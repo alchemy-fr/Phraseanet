@@ -120,21 +120,21 @@ class Query implements ControllerProviderInterface
 
         $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage);
 
-        foreach ($options->databoxes() as $databox) {
+        foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function(\collection $collection) {
                 return $collection->get_coll_id();
-            }, array_filter($options->collections(), function(\collection $collection) use ($databox) {
+            }, array_filter($options->getCollections(), function(\collection $collection) use ($databox) {
                 return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
             }));
 
-            $app['phraseanet.SE.logger']->log($databox, $query, $result->total(), $colls);
+            $app['phraseanet.SE.logger']->log($databox, $result->getQuery(), $result->getTotal(), $colls);
         }
         
-        $proposals = $firstPage ? $result->proposals() : false;
+        $proposals = $firstPage ? $result->getProposals() : false;
 
-        $npages = $result->totalPages($perPage);
+        $npages = $result->getTotalPages($perPage);
 
-        $page = $result->currentPage($perPage);
+        $page = $result->getCurrentPage($perPage);
 
         $string = '';
 
@@ -185,17 +185,17 @@ class Query implements ControllerProviderInterface
 
         $explain .= "<img src=\"/skins/icons/answers.gif\" /><span><b>";
 
-        if ($result->total() != $result->available()) {
-            $explain .= sprintf(_('reponses:: %d Resultats rappatries sur un total de %d trouves'), $result->available(), $result->total());
+        if ($result->getTotal() != $result->getAvailable()) {
+            $explain .= sprintf(_('reponses:: %d Resultats rappatries sur un total de %d trouves'), $result->getAvailable(), $result->getTotal());
         } else {
-            $explain .= sprintf(_('reponses:: %d Resultats'), $result->total());
+            $explain .= sprintf(_('reponses:: %d Resultats'), $result->getTotal());
         }
 
         $explain .= " </b></span>";
-        $explain .= '<br><div>' . $result->duration() . ' s</div>dans index ' . $result->indexes();
+        $explain .= '<br><div>' . $result->getDuration() . ' s</div>dans index ' . $result->getIndexes();
         $explain .= "</div>";
 
-        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . sprintf(_('reponses:: %d reponses'), $result->total()) . '</a> | ' . sprintf(_('reponses:: %s documents selectionnes'), '<span id="nbrecsel"></span>');
+        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . sprintf(_('reponses:: %d reponses'), $result->getTotal()) . '</a> | ' . sprintf(_('reponses:: %s documents selectionnes'), '<span id="nbrecsel"></span>');
 
         $json['infos'] = $infoResult;
         $json['navigation'] = $string;
@@ -203,10 +203,10 @@ class Query implements ControllerProviderInterface
         $prop = null;
 
         if ($firstPage) {
-            $propals = $result->suggestions();
+            $propals = $result->getSuggestions();
             if (count($propals) > 0) {
                 foreach ($propals as $prop_array) {
-                    if ($prop_array['value'] !== $query && $prop_array['hits'] > $result->total()) {
+                    if ($prop_array['value'] !== $query && $prop_array['hits'] > $result->getTotal()) {
                         $prop = $prop_array['value'];
                         break;
                     }
@@ -214,7 +214,7 @@ class Query implements ControllerProviderInterface
             }
         }
 
-        if ($result->total() === 0) {
+        if ($result->getTotal() === 0) {
             $template = 'prod/results/help.html.twig';
         } else {
             if ($mod == 'thumbs') {
@@ -227,7 +227,7 @@ class Query implements ControllerProviderInterface
         $json['results'] = $app['twig']->render($template, array(
             'results'         => $result,
             'GV_social_tools' => $app['phraseanet.registry']->get('GV_social_tools'),
-            'highlight'       => $result->query(),
+            'highlight'       => $result->getQuery(),
             'searchEngine'    => $app['phraseanet.SE'],
             'suggestions'     => $prop
             )
@@ -235,9 +235,9 @@ class Query implements ControllerProviderInterface
 
         $json['query'] = $query;
         $json['phrasea_props'] = $proposals;
-        $json['total_answers'] = (int) $result->available();
-        $json['next_page'] = ($page < $npages && $result->available() > 0) ? ($page + 1) : false;
-        $json['prev_page'] = ($page > 1 && $result->available() > 0) ? ($page - 1) : false;
+        $json['total_answers'] = (int) $result->getAvailable();
+        $json['next_page'] = ($page < $npages && $result->getAvailable() > 0) ? ($page + 1) : false;
+        $json['prev_page'] = ($page > 1 && $result->getAvailable() > 0) ? ($page - 1) : false;
         $json['form'] = $form;
 
         return $app->json($json);

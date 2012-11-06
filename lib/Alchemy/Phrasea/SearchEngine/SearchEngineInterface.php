@@ -40,7 +40,7 @@ interface SearchEngineInterface
     /**
      * @return ConfigurationPanelInterface
      */
-    public function configurationPanel();
+    public function getConfigurationPanel();
     
     /**
      * @return array an array of field names
@@ -71,7 +71,7 @@ interface SearchEngineInterface
      *
      * @return an array of self::GEM_TYPE_* indexed types
      */
-    public function availableTypes();
+    public function getAvailableTypes();
 
     /**
      * Add a record to index

@@ -32,19 +32,19 @@ class SphinxSearchResultTest extends \PhraseanetPHPUnitAbstract
                         $offsetStart, $available, $total, $error, $warning,
                         $suggestions, $propositions, $indexes);
 
-        $this->assertEquals($warning, $result->warning());
-        $this->assertEquals(2, $result->totalPages(23));
-        $this->assertEquals(5, $result->totalPages(5));
-        $this->assertEquals($total, $result->total());
-        $this->assertEquals($suggestions, $result->suggestions());
-        $this->assertEquals($results, $result->results());
-        $this->assertEquals($query, $result->query());
-        $this->assertEquals($propositions, $result->proposals());
-        $this->assertEquals($indexes, $result->indexes());
-        $this->assertEquals($error, $result->error());
-        $this->assertEquals($duration, $result->duration());
-        $this->assertEquals(2, $result->currentPage(23));
-        $this->assertEquals($available, $result->available());
+        $this->assertEquals($warning, $result->getWarning());
+        $this->assertEquals(2, $result->getTotalPages(23));
+        $this->assertEquals(5, $result->getTotalPages(5));
+        $this->assertEquals($total, $result->getTotal());
+        $this->assertEquals($suggestions, $result->getSuggestions());
+        $this->assertEquals($results, $result->getResults());
+        $this->assertEquals($query, $result->getQuery());
+        $this->assertEquals($propositions, $result->getProposals());
+        $this->assertEquals($indexes, $result->getIndexes());
+        $this->assertEquals($error, $result->getError());
+        $this->assertEquals($duration, $result->getDuration());
+        $this->assertEquals(2, $result->getCurrentPage(23));
+        $this->assertEquals($available, $result->getAvailable());
     }
 
 }

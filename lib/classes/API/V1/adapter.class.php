@@ -417,7 +417,7 @@ class API_V1_adapter extends API_V1_Abstract
                     'engine'            => array(
                         'type'          => $app['phraseanet.SE']->getName(),
                         'status'        => $SEStatus,
-                        'configuration' => $app['phraseanet.SE']->configurationPanel()->getConfiguration(),
+                        'configuration' => $app['phraseanet.SE']->getConfigurationPanel()->getConfiguration(),
                     ),
                 ),
                 'binary'  => array(
@@ -1011,28 +1011,28 @@ class API_V1_adapter extends API_V1_Abstract
 
         $search_result = $this->app['phraseanet.SE']->query($request->get('query'), $offsetStart, $perPage);
 
-        foreach ($options->databoxes() as $databox) {
+        foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function(\collection $collection) {
                 return $collection->get_coll_id();
-            }, array_filter($options->collections(), function(\collection $collection) use ($databox) {
+            }, array_filter($options->getCollections(), function(\collection $collection) use ($databox) {
                 return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
             }));
 
-            $this->app['phraseanet.SE.logger']->log($databox, $request->get('query'), $search_result->total(), $colls);
+            $this->app['phraseanet.SE.logger']->log($databox, $search_result->getQuery(), $search_result->getTotal(), $colls);
         }
 
         $ret = array(
             'offset_start'      => $offsetStart,
             'per_page'          => $perPage,
-            'available_results' => $search_result->available(),
-            'total_results'     => $search_result->total(),
-            'error'             => $search_result->error(),
-            'warning'           => $search_result->warning(),
-            'query_time'        => $search_result->duration(),
-            'search_indexes'    => $search_result->indexes(),
-            'suggestions'       => $search_result->suggestions()->toArray(),
+            'available_results' => $search_result->getAvailable(),
+            'total_results'     => $search_result->getTotal(),
+            'error'             => $search_result->getError(),
+            'warning'           => $search_result->getWarning(),
+            'query_time'        => $search_result->getDuration(),
+            'search_indexes'    => $search_result->getIndexes(),
+            'suggestions'       => $search_result->getSuggestions()->toArray(),
             'results'           => array(),
-            'query' => $search_result->query(),
+            'query'             => $search_result->getQuery(),
         );
 
         return array($ret, $search_result);

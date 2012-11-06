@@ -163,7 +163,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function configurationPanel()
+    public function getConfigurationPanel()
     {
         if (!$this->configurationPanel) {
             $this->configurationPanel = new ConfigurationPanel($this);
@@ -175,7 +175,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     public function getConfiguration()
     {
         if (!$this->configuration) {
-            $this->configuration = $this->configurationPanel()->getConfiguration();
+            $this->configuration = $this->getConfigurationPanel()->getConfiguration();
         }
 
         return $this->configuration;
@@ -184,7 +184,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function availableTypes()
+    public function getAvailableTypes()
     {
         return array(self::GEM_TYPE_RECORD, self::GEM_TYPE_STORY);
     }
@@ -316,6 +316,8 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $this->removeRecord($record);
         $this->addRecord($record);
+        
+        return $this;
     }
 
     /**
@@ -373,6 +375,8 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $this->options = $options;
         $this->applyOptions($options);
+        
+        return $this;
     }
 
     /**
@@ -382,12 +386,16 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $this->options = new SearchEngineOptions();
         $this->resetSphinx();
+        
+        return $this;
     }
 
     private function resetSphinx()
     {
         $this->sphinx->ResetGroupBy();
         $this->sphinx->ResetFilters();
+        
+        return $this;
     }
 
     /**
@@ -479,14 +487,14 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $index = '';
         // in this case search is done on metas
-        if ($this->options->fields() || $this->options->businessFieldsOn()) {
-            if ($this->options->stemmed() && $this->options->getLocale()) {
+        if ($this->options->getFields() || $this->options->getBusinessFieldsOn()) {
+            if ($this->options->isStemmed() && $this->options->getLocale()) {
                 $index = 'metadatas' . $this->CRCdatabox($record->get_databox()) . '_stemmed_' . $this->options->getLocale();
             } else {
                 $index = 'metadatas' . $this->CRCdatabox($record->get_databox());
             }
         } else {
-            if ($this->options->stemmed() && $this->options->getLocale()) {
+            if ($this->options->isStemmed() && $this->options->getLocale()) {
                 $index = 'documents' . $this->CRCdatabox($record->get_databox()) . '_stemmed_' . $this->options->getLocale();
             } else {
                 $index = 'documents' . $this->CRCdatabox($record->get_databox());
@@ -524,12 +532,12 @@ class SphinxSearchEngine implements SearchEngineInterface
     public function CRCdatabox(\databox $databox)
     {
         return sprintf("%u", crc32(
-                                str_replace(
-                                        array('.', '%')
-                                        , '_'
-                                        , sprintf('%s_%s_%s_%s', $databox->get_host(), $databox->get_port(), $databox->get_user(), $databox->get_dbname())
-                                )
-                        ));
+                str_replace(
+                        array('.', '%')
+                        , '_'
+                        , sprintf('%s_%s_%s_%s', $databox->get_host(), $databox->get_port(), $databox->get_user(), $databox->get_dbname())
+                )
+        ));
     }
 
     /**
@@ -546,14 +554,14 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $filters = array();
 
-        foreach ($options->collections() as $collection) {
+        foreach ($options->getCollections() as $collection) {
             $filters[] = sprintf("%u", crc32($collection->get_databox()->get_sbas_id() . '_' . $collection->get_coll_id()));
         }
 
         $this->sphinx->SetFilter('crc_sbas_coll', $filters);
 
         $this->sphinx->SetFilter('deleted', array(0));
-        $this->sphinx->SetFilter('parent_record_id', array($options->searchType()));
+        $this->sphinx->SetFilter('parent_record_id', array($options->getSearchType()));
 
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             foreach (array_unique(array_map(function(\databox_field $field) {
@@ -566,30 +574,29 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
         }
 
-
-        if ($options->fields()) {
+        if ($options->getFields()) {
 
             $filters = array();
-            foreach ($options->fields() as $field) {
+            foreach ($options->getFields() as $field) {
                 $filters[] = sprintf("%u", crc32($field->get_databox()->get_sbas_id() . '_' . $field->get_id()));
             }
 
             $this->sphinx->SetFilter('crc_struct_id', $filters);
         }
 
-        if ($options->businessFieldsOn()) {
+        if ($options->getBusinessFieldsOn()) {
 
             $crc_coll_business = array();
 
-            foreach ($options->businessFieldsOn() as $collection) {
+            foreach ($options->getBusinessFieldsOn() as $collection) {
                 $crc_coll_business[] = sprintf("%u", crc32($collection->get_coll_id() . '_1'));
                 $crc_coll_business[] = sprintf("%u", crc32($collection->get_coll_id() . '_0'));
             }
 
             $non_business = array();
 
-            foreach ($options->collections() as $collection) {
-                foreach ($options->businessFieldsOn() as $BFcollection) {
+            foreach ($options->getCollections() as $collection) {
+                foreach ($options->getBusinessFieldsOn() as $BFcollection) {
                     if ($collection->get_base_id() == $BFcollection->get_base_id()) {
                         continue 2;
                     }
@@ -602,7 +609,7 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
 
             $this->sphinx->SetFilter('crc_coll_business', $crc_coll_business);
-        } elseif ($options->fields()) {
+        } elseif ($options->getFields()) {
             $this->sphinx->SetFilter('business', array(0));
         }
 
@@ -610,7 +617,7 @@ class SphinxSearchEngine implements SearchEngineInterface
          * @todo : enhance : check status in a better way
          */
         $status_opts = $options->getStatus();
-        foreach ($options->databoxes() as $databox) {
+        foreach ($options->getDataboxes() as $databox) {
             foreach ($databox->get_statusbits() as $n => $status) {
                 if (!array_key_exists($n, $status_opts))
                     continue;
@@ -621,14 +628,12 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
         }
 
-
         if ($options->getRecordType()) {
             $this->sphinx->SetFilter('crc_type', array(sprintf("%u", crc32($options->getRecordType()))));
         }
 
-
         $order = '';
-        switch ($options->sortOrder()) {
+        switch ($options->getSortOrder()) {
             case SearchEngineOptions::SORT_MODE_ASC:
                 $order = 'ASC';
                 break;
@@ -638,7 +643,7 @@ class SphinxSearchEngine implements SearchEngineInterface
                 break;
         }
 
-        switch ($options->sortBy()) {
+        switch ($options->getSortBy()) {
             case SearchEngineOptions::SORT_RANDOM:
                 $sort = '@random';
                 break;
@@ -779,7 +784,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $tmpSuggestions = new ArrayCollection();
         foreach ($suggestions as $key => $suggestion) {
-            if ($suggestion->hits() < ($max_results / 100)) {
+            if ($suggestion->getHits() < ($max_results / 100)) {
                 continue;
             }
             $tmpSuggestions->add($suggestion);
@@ -790,11 +795,11 @@ class SphinxSearchEngine implements SearchEngineInterface
 
     private static function suggestionsHitSorter(SearchEngineSuggestion $a, SearchEngineSuggestion $b)
     {
-        if ($a->hits() == $b->hits()) {
+        if ($a->getHits() == $b->getHits()) {
             return 0;
         }
 
-        return ($a->hits() > $b->hits()) ? -1 : 1;
+        return ($a->getHits() > $b->getHits()) ? -1 : 1;
     }
 
     private function BuildTrigrams($keyword)
@@ -826,7 +831,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $indexes = array();
 
-        foreach ($this->options->databoxes() as $databox) {
+        foreach ($this->options->getDataboxes() as $databox) {
             $indexes[] = 'suggest' . $this->CRCdatabox($databox);
         }
 
@@ -855,20 +860,20 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $index_keys = array();
 
-        foreach ($this->options->databoxes() as $databox) {
+        foreach ($this->options->getDataboxes() as $databox) {
             $index_keys[] = $this->CRCdatabox($databox);
         }
 
         if (count($index_keys) > 0) {
-            if ($this->options->fields() || $this->options->businessFieldsOn()) {
-                if ($query !== '' && $this->options->stemmed() && $this->options->getLocale()) {
+            if ($this->options->getFields() || $this->options->getBusinessFieldsOn()) {
+                if ($query !== '' && $this->options->isStemmed() && $this->options->getLocale()) {
                     $index = 'metadatas' . implode('_stemmed_' . $this->options->getLocale() . ', metadatas', $index_keys) . '_stemmed_' . $this->options->getLocale();
                 } else {
                     $index = 'metadatas' . implode(',metadatas', $index_keys);
                 }
                 $index .= ', metas_realtime' . implode(', metas_realtime', $index_keys);
             } else {
-                if ($query !== '' && $this->options->stemmed() && $this->options->getLocale()) {
+                if ($query !== '' && $this->options->isStemmed() && $this->options->getLocale()) {
                     $index = 'documents' . implode('_stemmed_' . $this->options->getLocale() . ', documents', $index_keys) . '_stemmed_' . $this->options->getLocale();
                 } else {
                     $index = 'documents' . implode(', documents', $index_keys);
@@ -895,7 +900,6 @@ class SphinxSearchEngine implements SearchEngineInterface
         while (mb_strpos($query, '  ') !== false) {
             $query = str_replace('  ', ' ', $query);
         }
-
 
         $offset = 0;
         while (false !== $pos = mb_strpos($query, '-', $offset)) {

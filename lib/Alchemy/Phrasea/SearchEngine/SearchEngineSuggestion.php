@@ -41,7 +41,7 @@ class SearchEngineSuggestion
      * 
      * @return string
      */
-    public function query()
+    public function getQuery()
     {
         return $this->query;
     }
@@ -51,7 +51,7 @@ class SearchEngineSuggestion
      * 
      * @return string
      */
-    public function suggestion()
+    public function getSuggestion()
     {
         return $this->suggestion;
     }
@@ -61,7 +61,7 @@ class SearchEngineSuggestion
      * 
      * @return int
      */
-    public function hits()
+    public function getHits()
     {
         return $this->hits;
     }

@@ -112,7 +112,7 @@ class SearchEngineRequest
 
         $options->setDateFields($databoxDateFields);
         $options->setSort($request->request->get('sort'), $request->request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
-        $options->useStemming((Boolean) $request->request->get('stemme'));
+        $options->setStemming((Boolean) $request->request->get('stemme'));
 
         return new static($options);
     }

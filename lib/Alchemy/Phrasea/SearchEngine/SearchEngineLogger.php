@@ -24,8 +24,6 @@ class SearchEngineLogger
 
     public function log(\databox $databox, $query, $answers, array $coll_ids)
     {
-        $logger = \Session_Logger::load($this->app, $databox);
-
         $conn = $databox->get_connection();
 
         $sql = "INSERT INTO log_search
@@ -36,7 +34,7 @@ class SearchEngineLogger
         $stmt = $conn->prepare($sql);
 
         $stmt->execute(array(
-            ':log_id'    => $logger->get_id(),
+            ':log_id'    => $this->app['phraseanet.logger']($databox)->get_id(),
             ':date'      => date("Y-m-d H:i:s"),
             ':query'     => $query,
             ':nbresults' => $answers,

@@ -101,10 +101,10 @@ class record_preview extends record_adapter
 
                 $results = $search_engine->query($query, (int) ($pos), 1);
 
-                if ($results->results()->isEmpty()) {
+                if ($results->getResults()->isEmpty()) {
                     throw new Exception('Record introuvable');
                 }
-                foreach ($results->results() as $record) {
+                foreach ($results->getResults() as $record) {
                     $number = $pos;
                     $sbas_id = $record->get_sbas_id();
                     $record_id = $record->get_record_id();
@@ -209,7 +209,7 @@ class record_preview extends record_adapter
                 $page = (int) ceil($pos / $perPage);
                 $results = $search_engine->query($query, $index, $perPage);
 
-                $this->train = $results->results()->toArray();
+                $this->train = $results->getResults()->toArray();
                 break;
             case 'BASK':
                 $this->train = $this->container->getElements();

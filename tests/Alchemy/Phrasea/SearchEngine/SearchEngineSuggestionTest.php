@@ -13,8 +13,8 @@ class SearchEngineSuggestionTest extends \PhraseanetPHPUnitAbstract
         $hits = 42;
         
         $suggestion = new SearchEngineSuggestion($query, $words, $hits);
-        $this->assertEquals($hits, $suggestion->hits());
-        $this->assertEquals($query, $suggestion->query());
-        $this->assertEquals($words, $suggestion->suggestion());
+        $this->assertEquals($hits, $suggestion->getHits());
+        $this->assertEquals($query, $suggestion->getQuery());
+        $this->assertEquals($words, $suggestion->getSuggestion());
     }
 }

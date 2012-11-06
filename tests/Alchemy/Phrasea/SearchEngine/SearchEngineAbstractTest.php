@@ -98,9 +98,9 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
 
-        $result = $results->results()->first();
+        $result = $results->getResults()->first();
 
         $this->assertEquals($record->get_record_id(), $result->get_record_id());
         $this->assertEquals($record->get_sbas_id(), $result->get_sbas_id());
@@ -116,9 +116,9 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
 
-        $result = $results->results()->first();
+        $result = $results->getResults()->first();
 
         $this->assertEquals($record->get_record_id(), $result->get_record_id());
         $this->assertEquals($record->get_sbas_id(), $result->get_sbas_id());
@@ -147,14 +147,14 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(0, $results->total());
+        $this->assertEquals(0, $results->getTotal());
         
         $options->setMinDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-20 01:01:00'));
         self::$searchEngine->setOptions($options);
         
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     private function editDateRecord($date, \record_adapter $record)
@@ -219,14 +219,14 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(0, $results->total());
+        $this->assertEquals(0, $results->getTotal());
         
         $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-23 01:01:00'));
         self::$searchEngine->setOptions($options);
         
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     public function testQueryByDateRange()
@@ -253,14 +253,14 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(0, $results->total());
+        $this->assertEquals(0, $results->getTotal());
         
         $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-22 01:01:00'));
         self::$searchEngine->setOptions($options);
         
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     protected function editRecord($string2add, \record_adapter &$record, $indexable = true, $business = false)
@@ -304,7 +304,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(0, $results->total());
+        $this->assertEquals(0, $results->getTotal());
     }
 
     public function testAddRecord()
@@ -319,7 +319,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     public function testUpdateRecord()
@@ -338,7 +338,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     protected function getDefaultOptions()
@@ -356,7 +356,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     public function testUpdateRecordFR()
     {
         $options = $this->getDefaultOptions();
-        $options->useStemming(true);
+        $options->setStemming(true);
         $options->setLocale('fr');
         self::$searchEngine->setOptions($options);
 
@@ -370,7 +370,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     public function testUpdateQueryOnField()
@@ -390,7 +390,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     public function testBusinessFieldAvailable()
@@ -409,7 +409,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     public function testBusinessFieldNotAvailable()
@@ -424,7 +424,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(0, $results->total());
+        $this->assertEquals(0, $results->getTotal());
     }
 
     public function testUpdateQueryOnEmptyField()
@@ -450,7 +450,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         self::$searchEngine->setOptions($options);
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(0, $results->total());
+        $this->assertEquals(0, $results->getTotal());
     }
 
     public function testUpdateNonIndexableRecord()
@@ -468,7 +468,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(0, $results->total());
+        $this->assertEquals(0, $results->getTotal());
     }
 
     public function testDeleteRecord()
@@ -485,20 +485,20 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(0, $results->total());
+        $this->assertEquals(0, $results->getTotal());
     }
 
     public function testAvailableTypes()
     {
-        $this->assertTrue(is_array(self::$searchEngine->availableTypes()));
-        foreach (self::$searchEngine->availableTypes() as $type) {
+        $this->assertTrue(is_array(self::$searchEngine->getAvailableTypes()));
+        foreach (self::$searchEngine->getAvailableTypes() as $type) {
             $this->assertTrue(in_array($type, array(SearchEngineInterface::GEM_TYPE_ENTRY, SearchEngineInterface::GEM_TYPE_RECORD, SearchEngineInterface::GEM_TYPE_STORY)));
         }
     }
 
     public function testConfigurationPanel()
     {
-        $this->assertInstanceOf('\\Alchemy\\Phrasea\\SearchEngine\\ConfigurationPanelInterface', self::$searchEngine->configurationPanel());
+        $this->assertInstanceOf('\\Alchemy\\Phrasea\\SearchEngine\\ConfigurationPanelInterface', self::$searchEngine->getConfigurationPanel());
     }
 
     public function testStatus()
@@ -527,7 +527,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     public function testUpdateStory()
@@ -550,7 +550,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     public function testStatusQueryOnOverOff()
@@ -570,7 +570,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(0, $results->total());
+        $this->assertEquals(0, $results->getTotal());
     }
 
     public function testStatusQueryOnOverOn()
@@ -591,7 +591,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     public function testStatusQueryOffOverOn()
@@ -612,7 +612,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(0, $results->total());
+        $this->assertEquals(0, $results->getTotal());
     }
 
     public function testStatusQueryOffOverOff()
@@ -636,7 +636,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     public function testStatusQueryUpdate()
@@ -656,7 +656,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(0, $results->total());
+        $this->assertEquals(0, $results->getTotal());
 
         $record->set_binary_status('10000');
 
@@ -665,7 +665,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->total());
+        $this->assertEquals(1, $results->getTotal());
     }
 
     public function testExcerptFromSimpleQuery()
@@ -681,7 +681,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $fields = array();
-        $foundRecord = $results->results()->first();
+        $foundRecord = $results->getResults()->first();
 
         $this->assertInstanceOf('\record_adapter', $foundRecord);
 

@@ -99,22 +99,22 @@ if ($parm['pag'] < 1) {
 
 $result = $app['phraseanet.SE']->query($parm['qry'], (((int) $parm["pag"] - 1) * $perPage), $perPage);
 
-foreach ($options->databoxes() as $databox) {
+foreach ($options->getDataboxes() as $databox) {
     $colls = array_map(function(\collection $collection) {
         return $collection->get_coll_id();
-    }, array_filter($options->collections(), function(\collection $collection) use ($databox) {
+    }, array_filter($options->getCollections(), function(\collection $collection) use ($databox) {
         return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
     }));
 
-    $app['phraseanet.SE.logger']->log($databox, $parm['qry'], $result->total(), $colls);
+    $app['phraseanet.SE.logger']->log($databox, $result->getQuery(), $result->getTotal(), $colls);
 }
 
 $proposals = $firstPage ? $result->propositions() : false;
 
-$npages = $result->total();
+$npages = $result->getTotal();
 
 
-$page = $result->currentPage($perPage);
+$page = $result->getCurrentPage($perPage);
 
 $ACL = $app['phraseanet.user']->ACL();
 
@@ -140,7 +140,7 @@ $history = queries::history($app['phraseanet.appbox'], $app['phraseanet.user']->
 
 echo '<script language="javascript" type="text/javascript">$("#history").empty().append("' . str_replace('"', '\"', $history) . '")</script>';
 
-$nbanswers = $result->available();
+$nbanswers = $result->getAvailable();
 $longueur = strlen($parm['qry']);
 
 $qrys = '<div>' . _('client::answers: rapport de questions par bases') . '</div>';
@@ -157,7 +157,7 @@ $txt = "<b>" . substr($parm['qry'], 0, 36) . ($longueur > 36 ? "..." : "") . "</
     });
 </script>
 <?php
-$npages = $result->totalPages($perPage);
+$npages = $result->getTotalPages($perPage);
 $pages = '';
 $ecart = 3;
 $max = (2 * $ecart) + 3;
@@ -235,7 +235,7 @@ else
 
 $i = 0;
 
-if (count($result->results()) > 0) {
+if (count($result->getResults()) > 0) {
     ?><div><table id="grid" cellpadding="0" cellspacing="0" border="0" style="xwidth:95%;"><?php
     if ($mod_col == 1) { // MODE LISTE
         ?><tr style="visibility:hidden"><td class="w160px" /><td /></tr><?php
@@ -247,7 +247,7 @@ if (count($result->results()) > 0) {
         ?></tr><?php
     }
 
-    foreach ($result->results() as $record) {
+    foreach ($result->getResults() as $record) {
         /* @var $record record_adapter */
         $base_id = $record->get_base_id();
         $sbas_id = $record->get_sbas_id();
@@ -392,7 +392,7 @@ if (count($result->results()) > 0) {
         <script type="text/javascript">
             $(document).ready(function(){
 
-                p4.tot = <?php echo $result->available(); ?>;
+                p4.tot = <?php echo $result->getAvailable(); ?>;
                 p4.tot_options = '<?php echo $options->serialize() ?>';
                 p4.tot_query = '<?php echo $parm['qry'] ?>';
 

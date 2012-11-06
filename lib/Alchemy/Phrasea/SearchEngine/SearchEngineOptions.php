@@ -173,7 +173,7 @@ class SearchEngineOptions
      * 
      * @return array An array of collection
      */
-    public function businessFieldsOn()
+    public function getBusinessFieldsOn()
     {
         return $this->business_fields;
     }
@@ -183,7 +183,7 @@ class SearchEngineOptions
      *
      * @return string
      */
-    public function sortBy()
+    public function getSortBy()
     {
         return $this->sort_by;
     }
@@ -193,7 +193,7 @@ class SearchEngineOptions
      *
      * @return string
      */
-    public function sortOrder()
+    public function getSortOrder()
     {
         return $this->sort_ord;
     }
@@ -204,7 +204,7 @@ class SearchEngineOptions
      * @param  boolean              $boolean
      * @return SearchEngineOptions
      */
-    public function useStemming($boolean)
+    public function setStemming($boolean)
     {
         $this->stemming = !!$boolean;
 
@@ -216,7 +216,7 @@ class SearchEngineOptions
      *
      * @return boolean
      */
-    public function stemmed()
+    public function isStemmed()
     {
         return $this->stemming;
     }
@@ -247,7 +247,7 @@ class SearchEngineOptions
      *
      * @return int
      */
-    public function searchType()
+    public function getSearchType()
     {
         return $this->search_type;
     }
@@ -270,7 +270,7 @@ class SearchEngineOptions
      *
      * @return array An array of collection
      */
-    public function collections()
+    public function getCollections()
     {
         return $this->collections;
     }
@@ -281,7 +281,7 @@ class SearchEngineOptions
      * 
      * @return array
      */
-    public function databoxes()
+    public function getDataboxes()
     {
         $databoxes = array();
 
@@ -307,7 +307,7 @@ class SearchEngineOptions
      *
      * @return array
      */
-    public function fields()
+    public function getFields()
     {
         return $this->fields;
     }
@@ -561,7 +561,7 @@ class SearchEngineOptions
                     }
                     break;
                 case 'stemming':
-                    $options->useStemming($value);
+                    $options->setStemming($value);
                     break;
                 case 'sort_by':
                     $sort_by = $value;

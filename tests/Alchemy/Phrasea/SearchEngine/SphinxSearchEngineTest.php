@@ -23,7 +23,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 19306, '127.0.0.1', 19308);
 
         self::$config = tempnam(sys_get_temp_dir(), 'tmp_sphinx.conf');
-        $configuration = self::$searchEngine->configurationPanel()->getConfiguration();
+        $configuration = self::$searchEngine->getConfigurationPanel()->getConfiguration();
         $configuration['date_fields'] = array();
         
         foreach($appbox->get_databoxes() as $databox) {
@@ -37,9 +37,9 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         
         $configuration['date_fields'] = array_unique($configuration['date_fields']);
         
-        self::$searchEngine->configurationPanel()->saveConfiguration($configuration);
+        self::$searchEngine->getConfigurationPanel()->saveConfiguration($configuration);
         
-        $configFile = self::$searchEngine->configurationPanel()->generateSphinxConf($appbox->get_databoxes(), $configuration);
+        $configFile = self::$searchEngine->getConfigurationPanel()->generateSphinxConf($appbox->get_databoxes(), $configuration);
 
         file_put_contents(self::$config, $configFile);
 

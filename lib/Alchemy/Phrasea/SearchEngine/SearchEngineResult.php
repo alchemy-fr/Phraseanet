@@ -49,7 +49,7 @@ class SearchEngineResult
      * 
      * @return ArrayCollection
      */
-    public function results()
+    public function getResults()
     {
         return $this->results;
     }
@@ -59,7 +59,7 @@ class SearchEngineResult
      * 
      * @return string
      */
-    public function query()
+    public function getQuery()
     {
         return $this->query;
     }
@@ -69,7 +69,7 @@ class SearchEngineResult
      * 
      * @return float
      */
-    public function duration()
+    public function getDuration()
     {
         return $this->duration;
     }
@@ -80,7 +80,7 @@ class SearchEngineResult
      * @param integer   $amountPerPage
      * @return integer
      */
-    public function totalPages($amountPerPage)
+    public function getTotalPages($amountPerPage)
     {
         return ceil($this->available / $amountPerPage);
     }
@@ -92,7 +92,7 @@ class SearchEngineResult
      * @param integer   $amountPerPage
      * @return integer
      */
-    public function currentPage($amountPerPage)
+    public function getCurrentPage($amountPerPage)
     {
         return ceil($this->offsetStart / $amountPerPage);
     }
@@ -106,7 +106,7 @@ class SearchEngineResult
      * 
      * @return int
      */
-    public function available()
+    public function getAvailable()
     {
         return $this->available;
     }
@@ -118,7 +118,7 @@ class SearchEngineResult
      * 
      * @return int
      */
-    public function total()
+    public function getTotal()
     {
         return $this->total;
     }
@@ -128,7 +128,7 @@ class SearchEngineResult
      * 
      * @return string
      */
-    public function error()
+    public function getError()
     {
         return $this->error;
     }
@@ -138,7 +138,7 @@ class SearchEngineResult
      * 
      * @return string
      */
-    public function warning()
+    public function getWarning()
     {
         return $this->warning;
     }
@@ -148,7 +148,7 @@ class SearchEngineResult
      * 
      * @return ArrayCollection
      */
-    public function suggestions()
+    public function getSuggestions()
     {
         return $this->suggestions;
     }
@@ -158,7 +158,7 @@ class SearchEngineResult
      * 
      * @return string
      */
-    public function proposals()
+    public function getProposals()
     {
         return $this->propositions;
     }
@@ -168,7 +168,7 @@ class SearchEngineResult
      * 
      * @return string
      */
-    public function indexes()
+    public function getIndexes()
     {
         return $this->indexes;
     }

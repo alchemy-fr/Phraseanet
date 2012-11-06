@@ -83,7 +83,7 @@ class PhraseaEngine implements SearchEngineInterface
     public function getConfiguration()
     {
         if (!$this->configuration) {
-            $this->configuration = $this->configurationPanel()->getConfiguration();
+            $this->configuration = $this->getConfigurationPanel()->getConfiguration();
         }
 
         return $this->configuration;
@@ -134,6 +134,14 @@ class PhraseaEngine implements SearchEngineInterface
         return false;
     }
 
+    /**
+     * Initializes Phrasea Engine.
+     * 
+     * It opens the connection and creates the session
+     * 
+     * @return PhraseaEngine
+     * @throws RuntimeException
+     */
     public function initialize()
     {
         if ($this->initialized) {
@@ -167,6 +175,13 @@ class PhraseaEngine implements SearchEngineInterface
         return $this;
     }
 
+    /**
+     * Checks if the Phraseanet session is still valid. Creates a new one if required.
+     * 
+     * @return PhraseaEngine
+     * @throws \RuntimeException
+     * @throws \Exception_InternalServerError
+     */
     private function checkSession()
     {
         if (!$this->app['phraseanet.user']) {
@@ -179,6 +194,8 @@ class PhraseaEngine implements SearchEngineInterface
             }
             $this->app['session']->set('phrasea_session_id', $ses_id);
         }
+        
+        return $this;
     }
 
     /**
@@ -197,7 +214,7 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function configurationPanel()
+    public function getConfigurationPanel()
     {
         if (!$this->configurationPanel) {
             $this->configurationPanel = new ConfigurationPanel($this);
@@ -209,7 +226,7 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function availableTypes()
+    public function getAvailableTypes()
     {
         return array(self::GEM_TYPE_RECORD, self::GEM_TYPE_STORY);
     }
@@ -313,6 +330,8 @@ class PhraseaEngine implements SearchEngineInterface
     public function setOptions(SearchEngineOptions $options)
     {
         $this->options = $options;
+        
+        return $this;
     }
 
     /**
@@ -321,6 +340,8 @@ class PhraseaEngine implements SearchEngineInterface
     public function resetOptions()
     {
         $this->options = new SearchEngineOptions();
+        
+        return $this;
     }
 
     /**
@@ -410,6 +431,11 @@ class PhraseaEngine implements SearchEngineInterface
         return new SearchEngineResult($records, $query, $row['duration'], $offset, $row['total'], $row['total'], $error, '', new ArrayCollection(), $propositions, '');
     }
     
+    /**
+     * Returns HTML Phrasea proposals
+     * 
+     * @return string|null
+     */
     private function getPropositions()
     {
         if ($this->qp && isset($this->qp['main'])) {
@@ -423,6 +449,12 @@ class PhraseaEngine implements SearchEngineInterface
         return null;
     }
     
+    /**
+     * Format proposals from QueryParser to HTML
+     * 
+     * @param array $proposals
+     * @return string
+     */
     private static function proposalsToHTML($proposals)
     {
         $html = '';
@@ -445,21 +477,30 @@ class PhraseaEngine implements SearchEngineInterface
         return $html ;
     }
 
+    /**
+     * Factory
+     * 
+     * @param Application $app
+     * @return PhraseaEngine
+     */
     public static function create(Application $app)
     {
         return new static($app);
     }
 
     /**
-     * {@inheritdoc}
+     * Executes the Phrasea query
+     * 
+     * @param string $query
+     * @return PhraseaEngine
      */
     private function executeQuery($query)
     {
         $nbanswers = $total_time = 0;
         $sort = '';
 
-        if ($this->options->sortBy()) {
-            switch ($this->options->sortOrder()) {
+        if ($this->options->getSortBy()) {
+            switch ($this->options->getSortOrder()) {
                 case SearchEngineOptions::SORT_MODE_ASC:
                     $sort = '+';
                     break;
@@ -468,13 +509,13 @@ class PhraseaEngine implements SearchEngineInterface
                     $sort = '-';
                     break;
             }
-            $sort .= '0' . $this->options->sortBy();
+            $sort .= '0' . $this->options->getSortBy();
         }
 
         foreach ($this->queries as $sbas_id => $qry) {
             $BF = array();
 
-            foreach ($this->options->businessFieldsOn() as $collection) {
+            foreach ($this->options->getBusinessFieldsOn() as $collection) {
                 $BF[] = $collection->get_base_id();
             }
 
@@ -486,7 +527,7 @@ class PhraseaEngine implements SearchEngineInterface
                     , $this->app['phraseanet.registry']->get('GV_sit')
                     , $this->app['session']->get('usr_id')
                     , false
-                    , $this->options->searchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
+                    , $this->options->getSearchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
                     , $sort
                     , $BF
             );
@@ -579,9 +620,15 @@ class PhraseaEngine implements SearchEngineInterface
         return $this;
     }
 
+    /**
+     * Prepares the query
+     * 
+     * @param string $query
+     * @return PhraseaEngine
+     */
     private function addQuery($query)
     {
-        foreach ($this->options->databoxes() as $databox) {
+        foreach ($this->options->getDataboxes() as $databox) {
             $this->queries[$databox->get_sbas_id()] = $query;
         }
 
@@ -613,10 +660,10 @@ class PhraseaEngine implements SearchEngineInterface
                     $this->queries[$sbas] .= ' AND (recordstatus=' . $requestStat . ')';
                 }
             }
-            if ($this->options->fields()) {
+            if ($this->options->getFields()) {
                 $this->queries[$sbas] .= ' IN (' . implode(' OR ', array_map(function(\databox_field $field) {
                                             return $field->get_name();
-                                        }, $this->options->fields())) . ')';
+                                        }, $this->options->getFields())) . ')';
             }
             if (($this->options->getMinDate() || $this->options->getMaxDate()) && $this->options->getDateFields()) {
                 if ($this->options->getMinDate()) {
@@ -635,10 +682,10 @@ class PhraseaEngine implements SearchEngineInterface
         }
 
         $base_ids = array_map(function(\collection $collection) {
-                    return $collection->get_base_id();
-                }, $this->options->collections());
+                        return $collection->get_base_id();
+                    }, $this->options->getCollections());
 
-        foreach ($this->options->databoxes() as $databox) {
+        foreach ($this->options->getDataboxes() as $databox) {
             $sbas_id = $databox->get_sbas_id();
 
             $this->colls[$sbas_id] = array();
@@ -673,6 +720,13 @@ class PhraseaEngine implements SearchEngineInterface
         return $this;
     }
 
+    /**
+     * Parses the query for search engine
+     * 
+     * @param integer $sbas
+     * @param string $query
+     * @return PhraseaEngine
+     */
     private function singleParse($sbas, $query)
     {
         $this->qp[$sbas] = new PhraseaEngineQueryParser($this->app, $this->options->getLocale());
@@ -704,6 +758,8 @@ class PhraseaEngine implements SearchEngineInterface
             phrasea_close_session($this->app['session']->get('phrasea_session_id'));
             $this->app['session']->remove('phrasea_session_id');
         }
+        
+        return $this;
     }
 
     /**
