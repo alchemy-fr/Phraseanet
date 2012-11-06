@@ -23,6 +23,7 @@ $parm = $request->get_parms(
     'debug'
 );
 
+phrasea::headers(200, true, 'application/json', 'UTF-8', false);
 
 define('SEARCH_REPLACE_MAXREC', 25);
 
@@ -35,6 +36,7 @@ $ret = array(
     'nRecsUpdated'=>0,
     'msg'=>''
 );
+
 
 foreach ($parm['id'] as $id) {
     $id = explode('.', $id);
@@ -239,11 +241,11 @@ if($ret['nRecsToUpdate'] <= SEARCH_REPLACE_MAXREC)
         }
 
     }
-    $ret['msg'] = sprintf(_('%s records updated'), $ret['nRecsUpdated']);
+    $ret['msg'] = sprintf(_('prod::thesaurusTab:dlg:%d record(s) updated'), $ret['nRecsUpdated']);
 }
 else {
     // too many records to update
-    $ret['msg'] = sprintf(_('too many (%d) records to update (limit=%d)'), $ret['nRecsToUpdate'], SEARCH_REPLACE_MAXREC);
+    $ret['msg'] = sprintf(_('prod::thesaurusTab:dlg:too many (%1$d) records to update (limit=%2$d)'), $ret['nRecsToUpdate'], SEARCH_REPLACE_MAXREC);
 }
 
 
