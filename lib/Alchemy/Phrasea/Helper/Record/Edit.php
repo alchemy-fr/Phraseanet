@@ -314,7 +314,7 @@ class Edit extends RecordHelper
             $T_sgval['b' . $base_id] = array();
             $collection = \collection::get_from_base_id($base_id);
 
-            if ($sxe = simplexml_load_string($collection->get_prefs())) {
+            if (false !== $sxe = simplexml_load_string($collection->get_prefs())) {
                 $z = $sxe->xpath('/baseprefs/sugestedValues');
 
                 if ( ! $z || ! is_array($z))

@@ -397,10 +397,9 @@ abstract class base implements cache_cacheableInterface
             return $this;
         }
 
-        $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
-
-        if ( ! $structure)
+        if (false === $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml")) {
             throw new Exception('Unable to load schema');
+        }
 
         if ($this->get_base_type() === self::APPLICATION_BOX)
             $this->schema = $structure->appbox;

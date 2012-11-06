@@ -95,8 +95,7 @@ class task_period_RecordMover extends task_appboxAbstract
      */
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
-            // ... but we could check for safe values
+        if (false !== $sxml = simplexml_load_string($xml)) {
             if ((int) ($sxml->period) < 10)
                 $sxml->period = 10;
             elseif ((int) ($sxml->period) > 1440) // 1 jour
@@ -336,8 +335,8 @@ class task_period_RecordMover extends task_appboxAbstract
     protected function retrieveContent(appbox $appbox)
     {
         $this->maxrecs = 1000;
-        $this->sxTaskSettings = @simplexml_load_string($this->getSettings());
-        if ( ! $this->sxTaskSettings || !$this->sxTaskSettings->tasks) {
+        $this->sxTaskSettings = simplexml_load_string($this->getSettings());
+        if (false === $this->sxTaskSettings || !$this->sxTaskSettings->tasks) {
             return array();
         }
 
