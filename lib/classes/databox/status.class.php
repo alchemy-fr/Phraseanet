@@ -75,7 +75,7 @@ class databox_status
         $xmlpref = $databox->get_structure();
         $sxe = simplexml_load_string($xmlpref);
 
-        if ($sxe) {
+        if ($sxe !== false) {
 
             foreach ($sxe->statbits->bit as $sb) {
                 $bit = (int) ($sb["n"]);

@@ -81,7 +81,7 @@ class patch_370a8 implements patchInterface
              * migrating task 'workflow01' or 'task_period_ftv'
              */
             $x = $task['settings'];
-            if (($sx = simplexml_load_string($x)) !== FALSE) {
+            if (false !== $sx = simplexml_load_string($x)) {
                 $period = (int) ($sx->period);
 
                 if ( ! array_key_exists('_' . $period, $tdom)) {

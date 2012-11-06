@@ -39,8 +39,8 @@ class queries
         }
 
         $cssTopics = '';
-        if ($xmlTopics && ($sxTopics = simplexml_load_file($xmlTopics))) {
-            $cssTopics = (string) ($sxTopics->display->css);
+        if ($xmlTopics && false !== $sxTopics = simplexml_load_file($xmlTopics)) {
+            $cssTopics = (string) $sxTopics->display->css;
         }
 
         $out .= '<style type="text/css">
@@ -108,7 +108,7 @@ class queries
 
         $jsTopics = 'null';
         $maxdepth = 0;
-        if (($sxTopics = simplexml_load_file($xmlTopics))) {
+        if (false !== $sxTopics = simplexml_load_file($xmlTopics)) {
             $jsTopics = self::topicsAsJS($sxTopics->topics, 0, $maxdepth);
         }
 
