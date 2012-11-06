@@ -8,7 +8,9 @@ require_once __DIR__ . '/../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class SphinxSearchResultTest extends \PhraseanetPHPUnitAbstract
 {
-
+    /**
+     * @covers Alchemy\Phrasea\SearchEngine\SearchEngineResult
+     */
     public function testBasic()
     {
         $results = new ArrayCollection(array(

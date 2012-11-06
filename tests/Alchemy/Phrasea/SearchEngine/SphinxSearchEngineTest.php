@@ -14,6 +14,9 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
     protected static $config;
     protected static $searchd;
 
+    /**
+     * @covers Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine
+     */
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -81,6 +84,9 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         parent::tearDownAfterClass();
     }
 
+    /**
+     * @covers Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine::autocomplete
+     */
     public function testAutocomplete()
     {
         $record = self::$DI['record_24'];
@@ -119,7 +125,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         $process->run();
         usleep(500000);
 
-        $suggestions = self::$searchEngine->autoComplete('jean');
+        $suggestions = self::$searchEngine->autocomplete('jean');
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $suggestions);
 
         $this->assertGreaterThan(2, count($suggestions));

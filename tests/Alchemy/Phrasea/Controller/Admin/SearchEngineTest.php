@@ -10,6 +10,7 @@ class SearchEngineTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
     /**
+     * @covers Alchemy\Phrasea\Controller\Admin\SearchEngine::getSearchEngineConfigurationPanel
      * @dataProvider getSearchEngines
      */
     public function testGetConfiguration($searchEngine)
@@ -21,6 +22,7 @@ class SearchEngineTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
     
     /**
+     * @covers Alchemy\Phrasea\Controller\Admin\SearchEngine::postSearchEngineConfigurationPanel
      * @dataProvider getSearchEngines
      */
     public function testPostConfiguration($searchEngine)

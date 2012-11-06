@@ -6,6 +6,9 @@ require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class SearchEngineServiceProvidertest extends \PhraseanetPHPUnitAbstract
 {
+    /**
+     * @covers Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider
+     */
     public function testGetInstantiate()
     {
         self::$DI['app']->register(new SearchEngineServiceProvider());

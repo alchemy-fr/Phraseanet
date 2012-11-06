@@ -8,6 +8,9 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
 class SphinxSearchOptionsTest extends \PhraseanetPHPUnitAbstract
 {
+    /**
+     * @covers Alchemy\Phrasea\SearchEngine\SearchEngineOptions
+     */
     public function testSerialize()
     {
         $options = new SearchEngineOptions(self::$DI['app']);

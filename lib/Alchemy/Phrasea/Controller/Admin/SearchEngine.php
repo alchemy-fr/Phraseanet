@@ -28,14 +28,34 @@ class SearchEngine implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/', function(PhraseaApplication $app, Request $request) {
-            return $app['phraseanet.SE']->getConfigurationPanel()->get($app, $request);
-        })->bind('admin_searchengine_get');
+        $controllers->get('/', $this->call('getSearchEngineConfigurationPanel'))
+                ->bind('admin_searchengine_get');
 
-        $controllers->post('/', function(PhraseaApplication $app, Request $request) {
-            return $app['phraseanet.SE']->getConfigurationPanel()->post($app, $request);
-        })->bind('admin_searchengine_post');
+        $controllers->post('/', $this->call('postSearchEngineConfigurationPanel'))
+                ->bind('admin_searchengine_post');
 
         return $controllers;
     }
+
+    public function getSearchEngineConfigurationPanel(PhraseaApplication $app, Request $request)
+    {
+        return $app['phraseanet.SE']->getConfigurationPanel()->get($app, $request);
+    }
+
+    public function postSearchEngineConfigurationPanel(PhraseaApplication $app, Request $request)
+    {
+        return $app['phraseanet.SE']->getConfigurationPanel()->post($app, $request);
+    }
+
+    /**
+     * Prefix the method to call with the controller class name
+     *
+     * @param  string $method The method to call
+     * @return string
+     */
+    private function call($method)
+    {
+        return sprintf('%s::%s', __CLASS__, $method);
+    }
+
 }

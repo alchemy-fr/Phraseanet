@@ -9,6 +9,14 @@ require_once __DIR__ . '/ConfigurationPanelAbstractTest.php';
 
 class PhraseaConfigurationPanelTest extends ConfigurationPanelAbstractTest
 {
+    /**
+     * @covers Alchemy\Phrasea\SearchEngine\Phrasea\ConfigurationPanel
+     */
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+    }
+    
     public function getPanel()
     {
         return new ConfigurationPanel(new PhraseaEngine(self::$DI['app']));

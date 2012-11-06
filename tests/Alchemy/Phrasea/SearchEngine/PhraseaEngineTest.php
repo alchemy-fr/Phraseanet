@@ -2,7 +2,6 @@
 
 namespace Alchemy\Phrasea\SearchEngine;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Symfony\Component\Process\Process;
 
@@ -10,6 +9,14 @@ require_once __DIR__ . '/SearchEngineAbstractTest.php';
 
 class PhraseaEngineTest extends SearchEngineAbstractTest
 {
+    /**
+     * @covers Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
+     */
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+    }
+    
     public function initialize()
     {
         self::$searchEngine = PhraseaEngine::create(self::$DI['app']);
@@ -27,6 +34,9 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
         $process->run();
     }
 
+    /**
+     * @covers Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
+     */
     public function testAutocomplete()
     {
         return;
@@ -37,6 +47,9 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
         $this->markTestSkipped('Phrasea does not support `storyid=` request');
     }
 
+    /**
+     * @covers Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine::clearAllCache
+     */
     public function testClearAllCache()
     {
         self::$searchEngine->initialize();
@@ -90,6 +103,9 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
         $this->assertEquals(0, count($rs));
     }
 
+    /**
+     * @covers Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine::clearCache
+     */
     public function testClearCache()
     {
         self::$searchEngine->initialize();

@@ -6,6 +6,9 @@ require_once __DIR__ . '/../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class SearchEngineSuggestionTest extends \PhraseanetPHPUnitAbstract
 {
+    /**
+     * @covers Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion
+     */
     public function testSetUp()
     {
         $words = 'plutôt cela';
