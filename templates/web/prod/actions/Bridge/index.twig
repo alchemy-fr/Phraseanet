@@ -143,6 +143,45 @@ $(function() {
         return false;
       });
 
+      $(".delete-account" , $panel).bind("click", function(){
+            account_id = $(this).val();
+            var buttons = {};
+
+            buttons[language.valider] = function() {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/prod/bridge/adapter/" + account_id + "/delete/",
+                    data: {},
+                    success: function(datas){
+                        if(datas.success) {
+                            confirmBox.Close();
+                            publicator_reload_publicator();
+                        } else {
+                            confirmBox.Close();
+                            var alertBox = p4.Dialog.Create({
+                                size : 'Alert',
+                                closeOnEscape : true,
+                                closeButton:true
+                            }, 2);
+
+                            alertBox.setContent(datas.message);
+                        }
+                    }
+                });
+            };
+
+            var confirmBox = p4.Dialog.Create({
+                size : 'Alert',
+                closeOnEscape : true,
+                closeButton:true,
+                cancelButton: true,
+                buttons: buttons
+            }, 2);
+
+            confirmBox.setContent("{% trans 'You are about to delete this account. Would you like to continue ?' %}");
+      });
+
       $('.form_submitter', $panel).bind('click', function(){
         var $form = $(this).closest('form');
         var method = $form.attr('method');

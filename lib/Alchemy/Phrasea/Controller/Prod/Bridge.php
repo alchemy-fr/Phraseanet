@@ -116,6 +116,26 @@ class Bridge implements ControllerProviderInterface
                 return $app->redirect('/prod/bridge/adapter/' . $account_id . '/load-elements/' . $account->get_api()->get_connector()->get_default_element_type() . '/');
             })->assert('account_id', '\d+');
 
+        $controllers->post('/adapter/{account_id}/delete/'
+            , function($account_id) use ($app, $twig) {
+                $success = false;
+                $message = '';
+                $appbox = \appbox::get_instance($app['Core']);
+                try {
+                    $account = \Bridge_Account::load_account($appbox, $account_id);
+
+                    $account->delete();
+
+                    $success = true;
+                } catch(\Bridge_Exception_AccountNotFound $e) {
+                    $message = _('Current account could not be found.');
+                } catch(\Exception $e) {
+                    $message = _('Something went wront while deleting this account, please contact an administrator.');
+                }
+
+                return $app->json(array('success' => $success, 'message' => $message));
+            })->assert('account_id', '\d+');
+
         $controllers->get('/adapter/{account_id}/load-records/'
                 , function($account_id) use ($app, $twig) {
                     $page = max((int) $app['request']->get('page'), 0);
