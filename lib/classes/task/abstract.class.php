@@ -227,7 +227,7 @@ abstract class task_abstract
      */
     public function setSettings($settings)
     {
-        if (false === $sxe = simplexml_load_string($settings)) {
+        if (false === $sxe = @simplexml_load_string($settings)) {
             throw new Exception_InvalidArgument('Bad XML');
         }
 
