@@ -83,7 +83,6 @@
 
 {# SCRIPT - HORIZONTAL TABS #}
 <script type ="text/javascript">
-
 $(function() {
   var pub_tabs = $("#pub_tabs");
   var container = $('#dialog_publicator');
@@ -179,7 +178,7 @@ $(function() {
                 buttons: buttons
             }, 2);
 
-            confirmBox.setContent("{% trans 'You are about to delete this account. Would you like to continue ?' %}");
+            confirmBox.setContent("{{'You are about to delete this account. Would you like to continue ?'|trans|e('js') }}");
       });
 
       $('.form_submitter', $panel).bind('click', function(){
@@ -401,13 +400,13 @@ $(function() {
   });
 
   {% if route.get_count_element_received() == 0 %}
-    alert('{% trans "Vous n\'avez selectionne aucun element" %}');
+    alert('{{ "Vous n\'avez selectionne aucun element"|trans|e('js') }}');
     container.dialog('close');
   {% elseif route.get_count_actionable() == 0 %}
-    alert('{% trans "Vous n\'avez pas assez de droits sur les elements selectionnes" %}');
+    alert('{{ "Vous n\'avez pas assez de droits sur les elements selectionnes"|trans|e('js') }}');
     container.dialog('close');
   {% elseif route.get_count_actionable() != route.get_count_element_received() %}
-    alert('{% trans "Vous n\'avez pas assez de droits sur certains elements selectionnes" %}');
+    alert('{{ "Vous n\'avez pas assez de droits sur certains elements selectionnes"|trans|e('js') }}');
   {% endif %}
 });
 </script>
