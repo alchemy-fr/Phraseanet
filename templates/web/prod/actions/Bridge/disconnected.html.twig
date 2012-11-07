@@ -22,6 +22,9 @@
                             <button class="form_submitter single_menu btn btn-inverse" >{% trans 'boutton::refresh' %}</button>
                         </form>
                     </td>
+                    <td>
+                        <button type="button" class="delete-account btn btn-danger" value="{{ account.get_id() }}">{% trans 'boutton::supprimer' %}</button>
+                    </td>
                 </tr>
             </tbody>
         </table>

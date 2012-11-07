@@ -109,6 +109,28 @@ class Bridge implements ControllerProviderInterface
             return $app->redirect('/prod/bridge/adapter/' . $account_id . '/load-elements/' . $account->get_api()->get_connector()->get_default_element_type() . '/');
         })->assert('account_id', '\d+');
 
+        $controllers->post('/adapter/{account_id}/delete/'
+            , function($account_id) use ($app) {
+                $success = false;
+                $message = '';
+                try {
+                    $account = \Bridge_Account::load_account($app['phraseanet.appbox'], $account_id);
+
+                     if ($account->get_user()->get_id() !== $app->getAuthenticatedUser()->get_id()) {
+                         throw new HttpException(403, 'Access forbiden');
+                     }
+
+                    $account->delete();
+                    $success = true;
+                } catch(\Bridge_Exception_AccountNotFound $e) {
+                    $message = _('Account is not found.');
+                } catch(\Exception $e) {
+                    $message = _('Something went wrong, please contact an administrator');
+                }
+
+                return $app->json(array('success' => $success, 'message' => $message));
+            })->assert('account_id', '\d+');
+
         $controllers->get('/adapter/{account_id}/load-records/', function(Application $app, $account_id) {
             $page = max((int) $app['request']->query->get('page'), 0);
             $quantity = 10;

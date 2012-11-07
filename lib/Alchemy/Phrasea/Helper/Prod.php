@@ -88,7 +88,7 @@ class Prod extends Helper
                 continue;
             }
 
-            if (simplexml_load_string($databox->get_cterms())) {
+            if (false !== simplexml_load_string($databox->get_cterms())) {
                 $bases[$sbas_id]['cterms'] = true;
             }
         }

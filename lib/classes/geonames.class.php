@@ -33,7 +33,7 @@ class geonames
 
             $sxe = simplexml_load_string($xml);
 
-            if ($sxe && ($geoname = $sxe->geoname)) {
+            if ($sxe !== false && ($geoname = $sxe->geoname)) {
                 $ret = (string) $geoname->city . ', ' . (string) $geoname->country;
             }
         }
@@ -56,7 +56,7 @@ class geonames
         if ($xml) {
             $sxe = simplexml_load_string($xml);
 
-            if ($sxe && ($geoname = $sxe->geoname)) {
+            if ($sxe !== false && ($geoname = $sxe->geoname)) {
                 $ret = (string) $geoname->country;
             }
         }
@@ -76,7 +76,7 @@ class geonames
         if ($xml) {
             $sxe = simplexml_load_string($xml);
 
-            if ($sxe && ($geoname = $sxe->geoname)) {
+            if ($sxe !== false && ($geoname = $sxe->geoname)) {
                 $ret = (string) $geoname->country_code;
             }
         }
@@ -157,7 +157,7 @@ class geonames
         $xml = http_query::getUrl($url);
         if ($xml) {
             $sxe = simplexml_load_string($xml);
-            if ($sxe && $sxe->geoname) {
+            if ($sxe !== false && $sxe->geoname) {
                 $output['city'] = (string) $sxe->geoname->city;
                 $output['country_code'] = (string) $sxe->geoname->country_code;
                 $output['country'] = (string) $sxe->geoname->country;

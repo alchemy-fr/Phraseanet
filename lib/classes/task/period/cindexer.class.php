@@ -168,7 +168,7 @@ class task_period_cindexer extends task_abstract
      */
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
+        if (false !== $sxml = simplexml_load_string($xml)) {
             ?>
             <script type="text/javascript">
             <?php echo $form ?>.binpath.value      = "<?php echo p4string::MakeString($sxml->binpath, "js", '"') ?>";

@@ -1009,7 +1009,7 @@ class databox extends base
 
         $thesaurus = $this->get_thesaurus();
 
-        if ($thesaurus && ($tmp = simplexml_load_string($thesaurus)) !== false)
+        if ($thesaurus && false !== $tmp = simplexml_load_string($thesaurus))
             self::$_sxml_thesaurus[$sbas_id] = $tmp;
         else
             self::$_sxml_thesaurus[$sbas_id] = false;
@@ -1174,7 +1174,7 @@ class databox extends base
 
         $structure = $this->get_structure();
 
-        if ($structure && ($tmp = simplexml_load_string($structure)) !== false)
+        if ($structure && false !== $tmp = simplexml_load_string($structure))
             $this->_sxml_structure = $tmp;
         else
             $this->_sxml_structure = false;

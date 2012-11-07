@@ -87,8 +87,7 @@ class task_period_writemeta extends task_databoxAbstract
 
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
-            // ... but we could check for safe values (ex. 0 < period < 3600)
+        if (false !== $sxml = simplexml_load_string($xml)) {
             if ((int) ($sxml->period) < 10) {
                 $sxml->period = 10;
             } elseif ((int) ($sxml->period) > 300) {

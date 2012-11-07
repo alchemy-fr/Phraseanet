@@ -106,8 +106,7 @@ class task_period_outofdate extends task_abstract
     // ====================================================================
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
-            // ... but we could check for safe values
+        if (false !== $sxml = simplexml_load_string($xml)) {
             if ((int) ($sxml->period) < 10) {
                 $sxml->period = 10;
             } elseif ((int) ($sxml->period) > 1440) { // 1 jour
@@ -489,7 +488,7 @@ class task_period_outofdate extends task_abstract
                     $ret = self::STATUS_STOPPED;
                     $this->running = false;
                 } else {
-                    if (($this->sxTaskSettings = simplexml_load_string($row['settings'])) != FALSE) {
+                    if (false !== $this->sxTaskSettings = simplexml_load_string($row['settings'])) {
                         $period = (int) ($this->sxTaskSettings->period);
                         if ($period <= 0 || $period >= 24 * 60) {
                             $period = 60;

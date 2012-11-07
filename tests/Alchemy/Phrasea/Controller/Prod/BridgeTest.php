@@ -388,4 +388,23 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
     }
+
+    public function testDeleteAccount()
+    {
+        $account = Bridge_Account::create(appbox::get_instance(\bootstrap::getCore()), self::$api, self::$user, 'hello', 'you');
+        $url = "/bridge/adapter/" . $account->get_id() . "/delete/";
+        $this->client->request('POST', $url);
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isOk());
+        $datas = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('success', $datas);
+        $this->assertTrue($datas['success']);
+        try {
+            \Bridge_Account::load_account(appbox::get_instance(\bootstrap::getCore()), $account->get_id());
+            $this->fail('Account is not deleted');
+        } catch(Bridge_Exception_AccountNotFound $e) {
+
+        }
+        unset($account, $response);
+    }
 }

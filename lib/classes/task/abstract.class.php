@@ -140,8 +140,7 @@ abstract class task_abstract
         $this->completed_percentage = (int) $row['completed'];
         $this->settings = $row['settings'];
 
-        $sx = @simplexml_load_string($this->settings);
-        if ($sx) {
+        if (false !== $sx = @simplexml_load_string($this->settings)) {
             $this->loadSettings($sx);
         }
     }

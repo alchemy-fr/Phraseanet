@@ -81,8 +81,7 @@ class task_period_ftpPull extends task_appboxAbstract
 
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
-            // ... but we could check for safe values (ex. 0 < period < 3600)
+        if (false !== $sxml = simplexml_load_string($xml)) {
             ?>
             <script type="text/javascript">
             <?php echo $form ?>.proxy.value    = "<?php echo p4string::MakeString($sxml->proxy, "js", '"') ?>";

@@ -288,7 +288,7 @@ class task_period_archive extends task_abstract
         $this->period = 60;
         $this->cold = 30;
 
-        if (($this->sxBasePrefs = simplexml_load_string($collection->get_prefs())) != false) {
+        if (false !== $this->sxBasePrefs = @simplexml_load_string($collection->get_prefs())) {
             $this->sxBasePrefs["id"] = $base_id;
 
             $this->period = (int) ($this->sxTaskSettings->period);
@@ -387,7 +387,7 @@ class task_period_archive extends task_abstract
 
                 $this->setLastExecTime();
                 try {
-                    if ( ! ($this->sxTaskSettings = @simplexml_load_string($this->getSettings()))) {
+                    if (false === $this->sxTaskSettings = simplexml_load_string($this->getSettings())) {
                         throw new Exception(sprintf('Error fetching or reading settings of the task \'%d\'', $this->getID()));
                     } else {
                         // copy settings to task, so it's easier to get later
@@ -599,10 +599,10 @@ class task_period_archive extends task_abstract
         if ($this->movedFiles) {
 
             // something happened : a least one file has moved
-            return self::STATE_MAXRECSDONE;
+            return 'MAXRECSDONE';
         } elseif (memory_get_usage() >> 20 > 25) {
 
-            return self::STATE_MAXMEGSREACHED;
+            return 'MAXMEGSREACHED';
         } else {
 
             return 'NORECSTODO';
@@ -683,7 +683,7 @@ class task_period_archive extends task_abstract
         try {
             $listFolder = new CListFolder($path);
 
-            if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) != false) {
+            if (false !== $sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) {
 
                 // test for magic file
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
@@ -790,7 +790,7 @@ class task_period_archive extends task_abstract
 
             $xp = new DOMXPath($dom);
 
-            if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) != false) {
+            if (false !== $sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) {
 
                 // test magicfile
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
@@ -1564,7 +1564,7 @@ class task_period_archive extends task_abstract
             // a .grouping.xml must stay in place
             // -- don't do, done in phase4
 
-            $sxGrouping = simplexml_load_file($groupingFile);
+            $sxGrouping = @simplexml_load_file($groupingFile);
             $grp_rid = $sxGrouping['grouping'];
 
             $this->archiveFilesToGrp($dom, $node, $path . '/' . $grpFolder
@@ -1615,7 +1615,7 @@ class task_period_archive extends task_abstract
 
         if ($captionFile !== null && true === $this->dependencyContainer['filesystem']->exists($captionFile)) {
             $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
-            $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
+            $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
 
             if ($captionStatus) {
                 $status = databox_status::operation_or($this->dependencyContainer, $status, $captionStatus);
@@ -1680,7 +1680,7 @@ class task_period_archive extends task_abstract
 
         if ($captionFile !== null && true === $this->dependencyContainer['filesystem']->exists($captionFile)) {
             $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
-            $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
+            $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
 
             if ($captionStatus) {
                 $status = databox_status::operation_or($this->dependencyContainer, $status, $captionStatus);
@@ -2184,9 +2184,7 @@ class task_period_archive extends task_abstract
             throw new \InvalidArgumentException(sprintf('file %s does not exists', $pathfile));
         }
 
-        $sxcaption = @simplexml_load_file($pathfile);
-
-        if ( ! $sxcaption) {
+        if (false === $sxcaption = @simplexml_load_file($pathfile)) {
             throw new \InvalidArgumentException(sprintf('Invalid XML file %s', $pathfile));
         }
 
@@ -2236,15 +2234,17 @@ class task_period_archive extends task_abstract
      * @param  \SimpleXMLElement $sxcaption The SimpleXML related to the XML
      * @return string
      */
-    protected function parseStatusBit(\SimpleXMLElement $sxcaption)
+    protected function parseStatusBit($sxcaption)
     {
-        $statBit = null;
-
-        if ('' !== $inStatus = (string) $sxcaption->status) {
-            $statBit = $inStatus;
+        if (!$sxcaption instanceof SimpleXMLElement) {
+            return null;
         }
 
-        return $statBit;
+        if ('' !== $inStatus = (string) $sxcaption->status) {
+            return $inStatus;
+        }
+
+        return null;
     }
 }
 
