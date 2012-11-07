@@ -43,10 +43,10 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
         log.fonction,
         site,
         sit_session,
-        coll_list,
         appli,
         ip
-       FROM log";
+       FROM log
+        INNER JOIN log_colls ON (log.id = log_colls.log_id)";
 
             $this->sql .= " WHERE " . $report_filter['sql'];
             $this->sql .= $this->filter->getOrderFilter() ? : '';
@@ -59,9 +59,10 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
                 $this->sql .= $this->filter->getLimitFilter() ? : '';
         } else {
             $this->sql = "
-       SELECT  TRIM(" . $this->getTransQuery($this->groupby) . ")
-              as " . $this->groupby . ", SUM(1) as nb
-       FROM  log  ";
+            SELECT  TRIM(" . $this->getTransQuery($this->groupby) . ")
+                   as " . $this->groupby . ", SUM(1) as nb
+            FROM  (log)
+                INNER JOIN log_colls ON (log.id = log_colls.log_id)";
 
             if ($report_filter['sql'])
                 $this->sql .= " WHERE " . $report_filter['sql'];
@@ -83,8 +84,10 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
         $report_filter = $this->filter->getReportFilter();
         $params = $report_filter['params'];
 
-        $sql = 'SELECT  DISTINCT(' . $this->getTransQuery($field) . ') as val
-            FROM  log ';
+        $sql = '
+        SELECT  DISTINCT(' . $this->getTransQuery($field) . ') as val
+        FROM (log)
+            INNER JOIN log_colls ON (log.id = log_colls.log_id)';
 
         if ($report_filter['sql'])
             $sql .= ' WHERE ' . $report_filter['sql'];

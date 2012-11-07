@@ -30,7 +30,6 @@ class module_report_question extends module_report
         , 'fonction'    => 'log.fonction'
         , 'site'        => 'log.site'
         , 'sit_session' => 'log.sit_session'
-        , 'coll_list'   => 'log.coll_list'
         , 'appli'       => 'log.appli'
         , 'ip'          => 'log.ip'
     );

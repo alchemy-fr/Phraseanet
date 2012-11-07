@@ -5124,16 +5124,6 @@
             <comment></comment>
           </field>
           <field>
-            <name>coll_list</name>
-            <type>text</type>
-            <null></null>
-            <extra></extra>
-
-
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
             <name>nav</name>
             <type>varchar(64)</type>
             <null></null>
@@ -5272,6 +5262,46 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
+      <table name="log_colls">
+        <fields>
+          <field>
+            <name>id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra>auto_increment</extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>log_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>coll_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>PRIMARY</name>
+            <type>PRIMARY</type>
+            <fields>
+              <field>id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
+
       <table name="log_search">
         <fields>
           <field>

@@ -47,10 +47,12 @@ class module_report_sqlfilter
     {
         $ret = array('sql'    => '', 'params' => array());
         $coll_filter = array();
-        foreach (explode(',', $list_coll_id) as $val) {
-            $coll_filter [] = " position('," . phrasea::collFromBas($app, $val) . ",' in concat(',' ,coll_list, ',')) > 0 ";
+        foreach (array_filter(explode(',', $list_coll_id)) as $val) {
+            if( false !== $val = phrasea::collFromBas($app, $val)) {
+                $coll_filter[] =  'log_colls.coll_id = '.phrasea::collFromBas($app, $val);
+            }
         }
-        $ret['sql'] = implode(' OR ', $coll_filter);
+        $ret['sql'] = ' (' . implode(' OR ', array_unique($coll_filter)) . ') ';
 
         return $ret;
     }
@@ -75,7 +77,7 @@ class module_report_sqlfilter
             $params = array_merge($params, $this->filter['user']['params']);
         }
         if ($this->filter['collection']) {
-            $finalfilter .= '(' . $this->filter['collection']['sql'] . ') AND ';
+            $finalfilter .= $this->filter['collection']['sql'] . ' AND ';
             $params = array_merge($params, $this->filter['collection']['params']);
         }
         $finalfilter .= ' log.site = :log_site';
@@ -86,7 +88,7 @@ class module_report_sqlfilter
     public function getGvSitFilter()
     {
         $params = array();
-        $sql = '';
+        $sql = '1';
 
         if ($this->app['phraseanet.registry']->is_set('GV_sit')) {
             $sql = 'log.site = :log_site_gv_filter';
@@ -190,12 +192,16 @@ class module_report_sqlfilter
             return;
         }
 
-        $tab = explode(",", $report->getListCollId());
+        $tab = array_filter(explode(",", $report->getListCollId()));
+
         if (count($tab) > 0) {
             foreach ($tab as $val) {
-                $coll_filter[] = " position('," . phrasea::collFromBas($this->app, $val) . ",' in concat(',' ,coll_list, ',')) > 0 ";
+                if( false !== $val = phrasea::collFromBas($this->app, $val)) {
+                    $coll_filter[] =  'log_colls.coll_id = '.phrasea::collFromBas($this->app, $val);
+                }
             }
-            $this->filter['collection'] = array('sql'    => implode(' OR ', $coll_filter), 'params' => array());
+
+            $this->filter['collection'] = array('sql'    => ' (' . implode(' OR ', array_unique($coll_filter)) . ') ', 'params' => array());
         }
 
         return;

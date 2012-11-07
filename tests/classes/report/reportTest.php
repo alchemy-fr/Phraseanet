@@ -168,7 +168,6 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
           log.fonction,
           site,
           sit_session,
-          coll_list,
           appli,
           ip
          FROM log ');

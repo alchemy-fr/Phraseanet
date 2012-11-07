@@ -29,7 +29,6 @@ class module_report_connexion extends module_report
         , 'fonction'    => 'log.fonction'
         , 'site'        => 'log.site'
         , 'sit_session' => 'log.sit_session'
-        , 'coll_list'   => 'log.coll_list'
         , 'appli'       => 'log.appli'
         , 'ip'          => 'log.ip'
     );
@@ -115,18 +114,7 @@ class module_report_connexion extends module_report
                     continue;
                 }
 
-                if ($value == 'coll_list') {
-                    $coll = explode(",", $row[$value]);
-                    $this->result[$i][$value] = "";
-                    foreach ($coll as $id) {
-                        if ($this->result[$i][$value] != "") {
-                            $this->result[$i][$value].= " / ";
-                            $this->result[$i][$value] .= phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $id, $this->app), $this->app);
-                        } elseif ($this->result[$i][$value] == "") {
-                            $this->result[$i][$value] = phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $id, $this->app), $this->app);
-                        }
-                    }
-                } elseif ($value == 'appli') {
+                if ($value == 'appli') {
                     $applis = false;
                     if (($applis = @unserialize($row[$value])) !== false) {
                         if (empty($applis)) {
@@ -164,7 +152,8 @@ class module_report_connexion extends module_report
         $finalfilter .= 'log_date.site = :site_id';
 
         $sql = "SELECT    COUNT(usrid) as nb
-                FROM    log as log_date
+                FROM (log as log_date)
+                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
                 WHERE " . $finalfilter;
 
         $stmt = $conn->prepare($sql);

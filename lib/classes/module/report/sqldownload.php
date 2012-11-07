@@ -52,10 +52,10 @@ class module_report_sqldownload extends module_report_sql implements module_repo
          log_docs.record_id,
          log_docs.final,
          log_docs.comment
-       FROM (log
-        INNER JOIN log_docs ON log.id = log_docs.log_id
-        INNER JOIN record ON log_docs.record_id = record.record_id
-       )
+       FROM (log)
+        INNER JOIN log_docs ON (log.id = log_docs.log_id)
+        INNER JOIN log_colls ON (log.id = log_colls.log_id)
+        INNER JOIN record ON (log_docs.record_id = record.record_id)
        WHERE ";
 
             $this->sql .= $report_filters['sql'] ? : '';
@@ -80,49 +80,44 @@ class module_report_sqldownload extends module_report_sql implements module_repo
             if ($name == 'record_id' && $this->on == 'DOC') {
                 $this->sql = '
              SELECT
-              TRIM( ' . $field . ' ) AS ' . $name . ',
-              SUM(1) AS telechargement,
-              record.coll_id,
-              log_docs.final,
-              log_docs.comment,
-              subdef.size,
-              subdef.file,
-              subdef.mime
-             FROM ( log
-              INNER JOIN log_docs ON log.id = log_docs.log_id
-              INNER JOIN record ON log_docs.record_id = record.record_id
-              INNER JOIN subdef ON (log_docs.record_id = subdef.record_id
-               AND subdef.name = log_docs.final
-              )
-             )
+                TRIM( ' . $field . ' ) AS ' . $name . ',
+                SUM(1) AS telechargement,
+                record.coll_id,
+                log_docs.final,
+                log_docs.comment,
+                subdef.size,
+                subdef.file,
+                subdef.mime
+             FROM (log)
+                INNER JOIN log_docs ON (log.id = log_docs.log_id)
+                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                INNER JOIN record ON (log_docs.record_id = record.record_id)
+                INNER JOIN subdef ON (log_docs.record_id = subdef.record_id AND subdef.name = log_docs.final)
              WHERE
             ';
             } elseif ($this->on == 'DOC') {
                 $this->sql = '
-           SELECT
-            TRIM(' . $field . ') AS ' . $name . ',
-            SUM(1) AS telechargement
-           FROM ( log
-            INNER JOIN log_docs ON log.id = log_docs.log_id
-            INNER JOIN record ON log_docs.record_id = record.record_id
-            INNER JOIN subdef ON ( log_docs.record_id = subdef.record_id
-             AND subdef.name = log_docs.final
-            )
-           )
-           WHERE
-                ';
+                SELECT
+                    TRIM(' . $field . ') AS ' . $name . ',
+                    SUM(1) AS telechargement
+                FROM ( log )
+                    INNER JOIN log_docs ON (log.id = log_docs.log_id)
+                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                    INNER JOIN record ON (log_docs.record_id = record.record_id)
+                    INNER JOIN subdef ON ( log_docs.record_id = subdef.record_id AND subdef.name = log_docs.final)
+                WHERE';
             } else {
 
                 $this->sql = '
-         SELECT
-          TRIM( ' . $this->getTransQuery($this->groupby) . ') AS ' . $name . ',
-          SUM(1) AS nombre
-         FROM ( log
-          INNER JOIN log_docs ON log.id = log_docs.log_id
-          INNER JOIN record ON log_docs.record_id = record.record_id
-          INNER JOIN subdef ON (record.record_id = subdef.record_id AND subdef.name = "document")
-         )
-         WHERE ';
+                SELECT
+                    TRIM( ' . $this->getTransQuery($this->groupby) . ') AS ' . $name . ',
+                    SUM(1) AS nombre
+                FROM ( log )
+                    INNER JOIN log_docs ON (log.id = log_docs.log_id)
+                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                    INNER JOIN record ON (log_docs.record_id = record.record_id)
+                    INNER JOIN subdef ON (record.record_id = subdef.record_id AND subdef.name = "document")
+                WHERE ';
             }
 
             $this->sql .= $report_filters['sql'];
@@ -159,10 +154,11 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
         $sql = '
             SELECT  DISTINCT( ' . $this->getTransQuery($field) . ' ) AS val
-            FROM (log
-                INNER JOIN log_docs ON log.id = log_docs.log_id
-                INNER JOIN record ON log_docs.record_id = record.record_id
-                INNER JOIN subdef ON log_docs.record_id = subdef.record_id)
+            FROM (log)
+                INNER JOIN log_docs ON (log.id = log_docs.log_id)
+                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                INNER JOIN record ON (log_docs.record_id = record.record_id)
+                INNER JOIN subdef ON (log_docs.record_id = subdef.record_id)
             WHERE ';
 
         $sql .= $report_filters['sql'];

@@ -55,7 +55,7 @@ class module_report_dashboard_group implements module_report_dashboard_component
                         }
                     }
                 } else {
-                    throw new Exception("cannot group on a none dashboard object");
+                    continue;
                 }
             }
         }

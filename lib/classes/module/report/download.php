@@ -187,10 +187,9 @@ class module_report_download extends module_report
 
         $sql = '
             SELECT SUM(1) AS nb
-            FROM (  log
-                INNER JOIN log_docs as log_date ON log.id = log_date.log_id
-                INNER JOIN record on log_date.record_id = record.record_id
-            )
+            FROM (log)
+                INNER JOIN log_docs as log_date ON (log.id = log_date.log_id)
+                INNER JOIN record ON (log_date.record_id = record.record_id)
             WHERE (
                 ' . $finalfilter . '
             )
@@ -230,11 +229,10 @@ class module_report_download extends module_report
 
         $sql = '
             SELECT record.record_id as id, SUM(1) AS nb, subdef.name
-            FROM ( log
-                INNER JOIN log_docs as log_date  ON log.id = log_date.log_id
-                INNER JOIN record    ON log_date.record_id = record.record_id
-                INNER JOIN subdef    ON subdef.record_id = record.record_id
-            )
+            FROM ( log )
+                INNER JOIN log_docs as log_date  (ON log.id = log_date.log_id)
+                INNER JOIN record    ON (log_date.record_id = record.record_id)
+                INNER JOIN subdef    ON (subdef.record_id = record.record_id)
             WHERE (
                     ' . $finalfilter . '
             )

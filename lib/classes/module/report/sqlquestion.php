@@ -33,21 +33,19 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
         $this->params = $params;
 
         if ($this->groupby == false) {
-            $this->sql =
-                "
-       SELECT
-        log_search.date ddate,
-        search,
-        usrid,
-        user,
-        pays,
-        societe,
-        activite,
-        fonction
-       FROM `log_search`
-       INNER JOIN log
-       ON log.id = log_search.log_id
-       ";
+            $this->sql ="
+            SELECT
+            log_search.date ddate,
+            search,
+            usrid,
+            user,
+            pays,
+            societe,
+            activite,
+            fonction
+            FROM (`log_search`)
+                INNER JOIN log ON (log.id = log_search.log_id)
+                INNER JOIN log_colls ON (log.id = log_colls.log_id)";
 
             $this->sql .= " WHERE " . $report_filter['sql'];
 
@@ -61,13 +59,13 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
             $this->sql .= $this->filter->getLimitFilter() ? : '';
         } else {
             $this->sql = "
-         SELECT
-          TRIM(" . $this->getTransQuery($this->groupby) . ") as " . $this->groupby . ",
-          SUM(1) as nb
-         FROM `log_search`
-         INNER JOIN log
-         ON log.id = log_search.log_id
-         ";
+            SELECT
+                TRIM(" . $this->getTransQuery($this->groupby) . ") as " . $this->groupby . ",
+                SUM(1) as nb
+            FROM (`log_search`)
+                INNER JOIN log ON (log.id = log_search.log_id)
+                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+            ";
 
             $this->sql .= " WHERE " . $report_filter['sql'];
             $this->sql .= " GROUP BY " . $this->groupby;
@@ -90,9 +88,9 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
 
         $sql = "
             SELECT DISTINCT(" . $this->getTransQuery($field) . ") as val
-            FROM `log_search`
-            INNER JOIN log
-            ON log.id = log_search.log_id
+            FROM (`log_search`)
+                INNER JOIN log ON (log.id = log_search.log_id)
+                INNER JOIN log_colls ON (log.id = log_colls.log_id)
             ";
 
         if ($report_filter['sql'])

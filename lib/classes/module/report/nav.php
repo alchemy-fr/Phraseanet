@@ -74,7 +74,8 @@ class module_report_nav extends module_report
         $sql = '
             SELECT
                 SUM(1) AS total
-            FROM log
+            FROM (log)
+                INNER JOIN log_colls ON (log.id = log_colls.log_id)
             WHERE (' . $report_filter['sql'] . '
                 AND nav != TRIM(\'\')
             )
