@@ -551,7 +551,7 @@ function C_MenuOption(menuItem, menu, option, parm)
       var msg;
 
       {% set messageOne %}
-        {% trans "prod::thesaurusTab:dlg:remplacer le terme "%s" des fiches par :" %}
+        {% trans "prod::thesaurusTab:dlg:remplacer le terme \"%s\" des fiches par :" %}
       {% endset %}
       {% set messageMany %}
         {% trans "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :" %}
