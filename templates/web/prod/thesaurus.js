@@ -1,4 +1,3 @@
-
 function thesau_show()
 {
   if(p4.thesau.currentWizard == "???")	// first show of thesaurus
@@ -99,12 +98,24 @@ function T_replaceBy2(f)
 
   trees.C._toReplace = { 'sbas':sbas, 'cid':cid, 'replaceby':f };
 
-  msg  = $.sprintf('{% trans 'prod::thesaurusTab:dlg:Remplacement du candidat "%s" :' %}', term) ;
-  msg += "<br/><br/>";
-  msg += $.sprintf('{% trans 'prod::thesaurusTab:dlg:Remplacer par "%s"' %}', f) ;
+  {% set message %}
+   {% trans 'prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"' %}
+  {% endset %}
 
-  $("#THPD_confirm_replace_dlg_msg").html(msg);
-  $("#THPD_confirm_replace_dlg").dialog('open');
+  var msg = $.sprintf("{{ message | e('js') }}", {'from':term, 'to':f});
+
+  var confirmBox = p4.Dialog.Create({
+      size : 'Alert',
+      closeOnEscape : true,
+      cancelButton: true,
+      buttons: {
+          "Ok" : function() {
+              confirmBox.Close();
+              T_replaceCandidates_OK();
+          }
+      }
+  });
+  confirmBox.setContent(msg);
 }
 
 
@@ -160,9 +171,6 @@ function T_filter_delayed2(f, delay, mode)
 
           }
         });
-
-
-
       }
     }
     else if(mode=='CANDIDATE')
@@ -213,27 +221,23 @@ function T_filter_delayed2(f, delay, mode)
 
 // ======================================================================================================
 
-
-
-function T_replaceCandidates_OK(dlgnode)
+function T_replaceCandidates_OK()
 {
-  $("#THPD_confirm_replace_dlg_msg").html("{% trans 'prod::thesaurusTab:dlg:Remplacement en cours.' %}");
+  {% set replaceing_msg %}
+    {% trans 'prod::thesaurusTab:dlg:Remplacement en cours.' %}
+  {% endset %}
 
-  // 3 cases
-  // the new term already exists (possibly many times) in the thesaurus
-  // the new term already exists in the candidates
-  // the new term is brand new
-
-  // the simpliest solution is to replace the terms and let the indexer work
-
+  var replacingBox = p4.Dialog.Create({
+    size : 'Alert'
+  });
+  replacingBox.setContent("{{ replaceing_msg | e('js') }}");
 
   var parms = {
     url:	"/xmlhttp/replacecandidate.j.php",
     data:	{
-      "sbid" : trees.C._toReplace.sbas
-      , "cid"  : trees.C._toReplace.cid
-      , "t"    : trees.C._toReplace.replaceby
-      //	, "debug" : '1'
+      "id[]" : trees.C._toReplace.sbas + "." + trees.C._toReplace.cid
+      , "t" : trees.C._toReplace.replaceby
+      , "debug" : '0'
     },
     async:		false,
     cache:		false,
@@ -243,7 +247,25 @@ function T_replaceCandidates_OK(dlgnode)
     {
       trees.C._toReplace = null;
       thesauShowWizard("wiz_0", false);
-      $(dlgnode).dialog("close");
+
+      replacingBox.Close();
+
+      if(result.msg != '')
+      {
+        var alert = p4.Dialog.Create({
+          size : 'Alert',
+          closeOnEscape : true,
+          closeButton:true
+        });
+        alert.setContent(result.msg);
+      }
+
+      for(i in result.ctermsDeleted)
+      {
+          var cid = "#CX_P\\." + result.ctermsDeleted[i].replace(new RegExp("\\.", "g"), "\\.");	// escape les '.' pour jquery
+          $(cid).remove();
+      }
+
     },
     _ret: null	// private alchemy
   };
@@ -252,9 +274,16 @@ function T_replaceCandidates_OK(dlgnode)
 }
 
 
-function T_acceptCandidates_OK(dlgnode)
+function T_acceptCandidates_OK()
 {
-  $("#THPD_confirm_accept_dlg_msg").html("{% trans 'prod::thesaurusTab:dlg:Acceptation en cours.' %}");
+  {% set accepting_msg %}
+    {% trans 'prod::thesaurusTab:dlg:Acceptation en cours.' %}
+  {% endset %}
+
+  var acceptingBox = p4.Dialog.Create({
+    size : 'Alert'
+  });
+  acceptingBox.setContent("{{ accepting_msg | e('js') }}");
 
   var t_ids = [];
   var dst = trees.C._toAccept.dst.split('.');
@@ -264,19 +293,18 @@ function T_acceptCandidates_OK(dlgnode)
   same_sbas = true;
   // obviously the candidates and the target already complies (same sbas, good tbranch)
   trees.C._selInfos.sel.each(
-  function()
-  {
-    var x = this.getAttribute('id').split('.');
-    x.shift();
-    if(x.shift() != sbid)
-      same_sbas = false;
-    t_ids.push(x.join('.'));
-  }
-);
+    function()
+    {
+      var x = this.getAttribute('id').split('.');
+      x.shift();
+      if(x.shift() != sbid)
+        same_sbas = false;
+      t_ids.push(x.join('.'));
+    }
+  );
 
   if(!same_sbas)
     return;
-
 
   var parms = {
     url:	"/xmlhttp/acceptcandidates.j.php",
@@ -313,17 +341,15 @@ function T_acceptCandidates_OK(dlgnode)
             + j.parm['id'].replace(new RegExp("\\.", "g"), "\\.");	// escape les '.' pour jquery
 
           $(z).replaceWith(j.html);
-          trees.C._toAccept = null;
-          thesauShowWizard("wiz_0",false);
-          $(dlgnode).dialog("close");
         }
         , "json");
       }
-
-      // $("#THPD_confirm_accept_dlg_msg").dialog("close");
+      trees.C._toAccept = null;
+      thesauShowWizard("wiz_0",false);
+      acceptingBox.Close();
     },
-    error:function(){},
-    timeout:function(){},
+    error:function(){acceptingBox.Close();},
+    timeout:function(){acceptingBox.Close();},
     _ret: null	// private alchemy
   };
 
@@ -333,20 +359,27 @@ function T_acceptCandidates_OK(dlgnode)
 
 function C_deleteCandidates_OK()
 {
-  $("#THPD_confirm_del_dlg_msg").html("{% trans 'prod::thesaurusTab:dlg:Suppression en cours.' %}");
+  {% set deleting_msg %}
+    {% trans 'prod::thesaurusTab:dlg:Suppression en cours.' %}
+  {% endset %}
+
+  var deletingBox = p4.Dialog.Create({
+    size : 'Alert'
+  });
+  deletingBox.setContent("{{ deleting_msg | e('js') }}");
 
   var t_ids = [];
   var lisel = trees.C.tree.find("LI .selected");
   trees.C.tree.find("LI .selected").each(
-  function()
-  {
-    var x = this.getAttribute('id').split('.');
-    x.shift();
-    t_ids.push(x.join('.'));
-  }
-);
+    function()
+    {
+      var x = this.getAttribute('id').split('.');
+      x.shift();
+      t_ids.push(x.join('.'));
+    }
+  );
   var parms = {
-    url:"/xmlhttp/deletecandidates.j.php",
+    url:"/xmlhttp/replacecandidate.j.php",
     data:{"id[]":t_ids},
     async:false,
     cache:false,
@@ -354,12 +387,23 @@ function C_deleteCandidates_OK()
     timeout:10*60*1000,	// 10 minutes !
     success: function(result, textStatus)
     {
-      for(i in result)
+      deletingBox.Close();
+
+      if(result.msg != '')
       {
-        var cid = "#CX_P\\." + result[i].replace(new RegExp("\\.", "g"), "\\.");	// escape les '.' pour jquery
+        var alert = p4.Dialog.Create({
+          size : 'Alert',
+          closeOnEscape : true,
+          closeButton:true
+        });
+        alert.setContent(result.msg);
+      }
+
+      for(i in result.ctermsDeleted)
+      {
+        var cid = "#CX_P\\." + result.ctermsDeleted[i].replace(new RegExp("\\.", "g"), "\\.");	// escape les '.' pour jquery
         $(cid).remove();
       }
-      $("#THPD_confirm_del_dlg").dialog("close");
     },
     _ret: null
   };
@@ -379,23 +423,41 @@ function T_acceptCandidates(menuItem, menu, type)
   if(lisel.length == 0)
     return;
 
+  {% set messageOne %}
+   {% trans 'prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?' %}
+  {% endset %}
+  {% set messageMany %}
+   {% trans 'prod::thesaurusTab:dlg:accepter les %d termes candidats ?' %}
+  {% endset %}
+
   var msg;
-  if(lisel.length > 1)
+
+  if(lisel.length == 1)
   {
-    msg = $.sprintf("{% trans 'prod::thesaurusTab:dlg:accepter les %d termes candidats ?' %}", lisel.length);
+    var term = lisel.eq(0).find("span span").html();
+    msg = $.sprintf("{{ messageOne | e('js') }}", term);
   }
   else
   {
-    var term = lisel.eq(0).find("span span").html();
-    msg = $.sprintf('{% trans 'prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?' %}', term);
+    msg = $.sprintf("{{ messageMany | e('js') }}", lisel.length);
   }
 
   trees.C._toAccept.type = type;
   trees.C._toAccept.dst = lidst.eq(0).attr("id");
 
-  $("#THPD_confirm_accept_dlg_msg").html(msg);
+  var confirmBox = p4.Dialog.Create({
+      size : 'Alert',
+      closeOnEscape : true,
+      cancelButton: true,
+      buttons: {
+          "Ok" : function() {
+              confirmBox.Close();
+              T_acceptCandidates_OK();
+          }
+      }
+  });
+  confirmBox.setContent(msg);
 
-  $("#THPD_confirm_accept_dlg").dialog('open');
 }
 
 
@@ -459,13 +521,21 @@ function C_MenuOption(menuItem, menu, option, parm)
 
       // display helpful message into the thesaurus box...
       var msg;
-      if(trees.C._selInfos.n > 1)
+
+      {% set messageOne %}
+        {% trans 'prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"' %}
+      {% endset %}
+      {% set messageMany %}
+        {% trans "prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats" %}
+      {% endset %}
+
+      if(trees.C._selInfos.n == 1)
       {
-        msg = $.sprintf("{% trans 'prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats' %}", trees.C._selInfos.n);
+        msg = $.sprintf("{{ messageOne | e }}", menu._srcElement.find("span").html());
       }
       else
       {
-        msg = $.sprintf('{% trans 'prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"' %}', menu._srcElement.find("span").html());
+        msg = $.sprintf("{{ messageMany | e }}", trees.C._selInfos.n);
       }
 
       // set the content of the wizard
@@ -479,14 +549,22 @@ function C_MenuOption(menuItem, menu, option, parm)
     case 'REPLACE':
       // display helpful message into the thesaurus box...
       var msg;
-      if(trees.C._selInfos.n > 1)
+
+      {% set messageOne %}
+        {% trans "prod::thesaurusTab:dlg:remplacer le terme "%s" des fiches par :" %}
+      {% endset %}
+      {% set messageMany %}
+        {% trans "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :" %}
+      {% endset %}
+
+      if(trees.C._selInfos.n == 1)
       {
-        msg = $.sprintf('{% trans 'prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :' %}', trees.C._selInfos.n);
+        var term = trees.C._selInfos.sel.eq(0).find("span span").html();
+        msg = $.sprintf('{{ messageOne | e }}', term);
       }
       else
       {
-        var term = trees.C._selInfos.sel.eq(0).find("span span").html();
-        msg = $.sprintf('{% trans 'prod::thesaurusTab:dlg:remplacer le terme "%s" des fiches par :' %}', term);
+        msg = $.sprintf('{{ messageMany |e }}', trees.C._selInfos.n);
       }
 
       p4.thesau.tabs.tabs('select', 0);
@@ -501,25 +579,41 @@ function C_MenuOption(menuItem, menu, option, parm)
     case 'DELETE':
       $("#THPD_WIZARDS DIV", p4.thesau.tabs).hide();
       // display helpful message into the thesaurus box...
-      var msg;
-      if(trees.C._selInfos.n > 1)
+
+      {% set messageOne %}
+        {% trans 'prod::thesaurusTab:dlg:supprimer le terme "%s" des fiches ?' %}
+      {% endset %}
+      {% set messageMany %}
+        {% trans 'prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?' %}
+      {% endset %}
+
+     var msg;
+      if(trees.C._selInfos.n == 1)
       {
-        msg = $.sprintf("{% trans 'prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?' %}", trees.C._selInfos.n);
+        var term = trees.C._selInfos.sel.eq(0).find("span span").html();
+        msg = $.sprintf("{{ messageOne | e('js') }}", term);
       }
       else
       {
-        var term = trees.C._selInfos.sel.eq(0).find("span span").html();
-        msg = $.sprintf('{% trans 'prod::thesaurusTab:dlg:supprimer le terme "%s" des fiches ?' %}', term);
+        msg = $.sprintf("{{ messageMany | e('js') }}", trees.C._selInfos.n);
       }
 
-      $("#THPD_confirm_del_dlg_msg").html(msg);
-
-      $("#THPD_confirm_del_dlg").dialog('open');
+      var confirmBox = p4.Dialog.Create({
+        size : 'Alert',
+        closeOnEscape : true,
+        cancelButton: true,
+        buttons: {
+            "Ok" : function() {
+                confirmBox.Close();
+                C_deleteCandidates_OK();
+            }
+        }
+      });
+      confirmBox.setContent(msg);
 
       break;
   }
 }
-
 
 
 function Xclick(e)
@@ -662,14 +756,16 @@ function CXdblClick(e)
   {
     case "SPAN":		// term
       var li = $(x).closest('li');
-      var tid = li.attr('id');
-      if(tid.substr(0,5)=="CX_P.")
+      var field = li.closest('[field]').attr('field');
+      if(typeof(field) != "undefined")
       {
-        var sbid = tid.split(".")[1];
-        var term = $(x).text();
-        var field = li.closest('[field]').attr('field');
-
-        doThesSearch('C', sbid, term, field);
+        var tid = li.attr('id');
+        if(tid.substr(0,5)=="CX_P.")
+        {
+          var sbid = tid.split(".")[1];
+          var term = $(x).text();
+          doThesSearch('C', sbid, term, field);
+        }
       }
       break;
     default:
@@ -716,12 +812,6 @@ function doThesSearch(type, sbid, term, field)
   checkFilters();
   newSearch();
 }
-
-
-
-
-
-
 
 
 function thesau_clickThesaurus(event)	// onclick dans le thesaurus
@@ -828,7 +918,7 @@ function replaceEditSel(value)
 {
   if(!p4.thesau.lastTextfocus || !p4.thesau.lastTextfocus.selectedTerm)
     return;
-  // alert(textarea.selectedTerm.start + " ; " + textarea.selectedTerm.end);
+
   p4.thesau.lastTextfocus.value = p4.thesau.lastTextfocus.value.substr(0, p4.thesau.lastTextfocus.selectedTerm.start) + value + p4.thesau.lastTextfocus.value.substr(p4.thesau.lastTextfocus.selectedTerm.end);
   if(typeof(document.selection) != 'undefined')
   {
@@ -922,7 +1012,7 @@ function ThesauThesaurusSeeker(sbas_id)
     });
 
   };
-	this.xmlhttpstatechanged = function(ret, id) {
+  this.xmlhttpstatechanged = function(ret, id) {
     try
     {
       if(!this.tObj["TH_searching"])
@@ -1113,10 +1203,6 @@ function startThesaurus(){
 
   p4.thesau.lastClickedCandidate = null;
 
-  //	$("#THPD_confirm_del_dlg").remove();
-  //	$("#THPD_confirm_accept_dlg").remove();
-  //	$("#THPD_confirm_replace_dlg").remove();
-
   p4.thesau.tabs = $("#THPD_tabs");
   p4.thesau.tabs.tabs();
 
@@ -1131,63 +1217,6 @@ function startThesaurus(){
       , '_selInfos'  : null				// may contain : {'sel':lisel, 'field':field, 'sbas':sbas, 'n':lisel.length}
     }
   };
-
-  $("#THPD_confirm_del_dlg").dialog( {
-    modal:true,
-    autoOpen:false,
-    buttons:{
-      "{% trans 'boutton::ok' %}":function()
-      {
-        C_deleteCandidates_OK();
-      },
-      "{% trans 'boutton::annuler' %}":function()
-      {
-        $(this).dialog("close");
-      }
-    }
-  }
-);
-
-
-  $("#THPD_confirm_accept_dlg").dialog( {
-    closeOnEscape:true,
-    resizable:false,
-    draggable:false,
-    modal:true,
-    autoOpen:false,
-    buttons:{
-      "{% trans 'prod::thesaurusTab:dlg:OK' %}":function()
-      {
-        T_acceptCandidates_OK(this);
-      },
-      "{% trans 'prod::thesaurusTab:dlg:Annuler' %}":function()
-      {
-        $(this).dialog("close");
-      }
-    }
-  }
-);
-
-
-  $("#THPD_confirm_replace_dlg").dialog( {
-    closeOnEscape:true,
-    resizable:false,
-    draggable:false,
-    modal:true,
-    autoOpen:false,
-    buttons:{
-      "{% trans 'prod::thesaurusTab:dlg:OK' %}":function()
-      {
-        T_replaceCandidates_OK(this);
-      },
-      "{% trans 'prod::thesaurusTab:dlg:Annuler' %}":function()
-      {
-        $(this).dialog("close");
-      }
-    }
-  }
-);
-
 
   trees.T.tree.contextMenu(
   [
@@ -1341,6 +1370,16 @@ function startThesaurus(){
 
           // glue selection info to the tree
           trees.C._selInfos = {'sel':lisel, 'field':field, 'sbas':sbas, 'n':lisel.length} ;
+
+//             $(this.menu).find('.context-menu-item')[{{ thesau_languages|length }}].addClass('context-menu-item-disabled');
+          if(lisel.length == 1)
+          {
+            $(this.menu).find('.context-menu-item').eq({{ thesau_languages|length }}).removeClass('context-menu-item-disabled');
+          }
+          else
+          {
+            $(this.menu).find('.context-menu-item').eq({{ thesau_languages|length }}).addClass('context-menu-item-disabled');
+          }
         }
         else
         {
