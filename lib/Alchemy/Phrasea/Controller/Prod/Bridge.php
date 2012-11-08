@@ -114,9 +114,9 @@ class Bridge implements ControllerProviderInterface
                 $success = false;
                 $message = '';
                 try {
-                    $account = \Bridge_Account::load_account($app['phraseanet.appbox'], $account_id);
+                    $account = \Bridge_Account::load_account($app, $account_id);
 
-                     if ($account->get_user()->get_id() !== $app->getAuthenticatedUser()->get_id()) {
+                     if ($account->get_user()->get_id() !== $app['phraseanet.user']->get_id()) {
                          throw new HttpException(403, 'Access forbiden');
                      }
 
