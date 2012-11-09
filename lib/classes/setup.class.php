@@ -290,7 +290,7 @@ class setup
                             $message = 'Directory MUST be writable';
                         break;
                     case 'version':
-                        $result = version_compare($value, '1.18.0.3', '>=');
+                        $result = version_compare($value, '1.20.1.8', '>=');
                         if ($result)
                             $message = sprintf('Phrasea version %s is ok', $value);
                         else

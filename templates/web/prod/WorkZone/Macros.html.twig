@@ -322,12 +322,16 @@
                               <tr>
                                   <td> {{ choice.getParticipant().getUser(app).get_display_name() }} </td>
                                   <td>
-                                  {% if choice.getAgreement() == true %}
-                                      <img style="cursor:help;" src='/skins/lightbox/agree.png' title="{% trans "L'utilisateur approuve ce document" %}" />
-                                  {% elseif choice.getAgreement() is null %}
-                                      <img style="cursor:help;" src='/skins/icons/valid.png' title="{% trans "L'utilisateur n'a pas encore donne son avis sur ce document" %}" />
+                                  {% if choice.getParticipant().getCanAgree() %}
+                                        {% if choice.getAgreement() == true %}
+                                            <img style="cursor:help;" src='/skins/lightbox/agree.png' title="{% trans "L'utilisateur approuve ce document" %}" />
+                                        {% elseif choice.getAgreement() is null %}
+                                            <img style="cursor:help;" src='/skins/icons/valid.png' title="{% trans "L'utilisateur n'a pas encore donne son avis sur ce document" %}" />
+                                        {% else %}
+                                            <img style="cursor:help;" src='/skins/lightbox/disagree.png' title="{% trans "L'utilisateur desapprouve ce document" %}" />
+                                        {% endif %}
                                   {% else %}
-                                      <img style="cursor:help;" src='/skins/lightbox/disagree.png' title="{% trans "L'utilisateur desapprouve ce document" %}" />
+                                        <img style="cursor:help;" src='/skins/icons/no-valid.png' title="{% trans "This user does not participate to the validation but is only viewer." %}" />
                                   {% endif %}
                                   </td>
                                   <td style="width:25px;">

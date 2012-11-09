@@ -130,15 +130,9 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPMailer_v5.1",
-                "reference": "3bdb8bc7a8f304c27900d7b2ddc00068c86c781f"
+                "reference": "baabbdc1e68947f19c86e0e9e02d40d6fb1283e4"
             },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHPMailer_v5.1/zipball/3bdb8bc7a8f304c27900d7b2ddc00068c86c781f",
-                "reference": "3bdb8bc7a8f304c27900d7b2ddc00068c86c781f",
-                "shasum": ""
-            },
-            "time": "1333125389",
+            "time": "1352458275",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -175,7 +169,8 @@
                 "api",
                 "sdk",
                 "dailymotion"
-            ]
+            ],
+            "time": "1350827116"
         },
         {
             "name": "data-uri/data-uri",
@@ -1255,7 +1250,8 @@
             "homepage": "http://silex.sensiolabs.org",
             "keywords": [
                 "microframework"
-            ]
+            ],
+            "time": "1350911324"
         },
         {
             "name": "swftools/swftools",
@@ -1451,7 +1447,8 @@
             "homepage": "http://symfony.com",
             "keywords": [
                 "framework"
-            ]
+            ],
+            "time": "1346926323"
         },
         {
             "name": "tecnick.com/tcpdf",

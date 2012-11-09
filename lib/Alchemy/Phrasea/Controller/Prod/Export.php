@@ -240,8 +240,11 @@ class Export implements ControllerProviderInterface
             $request->request->get('businessfields')
         );
 
+        $separator = preg_split('//', ' ;,', -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+        $separator = '/\\' . implode('|\\', $separator) . '/';
+
         $list['export_name'] = sprintf("%s.zip", $download->getExportName());
-        $list['email'] = $request->request->get("destmail", "");
+        $list['email'] = implode(';', preg_split($separator, $request->request->get("destmail", "")));
 
         $destMails = array();
         //get destination mails

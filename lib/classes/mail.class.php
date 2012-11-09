@@ -208,8 +208,6 @@ class mail
         $body .= '<div><a href="' . $app['phraseanet.registry']->get('GV_ServerName') . '">' . $app['phraseanet.registry']->get('GV_ServerName') . "</a></div>\n";
         $body = '<body>' . $body . '</body>';
 
-        $body = str_replace('https://', 'http://', $body);
-
         try {
             $mail->CharSet = 'utf-8';
             $mail->Encoding = 'base64'; //'quoted-printable';
@@ -247,7 +245,7 @@ class mail
                 $mail->ConfirmReadingTo = $reading_confirm_to;
             }
 
-            $mail->MsgHTML(strip_tags($body, '<div><br><ul><li><em><strong><span><br>'));
+            $mail->MsgHTML(strip_tags($body, '<div><br><ul><li><em><strong><span><br><a>'));
 
             foreach ($files as $f) {
                 $mail->AddAttachment($f);      // attachment
