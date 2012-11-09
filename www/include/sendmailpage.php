@@ -64,7 +64,9 @@ $token = random::getUrlToken(\random::TYPE_EMAIL, false, $endDate, serialize($li
 
 $dest = array();
 
-$mails = explode(';', $Request->get("destmail", ''));
+$separator = preg_split('//', ' ;,', -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+$separator = '/\\' . implode('|\\', $separator) . '/';
+$mails = preg_split($separator, $Request->get("destmail", ''));
 
 foreach ($mails as $email) {
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
