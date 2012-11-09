@@ -1,5 +1,5 @@
 {
-    "hash": "60662e8bb069bc034541d710aedf33e4",
+    "hash": "49fd02f9d3bc6aa5d77f7a44f10a8d7f",
     "packages": [
         {
             "name": "alchemy/Phlickr",
@@ -48,7 +48,7 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1351010495",
+            "time": "1351093185",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -106,15 +106,9 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPMailer_v5.1",
-                "reference": "3bdb8bc7a8f304c27900d7b2ddc00068c86c781f"
+                "reference": "baabbdc1e68947f19c86e0e9e02d40d6fb1283e4"
             },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHPMailer_v5.1/zipball/3bdb8bc7a8f304c27900d7b2ddc00068c86c781f",
-                "reference": "3bdb8bc7a8f304c27900d7b2ddc00068c86c781f",
-                "shasum": ""
-            },
-            "time": "1333125389",
+            "time": "1352458275",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -137,7 +131,6 @@
                 "reference": "9017604a49e9d999973ee98ec1471e187d1ad933",
                 "shasum": ""
             },
-            "time": "1350827116",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -151,7 +144,8 @@
                 "api",
                 "sdk",
                 "dailymotion"
-            ]
+            ],
+            "time": "1350827116"
         },
         {
             "name": "data-uri/data-uri",
@@ -504,7 +498,7 @@
                 "symfony/dependency-injection": ">2.0",
                 "symfony/console": ">2.0"
             },
-            "time": "2012-10-24 01:09:30",
+            "time": "2012-10-24 01:56:51",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -653,7 +647,6 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1340268165",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -686,7 +679,8 @@
                 "ffmpeg",
                 "avprobe",
                 "ffprobe"
-            ]
+            ],
+            "time": "1340268165"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -711,7 +705,7 @@
                 "fabpot/php-cs-fixer": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1335481578",
+            "time": "1349803785",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1017,7 +1011,6 @@
                 "symfony/css-selector": ">=2.1,<2.3-dev",
                 "symfony/dom-crawler": ">=2.1,<2.3-dev"
             },
-            "time": "1350911324",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1048,7 +1041,8 @@
             "homepage": "http://silex.sensiolabs.org",
             "keywords": [
                 "microframework"
-            ]
+            ],
+            "time": "1350911324"
         },
         {
             "name": "swftools/swftools",
@@ -1074,7 +1068,6 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1349705213",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1102,7 +1095,8 @@
                 "flash",
                 "swf",
                 "adobe flash"
-            ]
+            ],
+            "time": "1339439296"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1213,7 +1207,6 @@
                 "propel/propel1": "dev-master",
                 "monolog/monolog": "1.*"
             },
-            "time": "1346926323",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1244,7 +1237,8 @@
             "homepage": "http://symfony.com",
             "keywords": [
                 "framework"
-            ]
+            ],
+            "time": "1346926323"
         },
         {
             "name": "tecnick.com/tcpdf",
