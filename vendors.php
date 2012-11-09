@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 /*
  * This file is part of the Symfony framework.
  *
@@ -21,7 +22,12 @@ $composer = __DIR__ . '/composer.phar';
 if ( ! file_exists($composer)) {
     system('curl -s http://getcomposer.org/installer | php');
     system('chmod +x ' . $composer);
-    system($composer . ' install --dev');
+
+    if ($argv[1] == '--no-dev') {
+        system($composer . ' install');
+    } else {
+        system($composer . ' install --dev');
+    }
 }
 
 if ( ! is_executable($composer)) {
@@ -29,7 +35,12 @@ if ( ! is_executable($composer)) {
 }
 
 system($composer . ' self-update');
-system($composer . ' install --dev');
+
+if ($argv[1] == '--no-dev') {
+    system($composer . ' install');
+} else {
+    system($composer . ' install --dev');
+}
 
 system('git submodule init');
 system('git submodule update');

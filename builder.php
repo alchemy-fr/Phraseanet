@@ -7,14 +7,14 @@
 
 printf('Retrieve vendors ...' . PHP_EOL);
 
-system('./vendors.php');
+system('./vendors.php --no-dev');
 /**
  *
  * Vendors has to be called two times.
  * We should fix that
  *
  */
-system('./vendors.php');
+system('./vendors.php --no-dev');
 
 require_once __DIR__ . '/lib/classes/bootstrap.class.php';
 
@@ -40,7 +40,10 @@ $finder
     ->name('localesToLaunchPad.php')
     ->name('pom.xml')
     ->name('composer.json')
+    ->name('composer.lock')
+    ->name('composer.phar')
     ->name('vendors.php')
+    ->name('.travis.yml')
     ->name('vendors.win.php')
     ->name('builder.php')
     ->ignoreDotFiles(false)
@@ -63,7 +66,11 @@ $finder = new Finder();
 $finder
     ->directories()
     ->name('test')
+    ->name('Test')
     ->name('tests')
+    ->name('Tests')
+    ->name('test-suite')
+    ->name('test_script')
     ->name('demos')
     ->name('demo')
     ->name('example')
