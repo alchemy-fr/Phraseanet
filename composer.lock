@@ -151,7 +151,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/dailymotion/dailymotion-sdk-php/zipball/a11e98742adf877497017fece69f603af578f329",
+                "url": "https://github.com/dailymotion/dailymotion-sdk-php/archive/a11e98742adf877497017fece69f603af578f329.zip",
                 "reference": "a11e98742adf877497017fece69f603af578f329",
                 "shasum": ""
             },
@@ -169,8 +169,7 @@
                 "api",
                 "sdk",
                 "dailymotion"
-            ],
-            "time": "1350827116"
+            ]
         },
         {
             "name": "data-uri/data-uri",
@@ -467,6 +466,7 @@
                 "knplabs/knp-snappy": "dev-master",
                 "imagine/imagine": "*"
             },
+            "time": "1338686843",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -491,8 +491,7 @@
                 "snappy",
                 "pdf",
                 "imagine"
-            ],
-            "time": "1338686843"
+            ]
         },
         {
             "name": "imagine/Imagine",
@@ -547,12 +546,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/KnpLabs/snappy.git",
-                "reference": "17da0d095913d089db5546ce884e844a144b3e1f"
+                "reference": "0.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/KnpLabs/snappy/zipball/17da0d095913d089db5546ce884e844a144b3e1f",
-                "reference": "17da0d095913d089db5546ce884e844a144b3e1f",
+                "url": "https://github.com/KnpLabs/snappy/archive/0.1.0.zip",
+                "reference": "0.1.0",
                 "shasum": ""
             },
             "require": {
@@ -561,6 +560,7 @@
             "suggest": {
                 "symfony/process": "Process Component of Symfony2."
             },
+            "time": "1352281681",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -589,8 +589,7 @@
                 "pdf",
                 "thumbnail",
                 "snapshot"
-            ],
-            "time": "1348990625"
+            ]
         },
         {
             "name": "media-alchemyst/media-alchemyst",
@@ -602,7 +601,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/Media-Alchemyst/zipball/8f2c693906d14aa9a8f9896556ab501dd07498d5",
+                "url": "https://github.com/alchemy-fr/Media-Alchemyst/archive/8f2c693906d14aa9a8f9896556ab501dd07498d5.zip",
                 "reference": "8f2c693906d14aa9a8f9896556ab501dd07498d5",
                 "shasum": ""
             },
@@ -754,12 +753,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/BadFaith-ServiceProvider",
-                "reference": "2354975dba05a0c003db19c9824703ea0707c029"
+                "reference": "9aaa0819e9596fa295895e5453471032c5d606df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/romainneutron/BadFaith-ServiceProvider/zipball/2354975dba05a0c003db19c9824703ea0707c029",
-                "reference": "2354975dba05a0c003db19c9824703ea0707c029",
+                "url": "https://github.com/romainneutron/BadFaith-ServiceProvider/archive/9aaa0819e9596fa295895e5453471032c5d606df.zip",
+                "reference": "9aaa0819e9596fa295895e5453471032c5d606df",
                 "shasum": ""
             },
             "require": {
@@ -771,6 +770,7 @@
             "require-dev": {
                 "fabpot/php-cs-fixer": "master"
             },
+            "time": "1352408071",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -788,7 +788,10 @@
                     "homepage": "http://www.lickmychip.com/"
                 }
             ],
-            "time": "1348756812"
+            "description": "A provider to BadFaith content negociation library",
+            "keywords": [
+                "content negociation"
+            ]
         },
         {
             "name": "neutron/silex-filesystem-provider",
@@ -796,12 +799,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Silex-Filesystem-Service-Provider",
-                "reference": "aa08f3f79c6494c21cbb3293538021a1a02303ac"
+                "reference": "98771524bba1ffa58373c4c06d438f5fb5442ff4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/romainneutron/Silex-Filesystem-Service-Provider/zipball/aa08f3f79c6494c21cbb3293538021a1a02303ac",
-                "reference": "aa08f3f79c6494c21cbb3293538021a1a02303ac",
+                "url": "https://github.com/romainneutron/Silex-Filesystem-Service-Provider/archive/98771524bba1ffa58373c4c06d438f5fb5442ff4.zip",
+                "reference": "98771524bba1ffa58373c4c06d438f5fb5442ff4",
                 "shasum": ""
             },
             "require": {
@@ -809,9 +812,7 @@
                 "silex/silex": ">=1.0",
                 "symfony/filesystem": ">=2.0"
             },
-            "require-dev": {
-                "fabpot/php-cs-fixer": "master"
-            },
+            "time": "1352408828",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -829,7 +830,12 @@
                     "homepage": "http://www.lickmychip.com/"
                 }
             ],
-            "time": "1346932827"
+            "description": "A Silex Provider for Symfony Filesystem component",
+            "keywords": [
+                "silex",
+                "filesystem",
+                "temporary-filesystem"
+            ]
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
@@ -837,12 +843,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg",
-                "reference": "8ddbc82630a37d1c2134fb4d69e2dd57459adf3b"
+                "reference": "60b2aeff24f2d9a68bee89789dc567c6c1352c00"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/zipball/8ddbc82630a37d1c2134fb4d69e2dd57459adf3b",
-                "reference": "8ddbc82630a37d1c2134fb4d69e2dd57459adf3b",
+                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/archive/60b2aeff24f2d9a68bee89789dc567c6c1352c00.zip",
+                "reference": "60b2aeff24f2d9a68bee89789dc567c6c1352c00",
                 "shasum": ""
             },
             "require": {
@@ -855,7 +861,16 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
+            "suggest": {
+                "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
+            },
+            "time": "1351638519",
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.2.x-dev"
+                }
+            },
             "installation-source": "source",
             "autoload": {
                 "psr-0": {
@@ -887,8 +902,7 @@
                 "ffmpeg",
                 "avprobe",
                 "ffprobe"
-            ],
-            "time": "1349965750"
+            ]
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -900,7 +914,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-MP4Box/zipball/2c272a3f77807771275fb4f2c404071e9c263e19",
+                "url": "https://github.com/alchemy-fr/PHP-MP4Box/archive/2c272a3f77807771275fb4f2c404071e9c263e19.zip",
                 "reference": "2c272a3f77807771275fb4f2c404071e9c263e19",
                 "shasum": ""
             },
@@ -913,6 +927,7 @@
                 "fabpot/php-cs-fixer": "dev-master",
                 "silex/silex": "dev-master"
             },
+            "time": "1349804408",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -935,8 +950,7 @@
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
-            "description": "PHP MP4Box, an Object Oriented library for easy file conversion with MP4 Box",
-            "time": "1349804408"
+            "description": "PHP MP4Box, an Object Oriented library for easy file conversion with MP4 Box"
         },
         {
             "name": "php-unoconv/php-unoconv",
@@ -961,6 +975,7 @@
                 "silex/silex": "dev-master",
                 "fabpot/php-cs-fixer": "dev-master"
             },
+            "time": "1349713000",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -983,8 +998,7 @@
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
-            "description": "Unoconv PHP, an Object Oriented library for easy file conversion with LibreOffice's unoconv",
-            "time": "1349713000"
+            "description": "Unoconv PHP, an Object Oriented library for easy file conversion with LibreOffice's unoconv"
         },
         {
             "name": "php-xpdf/php-xpdf",
@@ -996,7 +1010,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-XPDF/zipball/ed46b2681bf621307a12782a8c7f9c1271cdf095",
+                "url": "https://github.com/alchemy-fr/PHP-XPDF/archive/ed46b2681bf621307a12782a8c7f9c1271cdf095.zip",
                 "reference": "ed46b2681bf621307a12782a8c7f9c1271cdf095",
                 "shasum": ""
             },
@@ -1010,6 +1024,7 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
+            "time": "1349703734",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1036,8 +1051,7 @@
             "keywords": [
                 "pdf",
                 "xpdf"
-            ],
-            "time": "1349703734"
+            ]
         },
         {
             "name": "phpexiftool/exiftool",
@@ -1049,13 +1063,14 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/exiftool/zipball/c68d98b5a00aaf7ae0db7eebddfcde27d948e537",
+                "url": "https://github.com/alchemy-fr/exiftool/archive/c68d98b5a00aaf7ae0db7eebddfcde27d948e537.zip",
                 "reference": "c68d98b5a00aaf7ae0db7eebddfcde27d948e537",
                 "shasum": ""
             },
             "require": {
                 "phpexiftool/phpexiftool": "*"
             },
+            "time": "1346256086",
             "type": "library",
             "installation-source": "source",
             "license": [
@@ -1072,8 +1087,7 @@
             "keywords": [
                 "exiftool",
                 "metadatas"
-            ],
-            "time": "1346256086"
+            ]
         },
         {
             "name": "phpexiftool/phpexiftool",
@@ -1104,6 +1118,7 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
+            "time": "1346681208",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1125,8 +1140,7 @@
             "keywords": [
                 "metadata",
                 "exiftool"
-            ],
-            "time": "1346681208"
+            ]
         },
         {
             "name": "pimple/pimple",
@@ -1180,12 +1194,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Silex.git",
-                "reference": "598347392b5cca74440693964ab28f7fd087abcc"
+                "reference": "960f097be06f24d7d112deaa68fa904796435b85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Silex/zipball/598347392b5cca74440693964ab28f7fd087abcc",
-                "reference": "598347392b5cca74440693964ab28f7fd087abcc",
+                "url": "https://github.com/fabpot/Silex/archive/960f097be06f24d7d112deaa68fa904796435b85.zip",
+                "reference": "960f097be06f24d7d112deaa68fa904796435b85",
                 "shasum": ""
             },
             "require": {
@@ -1212,14 +1226,15 @@
                 "symfony/process": ">=2.1,<2.3-dev",
                 "symfony/translation": ">=2.1,<2.3-dev",
                 "symfony/twig-bridge": ">=2.1,<2.3-dev",
-                "symfony/validator": ">=2.1,<2.3-dev"
+                "symfony/validator": ">=2.1,<2.3-dev",
+                "symfony/serializer": ">=2.1,<2.3-dev"
             },
             "suggest": {
                 "symfony/browser-kit": ">=2.1,<2.3-dev",
                 "symfony/css-selector": ">=2.1,<2.3-dev",
                 "symfony/dom-crawler": ">=2.1,<2.3-dev"
             },
-            "time": "1351110265",
+            "time": "1352464470",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1250,8 +1265,7 @@
             "homepage": "http://silex.sensiolabs.org",
             "keywords": [
                 "microframework"
-            ],
-            "time": "1350911324"
+            ]
         },
         {
             "name": "swftools/swftools",
@@ -1277,6 +1291,7 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
+            "time": "1349705213",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1295,7 +1310,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "info@alchemy.fr",
+                    "email": "support@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
@@ -1304,8 +1319,7 @@
                 "flash",
                 "swf",
                 "adobe flash"
-            ],
-            "time": "1349705213"
+            ]
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1362,12 +1376,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "1277e6746b2333338124ad0574fa7d5b8c77c47c"
+                "reference": "ae61d354c929cfb3865e3ea275dac1e1b6cd02ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/zipball/1277e6746b2333338124ad0574fa7d5b8c77c47c",
-                "reference": "1277e6746b2333338124ad0574fa7d5b8c77c47c",
+                "url": "https://github.com/symfony/symfony/archive/ae61d354c929cfb3865e3ea275dac1e1b6cd02ca.zip",
+                "reference": "ae61d354c929cfb3865e3ea275dac1e1b6cd02ca",
                 "shasum": ""
             },
             "require": {
@@ -1416,7 +1430,7 @@
                 "propel/propel1": "dev-master",
                 "monolog/monolog": "1.*"
             },
-            "time": "1351170710",
+            "time": "1352469629",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1447,8 +1461,7 @@
             "homepage": "http://symfony.com",
             "keywords": [
                 "framework"
-            ],
-            "time": "1346926323"
+            ]
         },
         {
             "name": "tecnick.com/tcpdf",
@@ -1558,18 +1571,18 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Twig.git",
-                "reference": "61393dc9fb8982110048624aa573aec4aee0b465"
+                "reference": "1a10ea2fbb2291142b4ee03665591c0762315204"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Twig/zipball/61393dc9fb8982110048624aa573aec4aee0b465",
-                "reference": "61393dc9fb8982110048624aa573aec4aee0b465",
+                "url": "https://github.com/fabpot/Twig/archive/1a10ea2fbb2291142b4ee03665591c0762315204.zip",
+                "reference": "1a10ea2fbb2291142b4ee03665591c0762315204",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "1350737598",
+            "time": "1352366711",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1650,18 +1663,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "181b71e9a19bcdc93a9bf5c19dc0ef9615656173"
+                "reference": "a95d7839a7794c7c9b22d64e859ee70658d977fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/doctrine/data-fixtures/zipball/181b71e9a19bcdc93a9bf5c19dc0ef9615656173",
-                "reference": "181b71e9a19bcdc93a9bf5c19dc0ef9615656173",
+                "url": "https://github.com/doctrine/data-fixtures/archive/a95d7839a7794c7c9b22d64e859ee70658d977fe.zip",
+                "reference": "a95d7839a7794c7c9b22d64e859ee70658d977fe",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2"
             },
-            "time": "1350901469",
+            "time": "1351735543",
             "type": "library",
             "installation-source": "source",
             "autoload": {
