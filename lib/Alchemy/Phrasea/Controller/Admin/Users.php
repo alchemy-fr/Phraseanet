@@ -98,7 +98,7 @@ class Users implements ControllerProviderInterface
             $rights = new UserHelper\Edit($app, $app['request']);
             $rights->apply_quotas();
 
-            return;
+            return $app->json(array('message' => '', 'error'   => false));
         });
 
         $controllers->post('/rights/time/', function(Application $app) {
@@ -111,7 +111,7 @@ class Users implements ControllerProviderInterface
             $rights = new UserHelper\Edit($app, $app['request']);
             $rights->apply_time();
 
-            return;
+            return $app->json(array('message' => '', 'error'   => false));
         });
 
         $controllers->post('/rights/masks/', function(Application $app) {
@@ -124,7 +124,7 @@ class Users implements ControllerProviderInterface
             $rights = new UserHelper\Edit($app, $app['request']);
             $rights->apply_masks();
 
-            return;
+            return $app->json(array('message' => '', 'error'   => false));
         });
 
         $controllers->match('/search/', function(Application $app) {

@@ -302,7 +302,7 @@ class Edit implements ControllerProviderInterface
             }
 
             if (!is_array($request->request->get('mds'))) {
-                return;
+                return $app->json(array('message' => '', 'error'   => false));
             }
 
             $databoxes = $records->databoxes();
