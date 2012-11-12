@@ -53,6 +53,8 @@ class ApplicationRootTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $app->get('/unit-test-route', function(Application $app) use (&$boolean) {
             $boolean = $app->isAuthenticated();
+
+            return new Response();
         });
 
         $client = new Client($app);
@@ -100,6 +102,8 @@ class ApplicationRootTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $app->get('/unit-test-route', function(Application $app) use (&$boolean) {
             $boolean = $app->isAuthenticated();
+
+            return new Response();
         });
 
         $cookieJar = new CookieJar();

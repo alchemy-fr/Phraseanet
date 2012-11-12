@@ -72,7 +72,7 @@ return call_user_func(function($environment = 'prod') {
         $oauth2_adapter->remember_this_ses_id($app['session']->get('phrasea_session_id'));
 
         return;
-    });
+    }, 256);
 
     /**
      * OAuth log process
