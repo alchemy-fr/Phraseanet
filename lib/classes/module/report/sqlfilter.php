@@ -48,8 +48,9 @@ class module_report_sqlfilter
         $ret = array('sql'    => '', 'params' => array());
         $coll_filter = array();
         foreach (array_filter(explode(',', $list_coll_id)) as $val) {
-            if( false !== $val = phrasea::collFromBas($app, $val)) {
-                $coll_filter[] =  'log_colls.coll_id = '.phrasea::collFromBas($app, $val);
+            $val = \phrasea::collFromBas($app, $val);
+            if(!!$val) {
+                $coll_filter[] =  'log_colls.coll_id = ' . $val;
             }
         }
         $ret['sql'] = ' (' . implode(' OR ', array_unique($coll_filter)) . ') ';
@@ -196,8 +197,9 @@ class module_report_sqlfilter
 
         if (count($tab) > 0) {
             foreach ($tab as $val) {
-                if( false !== $val = phrasea::collFromBas($this->app, $val)) {
-                    $coll_filter[] =  'log_colls.coll_id = '.phrasea::collFromBas($this->app, $val);
+                $val = \phrasea::collFromBas($this->app, $val);
+                if(!!$val) {
+                    $coll_filter[] =  'log_colls.coll_id = ' . $val;
                 }
             }
 
