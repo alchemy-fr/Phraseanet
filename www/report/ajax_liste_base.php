@@ -10,6 +10,10 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
  *
@@ -72,6 +76,13 @@ foreach ($popbases as $key => $val) {
 $selection[$id_sbas]['liste'] = $liste;
 
 $app = new Application();
+
+$event = new GetResponseEvent($app, Request::createFromGlobals(), HttpKernelInterface::MASTER_REQUEST);
+
+$app->initPhrasea($event);
+$app->addLocale($event);
+$app->initSession($event);
+
 $twig = $app['twig'];
 
 echo $twig->render('liste_base.twig', array('selection' => $selection, 'param'     => $parm));

@@ -10,6 +10,10 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
  *
@@ -53,6 +57,14 @@ $param = $request->get_parms(
 );
 
 $app = new Application();
+
+$event = new GetResponseEvent($app, Request::createFromGlobals(), HttpKernelInterface::MASTER_REQUEST);
+
+
+$app->initPhrasea($event);
+$app->addLocale($event);
+$app->initSession($event);
+
 $twig = $app['twig'];
 
 $conf_info_usr = array(
