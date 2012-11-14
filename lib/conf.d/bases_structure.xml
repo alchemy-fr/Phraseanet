@@ -5298,7 +5298,15 @@
               <field>id</field>
             </fields>
           </index>
-           <index>
+          <index>
+            <name>couple</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>log_id</field>
+              <field>coll_id</field>
+            </fields>
+          </index>
+          <index>
             <name>log_id</name>
             <type>INDEX</type>
             <fields>
