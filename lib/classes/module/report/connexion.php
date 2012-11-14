@@ -148,12 +148,12 @@ class module_report_connexion extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $finalfilter = $datefilter['sql'] . ' AND ';
-        $finalfilter .= '(' . $collfilter['sql'] . ') AND ';
+        $finalfilter .= $collfilter['sql'] . ' AND ';
         $finalfilter .= 'log_date.site = :site_id';
 
         $sql = "SELECT    COUNT(usrid) as nb
-                FROM (log as log_date)
-                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                FROM log as log_date FORCE INDEX (date_site)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE " . $finalfilter;
 
         $stmt = $conn->prepare($sql);

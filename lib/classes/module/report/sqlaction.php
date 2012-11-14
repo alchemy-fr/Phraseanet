@@ -54,8 +54,8 @@ class module_report_sqlaction extends module_report_sql implements module_report
                 "
             SELECT log.usrid, log.user , d.final as getter,  d.record_id, d.date, s.*
             FROM (log_docs as d)
-               INNER JOIN log ON (" . $site_filter['sql'] . " AND log.id = d.log_id)
-               INNER JOIN log_colls ON (log.id = log_colls.log_id)
+               INNER JOIN log FORCE INDEX (date_site) ON (" . $site_filter['sql'] . " AND log.id = d.log_id)
+               INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                INNER JOIN record ON (record.record_id = d.record_id)
                LEFT JOIN subdef as s ON (s.record_id=d.record_id and s.name='document')
             WHERE";
@@ -87,8 +87,8 @@ class module_report_sqlaction extends module_report_sql implements module_report
               as " . $this->groupby . ",
              SUM(1) as nombre
             FROM (log_docs as d)
-                INNER JOIN log ON (" . $site_filter['sql'] . " AND log.id = d.log_id)
-                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                INNER JOIN log FORCE INDEX (date_site) ON (" . $site_filter['sql'] . " AND log.id = d.log_id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 INNER JOIN record ON (record.record_id = d.record_id)
                 LEFT JOIN subdef as s ON (s.record_id=d.record_id and s.name='document')
             WHERE ";
@@ -123,10 +123,10 @@ class module_report_sqlaction extends module_report_sql implements module_report
         $sql = "
             SELECT  DISTINCT(" . $this->getTransQuery($field) . ") as val
             FROM (log_docs as d)
-                INNER JOIN log ON (" . $site_filter['sql'] . "
+                INNER JOIN log FORCE INDEX (date_site) ON (" . $site_filter['sql'] . "
                     AND log.id = d.log_id
                     AND " . $date_filter['sql'] . ")
-                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 INNER JOIN record ON (record.record_id = d.record_id)
                 LEFT JOIN subdef as s ON (s.record_id=d.record_id AND s.name='document')
             WHERE ";

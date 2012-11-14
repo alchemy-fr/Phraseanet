@@ -69,18 +69,15 @@ class module_report_nav extends module_report
         $report_filter = $filter->getReportFilter();
         $coll_filter = $filter->getCollectionFilter();
         $site_filter = $filter->getGvSitFilter();
-        $params = array_merge($report_filter['params'], $coll_filter['params'], $site_filter['params']);
+        $params = array_merge($report_filter['params']);
 
         $sql = '
             SELECT
                 SUM(1) AS total
-            FROM (log)
-                INNER JOIN log_colls ON (log.id = log_colls.log_id)
-            WHERE (' . $report_filter['sql'] . '
-                AND nav != TRIM(\'\')
-            )
-            AND ' . $site_filter['sql'] . '
-          AND (' . $coll_filter['sql'] . ')';
+            FROM log FORCE INDEX (date_site)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+            WHERE ' . $report_filter['sql'] . ' AND nav != ""
+            ';
 
         $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);

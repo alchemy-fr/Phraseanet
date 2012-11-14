@@ -113,8 +113,8 @@ class module_report_activity extends module_report
 
         $sql = "
                 SELECT DATE_FORMAT( log.date, '%k' ) AS heures, SUM(1) AS nb
-                FROM (log)
-                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                FROM log FORCE INDEX (date_site)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE " . $date_filter['sql'] . "
                 AND " . $coll_filter['sql'] . "
                 AND " . $site_filter['sql'] . "
@@ -179,8 +179,8 @@ class module_report_activity extends module_report
                 SELECT DATE_FORMAT(log_search.date,'%Y-%m-%d %H:%i:%S') as date ,
                 log_search.search ,log_search.results
                 FROM (log_search)
-                    INNER JOIN log ON (log.id = log_search.log_id)
-                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                    INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE log_search.date > " . $date_filter['sql'] . "
                 AND log.`" . $what . "` = :main_value
                 AND " . $site_filter['sql'] . "
@@ -244,8 +244,8 @@ class module_report_activity extends module_report
                     SUM(1) as nb,
                     ROUND(avg(results)) as nb_rep
                 FROM (log_search)
-                    INNER JOIN log ON (log_search.log_id = log.id)
-                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                    INNER JOIN log FORCE INDEX (date_site) ON (log_search.log_id = log.id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE " . $date_filter['sql'] . "
                 AND log_search.search != 'all'
                 AND (" . $coll_filter['sql'] . ")";
@@ -315,8 +315,8 @@ class module_report_activity extends module_report
                 SELECT log_docs.record_id,
                     log_docs.date, log_docs.final as objets
                 FROM (`log_docs`)
-                    INNER JOIN log ON (log_docs.log_id = log.id)
-                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                    INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     INNER JOIN record ON (log_docs.record_id = record.record_id)
                 WHERE log_docs.action = 'download'
                 AND " . $date_filter['sql'] . "
@@ -393,8 +393,8 @@ class module_report_activity extends module_report
                  final
             FROM (log_docs)
                 INNER JOIN record ON (record.record_id = log_docs.record_id)
-                INNER JOIN log ON (" . $site_filter['sql'] . " AND log.id = log_docs.log_id)
-                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                INNER JOIN log FORCE INDEX (date_site) ON (" . $site_filter['sql'] . " AND log.id = log_docs.log_id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 LEFT JOIN subdef AS s ON (s.record_id = log_docs.record_id AND s.name = log_docs.final)
             WHERE " . $date_filter['sql'] . "
                 AND (log_docs.final != 'caption')
@@ -489,12 +489,12 @@ class module_report_activity extends module_report
                 SELECT  DISTINCT(log." . $on . ") as " . $on . ",
                     usrid,
                     SUM(1) as connexion
-                FROM (log)
-                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                FROM log FORCE INDEX (date_site)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE log.user != 'API'
                 AND " . $site_filter['sql'] . "
                 AND " . $date_filter['sql'] . "
-                AND (" . $coll_filter['sql'] . ")
+                AND " . $coll_filter['sql'] . "
                 GROUP BY " . $on . "
                 ORDER BY connexion DESC ";
 
@@ -589,10 +589,10 @@ class module_report_activity extends module_report
                     final, sum(1) as nb,
                     sum(size) as poid
                 FROM (log_docs as d)
-                    INNER JOIN log ON (" . $site_filter['sql'] . "
+                    INNER JOIN log FORCE INDEX (date_site) ON (" . $site_filter['sql'] . "
                         AND log.id = d.log_id
                         AND " . $date_filter['sql'] . ")
-                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     INNER JOIN record ON record.record_id = d.record_id
                     LEFT JOIN subdef as s on ((d.action = 'download' OR d.action = 'mail')
                         AND s.record_id=d.record_id and s.name=d.final
@@ -712,10 +712,10 @@ class module_report_activity extends module_report
         $sql = "
             SELECT log.usrid, log.user , d.final as getter,  d.record_id, d.date, s.*
             FROM (log_docs as d)
-                INNER JOIN log ON (" . $site_filter['sql'] . "
+                INNER JOIN log FORCE INDEX (date_site) ON (" . $site_filter['sql'] . "
                     AND log.id = d.log_id
                     AND " . $date_filter['sql'] . ")
-                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 INNER JOIN record ON (record.record_id = d.record_id)
                 LEFT JOIN subdef as s ON (s.record_id=d.record_id and s.name='document')
             WHERE ((" . $coll_filter['sql'] . ") AND " . $record_filter['sql'] . " AND d.action='push')
@@ -781,10 +781,10 @@ class module_report_activity extends module_report
         $sql = "
                 SELECT log.usrid, user, final, sum(1) AS nb, sum(size) AS poid
                 FROM (log_docs AS log_date)
-                    INNER JOIN log ON (log.site = :site_id
+                    INNER JOIN log FORCE INDEX (date_site) ON (log.site = :site_id
                         AND log.id = log_date.log_id
                         AND " . $datefilter['sql'] . ")
-                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     LEFT JOIN subdef AS s ON (log_date.action = 'download'
                         AND s.record_id = log_date.record_id
                         AND s.name = log_date.final
@@ -856,10 +856,10 @@ class module_report_activity extends module_report
 
         $sql = "
                 SELECT log_date.id, HOUR(log_date.date) as heures
-                FROM (log as log_date)
-                    INNER JOIN log_colls ON (log_date.id = log_colls.log_id)
+                FROM log as log_date FORCE INDEX (date_site)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
                 WHERE " . $datefilter['sql'] . "
-                AND (" . $collfilter['sql'] . ")
+                AND " . $collfilter['sql'] . "
                 AND log_date.site = :site_id";
 
         $stmt = $conn->prepare($sql);
@@ -899,7 +899,7 @@ class module_report_activity extends module_report
             SELECT DISTINCT (
                 DATE_FORMAT( log_date.date, '%Y-%m-%d' )
                 ) AS ddate, COUNT( DATE_FORMAT( log_date.date, '%d' ) ) AS activity
-                FROM log as log_date INNER JOIN log_colls ON (log_date.id = log_colls.log_id)
+                FROM log as log_date FORCE INDEX (date_site) INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
                 WHERE " . $datefilter['sql'] . "
                 AND log_date.site = :site_id
                 AND (" . $collfilter['sql'] . ")
@@ -938,8 +938,8 @@ class module_report_activity extends module_report
         $sql = "
                 SELECT log_date.usrid, log_date.user, sum(1) AS nb
                 FROM (`log_search`)
-                    INNER JOIN log as log_date ON (log_search.log_id = log_date.id)
-                    INNER JOIN log_colls ON (log_date.id = log_colls.log_id)
+                    INNER JOIN log as log_date FORCE INDEX (date_site) ON (log_search.log_id = log_date.id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
                 WHERE " . $datefilter['sql'] . "
                 AND log_date.site = :site_id
                 AND (" . $collfilter['sql'] . ")
@@ -979,8 +979,8 @@ class module_report_activity extends module_report
                 log_date.user,
                 sum(1) AS nb
             FROM (`log_search`)
-                INNER JOIN log as log_date ON (log_search.log_id = log_date.id)
-                INNER JOIN log_colls ON (log_date.id = log_colls.log_id)
+                INNER JOIN log as log_date FORCE INDEX (date_site) ON (log_search.log_id = log_date.id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
             WHERE " . $datefilter['sql'] . "
             AND log_date.site = :site_id
             AND (" . $collfilter['sql'] . ")
@@ -1017,8 +1017,8 @@ class module_report_activity extends module_report
         $sql = "
             SELECT referrer, COUNT(referrer) as nb_view
             FROM (log_view)
-                INNER JOIN log as log_date ON (log_view.log_id = log_date.id)
-                INNER JOIN log_colls ON (log_date.id = log_colls.log_id)
+                INNER JOIN log as log_date FORCE INDEX (date_site) ON (log_view.log_id = log_date.id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
             WHERE " . $datefilter['sql'] . "
             AND (" . $collfilter['sql'] . ")
             GROUP BY referrer
@@ -1059,8 +1059,8 @@ class module_report_activity extends module_report
             DATE_FORMAT( log_date.date, '%Y-%m-%d'  )
             ) AS ddate, COUNT( DATE_FORMAT( log_date.date, '%d' ) ) AS activity
             FROM (log_docs as log_date)
-                INNER JOIN log ON (log_date.log_id = log.id)
-                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
             WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'
             AND (" . $collfilter['sql'] . ")
             GROUP BY ddate
@@ -1093,8 +1093,8 @@ class module_report_activity extends module_report
             DATE_FORMAT( log_date.date, '%Y-%m-%d' )
             ) AS ddate, COUNT( DATE_FORMAT( log_date.date, '%d' ) ) AS activity
             FROM (log_docs as log_date)
-                INNER JOIN log ON log_date.log_id = log.id
-                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                INNER JOIN log FORCE INDEX (date_sit) ON log_date.log_id = log.id
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
             WHERE " . $datefilter['sql'] . " AND log_date.action = 'edit'
             AND (" . $collfilter['sql'] . ")
             GROUP BY ddate
@@ -1126,8 +1126,8 @@ class module_report_activity extends module_report
         $sql = "
             SELECT log.usrid, log.user, sum( 1 ) AS nb
             FROM (log_docs as log_date)
-                INNER JOIN log ON (log_date.log_id = log.id)
-                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
             WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'
             AND (" . $collfilter['sql'] . ")
             GROUP BY log.usrid

@@ -52,9 +52,9 @@ class module_report_sqldownload extends module_report_sql implements module_repo
          log_docs.record_id,
          log_docs.final,
          log_docs.comment
-       FROM (log)
+       FROM log FORCE INDEX (date_site)
         INNER JOIN log_docs ON (log.id = log_docs.log_id)
-        INNER JOIN log_colls ON (log.id = log_colls.log_id)
+        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
         INNER JOIN record ON (log_docs.record_id = record.record_id)
        WHERE ";
 
@@ -88,9 +88,9 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                 subdef.size,
                 subdef.file,
                 subdef.mime
-             FROM (log)
+             FROM log FORCE INDEX (date_site)
                 INNER JOIN log_docs ON (log.id = log_docs.log_id)
-                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 INNER JOIN record ON (log_docs.record_id = record.record_id)
                 INNER JOIN subdef ON (log_docs.record_id = subdef.record_id AND subdef.name = log_docs.final)
              WHERE
@@ -100,9 +100,9 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                 SELECT
                     TRIM(' . $field . ') AS ' . $name . ',
                     SUM(1) AS telechargement
-                FROM ( log )
+                FROM log FORCE INDEX (date_site)
                     INNER JOIN log_docs ON (log.id = log_docs.log_id)
-                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     INNER JOIN record ON (log_docs.record_id = record.record_id)
                     INNER JOIN subdef ON ( log_docs.record_id = subdef.record_id AND subdef.name = log_docs.final)
                 WHERE';
@@ -112,9 +112,9 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                 SELECT
                     TRIM( ' . $this->getTransQuery($this->groupby) . ') AS ' . $name . ',
                     SUM(1) AS nombre
-                FROM ( log )
+                FROM log FORCE INDEX (date_site)
                     INNER JOIN log_docs ON (log.id = log_docs.log_id)
-                    INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     INNER JOIN record ON (log_docs.record_id = record.record_id)
                     INNER JOIN subdef ON (record.record_id = subdef.record_id AND subdef.name = "document")
                 WHERE ';
@@ -154,9 +154,9 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
         $sql = '
             SELECT  DISTINCT( ' . $this->getTransQuery($field) . ' ) AS val
-            FROM (log)
+            FROM log FORCE INDEX (date_site)
                 INNER JOIN log_docs ON (log.id = log_docs.log_id)
-                INNER JOIN log_colls ON (log.id = log_colls.log_id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 INNER JOIN record ON (log_docs.record_id = record.record_id)
                 INNER JOIN subdef ON (log_docs.record_id = subdef.record_id)
             WHERE ';

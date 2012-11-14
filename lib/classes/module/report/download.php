@@ -187,12 +187,11 @@ class module_report_download extends module_report
 
         $sql = '
             SELECT SUM(1) AS nb
-            FROM (log)
+            FROM log FORCE INDEX (date_site)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 INNER JOIN log_docs as log_date ON (log.id = log_date.log_id)
                 INNER JOIN record ON (log_date.record_id = record.record_id)
-            WHERE (
-                ' . $finalfilter . '
-            )
+            WHERE ' . $finalfilter . '
             AND (
                 log_date.action = \'download\'
                 OR log_date.action = \'mail\'
