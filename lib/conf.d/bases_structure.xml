@@ -5260,6 +5260,56 @@
             </fields>
           </index>
           <index>
+            <name>nav</name>
+            <type>INDEX</type>
+            <fields>
+              <field>nav</field>
+            </fields>
+          </index>
+          <index>
+            <name>os</name>
+            <type>INDEX</type>
+            <fields>
+              <field>os</field>
+            </fields>
+          </index>
+          <index>
+            <name>appli</name>
+            <type>INDEX</type>
+            <fields>
+              <field>appli</field>
+            </fields>
+          </index>
+          <index>
+            <name>res</name>
+            <type>INDEX</type>
+            <fields>
+              <field>res</field>
+            </fields>
+          </index>
+          <index>
+            <name>version</name>
+            <type>INDEX</type>
+            <fields>
+              <field>version</field>
+            </fields>
+          </index>
+          <index>
+            <name>os_nav</name>
+            <type>INDEX</type>
+            <fields>
+              <field>os</field>
+              <field>nav</field>
+            </fields>
+          </index>
+          <index>
+            <name>appli</name>
+            <type>INDEX</type>
+            <fields>
+              <field>appli</field>
+            </fields>
+          </index>
+          <index>
             <name>date_site</name>
             <type>INDEX</type>
             <fields>
