@@ -5298,6 +5298,20 @@
               <field>id</field>
             </fields>
           </index>
+           <index>
+            <name>log_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>log_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>coll_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>coll_id</field>
+            </fields>
+          </index>
         </indexes>
         <engine>InnoDB</engine>
       </table>
