@@ -139,14 +139,10 @@ class module_report_nav extends module_report
             SELECT
                 nav,
                 COUNT(nav) AS nb,
-                ROUND(
-                    ( COUNT(nav) / ' . $this->total_pourcent . ' * 100),
-                    1
-                ) AS pourcent
-            FROM log
-            WHERE (' . $report_filter['sql'] . '
-                AND nav != TRIM(\'\')
-            )
+                ROUND((COUNT(nav) / ' . $this->total_pourcent . ' * 100), 1) AS pourcent
+            FROM log FORCE INDEX (date_site, nav)
+            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+            WHERE ' . $report_filter['sql'] . ' AND nav != ""
             GROUP BY nav
             ORDER BY pourcent DESC';
 
@@ -202,10 +198,9 @@ class module_report_nav extends module_report
                 os,
                 COUNT(os) AS nb,
                 ROUND((COUNT(os)/' . $this->total_pourcent . '*100),1) AS pourcent
-            FROM log
-            WHERE ( ' . $report_filter['sql'] . '
-                AND os != TRIM(\'\')
-            )
+            FROM log FORCE INDEX (date_site, os)
+            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+            WHERE '. $report_filter['sql'] . ' AND os != ""
             GROUP BY os
             ORDER BY pourcent DESC';
 
@@ -259,10 +254,9 @@ class module_report_nav extends module_report
                     res,
                     COUNT(res) AS nb,
                     ROUND((COUNT(res)/ ' . $this->total_pourcent . '*100),1) AS pourcent
-                FROM log
-                WHERE (' . $report_filter['sql'] . '
-                    AND res != TRIM(\'\')
-                )
+                FROM log FORCE INDEX (date_site, res)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                WHERE '. $report_filter['sql'] . ' AND res != ""
                 GROUP BY res
                 ORDER BY pourcent DESC
                 LIMIT 0, 10';
@@ -320,11 +314,10 @@ class module_report_nav extends module_report
                     ROUND(
                         (COUNT( CONCAT( nav ,'-', os ))/" . $this->total_pourcent . "*100),
                         1) AS pourcent
-                FROM log
-                WHERE (" . $report_filter['sql'] . "
-                    AND nav != TRIM( '' )
-                )
-                AND os != TRIM( '' )
+                FROM log FORCE INDEX (date_site, os_nav)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                WHERE ". $report_filter['sql'] ."  AND nav != ''
+                AND os != ''
                 GROUP BY combo
                 ORDER BY nb DESC
                 LIMIT 0 , 10";
@@ -379,14 +372,12 @@ class module_report_nav extends module_report
         $params = array_merge($params, $report_filter['params']);
 
         $sql = '
-            SELECT
-                appli
-            FROM log
-            WHERE (' . $report_filter['sql'] . '
-                AND appli != \'a:0:{}\'
-            )
+            SELECT appli
+            FROM log FORCE INDEX (date_site, appli)
+            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+            WHERE ' . $report_filter['sql'] . ' AND appli != \'a:0:{}\'
             GROUP BY appli
-            ORDER BY appli DESC
+            ORDER BY NULL
         ';
 
         $this->initialize();
@@ -571,11 +562,15 @@ class module_report_nav extends module_report
         $conn = connection::getPDOConnection($this->app, $this->sbas_id);
         $this->title = sprintf(
             _('report:: Information sur le navigateur %s'), $navigator);
-
+        $s = new module_report_sql($this->app, $this);
+        $filter = $s->getFilters();
         $params = array(':browser' => $navigator);
+        $report_filter = $filter->getReportFilter();
 
         $sql = "SELECT DISTINCT(version) as version, COUNT(version) as nb
-            FROM log
+            FROM log FORCE INDEX (date_site, nav, version)
+            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+            WHERE ". $report_filter['sql'] . "
             WHERE nav = :browser
             GROUP BY version
             ORDER BY nb DESC";
