@@ -5259,6 +5259,14 @@
               <field>date</field>
             </fields>
           </index>
+          <index>
+            <name>date_site</name>
+            <type>INDEX</type>
+            <fields>
+              <field>site</field>
+              <field>date</field>
+            </fields>
+          </index>
         </indexes>
         <engine>InnoDB</engine>
       </table>
