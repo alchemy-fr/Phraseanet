@@ -45,8 +45,8 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
         sit_session,
         appli,
         ip
-       FROM log
-        INNER JOIN log_colls ON (log.id = log_colls.log_id)";
+       FROM log FORCE INDEX (date_site)
+        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)";
 
             $this->sql .= " WHERE " . $report_filter['sql'];
             $this->sql .= $this->filter->getOrderFilter() ? : '';
