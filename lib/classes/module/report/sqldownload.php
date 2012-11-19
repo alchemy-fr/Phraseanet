@@ -11,12 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @package     module_report
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class module_report_sqldownload extends module_report_sql implements module_report_sqlReportInterface
 {
     protected $restrict = false;
@@ -31,144 +25,97 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
     public function buildSql()
     {
-        $report_filters = $this->filter->getReportFilter();
-        $record_filters = $this->filter->getRecordFilter() ? : array('sql'    => '', 'params' => array());
-        $this->params = array_merge($report_filters['params'], $record_filters['params']);
+        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql'         => false);
+        $this->params = array_merge(array(), $filter['params']);
 
         if ($this->groupby == false) {
             $this->sql = "
-        SELECT
-         log.user,
-         log.site,
-         log.societe,
-         log.pays,
-         log.activite,
-         log.fonction,
-         log.usrid,
-         record.coll_id,
-         log_docs.date AS ddate,
-         log_docs.id,
-         log_docs.log_id,
-         log_docs.record_id,
-         log_docs.final,
-         log_docs.comment
-       FROM log FORCE INDEX (date_site)
-        INNER JOIN log_docs ON (log.id = log_docs.log_id)
-        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-        INNER JOIN record ON (log_docs.record_id = record.record_id)
-       WHERE ";
+            SELECT DISTINCT(log.log_id), log.user, log.societe, log.pays, log.activite,
+            log.fonction, log.usrid, log_docs.date AS ddate, log_docs.record_id, log_docs.final, log_docs.comment
+            FROM log_docs
+            INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)
+            INNER JOIN log_colls FORCE INDEX (couple)  ON (log.id = log_colls.log_id)
+            WHERE (" .$filter['sql'] . ") AND (log_docs.action = 'download' OR log_docs.action = 'mail')";
 
-            $this->sql .= $report_filters['sql'] ? : '';
-
-            $this->sql .= ' AND ( log_docs.action = \'download\' OR log_docs.action = \'mail\')';
-            if ($this->restrict)
-                $this->sql .= ' AND ( log_docs.final = "document" OR log_docs.final = "preview")';
-            $this->sql .= empty($record_filters['sql']) ? '' : ' AND ( ' . $record_filters['sql'] . ' )';
-
-            $this->sql .= $this->filter->getOrderFilter() ? : '';
-
-            $stmt = $this->connbas->prepare($this->sql);
-            $stmt->execute($this->params);
-            $this->total_row = $stmt->rowCount();
-            $stmt->closeCursor();
-
-            $this->sql .= $this->filter->getLimitFilter() ? : '';
+            if ($this->restrict) {
+                $this->sql .= ' AND (log_docs.final = "document" OR log_docs.final = "preview")';
+            }
         } else {
             $name = $this->groupby;
             $field = $this->getTransQuery($this->groupby);
 
             if ($name == 'record_id' && $this->on == 'DOC') {
                 $this->sql = '
-             SELECT
-                TRIM( ' . $field . ' ) AS ' . $name . ',
-                SUM(1) AS telechargement,
-                record.coll_id,
-                log_docs.final,
-                log_docs.comment,
-                subdef.size,
-                subdef.file,
-                subdef.mime
-             FROM log FORCE INDEX (date_site)
-                INNER JOIN log_docs ON (log.id = log_docs.log_id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                INNER JOIN record ON (log_docs.record_id = record.record_id)
-                INNER JOIN subdef ON (log_docs.record_id = subdef.record_id AND subdef.name = log_docs.final)
-             WHERE
-            ';
+                SELECT ' . $name . ', SUM(1) AS telechargement, tt.comment, tt.size, tt.file, tt.mime, tt.final
+                FROM (
+                   SELECT DISTINCT(log.id), TRIM( ' . $field . ' ) AS ' . $name . ', log_docs.comment, subdef.size, subdef.file, subdef.mime, log_docs.final
+                   FROM log FORCE INDEX (date_site)
+                   INNER JOIN log_docs ON (log.id = log_docs.log_id)
+                   INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                   INNER JOIN record ON (log_docs.record_id = record.record_id)
+                   INNER JOIN subdef ON (log_docs.record_id = subdef.record_id)';
             } elseif ($this->on == 'DOC') {
                 $this->sql = '
-                SELECT
-                    TRIM(' . $field . ') AS ' . $name . ',
-                    SUM(1) AS telechargement
-                FROM log FORCE INDEX (date_site)
+                SELECT ' . $name . ', SUM(1) AS telechargement
+                FROM (
+                    SELECT DISTINCT(log.id), TRIM(' . $field . ') AS ' . $name . '
+                    FROM log FORCE INDEX (date_site)
                     INNER JOIN log_docs ON (log.id = log_docs.log_id)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     INNER JOIN record ON (log_docs.record_id = record.record_id)
-                    INNER JOIN subdef ON ( log_docs.record_id = subdef.record_id AND subdef.name = log_docs.final)
-                WHERE';
+                    INNER JOIN subdef ON ( log_docs.record_id = subdef.record_id)';
             } else {
-
                 $this->sql = '
-                SELECT
-                    TRIM( ' . $this->getTransQuery($this->groupby) . ') AS ' . $name . ',
-                    SUM(1) AS nombre
-                FROM log FORCE INDEX (date_site)
+                SELECT ' . $name . ', SUM(1) AS nombre
+                FROM (
+                    SELECT DISTINCT(log.id), TRIM( ' . $this->getTransQuery($this->groupby) . ') AS ' . $name . '
+                    FROM log FORCE INDEX (date_site)
                     INNER JOIN log_docs ON (log.id = log_docs.log_id)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                     INNER JOIN record ON (log_docs.record_id = record.record_id)
-                    INNER JOIN subdef ON (record.record_id = subdef.record_id AND subdef.name = "document")
-                WHERE ';
+                    INNER JOIN subdef ON (record.record_id = subdef.record_id)';
             }
 
-            $this->sql .= $report_filters['sql'];
-
-            $this->sql .= ' AND ( log_docs.action = \'download\' OR log_docs.action = \'mail\')';
-
-            $this->sql .= empty($record_filters['sql']) ? '' : ' AND ( ' . $record_filters['sql'] . ' )';
-
+            $this->sql .= ' WHERE (subdef.name = log_docs.final) AND ' . $filter['sql'] . ' ';
+            $this->sql .= 'AND ( log_docs.action = \'download\' OR log_docs.action = \'mail\') ';
             $this->sql .= $this->on == 'DOC' ? 'AND subdef.name =  \'document\' ' : '';
-
-            $this->sql .= ' GROUP BY ' . $this->groupby;
-
-            $this->sql .= ( $name == 'record_id' && $this->on == 'DOC') ? ' , final' : '';
-
-            if ($this->filter->getOrderFilter())
-                $this->sql .= $this->filter->getOrderFilter();
-
-            $stmt = $this->connbas->prepare($this->sql);
-            $stmt->execute($this->params);
-            $this->total = $stmt->rowCount();
-            $stmt->closeCursor();
-
-            $this->sql .= $this->filter->getLimitFilter() ? : '';
+            $this->sql .= ') as tt';
+            $this->sql .= ' GROUP BY ' . $name . ' ' . ($name == 'record_id' && $this->on == 'DOC' ? ', final' : '');
         }
+
+        $stmt = $this->connbas->prepare($this->sql);
+        $stmt->execute($this->params);
+        $this->total = $stmt->rowCount();
+        $stmt->closeCursor();
+
+        $this->sql .= $this->filter->getOrderFilter() ? : '';
+        $this->sql .= $this->filter->getLimitFilter() ? : '';
 
         return $this;
     }
 
     public function sqlDistinctValByField($field)
     {
-        $report_filters = $this->filter->getReportFilter();
-        $params = array_merge($report_filters['params']);
-        $this->params = $params;
+        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql'         => false);
+        $this->params = array_merge(array(), $filter['params']);
 
-        $sql = '
-            SELECT  DISTINCT( ' . $this->getTransQuery($field) . ' ) AS val
-            FROM log FORCE INDEX (date_site)
-                INNER JOIN log_docs ON (log.id = log_docs.log_id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                INNER JOIN record ON (log_docs.record_id = record.record_id)
-                INNER JOIN subdef ON (log_docs.record_id = subdef.record_id)
-            WHERE ';
+        $this->sql = '
+            SELECT DISTINCT(tt.val)
+            FROM (
+                SELECT DISTINCT(log.id), ' . $this->getTransQuery($field) . ' AS val
+                FROM log FORCE INDEX (date_site)
+                    INNER JOIN log_docs ON (log.id = log_docs.log_id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                    INNER JOIN record ON (log_docs.record_id = record.record_id)
+                    INNER JOIN subdef ON (log_docs.record_id = subdef.record_id)
+                WHERE (' . $filter['sql'] . ')
+                AND (log_docs.action = "download" OR log_docs.action = "mail")' .
+                ($this->on == 'DOC' ? ' AND subdef.name =  "document"' : '') .
+            ') AS tt';
 
-        $sql .= $report_filters['sql'];
-        $sql .= ' AND (log_docs.action = ' .
-            '\'download\'OR log_docs.action = \'mail\')';
+        $this->sql .= $this->filter->getOrderFilter() ? : '';
+        $this->sql .= $this->filter->getLimitFilter() ? : '';
 
-        $sql .= $this->on == 'DOC' ? 'AND subdef.name =  \'document\'' : '';
-        $sql .= $this->filter->getOrderFilter() ? : '';
-        $sql .= $this->filter->getLimitFilter() ? : '';
-
-        return array('sql'    => $sql, 'params' => $params);
+        return array('sql'    => $this->sq, 'params' => $this->params);
     }
 }

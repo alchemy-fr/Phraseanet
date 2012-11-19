@@ -121,12 +121,6 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $detailDl);
     }
 
-    public function push($report)
-    {
-        $push = $report->getPush();
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $push);
-    }
-
     public function topTenUser($report, $sbasid, $colllist)
     {
         $result = $report->topTenUser(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);

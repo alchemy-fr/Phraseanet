@@ -11,12 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @package     module_report
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class module_report_sqlquestion extends module_report_sql implements module_report_sqlReportInterface
 {
 
@@ -27,52 +21,38 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
 
     public function buildSql()
     {
-        $params = array();
-        $report_filter = $this->filter->getReportFilter();
-        $params = array_merge($params, $report_filter['params']);
-        $this->params = $params;
+        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql'         => false);
+        $this->params = array_merge(array(), $filter['params']);
 
         if ($this->groupby == false) {
             $this->sql ="
-            SELECT
-            log_search.date ddate,
-            search,
-            usrid,
-            user,
-            pays,
-            societe,
-            activite,
-            fonction
-            FROM (`log_search`)
-                INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)";
-
-            $this->sql .= " WHERE " . $report_filter['sql'];
-
-            $this->sql .= $this->filter->getOrderFilter() ? : '';
+            SELECT DISTINCT(log.id), log_search.date ddate, log_search.search, log.usrid, log.user, log.pays, log.societe, log.activite, log.fonction
+            FROM log_search
+            INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
+            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id) WHERE (" . $filter['sql'] .")";
 
             $stmt = $this->connbas->prepare($this->sql);
-            $stmt->execute($params);
+            $stmt->execute($this->params);
             $this->total_row = $stmt->rowCount();
             $stmt->closeCursor();
 
+            $this->sql .= $this->filter->getOrderFilter() ? : '';
             $this->sql .= $this->filter->getLimitFilter() ? : '';
         } else {
             $this->sql = "
-            SELECT
-                TRIM(" . $this->getTransQuery($this->groupby) . ") as " . $this->groupby . ",
-                SUM(1) as nb
-            FROM (`log_search`)
+            SELECT " . $this->groupby . ", SUM(1) AS nb
+            FROM (
+                SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "
+                FROM (`log_search`)
                 INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
                 INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            ";
-
-            $this->sql .= " WHERE " . $report_filter['sql'];
-            $this->sql .= " GROUP BY " . $this->groupby;
-            $this->sql .= " ORDER BY nb DESC";
+                WHERE (" . $filter['sql'] .")
+            ) AS tt
+            GROUP BY " . $this->groupby ."
+            ORDER BY nb DESC";
 
             $stmt = $this->connbas->prepare($this->sql);
-            $stmt->execute($params);
+            $stmt->execute($this->params);
             $this->total_row = $stmt->rowCount();
             $stmt->closeCursor();
         }
@@ -82,22 +62,20 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
 
     public function sqlDistinctValByField($field)
     {
-        $params = array();
-        $report_filter = $this->filter->getReportFilter();
-        $params = array_merge($params, $report_filter['params']);
+        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql'         => false);
+        $this->params = array_merge(array(), $filter['params']);
 
-        $sql = "
-            SELECT DISTINCT(" . $this->getTransQuery($field) . ") as val
-            FROM (`log_search`)
+        $this->sql = "
+            SELECT DISTINCT(tt.val)
+            FROM (
+                SELECT DISTINCT(log.id), " . $this->getTransQuery($field) . " AS val
+                FROM (`log_search`)
                 INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
                 INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            ";
+                WHERE (" . $filter['sql'] . ")
+            ) as tt
+            ORDER BY tt.val ASC";
 
-        if ($report_filter['sql'])
-            $sql .= ' WHERE ' . $report_filter['sql'];
-
-        $sql .= " ORDER BY " . $this->getTransQuery($field) . " ASC";
-
-        return array('sql'    => $sql, 'params' => $params);
+        return array('sql'    => $this->sql, 'params' => $this->params);
     }
 }

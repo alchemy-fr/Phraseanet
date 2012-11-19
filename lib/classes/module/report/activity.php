@@ -11,12 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @package     module_report
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class module_report_activity extends module_report
 {
     /**
@@ -100,28 +94,22 @@ class module_report_activity extends module_report
         $this->title = _('report:: activite par heure');
 
         $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
-        $conn = $s->getConnBas();
 
-        $params = array();
-        $date_filter = $filter->getDateFilter();
-        $params = array_merge($params, $date_filter['params']);
-        $coll_filter = $filter->getCollectionFilter();
-        $params = array_merge($params, $coll_filter['params']);
-        $site_filter = $filter->getGvSitFilter();
-        $params = array_merge($params, $site_filter['params']);
+        $filter = $s->getFilters()->getReportFilter();
+        $params = array_merge(array(), $filter['params']);
 
         $sql = "
-                SELECT DATE_FORMAT( log.date, '%k' ) AS heures, SUM(1) AS nb
-                FROM log FORCE INDEX (date_site)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE " . $date_filter['sql'] . "
-                AND " . $coll_filter['sql'] . "
-                AND " . $site_filter['sql'] . "
-                GROUP BY heures
-                ORDER BY heures ASC";
+        SELECT tt.heures, SUM(1) AS nb
+        FROM (
+            SELECT DISTINCT(log.id), DATE_FORMAT( log.date, '%k' ) AS heures
+            FROM log FORCE INDEX (date_site)
+            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+            WHERE (" . $filter['sql'] . ")
+        ) AS tt
+        GROUP BY tt.heures
+        ORDER BY tt.heures ASC";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -133,22 +121,23 @@ class module_report_activity extends module_report
         foreach ($rs as $row) {
             $row['heures'] = (string) $row['heures'];
             $res[$row['heures']] = round(($row['nb'] / 24), 2);
-            if ($res[$row['heures']] < 1)
+
+            if ($res[$row['heures']] < 1) {
                 $res[$row['heures']] = number_format($res[$row['heures']], 2);
-            else
+            } else {
                 $res[$row['heures']] = (int) $res[$row['heures']];
+            }
         }
 
         $this->result[] = $res;
         //calculate prev and next page
         $this->calculatePages($rs);
-        //do we display navigator ?
+        //display navigator
         $this->setDisplayNav();
         //set report
         $this->setReport();
 
-        $this->report['legend'] = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-            13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
+        $this->report['legend'] = range(0, 23);
 
         return $this->report;
     }
@@ -164,37 +153,28 @@ class module_report_activity extends module_report
         $result = array();
 
         $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
-        $conn = $s->getConnBas();
 
-        $params = array(':main_value' => $value);
-        $date_filter = $filter->getDateFilter();
-        $params = array_merge($params, $date_filter['params']);
-        $coll_filter = $filter->getCollectionFilter();
-        $params = array_merge($params, $coll_filter['params']);
-        $site_filter = $filter->getGvSitFilter();
-        $params = array_merge($params, $site_filter['params']);
+        $filter = $s->getFilters()->getReportFilter();
+        $params = array_merge(array(), $filter['params']);
 
         $sql = "
-                SELECT DATE_FORMAT(log_search.date,'%Y-%m-%d %H:%i:%S') as date ,
-                log_search.search ,log_search.results
-                FROM (log_search)
-                    INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE log_search.date > " . $date_filter['sql'] . "
-                AND log.`" . $what . "` = :main_value
-                AND " . $site_filter['sql'] . "
-                AND " . $coll_filter['sql'] . "
-                ORDER BY date";
+        SELECT DATE_FORMAT(log_search.date,'%Y-%m-%d %H:%i:%S') AS date ,
+        log_search.search ,log_search.results
+        FROM (log_search)
+            INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
+            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+        WHERE (" . $filter['sql'] . ")
+        AND log.`" . $what . "` = :main_value
+        ORDER BY date ";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
-        $s->setTotalrows($stmt->rowCount());
+        $sql->setTotalrows($stmt->rowCount());
         $stmt->closeCursor();
 
         $sql .= $filter->getLimitFilter();
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -204,9 +184,10 @@ class module_report_activity extends module_report
         $i = 0;
 
         foreach ($rs as $row) {
-            foreach ($this->champ as $key => $value)
+            foreach ($this->champ as $value) {
                 $result[$i][$value] = $row[$value];
-            $i ++;
+            }
+            $i++;
         }
 
         $this->title = _('report:: questions');
@@ -226,39 +207,28 @@ class module_report_activity extends module_report
         $this->report['value2'] = array();
 
         $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
-        $conn = $s->getConnBas();
+        $filter = $s->getFilters()->getReportFilter();
+        $params = array_merge(array(), $filter['params']);
 
-        $i = 0;
-        ($no_answer) ? $this->title = _('report:: questions sans reponses') :
-                $this->title = _('report:: questions les plus posees');
-
-        $params = array();
-        $date_filter = $filter->getDateFilter();
-        $params = array_merge($params, $date_filter['params']);
-        $coll_filter = $filter->getCollectionFilter();
-        $params = array_merge($params, $coll_filter['params']);
+        ($no_answer) ? $this->title = _('report:: questions sans reponses') : $this->title = _('report:: questions les plus posees');
 
         $sql = "
-                SELECT TRIM(log_search.search) as search,
-                    SUM(1) as nb,
-                    ROUND(avg(results)) as nb_rep
-                FROM (log_search)
-                    INNER JOIN log FORCE INDEX (date_site) ON (log_search.log_id = log.id)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE " . $date_filter['sql'] . "
-                AND log_search.search != 'all'
-                AND (" . $coll_filter['sql'] . ")";
+        SELECT TRIM(tt.search) AS search, SUM(1) AS nb, ROUND(avg(tt.results)) AS nb_rep
+        FROM (
+            SELECT DISTINCT(log.id), log_search.search AS search, results
+            FROM (log_search)
+                INNER JOIN log FORCE INDEX (date_site) ON (log_search.log_id = log.id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+            WHERE (" . $filter['sql'] . ")
+            AND log_search.search != 'all' " .
+            ($no_answer ? ' AND log_search.results = 0 ' : '') . "
+        ) AS tt
+        GROUP BY tt.search
+        ORDER BY nb DESC";
 
-        ($no_answer) ? $sql .= " AND log_search.results = 0 " : "";
+        $sql .= !$no_answer ? ' LIMIT ' . $this->nb_top : '';
 
-        $sql .= "
-                GROUP BY log_search.search
-                ORDER BY nb DESC";
-
-        ( ! $no_answer) ? $sql .= " LIMIT 0," . $this->nb_top : "";
-
-        $stmt = $conn->prepare($sql);
+        $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -266,10 +236,14 @@ class module_report_activity extends module_report
         $this->setChamp($rs);
         $this->setDisplay($tab);
 
+        $i = 0;
         foreach ($rs as $row) {
-            foreach ($this->champ as $key => $value)
+            foreach ($this->champ as $value) {
                 $this->result[$i][$value] = $row[$value];
-            $i ++;
+            }
+
+            $i++;
+
             $this->report['legend'][] = $row['search'];
             $this->report['value'][] = $row['nb'];
             $this->report['value2'][] = $row['nb_rep'];
@@ -296,44 +270,27 @@ class module_report_activity extends module_report
     {
         $result = array();
         $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
-        $conn = $s->getConnBas();
-
+        $filter = $s->getFilters()->getReportFilter();
+        $params = array_merge(array(), $filter['params']);
         $databox = $this->app['phraseanet.appbox']->get_databox($this->sbas_id);
 
-        $params = array();
-        $date_filter = $filter->getDateFilter();
-        $params = array_merge($params, $date_filter['params']);
-        $coll_filter = $filter->getCollectionFilter();
-        $params = array_merge($params, $coll_filter['params']);
-        $site_filter = $filter->getGvSitFilter();
-        $params = array_merge($params, $site_filter['params']);
-        $user_filter = $filter->getUserIdFilter($usr);
-        $params = array_merge($params, $user_filter['params']);
-
         $sql = "
-                SELECT log_docs.record_id,
-                    log_docs.date, log_docs.final as objets
-                FROM (`log_docs`)
-                    INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                    INNER JOIN record ON (log_docs.record_id = record.record_id)
-                WHERE log_docs.action = 'download'
-                AND " . $date_filter['sql'] . "
-                AND " . $user_filter['sql'] . "
-                AND " . $site_filter['sql'] . "
-                AND (" . $coll_filter['sql'] . ")";
+        SELECT log_docs.record_id, log_docs.date, log_docs.final AS objets
+        FROM (`log_docs`)
+        INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)
+        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+        INNER JOIN record ON (log_docs.record_id = record.record_id)
+        WHERE (". $filter['sql'] .") AND log_docs.action = 'download'
+        ORDER BY date DESC";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
-        $s->setTotalrows($stmt->rowCount());
+        $sql->setTotalrows($stmt->rowCount());
         $stmt->closeCursor();
 
-        $sql .= "
-                ORDER BY date DESC";
-        $sql .= $filter->getLimitFilter();
+        $sql .= $filter->getLimitFilter() ?: '';
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -341,22 +298,23 @@ class module_report_activity extends module_report
         $login = User_Adapter::getInstance($usr, $this->app)->get_display_name();
 
         $this->setChamp($rs);
-        ($config) ? $this->setConfigColumn($config) :
-                $this->initDefaultConfigColumn($this->champ);
-        $i = 0;
 
+        $config ? $this->setConfigColumn($config) : $this->initDefaultConfigColumn($this->champ);
+
+        $i = 0;
         foreach ($rs as $row) {
             $record = $databox->get_record($row['record_id']);
 
-            foreach ($this->champ as $key => $value) {
+            foreach ($this->champ as $value) {
                 $result[$i][$value] = $row[$value];
             }
 
             $result[$i]['titre'] = $record->get_title();
-
             $i ++;
         }
+
         $this->title = sprintf(_('report:: Telechargement effectue par l\'utilisateur %s'), $login);
+
         $this->setResult($result);
 
         return $this->result;
@@ -372,39 +330,27 @@ class module_report_activity extends module_report
         $this->title = _('report:: telechargements par jour');
 
         $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
-        $conn = $s->getConnBas();
-
-        $params = array();
-        $date_filter = $filter->getDateFilter();
-        $params = array_merge($params, $date_filter['params']);
-        $coll_filter = $filter->getCollectionFilter();
-        $params = array_merge($params, $coll_filter['params']);
-        $site_filter = $filter->getGvSitFilter();
-        $params = array_merge($params, $site_filter['params']);
-        $record_filter = $filter->getUserFilter();
-        if ($record_filter)
-            $params = array_merge($params, $record_filter['params']);
+        $filter = $s->getFilters()->getReportFilter();
+        $params = array_merge(array(), $filter['params']);
 
         $sql = "
-            SELECT
-              log_docs.date
-             AS ddate,
-                 final
-            FROM (log_docs)
-                INNER JOIN record ON (record.record_id = log_docs.record_id)
-                INNER JOIN log FORCE INDEX (date_site) ON (" . $site_filter['sql'] . " AND log.id = log_docs.log_id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                LEFT JOIN subdef AS s ON (s.record_id = log_docs.record_id AND s.name = log_docs.final)
-            WHERE " . $date_filter['sql'] . "
-                AND (log_docs.final != 'caption')
-                AND log_docs.action =  'download'
-                AND (" . $coll_filter['sql'] . ")";
-        if ($record_filter['sql'])
-            $sql .= "AND (" . $record_filter['sql'] . ")";
-        $sql .= ' ORDER BY log_docs.date DESC';
+            SELECT tt.record_id, DATE_FORMAT(tt.the_date, GET_FORMAT(DATE, 'INTERNAL')) AS ddate, tt.final, SUM(1) AS nb
+            FROM (
+                SELECT DISTINCT(log.id), log_docs.date AS the_date, log_docs.final, log_docs.record_id
+                FROM (log_docs)
+                    INNER JOIN record ON (record.record_id = log_docs.record_id)
+                    INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                WHERE (" . $filter['sql'] . ")
+                    AND (log_docs.action =  'download' OR log_docs.action =  'mail')
+                    AND (log_docs.final = 'preview' OR log_docs.final = 'document')
+            ) AS tt
+            LEFT JOIN subdef AS s ON (s.record_id = tt.record_id)
+            WHERE s.name = tt.final
+            GROUP BY tt.final, ddate
+            ORDER BY tt.the_date DESC";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -431,16 +377,16 @@ class module_report_activity extends module_report
             }
 
             if ($row['final'] == 'document') {
-                $this->result[$i]['document'] += 1;
-                $total['tot_doc'] += 1;
+                $this->result[$i]['document'] += $row['nb'];
+                $total['tot_doc'] += $row['nb'];
             } else {
-                $this->result[$i]['preview'] += 1;
-                $total['tot_prev'] += 1;
+                $this->result[$i]['preview'] += $row['nb'];
+                $total['tot_prev'] += $row['nb'];
             }
 
-            $this->result[$i]['total'] += 1;
+            $this->result[$i]['total'] += $row['nb'];
 
-            $total['tot_dl'] += 1;
+            $total['tot_dl'] += $row['nb'];
         }
 
         $nb_row = $i + 1;
@@ -473,39 +419,31 @@ class module_report_activity extends module_report
         }
 
         $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
-        $conn = $s->getConnBas();
+        $filter = $s->getFilters()->getReportFilter();
+        $params = array_merge(array(), $filter['params']);
 
-        $params = array();
-
-        $date_filter = $filter->getDateFilter();
-        $params = array_merge($params, $date_filter['params']);
-
-        $coll_filter = $filter->getCollectionFilter();
-        $params = array_merge($params, $coll_filter['params']);
-        $site_filter = $filter->getGvSitFilter();
-        $params = array_merge($params, $site_filter['params']);
         $this->req = "
-                SELECT  DISTINCT(log." . $on . ") as " . $on . ",
-                    usrid,
-                    SUM(1) as connexion
+            SELECT SUM(1) AS connexion, tt.user, tt.usrid FROM (
+                SELECT
+                    DISTINCT(log.id),
+                    log." . $on . " AS " . $on . ",
+                    log.usrid
                 FROM log FORCE INDEX (date_site)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                 WHERE log.user != 'API'
-                AND " . $site_filter['sql'] . "
-                AND " . $date_filter['sql'] . "
-                AND " . $coll_filter['sql'] . "
-                GROUP BY " . $on . "
-                ORDER BY connexion DESC ";
+                AND (" . $filter['sql'] . ")
+            ) AS tt
+            GROUP BY tt.usrid
+            ORDER BY connexion DESC ";
 
-        $stmt = $conn->prepare($this->req);
+        $stmt = $s->getConnBas()->prepare($this->req);
         $stmt->execute($params);
         $s->setTotalrows($stmt->rowCount());
         $stmt->closeCursor();
 
         $this->enable_limit ? $this->req .= "LIMIT 0," . $this->nb_record : "";
 
-        $stmt = $conn->prepare($this->req);
+        $stmt = $s->getConnBas()->prepare($this->req);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -565,44 +503,30 @@ class module_report_activity extends module_report
     {
         empty($on) ? $on = "user" : ""; //by default always report on user
 
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
-        $conn = $s->getConnBas();
-
         //set title
         $this->title = _('report:: Detail des telechargements');
 
-        $params = array();
-        $date_filter = $filter->getDateFilter();
-        $params = array_merge($params, $date_filter['params']);
-        $coll_filter = $filter->getCollectionFilter();
-        $params = array_merge($params, $coll_filter['params']);
-        $site_filter = $filter->getGvSitFilter();
-        $params = array_merge($params, $site_filter['params']);
-        $record_filter = $filter->getRecordFilter();
-        $params = array_merge($params, $record_filter['params']);
+        $s = new module_report_sql($this->app, $this);
+        $filter = $s->getFilters()->getReportFilter();
+        $params = array_merge(array(), $filter['params']);
 
         $sql = "
-                SELECT
-                    usrid,
-                    TRIM(" . $on . ") as " . $on . ",
-                    final, sum(1) as nb,
-                    sum(size) as poid
-                FROM (log_docs as d)
-                    INNER JOIN log FORCE INDEX (date_site) ON (" . $site_filter['sql'] . "
-                        AND log.id = d.log_id
-                        AND " . $date_filter['sql'] . ")
+            SELECT tt.usrid, TRIM(" . $on . ") AS " . $on . ", tt.final, sum(1) AS nb, sum(size) AS poid
+            FROM (
+                SELECT DISTINCT(log.id), TRIM(" . $on . ") AS " . $on . ", log_docs.record_id, log_docs.final, log.usrid
+                FROM log_docs
+                    INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                    INNER JOIN record ON record.record_id = d.record_id
-                    LEFT JOIN subdef as s on ((d.action = 'download' OR d.action = 'mail')
-                        AND s.record_id=d.record_id and s.name=d.final
-                    )
-                WHERE (" . $coll_filter['sql'] . ")
-                    AND (" . $record_filter['sql'] . ")
-                GROUP BY " . $on . ", final, usrid
-                WITH rollup";
+                    INNER JOIN record ON (record.record_id = log_docs.record_id)
+                WHERE (" . $filter['sql'] . ")
+                AND (log_docs.action = 'download' OR log_docs.action = 'mail')
+            ) AS tt
+            LEFT JOIN subdef FORCE INDEX (unicite) ON (tt.record_id = subdef.record_id)
+            WHERE subdef.name = tt.final
+            GROUP BY " . $on . ", usrid
+            ORDER BY nb DESC;";
 
-        $stmt = $conn->prepare($sql);
+        $stmt =  $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -692,75 +616,6 @@ class module_report_activity extends module_report
         return $this->report;
     }
 
-    public function getPush($tab = false)
-    {
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
-        $conn = $s->getConnBas();
-        $push = array();
-
-        $params = array();
-        $date_filter = $filter->getDateFilter();
-        $params = array_merge($params, $date_filter['params']);
-        $coll_filter = $filter->getCollectionFilter();
-        $params = array_merge($params, $coll_filter['params']);
-        $site_filter = $filter->getGvSitFilter();
-        $params = array_merge($params, $site_filter['params']);
-        $record_filter = $filter->getRecordFilter();
-        $params = array_merge($params, $record_filter['params']);
-
-        $sql = "
-            SELECT log.usrid, log.user , d.final as getter,  d.record_id, d.date, s.*
-            FROM (log_docs as d)
-                INNER JOIN log FORCE INDEX (date_site) ON (" . $site_filter['sql'] . "
-                    AND log.id = d.log_id
-                    AND " . $date_filter['sql'] . ")
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                INNER JOIN record ON (record.record_id = d.record_id)
-                LEFT JOIN subdef as s ON (s.record_id=d.record_id and s.name='document')
-            WHERE ((" . $coll_filter['sql'] . ") AND " . $record_filter['sql'] . " AND d.action='push')
-        ";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $this->setChamp($rs);
-        $this->initDefaultConfigColumn($this->champ);
-
-        $i = 0;
-        foreach ($rs as $row) {
-            foreach ($this->champ as $key => $value) {
-                $this->result[$i][$value] = $row[$value];
-                if ($value == "getter") {
-                    try {
-                        $user = User_Adapter::getInstance($row[$value], $this->app);
-                        $this->result[$i][$value] = $user->get_display_name();
-                    } catch (Exception $e) {
-
-                    }
-                } elseif ($value == "size") {
-                    $this->result[$i][$value] = p4string::format_octets($row[$value]);
-                } elseif ($value == "date") {
-                    $date_obj = new DateTime($row[$value]);
-                    $this->result[$i][$value] = $this->app['date-formatter']->getPrettyString($date_obj);
-                }
-            }
-            $i ++;
-        }
-
-        $this->total = sizeof($this->result);
-        //calculate prev and next page
-        $this->calculatePages($rs);
-        //do we display navigator ?
-        $this->setDisplayNav();
-        //set report
-        $this->setReport();
-
-        return($this->report);
-    }
-
     public static function topTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
@@ -778,19 +633,20 @@ class module_report_activity extends module_report
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
         $params = array_merge($params, $collfilter['params']);
 
-        $sql = "
-                SELECT log.usrid, user, final, sum(1) AS nb, sum(size) AS poid
-                FROM (log_docs AS log_date)
-                    INNER JOIN log FORCE INDEX (date_site) ON (log.site = :site_id
-                        AND log.id = log_date.log_id
-                        AND " . $datefilter['sql'] . ")
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                    LEFT JOIN subdef AS s ON (log_date.action = 'download'
-                        AND s.record_id = log_date.record_id
-                        AND s.name = log_date.final
-                        AND (" . $collfilter['sql'] . "))
-                GROUP BY user, final
-                WITH rollup";
+        $sql = "SELECT tt.usrid, tt.user, tt.final, tt.record_id, SUM(1) AS nb, SUM(size) AS poid
+                FROM (
+                    SELECT DISTINCT(log.id), log.usrid, user, final, log_date.record_id
+                    FROM (log_docs AS log_date)
+                        INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_date.log_id)
+                        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                        WHERE log.site = :site_id
+                        AND log_date.action = 'download'
+                        AND (" . $datefilter['sql'] . ")
+                        AND (" . $collfilter['sql'] . ")
+                ) AS tt
+                LEFT JOIN subdef AS s ON (s.record_id = tt.record_id)
+                WHERE s.name = tt.final
+                GROUP BY tt.user, tt.final";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -855,12 +711,15 @@ class module_report_activity extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
-                SELECT log_date.id, HOUR(log_date.date) as heures
-                FROM log as log_date FORCE INDEX (date_site)
+                SELECT tt.id, HOUR(tt.heure) AS heures
+                FROM (
+                    SELECT DISTINCT(log_date.id), log_date.date AS heures
+                    FROM log AS log_date FORCE INDEX (date_site)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
-                WHERE " . $datefilter['sql'] . "
-                AND " . $collfilter['sql'] . "
-                AND log_date.site = :site_id";
+                    WHERE " . $datefilter['sql'] . "
+                    AND " . $collfilter['sql'] . "
+                    AND log_date.site = :site_id
+                ) AS tt";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -896,15 +755,16 @@ class module_report_activity extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
-            SELECT DISTINCT (
-                DATE_FORMAT( log_date.date, '%Y-%m-%d' )
-                ) AS ddate, COUNT( DATE_FORMAT( log_date.date, '%d' ) ) AS activity
-                FROM log as log_date FORCE INDEX (date_site) INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
+            SELECT tt.ddate, COUNT( DATE_FORMAT( tt.ddate, '%d' ) ) AS activity
+            FROM (
+                SELECT DISTINCT(log_date.id), DATE_FORMAT( log_date.date, '%Y-%m-%d' ) AS ddate
+                FROM log AS log_date FORCE INDEX (date_site) INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
                 WHERE " . $datefilter['sql'] . "
                 AND log_date.site = :site_id
                 AND (" . $collfilter['sql'] . ")
-                GROUP by ddate
-                ORDER BY ddate ASC";
+            ) AS tt
+            GROUP by  tt.ddate
+            ORDER BY  tt.ddate ASC";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -936,14 +796,17 @@ class module_report_activity extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
-                SELECT log_date.usrid, log_date.user, sum(1) AS nb
-                FROM (`log_search`)
-                    INNER JOIN log as log_date FORCE INDEX (date_site) ON (log_search.log_id = log_date.id)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
-                WHERE " . $datefilter['sql'] . "
-                AND log_date.site = :site_id
-                AND (" . $collfilter['sql'] . ")
-                GROUP BY log_date.usrid
+                SELECT tt.usrid, tt.user, sum(1) AS nb
+                FROM (
+                    SELECT DISTINCT(log_date.id), log_date.usrid, log_date.user
+                    FROM (`log_search`)
+                        INNER JOIN log AS log_date FORCE INDEX (date_site) ON (log_search.log_id = log_date.id)
+                        INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
+                    WHERE " . $datefilter['sql'] . "
+                    AND log_date.site = :site_id
+                    AND (" . $collfilter['sql'] . ")
+                ) AS tt
+                GROUP BY tt.usrid
                 ORDER BY nb DESC";
 
         $stmt = $conn->prepare($sql);
@@ -973,18 +836,17 @@ class module_report_activity extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
-            SELECT
-                TRIM(log_search.search) as question,
-                log_date.usrid,
-                log_date.user,
-                sum(1) AS nb
-            FROM (`log_search`)
-                INNER JOIN log as log_date FORCE INDEX (date_site) ON (log_search.log_id = log_date.id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
-            WHERE " . $datefilter['sql'] . "
-            AND log_date.site = :site_id
-            AND (" . $collfilter['sql'] . ")
-            GROUP BY log_search.search
+            SELECT TRIM(tt.search) AS question, tt.usrid, tt.user, SUM(1) AS nb
+            FROM (
+                SELECT DISTINCT(log_date.id), log_search.search, log_date.usrid, log_date.user
+                FROM (`log_search`)
+                    INNER JOIN log AS log_date FORCE INDEX (date_site) ON (log_search.log_id = log_date.id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
+                WHERE " . $datefilter['sql'] . "
+                AND log_date.site = :site_id
+                AND (" . $collfilter['sql'] . ")
+            ) AS tt
+            GROUP BY tt.search
             ORDER BY nb DESC";
 
         $stmt = $conn->prepare($sql);
@@ -1015,12 +877,15 @@ class module_report_activity extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
-            SELECT referrer, COUNT(referrer) as nb_view
-            FROM (log_view)
-                INNER JOIN log as log_date FORCE INDEX (date_site) ON (log_view.log_id = log_date.id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
-            WHERE " . $datefilter['sql'] . "
-            AND (" . $collfilter['sql'] . ")
+            SELECT tt.referrer, SUM(1) AS nb_view
+            FROM (
+                SELECT DISTINCT(log_date.id), referrer
+                FROM (log_view)
+                    INNER JOIN log AS log_date FORCE INDEX (date_site) ON (log_view.log_id = log_date.id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
+                WHERE " . $datefilter['sql'] . "
+                AND (" . $collfilter['sql'] . ")
+            ) AS tt
             GROUP BY referrer
             ORDER BY nb_view DESC ";
 
@@ -1055,15 +920,16 @@ class module_report_activity extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
-            SELECT DISTINCT (
-            DATE_FORMAT( log_date.date, '%Y-%m-%d'  )
-            ) AS ddate, COUNT( DATE_FORMAT( log_date.date, '%d' ) ) AS activity
-            FROM (log_docs as log_date)
-                INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'
-            AND (" . $collfilter['sql'] . ")
-            GROUP BY ddate
+            SELECT tt.ddate, COUNT( DATE_FORMAT( tt.ddate, '%d' ) ) AS activity
+            FROM (
+                SELECT DISTINCT(log.id), DATE_FORMAT(log_date.date, '%Y-%m-%d') AS ddate
+                FROM (log_docs AS log_date)
+                    INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'
+                AND (" . $collfilter['sql'] . ")
+            ) AS tt
+            GROUP BY tt.ddate
             ORDER BY activity ASC ";
 
         $stmt = $conn->prepare($sql);
@@ -1089,15 +955,16 @@ class module_report_activity extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
-            SELECT DISTINCT (
-            DATE_FORMAT( log_date.date, '%Y-%m-%d' )
-            ) AS ddate, COUNT( DATE_FORMAT( log_date.date, '%d' ) ) AS activity
-            FROM (log_docs as log_date)
-                INNER JOIN log FORCE INDEX (date_sit) ON log_date.log_id = log.id
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            WHERE " . $datefilter['sql'] . " AND log_date.action = 'edit'
-            AND (" . $collfilter['sql'] . ")
-            GROUP BY ddate
+            SELECT tt.ddate, COUNT( DATE_FORMAT( tt.ddate, '%d' ) ) AS activity
+            FROM (
+                SELECT DISTINCT(log.id), DATE_FORMAT( log_date.date, '%Y-%m-%d') AS ddate
+                FROM (log_docs AS log_date)
+                    INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                WHERE " . $datefilter['sql'] . " AND log_date.action = 'edit'
+                AND (" . $collfilter['sql'] . ")
+            ) AS tt
+            GROUP BY tt.ddate
             ORDER BY activity ASC ";
 
         $stmt = $conn->prepare($sql);
@@ -1124,13 +991,16 @@ class module_report_activity extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
-            SELECT log.usrid, log.user, sum( 1 ) AS nb
-            FROM (log_docs as log_date)
+            SELECT tt.usrid, tt.user, sum( 1 ) AS nb
+            FROM (
+                SELECT DISTINCT(log.id), log.usrid, log.user
+                FROM (log_docs AS log_date)
                 INNER JOIN log FORCE INDEX (date_site) ON (log_date.log_id = log.id)
                 INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'
-            AND (" . $collfilter['sql'] . ")
-            GROUP BY log.usrid
+                WHERE " . $datefilter['sql'] . " AND log_date.action = 'add'
+                AND (" . $collfilter['sql'] . ")
+            ) AS tt
+            GROUP BY tt.usrid
             ORDER BY nb ASC ";
 
         $stmt = $conn->prepare($sql);

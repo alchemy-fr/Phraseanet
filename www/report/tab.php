@@ -876,7 +876,6 @@ function pushDoc(Application $app, $param, $twig)
         'record_id' => array("", 1, 1, 1, 1),
         'file' => array("", 1, 0, 1, 1),
         'mime' => array("", 1, 0, 1, 1),
-        'size' => array("", 1, 0, 1, 1)
     );
     $dl = new module_report_push($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
@@ -899,7 +898,6 @@ function addDoc(Application $app, $param, $twig)
         'record_id' => array("", 1, 1, 1, 1),
         'file' => array("", 1, 0, 1, 1),
         'mime' => array("", 1, 0, 1, 1),
-        'size' => array("", 1, 0, 1, 1)
     );
     $dl = new module_report_add($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
@@ -922,7 +920,6 @@ function ediDoc(Application $app, $param, $twig)
         'record_id' => array("", 1, 1, 1, 1),
         'file' => array("", 1, 0, 1, 1),
         'mime' => array("", 1, 0, 1, 1),
-        'size' => array("", 1, 0, 1, 1)
     );
     $dl = new module_report_edit($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
@@ -946,7 +943,6 @@ function validDoc(Application $app, $param, $twig)
         'record_id' => array("", 1, 1, 1, 1),
         'file' => array("", 1, 0, 1, 1),
         'mime' => array("", 1, 0, 1, 1),
-        'size' => array("", 1, 0, 1, 1)
     );
     $dl = new module_report_validate($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 

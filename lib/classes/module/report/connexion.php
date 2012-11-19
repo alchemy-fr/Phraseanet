@@ -11,12 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @package     module_report
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class module_report_connexion extends module_report
 {
     protected $cor_query = array(
@@ -151,9 +145,9 @@ class module_report_connexion extends module_report
         $finalfilter .= $collfilter['sql'] . ' AND ';
         $finalfilter .= 'log_date.site = :site_id';
 
-        $sql = "SELECT    COUNT(usrid) as nb
+        $sql = "SELECT COUNT(DISTINCT(log_date.id)) as nb
                 FROM log as log_date FORCE INDEX (date_site)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
                 WHERE " . $finalfilter;
 
         $stmt = $conn->prepare($sql);
