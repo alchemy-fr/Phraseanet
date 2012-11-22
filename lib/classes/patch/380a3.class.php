@@ -57,82 +57,64 @@ class patch_380a3 implements patchInterface
     public function apply(base $databox, Application $app)
     {
         $conn = $databox->get_connection();
-        $conn->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
-        // Count total rows from `log` table to process
-        $stmt = $conn->prepare('
-	        SELECT COUNT(l.id) as nb_row
-        	FROM log l
-        	LEFT JOIN log_colls lc ON (lc.log_id = l.id)
-        	WHERE (lc.log_id IS NULL)');
-        $stmt->execute();
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        unset($stmt);
 
-        $remainingRowsToProcess = (int) $row['nb_row'];
-        $failedRows = array();
+        try {
+            $removeProc = "DROP PROCEDURE IF EXISTS explode_log_table";
 
-        do {
-            unset($conn, $stmt);
-            $conn = $databox->get_connection();
-            // Fetch all missing rows from `log_colls` table
-            $sql = 'SELECT l.id, l.coll_list FROM log l LEFT JOIN log_colls lc ON (lc.log_id = l.id) WHERE (lc.log_id IS NULL) LIMIT 100';
-            $stmt = $conn->prepare($sql);
+            $stmt = $conn->prepare($removeProc);
             $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
             unset($stmt);
 
-            $sql = 'INSERT INTO log_colls (id, log_id, coll_id) VALUES (null, :log_id, :coll_id)';
-            $stmt = $conn->prepare($sql);
+            $procedure = "
+            CREATE PROCEDURE explode_log_table(bound VARCHAR(255))
+            BEGIN
+              DECLARE l_log_id INT UNSIGNED DEFAULT 0;
+              DECLARE l_coll_list TEXT;
+              DECLARE occurance INT DEFAULT 0;
+              DECLARE i INT DEFAULT 0;
+              DECLARE dest_coll_id INT;
+              DECLARE done INT DEFAULT 0;
+              DECLARE cur1 CURSOR FOR SELECT  l.id, l.coll_list FROM log l LEFT JOIN log_colls lc ON (lc.log_id = l.id) WHERE (lc.log_id IS NULL) AND coll_list != '';
+              DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+              OPEN cur1;
+                read_loop: LOOP
+                  FETCH cur1 INTO l_log_id, l_coll_list;
+                  IF done THEN
+                    LEAVE read_loop;
+                  END IF;
 
+                  SET occurance = (SELECT  LENGTH(l_coll_list) - LENGTH(REPLACE(l_coll_list, bound, ''))+1);
+                  SET i=1;
+              START TRANSACTION;
+                  WHILE i <= occurance DO
+                    SET dest_coll_id = (SELECT  REPLACE(SUBSTRING(SUBSTRING_INDEX(l_coll_list, bound, i), LENGTH(SUBSTRING_INDEX(l_coll_list, bound, i - 1)) + 1), ',', ''));
+                    IF dest_coll_id > 0 THEN
+                      INSERT INTO log_colls VALUES (null, l_log_id, dest_coll_id);
+                END IF;
+                    SET i = i + 1;
+                  END WHILE;
+              COMMIT;
+                END LOOP;
+              CLOSE cur1;
+            END;";
 
-            $transaction = false;
-            foreach ($rs as $row) {
-               // Clean fetched coll ids
-
-                $collIds = array_filter(array_map(function($collId) {
-                        return (int) $collId;
-                    }, explode(',', (string) $row['coll_list'])), function($collId) {
-                    return $collId > 0;
-                });
-                // Start mysql transaction to avoid case where only a part of coll ids are inserted in `log_colls`
-
-                if(!$transaction){
-                    $conn->beginTransaction();
-                    $transaction = true;
-                }
-
-                try {
-                    // For each collection id insert a new row
-                    foreach ($collIds as $collId) {
-                        $stmt->execute(array(
-                            ':log_id'  => (int) $row['id'],
-                            ':coll_id' => $collId
-                        ));
-                    }
-                } catch (\Exception $e) {
-                    // Rollback if something failed
-                    $failedRows[] = $row['id'];
-                    $conn->rollBack();
-                    $transaction = false;
-                    // Go to next row
-                    continue;
-                }
-
-                unset($collIds);
-                // Once all collection ids inserted commit
-                $remainingRowsToProcess--;
-                $i++;
-            }
-
-            $conn->commit();
-            $transaction = false;
+            $stmt = $conn->prepare($procedure);
+            $stmt->execute();
             $stmt->closeCursor();
-        } while (count($failedRows) !== $remainingRowsToProcess);
+            unset($stmt);
 
-        unset($conn, $stmt);
 
-        return count($failedRows) === 0;
+            $sql = "CALL explode_log_table(',')";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $stmt->closeCursor();
+            unset($stmt);
+        } catch (\PDOEXception $e) {
+            echo $e->getCode() . '  ' . $e->getMessage();
+            return false;
+        }
+
+        return true;
     }
 }
