@@ -155,7 +155,7 @@ class module_report_activity extends module_report
         $s = new module_report_sql($this->app, $this);
 
         $filter = $s->getFilters()->getReportFilter();
-        $params = array_merge(array(), $filter['params']);
+        $params = array_merge(array(':main_value' => $value), $filter['params']);
 
         $sql = "
         SELECT DATE_FORMAT(log_search.date,'%Y-%m-%d %H:%i:%S') AS date ,
@@ -169,10 +169,10 @@ class module_report_activity extends module_report
 
         $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
-        $sql->setTotalrows($stmt->rowCount());
+        $s->setTotalrows($stmt->rowCount());
         $stmt->closeCursor();
 
-        $sql .= $filter->getLimitFilter();
+        $sql .= $s->getFilters()->getLimitFilter();
 
         $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
@@ -285,10 +285,10 @@ class module_report_activity extends module_report
 
         $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
-        $sql->setTotalrows($stmt->rowCount());
+        $s->setTotalrows($stmt->rowCount());
         $stmt->closeCursor();
 
-        $sql .= $filter->getLimitFilter() ?: '';
+        $sql .= $s->getFilters()->getLimitFilter() ?: '';
 
         $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
@@ -711,15 +711,15 @@ class module_report_activity extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
-                SELECT tt.id, HOUR(tt.heure) AS heures
-                FROM (
-                    SELECT DISTINCT(log_date.id), log_date.date AS heures
-                    FROM log AS log_date FORCE INDEX (date_site)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
-                    WHERE " . $datefilter['sql'] . "
-                    AND " . $collfilter['sql'] . "
-                    AND log_date.site = :site_id
-                ) AS tt";
+        SELECT tt.id, HOUR(tt.heures) AS heures
+        FROM (
+            SELECT DISTINCT(log_date.id), log_date.date AS heures
+            FROM log AS log_date FORCE INDEX (date_site)
+            INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
+            WHERE " . $datefilter['sql'] . "
+            AND " . $collfilter['sql'] . "
+            AND log_date.site = :site_id
+        ) AS tt";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -727,16 +727,19 @@ class module_report_activity extends module_report
         $total = $stmt->rowCount();
         $stmt->closeCursor();
 
-        for ($i = 0; $i < 24; $i ++ )
+        for ($i = 0; $i < 24; $i ++ ){
             $res[$i] = 0;
-
-        foreach ($rs as $row) {
-            if ($total > 0)
-                $res[$row["heures"]] ++;
         }
 
-        foreach ($res as $heure => $value)
+        foreach ($rs as $row) {
+            if ($total > 0) {
+                $res[$row["heures"]]++;
+            }
+        }
+
+        foreach ($res as $heure => $value) {
             $res[$heure] = number_format(($value / 24), 2, '.', '');
+        }
 
         return $res;
     }

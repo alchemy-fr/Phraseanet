@@ -65,7 +65,6 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->detailDownload($report);
             $this->downloadByBaseByDay($report);
             $this->otherTest($report);
-            $this->push($report);
             $this->topQuestion($report);
             $this->topTenUser($report, $sbasid, $colllist);
         }

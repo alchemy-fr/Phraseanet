@@ -30,7 +30,7 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
         if ($this->groupby == false) {
             $this->sql = "
-            SELECT DISTINCT(log.log_id), log.user, log.societe, log.pays, log.activite,
+            SELECT DISTINCT(log.id), log.user, log.societe, log.pays, log.activite,
             log.fonction, log.usrid, log_docs.date AS ddate, log_docs.record_id, log_docs.final, log_docs.comment
             FROM log_docs
             INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)
@@ -116,6 +116,6 @@ class module_report_sqldownload extends module_report_sql implements module_repo
         $this->sql .= $this->filter->getOrderFilter() ? : '';
         $this->sql .= $this->filter->getLimitFilter() ? : '';
 
-        return array('sql'    => $this->sq, 'params' => $this->params);
+        return array('sql'    => $this->sql, 'params' => $this->params);
     }
 }

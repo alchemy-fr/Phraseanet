@@ -45,7 +45,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
             $this->sql = "
             SELECT tt.usrid, tt.user, tt.final AS getter, tt.record_id, tt.date, tt.mime, tt.file
             FROM (
-                SELECT DISTINCT(log.id), log.usrid, log.user , d.final,  d.record_id, d.date, record.mime, record.originalname as file
+                SELECT DISTINCT(log.id), log.usrid, log.user, d.final,  d.record_id, d.date, record.mime, record.originalname as file
                 FROM (log_docs AS d)
                 INNER JOIN log FORCE INDEX (date_site) ON (log.id = d.log_id)
                 INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
@@ -64,7 +64,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
             $this->sql = "
             SELECT " . $this->groupby . ", SUM(1) AS nombre
             FROM (
-                SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . " , log.usrid, log.user , d.final,  d.record_id, d.date
+                SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . " , log.usrid , d.final,  d.record_id, d.date
                 FROM (log_docs as d)
                     INNER JOIN log FORCE INDEX (date_site) ON (log.id = d.log_id)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
