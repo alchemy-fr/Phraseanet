@@ -111,7 +111,6 @@ class patch_380a3 implements patchInterface
             $stmt->closeCursor();
             unset($stmt);
         } catch (\PDOEXception $e) {
-            echo $e->getCode() . '  ' . $e->getMessage();
             return false;
         }
 

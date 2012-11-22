@@ -23,7 +23,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 require_once __DIR__ . "/../../vendor/autoload.php";
 
-$app = new Application('dev');
+$app = new Application();
 
 $event = new GetResponseEvent($app, Request::createFromGlobals(), HttpKernelInterface::MASTER_REQUEST);
 
