@@ -301,7 +301,7 @@ class set_order extends set_abstract
         $stmt->closeCursor();
 
         if ($n > 0) {
-            $evt_mngr = $Core['events-manager'];
+            $evt_mngr = $core['events-manager'];
 
             $params = array(
                 'ssel_id' => $this->ssel_id,
