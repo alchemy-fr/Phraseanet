@@ -2,9 +2,7 @@
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Silex\WebTestCase;
-use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
@@ -109,6 +107,29 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertFalse($appbox->get_session()->is_authenticated());
         $this->get_a_permalink();
     }
+
+    public function testGetAStorythumbnail()
+    {
+        $story = \record_adapter::createStory(self::$collection);
+
+        $media = $this->getMockBuilder('MediaVorus\Media\Media')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $symfoFile = new UploadedFile(__DIR__ . '/../../../testfiles/cestlafete.jpg', 'cestlafete.jpg');
+
+        $media->expects($this->any())
+            ->method('getFile')
+            ->will($this->returnValue($symfoFile));
+
+        $story->substitute_subdef('thumbnail', $media);
+
+        $this->client->request('GET', '/datafiles/' . $story->get_sbas_id() . '/' . $story->get_record_id() . '/preview/');
+        $response = $this->client->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
 
     protected function get_a_permalink()
     {

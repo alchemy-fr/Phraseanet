@@ -66,7 +66,7 @@ return call_user_func(
                         $response->setLastModified($file->get_modification_date());
                     }
 
-                    if ($file->getDataboxSubdef()->get_class() == \databox_subdef::CLASS_THUMBNAIL) {
+                    if (false === $record->is_grouping() && $file->getDataboxSubdef()->get_class() == \databox_subdef::CLASS_THUMBNAIL) {
                         // default expiration is 5 days
                         $expiration = 60 * 60 * 24 * 5;
 
