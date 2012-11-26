@@ -111,6 +111,9 @@ class appbox extends base
                 $collection->reset_watermark();
                 break;
             case collection::PIC_LOGO:
+                if (null === $filename) {
+                    break;
+                }
 
                 $imageSpec = new ImageSpecification();
                 $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
@@ -120,7 +123,7 @@ class appbox extends base
 
                 try {
                     $core['media-alchemyst']
-                        ->open($pathfile->getPathname())
+                        ->open($filename)
                         ->turninto($tmp, $imageSpec)
                         ->close();
                     $filename = $tmp;
