@@ -66,9 +66,9 @@
                 </div>
             </div>
             <div style="height: 25px; position:relative; text-align:left;">
-                <table class="bottom" style="width:100%; table-layout:auto;">
+                <table class="bottom" style="width:100%; table-layout:fixed;">
                 <tr>
-                    <td style="text-align:left;">
+                    <td style="text-align:left;text-overflow:ellipsis;overflow:hidden;">
                     {{record.get_collection_logo|raw}}
                     </td>
                     {% set l_width = 30 %}
