@@ -46,13 +46,19 @@ class task_period_ftp extends task_appboxAbstract
         $request = http_request::getInstance();
 
         $parm2 = $request->get_parms(
-            "proxy"
-            , "proxyport"
-            , "period"
+            'proxy'
+            , 'proxyport'
+            , 'period'
+            , 'syslog'
         );
         if (($dom = @DOMDocument::loadXML($oldxml)) != FALSE) {
             $xmlchanged = false;
-            foreach (array("str:proxy", "str:proxyport", "str:period") as $pname) {
+            foreach (array(
+            'str:proxy'
+            , 'str:proxyport'
+            , 'str:period'
+            , 'pop:syslog'
+            ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -63,13 +69,12 @@ class task_period_ftp extends task_appboxAbstract
                     }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
-                    $dom->documentElement->appendChild($dom->createTextNode("\t"));
                     $ns = $dom->documentElement->appendChild($dom->createElement($pname));
-                    $dom->documentElement->appendChild($dom->createTextNode("\n"));
                 }
                 // on fixe sa valeur
                 switch ($ptype) {
                     case "str":
+                    case "pop":
                         $ns->appendChild($dom->createTextNode($pvalue));
                         break;
                     case "boo":
@@ -92,14 +97,27 @@ class task_period_ftp extends task_appboxAbstract
     public function xml2graphic($xml, $form)
     {
         if (false !== $sxml = simplexml_load_string($xml)) {
+            if ((int) ($sxml->period) < self::MINPERIOD) {
+                $sxml->period = self::MINPERIOD;
+            } elseif ((int) ($sxml->period) > self::MAXPERIOD) {
+                $sxml->period = self::MAXPERIOD;
+            }
             ?>
             <script type="text/javascript">
+                var i;
+                var opts;
+                var found;
+                opts = <?php echo $form ?>.syslog.options;
+                for (found=0, i=1; found==0 && i<opts.length; i++) {
+                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->syslog, "form") ?>")
+                    found = i;
+                }
+                opts[found].selected = true;
             <?php echo $form ?>.proxy.value = "<?php echo p4string::MakeString($sxml->proxy, "js", '"') ?>";
             <?php echo $form ?>.proxyport.value = "<?php echo p4string::MakeString($sxml->proxyport, "js", '"') ?>";
             <?php echo $form ?>.period.value = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
             </script>
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -117,6 +135,17 @@ class task_period_ftp extends task_appboxAbstract
         <script type="text/javascript">
             function chgxmltxt(textinput, fieldname)
             {
+                var limits = {
+                    'period' :{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>}
+                } ;
+                if (typeof(limits[fieldname])!='undefined') {
+                    var v = 0|textinput.value;
+                    if(v < limits[fieldname].min)
+                        v = limits[fieldname].min;
+                    else if(v > limits[fieldname].max)
+                        v = limits[fieldname].max;
+                    textinput.value = v;
+                }
                 setDirty();
             }
 
@@ -131,7 +160,6 @@ class task_period_ftp extends task_appboxAbstract
             }
         </script>
         <?php
-
         return;
     }
 
@@ -145,6 +173,17 @@ class task_period_ftp extends task_appboxAbstract
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
+            syslog level :
+            <select name="syslog" onchange="chgxmlpopup(this, 'syslog');">
+                <option value="">...</option>
+                <option value="DEBUG">DEBUG</option>
+                <option value="INFO">INFO</option>
+                <option value="WARNING">WARNING</option>
+                <option value="ERROR">ERROR</option>
+                <option value="CRITICAL">CRITICAL</option>
+                <option value="ALERT">ALERT</option>
+            </select>
+            &nbsp;&nbsp;
             <?php echo('task::ftp:proxy') ?>
             <input type="text" name="proxy" style="width:400px;" onchange="chgxmltxt(this, 'proxy');"><br/>
             <br/>
@@ -157,7 +196,6 @@ class task_period_ftp extends task_appboxAbstract
             &nbsp;<?php echo('task::_common_:secondes (unite temporelle)') ?><br/>
         </form>
         <?php
-
         return ob_get_clean();
     }
 
@@ -165,13 +203,25 @@ class task_period_ftp extends task_appboxAbstract
     {
         $request = http_request::getInstance();
 
-        $parm = $request->get_parms("xml", "name", "active", "proxy", "proxyport", "period", "debug");
+        $parm = $request->get_parms(
+            'xml'
+            , 'name'
+            , 'active'
+            , 'proxy'
+            , 'proxyport'
+            , 'period'
+            , 'debug'
+        );
 
         if ($parm["xml"] === null) {
             // pas de xml 'raw' : on accepte les champs 'graphic view'
             if (($domTaskSettings = @DOMDocument::loadXML($taskrow["settings"])) != FALSE) {
                 $xmlchanged = false;
-                foreach (array("proxy", "proxyport", "period") as $f) {
+                foreach (array(
+                'proxy'
+                , 'proxyport'
+                , 'period'
+                ) as $f) {
                     if ($parm[$f] !== NULL) {
                         if (($ns = $domTaskSettings->getElementsByTagName($f)->item(0)) != NULL) {
                             // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
@@ -180,9 +230,7 @@ class task_period_ftp extends task_appboxAbstract
                             }
                         } else {
                             // le champ n'existait pas dans le xml, on le cree
-                            $domTaskSettings->documentElement->appendChild($domTaskSettings->createTextNode("\t"));
                             $ns = $domTaskSettings->documentElement->appendChild($domTaskSettings->createElement($f));
-                            $domTaskSettings->documentElement->appendChild($domTaskSettings->createTextNode("\n"));
                         }
                         // on fixe sa valeur
                         $ns->appendChild($domTaskSettings->createTextNode($parm[$f]));
@@ -196,7 +244,7 @@ class task_period_ftp extends task_appboxAbstract
         }
 
         // si on doit changer le xml, on verifie qu'il est valide
-        if ($parm["xml"] && ! @DOMDocument::loadXML($parm["xml"])) {
+        if ($parm["xml"] && !@DOMDocument::loadXML($parm["xml"])) {
             return(false);
         }
 
@@ -342,7 +390,7 @@ class task_period_ftp extends task_appboxAbstract
             continue;
         }
 
-        if ( ! ($ph_session = phrasea_open_session($ses_id, $usr_id))) {
+        if (!($ph_session = phrasea_open_session($ses_id, $usr_id))) {
             $this->logger->addDebug("Unable to open session");
             phrasea_close_session($ses_id);
             continue;
@@ -390,7 +438,7 @@ class task_period_ftp extends task_appboxAbstract
             $obj = array();
 
             $basefolder = '';
-            if ( ! in_array(trim($ftp_export["destfolder"]), array('.', './', ''))) {
+            if (!in_array(trim($ftp_export["destfolder"]), array('.', './', ''))) {
                 $basefolder = p4string::addEndSlash($ftp_export["destfolder"]);
             }
 
@@ -430,12 +478,12 @@ class task_period_ftp extends task_appboxAbstract
                     } else {
                         $sd = $record->get_subdefs();
 
-                        if ( ! $sd || ! isset($sd[$subdef])) {
+                        if (!$sd || !isset($sd[$subdef])) {
                             continue;
                         }
 
                         $localfile = $sd[$subdef]->get_pathfile();
-                        if ( ! file_exists($localfile)) {
+                        if (!file_exists($localfile)) {
                             throw new Exception('Le fichier local n\'existe pas');
                         }
                     }

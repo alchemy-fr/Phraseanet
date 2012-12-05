@@ -21,6 +21,16 @@ abstract class task_abstract
     const SIGNAL_SCHEDULER_DIED = 'SIGNAL_SCHEDULER_DIED';
     const ERR_ALREADY_RUNNING = 114;   // aka EALREADY (Operation already in progress)
 
+    // default min/max values for the 'restart task every n records' setting on tasks
+    const MINRECS = 10;
+    const MAXRECS = 100;
+    // default min/max values for the 'overflow memory (Mo)' setting on tasks
+    const MINMEGS = 2;
+    const MAXMEGS = 256;
+    // default min/max values for the 'period (seconds)' setting on tasks
+    const MINPERIOD = 10;
+    const MAXPERIOD = 3600;
+
     /**
      *
      * @var Logger
@@ -668,7 +678,7 @@ abstract class task_abstract
 
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
-                $this->log(sprintf("Max memory (%s M) reached (actual is %.02f M)", $this->maxmegs, ($current_memory >> 10) / 1024));
+                $this->log(sprintf("Max memory (%s Mo) reached (actual is %.02f Mo)", $this->maxmegs, ($current_memory >> 10)/1024 ), Logger::ERROR);
                 $this->running = FALSE;
                 $ret = self::STATE_MAXMEGSREACHED;
             }
@@ -698,7 +708,7 @@ abstract class task_abstract
 
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
-                $this->log(sprintf("Max memory (%s M) reached (current is %.02f M)", $this->maxmegs, ($current_memory >> 10) / 1024));
+                $this->log(sprintf("Max memory (%s Mo) reached (current is %.02f Mo)", $this->maxmegs, ($current_memory >> 10)/1024 ), Logger::ERROR);
                 $this->running = FALSE;
                 $ret = self::STATE_MAXMEGSREACHED;
             }
@@ -740,7 +750,7 @@ abstract class task_abstract
         }
         $this->maxmegs = (integer) $sx_task_settings->maxmegs;
         if ($sx_task_settings->maxmegs < 16 || $sx_task_settings->maxmegs > 512) {
-            $this->maxmegs = 24;
+//            $this->maxmegs = 24;
         }
         $this->record_buffer_size = (integer) $sx_task_settings->flush;
         if ($sx_task_settings->flush < 1 || $sx_task_settings->flush > 100) {
@@ -774,10 +784,10 @@ abstract class task_abstract
         $this->logger->addDebug(memory_get_usage() . " -- " . memory_get_usage(true));
     }
 
-    public function log($message)
+    public function log($message, $level=Logger::INFO)
     {
         if ($this->logger) {
-            $this->logger->addInfo($message);
+            $this->logger->addRecord($level, $message);
         }
 
         return $this;

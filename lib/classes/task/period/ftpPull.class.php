@@ -41,13 +41,35 @@ class task_period_ftpPull extends task_appboxAbstract
         $request = http_request::getInstance();
 
         $parm2 = $request->get_parms(
-            "proxy", "proxyport", "host", "port", "user"
-            , "password", "ssl", "ftppath", "localpath"
-            , "passive", "period"
+            'proxy'
+            , 'proxyport'
+            , 'host'
+            , 'port'
+            , 'user'
+            , 'password'
+            , 'ssl'
+            , 'ftppath'
+            , 'localpath'
+            , 'passive'
+            , 'period'
+            , 'syslog'
         );
         if ($dom = @DOMDocument::loadXML($oldxml)) {
             $xmlchanged = false;
-            foreach (array("str:proxy", "str:proxyport", "str:period", "boo:passive", "boo:ssl", "str:password", "str:user", "str:ftppath", "str:localpath", "str:port", "str:host") as $pname) {
+            foreach (array(
+            'str:proxy'
+            , 'str:proxyport'
+            , 'str:period'
+            , 'boo:passive'
+            , 'boo:ssl'
+            , 'str:password'
+            , 'str:user'
+            , 'str:ftppath'
+            , 'str:localpath'
+            , 'str:port'
+            , 'str:host'
+            , 'pop:syslog'
+            ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -58,13 +80,12 @@ class task_period_ftpPull extends task_appboxAbstract
                     }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
-                    $dom->documentElement->appendChild($dom->createTextNode("\t"));
                     $ns = $dom->documentElement->appendChild($dom->createElement($pname));
-                    $dom->documentElement->appendChild($dom->createTextNode("\n"));
                 }
                 // on fixe sa valeur
                 switch ($ptype) {
                     case "str":
+                    case "pop":
                         $ns->appendChild($dom->createTextNode($pvalue));
                         break;
                     case "boo":
@@ -81,8 +102,22 @@ class task_period_ftpPull extends task_appboxAbstract
     public function xml2graphic($xml, $form)
     {
         if (false !== $sxml = simplexml_load_string($xml)) {
-            ?>
+             if ((int) ($sxml->period) < self::MINPERIOD) {
+                $sxml->period = self::MINPERIOD;
+            } elseif ((int) ($sxml->period) > self::MAXPERIOD) {
+                $sxml->period = self::MAXPERIOD;
+            }
+           ?>
             <script type="text/javascript">
+                var i;
+                var opts;
+                var found;
+                opts = <?php echo $form ?>.syslog.options;
+                for (found=0, i=1; found==0 && i<opts.length; i++) {
+                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->syslog, "form") ?>")
+                    found = i;
+                }
+                opts[found].selected = true;
             <?php echo $form ?>.proxy.value    = "<?php echo p4string::MakeString($sxml->proxy, "js", '"') ?>";
             <?php echo $form ?>.proxyport.value  = "<?php echo p4string::MakeString($sxml->proxyport, "js", '"') ?>";
             <?php echo $form ?>.period.value    = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
@@ -98,7 +133,6 @@ class task_period_ftpPull extends task_appboxAbstract
             </script>
 
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -113,6 +147,17 @@ class task_period_ftpPull extends task_appboxAbstract
         <script type="text/javascript">
             function chgxmltxt(textinput, fieldname)
             {
+                var limits = {
+                    'period' :{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>}
+                } ;
+                if (typeof(limits[fieldname])!='undefined') {
+                    var v = 0|textinput.value;
+                    if(v < limits[fieldname].min)
+                        v = limits[fieldname].min;
+                    else if(v > limits[fieldname].max)
+                        v = limits[fieldname].max;
+                    textinput.value = v;
+                }
                 setDirty();
             }
             function chgxmlck(checkinput, fieldname)
@@ -135,6 +180,17 @@ class task_period_ftpPull extends task_appboxAbstract
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
+            syslog level :
+            <select name="syslog" onchange="chgxmlpopup(this, 'syslog');">
+                <option value="">...</option>
+                <option value="DEBUG">DEBUG</option>
+                <option value="INFO">INFO</option>
+                <option value="WARNING">WARNING</option>
+                <option value="ERROR">ERROR</option>
+                <option value="CRITICAL">CRITICAL</option>
+                <option value="ALERT">ALERT</option>
+            </select>
+            &nbsp;&nbsp;
             <?php echo('task::ftp:proxy') ?>
             <input type="text" name="proxy" style="width:400px;" onchange="chgxmltxt(this, 'proxy');"><br/>
             <br/>
@@ -172,7 +228,6 @@ class task_period_ftpPull extends task_appboxAbstract
             &nbsp;<?php echo('task::_common_:minutes (unite temporelle)') ?><br/>
         </form>
         <?php
-
         return ob_get_clean();
     }
 
@@ -181,16 +236,40 @@ class task_period_ftpPull extends task_appboxAbstract
         $request = http_request::getInstance();
 
         $parm = $request->get_parms(
-            "xml", "name", "active", "proxy", "proxyport", "period"
-            , "localpath", "ftppath", "port", "host", "user"
-            , "password", "passive", "ssl", "debug"
+            'xml'
+            , 'name'
+            , 'active'
+            , 'proxy'
+            , 'proxyport'
+            , 'period'
+            , 'localpath'
+            , 'ftppath'
+            , 'port'
+            , 'host'
+            , 'user'
+            , 'password'
+            , 'passive'
+            , 'ssl'
+            , 'debug'
         );
 
         if ($parm["xml"] === null) {
             // pas de xml 'raw' : on accepte les champs 'graphic view'
             if (($domTaskSettings = DOMDocument::loadXML($taskrow["settings"])) != FALSE) {
                 $xmlchanged = false;
-                foreach (array("proxy", "proxyport", "period", "host", "port", "user", "password", "ssl", "passive", "localpath", "ftppath") as $f) {
+                foreach (array(
+                'proxy'
+                , 'proxyport'
+                , 'period'
+                , 'localpath'
+                , 'ftppath'
+                , 'host'
+                , 'port'
+                , 'user'
+                , 'password'
+                , 'passive'
+                , 'ssl'
+                ) as $f) {
                     if ($parm[$f] !== NULL) {
                         if (($ns = $domTaskSettings->getElementsByTagName($f)->item(0)) != NULL) {
                             // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
@@ -199,9 +278,7 @@ class task_period_ftpPull extends task_appboxAbstract
                             }
                         } else {
                             // le champ n'existait pas dans le xml, on le cree
-                            $domTaskSettings->documentElement->appendChild($domTaskSettings->createTextNode("\t"));
                             $ns = $domTaskSettings->documentElement->appendChild($domTaskSettings->createElement($f));
-                            $domTaskSettings->documentElement->appendChild($domTaskSettings->createTextNode("\n"));
                         }
                         // on fixe sa valeur
                         $ns->appendChild($domTaskSettings->createTextNode($parm[$f]));
@@ -215,7 +292,7 @@ class task_period_ftpPull extends task_appboxAbstract
         }
 
         // si on doit changer le xml, on verifie qu'il est valide
-        if ($parm["xml"] && ! DOMDocument::loadXML($parm["xml"])) {
+        if ($parm["xml"] && !DOMDocument::loadXML($parm["xml"])) {
 
             return(false);
         }
@@ -261,8 +338,8 @@ class task_period_ftpPull extends task_appboxAbstract
         $this->port = (string) ($sx_task_settings->port);
         $this->user = (string) ($sx_task_settings->user);
         $this->password = (string) ($sx_task_settings->password);
-        $this->ssl = ! ! ((string) ($sx_task_settings->ssl));
-        $this->passive = ! ! ((string) ($sx_task_settings->passive));
+        $this->ssl = !!((string) ($sx_task_settings->ssl));
+        $this->passive = !!((string) ($sx_task_settings->passive));
         $this->ftppath = (string) ($sx_task_settings->ftppath);
         $this->localpath = (string) ($sx_task_settings->localpath);
 
@@ -282,16 +359,16 @@ class task_period_ftpPull extends task_appboxAbstract
 
         $core['file-system']->mkdir($this->localpath, 0750);
 
-        if ( ! is_dir($this->localpath)) {
+        if (!is_dir($this->localpath)) {
             $this->log('\'' . $this->localpath . '\' does not exists');
             $this->running = FALSE;
         }
-        if ( ! is_writeable($this->localpath)) {
+        if (!is_writeable($this->localpath)) {
             $this->log('\'' . $this->localpath . '\' is not writeable');
             $this->running = FALSE;
         }
 
-        if ( ! $this->running) {
+        if (!$this->running) {
             $this->set_status(self::STATE_STOPPED);
 
             return array();
@@ -310,7 +387,7 @@ class task_period_ftpPull extends task_appboxAbstract
             $this->logger->addDebug("attente de 25sec pour avoir les fichiers froids...");
 
             $this->sleep(25);
-            if ( ! $this->running) {
+            if (!$this->running) {
                 if (isset($ftp) && $ftp instanceof ftpclient) {
                     $ftp->close();
                 }
@@ -321,10 +398,10 @@ class task_period_ftpPull extends task_appboxAbstract
             $list_2 = $ftp->list_directory(true);
 
             foreach ($list_1 as $filepath => $timestamp) {
-                $done ++;
+                $done++;
                 $this->setProgress($done, $todo);
 
-                if ( ! isset($list_2[$filepath])) {
+                if (!isset($list_2[$filepath])) {
                     $this->logger->addDebug("le fichier $filepath a disparu...\n");
                     continue;
                 }

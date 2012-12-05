@@ -26,12 +26,13 @@ class task_period_workflow01 extends task_databoxAbstract
         $request = http_request::getInstance();
 
         $parm2 = $request->get_parms(
-            "sbas_id"
-            , "period"
+            'sbas_id'
+            , 'period'
             , 'status0'
             , 'coll0'
             , 'status1'
             , 'coll1'
+            , 'syslog'
         );
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
@@ -40,12 +41,13 @@ class task_period_workflow01 extends task_databoxAbstract
             $xmlchanged = false;
             // foreach($parm2 as $pname=>$pvalue)
             foreach (array(
-            "str:sbas_id",
-            "str:period",
-            'str:status0',
-            'str:coll0',
-            'str:status1',
-            'str:coll1',
+            'str:sbas_id'
+            , 'str:period'
+            , 'str:status0'
+            , 'str:coll0'
+            , 'str:status1'
+            , 'str:coll1'
+            , 'pop:syslog'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -57,13 +59,12 @@ class task_period_workflow01 extends task_databoxAbstract
                     }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
-                    $dom->documentElement->appendChild($dom->createTextNode("\t"));
                     $ns = $dom->documentElement->appendChild($dom->createElement($pname));
-                    $dom->documentElement->appendChild($dom->createTextNode("\n"));
                 }
                 // on fixe sa valeur
                 switch ($ptype) {
                     case "str":
+                    case "pop":
                         $ns->appendChild($dom->createTextNode($pvalue));
                         break;
                     case "boo":
@@ -80,10 +81,10 @@ class task_period_workflow01 extends task_databoxAbstract
     public function xml2graphic($xml, $form)
     {
         if (false !== $sxml = simplexml_load_string($xml)) {
-            if ((int) ($sxml->period) < 1) {
-                $sxml->period = 1;
-            } elseif ((int) ($sxml->period) > 1440) { // 1 jour
-                $sxml->period = 1440;
+            if ((int) ($sxml->period) < self::MINPERIOD) {
+                $sxml->period = self::MINPERIOD;
+            } elseif ((int) ($sxml->period) > self::MAXPERIOD) {
+                $sxml->period = self::MAXPERIOD;
             }
 
             if ((string) ($sxml->delay) == '') {
@@ -93,6 +94,13 @@ class task_period_workflow01 extends task_databoxAbstract
             <script type="text/javascript">
                 var i;
                 var opts;
+                var found;
+                opts = <?php echo $form ?>.syslog.options;
+                for (found=0, i=1; found==0 && i<opts.length; i++) {
+                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->syslog, "form") ?>")
+                    found = i;
+                }
+                opts[found].selected = true;
                 var pops = [
                     {'name':"sbas_id", 'val':"<?php echo p4string::MakeString($sxml->sbas_id, "js") ?>"},
 
@@ -117,7 +125,6 @@ class task_period_workflow01 extends task_databoxAbstract
             </script>
 
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -183,7 +190,10 @@ class task_period_workflow01 extends task_databoxAbstract
 
             function chgxmltxt(textinput, fieldname)
             {
-                var limits = { 'period':{min:1, 'max':1440} , 'delay':{min:0} } ;
+                var limits = {
+                    'period':{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
+                    'delay':{min:0}
+                } ;
                 if (typeof(limits[fieldname])!='undefined') {
                     var v = 0|textinput.value;
                     if(limits[fieldname].min && v < limits[fieldname].min)
@@ -266,6 +276,18 @@ class task_period_workflow01 extends task_databoxAbstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
+            <br/>
+            syslog level :
+            <select name="syslog" onchange="chgxmlpopup(this, 'syslog');">
+                <option value="">...</option>
+                <option value="DEBUG">DEBUG</option>
+                <option value="INFO">INFO</option>
+                <option value="WARNING">WARNING</option>
+                <option value="ERROR">ERROR</option>
+                <option value="CRITICAL">CRITICAL</option>
+                <option value="ALERT">ALERT</option>
+            </select>
+            &nbsp;&nbsp;
             <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;
 
             <select onchange="chgsbas(this);setDirty();" name="sbas_id">
@@ -321,7 +343,6 @@ class task_period_workflow01 extends task_databoxAbstract
             <div style="margin:10px; padding:5px; border:1px #000000 solid; font-family:monospace; font-size:16px; text-align:left; color:#00e000; background-color:#404040" id="cmd">cmd</div>
         </center>
         <?php
-
         return ob_get_clean();
     }
 
