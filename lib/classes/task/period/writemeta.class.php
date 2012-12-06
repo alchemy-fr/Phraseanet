@@ -149,30 +149,30 @@ class task_period_writemeta extends task_databoxAbstract
     {
         ?>
         <script type="text/javascript">
-            function chgform(formelem)
-            {
-                console.log((formelem.nodeName+$(formelem).attr("type")).toLowerCase());
-                fieldname = $(formelem).attr("name");
+            $(document).ready(function(){
                 var limits = {
                     'period':{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
                     'maxrecs':{'min':<?php echo self::MINRECS; ?>, 'max':<?php echo self::MAXRECS; ?>},
                     'maxmegs':{'min':<?php echo self::MINMEGS; ?>, 'max':<?php echo self::MAXMEGS; ?>}
                 } ;
-                switch((formelem.nodeName+$(formelem).attr("type")).toLowerCase())
-                {
-                    case "inputtext":
-                        if (typeof(limits[fieldname])!='undefined') {
-                            var v = 0|formelem.value;
-                            if(v < limits[fieldname].min)
-                                v = limits[fieldname].min;
-                            else if(v > limits[fieldname].max)
-                                v = limits[fieldname].max;
-                            formelem.value = v;
-                        }
-                        break;
-                }
-                setDirty();
-            }
+                $(".formElem").change(function(){
+                    fieldname = $(this).attr("name");
+                    switch((this.nodeName+$(this).attr("type")).toLowerCase())
+                    {
+                        case "inputtext":
+                            if (typeof(limits[fieldname])!='undefined') {
+                                var v = 0|this.value;
+                                if(v < limits[fieldname].min)
+                                    v = limits[fieldname].min;
+                                else if(v > limits[fieldname].max)
+                                    v = limits[fieldname].max;
+                                this.value = v;
+                            }
+                            break;
+                    }
+                    setDirty();
+                });
+            });
         </script>
         <?php
     }
@@ -189,12 +189,12 @@ class task_period_writemeta extends task_databoxAbstract
             ?>
             <form name="graphicForm" onsubmit="return(false);" method="post">
                 <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-                <input type="text" name="period" style="width:40px;" onchange="chgform(this);" value="">
+                <input class="formElem" type="text" name="period" style="width:40px;" value="">
                 <?php echo _('task::_common_:secondes (unite temporelle)') ?>
                 <br/>
                 <br/>
                 syslog level :
-                <select name="syslog" onchange="chgform(this);">
+                <select class="formElem" name="syslog">
                     <option value="">...</option>
                     <option value="DEBUG">DEBUG</option>
                     <option value="INFO">INFO</option>
@@ -205,7 +205,7 @@ class task_period_writemeta extends task_databoxAbstract
                 </select>
                 &nbsp;&nbsp;
                 maillog level :
-                <select name="maillog" onchange="chgform(this);">
+                <select class="formElem" name="maillog">
                     <option value="">...</option>
                     <option value="DEBUG">DEBUG</option>
                     <option value="INFO">INFO</option>
@@ -216,14 +216,14 @@ class task_period_writemeta extends task_databoxAbstract
                 </select>
                 <br/>
                 <br/>
-                <input type="checkbox" name="cleardoc" onchange="chgform(this)">
+                <input class="formElem" type="checkbox" name="cleardoc">
                 <?php echo _('task::writemeta:effacer les metadatas non presentes dans la structure') ?>
                 <br/>
                 <br/>
                 <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
-                <input type="text" name="maxrecs" style="width:40px;" onchange="chgform(this);" value="">
+                <input class="formElem" type="text" name="maxrecs" style="width:40px;" value="">
                 <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
-                <input type="text" name="maxmegs" style="width:40px;" onchange="chgform(this);" value="">
+                <input class="formElem" type="text" name="maxmegs" style="width:40px;" value="">
                 Mo
                 <br/>
             </form>

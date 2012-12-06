@@ -73,6 +73,7 @@ class task_period_subdef extends task_databoxAbstract
             , 'maxrecs'
             , 'maxmegs'
             , 'syslog'
+            , 'maillog'
         );
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
@@ -86,6 +87,7 @@ class task_period_subdef extends task_databoxAbstract
             , 'str:maxrecs'
             , 'str:maxmegs'
             , 'pop:syslog'
+            , 'pop:maillog'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -157,6 +159,12 @@ class task_period_subdef extends task_databoxAbstract
                     found = i;
                 }
                 opts[found].selected = true;
+                opts = <?php echo $form ?>.maillog.options;
+                for (found=0, i=1; found==0 && i<opts.length; i++) {
+                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->maillog, "form") ?>")
+                    found = i;
+                }
+                opts[found].selected = true;
             <?php echo $form ?>.period.value  = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
             <?php echo $form ?>.flush.value   = "<?php echo p4string::MakeString($sxml->flush, "js", '"') ?>";
             <?php echo $form ?>.maxrecs.value = "<?php echo p4string::MakeString($sxml->maxrecs, "js", '"') ?>";
@@ -179,32 +187,31 @@ class task_period_subdef extends task_databoxAbstract
     {
         ?>
         <script type="text/javascript">
-            function chgxmltxt(textinput, fieldname)
-            {
-                var limits = {
-                    'period' :{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
-                    'flush'  :{'min':<?php echo self::MINFLUSH; ?>, 'max':<?php echo self::MAXFLUSH; ?>} ,
-                    'maxrecs':{'min':<?php echo self::MINRECS; ?>, 'max':<?php echo self::MAXRECS; ?>},
-                    'maxmegs':{'min':<?php echo self::MINMEGS; ?>, 'max':<?php echo self::MAXMEGS; ?>}
-                } ;
-                if (typeof(limits[fieldname])!='undefined') {
-                    var v = 0|textinput.value;
-                    if(v < limits[fieldname].min)
-                        v = limits[fieldname].min;
-                    else if(v > limits[fieldname].max)
-                        v = limits[fieldname].max;
-                    textinput.value = v;
+        $(document).ready(function(){
+            var limits = {
+                'period' :{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
+                'flush'  :{'min':<?php echo self::MINFLUSH; ?>,  'max':<?php echo self::MAXFLUSH; ?>},
+                'maxrecs':{'min':<?php echo self::MINRECS; ?>,   'max':<?php echo self::MAXRECS; ?>},
+                'maxmegs':{'min':<?php echo self::MINMEGS; ?>,   'max':<?php echo self::MAXMEGS; ?>}
+            } ;
+            $(".formElem").change(function(){
+                fieldname = $(this).attr("name");
+                switch((this.nodeName+$(this).attr("type")).toLowerCase())
+                {
+                    case "inputtext":
+                        if (typeof(limits[fieldname])!='undefined') {
+                            var v = 0|this.value;
+                            if(v < limits[fieldname].min)
+                                v = limits[fieldname].min;
+                            else if(v > limits[fieldname].max)
+                                v = limits[fieldname].max;
+                            this.value = v;
+                        }
+                        break;
                 }
                 setDirty();
-            }
-            function chgxmlck(checkinput, fieldname)
-            {
-                setDirty();
-            }
-            function chgxmlpopup(popupinput, fieldname)
-            {
-                setDirty();
-            }
+             });
+        });
         </script>
         <?php
     }
@@ -218,9 +225,13 @@ class task_period_subdef extends task_databoxAbstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
+            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+            <input class="formElem" type="text" name="period" style="width:40px;" value="">
+            <?php echo _('task::_common_:secondes (unite temporelle)') ?>
+            <br/>
             <br/>
             syslog level :
-            <select name="syslog" onchange="chgxmlpopup(this, 'syslog');">
+            <select class="formElem" name="syslog">
                 <option value="">...</option>
                 <option value="DEBUG">DEBUG</option>
                 <option value="INFO">INFO</option>
@@ -230,17 +241,25 @@ class task_period_subdef extends task_databoxAbstract
                 <option value="ALERT">ALERT</option>
             </select>
             &nbsp;&nbsp;
-        <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-            <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">
-            <?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+            maillog level :
+            <select class="formElem" name="maillog">
+                <option value="">...</option>
+                <option value="DEBUG">DEBUG</option>
+                <option value="INFO">INFO</option>
+                <option value="WARNING">WARNING</option>
+                <option value="ERROR">ERROR</option>
+                <option value="CRITICAL">CRITICAL</option>
+                <option value="ALERT">ALERT</option>
+            </select>
             <br/>
-            <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input type="text" name="flush" style="width:40px;" onchange="chgxmltxt(this, \'flush\');" value="">'); ?>
+            <br/>
+            <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input class="formElem" type="text" name="flush" style="width:40px;" value="">'); ?>
             <br/>
             <br/>
-        <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
-            <input type="text" name="maxrecs" style="width:40px;" onchange="chgxmltxt(this, 'maxrecs');" value="">
+            <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
+            <input type="text" name="maxrecs" style="width:40px;" value="">
             <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
-            <input type="text" name="maxmegs" style="width:40px;" onchange="chgxmltxt(this, 'maxmegs');" value="">
+            <input type="text" name="maxmegs" style="width:40px;" value="">
             Mo
             <br/>
         </form>

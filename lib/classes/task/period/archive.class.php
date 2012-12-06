@@ -104,6 +104,7 @@ class task_period_archive extends task_abstract
             , 'delfolder'
             , 'cold'
             , 'syslog'
+            , 'maillog'
         );
         $dom = new DOMDocument();
         $dom->formatOutput = true;
@@ -120,6 +121,7 @@ class task_period_archive extends task_abstract
             , 'boo:copy_spe'
             , 'str:cold'
             , 'pop:syslog'
+            , 'pop:maillog'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -182,6 +184,12 @@ class task_period_archive extends task_abstract
                     found = i;
                 }
                 opts[found].selected = true;
+                opts = <?php echo $form ?>.maillog.options;
+                for (found=0, i=1; found==0 && i<opts.length; i++) {
+                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->maillog, "form") ?>")
+                    found = i;
+                }
+                opts[found].selected = true;
                 opts = <?php echo $form ?>.base_id.options;
                 for (found=0, i=1; found==0 && i<opts.length; i++) {
                     if(opts[i].value == "<?php echo \p4string::MakeString($sxml->base_id, "form") ?>")
@@ -210,30 +218,29 @@ class task_period_archive extends task_abstract
     {
         ?>
         <script type="text/javascript">
-            function chgxmltxt(textinput, fieldname)
-            {
+            $(document).ready(function(){
                 var limits = {
                     'period':{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
                     'cold':{'min':<?php echo self::MINCOLD; ?>, 'max':<?php echo self::MAXCOLD; ?>}
                 } ;
-                if (typeof(limits[fieldname])!='undefined') {
-                    var v = 0|textinput.value;
-                    if(v < limits[fieldname].min)
-                        v = limits[fieldname].min;
-                    else if(v > limits[fieldname].max)
-                        v = limits[fieldname].max;
-                    textinput.value = v;
-                }
-                setDirty();
-             }
-            function chgxmlck(checkinput, fieldname)
-            {
-                setDirty();
-            }
-            function chgxmlpopup(popupinput, fieldname)
-            {
-                setDirty();
-            }
+                $(".formElem").change(function(){
+                    fieldname = $(this).attr("name");
+                    switch((this.nodeName+$(this).attr("type")).toLowerCase())
+                    {
+                        case "inputtext":
+                            if (typeof(limits[fieldname])!='undefined') {
+                                var v = 0|this.value;
+                                if(v < limits[fieldname].min)
+                                    v = limits[fieldname].min;
+                                else if(v > limits[fieldname].max)
+                                    v = limits[fieldname].max;
+                                this.value = v;
+                            }
+                            break;
+                    }
+                    setDirty();
+                });
+            });
         </script>
         <?php
         return;
@@ -251,7 +258,7 @@ class task_period_archive extends task_abstract
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
             syslog level :
-            <select name="syslog" onchange="chgxmlpopup(this, 'syslog');">
+            <select class="formElem" name="syslog">
                 <option value="">...</option>
                 <option value="DEBUG">DEBUG</option>
                 <option value="INFO">INFO</option>
@@ -261,9 +268,21 @@ class task_period_archive extends task_abstract
                 <option value="ALERT">ALERT</option>
             </select>
             &nbsp;&nbsp;
+            maillog level :
+            <select class="formElem" name="maillog">
+                <option value="">...</option>
+                <option value="DEBUG">DEBUG</option>
+                <option value="INFO">INFO</option>
+                <option value="WARNING">WARNING</option>
+                <option value="ERROR">ERROR</option>
+                <option value="CRITICAL">CRITICAL</option>
+                <option value="ALERT">ALERT</option>
+            </select>
+            <br/>
+            <br/>
             <?php echo _('task::archive:archivage sur base/collection/') ?> :
 
-            <select onchange="chgxmlpopup(this, 'base_id');" name="base_id">
+            <select class="formElem" name="base_id">
                 <option value="">...</option>
                 <?php
                 foreach ($appbox->get_databoxes() as $databox) {
@@ -276,21 +295,21 @@ class task_period_archive extends task_abstract
             <br/>
             <br/>
             <?php echo _('task::_common_:hotfolder') ?>
-            <input type="text" name="hotfolder" style="width:400px;" onchange="chgxmltxt(this, 'hotfolder');" value=""><br/>
+            <input class="formElem" type="text" name="hotfolder" style="width:400px;" value=""><br/>
             <br/>
             <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-            <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+            <input class="formElem" type="text" name="period" style="width:40px;" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
             <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
-            <input type="text" name="cold" style="width:40px;" onchange="chgxmltxt(this, 'cold');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+            <input class="formElem" type="text" name="cold" style="width:40px;" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-            <input type="checkbox" name="move_archived" onchange="chgxmlck(this, 'move_archived');">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
+            <input class="formElem" type="checkbox" name="move_archived">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="checkbox" name="move_error" onchange="chgxmlck(this, 'move_error');">&nbsp;<?php echo _('task::archive:deplacer les fichiers non-archives dans _error') ?><br/>
+            <input class="formElem" type="checkbox" name="move_error">&nbsp;<?php echo _('task::archive:deplacer les fichiers non-archives dans _error') ?><br/>
             <br/>
-            <input type="checkbox" name="copy_spe" onchange="chgxmlck(this, 'copy_spe');">&nbsp;<?php echo _('task::archive:copier les fichiers \'.phrasea.xml\' et \'.grouping.xml\' dans _archived') ?><br/>
+            <input class="formElem" type="checkbox" name="copy_spe">&nbsp;<?php echo _('task::archive:copier les fichiers \'.phrasea.xml\' et \'.grouping.xml\' dans _archived') ?><br/>
             <br/>
-            <input type="checkbox" name="delfolder" onchange="chgxmlck(this, 'delfolder');">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
+            <input class="formElem" type="checkbox" name="delfolder">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
         </form>
         <?php
         return ob_get_clean();

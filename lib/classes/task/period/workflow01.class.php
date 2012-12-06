@@ -33,6 +33,7 @@ class task_period_workflow01 extends task_databoxAbstract
             , 'status1'
             , 'coll1'
             , 'syslog'
+            , 'maillog'
         );
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
@@ -48,6 +49,7 @@ class task_period_workflow01 extends task_databoxAbstract
             , 'str:status1'
             , 'str:coll1'
             , 'pop:syslog'
+            , 'pop:maillog'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -98,6 +100,12 @@ class task_period_workflow01 extends task_databoxAbstract
                 opts = <?php echo $form ?>.syslog.options;
                 for (found=0, i=1; found==0 && i<opts.length; i++) {
                     if(opts[i].value == "<?php echo \p4string::MakeString($sxml->syslog, "form") ?>")
+                    found = i;
+                }
+                opts[found].selected = true;
+                opts = <?php echo $form ?>.maillog.options;
+                for (found=0, i=1; found==0 && i<opts.length; i++) {
+                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->maillog, "form") ?>")
                     found = i;
                 }
                 opts[found].selected = true;
@@ -279,6 +287,17 @@ class task_period_workflow01 extends task_databoxAbstract
             <br/>
             syslog level :
             <select name="syslog" onchange="chgxmlpopup(this, 'syslog');">
+                <option value="">...</option>
+                <option value="DEBUG">DEBUG</option>
+                <option value="INFO">INFO</option>
+                <option value="WARNING">WARNING</option>
+                <option value="ERROR">ERROR</option>
+                <option value="CRITICAL">CRITICAL</option>
+                <option value="ALERT">ALERT</option>
+            </select>
+            &nbsp;&nbsp;
+            syslog level :
+            <select name="maillog" onchange="chgxmlpopup(this, 'maillog');">
                 <option value="">...</option>
                 <option value="DEBUG">DEBUG</option>
                 <option value="INFO">INFO</option>

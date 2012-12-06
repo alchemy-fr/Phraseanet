@@ -278,40 +278,40 @@ class task_period_RecordMover extends task_appboxAbstract
         <script type="text/javascript">
             $(document).ready(
             function(){
-            });
+                (function( $ ){
+                    $.fn.serializeJSON=function() {
+                        var json = {};
+                        jQuery.map($(this).serializeArray(), function(n, i){
+                            json[n['name']] = n['value'];
+                        });
 
-            (function( $ ){
-                $.fn.serializeJSON=function() {
-                    var json = {};
-                    jQuery.map($(this).serializeArray(), function(n, i){
-                        json[n['name']] = n['value'];
-                    });
+                        return json;
+                    };
+                })( jQuery );
 
-                    return json;
-                };
-            })( jQuery );
-
-
-            function chgxmltxt(textinput, fieldname)
-            {
                 var limits = {
                     'period':{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
                     'delay':{min:0}
                 } ;
-                if (typeof(limits[fieldname])!='undefined') {
-                    var v = 0|textinput.value;
-                    if(limits[fieldname].min && v < limits[fieldname].min)
-                        v = limits[fieldname].min;
-                    else if(limits[fieldname].max && v > limits[fieldname].max)
-                        v = limits[fieldname].max;
-                    textinput.value = v;
-                }
-                setDirty();
-            }
-            function chgxmlck(checkinput, fieldname)
-            {
-                setDirty();
-            }
+                $(".formElem").change(function(){
+                    fieldname = $(this).attr("name");
+                    switch((this.nodeName+$(this).attr("type")).toLowerCase())
+                    {
+                        case "inputtext":
+                            if (typeof(limits[fieldname])!='undefined') {
+                                var v = 0|this.value;
+                                if(v < limits[fieldname].min)
+                                    v = limits[fieldname].min;
+                                else if(v > limits[fieldname].max)
+                                    v = limits[fieldname].max;
+                                this.value = v;
+                            }
+                            break;
+                    }
+                    setDirty();
+                });
+            });
+
         </script>
         <?php
     }
@@ -327,12 +327,12 @@ class task_period_RecordMover extends task_appboxAbstract
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <?php echo _('task::_common_:periodicite de la tache') ?>
-            <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="" />
+            <input class="formElem" type="text" name="period" style="width:40px;" value="" />
             <?php echo _('task::_common_:secondes (unite temporelle)') ?>
             <br/>
             <br/>
             syslog level :
-            <select name="syslog" onchange="chgxmlpopup(this, 'syslog');">
+            <select class="formElem" name="syslog">
                 <option value="">...</option>
                 <option value="DEBUG">DEBUG</option>
                 <option value="INFO">INFO</option>
@@ -343,7 +343,7 @@ class task_period_RecordMover extends task_appboxAbstract
             </select>
             &nbsp;&nbsp;
             maillog level :
-            <select name="maillog" onchange="chgxmlpopup(this, 'maillog');">
+            <select class="formElem" name="maillog">
                 <option value="">...</option>
                 <option value="DEBUG">DEBUG</option>
                 <option value="INFO">INFO</option>
@@ -354,7 +354,7 @@ class task_period_RecordMover extends task_appboxAbstract
             </select>
             <br/>
             <br/>
-            <input type="checkbox" name="logsql" onchange="chgxmlck(this, 'logsql');" />&nbsp;log changes
+            <input class="formElem" type="checkbox" name="logsql" />&nbsp;log changes
         </form>
         <center>
             <div class="terminal" id="sqla"></div>

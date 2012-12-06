@@ -44,11 +44,12 @@ class module_console_taskrun extends Command
             , task_abstract::RUNNER_MANUAL
         );
         $this->addOption(
-            'syslog',
-            null,
-            InputOption::VALUE_REQUIRED, //::VALUE_OPTIONAL,
-            'threshold : (DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT)',
-            null
+            'syslog', null, InputOption::VALUE_REQUIRED, //::VALUE_OPTIONAL,
+            'threshold : (DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT)', null
+        );
+        $this->addOption(
+            'maillog', null, InputOption::VALUE_REQUIRED, //::VALUE_OPTIONAL,
+            'threshold : (DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT)', null
         );
 //        $this->addOption(
 //            'nolog'
@@ -110,41 +111,53 @@ class module_console_taskrun extends Command
 
         $logger = $core['monolog'];
 
-        var_dump($input->getOption('syslog'));
-
         $syslogOption = $input->getOption('syslog');
-        if ($syslogOption !== null) {
+        $maillogOption = $input->getOption('maillog');
+        if ($syslogOption !== null || $maillogOption !== null) {
             $lib2v = array(
-                'DEBUG'    => Logger::DEBUG,
-                'INFO'     => Logger::INFO,
-                'WARNING'  => Logger::WARNING,
-                'ERROR'    => Logger::ERROR,
-                'CRITICAL' => Logger::CRITICAL,
-                'ALERT'    => Logger::ALERT
+                'DEBUG'       => Logger::DEBUG,
+                'INFO'        => Logger::INFO,
+                'WARNING'     => Logger::WARNING,
+                'ERROR'       => Logger::ERROR,
+                'CRITICAL'    => Logger::CRITICAL,
+                'ALERT'       => Logger::ALERT
             );
-            $syslogOption = strtoupper($syslogOption);
-            if (!array_key_exists($syslogOption, $lib2v)) {
-                throw(new RuntimeException(sprintf(
-                    "Bad value '%s' for option --syslog\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT",
-                    $syslogOption))
+            if (($syslogOption = strtoupper($syslogOption)) != '') {
+                if (!array_key_exists($syslogOption, $lib2v)) {
+                    throw(new RuntimeException(sprintf(
+                            "Bad value '%s' for option --syslog\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $syslogOption))
+                    );
+                }
+                $fakeTask = $task_manager->getTask($task_id, null);
+                $handler = new Handler\SyslogHandler(
+                        "Phraseanet-Task/" . $fakeTask->getName(), // string added to each message
+                        "user", // facility (type of program logging)
+                        $lib2v[$syslogOption], // level
+                        true        // bubble
                 );
+                unset($fakeTask);
+                $logger->pushHandler($handler);
             }
-            $fakeTask = $task_manager->getTask($task_id, null);
-            $handler = new Handler\SyslogHandler(
-                    "Phraseanet-Task/" . $fakeTask->getName(), // string added to each message
-                    "user", // facility (type of program logging)
-                    $lib2v[$syslogOption],  // level
-                    true        // bubble
-            );
-            $logger->pushHandler($handler);
-            unset($fakeTask);
+            if (($maillogOption = strtoupper($maillogOption)) != '') {
+                if (!array_key_exists($maillogOption, $lib2v)) {
+                    throw(new RuntimeException(sprintf(
+                            "Bad value '%s' for option --maillog\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $maillogOption))
+                    );
+                }
+                $registry = registry::get_instance();
+                $adminMail = $registry->get('GV_adminMail');
+                $senderMail = $registry->get('GV_defaultmailsenderaddr');
+                $handler = new Handler\NativeMailerHandler(
+                        $adminMail,
+                        "Task problem",
+                        $senderMail,
+                        $lib2v[$maillogOption], // level
+                        true
+                );
+                $logger->pushHandler($handler);
+            }
         }
 
-        $registry = registry::get_instance();
-        $adminMail = $registry->get('GV_adminMail');
-        $senderMail = $registry->get('GV_defaultmailsenderaddr');
-        $handler = new Handler\NativeMailerHandler($adminMail, "Task problem", $senderMail, Logger::DEBUG, true);
-        $logger->pushHandler($handler);
 
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
         $handler = new Handler\RotatingFileHandler($logfile, 10);

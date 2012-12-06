@@ -211,25 +211,30 @@
                     {
                         if(this.currentView == "GRAPHIC")
                         {
-                            if( (f = document.forms['graphicForm']) )
-                            {
-                                document.getElementById("__gxml").value = document.forms['fxml'].txtareaxml.value;
-                                document.getElementById("__gtname").value = document.forms['__ftask'].__tname.value;
-                                document.getElementById("__gtactive").value = document.forms['__ftask'].__tactive.checked ? "1" : "0" ;
-                                document.getElementById("__gact").value = "SAVE_GRAPHIC";
-                                f.target = "hiddenFrame";
-                                f.action = "task2utils.php";
-                                f.submit();
-                            }
+                            var data = $(document.forms['graphicForm']).serializeJSON();
+                            data.__class   = "{{ task|get_class }}";
+                            data.__tid     = "{{task.getID()}}";
+                            data.__xml     = document.forms['fxml'].txtareaxml.value;
+                            data.__tname   = document.forms['__ftask'].__tname.value;
+                            data.__tactive = document.forms['__ftask'].__tactive.checked ? "1" : "0" ;
+                            data.__act     = "SAVE_GRAPHIC";
                         }
                         else
                         {
-                            document.forms['fxml'].target = "hiddenFrame";
-                            document.forms['fxml'].__tname.value = document.forms['__ftask'].__tname.value;
-                            document.forms['fxml'].__tactive.value = document.forms['__ftask'].__tactive.checked ? "1" : "0" ;
-                            document.forms['fxml'].__act.value = "SAVE_XML";
-                            document.forms['fxml'].submit();
+                            var data = $(document.forms['fxml']).serializeJSON();
+                            data.__tname   = document.forms['__ftask'].__tname.value;
+                            data.__tactive = document.forms['__ftask'].__tactive.checked ? "1" : "0" ;
+                            data.__act     = "SAVE_XML";
                         }
+                        $.post(
+                            "task2utils.php",
+                            data,
+                            function(data)
+                            {
+                                // console.log(data);
+                            },
+                            "text"
+                        );
                     }
                     else
                     {
@@ -242,71 +247,8 @@
                             document.forms["__freturn"].submit();
                         }
                     }
-                },
-
-                getHTTPObject:function()
-                {
-                    var ret = null ;
-                    try
-                    {
-                        ret = new XMLHttpRequest();
-                    }
-                    catch (e)
-                    {
-                        try
-                        {
-                            ret = new ActiveXObject("Msxml2.XMLHTTP");
-                        }
-                        catch (e)
-                        {
-                            try
-                            {
-                                ret = new ActiveXObject("Microsoft.XMLHTTP");
-                            }
-                            catch (e)
-                            {
-                                ret = null;
-                            }
-                        }
-                    }
-                    return ret;
-                },
-
-                resetCrashCounter:function()
-                {
-                    if(typeof(this.resetCrashCounter.x) == 'undefined')	// simulate static : only 1 instance of getHTTPObject !
-                    {
-                        this.resetCrashCounter.x = {
-                            "xmlhttp":new this.getHTTPObject,	// une seule instance
-                            "cb":function ()
-                            {
-                                var ret;
-                                if (this.readyState == 4)
-                                {
-                                    try
-                                    {
-                                        document.getElementById("idCrashLine").style.visibility = "hidden";
-                                        ret = this.responseXML;
-                                    }
-                                    catch(e)
-                                    {
-                                    }
-                                    delete this.responseText;
-                                    delete this.responseXML;
-                                    delete this.onreadystatechange;
-
-                                    this.abort();
-                                }
-                            }
-                        };
-                    }
-
-                    var url  = "/admin/adminFeedback.php?action=RESETTASKCRASHCOUNTER&task_id={{task.getID()}}";
-                    this.resetCrashCounter.x.xmlhttp.onreadystatechange = this.resetCrashCounter.x.cb; // ping_stateChange;
-                    this.resetCrashCounter.x.xmlhttp.open("POST", url, true);
-                    this.resetCrashCounter.x.xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                    this.resetCrashCounter.x.xmlhttp.send(null);
                 }
+
             };
 
             function redrawme()
@@ -314,68 +256,56 @@
                 hauteur =  document.body.clientHeight;
             }
 
-            function loaded()
+            function setDirty()
             {
-                var o;
-                if( (f = document.forms['graphicForm']) )
-                {
-                    o = document.createElement('input');
-                    o.setAttribute("name", "__class");
-                    o.setAttribute("type", "hidden");
-                    o.setAttribute("value", "{{ task|get_class }}");
-                    f.appendChild(o);
+                jsTaskObj.SettingsIsDirty = true;
+            }
 
-                    o = document.createElement('input');
-                    o.setAttribute("id", "__gact");
-                    o.setAttribute("name", "__act");
-                    o.setAttribute("type", "hidden");
-                    o.setAttribute("value", "");
-                    f.appendChild(o);
+            $(document).ready(function(){
 
-                    o = document.createElement('input');
-                    o.setAttribute("id", "__gtname");
-                    o.setAttribute("name", "__tname");
-                    o.setAttribute("type", "hidden");
-                    o.setAttribute("value", "");
-                    f.appendChild(o);
+                (function( $ ){
+                $.fn.serializeJSON=function() {
+                var json = {};
+                jQuery.map($(this).serializeArray(), function(n, i){
+                json[n['name']] = n['value'];
+                });
+                return json;
+                };
+                })( jQuery );
 
-                    o = document.createElement('input');
-                    o.setAttribute("id", "__gtactive");
-                    o.setAttribute("name", "__tactive");
-                    o.setAttribute("type", "hidden");
-                    o.setAttribute("value", "");
-                    f.appendChild(o);
-
-                    o = document.createElement('input');
-                    o.setAttribute("id", "__gxml");
-                    o.setAttribute("name", "__xml");
-                    o.setAttribute("type", "hidden");
-                    o.setAttribute("value", "");
-                    f.appendChild(o);
-
-                    o = document.createElement('input');
-                    o.setAttribute("id", "__gtid");
-                    o.setAttribute("name", "__tid");
-                    o.setAttribute("type", "hidden");
-                    o.setAttribute("value", "{{task.getID()}}");
-                    f.appendChild(o);
-                }
+                $(document.forms['graphicForm']).append(
+                    "<input                   name=\"__class\"   type=\"hidden\" value=\"{{ task|get_class }}\" />",
+                    "<input id=\"__gact\"     name=\"__act\"     type=\"hidden\" value=\"\" />",
+                    "<input id=\"__gtname\"   name=\"__tname\"   type=\"hidden\" value=\"\" />",
+                    "<input id=\"__gtactive\" name=\"__tactive\" type=\"hidden\" value=\"\" />",
+                    "<input id=\"__gxml\"     name=\"__xml\"     type=\"hidden\" value=\"\" />",
+                    "<input id=\"__gtid\"     name=\"__tid\"     type=\"hidden\" value=\"{{task.getID()}}\" />"
+                );
                 redrawme();
                 {% if task.hasInterfaceHTML() %}
                 jsTaskObj.view("PRE_GRAPHIC");
                 {% else %}
                 jsTaskObj.view("PRE_XML");
                 {% endif %}
-                if( (o = document.getElementById("iddivloading")) )
-                    o.style.visibility = "hidden";
-            }
 
-            function setDirty()
-            {
-                jsTaskObj.SettingsIsDirty = true;
-            }
+                $("#iddivloading").hide();
 
-
+                $("#resetCrashCounterButton").click(function(e){
+                    e.preventDefault();
+                    $.post(
+                        "/admin/adminFeedback.php",
+                        {
+                            action:"RESETTASKCRASHCOUNTER",
+                            task_id:"{{task.getID()}}"
+                        },
+                        function(data)
+                        {
+                            $("#idCrashLine").hide();
+                        },
+                        "xml"
+                    );
+                });
+            });
         </script>
         <!-- _____________  javascript of graphic interface of '{{task.getName()}}'   _____________ -->
         {{task.printInterfaceJS()}}
@@ -383,7 +313,7 @@
 
     </head>
 
-    <body id="idBody"  onResize="redrawme();"  onLoad="loaded();" style="background-color:#AAAAAA; overflow:hidden" scroll="no" >
+    <body id="idBody"  onResize="redrawme();" style="background-color:#AAAAAA; overflow:hidden" scroll="no" >
         <div style="position:absolute; top:0px; left:5px; right:5px; height:45px; " nowrap>
             <h4 style="padding:2px; text-align:center">{{task.getName()}} <span id="taskid">id : {{task.getID()}}</span></h4>
             <form name="__ftask" onsubmit="return(false);" method="post" method="post">
@@ -395,7 +325,7 @@
             <div id="idCrashLine" style="visibility:{% if task.getCrashCounter() == 0 %}hidden{% endif %}">
                 {% trans 'admin::tasks: Nombre de crashes : ' %} {{task.getCrashCounter()}}
 
-                <a href="javascript:void();" onclick="jsTaskObj.resetCrashCounter();return(false);">
+                <a id="resetCrashCounterButton" href="#">
                     {% trans 'admin::tasks: reinitialiser el compteur de crashes' %}</a>
             </div>
         </div>
