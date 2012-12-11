@@ -48,8 +48,6 @@ class task_period_writemeta extends task_databoxAbstract
             , 'cleardoc'
             , 'maxrecs'
             , 'maxmegs'
-            , 'syslog'
-            , 'maillog'
         );
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
@@ -61,8 +59,6 @@ class task_period_writemeta extends task_databoxAbstract
             , 'str:maxrecs'
             , 'str:maxmegs'
             , 'boo:cleardoc'
-            , 'pop:syslog'
-            , 'pop:maillog'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -121,21 +117,6 @@ class task_period_writemeta extends task_databoxAbstract
             <?php echo $form ?>.cleardoc.checked    = <?php echo p4field::isyes($sxml->cleardoc) ? "true" : 'false' ?>;
             <?php echo $form ?>.maxrecs.value       = "<?php echo p4string::MakeString($sxml->maxrecs, "js", '"') ?>";
             <?php echo $form ?>.maxmegs.value       = "<?php echo p4string::MakeString($sxml->maxmegs, "js", '"') ?>";
-                var i;
-                var opts;
-                var found;
-                opts = <?php echo $form ?>.syslog.options;
-                for (found=0, i=1; found==0 && i<opts.length; i++) {
-                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->syslog, "form") ?>")
-                    found = i;
-                }
-                opts[found].selected = true;
-                opts = <?php echo $form ?>.maillog.options;
-                for (found=0, i=1; found==0 && i<opts.length; i++) {
-                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->maillog, "form") ?>")
-                    found = i;
-                }
-                opts[found].selected = true;
             </script>
             <?php
             return("");
@@ -188,32 +169,10 @@ class task_period_writemeta extends task_databoxAbstract
         if (count($sbas_ids) > 0) {
             ?>
             <form name="graphicForm" onsubmit="return(false);" method="post">
+                <br/>
                 <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
                 <input class="formElem" type="text" name="period" style="width:40px;" value="">
                 <?php echo _('task::_common_:secondes (unite temporelle)') ?>
-                <br/>
-                <br/>
-                syslog level :
-                <select class="formElem" name="syslog">
-                    <option value="">...</option>
-                    <option value="DEBUG">DEBUG</option>
-                    <option value="INFO">INFO</option>
-                    <option value="WARNING">WARNING</option>
-                    <option value="ERROR">ERROR</option>
-                    <option value="CRITICAL">CRITICAL</option>
-                    <option value="ALERT">ALERT</option>
-                </select>
-                &nbsp;&nbsp;
-                maillog level :
-                <select class="formElem" name="maillog">
-                    <option value="">...</option>
-                    <option value="DEBUG">DEBUG</option>
-                    <option value="INFO">INFO</option>
-                    <option value="WARNING">WARNING</option>
-                    <option value="ERROR">ERROR</option>
-                    <option value="CRITICAL">CRITICAL</option>
-                    <option value="ALERT">ALERT</option>
-                </select>
                 <br/>
                 <br/>
                 <input class="formElem" type="checkbox" name="cleardoc">

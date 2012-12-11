@@ -25,11 +25,14 @@ abstract class task_abstract
     const MINRECS = 10;
     const MAXRECS = 100;
     // default min/max values for the 'overflow memory (Mo)' setting on tasks
-    const MINMEGS = 2;
+    const MINMEGS = 20;
     const MAXMEGS = 256;
     // default min/max values for the 'period (seconds)' setting on tasks
     const MINPERIOD = 10;
     const MAXPERIOD = 3600;
+    // default min/max values for the 'flush every n records' setting on tasks
+    const MINFLUSH = 1;
+    const MAXFLUSH = 100;
 
     /**
      *
@@ -678,7 +681,7 @@ abstract class task_abstract
 
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
-                $this->log(sprintf("Max memory (%s Mo) reached (actual is %.02f Mo)", $this->maxmegs, ($current_memory >> 10)/1024 ), Logger::ERROR);
+                $this->log(sprintf("Max memory (%s M) reached (actual is %.02f M)", $this->maxmegs, ($current_memory >> 10) / 1024), Logger::ERROR);
                 $this->running = FALSE;
                 $ret = self::STATE_MAXMEGSREACHED;
             }
@@ -708,7 +711,7 @@ abstract class task_abstract
 
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
-                $this->log(sprintf("Max memory (%s Mo) reached (current is %.02f Mo)", $this->maxmegs, ($current_memory >> 10)/1024 ), Logger::ERROR);
+                $this->log(sprintf("Max memory (%s M) reached (current is %.02f M)", $this->maxmegs, ($current_memory >> 10) / 1024), Logger::ERROR);
                 $this->running = FALSE;
                 $ret = self::STATE_MAXMEGSREACHED;
             }
@@ -740,21 +743,23 @@ abstract class task_abstract
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->period = (integer) $sx_task_settings->period;
-        if ($this->period <= 0 || $this->period >= 60 * 60) {
-            $this->period = 60;
+        if ($this->period < self::MINPERIOD || $this->period > self::MAXPERIOD) {
+            $this->period = self::MINPERIOD;
         }
 
         $this->maxrecs = (integer) $sx_task_settings->maxrecs;
-        if ($sx_task_settings->maxrecs < 10 || $sx_task_settings->maxrecs > 1000) {
-            $this->maxrecs = 100;
+        if ($sx_task_settings->maxrecs < self::MINRECS || $sx_task_settings->maxrecs > self::MAXRECS) {
+            $this->maxrecs = self::MINRECS;
         }
+
         $this->maxmegs = (integer) $sx_task_settings->maxmegs;
-        if ($sx_task_settings->maxmegs < 16 || $sx_task_settings->maxmegs > 512) {
-//            $this->maxmegs = 24;
+        if ($sx_task_settings->maxmegs < self::MINMEGS || $sx_task_settings->maxmegs > self::MAXMEGS) {
+            $this->maxmegs = self::MINMEGS;
         }
+
         $this->record_buffer_size = (integer) $sx_task_settings->flush;
-        if ($sx_task_settings->flush < 1 || $sx_task_settings->flush > 100) {
-            $this->record_buffer_size = 10;
+        if ($sx_task_settings->flush < self::MINFLUSH || $sx_task_settings->flush > self::MAXFLUSH) {
+            $this->record_buffer_size = self::MINFLUSH;
         }
     }
 

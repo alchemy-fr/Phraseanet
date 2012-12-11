@@ -106,14 +106,14 @@ class module_console_taskrun extends Command
                 $this->shedulerPID = $schedStatus['pid'];
             }
         }
-
         $core = \bootstrap::getCore();
 
         $logger = $core['monolog'];
 
-        $syslogOption = $input->getOption('syslog');
-        $maillogOption = $input->getOption('maillog');
-        if ($syslogOption !== null || $maillogOption !== null) {
+        $syslogOption = strtoupper($core['task.config']->get('SyslogLevel'));
+        $maillogOption = strtoupper($core['task.config']->get('MaillogLevel'));
+
+        if ($syslogOption != '' || $maillogOption != '') {
             $lib2v = array(
                 'DEBUG'       => Logger::DEBUG,
                 'INFO'        => Logger::INFO,
@@ -122,10 +122,10 @@ class module_console_taskrun extends Command
                 'CRITICAL'    => Logger::CRITICAL,
                 'ALERT'       => Logger::ALERT
             );
-            if (($syslogOption = strtoupper($syslogOption)) != '') {
+            if ($syslogOption != '') {
                 if (!array_key_exists($syslogOption, $lib2v)) {
                     throw(new RuntimeException(sprintf(
-                            "Bad value '%s' for option --syslog\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $syslogOption))
+                            "Bad value '%s' for setting SyslogLevel\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $syslogOption))
                     );
                 }
                 $fakeTask = $task_manager->getTask($task_id, null);
@@ -138,10 +138,10 @@ class module_console_taskrun extends Command
                 unset($fakeTask);
                 $logger->pushHandler($handler);
             }
-            if (($maillogOption = strtoupper($maillogOption)) != '') {
+            if ($maillogOption != '') {
                 if (!array_key_exists($maillogOption, $lib2v)) {
                     throw(new RuntimeException(sprintf(
-                            "Bad value '%s' for option --maillog\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $maillogOption))
+                            "Bad value '%s' for setting MaillogLevel\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $maillogOption))
                     );
                 }
                 $registry = registry::get_instance();

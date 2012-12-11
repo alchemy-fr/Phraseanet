@@ -72,8 +72,6 @@ class task_period_subdef extends task_databoxAbstract
             , 'flush'
             , 'maxrecs'
             , 'maxmegs'
-            , 'syslog'
-            , 'maillog'
         );
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
@@ -86,8 +84,6 @@ class task_period_subdef extends task_databoxAbstract
             , 'str:flush'
             , 'str:maxrecs'
             , 'str:maxmegs'
-            , 'pop:syslog'
-            , 'pop:maillog'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -150,21 +146,6 @@ class task_period_subdef extends task_databoxAbstract
             }
             ?>
             <script type="text/javascript">
-                var i;
-                var opts;
-                var found;
-                opts = <?php echo $form ?>.syslog.options;
-                for (found=0, i=1; found==0 && i<opts.length; i++) {
-                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->syslog, "form") ?>")
-                    found = i;
-                }
-                opts[found].selected = true;
-                opts = <?php echo $form ?>.maillog.options;
-                for (found=0, i=1; found==0 && i<opts.length; i++) {
-                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->maillog, "form") ?>")
-                    found = i;
-                }
-                opts[found].selected = true;
             <?php echo $form ?>.period.value  = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
             <?php echo $form ?>.flush.value   = "<?php echo p4string::MakeString($sxml->flush, "js", '"') ?>";
             <?php echo $form ?>.maxrecs.value = "<?php echo p4string::MakeString($sxml->maxrecs, "js", '"') ?>";
@@ -225,41 +206,19 @@ class task_period_subdef extends task_databoxAbstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
+            <br/>
             <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input class="formElem" type="text" name="period" style="width:40px;" value="">
             <?php echo _('task::_common_:secondes (unite temporelle)') ?>
-            <br/>
-            <br/>
-            syslog level :
-            <select class="formElem" name="syslog">
-                <option value="">...</option>
-                <option value="DEBUG">DEBUG</option>
-                <option value="INFO">INFO</option>
-                <option value="WARNING">WARNING</option>
-                <option value="ERROR">ERROR</option>
-                <option value="CRITICAL">CRITICAL</option>
-                <option value="ALERT">ALERT</option>
-            </select>
-            &nbsp;&nbsp;
-            maillog level :
-            <select class="formElem" name="maillog">
-                <option value="">...</option>
-                <option value="DEBUG">DEBUG</option>
-                <option value="INFO">INFO</option>
-                <option value="WARNING">WARNING</option>
-                <option value="ERROR">ERROR</option>
-                <option value="CRITICAL">CRITICAL</option>
-                <option value="ALERT">ALERT</option>
-            </select>
             <br/>
             <br/>
             <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input class="formElem" type="text" name="flush" style="width:40px;" value="">'); ?>
             <br/>
             <br/>
             <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
-            <input type="text" name="maxrecs" style="width:40px;" value="">
+            <input class="formElem" type="text" name="maxrecs" style="width:40px;" value="">
             <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
-            <input type="text" name="maxmegs" style="width:40px;" value="">
+            <input class="formElem" type="text" name="maxmegs" style="width:40px;" value="">
             Mo
             <br/>
         </form>
@@ -274,8 +233,7 @@ class task_period_subdef extends task_databoxAbstract
         $sql = 'SELECT coll_id, record_id
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
-              ORDER BY record_id DESC LIMIT 0, 20';
-
+              ORDER BY record_id DESC LIMIT 0, '.$this->maxrecs;
         $stmt = $connbas->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

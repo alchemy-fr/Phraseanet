@@ -47,8 +47,6 @@ class task_period_RecordMover extends task_appboxAbstract
         $parm2 = $request->get_parms(
             'period'
             , 'logsql'
-            , 'syslog'
-            , 'maillog'
         );
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
@@ -58,8 +56,6 @@ class task_period_RecordMover extends task_appboxAbstract
             foreach (array(
             'str:period'
             , 'boo:logsql'
-            , 'pop:syslog'
-            , 'pop:maillog'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -108,21 +104,6 @@ class task_period_RecordMover extends task_appboxAbstract
                 $sxml->delay = 0;
             ?>
             <script type="text/javascript">
-                var i;
-                var opts;
-                var found;
-                opts = <?php echo $form ?>.syslog.options;
-                for (found=0, i=1; found==0 && i<opts.length; i++) {
-                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->syslog, "form") ?>")
-                    found = i;
-                }
-                opts[found].selected = true;
-                opts = <?php echo $form ?>.maillog.options;
-                for (found=0, i=1; found==0 && i<opts.length; i++) {
-                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->maillog, "form") ?>")
-                    found = i;
-                }
-                opts[found].selected = true;
             <?php echo $form ?>.period.value   = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
             <?php echo $form ?>.logsql.checked = <?php echo ($sxml->logsql > 0 ? 'true' : 'false'); ?>;
 
@@ -326,32 +307,10 @@ class task_period_RecordMover extends task_appboxAbstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
+            <br/>
             <?php echo _('task::_common_:periodicite de la tache') ?>
             <input class="formElem" type="text" name="period" style="width:40px;" value="" />
             <?php echo _('task::_common_:secondes (unite temporelle)') ?>
-            <br/>
-            <br/>
-            syslog level :
-            <select class="formElem" name="syslog">
-                <option value="">...</option>
-                <option value="DEBUG">DEBUG</option>
-                <option value="INFO">INFO</option>
-                <option value="WARNING">WARNING</option>
-                <option value="ERROR">ERROR</option>
-                <option value="CRITICAL">CRITICAL</option>
-                <option value="ALERT">ALERT</option>
-            </select>
-            &nbsp;&nbsp;
-            maillog level :
-            <select class="formElem" name="maillog">
-                <option value="">...</option>
-                <option value="DEBUG">DEBUG</option>
-                <option value="INFO">INFO</option>
-                <option value="WARNING">WARNING</option>
-                <option value="ERROR">ERROR</option>
-                <option value="CRITICAL">CRITICAL</option>
-                <option value="ALERT">ALERT</option>
-            </select>
             <br/>
             <br/>
             <input class="formElem" type="checkbox" name="logsql" />&nbsp;log changes

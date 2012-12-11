@@ -103,8 +103,6 @@ class task_period_archive extends task_abstract
             , 'copy_spe'
             , 'delfolder'
             , 'cold'
-            , 'syslog'
-            , 'maillog'
         );
         $dom = new DOMDocument();
         $dom->formatOutput = true;
@@ -120,8 +118,6 @@ class task_period_archive extends task_abstract
             , 'boo:delfolder'
             , 'boo:copy_spe'
             , 'str:cold'
-            , 'pop:syslog'
-            , 'pop:maillog'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -178,18 +174,6 @@ class task_period_archive extends task_abstract
                 var i;
                 var opts;
                 var found;
-                opts = <?php echo $form ?>.syslog.options;
-                for (found=0, i=1; found==0 && i<opts.length; i++) {
-                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->syslog, "form") ?>")
-                    found = i;
-                }
-                opts[found].selected = true;
-                opts = <?php echo $form ?>.maillog.options;
-                for (found=0, i=1; found==0 && i<opts.length; i++) {
-                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->maillog, "form") ?>")
-                    found = i;
-                }
-                opts[found].selected = true;
                 opts = <?php echo $form ?>.base_id.options;
                 for (found=0, i=1; found==0 && i<opts.length; i++) {
                     if(opts[i].value == "<?php echo \p4string::MakeString($sxml->base_id, "form") ?>")
@@ -256,29 +240,6 @@ class task_period_archive extends task_abstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-            <br/>
-            syslog level :
-            <select class="formElem" name="syslog">
-                <option value="">...</option>
-                <option value="DEBUG">DEBUG</option>
-                <option value="INFO">INFO</option>
-                <option value="WARNING">WARNING</option>
-                <option value="ERROR">ERROR</option>
-                <option value="CRITICAL">CRITICAL</option>
-                <option value="ALERT">ALERT</option>
-            </select>
-            &nbsp;&nbsp;
-            maillog level :
-            <select class="formElem" name="maillog">
-                <option value="">...</option>
-                <option value="DEBUG">DEBUG</option>
-                <option value="INFO">INFO</option>
-                <option value="WARNING">WARNING</option>
-                <option value="ERROR">ERROR</option>
-                <option value="CRITICAL">CRITICAL</option>
-                <option value="ALERT">ALERT</option>
-            </select>
-            <br/>
             <br/>
             <?php echo _('task::archive:archivage sur base/collection/') ?> :
 
@@ -359,20 +320,20 @@ class task_period_archive extends task_abstract
         // mask(s) of accepted files
         $this->tmask = array();
         $this->tmaskgrp = array();
-        $this->period = 60;
+//        $this->period = 60;
         $this->cold = 30;
 
         if (false !== $this->sxBasePrefs = @simplexml_load_string($collection->get_prefs())) {
             $this->sxBasePrefs["id"] = $base_id;
 
-            $this->period = (int) ($this->sxTaskSettings->period);
-            if ($this->period <= 0 || $this->period >= 3600) {
-                $this->period = 60;
-            }
+//            $this->period = (int) ($this->sxTaskSettings->period);
+//            if ($this->period <= 0 || $this->period >= 3600) {
+//                $this->period = 60;
+//            }
 
             $this->cold = (int) ($this->sxTaskSettings->cold);
-            if ($this->cold <= 0 || $this->cold >= 300) {
-                $this->cold = 30;
+            if ($this->cold < self::MINCOLD || $this->cold > self::MAXCOLD) {
+                $this->cold = self::MINCOLD;
             }
 
             // check the data-repository exists

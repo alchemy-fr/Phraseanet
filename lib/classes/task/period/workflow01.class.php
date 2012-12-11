@@ -15,6 +15,8 @@
  */
 class task_period_workflow01 extends task_databoxAbstract
 {
+    const MINPERIOD = 1;    // in this task, period is in minutes
+    const MAXPERIOD = 1440; // 24 h
 
     public function getName()
     {
@@ -32,8 +34,6 @@ class task_period_workflow01 extends task_databoxAbstract
             , 'coll0'
             , 'status1'
             , 'coll1'
-            , 'syslog'
-            , 'maillog'
         );
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
@@ -48,8 +48,6 @@ class task_period_workflow01 extends task_databoxAbstract
             , 'str:coll0'
             , 'str:status1'
             , 'str:coll1'
-            , 'pop:syslog'
-            , 'pop:maillog'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -96,19 +94,6 @@ class task_period_workflow01 extends task_databoxAbstract
             <script type="text/javascript">
                 var i;
                 var opts;
-                var found;
-                opts = <?php echo $form ?>.syslog.options;
-                for (found=0, i=1; found==0 && i<opts.length; i++) {
-                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->syslog, "form") ?>")
-                    found = i;
-                }
-                opts[found].selected = true;
-                opts = <?php echo $form ?>.maillog.options;
-                for (found=0, i=1; found==0 && i<opts.length; i++) {
-                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->maillog, "form") ?>")
-                    found = i;
-                }
-                opts[found].selected = true;
                 var pops = [
                     {'name':"sbas_id", 'val':"<?php echo p4string::MakeString($sxml->sbas_id, "js") ?>"},
 
@@ -285,28 +270,6 @@ class task_period_workflow01 extends task_databoxAbstract
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
-            syslog level :
-            <select name="syslog" onchange="chgxmlpopup(this, 'syslog');">
-                <option value="">...</option>
-                <option value="DEBUG">DEBUG</option>
-                <option value="INFO">INFO</option>
-                <option value="WARNING">WARNING</option>
-                <option value="ERROR">ERROR</option>
-                <option value="CRITICAL">CRITICAL</option>
-                <option value="ALERT">ALERT</option>
-            </select>
-            &nbsp;&nbsp;
-            syslog level :
-            <select name="maillog" onchange="chgxmlpopup(this, 'maillog');">
-                <option value="">...</option>
-                <option value="DEBUG">DEBUG</option>
-                <option value="INFO">INFO</option>
-                <option value="WARNING">WARNING</option>
-                <option value="ERROR">ERROR</option>
-                <option value="CRITICAL">CRITICAL</option>
-                <option value="ALERT">ALERT</option>
-            </select>
-            &nbsp;&nbsp;
             <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;
 
             <select onchange="chgsbas(this);setDirty();" name="sbas_id">
@@ -376,21 +339,22 @@ class task_period_workflow01 extends task_databoxAbstract
 
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
+        parent::loadSettings($sx_task_settings);
+
         $this->status_origine = (string) $sx_task_settings->status0;
         $this->status_destination = (string) $sx_task_settings->status1;
 
         $this->coll_origine = (int) $sx_task_settings->coll0;
         $this->coll_destination = (int) $sx_task_settings->coll1;
 
-        parent::loadSettings($sx_task_settings);
-
         $this->mono_sbas_id = (int) $sx_task_settings->sbas_id;
-        // in minutes
-        $this->period = (int) $sx_task_settings->period * 60;
 
-        if ($this->period <= 0 || $this->period >= 24 * 60) {
-            $this->period = 60;
+        //  in this task, period is in minutes
+        $this->period = (integer) $sx_task_settings->period;
+        if ($this->period < self::MINPERIOD || $this->period > self::MAXPERIOD) {
+            $this->period = self::MINPERIOD;
         }
+        $this->period *= 60;
     }
 
     protected function retrieveSbasContent(databox $databox)
