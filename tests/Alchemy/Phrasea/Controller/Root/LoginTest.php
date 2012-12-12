@@ -73,7 +73,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?redirect=/prod&error=code-not-found', $response->headers->get('location'));
+        $this->assertEquals('/login/?redirect=prod&error=code-not-found', $response->headers->get('location'));
     }
 
     /**
@@ -86,7 +86,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?redirect=/prod&error=token-not-found', $response->headers->get('location'));
+        $this->assertEquals('/login/?redirect=prod&error=token-not-found', $response->headers->get('location'));
     }
 
     /**
@@ -101,7 +101,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?redirect=/prod&error=user-not-found', $response->headers->get('location'));
+        $this->assertEquals('/login/?redirect=prod&error=user-not-found', $response->headers->get('location'));
     }
 
     /**
@@ -678,6 +678,30 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     /**
      * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
      */
+    public function testAuthenticateCheckRedirect()
+    {
+        $password = \random::generatePassword();
+
+        $login = self::$DI['app']['phraseanet.user']->get_login();
+        self::$DI['app']['phraseanet.user']->set_password($password);
+
+        self::$DI['app']->closeAccount();
+
+        self::$DI['client'] = new Client(self::$DI['app'], array());
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
+        self::$DI['client']->request('POST', '/login/authenticate/', array(
+            'login'    => $login,
+            'pwd'      => $password,
+            'redirect' => '/admin'
+        ));
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertRegExp('/admin/', self::$DI['client']->getResponse()->headers->get('Location'));
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
+     */
     public function testGuestAuthenticate()
     {
         $usr_id = \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'invite');
@@ -734,6 +758,23 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegexp('/error=auth/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertFalse(self::$DI['app']->isAuthenticated());
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
+     */
+    public function testBadAuthenticateCheckRedirect()
+    {
+        self::$DI['app']->closeAccount();
+        self::$DI['client']->request('POST', '/login/authenticate/', array(
+            'login'     => self::$DI['user']->get_login(),
+            'pwd'       => 'test',
+            'redirect'  => '/prod'
+        ));
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertRegExp('/redirect=prod/', self::$DI['client']->getResponse()->headers->get('Location'));
         $this->assertFalse(self::$DI['app']->isAuthenticated());
     }
 
