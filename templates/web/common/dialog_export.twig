@@ -528,7 +528,14 @@
                 {% set alert_message %}
                     {% trans 'You must agree to the Terms of Use to continue.' %}
                 {% endset %}
-                alert("{{alert_message|e}}");
+
+                var options = {
+                  size : 'Alert',
+                  closeButton: true,
+                  title : '{% trans "Warning !" %}'
+                };
+
+                p4.Dialog.Create(options, 2).setContent("{{ alert_message|e }}");
 
                 return false;
             }
@@ -561,7 +568,14 @@
                 {% set alert_message %}
                     {% trans 'Certains champs sont obligatoires, veuillez les remplir' %}
                 {% endset %}
-                alert("{{alert_message|e}}");
+
+                var options = {
+                  size : 'Alert',
+                  closeButton: true,
+                  title : '{% trans "Warning !" %}'
+                };
+
+                p4.Dialog.Create(options, 2).setContent("{{ alert_message|e }}");
 
                 return false;
             }
@@ -570,7 +584,14 @@
                 {% set alert_message %}
                     {% trans 'Vous devez selectionner un type de sous definitions' %}
                 {% endset %}
-                alert("{{alert_message|e}}");
+
+                var options = {
+                  size : 'Alert',
+                  closeButton: true,
+                  title : '{% trans "Warning !" %}'
+                };
+
+                p4.Dialog.Create(options, 2).setContent("{{ alert_message|e }}");
 
                 return false;
             }
@@ -665,7 +686,14 @@
                         $this.removeAttr('disabled');
                         $('#order .order_button_loader').css('visibility','hidden');
 
-                        alert(data.message);
+                        var options = {
+                          size : 'Alert',
+                          closeButton: true,
+                          title : '{% trans "Warning !" %}'
+                        };
+
+                        p4.Dialog.Create(options, 2).setContent(data.message);
+
                         if(!data.error)
                         {
                             $('#dialog_dwnl').dialog('close').dialog('destroy');
@@ -697,7 +725,15 @@
                     , function(data){
                         $this.removeAttr('disabled');
                         $('#ftp .ftp_button_loader').css('visibility','hidden');
-                        alert(data.message);
+
+                        var options = {
+                          size : 'Alert',
+                          closeButton: true,
+                          title : '{% trans "Warning !" %}'
+                        };
+
+                        p4.Dialog.Create(options, 2).setContent(data.message);
+
                         if(!data.error)
                         {
                             $('#dialog_dwnl').dialog('close').dialog('destroy');
@@ -718,7 +754,15 @@
                     , options
                     , function(data){
                         $('#ftp .tryftp_button_loader').css('visibility','hidden');
-                        alert(data);
+
+                        var options = {
+                          size : 'Alert',
+                          closeButton: true,
+                          title : '{% trans "Warning !" %}'
+                        };
+
+                        p4.Dialog.Create(options, 2).setContent(data);
+
                         $this.removeAttr('disabled');
 
                         return;
