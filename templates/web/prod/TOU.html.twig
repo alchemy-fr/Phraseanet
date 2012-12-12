@@ -1,7 +1,7 @@
 <div>
     {% for name, TOU in TOUs %}
         <h1 style="text-align:center;font-weight:bold;font-size:16px;">{{ name }}</h1>
-        {{ TOU }}
+        {{ TOU | raw }}
         {% if loop.last == false %}
             <hr/>
         {% endif %}
