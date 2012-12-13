@@ -221,9 +221,9 @@ class Step35 implements DatasUpgraderInterface
     {
         static $stmt;
 
-        if ( ! $stmt) {
+        if (!isset($stmt[$databox->get_sbas_id()])) {
             $sql = 'UPDATE record SET originalname = :originalname WHERE record_id = :record_id';
-            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt[$databox->get_sbas_id()] = $databox->get_connection()->prepare($sql);
         }
 
         $original = '';
@@ -238,7 +238,7 @@ class Step35 implements DatasUpgraderInterface
             }
         }
 
-        $stmt->execute(array(':originalname' => $original, ':record_id'    => $record['record_id']));
+        $stmt[$databox->get_sbas_id()]->execute(array(':originalname' => $original, ':record_id'    => $record['record_id']));
     }
 
     /**
