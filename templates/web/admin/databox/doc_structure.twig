@@ -25,7 +25,7 @@
 
         <div id="warning_dialog" style="display:none" title="{% trans 'Attention !' %}" >
         </div>
-        <div style="display:none" id="field_changer">
+        <div style="display:none" id="field_changer" title="{% trans 'Metadata source selection' %}">
             <input id="field_chooser" type="text" value="">
             <input type="text" readonly value="" id="current_field_label"/>
             <button id="tag_remover">{% trans 'Delete' %}</button>
@@ -263,44 +263,46 @@
                     }
                 });
 
+                var current_field_label = $('#current_field_label');
+
                 $("#field_chooser").autocomplete({
                     source: "/admin/description/metadatas/search/",
                     minLength: 2,
                     select: function( event, ui ) {
-                        $('#current_field_label').val(ui.item.value);
+                        current_field_label.val(ui.item.value);
                     }
                 });
 
                 var buttons = {};
                 var dialog = $('#field_changer');
                 buttons['{% trans 'boutton::annuler' %}'] = function(){
-                    $('#field_changer').dialog('close');
+                    dialog.dialog('close');
                 };
 
                 $('#tag_remover').bind('click', function(){
-                    $('#current_field_label').val('');
+                    current_field_label.val('');
                 });
 
                 buttons['{% trans 'boutton::valider' %}'] = function(){
                     var field_id = $('input[name="field_id"]', dialog).val();
-                    $('#field_changer').dialog('close');
 
-                    $('#display_value_'+field_id).empty().append($('#current_field_label').val());
-                    $('input[name="src_'+field_id+'"]', container).val($('#current_field_label').val());
+                    $('#display_value_'+field_id).empty().append(current_field_label.val());
+                    $('input[name="src_'+field_id+'"]', container).val(current_field_label.val());
                     $('input[name="src_'+field_id+'"]', container).trigger('change');
                     $('.metafield_'+field_id, container).removeAttr('disabled');
+                    dialog.dialog('close');
                 };
-                $('#field_changer').dialog({
+                dialog.dialog({
                     modal:true,
                     buttons : buttons,
-                    draggable:false,
+                    draggable:true,
                     resizable:false
                 }).dialog('close');
 
                 $('a.field_change', container).bind('click', function(){
                     $('#field_chooser').val('');
                     var field_id = $('input',this).val();
-                    $('#current_field_label').val( $('input[name="src_'+field_id+'"]', container).val());
+                    current_field_label.val( $('input[name="src_'+field_id+'"]', container).val());
                     $('input[name="field_id"]', dialog).val(field_id);
                     dialog.dialog().dialog('open');
 
