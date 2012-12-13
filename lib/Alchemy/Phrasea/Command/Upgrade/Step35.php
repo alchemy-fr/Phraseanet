@@ -192,14 +192,14 @@ class Step35 implements DatasUpgraderInterface
         foreach ($datas as $meta_struct_id => $values) {
             if (is_array($values)) {
                 foreach ($values as $value) {
-                    $metadatas[$meta_struct_id] = array(
+                    $metadatas[] = array(
                         'meta_struct_id' => $meta_struct_id
                         , 'meta_id'        => null
                         , 'value'          => $value
                     );
                 }
             } else {
-                $metadatas[$meta_struct_id] = array(
+                $metadatas[] = array(
                     'meta_struct_id' => $meta_struct_id
                     , 'meta_id'        => null
                     , 'value'          => $values
