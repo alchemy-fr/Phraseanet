@@ -304,7 +304,19 @@ class databox_subdef
      */
     protected function buildAudioSubdef(SimpleXMLElement $sd)
     {
-        return new Audio();
+        $audio = new Audio();
+
+        if ($sd->acodec) {
+            $audio->setOptionValue(Audio::OPTION_ACODEC, (string) $sd->acodec);
+        }
+        if ($sd->bitrate) {
+            $audio->setOptionValue(Audio::OPTION_BITRATE, (int) $sd->bitrate);
+        }
+        if ($sd->audiosamplerate) {
+            $audio->setOptionValue(Audio::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
+        }
+
+        return $audio;
     }
 
     /**
@@ -362,6 +374,12 @@ class databox_subdef
         }
         if ($sd->bitrate) {
             $video->setOptionValue(Video::OPTION_BITRATE, (int) $sd->bitrate);
+        }
+        if ($sd->audiosamplerate) {
+            $video->setOptionValue(Video::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
+        }
+        if ($sd->GOPsize) {
+            $video->setOptionValue(Video::OPTION_GOPSIZE, (int) $sd->GOPsize);
         }
 
         return $video;

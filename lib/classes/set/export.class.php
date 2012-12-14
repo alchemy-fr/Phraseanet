@@ -768,11 +768,12 @@ class set_export extends set_abstract
     $file, $exportname, $mime, $disposition = 'inline')
     {
         $registry = registry::get_instance();
+        $unicode = new \unicode();
 
         $response = new Symfony\Component\HttpFoundation\Response();
 
         $disposition = $disposition === 'attachment' ? ResponseHeaderBag::DISPOSITION_ATTACHMENT : ResponseHeaderBag::DISPOSITION_INLINE;
-        $headerDisposition = $response->headers->makeDisposition($disposition, $exportname);
+        $headerDisposition = $response->headers->makeDisposition($disposition, $exportname, $unicode->remove_nonazAZ09($exportname));
 
         if (is_file($file)) {
             if ($registry->get('GV_modxsendfile')) {
