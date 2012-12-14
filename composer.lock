@@ -1,5 +1,5 @@
 {
-    "hash": "2aa621dc7ff6401f3411f9d87346d151",
+    "hash": "c508da190daa1fe68dd5e8b6756143f9",
     "packages": [
         {
             "name": "alchemy/Phlickr",
@@ -144,6 +144,7 @@
                     "Dailymotion.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "description": "Dailymotion PHP SDK",
             "homepage": "http://dailymotion.com",
             "keywords": [
@@ -403,6 +404,7 @@
                     "Gedmo": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -434,12 +436,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/avalanche123/Imagine",
-                "reference": "v0.4.0"
+                "reference": "v0.4.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/avalanche123/Imagine/archive/v0.4.0.zip",
-                "reference": "v0.4.0",
+                "url": "https://github.com/avalanche123/Imagine/archive/v0.4.1.zip",
+                "reference": "v0.4.1",
                 "shasum": ""
             },
             "require": {
@@ -448,7 +450,7 @@
             "require-dev": {
                 "sami/sami": "dev-master"
             },
-            "time": "2012-12-07 16:46:12",
+            "time": "2012-12-13 18:31:18",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -456,6 +458,7 @@
                     "Imagine": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -516,6 +519,7 @@
                     "MediaAlchemyst": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -547,12 +551,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/MediaVorus",
-                "reference": "a540721ccba2db82f309150c8a167d9a8b4e936c"
+                "reference": "0.1.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/romainneutron/MediaVorus/archive/a540721ccba2db82f309150c8a167d9a8b4e936c.zip",
-                "reference": "a540721ccba2db82f309150c8a167d9a8b4e936c",
+                "url": "https://github.com/romainneutron/MediaVorus/archive/0.1.1.zip",
+                "reference": "0.1.1",
                 "shasum": ""
             },
             "require": {
@@ -567,7 +571,7 @@
                 "fabpot/php-cs-fixer": "*",
                 "silex/silex": "dev-master"
             },
-            "time": "2012-11-26 19:04:35",
+            "time": "2012-12-13 18:11:22",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -580,6 +584,7 @@
                     "MediaVorus": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -644,12 +649,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg",
-                "reference": "b6b8bd502131e0dd82f53517ccc84d3de2c09424"
+                "reference": "1d326e08bbd74c73825e71fb22a9b92ee2636f13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/zipball/b6b8bd502131e0dd82f53517ccc84d3de2c09424",
-                "reference": "b6b8bd502131e0dd82f53517ccc84d3de2c09424",
+                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/archive/1d326e08bbd74c73825e71fb22a9b92ee2636f13.zip",
+                "reference": "1d326e08bbd74c73825e71fb22a9b92ee2636f13",
                 "shasum": ""
             },
             "require": {
@@ -660,15 +665,26 @@
             "require-dev": {
                 "fabpot/php-cs-fixer": "master",
                 "sami/sami": "dev-master",
-                "silex/silex": "dev-master"
+                "silex/silex": "dev-master",
+                "phpunit/phpunit": "3.7.*"
             },
+            "suggest": {
+                "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
+            },
+            "time": "2012-12-13 17:26:20",
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.2.x-dev"
+                }
+            },
             "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "FFMpeg": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -727,6 +743,7 @@
                     "MP4Box": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -775,6 +792,7 @@
                     "Unoconv": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -824,6 +842,7 @@
                     "XPDF": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -843,8 +862,7 @@
             "keywords": [
                 "pdf",
                 "xpdf"
-            ],
-            "time": "1340123615"
+            ]
         },
         {
             "name": "phpexiftool/exiftool",
@@ -866,6 +884,7 @@
             "time": "2012-08-29 16:01:26",
             "type": "library",
             "installation-source": "source",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Perl Licensing"
             ],
@@ -919,6 +938,7 @@
                     "PHPExiftool": "lib"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -941,12 +961,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Pimple.git",
-                "reference": "b9f27b8dc18c08f00627dec02359b46a24791dc3"
+                "reference": "v1.0.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Pimple/zipball/b9f27b8dc18c08f00627dec02359b46a24791dc3",
-                "reference": "b9f27b8dc18c08f00627dec02359b46a24791dc3",
+                "url": "https://github.com/fabpot/Pimple/archive/v1.0.1.zip",
+                "reference": "v1.0.1",
                 "shasum": ""
             },
             "require": {
@@ -965,6 +985,7 @@
                     "Pimple": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1026,7 +1047,7 @@
                 "symfony/css-selector": ">=2.1,<2.3-dev",
                 "symfony/dom-crawler": ">=2.1,<2.3-dev"
             },
-            "time": "2012-11-27 09:18:13",
+            "time": "2012-12-12 21:20:27",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1039,6 +1060,7 @@
                     "Silex": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1091,6 +1113,7 @@
                     "SwfTools": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1236,6 +1259,7 @@
                     "SessionHandlerInterface": "src/Symfony/Component/HttpFoundation/Resources/stubs"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1266,7 +1290,7 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "1348597020",
+            "time": "2012-09-25 18:17:00",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1374,11 +1398,11 @@
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-11-26 10:25:49",
+            "time": "2012-12-11 14:30:16",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.11-dev"
+                    "dev-master": "1.12-dev"
                 }
             },
             "installation-source": "source",
@@ -1387,6 +1411,7 @@
                     "Twig_": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3"
             ],
@@ -1679,12 +1704,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/Behat/MinkExtension.git",
-                "reference": "880fc457e056924694f7bb396842548ef2d8b3a1"
+                "reference": "1b68c7343fa6d1f6171816a49197013bfbd225c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/Behat/MinkExtension/archive/880fc457e056924694f7bb396842548ef2d8b3a1.zip",
-                "reference": "880fc457e056924694f7bb396842548ef2d8b3a1",
+                "url": "https://github.com/Behat/MinkExtension/archive/1b68c7343fa6d1f6171816a49197013bfbd225c5.zip",
+                "reference": "1b68c7343fa6d1f6171816a49197013bfbd225c5",
                 "shasum": ""
             },
             "require": {
@@ -1695,7 +1720,7 @@
             "require-dev": {
                 "behat/mink-goutte-driver": "*"
             },
-            "time": "2012-11-21 00:22:28",
+            "time": "2012-12-12 08:34:22",
             "type": "behat-extension",
             "installation-source": "source",
             "autoload": {
@@ -1703,6 +1728,7 @@
                     "Behat\\MinkExtension": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1728,26 +1754,26 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/Behat/MinkGoutteDriver.git",
-                "reference": "fa0fb4f43361d8d386a8b62a1b82f3ea0a511693"
+                "reference": "b563bf8286e0dae12dac7935cf5dc16adfe60a56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/Behat/MinkGoutteDriver/archive/fa0fb4f43361d8d386a8b62a1b82f3ea0a511693.zip",
-                "reference": "fa0fb4f43361d8d386a8b62a1b82f3ea0a511693",
+                "url": "https://github.com/Behat/MinkGoutteDriver/archive/b563bf8286e0dae12dac7935cf5dc16adfe60a56.zip",
+                "reference": "b563bf8286e0dae12dac7935cf5dc16adfe60a56",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.1",
-                "behat/mink-browserkit-driver": "*",
                 "behat/mink": ">=1.4.0,<1.5.0-dev",
                 "symfony/browser-kit": "2.1.*@dev",
                 "symfony/css-selector": "2.1.*@dev",
                 "symfony/dom-crawler": "2.1.*@dev",
                 "symfony/finder": "2.1.*@dev",
                 "symfony/process": "2.1.*@dev",
-                "fabpot/goutte": "@dev"
+                "fabpot/goutte": "@dev",
+                "behat/mink-browserkit-driver": "*@dev"
             },
-            "time": "2012-10-16 10:01:56",
+            "time": "2012-11-29 22:05:37",
             "type": "mink-driver",
             "installation-source": "source",
             "autoload": {
@@ -1755,6 +1781,7 @@
                     "Behat\\Mink\\Driver": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1847,6 +1874,7 @@
                     "Doctrine\\Common\\DataFixtures": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1869,12 +1897,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Goutte",
-                "reference": "7e87fd73ffd644ba0fe6c7ac01a9e1abd4105d99"
+                "reference": "70c036b3ffe33521b95b8223bf062ae007da619f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Goutte/archive/7e87fd73ffd644ba0fe6c7ac01a9e1abd4105d99.zip",
-                "reference": "7e87fd73ffd644ba0fe6c7ac01a9e1abd4105d99",
+                "url": "https://github.com/fabpot/Goutte/archive/70c036b3ffe33521b95b8223bf062ae007da619f.zip",
+                "reference": "70c036b3ffe33521b95b8223bf062ae007da619f",
                 "shasum": ""
             },
             "require": {
@@ -1887,7 +1915,7 @@
                 "ext-curl": "*",
                 "guzzle/guzzle": "3.0.*"
             },
-            "time": "2012-11-19 07:09:26",
+            "time": "2012-12-03 13:38:32",
             "type": "application",
             "extra": {
                 "branch-alias": {
@@ -1900,6 +1928,7 @@
                     "Goutte": "."
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1964,32 +1993,32 @@
         },
         {
             "name": "guzzle/guzzle",
-            "version": "v3.0.5",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle",
-                "reference": "v3.0.5"
+                "reference": "cc9beb31626cb776a20536f5903e8ab2ec2a3707"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/guzzle/guzzle/archive/v3.0.5.zip",
-                "reference": "v3.0.5",
+                "url": "https://github.com/guzzle/guzzle/archive/cc9beb31626cb776a20536f5903e8ab2ec2a3707.zip",
+                "reference": "cc9beb31626cb776a20536f5903e8ab2ec2a3707",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2",
                 "ext-curl": "*",
-                "symfony/event-dispatcher": "2.1.*"
+                "symfony/event-dispatcher": ">=2.1"
             },
             "replace": {
-                "guzzle/batch": "self.version",
-                "guzzle/cache": "self.version",
                 "guzzle/common": "self.version",
                 "guzzle/http": "self.version",
+                "guzzle/parser": "self.version",
+                "guzzle/batch": "self.version",
+                "guzzle/cache": "self.version",
                 "guzzle/inflection": "self.version",
                 "guzzle/iterator": "self.version",
                 "guzzle/log": "self.version",
-                "guzzle/parser": "self.version",
                 "guzzle/plugin": "self.version",
                 "guzzle/plugin-async": "self.version",
                 "guzzle/plugin-backoff": "self.version",
@@ -1998,31 +2027,43 @@
                 "guzzle/plugin-curlauth": "self.version",
                 "guzzle/plugin-history": "self.version",
                 "guzzle/plugin-log": "self.version",
-                "guzzle/plugin-md5": "self.version",
                 "guzzle/plugin-mock": "self.version",
                 "guzzle/plugin-oauth": "self.version",
                 "guzzle/service": "self.version",
-                "guzzle/stream": "self.version"
+                "guzzle/stream": "self.version",
+                "guzzle/plugin-md5": "self.version"
             },
             "require-dev": {
                 "doctrine/common": "*",
                 "symfony/class-loader": "*",
                 "monolog/monolog": "1.*",
-                "zendframework/zend-cache": "2.0.*",
-                "zendframework/zend-log": "2.0.*",
                 "zend/zend-log1": "1.12",
                 "zend/zend-cache1": "1.12",
+                "zendframework/zend-cache": "2.0.*",
+                "zendframework/zend-log": "2.0.*",
                 "phpunit/phpunit": "3.7.*"
             },
-            "time": "2012-11-19 00:15:33",
+            "suggest": {
+                "symfony/class-loader": "*",
+                "monolog/monolog": "*",
+                "zend/zend-cache": "2.0.0beta3",
+                "zend/zend-log": "2.0.0beta3"
+            },
+            "time": "2012-12-14 00:49:17",
             "type": "library",
-            "installation-source": "dist",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Guzzle\\Tests": "tests/",
                     "Guzzle": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2066,7 +2107,7 @@
             "require": {
                 "php": ">=5.3.2"
             },
-            "time": "2012-11-20 19:48:34",
+            "time": "2012-12-02 22:08:47",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -2074,6 +2115,7 @@
                     "WebDriver": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache"
             ],

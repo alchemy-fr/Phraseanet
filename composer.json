@@ -13,7 +13,7 @@
         "data-uri/data-uri": "dev-master",
         "doctrine/orm": "2.2.2",
         "gedmo/doctrine-extensions": "2.2.*",
-        "mediavorus/mediavorus": "0.1.*",
+        "mediavorus/mediavorus": "0.1.x-dev",
         "media-alchemyst/media-alchemyst": "0.1.*",
         "monolog/monolog": "1.0.*",
         "php-xpdf/php-xpdf": "dev-master",
