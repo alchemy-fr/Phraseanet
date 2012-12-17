@@ -30,7 +30,7 @@ class Video extends Audio
     {
         parent::__construct();
 
-        $this->registerOption(new OptionType\Range(_('GOP size'), self::OPTION_GOPSIZE, 1, 200, 25));
+        $this->registerOption(new OptionType\Range(_('GOP size'), self::OPTION_GOPSIZE, 1, 300, 10));
         $this->registerOption(new OptionType\Range(_('Dimension'), self::OPTION_SIZE, 64, 2000, 600, 16));
         $this->registerOption(new OptionType\Range(_('Frame Rate'), self::OPTION_FRAMERATE, 1, 200, 20));
         $this->registerOption(new OptionType\Enum(_('Video Codec'), self::OPTION_VCODEC, array('libx264', 'libvpx', 'libtheora'), 'libx264'));

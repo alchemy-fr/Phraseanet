@@ -177,14 +177,14 @@ class Step35 implements DatasUpgraderInterface
         foreach ($datas as $meta_struct_id => $values) {
             if (is_array($values)) {
                 foreach ($values as $value) {
-                    $metadatas[$meta_struct_id] = array(
+                    $metadatas[] = array(
                         'meta_struct_id' => $meta_struct_id
                         , 'meta_id'        => null
                         , 'value'          => $value
                     );
                 }
             } else {
-                $metadatas[$meta_struct_id] = array(
+                $metadatas[] = array(
                     'meta_struct_id' => $meta_struct_id
                     , 'meta_id'        => null
                     , 'value'          => $values
@@ -206,9 +206,9 @@ class Step35 implements DatasUpgraderInterface
     {
         static $stmt;
 
-        if ( ! $stmt) {
+        if (!isset($stmt[$databox->get_sbas_id()])) {
             $sql = 'UPDATE record SET originalname = :originalname WHERE record_id = :record_id';
-            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt[$databox->get_sbas_id()] = $databox->get_connection()->prepare($sql);
         }
 
         $original = '';
@@ -223,7 +223,7 @@ class Step35 implements DatasUpgraderInterface
             }
         }
 
-        $stmt->execute(array(':originalname' => $original, ':record_id'    => $record['record_id']));
+        $stmt[$databox->get_sbas_id()]->execute(array(':originalname' => $original, ':record_id'    => $record['record_id']));
     }
 
     /**

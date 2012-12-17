@@ -60,7 +60,6 @@ $finder = new Finder();
 $finder
     ->directories()
     ->name('test')
-    ->name('Test')
     ->name('tests')
     ->name('Tests')
     ->name('test-suite')

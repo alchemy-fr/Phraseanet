@@ -32,6 +32,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public static $locales = array(
         'ar_SA' => 'العربية'
         , 'de_DE' => 'Deutsch'
+        , 'nl_NL' => 'Dutch'
         , 'en_GB' => 'English'
         , 'es_ES' => 'Español'
         , 'fr_FR' => 'Français'

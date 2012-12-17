@@ -60,14 +60,20 @@ abstract class AbstractDelivery implements ControllerProviderInterface
             $response->setLastModified($file->get_modification_date());
         }
 
-        if ($file->getDataboxSubdef()->get_class() == \databox_subdef::CLASS_THUMBNAIL) {
-            // default expiration is 5 days
-            $expiration = 60 * 60 * 24 * 5;
+        if (false === $record->is_grouping() && $subdef !== 'document') {
+            try {
+                if ($file->getDataboxSubdef()->get_class() == \databox_subdef::CLASS_THUMBNAIL) {
+                    // default expiration is 5 days
+                    $expiration = 60 * 60 * 24 * 5;
 
-            $response->setExpires(new \DateTime(sprintf('+%d seconds', $expiration)));
+                    $response->setExpires(new \DateTime(sprintf('+%d seconds', $expiration)));
 
-            $response->setMaxAge($expiration);
-            $response->setSharedMaxAge($expiration);
+                    $response->setMaxAge($expiration);
+                    $response->setSharedMaxAge($expiration);
+                }
+            } catch (\Exception $e) {
+
+            }
         }
 
         $response->headers->addCacheControlDirective('must-revalidate', true);

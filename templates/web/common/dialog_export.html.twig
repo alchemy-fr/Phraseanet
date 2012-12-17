@@ -515,6 +515,7 @@
                     size : 'Alert',
                     closeOnEscape : true,
                     closeButton:true,
+                    title : '{% trans "Warning !" %}'
                 }, 2);
 
                 alert.setContent("{{ alert_message|e }}");
@@ -557,6 +558,7 @@
                     size : 'Alert',
                     closeOnEscape : true,
                     closeButton:true,
+                    title : '{% trans "Warning !" %}'
                 }, 2);
 
                 alert.setContent("{{ alert_message|e }}");
@@ -573,6 +575,7 @@
                     size : 'Alert',
                     closeOnEscape : true,
                     closeButton:true,
+                    title : '{% trans "Warning !" %}'
                 }, 2);
 
                 alert.setContent("{{ alert_message|e }}");
@@ -676,7 +679,15 @@
 
                         $('#order .order_button_loader').css('visibility','hidden');
 
-                        if( data.success )
+                        var options = {
+                          size : 'Alert',
+                          closeButton: true,
+                          title : '{% trans "Warning !" %}'
+                        };
+
+                        p4.Dialog.Create(options, 2).setContent(data.message);
+
+                        if(!data.error)
                         {
                             humane.info(data.msg);
                             dialog.Close();
@@ -719,6 +730,7 @@
                                 size : 'Alert',
                                 closeOnEscape : true,
                                 closeButton:true,
+                                title : '{% trans "Warning !" %}'
                             }, 2);
 
                             alert.setContent(data.message);
@@ -738,14 +750,14 @@
                     , options
                     , function(data){
                         $('#ftp .tryftp_button_loader').css('visibility','hidden');
-                        var msg;
-                        var alert = p4.Dialog.Create({
-                            size : 'Alert',
-                            closeOnEscape : true,
-                            closeButton:true,
-                        }, 2);
 
-                        alert.setContent(data.message);
+                        var options = {
+                          size : 'Alert',
+                          closeButton: true,
+                          title : '{% trans "Warning !" %}'
+                        };
+
+                        p4.Dialog.Create(options, 2).setContent(data);
 
                         $this.removeAttr('disabled');
 

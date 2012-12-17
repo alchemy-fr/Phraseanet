@@ -1,7 +1,8 @@
 #version 3.7
 
  - Pieter Demonie (Dutch localization)
- - Laurent OUDOT / TEHTRI-Security (Security flaw)
+ - Laurent Oudot / TEHTRI-Security (Security flaw)
+ - Hubert Lecorche
 
 #version 3.6
  
