@@ -415,6 +415,8 @@ class set_export extends set_abstract
 
         $size = 0;
 
+        $unicode = new \unicode();
+
         foreach ($this->elements as $download_element) {
             $id = count($files);
 
@@ -451,7 +453,7 @@ class set_export extends set_abstract
             if ($rename_title) {
                 $title = strip_tags($download_element->get_title(null, null, true));
 
-                $files[$id]['export_name'] = $this->app['unicode']->remove_nonazAZ09($title, true);
+                $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true);
                 $rename_done = true;
             } else {
                 $files[$id]["export_name"] = $infos['filename'];
@@ -609,8 +611,8 @@ class set_export extends set_abstract
             $file_names[] = mb_strtolower($name);
             $files[$id]["export_name"] = $name;
 
-            $files[$id]["export_name"] = $this->app['unicode']->remove_nonazAZ09($files[$id]["export_name"]);
-            $files[$id]["original_name"] = $this->app['unicode']->remove_nonazAZ09($files[$id]["original_name"]);
+            $files[$id]["export_name"] = $unicode->remove_nonazAZ09($files[$id]["export_name"]);
+            $files[$id]["original_name"] = $unicode->remove_nonazAZ09($files[$id]["original_name"]);
 
             $i = 0;
             $name = utf8_decode($files[$id]["export_name"]);
@@ -711,6 +713,8 @@ class set_export extends set_abstract
 
         random::updateToken($app, $token, serialize($list));
 
+        $unicode = new \unicode();
+
         $toRemove = array();
 
         foreach ($files as $record) {
@@ -723,7 +727,7 @@ class set_export extends set_abstract
                             . $obj["ajout"]
                             . '.' . $obj["exportExt"];
 
-                        $name = $app['unicode']->remove_diacritics($name);
+                        $name = $unicode->remove_diacritics($name);
 
                         $zip->addFile($path, $name);
 
@@ -763,8 +767,9 @@ class set_export extends set_abstract
     {
         $response = new Response();
 
+        $unicode = new \unicode();
         $disposition = $disposition === 'attachment' ? ResponseHeaderBag::DISPOSITION_ATTACHMENT : ResponseHeaderBag::DISPOSITION_INLINE;
-        $headerDisposition = $response->headers->makeDisposition($disposition, $exportname, $app['unicode']->remove_nonazAZ09($exportname));
+        $headerDisposition = $response->headers->makeDisposition($disposition, $exportname, $unicode->remove_nonazAZ09($exportname));
 
         if (is_file($file)) {
             if ($app['phraseanet.registry']->get('GV_modxsendfile')) {
