@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Root;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,7 @@ class Login implements ControllerProviderInterface
 
         $controllers->before(function(Request $request) use ($app) {
             if ($app['phraseanet.registry']->get('GV_maintenance')) {
-                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=maintenance");
+                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'), '/') . "&error=maintenance");
             }
         });
 
@@ -61,8 +62,8 @@ class Login implements ControllerProviderInterface
                         // then post login operation like getting baskets from an invit session
                         // could be done by Session_handler authentication process
 
-                        $response = new RedirectResponse("/login/logout/?redirect=" . $request->query->get('redirect', 'prod'));
-                        $response->headers->setCookie(new \Symfony\Component\HttpFoundation\Cookie('postlog', 1));
+                        $response = new RedirectResponse("/login/logout/?redirect=" . ltrim($request->query->get('redirect', 'prod'), '/'));
+                        $response->headers->setCookie(new Cookie('postlog', 1));
 
                         return $response;
                     }
@@ -251,19 +252,19 @@ class Login implements ControllerProviderInterface
     public function registerConfirm(Application $app, Request $request)
     {
         if (null === $code = $request->query->get('code')) {
-            return $app->redirect('/login/?redirect=/prod&error=code-not-found');
+            return $app->redirect('/login/?redirect=prod&error=code-not-found');
         }
 
         try {
             $datas = \random::helloToken($app, $code);
         } catch (\Exception_NotFound $e) {
-            return $app->redirect('/login/?redirect=/prod&error=token-not-found');
+            return $app->redirect('/login/?redirect=prod&error=token-not-found');
         }
 
         try {
             $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
         } catch (\Exception $e) {
-            return $app->redirect('/login/?redirect=/prod&error=user-not-found');
+            return $app->redirect('/login/?redirect=prod&error=user-not-found');
         }
 
         if (!$user->get_mail_locked()) {
@@ -540,7 +541,7 @@ class Login implements ControllerProviderInterface
 
         if (!$captchaOK) {
             return $app->redirect($app['url_generator']->generate('login_register', array(
-                'error' => $captcha
+                'error' => 'captcha'
             )));
         }
 
@@ -690,7 +691,7 @@ class Login implements ControllerProviderInterface
 
             return $app->redirect(sprintf('/login/?usr=%d', $user->get_id()));
         } catch (\Exception $e) {
-            return $app->redirect(sprintf('/login/?error=%s', _('An error occured while inscription, please retry or contact a sysadmin')));
+            return $app->redirect('/login/?error=unexpected');
         }
     }
 
@@ -713,7 +714,7 @@ class Login implements ControllerProviderInterface
          */
         $app->closeAccount();
 
-        $response = new RedirectResponse("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=/%s", $appRedirect) : ""));
+        $response = new RedirectResponse("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=%s", ltrim($appRedirect, '/')) : ""));
 
         $response->headers->removeCookie('persistent');
         $response->headers->removeCookie('last_act');
@@ -827,7 +828,7 @@ class Login implements ControllerProviderInterface
                 'module_name'    => _('Accueil'),
                 'notice'         => $notice,
                 'warning'        => $warning,
-                'redirect'       => $request->query->get('redirect'),
+                'redirect'       => ltrim($request->query->get('redirect'), '/'),
                 'logged_out'     => $request->query->get('logged_out'),
                 'captcha_system' => $captchaSys,
                 'login'          => new \login(),
@@ -935,7 +936,7 @@ class Login implements ControllerProviderInterface
                 $auth->prelog();
 
                 if ($app->isAuthenticated() && $app['session']->get('usr_id') == $auth->get_user()->get_id()) {
-                    return $app->redirect('/' . $request->request->get('redirect', 'prod'));
+                    return $app->redirect('/' . ltrim($request->request->get('redirect', 'prod'), '/'));
                 }
 
                 $user = $auth->signOn();
@@ -974,7 +975,7 @@ class Login implements ControllerProviderInterface
                 if ($app['browser']->isMobile()) {
                     $response = new RedirectResponse("/lightbox/");
                 } elseif ($request->request->get('redirect')) {
-                    $response = new RedirectResponse('/' . $request->request->get('redirect'));
+                    $response = new RedirectResponse('/' . ltrim($request->request->get('redirect'),'/'));
                 } elseif (true !== $app['browser']->isNewGeneration()) {
                     $response = new RedirectResponse('/client/');
                 } else {
@@ -1014,19 +1015,19 @@ class Login implements ControllerProviderInterface
 
                 return $response;
             } catch (\Exception_Session_StorageClosed $e) {
-                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=session");
+                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=session");
             } catch (\Exception_Session_RequireCaptcha $e) {
-                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=captcha");
+                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=captcha");
             } catch (\Exception_Unauthorized $e) {
-                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=auth");
+                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=auth");
             } catch (\Exception_Session_MailLocked $e) {
-                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=mail-not-confirmed&usr=" . $e->get_usr_id());
+                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=mail-not-confirmed&usr=" . $e->get_usr_id());
             } catch (\Exception_Session_WrongToken $e) {
-                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=token");
+                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=token");
             } catch (\Exception_InternalServerError $e) {
-                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=session");
+                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=session");
             } catch (\Exception_ServiceUnavailable $e) {
-                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=maintenance");
+                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=maintenance");
             } catch (\Exception_Session_BadSalinity $e) {
                 $date = new \DateTime('5 minutes');
                 $usr_id = \User_Adapter::get_usr_id_from_login($app, $request->request->get('login'));
@@ -1036,7 +1037,7 @@ class Login implements ControllerProviderInterface
                     'token' => \random::getUrlToken($app, \random::TYPE_PASSWORD, $usr_id, $date)
                 )));
             } catch (\Exception $e) {
-                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=unexpected");
+                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'), '/') . "&error=unexpected");
             }
         } else {
             return $app->redirect("/login/");
