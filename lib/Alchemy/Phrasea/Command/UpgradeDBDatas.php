@@ -117,7 +117,7 @@ EOF
             throw new \Exception('No upgrade available');
         }
 
-        $time = 0;
+        $time = 30;
 
         foreach ($this->upgrades as $version) {
             $time += $version->getTimeEstimation();

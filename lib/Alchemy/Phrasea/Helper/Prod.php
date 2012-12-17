@@ -34,7 +34,7 @@ class Prod extends Helper
             return $search_datas;
         }
 
-        $searchSet = $user->getPrefs('search');
+        $searchSet = json_decode($user->getPrefs('search'), true);
 
         foreach ($user->ACL()->get_granted_sbas() as $databox) {
             $sbas_id = $databox->get_sbas_id();
@@ -47,9 +47,8 @@ class Prod extends Helper
             );
 
             foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
-                $selected = ($searchSet &&
-                    isset($searchSet->bases) &&
-                    isset($searchSet->bases->$sbas_id)) ? (in_array($coll->get_base_id(), $searchSet->bases->$sbas_id)) : true;
+                $selected = (isset($searchSet['bases']) &&
+                    isset($searchSet['bases'][$sbas_id])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbas_id])) : true;
                 $bases[$sbas_id]['collections'][] =
                     array(
                         'selected' => $selected,

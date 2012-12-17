@@ -111,6 +111,9 @@ class appbox extends base
                 $collection->reset_watermark();
                 break;
             case collection::PIC_LOGO:
+                if (null === $filename) {
+                    break;
+                }
 
                 $imageSpec = new ImageSpecification();
                 $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
@@ -120,7 +123,7 @@ class appbox extends base
 
                 try {
                     $core['media-alchemyst']
-                        ->open($pathfile->getPathname())
+                        ->open($filename)
                         ->turninto($tmp, $imageSpec)
                         ->close();
                     $filename = $tmp;
@@ -415,9 +418,9 @@ class appbox extends base
         $upgrader->add_steps_complete(1);
 
         if (version_compare($from_version, '3.1') < 0) {
-            $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/upgrader --from=3.1');
+            $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/console system:upgrade-datas --from=3.1');
         } elseif (version_compare($from_version, '3.5') < 0) {
-            $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/upgrader --from=3.5');
+            $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/console system:upgrade-datas --from=3.5');
         }
 
         if (version_compare($from_version, '3.7') < 0) {

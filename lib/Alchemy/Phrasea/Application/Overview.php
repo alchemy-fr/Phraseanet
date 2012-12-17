@@ -66,16 +66,21 @@ return call_user_func(
                         $response->setLastModified($file->get_modification_date());
                     }
 
-                    if ($file->getDataboxSubdef()->get_class() == \databox_subdef::CLASS_THUMBNAIL) {
-                        // default expiration is 5 days
-                        $expiration = 60 * 60 * 24 * 5;
+                    if (false === $record->is_grouping() && $subdef !== 'document') {
+                        try {
+                            if ($file->getDataboxSubdef()->get_class() == \databox_subdef::CLASS_THUMBNAIL) {
+                                // default expiration is 5 days
+                                $expiration = 60 * 60 * 24 * 5;
 
-                        $response->setExpires(new \DateTime(sprintf('+%d seconds', $expiration)));
+                                $response->setExpires(new \DateTime(sprintf('+%d seconds', $expiration)));
 
-                        $response->setMaxAge($expiration);
-                        $response->setSharedMaxAge($expiration);
+                                $response->setMaxAge($expiration);
+                                $response->setSharedMaxAge($expiration);
+                            }
+                        } catch (\Exception $e) {
+
+                        }
                     }
-
                     $response->headers->addCacheControlDirective('must-revalidate', true);
                     $response->isNotModified($request);
 
@@ -178,6 +183,7 @@ return call_user_func(
                     , function($label, $sbas_id, $record_id, $key, $subdef) use ($app, $session, $deliver_content) {
                         $databox = \databox::get_instance((int) $sbas_id);
                         $record = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
+
                         if (!($record instanceof \record_adapter))
                             throw new \Exception('bad luck');
 

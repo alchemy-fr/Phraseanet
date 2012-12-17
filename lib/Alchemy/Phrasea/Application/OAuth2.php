@@ -340,10 +340,11 @@ return call_user_func(function() {
 
                         $token = $account->get_token();
 
-                        if ($token instanceof API_OAuth2_Token)
+                        if ($token instanceof \API_OAuth2_Token) {
                             $token->renew();
-                        else
+                        } else {
                             $token = \API_OAuth2_Token::create($app['appbox'], $account);
+                        }
 
                         $result = array(
                             "ok"    => true

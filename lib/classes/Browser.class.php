@@ -789,12 +789,15 @@ class Browser
     protected function checkBrowserChrome()
     {
         if (stripos($this->_agent, 'Chrome') !== false) {
-            $aresult = explode('/', stristr($this->_agent, 'Chrome'));
-            $aversion = explode(' ', $aresult[1]);
-            $this->setVersion($aversion[0]);
-            $this->setBrowser(self::BROWSER_CHROME);
+            if (preg_match('/chrome\/([\.0-9]+) (mobile)?/i', $this->_agent, $matches)) {
+                $this->setVersion($matches[1]);
+                $this->setBrowser(self::BROWSER_CHROME);
+                if (isset($matches[2])) {
+                    $this->setMobile(true);
+                }
 
-            return true;
+                return true;
+            }
         }
 
         return false;

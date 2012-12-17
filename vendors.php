@@ -23,7 +23,7 @@ if ( ! file_exists($composer)) {
     system('curl -s http://getcomposer.org/installer | php');
     system('chmod +x ' . $composer);
 
-    if ($argv[1] == '--no-dev') {
+    if (isset($argv[1]) && $argv[1] == '--no-dev') {
         system($composer . ' install');
     } else {
         system($composer . ' install --dev');
@@ -36,7 +36,7 @@ if ( ! is_executable($composer)) {
 
 system($composer . ' self-update');
 
-if ($argv[1] == '--no-dev') {
+if (isset($argv[1]) && $argv[1] == '--no-dev') {
     system($composer . ' install');
 } else {
     system($composer . ' install --dev');

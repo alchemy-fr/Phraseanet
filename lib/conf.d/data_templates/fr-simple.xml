@@ -311,7 +311,7 @@
         <Province src="IPTC:Province-State" />
         <Pays src="IPTC:Country-PrimaryLocationName" />
         <ReferencesOriginales src="IPTC:OriginalTransmissionReference" />
-        <Titre src="IPTC:Headline" report="1" />
+        <Titre src="IPTC:Headline" report="1" thumbtitle="1" />
         <Credit src="IPTC:Credit" report="1" />
         <Source src="IPTC:Source" />
         <Legende src="IPTC:Caption-Abstract" />
