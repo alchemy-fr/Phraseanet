@@ -752,29 +752,30 @@ class set_export extends set_abstract
 
     /**
      *
+     * @param  Application                                $app
      * @param  string                                     $file
      * @param  string                                     $exportname
      * @param  string                                     $mime
      * @param  string                                     $disposition
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public static function stream_file(\registry $registry, $file, $exportname, $mime, $disposition = 'inline')
+    public static function stream_file(Application $app, $file, $exportname, $mime, $disposition = 'inline')
     {
         $response = new Response();
 
         $disposition = $disposition === 'attachment' ? ResponseHeaderBag::DISPOSITION_ATTACHMENT : ResponseHeaderBag::DISPOSITION_INLINE;
-        $headerDisposition = $response->headers->makeDisposition($disposition, $exportname, $this->app['unicode']->remove_nonazAZ09($exportname));
+        $headerDisposition = $response->headers->makeDisposition($disposition, $exportname, $app['unicode']->remove_nonazAZ09($exportname));
 
         if (is_file($file)) {
-            if ($registry->get('GV_modxsendfile')) {
+            if ($app['phraseanet.registry']->get('GV_modxsendfile')) {
                 $file_xaccel = str_replace(
                     array(
-                    $registry->get('GV_X_Accel_Redirect'),
-                    $registry->get('GV_RootPath') . 'tmp/download/',
-                    $registry->get('GV_RootPath') . 'tmp/lazaret/'
+                    $app['phraseanet.registry']->get('GV_X_Accel_Redirect'),
+                    $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/',
+                    $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/'
                     )
                     , array(
-                    '/' . $registry->get('GV_X_Accel_Redirect_mount_point') . '/',
+                    '/' . $app['phraseanet.registry']->get('GV_X_Accel_Redirect_mount_point') . '/',
                     '/download/',
                     '/lazaret/'
                     )

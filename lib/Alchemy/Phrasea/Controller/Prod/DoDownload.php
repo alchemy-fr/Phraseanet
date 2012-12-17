@@ -176,7 +176,7 @@ class DoDownload implements ControllerProviderInterface
         });
 
         $response = \set_export::stream_file(
-            $app['phraseanet.registry'],
+            $app,
             $exportFile,
             $exportName,
             $mime,

@@ -51,7 +51,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
 
         }
 
-        $response = \set_export::stream_file($app['phraseanet.registry'], $pathOut, $file->get_file(), $file->get_mime(), 'inline');
+        $response = \set_export::stream_file($app, $pathOut, $file->get_file(), $file->get_mime(), 'inline');
         $response->setPrivate();
 
         /* @var $response \Symfony\Component\HttpFoundation\Response */
