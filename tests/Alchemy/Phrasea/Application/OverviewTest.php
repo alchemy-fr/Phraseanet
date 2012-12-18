@@ -93,9 +93,19 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testGetAStorythumbnail()
     {
-        $story = \record_adapter::createStory(self::$collection);
+        $this->substituteAndCheck('thumbnail');
+    }
 
-        $media = $this->getMockBuilder('MediaVorus\Media\Media')
+    public function testGetAStoryPreview()
+    {
+        $this->substituteAndCheck('preview');
+    }
+
+    private function substituteAndCheck($name)
+    {
+        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
+
+        $media = $this->getMockBuilder('MediaVorus\Media\MediaInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -105,14 +115,13 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('getFile')
             ->will($this->returnValue($symfoFile));
 
-        $story->substitute_subdef('thumbnail', $media);
+        $story->substitute_subdef($name, $media, self::$DI['app']);
 
-        $this->client->request('GET', '/datafiles/' . $story->get_sbas_id() . '/' . $story->get_record_id() . '/preview/');
-        $response = $this->client->getResponse();
+        self::$DI['client']->request('GET', '/datafiles/' . $story->get_sbas_id() . '/' . $story->get_record_id() . '/' . $name . '/');
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
     }
-
 
     protected function get_a_permalink()
     {

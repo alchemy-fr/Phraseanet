@@ -33,7 +33,7 @@ class Prod extends Helper
             return $search_datas;
         }
 
-        $searchSet = json_decode($user->getPrefs('search'), true);
+        $searchSet = json_decode($this->app['phraseanet.user']->getPrefs('search'), true);
 
         foreach ($this->app['phraseanet.user']->ACL()->get_granted_sbas() as $databox) {
             $sbas_id = $databox->get_sbas_id();
