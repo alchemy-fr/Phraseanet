@@ -20,10 +20,14 @@ before_script:
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
   - sh -c "cd Phraseanet-Extension && phpize && ./configure && make && sudo make install"
   - echo "extension=phrasea2.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-  - wget http://pecl.php.net/get/gmagick-1.1.0RC2.tgz
-  - tar -xzf gmagick-1.1.0RC2.tgz
-  - sh -c "cd gmagick-1.1.0RC2 && phpize && ./configure --with-gmagick=/usr/local && make && sudo make install"
-  - echo "extension=gmagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+  - wget http://pecl.php.net/get/imagick-3.1.0RC2.tgz
+  - tar -xzf imagick-3.1.0RC2.tgz
+  - sh -c "cd imagick-3.1.0RC2 && phpize && ./configure --with-imagick=/usr/local && make && sudo make install"
+  - echo "extension=imagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+#  - wget http://pecl.php.net/get/gmagick-1.1.0RC2.tgz
+#  - tar -xzf gmagick-1.1.0RC2.tgz
+#  - sh -c "cd gmagick-1.1.0RC2 && phpize && ./configure --with-gmagick=/usr/local && make && sudo make install"
+#  - echo "extension=gmagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
 
 notifications:
   irc:
