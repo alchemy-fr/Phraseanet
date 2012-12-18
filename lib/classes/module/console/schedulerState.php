@@ -55,7 +55,7 @@ class module_console_schedulerState extends Command
             return self::EXITCODE_SETUP_ERROR;
         }
 
-        $task_manager = new task_manager($this->container);
+        $task_manager = $this->container['task-manager'];
 
         $exitCode = 0;
         $state = $task_manager->getSchedulerState();

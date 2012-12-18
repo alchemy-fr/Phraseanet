@@ -13,8 +13,17 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+
+use Monolog\Logger;
+
 class task_period_subdef extends task_databoxAbstract
 {
+    const MINMEGS = 20;
+    const MAXMEGS = 64;
+
+    const MINFLUSH = 10;
+    const MAXFLUSH = 100;
+
     /**
      * Record buffer for writing meta datas after building subdefs
      *
@@ -51,6 +60,107 @@ class task_period_subdef extends task_databoxAbstract
         return(_('task::subdef:creation des sous definitions'));
     }
 
+    /**
+     * must return the xml (text) version of the form
+     *
+     * @param  string $oldxml
+     * @return string
+     */
+    public function graphic2xml($oldxml)
+    {
+        $request = http_request::getInstance();
+
+        $parm2 = $request->get_parms(
+            'period'
+            , 'flush'
+            , 'maxrecs'
+            , 'maxmegs'
+        );
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = true;
+        if (@$dom->loadXML($oldxml)) {
+            $xmlchanged = false;
+
+            foreach (array(
+            'str:period'
+            , 'str:flush'
+            , 'str:maxrecs'
+            , 'str:maxmegs'
+            ) as $pname) {
+                $ptype = substr($pname, 0, 3);
+                $pname = substr($pname, 4);
+                $pvalue = $parm2[$pname];
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
+                    while (($n = $ns->firstChild)) {
+                        $ns->removeChild($n);
+                    }
+                } else {
+                    $ns = $dom->documentElement->appendChild($dom->createElement($pname));
+                }
+                switch ($ptype) {
+                    case "str":
+                    case "pop":
+                        $ns->appendChild($dom->createTextNode($pvalue));
+                        break;
+                    case "boo":
+                        $ns->appendChild($dom->createTextNode($pvalue ? '1' : '0'));
+                        break;
+                }
+                $xmlchanged = true;
+            }
+        }
+
+        return($dom->saveXML());
+    }
+
+    /**
+     * must fill the graphic form (using js) from xml
+     *
+     * @param  string $xml
+     * @param  string $form
+     * @return string
+     */
+    public function xml2graphic($xml, $form)
+    {
+        if (false !== $sxml = simplexml_load_string($xml)) {
+            if ((int) ($sxml->period) < self::MINPERIOD) {
+                $sxml->period = self::MINPERIOD;
+            } elseif ((int) ($sxml->period) > self::MAXPERIOD) {
+                $sxml->period = self::MAXPERIOD;
+            }
+
+            if ((int) ($sxml->flush) < self::MINFLUSH) {
+                $sxml->flush = self::MINFLUSH;
+            } elseif ((int) ($sxml->flush) > self::MAXFLUSH) {
+                $sxml->flush = self::MAXFLUSH;
+            }
+
+            if ((int) ($sxml->maxrecs) < self::MINRECS) {
+                $sxml->maxrecs = self::MINRECS;
+            } elseif (self::MAXRECS != -1 && (int) ($sxml->maxrecs) > self::MAXRECS) {
+                $sxml->maxrecs = self::MAXRECS;
+            }
+
+            if ((int) ($sxml->maxmegs) < self::MINMEGS) {
+                $sxml->maxmegs = self::MINMEGS;
+            } elseif (self::MAXMEGS != -1 && (int) ($sxml->maxmegs) > self::MAXMEGS) {
+                $sxml->maxmegs = self::MAXMEGS;
+            }
+            ?>
+            <script type="text/javascript">
+            <?php echo $form ?>.period.value  = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
+            <?php echo $form ?>.flush.value   = "<?php echo p4string::MakeString($sxml->flush, "js", '"') ?>";
+            <?php echo $form ?>.maxrecs.value = "<?php echo p4string::MakeString($sxml->maxrecs, "js", '"') ?>";
+            <?php echo $form ?>.maxmegs.value = "<?php echo p4string::MakeString($sxml->maxmegs, "js", '"') ?>";
+            </script>
+
+            <?php
+            return("");
+        } else {
+            return("BAD XML");
+        }
+    }
 
     /**
      *
@@ -79,26 +189,28 @@ class task_period_subdef extends task_databoxAbstract
             }
 
             $(document).ready(function(){
-                $("#graphicForm *").change(function(){
-                    var limits = {
-                                            'period': {min:1,  max:300,  allowempty:false} ,
-                                            'flush':  {min:1,  max:100,  allowempty:false} ,
-                                            'maxrecs':{min:10, max:1000, allowempty:true} ,
-                                            'maxmegs':{min:2,  max:100,  allowempty:true}
-                                        } ;
-                    var name = $(this).attr("name");
-                    if(name && limits[name])
+                var limits = {
+                    'period' :{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
+                    'flush'  :{'min':<?php echo self::MINFLUSH; ?>,  'max':<?php echo self::MAXFLUSH; ?>},
+                    'maxrecs':{'min':<?php echo self::MINRECS; ?>,   'max':<?php echo self::MAXRECS; ?>},
+                    'maxmegs':{'min':<?php echo self::MINMEGS; ?>,   'max':<?php echo self::MAXMEGS; ?>}
+                } ;
+                $(".formElem").change(function(){
+                    fieldname = $(this).attr("name");
+                    switch((this.nodeName+$(this).attr("type")).toLowerCase())
                     {
-                        var v = $(this).val();
-                        if(v != "" || !limits[name].allowempty)
-                        {
-                            v = 0|v;
-                            if(v < limits[name].min)
-                                $(this).val(limits[name].min);
-                            else if(v > limits[name].max)
-                                $(this).val(limits[name].max);
-                        }
+                        case "inputtext":
+                            if (typeof(limits[fieldname])!='undefined') {
+                                var v = 0|this.value;
+                                if(v < limits[fieldname].min)
+                                    v = limits[fieldname].min;
+                                else if(v > limits[fieldname].max)
+                                    v = limits[fieldname].max;
+                                this.value = v;
+                            }
+                            break;
                     }
+                    setDirty();
                 });
             });
         </script>
@@ -109,7 +221,6 @@ class task_period_subdef extends task_databoxAbstract
      * return interface 'graphic view'
      *
      */
-
     public function getInterfaceHTML()
     {
         ob_start();
@@ -117,20 +228,21 @@ class task_period_subdef extends task_databoxAbstract
         <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
             <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-            <input type="text" name="period" style="width:40px;" value="">
-            <?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+            <input class="formElem" type="text" name="period" style="width:40px;" value="">
+            <?php echo _('task::_common_:secondes (unite temporelle)') ?>
             <br/>
-            <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input type="text" name="flush" style="width:40px;" value="">'); ?>
+            <br/>
+            <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input class="formElem" type="text" name="flush" style="width:40px;" value="">'); ?>
             <br/>
             <br/>
             <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
-            <input type="text" name="maxrecs" style="width:40px;" value="">
+            <input class="formElem" type="text" name="maxrecs" style="width:40px;" value="">
             <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
-            <input type="text" name="maxmegs" style="width:40px;" value=""> Mo
+            <input class="formElem" type="text" name="maxmegs" style="width:40px;" value="">
+            Mo
             <br/>
         </form>
         <?php
-
         return ob_get_clean();
     }
 
@@ -141,8 +253,7 @@ class task_period_subdef extends task_databoxAbstract
         $sql = 'SELECT coll_id, record_id
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
-              ORDER BY record_id DESC LIMIT 0, 20';
-
+              ORDER BY record_id DESC LIMIT 0, '.$this->maxrecs;
         $stmt = $connbas->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -155,8 +266,10 @@ class task_period_subdef extends task_databoxAbstract
     {
         $record_id = $row['record_id'];
         $this->log(sprintf(
-                "Generate subdefs for :  sbas_id %s / record %s "
-                , $this->sbas_id, $record_id));
+                "Generate subdefs for : sbasid=%s / databox=%s / recordid=%s "
+                , $databox->get_sbas_id(), $databox->get_dbname() , $record_id)
+                , self::LOG_INFO
+            );
 
         try {
             $record = new record_adapter($this->dependencyContainer, $this->sbas_id, $record_id);
@@ -165,8 +278,9 @@ class task_period_subdef extends task_databoxAbstract
         } catch (\Exception $e) {
             $this->log(
                 sprintf(
-                    'Generate failed for record %d on databox %s (%s)', $record_id, $record->get_databox()->get_viewname(), $e->getMessage()
-                )
+                "Generate subdefs failed for : sbasid=%s / databox=%s / recordid=%s : %s"
+                , $databox->get_sbas_id(), $databox->get_dbname() , $record_id, $e->getMessage())
+                , self::LOG_WARNING
             );
         }
 
@@ -202,7 +316,7 @@ class task_period_subdef extends task_databoxAbstract
             $this->log(sprintf(
                     'setting %d record(s) to subdef meta writing'
                     , count($this->recs_to_write)
-                ));
+                ), self::LOG_INFO);
 
             try {
                 $connbas = connection::getPDOConnection($this->dependencyContainer, $this->sbas_id);
@@ -214,7 +328,7 @@ class task_period_subdef extends task_databoxAbstract
                 $stmt->execute();
                 $stmt->closeCursor();
             } catch (Exception $e) {
-                $this->log($e->getMessage());
+                $this->log($e->getMessage(), self::LOG_CRITICAL);
             }
         }
         $this->recs_to_write = array();

@@ -160,39 +160,6 @@ class task_period_cindexer extends task_abstract
         return($dom->saveXML());
     }
 
-    /**
-     *
-     * @param  string $xml
-     * @param  string $form
-     * @return string
-     */
-    public function xml2graphic($xml, $form)
-    {
-        if (false !== $sxml = simplexml_load_string($xml)) {
-            ?>
-            <script type="text/javascript">
-            <?php echo $form ?>.binpath.value      = "<?php echo p4string::MakeString($sxml->binpath, "js", '"') ?>";
-            <?php echo $form ?>.host.value         = "<?php echo p4string::MakeString($sxml->host, "js", '"') ?>";
-            <?php echo $form ?>.port.value         = "<?php echo p4string::MakeString($sxml->port, "js", '"') ?>";
-            <?php echo $form ?>.base.value         = "<?php echo p4string::MakeString($sxml->base, "js", '"') ?>";
-            <?php echo $form ?>.user.value         = "<?php echo p4string::MakeString($sxml->user, "js", '"') ?>";
-            <?php echo $form ?>.socket.value       = "<?php echo p4string::MakeString($sxml->socket, "js", '"') ?>";
-            <?php echo $form ?>.password.value     = "<?php echo p4string::MakeString($sxml->password, "js", '"') ?>";
-            <?php echo $form ?>.clng.value         = "<?php echo p4string::MakeString($sxml->clng, "js", '"') ?>";
-            <?php echo $form ?>.use_sbas.checked   = <?php echo trim((string) $sxml->use_sbas) != '' ? (p4field::isyes($sxml->use_sbas) ? 'true' : 'false') : 'true' ?>;
-            <?php echo $form ?>.nolog.checked      = <?php echo p4field::isyes($sxml->nolog) ? 'true' : 'false' ?>;
-            <?php echo $form ?>.winsvc_run.checked = <?php echo p4field::isyes($sxml->winsvc_run) ? 'true' : 'false' ?>;
-            <?php echo $form ?>.charset.value      = "<?php echo trim((string) $sxml->charset) != '' ? p4string::MakeString($sxml->charset, "js", '"') : 'utf8' ?>";
-            <?php echo $form ?>.debugmask.value    = "<?php echo trim((string) $sxml->debugmask) != '' ? p4string::MakeString($sxml->debugmask, "js", '"') : '0' ?>";
-                parent.calccmd();
-            </script>
-            <?php
-            return("");
-        } else { // ... so we NEVER come here
-            // bad xml
-            return("BAD XML");
-        }
-    }
 
     /**
      *

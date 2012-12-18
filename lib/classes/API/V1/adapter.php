@@ -101,7 +101,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new \API_V1_result($app['request'], $this);
 
-        $taskManager = new \task_manager($app);
+        $taskManager = $app['task-manager'];
         $ret = $taskManager->getSchedulerState();
 
         $ret['state'] = $ret['status'];
@@ -127,7 +127,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new \API_V1_result($app['request'], $this);
 
-        $taskManager = new \task_manager($app);
+        $taskManager = $app['task-manager'];
         $tasks = $taskManager->getTasks();
 
         $ret = array();
@@ -166,7 +166,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new \API_V1_result($app['request'], $this);
 
-        $taskManager = new task_manager($app);
+        $taskManager = $app['task-manager'];
 
         $ret = array(
             'task' => $this->list_task($taskManager->getTask($taskId))
@@ -188,7 +188,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new \API_V1_result($app['request'], $this);
 
-        $taskManager = new \task_manager($app);
+        $taskManager = $app['task-manager'];
 
         $task = $taskManager->getTask($taskId);
         if (!in_array($task->getState(), array(\task_abstract::STATE_TOSTART, \task_abstract::STATE_STARTED))) {
@@ -211,7 +211,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($app['request'], $this);
 
-        $taskManager = new \task_manager($app);
+        $taskManager = $app['task-manager'];
 
         $task = $taskManager->getTask($taskId);
         if (!in_array($task->getState(), array(\task_abstract::STATE_TOSTOP, \task_abstract::STATE_STOPPED))) {
@@ -243,7 +243,7 @@ class API_V1_adapter extends API_V1_Abstract
             throw new \API_V1_exception_badrequest();
         }
 
-        $taskManager = new \task_manager($app);
+        $taskManager = $app['task-manager'];
 
         $task = $taskManager->getTask($taskId);
 

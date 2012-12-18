@@ -26,13 +26,20 @@ class task_manager
     const STATE_TOSTOP = 'tostop';
 
     protected $app;
+    protected $logger;
     protected $tasks;
 
-    public function __construct(Application $app)
+    public function __construct(Application $app, Logger $logger)
     {
         $this->app = $app;
+        $this->logger = $logger;
 
         return $this;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
     }
 
     /**
@@ -67,14 +74,10 @@ class task_manager
         return $ret;
     }
 
-    public function getTasks($refresh = false, Logger $logger = null)
+    public function getTasks($refresh = false)
     {
         if ($this->tasks && !$refresh) {
             return $this->tasks;
-        }
-
-        if (!$logger) {
-            $logger = $this->app['monolog'];
         }
 
         $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
@@ -93,7 +96,7 @@ class task_manager
                 continue;
             }
             try {
-                $tasks[$row['task_id']] = new $classname($row['task_id'], $this->app, $logger);
+                $tasks[$row['task_id']] = new $classname($row['task_id'], $this->app, $this->logger);
             } catch (Exception $e) {
 
             }
@@ -109,13 +112,9 @@ class task_manager
      * @param  int           $task_id
      * @return task_abstract
      */
-    public function getTask($task_id, Logger $logger = null)
+    public function getTask($task_id)
     {
-        if (!$logger) {
-            $logger = $this->app['monolog'];
-        }
-
-        $tasks = $this->getTasks(false, $logger);
+        $tasks = $this->getTasks(false);
 
         if (!isset($tasks[$task_id])) {
             throw new Exception_NotFound('Unknown task_id ' . $task_id);

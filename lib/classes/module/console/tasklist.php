@@ -39,7 +39,7 @@ class module_console_tasklist extends Command
         }
 
         try {
-            $task_manager = new task_manager($this->container);
+            $task_manager = $this->container['task-manager'];
             $tasks = $task_manager->getTasks();
 
             if (count($tasks) === 0) {

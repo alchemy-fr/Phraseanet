@@ -67,6 +67,8 @@
 
         <button id="taskCancelButton">{% trans 'boutton::annuler' %}</button>
         <button id="taskSaveButton">{% trans 'boutton::valider' %}</button>
+        <br/>
+        <br/>
     </div>
 
         <script type="text/javascript">
@@ -181,20 +183,36 @@
                 $("#taskSaveButton").click(function()
                 {
                     // click on save button
-                    $.ajax({ url: "/admin/task-manager/task/{{task.getID()}}/save/"
-                        , data: {
-                                    title:$("#taskTaskname").val(),
-                                    active:!!$("#taskTaskActive").attr("checked"),
-                                    xml:$("#txtareaxml").val()
-                                }
-                        , dataType:'json'
+
+                    var data = $("form[name='graphicForm']").serializeJSON();
+                    data["__action"] = "FORM2XML";
+                    data["__xml"] = $("#txtareaxml").val();
+                    $.ajax({ url: "/admin/task-manager/task/{{task.getID()}}/facility/"
+                        , data: data
+                        , dataType:'text'
                         , type:"POST"
                         , async:false
                         , success:function(data) {
-                              $("#taskFormByeBye").submit();
+                            $("#txtareaxml").val(data);
+                            $.ajax({ url: "/admin/task-manager/task/{{task.getID()}}/save/"
+                                , data: {
+                                            title:$("#taskTaskname").val(),
+                                            active:!!$("#taskTaskActive").attr("checked"),
+                                            xml:data
+                                        }
+                                , dataType:'json'
+                                , type:"POST"
+                                , async:false
+                                , success:function(data) {
+                                    $("#taskFormByeBye").submit();
+                                }
+                                , error:function(jqXHR, textStatus, errorThrown) {
+                                    alert("Erreur XML:\n\n" + jqXHR.responseText);
+                                }
+                            });
                         }
                         , error:function(jqXHR, textStatus, errorThrown) {
-                            alert("Erreur XML:\n\n" + jqXHR.responseText);
+                            alert(jqXHR.responseText);
                         }
                     });
                 });

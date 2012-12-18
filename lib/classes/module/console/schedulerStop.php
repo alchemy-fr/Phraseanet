@@ -34,7 +34,7 @@ class module_console_schedulerStop extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $task_manager = new task_manager($this->container);
+            $task_manager = $this->container['task-manager'];
             $task_manager->setSchedulerState(task_manager::STATE_TOSTOP);
 
             return 0;

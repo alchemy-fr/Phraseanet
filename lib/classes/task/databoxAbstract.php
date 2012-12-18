@@ -34,9 +34,9 @@ abstract class task_databoxAbstract extends task_abstract
             try {
                 $conn = connection::getPDOConnection($this->dependencyContainer);
             } catch (PDOException $e) {
-                $this->log($e->getMessage());
+                $this->log($e->getMessage(), self::LOG_ERROR );
                 if ($this->getRunner() == self::RUNNER_SCHEDULER) {
-                    $this->log(("Warning : abox connection lost, restarting in 10 min."));
+                    $this->log(("appbox connection lost, restarting in 10 min."), self::LOG_ERROR);
 
                     // DON'T do sleep(600) because it prevents ticks !
                     for ($t = 60 * 10; $this->running && $t; $t -- ) {
@@ -47,6 +47,7 @@ abstract class task_databoxAbstract extends task_abstract
                     // will enforce the scheduler to restart the task
                 } else {
                     // runner = manual : can't restart so simply quit
+                    $this->log(("appbox connection lost, quit."), self::LOG_ERROR);
                 }
                 $this->running = FALSE;
 
@@ -81,20 +82,29 @@ abstract class task_databoxAbstract extends task_abstract
                 }
 
                 $this->sbas_id = (int) $row['sbas_id'];
-                $this->log('This task works now on ' . phrasea::sbas_names($this->sbas_id, $this->dependencyContainer));
+                $this->log(sprintf('This task works now on sbasid=%s ', $this->sbas_id), self::LOG_INFO);
 
                 try {
                     // get the records to process
                     $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox((int) $row['sbas_id']);
                 } catch (Exception $e) {
-                    $this->log(sprintf('Warning : can\' connect to sbas(%s)', $row['sbas_id']));
+                    $this->log(sprintf(
+                            'can\'t connect to sbas(%s) because "%s"'
+                            , $row['sbas_id']
+                            , $e->getMessage())
+                        , self::LOG_WARNING
+                    );
                     continue;
                 }
 
                 try {
                     $this->loadSettings(simplexml_load_string($row['settings']));
                 } catch (Exception $e) {
-                    $this->log($e->getMessage());
+                    $this->log(sprintf(
+                            'can\'t get get settings of task because "%s"'
+                            , $e->getMessage())
+                        , self::LOG_WARNING
+                    );
                     continue;
                 }
 
@@ -139,7 +149,7 @@ abstract class task_databoxAbstract extends task_abstract
 
         if ($task_must_delete) {
             $this->setState(self::STATE_TODELETE);
-            $this->log('task will self delete');
+            $this->log('task will self delete', self::LOG_INFO);
         }
 
         return;
@@ -160,7 +170,7 @@ abstract class task_databoxAbstract extends task_abstract
             // process the records
             $ret = $this->processLoop($databox, $rs);
         } catch (Exception $e) {
-            $this->log('Error  : ' . $e->getMessage());
+            $this->log($e->getMessage(), self::LOG_ERROR);
         }
 
         return $ret;
