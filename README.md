@@ -7,12 +7,12 @@ Phraseanet 3.8 - Digital Asset Management application
 
 Metadatas Management (include Thesaurus and DublinCore Mapping)
 Search Engine (Sphinx Search Integration)
-RestFull APIS (See Developer Documentation https://docs.phraseanet.com/3.6/Devel)
+RestFull APIS (See Developer Documentation https://docs.phraseanet.com/Devel)
 Bridge to Youtube/Dailymotion/Flickr
 
 #Documentation :
 
-https://docs.phraseanet.com/3.6/
+https://docs.phraseanet.com/
 
 #Easy Installation
 
