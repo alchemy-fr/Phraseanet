@@ -1410,12 +1410,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "ab64da5671ec161ab73aba07fc011bc8de56ae41"
+                "reference": "ad29df5efdc51096f882a7a7bc672d41281770ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/archive/ab64da5671ec161ab73aba07fc011bc8de56ae41.zip",
-                "reference": "ab64da5671ec161ab73aba07fc011bc8de56ae41",
+                "url": "https://github.com/symfony/symfony/archive/ad29df5efdc51096f882a7a7bc672d41281770ce.zip",
+                "reference": "ad29df5efdc51096f882a7a7bc672d41281770ce",
                 "shasum": ""
             },
             "require": {
