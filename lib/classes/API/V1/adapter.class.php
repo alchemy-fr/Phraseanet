@@ -838,7 +838,39 @@ class API_V1_adapter extends API_V1_Abstract
     }
 
     /**
+     * Search for results
+     *
+     * @param Request $request
+     * @return \API_V1_result
+     */
+    public function search(Request $request)
+    {
+        $result = new API_V1_result($request, $this);
+
+        list($ret, $search_result) = $this->prepare_search_request($request);
+
+        $ret['results'] = array('records' => array(), 'stories' => array());
+
+        foreach ($search_result->get_datas()->get_elements() as $record) {
+            if ($record->is_grouping()) {
+                $ret['results']['stories'][] = $this->list_story($record);
+            } else {
+                $ret['results']['records'][] = $this->list_record($record);
+            }
+        }
+
+        /**
+         * @todo donner des highlights
+         */
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+    /**
      * Get an API_V1_result containing the results of a records search
+     *
+     * Deprecated in favor of search
      *
      * @param  Request       $request
      * @param  int           $databox_id
@@ -847,10 +879,27 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function search_records(Request $request)
     {
+        $result = new API_V1_result($request, $this);
+
+        list($ret, $search_result) = $this->prepare_search_request($request);
+
+        foreach ($search_result->get_datas()->get_elements() as $record) {
+            $ret['results'][] = $this->list_record($record);
+        }
+
+        /**
+         * @todo donner des highlights
+         */
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+    private function prepare_search_request(Request $request)
+    {
         $session = $this->appbox->get_session();
         $user = User_Adapter::getInstance($session->get_usr_id(), $this->appbox);
         $registry = $this->appbox->get_registry();
-        $result = new API_V1_result($request, $this);
 
         $search_type = ($request->get('search_type')
             && in_array($request->get('search_type'), array(0, 1))) ?
@@ -945,19 +994,10 @@ class API_V1_adapter extends API_V1_Abstract
             'search_indexes'    => $search_result->get_search_indexes(),
             'suggestions'       => $search_result->get_suggestions(),
             'results'           => array(),
-            'query' => $search_engine->get_query(),
+            'query'             => $search_engine->get_query(),
         );
 
-        foreach ($search_result->get_datas()->get_elements() as $record) {
-            $ret['results'][] = $this->list_record($record);
-        }
-
-        /**
-         * @todo donner des highlights
-         */
-        $result->set_datas($ret);
-
-        return $result;
+        return array($ret, $search_result);
     }
 
     /**
@@ -973,17 +1013,25 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($request, $this);
 
-        $containers = $this->appbox
-            ->get_databox($databox_id)
-            ->get_record($record_id)
-            ->get_container_baskets();
+        $that = $this;
+        $baskets = array_map(function ($basket) use ($that) {
+            return $that->list_basket($basket);
+            }, (array) $this->appbox
+                ->get_databox($databox_id)
+                ->get_record($record_id)
+                ->get_container_baskets()
+        );
 
-        $ret = array();
-        foreach ($containers as $basket) {
-            $ret[] = $this->list_basket($basket);
-        }
+        $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
 
-        $result->set_datas(array("baskets" => $ret));
+        $stories = array_map(function ($story) use ($that) {
+            return $that->list_story($story);
+        }, $record->get_grouping_parents()->get_elements());
+
+        $result->set_datas(array(
+            "baskets" => $baskets,
+            "stories" => $stories,
+        ));
 
         return $result;
     }
@@ -1854,6 +1902,65 @@ class API_V1_adapter extends API_V1_Abstract
             'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->get_type(),
             'uuid'                   => $record->get_uuid(),
+        );
+    }
+
+    /**
+     * Retrieve detailled informations about one story
+     *
+     * @param  record_adapter $story
+     * @return array
+     */
+    protected function list_story(record_adapter $story, $includeChildren = true)
+    {
+        if (!$story->is_grouping()) {
+            throw new \API_V1_exception_notfound('Story not found');
+        }
+
+        $that = $this;
+        $records = array_map(function (\record_adapter $record) use ($that) {
+            return $that->list_record($record);
+        }, array_values($story->get_children()->get_elements()));
+
+        $caption = $story->get_caption();
+
+        $format = function(caption_record $caption, $dcField) {
+
+            $field = $caption->get_dc_field($dcField);
+
+            if (!$field) {
+                return null;
+            }
+
+            return $field->get_serialized_values();
+        };
+
+        return array(
+            'databox_id'     => $story->get_sbas_id(),
+            'story_id'       => $story->get_record_id(),
+            'updated_on'     => $story->get_modification_date()->format(DATE_ATOM),
+            'created_on'     => $story->get_creation_date()->format(DATE_ATOM),
+            'collection_id'  => phrasea::collFromBas($story->get_base_id()),
+            'thumbnail'      => $this->list_embedable_media($story->get_thumbnail(), registry::get_instance()),
+            'uuid'           => $story->get_uuid(),
+            'metadatas'      => array(
+                'dc:contributor' => $format($caption, databox_Field_DCESAbstract::Contributor),
+                'dc:coverage'    => $format($caption, databox_Field_DCESAbstract::Coverage),
+                'dc:creator'     => $format($caption, databox_Field_DCESAbstract::Creator),
+                'dc:date'        => $format($caption, databox_Field_DCESAbstract::Date),
+                'dc:description' => $format($caption, databox_Field_DCESAbstract::Description),
+                'dc:format'      => $format($caption, databox_Field_DCESAbstract::Format),
+                'dc:identifier'  => $format($caption, databox_Field_DCESAbstract::Identifier),
+                'dc:language'    => $format($caption, databox_Field_DCESAbstract::Language),
+                'dc:publisher'   => $format($caption, databox_Field_DCESAbstract::Publisher),
+                'dc:relation'    => $format($caption, databox_Field_DCESAbstract::Relation),
+                'dc:rights'      => $format($caption, databox_Field_DCESAbstract::Rights),
+                'dc:source'      => $format($caption, databox_Field_DCESAbstract::Source),
+                'dc:subject'     => $format($caption, databox_Field_DCESAbstract::Subject),
+                'dc:title'       => $format($caption, databox_Field_DCESAbstract::Title),
+                'dc:type'        => $format($caption, databox_Field_DCESAbstract::Type),
+            ),
+            'records'        => $records,
         );
     }
 

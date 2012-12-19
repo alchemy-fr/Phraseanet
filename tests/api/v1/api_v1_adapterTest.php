@@ -163,24 +163,163 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         }
     }
 
-    public function testSearch_records()
+    public function testSearch_recordsWithRecords()
     {
-        $request = new Request(array('record_type' => "image"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        static::$records['record_1'];
+
+        $request = new Request(array('record_type' => "image", 'search_type' => 0), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $this->object->search_records($request);
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
+
+        $data = json_decode($result->format(), true);
+
+        $found = false;
+        foreach ($data['response']['results'] as $retRecord) {
+            if($retRecord['record_id'] == static::$records['record_1']->get_record_id() && $retRecord['databox_id'] == static::$records['record_1']->get_sbas_id()) {
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            $this->fail('unable to find the record back');
+        }
+    }
+
+    public function testSearch_recordsWithStories()
+    {
+        $story = \record_adapter::createStory(self::$collection);
+        $story->appendChild(static::$records['record_1']);
+
+        $request = new Request(array('search_type' => 1), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $result = $this->object->search_records($request);
+        $this->assertEquals(200, $result->get_http_code());
+        $this->assertEquals('application/json', $result->get_content_type());
+        $this->assertTrue(is_array(json_decode($result->format(), true)));
+
+        $data = json_decode($result->format(), true);
+
+        $found = false;
+
+        foreach ($data['response']['results'] as $retStory) {
+            if($retStory['record_id'] == $story->get_record_id() && $retStory['databox_id'] == $story->get_sbas_id()) {
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            $this->fail('unable to find the story back');
+        }
+    }
+
+    public function testSearchWithStories()
+    {
+        $story = \record_adapter::createStory(self::$collection);
+        $story->appendChild(static::$records['record_1']);
+
+        $request = new Request(array('search_type' => 1), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $result = $this->object->search($request);
+        $this->assertEquals(200, $result->get_http_code());
+        $this->assertEquals('application/json', $result->get_content_type());
+        $this->assertTrue(is_array(json_decode($result->format(), true)));
+
+        $data = json_decode($result->format(), true);
+
+        $this->assertArrayHasKey('records', $data['response']['results']);
+        $this->assertArrayHasKey('stories', $data['response']['results']);
+
+        $found = false;
+
+        foreach ($data['response']['results']['stories'] as $retStory) {
+            if($retStory['story_id'] == $story->get_record_id() && $retStory['databox_id'] == $story->get_sbas_id()) {
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            $this->fail('unable to find the story back');
+        }
+    }
+
+    public function testSearchWithRecords()
+    {
+        static::$records['record_1'];
+
+        $request = new Request(array('search_type' => 0), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $result = $this->object->search($request);
+        $this->assertEquals(200, $result->get_http_code());
+        $this->assertEquals('application/json', $result->get_content_type());
+        $this->assertTrue(is_array(json_decode($result->format(), true)));
+
+        $data = json_decode($result->format(), true);
+
+        $this->assertArrayHasKey('records', $data['response']['results']);
+        $this->assertArrayHasKey('stories', $data['response']['results']);
+
+        $found = false;
+
+        foreach ($data['response']['results']['records'] as $retRecord) {
+            if($retRecord['record_id'] == static::$records['record_1']->get_record_id() && $retRecord['databox_id'] == static::$records['record_1']->get_sbas_id()) {
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            $this->fail('unable to find the record back');
+        }
     }
 
     public function testGet_record_related()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
+        $basketElement = $this->insertOneBasketElement();
+        $basketElement->setRecord(static::$records['record_1']);
+
+        $story = \record_adapter::createStory(self::$collection);
+        $story->appendChild(static::$records['record_1']);
+
+        self::$core['EM']->flush($basketElement);
+
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $this->object->get_record_related($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
+
+        $data = json_decode($result->format(), true);
+
+        $this->assertArrayHasKey('baskets', $data['response']);
+        $this->assertArrayHasKey('stories', $data['response']);
+
+        $found = false;
+        foreach ($data['response']['baskets'] as $bask) {
+            if ($bask['basket_id'] == $basketElement->getBasket()->getId()) {
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            $this->fail('unable to find the basket back');
+        }
+
+        $found = false;
+        foreach ($data['response']['stories'] as $retStory) {
+            if ($retStory['story_id'] == $story->get_record_id() && $retStory['databox_id'] == $story->get_sbas_id()) {
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            $this->fail('unable to find the story back');
+        }
     }
 
     public function testGet_record_metadatas()
@@ -233,7 +372,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $caption_field_value = caption_Field_Value::create(databox_field::get_instance($databox, 1), static::$records['record_1'], 'my value');
         }
 
-//valide metas
         $metadatas = array();
 
         foreach (static::$records['record_1']->get_databox()->get_meta_structure()->get_elements() as $field) {
@@ -497,30 +635,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->checkResponseField($result, "per_page", 'integer');
         }
         $feed->delete();
-    }
-
-    public function testSearch_users()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    public function testGet_user_acces()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    public function testAdd_user()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
     }
 
     protected function checkResponseField(API_V1_result $result, $field, $type)
