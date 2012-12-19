@@ -25,7 +25,7 @@ class API_V1_adapter extends API_V1_Abstract
      *
      * @var string
      */
-    protected $version = '1.2';
+    protected $version = '1.3';
 
     /**
      * Appbox where the API works
