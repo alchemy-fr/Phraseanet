@@ -439,6 +439,31 @@ return call_user_func(function() {
             );
 
             /**
+             * Route : /search/
+             *
+             * Method : GET or POST
+             *
+             * Parameters :
+             *    bases[] : array
+             *    status[] : array
+             *    fields[] : array
+             *    record_type : boolean
+             *    media_type : string
+             *
+             * Response :
+             *    Array containing an array of records and stories collection
+             *
+             */
+            $route = '/search/';
+            $app->match(
+                $route, function() use ($app) {
+                    $result = $app['api']->search($app['request']);
+
+                    return $result->get_response();
+                }
+            );
+
+            /**
              * Route : /records/search/
              *
              * Method : GET or POST
@@ -559,6 +584,27 @@ return call_user_func(function() {
             $app->get('/records/{any_id}/{anyother_id}/embed/', $bad_request_exception);
 
             /**
+             * Route : /stories/DATABOX_ID/RECORD_ID/embed/
+             *
+             * Method : GET
+             *
+             * Parameters :
+             *    DATABOX_ID : required INT
+             *    RECORD_ID : required INT
+             *
+             */
+            $route = '/stories/{databox_id}/{story_id}/embed/';
+            $app->get(
+                $route, function($databox_id, $story_id) use ($app) {
+                    $result = $app['api']->get_record_embed($app['request'], $databox_id, $story_id);
+
+                    return $result->get_response();
+                }
+            )->assert('databox_id', '\d+')->assert('story_id', '\d+');
+
+            $app->get('/stories/{any_id}/{anyother_id}/embed/', $bad_request_exception);
+
+            /**
              * Route : /records/DATABOX_ID/RECORD_ID/setmetadatas/
              *
              * Method : POST
@@ -627,6 +673,14 @@ return call_user_func(function() {
                     return $result->get_response();
                 })->assert('databox_id', '\d+')->assert('record_id', '\d+');
             $app->get('/records/{any_id}/{anyother_id}/', $bad_request_exception);
+
+            $route = '/stories/{databox_id}/{story_id}/';
+            $app->get($route, function($databox_id, $story_id) use ($app) {
+                    $result = $app['api']->get_story($app['request'], $databox_id, $story_id);
+
+                    return $result->get_response();
+                })->assert('databox_id', '\d+')->assert('story_id', '\d+');
+            $app->get('/stories/{any_id}/{anyother_id}/', $bad_request_exception);
 
             /**
              * Route : /baskets/list/

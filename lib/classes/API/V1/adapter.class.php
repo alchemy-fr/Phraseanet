@@ -1241,6 +1241,30 @@ class API_V1_adapter extends API_V1_Abstract
     }
 
     /**
+     * Return detailed informations about one story
+     *
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  int           $story_id
+     * @return API_V1_result
+     */
+    public function get_story(Request $request, $databox_id, $story_id)
+    {
+        $result = new API_V1_result($request, $this);
+        $databox = $this->appbox->get_databox($databox_id);
+        try {
+            $story = $databox->get_record($story_id);
+            $result->set_datas(array('story' => $this->list_story($story)));
+        } catch (Exception_NotFound $e) {
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('Story Not Found'));
+        } catch (Exception $e) {
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
+        }
+
+        return $result;
+    }
+
+    /**
      * Return the baskets list of the authenticated user
      *
      * @param  Request       $request
