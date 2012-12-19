@@ -1026,7 +1026,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $stories = array_map(function ($story) use ($that) {
             return $that->list_story($story);
-        }, $record->get_grouping_parents()->get_elements());
+        }, array_values($record->get_grouping_parents()->get_elements()));
 
         $result->set_datas(array(
             "baskets" => $baskets,
@@ -1100,6 +1100,36 @@ class API_V1_adapter extends API_V1_Abstract
      * @return API_V1_result
      */
     public function get_record_embed(Request $request, $databox_id, $record_id)
+    {
+
+        $result = new API_V1_result($request, $this);
+
+        $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
+
+        $ret = array();
+
+        $devices = $request->get('devices', array());
+        $mimes = $request->get('mimes', array());
+
+        foreach ($record->get_embedable_medias($devices, $mimes) as $name => $media) {
+            $ret[] = $this->list_embedable_media($media, $this->appbox->get_registry());
+        }
+
+        $result->set_datas(array("embed" => $ret));
+
+        return $result;
+    }
+
+    /**
+     * Get an API_V1_result containing the story embed files
+     *
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  int           $record_id
+     * @param  string        $response_type
+     * @return API_V1_result
+     */
+    public function get_story_embed(Request $request, $databox_id, $record_id)
     {
 
         $result = new API_V1_result($request, $this);

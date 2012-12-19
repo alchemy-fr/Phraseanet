@@ -596,7 +596,7 @@ return call_user_func(function() {
             $route = '/stories/{databox_id}/{story_id}/embed/';
             $app->get(
                 $route, function($databox_id, $story_id) use ($app) {
-                    $result = $app['api']->get_record_embed($app['request'], $databox_id, $story_id);
+                    $result = $app['api']->get_story_embed($app['request'], $databox_id, $story_id);
 
                     return $result->get_response();
                 }
