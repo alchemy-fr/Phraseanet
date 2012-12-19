@@ -2340,7 +2340,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
     }
 
-
     protected function evaluateGoodStory($story)
     {
         $this->assertArrayHasKey('databox_id', $story);
