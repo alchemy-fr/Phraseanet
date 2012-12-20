@@ -1,5 +1,5 @@
 Phraseanet 3.7 - Digital Asset Management application
-=================================================
+=====================================================
 
 [![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=3.7)](http://travis-ci.org/alchemy-fr/Phraseanet)
 
@@ -7,45 +7,21 @@ Phraseanet 3.7 - Digital Asset Management application
 
 Metadatas Management (include Thesaurus and DublinCore Mapping)
 Search Engine (Sphinx Search Integration)
-RestFull APIS (See Developer Documentation https://docs.phraseanet.com/3.6/Devel)
+RestFull APIS (See Developer Documentation https://docs.phraseanet.com/Devel)
 Bridge to Youtube/Dailymotion/Flickr
 
 #Documentation :
 
-https://docs.phraseanet.com/3.6/
+https://docs.phraseanet.com/
 
-#Easy Installation
+#Installation
 
-Get the latest sources here https://github.com/alchemy-fr/Phraseanet/downloads
+You **must** not download the source from GitHub, but download a packaged version here :
 
-**Setup your webserver**
+https://sourceforge.net/projects/phraseanet/files/
 
-***Nginx***
-<pre>
-server {
-    listen        80;
-    server_name   subdomain.domain.tld;
-    root          /path/to/Phraseanet/www;
-
-    index         index.php;
-
-    location /download {
-        internal;
-        alias /path/to/Phraseanet/tmp/download;
-    }
-    location /lazaret {
-        internal;
-        alias /path/to/Phraseanet/tmp/lazaret;
-    }
-}
-</pre>
-
-
-Let's go !
+And follow the install steps described at https:////docs.phraseanet.com/Admin/
 
 #License
 
 Phraseanet is licensed under GPL-v3 license.
-
-[1]: http://developer.phraseanet.com/
-
