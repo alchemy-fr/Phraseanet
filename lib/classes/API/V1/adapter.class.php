@@ -1935,7 +1935,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  record_adapter $record
      * @return array
      */
-    protected function list_record(record_adapter $record)
+    public function list_record(record_adapter $record)
     {
         $technicalInformation = array();
         foreach ($record->get_technical_infos() as $name => $value) {
