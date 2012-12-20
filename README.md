@@ -20,7 +20,7 @@ You **must** not download the source from GitHub, but download a packaged versio
 
 https://sourceforge.net/projects/phraseanet/files/
 
-And follow the install steps described at https:////docs.phraseanet.com/Admin/
+And follow the install steps described at https://docs.phraseanet.com/Admin/
 
 #License
 
