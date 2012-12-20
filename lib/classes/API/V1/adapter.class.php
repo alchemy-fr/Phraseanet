@@ -41,6 +41,9 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected $core;
 
+    const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
+    const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
+
     /**
      * API constructor
      *
@@ -1990,6 +1993,7 @@ class API_V1_adapter extends API_V1_Abstract
         };
 
         return array(
+            '@entity@'       => self::OBJECT_TYPE_STORY,
             'databox_id'     => $story->get_sbas_id(),
             'story_id'       => $story->get_record_id(),
             'updated_on'     => $story->get_modification_date()->format(DATE_ATOM),
@@ -1998,6 +2002,7 @@ class API_V1_adapter extends API_V1_Abstract
             'thumbnail'      => $this->list_embedable_media($story->get_thumbnail(), registry::get_instance()),
             'uuid'           => $story->get_uuid(),
             'metadatas'      => array(
+                '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
                 'dc:contributor' => $format($caption, databox_Field_DCESAbstract::Contributor),
                 'dc:coverage'    => $format($caption, databox_Field_DCESAbstract::Coverage),
                 'dc:creator'     => $format($caption, databox_Field_DCESAbstract::Creator),

@@ -800,6 +800,9 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateSearchResponse($response);
 
+        $this->assertArrayHasKey('stories', $response['results']);
+        $this->assertArrayHasKey('records', $response['results']);
+
         $found = false;
 
         foreach ($response['results']['records'] as $record) {
@@ -832,6 +835,9 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $response = $content['response'];
 
         $this->evaluateSearchResponse($response);
+
+        $this->assertArrayHasKey('stories', $response['results']);
+        $this->assertArrayHasKey('records', $response['results']);
 
         $found = false;
 
@@ -989,6 +995,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testStoriesEmbedRoute()
     {
         $this->setToken(self::$token);
+
+        $media = self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/cestlafete.jpg'));
+        static::$records['record_story_1']->substitute_subdef('preview', $media);
+        static::$records['record_story_1']->substitute_subdef('thumbnail', $media);
 
         $keys = array_keys(static::$records['record_story_1']->get_subdefs());
 
@@ -2180,7 +2190,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('response', $content);
         $this->assertTrue(is_array($content['meta']), 'Le bloc meta est un array');
         $this->assertTrue(is_array($content['response']), 'Le bloc reponse est un array');
-        $this->assertEquals('1.2', $content['meta']['api_version']);
+        $this->assertEquals('1.3', $content['meta']['api_version']);
         $this->assertNotNull($content['meta']['response_time']);
         $this->assertEquals('UTF-8', $content['meta']['charset']);
     }
@@ -2354,6 +2364,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertTrue(is_int($story['collection_id']));
         $this->assertArrayHasKey('thumbnail', $story);
         $this->assertArrayHasKey('uuid', $story);
+        $this->assertArrayHasKey('@entity@', $story);
+        $this->assertEquals(\API_V1_adapter::OBJECT_TYPE_STORY, $story['@entity@']);
         $this->assertTrue(\uuid::is_valid($story['uuid']));
 
         if ( ! is_null($story['thumbnail'])) {
@@ -2373,6 +2385,20 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertArrayHasKey('records', $story);
         $this->assertInternalType('array', $story['records']);
+
+        foreach ($story['metadatas'] as $key => $metadata) {
+            if (null !== $metadata) {
+                $this->assertInternalType('string', $metadata);
+            }
+            if ($key === '@entity@') {
+                continue;
+            }
+
+            $this->assertEquals(0, strpos($key, 'dc:'));
+        }
+
+        $this->assertArrayHasKey('@entity@', $story['metadatas']);
+        $this->assertEquals(\API_V1_adapter::OBJECT_TYPE_STORY_METADATA_BAG, $story['metadatas']['@entity@']);
 
         foreach ($story['records'] as $record) {
             $this->evaluateGoodRecord($record);
@@ -2493,8 +2519,5 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertTrue(is_array($response['suggestions']));
         $this->assertTrue(is_array($response['results']));
         $this->assertTrue(is_string($response['query']));
-
-        $this->assertArrayHasKey('stories', $response['results']);
-        $this->assertArrayHasKey('records', $response['results']);
     }
 }
