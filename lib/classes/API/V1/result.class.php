@@ -160,6 +160,16 @@ class API_V1_result
     }
 
     /**
+     * Return response data
+     *
+     * @return array
+     */
+    public function get_datas()
+    {
+        return (array) $this->response;
+    }
+
+    /**
      * Format the data and return serialized string
      *
      * @return string

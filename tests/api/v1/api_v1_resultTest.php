@@ -43,7 +43,14 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals(0, sizeof(get_class_methods($response->response)));
         $this->checkResponseFieldMeta($response, "api_version", "my_super_version1.0", PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
         $this->checkResponseFieldMeta($response, "request", "GET my/base/path/my/request/uri", PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
-//    $this->checkResponseFieldMeta($response, "response_time", $date->format(DATE_ATOM), PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
+
+        $date = new \DateTime();
+        $now = $date->format('U');
+
+        $date_query = \DateTime::createFromFormat(DATE_ATOM, $response->meta->response_time);
+        $now_query = $date_query->format('U');
+
+        $this->assertLessThan(1, $now_query - $now);
 
         $this->assertDateAtom($response->meta->response_time);
         $date = new DateTime();
@@ -141,6 +148,42 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->checkResponseFieldResponse($response, "pirouette", "cacahuete", PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
         $this->checkResponseFieldResponse($response, "black", true, PHPUnit_Framework_Constraint_IsType::TYPE_BOOL);
         $this->checkResponseFieldResponse($response, "bob", array("bob"), PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY);
+    }
+
+    public function testGet_datas()
+    {
+        $server = array(
+            "HTTP_ACCEPT"     => "application/json"
+            , 'REQUEST_METHOD'  => 'GET'
+            , 'SCRIPT_FILENAME' => 'my/base/path/my/request/uri/filename'
+            , "REQUEST_URI"     => "my/base/path/my/request/uri"
+            , 'PHP_SELF'        => 'my/base/path'
+        );
+        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
+
+        $data = array("pirouette" => "cacahuete", "black"     => true, "bob"       => array("bob"));
+        $api_result = new API_V1_result($request, $this->api);
+        $api_result->set_datas($data);
+
+        $this->assertEquals($data, $api_result->get_datas());
+    }
+
+    public function testGet_Emptydatas()
+    {
+        $server = array(
+            "HTTP_ACCEPT"     => "application/json"
+            , 'REQUEST_METHOD'  => 'GET'
+            , 'SCRIPT_FILENAME' => 'my/base/path/my/request/uri/filename'
+            , "REQUEST_URI"     => "my/base/path/my/request/uri"
+            , 'PHP_SELF'        => 'my/base/path'
+        );
+        $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
+
+        $data = array();
+        $api_result = new API_V1_result($request, $this->api);
+        $api_result->set_datas($data);
+
+        $this->assertEquals($data, $api_result->get_datas());
     }
 
     protected function checkResponseFieldMeta(stdClass $response, $field, $expected_value, $type)

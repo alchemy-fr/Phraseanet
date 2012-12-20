@@ -371,7 +371,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function get_embedable_medias($devices = null, $mimes = null)
     {
-
         return $this->getSubdfefByDeviceAndMime($devices, $mimes);
     }
 
@@ -707,9 +706,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $searchDevices = array_merge((array) $devices, (array) databox_subdef::DEVICE_ALL);
 
+        $type = $this->is_grouping() ? 'image' : $this->get_type();
+
         foreach ($this->databox->get_subdef_structure() as $group => $databoxSubdefs) {
 
-            if ($this->get_type() != $group) {
+            if ($type != $group) {
                 continue;
             }
 
