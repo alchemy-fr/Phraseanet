@@ -117,8 +117,11 @@ class Tooltip implements ControllerProviderInterface
         $controllers->post('/tc_datas/{sbas_id}/{record_id}/'
             , function(Application $app, $sbas_id, $record_id) {
                 $record = new \record_adapter($sbas_id, $record_id);
-                $document = $record->get_subdef('document');
-
+                try {
+                    $document = $record->get_subdef('document');
+                } catch(\Exception $e) {
+                    $document = null;
+                }
                 /* @var $twig \Twig_Environment */
                 $twig = $app['Core']->getTwig();
 
