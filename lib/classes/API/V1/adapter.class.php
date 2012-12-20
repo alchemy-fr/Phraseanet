@@ -1968,7 +1968,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  record_adapter $story
      * @return array
      */
-    protected function list_story(record_adapter $story, $includeChildren = true)
+    public function list_story(record_adapter $story, $includeChildren = true)
     {
         if (!$story->is_grouping()) {
             throw new \API_V1_exception_notfound('Story not found');
