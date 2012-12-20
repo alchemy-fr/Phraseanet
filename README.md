@@ -5,10 +5,10 @@ Phraseanet 3.7 - Digital Asset Management application
 
 #Features :
 
-Metadatas Management (include Thesaurus and DublinCore Mapping)
-Search Engine (Sphinx Search Integration)
-RestFull APIS (See Developer Documentation https://docs.phraseanet.com/Devel)
-Bridge to Youtube/Dailymotion/Flickr
+ - Metadatas Management (include Thesaurus and DublinCore Mapping)
+ - Search Engine (Sphinx Search Integration)
+ - RestFull APIS (See Developer Documentation https://docs.phraseanet.com/Devel)
+ - Bridge to Youtube/Dailymotion/Flickr
 
 #Documentation :
 
