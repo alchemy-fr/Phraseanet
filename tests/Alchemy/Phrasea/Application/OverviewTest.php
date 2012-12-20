@@ -60,7 +60,6 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertNull($response->getLastModified());
         $this->assertNull($response->getMaxAge());
         $this->assertNull($response->getTtl());
-        $this->assertEquals(0, $response->getAge());
         $this->assertNull($response->getExpires());
 
         $record->generate_subdefs($record->get_databox(), self::$core['monolog']);

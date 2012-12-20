@@ -553,7 +553,9 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        static::$records['record_story_1']->appendChild(static::$records['record_1']);
+        if (!static::$records['record_story_1']->hasChild(static::$records['record_1'])) {
+            static::$records['record_story_1']->appendChild(static::$records['record_1']);
+        }
 
         $route = '/stories/' . static::$records['record_story_1']->get_sbas_id() . '/' . static::$records['record_story_1']->get_record_id() . '/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
