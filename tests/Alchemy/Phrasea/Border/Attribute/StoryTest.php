@@ -10,6 +10,14 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      * @var Story
      */
     protected $object;
+    private static $story;
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        self::$story = \record_adapter::createStory(self::$collection);
+    }
 
     /**
      * @covers Alchemy\Phrasea\Border\Attribute\Attribute
@@ -18,7 +26,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Story(static::$records['record_story_1']);
+        $this->object = new Story(self::$story);
     }
 
     /**
@@ -28,6 +36,12 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
     {
         $this->object = null;
         parent::tearDown();
+    }
+
+    public static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
+        self::$story->delete();
     }
 
     /**
@@ -44,7 +58,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetValue()
     {
-        $this->assertSame(static::$records['record_story_1'], $this->object->getValue());
+        $this->assertSame(self::$story, $this->object->getValue());
     }
 
     /**

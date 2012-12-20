@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
+use Alchemy\Phrasea\Border\File as BorderFile;
 use Symfony\Component\HttpFoundation\Request;
 
 class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -88,7 +89,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_version()
     {
-        $this->assertEquals('1.2', $this->object->get_version());
+        $this->assertEquals('1.3', $this->object->get_version());
     }
 
     public function testGet_databoxes()
@@ -165,7 +166,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearch_recordsWithRecords()
     {
-        static::$records['record_1'];
+        $record = \record_adapter::createFromFile(BorderFile::buildFromPathfile(__DIR__ . '/../../testfiles/cestlafete.jpg', self::$collection));
 
         $request = new Request(array('record_type' => "image", 'search_type' => 0), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $this->object->search_records($request);
@@ -177,7 +178,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $found = false;
         foreach ($data['response']['results'] as $retRecord) {
-            if($retRecord['record_id'] == static::$records['record_1']->get_record_id() && $retRecord['databox_id'] == static::$records['record_1']->get_sbas_id()) {
+            if($retRecord['record_id'] == $record->get_record_id() && $retRecord['databox_id'] == $record->get_sbas_id()) {
                 $found = true;
                 break;
             }
@@ -191,7 +192,10 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSearch_recordsWithStories()
     {
         $story = \record_adapter::createStory(self::$collection);
-        $story->appendChild(static::$records['record_1']);
+
+        if (!$story->hasChild(static::$records['record_1'])) {
+            $story->appendChild(static::$records['record_1']);
+        }
 
         $request = new Request(array('search_type' => 1), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $this->object->search_records($request);
@@ -218,7 +222,10 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSearchWithStories()
     {
         $story = \record_adapter::createStory(self::$collection);
-        $story->appendChild(static::$records['record_1']);
+
+        if (!$story->hasChild(static::$records['record_1'])) {
+            $story->appendChild(static::$records['record_1']);
+        }
 
         $request = new Request(array('search_type' => 1), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $this->object->search($request);
@@ -247,7 +254,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearchWithRecords()
     {
-        static::$records['record_1'];
+        $record = \record_adapter::createFromFile(BorderFile::buildFromPathfile(__DIR__ . '/../../testfiles/cestlafete.jpg', self::$collection));
 
         $request = new Request(array('search_type' => 0), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $this->object->search($request);
@@ -263,7 +270,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $found = false;
 
         foreach ($data['response']['results']['records'] as $retRecord) {
-            if($retRecord['record_id'] == static::$records['record_1']->get_record_id() && $retRecord['databox_id'] == static::$records['record_1']->get_sbas_id()) {
+            if($retRecord['record_id'] == $record->get_record_id() && $retRecord['databox_id'] == $record->get_sbas_id()) {
                 $found = true;
                 break;
             }
@@ -282,7 +289,10 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $basketElement->setRecord(static::$records['record_1']);
 
         $story = \record_adapter::createStory(self::$collection);
-        $story->appendChild(static::$records['record_1']);
+
+        if (!$story->hasChild(static::$records['record_1'])) {
+            $story->appendChild(static::$records['record_1']);
+        }
 
         self::$core['EM']->flush($basketElement);
 
