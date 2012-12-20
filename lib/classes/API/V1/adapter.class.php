@@ -1877,7 +1877,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  \Entities\Basket $basket
      * @return array
      */
-    protected function list_basket(\Entities\Basket $basket)
+    public function list_basket(\Entities\Basket $basket)
     {
         $ret = array(
             'basket_id'         => $basket->getId(),
