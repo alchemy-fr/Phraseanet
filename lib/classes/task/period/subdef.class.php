@@ -15,6 +15,12 @@
  */
 class task_period_subdef extends task_databoxAbstract
 {
+    const MINMEGS = 20;
+    const MAXMEGS = 64;
+
+    const MINFLUSH = 10;
+    const MAXFLUSH = 100;
+
     /**
      * Record buffer for writing meta datas after building subdefs
      *
@@ -73,7 +79,12 @@ class task_period_subdef extends task_databoxAbstract
         if ($dom->loadXML($oldxml)) {
             $xmlchanged = false;
 
-            foreach (array("str:period", "str:flush", "str:maxrecs", "str:maxmegs") as $pname) {
+            foreach (array(
+            'str:period'
+            , 'str:flush'
+            , 'str:maxrecs'
+            , 'str:maxmegs'
+            ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -86,6 +97,7 @@ class task_period_subdef extends task_databoxAbstract
                 }
                 switch ($ptype) {
                     case "str":
+                    case "pop":
                         $ns->appendChild($dom->createTextNode($pvalue));
                         break;
                     case "boo":
@@ -109,36 +121,28 @@ class task_period_subdef extends task_databoxAbstract
     public function xml2graphic($xml, $form)
     {
         if (false !== $sxml = simplexml_load_string($xml)) {
-            if ((int) ($sxml->period) < 10) {
-                $sxml->period = 10;
-            } elseif ((int) ($sxml->period) > 300) {
-                $sxml->period = 300;
+            if ((int) ($sxml->period) < self::MINPERIOD) {
+                $sxml->period = self::MINPERIOD;
+            } elseif ((int) ($sxml->period) > self::MAXPERIOD) {
+                $sxml->period = self::MAXPERIOD;
             }
 
-            if ((string) ($sxml->flush) == '') {
-                $sxml->flush = 10;
-            } elseif ((int) ($sxml->flush) < 1) {
-                $sxml->flush = 1;
-            } elseif ((int) ($sxml->flush) > 100) {
-                $sxml->flush = 100;
+            if ((int) ($sxml->flush) < self::MINFLUSH) {
+                $sxml->flush = self::MINFLUSH;
+            } elseif ((int) ($sxml->flush) > self::MAXFLUSH) {
+                $sxml->flush = self::MAXFLUSH;
             }
 
-            if ((string) ($sxml->maxrecs) == '') {
-                $sxml->maxrecs = 100;
-            }
-            if ((int) ($sxml->maxrecs) < 10) {
-                $sxml->maxrecs = 10;
-            } elseif ((int) ($sxml->maxrecs) > 500) {
-                $sxml->maxrecs = 500;
+            if ((int) ($sxml->maxrecs) < self::MINRECS) {
+                $sxml->maxrecs = self::MINRECS;
+            } elseif (self::MAXRECS != -1 && (int) ($sxml->maxrecs) > self::MAXRECS) {
+                $sxml->maxrecs = self::MAXRECS;
             }
 
-            if ((string) ($sxml->maxmegs) == '') {
-                $sxml->maxmegs = 6;
-            }
-            if ((int) ($sxml->maxmegs) < 3) {
-                $sxml->maxmegs = 3;
-            } elseif ((int) ($sxml->maxmegs) > 32) {
-                $sxml->maxmegs = 32;
+            if ((int) ($sxml->maxmegs) < self::MINMEGS) {
+                $sxml->maxmegs = self::MINMEGS;
+            } elseif (self::MAXMEGS != -1 && (int) ($sxml->maxmegs) > self::MAXMEGS) {
+                $sxml->maxmegs = self::MAXMEGS;
             }
             ?>
             <script type="text/javascript">
@@ -149,7 +153,6 @@ class task_period_subdef extends task_databoxAbstract
             </script>
 
             <?php
-
             return("");
         } else {
             return("BAD XML");
@@ -165,40 +168,31 @@ class task_period_subdef extends task_databoxAbstract
     {
         ?>
         <script type="text/javascript">
-            function chgxmltxt(textinput, fieldname)
-            {
-                var limits = { 'period':{min:1, 'max':300} , 'flush':{min:1, 'max':100} , 'maxrecs':{min:10, 'max':1000} , 'maxmegs':{min:2, 'max':100} } ;
-                if (typeof(limits[fieldname])!='undefined') {
-                    var v = 0|textinput.value;
-                    if(v < limits[fieldname].min)
-                        v = limits[fieldname].min;
-                    else if(v > limits[fieldname].max)
-                        v = limits[fieldname].max;
-                    textinput.value = v;
+        $(document).ready(function(){
+            var limits = {
+                'period' :{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
+                'flush'  :{'min':<?php echo self::MINFLUSH; ?>,  'max':<?php echo self::MAXFLUSH; ?>},
+                'maxrecs':{'min':<?php echo self::MINRECS; ?>,   'max':<?php echo self::MAXRECS; ?>},
+                'maxmegs':{'min':<?php echo self::MINMEGS; ?>,   'max':<?php echo self::MAXMEGS; ?>}
+            } ;
+            $(".formElem").change(function(){
+                fieldname = $(this).attr("name");
+                switch((this.nodeName+$(this).attr("type")).toLowerCase())
+                {
+                    case "inputtext":
+                        if (typeof(limits[fieldname])!='undefined') {
+                            var v = 0|this.value;
+                            if(v < limits[fieldname].min)
+                                v = limits[fieldname].min;
+                            else if(v > limits[fieldname].max)
+                                v = limits[fieldname].max;
+                            this.value = v;
+                        }
+                        break;
                 }
                 setDirty();
-            }
-            function chgxmlck_die(ck)
-            {
-                if (ck.checked) {
-                    if(document.forms['graphicForm'].maxrecs.value == "")
-                        document.forms['graphicForm'].maxrecs.value = 500;
-                    if(document.forms['graphicForm'].maxmegs.value == "")
-                        document.forms['graphicForm'].maxmegs.value = 4;
-                    document.forms['graphicForm'].maxrecs.disabled = document.forms['graphicForm'].maxmegs.disabled = false;
-                } else {
-                    document.forms['graphicForm'].maxrecs.disabled = document.forms['graphicForm'].maxmegs.disabled = true;
-                }
-                setDirty();
-            }
-            function chgxmlck(checkinput, fieldname)
-            {
-                setDirty();
-            }
-            function chgxmlpopup(popupinput, fieldname)
-            {
-                setDirty();
-            }
+             });
+        });
         </script>
         <?php
     }
@@ -207,7 +201,6 @@ class task_period_subdef extends task_databoxAbstract
      * return interface 'graphic view'
      *
      */
-
     public function getInterfaceHTML()
     {
         ob_start();
@@ -215,21 +208,21 @@ class task_period_subdef extends task_databoxAbstract
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
             <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-            <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">
-            <?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+            <input class="formElem" type="text" name="period" style="width:40px;" value="">
+            <?php echo _('task::_common_:secondes (unite temporelle)') ?>
             <br/>
-            <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input type="text" name="flush" style="width:40px;" onchange="chgxmltxt(this, \'flush\');" value="">'); ?>
+            <br/>
+            <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input class="formElem" type="text" name="flush" style="width:40px;" value="">'); ?>
             <br/>
             <br/>
             <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
-            <input type="text" name="maxrecs" style="width:40px;" onchange="chgxmltxt(this, 'maxrecs');" value="">
+            <input class="formElem" type="text" name="maxrecs" style="width:40px;" value="">
             <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
-            <input type="text" name="maxmegs" style="width:40px;" onchange="chgxmltxt(this, 'maxmegs');" value="">
+            <input class="formElem" type="text" name="maxmegs" style="width:40px;" value="">
             Mo
             <br/>
         </form>
         <?php
-
         return ob_get_clean();
     }
 
@@ -240,8 +233,7 @@ class task_period_subdef extends task_databoxAbstract
         $sql = 'SELECT coll_id, record_id
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
-              ORDER BY record_id DESC LIMIT 0, 20';
-
+              ORDER BY record_id DESC LIMIT 0, '.$this->maxrecs;
         $stmt = $connbas->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -351,6 +351,11 @@ class Configuration
         return 'Border\\' . $this->configuration->get('border-manager');
     }
 
+    public function getTaskManagerConfig()
+    {
+       return 'TaskManager\\' . $this->configuration->get('task-manager');
+    }
+
     /**
      * Return the selected service configuration
      *

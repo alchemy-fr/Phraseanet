@@ -126,7 +126,14 @@ class Core extends \Pimple
                 return $core['CacheService']->get('OpcodeCache', $serviceName)->getDriver();
             });
 
+        $this['task.config'] =  $this->share(function() use ($core) {
+            $serviceName = $core->getConfiguration()->getTaskManagerConfig();
+            $configuration = $core->getConfiguration()->getService($serviceName);
 
+            $Service = Core\Service\Builder::create($core, $configuration);
+
+            return $Service->getDriver();
+        });
 
         $this["Twig"] = $this->share(function() use ($core) {
                 $serviceName = $core->getConfiguration()->getTemplating();

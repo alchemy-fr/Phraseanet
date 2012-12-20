@@ -44,12 +44,20 @@ class module_console_taskrun extends Command
             , task_abstract::RUNNER_MANUAL
         );
         $this->addOption(
-            'nolog'
-            , NULL
-            , 1 | InputOption::VALUE_NONE
-            , 'do not log to logfile'
-            , NULL
+            'syslog', null, InputOption::VALUE_REQUIRED, //::VALUE_OPTIONAL,
+            'threshold : (DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT)', null
         );
+        $this->addOption(
+            'maillog', null, InputOption::VALUE_REQUIRED, //::VALUE_OPTIONAL,
+            'threshold : (DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT)', null
+        );
+//        $this->addOption(
+//            'nolog'
+//            , NULL
+//            , 1 | InputOption::VALUE_NONE
+//            , 'do not log to logfile'
+//            , NULL
+//        );
         $this->setDescription('Run task');
 
         return $this;
@@ -98,19 +106,63 @@ class module_console_taskrun extends Command
                 $this->shedulerPID = $schedStatus['pid'];
             }
         }
-
         $core = \bootstrap::getCore();
 
         $logger = $core['monolog'];
 
-        if ($input->getOption('verbose')) {
-            $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
-            $logger->pushHandler($handler);
+        $syslogOption = strtoupper($core['task.config']->get('SyslogLevel'));
+        $maillogOption = strtoupper($core['task.config']->get('MaillogLevel'));
+
+        if ($syslogOption != '' || $maillogOption != '') {
+            $lib2v = array(
+                'DEBUG'       => Logger::DEBUG,
+                'INFO'        => Logger::INFO,
+                'WARNING'     => Logger::WARNING,
+                'ERROR'       => Logger::ERROR,
+                'CRITICAL'    => Logger::CRITICAL,
+                'ALERT'       => Logger::ALERT
+            );
+            if ($syslogOption != '') {
+                if (!array_key_exists($syslogOption, $lib2v)) {
+                    throw(new RuntimeException(sprintf(
+                            "Bad value '%s' for setting SyslogLevel\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $syslogOption))
+                    );
+                }
+                $fakeTask = $task_manager->getTask($task_id, null);
+                $handler = new Handler\SyslogHandler(
+                        "Phraseanet-Task/" . $fakeTask->getName(), // string added to each message
+                        "user", // facility (type of program logging)
+                        $lib2v[$syslogOption], // level
+                        true        // bubble
+                );
+                unset($fakeTask);
+                $logger->pushHandler($handler);
+            }
+            if ($maillogOption != '') {
+                if (!array_key_exists($maillogOption, $lib2v)) {
+                    throw(new RuntimeException(sprintf(
+                            "Bad value '%s' for setting MaillogLevel\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $maillogOption))
+                    );
+                }
+                $registry = registry::get_instance();
+                $adminMail = $registry->get('GV_adminMail');
+                $senderMail = $registry->get('GV_defaultmailsenderaddr');
+                $handler = new Handler\NativeMailerHandler(
+                        $adminMail,
+                        "Task problem",
+                        $senderMail,
+                        $lib2v[$maillogOption], // level
+                        true
+                );
+                $logger->pushHandler($handler);
+            }
         }
+
 
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
         $handler = new Handler\RotatingFileHandler($logfile, 10);
         $logger->pushHandler($handler);
+
         $this->task = $task_manager->getTask($task_id, $logger);
 
         register_tick_function(array($this, 'tick_handler'), true);

@@ -48,6 +48,7 @@ class task_period_outofdate extends task_abstract
             , 'coll1'
             , 'status2'
             , 'coll2'
+            , 'syslog'
         );
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
@@ -56,20 +57,21 @@ class task_period_outofdate extends task_abstract
             $xmlchanged = false;
             // foreach($parm2 as $pname=>$pvalue)
             foreach (array(
-            "str:sbas_id",
-            "str:period",
-            'str:field1',
-            'str:fieldDs1',
-            'str:fieldDv1',
-            'str:field2',
-            'str:fieldDs2',
-            'str:fieldDv2',
-            'str:status0',
-            'str:coll0',
-            'str:status1',
-            'str:coll1',
-            'str:status2',
-            'str:coll2'
+            'str:sbas_id'
+            , 'str:period'
+            , 'str:field1'
+            , 'str:fieldDs1'
+            , 'str:fieldDv1'
+            , 'str:field2'
+            , 'str:fieldDs2'
+            , 'str:fieldDv2'
+            , 'str:status0'
+            , 'str:coll0'
+            , 'str:status1'
+            , 'str:coll1'
+            , 'str:status2'
+            , 'str:coll2'
+            , 'pop:syslog'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -81,13 +83,12 @@ class task_period_outofdate extends task_abstract
                     }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
-                    $dom->documentElement->appendChild($dom->createTextNode("\t"));
                     $ns = $dom->documentElement->appendChild($dom->createElement($pname));
-                    $dom->documentElement->appendChild($dom->createTextNode("\n"));
                 }
                 // on fixe sa valeur
                 switch ($ptype) {
                     case "str":
+                    case "pop":
                         $ns->appendChild($dom->createTextNode($pvalue));
                         break;
                     case "boo":
@@ -107,10 +108,10 @@ class task_period_outofdate extends task_abstract
     public function xml2graphic($xml, $form)
     {
         if (false !== $sxml = simplexml_load_string($xml)) {
-            if ((int) ($sxml->period) < 10) {
-                $sxml->period = 10;
-            } elseif ((int) ($sxml->period) > 1440) { // 1 jour
-                $sxml->period = 1440;
+            if ((int) ($sxml->period) < self::MINPERIOD) {
+                $sxml->period = self::MINPERIOD;
+            } elseif ((int) ($sxml->period) > self::MAXPERIOD) {
+                $sxml->period = self::MAXPERIOD;
             }
 
             if ((string) ($sxml->delay) == '') {
@@ -120,6 +121,14 @@ class task_period_outofdate extends task_abstract
             <script type="text/javascript">
                 var i;
                 var opts;
+                var found;
+                opts = <?php echo $form ?>.syslog.options;
+                for (found=0, i=1; found==0 && i<opts.length; i++) {
+                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->syslog, "form") ?>")
+                    found = i;
+                }
+                opts[found].selected = true;
+
                 var pops = [
                     {'name':"sbas_id", 'val':"<?php echo p4string::MakeString($sxml->sbas_id, "js") ?>"},
 
@@ -153,7 +162,6 @@ class task_period_outofdate extends task_abstract
                 parent.calcSQL();
             </script>
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -215,7 +223,10 @@ class task_period_outofdate extends task_abstract
 
             function chgxmltxt(textinput, fieldname)
             {
-                var limits = { 'period':{min:1, 'max':1440} , 'delay':{min:0} } ;
+                var limits = {
+                    'period':{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
+                    'delay':{min:0}
+                } ;
                 if (typeof(limits[fieldname])!='undefined') {
                     var v = 0|textinput.value;
                     if(limits[fieldname].min && v < limits[fieldname].min)
@@ -317,6 +328,18 @@ class task_period_outofdate extends task_abstract
         $sbas_list = $user->ACL()->get_granted_sbas(array('bas_manage'));
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
+            <br/>
+            syslog level :
+            <select name="syslog" onchange="chgxmlpopup(this, 'syslog');">
+                <option value="">...</option>
+                <option value="DEBUG">DEBUG</option>
+                <option value="INFO">INFO</option>
+                <option value="WARNING">WARNING</option>
+                <option value="ERROR">ERROR</option>
+                <option value="CRITICAL">CRITICAL</option>
+                <option value="ALERT">ALERT</option>
+            </select>
+            &nbsp;&nbsp;
             <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;
 
             <select onchange="chgsbas(this);setDirty();" name="sbas_id">
@@ -407,7 +430,6 @@ class task_period_outofdate extends task_abstract
             <div style="margin:10px; padding:5px; border:1px #000000 solid; background-color:#404040" id="cmd">cmd</div>
         </center>
         <?php
-
         return ob_get_clean();
     }
     // ====================================================================
@@ -453,9 +475,9 @@ class task_period_outofdate extends task_abstract
         // ici la tache tourne tant qu'elle est active
         $loop = 0;
         while ($this->running) {
-            if ( ! $conn->ping()) {
+            if (!$conn->ping()) {
                 $this->log(("Warning : abox connection lost, restarting in 10 min."));
-                for ($i = 0; $i < 60 * 10; $i ++ ) {
+                for ($i = 0; $i < 60 * 10; $i++) {
                     sleep(1);
                 }
                 $this->running = false;
@@ -465,12 +487,12 @@ class task_period_outofdate extends task_abstract
 
             try {
                 $connbas = connection::getPDOConnection($this->sbas_id);
-                if ( ! $connbas->ping()) {
+                if (!$connbas->ping()) {
                     throw new Exception('Mysql has gone away');
                 }
             } catch (Exception $e) {
                 $this->log(("dbox connection lost, restarting in 10 min."));
-                for ($i = 0; $i < 60 * 10; $i ++ ) {
+                for ($i = 0; $i < 60 * 10; $i++) {
                     sleep(1);
                 }
                 $this->running = false;
@@ -541,7 +563,7 @@ class task_period_outofdate extends task_abstract
                 $this->setState(self::STATE_STOPPED);
                 $this->running = false;
             }
-            $loop ++;
+            $loop++;
         }
     }
 
@@ -613,7 +635,7 @@ class task_period_outofdate extends task_abstract
 
         $sqlset = $params = $tmp_params = array();
         $sqlwhere = array();
-        for ($i = 0; $i <= 2; $i ++ ) {
+        for ($i = 0; $i <= 2; $i++) {
             $sqlwhere[$i] = '';
             $sqlset[$i] = '';
             $x = 'status' . $i;

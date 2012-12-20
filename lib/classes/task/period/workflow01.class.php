@@ -15,6 +15,8 @@
  */
 class task_period_workflow01 extends task_databoxAbstract
 {
+    const MINPERIOD = 1;    // in this task, period is in minutes
+    const MAXPERIOD = 1440; // 24 h
 
     public function getName()
     {
@@ -26,8 +28,8 @@ class task_period_workflow01 extends task_databoxAbstract
         $request = http_request::getInstance();
 
         $parm2 = $request->get_parms(
-            "sbas_id"
-            , "period"
+            'sbas_id'
+            , 'period'
             , 'status0'
             , 'coll0'
             , 'status1'
@@ -40,12 +42,12 @@ class task_period_workflow01 extends task_databoxAbstract
             $xmlchanged = false;
             // foreach($parm2 as $pname=>$pvalue)
             foreach (array(
-            "str:sbas_id",
-            "str:period",
-            'str:status0',
-            'str:coll0',
-            'str:status1',
-            'str:coll1',
+            'str:sbas_id'
+            , 'str:period'
+            , 'str:status0'
+            , 'str:coll0'
+            , 'str:status1'
+            , 'str:coll1'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -57,13 +59,12 @@ class task_period_workflow01 extends task_databoxAbstract
                     }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
-                    $dom->documentElement->appendChild($dom->createTextNode("\t"));
                     $ns = $dom->documentElement->appendChild($dom->createElement($pname));
-                    $dom->documentElement->appendChild($dom->createTextNode("\n"));
                 }
                 // on fixe sa valeur
                 switch ($ptype) {
                     case "str":
+                    case "pop":
                         $ns->appendChild($dom->createTextNode($pvalue));
                         break;
                     case "boo":
@@ -80,10 +81,10 @@ class task_period_workflow01 extends task_databoxAbstract
     public function xml2graphic($xml, $form)
     {
         if (false !== $sxml = simplexml_load_string($xml)) {
-            if ((int) ($sxml->period) < 1) {
-                $sxml->period = 1;
-            } elseif ((int) ($sxml->period) > 1440) { // 1 jour
-                $sxml->period = 1440;
+            if ((int) ($sxml->period) < self::MINPERIOD) {
+                $sxml->period = self::MINPERIOD;
+            } elseif ((int) ($sxml->period) > self::MAXPERIOD) {
+                $sxml->period = self::MAXPERIOD;
             }
 
             if ((string) ($sxml->delay) == '') {
@@ -117,7 +118,6 @@ class task_period_workflow01 extends task_databoxAbstract
             </script>
 
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -183,7 +183,10 @@ class task_period_workflow01 extends task_databoxAbstract
 
             function chgxmltxt(textinput, fieldname)
             {
-                var limits = { 'period':{min:1, 'max':1440} , 'delay':{min:0} } ;
+                var limits = {
+                    'period':{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
+                    'delay':{min:0}
+                } ;
                 if (typeof(limits[fieldname])!='undefined') {
                     var v = 0|textinput.value;
                     if(limits[fieldname].min && v < limits[fieldname].min)
@@ -266,6 +269,7 @@ class task_period_workflow01 extends task_databoxAbstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
+            <br/>
             <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;
 
             <select onchange="chgsbas(this);setDirty();" name="sbas_id">
@@ -321,7 +325,6 @@ class task_period_workflow01 extends task_databoxAbstract
             <div style="margin:10px; padding:5px; border:1px #000000 solid; font-family:monospace; font-size:16px; text-align:left; color:#00e000; background-color:#404040" id="cmd">cmd</div>
         </center>
         <?php
-
         return ob_get_clean();
     }
 
@@ -336,21 +339,22 @@ class task_period_workflow01 extends task_databoxAbstract
 
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
+        parent::loadSettings($sx_task_settings);
+
         $this->status_origine = (string) $sx_task_settings->status0;
         $this->status_destination = (string) $sx_task_settings->status1;
 
         $this->coll_origine = (int) $sx_task_settings->coll0;
         $this->coll_destination = (int) $sx_task_settings->coll1;
 
-        parent::loadSettings($sx_task_settings);
-
         $this->mono_sbas_id = (int) $sx_task_settings->sbas_id;
-        // in minutes
-        $this->period = (int) $sx_task_settings->period * 60;
 
-        if ($this->period <= 0 || $this->period >= 24 * 60) {
-            $this->period = 60;
+        //  in this task, period is in minutes
+        $this->period = (integer) $sx_task_settings->period;
+        if ($this->period < self::MINPERIOD || $this->period > self::MAXPERIOD) {
+            $this->period = self::MINPERIOD;
         }
+        $this->period *= 60;
     }
 
     protected function retrieveSbasContent(databox $databox)
