@@ -446,7 +446,7 @@ class set_export extends set_abstract
             if ($rename_title) {
                 $title = strip_tags($download_element->get_title(null, null, true));
 
-                $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true);
+                $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true);
                 $rename_done = true;
             } else {
                 $files[$id]["export_name"] = $infos['filename'];
@@ -604,8 +604,8 @@ class set_export extends set_abstract
             $file_names[] = mb_strtolower($name);
             $files[$id]["export_name"] = $name;
 
-            $files[$id]["export_name"] = $unicode->remove_nonazAZ09($files[$id]["export_name"]);
-            $files[$id]["original_name"] = $unicode->remove_nonazAZ09($files[$id]["original_name"]);
+            $files[$id]["export_name"] = $unicode->remove_nonazAZ09($files[$id]["export_name"], true, true, true);
+            $files[$id]["original_name"] = $unicode->remove_nonazAZ09($files[$id]["original_name"], true, true, true);
 
             $i = 0;
             $name = utf8_decode($files[$id]["export_name"]);
@@ -773,7 +773,16 @@ class set_export extends set_abstract
         $response = new Symfony\Component\HttpFoundation\Response();
 
         $disposition = $disposition === 'attachment' ? ResponseHeaderBag::DISPOSITION_ATTACHMENT : ResponseHeaderBag::DISPOSITION_INLINE;
-        $headerDisposition = $response->headers->makeDisposition($disposition, $exportname, $unicode->remove_nonazAZ09($exportname));
+        $headerDisposition = $response->headers->makeDisposition(
+            $disposition,
+            $exportname,
+            $unicode->remove_nonazAZ09(
+                $exportname,
+                true,   // keep underscore
+                true,   // keep minus
+                true    // keep dot
+                )
+            );
 
         if (is_file($file)) {
             if ($registry->get('GV_modxsendfile')) {
