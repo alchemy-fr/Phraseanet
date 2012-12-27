@@ -36,10 +36,10 @@ abstract class task_databoxAbstract extends task_abstract
             } catch (PDOException $e) {
                 $this->log($e->getMessage(), self::LOG_ERROR );
                 if ($this->getRunner() == self::RUNNER_SCHEDULER) {
-                    $this->log(("appbox connection lost, restarting in 10 min."), self::LOG_ERROR);
+                    $this->log("appbox connection lost, restarting in 10 min.", self::LOG_ERROR);
 
                     // DON'T do sleep(600) because it prevents ticks !
-                    for ($t = 60 * 10; $this->running && $t; $t -- ) {
+                    for ($t = 60 * 10; $this->running && $t; $t-- ) {
                         sleep(1);
                     }
                     // because connection is lost we cannot change status to 'torestart'
@@ -47,7 +47,7 @@ abstract class task_databoxAbstract extends task_abstract
                     // will enforce the scheduler to restart the task
                 } else {
                     // runner = manual : can't restart so simply quit
-                    $this->log(("appbox connection lost, quit."), self::LOG_ERROR);
+                    $this->log("appbox connection lost, quit.", self::LOG_ERROR);
                 }
                 $this->running = FALSE;
 

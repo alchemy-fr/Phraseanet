@@ -10,17 +10,18 @@
  */
 
 namespace Alchemy\Phrasea\Core\Service\TaskManager;
-
-use Monolog\Handler;
 use Alchemy\Phrasea\Core;
 use Alchemy\Phrasea\Core\Service;
 use Alchemy\Phrasea\Core\Service\ServiceAbstract;
 
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Bridge\Monolog\Logger;
+
+use Monolog\Handler\SyslogHandler;
+use Monolog\Handler\NativeMailerHandler;
 
 /**
- * Define a Border Manager service which handles checks on files that comes in
- * Phraseanet
+ *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -42,14 +43,14 @@ class TaskManager extends ServiceAbstract
         $this->taskManager = new \task_manager($this->app, $logger);
     }
 
-    private function extendsLogger(\Monolog\Logger $logger, $options)
+    private function extendsLogger(Logger $logger, $options)
     {
         $options = $this->getOptions();
         $registry = $this->app['phraseanet.registry'];
 
         // send log to syslog ?
         if (null !== ($syslogLevel = constant($options['syslog_level']))) {
-            $handler = new Handler\SyslogHandler(
+            $handler = new SyslogHandler(
                     "Phraseanet-Task", // string added to each message
                     "user", // facility (type of program logging)
                     $syslogLevel, // level
@@ -67,7 +68,7 @@ class TaskManager extends ServiceAbstract
             }
             $senderMail = $registry->get('GV_defaultmailsenderaddr');
 
-            $handler = new Handler\NativeMailerHandler(
+            $handler = new NativeMailerHandler(
                     $adminMail,
                     "Phraseanet-Task",
                     $senderMail,
@@ -81,10 +82,9 @@ class TaskManager extends ServiceAbstract
     }
 
     /**
-     * Set and return a new Border Manager instance and set the proper checkers
-     * according to the services configuration
+     * Set and return a new \task_manager instance
      *
-     * @return \Alchemy\Phrasea\Border\Manager
+     * @return \task_manager
      */
     public function getDriver()
     {
@@ -93,6 +93,7 @@ class TaskManager extends ServiceAbstract
 
     /**
      * Return the type of the service
+     *
      * @return string
      */
     public function getType()
@@ -102,12 +103,12 @@ class TaskManager extends ServiceAbstract
 
     /**
      * Define the mandatory option for the current services
+     *
      * @return array
      */
     public function getMandatoryOptions()
     {
         return array();
-       // return array('enabled', 'checkers');
     }
 
 }

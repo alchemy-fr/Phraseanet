@@ -292,16 +292,10 @@ class task_period_archive extends task_abstract
         // mask(s) of accepted files
         $this->tmask = array();
         $this->tmaskgrp = array();
-//        $this->period = 60;
         $this->cold = 30;
 
         if (false !== $this->sxBasePrefs = @simplexml_load_string($collection->get_prefs())) {
             $this->sxBasePrefs["id"] = $base_id;
-
-//            $this->period = (int) ($this->sxTaskSettings->period);
-//            if ($this->period <= 0 || $this->period >= 3600) {
-//                $this->period = 60;
-//            }
 
             $this->cold = (int) ($this->sxTaskSettings->cold);
             if ($this->cold < self::MINCOLD || $this->cold > self::MAXCOLD) {

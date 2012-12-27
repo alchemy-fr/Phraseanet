@@ -42,7 +42,6 @@ abstract class task_abstract
     const LOG_CRITICAL    = Logger::CRITICAL;
     const LOG_ALERT       = Logger::ALERT;
 
-
     /**
      *
      * @var Logger
@@ -809,9 +808,7 @@ abstract class task_abstract
     public function log($message, $level=self::LOG_INFO)
     {
         // nb : self::log_levels ARE standard log levels, ok with monolog
-        if ($this->logger) {
-            $this->logger->addRecord($level, $message);
-        }
+        $this->logger->addRecord($level, $message);
 
         return $this;
     }

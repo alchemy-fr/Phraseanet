@@ -206,7 +206,7 @@ SearchEngine:
       rt_host: localhost
       rt_port: 9308
 TaskManager:
-  config_taskmanager:
+  task_manager:
     type: TaskManager\TaskManager
     options:
       # set the threshold for sending task logs to syslog or by mail

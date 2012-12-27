@@ -1,6 +1,6 @@
 <IfModule mod_rewrite.c>
   RewriteEngine on
-  RewriteRule ^include/minify/([a-z]=.*)          /include/minify/index.ph?$1  [L,NE]
+  RewriteRule ^include/minify/([a-z]=.*)          /include/minify/index.php$1  [L,NE]
 
   RewriteRule ^lightbox/.*$                     /index.php [L]
   RewriteRule ^admin/.*$                        /index.php [L]

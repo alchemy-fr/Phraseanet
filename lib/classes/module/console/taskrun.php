@@ -10,12 +10,15 @@
  */
 
 use Alchemy\Phrasea\Command\Command;
-use Monolog\Handler;
-use Monolog\Logger;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use Monolog\Handler;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\RotatingFileHandler;
 
 /**
  * @todo write tests
@@ -44,7 +47,7 @@ class module_console_taskrun extends Command
             , task_abstract::RUNNER_MANUAL
         );
         $this->addOption(
-            'ttylogLevel'
+            'ttyloglevel'
             , 't'
             , InputOption::VALUE_REQUIRED
             , 'threshold : (DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT)'
@@ -94,12 +97,12 @@ class module_console_taskrun extends Command
 
 
         if ($input->getOption('verbose')) {
-            $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
+            $handler = new StreamHandler(fopen('php://stdout', 'a'));
             $this->container['monolog']->pushHandler($handler);
         }
 
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
-        $handler = new Handler\RotatingFileHandler($logfile, 10);
+        $handler = new RotatingFileHandler($logfile, 10);
         $this->container['monolog']->pushHandler($handler);
         $this->task = $task_manager->getTask($task_id, $this->container['monolog']);
 
@@ -119,15 +122,15 @@ class module_console_taskrun extends Command
 
         // log to tty ?
 
-        if(($ttylogLevel = strtoupper($input->getOption('ttylogLevel'))) != '') {
-            if (!array_key_exists($ttylogLevel, $lib2v)) {
+        if(($ttyloglevel = strtoupper($input->getOption('ttyloglevel'))) != '') {
+            if (!array_key_exists($ttyloglevel, $lib2v)) {
                 throw(new RuntimeException(sprintf(
-                        "Bad value '%s' for option loglevel\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $ttylogLevel))
+                        "Bad value '%s' for option loglevel\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $ttyloglevel))
                 );
             }
             $handler = new Handler\StreamHandler(
                 "php://stdout",
-                $lib2v[$ttylogLevel],
+                $lib2v[$ttyloglevel],
                 true
             );
             $logger->pushHandler($handler);
@@ -137,9 +140,7 @@ class module_console_taskrun extends Command
         $handler = new Handler\RotatingFileHandler($logfile, 10); //, $lib2v[$loglevelOption], true);
         $logger->pushHandler($handler);
 
-
         $this->task = $task_manager->getTask($task_id, $logger);
-
 
         register_tick_function(array($this, 'tick_handler'), true);
         declare(ticks = 1);

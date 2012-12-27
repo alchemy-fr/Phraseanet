@@ -119,6 +119,7 @@ class task_period_writemeta extends task_databoxAbstract
             <?php echo $form ?>.maxmegs.value       = "<?php echo p4string::MakeString($sxml->maxmegs, "js", '"') ?>";
             </script>
             <?php
+            
             return("");
         } else { // ... so we NEVER come here
             // bad xml
