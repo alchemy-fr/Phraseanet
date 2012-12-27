@@ -137,7 +137,7 @@ class module_console_taskrun extends Command
         }
 
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
-        $handler = new Handler\RotatingFileHandler($logfile, 10); //, $lib2v[$loglevelOption], true);
+        $handler = new RotatingFileHandler($logfile, 10);
         $logger->pushHandler($handler);
 
         $this->task = $task_manager->getTask($task_id, $logger);
