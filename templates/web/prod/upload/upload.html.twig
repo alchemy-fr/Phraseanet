@@ -150,7 +150,7 @@ $(document).ready(function () {
     var totalElement;
 
     var maxFileSize = {{ maxFileSize }};
-
+    
     UploaderManager.Preview.setOptions({
                         maxWidth: 160,
                         maxHeight: 120,
@@ -338,7 +338,7 @@ $(document).ready(function () {
             return false;
         },
         fail: function(){
-            //disabled cancel-all button, if queue is emepty and last upload fail
+            //disabled cancel-all button, if queue is empty and last upload fail
             if (UploaderManager.Queue.isEmpty()){
                 $("#cancel-all").attr("disabled", true);
             }
@@ -395,10 +395,12 @@ $(document).ready(function () {
                     if (errorThrown === 'abort') {
                         return false;
                     } else {
-                        data.context.find('.upload-record p.error').append(jqXHR.responseText);
+                        data.context.find('.upload-record p.error').append(jqXHR.status + " " + jqXHR.statusText).show();
                     }
                     //Remove data
                     UploaderManager.removeData(data.uploadIndex);
+                    // Remove cancel button
+                    $('button.remove-element', data.context).remove();
                 });
 
                 //cancel request
