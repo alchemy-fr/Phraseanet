@@ -194,7 +194,19 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     {
         return array(self::CONTAINER_TYPE_PLAYLIST => _('Playlists'));
     }
+    
+    public function get_oauth_token()
+    {
+        return $this->oauth_token;
+    }
 
+    public function set_oauth_token($oauth_token)
+    {
+        $this->oauth_token = $oauth_token;
+        
+        return $this;
+    }
+    
     /**
      *
      * @param  string $type
@@ -846,9 +858,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
         $datas = array(
             'title'       => $request->get('title_' . $key),
             'description' => $request->get('description_' . $key),
-            'category'    => $request->get('category_' . $key),
             'tag'         => $request->get('tags_' . $key),
-            'privacy'     => $request->get('privacy_' . $key),
+            'private'     => $request->get('privacy_' . $key) === 'private' ? true : false,
         );
 
         return $datas;
@@ -864,9 +875,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
         $datas = array(
             'title'       => $request->get('modif_title'),
             'description' => $request->get('modif_description'),
-            'category'    => $request->get('modif_category'),
             'tags'        => $request->get('modif_tags'),
-            'privacy'     => $request->get('modif_privacy'),
+            'private'     => $request->get('modif_privacy') === 'private' ? true : false,
         );
 
         return $datas;
@@ -907,7 +917,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      *
      * @return array
      */
-    private function get_fields()
+    public function get_fields()
     {
         return array(
             array(
@@ -929,7 +939,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 'required'   => false
             )
             , array(
-                'name'       => 'privacy',
+                'name'       => 'private',
                 'length'     => '0',
                 'length_min' => '0',
                 'required'   => true

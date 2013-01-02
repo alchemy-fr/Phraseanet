@@ -183,16 +183,19 @@ var p4 = p4 || {};
             if (typeof bits !== 'number') {
                 throw bits + ' is not a number';
             }
-            if (bits >= 1073741824) {
-                return (bits / 1073741824).toFixed(2) + ' Gbit/s';
+            // 1 byte = 8 bits
+            var bytes = (bits >> 3);
+            
+            if (bytes >= (1 << 30)) {
+                return (bytes / (1 << 30)).toFixed(2) + ' Go/s';
             }
-            if (bits >= 1048576) {
-                return (bits / 1048576).toFixed(2) + ' Mbit/s';
+            if (bytes >= (1 << 20)) {
+                return (bytes / (1 << 20)).toFixed(2) + ' Mo/s';
             }
-            if (bits >= 1024) {
-                return (bits / 1024).toFixed(2) + ' Kbit/s';
+            if (bytes >= (1 << 10)) {
+                return (bytes / (1 << 10)).toFixed(2) + ' Ko/s';
             }
-            return bits + ' bit/s';
+            return bytes + ' o/s';
         },
         pourcent: function(current, total){
             return (current/ total * 100).toFixed(2)

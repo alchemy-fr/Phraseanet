@@ -414,24 +414,12 @@ function display_basket_element(compare, sselcont_id)
 
   var options_container = $('.options',container);
 
-  $('.download_button', options_container).button({
-    text	: false
-  //				,
-  //				icons	: {
-  //					primary: 'ui-icon-disk'
-  //				}
-  }).bind('click',function(){
+  $('.download_button', options_container).bind('click',function(){
     //		$(this).blur();
     download($(this).next('form[name=download_form]').find('input').val());
   });
 
-  $('.comment_button', options_container).button({
-    text	: true
-  //		,
-  //		icons	: {
-  //			primary: 'ui-icon-comment'
-  //		}
-  }).bind('click',function()
+  $('.comment_button', options_container).bind('click',function()
   {
     //				$(this).blur();
     if($('.container', container).hasClass('note_editing'))
@@ -447,35 +435,17 @@ function display_basket_element(compare, sselcont_id)
 
   activate_notes(container);
 
-  $('.previous_button', options_container).button({
-    text	: false
-  //		,
-  //		icons	: {
-  //			primary: 'ui-icon-seek-prev'
-  //		}
-  }).bind('click',function(){
+  $('.previous_button', options_container).bind('click',function(){
     //		$(this).blur();
     get_prev();
   });
 
-  $('.play_button', options_container).button({
-    text	: false
-  //		,
-  //		icons	: {
-  //			primary: 'ui-icon-play'
-  //		}
-  }).bind('click',function(){
+  $('.play_button', options_container).bind('click',function(){
     //		$(this).blur();
     slideshow(true);
   });
 
-  $('.pause_button', options_container).button({
-    text	: false
-  //		,
-  //		icons	: {
-  //			primary: 'ui-icon-pause'
-  //		}
-  }).bind('click',function(){
+  $('.pause_button', options_container).bind('click',function(){
     //		$(this).blur();
     slideshow(false);
   });
@@ -489,13 +459,7 @@ function display_basket_element(compare, sselcont_id)
     $('.pause_button, .next_button.pause, .previous_button.pause', options_container).hide();
   }
 
-  $('.next_button', options_container).button({
-    text	: false
-  //		,
-  //		icons	: {
-  //			primary: 'ui-icon-seek-next'
-  //		}
-  }).bind('click',function(){
+  $('.next_button', options_container).bind('click',function(){
     //		$(this).blur();
     slideshow(false);
     get_next();
