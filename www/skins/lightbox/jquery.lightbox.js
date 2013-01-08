@@ -1089,10 +1089,6 @@ function download(value)
     overlay: {
       backgroundColor: '#000',
       opacity: 0.7
-    },
-    beforeclose:function(){
-      tinyMCE.execCommand('mceRemoveControl',true,'sendmail_message');
-      tinyMCE.execCommand('mceRemoveControl',true,'order_usage');
     }
   }).dialog('open');
 
@@ -1100,8 +1096,6 @@ function download(value)
 
     dialog_box.removeClass('loading').empty().append(data);
     $('.tabs', dialog_box).tabs();
-    tinyMCE.execCommand('mceAddControl',true,'sendmail_message');
-    tinyMCE.execCommand('mceAddControl',true,'order_usage');
 
     $('.close_button', dialog_box).bind('click',function(){
       dialog_box.dialog('close').dialog('destroy');
