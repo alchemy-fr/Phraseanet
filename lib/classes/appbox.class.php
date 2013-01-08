@@ -114,10 +114,15 @@ class appbox extends base
                 if (null === $filename) {
                     break;
                 }
-
+                
+                $media = $core['mediavorus']->guess($pathfile);
+                
                 $imageSpec = new ImageSpecification();
-                $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
-                $imageSpec->setDimensions(120, 24);
+                
+                if($media->getWidth() > 120 || $media->getHeight() > 24) {
+                    $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+                    $imageSpec->setDimensions(120, 24);
+                }
 
                 $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 

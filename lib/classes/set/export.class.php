@@ -775,14 +775,9 @@ class set_export extends set_abstract
         $disposition = $disposition === 'attachment' ? ResponseHeaderBag::DISPOSITION_ATTACHMENT : ResponseHeaderBag::DISPOSITION_INLINE;
         $headerDisposition = $response->headers->makeDisposition(
             $disposition,
-            $exportname,
-            $unicode->remove_nonazAZ09(
-                $exportname,
-                true,   // keep underscore
-                true,   // keep minus
-                true    // keep dot
-                )
-            );
+            str_replace(array('/', '\\'), '', $exportname),
+            $unicode->remove_nonazAZ09($exportname, true, true, true)
+        );
 
         if (is_file($file)) {
             if ($registry->get('GV_modxsendfile')) {
@@ -838,7 +833,8 @@ class set_export extends set_abstract
      */
     public static function stream_data($data, $exportname, $mime, $disposition = 'attachment')
     {
-
+        $unicode = new \unicode();
+        
         header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -848,7 +844,7 @@ class set_export extends set_abstract
         header("Content-Length: " . strlen($data));
         header("Cache-Control: max-age=3600, must-revalidate ");
         header("Content-Disposition: " . $disposition
-            . "; filename=" . $exportname . ";");
+            . "; filename=" . str_replace(array('/', '\\'), '', $exportname) . ";");
 
         echo $data;
 

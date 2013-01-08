@@ -333,7 +333,7 @@ class recordutils_image extends recordutils
         $pathIn = $subdef->get_path() . $subdef->get_file();
 
         $pathOut = $subdef->get_path() . 'watermark_' . $subdef->get_file();
-
+        
         if (!is_file($pathIn)) {
             return false;
         }
@@ -342,7 +342,7 @@ class recordutils_image extends recordutils
             return $pathOut;
         }
 
-        if ($registry->get('GV_pathcomposite') &&
+        if ($registry->get('composite_binary') &&
             file_exists($registry->get('GV_RootPath') . 'config/wm/' . $base_id)) {
 
             $builder = ProcessBuilder::create(array(

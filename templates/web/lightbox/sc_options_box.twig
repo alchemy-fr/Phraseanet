@@ -1,33 +1,33 @@
 <span style="padding:10px 4px 7px;">
     {% if basket_element %}
-        <button class="previous_button play" title="{% trans 'boutton::precedent' %}">
-            <img src="/skins/lightbox/prev.png" />
+        <button class="previous_button play btn btn-mini" title="{% trans 'boutton::precedent' %}">
+            <i class="icon-chevron-left"></i>
         </button>
-        <button class="previous_button pause" title="{% trans 'boutton::precedent' %}">
-            <img src="/skins/lightbox/prev_pause.png" />
+        <button class="previous_button pause btn btn-mini btn-inverse" title="{% trans 'boutton::precedent' %}">
+            <i class="icon-chevron-left icon-white"></i>
         </button>
-        <button class="play_button" title="{% trans 'boutton::demarrer' %}">
-            <img src="/skins/lightbox/play.png" />
+        <button class="play_button btn btn-mini" title="{% trans 'boutton::demarrer' %}">
+            <i class="icon-play"></i>
         </button>
-        <button class="pause_button" title="{% trans 'boutton::pause' %}">
-            <img src="/skins/lightbox/pause.png" />
+        <button class="pause_button btn btn-mini" title="{% trans 'boutton::pause' %}">
+            <i class="icon-pause"></i>
         </button>
-        <button class="next_button play" title="{% trans 'boutton::suivant' %}">
-            <img src="/skins/lightbox/next.png" />
+        <button class="next_button play btn btn-mini" title="{% trans 'boutton::suivant' %}">
+            <i class="icon-chevron-right"></i>
         </button>
-        <button class="next_button pause" title="{% trans 'boutton::suivant' %}">
-            <img src="/skins/lightbox/next_pause.png" />
+        <button class="next_button pause btn btn-mini btn-inverse" title="{% trans 'boutton::suivant' %}">
+            <i class="icon-chevron-right icon-white"></i>
         </button>
-        <button class="download_button" title="{% trans 'boutton::telecharger' %}">
-            <img src="/skins/lightbox/save.png"/>
+        <button class="download_button btn btn-mini btn-inverse" title="{% trans 'boutton::telecharger' %}">
+            <i class="icon-download icon-white"></i>
         </button>
         <form name="download_form" style="display:none;">
             <input type="hidden" name="basrec" value="{{basket_element.getRecord().get_serialize_key()}}"/>
         </form>
          |
         {% if basket_element.getBasket().getValidation() %}
-            <button class="comment_button">
-                <img src="/skins/lightbox/note.png"/>
+            <button class="comment_button btn btn-mini btn-inverse">
+                <i class="icon-edit icon-white"></i>
                 {% set n = 0 %}
                 {% for validationData in basket_element.getValidationDatas() %}
                   {% if validationData.getNote() %}

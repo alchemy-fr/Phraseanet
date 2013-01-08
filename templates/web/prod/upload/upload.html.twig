@@ -18,44 +18,43 @@
         </ul>
         {# upload tab content #}
         <div id="tab-upload">
-            <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
+            {% if collections|length > 0 %}
+                <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
 
-                <div id="uploadBoxLeft" class="well">
+                    <div id="uploadBoxLeft" class="well">
 
-                    {# <h5 style="margin-top: 10px;">{% trans 'Choose files to add' %} :</h5> #}
-                    {# action bar #}
-                    <table id="addFileList">
-                        <tr>
-                            <td class='uploader-button'>
-                                <span class="btn btn-inverse fileinput-button input-medium">
-                                    <span>{% trans 'Select files...' %}</span>
-                                    <input type="file" name="files[]" multiple>
-                                </span>
-                                    <br />
-                                <span class="comment">
-                                    ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
-                                </span>
-                            </td>
-                            <td class='uploader-icon'>
-                                <img src='/skins/icons/html5-logo.png' width="32px" heigh="32px"  title="{% trans 'You are using the HTML5 uploader.'%}"/>
-                            </td>
-                            <td class="uploader-info">
-                                <p>
-                                    {% trans 'You are using the HTML5 uploader.' %}
-                                    {% if not browser.supportFileAPI() %}
-                                        {% trans 'Your browser does not support all HTML5 features properly.' %}
-                                    {% endif %}
-                                </p>
-                                <a href="/prod/upload/flash-version/" class="dialog full-dialog">{% trans 'Use the Flash uploader' %}</a>
-                            </td>
-                        </tr>
-                    </table>
+                        {# action bar #}
+                        <table id="addFileList">
+                            <tr>
+                                <td class='uploader-button'>
+                                    <span class="btn btn-inverse fileinput-button input-medium">
+                                        <span>{% trans 'Select files...' %}</span>
+                                        <input type="file" name="files[]" multiple>
+                                    </span>
+                                        <br />
+                                    <span class="comment">
+                                        ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
+                                    </span>
+                                </td>
+                                <td class='uploader-icon'>
+                                    <img src='/skins/icons/html5-logo.png' width="32px" heigh="32px"  title="{% trans 'You are using the HTML5 uploader.'%}"/>
+                                </td>
+                                <td class="uploader-info">
+                                    <p>
+                                        {% trans 'You are using the HTML5 uploader.' %}
+                                        {% if not browser.supportFileAPI() %}
+                                            {% trans 'Your browser does not support all HTML5 features properly.' %}
+                                        {% endif %}
+                                    </p>
+                                    <a href="/prod/upload/flash-version/" class="dialog full-dialog">{% trans 'Use the Flash uploader' %}</a>
+                                </td>
+                            </tr>
+                        </table>
 
-                    {# settings box #}
-                    <div class='settings-box'>
-                        <h5>{% trans 'upload:: Destination (collection) :' %} :</h5>
-                        {# collections list #}
-                        {% if collections|length > 0 %}
+                        {# settings box #}
+                        <div class='settings-box'>
+                            <h5>{% trans 'upload:: Destination (collection) :' %} :</h5>
+                            {# collections list #}
                             <select name="base_id" class="span3" style="margin-left: 10px;">
                             {% for  sbasId, availableCollections in collections %}
                                 <optgroup label="{{ availableCollections['databox'].get_viewname() }}" class="select-label">
@@ -100,40 +99,40 @@
                                     </div>
                                 {% endfor %}
                             {% endfor %}
-                        {% else %}
-                            {% trans 'You can not upload files' %}
-                        {% endif %}
+                        </div>
+
+                        {# upload box #}
+                        <div class='upload-box' style="display: none;">
+                            <h5>{% trans 'Selected files' %} :</h5>
+                            <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Clear list' %}</button>
+                            <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Send' %}</button>
+                            <div class="clear"></div>
+                            <div class='upload-box-addedfiles'></div>
+                            <div class="clear"></div>
+                        </div>
                     </div>
 
-                    {# upload box #}
-                    <div class='upload-box' style="display: none;">
-                        <h5>{% trans 'Selected files' %} :</h5>
-                        <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Clear list' %}</button>
-                        <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Send' %}</button>
-                        <div class="clear"></div>
-                        <div class='upload-box-addedfiles'></div>
-                        <div class="clear"></div>
-                    </div>
-                </div>
+                    <div id="uploadBoxRight" class="well">
+                        <div>
+                            <h5 style="margin-top: 10px;">{% trans 'Transmited files' %} :
+                                <span class='bitrate-box'></span>
+                            </h5>
+                            <button id="cancel-all" class="btn" type="button" disabled="disabled">
+                                {% trans "Cancel all" %}
+                            </button>
+                        </div>
+                        <div class="progress progress-striped active">
+                            <div class="progress-bar-total bar" style="width: 0%;"></div>
+                        </div>
 
-                <div id="uploadBoxRight" class="well">
-                    <div>
-                        <h5 style="margin-top: 10px;">{% trans 'Transmited files' %} :
-                            <span class='bitrate-box'></span>
-                        </h5>
-                        <button id="cancel-all" class="btn" type="button" disabled="disabled">
-                            {% trans "Cancel all" %}
-                        </button>
-                    </div>
-                    <div class="progress progress-striped active">
-                        <div class="progress-bar-total bar" style="width: 0%;"></div>
+                        {# download box #}
+                        <div class="download-box"></div>
                     </div>
 
-                    {# download box #}
-                    <div class="download-box"></div>
-                </div>
-
-            </form>
+                </form>
+            {% else %}
+                {% trans 'You can not upload files' %}
+            {% endif %}
          </div>
     </div>
 </div>
@@ -151,7 +150,7 @@ $(document).ready(function () {
     var totalElement;
 
     var maxFileSize = {{ maxFileSize }};
-
+    
     UploaderManager.Preview.setOptions({
                         maxWidth: 160,
                         maxHeight: 120,
@@ -339,7 +338,7 @@ $(document).ready(function () {
             return false;
         },
         fail: function(){
-            //disabled cancel-all button, if queue is emepty and last upload fail
+            //disabled cancel-all button, if queue is empty and last upload fail
             if (UploaderManager.Queue.isEmpty()){
                 $("#cancel-all").attr("disabled", true);
             }
@@ -396,10 +395,12 @@ $(document).ready(function () {
                     if (errorThrown === 'abort') {
                         return false;
                     } else {
-                        data.context.find('.upload-record p.error').append(jqXHR.responseText);
+                        data.context.find('.upload-record p.error').append(jqXHR.status + " " + jqXHR.statusText).show();
                     }
                     //Remove data
                     UploaderManager.removeData(data.uploadIndex);
+                    // Remove cancel button
+                    $('button.remove-element', data.context).remove();
                 });
 
                 //cancel request
