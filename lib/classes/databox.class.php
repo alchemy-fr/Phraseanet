@@ -341,6 +341,8 @@ class databox extends base
 
     public function unmount_databox(appbox $appbox)
     {
+        $core = \bootstrap::getCore();
+
         foreach ($this->get_collections() as $collection) {
             $collection->unmount_collection($appbox);
         }
@@ -362,6 +364,16 @@ class databox extends base
             }
             $n+=50;
         }
+
+        foreach ($core['EM']->getRepository('\Entities\StoryWZ')->findByDatabox($this) as $story) {
+            $core['EM']->remove($story);
+        }
+
+        foreach ($core['EM']->getRepository('\Entities\BasketElement')->findElementsByDatabox($this) as $element) {
+            $core['EM']->remove($element);
+        }
+
+        $core['EM']->flush();
 
         $params = array(':site_id' => $this->get_registry()->get('GV_sit'));
 

@@ -29,7 +29,7 @@ class StoryWZRepository extends EntityRepository
         foreach ($stories as $key => $story) {
             try {
                 $story->getRecord()->get_title();
-            } catch (\Exception_Record_AdapterNotFound $e) {
+            } catch (\Exception_NotFound $e) {
                 $this->getEntityManager()->remove($story);
                 unset($stories[$key]);
             }
@@ -72,7 +72,7 @@ class StoryWZRepository extends EntityRepository
             }
 
             if ($story->getUser()->get_id() !== $user->get_id()) {
-                throw new \Exception_Forbidden('You have not access to ths story');
+                throw new \Exception_Forbidden('You have not access to this story');
             }
         } else {
             throw new \Exception_NotFound('Story not found');
@@ -94,7 +94,7 @@ class StoryWZRepository extends EntityRepository
         if ($story) {
             try {
                 $record = $story->getRecord();
-            } catch (\Exception_Record_AdapterNotFound $e) {
+            } catch (\Exception_NotFound $e) {
                 $this->getEntityManager()->remove($story);
                 $this->getEntityManager()->flush();
                 $story = null;
@@ -120,7 +120,31 @@ class StoryWZRepository extends EntityRepository
         foreach ($stories as $key => $story) {
             try {
                 $record = $story->getRecord();
-            } catch (\Exception_Record_AdapterNotFound $e) {
+            } catch (\Exception_NotFound $e) {
+                $this->getEntityManager()->remove($story);
+                $this->getEntityManager()->flush();
+                unset($stories[$key]);
+            }
+        }
+
+        return $stories;
+    }
+
+    public function findByDatabox(\databox $databox)
+    {
+        $dql = 'SELECT s FROM Entities\StoryWZ s WHERE s.sbas_id = :sbas_id';
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters(array(
+            'sbas_id' => $databox->get_sbas_id(),
+        ));
+
+        $stories = $query->getResult();
+
+        foreach ($stories as $key => $story) {
+            try {
+                $record = $story->getRecord();
+            } catch (\Exception_NotFound $e) {
                 $this->getEntityManager()->remove($story);
                 $this->getEntityManager()->flush();
                 unset($stories[$key]);
