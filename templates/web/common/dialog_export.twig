@@ -686,10 +686,16 @@
                         $this.removeAttr('disabled');
                         $('#order .order_button_loader').css('visibility','hidden');
 
+                        if(!data.error) {
+                            var title = '{% trans "Success" %}';
+                        } else {
+                            var title = '{% trans "Warning !" %}';
+                        }
+
                         var options = {
                           size : 'Alert',
                           closeButton: true,
-                          title : '{% trans "Warning !" %}'
+                          title : title
                         };
 
                         p4.Dialog.Create(options, 2).setContent(data.message);
