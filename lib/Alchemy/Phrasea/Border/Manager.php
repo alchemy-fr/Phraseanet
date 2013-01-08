@@ -19,7 +19,6 @@ use Entities\LazaretFile;
 use Entities\LazaretSession;
 use MediaAlchemyst\Exception\Exception as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
-use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use Symfony\Component\Filesystem\Filesystem;
@@ -311,7 +310,7 @@ class Manager
                         $metadatas[$key] = array();
                     }
 
-                    $metadatas[$key] = array_merge($metadatas[$key], array($attribute->getValue()));
+                    $metadatas[$key] = array_merge($metadatas[$key], $attribute->getValue());
                     break;
 
                 case Attribute\Attribute::NAME_METADATA:

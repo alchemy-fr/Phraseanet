@@ -27,7 +27,7 @@ class MetaField implements Attribute
 
     /**
      *
-     * @var mixed
+     * @var array
      */
     protected $value;
 
@@ -35,15 +35,10 @@ class MetaField implements Attribute
      * Constructor
      *
      * @param \databox_field $databox_field The databox field
-     * @param type           $value         A scalar value
-     *
-     * @throws \InvalidArgumentException When value is not scalar
+     * @param array          $value         An array of scalar values
      */
-    public function __construct(\databox_field $databox_field, $value)
+    public function __construct(\databox_field $databox_field, array $value)
     {
-        if ( ! is_scalar($value)) {
-            throw new \InvalidArgumentException('Databox field only accept scalar values');
-        }
         $this->databox_field = $databox_field;
         $this->value = $value;
     }
@@ -77,7 +72,7 @@ class MetaField implements Attribute
     /**
      * {@inheritdoc}
      *
-     * @return mixed A scalar value
+     * @return array An array of scalar values
      */
     public function getValue()
     {
@@ -90,10 +85,10 @@ class MetaField implements Attribute
     public function asString()
     {
         return serialize(array(
-                'id'      => $this->databox_field->get_id(),
-                'sbas_id' => $this->databox_field->get_databox()->get_sbas_id(),
-                'value'   => $this->value
-            ));
+            'id'      => $this->databox_field->get_id(),
+            'sbas_id' => $this->databox_field->get_databox()->get_sbas_id(),
+            'value'   => $this->value
+        ));
     }
 
     /**

@@ -14,11 +14,10 @@ namespace Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Media\Type as MediaType;
 use MediaVorus\Media\Media;
 use MediaVorus\MediaVorus;
-use PHPExiftool\Reader;
 use PHPExiftool\Writer;
 use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Driver\Metadata\Metadata;
-use PHPExiftool\Driver\Metadata\MetadataBag;
+use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 
 /**
@@ -124,7 +123,7 @@ class File
             $writer = new Writer();
 
             $value = new MonoValue($this->uuid);
-            $metadatas = new MetadataBag();
+            $metadatas = new ExiftoolMetadataBag();
 
             foreach ($availableUUIDs as $tagname) {
                 $metadatas->add(new Metadata(TagFactory::getFromRDFTagname($tagname), $value));
