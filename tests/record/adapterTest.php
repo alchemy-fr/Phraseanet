@@ -174,7 +174,10 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_rollover_thumbnail()
     {
-        $this->markTestSkipped('Skipped while \ﬂmagick is bugged');
+        if (!extension_loaded('\Gmagick')) {
+            $this->markTestSkipped('\Gmagick required to build animated gifs');
+        }
+
         $this->assertInstanceOf('media_subdef', static::$records['record_23']->get_rollover_thumbnail());
         $this->assertNull(static::$records['record_1']->get_rollover_thumbnail());
     }
@@ -210,7 +213,10 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertInstanceOf('media_subdef', static::$records['record_23']->get_subdef('preview'));
         $this->assertInstanceOf('media_subdef', static::$records['record_23']->get_subdef('thumbnail'));
 
-        $this->markTestSkipped('Skipped while \ﬂmagick is bugged');
+        if (!extension_loaded('\Gmagick')) {
+            $this->markTestSkipped('\Gmagick required to build animated gifs');
+        }
+
         $this->assertInstanceOf('media_subdef', static::$records['record_23']->get_subdef('thumbnailGIF'));
     }
 
