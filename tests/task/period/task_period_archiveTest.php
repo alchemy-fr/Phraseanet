@@ -421,7 +421,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
         $bagByName = self::$object->getIndexByFieldNameTester($meta_struct, $media->getEntity()->getMetadatas());
 
-        $this->assertInstanceOf('\\PHPExiftool\\Driver\\Metadata\\MetadataBag', $bagByName);
+        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\MetadataBag', $bagByName);
 
         if (count($bagByName) == 0) {
             $this->markTestSkipped('No enough data to tests');
