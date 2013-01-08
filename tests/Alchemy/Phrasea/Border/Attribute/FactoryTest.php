@@ -56,7 +56,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
             $this->markTestSkipped('No databox field found');
         }
 
-        $metafield = new MetaField($databox_field, 'value');
+        $metafield = new MetaField($databox_field, array('value'));
 
         $attribute = Factory::getFileAttribute(Attribute::NAME_METAFIELD, $metafield->asString());
 
