@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2012 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Border\Attribute;
 
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
@@ -19,7 +28,7 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
      */
     public function setUp()
     {
-        $this->value = "Un éléphant ça trompe";
+        $this->value = array("Un éléphant ça trompe");
         foreach (self::$collection->get_databox()->get_meta_structure() as $databox_field) {
             $this->databox_field = $databox_field;
             break;
@@ -48,17 +57,8 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
      */
     public function testConstruct()
     {
-        new MetaField($this->databox_field, 0.57);
-        new MetaField($this->databox_field, 3);
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\MetaField::__construct
-     * @expectedException \InvalidArgumentException
-     */
-    public function testConstructFail()
-    {
-        new MetaField($this->databox_field, array(22));
+        new MetaField($this->databox_field, array(0.57));
+        new MetaField($this->databox_field, array(3));
     }
 
     /**

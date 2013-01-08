@@ -54,15 +54,16 @@ class Description implements ControllerProviderInterface
                             'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfAtime',
                             'namespace' => 'Phraseanet'
                         ),
+                        'tfbasename' => array(
+                            'tagname'    => 'TfBasename',
+                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfBasename',
+                            'namespace'  => 'Phraseanet'
+                        ),
                         'tfbits'    => array(
                             'tagname'    => 'TfBits',
                             'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfBits',
                             'namespace'  => 'Phraseanet'
                         ),
-                        'tfbasename' => array(
-                            'tagname'    => 'TfBasename',
-                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfBasename',
-                            'namespace'  => 'Phraseanet'),
                         'tfchannels' => array(
                             'tagname'   => 'TfChannels',
                             'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfChannels',
@@ -71,6 +72,11 @@ class Description implements ControllerProviderInterface
                         'tTfCtime'  => array(
                             'tagname'    => 'TfCtime',
                             'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfCtime',
+                            'namespace'  => 'Phraseanet'
+                        ),
+                        'tfdirname' => array(
+                            'tagname'    => 'TfDirname',
+                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfDirname',
                             'namespace'  => 'Phraseanet'
                         ),
                         'tfduration' => array(
@@ -113,9 +119,9 @@ class Description implements ControllerProviderInterface
                             'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfMtime',
                             'namespace' => 'Phraseanet'
                         ),
-                        'tfdirname' => array(
-                            'tagname'    => 'TfDirname',
-                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfDirname',
+                        'tfquarantine' => array(
+                            'tagname'    => 'TfQuarantine',
+                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfQuarantine',
                             'namespace'  => 'Phraseanet'
                         ),
                         'tfrecordid' => array(

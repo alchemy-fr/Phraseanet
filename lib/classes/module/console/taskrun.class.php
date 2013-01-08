@@ -104,7 +104,7 @@ class module_console_taskrun extends Command
         $logger = $core['monolog'];
 
         if ($input->getOption('verbose')) {
-            $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
+            $handler = new Handler\StreamHandler('php://stdout');
             $logger->pushHandler($handler);
         }
 
