@@ -46,8 +46,8 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
         $this->assertNotNull($response->getEtag());
         $this->assertInstanceOf('DateTime', $response->getLastModified());
-        $this->assertNull($response->getMaxAge());
-        $this->assertNull($response->getTtl());
+        $this->assertEquals(0, $response->getMaxAge());
+        $this->assertEquals(0, $response->getTtl());
         $this->assertGreaterThanOrEqual(0, $response->getAge());
         $this->assertNull($response->getExpires());
 

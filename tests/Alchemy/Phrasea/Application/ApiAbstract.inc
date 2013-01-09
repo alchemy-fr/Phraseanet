@@ -514,7 +514,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      * @covers \API_V1_adapter::get_record
      * @covers \API_V1_adapter::list_record
      */
-    public function testDataboxRecordRoute()
+    public function testRecordRoute()
     {
         $this->setToken(self::$token);
 
@@ -532,6 +532,41 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
         $route = '/records/kjslkz84spm/sfsd5qfsd5/';
+        $this->evaluateBadRequestRoute($route, array('GET'));
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+    }
+
+    /**
+     * @covers \API_V1_adapter::get_story
+     * @covers \API_V1_adapter::list_story
+     */
+    public function testStoryRoute()
+    {
+        $this->setToken(self::$token);
+
+        self::$DI['app']['session']->set('usr_id', self::$DI['user']->get_id());
+
+        if (!self::$DI['record_story_1']->hasChild(self::$DI['record_1'])) {
+            self::$DI['record_story_1']->appendChild(self::$DI['record_1']);
+        }
+
+        self::$DI['app']['session']->remove('usr_id');
+
+        $route = '/stories/' . self::$DI['record_story_1']->get_sbas_id() . '/' . self::$DI['record_story_1']->get_record_id() . '/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+
+        $this->evaluateGoodStory($content['response']['story']);
+        $this->assertGreaterThan(0, $content['response']['story']['records']);
+
+        $route = '/stories/1234567890/1/';
+        $this->evaluateNotFoundRoute($route, array('GET'));
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $route = '/stories/kjslkz84spm/sfsd5qfsd5/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -742,6 +777,75 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     }
 
     /**
+     * @covers \API_V1_adapter::search
+     * @covers \API_V1_adapter::list_record
+     * @covers \API_V1_adapter::list_story
+     */
+    public function testSearchRoute()
+    {
+        $this->setToken(self::$token);
+        $crawler = self::$DI['client']->request('POST', '/search/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+
+        $response = $content['response'];
+
+        $this->evaluateSearchResponse($response);
+
+        $this->assertArrayHasKey('stories', $response['results']);
+        $this->assertArrayHasKey('records', $response['results']);
+
+        $found = false;
+
+        foreach ($response['results']['records'] as $record) {
+            $this->evaluateGoodRecord($record);
+            $found = true;
+        }
+
+        if (!$found) {
+            $this->fail('Unable to find record back');
+        }
+    }
+
+    /**
+     * @covers \API_V1_adapter::search
+     * @covers \API_V1_adapter::list_record
+     * @covers \API_V1_adapter::list_story
+     */
+    public function testSearchRouteWithStories()
+    {
+        $this->setToken(self::$token);
+
+        self::$DI['record_story_1'];
+
+        $crawler = self::$DI['client']->request('POST', '/search/', $this->getParameters(array('search_type' => 1)), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+
+        $response = $content['response'];
+
+        $this->evaluateSearchResponse($response);
+
+        $this->assertArrayHasKey('stories', $response['results']);
+        $this->assertArrayHasKey('records', $response['results']);
+
+        $found = false;
+
+        foreach ($response['results']['stories'] as $story) {
+            $this->evaluateGoodStory($story);
+            $found = true;
+        }
+
+        if (!$found) {
+            $this->fail('Unable to find story back');
+        }
+    }
+
+    /**
      * @covers \API_V1_adapter::search_records
      * @covers \API_V1_adapter::list_record
      */
@@ -756,27 +860,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $response = $content['response'];
 
-        $this->assertArrayHasKey('available_results', $response);
-        $this->assertArrayHasKey('total_results', $response);
-        $this->assertArrayHasKey('error', $response);
-        $this->assertArrayHasKey('warning', $response);
-        $this->assertArrayHasKey('query_time', $response);
-        $this->assertArrayHasKey('search_indexes', $response);
-        $this->assertArrayHasKey('suggestions', $response);
-        $this->assertArrayHasKey('results', $response);
-        $this->assertArrayHasKey('query', $response);
-
-
-        $this->assertTrue(is_int($response['available_results']), 'Le nombre de results dispo est un int');
-        $this->assertTrue(is_int($response['total_results']), 'Le nombre de results est un int');
-        $this->assertTrue(is_string($response['error']), 'Error est une string');
-        $this->assertTrue(is_string($response['warning']), 'Warning est une string');
-
-//        $this->assertTrue(is_string($response['query_time']));
-        $this->assertTrue(is_string($response['search_indexes']));
-        $this->assertTrue(is_array($response['suggestions']));
-        $this->assertTrue(is_array($response['results']));
-        $this->assertTrue(is_string($response['query']));
+        $this->evaluateSearchResponse($response);
 
         foreach ($response['results'] as $record) {
             $this->evaluateGoodRecord($record);
@@ -893,6 +977,43 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
         $route = '/records/any_bad_id/sfsd5qfsd5/embed/';
+        $this->evaluateBadRequestRoute($route, array('GET'));
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+    }
+
+    /**
+     * @covers \API_V1_adapter::get_record_embed
+     * @covers \API_V1_adapter::list_embedable_media
+     * @covers \API_V1_adapter::list_permalink
+     */
+    public function testStoriesEmbedRoute()
+    {
+        $this->setToken(self::$token);
+
+        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../testfiles/cestlafete.jpg');
+        self::$DI['record_story_1']->substitute_subdef('preview', $media, self::$DI['app']);
+        self::$DI['record_story_1']->substitute_subdef('thumbnail', $media, self::$DI['app']);
+
+        $keys = array_keys(self::$DI['record_story_1']->get_subdefs());
+
+        $route = '/stories/' . self::$DI['record_story_1']->get_sbas_id() . '/' . self::$DI['record_story_1']->get_record_id() . '/embed/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateMeta200($content);
+
+        $this->assertArrayHasKey('embed', $content['response']);
+
+        foreach ($content['response']['embed'] as $embed) {
+            $this->checkEmbed($embed, self::$DI['record_story_1']);
+        }
+        $route = '/stories/24892534/51654651553/embed/';
+        $this->evaluateNotFoundRoute($route, array('GET'));
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $route = '/stories/any_bad_id/sfsd5qfsd5/embed/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -2059,7 +2180,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('response', $content);
         $this->assertTrue(is_array($content['meta']), 'Le bloc meta est un array');
         $this->assertTrue(is_array($content['response']), 'Le bloc reponse est un array');
-        $this->assertEquals('1.2', $content['meta']['api_version']);
+        $this->assertEquals('1.3', $content['meta']['api_version']);
         $this->assertNotNull($content['meta']['response_time']);
         $this->assertEquals('UTF-8', $content['meta']['charset']);
     }
@@ -2219,6 +2340,61 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
     }
 
+    protected function evaluateGoodStory($story)
+    {
+        $this->assertArrayHasKey('databox_id', $story);
+        $this->assertTrue(is_int($story['databox_id']));
+        $this->assertArrayHasKey('story_id', $story);
+        $this->assertTrue(is_int($story['story_id']));
+        $this->assertArrayHasKey('updated_on', $story);
+        $this->assertDateAtom($story['updated_on']);
+        $this->assertArrayHasKey('created_on', $story);
+        $this->assertDateAtom($story['created_on']);
+        $this->assertArrayHasKey('collection_id', $story);
+        $this->assertTrue(is_int($story['collection_id']));
+        $this->assertArrayHasKey('thumbnail', $story);
+        $this->assertArrayHasKey('uuid', $story);
+        $this->assertArrayHasKey('@entity@', $story);
+        $this->assertEquals(\API_V1_adapter::OBJECT_TYPE_STORY, $story['@entity@']);
+        $this->assertTrue(\uuid::is_valid($story['uuid']));
+
+        if ( ! is_null($story['thumbnail'])) {
+            $this->assertTrue(is_array($story['thumbnail']));
+            $this->assertArrayHasKey('player_type', $story['thumbnail']);
+            $this->assertTrue(is_string($story['thumbnail']['player_type']));
+            $this->assertArrayHasKey('permalink', $story['thumbnail']);
+            $this->assertArrayHasKey('mime_type', $story['thumbnail']);
+            $this->assertTrue(is_string($story['thumbnail']['mime_type']));
+            $this->assertArrayHasKey('height', $story['thumbnail']);
+            $this->assertTrue(is_int($story['thumbnail']['height']));
+            $this->assertArrayHasKey('width', $story['thumbnail']);
+            $this->assertTrue(is_int($story['thumbnail']['width']));
+            $this->assertArrayHasKey('filesize', $story['thumbnail']);
+            $this->assertTrue(is_int($story['thumbnail']['filesize']));
+        }
+
+        $this->assertArrayHasKey('records', $story);
+        $this->assertInternalType('array', $story['records']);
+
+        foreach ($story['metadatas'] as $key => $metadata) {
+            if (null !== $metadata) {
+                $this->assertInternalType('string', $metadata);
+            }
+            if ($key === '@entity@') {
+                continue;
+            }
+
+            $this->assertEquals(0, strpos($key, 'dc:'));
+        }
+
+        $this->assertArrayHasKey('@entity@', $story['metadatas']);
+        $this->assertEquals(\API_V1_adapter::OBJECT_TYPE_STORY_METADATA_BAG, $story['metadatas']['@entity@']);
+
+        foreach ($story['records'] as $record) {
+            $this->evaluateGoodRecord($record);
+        }
+    }
+
     protected function evaluateRecordsCaptionResponse($content)
     {
         $this->assertArrayHasKey('caption_metadatas', $content['response']);
@@ -2312,5 +2488,29 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     protected function unsetToken()
     {
         unset($_GET['oauth_token']);
+    }
+
+    private function evaluateSearchResponse($response)
+    {
+        $this->assertArrayHasKey('available_results', $response);
+        $this->assertArrayHasKey('total_results', $response);
+        $this->assertArrayHasKey('error', $response);
+        $this->assertArrayHasKey('warning', $response);
+        $this->assertArrayHasKey('query_time', $response);
+        $this->assertArrayHasKey('search_indexes', $response);
+        $this->assertArrayHasKey('suggestions', $response);
+        $this->assertArrayHasKey('results', $response);
+        $this->assertArrayHasKey('query', $response);
+
+
+        $this->assertTrue(is_int($response['available_results']), 'Le nombre de results dispo est un int');
+        $this->assertTrue(is_int($response['total_results']), 'Le nombre de results est un int');
+        $this->assertTrue(is_string($response['error']), 'Error est une string');
+        $this->assertTrue(is_string($response['warning']), 'Warning est une string');
+
+        $this->assertTrue(is_string($response['search_indexes']));
+        $this->assertTrue(is_array($response['suggestions']));
+        $this->assertTrue(is_array($response['results']));
+        $this->assertTrue(is_string($response['query']));
     }
 }

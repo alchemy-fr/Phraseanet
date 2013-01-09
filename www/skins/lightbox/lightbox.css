@@ -473,6 +473,7 @@ table th i {
     top: -100%;
     height: 100%;
     width: 100%;
+    left:0px;
 }
 
 .record_display_box .note_wrapper {

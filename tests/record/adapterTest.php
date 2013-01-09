@@ -181,6 +181,10 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_rollover_thumbnail()
     {
+        if (!extension_loaded('\Gmagick')) {
+            $this->markTestSkipped('\Gmagick required to build animated gifs');
+        }
+        
         $this->assertNull(self::$DI['record_1']->get_rollover_thumbnail());
     }
 

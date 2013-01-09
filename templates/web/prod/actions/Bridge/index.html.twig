@@ -368,8 +368,8 @@ $(function() {
     var account_id = $('form[name="current_datas"] input[name="account_id"]').val();
     $('input[name="account_id"]', $form).val(account_id);
 
-    var $panel = $('#pub_tabs .ui-tabs-panel');
-
+    var $panel = $('#pub_tabs .ui-tabs-panel:visible');
+    
     $.ajax({
       type : 'GET',
       url : '/prod/bridge/upload/',

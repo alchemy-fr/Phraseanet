@@ -1,4 +1,8 @@
-{% trans 'Record_id' %} : {{ record.get_record_id() }}<br/>
+{% if record.is_grouping() %}
+  {% trans 'Story_id' %} : {{ record.get_record_id() }}<br/>
+{% else %}
+  {% trans 'Record_id' %} : {{ record.get_record_id() }}<br/>
+{% endif %}
 
 {% if record.is_grouping() == false %}
 

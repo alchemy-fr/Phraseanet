@@ -1026,7 +1026,6 @@
     </script>
     <script type="text/javascript" src="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/minify/g=prod"></script>
     <script type="text/javascript" src="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
-    <script type="text/javascript" src="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             p4.reg_delete="{% if app['phraseanet.user'].getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";

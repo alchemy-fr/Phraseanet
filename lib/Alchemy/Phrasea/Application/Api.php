@@ -362,6 +362,26 @@ return call_user_func(function($environment = 'prod') {
     });
 
     /**
+     * Route : /search/
+     *
+     * Method : GET or POST
+     *
+     * Parameters :
+     *    bases[] : array
+     *    status[] : array
+     *    fields[] : array
+     *    record_type : boolean
+     *    media_type : string
+     *
+     * Response :
+     *    Array containing an array of records and stories collection
+     *
+     */
+    $app->match('/search/', function() use ($app) {
+        return $app['api']->search($app['request'])->get_response();
+    });
+
+    /**
      * Route : /records/search/
      *
      * Method : GET or POST
@@ -655,6 +675,41 @@ return call_user_func(function($environment = 'prod') {
     })->assert('feed_id', '\d+');
 
     $app->get('/feeds/{wrong_feed_id}/content/', $bad_request_exception);
+
+    /**
+     * Route : /stories/DATABOX_ID/RECORD_ID/embed/
+     *
+     * Method : GET
+     *
+     * Parameters :
+     *    DATABOX_ID : required INT
+     *    RECORD_ID : required INT
+     *
+     */
+    $app->get('/stories/{databox_id}/{story_id}/embed/', function($databox_id, $story_id) use ($app) {
+            $result = $app['api']->get_story_embed($app['request'], $databox_id, $story_id);
+
+            return $result->get_response();
+        }
+    )->assert('databox_id', '\d+')->assert('story_id', '\d+');
+
+    $app->get('/stories/{any_id}/{anyother_id}/embed/', $bad_request_exception);
+
+    $app->get('/stories/{databox_id}/{story_id}/', function($databox_id, $story_id) use ($app) {
+        $result = $app['api']->get_story($app['request'], $databox_id, $story_id);
+
+        return $result->get_response();
+    })->assert('databox_id', '\d+')->assert('story_id', '\d+');
+
+    $app->get('/stories/{any_id}/{anyother_id}/', $bad_request_exception);
+
+    $app->get('/stories/{databox_id}/{story_id}/', function($databox_id, $story_id) use ($app) {
+        $result = $app['api']->get_story($app['request'], $databox_id, $story_id);
+
+        return $result->get_response();
+    })->assert('databox_id', '\d+')->assert('story_id', '\d+');
+    $app->get('/stories/{any_id}/{anyother_id}/', $bad_request_exception);
+
 
     /**
      * Route Errors

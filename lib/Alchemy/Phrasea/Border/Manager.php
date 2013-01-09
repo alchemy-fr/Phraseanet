@@ -320,7 +320,7 @@ class Manager
                         $metadatas[$key] = array();
                     }
 
-                    $metadatas[$key] = array_merge($metadatas[$key], array($attribute->getValue()));
+                    $metadatas[$key] = array_merge($metadatas[$key], $attribute->getValue());
                     break;
 
                 case AttributeInterface::NAME_METADATA:

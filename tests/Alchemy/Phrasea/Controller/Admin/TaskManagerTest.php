@@ -68,13 +68,11 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
     }
 
     public function testRouteTaskManager_scheduler_log() {
-        $task_manager = new \task_manager(self::$DI['app']);
+        self::$DI['client']->request('GET', '/admin/task-manager/scheduler/log');
 
-        self::$DI['client']->request(
-                'GET', '/admin/task-manager/scheduler/log', array()
-        );
+        $response = self::$DI['client']->getResponse();
 
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $response);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
-
 }

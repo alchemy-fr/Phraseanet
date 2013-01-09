@@ -7,7 +7,6 @@
     <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
     <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
         <script type="text/javascript" src="/include/minify/g=lightbox"></script>
-        <script type="text/javascript" src="/include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 {% endblock %}
 
 {% block stylesheet %}
@@ -50,7 +49,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="container PNB">
+                    <div class="container PNB record_display_box">
                         {% if basket_element %}
 
                             {% set bask_prev = basket_element.getRecord(app).get_preview() %}

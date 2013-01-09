@@ -302,7 +302,8 @@ class Upload implements ControllerProviderInterface
 
         foreach ($user->ACL()->get_granted_base(array('canaddrecord')) as $collection) {
             $databox = $collection->get_databox();
-            if (!isset($collections[$databox->get_sbas_id()])) {
+             
+            if ( ! isset($collections[$databox->get_sbas_id()])) {
                 $collections[$databox->get_sbas_id()] = array(
                     'databox'             => $databox,
                     'databox_collections' => array()

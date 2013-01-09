@@ -69,7 +69,7 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $base = $this->createDatabox();
-        $base->unmount_databox(self::$DI['app']['phraseanet.appbox']);
+        $base->unmount_databox();
 
         self::$DI['client']->request('POST', '/admin/databoxes/mount/', array(
             'new_dbname' => 'unit_test_db'
@@ -87,7 +87,7 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         try {
             $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databoxId);
-            $databox->unmount_databox(self::$DI['app']['phraseanet.appbox']);
+            $databox->unmount_databox();
             $databox->delete();
         } catch (\Exception_DataboxNotFound $e) {
             $this->fail('databox not mounted');
@@ -149,7 +149,7 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $explode = explode('/', $uriRedirect);
         $databoxId = $explode[3];
         $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databoxId);
-        $databox->unmount_databox(self::$DI['app']['phraseanet.appbox']);
+        $databox->unmount_databox();
         $databox->delete();
 
         unset($stmt, $databox);

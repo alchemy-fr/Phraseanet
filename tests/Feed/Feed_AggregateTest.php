@@ -15,8 +15,6 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $auth = new Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
         $objects[] = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
         $objects[] = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
 

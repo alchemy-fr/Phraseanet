@@ -138,4 +138,13 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $this->assertRegExp("/" . $this->queryParameters["scope"] . "/", self::$DI['client']->getResponse()->getContent());
         $this->assertRegExp("/" . $this->queryParameters["state"] . "/", self::$DI['client']->getResponse()->getContent());
     }
+
+    public function testGetTokenNotHTTPS()
+    {
+        $this->setQueryParameters('grant_type', 'authorization_code');
+        $this->setQueryParameters('code', '12345678918');
+        self::$DI['client']->request('POST', '/token', $this->queryParameters);
+
+        $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
+    }
 }

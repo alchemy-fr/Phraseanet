@@ -15,8 +15,6 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $auth = new Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
         self::$object = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
         self::$object->set_public(true);
     }

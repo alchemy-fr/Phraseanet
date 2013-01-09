@@ -61,6 +61,7 @@ $finder
     ->directories()
     ->name('test')
     ->name('tests')
+    ->name('functionnal-tests')
     ->name('Tests')
     ->name('test-suite')
     ->name('test_script')

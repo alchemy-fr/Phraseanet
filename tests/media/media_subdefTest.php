@@ -55,8 +55,10 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
             }
         }
 
+        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
+
         self::$objectNotPresent->remove_file();
-        self::$storyPresent = self::$DI['record_story_1']->get_subdef('thumbnail');
+        self::$storyPresent = $story->get_subdef('thumbnail');
     }
 
     /**

@@ -123,7 +123,7 @@ class TaskManager implements ControllerProviderInterface
                     ob_flush();
                     flush();
                 }
-            });
+            }, 200, array('Content-Type' => 'text/html'));
         });
 
 

@@ -170,7 +170,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                         $value = new \PHPExiftool\Driver\Value\Mono(current($data));
                         $tofetch [$databox_field->get_name()] = $data;
 
-                        $file->addAttribute(new Attribute\MetaField($databox_field, current($data)));
+                        $file->addAttribute(new Attribute\MetaField($databox_field, array(current($data))));
                     }
                 }
                 if ($first) {
@@ -277,7 +277,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 } else {
                     $tofetchField [$databox_field->get_name()] = $data;
 
-                    $file->addAttribute(new Attribute\MetaField($databox_field, current($data)));
+                    $file->addAttribute(new Attribute\MetaField($databox_field, array(current($data))));
                 }
             }
 

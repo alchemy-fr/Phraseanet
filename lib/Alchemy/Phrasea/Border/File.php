@@ -24,7 +24,7 @@ use MediaVorus\Exception\FileNotFoundException;
 use PHPExiftool\Writer;
 use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Driver\Metadata\Metadata;
-use PHPExiftool\Driver\Metadata\MetadataBag;
+use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use PHPExiftool\Exiftool;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
@@ -133,7 +133,7 @@ class File
 
         if ($write) {
             $value = new MonoValue($this->uuid);
-            $metadatas = new MetadataBag();
+            $metadatas = new ExiftoolMetadataBag();
 
             foreach ($availableUUIDs as $tagname) {
                 $metadatas->add(new Metadata(TagFactory::getFromRDFTagname($tagname), $value));

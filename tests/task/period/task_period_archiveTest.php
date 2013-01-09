@@ -425,7 +425,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
         $bagByName = self::$object->getIndexByFieldNameTester($meta_struct, $media->getMetadatas());
 
-        $this->assertInstanceOf('\\PHPExiftool\\Driver\\Metadata\\MetadataBag', $bagByName);
+        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\MetadataBag', $bagByName);
 
         if (count($bagByName) == 0) {
             $this->markTestSkipped('No enough data to tests');
@@ -435,162 +435,6 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
             $this->assertNotNull($meta_struct->get_element_by_name($fieldname));
             $this->assertInstanceOf('\\databox_field', $meta_struct->get_element_by_name($fieldname));
             $this->assertInstanceof('\\PHPExiftool\\Driver\\Metadata\\Metadata', $value);
-        }
-    }
-
-    /**
-     * @covers task_period_archive::bagToArray
-     */
-    public function testBagToArray()
-    {
-        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
-
-        $bag = new PHPExiftool\Driver\Metadata\MetadataBag();
-
-        $first_multi = $first_mono = false;
-        $toFetch = array();
-
-        foreach ($meta_struct as $databox_field) {
-            $tagname = $databox_field->get_tag()->getTagname();
-
-            if ( ! $tagname) {
-                continue;
-            }
-
-            if($databox_field->get_type() == 'date') {
-
-                $date = new \DateTime();
-                $bag->set($tagname, new PHPExiftool\Driver\Metadata\Metadata(
-                        $databox_field->get_tag(),
-                        new \PHPExiftool\Driver\Value\Mono($date->format('Y/m/d H:i:s'))
-                ));
-                $toFetch[$tagname] = array($date->format('Y/m/d H:i:s'));
-
-            } elseif ($databox_field->is_multi()) {
-                if ($first_multi) {
-                    $bag->set($tagname, new PHPExiftool\Driver\Metadata\Metadata(
-                            $databox_field->get_tag(),
-                            new \PHPExiftool\Driver\Value\Mono('c-multi-' . $databox_field->get_id())
-                    ));
-                    $toFetch[$tagname][] = 'c-multi-' . $databox_field->get_id();
-                } else {
-                    $bag->set($tagname, new PHPExiftool\Driver\Metadata\Metadata(
-                            $databox_field->get_tag(),
-                            new \PHPExiftool\Driver\Value\Multi(array('a-multi-' . $databox_field->get_id(), 'b-multi-' . $databox_field->get_id()))
-                    ));
-                    $toFetch[$tagname][] = 'a-multi-' . $databox_field->get_id();
-                    $toFetch[$tagname][] = 'b-multi-' . $databox_field->get_id();
-                }
-                $first_multi = false;
-            } else {
-                if ($first_mono) {
-                    $bag->set($tagname, new PHPExiftool\Driver\Metadata\Metadata(
-                            $databox_field->get_tag(),
-                            new \PHPExiftool\Driver\Value\Multi(array('a-mono-' . $databox_field->get_id(), 'b-mono-' . $databox_field->get_id()))
-                    ));
-                    $toFetch[$tagname] = array('b-mono-' . $databox_field->get_id());
-                } else {
-                    $bag->set($tagname, new PHPExiftool\Driver\Metadata\Metadata(
-                            $databox_field->get_tag(),
-                            new \PHPExiftool\Driver\Value\Mono('c-mono-' . $databox_field->get_id())
-                    ));
-                    $toFetch[$tagname] = array('c-mono-' . $databox_field->get_id());
-                }
-                $first_mono = false;
-            }
-        }
-
-        $array = self::$object->bagToArrayTester($meta_struct, $bag);
-
-
-        $written = $id_done = array();
-        foreach ($array as $meta) {
-            $databox_field = $meta_struct->get_element($meta['meta_struct_id']);
-            $tagname = $databox_field->get_tag()->getTagname();
-
-            if ( ! $databox_field->is_multi() && isset($id_done[$databox_field->get_id()])) {
-                $this->fail('No duplicate for mono values');
-            }
-
-            $id_done[$databox_field->get_id()] = true;
-
-            $written[$tagname][] = $meta['value'];
-
-            $written[$tagname] = array_unique($written[$tagname]);
-        }
-
-        foreach ($written as $tagname => $values) {
-            $this->assertEquals($values, $toFetch[$tagname]);
-        }
-    }
-
-    /**
-     * @covers task_period_archive::mergeForDatabox
-     * @todo Implement testMergeForDatabox().
-     */
-    public function testMergeForDatabox()
-    {
-        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
-
-        $bag1 = new PHPExiftool\Driver\Metadata\MetadataBag();
-        $bag2 = new PHPExiftool\Driver\Metadata\MetadataBag();
-
-        $tofetch = array();
-
-        foreach ($meta_struct as $databox_field) {
-            $tofetch[$databox_field->get_name()] = array();
-            if ($databox_field->is_multi()) {
-                $values = array('a-multi-' . $databox_field->get_id(), 'b-multi-' . $databox_field->get_id());
-                $bag1->set(
-                    $databox_field->get_name(), new PHPExiftool\Driver\Metadata\Metadata(
-                        $databox_field->get_tag(),
-                        new PHPExiftool\Driver\Value\Multi($values)
-                    )
-                );
-
-                $tofetch[$databox_field->get_name()] = array_merge($tofetch[$databox_field->get_name()], $values);
-
-                $values = array('a-multi-' . $databox_field->get_id(), 'd-multi-' . $databox_field->get_id());
-
-                $bag2->set(
-                    $databox_field->get_name(), new PHPExiftool\Driver\Metadata\Metadata(
-                        $databox_field->get_tag(),
-                        new PHPExiftool\Driver\Value\Multi($values)
-                    )
-                );
-
-                $tofetch[$databox_field->get_name()] = array_values(array_unique(array_merge($tofetch[$databox_field->get_name()], $values)));
-            } else {
-                $value = 'a-mono-' . $databox_field->get_id();
-                $bag1->set(
-                    $databox_field->get_name(), new PHPExiftool\Driver\Metadata\Metadata(
-                        $databox_field->get_tag(),
-                        new PHPExiftool\Driver\Value\Mono($value)
-                    )
-                );
-
-                $value = 'b-mono-' . $databox_field->get_id();
-                $bag2->set(
-                    $databox_field->get_name(), new PHPExiftool\Driver\Metadata\Metadata(
-                        $databox_field->get_tag(),
-                        new PHPExiftool\Driver\Value\Mono($value)
-                    )
-                );
-
-                $tofetch[$databox_field->get_name()] = array($value);
-            }
-        }
-
-        $bag = self::$object->mergeForDataboxTester($meta_struct, $bag1, $bag2);
-
-        $found = array();
-
-        foreach ($bag as $fieldname => $metadata) {
-            $found[$fieldname] = $metadata->getValue()->asArray();
-        }
-
-        foreach ($tofetch as $fieldname => $tofound) {
-            $this->assertEquals($tofound, $found[$fieldname]);
         }
     }
 
@@ -631,7 +475,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
         $found = array();
 
         foreach ($bag as $fieldname => $metadata) {
-            $found[$fieldname] = $metadata->getValue()->asArray();
+            $found[$fieldname] = $metadata->getValue();
         }
 
         foreach ($tofetch as $fieldname => $values) {
@@ -682,16 +526,6 @@ class archiveTester extends task_period_archive
     public function getIndexByFieldNameTester($meta_struct, $bag)
     {
         return parent::getIndexByFieldName($meta_struct, $bag);
-    }
-
-    public function bagToArrayTester($meta_struct, $bag)
-    {
-        return parent::bagToArray($meta_struct, $bag);
-    }
-
-    public function mergeForDataboxTester($meta_struct, $bag1, $bag2)
-    {
-        return parent::mergeForDatabox($meta_struct, $bag1, $bag2);
     }
 
     public function readXMLForDataboxTester($meta_struct, $pathfile)

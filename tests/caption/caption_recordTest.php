@@ -97,10 +97,38 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
      */
     public function testGet_dc_field()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $field = null;
+
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+            foreach ($databox->get_meta_structure() as $meta) {
+                $meta->set_dces_element(new databox_Field_DCES_Contributor());
+                $field = $meta;
+                $set = true;
+                break;
+            }
+            break;
+        }
+
+        if (!$meta) {
+            $this->markTestSkipped('Unable to set a DC field');
+        }
+
+        $captionField = self::$DI['record_1']->get_caption()->get_field($field->get_name());
+
+        if (!$captionField) {
+            self::$DI['record_1']->set_metadatas(array(
+                array(
+                    'meta_id'        => null,
+                    'meta_struct_id' => $meta->get_id(),
+                    'value'          => array('HELLO MO !'),
+                )
+            ));
+            $value = 'HELLO MO !';
+        } else {
+            $value = $captionField->get_serialized_values();
+        }
+
+        $this->assertEquals($value, self::$DI['record_1']->get_caption()->get_dc_field(databox_Field_DCESAbstract::Contributor)->get_serialized_values());
     }
 
     /**

@@ -339,7 +339,7 @@ class recordutils_image extends recordutils
             return $pathOut;
         }
 
-        if ($app['phraseanet.registry']->get('GV_pathcomposite') &&
+        if ($app['phraseanet.registry']->get('composite_binary') &&
             file_exists($app['phraseanet.registry']->get('GV_RootPath') . 'config/wm/' . $base_id)) {
 
             $builder = ProcessBuilder::create(array(

@@ -461,7 +461,7 @@ class Databox implements ControllerProviderInterface
             if ($databox->get_record_amount() > 0) {
                 $msg = _('admin::base: vider la base avant de la supprimer');
             } else {
-                $databox->unmount_databox($app['phraseanet.appbox']);
+                $databox->unmount_databox();
                 $app['phraseanet.appbox']->write_databox_pic($app['media-alchemyst'], $app['filesystem'], $databox, null, \databox::PIC_PDF);
                 $databox->delete();
                 $success = true;
@@ -744,7 +744,7 @@ class Databox implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-            $databox->unmount_databox($app['phraseanet.appbox']);
+            $databox->unmount_databox();
 
             $success = true;
         } catch (\Exception $e) {

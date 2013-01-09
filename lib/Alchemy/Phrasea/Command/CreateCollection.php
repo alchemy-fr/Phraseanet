@@ -49,16 +49,16 @@ class CreateCollection extends Command
 
         $new_collection = \collection::create($app, $databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
 
-        if ($new_collection && $input->getOption('duplicate_rights_from_base_id')) {
+        if ($new_collection && $input->getOption('base_id_rights')) {
 
             $query = new \User_Query($this->container);
-            $total = $query->on_base_ids(array($input->getOption('duplicate_rights_from_base_id')))->get_total();
+            $total = $query->on_base_ids(array($input->getOption('base_id_rights')))->get_total();
 
             $n = 0;
             while ($n < $total) {
                 $results = $query->limit($n, 40)->execute()->get_results();
                 foreach ($results as $user) {
-                    $user->ACL()->duplicate_right_from_bas($input->getOption('duplicate_rights_from_base_id'), $new_collection->get_base_id());
+                    $user->ACL()->duplicate_right_from_bas($input->getOption('base_id_rights'), $new_collection->get_base_id());
                 }
                 $n+=40;
             }

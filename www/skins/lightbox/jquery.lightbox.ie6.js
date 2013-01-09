@@ -479,19 +479,11 @@ function download(value)
 {
 	var dialog = p4.Dialog.Create({title: typeof(language) !== 'undefined' ? language['export']: ''});
 
-    dialog.getDomElement().bind("dialogbeforeclose", function(event, ui) {
-        tinyMCE.execCommand('mceRemoveControl',true,'sendmail_message');
-        tinyMCE.execCommand('mceRemoveControl',true,'order_usage');
-    });
-
     $.post("/prod/export/multi-export/", "lst="+value, function(data) {
 
         dialog.setContent(data);
 
         $('.tabs', dialog.getDomElement()).tabs();
-
-        tinyMCE.execCommand('mceAddControl',true,'sendmail_message');
-        tinyMCE.execCommand('mceAddControl',true,'order_usage');
 
         $('.close_button', dialog.getDomElement()).bind('click',function(){
             dialog.Close();

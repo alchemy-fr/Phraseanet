@@ -189,7 +189,7 @@
                         </div>
                         <div>
                             <p>{% trans 'export::mail: contenu du mail' %}</p>
-                            <textarea rows="10" style="width:100%; white-space:pre;" name="textmail" id="sendmail_message"></textarea>
+                            <textarea rows="6" style="width:90%; white-space:pre;resize:none;" name="textmail" id="sendmail_message"></textarea>
                         </div>
                         <div>
                             <p>{% trans 'export::mail: fichiers joint' %}</p>
@@ -679,10 +679,16 @@
 
                         $('#order .order_button_loader').css('visibility','hidden');
 
+                        if(!data.error) {
+                            var title = '{% trans "Success" %}';
+                        } else {
+                            var title = '{% trans "Warning !" %}';
+                        }
+
                         var options = {
                           size : 'Alert',
                           closeButton: true,
-                          title : '{% trans "Warning !" %}'
+                          title : title
                         };
 
                         p4.Dialog.Create(options, 2).setContent(data.message);

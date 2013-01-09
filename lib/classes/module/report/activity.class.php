@@ -1094,7 +1094,7 @@ class module_report_activity extends module_report
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $date = $this->app['date-formatter']->getPrettyString(new DateTime($row['ddate']));
+            $date = $app['date-formatter']->getPrettyString(new DateTime($row['ddate']));
             $result[$date] = $row['activity'];
         }
 

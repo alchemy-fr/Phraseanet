@@ -253,7 +253,6 @@ class Lazaret implements ControllerProviderInterface
             return $app->json($ret);
         }
 
-
         $lazaretFile = $app['EM']->find('Entities\LazaretFile', $file_id);
 
         /* @var $lazaretFile \Entities\LazaretFile */
@@ -286,8 +285,11 @@ class Lazaret implements ControllerProviderInterface
 
             if ($keepAttributes) {
                 //add attribute
-                foreach ($lazaretFile->getAttributes() as $attr) {
 
+                $metaFields = new Border\MetaFieldsBag();
+                $metadataBag = new Border\MetadataBag();
+
+                foreach ($lazaretFile->getAttributes() as $attr) {
                     //Check which ones to keep
                     if (!!count($attributesToKeep)) {
                         if (!in_array($attr->getId(), $attributesToKeep)) {
@@ -305,9 +307,8 @@ class Lazaret implements ControllerProviderInterface
 
                     switch ($attribute->getName()) {
                         case AttributeInterface::NAME_METADATA:
-                            /**
-                             * @todo romain neutron
-                             */
+                            $value = $attribute->getValue();
+                            $metadataBag->set($value->getTag()->getTagname(), new \PHPExiftool\Driver\Metadata\Metadata($value->getTag(), $value->getValue()));
                             break;
                         case AttributeInterface::NAME_STORY:
                             $attribute->getValue()->appendChild($record);
@@ -316,12 +317,16 @@ class Lazaret implements ControllerProviderInterface
                             $record->set_binary_status($attribute->getValue());
                             break;
                         case AttributeInterface::NAME_METAFIELD:
-                            /**
-                             * @todo romain neutron
-                             */
+                            $metaFields->set($attribute->getField()->get_name(), $attribute->getValue());
                             break;
                     }
                 }
+
+                $datas = $metadataBag->toMetadataArray($record->get_databox()->get_meta_structure());
+                $record->set_metadatas($datas);
+
+                $fields = $metaFields->toMetadataArray($record->get_databox()->get_meta_structure());
+                $record->set_metadatas($fields);
             }
 
             //Delete lazaret file

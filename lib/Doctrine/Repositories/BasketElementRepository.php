@@ -65,6 +65,25 @@ class BasketElementRepository extends EntityRepository
         return $query->getResult();
     }
 
+    public function findElementsByDatabox(\databox $databox)
+    {
+        $dql = 'SELECT e
+            FROM Entities\BasketElement e
+            JOIN e.basket b
+            LEFT JOIN b.validation s
+            LEFT JOIN s.participants p
+            WHERE e.sbas_id = :sbas_id';
+
+        $params = array(
+            'sbas_id'   => $databox->get_sbas_id(),
+        );
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters($params);
+
+        return $query->getResult();
+    }
+
     /**
      *
      * @param  \record_adapter                              $record

@@ -91,8 +91,13 @@ class appbox extends base
             if ($pic_type === collection::PIC_LOGO) {
                 //resize collection logo
                 $imageSpec = new ImageSpecification();
-                $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
-                $imageSpec->setDimensions(120, 24);
+
+                $media = $this->app['mediavorus']->guess($filename);
+
+                if($media->getWidth() > 120 || $media->getHeight() > 24) {
+                    $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+                    $imageSpec->setDimensions(120, 24);
+                }
 
                 $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 

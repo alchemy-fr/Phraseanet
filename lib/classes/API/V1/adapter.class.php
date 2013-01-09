@@ -26,7 +26,7 @@ class API_V1_adapter extends API_V1_Abstract
      *
      * @var string
      */
-    protected $version = '1.2';
+    protected $version = '1.3';
 
     /**
      * Application context
@@ -34,6 +34,9 @@ class API_V1_adapter extends API_V1_Abstract
      * @var Application
      */
     protected $app;
+
+    const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
+    const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
 
     /**
      * API constructor
@@ -815,7 +818,39 @@ class API_V1_adapter extends API_V1_Abstract
     }
 
     /**
+     * Search for results
+     *
+     * @param Request $request
+     * @return \API_V1_result
+     */
+    public function search(Request $request)
+    {
+        $result = new API_V1_result($request, $this);
+
+        list($ret, $search_result) = $this->prepare_search_request($request);
+
+        $ret['results'] = array('records' => array(), 'stories' => array());
+
+        foreach ($search_result->get_datas()->get_elements() as $record) {
+            if ($record->is_grouping()) {
+                $ret['results']['stories'][] = $this->list_story($record);
+            } else {
+                $ret['results']['records'][] = $this->list_record($record);
+            }
+        }
+
+        /**
+         * @todo donner des highlights
+         */
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+    /**
      * Get an API_V1_result containing the results of a records search
+     *
+     * Deprecated in favor of search
      *
      * @param  Request       $request
      * @param  int           $databox_id
@@ -826,6 +861,22 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($request, $this);
 
+        list($ret, $search_result) = $this->prepare_search_request($request);
+
+        foreach ($search_result->get_datas()->get_elements() as $record) {
+            $ret['results'][] = $this->list_record($record);
+        }
+
+        /**
+         * @todo donner des highlights
+         */
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+    private function prepare_search_request(Request $request)
+    {
         $search_type = ($request->get('search_type')
             && in_array($request->get('search_type'), array(0, 1))) ?
             $request->get('search_type') : 0;
@@ -918,19 +969,10 @@ class API_V1_adapter extends API_V1_Abstract
             'search_indexes'    => $search_result->get_search_indexes(),
             'suggestions'       => $search_result->get_suggestions($this->app['locale.I18n']),
             'results'           => array(),
-            'query' => $search_engine->get_query(),
+            'query'             => $search_engine->get_query(),
         );
 
-        foreach ($search_result->get_datas()->get_elements() as $record) {
-            $ret['results'][] = $this->list_record($record);
-        }
-
-        /**
-         * @todo donner des highlights
-         */
-        $result->set_datas($ret);
-
-        return $result;
+        return array($ret, $search_result);
     }
 
     /**
@@ -946,17 +988,25 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($request, $this);
 
-        $containers = $this->app['phraseanet.appbox']
-            ->get_databox($databox_id)
-            ->get_record($record_id)
-            ->get_container_baskets($this->app['EM'], $this->app['phraseanet.user']);
+        $that = $this;
+        $baskets = array_map(function ($basket) use ($that) {
+            return $that->list_basket($basket);
+            }, (array) $this->app['phraseanet.appbox']
+                ->get_databox($databox_id)
+                ->get_record($record_id)
+                ->get_container_baskets($this->app['EM'], $this->app['phraseanet.user'])
+        );
 
-        $ret = array();
-        foreach ($containers as $basket) {
-            $ret[] = $this->list_basket($basket);
-        }
+        $record = $this->app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
-        $result->set_datas(array("baskets" => $ret));
+        $stories = array_map(function ($story) use ($that) {
+            return $that->list_story($story);
+        }, array_values($record->get_grouping_parents()->get_elements()));
+
+        $result->set_datas(array(
+            "baskets" => $baskets,
+            "stories" => $stories,
+        ));
 
         return $result;
     }
@@ -1030,6 +1080,38 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $record = $this->app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
+
+        $ret = array();
+
+        $devices = $request->get('devices', array());
+        $mimes = $request->get('mimes', array());
+
+        foreach ($record->get_embedable_medias($devices, $mimes) as $name => $media) {
+            $ret[] = $this->list_embedable_media($media, $this->app['phraseanet.registry']);
+        }
+
+        $result->set_datas(array("embed" => $ret));
+
+        return $result;
+    }
+
+    /**
+     * Get an API_V1_result containing the story embed files
+     *
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  int           $record_id
+     * @param  string        $response_type
+     * @return API_V1_result
+     */
+    public function get_story_embed(Request $request, $databox_id, $record_id)
+    {
+
+        $result = new API_V1_result($request, $this);
+
+        $record = $this->app['phraseanet.appbox']
+                    ->get_databox($databox_id)
+                    ->get_record($record_id);
 
         $ret = array();
 
@@ -1158,6 +1240,30 @@ class API_V1_adapter extends API_V1_Abstract
             $result->set_datas(array('record' => $this->list_record($record)));
         } catch (Exception_NotFound $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('Record Not Found'));
+        } catch (Exception $e) {
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return detailed informations about one story
+     *
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  int           $story_id
+     * @return API_V1_result
+     */
+    public function get_story(Request $request, $databox_id, $story_id)
+    {
+        $result = new API_V1_result($request, $this);
+        $databox = $this->app['phraseanet.appbox']->get_databox($databox_id);
+        try {
+            $story = $databox->get_record($story_id);
+            $result->set_datas(array('story' => $this->list_story($story)));
+        } catch (Exception_NotFound $e) {
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('Story Not Found'));
         } catch (Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
         }
@@ -1737,7 +1843,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  \Entities\Basket $basket
      * @return array
      */
-    protected function list_basket(\Entities\Basket $basket)
+    public function list_basket(\Entities\Basket $basket)
     {
         $ret = array(
             'basket_id'         => $basket->getId(),
@@ -1793,7 +1899,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  record_adapter $record
      * @return array
      */
-    protected function list_record(record_adapter $record)
+    public function list_record(record_adapter $record)
     {
         $technicalInformation = array();
         foreach ($record->get_technical_infos() as $name => $value) {
@@ -1817,6 +1923,67 @@ class API_V1_adapter extends API_V1_Abstract
             'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->get_type(),
             'uuid'                   => $record->get_uuid(),
+        );
+    }
+
+    /**
+     * Retrieve detailled informations about one story
+     *
+     * @param  record_adapter $story
+     * @return array
+     */
+    public function list_story(record_adapter $story, $includeChildren = true)
+    {
+        if (!$story->is_grouping()) {
+            throw new \API_V1_exception_notfound('Story not found');
+        }
+
+        $that = $this;
+        $records = array_map(function (\record_adapter $record) use ($that) {
+            return $that->list_record($record);
+        }, array_values($story->get_children()->get_elements()));
+
+        $caption = $story->get_caption();
+
+        $format = function(caption_record $caption, $dcField) {
+
+            $field = $caption->get_dc_field($dcField);
+
+            if (!$field) {
+                return null;
+            }
+
+            return $field->get_serialized_values();
+        };
+
+        return array(
+            '@entity@'       => self::OBJECT_TYPE_STORY,
+            'databox_id'     => $story->get_sbas_id(),
+            'story_id'       => $story->get_record_id(),
+            'updated_on'     => $story->get_modification_date()->format(DATE_ATOM),
+            'created_on'     => $story->get_creation_date()->format(DATE_ATOM),
+            'collection_id'  => phrasea::collFromBas($this->app, $story->get_base_id()),
+            'thumbnail'      => $this->list_embedable_media($story->get_thumbnail(), $this->app['phraseanet.registry']),
+            'uuid'           => $story->get_uuid(),
+            'metadatas'      => array(
+                '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
+                'dc:contributor' => $format($caption, databox_Field_DCESAbstract::Contributor),
+                'dc:coverage'    => $format($caption, databox_Field_DCESAbstract::Coverage),
+                'dc:creator'     => $format($caption, databox_Field_DCESAbstract::Creator),
+                'dc:date'        => $format($caption, databox_Field_DCESAbstract::Date),
+                'dc:description' => $format($caption, databox_Field_DCESAbstract::Description),
+                'dc:format'      => $format($caption, databox_Field_DCESAbstract::Format),
+                'dc:identifier'  => $format($caption, databox_Field_DCESAbstract::Identifier),
+                'dc:language'    => $format($caption, databox_Field_DCESAbstract::Language),
+                'dc:publisher'   => $format($caption, databox_Field_DCESAbstract::Publisher),
+                'dc:relation'    => $format($caption, databox_Field_DCESAbstract::Relation),
+                'dc:rights'      => $format($caption, databox_Field_DCESAbstract::Rights),
+                'dc:source'      => $format($caption, databox_Field_DCESAbstract::Source),
+                'dc:subject'     => $format($caption, databox_Field_DCESAbstract::Subject),
+                'dc:title'       => $format($caption, databox_Field_DCESAbstract::Title),
+                'dc:type'        => $format($caption, databox_Field_DCESAbstract::Type),
+            ),
+            'records'        => $records,
         );
     }
 

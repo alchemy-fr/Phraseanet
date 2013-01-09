@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -135,13 +136,16 @@ return call_user_func(function($environment = 'prod') {
      *  Token endpoint - used to exchange an authorization grant for an access token.
      */
     $app->post('/token', function(\Silex\Application $app, Request $request) {
+        if ( ! $request->isSecure()) {
+            throw new HttpException(400, 'This route requires the use of the https scheme', null, array('content-type' => 'application/json'));
+        }
 
         $app['oauth']->grantAccessToken();
         ob_flush();
         flush();
 
         return;
-    })->requireHttps();
+    });
 
     /**
      * Error Handler

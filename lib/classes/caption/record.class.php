@@ -222,7 +222,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function get_dc_field($label)
     {
-        $fields = $this->get_fields();
+        $fields = $this->retrieve_fields();
         if (isset($this->dces_elements[$label])) {
             return $fields[$this->dces_elements[$label]];
         }
@@ -275,7 +275,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
                 foreach ($fields as $key => $value) {
                     $n++;
-                    
+
                     if (!isset($fields[$key])) {
                         continue;
                     }

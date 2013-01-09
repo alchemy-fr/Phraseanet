@@ -322,7 +322,7 @@ class databox extends base
         return $ret;
     }
 
-    public function unmount_databox(appbox $appbox)
+    public function unmount_databox()
     {
         foreach ($this->get_collections() as $collection) {
             $collection->unmount_collection($this->app);
@@ -346,6 +346,16 @@ class databox extends base
             $n+=50;
         }
 
+        foreach ($this->app['EM']->getRepository('\Entities\StoryWZ')->findByDatabox($this) as $story) {
+            $this->app['EM']->remove($story);
+        }
+
+        foreach ($this->app['EM']->getRepository('\Entities\BasketElement')->findElementsByDatabox($this) as $element) {
+            $this->app['EM']->remove($element);
+        }
+
+        $this->app['EM']->flush();
+
         $params = array(':site_id' => $this->app['phraseanet.registry']->get('GV_sit'));
 
         $sql = 'DELETE FROM clients WHERE site_id = :site_id';
@@ -359,16 +369,16 @@ class databox extends base
         $stmt->closeCursor();
 
         $sql = "DELETE FROM sbas WHERE sbas_id = :sbas_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
         $stmt->closeCursor();
 
         $sql = "DELETE FROM sbasusr WHERE sbas_id = :sbas_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
         $stmt->closeCursor();
 
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         return;
     }

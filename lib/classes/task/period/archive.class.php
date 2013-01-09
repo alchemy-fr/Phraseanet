@@ -10,8 +10,10 @@
 
 use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
 use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
+use Alchemy\Phrasea\Border\MetadataBag;
+use Alchemy\Phrasea\Border\MetaFieldsBag;
+use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Metadata\Metadata;
-use PHPExiftool\Driver\Metadata\MetadataBag;
 use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
@@ -1614,22 +1616,20 @@ class task_period_archive extends task_abstract
         $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getMetadatas());
 
         if ($captionFile !== null && true === $this->dependencyContainer['filesystem']->exists($captionFile)) {
-            $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
+            $metaFields = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
 
             if ($captionStatus) {
                 $status = databox_status::operation_or($this->dependencyContainer, $status, $captionStatus);
             }
-
-            $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
         }
-
-        $metas = $this->bagToArray($metadatasStructure, $metadatas);
 
         $story = record_adapter::createStory($this->dependencyContainer, $collection);
         $story->substitute_subdef('document', $media, $this->dependencyContainer);
 
-        $story->set_metadatas($metas, true);
+        $story->set_metadatas($metadatas->toMetadataArray($metadatasStructure), true);
+        $story->set_metadatas($metaFields->toMetadataArray($metadatasStructure), true);
+
         $story->set_binary_status(databox_status::operation_or($this->dependencyContainer, $stat0, $stat1));
         $story->rebuild_subdefs();
         $story->reindex();
@@ -1679,14 +1679,12 @@ class task_period_archive extends task_abstract
         $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getMetadatas());
 
         if ($captionFile !== null && true === $this->dependencyContainer['filesystem']->exists($captionFile)) {
-            $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
+            $metaFields = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
 
             if ($captionStatus) {
                 $status = databox_status::operation_or($this->dependencyContainer, $status, $captionStatus);
             }
-
-            $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
         }
         $file = new \Alchemy\Phrasea\Border\File($this->dependencyContainer, $media, $collection);
 
@@ -1701,6 +1699,10 @@ class task_period_archive extends task_abstract
 
         foreach ($metadatas as $meta) {
             $file->addAttribute(new BorderAttribute\Metadata($meta));
+        }
+
+        foreach ($metaFields as $metaField) {
+            $file->addAttribute($metaField);
         }
 
         if ($grp_rid) {
@@ -2047,10 +2049,10 @@ class task_period_archive extends task_abstract
      * indexed by **FieldNames**
      *
      * @param  \databox_descriptionStructure $metadatasStructure The databox structure related
-     * @param  MetadataBag                   $bag                The metadata bag
+     * @param  ExiftoolMetadataBag                   $bag                The metadata bag
      * @return MetadataBag
      */
-    protected function getIndexByFieldName(\databox_descriptionStructure $metadatasStructure, MetadataBag $bag)
+    protected function getIndexByFieldName(\databox_descriptionStructure $metadatasStructure, ExiftoolMetadataBag $bag)
     {
         $ret = new MetadataBag();
 
@@ -2063,121 +2065,6 @@ class task_period_archive extends task_abstract
         return $ret;
     }
 
-    /**
-     * Map a bag of metadatas indexed by **FieldNames** to an array ready for
-     * \record_adapter metadatas submission
-     *
-     * @param  \databox_descriptionStructure $metadatasStructure The databox structure related
-     * @param  MetadataBag                   $metadatas          The metadata bag
-     * @return array
-     */
-    protected function bagToArray(\databox_descriptionStructure $metadatasStructure, MetadataBag $metadatas)
-    {
-        $metas = array();
-        $unicode = new \unicode();
-
-        foreach ($metadatasStructure as $databox_field) {
-            if ($metadatas->containsKey($databox_field->get_tag()->getTagname())) {
-
-                if ($databox_field->is_multi()) {
-
-                    $values = $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asArray();
-
-                    $tmp = array();
-
-                    foreach ($values as $value) {
-                        foreach (\caption_field::get_multi_values($value, $databox_field->get_separator()) as $v) {
-                            $tmp[] = $v;
-                        }
-                    }
-
-                    $values = array_unique($tmp);
-
-                    foreach ($values as $value) {
-
-                        $value = $unicode->substituteCtrlCharacters($value, ' ');
-                        $value = $unicode->toUTF8($value);
-                        if ($databox_field->get_type() == 'date') {
-                            $value = $unicode->parseDate($value);
-                        }
-
-                        $metas[] = array(
-                            'meta_struct_id' => $databox_field->get_id(),
-                            'value'          => $value,
-                            'meta_id'        => null
-                        );
-                    }
-                } else {
-                    $value = $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asString();
-
-                    $value = $unicode->substituteCtrlCharacters($value, ' ');
-                    $value = $unicode->toUTF8($value);
-                    if ($databox_field->get_type() == 'date') {
-                        $value = $unicode->parseDate($value);
-                    }
-
-                    $metas[] = array(
-                        'meta_struct_id' => $databox_field->get_id(),
-                        'value'          => $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asString(),
-                        'meta_id'        => null
-                    );
-                }
-            }
-        }
-
-        unset($unicode);
-
-        return $metas;
-    }
-
-    /**
-     * Merge two bags of metadatas indexed by **FieldNames**
-     * Return a bag indexed by **FieldNames**
-     *
-     * @param  \databox_descriptionStructure            $metadatasStructure The databox structure related
-     * @param  MetadataBag                              $bag1               The first metadata bag
-     * @param  MetadataBag                              $bag2               The second metadata bag
-     * @return \PHPExiftool\Driver\Metadata\MetadataBag
-     */
-    protected function mergeForDatabox(\databox_descriptionStructure $metadatasStructure, MetadataBag $bag1, MetadataBag $bag2)
-    {
-        $metadatasBag = new MetadataBag();
-
-        foreach ($metadatasStructure as $databox_field) {
-
-            $value = array();
-
-            $tag = $databox_field->get_tag();
-
-            foreach (array($bag1, $bag2) as $bag) {
-
-                if ( ! $bag->containsKey($databox_field->get_name())) {
-                    continue;
-                }
-
-                if ($databox_field->is_multi()) {
-                    $value = array_unique(array_merge($value, $bag->get($databox_field->get_name())->getValue()->asArray()));
-                } else {
-                    $value = $bag->get($databox_field->get_name())->getValue()->asString();
-                }
-            }
-
-            if ( ! $value) {
-                continue;
-            }
-
-            if ($databox_field->is_multi()) {
-                $value = new \PHPExiftool\Driver\Value\Multi($value);
-            } else {
-                $value = new \PHPExiftool\Driver\Value\Mono($value);
-            }
-
-            $metadatasBag->set($databox_field->get_name(), new PHPExiftool\Driver\Metadata\Metadata($tag, $value));
-        }
-
-        return $metadatasBag;
-    }
-
     protected function readXMLForDatabox(\databox_descriptionStructure $metadatasStructure, $pathfile)
     {
         if (false === $this->dependencyContainer['filesystem']->exists($pathfile)) {
@@ -2188,10 +2075,7 @@ class task_period_archive extends task_abstract
             throw new \InvalidArgumentException(sprintf('Invalid XML file %s', $pathfile));
         }
 
-        /**
-         * @todo update with metafield, ensure that metafield primes on metadata
-         */
-        $metadataBag = new MetadataBag();
+        $metadataBag = new MetaFieldsBag();
 
         foreach ($sxcaption->description->children() as $tagname => $field) {
             $field = trim($field);
@@ -2201,27 +2085,18 @@ class task_period_archive extends task_abstract
                 continue;
             }
 
-            $tag = $meta->get_tag();
-
             if ($meta->is_multi()) {
                 $fields = caption_field::get_multi_values($field, $meta->get_separator());
 
                 if ( ! $metadataBag->containsKey($meta->get_name())) {
-                    $values = new \PHPExiftool\Driver\Value\Multi($fields);
+                    $values = $fields;
                 } else {
-                    $values = $metadataBag->get($meta->get_name())->getValue();
-
-                    foreach ($fields as $f) {
-                        $values->addValue($f);
-                    }
+                    $values = array_merge($metadataBag->get($meta->get_name())->getValue(), $fields);
                 }
 
-                /**
-                 * fail if not tagname defined
-                 */
-                $metadataBag->set($meta->get_name(), new \PHPExiftool\Driver\Metadata\Metadata($tag, $values));
+                $metadataBag->set($meta->get_name(), new BorderAttribute\MetaField($meta, $values));
             } else {
-                $metadataBag->set($meta->get_name(), new \PHPExiftool\Driver\Metadata\Metadata($tag, new \PHPExiftool\Driver\Value\Mono($field)));
+                $metadataBag->set($meta->get_name(), new BorderAttribute\MetaField($meta, array($field)));
             }
         }
 

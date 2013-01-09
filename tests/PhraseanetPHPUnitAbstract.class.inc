@@ -167,7 +167,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         //In case some executed script modify 'max_execution_time' ini var
         //Initialize set_time_limit(0) which is the default value for PHP CLI
-        
+
         set_time_limit(0);
     }
 

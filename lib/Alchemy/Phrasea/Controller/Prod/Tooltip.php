@@ -131,9 +131,15 @@ class Tooltip implements ControllerProviderInterface
     {
         $record = new \record_adapter($app, $sbas_id, $record_id);
 
+        try {
+            $document = $record->get_subdef('document');
+        } catch(\Exception $e) {
+            $document = null;
+        }
+
         return $app['twig']->render(
                 'prod/Tooltip/TechnicalDatas.html.twig'
-                , array('record'   => $record, 'document' => $record->get_subdef('document'))
+                , array('record'   => $record, 'document' => $document)
         );
     }
 
