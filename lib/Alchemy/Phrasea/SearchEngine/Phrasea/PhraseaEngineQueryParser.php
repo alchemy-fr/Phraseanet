@@ -625,15 +625,15 @@ class PhraseaEngineQueryParser
             foreach ($tsy as $lng => $tsy2) {
                 foreach ($tsy2 as $sy) {
                     $alt .= $alt ? "\n" : "";
-                    $alt .= "" . $lng . ": " . p4string::MakeString($sy["v"], "js");
+                    $alt .= "" . $lng . ": " . \p4string::MakeString($sy["v"], "js");
                 }
             }
 
             $this->proposals['QUERIES'][$syfound["w"]] = $syfound["w"];
 
             $thtml = $syfound["v"];
-            $kjs = $syfound["k"] ? ("'" . p4string::MakeString($syfound["k"], "js") . "'") : "null";
-            $wjs = "'" . p4string::MakeString($syfound["w"], "js") . "'";
+            $kjs = $syfound["k"] ? ("'" . \p4string::MakeString($syfound["k"], "js") . "'") : "null";
+            $wjs = "'" . \p4string::MakeString($syfound["w"], "js") . "'";
 
             if ($node->getAttribute("term")) {
                 $thtml = "<b>" . $thtml . "</b>";
@@ -752,7 +752,7 @@ class PhraseaEngineQueryParser
         if ($this->debug)
             printf("searching thesaurus with xpath='%s'<br/>\n", $x);
 
-        $dxp = new DOMXPath($domthe);
+        $dxp = new \DOMXPath($domthe);
         $nodes = $dxp->query($x);
 
         if (!isset($tree["RB"]["SREF"]["TIDS"]))
