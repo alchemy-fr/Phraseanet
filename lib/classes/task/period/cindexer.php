@@ -83,6 +83,12 @@ class task_period_cindexer extends task_abstract
      *
      * @var string
      */
+    protected $stem;
+
+    /**
+     *
+     * @var string
+     */
     protected $nolog;
 
     /**
@@ -125,13 +131,13 @@ class task_period_cindexer extends task_abstract
         $request = http_request::getInstance();
 
         $parm2 = $request->get_parms(
-            'binpath', 'host', 'port', 'base', 'user', 'password', 'socket', 'use_sbas', 'nolog', 'clng', 'winsvc_run', 'charset', 'debugmask'
+            'binpath', 'host', 'port', 'base', 'user', 'password', 'socket', 'use_sbas', 'nolog', 'clng', 'winsvc_run', 'charset', 'debugmask', 'stem'
         );
         $dom = new DOMDocument();
         $dom->formatOutput = true;
         if ($dom->loadXML($oldxml)) {
             $xmlchanged = false;
-            foreach (array("str:binpath", "str:host", "str:port", "str:base", "str:user", "str:password", "str:socket", "boo:use_sbas", "boo:nolog", "str:clng", "boo:winsvc_run", "str:charset", 'str:debugmask') as $pname) {
+            foreach (array("str:binpath", "str:host", "str:port", "str:base", "str:user", "str:password", "str:socket", "boo:use_sbas", "boo:nolog", "str:clng", "boo:winsvc_run", "str:charset", 'str:debugmask', 'str:stem') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -200,6 +206,7 @@ class task_period_cindexer extends task_abstract
                         nolog.checked      = isyes(xml.find("nolog").text());
                         winsvc_run.checked = isyes(xml.find("winsvc_run").text());
                         charset.value      = xml.find("charset").text();
+                        stem.value         = xml.find("stem").text();
                         debugmask.value    = 0|xml.find("debugmask").text();
                     }
                 }
@@ -231,6 +238,8 @@ class task_period_cindexer extends task_abstract
                         cmd += " -n";
                     if(clng.value)
                         cmd += " -c=" + clng.value;
+                    if(stem.value)
+                        cmd += " --stem=" + stem.value;
                     if(debugmask.value)
                         cmd += " -d=" + debugmask.value;
                     if(winsvc_run.checked)
@@ -294,6 +303,10 @@ class task_period_cindexer extends task_abstract
             <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" value="">
             <br/>
 
+            <?php echo _('task::cindexer:stemming languages') ?>&nbsp;:&nbsp;<input type="text" name="stem" style="width:200px;" value="">
+            &nbsp;<?php echo _('task::cindexer:ex.: fr,en') ?>
+            <br/>
+
             <input type="checkbox" name="nolog">&nbsp;<?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
             <br/>
 
@@ -324,6 +337,7 @@ class task_period_cindexer extends task_abstract
         $this->socket = trim($sx_task_settings->socket);
         $this->use_sbas = p4field::isyes(trim($sx_task_settings->use_sbas));
         $this->charset = trim($sx_task_settings->charset);
+        $this->stem = trim($sx_task_settings->stem);
         $this->debugmask = (int) (trim($sx_task_settings->debugmask));
         $this->nolog = p4field::isyes(trim($sx_task_settings->nolog));
         $this->winsvc_run = p4field::isyes(trim($sx_task_settings->winsvc_run));
@@ -389,6 +403,10 @@ class task_period_cindexer extends task_abstract
         if ($this->charset) {
             $args[] = '--default-character-set=' . $this->charset;
             $args_nopwd[] = '--default-character-set=' . $this->charset;
+        }
+        if ($this->stem) {
+            $args[] = '--stem=' . $this->stem;
+            $args_nopwd[] = '--stem=' . $this->stem;
         }
         if ($this->debugmask > 0) {
             $args[] = '-d=' . $this->debugmask;
