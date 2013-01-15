@@ -5018,7 +5018,15 @@
           </field>
           <field>
             <name>keyword</name>
-            <type>varchar(64)</type>
+            <type>char(64)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>lng</name>
+            <type>char(4)</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -5038,6 +5046,7 @@
             <type>UNIQUE</type>
             <fields>
               <field>keyword</field>
+              <field>lng</field>
             </fields>
           </index>
         </indexes>
