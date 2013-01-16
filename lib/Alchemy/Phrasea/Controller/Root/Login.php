@@ -709,7 +709,9 @@ class Login implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
 
         $app->closeAccount();
-
+        
+        $appRedirect = $request->query->get("app");
+        
         $response = new RedirectResponse("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=%s", ltrim($appRedirect, '/')) : ""));
 
         $response->headers->removeCookie('persistent');
