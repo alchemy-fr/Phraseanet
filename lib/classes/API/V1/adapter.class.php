@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Controller\SearchEngineRequest;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
@@ -836,7 +837,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $ret['results'] = array('records' => array(), 'stories' => array());
 
-        foreach ($search_result->get_datas()->get_elements() as $record) {
+        foreach ($search_result->getResults() as $record) {
             if ($record->is_grouping()) {
                 $ret['results']['stories'][] = $this->list_story($record);
             } else {
@@ -868,7 +869,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         list($ret, $search_result) = $this->prepare_search_request($request);
 
-        foreach ($search_result->get_datas()->get_elements() as $record) {
+        foreach ($search_result->getResults() as $record) {
             $ret['results'][] = $this->list_record($record);
         }
 
@@ -893,6 +894,8 @@ class API_V1_adapter extends API_V1_Abstract
             ) ?
             $request->get('record_type') : '';
 
+        $offsetStart = (int) ($request->get('offset_start') ? : 0);
+        
         $params = array(
             'fields' => is_array($request->get('fields')) ? $request->get('fields') : array(),
             'status' => is_array($request->get('status')) ? $request->get('status') : array(),
@@ -907,7 +910,7 @@ class API_V1_adapter extends API_V1_Abstract
             'stemme'       => $request->get('stemme') ? : '',
             'per_page'     => $request->get('per_page') ? : 10,
             'query'        => $request->get('query') ? : '',
-            'offset_start' => (int) ($request->get('offset_start') ? : 0),
+            'offset_start' => $offsetStart,
         );
 
         if (is_array($request->get('bases')) === false) {
@@ -1002,7 +1005,7 @@ class API_V1_adapter extends API_V1_Abstract
         $options->setDateFields($databoxDateFields);
 
         $options->setSort($params['sort'], $params['ord']);
-        $options->useStemming($params['stemme']);
+        $options->setStemming($params['stemme']);
 
         $perPage = (int) $params['per_page'];
 
