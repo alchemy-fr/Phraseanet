@@ -977,8 +977,8 @@ class databox extends base
 
         $dom = new DOMDocument();
 
-        if ($thesaurus && false !== $tmp = $dom->loadXML($thesaurus)) {
-            self::$_dom_thesaurus[$sbas_id] = $tmp;
+        if ($thesaurus && false !== ($dom->loadXML($thesaurus))) {
+            self::$_dom_thesaurus[$sbas_id] = $dom;
         } else {
             self::$_dom_thesaurus[$sbas_id] = false;
             unset($dom);
