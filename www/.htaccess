@@ -1,9 +1,9 @@
 <IfModule mod_rewrite.c>
   RewriteEngine on
-  RewriteRule ^include/minify/([a-z]=.*)          /include/minify/index.php?$1  [L,NE]
+  RewriteRule ^include/minify/([a-z]=.*)          /include/minify/index.ph?$1  [L,NE]
 
-  RewriteRule ^lightbox/.?$                     /index.php [L]
-  RewriteRule ^admin/.?$                        /index.php [L]
+  RewriteRule ^lightbox/.*$                     /index.php [L]
+  RewriteRule ^admin/.*$                        /index.php [L]
   RewriteRule ^permalink/.*$                    /index.php [L]
   RewriteRule ^datafiles/.*$                    /index.php [L]
   RewriteRule ^robots.txt$                      /index.php [L]
@@ -25,7 +25,7 @@
   RewriteRule ^prod/push/.*$                    /index.php [L]
   RewriteRule ^prod/printer/.*$                 /index.php [L]
   RewriteRule ^prod/story/.*$                   /index.php [L]
-  RewriteRule ^prod/TOU/.?$                     /index.php [L]
+  RewriteRule ^prod/TOU/.*$                     /index.php [L]
   RewriteRule ^prod/WorkZone/.*$                /index.php [L]
   RewriteRule ^prod/language/.*$                /index.php [L]
   RewriteRule ^prod/tools/.*$                   /index.php [L]
