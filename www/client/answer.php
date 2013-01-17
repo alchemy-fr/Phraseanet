@@ -81,8 +81,7 @@ $mod_xy = $mod_col * $mod_row;
 
 $tbases = array();
 
-$searchRequest = SearchEngineOptions::fromRequest($app, $request);
-$options = $searchRequest->getOptions();
+$options = SearchEngineOptions::fromRequest($app, $request);
 
 $form = $options->serialize();
 

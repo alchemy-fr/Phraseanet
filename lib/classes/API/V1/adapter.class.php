@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Controller\SearchEngineRequest;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
@@ -882,8 +882,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     private function prepare_search_request(Request $request)
     {
-        $SearchRequest = SearchEngineRequest::fromRequest($this->app, $request);
-        $options = $SearchRequest->getOptions();
+        $options = SearchEngineOptions::fromRequest($this->app, $request);
 
         $offsetStart = (int) ($request->get('offset_start') ? : 0);
         $perPage = (int)  $request->get('per_page') ? : 10;

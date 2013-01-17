@@ -100,8 +100,7 @@ class Query implements ControllerProviderInterface
 
         $json = array();
 
-        $SearchRequest = SearchEngineOptions::fromRequest($app, $request);
-        $options = $SearchRequest->getOptions();
+        $options = SearchEngineOptions::fromRequest($app, $request);
 
         $form = $options->serialize();
 

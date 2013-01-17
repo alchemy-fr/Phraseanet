@@ -8,12 +8,5 @@ sudo mysql -e 'create database ab_test;create database db_test; create database 
 sudo mysql -e "GRANT ALL PRIVILEGES ON ab_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
 sudo mysql -e "GRANT ALL PRIVILEGES ON db_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
 
-if [ "$1" = "faac" ]
-then
-    sudo mysql -e "source `pwd`/hudson/fixtures-faac.sql"
-else
-    echo "Loading fixture with libvo_aacenc, use 'build-env.sh faac' to load with faac library"
-    sudo mysql -e "source `pwd`/hudson/fixtures.sql"
-fi
-
+sudo mysql -e "source `pwd`/hudson/fixtures.sql"
 sudo mysql -e 'SET @@global.sql_mode= "";'
