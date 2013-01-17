@@ -32,7 +32,6 @@ class QueryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testQueryAnswerTrain()
     {
-        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
         $auth = new \Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
         self::$DI['record_24'];

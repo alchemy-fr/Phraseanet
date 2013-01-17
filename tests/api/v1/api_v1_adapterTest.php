@@ -160,10 +160,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearch_recordsWithRecords()
     {
-        /**
-         * to remove after having merge SearchEngine PR
-         */
-        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
         $auth = new \Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
 
@@ -192,10 +188,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearch_recordsWithStories()
     {
-        /**
-         * to remove after having merge SearchEngine PR
-         */
-        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
         $auth = new \Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
 
@@ -229,10 +221,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearchWithStories()
     {
-        /**
-         * to remove after having merge SearchEngine PR
-         */
-        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
         $auth = new \Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
 
@@ -269,10 +257,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearchWithRecords()
     {
-        /**
-         * to remove after having merge SearchEngine PR
-         */
-        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
         $auth = new \Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
 
