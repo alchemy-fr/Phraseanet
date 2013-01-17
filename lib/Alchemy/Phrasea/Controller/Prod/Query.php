@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Alchemy\Phrasea\Controller\SearchEngineRequest;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -100,8 +99,8 @@ class Query implements ControllerProviderInterface
         $mod = $app['phraseanet.user']->getPrefs('view');
 
         $json = array();
-        
-        $SearchRequest = SearchEngineRequest::fromRequest($app, $request);
+
+        $SearchRequest = SearchEngineOptions::fromRequest($app, $request);
         $options = $SearchRequest->getOptions();
 
         $form = $options->serialize();
@@ -129,7 +128,7 @@ class Query implements ControllerProviderInterface
 
             $app['phraseanet.SE.logger']->log($databox, $result->getQuery(), $result->getTotal(), $colls);
         }
-        
+
         $proposals = $firstPage ? $result->getProposals() : false;
 
         $npages = $result->getTotalPages($perPage);

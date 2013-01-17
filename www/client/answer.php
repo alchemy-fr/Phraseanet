@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Controller\SearchEngineRequest;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -82,7 +81,7 @@ $mod_xy = $mod_col * $mod_row;
 
 $tbases = array();
 
-$searchRequest = SearchEngineRequest::fromRequest($app, $request);
+$searchRequest = SearchEngineOptions::fromRequest($app, $request);
 $options = $searchRequest->getOptions();
 
 $form = $options->serialize();
@@ -371,7 +370,7 @@ if (count($result->getResults()) > 0) {
                                             <?php
                                         }
                                     } catch (Exception $e) {
-                                        
+
                                     }
                                 }
                                 ?></div><?php

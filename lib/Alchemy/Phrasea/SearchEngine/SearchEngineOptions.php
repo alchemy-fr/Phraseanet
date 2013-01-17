@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 class SearchEngineOptions
 {
@@ -144,7 +145,7 @@ class SearchEngineOptions
 
     /**
      * Allows business fields query on the given collections
-     * 
+     *
      * @param array $collection An array of collection
      * @return SearchEngineOptions
      */
@@ -157,7 +158,7 @@ class SearchEngineOptions
 
     /**
      * Reset business fields settings
-     * 
+     *
      * @return SearchEngineOptions
      */
     public function disallowBusinessFields()
@@ -168,9 +169,9 @@ class SearchEngineOptions
     }
 
     /**
-     * Returns an array of collection on which business fields are allowed to 
+     * Returns an array of collection on which business fields are allowed to
      * search on
-     * 
+     *
      * @return array An array of collection
      */
     public function getBusinessFieldsOn()
@@ -199,7 +200,7 @@ class SearchEngineOptions
     }
 
     /**
-     * Tells whether to use stemming or not 
+     * Tells whether to use stemming or not
      *
      * @param  boolean              $boolean
      * @return SearchEngineOptions
@@ -254,7 +255,7 @@ class SearchEngineOptions
 
     /**
      * Set the collections where to search for
-     * 
+     *
      * @param array $collections An array of collection
      * @return SearchEngineOptions
      */
@@ -276,9 +277,9 @@ class SearchEngineOptions
     }
 
     /**
-     * Returns an array containing all the databoxes where the search will 
+     * Returns an array containing all the databoxes where the search will
      * happen
-     * 
+     *
      * @return array
      */
     public function getDataboxes()
@@ -598,4 +599,112 @@ class SearchEngineOptions
         return $options;
     }
 
+    /**
+     * Creates options based on a Symfony Request object
+     *
+     * @param Application $app
+     * @param Request $request
+     *
+     * @return SearchEngineOptions
+     */
+    public static function fromRequest(Application $app, Request $request)
+    {
+        $options = new static();
+
+        $options->disallowBusinessFields();
+        $options->setLocale($app['locale.I18n']);
+
+
+        if (is_array($request->get('bases'))) {
+            $bas = array_map(function($base_id) use ($app) {
+                return \collection::get_from_base_id($app, $base_id);
+            }, $request->get('bases'));
+        } elseif (!$app->isAuthenticated()) {
+            $bas = $app->getOpenCollections();
+        } else {
+            $bas = $app['phraseanet.user']->ACL()->get_granted_base();
+        }
+
+        $bas = array_filter($bas, function($collection) use ($app) {
+            if ($app->isAuthenticated()) {
+                return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+            } else {
+                return in_array($collection, $app->getOpenCollections());
+            }
+        });
+
+        $databoxes = array();
+
+        foreach ($bas as $collection) {
+            if (!isset($databoxes[$collection->get_sbas_id()])) {
+                $databoxes[$collection->get_sbas_id()] = $collection->get_databox();
+            }
+        }
+
+        if ($app->isAuthenticated() && $app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
+            $BF = array_filter($bas, function($collection) use ($app) {
+                return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+            });
+
+            $options->allowBusinessFieldsOn($BF);
+        }
+
+        $status = is_array($request->get('status')) ? $request->get('status') : array();
+        $fields = is_array($request->get('fields')) ? $request->get('fields') : array();
+
+        $databoxFields = array();
+
+        foreach ($databoxes as $databox) {
+            foreach ($fields as $field) {
+                try {
+                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
+                } catch (\Exception $e) {
+                    continue;
+                }
+                if ($databoxField) {
+                    $databoxFields[] = $databoxField;
+                }
+            }
+        }
+
+        $options->setFields($databoxFields);
+        $options->setStatus($status);
+        
+        $options->onCollections($bas);
+
+        $options->setSearchType($request->get('search_type'));
+        $options->setRecordType($request->get('record_type'));
+
+        $min_date = $max_date = null;
+        if ($request->get('date_min')) {
+            $min_date = \DateTime::createFromFormat('Y/m/d H:i:s', $request->get('date_min') . ' 00:00:00');
+        }
+        if ($request->get('date_max')) {
+            $max_date = \DateTime::createFromFormat('Y/m/d H:i:s', $request->get('date_max') . ' 23:59:59');
+        }
+
+        $options->setMinDate($min_date);
+        $options->setMaxDate($max_date);
+
+        $databoxDateFields = array();
+
+        foreach ($databoxes as $databox) {
+            foreach (explode('|', $request->get('date_field')) as $field) {
+                try {
+                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
+                } catch (\Exception $e) {
+                    continue;
+                }
+                if ($databoxField) {
+                    $databoxDateFields[] = $databoxField;
+                }
+            }
+        }
+
+        $options->setDateFields($databoxDateFields);
+        $options->setSort($request->get('sort'), $request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
+        $options->setStemming((Boolean) $request->get('stemme'));
+
+        return $options;
+    }
 }

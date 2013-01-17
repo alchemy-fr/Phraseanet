@@ -382,6 +382,16 @@ class Application extends SilexApplication
     }
 
     /**
+     * Returns an an array of available collection for offline queries
+     *
+     * @return array
+     */
+    public function getOpenCollections()
+    {
+        return array();
+    }
+
+    /**
      * Open user session
      *
      * @param \Session_Authentication_Interface $auth
