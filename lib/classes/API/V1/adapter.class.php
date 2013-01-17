@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Controller\SearchEngineRequest;
-use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
@@ -330,7 +329,7 @@ class API_V1_adapter extends API_V1_Abstract
         } catch (\RuntimeException $e) {
             $SEStatus = array('error' => $e->getMessage());
         }
-        
+
         return array(
             'global_values' => array(
                 'serverName'  => $app['phraseanet.registry']->get('GV_ServerName'),
@@ -883,136 +882,18 @@ class API_V1_adapter extends API_V1_Abstract
 
     private function prepare_search_request(Request $request)
     {
-        $search_type = ($request->get('search_type')
-            && in_array($request->get('search_type'), array(0, 1))) ?
-            $request->get('search_type') : 0;
-
-        $record_type = ($request->get('record_type')
-            && in_array(
-                $request->get('record_type')
-                , array('audio', 'video', 'image', 'document', 'flash'))
-            ) ?
-            $request->get('record_type') : '';
+        $SearchRequest = SearchEngineRequest::fromRequest($this->app, $request);
+        $options = $SearchRequest->getOptions();
 
         $offsetStart = (int) ($request->get('offset_start') ? : 0);
-        
-        $params = array(
-            'fields' => is_array($request->get('fields')) ? $request->get('fields') : array(),
-            'status' => is_array($request->get('status')) ? $request->get('status') : array(),
-            'bases' => is_array($request->get('bases')) ? $request->get('bases') : null,
-            'search_type'  => $search_type,
-            'recordtype'   => $record_type,
-            'datemin'      => $request->get('date_min') ? : '',
-            'datemax'      => $request->get('date_max') ? : '',
-            'datefield'    => $request->get('date_field') ? : '',
-            'sort'         => $request->get('sort') ? : '',
-            'ord'          => $request->get('ord') ? : '',
-            'stemme'       => $request->get('stemme') ? : '',
-            'per_page'     => $request->get('per_page') ? : 10,
-            'query'        => $request->get('query') ? : '',
-            'offset_start' => $offsetStart,
-        );
+        $perPage = (int)  $request->get('per_page') ? : 10;
 
-        if (is_array($request->get('bases')) === false) {
-            $params['bases'] = array();
-            foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
-                foreach ($databox->get_collections() as $collection)
-                    $params['bases'][] = $collection->get_base_id();
-            }
-        }
-
-        $options = new SearchEngineOptions();
-        $options->disallowBusinessFields();
-
-        $bas = $this->app['phraseanet.user']->ACL()->get_granted_base();
-
-        $app = $this->app;
-
-        if (is_array($params['bases'])) {
-            $bas = array_map(function($base_id) use ($app) {
-                return \collection::get_from_base_id($app, $base_id);
-            }, $params['bases']);
-        }
-
-        $databoxes = array();
-
-        foreach ($bas as $collection) {
-            if (!isset($databoxes[$collection->get_sbas_id()])) {
-                $databoxes[$collection->get_sbas_id()] = $collection->get_databox();
-            }
-        }
-
-        if ($this->app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
-            $BF = array_filter($bas, function($collection) use ($app) {
-                return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
-            });
-
-            $options->allowBusinessFieldsOn($BF);
-        }
-
-        $options->onCollections($bas);
-
-        $status = is_array($request->request->get('status')) ? $request->request->get('status') : array();
-        $fields = is_array($request->request->get('fields')) ? $request->request->get('fields') : array();
-
-        $databoxFields = array();
-
-        foreach ($databoxes as $databox) {
-            foreach ($fields as $field) {
-                try {
-                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
-                } catch (\Exception $e) {
-                    continue;
-                }
-                if ($databoxField) {
-                    $databoxFields[] = $databoxField;
-                }
-            }
-        }
-
-        $options->setFields($databoxFields);
-        $options->setStatus($status);
-
-        $options->setSearchType($params['search_type']);
-        $options->setRecordType($params['recordtype']);
-
-        $min_date = $max_date = null;
-        if ($params['datemin']) {
-            $min_date = \DateTime::createFromFormat('Y/m/d H:i:s', $params['datemin'] . ' 00:00:00');
-        }
-        if ($params['datemax']) {
-            $max_date = \DateTime::createFromFormat('Y/m/d H:i:s', $params['datemax'] . ' 23:59:59');
-        }
-
-        $options->setMinDate($min_date);
-        $options->setMaxDate($max_date);
-
-        $databoxDateFields = array();
-
-        foreach ($databoxes as $databox) {
-            foreach (explode('|', $request->request->get('datefield')) as $field) {
-                try {
-                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
-                } catch (\Exception $e) {
-                    continue;
-                }
-                if ($databoxField) {
-                    $databoxDateFields[] = $databoxField;
-                }
-            }
-        }
-
-        $options->setDateFields($databoxDateFields);
-
-        $options->setSort($params['sort'], $params['ord']);
-        $options->setStemming($params['stemme']);
-
-        $perPage = (int) $params['per_page'];
+        $query = (string) $request->request->get('query');
 
         $this->app['phraseanet.SE']->setOptions($options);
         $this->app['phraseanet.SE']->resetCache();
 
-        $search_result = $this->app['phraseanet.SE']->query($request->get('query'), $offsetStart, $perPage);
+        $search_result = $this->app['phraseanet.SE']->query($query, $offsetStart, $perPage);
 
         foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function(\collection $collection) {
@@ -1610,7 +1491,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function remove_publications(Request $request, $publication_id)
     {
-        
+
     }
 
     /**
@@ -1782,7 +1663,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function search_users(Request $request)
     {
-        
+
     }
 
     /**
@@ -1792,7 +1673,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_user_acces(Request $request, $usr_id)
     {
-        
+
     }
 
     /**
@@ -1801,7 +1682,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function add_user(Request $request)
     {
-        
+
     }
 
     /**
