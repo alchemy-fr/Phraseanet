@@ -1,5 +1,7 @@
 <?php
 
+namespace Alchemy\Phrasea\Controller\Admin;
+
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 
