@@ -930,8 +930,8 @@ class API_V1_adapter extends API_V1_Abstract
 
         if (is_array($params['bases'])) {
             $bas = array_map(function($base_id) use ($app) {
-                    return \collection::get_from_base_id($app, $base_id);
-                }, $params['bases']);
+                return \collection::get_from_base_id($app, $base_id);
+            }, $params['bases']);
         }
 
         $databoxes = array();
@@ -944,8 +944,8 @@ class API_V1_adapter extends API_V1_Abstract
 
         if ($this->app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
             $BF = array_filter($bas, function($collection) use ($app) {
-                    return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
-                });
+                return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+            });
 
             $options->allowBusinessFieldsOn($BF);
         }
