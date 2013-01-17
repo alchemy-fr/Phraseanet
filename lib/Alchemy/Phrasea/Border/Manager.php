@@ -340,8 +340,7 @@ class Manager
                     }
                     break;
                 case AttributeInterface::NAME_STATUS:
-
-                    $element->set_binary_status($element->get_status() | $attribute->getValue());
+                    $element->set_binary_status(decbin(bindec($element->get_status()) | bindec($attribute->getValue())));
 
                     break;
                 case AttributeInterface::NAME_STORY:

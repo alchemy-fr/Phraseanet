@@ -41,7 +41,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
         $params = array(
-            ':ses_id' => self::$DI['app']['session']->get('phrasea_session_id')
+            ':ses_id' => self::$DI['app']['session']->get('session_id')
             , ':usr_id' => self::$DI['app']['phraseanet.user']->get_id()
             , ':site'   => self::$DI['app']['phraseanet.registry']->get('GV_sit')
         );
@@ -52,7 +52,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $this->assertEquals($this->object->get_id(), $row['id']);
         $log_id = $this->object->get_id();
-        $ses_id = self::$DI['app']['session']->get('phrasea_session_id');
+        $ses_id = self::$DI['app']['session']->get('session_id');
         $usr_id = self::$DI['app']['phraseanet.user']->get_id();
 
         self::$DI['app']->closeAccount();

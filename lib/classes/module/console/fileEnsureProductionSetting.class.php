@@ -38,6 +38,7 @@ class module_console_fileEnsureProductionSetting extends Command
         , 'checkDatabaseScope'
         , 'checkTeamplateEngineService'
         , 'checkOrmService'
+        , 'checkSearchEngineService'
         , 'checkCacheService'
         , 'checkOpcodeCacheService'
         , 'checkBorderService'
@@ -97,6 +98,9 @@ class module_console_fileEnsureProductionSetting extends Command
                     break;
                 case 'checkOrmService' :
                     $display = "ORM";
+                    break;
+                case 'checkSearchEngineService':
+                    $display = 'Search Engine';
                     break;
                 case 'checkCacheService' :
                     $display = "Cache";
@@ -508,6 +512,22 @@ class module_console_fileEnsureProductionSetting extends Command
         }
 
         return;
+    }
+
+    private function checkSearchEngineService(OutputInterface $output)
+    {
+        $SEName = $this->configuration->getSearchEngine();
+        $configuration = $this->configuration->getService($SEName);
+
+        try {
+            $service = Builder::create($this->container, $configuration);
+            $work_message = '<info>Works !</info>';
+        } catch (\Exception $e) {
+            $work_message = sprintf('<error>Failed : %s !</error>', $e->getMessage());
+            $this->errors ++;
+        }
+
+        $output->writeln(sprintf("\t--> Verify ORM engine <info>%s</info> : %s", $SEName, $work_message));
     }
 
     private function checkOrmService(OutputInterface $output)

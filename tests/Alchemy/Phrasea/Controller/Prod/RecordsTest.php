@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+
 /**
  * @todo Test Alchemy\Phrasea\Controller\Prod\Export::exportMail
  */
@@ -79,15 +81,14 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetRecordDetailResult()
     {
-        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
         $auth = new \Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
         self::$DI['record_24'];
 
-        $options = new \searchEngine_options();
+        $options = new SearchEngineOptions();
         $acl = self::$DI['app']['phraseanet.user']->ACL();
-        $options->set_bases(array_keys($acl->get_granted_base()), $acl);
-        $serializedOptions = serialize($options);
+        $options->onCollections($acl->get_granted_base());
+        $serializedOptions = $options->serialize();
 
         $this->XMLHTTPRequest('POST', '/prod/records/', array(
             'env'            => 'RESULT',
@@ -97,17 +98,17 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         ));
 
         $response = self::$DI['client']->getResponse();
-        $data = json_decode($response->getContent());
+        $data = json_decode($response->getContent(), true);
 
-        $this->assertObjectHasAttribute('desc', $data);
-        $this->assertObjectHasAttribute('html_preview', $data);
-        $this->assertObjectHasAttribute('current', $data);
-        $this->assertObjectHasAttribute('others', $data);
-        $this->assertObjectHasAttribute('history', $data);
-        $this->assertObjectHasAttribute('popularity', $data);
-        $this->assertObjectHasAttribute('tools', $data);
-        $this->assertObjectHasAttribute('pos', $data);
-        $this->assertObjectHasAttribute('title', $data);
+        $this->assertArrayHasKey('desc', $data);
+        $this->assertArrayHasKey('html_preview', $data);
+        $this->assertArrayHasKey('current', $data);
+        $this->assertArrayHasKey('others', $data);
+        $this->assertArrayHasKey('history', $data);
+        $this->assertArrayHasKey('popularity', $data);
+        $this->assertArrayHasKey('tools', $data);
+        $this->assertArrayHasKey('pos', $data);
+        $this->assertArrayHasKey('title', $data);
 
         unset($response, $data);
     }
@@ -117,7 +118,6 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetRecordDetailREG()
     {
-        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
         $auth = new \Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
         self::$DI['record_story_1'];
@@ -149,7 +149,6 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetRecordDetailBasket()
     {
-        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
         $auth = new \Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
         $basket = $this->insertOneBasket();
@@ -193,7 +192,6 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetRecordDetailFeed()
     {
-        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
         $auth = new \Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
 

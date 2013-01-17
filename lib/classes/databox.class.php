@@ -1294,11 +1294,12 @@ class databox extends base
 
         $missing_locale = array();
 
-        $avLanguages = User_Adapter::avLanguages();
-        foreach ($avLanguages as $lang)
-            foreach ($lang as $k => $v)
-                if ( ! isset($TOU[$k]))
-                    $missing_locale[] = $k;
+        $avLanguages = $this->app->getAvailableLanguages();
+        foreach ($avLanguages as $code => $language) {
+            if (!isset($TOU[$code])) {
+                $missing_locale[] = $code;
+            }
+        }
 
         $date_obj = new DateTime();
         $date = $this->app['date-formatter']->format_mysql($date_obj);

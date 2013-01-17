@@ -776,7 +776,7 @@ function CXdblClick(e)
 function doThesSearch(type, sbid, term, field)
 {
   var nck = 0;
-  $('#adv_search input[name="bas[]"]').each(
+  $('#adv_search input[name="bases[]"]').each(
   function(i,n)
   {
       var base_id = $(n).val();

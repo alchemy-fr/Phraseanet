@@ -146,8 +146,6 @@ interface User_Interface
 
     public function get_nonce();
 
-    public static function avLanguages();
-
     public function setPrefs($prop, $value);
 
     public function getPrefs($prop);

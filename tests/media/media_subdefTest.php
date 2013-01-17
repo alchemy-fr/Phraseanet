@@ -1,6 +1,5 @@
 <?php
 
-use Symfony\Component\Filesystem\Filesystem;
 use Alchemy\Phrasea\Border\File;
 
 require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';

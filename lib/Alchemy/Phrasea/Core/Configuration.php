@@ -280,6 +280,11 @@ class Configuration
         return 'Orm\\' . $this->configuration->get('orm');
     }
 
+    public function getSearchEngine()
+    {
+        return 'SearchEngine\\' . $this->configuration->get('search-engine');
+    }
+
     /**
      * Return border service for border-manager
      * @return string

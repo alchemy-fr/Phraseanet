@@ -195,3 +195,13 @@ Border:
             enabled: false
             options:
               mediatypes: [Audio, Document, Flash, Image, Video]
+SearchEngine:
+  phrasea:
+    type: SearchEngine\PhraseaEngine
+  sphinxsearch:
+    type: SearchEngine\SphinxSearch
+    options:
+      host: localhost
+      port: 9306
+      rt_host: localhost
+      rt_port: 9308

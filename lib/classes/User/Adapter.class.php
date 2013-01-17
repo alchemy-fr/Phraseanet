@@ -1380,29 +1380,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return $this;
     }
 
-    public static function avLanguages()
-    {
-        $lngs = array();
-
-        $path = __DIR__ . "/../../../locale";
-        if ($hdir = opendir($path)) {
-            while (false !== ($file = readdir($hdir))) {
-                if (substr($file, 0, 1) == "." || strtolower($file) == "cvs")
-                    continue;
-                if (is_dir($path . "/" . $file) && strpos($file, '_') == 2 && strlen($file) == 5) {
-                    if (!array_key_exists($file, self::$locales))
-                        continue;
-                    $supFile = explode('_', $file);
-                    if (!isset($lngs[$supFile[0]]))
-                        $lngs[$supFile[0]] = array();
-                    $lngs[$supFile[0]][$file] = array('name'     => self::$locales[$file], 'selected' => false);
-                }
-            }
-        }
-
-        return $lngs;
-    }
-
     public static function get_wrong_email_users(Application $app)
     {
 

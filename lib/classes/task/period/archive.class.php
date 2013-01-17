@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
 use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
 use Alchemy\Phrasea\Border\MetadataBag;
@@ -1632,7 +1633,8 @@ class task_period_archive extends task_abstract
 
         $story->set_binary_status(databox_status::operation_or($this->dependencyContainer, $stat0, $stat1));
         $story->rebuild_subdefs();
-        $story->reindex();
+
+        $this->dependencyContainer['phraseanet.SE']->addStory($story);
 
         $media = $databox = null;
 
@@ -1686,7 +1688,7 @@ class task_period_archive extends task_abstract
                 $status = databox_status::operation_or($this->dependencyContainer, $status, $captionStatus);
             }
         }
-        $file = new \Alchemy\Phrasea\Border\File($this->dependencyContainer, $media, $collection);
+        $file = new File($this->dependencyContainer, $media, $collection);
 
         $file->addAttribute(new BorderAttribute\Status($this->dependencyContainer, $status));
 

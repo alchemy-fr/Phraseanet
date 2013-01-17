@@ -615,7 +615,7 @@ class task_period_outofdate extends task_abstract
             $sqlset[$i] = '';
             $x = 'status' . $i;
             @list($tostat, $statval) = explode('_', (string) ($this->sxTaskSettings->{$x}));
-            if ($tostat >= 4 && $tostat <= 63) {
+            if ($tostat >= 4 && $tostat < 32) {
                 if ($statval == '0') {
                     $sqlset[$i] = 'status=status & ~(1<<' . $tostat . ')';
                     $sqlwhere[$i] .= '(status & (1<<' . $tostat . ') = 0)';

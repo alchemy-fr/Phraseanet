@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
 /**
  *
@@ -232,24 +233,24 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     /**
      *
-     * @param  string               $highlight
-     * @param  array                $grep_fields
-     * @param  searchEngine_adapter $searchEngine
+     * @param  string                $highlight
+     * @param  array                 $grep_fields
+     * @param  SearchEngineInterface $searchEngine
      * @return array
      */
-    public function get_highlight_fields($highlight = '', Array $grep_fields = null, searchEngine_adapter $searchEngine = null, $includeBusiness = false)
+    public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false)
     {
         return $this->highlight_fields($highlight, $grep_fields, $searchEngine, $includeBusiness);
     }
 
     /**
      * @todo move this fun in caption_field object
-     * @param  string               $highlight
-     * @param  array                $grep_fields
-     * @param  searchEngine_adapter $searchEngine
+     * @param  string                $highlight
+     * @param  array                 $grep_fields
+     * @param  SearchEngineInterface $searchEngine
      * @return array
      */
-    protected function highlight_fields($highlight, Array $grep_fields = null, searchEngine_adapter $searchEngine = null, $includeBusiness = false)
+    protected function highlight_fields($highlight, Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false)
     {
         $fields = array();
 
@@ -267,8 +268,8 @@ class caption_record implements caption_interface, cache_cacheableInterface
             );
         }
 
-        if ($searchEngine instanceof searchEngine_adapter) {
-            $ret = $searchEngine->build_excerpt($highlight, $fields, $this->record);
+        if ($searchEngine instanceof SearchEngineInterface) {
+            $ret = $searchEngine->excerpt($highlight, $fields, $this->record);
 
             if ($ret) {
                 $n = -1;

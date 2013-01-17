@@ -1,10 +1,10 @@
 {% import 'prod/results/record.html.twig' as record_format %}
 
-{% if results.get_error() %}
-<div>{{results.get_error()}}</div>
+{% if results.getError() %}
+<div>{{results.getError()}}</div>
 {% else %}
-  {% if results.get_warning() %}
-    <div>{{results.get_warning()}}</div>
+  {% if results.getWarning() %}
+    <div>{{results.getWarning()}}</div>
   {% endif %}
 
   {% if suggestions %}

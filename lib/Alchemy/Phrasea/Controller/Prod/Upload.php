@@ -214,7 +214,7 @@ class Upload implements ControllerProviderInterface
                 $postStatus = $postStatus[$collection->get_base_id()];
 
                 $status = '';
-                foreach (range(0, 63) as $i) {
+                foreach (range(0, 31) as $i) {
                     $status .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : '0';
                 }
                 $packageFile->addAttribute(new Status($app, strrev($status)));
@@ -249,6 +249,7 @@ class Upload implements ControllerProviderInterface
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';
                 $message = _('The record was successfully created');
+                $app['phraseanet.SE']->addRecord($elementCreated);
             } else {
                 $params = array('lazaret_file' => $elementCreated);
 

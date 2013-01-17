@@ -78,8 +78,9 @@ if ($parm["dlg"]) {
         <div class="menu" id="flagsMenu" style="z-index:50">
 <?php
 // on liste tous les drapeaux
-$tlng = User_Adapter::avLanguages();
-foreach ($tlng as $lng_code => $lng) {
+foreach ($app->getAvailableLanguages() as $lng_code => $lng) {
+    $lng_code = explode('_', $lng_code);
+    $lng_code = $lng_code[0];
     print("<a id='flagMenu_$lng_code' href='javascript:void(0)' class=''><img src='/skins/lng/" . $lng_code . "_flag_18.gif' />$lng_code</a>");
 }
 ?>

@@ -351,17 +351,17 @@ class ACL implements cache_cacheableInterface
              * apply sb is substractive
              */
             $mand = substr(
-                str_repeat('0', 64)
+                str_repeat('0', 32)
                 . databox_status::dec2bin($this->app, $mask_and)
-                , -64
+                , -32
             );
             $mxor = substr(
-                str_repeat('0', 64)
+                str_repeat('0', 32)
                 . databox_status::dec2bin($this->app, $mask_xor)
-                , -64
+                , -32
             );
             $m = array('aa' => '', 'ao' => '', 'xa' => '', 'xo' => '');
-            for ($i = 0; $i < 64; $i++) {
+            for ($i = 0; $i < 32; $i++) {
                 $ax = $mand[$i] . $mxor[$i];
 
                 foreach ($m as $k => $v) {
@@ -1502,8 +1502,9 @@ class ACL implements cache_cacheableInterface
 
         foreach ($datas as $name => $f) {
             $vhex[$name] = "0x";
-            while (strlen($datas[$name]) < 64)
+            while (strlen($datas[$name]) < 32) {
                 $datas[$name] = "0" . $datas[$name];
+            }
         }
         foreach ($datas as $name => $f) {
             while (strlen($datas[$name]) > 0) {

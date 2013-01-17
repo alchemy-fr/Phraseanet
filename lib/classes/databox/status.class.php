@@ -82,7 +82,7 @@ class databox_status
 
             foreach ($sxe->statbits->bit as $sb) {
                 $bit = (int) ($sb["n"]);
-                if ($bit < 4 && $bit > 63)
+                if ($bit < 4 && $bit > 31)
                     continue;
 
                 $this->status[$bit]["name"] = (string) ($sb);
@@ -518,7 +518,7 @@ class databox_status
         $status = (string) $status;
 
         if ( ! ctype_digit($status)) {
-            throw new \Exception('Non-decimal value');
+            throw new \Exception(sprintf('`%s`is non-decimal value', $status));
         }
 
         $conn = connection::getPDOConnection($app);

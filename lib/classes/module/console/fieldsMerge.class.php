@@ -201,6 +201,9 @@ class module_console_fieldsMerge extends Command
                             'value'          => $data,
                         )), true);
                 }
+
+                $this->getService('phraseanet.SE')->updateRecord($record);
+
                 unset($record);
             }
 

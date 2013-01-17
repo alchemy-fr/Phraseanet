@@ -329,6 +329,11 @@ class caption_field implements cache_cacheableInterface
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
                     $record->set_metadatas(array());
+
+                    /**
+                     * TODO NEUTRON add App
+                     */
+                    $app['phraseanet.SE']->updateRecord($record);
                     unset($record);
                 } catch (Exception $e) {
 
@@ -380,6 +385,8 @@ class caption_field implements cache_cacheableInterface
                     $caption_field = new caption_field($app, $databox_field, $record);
                     $caption_field->delete();
                     $record->set_metadatas(array());
+
+                    $app['phraseanet.SE']->updateRecord($record);
                     unset($caption_field);
                     unset($record);
                 } catch (Exception $e) {

@@ -83,7 +83,7 @@ class Setup implements ControllerProviderInterface
      */
     public function getGlobals(Application $app, Request $request)
     {
-        require_once __DIR__ . "/../../../../conf.d/_GV_template.inc";
+        $GV = require_once __DIR__ . "/../../../../conf.d/_GV_template.inc";
 
         if (null !== $update = $request->query->get('update')) {
             if (!!$update) {
@@ -110,10 +110,14 @@ class Setup implements ControllerProviderInterface
     public function postGlobals(Application $app, Request $request)
     {
         if (\setup::create_global_values($app, $request->request->all())) {
-            return $app->redirect('/admin/globals/?success=1');
+            return $app->redirect($app['url_generator']->generate('setup_display_globals', array(
+                'success' => 1
+            )));
         }
 
-        return $app->redirect('/admin/globals/?success=0');
+        return $app->redirect($app['url_generator']->generate('setup_display_globals', array(
+            'success' => 0
+        )));
     }
 
     /**

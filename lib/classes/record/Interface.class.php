@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\Media\MediaInterface;
 use Monolog\Logger;
@@ -79,7 +80,7 @@ interface record_Interface
 
     public function get_original_name();
 
-    public function get_title($highlight = false, searchEngine_adapter $searchEngine = null);
+    public function get_title($highlight = false, SearchEngineInterface $searchEngine = null);
 
     public function get_preview();
 

@@ -1,0 +1,16 @@
+<h1>{% trans 'Phrasea search-engine configuration' %}</h1>
+
+<form method="post" action="{{ path('admin_searchengine_post') }}">
+    
+    <div>{% trans 'Date fields available for search' %}</div>
+    {% for field in date_fields %}
+    <input type="checkbox" name="date_fields[]" value="{{ field }}" {% if field in configuration['date_fields'] %}checked="checked"{% endif %} > {{ field }}
+    {% endfor %}
+    <div>{% trans 'Default sort' %}</div>
+    <select name="default_sort">
+        {% for sort, sort_name in available_sort %}
+        <option value="{{ sort }}" {%if configuration['default_sort'] == sort %}selected="selected"{% endif %}>{{ sort_name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">{% trans 'boutton::valider' %}</button>
+</form>

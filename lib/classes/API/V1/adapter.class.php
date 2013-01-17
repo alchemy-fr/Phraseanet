@@ -9,7 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -322,6 +324,12 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function get_gv_info(Application $app)
     {
+        try {
+            $SEStatus = $app['phraseanet.SE']->getStatus();
+        } catch (\RuntimeException $e) {
+            $SEStatus = array('error' => $e->getMessage());
+        }
+
         return array(
             'global_values' => array(
                 'serverName'  => $app['phraseanet.registry']->get('GV_ServerName'),
@@ -403,17 +411,13 @@ class API_V1_adapter extends API_V1_Abstract
                     'configuration' => array(
                         'defaultQuery'     => $app['phraseanet.registry']->get('GV_defaultQuery'),
                         'defaultQueryType' => $app['phraseanet.registry']->get('GV_defaultQuery_type'),
+                        'minChar'          => $app['phraseanet.registry']->get('GV_min_letters_truncation'),
+                        'sort'             => $app['phraseanet.registry']->get('GV_phrasea_sort'),
                     ),
-                    'sphinx'           => array(
-                        'active'       => $app['phraseanet.registry']->get('GV_sphinx'),
-                        'host'         => $app['phraseanet.registry']->get('GV_sphinx_host'),
-                        'port'         => $app['phraseanet.registry']->get('GV_sphinx_port'),
-                        'realtimeHost' => $app['phraseanet.registry']->get('GV_sphinx_rt_host'),
-                        'realtimePort' => $app['phraseanet.registry']->get('GV_sphinx_rt_port'),
-                    ),
-                    'phrasea'      => array(
-                        'minChar' => $app['phraseanet.registry']->get('GV_min_letters_truncation'),
-                        'sort'    => $app['phraseanet.registry']->get('GV_phrasea_sort'),
+                    'engine'            => array(
+                        'type'          => $app['phraseanet.SE']->getName(),
+                        'status'        => $SEStatus,
+                        'configuration' => $app['phraseanet.SE']->getConfigurationPanel()->getConfiguration(),
                     ),
                 ),
                 'binary'  => array(
@@ -494,7 +498,7 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($app['request'], $this);
 
         $ret = array_merge(
-            $this->get_config_info($app), $this->get_cache_info($app), $this->get_gv_info($app)
+                $this->get_config_info($app), $this->get_cache_info($app), $this->get_gv_info($app)
         );
 
         $result->set_datas($ret);
@@ -531,11 +535,11 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $result->set_datas(
-            array(
-                "collections" => $this->list_databox_collections(
-                    $this->app['phraseanet.appbox']->get_databox($databox_id)
+                array(
+                    "collections" => $this->list_databox_collections(
+                            $this->app['phraseanet.appbox']->get_databox($databox_id)
+                    )
                 )
-            )
         );
 
         return $result;
@@ -554,12 +558,12 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $result->set_datas(
-            array(
-                "status" =>
-                $this->list_databox_status(
-                    $this->app['phraseanet.appbox']->get_databox($databox_id)->get_statusbits()
+                array(
+                    "status" =>
+                    $this->list_databox_status(
+                            $this->app['phraseanet.appbox']->get_databox($databox_id)->get_statusbits()
+                    )
                 )
-            )
         );
 
         return $result;
@@ -578,13 +582,13 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $result->set_datas(
-            array(
-                "document_metadatas" =>
-                $this->list_databox_metadatas_fields(
-                    $this->app['phraseanet.appbox']->get_databox($databox_id)
-                        ->get_meta_structure()
+                array(
+                    "document_metadatas" =>
+                    $this->list_databox_metadatas_fields(
+                            $this->app['phraseanet.appbox']->get_databox($databox_id)
+                                    ->get_meta_structure()
+                    )
                 )
-            )
         );
 
         return $result;
@@ -603,10 +607,10 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $result->set_datas(
-            array(
-                "termsOfUse" =>
-                $this->list_databox_terms($this->app['phraseanet.appbox']->get_databox($databox_id))
-            )
+                array(
+                    "termsOfUse" =>
+                    $this->list_databox_terms($this->app['phraseanet.appbox']->get_databox($databox_id))
+                )
         );
 
         return $result;
@@ -663,7 +667,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $media = $app['mediavorus']->guess($file->getPathname());
 
-        $Package = new Alchemy\Phrasea\Border\File($this->app, $media, $collection, $file->getClientOriginalName());
+        $Package = new File($this->app, $media, $collection, $file->getClientOriginalName());
 
         if ($request->get('status')) {
             $Package->addAttribute(new Status($app, $request->get('status')));
@@ -678,16 +682,16 @@ class API_V1_adapter extends API_V1_Abstract
         $reasons = $output = null;
 
         $callback = function($element, $visa, $code) use (&$reasons, &$output) {
-                if (!$visa->isValid()) {
-                    $reasons = array();
+                    if (!$visa->isValid()) {
+                        $reasons = array();
 
-                    foreach ($visa->getResponses() as $response) {
-                        $reasons[] = $response->getMessage();
+                        foreach ($visa->getResponses() as $response) {
+                            $reasons[] = $response->getMessage();
+                        }
                     }
-                }
 
-                $output = $element;
-            };
+                    $output = $element;
+                };
 
         switch ($request->get('forceBehavior')) {
             case '0' :
@@ -700,7 +704,7 @@ class API_V1_adapter extends API_V1_Abstract
                 $behavior = null;
                 break;
             default:
-                throw new API_V1_exception_badrequest('Invalid forceBehavior value');
+                throw new API_V1_exception_badrequest(sprintf('Invalid forceBehavior value `%s`', $request->get('forceBehavior')));
                 break;
         }
 
@@ -713,6 +717,7 @@ class API_V1_adapter extends API_V1_Abstract
         if ($output instanceof \record_adapter) {
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->get_sbas_id() . '/' . $output->get_record_id() . '/';
+            $app['phraseanet.SE']->addRecord($output);
         }
         if ($output instanceof \Entities\LazaretFile) {
             $ret['entity'] = '1';
@@ -739,7 +744,7 @@ class API_V1_adapter extends API_V1_Abstract
             $lazaretRepository = $app['EM']->getRepository('Entities\LazaretFile');
 
             $lazaretFiles = $lazaretRepository->findPerPage(
-                $baseIds, $offset_start, $per_page
+                    $baseIds, $offset_start, $per_page
             );
         }
 
@@ -831,7 +836,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $ret['results'] = array('records' => array(), 'stories' => array());
 
-        foreach ($search_result->get_datas()->get_elements() as $record) {
+        foreach ($search_result->getResults() as $record) {
             if ($record->is_grouping()) {
                 $ret['results']['stories'][] = $this->list_story($record);
             } else {
@@ -863,7 +868,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         list($ret, $search_result) = $this->prepare_search_request($request);
 
-        foreach ($search_result->get_datas()->get_elements() as $record) {
+        foreach ($search_result->getResults() as $record) {
             $ret['results'][] = $this->list_record($record);
         }
 
@@ -877,99 +882,40 @@ class API_V1_adapter extends API_V1_Abstract
 
     private function prepare_search_request(Request $request)
     {
-        $search_type = ($request->get('search_type')
-            && in_array($request->get('search_type'), array(0, 1))) ?
-            $request->get('search_type') : 0;
+        $options = SearchEngineOptions::fromRequest($this->app, $request);
 
-        $record_type = ($request->get('record_type')
-            && in_array(
-                $request->get('record_type')
-                , array('audio', 'video', 'image', 'document', 'flash'))
-            ) ?
-            $request->get('record_type') : '';
+        $offsetStart = (int) ($request->get('offset_start') ? : 0);
+        $perPage = (int)  $request->get('per_page') ? : 10;
 
-        $params = array(
-            'fields' => is_array($request->get('fields')) ? $request->get('fields') : array(),
-            'status' => is_array($request->get('status')) ? $request->get('status') : array(),
-            'bases' => is_array($request->get('bases')) ? $request->get('bases') : array(),
-            'search_type'  => $search_type,
-            'recordtype'   => $record_type,
-            'datemin'      => $request->get('date_min') ? : '',
-            'datemax'      => $request->get('date_max') ? : '',
-            'datefield'    => $request->get('date_field') ? : '',
-            'sort'         => $request->get('sort') ? : '',
-            'ord'          => $request->get('ord') ? : '',
-            'stemme'       => $request->get('stemme') ? : '',
-            'per_page'     => $request->get('per_page') ? : 10,
-            'query'        => $request->get('query') ? : '',
-            'offset_start' => (int) ($request->get('offset_start') ? : 0),
-        );
+        $query = (string) $request->request->get('query');
 
-        if (is_array($request->get('bases')) === false) {
-            $params['bases'] = array();
-            foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
-                foreach ($databox->get_collections() as $collection)
-                    $params['bases'][] = $collection->get_base_id();
-            }
+        $this->app['phraseanet.SE']->setOptions($options);
+        $this->app['phraseanet.SE']->resetCache();
+
+        $search_result = $this->app['phraseanet.SE']->query($query, $offsetStart, $perPage);
+
+        foreach ($options->getDataboxes() as $databox) {
+            $colls = array_map(function(\collection $collection) {
+                return $collection->get_coll_id();
+            }, array_filter($options->getCollections(), function(\collection $collection) use ($databox) {
+                return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
+            }));
+
+            $this->app['phraseanet.SE.logger']->log($databox, $search_result->getQuery(), $search_result->getTotal(), $colls);
         }
-
-        $options = new searchEngine_options();
-
-        $params['bases'] = is_array($params['bases']) ? $params['bases'] : array_keys($this->app['phraseanet.user']->ACL()->get_granted_base());
-
-        if ($this->app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
-            $options->set_business_fields(array());
-
-            $BF = array();
-
-            foreach ($this->app['phraseanet.user']->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
-                if (count($params['bases']) === 0 || in_array($collection->get_base_id(), $params['bases'])) {
-                    $BF[] = $collection->get_base_id();
-                }
-            }
-            $options->set_business_fields($BF);
-        } else {
-            $options->set_business_fields(array());
-        }
-
-        $options->set_bases($params['bases'], $this->app['phraseanet.user']->ACL());
-
-        if (!is_array($params['fields'])) {
-            $params['fields'] = array();
-        }
-        $options->set_fields($params['fields']);
-        if (!is_array($params['status'])) {
-            $params['status'] = array();
-        }
-        $options->set_status($params['status']);
-        $options->set_search_type($params['search_type']);
-        $options->set_record_type($params['recordtype']);
-        $options->set_min_date($params['datemin']);
-        $options->set_max_date($params['datemax']);
-        $options->set_date_fields(explode('|', $params['datefield']));
-        $options->set_sort($params['sort'], $params['ord']);
-        $options->set_use_stemming($params['stemme']);
-
-        $perPage = (int) $params['per_page'];
-        $search_engine = new searchEngine_adapter($this->app);
-        $search_engine->set_options($options);
-
-        $search_engine->reset_cache();
-
-        $search_result = $search_engine->query_per_offset($params['query'], $params["offset_start"], $perPage);
 
         $ret = array(
-            'offset_start'      => $params["offset_start"],
+            'offset_start'      => $offsetStart,
             'per_page'          => $perPage,
-            'available_results' => $search_result->get_count_available_results(),
-            'total_results'     => $search_result->get_count_total_results(),
-            'error'             => $search_result->get_error(),
-            'warning'           => $search_result->get_warning(),
-            'query_time'        => $search_result->get_query_time(),
-            'search_indexes'    => $search_result->get_search_indexes(),
-            'suggestions'       => $search_result->get_suggestions($this->app['locale.I18n']),
+            'available_results' => $search_result->getAvailable(),
+            'total_results'     => $search_result->getTotal(),
+            'error'             => $search_result->getError(),
+            'warning'           => $search_result->getWarning(),
+            'query_time'        => $search_result->getDuration(),
+            'search_indexes'    => $search_result->getIndexes(),
+            'suggestions'       => $search_result->getSuggestions()->toArray(),
             'results'           => array(),
-            'query'             => $search_engine->get_query(),
+            'query'             => $search_result->getQuery(),
         );
 
         return array($ret, $search_result);
@@ -1027,9 +973,9 @@ class API_V1_adapter extends API_V1_Abstract
         $record = $this->app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
         $result->set_datas(
-            array(
-                "record_metadatas" => $this->list_record_caption($record->get_caption())
-            )
+                array(
+                    "record_metadatas" => $this->list_record_caption($record->get_caption())
+                )
         );
 
         return $result;
@@ -1049,17 +995,17 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $record = $this->app['phraseanet.appbox']
-            ->get_databox($databox_id)
-            ->get_record($record_id);
+                ->get_databox($databox_id)
+                ->get_record($record_id);
 
         $result->set_datas(
-            array(
-                "status" =>
-                $this->list_record_status(
-                    $this->app['phraseanet.appbox']->get_databox($databox_id)
-                    , $record->get_status()
+                array(
+                    "status" =>
+                    $this->list_record_status(
+                            $this->app['phraseanet.appbox']->get_databox($databox_id)
+                            , $record->get_status()
+                    )
                 )
-            )
         );
 
         return $result;
@@ -1170,7 +1116,7 @@ class API_V1_adapter extends API_V1_Abstract
                 throw new API_V1_exception_badrequest();
             }
             foreach ($status as $n => $value) {
-                if ($n > 63 || $n < 4) {
+                if ($n > 31 || $n < 4) {
                     throw new API_V1_exception_badrequest();
                 }
                 if (!in_array($value, array('0', '1'))) {
@@ -1185,10 +1131,13 @@ class API_V1_adapter extends API_V1_Abstract
             $datas = strrev($datas);
 
             $record->set_binary_status($datas);
+
+            $this->app['phraseanet.SE']->updateRecord($record);
+
             $result->set_datas(array(
                 "status" =>
                 $this->list_record_status($databox, $record->get_status())
-                )
+                    )
             );
         } catch (Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
@@ -1217,7 +1166,7 @@ class API_V1_adapter extends API_V1_Abstract
             $record->move_to_collection($collection, $this->app['phraseanet.appbox']);
             $result->set_datas(array("record" => $this->list_record($record)));
         } catch (Exception $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $e->getMessage());
         }
 
         return $result;
@@ -1375,10 +1324,10 @@ class API_V1_adapter extends API_V1_Abstract
         $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['phraseanet.user'], false);
 
         $result->set_datas(
-            array(
-                "basket"          => $this->list_basket($Basket),
-                "basket_elements" => $this->list_basket_content($Basket)
-            )
+                array(
+                    "basket"          => $this->list_basket($Basket),
+                    "basket_elements" => $this->list_basket_content($Basket)
+                )
         );
 
         return $result;
@@ -1880,13 +1829,13 @@ class API_V1_adapter extends API_V1_Abstract
             }
 
             $ret = array_merge(
-                array(
+                    array(
                 'validation_users'     => $users,
                 'expires_on'           => $expires_on_atom,
                 'validation_infos'     => $basket->getValidation()->getValidationString($this->app, $this->app['phraseanet.user']),
                 'validation_confirmed' => $basket->getValidation()->getParticipant($this->app['phraseanet.user'], $this->app)->getIsConfirmed(),
                 'validation_initiator' => $basket->getValidation()->isInitiator($this->app['phraseanet.user']),
-                ), $ret
+                    ), $ret
             );
         }
 
@@ -2134,4 +2083,5 @@ class API_V1_adapter extends API_V1_Abstract
 
         return $ret;
     }
+
 }

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -123,15 +124,12 @@ class Records implements ControllerProviderInterface
 
         // Use $request->get as HTTP method can be POST or GET
         if ('RESULT' == $env = strtoupper($request->get('env', ''))) {
-            if (null === $optionsSerial = $request->get('options_serial')) {
-                $app->abort(400, 'Search engine options are missing');
-            }
-
-            if (false !== $options = unserialize($optionsSerial)) {
-                $searchEngine = new \searchEngine_adapter($app);
-                $searchEngine->set_options($options);
-            } else {
-                $app->abort(400, 'Provided search engine options are not valid');
+            try {
+                $options = SearchEngineOptions::hydrate($app, $request->get('options_serial'));
+                $searchEngine = $app['phraseanet.SE'];
+                $searchEngine->setOptions($options);
+            } catch (\Exception $e) {
+                $app->abort(400, 'Search-engine options are not valid or missing');
             }
         }
 
@@ -144,7 +142,6 @@ class Records implements ControllerProviderInterface
             $env,
             $pos < 0 ? 0 : $pos,
             $request->get('cont', ''),
-            $reloadTrain,
             $searchEngine,
             $query
         );

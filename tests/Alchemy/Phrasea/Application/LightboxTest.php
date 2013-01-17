@@ -30,8 +30,7 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteSlash()
     {
-        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
-        $auth = new Session_Authentication_None(self::$DI['user'], self::$DI['app']['session']->get('phrasea_session_id'));
+        $auth = new Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
 
         $baskets = $this->insertFiveBasket();
