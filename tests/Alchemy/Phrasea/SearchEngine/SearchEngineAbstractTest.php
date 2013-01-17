@@ -69,10 +69,10 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $options->onCollections($databox->get_collections());
 
         $this->options = $options;
-        
+
         self::$searchEngine->setOptions($options);
     }
-    
+
     /**
      * @return SearchEngineOptions
      */
@@ -144,14 +144,14 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $options->setDateFields(array($date_field));
         $options->setMinDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-23 01:01:00'));
         self::$searchEngine->setOptions($options);
-        
+
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(0, $results->getTotal());
-        
+
         $options->setMinDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-20 01:01:00'));
         self::$searchEngine->setOptions($options);
-        
+
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(1, $results->getTotal());
@@ -216,14 +216,14 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $options->setDateFields(array($date_field));
         $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-20 01:01:00'));
         self::$searchEngine->setOptions($options);
-        
+
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(0, $results->getTotal());
-        
+
         $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-23 01:01:00'));
         self::$searchEngine->setOptions($options);
-        
+
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(1, $results->getTotal());
@@ -250,14 +250,14 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $options->setMinDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-18 01:01:00'));
         $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-20 01:01:00'));
         self::$searchEngine->setOptions($options);
-        
+
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(0, $results->getTotal());
-        
+
         $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-22 01:01:00'));
         self::$searchEngine->setOptions($options);
-        
+
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(1, $results->getTotal());
@@ -620,9 +620,6 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $options = $this->getDefaultOptions();
 
         $record = self::$DI['record_24'];
-        $record->set_binary_status('00000');
-
-        $record = self::$records['record_24'];
         $record->set_binary_status('00000');
 
         $options->setStatus(array(4 => array('off' => array($record->get_databox()->get_sbas_id()))));

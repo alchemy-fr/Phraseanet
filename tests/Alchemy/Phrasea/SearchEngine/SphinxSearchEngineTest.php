@@ -28,7 +28,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         self::$config = tempnam(sys_get_temp_dir(), 'tmp_sphinx.conf');
         $configuration = self::$searchEngine->getConfigurationPanel()->getConfiguration();
         $configuration['date_fields'] = array();
-        
+
         foreach($appbox->get_databoxes() as $databox) {
             foreach ($databox->get_meta_structure() as $databox_field) {
                 if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
@@ -37,11 +37,11 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
                 $configuration['date_fields'][] = $databox_field->get_name();
             }
         }
-        
+
         $configuration['date_fields'] = array_unique($configuration['date_fields']);
-        
+
         self::$searchEngine->getConfigurationPanel()->saveConfiguration($configuration);
-        
+
         $configFile = self::$searchEngine->getConfigurationPanel()->generateSphinxConf($appbox->get_databoxes(), $configuration);
 
         file_put_contents(self::$config, $configFile);
@@ -56,14 +56,14 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
         self::$searchd = new Process($searchd . ' -c ' . self::$config);
         self::$searchd->run();
-        
+
         self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 19306, '127.0.0.1', 19308);
     }
-    
+
     public function tearDown()
     {
         self::$searchEngine->removeRecord(self::$DI['record_24']);
-        
+
         parent::tearDown();
     }
 
@@ -126,57 +126,6 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         usleep(500000);
 
         $suggestions = self::$searchEngine->autocomplete('jean');
-        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $suggestions);
-
-        $this->assertGreaterThan(2, count($suggestions));
-
-        foreach ($suggestions as $suggestion) {
-            $this->assertInstanceof('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineSuggestion', $suggestion);
-        }
-    }
-
-    public function testAutocomplete()
-    {
-        $record = self::$DI['record_24'];
-
-        $toupdate = array();
-
-        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
-            try {
-                $values = $record->get_caption()->get_field($field->get_name())->get_values();
-                $value = array_pop($values);
-                $meta_id = $value->getId();
-            } catch (\Exception $e) {
-                $meta_id = null;
-            }
-
-            $toupdate[$field->get_id()] = array(
-                'meta_id'        => $meta_id
-                , 'meta_struct_id' => $field->get_id()
-                , 'value'          => 'jeanne, jeannine, jeannette, jean-pierre et jean claude'
-            );
-            break;
-        }
-
-        $record->set_metadatas($toupdate);
-
-        self::$searchEngine->addRecord($record);
-        $this->updateIndex();
-
-        $binaryFinder = new ExecutableFinder();
-        $indexer = $binaryFinder->find('indexer');
-
-        $process = new Process($indexer . ' --all --rotate -c ' . self::$config);
-        $process->run();
-
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        self::$searchEngine->buildSuggestions($appbox->get_databoxes(), self::$config, 0);
-
-        $process = new Process($indexer . ' --all --rotate -c ' . self::$config);
-        $process->run();
-        usleep(500000);
-
-        $suggestions = self::$searchEngine->autoComplete('jean');
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $suggestions);
 
         $this->assertGreaterThan(2, count($suggestions));
