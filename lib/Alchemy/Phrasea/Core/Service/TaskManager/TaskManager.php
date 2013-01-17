@@ -62,7 +62,7 @@ class TaskManager extends ServiceAbstract
         // send log by mail ?
         if (null !== ($maillogLevel = constant($options['maillog_level']))) {
             if (($adminMail = $registry->get('GV_adminMail')) == '') {
-                throw(new RuntimeException(sprintf(
+                throw(new Alchemy\Phrasea\Exception\RuntimeException(sprintf(
                         "Admininstrator mail must be set to get log by mail."))
                 );
             }
