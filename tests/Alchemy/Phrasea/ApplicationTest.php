@@ -14,24 +14,6 @@ require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class ApplicationTest extends \PhraseanetPHPUnitAbstract
 {
-
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
-    public function testLoad()
-    {
-        /**
-         * Warm up
-         */
-        $app = new Application();
-
-        $start = microtime(true);
-        $app = new Application();
-        $duration = microtime(true) - $start;
-
-        $this->assertLessThan(0.005, $duration);
-    }
-
     /**
      * @covers Alchemy\Phrasea\Application
      */

@@ -129,8 +129,9 @@ if ($nbases > 0) {
     }
 
     $nf = 0;
-    $tlng = User_Adapter::avLanguages();
-    foreach ($tlng as $lng_code => $lng) {
+    foreach (Application::getAvailableLanguages() as $lng_code => $lng) {
+        $lng_code = explode('_', $lng_code);
+        $lng_code = $lng_code[0];
         printf("<tr><td>%s</td>", $nf == 0 ? p4string::MakeString(_('thesaurus:: langue pivot')) /* Langue pivot : */ : "");
         print("<td style=\"text-align:left\"><input type='radio' onclick=\"ckok();return(true);\" value='$lng_code' name='piv'><img src='/skins/lng/" . $lng_code . "_flag_18.gif' />&nbsp;(" . $lng_code . ")</td></tr>\n");
         $nf ++;

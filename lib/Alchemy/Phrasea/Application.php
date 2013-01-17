@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Phrasea\PhraseanetServiceProvider;
+use Alchemy\Phrasea\Core\Event\Subscriber\Logout;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
@@ -20,7 +21,9 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
+use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use FFMpeg\FFMpegServiceProvider;
 use Grom\Silex\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
@@ -126,12 +129,14 @@ class Application extends SilexApplication
         $this->register(new ORMServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
+        $this->register(new SearchEngineServiceProvider());
         $this->register(new SessionServiceProvider(), array(
             'session.test' => $this->getEnvironment() == 'test'
         ));
         $this->register(new TaskManagerServiceProvider());
         $this->register(new UnoconvServiceProvider());
         $this->register(new UrlGeneratorServiceProvider());
+        $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
         $this->register(new XPDFServiceProvider());
 
@@ -195,11 +200,11 @@ class Application extends SilexApplication
 
         $this->setupTwig();
 
-        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initPhrasea'), 256);
         $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 255);
         $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initSession'), 254);
         $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
         $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'disableCookiesIfRequired'), -256);
+        $this['dispatcher']->addSubscriber(new Logout());
 
         $this['locale'] = $this->share(function(Application $app){
             return $app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
@@ -235,15 +240,6 @@ class Application extends SilexApplication
                 return $request;
             }
         }
-    }
-
-    public function initPhrasea(GetResponseEvent $event)
-    {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
-        }
-
-        \phrasea::start($this['phraseanet.configuration']);
     }
 
     public function addUTF8Charset(FilterResponseEvent $event)
@@ -386,6 +382,16 @@ class Application extends SilexApplication
     }
 
     /**
+     * Returns an an array of available collection for offline queries
+     *
+     * @return array
+     */
+    public function getOpenCollections()
+    {
+        return array();
+    }
+
+    /**
      * Open user session
      *
      * @param \Session_Authentication_Interface $auth
@@ -398,17 +404,6 @@ class Application extends SilexApplication
 
         $this['session']->clear();
         $this['session']->set('usr_id', $user->get_id());
-
-        if ($ses_id) {
-            phrasea_close_session($ses_id);
-        }
-
-        if (!phrasea_open_session($this['session']->get('phrasea_session_id'), $user->get_id())) {
-            if (!$ses_id = phrasea_create_session($user->get_id())) {
-                throw new \Exception_InternalServerError('Unable to create phrasea session');
-            }
-            $this['session']->set('phrasea_session_id', $ses_id);
-        }
 
         $session = new \Entities\Session();
         $session->setBrowserName($this['browser']->getBrowser())
@@ -444,10 +439,6 @@ class Application extends SilexApplication
      */
     public function closeAccount()
     {
-        if ($this['session']->has('phrasea_session_id')) {
-            phrasea_close_session($this['session']->get('phrasea_session_id'));
-        }
-
         $this['session']->clear();
         $this->reinitUser();
 

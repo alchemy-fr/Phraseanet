@@ -225,13 +225,11 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      */
     public function set_label($label)
     {
-        $unicode_processor = new unicode();
-
         $label = trim($label);
         while (strpos($label, '  ') !== false)
             $label = str_replace('  ', ' ', $label);
 
-        $this->label = $unicode_processor->remove_nonazAZ09(
+        $this->label = $this->app['unicode']->remove_nonazAZ09(
             str_replace(' ', '-', $label)
         );
 

@@ -15,10 +15,12 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+
+use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\SearchEngine\PhraseaEngineQueryParser;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Alchemy\Phrasea\Command\Command;
 
 class module_console_checkExtension extends Command
 {
@@ -147,7 +149,7 @@ class module_console_checkExtension extends Command
                 $tbases[$kbase]["searchcoll"] = $tcoll;
                 $tbases[$kbase]["mask_xor"] = $tbases[$kbase]["mask_and"] = 0;
 
-                $qp = new searchEngine_adapter_phrasea_queryParser($this->container);
+                $qp = new PhraseaEngineQueryParser($this->container);
                 $treeq = $qp->parsequery($input->getOption('query'));
                 $arrayq = $qp->makequery($treeq);
 

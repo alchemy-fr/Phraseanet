@@ -125,8 +125,6 @@ class module_console_systemExport extends Command
 
         $total = $errors = 0;
 
-        $unicode = new \unicode();
-
         foreach ($this->getService('phraseanet.appbox')->get_databoxes() as $databox) {
             $output->writeln(sprintf("Processing <info>%s</info>", $databox->get_viewname()));
 
@@ -155,7 +153,7 @@ class module_console_systemExport extends Command
             }
 
             $local_export = $export_directory
-                . '/' . $unicode->remove_nonazAZ09($databox->get_viewname(), true, true)
+                . '/' . $this->container['unicode']->remove_nonazAZ09($databox->get_viewname(), true, true)
                 . '/';
 
             $this->getService('filesystem')->mkdir($local_export);
@@ -195,7 +193,7 @@ class module_console_systemExport extends Command
                 }
 
                 if ($sanitize) {
-                    $filename = $unicode->remove_nonazAZ09($record->get_original_name(), true, true, true);
+                    $filename = $this->container['unicode']->remove_nonazAZ09($record->get_original_name(), true, true, true);
                 } else {
                     $filename = $record->get_original_name();
                 }

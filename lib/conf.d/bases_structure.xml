@@ -118,7 +118,7 @@
           </field>
           <field>
             <name>server_coll_id</name>
-            <type>bigint(20)</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
             <default>0</default>
@@ -1076,7 +1076,7 @@
         <fields>
           <field>
             <name>id</name>
-            <type>bigint(11) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra>auto_increment</extra>
             <default></default>
@@ -1211,7 +1211,7 @@
           </field>
           <field>
             <name>mask_and</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(11) unsigned</type>
 
             <null></null>
             <extra></extra>
@@ -1222,7 +1222,7 @@
           <field>
             <name>mask_xor</name>
 
-            <type>bigint(20) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
 
@@ -1512,6 +1512,22 @@
           <field>
             <name>query_time</name>
             <type>DATETIME</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>duration</name>
+            <type>float</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>total</name>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -1887,7 +1903,7 @@
           </field>
           <field>
             <name>sbas_id</name>
-            <type>bigint(11) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -1895,7 +1911,7 @@
           </field>
           <field>
             <name>usr_id</name>
-            <type>bigint(11) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -3525,7 +3541,7 @@
           </field>
           <field>
             <name>ord</name>
-            <type>bigint(11) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
 
@@ -4072,7 +4088,7 @@
           </field>
           <field>
             <name>defaultftpdatasent</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(11) unsigned</type>
 
             <null></null>
             <extra></extra>
@@ -4482,7 +4498,7 @@
           </field>
           <field>
             <name>mask_and</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
             <default>0</default>
@@ -4490,7 +4506,7 @@
           </field>
           <field>
             <name>mask_xor</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
             <default>0</default>
@@ -4739,7 +4755,7 @@
         <fields>
           <field>
             <name>id</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(10) unsigned</type>
             <null></null>
             <extra>auto_increment</extra>
             <default></default>
@@ -4826,7 +4842,7 @@
         <fields>
           <field>
             <name>id</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(10) unsigned</type>
             <null></null>
             <extra>auto_increment</extra>
             <default></default>
@@ -6054,7 +6070,7 @@
           <field>
 
             <name>status</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(10) unsigned</type>
             <null></null>
             <extra></extra>
 

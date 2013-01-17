@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Core\Event\LogoutEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -704,16 +706,12 @@ class Login implements ControllerProviderInterface
      */
     public function logout(PhraseaApplication $app, Request $request)
     {
-        $appRedirect = $request->query->get("app");
+        $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
 
-        /**
-         * Move to middleware
-          if ( ! $this->is_authenticated()) {
-          return;
-          }
-         */
         $app->closeAccount();
-
+        
+        $appRedirect = $request->query->get("app");
+        
         $response = new RedirectResponse("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=%s", ltrim($appRedirect, '/')) : ""));
 
         $response->headers->removeCookie('persistent');
@@ -885,19 +883,6 @@ class Login implements ControllerProviderInterface
                     $auth->set_captcha_challenge($captcha);
                 }
 
-
-                $sql = "SELECT session_id FROM cache
-                    WHERE lastaccess < DATE_SUB(NOW(), INTERVAL 1 MONTH)";
-
-                $stmt = $conn->prepare($sql);
-                $stmt->execute();
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                foreach ($rs as $row) {
-                    phrasea_close_session($row['session_id']);
-                }
-
                 $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
 
                 foreach ($app['EM']
@@ -942,7 +927,7 @@ class Login implements ControllerProviderInterface
                 $user = $auth->signOn();
 
                 /**
-                 * TODO NEUTRON move this to phrasea engine
+                 * @todo move this to phrasea engine
                  */
                 $user->ACL()->inject_rights();
 

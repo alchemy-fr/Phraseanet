@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
+use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Border\File;
 
 class Sha256Test extends \PhraseanetPHPUnitAbstract
@@ -41,7 +42,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
         $session = new \Entities\LazaretSession();
         self::$DI['app']['EM']->persist($session);
 
-        self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
+        self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, Manager::FORCE_RECORD);
 
         $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array(self::$DI['app'], $this->media, self::$DI['collection']));
 

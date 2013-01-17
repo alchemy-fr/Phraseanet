@@ -4,6 +4,10 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 
 require_once __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php';
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Silex\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
+
 class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
@@ -84,8 +88,8 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
         foreach ($routes as $route) {
-            $option = new \searchEngine_options();
-            $crawler = self::$DI['client']->request('POST', $route, array('options_serial' => serialize($option)));
+            $option = new SearchEngineOptions();
+            $crawler = self::$DI['client']->request('POST', $route, array('options_serial' => $option->serialize()));
 
             $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         }

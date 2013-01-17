@@ -29,13 +29,11 @@ class Migration31 implements MigrationInterface
             throw new \LogicException('Required config files not found');
         }
 
-        /**
-         * Required for GV :/
-         */
+        // required to load GV template
         $app = $this->app;
 
         require __DIR__ . '/../../../../../../config/_GV.php';
-        require __DIR__ . '/../../../../../../lib/conf.d/_GV_template.inc';
+        $GV = require __DIR__ . '/../../../../../../lib/conf.d/_GV_template.inc';
 
         $retrieve_old_credentials = function() {
                 require __DIR__ . '/../../../../../../config/connexion.inc';
@@ -61,11 +59,6 @@ class Migration31 implements MigrationInterface
             character_set_server = 'utf8'");
 
         define('GV_STATIC_URL', '');
-        define('GV_sphinx', false);
-        define('GV_sphinx_host', '');
-        define('GV_sphinx_port', '');
-        define('GV_sphinx_rt_host', '');
-        define('GV_sphinx_rt_port', '');
 
         $connection->exec("CREATE TABLE IF NOT EXISTS `registry` (
             `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

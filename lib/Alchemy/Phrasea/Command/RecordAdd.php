@@ -118,6 +118,7 @@ class RecordAdd extends Command
                     "Record id <info>%d</info> on collection `%s` (databox `%s`) has been created", $elementCreated->get_record_id(), $elementCreated->get_collection()->get_name(), $elementCreated->get_databox()->get_viewname()
                 )
             );
+            $this->container['phraseanet.SE']->addRecord($elementCreated);
         } elseif ($elementCreated instanceof LazaretFile) {
             $output->writeln(
                 sprintf("Quarantine item id <info>%d</info> has been created", $elementCreated->getId())

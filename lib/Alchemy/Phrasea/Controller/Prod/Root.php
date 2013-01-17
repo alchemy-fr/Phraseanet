@@ -11,7 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Silex\Application;
+use Alchemy\Phrasea\Application;
+use Silex\Application as SilexApplication;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Finder\Finder;
@@ -25,7 +26,7 @@ use Alchemy\Phrasea\Helper;
 class Root implements ControllerProviderInterface
 {
 
-    public function connect(Application $app)
+    public function connect(SilexApplication $app)
     {
         $controllers = $app['controllers_factory'];
 
@@ -122,7 +123,7 @@ class Root implements ControllerProviderInterface
                 'thesau_js_list'       => $thjslist,
                 'thesau_json_sbas'     => json_encode($sbas),
                 'thesau_json_bas2sbas' => json_encode($bas2sbas),
-                'thesau_languages'     => \User_Adapter::avLanguages(),
+                'thesau_languages'     => $app->getAvailableLanguages(),
             ));
         });
 

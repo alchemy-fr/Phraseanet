@@ -224,7 +224,7 @@ if ($app['phraseanet.registry']->get('GV_client_coll_ckbox') === 'popup') {
                                                             $allbcol[] = $coll->get_base_id();
                                                             $n_allbcol ++;
 
-                                                            echo '<input style="display:none;" checked="checked" type="checkbox" class="basItem checkbox basItem' . $databox->get_sbas_id() . '" name="bas[]" value="' . $coll->get_base_id() . '"  id="basChk' . $coll->get_base_id() . '" />';
+                                                            echo '<input style="display:none;" checked="checked" type="checkbox" class="basItem checkbox basItem' . $databox->get_sbas_id() . '" name="bases[]" value="' . $coll->get_base_id() . '"  id="basChk' . $coll->get_base_id() . '" />';
 
                                                             $options .= '<option value="' . $coll->get_base_id() . '" checked="checked" >' . $coll->get_name() . '</option>';
 
@@ -392,9 +392,9 @@ if ($app['phraseanet.registry']->get('GV_thesaurus')) {
                                 '</td></tr>' .
                                 '<tr><td style="width:50%;">' .
                                 '<input type="hidden" name="dateminfield[]" value="' . $databox->get_sbas_id() . '_' . $f . '">' .
-                                ' <input db="' . $databox->get_sbas_id() . '" onchange="checkFilters();" class="datepicker" type="text" name="datemin[]"></td><td style="width:50%;">' .
+                                ' <input db="' . $databox->get_sbas_id() . '" onchange="checkFilters();" class="datepicker" type="text" name="date_min[]"></td><td style="width:50%;">' .
                                 '<input type="hidden" name="datemaxfield[]" value="' . $databox->get_sbas_id() . '_' . $f . '">' .
-                                ' <input db="' . $databox->get_sbas_id() . '" onchange="checkFilters();" class="datepicker" type="text" name="datemax[]"></td></tr>' .
+                                ' <input db="' . $databox->get_sbas_id() . '" onchange="checkFilters();" class="datepicker" type="text" name="date_max[]"></td></tr>' .
                                 '</table>' .
                                 '</div>';
                         } elseif ($field['type'] != 'date') {
@@ -422,7 +422,7 @@ if ($app['phraseanet.registry']->get('GV_thesaurus')) {
                                                                     ?><div class="basGrp"><?php
                                                             foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
                                                                 $s = "checked";
-                                                                echo '<div><input type="checkbox" class="checkbox basItem basItem' . $databox->get_sbas_id() . '" ' . $s . ' name="bas[]"  id="basChk' . $coll->get_base_id() . '" value="' . $coll->get_base_id() . '"><label for="basChk' . $coll->get_base_id() . '">' . $coll->get_name() . '</label></div>';
+                                                                echo '<div><input type="checkbox" class="checkbox basItem basItem' . $databox->get_sbas_id() . '" ' . $s . ' name="bases[]"  id="basChk' . $coll->get_base_id() . '" value="' . $coll->get_base_id() . '"><label for="basChk' . $coll->get_base_id() . '">' . $coll->get_name() . '</label></div>';
                                                             }
                                                                     ?></div><?php
                                                             if ($app['phraseanet.registry']->get('GV_view_bas_and_coll'))

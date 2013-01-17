@@ -1,6 +1,7 @@
 <?php
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Border\File;
 
 require_once __DIR__ . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
@@ -86,7 +87,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_record_amount()
     {
         self::$object->empty_collection();
-        $file = new Alchemy\Phrasea\Border\File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), self::$object);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), self::$object);
         record_adapter::createFromFile($file, self::$DI['app']);
         $this->assertTrue(self::$object->get_record_amount() === 1);
         self::$object->empty_collection();
@@ -133,7 +134,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_details()
     {
-        $file = new Alchemy\Phrasea\Border\File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), self::$object);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), self::$object);
         $record = record_adapter::createFromFile($file, self::$DI['app']);
         $details = self::$object->get_record_details();
 

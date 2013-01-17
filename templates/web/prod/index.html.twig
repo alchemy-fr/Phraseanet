@@ -25,7 +25,7 @@
                                     onclick="cancelEvent(event);return false;"
                                     onmousedown="infoSbas(this, {{sbas_id}}, false, event); return false;"
                                     id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
-                                    name="bas[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
+                                    name="bases[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
                             </label>
                         </li>
                     {% endfor %}
@@ -308,7 +308,7 @@
                                 {% else %}
                                     <input type="hidden" value="0" name="search_type" />
                                 {% endif %}
-                                <select name="recordtype" id="recordtype_sel" class="input-small">
+                                <select name="record_type" id="recordtype_sel" class="input-small">
                                     <option value="">{% trans 'Tout type' %}</option>
                                     <option value="image">{% trans 'Image' %}</option>
                                     <option value="video">{% trans 'Video' %}</option>
@@ -340,32 +340,20 @@
                                             <div  class="btn-toolbar">
                                                 <input class="btn btn-inverse" type="button" value="{% trans 'Re-initialiser' %}" onclick="reset_adv_search();" />
                                             </div>
-                                            {% if app['phraseanet.registry'].get('GV_sphinx') %}
-                                                <span>{% trans 'Trier par ' %}</span>
-                                                <select name="sort" class="input-mini">
-                                                    <option value="relevance">{% trans 'pertinence'%}</option>
-                                                    <option value="created_on">{% trans 'date dajout'%}</option>
-                                                    <option value="random">{% trans 'aleatoire'%}</option>
-                                                </select>
-                                                <select name="ord" class="span2">
-                                                    <option value="desc">{% trans 'descendant'%}</option>
-                                                    <option value="asc">{% trans 'ascendant'%}</option>
-                                                </select>
-                                                <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
-                                            {% else %}
-                                                <span>{% trans 'Trier par ' %}</span>
-                                                <select name="sort" class="input-mini">
-                                                    <option value=""></option>
-                                                    {% for field_id, field in search_datas['fields'] %}
-                                                        {% if field['type'] == 'date' %}
-                                                            <option class="field_switch field_{{field['sbas']|join(' field_')}}" value="{{field_id}}" {% if app['phraseanet.registry'].get('GV_phrasea_sort') == field['fieldname'] %}selected="selected"{% endif %}>{{ field['fieldname'] }}</option>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </select>
-                                                <select name="ord" class="span2">
-                                                    <option value="desc">{% trans 'descendant'%}</option>
-                                                    <option value="asc">{% trans 'ascendant'%}</option>
-                                                </select>
+                                                
+                                            <span>{% trans 'Trier par ' %}</span>
+                                            <select name="sort" class="input-mini">
+                                                {% for sort, sort_name in app['phraseanet.SE'].getAvailableSort() %}
+                                                <option value="{{ sort }}" {% if sort == app['phraseanet.SE'].getDefaultSort() %}selected="selected"{% endif %}>{{ sort_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <select name="ord" class="span2">
+                                                {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}
+                                                <option value="{{ ord }}">{{ ord_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            {% if app['phraseanet.SE'].hasStemming() %}
+                                            <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
                                             {% endif %}
                                             <div class="field_filter">
                                                 <span>{% trans 'Les termes apparaissent dans le(s) champs' %}</span>
@@ -416,21 +404,20 @@
                                                     </table>
                                                 </div>
                                             {% endif %}
-
-                                            {% set dates_length = search_datas['dates']|length %}
-                                            {% if dates_length > 0 %}
+                                            
+                                            {% if app['phraseanet.SE'].getAvailableDateFields() | length > 0 %}
                                                 <hr />
                                                 <div class="date_filter">
                                                     <span>{% trans 'Rechercher dans un champ date' %}</span>
                                                     <table>
                                                         <tr>
                                                             <td colspan="2">
-                                                                <select name="datefield" class="input-medium">
-                                                                    {% for field_id, field in search_datas['dates'] %}
+                                                                <select name="date_field" class="input-medium">
+                                                                    {% for field in app['phraseanet.SE'].getAvailableDateFields() %}
                                                                         <option onchange="checkFilters(true);"
-                                                                            class="field_switch field_{{field['sbas']|join(' field_')}}" value="{{ field['fieldname'] }}">{{field['fieldname']}}</option>
+                                                                            class="" value="{{ field }}">{{ field }}</option>
                                                                     {% endfor %}
-                                                                    <option value="{{search_datas['dates']|keys|join('|')}}" selected="selected">
+                                                                    <option value="{{ app['phraseanet.SE'].getAvailableDateFields()|join('|') }}" selected="selected">
                                                                         {% trans 'rechercher dans tous les champs' %}
                                                                     </option>
                                                                 </select>
@@ -439,11 +426,11 @@
                                                         <tr>
                                                             <td style="padding-right: 5px;">
                                                                 <span>{% trans 'phraseanet::time:: de' %}</span><br />
-                                                                <input onchange="checkFilters(true);" class="datepicker input-medium" type="text" name="datemin" style="height: 18px;" />
+                                                                <input onchange="checkFilters(true);" class="datepicker input-medium" type="text" name="date_min" style="height: 18px;" />
                                                             </td>
                                                             <td>
                                                                 <span>{% trans 'phraseanet::time:: a' %}</span><br />
-                                                                <input onchange="checkFilters(true);" class="datepicker input-medium" type="text" name="datemax" style="height: 18px;" />
+                                                                <input onchange="checkFilters(true);" class="datepicker input-medium" type="text" name="date_max" style="height: 18px;" />
                                                             </td>
                                                         </tr>
                                                     </table>

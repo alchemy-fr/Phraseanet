@@ -22,8 +22,8 @@ use Alchemy\Phrasea\Core\Service\ServiceAbstract;
  */
 class BorderManager extends ServiceAbstract
 {
-    /** `
-     * `@var \Alchemy\Phrasea\Border\Manager
+    /**
+     * @var Manager
      */
     protected $borderManager;
 
@@ -122,7 +122,7 @@ class BorderManager extends ServiceAbstract
      * Set and return a new Border Manager instance and set the proper checkers
      * according to the services configuration
      *
-     * @return \Alchemy\Phrasea\Border\Manager
+     * @return Manager
      */
     public function getDriver()
     {

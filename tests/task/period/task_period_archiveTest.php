@@ -4,6 +4,8 @@ use Alchemy\Phrasea\Application;
 
 require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
+use \Alchemy\Phrasea\Border\Manager;
+
 class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 {
     /**
@@ -333,7 +335,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
         file_put_contents($tmp, $xml);
 
-        $story = self::$object->createRecord(self::$DI['collection'], $tmpFile, $tmp, null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
+        $story = self::$object->createRecord(self::$DI['collection'], $tmpFile, $tmp, null, Manager::FORCE_RECORD);
 
         unlink($tmpFile);
 

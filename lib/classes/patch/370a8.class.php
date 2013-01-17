@@ -141,7 +141,7 @@ class patch_370a8 implements patchInterface
                         $st = explode('_', trim($sx->status0));
                         if (count($st) == 2) {
                             $bit = (int) ($st[0]);
-                            if ($bit >= 0 && $bit <= 63 && ($st[1] == '0' || $st[1] == '1')) {
+                            if ($bit >= 0 && $bit < 32 && ($st[1] == '0' || $st[1] == '1')) {
                                 $from->appendChild($dom->createElement('status'))
                                     ->setAttribute('mask', $st[1] . str_repeat('x', $bit - 1));
                             } else {
@@ -171,7 +171,7 @@ class patch_370a8 implements patchInterface
                         $st = explode('_', trim($sx->status1));
                         if (count($st) == 2) {
                             $bit = (int) ($st[0]);
-                            if ($bit >= 0 && $bit <= 63 && ($st[1] == '0' || $st[1] == '1')) {
+                            if ($bit >= 0 && $bit < 32 && ($st[1] == '0' || $st[1] == '1')) {
                                 $to->appendChild($dom->createElement('status'))
                                     ->setAttribute('mask', $st[1] . str_repeat('x', $bit - 1));
                             } else {

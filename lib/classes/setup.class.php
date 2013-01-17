@@ -75,7 +75,7 @@ class setup
 
     public static function create_global_values(Application $app, $datas = array())
     {
-        require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
+        $GV = require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
         $debug = $log_errors = false;
         $vars = array();

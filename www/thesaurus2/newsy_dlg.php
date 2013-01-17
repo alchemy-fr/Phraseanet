@@ -97,8 +97,9 @@ switch ($parm["typ"]) {
                     <td></td>
                     <td valign="bottom">
 <?php
-$tlng = User_Adapter::avLanguages();
-foreach ($tlng as $lng_code => $lng) {
+foreach (Application::getAvailableLanguages() as $lng_code => $lng) {
+    $lng_code = explode('_', $lng_code);
+    $lng_code = $lng_code[0];
     $ck = $lng_code == $parm["piv"] ? " checked" : "";
     ?>
                             <span style="display:inline-block">

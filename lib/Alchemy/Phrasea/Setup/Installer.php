@@ -79,8 +79,9 @@ class Installer
             $this->app['phraseanet.registry']->set($key, $value, \registry::TYPE_STRING);
         }
 
+        // required to load GV template
         $app = $this->app;
-        require __DIR__ . '/../../../../lib/conf.d/_GV_template.inc';
+        $GV = require __DIR__ . '/../../../../lib/conf.d/_GV_template.inc';
 
         foreach ($GV as $section) {
             foreach ($section['vars'] as $var) {
@@ -149,8 +150,6 @@ class Installer
         $user = \User_Adapter::create($this->app, $this->email, $this->password, $this->email, true);
 
         $this->app['session']->set('usr_id', $user->get_id());
-
-        \phrasea::start($this->app['phraseanet.configuration']);
     }
 
     private function rollbackInstall()

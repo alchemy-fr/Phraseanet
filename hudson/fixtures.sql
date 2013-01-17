@@ -613,7 +613,7 @@ CREATE TABLE `sbas` (
 
 LOCK TABLES `sbas` WRITE;
 /*!40000 ALTER TABLE `sbas` DISABLE KEYS */;
-INSERT INTO `sbas` VALUES (1,1,'localhost',3306,'db_test','MYSQL','root','',0,'',1);
+INSERT INTO `sbas` VALUES (1,1,'127.0.0.1',3306,'db_test','MYSQL','root','',0,'',1);
 /*!40000 ALTER TABLE `sbas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -868,7 +868,7 @@ CREATE TABLE `task2` (
 
 LOCK TABLES `task2` WRITE;
 /*!40000 ALTER TABLE `task2` DISABLE KEYS */;
-INSERT INTO `task2` VALUES (2,0,0,'stopped',0,1,'Metadatas Reading','0000-00-00 00:00:00','0000-00-00 00:00:00','task_readmeta','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<period>10</period><flush>10</flush><autodie>1</autodie><maxrecs></maxrecs><maxmegs></maxmegs></tasksettings>\n',-1),(3,0,0,'stopped',0,1,'Metadatas Writing','0000-00-00 00:00:00','0000-00-00 00:00:00','task_writemeta','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n	<period>10</period>\n	<autodie>1</autodie>\n	<maxrecs></maxrecs>\n	<maxmegs></maxmegs>\n	<cleardoc>0</cleardoc>\n</tasksettings>\n',-1),(4,0,0,'stopped',0,1,'Subdefs','0000-00-00 00:00:00','0000-00-00 00:00:00','task_subdef','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<period>10</period><flush>10</flush><autodie>1</autodie><maxrecs></maxrecs><maxmegs></maxmegs></tasksettings>\n',-1),(5,0,0,'stopped',0,1,'Indexer','0000-00-00 00:00:00','0000-00-00 00:00:00','task_cindexer','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<binpath>/usr/local/bin</binpath><host>localhost</host><port>3306</port><base>ab_test31</base><user>root</user><password></password><socket>25200</socket><use_sbas>1</use_sbas><nolog>0</nolog><clng></clng><winsvc_run>0</winsvc_run><charset>utf8</charset></tasksettings>\n',-1);
+INSERT INTO `task2` VALUES (2,0,0,'stopped',0,1,'Metadatas Reading','0000-00-00 00:00:00','0000-00-00 00:00:00','task_readmeta','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<period>10</period><flush>10</flush><autodie>1</autodie><maxrecs></maxrecs><maxmegs></maxmegs></tasksettings>\n',-1),(3,0,0,'stopped',0,1,'Metadatas Writing','0000-00-00 00:00:00','0000-00-00 00:00:00','task_writemeta','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n	<period>10</period>\n	<autodie>1</autodie>\n	<maxrecs></maxrecs>\n	<maxmegs></maxmegs>\n	<cleardoc>0</cleardoc>\n</tasksettings>\n',-1),(4,0,0,'stopped',0,1,'Subdefs','0000-00-00 00:00:00','0000-00-00 00:00:00','task_subdef','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<period>10</period><flush>10</flush><autodie>1</autodie><maxrecs></maxrecs><maxmegs></maxmegs></tasksettings>\n',-1),(5,0,0,'stopped',0,1,'Indexer','0000-00-00 00:00:00','0000-00-00 00:00:00','task_cindexer','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<binpath>/usr/local/bin</binpath><host>127.0.0.1</host><port>3306</port><base>ab_test31</base><user>root</user><password></password><socket>25200</socket><use_sbas>1</use_sbas><nolog>0</nolog><clng></clng><winsvc_run>0</winsvc_run><charset>utf8</charset></tasksettings>\n',-1);
 /*!40000 ALTER TABLE `task2` ENABLE KEYS */;
 UNLOCK TABLES;
 

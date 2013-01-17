@@ -116,12 +116,12 @@ class phrasea
                 $parm["sel"] = '';
                 $parm["ord"] = null;
                 $parm["search_type"] = 0;
-                $parm["recordtype"] = '';
+                $parm["record_type"] = '';
                 $parm["status"] = array();
                 $parm["fields"] = array();
-                $parm["datemin"] = '';
-                $parm["datemax"] = '';
-                $parm["datefield"] = '';
+                $parm["date_min"] = '';
+                $parm["date_max"] = '';
+                $parm["date_field"] = '';
             }
             if ($context == "client") {
                 $parm["mod"] = $app['phraseanet.user']->getPrefs('client_view');
@@ -133,10 +133,10 @@ class phrasea
                 $parm["opAdv"] = array();
                 $parm["status"] = '';
                 $parm["nba"] = '';
-                $parm["datemin"] = '';
-                $parm["datemax"] = '';
-                $parm["recordtype"] = '';
-                $parm["datefield"] = '';
+                $parm["date_min"] = '';
+                $parm["date_max"] = '';
+                $parm["record_type"] = '';
+                $parm["date_field"] = '';
                 $parm["sort"] = $app['phraseanet.registry']->get('GV_phrasea_sort');
                 $parm["stemme"] = '';
                 $parm["dateminfield"] = array();

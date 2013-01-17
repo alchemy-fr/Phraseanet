@@ -29,6 +29,7 @@ dev:
   cache: array_cache
   opcodecache: array_cache
   border-manager: border_manager
+  search-engine: phrasea
 
 ##############
 # PRODUCTION #
@@ -46,6 +47,7 @@ prod:
   cache: array_cache
   opcodecache: array_cache
   border-manager: border_manager
+  search-engine: phrasea
 
 ##############
 #    TEST    #
@@ -63,4 +65,5 @@ test:
   cache: array_cache
   opcodecache: array_cache
   border-manager: border_manager
+  search-engine: phrasea
 

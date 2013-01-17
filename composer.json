@@ -19,6 +19,7 @@
         "monolog/monolog": "1.0.*",
         "neutron/silex-badfaith-provider": "dev-master",
         "neutron/silex-filesystem-provider": "dev-master",
+        "neutron/sphinxsearch-api": ">=2.0.6",
         "php-xpdf/php-xpdf": "dev-master",
         "phpexiftool/phpexiftool": "dev-master",
         "silex/silex": "1.0.*",
