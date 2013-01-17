@@ -25,6 +25,7 @@ before_script:
   - tar -xzf imagick-3.1.0RC2.tgz
   - sh -c "cd imagick-3.1.0RC2 && phpize && ./configure --with-imagick=/usr/local && make && sudo make install"
   - echo "extension=imagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+  - bin/setup system:upgrade -y -v -f
 #  - wget http://pecl.php.net/get/gmagick-1.1.0RC2.tgz
 #  - tar -xzf gmagick-1.1.0RC2.tgz
 #  - sh -c "cd gmagick-1.1.0RC2 && phpize && ./configure --with-gmagick=/usr/local && make && sudo make install"
