@@ -1295,10 +1295,10 @@ class databox extends base
         $missing_locale = array();
 
         $avLanguages = $this->app->getAvailableLanguages();
-        foreach ($avLanguages as $code=>$language) {
-                if ( ! isset($TOU[$code])) {
-                    $missing_locale[] = $code;
-                }
+        foreach ($avLanguages as $code => $language) {
+            if (!isset($TOU[$code])) {
+                $missing_locale[] = $code;
+            }
         }
 
         $date_obj = new DateTime();
