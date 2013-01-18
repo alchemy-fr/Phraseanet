@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Application;
  * @link        www.phraseanet.com
  */
 
-require_once __DIR__ . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../vendor/autoload.php";
 
 $app = new Application();
 $usr_id = $app['phraseanet.user']->get_id();

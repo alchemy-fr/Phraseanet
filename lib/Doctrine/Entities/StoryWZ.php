@@ -13,12 +13,6 @@ namespace Entities;
 
 use Alchemy\Phrasea\Application;
 
-require_once __DIR__ . '/../../classes/record/Interface.class.php';
-require_once __DIR__ . '/../../classes/record/adapter.class.php';
-require_once __DIR__ . '/../../classes/cache/cacheableInterface.class.php';
-require_once __DIR__ . '/../../classes/User/Interface.class.php';
-require_once __DIR__ . '/../../classes/User/Adapter.class.php';
-
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3

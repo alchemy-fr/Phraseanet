@@ -21,7 +21,7 @@ use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Setup\Install;
 use Alchemy\Phrasea\CLI;
 
-require_once dirname(__FILE__) . '/../lib/bootstrap.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $app = new CLI("

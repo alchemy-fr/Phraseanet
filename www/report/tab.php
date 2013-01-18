@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Application;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../vendor/autoload.php";
 
 /* get all the post parameters from report.php's form */
 
