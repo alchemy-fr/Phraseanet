@@ -5,15 +5,15 @@
  *
  */
 
+use Symfony\Component\Finder\Finder;
+
+require __DIR__ . '/vendor/autoload.php';
+
 printf('Retrieve vendors ...' . PHP_EOL);
 
 system('./vendors.php --no-dev');
 
-require_once __DIR__ . '/lib/classes/bootstrap.class.php';
-
-\bootstrap::register_autoloads();
-
-use Symfony\Component\Finder\Finder;
+system(__DIR__ . '/composer.phar dump-autoload');
 
 chdir(__DIR__);
 

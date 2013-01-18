@@ -5,11 +5,9 @@
  *
  */
 
-require_once __DIR__ . '/lib/classes/bootstrap.class.php';
-
-\bootstrap::register_autoloads();
-
 use Symfony\Component\Finder\Finder;
+
+require __DIR__ . '/vendor/autoload.php';
 
 chdir(__DIR__);
 

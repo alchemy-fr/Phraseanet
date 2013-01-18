@@ -1,16 +1,11 @@
 <?php
 
-require_once __DIR__ . '/../../lib/classes/bootstrap.class.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Yaml\Yaml;
-
-\bootstrap::register_autoloads();
-$core = \bootstrap::execute('dev');
 
 $console = new Application('Functionnal tests for dailymotion API');
 
@@ -24,10 +19,10 @@ $console
             $output->writeln('<error>could not parse configuration file</error>');
             return;
         }
-        
-        
+
+
         $appbox = \appbox::get_instance($core);
-        
+
         $found = false;
         foreach ($appbox->get_databoxes() as $databox) {
             /* @var $databox \databox */
@@ -44,16 +39,16 @@ $console
             }
             unset($stmt);
         }
-        
+
         if (!$found) {
             $output->writeln('<error>No video found, </error>');
             return;
         }
-        
+
         $bridge = new \Bridge_Api_Dailymotion($core['Registry'], new \Bridge_Api_Auth_OAuth2());
-        
+
         $bridge->set_oauth_token($configuration['dailymotion']['dev_token']);
-        
+
         $options = array();
         $samples = array(
             'title'         => $record->get_title(),
@@ -61,11 +56,11 @@ $console
             'tags'          => 'phraseanet upload test dm api',
             'private'       => true,
         );
-        
+
         foreach($bridge->get_fields() as $field) {
-           $options[$field['name']] = isset($samples[$field['name']]) ? $samples[$field['name']] : uniqid('test_upload'); 
+           $options[$field['name']] = isset($samples[$field['name']]) ? $samples[$field['name']] : uniqid('test_upload');
         }
-        
+
         try {
             $idVideo = $bridge->upload($record, $options);
             $output->writeln(sprintf('<info>video id is %s</info>', $idVideo));

@@ -30,8 +30,7 @@ class ConnectionTest implements ControllerProviderInterface
          * @todo : check this as it would lead to a security issue
          */
         $controllers->get('/mysql/', function(Application $app) {
-            require_once __DIR__ . '/../../../../classes/connection/pdo.class.php';
-
+            
             $request = $app['request'];
             $hostname = $request->query->get('hostname', '127.0.0.1');
             $port = (int) $request->query->get('port', 3306);
