@@ -9,7 +9,7 @@
          stopOnFailure="false"
          syntaxCheck="true"
          verbose="false"
-         bootstrap="tests/bootstrap.inc"
+         bootstrap="tests/bootstrap.php"
 >
 <!--
     <logging>
@@ -42,7 +42,7 @@
     </filter>
 
   <listeners>
-    <listener class="PhraseanetPHPUnitListener" file="tests/PhraseanetPHPUnitListener.class.inc"></listener>
+    <listener class="PhraseanetPHPUnitListener" file="tests/classes/PhraseanetPHPUnitListener.php"></listener>
   </listeners>
 
 </phpunit>

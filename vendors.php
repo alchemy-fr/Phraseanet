@@ -24,9 +24,9 @@ if ( ! file_exists($composer)) {
     system('chmod +x ' . $composer);
 
     if (isset($argv[1]) && $argv[1] == '--no-dev') {
-        system($composer . ' install');
+        system($composer . ' install --optimize-autoloader');
     } else {
-        system($composer . ' install --dev');
+        system($composer . ' install --dev --optimize-autoloader');
     }
 }
 
@@ -37,9 +37,9 @@ if ( ! is_executable($composer)) {
 system($composer . ' self-update');
 
 if (isset($argv[1]) && $argv[1] == '--no-dev') {
-    system($composer . ' install');
+    system($composer . ' install --optimize-autoloader');
 } else {
-    system($composer . ' install --dev');
+    system($composer . ' install --dev --optimize-autoloader');
 }
 
 system('git submodule init');

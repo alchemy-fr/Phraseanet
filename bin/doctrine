@@ -31,7 +31,7 @@ use Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand;
 use Doctrine\ORM\Tools\Console\Command\RunDqlCommand;
 use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
 
-require_once dirname(__FILE__) . '/../lib/bootstrap.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $cli = new CLI("Phraseanet Doctrine Console");
