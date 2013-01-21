@@ -340,7 +340,7 @@
                                             <div  class="btn-toolbar">
                                                 <input class="btn btn-inverse" type="button" value="{% trans 'Re-initialiser' %}" onclick="reset_adv_search();" />
                                             </div>
-                                                
+
                                             <span>{% trans 'Trier par ' %}</span>
                                             <select name="sort" class="input-mini">
                                                 {% for sort, sort_name in app['phraseanet.SE'].getAvailableSort() %}
@@ -404,7 +404,7 @@
                                                     </table>
                                                 </div>
                                             {% endif %}
-                                            
+
                                             {% if app['phraseanet.SE'].getAvailableDateFields() | length > 0 %}
                                                 <hr />
                                                 <div class="date_filter">
@@ -1021,10 +1021,10 @@
         function sessionactive(){
             $.ajax({
                 type: "POST",
-                url: "/include/updses.php",
+                url: "/session/update/",
                 dataType: "json",
                 data: {
-                    app : 1,
+                    module : 1,
                     usr : {{app['phraseanet.user'].get_id()}}
                 },
                 error: function(){

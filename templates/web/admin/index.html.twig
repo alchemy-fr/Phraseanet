@@ -55,10 +55,10 @@
     function sessionactive(){
       $.ajax({
         type: "POST",
-        url: "/include/updses.php",
+        url: "/session/update/",
         dataType: 'json',
         data: {
-          app : 3,
+          module : 3,
           usr : {{ app['phraseanet.user'].get_id() }}
         },
         error: function(){
