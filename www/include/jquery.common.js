@@ -409,7 +409,7 @@ function manageSession(data, showMessages)
             }
           }
 			}
-		if(data.message !== false)
+		if('' !== $.trim(data.message))
 		{
 			if($('#MESSAGE').length === 0)
 				$('body').append('<div id="#MESSAGE"></div>');
