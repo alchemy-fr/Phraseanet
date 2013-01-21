@@ -11,7 +11,7 @@
 
 require_once __DIR__ . "/../../../classes/DailymotionWithoutOauth2.php";
 
-use \Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -194,7 +194,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     {
         return array(self::CONTAINER_TYPE_PLAYLIST => _('Playlists'));
     }
-    
+
     public function get_oauth_token()
     {
         return $this->oauth_token;
@@ -203,10 +203,10 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     public function set_oauth_token($oauth_token)
     {
         $this->oauth_token = $oauth_token;
-        
+
         return $this;
     }
-    
+
     /**
      *
      * @param  string $type

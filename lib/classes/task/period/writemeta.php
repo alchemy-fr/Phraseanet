@@ -43,23 +43,13 @@ class task_period_writemeta extends task_databoxAbstract
     {
         $request = http_request::getInstance();
 
-        $parm2 = $request->get_parms(
-            'period'
-            , 'cleardoc'
-            , 'maxrecs'
-            , 'maxmegs'
-        );
+        $parm2 = $request->get_parms('period', 'cleardoc', 'maxrecs', 'maxmegs');
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         if ($dom->loadXML($oldxml)) {
             $xmlchanged = false;
-            foreach (array(
-            'str:period'
-            , 'str:maxrecs'
-            , 'str:maxmegs'
-            , 'boo:cleardoc'
-            ) as $pname) {
+            foreach (array('str:period', 'str:maxrecs', 'str:maxmegs', 'boo:cleardoc') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -119,7 +109,7 @@ class task_period_writemeta extends task_databoxAbstract
             <?php echo $form ?>.maxmegs.value       = "<?php echo p4string::MakeString($sxml->maxmegs, "js", '"') ?>";
             </script>
             <?php
-            
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -210,7 +200,7 @@ class task_period_writemeta extends task_databoxAbstract
     protected function retrieveSbasContent(databox $databox)
     {
         $this->dependencyContainer['exiftool.writer']->setModule(Writer::MODULE_MWG, true);
-        
+
         $connbas = $databox->get_connection();
         $subdefgroups = $databox->get_subdef_structure();
         $metasubdefs = array();
