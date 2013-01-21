@@ -17,7 +17,7 @@
  */
 
 use Alchemy\Phrasea\Command\Command;
-use Alchemy\Phrasea\SearchEngine\PhraseaEngineQueryParser;
+use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngineQueryParser;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
