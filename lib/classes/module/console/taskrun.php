@@ -124,7 +124,7 @@ class module_console_taskrun extends Command
 
         if(($ttyloglevel = strtoupper($input->getOption('ttyloglevel'))) != '') {
             if (!array_key_exists($ttyloglevel, $lib2v)) {
-                throw(new RuntimeException(sprintf(
+                throw(new Alchemy\Phrasea\Exception\RuntimeException(sprintf(
                         "Bad value '%s' for option loglevel\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $ttyloglevel))
                 );
             }

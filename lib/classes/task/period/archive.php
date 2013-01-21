@@ -2132,54 +2132,6 @@ class task_period_archive extends task_abstract
         return $metas;
     }
 
-    /**
-     * Merge two bags of metadatas indexed by **FieldNames**
-     * Return a bag indexed by **FieldNames**
-     *
-     * @param  \databox_descriptionStructure            $metadatasStructure The databox structure related
-     * @param  MetadataBag                              $bag1               The first metadata bag
-     * @param  MetadataBag                              $bag2               The second metadata bag
-     * @return \PHPExiftool\Driver\Metadata\MetadataBag
-     */
-    protected function mergeForDatabox(\databox_descriptionStructure $metadatasStructure, MetadataBag $bag1, MetadataBag $bag2)
-    {
-        $metadatasBag = new MetadataBag();
-
-        foreach ($metadatasStructure as $databox_field) {
-
-            $value = array();
-
-            $tag = $databox_field->get_tag();
-
-            foreach (array($bag1, $bag2) as $bag) {
-
-                if (!$bag->containsKey($databox_field->get_name())) {
-                    continue;
-                }
-
-                if ($databox_field->is_multi()) {
-                    $value = array_unique(array_merge($value, $bag->get($databox_field->get_name())->getValue()->asArray()));
-                } else {
-                    $value = $bag->get($databox_field->get_name())->getValue()->asString();
-                }
-            }
-
-            if (!$value) {
-                continue;
-            }
-
-            if ($databox_field->is_multi()) {
-                $value = new \PHPExiftool\Driver\Value\Multi($value);
-            } else {
-                $value = new \PHPExiftool\Driver\Value\Mono($value);
-            }
-
-            $metadatasBag->set($databox_field->get_name(), new PHPExiftool\Driver\Metadata\Metadata($tag, $value));
-        }
-
-        return $metadatasBag;
-    }
-
     protected function readXMLForDatabox(\databox_descriptionStructure $metadatasStructure, $pathfile)
     {
         if (false === $this->dependencyContainer['filesystem']->exists($pathfile)) {

@@ -10,15 +10,15 @@
  */
 
 namespace Alchemy\Phrasea\Core\Service\TaskManager;
+
 use Alchemy\Phrasea\Core;
 use Alchemy\Phrasea\Core\Service;
 use Alchemy\Phrasea\Core\Service\ServiceAbstract;
-
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Bridge\Monolog\Logger;
-
 use Monolog\Handler\SyslogHandler;
 use Monolog\Handler\NativeMailerHandler;
+use Alchemy\Phrasea\Exception\RuntimeException;
 
 /**
  *
