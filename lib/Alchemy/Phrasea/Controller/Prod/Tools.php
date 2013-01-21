@@ -45,12 +45,9 @@ class Tools implements ControllerProviderInterface
                 $record = $records->first();
                 if (!$record->is_grouping()) {
                     try {
-                        $reader = new \PHPExiftool\Reader();
-
-                        $metadatas = $reader
+                        $metadatas = $app['exiftool.reader']
                                 ->files($record->get_subdef('document')->get_pathfile())
                                 ->first()->getMetadatas();
-                        unset($reader);
                     } catch (\PHPExiftool\Exception\Exception $e) {
 
                     } catch (\Exception_Media_SubdefNotFound $e) {

@@ -201,6 +201,8 @@ class task_period_writemeta extends task_databoxAbstract
 
     protected function retrieveSbasContent(databox $databox)
     {
+        $this->dependencyContainer['exiftool.writer']->setModule(Writer::MODULE_MWG, true);
+        
         $connbas = $databox->get_connection();
         $subdefgroups = $databox->get_subdef_structure();
         $metasubdefs = array();
@@ -297,23 +299,18 @@ class task_period_writemeta extends task_databoxAbstract
             );
         }
 
-        $writer = new Writer();
-        $writer->setModule(Writer::MODULE_MWG, true);
-
         foreach ($tsub as $name => $file) {
 
-            $writer->erase($name != 'document' || $this->clear_doc);
+            $this->dependencyContainer['exiftool.writer']->erase($name != 'document' || $this->clear_doc);
 
             try {
-                $writer->write($file, $metadatas);
+                $this->dependencyContainer['exiftool.writer']->write($file, $metadatas);
 
                 $this->log(sprintf('Success writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)', $this->sbas_id, $record_id, $name));
             } catch (\PHPExiftool\Exception\Exception $e) {
                 $this->log(sprintf('Failure writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)', $this->sbas_id, $record_id, $name));
             }
         }
-
-        $writer = $metadatas = null;
 
         return $this;
     }
