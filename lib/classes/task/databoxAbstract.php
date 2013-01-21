@@ -88,11 +88,10 @@ abstract class task_databoxAbstract extends task_abstract
                     // get the records to process
                     $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox((int) $row['sbas_id']);
                 } catch (Exception $e) {
-                    $this->log(sprintf(
-                            'can\'t connect to sbas(%s) because "%s"'
-                            , $row['sbas_id']
-                            , $e->getMessage())
-                        , self::LOG_WARNING
+                    $this->log(sprintf('can\'t connect to sbas(%s) because "%s"',
+                        $row['sbas_id'],
+                        $e->getMessage()),
+                        self::LOG_WARNING
                     );
                     continue;
                 }
@@ -100,10 +99,9 @@ abstract class task_databoxAbstract extends task_abstract
                 try {
                     $this->loadSettings(simplexml_load_string($row['settings']));
                 } catch (Exception $e) {
-                    $this->log(sprintf(
-                            'can\'t get get settings of task because "%s"'
-                            , $e->getMessage())
-                        , self::LOG_WARNING
+                    $this->log(sprintf('can\'t get get settings of task because "%s"',
+                        $e->getMessage()),
+                        self::LOG_WARNING
                     );
                     continue;
                 }

@@ -8,14 +8,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-
-use Monolog\Logger;
-
 class task_period_subdef extends task_databoxAbstract
 {
     const MINMEGS = 20;
@@ -70,24 +62,14 @@ class task_period_subdef extends task_databoxAbstract
     {
         $request = http_request::getInstance();
 
-        $parm2 = $request->get_parms(
-            'period'
-            , 'flush'
-            , 'maxrecs'
-            , 'maxmegs'
-        );
+        $parm2 = $request->get_parms('period', 'flush', 'maxrecs', 'maxmegs');
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         if (@$dom->loadXML($oldxml)) {
             $xmlchanged = false;
 
-            foreach (array(
-            'str:period'
-            , 'str:flush'
-            , 'str:maxrecs'
-            , 'str:maxmegs'
-            ) as $pname) {
+            foreach (array('str:period', 'str:flush', 'str:maxrecs', 'str:maxmegs') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -327,7 +309,7 @@ class task_period_subdef extends task_databoxAbstract
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute();
                 $stmt->closeCursor();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->log($e->getMessage(), self::LOG_CRITICAL);
             }
         }
