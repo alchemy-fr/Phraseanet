@@ -44,10 +44,7 @@ class task_period_RecordMover extends task_appboxAbstract
     {
         $request = http_request::getInstance();
 
-        $parm2 = $request->get_parms(
-            'period'
-            , 'logsql'
-        );
+        $parm2 = $request->get_parms('period', 'logsql');
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
@@ -164,8 +161,6 @@ class task_period_RecordMover extends task_appboxAbstract
                     {
                         period.value  = xml2.find("period").text();
                         logsql.checked   = Number(xml2.find("logsql").text()) > 0;
-//                        maxrecs.value = xml.find("maxrecs").text();
-//                        maxmegs.value = xml.find("maxmegs").text();
                     }
 
                     var data = {};

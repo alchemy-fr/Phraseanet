@@ -2065,73 +2065,6 @@ class task_period_archive extends task_abstract
         return $ret;
     }
 
-    /**
-     * Map a bag of metadatas indexed by **FieldNames** to an array ready for
-     * \record_adapter metadatas submission
-     *
-     * @param  \databox_descriptionStructure $metadatasStructure The databox structure related
-     * @param  MetadataBag                   $metadatas          The metadata bag
-     * @return array
-     */
-    protected function bagToArray(\databox_descriptionStructure $metadatasStructure, MetadataBag $metadatas)
-    {
-        $metas = array();
-        $unicode = new \unicode();
-
-        foreach ($metadatasStructure as $databox_field) {
-            if ($metadatas->containsKey($databox_field->get_tag()->getTagname())) {
-
-                if ($databox_field->is_multi()) {
-
-                    $values = $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asArray();
-
-                    $tmp = array();
-
-                    foreach ($values as $value) {
-                        foreach (\caption_field::get_multi_values($value, $databox_field->get_separator()) as $v) {
-                            $tmp[] = $v;
-                        }
-                    }
-
-                    $values = array_unique($tmp);
-
-                    foreach ($values as $value) {
-
-                        $value = $unicode->substituteCtrlCharacters($value, ' ');
-                        $value = $unicode->toUTF8($value);
-                        if ($databox_field->get_type() == 'date') {
-                            $value = $unicode->parseDate($value);
-                        }
-
-                        $metas[] = array(
-                            'meta_struct_id' => $databox_field->get_id(),
-                            'value'          => $value,
-                            'meta_id'        => null
-                        );
-                    }
-                } else {
-                    $value = $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asString();
-
-                    $value = $unicode->substituteCtrlCharacters($value, ' ');
-                    $value = $unicode->toUTF8($value);
-                    if ($databox_field->get_type() == 'date') {
-                        $value = $unicode->parseDate($value);
-                    }
-
-                    $metas[] = array(
-                        'meta_struct_id' => $databox_field->get_id(),
-                        'value'          => $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asString(),
-                        'meta_id'        => null
-                    );
-                }
-            }
-        }
-
-        unset($unicode);
-
-        return $metas;
-    }
-
     protected function readXMLForDatabox(\databox_descriptionStructure $metadatasStructure, $pathfile)
     {
         if (false === $this->dependencyContainer['filesystem']->exists($pathfile)) {
@@ -2207,7 +2140,7 @@ class CListFolder
     {
         $this->list = array();
         if ($hdir = opendir($path)) {
-            while (false !== ($file = readdir($hdir))) {
+            while (false !== $file = readdir($hdir)) {
                 $this->list[] = $file;
             }
             closedir($hdir);

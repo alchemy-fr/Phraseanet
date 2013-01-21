@@ -45,23 +45,13 @@ class task_period_ftp extends task_appboxAbstract
     {
         $request = http_request::getInstance();
 
-        $parm2 = $request->get_parms(
-            'proxy'
-            , 'proxyport'
-            , 'period'
-            , 'syslog'
-        );
+        $parm2 = $request->get_parms('proxy', 'proxyport', 'period', 'syslog');
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         if ((@$dom->loadXML($oldxml)) != FALSE) {
             $xmlchanged = false;
-            foreach (array(
-            'str:proxy'
-            , 'str:proxyport'
-            , 'str:period'
-            , 'pop:syslog'
-            ) as $pname) {
+            foreach (array('str:proxy', 'str:proxyport', 'str:period', 'pop:syslog') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -354,17 +344,6 @@ class task_period_ftp extends task_appboxAbstract
 
         $this->logger->addDebug($line);
 
-        if (($ses_id = phrasea_create_session($usr_id)) == null) {
-            $this->logger->addDebug("Unable to create session");
-            return;
-        }
-
-        if (!($ph_session = phrasea_open_session($ses_id, $usr_id))) {
-            $this->logger->addDebug("Unable to open session");
-            phrasea_close_session($ses_id);
-            return;
-        }
-
         try {
             $ssl = ($ftp_export['ssl'] == '1');
             $ftp_client = $this->dependencyContainer['phraseanet.ftp.client']($ftp_server, 21, 300, $ssl, $this->proxy, $this->proxyport);
@@ -558,7 +537,6 @@ class task_period_ftp extends task_appboxAbstract
             unset($ftp_client);
         }
         $this->finalize($appbox, $id);
-//        phrasea_close_session($ses_id);
     }
 
     protected function postProcessOneContent(appbox $appbox, Array $row)

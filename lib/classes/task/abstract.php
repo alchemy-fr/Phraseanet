@@ -638,7 +638,7 @@ abstract class task_abstract
 
         // if something went wrong, report
         if ($exception) {
-            throw($exception);
+            throw $exception;
         }
     }
 

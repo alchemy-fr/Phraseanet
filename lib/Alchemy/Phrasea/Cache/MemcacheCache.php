@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use \Doctrine\Common\Cache\MemcacheCache as DoctrineMemcache;
+use Doctrine\Common\Cache\MemcacheCache as DoctrineMemcache;
 
 /**
  *
