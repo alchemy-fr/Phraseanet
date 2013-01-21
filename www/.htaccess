@@ -11,6 +11,7 @@
   RewriteRule ^account/.*$                      /index.php [L]
   RewriteRule ^developers/.*$                   /index.php [L]
   RewriteRule ^login/.*$                        /index.php [L]
+  RewriteRule ^prod/records/.*$                 /index.php [L]
   RewriteRule ^prod/records/edit/.*$            /index.php [L]
   RewriteRule ^prod/records/property/.*$        /index.php [L]
   RewriteRule ^prod/records/movecollection/.*$  /index.php [L]
