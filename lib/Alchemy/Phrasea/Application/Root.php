@@ -219,6 +219,10 @@ return call_user_func(function($environment = null) {
             if (isset($headers['X-Phraseanet-Redirect'])) {
                 return new RedirectResponse($headers['X-Phraseanet-Redirect'], 302, array('X-Status-Code' => 302));
             }
+
+            $message = isset(Response::$statusTexts[$e->getStatusCode()]) ? Response::$statusTexts[$e->getStatusCode()] : '';
+
+            return new Response($message, $e->getStatusCode(), $e->getHeaders());
         }
 
         if ($e instanceof \Exception_BadRequest) {
