@@ -70,7 +70,7 @@ class module_console_taskState extends Command
             return self::EXITCODE_BAD_ARGUMENT;
         }
 
-        $task_manager = new task_manager($this->container);
+        $task_manager = $this->container['task-manager'];
 
         $taskPID = $taskState = NULL;
         $exitCode = 0;

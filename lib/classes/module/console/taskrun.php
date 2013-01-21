@@ -10,12 +10,15 @@
  */
 
 use Alchemy\Phrasea\Command\Command;
-use Monolog\Handler;
-use Monolog\Logger;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use Monolog\Handler;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\RotatingFileHandler;
 
 /**
  * @todo write tests
@@ -44,11 +47,11 @@ class module_console_taskrun extends Command
             , task_abstract::RUNNER_MANUAL
         );
         $this->addOption(
-            'nolog'
-            , NULL
-            , 1 | InputOption::VALUE_NONE
-            , 'do not log to logfile'
-            , NULL
+            'ttyloglevel'
+            , 't'
+            , InputOption::VALUE_REQUIRED
+            , 'threshold : (DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT)'
+            , ''
         );
         $this->setDescription('Run task');
 
@@ -74,7 +77,8 @@ class module_console_taskrun extends Command
             throw new \RuntimeException('Argument must be an Id.');
         }
 
-        $task_manager = new task_manager($this->container);
+        $task_manager = $this->container['task-manager'];
+        $logger = $task_manager->getLogger();
 
         if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
             $schedStatus = $task_manager->getSchedulerState();
@@ -93,14 +97,50 @@ class module_console_taskrun extends Command
 
 
         if ($input->getOption('verbose')) {
-            $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
+            $handler = new StreamHandler(fopen('php://stdout', 'a'));
             $this->container['monolog']->pushHandler($handler);
         }
 
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
-        $handler = new Handler\RotatingFileHandler($logfile, 10);
+        $handler = new RotatingFileHandler($logfile, 10);
         $this->container['monolog']->pushHandler($handler);
         $this->task = $task_manager->getTask($task_id, $this->container['monolog']);
+
+        $lib2v = array(
+            'DEBUG'       => task_abstract::LOG_DEBUG,
+            'INFO'        => task_abstract::LOG_INFO,
+            'WARNING'     => task_abstract::LOG_WARNING,
+            'ERROR'       => task_abstract::LOG_ERROR,
+            'CRITICAL'    => task_abstract::LOG_CRITICAL,
+            'ALERT'       => task_abstract::LOG_ALERT
+        );
+
+        $tmpTask = $task_manager->getTask($task_id, null);
+        $taskname =  $tmpTask->getName();
+        unset($tmpTask);
+
+
+        // log to tty ?
+
+        if(($ttyloglevel = strtoupper($input->getOption('ttyloglevel'))) != '') {
+            if (!array_key_exists($ttyloglevel, $lib2v)) {
+                throw(new Alchemy\Phrasea\Exception\RuntimeException(sprintf(
+                        "Bad value '%s' for option loglevel\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $ttyloglevel))
+                );
+            }
+            $handler = new Handler\StreamHandler(
+                "php://stdout",
+                $lib2v[$ttyloglevel],
+                true
+            );
+            $logger->pushHandler($handler);
+        }
+
+        $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
+        $handler = new RotatingFileHandler($logfile, 10);
+        $logger->pushHandler($handler);
+
+        $this->task = $task_manager->getTask($task_id, $logger);
 
         register_tick_function(array($this, 'tick_handler'), true);
         declare(ticks = 1);

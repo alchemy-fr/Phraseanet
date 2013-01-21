@@ -635,7 +635,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
 
-        $taskManager = new \task_manager(self::$DI['app']);
+        $taskManager = self::$DI['app']['task-manager'];
         $tasks = $taskManager->getTasks();
 
         $found = false;

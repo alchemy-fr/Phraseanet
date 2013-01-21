@@ -24,6 +24,9 @@ use Symfony\Component\Filesystem\Exception\IOException;
  */
 class task_period_archive extends task_abstract
 {
+    const MINCOLD = 5;
+    const MAXCOLD = 300;
+
     /**
      * command line args specifics
      *
@@ -80,13 +83,13 @@ class task_period_archive extends task_abstract
         $request = http_request::getInstance();
 
         $parm2 = $request->get_parms(
-            "base_id"
-            , "hotfolder"
-            , "period"
-            , "move_archived"
-            , "move_error"
-            , "copy_spe"
-            , "delfolder"
+            'base_id'
+            , 'hotfolder'
+            , 'period'
+            , 'move_archived'
+            , 'move_error'
+            , 'copy_spe'
+            , 'delfolder'
             , 'cold'
         );
         $dom = new DOMDocument();
@@ -94,8 +97,16 @@ class task_period_archive extends task_abstract
         $dom->preserveWhiteSpace = false;
         if ($dom->loadXML($oldxml)) {
             $xmlchanged = false;
-            // foreach($parm2 as $pname=>$pvalue)
-            foreach (array("str:base_id", "str:hotfolder", "str:period", "boo:move_archived", "boo:move_error", "boo:delfolder", 'boo:copy_spe', 'str:cold') as $pname) {
+            foreach (array(
+            'str:base_id'
+            , 'str:hotfolder'
+            , 'str:period'
+            , 'boo:move_archived'
+            , 'boo:move_error'
+            , 'boo:delfolder'
+            , 'boo:copy_spe'
+            , 'str:cold'
+            ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -111,6 +122,7 @@ class task_period_archive extends task_abstract
                 // on fixe sa valeur
                 switch ($ptype) {
                     case "str":
+                    case "pop":
                         $ns->appendChild($dom->createTextNode($pvalue));
                         break;
                     case "boo":
@@ -136,55 +148,54 @@ class task_period_archive extends task_abstract
             {
                 if(xml)
                 {
-                    xml = $.parseXML(xml);
-                    xml = $(xml);
-
-                    var isyes = function(v) {
-                        v = v.toUpperCase().trim();
-                        return v=='O' || v=='Y' || v=='OUI' || v=='YES' || v=='1';
-                    }
+                    xml2 = $.parseXML(xml);
+                    xml2 = $(xml2);
 
                     with(document.forms['graphicForm'])
                     {
                         var i;
-                        var opts = base_id.options;
-                        var basefound = 0;
-                        for (i=1; basefound==0 && i<opts.length; i++) {
-                            if(opts[i].value == xml.find("base_id").text())
-                                basefound = i;
+                        var opts;
+                        var found;
+                        opts = base_id.options;
+                        for (found=0, i=1; found==0 && i<opts.length; i++) {
+                            if(opts[i].value == xml2.find("base_id").text())
+                            found = i;
                         }
-                        opts[basefound].selected = true;
-
-                        hotfolder.value       = xml.find("hotfolder").text();
-                        period.value          = xml.find("period").text();
-                        cold.value            = xml.find("cold").text();
-                        move_archived.checked = isyes(xml.find("move_archived").text());
-                        move_error.checked    = isyes(xml.find("move_error").text());
-                        delfolder.checked     = isyes(xml.find("delfolder").text());
-                        copy_spe.checked      = isyes(xml.find("copy_spe").text());
+                        opts[found].selected = true;
+                        period.value          = xml2.find("period").text();
+                        hotfolder.value       = xml2.find("hotfolder").text();
+                        cold.value            = xml2.find("cold").text();
+                        move_archived.checked = Number(xml2.find("move_archived").text()) > 0;
+                        move_error.checked    = Number(xml2.find("move_error").text()) > 0;
+                        delfolder.checked     = Number(xml2.find("delfolder").text()) > 0;
+                        copy_spe.checked      = Number(xml2.find("copy_spe").text()) > 0;
                     }
                 }
             }
 
+
+
             $(document).ready(function(){
-                $("#graphicForm *").change(function(){
-                    var limits = {
-                                    'period': {min:10, max:3600, allowempty:false} ,
-                                    'cold':   {min:5,  max:300,  allowempty:false}
-                                } ;
-                    var name = $(this).attr("name");
-                    if(name && limits[name])
+                var limits = {
+                    'period':{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
+                    'cold':{'min':<?php echo self::MINCOLD; ?>, 'max':<?php echo self::MAXCOLD; ?>}
+                } ;
+                $(".formElem").change(function(){
+                    fieldname = $(this).attr("name");
+                    switch((this.nodeName+$(this).attr("type")).toLowerCase())
                     {
-                        var v = $(this).val();
-                        if(v != "" || !limits[name].allowempty)
-                        {
-                            v = 0|v;
-                            if(v < limits[name].min)
-                                $(this).val(limits[name].min);
-                            else if(v > limits[name].max)
-                                $(this).val(limits[name].max);
-                        }
+                        case "inputtext":
+                            if (typeof(limits[fieldname])!='undefined') {
+                                var v = 0|this.value;
+                                if(v < limits[fieldname].min)
+                                    v = limits[fieldname].min;
+                                else if(v > limits[fieldname].max)
+                                    v = limits[fieldname].max;
+                                this.value = v;
+                            }
+                            break;
                     }
+                    setDirty();
                 });
             });
         </script>
@@ -200,45 +211,38 @@ class task_period_archive extends task_abstract
     {
         ob_start();
         ?>
-        <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
+        <form name="graphicForm" onsubmit="return(false);" method="post">
+            <br/>
             <?php echo _('task::archive:archivage sur base/collection/') ?> :
 
-            <select name="base_id">
+            <select class="formElem" name="base_id">
                 <option value="">...</option>
-        <?php
-        foreach ($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $databox) {
-            foreach ($databox->get_collections() as $collection) {
-                print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
-            }
-        }
-        ?>
+                <?php
+                foreach($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $databox) {
+                    foreach ($databox->get_collections() as $collection) {
+                        print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
+                    }
+                }
+                ?>
             </select>
             <br/>
             <br/>
-        <?php echo _('task::_common_:hotfolder') ?>
-            <input type="text" name="hotfolder" style="width:400px;" onchange="chgxmltxt(this, 'hotfolder');" value=""><br/>
-            <br/>
-        <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-            <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
-            <br/>
-        <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
-            <input type="text" name="cold" style="width:40px;" onchange="chgxmltxt(this, 'cold');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <?php echo _('task::_common_:hotfolder') ?>
-            <input type="text" name="hotfolder" style="width:400px;" value=""><br/>
+            <input class="formElem" type="text" name="hotfolder" style="width:400px;" value=""><br/>
             <br/>
             <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-            <input type="text" name="period" style="width:40px;" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+            <input class="formElem" type="text" name="period" style="width:40px;" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
             <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
-            <input type="text" name="cold" style="width:40px;" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+            <input class="formElem" type="text" name="cold" style="width:40px;" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-            <input type="checkbox" name="move_archived">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
+            <input class="formElem" type="checkbox" name="move_archived">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="checkbox" name="move_error">&nbsp;<?php echo _('task::archive:deplacer les fichiers non-archives dans _error') ?><br/>
+            <input class="formElem" type="checkbox" name="move_error">&nbsp;<?php echo _('task::archive:deplacer les fichiers non-archives dans _error') ?><br/>
             <br/>
-            <input type="checkbox" name="copy_spe">&nbsp;<?php echo _('task::archive:copier les fichiers \'.phrasea.xml\' et \'.grouping.xml\' dans _archived') ?><br/>
+            <input class="formElem" type="checkbox" name="copy_spe">&nbsp;<?php echo _('task::archive:copier les fichiers \'.phrasea.xml\' et \'.grouping.xml\' dans _archived') ?><br/>
             <br/>
-            <input type="checkbox" name="delfolder">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
+            <input class="formElem" type="checkbox" name="delfolder">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
         </form>
         <?php
         return ob_get_clean();
@@ -267,7 +271,7 @@ class task_period_archive extends task_abstract
         $base_id = (int) ($this->sxTaskSettings->base_id);
         $this->sbas_id = \phrasea::sbasFromBas($this->dependencyContainer, $base_id);
 
-        if ( ! $this->sbas_id) {
+        if (!$this->sbas_id) {
             $this->log('base_id unknown');
 
             return 'tostop';
@@ -288,20 +292,14 @@ class task_period_archive extends task_abstract
         // mask(s) of accepted files
         $this->tmask = array();
         $this->tmaskgrp = array();
-        $this->period = 60;
         $this->cold = 30;
 
         if (false !== $this->sxBasePrefs = @simplexml_load_string($collection->get_prefs())) {
             $this->sxBasePrefs["id"] = $base_id;
 
-            $this->period = (int) ($this->sxTaskSettings->period);
-            if ($this->period <= 0 || $this->period >= 3600) {
-                $this->period = 60;
-            }
-
             $this->cold = (int) ($this->sxTaskSettings->cold);
-            if ($this->cold <= 0 || $this->cold >= 300) {
-                $this->cold = 30;
+            if ($this->cold < self::MINCOLD || $this->cold > self::MAXCOLD) {
+                $this->cold = self::MINCOLD;
             }
 
             // check the data-repository exists
@@ -369,7 +367,7 @@ class task_period_archive extends task_abstract
                 }
 
                 $path_in = (string) ($this->sxTaskSettings->hotfolder);
-                if ( ! @is_dir($path_in)) {
+                if (!@is_dir($path_in)) {
                     if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                         $this->log(sprintf(('Warning : missing hotfolder \'%s\', restarting in 10 min.'), $path_in));
 
@@ -456,7 +454,7 @@ class task_period_archive extends task_abstract
                     case 'NORECSTODO':
                         $duration = time() - $duration;
                         if ($duration < ($period + $cold)) {
-                            for ($i = 0; $i < (($period + $cold) - $duration) && $this->running; $i ++ ) {
+                            for ($i = 0; $i < (($period + $cold) - $duration) && $this->running; $i++) {
                                 $s = $this->getState();
                                 if ($s == self::STATE_TOSTOP) {
                                     $this->setState(self::STATE_STOPPED);
@@ -482,7 +480,7 @@ class task_period_archive extends task_abstract
                         }
                         break;
                 }
-                $loop ++;
+                $loop++;
             }
         }
     }
@@ -724,7 +722,7 @@ class task_period_archive extends task_abstract
                     $time0 = time();
                 }
 
-                if (($iloop ++ % 100) == 0) {
+                if (($iloop++ % 100) == 0) {
                     usleep(1000);
                 }
 
@@ -753,7 +751,7 @@ class task_period_archive extends task_abstract
                     foreach (array("size", "ctime", "mtime") as $k) {
                         $n->setAttribute($k, $stat[$k]);
                     }
-                    $nnew ++;
+                    $nnew++;
                 }
                 $n->setAttribute('cid', $server_coll_id);
 
@@ -822,7 +820,7 @@ class task_period_archive extends task_abstract
                     continue;
                 }
 
-                if (($iloop ++ % 100) == 0) {
+                if (($iloop++ % 100) == 0) {
                     usleep(500);
                 }
 
@@ -845,7 +843,7 @@ class task_period_archive extends task_abstract
                     } else {
                         $n = $node->appendChild($dom->createElement('file'));
                         $n->setAttribute('name', $file);
-                        $nnew ++;
+                        $nnew++;
                     }
                     $this->setBranchHot($dom, $n);
                 } elseif ($dnl && $dnl->length == 1) {
@@ -901,7 +899,7 @@ class task_period_archive extends task_abstract
         $xpath = new DOMXPath($dom);
 
         for ($n = $node->firstChild; $this->running && $n; $n = $n->nextSibling) {
-            if (($iloop ++ % 100) == 0) {
+            if (($iloop++ % 100) == 0) {
                 usleep(1000);
             }
 
@@ -949,7 +947,7 @@ class task_period_archive extends task_abstract
                             }
                         }
 
-                        if ( ! $err) {
+                        if (!$err) {
                             // the group is ok, flag it ...
                             $n->setAttribute('grp', 'tocreate');
 
@@ -995,7 +993,7 @@ class task_period_archive extends task_abstract
                 }
             } else {
                 // this is a file
-                if ( ! $n->getAttribute('match')) {
+                if (!$n->getAttribute('match')) {
                     // because match can be set before
                     if ($name == '.phrasea.xml') {
                         // special file(s) always ok
@@ -1009,7 +1007,7 @@ class task_period_archive extends task_abstract
 
         // scan again for unmatched files
         for ($n = $node->firstChild; $this->running && $n; $n = $n->nextSibling) {
-            if ( ! $n->getAttribute('isdir') == '1' && ! $n->getAttribute('match')) {
+            if (!$n->getAttribute('isdir') == '1' && !$n->getAttribute('match')) {
                 // still no match, now it's an error (bubble to the top)
                 for ($nn = $n; $nn && $nn->nodeType == XML_ELEMENT_NODE; $nn = $nn->parentNode) {
                     $nn->setAttribute('error', '1');
@@ -1048,7 +1046,7 @@ class task_period_archive extends task_abstract
 
         $nodesToDel = array();
         for ($n = $node->firstChild; $this->running && $n; $n = $n->nextSibling) {
-            if (($iloop ++ % 20) == 0) {
+            if (($iloop++ % 20) == 0) {
                 usleep(1000);
             }
 
@@ -1101,7 +1099,7 @@ class task_period_archive extends task_abstract
                         $this->log($e->getMessage());
                     }
 
-                    $this->movedFiles ++;
+                    $this->movedFiles++;
                 }
             }
         }
@@ -1140,7 +1138,7 @@ class task_period_archive extends task_abstract
 
         $nodesToDel = array();
         for ($n = $node->firstChild; $this->running && $n; $n = $n->nextSibling) {
-            if (($iloop ++ % 20) == 0) {
+            if (($iloop++ % 20) == 0) {
                 usleep(1000);
             }
 
@@ -1217,7 +1215,7 @@ class task_period_archive extends task_abstract
 
         $ret = 0;
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
-            if (($iloop ++ % 20) == 0) {
+            if (($iloop++ % 20) == 0) {
                 usleep(1000);
             }
 
@@ -1283,7 +1281,7 @@ class task_period_archive extends task_abstract
 
         $nodesToDel = array();
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
-            if (($iloop ++ % 20) == 0) {
+            if (($iloop++ % 20) == 0) {
                 usleep(1000);
             }
 
@@ -1299,7 +1297,7 @@ class task_period_archive extends task_abstract
                     , $path_error . '/' . $name
                     , $depth + 1);
 
-                if ( ! $n->firstChild) {
+                if (!$n->firstChild) {
                     $nodesToDel[] = $n;
                 }
                 /**
@@ -1324,7 +1322,7 @@ class task_period_archive extends task_abstract
                         $this->log($e->getMessage());
                     }
 
-                    if ( ! $n->getAttribute('keep')) { // do not count copy of special files as a real event
+                    if (!$n->getAttribute('keep')) { // do not count copy of special files as a real event
                         $nodesToDel[] = $n;
                         $ret = true;
                     }
@@ -1345,13 +1343,13 @@ class task_period_archive extends task_abstract
                         $this->log($e->getMessage());
                     }
 
-                    if ( ! $n->getAttribute('keep')) { // do not count copy of special files as a real event
+                    if (!$n->getAttribute('keep')) { // do not count copy of special files as a real event
                         $nodesToDel[] = $n;
                         $ret = true;
                     }
                 }
 
-                if ( ! $n->getAttribute('keep')) {
+                if (!$n->getAttribute('keep')) {
                     $this->log(sprintf(('delete \'%s\''), $subpath . '/' . $name));
 
                     try {
@@ -1427,7 +1425,7 @@ class task_period_archive extends task_abstract
             $this->log(sprintf(('created story \'%s\''), $subpath . '/' . $grpFolder));
 
             // if the .grp does not have a representative doc, let's use a generic file
-            if ( ! ($rep = $node->getAttribute('grp_representation'))) {
+            if (!($rep = $node->getAttribute('grp_representation'))) {
 
                 try {
                     $this->dependencyContainer['filesystem']->copy(p4string::addEndSlash($this->dependencyContainer['phraseanet.registry']->get('GV_RootPath')) . 'www/skins/icons/substitution/regroup_doc.png', $genericdoc = ($path . '/group.jpg'), true);
@@ -1466,7 +1464,7 @@ class task_period_archive extends task_abstract
                 $rid = $story->get_record_id();
 
                 $this->log(sprintf('story %s created', $rid));
-                $this->archivedFiles ++;
+                $this->archivedFiles++;
 
                 if ($genericdoc) {
                     try {
@@ -1526,7 +1524,7 @@ class task_period_archive extends task_abstract
 
                     $nodesToDel[] = $captionFileNode;
 
-                    $this->movedFiles ++;
+                    $this->movedFiles++;
                 }
                 if ($representationFileNode) {
                     $representationFileNode->setAttribute('archived', '1');
@@ -1554,7 +1552,7 @@ class task_period_archive extends task_abstract
                     }
                     $nodesToDel[] = $representationFileNode;
 
-                    $this->movedFiles ++;
+                    $this->movedFiles++;
                 }
                 $node->setAttribute('grp', 'tocomplete');
             } catch (Exception $e) {
@@ -1602,10 +1600,10 @@ class task_period_archive extends task_abstract
             }
         }
 
-        if ( ! $stat0) {
+        if (!$stat0) {
             $stat0 = '0';
         }
-        if ( ! $stat1) {
+        if (!$stat1) {
             $stat1 = '0';
         }
 
@@ -1664,10 +1662,10 @@ class task_period_archive extends task_abstract
             }
         }
 
-        if ( ! $stat0) {
+        if (!$stat0) {
             $stat0 = '0';
         }
-        if ( ! $stat1) {
+        if (!$stat1) {
             $stat1 = '0';
         }
 
@@ -1781,7 +1779,7 @@ class task_period_archive extends task_abstract
         $subpath = substr($path, strlen($rootpath));
 
 
-        if ( ! $match) {
+        if (!$match) {
             // the file does not match on any mask
             $this->log(sprintf(("File '%s' does not match any mask"), $subpath . '/' . $file));
             $node->setAttribute('error', '1');
@@ -1848,10 +1846,10 @@ class task_period_archive extends task_abstract
         if ($this->sxTaskSettings->status) {
             $stat1 = (string) ($this->sxTaskSettings->status);
         }
-        if ( ! $stat0) {
+        if (!$stat0) {
             $stat0 = '0';
         }
-        if ( ! $stat1) {
+        if (!$stat1) {
             $stat1 = '0';
         }
 
@@ -1871,7 +1869,7 @@ class task_period_archive extends task_abstract
                 $captionFileNode->setAttribute('archived', '1');
             }
 
-            $this->archivedFiles ++;
+            $this->archivedFiles++;
         } catch (\Exception $e) {
 
             $this->log(("Error : can't insert record : " . $e->getMessage()));
@@ -1907,7 +1905,7 @@ class task_period_archive extends task_abstract
                     $this->log($e->getMessage());
                 }
             }
-            if ( ! $node->getAttribute('keep')) // do not count copy of special files as a real event
+            if (!$node->getAttribute('keep')) // do not count copy of special files as a real event
                 $ret = true;
         }
 
@@ -1936,12 +1934,12 @@ class task_period_archive extends task_abstract
                 }
             }
             // do not count copy of special files as a real event
-            if ( ! $node->getAttribute('keep')) {
+            if (!$node->getAttribute('keep')) {
                 $ret = true;
             }
         }
 
-        if ( ! $node->getAttribute('keep')) {
+        if (!$node->getAttribute('keep')) {
             $file = $node->getAttribute('name');
 
             try {
@@ -1952,10 +1950,10 @@ class task_period_archive extends task_abstract
 
             $nodesToDel[] = $node;
 
-            $this->movedFiles ++;
+            $this->movedFiles++;
         }
 
-        if ($captionFileNode && ! $captionFileNode->getAttribute('keep')) {
+        if ($captionFileNode && !$captionFileNode->getAttribute('keep')) {
             $file = $captionFileNode->getAttribute('name');
 
             try {
@@ -1967,7 +1965,7 @@ class task_period_archive extends task_abstract
 
             $nodesToDel[] = $captionFileNode;
 
-            $this->movedFiles ++;
+            $this->movedFiles++;
         }
 
         return;
@@ -1993,7 +1991,7 @@ class task_period_archive extends task_abstract
             $node->setAttribute($a, $v);
         }
 
-        if (($iloop ++ % 100) == 0) {
+        if (($iloop++ % 100) == 0) {
             usleep(1000);
         }
 
@@ -2067,6 +2065,73 @@ class task_period_archive extends task_abstract
         return $ret;
     }
 
+    /**
+     * Map a bag of metadatas indexed by **FieldNames** to an array ready for
+     * \record_adapter metadatas submission
+     *
+     * @param  \databox_descriptionStructure $metadatasStructure The databox structure related
+     * @param  MetadataBag                   $metadatas          The metadata bag
+     * @return array
+     */
+    protected function bagToArray(\databox_descriptionStructure $metadatasStructure, MetadataBag $metadatas)
+    {
+        $metas = array();
+        $unicode = new \unicode();
+
+        foreach ($metadatasStructure as $databox_field) {
+            if ($metadatas->containsKey($databox_field->get_tag()->getTagname())) {
+
+                if ($databox_field->is_multi()) {
+
+                    $values = $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asArray();
+
+                    $tmp = array();
+
+                    foreach ($values as $value) {
+                        foreach (\caption_field::get_multi_values($value, $databox_field->get_separator()) as $v) {
+                            $tmp[] = $v;
+                        }
+                    }
+
+                    $values = array_unique($tmp);
+
+                    foreach ($values as $value) {
+
+                        $value = $unicode->substituteCtrlCharacters($value, ' ');
+                        $value = $unicode->toUTF8($value);
+                        if ($databox_field->get_type() == 'date') {
+                            $value = $unicode->parseDate($value);
+                        }
+
+                        $metas[] = array(
+                            'meta_struct_id' => $databox_field->get_id(),
+                            'value'          => $value,
+                            'meta_id'        => null
+                        );
+                    }
+                } else {
+                    $value = $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asString();
+
+                    $value = $unicode->substituteCtrlCharacters($value, ' ');
+                    $value = $unicode->toUTF8($value);
+                    if ($databox_field->get_type() == 'date') {
+                        $value = $unicode->parseDate($value);
+                    }
+
+                    $metas[] = array(
+                        'meta_struct_id' => $databox_field->get_id(),
+                        'value'          => $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asString(),
+                        'meta_id'        => null
+                    );
+                }
+            }
+        }
+
+        unset($unicode);
+
+        return $metas;
+    }
+
     protected function readXMLForDatabox(\databox_descriptionStructure $metadatasStructure, $pathfile)
     {
         if (false === $this->dependencyContainer['filesystem']->exists($pathfile)) {
@@ -2083,15 +2148,15 @@ class task_period_archive extends task_abstract
             $field = trim($field);
 
             $meta = $metadatasStructure->get_element_by_name(trim($tagname));
-            if ( ! $meta) {
+            if (!$meta) {
                 continue;
             }
 
             if ($meta->is_multi()) {
                 $fields = caption_field::get_multi_values($field, $meta->get_separator());
 
-                if ( ! $metadataBag->containsKey($meta->get_name())) {
-                    $values = $fields;
+                if (!$metadataBag->containsKey($meta->get_name())) {
+                    $values = new \PHPExiftool\Driver\Value\Multi($fields);
                 } else {
                     $values = array_merge($metadataBag->get($meta->get_name())->getValue(), $fields);
                 }

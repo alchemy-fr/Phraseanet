@@ -3,7 +3,7 @@
 use Alchemy\Phrasea\CLI;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class module_console_tasklistTest extends PHPUnit_Framework_TestCase
+class module_console_tasklistTest extends PhraseanetPHPUnitAbstract
 {
 
     /**
@@ -18,7 +18,7 @@ class module_console_tasklistTest extends PHPUnit_Framework_TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $task_manager = new task_manager($application);
+        $task_manager = self::$DI['app']['task-manager'];
         $lines = explode("\n", trim($commandTester->getDisplay()));
 
         if (count($task_manager->getTasks()) > 0) {

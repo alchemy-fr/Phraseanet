@@ -15,7 +15,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
     }
 
     public function testRouteTaskManager_tasks() {
-        $task_manager = new \task_manager(self::$DI['app']);
+        $task_manager = self::$DI['app']['task-manager'];
 
         $crawler = self::$DI['client']->request(
                 'GET', '/admin/task-manager/tasks/', array()
@@ -36,7 +36,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
     }
 
     public function testRouteTaskManager_task_create() {
-        $task_manager = new \task_manager(self::$DI['app']);
+        $task_manager = self::$DI['app']['task-manager'];
 
         $nTasks0 = count($task_manager->getTasks());
 

@@ -62,7 +62,7 @@ class patch_370a8 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $task_manager = new task_manager($app);
+        $taskManager = $app['task-manager'];
 
         $ttasks = array();
         $conn = $appbox->get_connection();
