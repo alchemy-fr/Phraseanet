@@ -3,7 +3,7 @@
 use Alchemy\Phrasea\CLI;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class module_console_schedulerStateTest extends PHPUnit_Framework_TestCase
+class module_console_schedulerStateTest extends PhraseanetPHPUnitAbstract
 {
 
     /**
@@ -18,14 +18,15 @@ class module_console_schedulerStateTest extends PHPUnit_Framework_TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $task_manager = new task_manager($application);
+        $task_manager = self::$DI['app']['task-manager'];
+
         $state = $task_manager->getSchedulerState();
 
         $sentence = sprintf('Scheduler is %s', $state['status']);
         $this->assertTrue(strpos($commandTester->getDisplay(), $sentence) !== false);
 
         $commandTester->execute(array('command' => $command->getName(), '--short'=>true));
-        $task_manager = new task_manager($application);
+
         $state = $task_manager->getSchedulerState();
 
         $sentence = sprintf('%s(%s)', $state['status'], $state['pid']);

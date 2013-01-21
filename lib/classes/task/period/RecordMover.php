@@ -45,7 +45,8 @@ class task_period_RecordMover extends task_appboxAbstract
         $request = http_request::getInstance();
 
         $parm2 = $request->get_parms(
-            "period", "logsql"
+            'period'
+            , 'logsql'
         );
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
@@ -53,10 +54,9 @@ class task_period_RecordMover extends task_appboxAbstract
 
         if ($dom->loadXML($oldxml)) {
             $xmlchanged = false;
-            // foreach($parm2 as $pname=>$pvalue)
             foreach (array(
-            "str:period",
-            "boo:logsql"
+            'str:period'
+            , 'boo:logsql'
             ) as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -67,13 +67,12 @@ class task_period_RecordMover extends task_appboxAbstract
                         $ns->removeChild($n);
                 } else {
                     // field did not exists, create it
-                    $dom->documentElement->appendChild($dom->createTextNode("\t"));
                     $ns = $dom->documentElement->appendChild($dom->createElement($pname));
-                    $dom->documentElement->appendChild($dom->createTextNode("\n"));
                 }
                 // set the value
                 switch ($ptype) {
                     case "str":
+                    case "pop":
                         $ns->appendChild($dom->createTextNode($pvalue));
                         break;
                     case "boo":
@@ -85,113 +84,6 @@ class task_period_RecordMover extends task_appboxAbstract
         }
 
         return $dom->saveXML();
-    }
-
-    /**
-     * must fill the gui (using js) from xml
-     *
-     * @param  string      $xml
-     * @param  form-object $form
-     * @return string      "" or error message
-     */
-    public function xml2graphic($xml, $form)
-    {
-        if (false !== $sxml = simplexml_load_string($xml)) {
-            if ((int) ($sxml->period) < 10)
-                $sxml->period = 10;
-            elseif ((int) ($sxml->period) > 1440) // 1 jour
-                $sxml->period = 1440;
-
-            if ((string) ($sxml->delay) == '')
-                $sxml->delay = 0;
-            ?>
-            <script type="text/javascript">
-            <?php echo $form ?>.period.value   = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
-            <?php echo $form ?>.logsql.checked = <?php echo ($sxml->logsql > 0 ? 'true' : 'false'); ?>;
-
-                parent.$("#sqlu").text("");
-                parent.$("#sqls").text("");
-                var data = {};
-                data["ACT"] = "CALCTEST";
-                data["taskid"]=<?php echo $this->getID(); ?>;
-                data["cls"]="RecordMover";
-                data["xml"] = "<?php echo p4string::MakeString($sxml->saveXML(), "js", '"') ?>";
-                parent.$.ajax({ url: "/admin/task-manager/task/<?php echo $this->getID(); ?>/facility/"
-                    , data: data
-                    , dataType:'json'
-                    , type:"POST"
-                    , async:true
-                    , success:function(data) {
-                        t = "";
-                        for (i in data.tasks) {
-                            t += "<div class=\"title\">&nbsp;";
-                            if(data.tasks[i].active)
-                                t += "<span class=\"active\">&nbsp;X&nbsp;</span>&nbsp;";
-                            else
-                                t += "<span class=\"notactive\">&nbsp;X&nbsp;</span>&nbsp;";
-                            if(data.tasks[i].name_htmlencoded)
-                                t += "<b>" + data.tasks[i].name_htmlencoded + "</b>";
-                            else
-                                t += "<b><i>sans nom</i></b>";
-
-                            if(data.tasks[i].basename_htmlencoded)
-                                t += " (action=" + data.tasks[i].action + ' on ' +  data.tasks[i].basename_htmlencoded + ')';
-                            else
-                                t += " (action=" + data.tasks[i].action + ' on <i>Unknown</i>)';
-                            t += "</div>";
-
-                            if(data.tasks[i].err_htmlencoded) ;
-                            t += "<div class=\"err\">" + data.tasks[i].err_htmlencoded + "</div>";
-
-                            t += "<div class=\"sql\">";
-
-                            if(data.tasks[i].sql && data.tasks[i].sql.test.sql_htmlencoded)
-                                t += "<div class=\"sqltest\">" + data.tasks[i].sql.test.sql_htmlencoded + "</div>";
-                            t += "--&gt; <span id=\"SQLRET"+i+"\"><i>wait...</i></span><br/>";
-
-                            t += "</div>";
-                        }
-                        parent.$("#sqla").html(t);
-
-                        var data = {};
-                        data["ACT"] = "PLAYTEST";
-                        data["taskid"]=<?php echo $this->getID(); ?>;
-                        data["cls"]="RecordMover";
-                        data["xml"] = "<?php echo p4string::MakeString($sxml->saveXML(), "js", '"') ?>";
-                        parent.$.ajax({ url: "/admin/task-manager/task/<?php echo $this->getID(); ?>/facility/"
-                            , data: data
-                            , dataType:'json'
-                            , type:"POST"
-                            , async:true
-                            , success:function(data) {
-                                for (i in data.tasks) {
-                                    if (data.tasks[i].sql) {
-                                        if (data.tasks[i].sql.test.err) {
-                                            parent.$("#SQLRET"+i).html("err: " + data.tasks[i].sql.test.err);
-                                        } else {
-                                            t = '';
-                                            for(j in data.tasks[i].sql.test.result.rids)
-                                                t += (t?', ':'') + data.tasks[i].sql.test.result.rids[j];
-                                            if(data.tasks[i].sql.test.result.rids.length < data.tasks[i].sql.test.result.n)
-                                                t += ', ...';
-                                            parent.$("#SQLRET"+i).html("n=" + data.tasks[i].sql.test.result.n + ", rids:(" + t + ")");
-                                        }
-                                    } else {
-                                        parent.$("#SQLRET"+i).html("");
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-
-            </script>
-            <?php
-            return "";
-        } else { // ... so we NEVER come here
-            // bad xml
-            return "BAD XML";
-        }
     }
 
     /**
@@ -259,31 +151,30 @@ class task_period_RecordMover extends task_appboxAbstract
     {
         ?>
         <script type="text/javascript">
-            function taskFillGraphic_<?php echo(get_class($this)); ?>(xmltxt)
+            function taskFillGraphic_<?php echo(get_class($this));?>(xml)
             {
-                if(xmltxt)
+                $("#sqlu").text("");
+                $("#sqls").text("");
+                if(xml)
                 {
-                    xml = $.parseXML(xmltxt);
-                    xml = $(xml);
-
-                    var isyes = function(v) {
-                        v = v.toUpperCase().trim();
-                        return v=='O' || v=='Y' || v=='OUI' || v=='YES' || v=='1';
-                    }
+                    xml2 = $.parseXML(xml);
+                    xml2 = $(xml2);
 
                     with(document.forms['graphicForm'])
                     {
-                        period.value   = xml.find("period").text();
-                        logsql.checked = isyes(xml.find("logsql").text());
+                        period.value  = xml2.find("period").text();
+                        logsql.checked   = Number(xml2.find("logsql").text()) > 0;
+//                        maxrecs.value = xml.find("maxrecs").text();
+//                        maxmegs.value = xml.find("maxmegs").text();
                     }
 
-                    $("#sqlu").text("");
-                    $("#sqls").text("");
-                    $.ajax({ url: "/admin/task/<?php echo $this->getID() ?>/facility/"
-                        , data: {
-                            ACT: "CALCTEST",
-                            xml: xmltxt
-                        }
+                    var data = {};
+                    data["ACT"] = "CALCTEST";
+                    data["taskid"]=<?php echo $this->getID(); ?>;
+                    data["cls"]="RecordMover";
+                    data["xml"] = xml;
+                    $.ajax({ url: "/admin/task-manager/task/<?php echo $this->getID(); ?>/facility/"
+                        , data: data
                         , dataType:'json'
                         , type:"POST"
                         , async:true
@@ -319,11 +210,13 @@ class task_period_RecordMover extends task_appboxAbstract
                             }
                             $("#sqla").html(t);
 
-                            $.ajax({ url: "/admin/task/<?php echo $this->getID() ?>/facility/"
-                                , data: {
-                                    ACT: "PLAYTEST",
-                                    xml: xmltxt
-                                }
+                            var data = {};
+                            data["ACT"] = "PLAYTEST";
+                            data["taskid"]=<?php echo $this->getID(); ?>;
+                            data["cls"]="RecordMover";
+                            data["xml"] = xml;
+                            $.ajax({ url: "/admin/task-manager/task/<?php echo $this->getID(); ?>/facility/"
+                                , data: data
                                 , dataType:'json'
                                 , type:"POST"
                                 , async:true
@@ -346,35 +239,49 @@ class task_period_RecordMover extends task_appboxAbstract
                                     }
                                 }
                             });
-
                         }
                     });
-
                 }
             }
 
-            $(document).ready(function(){
-                $("#graphicForm *").change(function(){
-                    var limits = {
-                        'period': {min:10, max:3600, allowempty:false}
-                    } ;
-                    var name = $(this).attr("name");
-                    if(name && limits[name])
-                    {
-                        var v = $(this).val();
-                        if(v != "" || !limits[name].allowempty)
-                        {
-                            v = 0|v;
-                            if(v < limits[name].min)
-                                $(this).val(limits[name].min);
-                            else if(v > limits[name].max)
-                                $(this).val(limits[name].max);
-                        }
-                    }
-                });
-            });
+            $(document).ready(
+                function(){
+                    (function( $ ){
+                        $.fn.serializeJSON=function() {
+                            var json = {};
+                            jQuery.map($(this).serializeArray(), function(n, i){
+                                json[n['name']] = n['value'];
+                            });
 
-       </script>
+                            return json;
+                        };
+                    })( jQuery );
+
+                    var limits = {
+                        'period':{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
+                        'delay':{min:0}
+                    } ;
+                    $(".formElem").change(function(){
+                        fieldname = $(this).attr("name");
+                        switch((this.nodeName+$(this).attr("type")).toLowerCase())
+                        {
+                            case "inputtext":
+                                if (typeof(limits[fieldname])!='undefined') {
+                                    var v = 0|this.value;
+                                    if(v < limits[fieldname].min)
+                                        v = limits[fieldname].min;
+                                    else if(v > limits[fieldname].max)
+                                        v = limits[fieldname].max;
+                                    this.value = v;
+                                }
+                                break;
+                        }
+                        setDirty();
+                    });
+                }
+            );
+
+        </script>
         <?php
     }
 
@@ -387,12 +294,13 @@ class task_period_RecordMover extends task_appboxAbstract
     {
         ob_start();
         ?>
-        <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
+        <form name="graphicForm" onsubmit="return(false);" method="post">
+            <br/>
             <?php echo _('task::_common_:periodicite de la tache') ?>
-            <input type="text" name="period" style="width:40px;"" value="" />
+            <input class="formElem" type="text" name="period" style="width:40px;" value="" />
             <?php echo _('task::_common_:secondes (unite temporelle)') ?>
-                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                   <input type="checkbox" name="logsql" />&nbsp;log changes
+            <br/>
+            <input class="formElem" type="checkbox" name="logsql" />&nbsp;log changes
         </form>
         <center>
             <div class="terminal" id="sqla"></div>
@@ -427,26 +335,26 @@ class task_period_RecordMover extends task_appboxAbstract
 
         foreach ($this->sxTaskSettings->tasks->task as $sxtask) {
 
-            if ( ! $this->running) {
+            if (!$this->running) {
                 break;
             }
 
             $task = $this->calcSQL($sxtask);
 
-            if ( ! $task['active']) {
+            if (!$task['active']) {
                 continue;
             }
 
             if ($logsql) {
                 $this->log(sprintf("playing task '%s' on base '%s'"
                         , $task['name']
-                        , $task['basename'] ? $task['basename'] : '<unknown>'));
+                        , $task['basename'] ? $task['basename'] : '<unknown>'), self::LOG_INFO);
             }
 
             try {
                 $connbas = connection::getPDOConnection($this->dependencyContainer, $task['sbas_id']);
             } catch (Exception $e) {
-                $this->log(sprintf("can't connect sbas %s", $task['sbas_id']));
+                $this->log(sprintf("can't connect sbas %s", $task['sbas_id']), self::LOG_ERROR);
                 continue;
             }
 
@@ -762,7 +670,7 @@ class task_period_RecordMover extends task_appboxAbstract
 
         // criteria <text field="XXX" compare="OP" value="ZZZ" />
         foreach ($sxtask->from->text as $x) {
-            $ijoin ++;
+            $ijoin++;
             $comp = strtoupper($x['compare']);
             if (in_array($comp, array('<', '>', '<=', '>=', '=', '!='))) {
                 $s = 'p' . $ijoin . '.name=\'' . $x['field'] . '\' AND p' . $ijoin . '.value' . $comp;
@@ -777,7 +685,7 @@ class task_period_RecordMover extends task_appboxAbstract
 
         // criteria <date direction ="XXX" field="YYY" delta="Z" />
         foreach ($sxtask->from->date as $x) {
-            $ijoin ++;
+            $ijoin++;
             $s = 'p' . $ijoin . '.name=\'' . $x['field'] . '\' AND NOW()';
             $s .= strtoupper($x['direction']) == 'BEFORE' ? '<' : '>=';
             $delta = (int) ($x['delta']);

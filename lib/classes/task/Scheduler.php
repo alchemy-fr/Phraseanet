@@ -126,7 +126,7 @@ class task_Scheduler
         $sql = "UPDATE sitepreff SET schedstatus='started'";
         $conn->exec($sql);
 
-        $task_manager = new task_manager($this->dependencyContainer);
+        $task_manager = $this->dependencyContainer['task-manager'];
 
         // set every 'auto-start' task to start
         foreach ($task_manager->getTasks() as $task) {
