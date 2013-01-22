@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered;
+
 /**
  *
  *
@@ -106,29 +109,29 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         $datas = $dom_xml->saveXml();
 
+        try {
+            $registeredUser = \User_Adapter::getInstance($params['usr_id'], $this->app);
+        } catch (\Exception $e) {
+            return;
+        }
+
         foreach ($mailColl as $usr_id => $base_ids) {
             $mailed = false;
 
-            $send_notif = ($this->get_prefs(__CLASS__, $usr_id) != '0');
-            if ($send_notif) {
+            if ($this->shouldSendNotificationFor($usr_id)) {
                 try {
                     $admin_user = User_Adapter::getInstance($usr_id, $this->app);
+
+                    $receiver = Receiver::fromUser($admin_user);
+                    $mail = MailInfoUserRegistered::create($this->app, $receiver);
+                    $mail->setRegisteredUser($registeredUser);
+
+                    $this->app['notification.deliverer']->deliver($mail);
+
+                    $mailed = true;
                 } catch (Exception $e) {
                     continue;
                 }
-
-                $dest = $admin_user->get_email();
-
-                $dest = $admin_user->get_display_name();
-
-                $to = array('email' => $admin_user->get_email(), 'name'  => $dest);
-                $from = array(
-                    'email' => $this->app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
-                    'name'  => $this->app['phraseanet.registry']->get('GV_homeTitle')
-                );
-
-                if (self::mail($to, $from, $datas))
-                    $mailed = true;
             }
 
             $this->broker->notify($usr_id, __CLASS__, $datas, $mailed);
@@ -183,78 +186,6 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
     public function get_description()
     {
         return _('Recevoir des notifications lorsqu\'un utilisateur demande une inscription necessitant mon approbation');
-    }
-
-    /**
-     *
-     * @param  Array   $to
-     * @param  Array   $from
-     * @param  string  $datas
-     * @return boolean
-     */
-    public function mail($to, $from, $datas)
-    {
-        $subject = sprintf(
-            _('admin::register: demande d\'inscription sur %s'), $this->app['phraseanet.registry']->get('GV_homeTitle')
-        );
-
-        $body = "<div>"
-            . _('admin::register: un utilisateur a fait une demande d\'inscription')
-            . "</div>\n";
-
-        $sx = simplexml_load_string($datas);
-
-        $usr_id = (string) $sx->usr_id;
-
-        try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
-        } catch (Exception $e) {
-            return false;
-        }
-
-        $body .= "<br/>\n<div>Login : "
-            . $registered_user->get_login() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur nom')
-            . " : " . $registered_user->get_firstname() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur prenom')
-            . " : " . $registered_user->get_lastname() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur email')
-            . " : " . $registered_user->get_email() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur adresse')
-            . " : " . $registered_user->get_address() . "</div>\n";
-        $body .= "<div>" . $registered_user->get_city()
-            . " " . $registered_user->get_zipcode() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur telephone')
-            . " : " . $registered_user->get_tel() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur fax')
-            . " : " . $registered_user->get_fax() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur poste')
-            . "/" . _('admin::compte-utilisateur societe')
-            . " " . $registered_user->get_job()
-            . " " . $registered_user->get_company() . "</div>\n";
-
-        $base_ids = $sx->base_ids;
-
-        $body .= "<br/>\n<div>"
-            . _('admin::register: les demandes de l\'utilisateur portent sur les bases suivantes')
-            . "</div>\n";
-        $body .= "<ul>\n";
-
-        foreach ($base_ids->base_id as $base_id) {
-            $body .= "<li>"
-                . phrasea::sbas_names(phrasea::sbasFromBas($this->app, (string) $base_id), $this->app)
-                . ' - '
-                . phrasea::bas_names((string) $base_id, $this->app) . "</li>\n";
-        }
-
-        $body .= "</ul>\n";
-
-        $body .= "<br/>\n<div><a href='" . $this->app['phraseanet.registry']->get('GV_ServerName')
-            . "login/?redirect=admin' target='_blank'>"
-            . _('admin::register: vous pourrez traiter ses demandes en ligne via l\'interface d\'administration')
-            . "</a></div>\n";
-
-        return mail::send_mail($this->app, $subject, $body, $to, $from);
     }
 
     /**

@@ -14,6 +14,10 @@ namespace Alchemy\Phrasea\Controller\Root;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -234,14 +238,22 @@ class Login implements ControllerProviderInterface
 
         try {
             $user = \User_Adapter::getInstance((int) $usrId, $app);
-            $email = $user->get_email();
 
-            if (true === \mail::mail_confirmation($app, $email, $usrId)) {
-                return $app->redirect('/login/?notice=mail-sent');
-            }
+            $expire = new \DateTime('+3 days');
+            $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+
+            $mail = MailRequestEmailConfirmation::create($app, Receiver::fromUser($user));
+            $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
+            $mail->setExpiration($expire);
+
+            $app['notification.deliverer']->deliver($mail);
+
+            return $app->redirect('/login/?notice=mail-sent');
         } catch (\Exception $e) {
-            return $app->redirect('/login/?error=user-not-found');
+
         }
+
+        return $app->redirect('/login/?error=user-not-found');
     }
 
     /**
@@ -277,29 +289,15 @@ class Login implements ControllerProviderInterface
 
         if (\Swift_Validate::email($user->get_email())) {
             if (count($user->ACL()->get_granted_base()) > 0) {
-                \mail::mail_confirm_registered($app, $user->get_email());
+                $mail = MailSuccessEmailConfirmationRegistered::create($app, Receiver::fromUser($user));
+                $app['notification.deliverer']->deliver($mail);
             }
 
             $user->set_mail_locked(false);
             \random::removeToken($app, $code);
 
-            $appboxRegister = new \appbox_register($app['phraseanet.appbox']);
-
-            $list = $appboxRegister->get_collection_awaiting_for_user($app, $user);
-
-            if (count($list) > 0) {
-                $others = array();
-
-                foreach ($list as $collection) {
-                    $others[] = $collection->get_name();
-                }
-
-                \mail::mail_confirm_unregistered($app, $user->get_email(), $others);
-
-                return $app->redirect('/login/?redirect=prod&notice=confirm-ok-wait');
-            }
-
-            return $app->redirect('/login/?redirect=prod&notice=confirm-ok');
+            $mail = MailSuccessEmailConfirmationUnregistered::create($app, Receiver::fromUser($user));
+            $app['notification.deliverer']->deliver($mail);
         }
     }
 
@@ -328,10 +326,14 @@ class Login implements ControllerProviderInterface
             if ($token) {
                 $url = $app['url_generator']->generate('login_forgot_password', array('token' => $token), true);
 
-                if (\mail::forgot_passord($app, $mail, $user->get_login(), $url)) {
+                $mail = MailRequestEmailConfirmation::create($app, Receiver::fromUser($user));
+                $mail->setButtonUrl($url);
+
+                try {
+                    $app['notification.deliverer']->deliver($mail);
                     return $app->redirect($app['url_generator']->generate('login_forgot_password', array('sent' => 'ok')));
-                } else {
-                    return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'mailserver')));
+                } catch (\Exception $e) {
+                    return $app->redirect($app['url_generator']->generate('login_forgot_password', array('sent' => 'ok')));
                 }
             }
         }
@@ -686,9 +688,20 @@ class Login implements ControllerProviderInterface
             $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
 
             $user->set_mail_locked(true);
-            if (true === \mail::mail_confirmation($app, $user->get_email(), $user->get_id())) {
+
+            try {
+                $expire = new \DateTime('+3 days');
+                $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+
+                $mail = MailRequestEmailConfirmation::create($app, Receiver::fromUser($user));
+                $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
+                $mail->setExpiration($expire);
+
+                $app['notification.deliverer']->deliver($mail);
 
                 return $app->redirect('/login/?notice=mail-sent');
+            } catch (\Exception $e) {
+
             }
 
             return $app->redirect(sprintf('/login/?usr=%d', $user->get_id()));

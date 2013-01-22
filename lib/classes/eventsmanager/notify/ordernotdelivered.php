@@ -10,6 +10,9 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Emitter;
+use Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled;
 
 /**
  *
@@ -72,8 +75,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
 
         $mailed = false;
 
-        $send_notif = ($this->get_prefs(__CLASS__, $params['to']) != '0');
-        if ($send_notif) {
+        if ($this->shouldSendNotificationFor($params['to'])) {
             try {
                 $user_from = User_Adapter::getInstance($params['from'], $this->app);
                 $user_to = User_Adapter::getInstance($params['to'], $this->app);
@@ -81,17 +83,20 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
                 return false;
             }
 
-            $to = array(
-                'email' => $user_to->get_email(),
-                'name'  => $user_to->get_display_name()
-            );
-            $from = array(
-                'email' => $user_from->get_email(),
-                'name'  => $user_from->get_display_name()
-            );
+            try {
+                $receiver = Receiver::fromUser($user_to);
+                $emitter = Emitter::fromUser($user_from);
 
-            if (self::mail($to, $from, $params['n']))
+                $mail = MailInfoOrderCancelled::create($this->app, $receiver, $emitter);
+                $mail->setQuantity($params['n']);
+                $mail->setDeliverer($user_from);
+
+                $this->app['notification.deliverer']->deliver($mail);
+
                 $mailed = true;
+            } catch (\Exception $e) {
+
+            }
         }
 
         return $this->broker->notify($params['to'], __CLASS__, $datas, $mailed);
@@ -130,18 +135,6 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
     public function get_description()
     {
         return _('Refus d\'elements de commande');
-    }
-
-    public function mail($to, $from, $n)
-    {
-        $subject = sprintf(_('push::mail:: Refus d\'elements de votre commande'));
-
-        $body = "<div>"
-            . sprintf(
-                _('%s a refuse %d elements de votre commande'), $from['name'], $n
-            ) . "</div>\n";
-
-        return mail::send_mail($this->app, $subject, $body, $to, $from, array());
     }
 
     /**

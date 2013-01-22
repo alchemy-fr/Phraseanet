@@ -29,4 +29,9 @@ abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
 
         return $user->getPrefs('notification_' . $class);
     }
+
+    protected function shouldSendNotificationFor($usr_id)
+    {
+        return 0 !== (int) $this->get_prefs(get_class($this), $usr_id);
+    }
 }

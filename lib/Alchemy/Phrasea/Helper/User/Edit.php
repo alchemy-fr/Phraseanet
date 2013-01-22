@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Helper\User;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
+use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -537,7 +539,19 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $new_email = $user->get_email();
 
         if ($old_email != $new_email) {
-            \mail::change_mail_information($this->app, $user->get_display_name(), $old_email, $new_email);
+
+            $newReceiver = new Receiver(null, $new_email);
+            $oldReceiver = new Receiver(null, $old_email);
+
+            $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, sprintf(_('You will now receive notifications at %s'), $new_email));
+            $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, sprintf(_('You will no longer receive notifications at %s'), $old_email));
+
+            try {
+                $this->app['notification.deliverer']->deliver($mailOldAddress);
+                $this->app['notification.deliverer']->deliver($mailNewAddress);
+            } catch (\Exception $e) {
+
+            }
         }
 
         return $this;

@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Controller\Root;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -293,7 +295,18 @@ class Account implements ControllerProviderInterface
             return $app->redirect('/account/reset-email/?notice=mail-match');
         }
 
-        if (!\mail::reset_email($app, $email, $app['phraseanet.user']->get_id()) === true) {
+        try {
+            $date = new DateTime('1 day');
+            $token = random::getUrlToken($app, \random::TYPE_EMAIL, $app['phraseanet.user']->get_id(), $date, $app['phraseanet.user']->get_email());
+            $url = $app['phraseanet.registry']->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
+
+            $receiver = Receiver::fromUser($app['phraseanet.user']);
+            $mail = MailRequestEmailUpdate::create($app, $receiver, null);
+            $mail->setUrl($url);
+            $mail->setExpiration($date);
+
+            $app['notification.deliverer']->deliver($mail);
+        } catch (\Exception $e) {
             return $app->redirect('/account/reset-email/?notice=mail-server');
         }
 

@@ -9,6 +9,10 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Notification\Emitter;
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailInfoPushReceived;
+
 /**
  *
  *
@@ -78,22 +82,27 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
 
         $mailed = false;
 
-        $send_notif = ($this->get_prefs(__CLASS__, $params['to']) != '0');
-        if ($send_notif) {
-            $email = array(
-                'email' => $params['to_email'],
-                'name'  => $params['to_name']
-            );
-            $from = array(
-                'email'  => $params['from_email'],
-                'name'   => $params['from_email']
-            );
-            $message = $params['message'];
-            $url = $params['url'];
-            $accuse = $params['accuse'];
+        if ($this->shouldSendNotificationFor($params['to'])) {
+            try {
+                $repository = $this->app['EM']->getRepository('\Entities\Basket');
+                $basket = $repository->find($params['ssel_id']);
 
-            if (self::mail($email, $from, $message, $url, $accuse))
+                $user_from = User_Adapter::getInstance($params['from'], $this->app);
+                $user_to = User_Adapter::getInstance($params['to'], $this->app);
+
+                $receiver = Receiver::fromUser($user_from);
+                $emitter = Emitter::fromUser($user_to);
+
+                $mail = MailInfoPushReceived::create($this->app, $receiver, $emitter, $params['message']);
+                $mail->setBasket($basket);
+                $mail->setPusher($user_from);
+
+                $this->app['notification.deliverer']->deliver($mail, $params['accuse']);
+
                 $mailed = true;
+            } catch (Exception $e) {
+
+            }
         }
 
         return $this->broker->notify($params['to'], __CLASS__, $datas, $mailed);
@@ -156,32 +165,4 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
         return true;
     }
 
-    /**
-     *
-     * @param  Array   $to
-     * @param  Array   $from
-     * @param  string  $message
-     * @param  string  $url
-     * @param  boolean $accuse
-     * @return boolean
-     */
-    public function mail($to, $from, $message, $url, $accuse)
-    {
-        $subject = _('push::mail:: Reception de documents');
-
-        $body = "<div>"
-            . _('push::Vous pouvez vous connecter a l\'adresse suivante afin de retrouver votre panier, voir les previews, les descriptions, le telecharger, etc.')
-            . "</div>\n";
-
-        $body .= '<div><a href="' . $url . '">' . $url . "</a></div>\n";
-
-        $body .= " <br/> ";
-
-        $body .= $message;
-
-        $body .= "<br/>\n<br/>\n<br/>\n"
-            . _('push::atention: ce lien est unique et son contenu confidentiel, ne divulguez pas');
-
-        return mail::send_mail($this->app, $subject, $body, $to, $from, array(), $accuse);
-    }
 }

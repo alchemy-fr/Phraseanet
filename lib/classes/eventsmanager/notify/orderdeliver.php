@@ -10,6 +10,9 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Notification\Emitter;
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered;
 
 /**
  *
@@ -92,8 +95,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
 
         $mailed = false;
 
-        $send_notif = ($this->get_prefs(__CLASS__, $params['to']) != '0');
-        if ($send_notif) {
+        if ($this->shouldSendNotificationFor($params['to'])) {
             try {
                 $user_from = User_Adapter::getInstance($params['from'], $this->app);
                 $user_to = User_Adapter::getInstance($params['to'], $this->app);
@@ -101,17 +103,24 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
                 return false;
             }
 
-            $to = array(
-                'email' => $user_to->get_email(),
-                'name'  => $user_to->get_display_name()
-            );
-            $from = array(
-                'email' => $user_from->get_email(),
-                'name'  => $user_from->get_display_name()
-            );
+            try {
+                $repository = $this->app['EM']->getRepository('\Entities\Basket');
 
-            if (self::mail($to, $from, $params['ssel_id'], $params['n']))
+                $basket = $repository->find($params['ssel_id']);
+
+                $receiver = Receiver::fromUser($user_to);
+                $emitter = Emitter::fromUser($user_from);
+
+                $mail = MailInfoOrderDelivered::create($this->app, $receiver, $emitter);
+                $mail->setBasket($basket);
+                $mail->setDeliverer($user_from);
+
+                $this->app['notification.deliverer']->deliver($mail);
                 $mailed = true;
+
+            } catch (Exception $e) {
+
+            }
         }
 
         return $this->broker->notify($params['to'], __CLASS__, $datas, $mailed);
@@ -174,40 +183,6 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
     public function get_description()
     {
         return _('Reception d\'une commande');
-    }
-
-    /**
-     *
-     * @param  Array   $to
-     * @param  Array   $from
-     * @param  int     $ssel_id
-     * @return boolean
-     */
-    public function mail($to, $from, $ssel_id)
-    {
-        try {
-            $repository = $this->app['EM']->getRepository('\Entities\Basket');
-
-            $basket = $repository->findOneBy(array(
-                'id'        => $ssel_id
-                , 'pusher_id' => $this->app['phraseanet.user']->get_id()
-                )
-            );
-        } catch (Exception $e) {
-            return false;
-        }
-        $subject = sprintf(
-            _('push::mail:: Reception de votre commande %s'), $basket->getName()
-        );
-
-        $body = "<div>"
-            . sprintf(
-                _('%s vous a delivre votre commande, consultez la en ligne a l\'adresse suivante'), $from['name']
-            ) . "</div>\n";
-
-        $body .= "<br/>\n" . $this->app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/validate/' . $ssel_id;
-
-        return mail::send_mail($this->app, $subject, $body, $to, $from, array());
     }
 
     /**

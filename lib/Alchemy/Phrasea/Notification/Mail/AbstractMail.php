@@ -8,16 +8,16 @@ use Alchemy\Phrasea\Notification\Receiver;
 
 abstract class AbstractMail implements MailInterface
 {
-    private $twig;
-    protected $registry;
-    private $emitter;
-    private $receiver;
-    private $message;
+    protected $app;
+    /** @var Emitter */
+    protected $emitter;
+    /** @var Receiver */
+    protected $receiver;
+    protected $message;
 
-    public function __construct(\Twig_Environment $twig, \registry $registry, Receiver $receiver, Emitter $emitter = null, $message = null)
+    public function __construct(Application $app, Receiver $receiver, Emitter $emitter = null, $message = null)
     {
-        $this->twig = $twig;
-        $this->registry = $registry;
+        $this->app = $app;
         $this->emitter = $emitter;
         $this->receiver = $receiver;
         $this->message = $message;
@@ -25,7 +25,7 @@ abstract class AbstractMail implements MailInterface
 
     public function renderHTML()
     {
-        return $this->twig->render('email-template.html.twig', array(
+        return $this->app['twig']->render('email-template.html.twig', array(
                 'phraseanetURL' => $this->phraseanetURL(),
                 'logoUrl'       => $this->logoUrl(),
                 'logoText'      => $this->logoText(),
@@ -33,6 +33,7 @@ abstract class AbstractMail implements MailInterface
                 'senderName'    => $this->emitter() ? $this->emitter()->getName() : null,
                 'senderMail'    => $this->emitter() ? $this->emitter()->getEmail() : null,
                 'messageText'   => $this->message(),
+                'expirationMessage'   => $this->getExpirationMessage(),
                 'buttonUrl'     => $this->buttonURL(),
                 'buttonText'    => $this->buttonText(),
             ));
@@ -40,7 +41,7 @@ abstract class AbstractMail implements MailInterface
 
     public function phraseanetURL()
     {
-        return $this->registry->get('GV_ServerName');
+        return $this->app['phraseanet.registry']->get('GV_ServerName');
     }
 
     public function logoUrl()
@@ -50,7 +51,7 @@ abstract class AbstractMail implements MailInterface
 
     public function logoText()
     {
-        return $this->registry->get('GV_homeTitle');
+        return $this->app['phraseanet.registry']->get('GV_homeTitle');
     }
 
     public function emitter()
@@ -63,6 +64,11 @@ abstract class AbstractMail implements MailInterface
         return $this->receiver;
     }
 
+    public function getExpirationMessage()
+    {
+        return null;
+    }
+
     abstract public function subject();
 
     abstract public function message();
@@ -73,6 +79,6 @@ abstract class AbstractMail implements MailInterface
 
     public static function create(Application $app, Receiver $receiver, Emitter $emitter = null, $message = null)
     {
-        return new static($app['twig'], $app['phraseanet.registry'], $receiver, $emitter, $message);
+        return new static($app['twig'], $receiver, $emitter, $message);
     }
 }

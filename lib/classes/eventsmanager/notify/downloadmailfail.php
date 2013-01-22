@@ -81,9 +81,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
 
         $mailed = false;
 
-        $send_notif = ($this->get_prefs(__CLASS__, $params['usr_id']) != '0');
-
-        if ($send_notif) {
+        if ($this->shouldSendNotificationFor($params['usr_id'])) {
             $user = User_Adapter::getInstance($params['usr_id'], $this->app);
             $name = $user->get_display_name();
 

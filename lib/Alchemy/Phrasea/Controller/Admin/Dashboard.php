@@ -191,7 +191,7 @@ class Dashboard implements ControllerProviderInterface
 
             return $app->redirect('/admin/dashboard/?email=sent');
         } catch (\Exception $e) {
-exit($e->getMessage());
+
         }
 
         return $app->redirect('/admin/dashboard/?email=error');

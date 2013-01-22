@@ -547,7 +547,23 @@ class Users implements ControllerProviderInterface
                                 }
                             }
                             if (($accept != '' || $deny != '')) {
-                                \mail::register_confirm($app, $row['usr_mail'], $accept, $deny);
+                                $message = '';
+                                if ($accept != '') {
+                                    $message .= "\n" . _('login::register:email: Vous avez ete accepte sur les collections suivantes : ') . implode(', ', $accept). "\n";
+                                }
+                                if ($deny != '') {
+                                    $message .= "\n" . _('login::register:email: Vous avez ete refuse sur les collections suivantes : ') . implode(', ', $deny) . "\n";
+                                }
+
+
+                                $receiver = new Receiver(null, $row['usr_mail']);
+                                $mail = MailSuccessEmailUpdate::create($this->app, $receiver, null, $message);
+
+                                try {
+                                    $this->app['notification.deliverer']->deliver($mail);
+                                } catch (\Exception $e) {
+
+                                }
                             }
                         }
                     }

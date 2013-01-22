@@ -23,7 +23,7 @@ class Deliverer
         $this->registry = $registry;
     }
 
-    public function deliver(MailInterface $mail)
+    public function deliver(MailInterface $mail, $readReceipt = false)
     {
         if (!$mail->receiver()) {
             throw new \LogicException('You should provide a receiver for a mail notification');
@@ -41,6 +41,9 @@ class Deliverer
             $message->setReplyTo($mail->emitter()->email(), $mail->emitter()->name());
         }
 
+        if ($readReceipt) {
+            $message->setReadReceiptTo($readReceipt);
+        }
 
         $this->mailer->send($message);
     }

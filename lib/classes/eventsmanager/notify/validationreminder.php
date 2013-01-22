@@ -10,13 +10,9 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Notification\Mail\MailInfoValidationReminder;
+use Alchemy\Phrasea\Notification\Receiver;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstract
 {
     /**
@@ -96,20 +92,30 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
             return false;
         }
 
-        $send_notif = ($this->get_prefs(__CLASS__, $params['to']) != '0');
-        if ($send_notif) {
-            $to = array(
-                'email' => $user_to->get_email(),
-                'name'  => $user_to->get_display_name()
-            );
-            $from = array(
-                'email' => $user_from->get_email(),
-                'name'  => $user_from->get_display_name()
-            );
-            $url = $params['url'];
+        if ($this->shouldSendNotificationFor($params['to'])) {
 
-            if (self::mail($to, $from, $url))
+            try {
+                $basket = $this->app['EM']
+                    ->getRepository('\Entities\Basket')
+                    ->find($params['ssel_id']);
+                $title = $basket->getName();
+            } catch (\Exception $e) {
+                $title = '';
+            }
+
+            $receiver = Receiver::fromUser($user_to);
+            $emitter = Receiver::fromUser($user_from);
+
+            try {
+                $mail = MailInfoValidationReminder::create($this->app, $receiver, $emitter);
+                $mail->setUrl($params['url']);
+                $mail->setTitle($title);
+
+                $this->app['notification.deliverer']->deliver($mail);
                 $mailed = true;
+            } catch (\Exception $e) {
+
+            }
         }
 
         return $this->broker->notify($params['to'], __CLASS__, $datas, $mailed);
@@ -176,40 +182,6 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
     public function get_description()
     {
         return _('Rappel pour une demande de validation');
-    }
-
-    /**
-     *
-     * @param  Array   $to
-     * @param  Array   $from
-     * @param  string  $url
-     * @return boolean
-     */
-    public function mail($to, $from, $url)
-    {
-        $subject = _('push::mail:: Rappel de demande de validation de documents');
-
-        $body = "<div>"
-            . sprintf(
-                _('Il ne vous reste plus que %d jours pour terminer votre validation'), $this->app['phraseanet.registry']->get('GV_validation_reminder'))
-            . "</div>\n";
-
-        if (trim($url) != '') {
-            $body = '<div>'
-                . sprintf(
-                    _('Le lien suivant vous propose de valider une selection faite par %s'), $from['name']
-                ) . "</div>\n";
-
-            $body .= "<br/>\n";
-
-            $body .= '<div><a href="' . $url
-                . '" target="_blank">' . $url . "</a></div>\n";
-        }
-
-        $body .= "<br/>\n<br/>\n<br/>\n"
-            . _('push::atention: ce lien est unique et son contenu confidentiel, ne divulguez pas');
-
-        return mail::send_mail($this->app, $subject, $body, $to, $from, array());
     }
 
     /**

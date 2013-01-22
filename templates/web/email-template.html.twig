@@ -53,6 +53,13 @@
                                 <!-- End of message table -->
                             </td>
                         </tr>
+                        {% if expirationMessage is defined %}
+                        <tr>
+                            <td colspan="2" width="720" height="60" valign="center" align="center" style="font-family:sans-serif,'Lucida Console'; font-size:15px; font-weight:bold; text-transform:uppercase; color:#494949;">
+                                Le lien suivant est valable jusque {{ expirationMessage | app['date-formater']->getDate() }} {{ expirationMessage | app['date-formater']->getTime() }}
+                            </td>
+                        </tr>
+                        {% endif %}
                         {% if buttonText is defined and buttonUrl is defined %}
                         <tr>
                             <td colspan="2" width="720" height="70" valign="center" align="center" style="">
