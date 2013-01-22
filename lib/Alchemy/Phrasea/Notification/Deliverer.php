@@ -45,6 +45,6 @@ class Deliverer
             $message->setReadReceiptTo($readReceipt);
         }
 
-        $this->mailer->send($message);
+        return $this->mailer->send($message);
     }
 }
