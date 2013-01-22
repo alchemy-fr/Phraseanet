@@ -1,50 +1,80 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Notification;
 
+use Alchemy\Phrasea\Notification\EmitterInterface;
 use Alchemy\Phrasea\Notification\Mail\MailInterface;
+use Alchemy\Phrasea\Exception\LogicException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Deliverer
 {
-    /**
-     * @var \Swift_Mailer
-     */
+    /** @var \Swift_Mailer */
     private $mailer;
 
-    /**
-     *
-     * @var \registry
-     */
-    private $registry;
+    /** @var EmitterInterface */
+    private $emitter;
 
-    public function __construct(\Swift_Mailer $mailer, \registry $registry)
+    /** @var EventDispatcherInterface */
+    private $dispatcher;
+
+    /** @var string */
+    private $prefix;
+
+    public function __construct(\Swift_Mailer $mailer, EventDispatcherInterface $dispatcher, EmitterInterface $emitter, $prefix = '')
     {
         $this->mailer = $mailer;
-        $this->registry = $registry;
+        $this->emitter = $emitter;
+        $this->dispatcher = $dispatcher;
+        $this->prefix = $prefix ? sprintf('%s ', $prefix) : '';
     }
 
+    /**
+     * Delivers an email
+     *
+     * @param MailInterface $mail
+     * @param Boolean $readReceipt
+     * @return int the number of messages that have been sent
+     *
+     * @throws LogicException In case no Receiver provided
+     * @throws LogicException In case a read-receipt is asked but no Emitter provided
+     */
     public function deliver(MailInterface $mail, $readReceipt = false)
     {
-        if (!$mail->receiver()) {
-            throw new \LogicException('You should provide a receiver for a mail notification');
+        if (!$mail->getReceiver()) {
+            throw new LogicException('You must provide a receiver for a mail notification');
         }
 
-        $prefix = $this->registry->get('GV_mail_prefix') ? ($this->registry->get('GV_mail_prefix') . ' ') : null;
+        $message = \Swift_Message::newInstance($this->prefix . $mail->getSubject(), $mail->renderHTML(), 'text/html', 'utf-8');
+        $message->addPart($mail->getMessage(), 'text/plain', 'utf-8');
 
-        $message = \Swift_Message::newInstance($prefix . $mail->subject(), $mail->renderHTML(), 'text/html', 'utf-8');
-        $message->addPart($mail->message(), 'text/plain', 'utf-8');
+        $message->setFrom($this->emitter->getEmail(), $this->emitter->getName());
+        $message->setTo($mail->getReceiver()->getEmail(), $mail->getReceiver()->getName());
 
-        $message->setFrom($this->registry->get('GV_defaulmailsenderaddr', 'no-reply@phraseanet.com'), $this->registry->get('GV_homeTitle', 'Phraseanet'));
-        $message->setTo($mail->receiver()->email(), $mail->receiver()->name());
-
-        if ($mail->emitter()) {
-            $message->setReplyTo($mail->emitter()->email(), $mail->emitter()->name());
+        if ($mail->getEmitter()) {
+            $message->setReplyTo($mail->getEmitter()->getEmail(), $mail->getEmitter()->getName());
         }
 
         if ($readReceipt) {
-            $message->setReadReceiptTo($readReceipt);
+            if (!$mail->getEmitter()) {
+                throw new LogicException('You must provide an emitter for a ReadReceipt');
+            }
+            $message->setReadReceiptTo(array($mail->getEmitter()->getEmail() => $mail->getEmitter()->getName()));
         }
 
-        return $this->mailer->send($message);
+        $ret = $this->mailer->send($message);
+
+        $this->dispatcher->dispatch('phraseanet.notification.sent');
+
+        return $ret;
     }
 }
