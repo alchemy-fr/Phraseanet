@@ -1,5 +1,5 @@
 {
-    "hash": "180359cee46a1e23cee4943b7feb6d31",
+    "hash": "a43275d20ef27e4ce02871d21e4b02be",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -124,28 +124,6 @@
                     "lib/"
                 ]
             }
-        },
-        {
-            "name": "alchemy/phpmailer",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/alchemy-fr/PHPMailer_v5.1",
-                "reference": "baabbdc1e68947f19c86e0e9e02d40d6fb1283e4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHPMailer_v5.1/zipball/3bdb8bc7a8f304c27900d7b2ddc00068c86c781f",
-                "reference": "3bdb8bc7a8f304c27900d7b2ddc00068c86c781f",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "./"
-                ]
-            },
-            "time": "2012-11-09 10:51:15"
         },
         {
             "name": "dailymotion/sdk",
@@ -928,7 +906,6 @@
             "require": {
                 "php": ">=4"
             },
-            "time": "2013-01-23 21:26:40",
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -951,7 +928,8 @@
                 "api",
                 "Sphinx Search",
                 "search-engine"
-            ]
+            ],
+            "time": "2012-10-23 09:05:12"
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
@@ -1311,12 +1289,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Silex.git",
-                "reference": "c1bf812c4a5c335f0d8489ae4ca9e5f42a7d7a24"
+                "reference": "7c05e116b2875d90ecdc608db347ccbf7bb9a705"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Silex/archive/c1bf812c4a5c335f0d8489ae4ca9e5f42a7d7a24.zip",
-                "reference": "c1bf812c4a5c335f0d8489ae4ca9e5f42a7d7a24",
+                "url": "https://github.com/fabpot/Silex/archive/7c05e116b2875d90ecdc608db347ccbf7bb9a705.zip",
+                "reference": "7c05e116b2875d90ecdc608db347ccbf7bb9a705",
                 "shasum": ""
             },
             "require": {
@@ -1352,7 +1330,7 @@
                 "symfony/css-selector": ">=2.1,<2.3-dev",
                 "symfony/dom-crawler": ">=2.1,<2.3-dev"
             },
-            "time": "2013-01-24 08:46:05",
+            "time": "2013-01-21 15:15:34",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1581,12 +1559,12 @@
             "source": {
                 "type": "git",
                 "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "f7d525858a807acb59a21857e78706917ae8dbf7"
+                "reference": "ce2f309281230fc5955875dff7e90c8a6f3517c7"
             },
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2013-01-22 17:33:43",
+            "time": "2012-12-16 12:23:34",
             "type": "library",
             "autoload": {
                 "classmap": [
