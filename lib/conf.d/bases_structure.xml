@@ -5303,13 +5303,6 @@
             </fields>
           </index>
           <index>
-            <name>appli</name>
-            <type>INDEX</type>
-            <fields>
-              <field>appli</field>
-            </fields>
-          </index>
-          <index>
             <name>date_site</name>
             <type>INDEX</type>
             <fields>
