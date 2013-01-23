@@ -53,8 +53,8 @@ class module_report_nav extends module_report
 
     private function setTotalPourcent()
     {
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters();
 
         $report_filter = $filter->getReportFilter();
         $params = array_merge(array(), $report_filter['params']);
@@ -67,7 +67,7 @@ class module_report_nav extends module_report
                 WHERE ' . $report_filter['sql'] . ' AND nav != ""
             ) AS tt';
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -98,8 +98,8 @@ class module_report_nav extends module_report
     {
         $i = 0;
 
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters();
         $this->title = _('report:: navigateur');
 
         $this->total_pourcent = $this->setTotalPourcent();
@@ -112,19 +112,19 @@ class module_report_nav extends module_report
         $params = array_merge(array(), $report_filter['params']);
 
         $sql = '
-        SELECT tt.nav, SUM(1) AS nb, ROUND((SUM(1) / ' . $this->total_pourcent . ' * 100), 1) AS pourcent
-        FROM (
-            SELECT DISTINCT(log.id), nav
-            FROM log FORCE INDEX (date_site, nav)
-            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            WHERE ' . $report_filter['sql'] . ' AND nav != ""
-        ) AS tt
-        GROUP BY tt.nav
-        ORDER BY nb DESC';
+            SELECT tt.nav, SUM(1) AS nb, ROUND((SUM(1) / ' . $this->total_pourcent . ' * 100), 1) AS pourcent
+            FROM (
+                SELECT DISTINCT(log.id), nav
+                FROM log FORCE INDEX (date_site, nav)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                WHERE ' . $report_filter['sql'] . ' AND nav != ""
+            ) AS tt
+            GROUP BY tt.nav
+            ORDER BY nb DESC';
 
         $this->initialize();
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -156,8 +156,8 @@ class module_report_nav extends module_report
      */
     public function buildTabOs($tab = false)
     {
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters();
         $i = 0;
         $this->title = _('report:: Plateforme');
 
@@ -183,7 +183,7 @@ class module_report_nav extends module_report
 
         $this->initialize();
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -214,8 +214,8 @@ class module_report_nav extends module_report
      */
     public function buildTabRes($tab = false)
     {
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters();
         $this->title = _('report:: resolution');
         $i = 0;
 
@@ -229,20 +229,20 @@ class module_report_nav extends module_report
         $params = array_merge(array(), $report_filter['params']);
 
         $sql = '
-        SELECT tt.res, COUNT(res) AS nb, ROUND((COUNT(res)/ ' . $this->total_pourcent . '*100),1) AS pourcent
-        FROM (
-            SELECT DISTINCT(log.id), res
-            FROM log FORCE INDEX (date_site, res)
-            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            WHERE '. $report_filter['sql'] . ' AND res != ""
-        ) AS tt
-        GROUP BY tt.res
-        ORDER BY nb DESC
-        LIMIT 0, 10';
+            SELECT tt.res, COUNT(res) AS nb, ROUND((COUNT(res)/ ' . $this->total_pourcent . '*100),1) AS pourcent
+            FROM (
+                SELECT DISTINCT(log.id), res
+                FROM log FORCE INDEX (date_site, res)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                WHERE '. $report_filter['sql'] . ' AND res != ""
+            ) AS tt
+            GROUP BY tt.res
+            ORDER BY nb DESC
+            LIMIT 0, 10';
 
         $this->initialize();
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -274,8 +274,8 @@ class module_report_nav extends module_report
      */
     public function buildTabCombo($tab = false)
     {
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters();
         $this->title = _('report:: navigateurs et plateforme');
         $i = 0;
 
@@ -302,7 +302,7 @@ class module_report_nav extends module_report
 
         $this->initialize();
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -335,8 +335,8 @@ class module_report_nav extends module_report
     public function buildTabModule($tab = false)
     {
         $this->initialize();
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters();
         $this->title = _('report:: modules');
         $x = array();
         $tab_appli = array();
@@ -362,7 +362,7 @@ class module_report_nav extends module_report
 
         $this->initialize();
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -440,23 +440,23 @@ class module_report_nav extends module_report
             }
 
             $sql = "
-            SELECT
-                usr_login as identifiant,
-                usr_nom as nom,
-                usr_mail as mail,
-                adresse, tel
-            FROM usr
-            WHERE $on = :value AND (" . $filter_id_apbox . ")";
+                SELECT
+                    usr_login as identifiant,
+                    usr_nom as nom,
+                    usr_mail as mail,
+                    adresse, tel
+                FROM usr
+                WHERE $on = :value AND (" . $filter_id_apbox . ")";
         } else {
             $sql = '
-            SELECT
-                usr_login AS identifiant,
-                usr_nom    AS nom,
-                usr_mail  AS mail,
-                adresse,
-                tel
-             FROM usr
-             WHERE (usr_id = :value)';
+                SELECT
+                    usr_login AS identifiant,
+                    usr_nom    AS nom,
+                    usr_mail  AS mail,
+                    adresse,
+                    tel
+                 FROM usr
+                 WHERE (usr_id = :value)';
         }
 
         $params2 = array(':value' => $val);
@@ -546,22 +546,22 @@ class module_report_nav extends module_report
         $conn = connection::getPDOConnection($this->app, $this->sbas_id);
         $this->title = sprintf(
             _('report:: Information sur le navigateur %s'), $navigator);
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters();
         $params = array(':browser' => $navigator);
         $report_filter = $filter->getReportFilter();
 
         $sql = "
-        SELECT DISTINCT(version), COUNT(version) as nb
-        FROM (
-            SELECT DISTINCT (log.id)
-            FROM log FORCE INDEX (date_site, nav, version)
-            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            WHERE ". $report_filter['sql'] . "
-            WHERE nav = :browser
-        ) AS tt
-        GROUP BY tt.version
-        ORDER BY nb DESC";
+            SELECT DISTINCT(version), COUNT(version) as nb
+            FROM (
+                SELECT DISTINCT (log.id)
+                FROM log FORCE INDEX (date_site, nav, version)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                WHERE ". $report_filter['sql'] . "
+                WHERE nav = :browser
+            ) AS tt
+            GROUP BY tt.version
+            ORDER BY nb DESC";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);

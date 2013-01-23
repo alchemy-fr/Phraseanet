@@ -26,10 +26,10 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
 
         if ($this->groupby == false) {
             $this->sql ="
-            SELECT DISTINCT(log.id), log_search.date ddate, log_search.search, log.usrid, log.user, log.pays, log.societe, log.activite, log.fonction
-            FROM log_search
-            INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id) WHERE (" . $filter['sql'] .")";
+                SELECT DISTINCT(log.id), log_search.date ddate, log_search.search, log.usrid, log.user, log.pays, log.societe, log.activite, log.fonction
+                FROM log_search
+                INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id) WHERE (" . $filter['sql'] .")";
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);
@@ -40,16 +40,16 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
             $this->sql .= $this->filter->getLimitFilter() ? : '';
         } else {
             $this->sql = "
-            SELECT " . $this->groupby . ", SUM(1) AS nb
-            FROM (
-                SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "
-                FROM (`log_search`)
-                INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE (" . $filter['sql'] .")
-            ) AS tt
-            GROUP BY " . $this->groupby ."
-            ORDER BY nb DESC";
+                SELECT " . $this->groupby . ", SUM(1) AS nb
+                FROM (
+                    SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "
+                    FROM (`log_search`)
+                    INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                    WHERE (" . $filter['sql'] .")
+                ) AS tt
+                GROUP BY " . $this->groupby ."
+                ORDER BY nb DESC";
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);

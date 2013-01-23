@@ -53,21 +53,21 @@ class module_report_validate extends module_report
      */
     protected function buildReq($groupby = false, $on = false)
     {
-        $s = $this->sqlBuilder('action')->setGroupBy($groupby)->setOn($on)
+        $sqlBuilder = $this->sqlBuilder('action')->setGroupBy($groupby)->setOn($on)
                 ->setAction('validate')->buildSql();
-        $this->req = $s->getSql();
-        $this->params = $s->getParams();
-        $this->total = $s->getTotalRows();
+        $this->req = $sqlBuilder->getSql();
+        $this->params = $sqlBuilder->getParams();
+        $this->total = $sqlBuilder->getTotalRows();
     }
 
     public function colFilter($field, $on = false)
     {
-        $s = $this->sqlBuilder('action')->setAction('validate');
-        $var = $s->sqlDistinctValByField($field);
+        $sqlBuilder = $this->sqlBuilder('action')->setAction('validate');
+        $var = $sqlBuilder->sqlDistinctValByField($field);
         $sql = $var['sql'];
         $params = $var['params'];
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();

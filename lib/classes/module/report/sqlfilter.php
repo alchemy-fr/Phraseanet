@@ -43,7 +43,7 @@ class module_report_sqlfilter
         $coll_filter = array();
         foreach (array_filter(explode(',', $list_coll_id)) as $val) {
             $val = \phrasea::collFromBas($app, $val);
-            if(!!$val) {
+            if (!!$val) {
                 $coll_filter[] =  'log_colls.coll_id = ' . $val;
             }
         }
@@ -192,7 +192,7 @@ class module_report_sqlfilter
         if (count($tab) > 0) {
             foreach ($tab as $val) {
                 $val = \phrasea::collFromBas($this->app, $val);
-                if(!!$val) {
+                if (!!$val) {
                     $coll_filter[] =  'log_colls.coll_id = ' . $val;
                 }
             }

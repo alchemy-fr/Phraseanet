@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-interface module_report_sqlReportinterface
+interface module_report_sqlReportInterface
 {
 
     public function buildSql();

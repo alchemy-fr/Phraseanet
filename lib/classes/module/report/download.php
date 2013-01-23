@@ -66,12 +66,12 @@ class module_report_download extends module_report
     public function colFilter($field, $on = false)
     {
         $ret = array();
-        $s = $this->sqlBuilder('download');
-        $var = $s->sqlDistinctValByField($field);
+        $sqlBuilder = $this->sqlBuilder('download');
+        $var = $sqlBuilder->sqlDistinctValByField($field);
         $sql = $var['sql'];
         $params = $var['params'];
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();

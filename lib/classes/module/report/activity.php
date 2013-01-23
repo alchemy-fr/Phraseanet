@@ -93,23 +93,23 @@ class module_report_activity extends module_report
         $this->result = array();
         $this->title = _('report:: activite par heure');
 
-        $s = new module_report_sql($this->app, $this);
+        $sqlBuilder = new module_report_sql($this->app, $this);
 
-        $filter = $s->getFilters()->getReportFilter();
+        $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
 
         $sql = "
-        SELECT tt.heures, SUM(1) AS nb
-        FROM (
-            SELECT DISTINCT(log.id), DATE_FORMAT( log.date, '%k' ) AS heures
-            FROM log FORCE INDEX (date_site)
-            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            WHERE (" . $filter['sql'] . ")
-        ) AS tt
-        GROUP BY tt.heures
-        ORDER BY tt.heures ASC";
+            SELECT tt.heures, SUM(1) AS nb
+            FROM (
+                SELECT DISTINCT(log.id), DATE_FORMAT( log.date, '%k' ) AS heures
+                FROM log FORCE INDEX (date_site)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                WHERE (" . $filter['sql'] . ")
+            ) AS tt
+            GROUP BY tt.heures
+            ORDER BY tt.heures ASC";
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -152,29 +152,29 @@ class module_report_activity extends module_report
     {
         $result = array();
 
-        $s = new module_report_sql($this->app, $this);
+        $sqlBuilder = new module_report_sql($this->app, $this);
 
-        $filter = $s->getFilters()->getReportFilter();
+        $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(':main_value' => $value), $filter['params']);
 
         $sql = "
-        SELECT DATE_FORMAT(log_search.date,'%Y-%m-%d %H:%i:%S') AS date ,
-        log_search.search ,log_search.results
-        FROM (log_search)
-            INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-        WHERE (" . $filter['sql'] . ")
-        AND log.`" . $what . "` = :main_value
-        ORDER BY date ";
+            SELECT DATE_FORMAT(log_search.date,'%Y-%m-%d %H:%i:%S') AS date ,
+            log_search.search ,log_search.results
+            FROM (log_search)
+                INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+            WHERE (" . $filter['sql'] . ")
+            AND log.`" . $what . "` = :main_value
+            ORDER BY date ";
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
-        $s->setTotalrows($stmt->rowCount());
+        $sqlBuilder->setTotalrows($stmt->rowCount());
         $stmt->closeCursor();
 
-        $sql .= $s->getFilters()->getLimitFilter();
+        $sql .= $sqlBuilder->getFilters()->getLimitFilter();
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -206,29 +206,29 @@ class module_report_activity extends module_report
         $this->report['value'] = array();
         $this->report['value2'] = array();
 
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters()->getReportFilter();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
 
         ($no_answer) ? $this->title = _('report:: questions sans reponses') : $this->title = _('report:: questions les plus posees');
 
         $sql = "
-        SELECT TRIM(tt.search) AS search, SUM(1) AS nb, ROUND(avg(tt.results)) AS nb_rep
-        FROM (
-            SELECT DISTINCT(log.id), log_search.search AS search, results
-            FROM (log_search)
-                INNER JOIN log FORCE INDEX (date_site) ON (log_search.log_id = log.id)
-                INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-            WHERE (" . $filter['sql'] . ")
-            AND log_search.search != 'all' " .
-            ($no_answer ? ' AND log_search.results = 0 ' : '') . "
-        ) AS tt
-        GROUP BY tt.search
-        ORDER BY nb DESC";
+            SELECT TRIM(tt.search) AS search, SUM(1) AS nb, ROUND(avg(tt.results)) AS nb_rep
+            FROM (
+                SELECT DISTINCT(log.id), log_search.search AS search, results
+                FROM (log_search)
+                    INNER JOIN log FORCE INDEX (date_site) ON (log_search.log_id = log.id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                WHERE (" . $filter['sql'] . ")
+                AND log_search.search != 'all' " .
+                ($no_answer ? ' AND log_search.results = 0 ' : '') . "
+            ) AS tt
+            GROUP BY tt.search
+            ORDER BY nb DESC";
 
         $sql .= !$no_answer ? ' LIMIT ' . $this->nb_top : '';
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -269,28 +269,28 @@ class module_report_activity extends module_report
     public function getAllDownloadByUserBase($usr, $config = false)
     {
         $result = array();
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters()->getReportFilter();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
         $databox = $this->app['phraseanet.appbox']->get_databox($this->sbas_id);
 
         $sql = "
-        SELECT log_docs.record_id, log_docs.date, log_docs.final AS objets
-        FROM (`log_docs`)
-        INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)
-        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-        INNER JOIN record ON (log_docs.record_id = record.record_id)
-        WHERE (". $filter['sql'] .") AND log_docs.action = 'download'
-        ORDER BY date DESC";
+            SELECT log_docs.record_id, log_docs.date, log_docs.final AS objets
+            FROM (`log_docs`)
+            INNER JOIN log FORCE INDEX (date_site) ON (log_docs.log_id = log.id)
+            INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+            INNER JOIN record ON (log_docs.record_id = record.record_id)
+            WHERE (". $filter['sql'] .") AND log_docs.action = 'download'
+            ORDER BY date DESC";
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
-        $s->setTotalrows($stmt->rowCount());
+        $sqlBuilder->setTotalrows($stmt->rowCount());
         $stmt->closeCursor();
 
-        $sql .= $s->getFilters()->getLimitFilter() ?: '';
+        $sql .= $sqlBuilder->getFilters()->getLimitFilter() ?: '';
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -329,8 +329,8 @@ class module_report_activity extends module_report
     {
         $this->title = _('report:: telechargements par jour');
 
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters()->getReportFilter();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
 
         $sql = "
@@ -350,7 +350,7 @@ class module_report_activity extends module_report
             GROUP BY tt.final, ddate
             ORDER BY tt.the_date DESC";
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -390,9 +390,9 @@ class module_report_activity extends module_report
         }
 
         $nb_row = $i + 1;
-        $s->setTotalrows($nb_row);
+        $sqlBuilder->setTotalrows($nb_row);
 
-        if ($s->getTotalRows() > 0) {
+        if ($sqlBuilder->getTotalRows() > 0) {
             $this->result[$nb_row]['ddate'] = '<b>TOTAL</b>';
             $this->result[$nb_row]['document'] = '<b>' . $total['tot_doc'] . '</b>';
             $this->result[$nb_row]['preview'] = '<b>' . $total['tot_prev'] . '</b>';
@@ -418,8 +418,8 @@ class module_report_activity extends module_report
             $on = "user";
         }
 
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters()->getReportFilter();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
 
         $this->req = "
@@ -436,14 +436,14 @@ class module_report_activity extends module_report
             GROUP BY tt.usrid
             ORDER BY connexion DESC ";
 
-        $stmt = $s->getConnBas()->prepare($this->req);
+        $stmt = $sqlBuilder->getConnBas()->prepare($this->req);
         $stmt->execute($params);
-        $s->setTotalrows($stmt->rowCount());
+        $sqlBuilder->setTotalrows($stmt->rowCount());
         $stmt->closeCursor();
 
         $this->enable_limit ? $this->req .= "LIMIT 0," . $this->nb_record : "";
 
-        $stmt = $s->getConnBas()->prepare($this->req);
+        $stmt = $sqlBuilder->getConnBas()->prepare($this->req);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -506,8 +506,8 @@ class module_report_activity extends module_report
         //set title
         $this->title = _('report:: Detail des telechargements');
 
-        $s = new module_report_sql($this->app, $this);
-        $filter = $s->getFilters()->getReportFilter();
+        $sqlBuilder = new module_report_sql($this->app, $this);
+        $filter = $sqlBuilder->getFilters()->getReportFilter();
         $params = array_merge(array(), $filter['params']);
 
         $sql = "
@@ -526,7 +526,7 @@ class module_report_activity extends module_report
             GROUP BY " . $on . ", usrid
             ORDER BY nb DESC;";
 
-        $stmt =  $s->getConnBas()->prepare($sql);
+        $stmt =  $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -711,15 +711,15 @@ class module_report_activity extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
-        SELECT tt.id, HOUR(tt.heures) AS heures
-        FROM (
-            SELECT DISTINCT(log_date.id), log_date.date AS heures
-            FROM log AS log_date FORCE INDEX (date_site)
-            INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
-            WHERE " . $datefilter['sql'] . "
-            AND " . $collfilter['sql'] . "
-            AND log_date.site = :site_id
-        ) AS tt";
+            SELECT tt.id, HOUR(tt.heures) AS heures
+            FROM (
+                SELECT DISTINCT(log_date.id), log_date.date AS heures
+                FROM log AS log_date FORCE INDEX (date_site)
+                INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
+                WHERE " . $datefilter['sql'] . "
+                AND " . $collfilter['sql'] . "
+                AND log_date.site = :site_id
+            ) AS tt";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -727,7 +727,7 @@ class module_report_activity extends module_report
         $total = $stmt->rowCount();
         $stmt->closeCursor();
 
-        for ($i = 0; $i < 24; $i ++ ){
+        for ($i = 0; $i < 24; $i ++) {
             $res[$i] = 0;
         }
 
@@ -799,18 +799,18 @@ class module_report_activity extends module_report
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
-                SELECT tt.usrid, tt.user, sum(1) AS nb
-                FROM (
-                    SELECT DISTINCT(log_date.id), log_date.usrid, log_date.user
-                    FROM (`log_search`)
-                        INNER JOIN log AS log_date FORCE INDEX (date_site) ON (log_search.log_id = log_date.id)
-                        INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
-                    WHERE " . $datefilter['sql'] . "
-                    AND log_date.site = :site_id
-                    AND (" . $collfilter['sql'] . ")
-                ) AS tt
-                GROUP BY tt.usrid
-                ORDER BY nb DESC";
+            SELECT tt.usrid, tt.user, sum(1) AS nb
+            FROM (
+                SELECT DISTINCT(log_date.id), log_date.usrid, log_date.user
+                FROM (`log_search`)
+                    INNER JOIN log AS log_date FORCE INDEX (date_site) ON (log_search.log_id = log_date.id)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
+                WHERE " . $datefilter['sql'] . "
+                AND log_date.site = :site_id
+                AND (" . $collfilter['sql'] . ")
+            ) AS tt
+            GROUP BY tt.usrid
+            ORDER BY nb DESC";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
