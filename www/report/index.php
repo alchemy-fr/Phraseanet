@@ -23,11 +23,10 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 require_once __DIR__ . "/../../vendor/autoload.php";
 
-$app = new Application();
+$app = new Application('dev');
 
 $event = new GetResponseEvent($app, Request::createFromGlobals(), HttpKernelInterface::MASTER_REQUEST);
 
-$app->initPhrasea($event);
 $app->addLocale($event);
 $app->initSession($event);
 
