@@ -17,17 +17,41 @@ use Alchemy\Phrasea\Notification\ReceiverInterface;
 interface MailInterface
 {
     /**
-     * @return EmitterInterface
+     * Returns
+     *
+     *  the Emitter
+     *
+     * @return EmitterInterface|null
      */
     public function getEmitter();
 
     /**
+     * Sets an Emitter
+     *
+     * @param EmitterInterface|null $emitter
+     *
+     * @return MailInterface
+     */
+    public function setEmitter(EmitterInterface $emitter = null);
+
+    /**
+     * Returns the Receiver
+     *
      * @return ReceiverInterface
      */
     public function getReceiver();
 
     /**
-     * Gets the message for the link button
+     * Sets the Receiver
+     *
+     * @param ReceiverInterface $receiver
+     *
+     * @return MailInterface
+     */
+    public function setReceiver(ReceiverInterface $receiver);
+
+    /**
+     * Returns the message for the link button
      *
      * @return string
      */
@@ -69,6 +93,15 @@ interface MailInterface
     public function getLogoUrl();
 
     /**
+     * Sets the URL for the logo
+     *
+     * @param string $url
+     *
+     * @return MailInterface
+     */
+    public function setLogoUrl($url);
+
+    /**
      * Returns a alternate text for the logo
      *
      * @return string
@@ -76,23 +109,41 @@ interface MailInterface
     public function getLogoText();
 
     /**
-     * Gets an expiration date for the meaning of the message
+     * Sets the logo alternate text
+     *
+     * @param string $text
+     *
+     * @return MailInterface
+     */
+    public function setLogoText($text);
+
+    /**
+     * Returns an expiration date for the meaning of the message
      *
      * @return \DateTime
      */
     public function getExpirationMessage();
 
     /**
-     * Gets the message for the link button
+     * Sets an expiration date for the message meaning
+     *
+     * @param \DateTime|null $expiration
+     *
+     * @return MailInterface
+     */
+    public function setExpirationMessage(\DateTime $expiration = null);
+
+    /**
+     * Returns the message for the link button
      *
      * @return string
      */
-    public function getButtonText();
+    public function getButtonURL();
 
     /**
      * Sets a URL for the link button
      *
      * @return MailInterface
      */
-    public function getButtonURL();
+    public function setButtonURL($url);
 }
