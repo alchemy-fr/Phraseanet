@@ -10,11 +10,6 @@ class FTPServiceProvidertest extends \PhraseanetPHPUnitAbstract
     {
         self::$DI['app']->register(new FtpServiceProvider());
 
-        $ftpclient1 = self::$DI['app']['phraseanet.ftp.client'];
-        $ftpclient2 = self::$DI['app']['phraseanet.ftp.client'];
-        $this->assertInstanceof('ftpclient', $ftpclient1);
-        $this->assertInstanceof('ftpclient', $ftpclient2);
-
-        $this->assertNotEquals($ftpclient1, $ftpclient2);
+        $this->assertInstanceOf('Closure', self::$DI['app']['phraseanet.ftp.client']);
     }
 }
