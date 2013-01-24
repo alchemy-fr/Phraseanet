@@ -74,7 +74,6 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function setUp()
     {
         parent::setUp();
-        self::$DI['app.use-exception-handler'] = true;
         self::$feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], 'title', 'subtitle');
         self::$publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], self::$feed, self::$DI['user']);
         self::$entry = \Feed_Entry_Adapter::create(self::$DI['app'], self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
@@ -334,12 +333,11 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
     }
 
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
     public function testUnknowFeedId2()
     {
         self::$DI['client']->request("GET", "/feeds/feed/titi/");
+
+        $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
     public function testGetFeedId()

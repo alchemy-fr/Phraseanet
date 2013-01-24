@@ -386,12 +386,13 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers \Alchemy\Phrasea\Controller\Root\Login::register
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testPostRegisterBadRequest()
     {
         self::$DI['app']->closeAccount();
         self::$DI['client']->request('POST', '/login/register/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -618,12 +619,13 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers \Alchemy\Phrasea\Controller\Root\Login::sendConfirmMail
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testSendConfirmMailBadRequest()
     {
         self::$DI['app']->closeAccount();
         self::$DI['client']->request('GET', '/login/send-mail-confirm/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**

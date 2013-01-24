@@ -40,12 +40,12 @@ class TaskManager extends ServiceAbstract
         $options = $this->getOptions();
         $registry = $this->app['phraseanet.registry'];
 
-        if (null !== $syslogLevel = constant($options['syslog_level'])) {
+        if (isset($options['syslog_level']) && null !== $syslogLevel = constant($options['syslog_level'])) {
             $handler = new SyslogHandler("Phraseanet-Task", "user", $syslogLevel);
             $logger->pushHandler($handler);
         }
 
-        if (null !== $maillogLevel = constant($options['maillog_level'])) {
+        if (isset($options['maillog_level']) && null !== $maillogLevel = constant($options['maillog_level'])) {
             if ('' === $adminMail = trim($registry->get('GV_adminMail'))) {
                 throw new RuntimeException("Admininstrator mail must be set to get log by mail.");
             }

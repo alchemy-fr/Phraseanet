@@ -8,12 +8,6 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
     public static $api = null;
     protected $client;
 
-    public function setUp()
-    {
-        parent::setUp();
-        self::$DI['app.use-exception-handler'] = true;
-    }
-
     public function testList()
     {
         $crawler = self::$DI['client']->request('GET', '/admin/publications/list/');

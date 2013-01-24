@@ -76,7 +76,6 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Prod\Export::testFtpConnexion
      */
     public function testFtpConnexionNoXMLHTTPRequests()
@@ -98,10 +97,8 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request('POST', '/prod/export/ftp/test/', array('lst' => self::$DI['record_1']->get_serialize_key()));
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
-        $this->assertArrayHasKey('success', $datas);
-        $this->assertFalse($datas['success']);
-        $this->assertArrayHasKey('message', $datas);
-        unset($response, $datas);
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -126,13 +123,14 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Prod\Export::exportFtp
      * @dataProvider getMissingArguments
      */
     public function testExportFtpBadRequest($params)
     {
         self::$DI['client']->request('POST', '/prod/export/ftp/', $params);
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     public function getMissingArguments()

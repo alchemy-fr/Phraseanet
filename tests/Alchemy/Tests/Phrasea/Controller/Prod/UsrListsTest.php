@@ -241,7 +241,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = self::$DI['client']->getResponse();
 
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertBadResponse($response);
         $this->assertEquals('UTF-8', $response->getCharset());
 
 
@@ -251,10 +251,8 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = self::$DI['client']->getResponse();
 
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertBadResponse($response);
         $this->assertEquals('UTF-8', $response->getCharset());
-
-
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 

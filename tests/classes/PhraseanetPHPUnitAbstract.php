@@ -100,8 +100,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         parent::setUp();
 
-        self::$DI['app.use-exception-handler'] = false;
-
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
 
@@ -111,10 +109,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Root.php';
 
             $app['debug'] = true;
-
-            if (!$DI['app.use-exception-handler']) {
-                unset($app['exception_handler']);
-            }
 
             $app['EM'] = $app->share($app->extend('EM', function($em) {
                 @unlink('/tmp/db.sqlite');
@@ -168,6 +162,25 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         set_time_limit(0);
     }
+
+    protected function assertForbiddenResponse(Response $response)
+    {
+        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertTrue(false !== stripos($response->getContent(), 'forbidden'));
+    }
+
+    protected function assertBadResponse(Response $response)
+    {
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertTrue(false !== stripos($response->getContent(), 'bad request'));
+    }
+
+    protected function assertNotFoundResponse(Response $response)
+    {
+        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertTrue(false !== stripos($response->getContent(), 'not found'));
+    }
+
 
     /**
      * Insert fixture contained in the specified fixtureLoader

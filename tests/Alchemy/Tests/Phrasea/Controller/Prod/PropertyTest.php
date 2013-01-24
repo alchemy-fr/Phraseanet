@@ -20,12 +20,13 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Prod\Property::displayStatusProperty
      */
     public function testDisplayStatusPropertyNotXMLHTTPRequets()
     {
         self::$DI['client']->request('GET', '/prod/records/property/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -40,12 +41,13 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Prod\Property::displayProperty
      */
     public function testDisplayTypePropertyNotXMLHTTPRequets()
     {
         self::$DI['client']->request('GET', '/prod/records/property/type/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**

@@ -20,7 +20,6 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        self::$DI['app.use-exception-handler'] = true;
         $this->tmpFile = sys_get_temp_dir() . '/' . time() . mt_rand(1000, 9999) . '.jpg';
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', $this->tmpFile);
     }

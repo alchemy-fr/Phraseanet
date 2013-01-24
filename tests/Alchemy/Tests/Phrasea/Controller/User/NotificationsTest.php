@@ -18,21 +18,23 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\User\Notifications::listNotifications
      */
     public function testListNotificationsNoXMLHTTPRequests()
     {
         self::$DI['client']->request('GET', '/user/notifications/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\User\Notifications::setNotificationsReaded
      */
     public function testSetNotificationsReadedNoXMLHTTPRequests()
     {
         self::$DI['client']->request('POST', '/user/notifications/read/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -53,7 +55,6 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\User\Notifications::connect
      * @covers Alchemy\Phrasea\Controller\User\Notifications::call
      */
@@ -69,5 +70,7 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->will($this->returnValue(true));
 
         self::$DI['client']->request('GET', '/user/notifications/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 }

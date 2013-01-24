@@ -18,14 +18,14 @@ class SetupTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers Alchemy\Phrasea\Controller\Admin\Setup::getGlobals
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testGetSlashUnauthorizedException()
     {
         $this->setAdmin(false);
 
         self::$DI['client']->request('GET', '/admin/setup/');
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**

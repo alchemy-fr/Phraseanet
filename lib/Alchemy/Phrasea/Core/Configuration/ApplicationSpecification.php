@@ -123,17 +123,17 @@ class ApplicationSpecification implements SpecificationInterface
         $this->delete();
 
         copy(
-            $this->getRealRootPath() . "/conf.d/connexions.yml"
+            $this->getRealRootPath() . "/lib/conf.d/connexions.yml"
             , $this->getConnexionsPathFile()
         );
 
         copy(
-            $this->getRealRootPath() . "/conf.d/services.yml"
+            $this->getRealRootPath() . "/lib/conf.d/services.yml"
             , $this->getServicesPathFile()
         );
 
         copy(
-            $this->getRealRootPath() . "/conf.d/config.yml"
+            $this->getRealRootPath() . "/lib/conf.d/config.yml"
             , $this->getConfigurationsPathFile()
         );
 

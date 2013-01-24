@@ -120,11 +120,12 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers \Alchemy\Phrasea\Controller\Root\Account::resetEmail
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testPostResetMailBadRequest()
     {
         self::$DI['client']->request('POST', '/account/reset-email/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -363,12 +364,11 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(count($ret), count($bases));
     }
 
-    /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
-     */
     public function testAUthorizedAppGrantAccessBadRequest()
     {
         self::$DI['client']->request('GET', '/account/security/application/3/grant/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     public function testAUthorizedAppGrantAccessNotSuccessfull()

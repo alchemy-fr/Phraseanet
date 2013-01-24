@@ -10,12 +10,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     protected $client;
     public static $createdCollections = array();
 
-    public function setUp()
-    {
-        parent::setUp();
-        self::$DI['app.use-exception-handler'] = true;
-    }
-
     public function tearDown()
     {
         self::$DI['app']['phraseanet.user'] = self::$DI['user'];
@@ -192,7 +186,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::enable
      */
     public function testPostEnableUnauthorizedException()
@@ -200,6 +193,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/enable/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -232,7 +227,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::disabled
      */
     public function testPostDisabledUnauthorizedException()
@@ -240,6 +234,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/disabled/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -259,7 +255,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::setOrderAdmins
      */
     public function testPostOrderAdminsUnauthorizedException()
@@ -267,6 +262,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/order/admins/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -300,7 +297,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::setPublicationDisplay
      */
     public function testPostPublicationDisplayUnauthorizedException()
@@ -308,6 +304,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/publication/display/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -356,7 +354,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::rename
      */
     public function testPostNameUnauthorizedException()
@@ -364,6 +361,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/rename/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -509,7 +508,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setMiniLogo
      */
     public function testSetMiniLogoBadRequest()
@@ -517,10 +515,11 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/mini-logo/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setStamp
      */
     public function testSetStampBadRequest()
@@ -528,19 +527,21 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/stamp-logo/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setWatermark
      */
     public function testSetWatermarkBadRequest()
     {
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/watermark/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setBanner
      */
     public function testSetBannerBadRequest()
@@ -548,6 +549,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/banner/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -741,7 +744,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::getCollection
      */
     public function testGetCollectionUnauthorizedException()
@@ -749,10 +751,11 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('GET', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::getSuggestedValues
      */
     public function testGetSuggestedValuesUnauthorizedException()
@@ -760,10 +763,11 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('GET', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/suggested-values/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::getDetails
      */
     public function testInformationsDetailsUnauthorizedException()
@@ -771,6 +775,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('GET', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/informations/details/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -788,7 +794,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::delete
      */
     public function testDeleteCollectionUnauthorized()
@@ -796,6 +801,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/delete/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
