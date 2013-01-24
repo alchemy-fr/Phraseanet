@@ -10,6 +10,11 @@ class BorderManagerServiceProvidertest extends \PhraseanetPHPUnitAbstract
     {
         self::$DI['app']->register(new BorderManagerServiceProvider());
 
-        $this->assertInstanceof('Alchemy\\Phrasea\\Border\\Manager', self::$DI['app']['border-manager']);
+        $borderManager1 = self::$DI['app']['border-manager'];
+        $borderManager2 = self::$DI['app']['border-manager'];
+
+        $this->assertInstanceof('Alchemy\\Phrasea\\Border\\Manager', $borderManager1);
+
+        $this->assertEquals($borderManager1, $borderManager2);
     }
 }

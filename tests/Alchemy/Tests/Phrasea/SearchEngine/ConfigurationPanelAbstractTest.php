@@ -26,6 +26,8 @@ abstract class ConfigurationPanelAbstractTest extends \PhraseanetPHPUnitAuthenti
 
         $config = $this->getPanel()->getConfiguration();
         $this->assertEquals($data, $config['test']);
+        unset($config['test']);
+        $this->getPanel()->saveConfiguration($config);
     }
 
     public function testGetAvailableDateFields()

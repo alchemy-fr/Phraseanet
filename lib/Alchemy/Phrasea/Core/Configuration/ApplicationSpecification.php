@@ -13,20 +13,15 @@ namespace Alchemy\Phrasea\Core\Configuration;
 
 use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Symfony\Component\Yaml\Yaml;
 
-/**
- * Precise some informations about phraseanet configuration mechanism
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class ApplicationSpecification implements SpecificationInterface
 {
     protected $parser;
 
     public function __construct()
     {
-        $this->parser = new \Symfony\Component\Yaml\Yaml();
+        $this->parser = new Yaml();
     }
 
     public function setConfigurations($configurations)
@@ -41,6 +36,26 @@ class ApplicationSpecification implements SpecificationInterface
         return file_put_contents(
                 $this->getConnexionsPathFile(), $this->parser->dump($connexions, 7)
         );
+    }
+
+    public function resetServices($name = null)
+    {
+        $services = $this->getServices();
+
+        if (!$name) {
+            $newServices = $services;
+        } else {
+            $newServices = $services;
+            $legacyServices = $this->parser->parse(
+                file_get_contents($this->getRealRootPath() . "/conf.d/services.yml")
+            );
+            if (!isset($legacyServices[$name])) {
+                throw new InvalidArgumentException(sprintf('%s is not a valid service name'));
+            }
+            $newServices[$name] = $legacyServices[$name];
+        }
+
+        return $this->setServices($newServices);
     }
 
     public function setServices($services)
@@ -108,17 +123,17 @@ class ApplicationSpecification implements SpecificationInterface
         $this->delete();
 
         copy(
-            $this->getRealRootPath() . "/config/connexions.sample.yml"
+            $this->getRealRootPath() . "/conf.d/connexions.yml"
             , $this->getConnexionsPathFile()
         );
 
         copy(
-            $this->getRealRootPath() . "/config/services.sample.yml"
+            $this->getRealRootPath() . "/conf.d/services.yml"
             , $this->getServicesPathFile()
         );
 
         copy(
-            $this->getRealRootPath() . "/config/config.sample.yml"
+            $this->getRealRootPath() . "/conf.d/config.yml"
             , $this->getConfigurationsPathFile()
         );
 
