@@ -211,5 +211,5 @@ TaskManager:
     options:
       # set the threshold for sending task logs to syslog or by mail
       # values : task_abstract::[LOG_DEBUG | LOG_INFO | LOG_WARNING | LOG_ERROR | LOG_CRITICAL | LOG_ALERT]
-      syslog_level: task_abstract::LOG_ERROR
-      maillog_level: task_abstract::LOG_ERROR
+      #syslog_level: task_abstract::LOG_ERROR
+      #maillog_level: task_abstract::LOG_ERROR
