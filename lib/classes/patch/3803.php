@@ -107,7 +107,7 @@ class patch_3803 implements patchInterface
             $app['phraseanet.SE']->getConfigurationPanel()->saveConfiguration($sphinxConfiguration);
         }
 
-        return;
+        return true;
     }
 
 }
