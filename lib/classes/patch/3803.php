@@ -64,9 +64,11 @@ class patch_3803 implements patchInterface
         $confs = $app['phraseanet.configuration']->getConfigurations();
 
         foreach ($confs as $env => $conf) {
+
             if (in_array($env, array('environment', 'key'))) {
                 continue;
             }
+
             if (!isset($conf['search-engine'])) {
                 $confs[$env]['search-engine'] = $searchEngine;
             }
@@ -81,6 +83,7 @@ class patch_3803 implements patchInterface
         }
 
         if (!$app['phraseanet.registry']->get('GV_sphinx')) {
+
             $phraseaConfiguration = $app['phraseanet.SE']->getConfigurationPanel()->getConfiguration();
 
             if ($app['phraseanet.registry']->get('GV_phrasea_sort')) {
@@ -88,7 +91,9 @@ class patch_3803 implements patchInterface
             }
 
             $app['phraseanet.SE']->getConfigurationPanel()->saveConfiguration($phraseaConfiguration);
+
         } else {
+
             $sphinxConfiguration = $app['phraseanet.SE']->getConfigurationPanel()->getConfiguration();
 
             if ($app['phraseanet.registry']->get('GV_sphinx_rt_port')) {

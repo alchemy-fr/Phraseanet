@@ -46,12 +46,15 @@ class ApplicationSpecification implements SpecificationInterface
             $newServices = $services;
         } else {
             $newServices = $services;
+
             $legacyServices = $this->parser->parse(
                 file_get_contents($this->getRealRootPath() . "/conf.d/services.yml")
             );
+
             if (!isset($legacyServices[$name])) {
                 throw new InvalidArgumentException(sprintf('%s is not a valid service name'));
             }
+
             $newServices[$name] = $legacyServices[$name];
         }
 
