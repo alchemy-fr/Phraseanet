@@ -39,13 +39,14 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers Alchemy\Phrasea\Controller\Admin\Databases::getDatabases
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testGetSlashUnauthorizedException()
     {
         $this->setAdmin(false);
 
         self::$DI['client']->request('GET', '/admin/databoxes/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**

@@ -237,8 +237,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateMeta200($content);
         $response = $content['response'];
 
-        $task_manager = new \task_manager(self::$DI['app']);
-        $tasks = $task_manager->getTasks();
+        $tasks = self::$DI['app']['task-manager']->getTasks();
         $this->assertEquals(count($tasks), count($response['tasks']));
 
         foreach ($response['tasks'] as $task) {
@@ -326,8 +325,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testGetMonitorTaskById()
     {
-        $task_manager = new \task_manager(self::$DI['app']);
-        $tasks = $task_manager->getTasks();
+        $tasks = self::$DI['app']['task-manager']->getTasks();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -359,8 +357,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testPostMonitorTaskById()
     {
-        $task_manager = new \task_manager(self::$DI['app']);
-        $tasks = $task_manager->getTasks();
+        $tasks = self::$DI['app']['task-manager']->getTasks();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -415,8 +412,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->markTestSkipped('there is no user with admin rights');
         }
 
-        $task_manager = new \task_manager(self::$DI['app']);
-        $tasks = $task_manager->getTasks();
+        $tasks = self::$DI['app']['task-manager']->getTasks();
 
         if (!count($tasks)) {
             $this->markTestSkipped('no tasks created for the current instance');
@@ -437,8 +433,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('task', $content['response']);
         $this->evaluateGoodTask($content['response']['task']);
 
-        $task_manager->getTasks(true);
-        $task = $task_manager->getTask($idTask);
+        $task = self::$DI['app']['task-manager']->getTask($idTask);
         $this->assertContains($task->getState(), array(\task_abstract::STATE_TOSTART, \task_abstract::STATE_STARTED));
     }
 
@@ -448,9 +443,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testPostMonitorStopTask()
     {
-        $task_manager = new \task_manager(self::$DI['app']);
-
-        $tasks = $task_manager->getTasks();
+        $tasks = self::$DI['app']['task-manager']->getTasks();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -475,8 +468,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('task', $content['response']);
         $this->evaluateGoodTask($content['response']['task']);
 
-        $task_manager->getTasks(true);
-        $task = $task_manager->getTask($idTask);
+        $task = self::$DI['app']['task-manager']->getTask($idTask);
         $this->assertContains($task->getState(), array(\task_abstract::STATE_TOSTOP, \task_abstract::STATE_STOPPED));
     }
 

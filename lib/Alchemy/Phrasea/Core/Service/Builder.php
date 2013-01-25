@@ -31,7 +31,7 @@ class Builder
         }
 
         try {
-            $options = $configuration->get("options");
+            $options = $configuration->get("options") ?: array() ;
         } catch (\Exception $e) {
             $options = array();
         }

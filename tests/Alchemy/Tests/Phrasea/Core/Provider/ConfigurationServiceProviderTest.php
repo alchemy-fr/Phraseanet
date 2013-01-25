@@ -2,14 +2,15 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
-
-class ConfigurationServiceProvidertest extends \PhraseanetPHPUnitAbstract
+/**
+ * @covers Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider
+ */
+class ConfigurationServiceProvidertest extends ServiceProviderTestCase
 {
-    public function testGetInstantiate()
+    public function provideServiceDescription()
     {
-        self::$DI['app']->register(new ConfigurationServiceProvider());
-
-        $this->assertInstanceof('Alchemy\\Phrasea\\Core\\Configuration', self::$DI['app']['phraseanet.configuration']);
+        return array(
+            array('Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider', 'phraseanet.configuration', 'Alchemy\\Phrasea\\Core\\Configuration'),
+        );
     }
 }

@@ -28,8 +28,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request('POST', $route);
         $response = self::$DI['client']->getResponse();
 
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertFalse($response->isOk());
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     public function testAttachStoryToWZ()
@@ -146,8 +145,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request('POST', $route);
         $response = self::$DI['client']->getResponse();
 
-        $this->assertEquals(404, $response->getStatusCode());
-        $this->assertFalse($response->isOk());
+        $this->assertNotFoundResponse(self::$DI['client']->getResponse());
 
         //attach
         $attachRoute = sprintf("/prod/WorkZone/attachStories/");

@@ -2,14 +2,15 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
-
-class ORMServiceProvidertest extends \PhraseanetPHPUnitAbstract
+/**
+ * @covers Alchemy\Phrasea\Core\Provider\ORMServiceProvider
+ */
+class ORMServiceProvidertest extends ServiceProviderTestCase
 {
-    public function testGetInstantiate()
+    public function provideServiceDescription()
     {
-        self::$DI['app']->register(new ORMServiceProvider());
-
-        $this->assertInstanceof('Doctrine\\ORM\\EntityManager', self::$DI['app']['EM']);
+        return array(
+            array('Alchemy\Phrasea\Core\Provider\ORMServiceProvider', 'EM', 'Doctrine\\ORM\\EntityManager'),
+        );
     }
 }

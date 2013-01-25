@@ -2,14 +2,15 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
-
-class BorderManagerServiceProvidertest extends \PhraseanetPHPUnitAbstract
+/**
+ * @covers Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider
+ */
+class BorderManagerServiceProvidertest extends ServiceProviderTestCase
 {
-    public function testGetInstantiate()
+    public function provideServiceDescription()
     {
-        self::$DI['app']->register(new BorderManagerServiceProvider());
-
-        $this->assertInstanceof('Alchemy\\Phrasea\\Border\\Manager', self::$DI['app']['border-manager']);
+        return array(
+            array('Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider', 'border-manager', 'Alchemy\\Phrasea\\Border\\Manager'),
+        );
     }
 }

@@ -32,21 +32,23 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\User\Preferences::saveUserPref
      */
     public function testSaveUserPrefNoXMLHTTPRequests()
     {
         self::$DI['client']->request('POST', '/user/preferences/',  array('prop'  => 'prop_test', 'value' => 'val_test'));
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\User\Preferences::saveTemporaryPref
      */
     public function testSaveTempPrefNoXMLHTTPRequests()
     {
         self::$DI['client']->request('POST', '/user/preferences/temporary/',  array('prop'  => 'prop_test', 'value' => 'val_test'));
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**

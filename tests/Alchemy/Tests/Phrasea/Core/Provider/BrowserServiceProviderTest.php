@@ -2,14 +2,15 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
-
-class BrowserServiceProvidertest extends \PhraseanetPHPUnitAbstract
+/**
+ * @covers Alchemy\Phrasea\Core\Provider\BrowserServiceProvider
+ */
+class BrowserServiceProvidertest extends ServiceProviderTestCase
 {
-    public function testGetInstantiate()
+    public function provideServiceDescription()
     {
-        self::$DI['app']->register(new BrowserServiceProvider());
-
-        $this->assertInstanceof('Browser', self::$DI['app']['browser']);
+        return array(
+            array('Alchemy\Phrasea\Core\Provider\BrowserServiceProvider', 'browser', 'Browser'),
+        );
     }
 }

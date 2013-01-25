@@ -126,7 +126,6 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::getDatabaseCGU
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testGetCGUHasNoRights()
     {
@@ -138,6 +137,8 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -199,7 +200,6 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::progressBarInfos
      */
     public function testGetInformationDocumentBadRequest()
@@ -207,6 +207,8 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/informations/documents/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -252,7 +254,6 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::getDatabase
      */
     public function testGetDataboxUnauthorizedException()
@@ -260,10 +261,11 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::getReorder
      */
     public function testGetCollectionOrderUnauthorizedException()
@@ -271,10 +273,11 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/collections/order/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::getDatabaseCGU
      */
     public function testGetCGUUnauthorizedException()
@@ -282,6 +285,8 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/cgus/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -297,7 +302,6 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::progressBarInfos
      */
     public function testGetInformationDetailsUnauthorizedException()
@@ -305,10 +309,11 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/informations/details/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::getNewCollection
      */
     public function testGetNewCollectionUnauthorizedException()
@@ -316,6 +321,8 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         self::$DI['client']->request('GET', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/collection/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**

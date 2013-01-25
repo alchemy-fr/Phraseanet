@@ -19,12 +19,13 @@ namespace Alchemy\Phrasea\Core\Configuration;
  */
 interface SpecificationInterface
 {
-
     public function setConfigurations($configurations);
 
     public function setConnexions($connexions);
 
     public function setServices($services);
+
+    public function resetServices($name = null);
 
     public function setBinaries($binaries);
 
