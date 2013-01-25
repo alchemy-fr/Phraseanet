@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Core;
 use Alchemy\Phrasea\Core\Configuration\ApplicationSpecification;
 use Alchemy\Phrasea\Core\Configuration\SpecificationInterface;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
@@ -65,7 +66,13 @@ class Configuration
 
         if ($specifications->isSetup()) {
             $configurations = $this->specifications->getConfigurations();
-            $environment = $environment ? : $configurations[self::KEYWORD_ENV];
+            if (!$environment) {
+                if (isset($configurations[self::KEYWORD_ENV])) {
+                    $environment = $configurations[self::KEYWORD_ENV];
+                } else {
+                    throw new RuntimeException('No configuration environment provided');
+                }
+            }
         } else {
             $environment = null;
         }
@@ -83,6 +90,11 @@ class Configuration
     public function has($name)
     {
         return $this->configuration->has($name);
+    }
+
+    public function getSpecifications()
+    {
+        return $this->specifications;
     }
 
     /**
@@ -109,7 +121,7 @@ class Configuration
             $configurations = $this->specifications->getConfigurations();
 
             if ( ! isset($configurations[$this->environment])) {
-                throw new \Exception('Requested environnment is not available');
+                throw new InvalidArgumentException('Requested environnment is not available');
             }
 
             $this->configuration = new ParameterBag($configurations[$this->environment]);
@@ -201,6 +213,11 @@ class Configuration
         return $this->specifications->setServices($services);
     }
 
+    public function resetServices($name = null)
+    {
+        return $this->specifications->resetServices($name);
+    }
+
     public function setBinaries($binaries)
     {
         return $this->specifications->setBinaries($binaries);
@@ -229,11 +246,6 @@ class Configuration
     public function getConnexions()
     {
         return $this->specifications->getConnexions();
-    }
-
-    public function getSelectedEnvironnment()
-    {
-        return $this->selectedEnvironnment;
     }
 
     /**

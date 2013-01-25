@@ -59,52 +59,60 @@ class patch_3803 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $searchEngine = $app['phraseanet.registry']->get('GV_sphinx') ? 'sphinx-search' : 'phrasea';
+        $searchEngine = $app['phraseanet.registry']->get('GV_sphinx') ? 'sphinxsearch' : 'phrasea';
 
-        $app['phraseanet.registry']->set('GV_search_engine', $searchEngine, \registry::TYPE_ENUM);
+        $confs = $app['phraseanet.configuration']->getConfigurations();
 
-        $phraseaConfiguration = null;
-        $phraseaConfigFile = __DIR__ . '/../../../config/phrasea-engine.json';
+        foreach ($confs as $env => $conf) {
 
-        if (file_exists($phraseaConfigFile)) {
-            $phraseaConfiguration = json_decode(file_get_contents($phraseaConfigFile), true);
-        }
-        if (!is_array($phraseaConfiguration)) {
-            $phraseaConfiguration = array();
-        }
+            if (in_array($env, array('environment', 'key'))) {
+                continue;
+            }
 
-        if ($app['phraseanet.registry']->get('GV_phrasea_sort')) {
-            $phraseaConfiguration['default_sort'] = $app['phraseanet.registry']->get('GV_phrasea_sort');
-        }
-        
-        file_put_contents($phraseaConfigFile, $phraseaConfiguration);
-        
-        $sphinxConfiguration = null;
-        $sphinxConfigFile = __DIR__ . '/../../../config/sphinx-search.json';
-
-        if (file_exists($sphinxConfigFile)) {
-            $sphinxConfiguration = json_decode(file_get_contents($sphinxConfigFile), true);
-        }
-        if (!is_array($sphinxConfiguration)) {
-            $sphinxConfiguration = array();
+            if (!isset($conf['search-engine'])) {
+                $confs[$env]['search-engine'] = $searchEngine;
+            }
         }
 
-        if ($app['phraseanet.registry']->get('GV_sphinx_rt_port')) {
-            $sphinxConfiguration['rt_port'] = $app['phraseanet.registry']->get('GV_sphinx_rt_port');
-        }
-        if ($app['phraseanet.registry']->get('GV_sphinx_rt_host')) {
-            $sphinxConfiguration['rt_host'] = $app['phraseanet.registry']->get('GV_sphinx_rt_host');
-        }
-        if ($app['phraseanet.registry']->get('GV_sphinx_port')) {
-            $sphinxConfiguration['port'] = $app['phraseanet.registry']->get('GV_sphinx_port');
-        }
-        if ($app['phraseanet.registry']->get('GV_sphinx_host')) {
-            $sphinxConfiguration['host'] = $app['phraseanet.registry']->get('GV_sphinx_host');
-        }
-        
-        file_put_contents($sphinxConfigFile, $sphinxConfiguration);
+        $app['phraseanet.configuration']->setConfigurations($confs);
 
-        return;
+        $services = $app['phraseanet.configuration']->getServices();
+
+        if (!isset($services['SearchEngine'])) {
+            $app['phraseanet.configuration']->resetServices('SearchEngine');
+        }
+
+        if (!$app['phraseanet.registry']->get('GV_sphinx')) {
+
+            $phraseaConfiguration = $app['phraseanet.SE']->getConfigurationPanel()->getConfiguration();
+
+            if ($app['phraseanet.registry']->get('GV_phrasea_sort')) {
+                $phraseaConfiguration['default_sort'] = $app['phraseanet.registry']->get('GV_phrasea_sort');
+            }
+
+            $app['phraseanet.SE']->getConfigurationPanel()->saveConfiguration($phraseaConfiguration);
+
+        } else {
+
+            $sphinxConfiguration = $app['phraseanet.SE']->getConfigurationPanel()->getConfiguration();
+
+            if ($app['phraseanet.registry']->get('GV_sphinx_rt_port')) {
+                $sphinxConfiguration['rt_port'] = $app['phraseanet.registry']->get('GV_sphinx_rt_port');
+            }
+            if ($app['phraseanet.registry']->get('GV_sphinx_rt_host')) {
+                $sphinxConfiguration['rt_host'] = $app['phraseanet.registry']->get('GV_sphinx_rt_host');
+            }
+            if ($app['phraseanet.registry']->get('GV_sphinx_port')) {
+                $sphinxConfiguration['port'] = $app['phraseanet.registry']->get('GV_sphinx_port');
+            }
+            if ($app['phraseanet.registry']->get('GV_sphinx_host')) {
+                $sphinxConfiguration['host'] = $app['phraseanet.registry']->get('GV_sphinx_host');
+            }
+
+            $app['phraseanet.SE']->getConfigurationPanel()->saveConfiguration($sphinxConfiguration);
+        }
+
+        return true;
     }
 
 }

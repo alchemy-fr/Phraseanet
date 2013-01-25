@@ -2,8 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
-
 class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
@@ -186,23 +184,19 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $field = \databox_field::create(self::$DI['app'], $databox, $name, false);
         $id = $field->get_id();
 
-        try {
-            self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
-                'field_ids' => array($id)
-                , 'name_' . $id       => $name
-                , 'multi_' . $id      => 1
-                , 'indexable_' . $id  => 1
-                , 'src_' . $id        => '/rdf:RDF/rdf:Description/IPTC:SupplementalCategories'
-                , 'required_' . $id   => 0
-                , 'readonly_' . $id   => 0
-                , 'type_' . $id       => 'string'
-                , 'vocabulary_' . $id => 'User'
-            ));
-            print(self::$DI['client']->getResponse()->getContent());
-            $this->fail('Should throw an HttpException');
-        } catch (HttpException $e) {
+        self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
+            'field_ids' => array($id)
+            , 'name_' . $id       => $name
+            , 'multi_' . $id      => 1
+            , 'indexable_' . $id  => 1
+            , 'src_' . $id        => '/rdf:RDF/rdf:Description/IPTC:SupplementalCategories'
+            , 'required_' . $id   => 0
+            , 'readonly_' . $id   => 0
+            , 'type_' . $id       => 'string'
+            , 'vocabulary_' . $id => 'User'
+        ));
 
-        }
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
 
         $field->delete();
     }
@@ -214,12 +208,9 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
 
-        try {
-            self::$DI['client']->request("GET", "/admin/description/" . $databox->get_sbas_id() . "/");
-            $this->fail('Should throw an HttpException');
-        } catch (HttpException $e) {
+        self::$DI['client']->request("GET", "/admin/description/" . $databox->get_sbas_id() . "/");
 
-        }
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     public function testGetDescription()

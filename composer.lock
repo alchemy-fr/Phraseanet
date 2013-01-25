@@ -1,5 +1,5 @@
 {
-    "hash": "a1c888150997e9946a0a84fe7117ff14",
+    "hash": "180359cee46a1e23cee4943b7feb6d31",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -14,7 +14,6 @@
             },
             "time": "2012-07-27 20:10:01",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "BadFaith": "lib/"
@@ -39,14 +38,13 @@
                 "reference": "89993abd6a02b42e0b765114c34c26c4056762fa",
                 "shasum": ""
             },
+            "time": "2012-04-13 17:43:31",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Phlickr_": "./"
                 }
-            },
-            "time": "1334339011"
+            }
         },
         {
             "name": "alchemy/ghostscript",
@@ -79,7 +77,6 @@
                     "dev-master": "0.2.x-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Ghostscript": "src"
@@ -120,14 +117,13 @@
                 "reference": "5f949209461e8f4c31e8476155188923aafa2ae5",
                 "shasum": ""
             },
+            "time": "2012-03-30 15:47:07",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "classmap": [
                     "lib/"
                 ]
-            },
-            "time": "1333122427"
+            }
         },
         {
             "name": "alchemy/phpmailer",
@@ -144,13 +140,12 @@
                 "shasum": ""
             },
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "classmap": [
                     "./"
                 ]
             },
-            "time": "1333125389"
+            "time": "2012-11-09 10:51:15"
         },
         {
             "name": "dailymotion/sdk",
@@ -168,21 +163,18 @@
             },
             "time": "2012-10-25 10:52:56",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "classmap": [
                     "Dailymotion.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "description": "Dailymotion PHP SDK",
             "homepage": "http://dailymotion.com",
             "keywords": [
                 "api",
                 "sdk",
                 "dailymotion"
-            ],
-            "time": "1350827116"
+            ]
         },
         {
             "name": "data-uri/data-uri",
@@ -208,7 +200,6 @@
             },
             "time": "2012-06-01 00:09:00",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "DataURI": "src"
@@ -224,6 +215,68 @@
                 }
             ],
             "description": "PHP DataURI component"
+        },
+        {
+            "name": "doctrine/collections",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/collections.git",
+                "reference": "v1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/doctrine/collections/archive/v1.0.zip",
+                "reference": "v1.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "time": "2013-01-12 16:36:50",
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Common\\Collections\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com",
+                    "homepage": "http://www.jwage.com/"
+                },
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com",
+                    "homepage": "http://www.instaclick.com"
+                },
+                {
+                    "name": "Roman Borschel",
+                    "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Johannes Schmitt",
+                    "email": "schmittjoh@gmail.com",
+                    "homepage": "https://github.com/schmittjoh",
+                    "role": "Developer of wrapped JMSSerializerBundle"
+                }
+            ],
+            "description": "Collections Abstraction library",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "collections",
+                "iterator",
+                "array"
+            ]
         },
         {
             "name": "doctrine/common",
@@ -244,7 +297,6 @@
             },
             "time": "2012-08-29 01:04:14",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Doctrine\\Common": "lib/"
@@ -307,9 +359,8 @@
                 "php": ">=5.3.2",
                 "doctrine/common": ">=2.2.0,<=2.2.99"
             },
-            "time": "2012-04-13 07:56:12",
+            "time": "2012-04-13 00:56:12",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Doctrine\\DBAL": "lib/"
@@ -326,7 +377,8 @@
                 },
                 {
                     "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com"
+                    "email": "guilhermeblanco@gmail.com",
+                    "homepage": "http://www.instaclick.com"
                 },
                 {
                     "name": "Roman Borschel",
@@ -366,9 +418,8 @@
                 "doctrine/common": ">=2.2.0,<2.2.99",
                 "doctrine/dbal": ">=2.2.1,<2.2.99"
             },
-            "time": "2012-04-13 08:02:34",
+            "time": "2012-04-13 01:02:34",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Doctrine\\ORM": "lib/"
@@ -385,7 +436,8 @@
                 },
                 {
                     "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com"
+                    "email": "guilhermeblanco@gmail.com",
+                    "homepage": "http://www.instaclick.com"
                 },
                 {
                     "name": "Roman Borschel",
@@ -425,14 +477,13 @@
                 "doctrine/orm": ">=2.1",
                 "doctrine/mongodb-odm": "*"
             },
+            "time": "2012-11-15 16:25:16",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Gedmo": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -456,8 +507,7 @@
                 "nestedset",
                 "sortable",
                 "timestampable"
-            ],
-            "time": "1339767845"
+            ]
         },
         {
             "name": "grom/silex-service-provider",
@@ -480,13 +530,11 @@
             },
             "time": "2012-06-03 01:27:23",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Grom\\Silex": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -526,14 +574,13 @@
             "require-dev": {
                 "sami/sami": "dev-master"
             },
+            "time": "2012-12-13 18:31:18",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Imagine": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -551,8 +598,7 @@
                 "image processing",
                 "drawing",
                 "graphics"
-            ],
-            "time": "1350920158"
+            ]
         },
         {
             "name": "knplabs/knp-snappy",
@@ -576,13 +622,11 @@
             },
             "time": "2012-11-07 09:48:01",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Knp\\Snappy": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -612,12 +656,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst",
-                "reference": "7e38949ab34f9670c3e6406ed865ccc18b34c362"
+                "reference": "44c4dd6dcb0fa9145677ccaa41f4d8bf4aa20692"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/Media-Alchemyst/archive/7e38949ab34f9670c3e6406ed865ccc18b34c362.zip",
-                "reference": "7e38949ab34f9670c3e6406ed865ccc18b34c362",
+                "url": "https://github.com/alchemy-fr/Media-Alchemyst/archive/44c4dd6dcb0fa9145677ccaa41f4d8bf4aa20692.zip",
+                "reference": "44c4dd6dcb0fa9145677ccaa41f4d8bf4aa20692",
                 "shasum": ""
             },
             "require": {
@@ -625,26 +669,25 @@
                 "php-unoconv/php-unoconv": "dev-master",
                 "php-mp4box/php-mp4box": "dev-master",
                 "php": ">=5.3.3",
-                "symfony/console": ">=2.0,<=2.2",
                 "pimple/pimple": "1.*",
-                "mediavorus/mediavorus": "0.2.*",
                 "monolog/monolog": "1.*",
                 "alchemy/ghostscript": "0.2.*",
                 "imagine/imagine": ">=0.4",
-                "php-ffmpeg/php-ffmpeg": "0.2.*"
+                "php-ffmpeg/php-ffmpeg": "0.2.*",
+                "mediavorus/mediavorus": ">=0.2, <=0.3",
+                "symfony/console": ">=2.0,<=2.2.x-dev"
             },
             "require-dev": {
                 "grom/silex-service-provider": "dev-master",
                 "phpexiftool/phpexiftool": "dev-master"
             },
-            "time": "2012-12-17 12:10:42",
+            "time": "2013-01-14 12:54:21",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "0.2.x-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "MediaAlchemyst": "src"
@@ -674,8 +717,7 @@
                 "video processing",
                 "video",
                 "audio processing"
-            ],
-            "time": "1350650300"
+            ]
         },
         {
             "name": "mediavorus/mediavorus",
@@ -683,34 +725,40 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/MediaVorus",
-                "reference": "000bb25ab0c33080c08190910618714e28aa4c84"
+                "reference": "7d59243fe92d9cd6be744908019128e7fd9ae046"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/romainneutron/MediaVorus/archive/000bb25ab0c33080c08190910618714e28aa4c84.zip",
-                "reference": "000bb25ab0c33080c08190910618714e28aa4c84",
+                "url": "https://github.com/romainneutron/MediaVorus/archive/7d59243fe92d9cd6be744908019128e7fd9ae046.zip",
+                "reference": "7d59243fe92d9cd6be744908019128e7fd9ae046",
                 "shasum": ""
             },
             "require": {
                 "phpexiftool/phpexiftool": "dev-master",
                 "php-ffmpeg/php-ffmpeg": "dev-master",
                 "php": ">=5.3.0",
-                "monolog/monolog": "1.0.*",
                 "symfony/http-foundation": ">2.0,<=2.2",
-                "symfony/console": ">2.0,<=2.2"
+                "symfony/console": ">2.0,<=2.2",
+                "monolog/monolog": "1.*",
+                "doctrine/collections": ">=1.0,<2.0"
             },
             "require-dev": {
                 "fabpot/php-cs-fixer": "*",
-                "silex/silex": "1.0.*-dev"
+                "silex/silex": "1.0.*-dev",
+                "symfony/yaml": "*",
+                "jms/serializer": "1.0.x-dev"
             },
-            "time": "2012-12-14 09:20:49",
+            "suggest": {
+                "jms/serializer": "To serialize Medias",
+                "symfony/yaml": "To serialize Medias in Yaml format"
+            },
+            "time": "2013-01-14 13:16:28",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "0.2.x-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "MediaVorus": "src"
@@ -749,9 +797,8 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2011-10-24 09:39:02",
+            "time": "2011-10-24 02:39:02",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Monolog": "src/"
@@ -781,12 +828,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/BadFaith-ServiceProvider",
-                "reference": "9aaa0819e9596fa295895e5453471032c5d606df"
+                "reference": "5bc683cea2996fe5fda6f72b1f9c83299a381336"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/romainneutron/BadFaith-ServiceProvider/archive/9aaa0819e9596fa295895e5453471032c5d606df.zip",
-                "reference": "9aaa0819e9596fa295895e5453471032c5d606df",
+                "url": "https://github.com/romainneutron/BadFaith-ServiceProvider/archive/5bc683cea2996fe5fda6f72b1f9c83299a381336.zip",
+                "reference": "5bc683cea2996fe5fda6f72b1f9c83299a381336",
                 "shasum": ""
             },
             "require": {
@@ -798,9 +845,8 @@
             "require-dev": {
                 "fabpot/php-cs-fixer": "master"
             },
-            "time": "2012-11-08 20:54:31",
+            "time": "2012-12-19 23:40:50",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Neutron": "src"
@@ -843,13 +889,11 @@
             },
             "time": "2012-11-08 21:07:08",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Neutron": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -873,25 +917,25 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client",
-                "reference": "2.0.6"
+                "reference": "3e30e2ee40f685d4033f52122fb191cf19a4d3fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client/zipball/2.0.6",
-                "reference": "2.0.6",
+                "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client/archive/3e30e2ee40f685d4033f52122fb191cf19a4d3fa.zip",
+                "reference": "3e30e2ee40f685d4033f52122fb191cf19a4d3fa",
                 "shasum": ""
             },
             "require": {
                 "php": ">=4"
             },
-            "time": "1350983112",
+            "time": "2013-01-23 21:26:40",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "classmap": [
                     "sphinxapi.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL"
             ],
@@ -915,12 +959,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg",
-                "reference": "014112a16f31b74e584b1ae7540f4b72960ebd9e"
+                "reference": "d7bb7bd091c47ae512ab86206607e2febce7ce49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/archive/014112a16f31b74e584b1ae7540f4b72960ebd9e.zip",
-                "reference": "014112a16f31b74e584b1ae7540f4b72960ebd9e",
+                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/archive/d7bb7bd091c47ae512ab86206607e2febce7ce49.zip",
+                "reference": "d7bb7bd091c47ae512ab86206607e2febce7ce49",
                 "shasum": ""
             },
             "require": {
@@ -937,14 +981,13 @@
             "suggest": {
                 "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
             },
-            "time": "2012-12-16 15:58:49",
+            "time": "2012-12-27 23:01:03",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "0.2.x-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "FFMpeg": "src"
@@ -984,26 +1027,25 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/alchemy-fr/PHP-MP4Box.git",
-                "reference": "2c272a3f77807771275fb4f2c404071e9c263e19"
+                "reference": "2e8db20b7ebc53818b3e23c99f4e23c6e2bfc1c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-MP4Box/archive/2c272a3f77807771275fb4f2c404071e9c263e19.zip",
-                "reference": "2c272a3f77807771275fb4f2c404071e9c263e19",
+                "url": "https://github.com/alchemy-fr/PHP-MP4Box/archive/2e8db20b7ebc53818b3e23c99f4e23c6e2bfc1c4.zip",
+                "reference": "2e8db20b7ebc53818b3e23c99f4e23c6e2bfc1c4",
                 "shasum": ""
             },
             "require": {
-                "monolog/monolog": "1.0.*",
                 "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<=2.2"
+                "symfony/process": ">=2.0,<=2.2",
+                "monolog/monolog": "1.*"
             },
             "require-dev": {
                 "fabpot/php-cs-fixer": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "2012-10-09 17:40:08",
+            "time": "2012-12-21 16:56:54",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "MP4Box": "src"
@@ -1033,26 +1075,25 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-Unoconv",
-                "reference": "dd49df9be9ab649af37674f07393037727077124"
+                "reference": "0.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-Unoconv/archive/dd49df9be9ab649af37674f07393037727077124.zip",
-                "reference": "dd49df9be9ab649af37674f07393037727077124",
+                "url": "https://github.com/alchemy-fr/PHP-Unoconv/archive/0.1.0.zip",
+                "reference": "0.1.0",
                 "shasum": ""
             },
             "require": {
-                "monolog/monolog": "1.0.*",
                 "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<=2.2"
+                "symfony/process": ">=2.0,<=2.2",
+                "monolog/monolog": "1.*"
             },
             "require-dev": {
                 "silex/silex": "dev-master",
                 "fabpot/php-cs-fixer": "dev-master"
             },
-            "time": "2012-10-08 16:16:40",
+            "time": "2012-12-21 16:41:47",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Unoconv": "src"
@@ -1070,7 +1111,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "info@alchemy.fr",
+                    "email": "support@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
@@ -1100,15 +1141,13 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1349703734",
+            "time": "2012-10-08 13:42:14",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "XPDF": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1128,8 +1167,7 @@
             "keywords": [
                 "pdf",
                 "xpdf"
-            ],
-            "time": "1349703734"
+            ]
         },
         {
             "name": "phpexiftool/exiftool",
@@ -1137,20 +1175,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/exiftool",
-                "reference": "c68d98b5a00aaf7ae0db7eebddfcde27d948e537"
+                "reference": "6f833c5fcd94de99a240e9e3f549280051677269"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/exiftool/archive/c68d98b5a00aaf7ae0db7eebddfcde27d948e537.zip",
-                "reference": "c68d98b5a00aaf7ae0db7eebddfcde27d948e537",
+                "url": "https://github.com/alchemy-fr/exiftool/archive/6f833c5fcd94de99a240e9e3f549280051677269.zip",
+                "reference": "6f833c5fcd94de99a240e9e3f549280051677269",
                 "shasum": ""
             },
             "require": {
                 "phpexiftool/phpexiftool": "*"
             },
-            "time": "2012-08-29 16:01:26",
+            "time": "2013-01-03 11:16:06",
             "type": "library",
-            "installation-source": "source",
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Perl Licensing"
@@ -1166,8 +1203,7 @@
             "keywords": [
                 "exiftool",
                 "metadatas"
-            ],
-            "time": "1346256086"
+            ]
         },
         {
             "name": "phpexiftool/phpexiftool",
@@ -1175,32 +1211,32 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/PHPExiftool",
-                "reference": "c72f9a88a74c1967fb14de62f342048c8311cb9b"
+                "reference": "a953aa842a555ece591603971751d90fee8620de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/romainneutron/PHPExiftool/archive/c72f9a88a74c1967fb14de62f342048c8311cb9b.zip",
-                "reference": "c72f9a88a74c1967fb14de62f342048c8311cb9b",
+                "url": "https://github.com/romainneutron/PHPExiftool/archive/a953aa842a555ece591603971751d90fee8620de.zip",
+                "reference": "a953aa842a555ece591603971751d90fee8620de",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
-                "doctrine/common": ">=2.2",
-                "phpexiftool/exiftool": "dev-master",
-                "symfony/process": "2.1.*"
+                "monolog/monolog": "1.*",
+                "doctrine/common": ">=2.2,<=2.3",
+                "phpexiftool/exiftool": ">=9.12",
+                "symfony/process": ">=2.0,<=2.2.x-dev"
             },
             "require-dev": {
-                "symfony/css-selector": "2.1.*",
-                "symfony/finder": "2.1.*",
-                "symfony/console": "2.1.*",
-                "symfony/dom-crawler": "2.1.*",
-                "fabpot/php-cs-fixer": "dev-master",
-                "sami/sami": "dev-master",
-                "silex/silex": "dev-master"
+                "fabpot/php-cs-fixer": "*",
+                "sami/sami": "*",
+                "silex/silex": "*",
+                "symfony/css-selector": ">=2.0,<=2.2.x-dev",
+                "symfony/finder": ">=2.0,<=2.2.x-dev",
+                "symfony/console": ">=2.0,<=2.2.x-dev",
+                "symfony/dom-crawler": ">=2.0,<=2.2.x-dev"
             },
-            "time": "2012-09-03 14:06:48",
+            "time": "2013-01-03 11:53:47",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "PHPExiftool": "lib"
@@ -1221,8 +1257,7 @@
             "keywords": [
                 "metadata",
                 "exiftool"
-            ],
-            "time": "1346681208"
+            ]
         },
         {
             "name": "pimple/pimple",
@@ -1230,24 +1265,24 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Pimple.git",
-                "reference": "v1.0.1"
+                "reference": "d58cec632dfdd3305d6b4f2563a5cf2a75b4d978"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Pimple/archive/v1.0.1.zip",
-                "reference": "v1.0.1",
+                "url": "https://github.com/fabpot/Pimple/archive/d58cec632dfdd3305d6b4f2563a5cf2a75b4d978.zip",
+                "reference": "d58cec632dfdd3305d6b4f2563a5cf2a75b4d978",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
+            "time": "2013-01-07 10:39:26",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "1.0.x-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Pimple": "lib/"
@@ -1268,8 +1303,7 @@
             "keywords": [
                 "dependency injection",
                 "container"
-            ],
-            "time": "1347278988"
+            ]
         },
         {
             "name": "silex/silex",
@@ -1277,12 +1311,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Silex.git",
-                "reference": "c2dff3ca9e8ee4e5c9652a366c39eb3b3c91ca53"
+                "reference": "c1bf812c4a5c335f0d8489ae4ca9e5f42a7d7a24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Silex/archive/c2dff3ca9e8ee4e5c9652a366c39eb3b3c91ca53.zip",
-                "reference": "c2dff3ca9e8ee4e5c9652a366c39eb3b3c91ca53",
+                "url": "https://github.com/fabpot/Silex/archive/c1bf812c4a5c335f0d8489ae4ca9e5f42a7d7a24.zip",
+                "reference": "c1bf812c4a5c335f0d8489ae4ca9e5f42a7d7a24",
                 "shasum": ""
             },
             "require": {
@@ -1294,7 +1328,6 @@
                 "symfony/routing": ">=2.1,<2.3-dev"
             },
             "require-dev": {
-                "monolog/monolog": ">=1.0.0,<1.2-dev",
                 "twig/twig": ">=1.8.0,<2.0-dev",
                 "swiftmailer/swiftmailer": "4.2.*",
                 "doctrine/dbal": ">=2.2.0,<2.4.0-dev",
@@ -1310,21 +1343,22 @@
                 "symfony/translation": ">=2.1,<2.3-dev",
                 "symfony/twig-bridge": ">=2.1,<2.3-dev",
                 "symfony/validator": ">=2.1,<2.3-dev",
-                "symfony/serializer": ">=2.1,<2.3-dev"
+                "symfony/serializer": ">=2.1,<2.3-dev",
+                "symfony/dom-crawler": ">=2.1,<2.3-dev",
+                "symfony/options-resolver": ">=2.1,<2.3-dev"
             },
             "suggest": {
                 "symfony/browser-kit": ">=2.1,<2.3-dev",
                 "symfony/css-selector": ">=2.1,<2.3-dev",
                 "symfony/dom-crawler": ">=2.1,<2.3-dev"
             },
-            "time": "2012-12-14 13:15:04",
+            "time": "2013-01-24 08:46:05",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "1.0.x-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Silex": "src/"
@@ -1349,8 +1383,7 @@
             "homepage": "http://silex.sensiolabs.org",
             "keywords": [
                 "microframework"
-            ],
-            "time": "1350911324"
+            ]
         },
         {
             "name": "swftools/swftools",
@@ -1358,27 +1391,26 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPSwftools",
-                "reference": "9b79c0fb1f43a2e84c26e908d54b1ed98091510c"
+                "reference": "0.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHPSwftools/archive/9b79c0fb1f43a2e84c26e908d54b1ed98091510c.zip",
-                "reference": "9b79c0fb1f43a2e84c26e908d54b1ed98091510c",
+                "url": "https://github.com/alchemy-fr/PHPSwftools/archive/0.1.0.zip",
+                "reference": "0.1.0",
                 "shasum": ""
             },
             "require": {
-                "monolog/monolog": "1.0.*",
                 "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<=2.2"
+                "symfony/process": ">=2.0,<=2.2",
+                "monolog/monolog": "1.*"
             },
             "require-dev": {
                 "fabpot/php-cs-fixer": "dev-master",
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "2012-10-08 14:06:53",
+            "time": "2012-12-21 16:29:27",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "SwfTools": "src"
@@ -1424,14 +1456,13 @@
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-06-17 20:55:34",
+            "time": "2012-06-17 13:55:34",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "4.1-dev"
                 }
             },
-            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "lib/swift_required.php"
@@ -1462,12 +1493,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "ad29df5efdc51096f882a7a7bc672d41281770ce"
+                "reference": "bdc7e91865b4633b01e79ff91aadb58efccfa981"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/archive/ad29df5efdc51096f882a7a7bc672d41281770ce.zip",
-                "reference": "ad29df5efdc51096f882a7a7bc672d41281770ce",
+                "url": "https://github.com/symfony/symfony/archive/bdc7e91865b4633b01e79ff91aadb58efccfa981.zip",
+                "reference": "bdc7e91865b4633b01e79ff91aadb58efccfa981",
                 "shasum": ""
             },
             "require": {
@@ -1514,11 +1545,10 @@
                 "doctrine/orm": ">=2.2.3,<2.4-dev",
                 "doctrine/data-fixtures": "1.0.*",
                 "propel/propel1": "dev-master",
-                "monolog/monolog": "1.*"
+                "monolog/monolog": ">=1.0,<1.3-dev"
             },
-            "time": "2012-12-15 17:28:15",
+            "time": "2013-01-22 07:14:57",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Symfony": "src/",
@@ -1550,15 +1580,14 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "git://tcpdf.git.sourceforge.net/gitroot/tcpdf/tcpdf",
-                "reference": "f2aa41dd8252ad6321bad88776889b75b127a60c"
+                "url": "git://git.code.sf.net/p/tcpdf/code",
+                "reference": "f7d525858a807acb59a21857e78706917ae8dbf7"
             },
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2012-09-25 18:17:00",
+            "time": "2013-01-22 17:33:43",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "classmap": [
                     "fonts",
@@ -1578,6 +1607,7 @@
                     "unicode_data.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "LGPLv3"
             ],
@@ -1606,24 +1636,24 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig-extensions",
-                "reference": "d1990ffaca93302709d1306d50ae153adb169f49"
+                "reference": "5c2d515d4624bdd588226d688173cf0399a4d8cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Twig-extensions/archive/d1990ffaca93302709d1306d50ae153adb169f49.zip",
-                "reference": "d1990ffaca93302709d1306d50ae153adb169f49",
+                "url": "https://github.com/fabpot/Twig-extensions/archive/5c2d515d4624bdd588226d688173cf0399a4d8cf.zip",
+                "reference": "5c2d515d4624bdd588226d688173cf0399a4d8cf",
                 "shasum": ""
             },
             "require": {
                 "twig/twig": "1.*"
             },
+            "time": "2013-01-04 16:55:05",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "1.0.x-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Twig_Extensions_": "lib/"
@@ -1645,8 +1675,7 @@
                 "debug",
                 "i18n",
                 "text"
-            ],
-            "time": "1349889206"
+            ]
         },
         {
             "name": "twig/twig",
@@ -1654,24 +1683,24 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Twig.git",
-                "reference": "6c01c14fd8f42348a032148ebecb6e034e9e18bd"
+                "reference": "93c6a8dedc46c73ccdd61342de3d5e761e4412f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Twig/archive/6c01c14fd8f42348a032148ebecb6e034e9e18bd.zip",
-                "reference": "6c01c14fd8f42348a032148ebecb6e034e9e18bd",
+                "url": "https://github.com/fabpot/Twig/archive/93c6a8dedc46c73ccdd61342de3d5e761e4412f6.zip",
+                "reference": "93c6a8dedc46c73ccdd61342de3d5e761e4412f6",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.4"
             },
+            "time": "2013-01-18 09:58:04",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "1.12-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Twig_": "lib/"
@@ -1695,8 +1724,7 @@
             "homepage": "http://twig.sensiolabs.org",
             "keywords": [
                 "templating"
-            ],
-            "time": "1350737598"
+            ]
         },
         {
             "name": "zend/gdata",
@@ -1715,8 +1743,8 @@
             "require": {
                 "php": ">5.2.4"
             },
+            "time": "2012-05-04 11:57:49",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Zend_": "library"
@@ -1736,8 +1764,7 @@
             "keywords": [
                 "zend",
                 "gdata"
-            ],
-            "time": "1336132669"
+            ]
         }
     ],
     "packages-dev": [
@@ -1747,20 +1774,33 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "84cd1ca060e06bf5eb7066adb334adea4bf29fe7"
+                "reference": "50e7e644984f17038224f6fcd02c2b7c20147980"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/doctrine/data-fixtures/archive/84cd1ca060e06bf5eb7066adb334adea4bf29fe7.zip",
-                "reference": "84cd1ca060e06bf5eb7066adb334adea4bf29fe7",
+                "url": "https://github.com/doctrine/data-fixtures/archive/50e7e644984f17038224f6fcd02c2b7c20147980.zip",
+                "reference": "50e7e644984f17038224f6fcd02c2b7c20147980",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2",
                 "doctrine/common": ">=2.2,<2.5-dev"
             },
+            "require-dev": {
+                "doctrine/orm": ">=2.2,<2.5-dev"
+            },
+            "suggest": {
+                "doctrine/orm": "For loading ORM fixtures",
+                "doctrine/mongodb-odm": "For loading MongoDB ODM fixtures",
+                "doctrine/phpcr-odm": "For loading PHPCR ODM fixtures"
+            },
+            "time": "2013-01-05 13:05:52",
             "type": "library",
-            "installation-source": "source",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
                     "Doctrine\\Common\\DataFixtures": "lib/"
@@ -1781,8 +1821,7 @@
             "homepage": "http://www.doctrine-project.org",
             "keywords": [
                 "database"
-            ],
-            "time": "1350901469"
+            ]
         },
         {
             "name": "fabpot/php-cs-fixer",
@@ -1790,12 +1829,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/PHP-CS-Fixer.git",
-                "reference": "v0.1.0"
+                "reference": "2377b9ea383ac7939e563c3dd6ee2be9ee2d3183"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/PHP-CS-Fixer/archive/v0.1.0.zip",
-                "reference": "v0.1.0",
+                "url": "https://github.com/fabpot/PHP-CS-Fixer/archive/2377b9ea383ac7939e563c3dd6ee2be9ee2d3183.zip",
+                "reference": "2377b9ea383ac7939e563c3dd6ee2be9ee2d3183",
                 "shasum": ""
             },
             "require": {
@@ -1804,7 +1843,7 @@
                 "symfony/finder": "2.1.*",
                 "php": ">=5.3.3"
             },
-            "time": "2012-11-20 07:00:21",
+            "time": "2013-01-04 16:55:35",
             "bin": [
                 "php-cs-fixer"
             ],
@@ -1814,12 +1853,12 @@
                     "dev-master": "0.1.x-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Symfony\\CS": "."
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],

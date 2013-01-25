@@ -2089,7 +2089,7 @@ class task_period_archive extends task_abstract
                 $fields = caption_field::get_multi_values($field, $meta->get_separator());
 
                 if (!$metadataBag->containsKey($meta->get_name())) {
-                    $values = new \PHPExiftool\Driver\Value\Multi($fields);
+                    $values = $fields;
                 } else {
                     $values = array_merge($metadataBag->get($meta->get_name())->getValue(), $fields);
                 }

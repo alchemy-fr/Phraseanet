@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 use Alchemy\Phrasea\Border\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
@@ -20,12 +19,11 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->assertEquals(self::$DI['record_1']->get_preview()->get_size(), $response->headers->get('content-length'));
     }
 
-    /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
     function testDatafilesNonExistentSubdef()
     {
-        $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/asubdefthatdoesnotexists/');
+        self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/asubdefthatdoesnotexists/');
+        
+        $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
     function testEtag()
@@ -58,25 +56,17 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
     function testDatafilesRouteNotAuthenticated()
     {
         self::$DI['app']->closeAccount();
-        try {
-            $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
-            $this->fail('should throw an HttpException');
-        } catch (HttpException $e) {
-            $response = self::$DI['client']->getResponse();
-            $this->assertEquals(403, $e->getStatusCode());
-        }
+        self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     function testDatafilesRouteNotAuthenticatedUnknownSubdef()
     {
         self::$DI['app']->closeAccount();
-        try {
-            $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/notfoundreview/');
-            $this->fail('should throw an HttpException');
-        } catch (HttpException $e) {
-            $response = self::$DI['client']->getResponse();
-            $this->assertEquals(403, $e->getStatusCode());
-        }
+        self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/notfoundreview/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     function testPermalinkAuthenticated()

@@ -7,7 +7,6 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     protected $client;
 
     /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::slash
      * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::connect
      * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::call
@@ -16,6 +15,8 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
         self::$DI['client']->request('GET', '/admin/dashboard/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -62,7 +63,6 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::sendMail
      */
     public function testSendMailTestBadRequest()
@@ -70,6 +70,8 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         self::$DI['client']->request('POST', '/admin/dashboard/send-mail-test/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
     /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::resetAdminRights

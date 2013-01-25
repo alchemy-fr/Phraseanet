@@ -46,22 +46,26 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::prepareDownload
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testPrepareDownloadTokenNotFound()
     {
         $token = 'AzBdisusjA';
         self::$DI['client']->request('GET', sprintf('/download/%s/prepare/', $token));
+
+        $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::prepareDownload
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testPrepareDownloadInvalidData()
     {
         $token = $this->getToken(array('bad_string' => base64_decode(serialize(array('fail')))));
         self::$DI['client']->request('GET', sprintf('/download/%s/prepare/', $token));
+
+        $response = self::$DI['client']->getResponse();
+        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertTrue(false !== stripos($response->getContent(), 'internal server error'));
     }
 
     /**
@@ -185,7 +189,6 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadDocuments
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testDocumentsDownloadNotFound()
     {
@@ -215,29 +218,32 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         ));
         $url = sprintf('/download/%s/get/', $token);
         self::$DI['client']->request('POST', $url);
-        $response = self::$DI['client']->getResponse();
-        $this->assertTrue($response->isOk());
-        unset($response);
+
+        $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadDocuments
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testDocumentsDownloadTokenNotFound()
     {
         $token = 'AzBdisusjA';
         self::$DI['client']->request('POST', sprintf('/download/%s/get/', $token));
+
+        $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadDocuments
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testDocumentsDownloadInvalidData()
     {
         $token = $this->getToken(array('bad_string' => base64_decode(serialize(array('fail')))));
         self::$DI['client']->request('POST', sprintf('/download/%s/get/', $token));
+
+        $response = self::$DI['client']->getResponse();
+        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertTrue(false !== stripos($response->getContent(), 'internal server error'));
     }
 
     /**

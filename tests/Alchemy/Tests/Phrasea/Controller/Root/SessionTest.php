@@ -70,11 +70,12 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
      /**
      * @covers \Alchemy\Phrasea\Controller\Root\Session::updateSession
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testUpdSessionBadRequest()
     {
         self::$DI['client']->request('POST', '/session/update/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     private function checkSessionReturn(\stdClass $data)

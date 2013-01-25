@@ -2,17 +2,15 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
-
-class SearchEngineServiceProvidertest extends \PhraseanetPHPUnitAbstract
+/**
+ * @covers Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider
+ */
+class SearchEngineServiceProvidertest extends ServiceProviderTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider
-     */
-    public function testGetInstantiate()
+    public function provideServiceDescription()
     {
-        self::$DI['app']->register(new SearchEngineServiceProvider());
-
-        $this->assertInstanceof('Alchemy\Phrasea\SearchEngine\SearchEngineInterface', self::$DI['app']['phraseanet.SE']);
+        return array(
+            array('Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider', 'phraseanet.SE', 'Alchemy\Phrasea\SearchEngine\SearchEngineInterface'),
+        );
     }
 }

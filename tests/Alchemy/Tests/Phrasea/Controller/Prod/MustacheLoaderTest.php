@@ -10,26 +10,21 @@ class MustacheLoaderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$DI['client']->request('GET', '/prod/MustacheLoader/');
 
-        $response = self::$DI['client']->getResponse();
-        /* @var $response \Symfony\Component\HttpFoundation\Response */
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     public function testRouteSlashWrongUrl()
     {
         self::$DI['client']->request('GET', '/prod/MustacheLoader/', array('template' => '/../../../../config/config.yml'));
 
-        $response = self::$DI['client']->getResponse();
-        $this->assertEquals(400, $response->getStatusCode());
-        /* @var $response \Symfony\Component\HttpFoundation\Response */
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     public function testRouteSlashWrongFile()
     {
         self::$DI['client']->request('GET', '/prod/MustacheLoader/', array('template' => 'patator_lala'));
 
-        $response = self::$DI['client']->getResponse();
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
     public function testRouteGood()

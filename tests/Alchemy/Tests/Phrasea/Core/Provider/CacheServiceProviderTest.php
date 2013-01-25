@@ -2,16 +2,17 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
-
-class CacheServiceProvidertest extends \PhraseanetPHPUnitAbstract
+/**
+ * @covers Alchemy\Phrasea\Core\Provider\CacheServiceProvider
+ */
+class CacheServiceProvidertest extends ServiceProviderTestCase
 {
-    public function testGetInstantiate()
+    public function provideServiceDescription()
     {
-        self::$DI['app']->register(new CacheServiceProvider());
-
-        $this->assertInstanceof('Doctrine\\Common\\Cache\\Cache', self::$DI['app']['cache']);
-        $this->assertInstanceof('Doctrine\\Common\\Cache\\Cache', self::$DI['app']['opcode-cache']);
-        $this->assertInstanceof('Alchemy\\Phrasea\\Cache\\Manager', self::$DI['app']['phraseanet.cache-service']);
+        return array(
+            array('Alchemy\Phrasea\Core\Provider\CacheServiceProvider', 'cache', 'Doctrine\\Common\\Cache\\Cache'),
+            array('Alchemy\Phrasea\Core\Provider\CacheServiceProvider', 'opcode-cache', 'Doctrine\\Common\\Cache\\Cache'),
+            array('Alchemy\Phrasea\Core\Provider\CacheServiceProvider', 'phraseanet.cache-service', 'Alchemy\\Phrasea\\Cache\\Manager'),
+        );
     }
 }

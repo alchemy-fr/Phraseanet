@@ -70,11 +70,12 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Records::getRecord
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testGetRecordDetailNotAjax()
     {
         self::$DI['client']->request('POST', '/prod/records/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**

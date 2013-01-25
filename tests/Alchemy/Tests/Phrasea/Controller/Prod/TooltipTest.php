@@ -18,25 +18,22 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
     public function testRouteBasketFail()
     {
         $crawler = self::$DI['client']->request('POST', '/prod/tooltip/basket/notanid/');
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertFalse(self::$DI['client']->getResponse()->isOk());
 
+        $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
     public function testRouteBasketFail2()
     {
         $crawler = self::$DI['client']->request('POST', '/prod/tooltip/basket/-5/');
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertFalse(self::$DI['client']->getResponse()->isOk());
+
+        $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
     public function testRoutePreview()

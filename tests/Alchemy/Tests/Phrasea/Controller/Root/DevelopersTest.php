@@ -74,11 +74,12 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @cover \Alchemy\Phrasea\Controller\Root\Developers::getApp
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testGetUnknowApp()
     {
         self::$DI['client']->request('GET', '/developers/application/0/');
+
+        $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -94,11 +95,12 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @cover \Alchemy\Phrasea\Controller\Root\Developers::deleteApp
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testDeleteAppBadRequest()
     {
         self::$DI['client']->request('DELETE', '/developers/application/1/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -134,11 +136,12 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @cover \Alchemy\Phrasea\Controller\Root\Developers::renewAppCallback
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testRenewAppCallbackBadRequest()
     {
         self::$DI['client']->request('POST', '/developers/application/1/callback/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -189,11 +192,12 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @cover \Alchemy\Phrasea\Controller\Root\Developers::renewAccessToken
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testRenewAccessTokenbadRequest()
     {
         self::$DI['client']->request('POST', '/developers/application/1/access_token/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**
@@ -228,11 +232,12 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @cover \Alchemy\Phrasea\Controller\Root\Developers::authorizeGrantpassword
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testAuthorizeGrantpasswordBadRequest()
     {
         self::$DI['client']->request('POST', '/developers/application/1/authorize_grant_password/');
+
+        $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     /**

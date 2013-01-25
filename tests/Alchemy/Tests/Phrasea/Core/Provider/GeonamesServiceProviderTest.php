@@ -2,14 +2,15 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
-
-class GeonamesServiceProvidertest extends \PhraseanetPHPUnitAbstract
+/**
+ * @covers Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider
+ */
+class GeonamesServiceProvidertest extends ServiceProviderTestCase
 {
-    public function testGetInstantiate()
+    public function provideServiceDescription()
     {
-        self::$DI['app']->register(new GeonamesServiceProvider());
-
-        $this->assertInstanceof('geonames', self::$DI['app']['geonames']);
+        return array(
+            array('Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider', 'geonames', 'geonames'),
+        );
     }
 }
