@@ -97,7 +97,7 @@ return call_user_func(function($environment = null) {
         } else {
             return $app->redirect("/login/?redirect=client");
         }
-    });
+    })->bind('root');
 
     $app->get('/robots.txt', function(PhraseaApplication $app) {
 
