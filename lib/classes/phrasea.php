@@ -48,83 +48,29 @@ class phrasea
         return $retval;
     }
 
-    public function getHome(Application $app, $type = 'PUBLI', $context = 'prod')
+    public static function start(Configuration $configuration)
     {
-        if ($type == 'HELP') {
-            if (file_exists($app['phraseanet.registry']->get('GV_RootPath') . "config/help_" . $app['locale.I18n'] . ".php")) {
-                require($app['phraseanet.registry']->get('GV_RootPath') . "config/help_" . $app['locale.I18n'] . ".php");
-            } elseif (file_exists($app['phraseanet.registry']->get('GV_RootPath') . 'config/help.php')) {// on verifie si il y a une home personnalisee sans langage
-                require($app['phraseanet.registry']->get('GV_RootPath') . 'config/help.php');
-            } else {
-                require($app['phraseanet.registry']->get('GV_RootPath') . 'www/client/help.php');
-            }
+        $choosenConnexion = $configuration->getPhraseanet()->get('database');
+
+        $connexion = $configuration->getConnexion($choosenConnexion);
+
+        $hostname = $connexion->get('host');
+        $port = (int) $connexion->get('port');
+        $user = $connexion->get('user');
+        $password = $connexion->get('password');
+        $dbname = $connexion->get('dbname');
+
+        if (!extension_loaded('phrasea2')) {
+            throw new RuntimeException('Phrasea extension is required');
         }
 
-        if ($type == 'PUBLI') {
-            if ($context == 'prod')
-                require($app['phraseanet.registry']->get('GV_RootPath') . "www/prod/homeinterpubbask.php");
-            else
-                require($app['phraseanet.registry']->get('GV_RootPath') . "www/client/homeinterpubbask.php");
+        if (!function_exists('phrasea_conn')) {
+            throw new RuntimeException('Phrasea extension requires upgrade');
         }
 
-        if (in_array($type, array('QUERY', 'LAST_QUERY'))) {
-            $context = in_array($context, array('client', 'prod')) ? $context : 'prod';
-            $parm = array();
-
-            $bas = array();
-
-            $searchSet = json_decode($app['phraseanet.user']->getPrefs('search'));
-
-            if ($searchSet && isset($searchSet->bases)) {
-                foreach ($searchSet->bases as $bases)
-                    $bas = array_merge($bas, $bases);
-            } else {
-                $bas = array_keys($app['phraseanet.user']->ACL()->get_granted_base());
-            }
-
-            $start_page_query = $app['phraseanet.user']->getPrefs('start_page_query');
-
-            if ($context == "prod") {
-                $parm["bas"] = $bas;
-                $parm["qry"] = $start_page_query;
-                $parm["pag"] = 0;
-                $parm["sel"] = '';
-                $parm["ord"] = null;
-                $parm["search_type"] = 0;
-                $parm["record_type"] = '';
-                $parm["status"] = array();
-                $parm["fields"] = array();
-                $parm["date_min"] = '';
-                $parm["date_max"] = '';
-                $parm["date_field"] = '';
-            }
-            if ($context == "client") {
-                $parm["mod"] = $app['phraseanet.user']->getPrefs('client_view');
-                $parm["bas"] = $bas;
-                $parm["qry"] = $start_page_query;
-                $parm["pag"] = '';
-                $parm["search_type"] = 0;
-                $parm["qryAdv"] = '';
-                $parm["opAdv"] = array();
-                $parm["status"] = '';
-                $parm["nba"] = '';
-                $parm["date_min"] = '';
-                $parm["date_max"] = '';
-                $parm["record_type"] = '';
-                $parm["date_field"] = '';
-                $parm["sort"] = $app['phraseanet.registry']->get('GV_phrasea_sort');
-                $parm["stemme"] = '';
-                $parm["dateminfield"] = array();
-                $parm["datemaxfield"] = array();
-                $parm["infield"] = '';
-                $parm["regroup"] = null;
-                $parm["ord"] = 0;
-            }
-
-            require($app['phraseanet.registry']->get('GV_RootPath') . 'www/' . $context . "/answer.php");
+        if (phrasea_conn($hostname, $port, $user, $password, $dbname) !== true) {
+            throw new RuntimeException('Unable to initialize Phrasea connection');
         }
-
-        return;
     }
 
     public static function clear_sbas_params(Application $app)

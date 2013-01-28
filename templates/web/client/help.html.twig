@@ -1,24 +1,10 @@
-<?php
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2013 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+{% if app['locale.I18n'] not in ['fr', 'en', 'us'] %}
+    {% set lng = 'fr' %}
+{% else  %}
+    {% set lng = app['locale.I18n'] %}
+{% endif %}
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-$help_lng = $app['locale.I18n'];
-if ( ! in_array($app['locale.I18n'], array('fr', 'en', 'us')))
-    $help_lng = 'fr';
-
-if ($help_lng == 'fr') {
-    ?>
+{% if lng == 'fr' %}
     <div class="client_help">
         <h5>La recherche s'effectue grâce à la boîte de dialogue qui se trouve en haut à gauche de l'écran. Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux suivants :</h5>
         <h5 style="border:#CCCCCC 2px solid">* , ? , ET , OU , SAUF , DANS , DERNIERS , TOUT&nbsp;&nbsp; &nbsp;(ou AND , OR , EXCEPT , LAST , ALL)</h5>
@@ -79,10 +65,7 @@ if ($help_lng == 'fr') {
             , ...
         </center>
     </div>
-    <?php
-}
-if ($help_lng == 'en' || $help_lng == 'us') {
-    ?>
+{% elseif lng == 'en' or lng == 'us' %}
     <div class="client_help">
         <h5>The search can be made through a dialogue box which can be found up left of your screen. Please note that you can use the following specific characters or boolean operators :</h5>
         <h5 style="border:#CCCCCC 2px solid">* , ? ,  AND , OR , EXCEPT , IN, LAST , ALL</h5>
@@ -143,5 +126,4 @@ if ($help_lng == 'en' || $help_lng == 'us') {
             , ...
         </center>
     </div>
-    <?php
-}
+{% endif %}

@@ -81,10 +81,9 @@ function getHome(cas, page){
         case 'HELP':
             $.ajax({
                 type: "POST",
-                url: "/client/clientFeedBack.php",
+                url: "/client/home/",
                 dataType: 'html',
                 data: {
-                    action: "HOME",
                     type: cas
                 },
                 beforeSend: function(){
