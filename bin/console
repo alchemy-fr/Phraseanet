@@ -17,11 +17,12 @@ namespace KonsoleKommander;
  * @link        www.phraseanet.com
  */
 use Alchemy\Phrasea\Core\Version;
-use Alchemy\Phrasea\Command\UpgradeDBDatas;
-use Alchemy\Phrasea\Command\RescanTechnicalDatas;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
-use Alchemy\Phrasea\Command\RecordAdd;
 use Alchemy\Phrasea\Command\CreateCollection;
+use Alchemy\Phrasea\Command\MailTest;
+use Alchemy\Phrasea\Command\RecordAdd;
+use Alchemy\Phrasea\Command\RescanTechnicalDatas;
+use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\CLI;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -77,6 +78,7 @@ try {
     $app->command(new \module_console_fileEnsureDevSetting('check:ensure-dev-settings'));
     $app->command(new \module_console_systemConfigCheck('check:system'));
 
+    $app->command(new Mailtest('mail:test'));
 
     $app->command(new \module_console_fieldsList('fields:list'));
     $app->command(new \module_console_fieldsDelete('fields:delete'));
