@@ -72,11 +72,14 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testSendOrder()
     {
         $order = $this->createOneOrder('I need this pictures');
+
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered');
+
         $parameters = array();
         foreach ($order as $id => $element) {
             $parameters[] = $id;
         }
-        self::$DI['client']->request('POST', '/prod/order/' . $order->get_order_id() . '/send/', $parameters);
+        self::$DI['client']->request('POST', '/prod/order/' . $order->get_order_id() . '/send/', array('elements' => $parameters));
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $url = parse_url(self::$DI['client']->getResponse()->headers->get('location'));
         parse_str($url['query']);
@@ -89,11 +92,14 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testSendOrderJson()
     {
         $order = $this->createOneOrder('I need this pictures');
+
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered');
+
         $parameters = array();
         foreach ($order as $id => $element) {
             $parameters[] = $id;
         }
-        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->get_order_id() . '/send/', $parameters);
+        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->get_order_id() . '/send/', array('elements' => $parameters));
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
@@ -112,11 +118,14 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testDenyOrder()
     {
         $order = $this->createOneOrder('I need this pictures');
+
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled');
+
         $parameters = array();
         foreach ($order as $id => $element) {
             $parameters[] = $id;
         }
-        self::$DI['client']->request('POST', '/prod/order/' . $order->get_order_id() . '/deny/', $parameters);
+        self::$DI['client']->request('POST', '/prod/order/' . $order->get_order_id() . '/deny/', array('elements' => $parameters));
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $url = parse_url(self::$DI['client']->getResponse()->headers->get('location'));
         parse_str($url['query']);
@@ -129,11 +138,14 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testDenyOrderJson()
     {
         $order = $this->createOneOrder('I need this pictures');
+
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled');
+
         $parameters = array();
         foreach ($order as $id => $element) {
             $parameters[] = $id;
         }
-        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->get_order_id() . '/deny/', $parameters);
+        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->get_order_id() . '/deny/', array('elements' => $parameters));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
@@ -147,6 +159,14 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     private function createOneOrder($usage)
     {
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
+            ->method('deliver')
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewOrder'), $this->equalTo(null));
+
         $receveid = array(self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']);
 
         return \set_order::create(

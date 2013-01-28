@@ -185,6 +185,8 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostResetMailEmail()
     {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate');
+        
         $password = \random::generatePassword();
         self::$DI['app']['phraseanet.user']->set_password($password);
         self::$DI['client']->request('POST', '/account/reset-email/', array(
@@ -311,7 +313,6 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpdateAccount()
     {
-        $register = new \appbox_register(self::$DI['app']['phraseanet.appbox']);
         $bases = $notifs = array();
 
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
@@ -360,9 +361,9 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals('minet', self::$DI['app']['phraseanet.user']->get_lastname());
 
         $sql = 'SELECT base_id FROM demand WHERE usr_id = :usr_id AND en_cours="1" ';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $user->get_id()));
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':usr_id' => self::$DI['app']['phraseanet.user']->get_id()));
+        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $this->assertCount(count($bases), $rs);

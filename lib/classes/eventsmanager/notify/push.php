@@ -83,6 +83,8 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
         $mailed = false;
 
         if ($this->shouldSendNotificationFor($params['to'])) {
+
+            $readyToSend = false;
             try {
                 $repository = $this->app['EM']->getRepository('\Entities\Basket');
                 $basket = $repository->find($params['ssel_id']);
@@ -92,7 +94,12 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
 
                 $receiver = Receiver::fromUser($user_from);
                 $emitter = Emitter::fromUser($user_to);
+                $readyToSend = true;
+            } catch (Exception $e) {
 
+            }
+
+            if ($readyToSend) {
                 $mail = MailInfoPushReceived::create($this->app, $receiver, $emitter, $params['message']);
                 $mail->setBasket($basket);
                 $mail->setPusher($user_from);
@@ -100,8 +107,6 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
                 $this->app['notification.deliverer']->deliver($mail, $params['accuse']);
 
                 $mailed = true;
-            } catch (Exception $e) {
-
             }
         }
 

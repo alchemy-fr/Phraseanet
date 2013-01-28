@@ -119,18 +119,22 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             $mailed = false;
 
             if ($this->shouldSendNotificationFor($usr_id)) {
+                $readyToSend = false;
                 try {
                     $admin_user = User_Adapter::getInstance($usr_id, $this->app);
-
                     $receiver = Receiver::fromUser($admin_user);
+                    $readyToSend = true;
+                } catch (Exception $e) {
+                    continue;
+                }
+
+                if ($readyToSend) {
                     $mail = MailInfoUserRegistered::create($this->app, $receiver);
                     $mail->setRegisteredUser($registeredUser);
 
                     $this->app['notification.deliverer']->deliver($mail);
 
                     $mailed = true;
-                } catch (Exception $e) {
-                    continue;
                 }
             }
 

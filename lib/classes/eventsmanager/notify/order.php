@@ -111,15 +111,20 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
             $mailed = false;
 
             if ($this->shouldSendNotificationFor($user->get_id())) {
+                $readyToSend = false;
                 try {
                     $receiver = Receiver::fromUser($user);
+                    $readyToSend = true;
+                } catch (Exception $e) {
+                    continue;
+                }
+
+                if ($readyToSend) {
                     $mail = MailInfoNewOrder::create($this->app, $receiver);
                     $mail->setUser($orderInitiator);
 
                     $this->app['notification.deliverer']->deliver($mail);
                     $mailed = true;
-                } catch (\Exception $e) {
-
                 }
             }
 

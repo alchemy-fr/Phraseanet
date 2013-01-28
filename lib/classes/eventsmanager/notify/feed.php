@@ -67,7 +67,10 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
         $Query = new \User_Query($this->app);
 
-        $Query->include_phantoms(true)->include_invite(false)->include_templates(false);
+        $Query->include_phantoms(true)
+            ->include_invite(false)
+            ->include_templates(false)
+            ->email_not_null(true);
 
         if ($entry->get_feed()->get_collection()) {
             $Query->on_base_ids(array($entry->get_feed()->get_collection()->get_base_id()));
@@ -83,32 +86,38 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
         do {
             $results = $Query->limit($start, $perLoop)->execute()->get_results();
-
+            
             foreach ($results as $user_to_notif) {
                 /* @var $user_to_notif \User_Adapter */
                 $mailed = false;
 
                 if ($this->shouldSendNotificationFor($user_to_notif->get_id())) {
-
-                    $token = \random::getUrlToken(
-                            $this->app,
-                            \random::TYPE_FEED_ENTRY
-                            , $user_to_notif->get_id()
-                            , null
-                            , $entry->get_id()
-                    );
-
-                    $url = $this->app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/index.php?LOG=' . $token;
-
+                    $readyToSend = false;
                     try {
+                        $token = \random::getUrlToken(
+                                $this->app,
+                                \random::TYPE_FEED_ENTRY
+                                , $user_to_notif->get_id()
+                                , null
+                                , $entry->get_id()
+                        );
+
+                        $url = $this->app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/index.php?LOG=' . $token;
+
                         $receiver = Receiver::fromUser($user_to_notif);
+                        $readyToSend = true;
+                    } catch (\Exception $e) {
+
+                    }
+
+                    if ($readyToSend) {
                         $mail = MailInfoNewPublication::create($this->app, $receiver);
                         $mail->setButtonUrl($url);
                         $mail->setAuthor($entry->get_author_name());
                         $mail->setTitle($entry->get_title());
-                        $mailed = true;
-                    } catch (\Exception $e) {
 
+                        $this->app['notification.deliverer']->deliver($mail);
+                        $mailed = true;
                     }
                 }
 

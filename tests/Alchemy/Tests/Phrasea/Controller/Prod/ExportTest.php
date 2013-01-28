@@ -175,6 +175,23 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Export::exportMail
+     */
+    public function testExportMail()
+    {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRecordsExport');
+
+        self::$DI['client']->request('POST', '/prod/export/mail/', array(
+            'lst'        => self::$DI['record_1']->get_serialize_key(),
+            'destmail'   => 'user@example.com',
+            'obj'        => array('preview'),
+        ));
+
+        $response = self::$DI['client']->getResponse();
+        $this->assertTrue($response->isOk());
+    }
+
+    /**
      * @covers Alchemy\Phrasea\Controller\Prod\Export::connect
      * @covers Alchemy\Phrasea\Controller\Prod\Export::call
      */

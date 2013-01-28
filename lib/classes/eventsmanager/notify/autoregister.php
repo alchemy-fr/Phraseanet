@@ -197,17 +197,20 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         $body .= sprintf("%s : %s\n", _('admin::compte-utilisateur email'), $registeredUser->get_email());
         $body .= sprintf("%s/%s\n", $registeredUser->get_job(), $registeredUser->get_company());
 
-        $receiver = Receiver::fromUser($to);
-        $mail = MailInfoSomebodyAutoregistered::create($this->app, $receiver, $body);
-
+        $readyToSend = false;
         try {
-            $this->app['notification.deliverer']->deliver($mail);
-
-            return true;
-        } catch (\Exception $e) {
+            $receiver = Receiver::fromUser($to);
+            $readyToSend = true;
+        } catch (Exception $e) {
+            
         }
 
-        return false;
+        if ($readyToSend) {
+            $mail = MailInfoSomebodyAutoregistered::create($this->app, $receiver, $body);
+            $this->app['notification.deliverer']->deliver($mail);
+        }
+
+        return true;
     }
 
     /**

@@ -296,13 +296,13 @@ class Account implements ControllerProviderInterface
         }
 
         try {
-            $date = new DateTime('1 day');
-            $token = random::getUrlToken($app, \random::TYPE_EMAIL, $app['phraseanet.user']->get_id(), $date, $app['phraseanet.user']->get_email());
+            $date = new \DateTime('1 day');
+            $token = \random::getUrlToken($app, \random::TYPE_EMAIL, $app['phraseanet.user']->get_id(), $date, $app['phraseanet.user']->get_email());
             $url = $app['phraseanet.registry']->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
 
             $receiver = Receiver::fromUser($app['phraseanet.user']);
             $mail = MailRequestEmailUpdate::create($app, $receiver, null);
-            $mail->setUrl($url);
+            $mail->setButtonUrl($url);
             $mail->setExpiration($date);
 
             $app['notification.deliverer']->deliver($mail);

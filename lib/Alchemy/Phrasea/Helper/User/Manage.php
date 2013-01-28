@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Helper\User;
 use Alchemy\Phrasea\Helper\Helper;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
 
 /**
  *
@@ -183,7 +184,7 @@ class Manage extends Helper
 
                 if (false !== $urlToken) {
                     $mail = MailSuccessEmailConfirmationUnregistered::create($this->app, Receiver::fromUser($createdUser));
-                    $mail->setUrl($this->app['url_generator']->generate('login_forgot_password', array('token' => $urlToken), true));
+                    $mail->setButtonUrl($this->app['url_generator']->generate('login_forgot_password', array('token' => $urlToken), true));
                     $this->app['notification.deliverer']->deliver($mail);
                 }
             }

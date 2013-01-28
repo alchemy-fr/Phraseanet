@@ -110,13 +110,18 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
         $mailed = false;
 
         if ($this->shouldSendNotificationFor($user->get_id())) {
+            $readyToSend = false;
             try {
                 $receiver = Receiver::fromUser($user);
+                $readyToSend = true;
+            } catch (Exception $e) {
+
+            }
+
+            if ($readyToSend) {
                 $mail = MailInfoRecordQuarantined::create($this->app, $receiver);
                 $this->app['notification.deliverer']->deliver($mail);
                 $mailed = true;
-            } catch (\Exception $e) {
-
             }
         }
 

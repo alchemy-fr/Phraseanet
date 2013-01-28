@@ -112,6 +112,12 @@ class User_Query implements User_QueryInterface
 
     /**
      *
+     * @var boolean
+     */
+    protected $email_not_null = false;
+
+    /**
+     *
      * @var Array
      */
     protected $base_ids = array();
@@ -220,6 +226,10 @@ class User_Query implements User_QueryInterface
 
         if ( ! $this->include_invite) {
             $sql .= ' AND usr.invite=0 ';
+        }
+
+        if ( ! $this->email_not_null) {
+            $sql .= ' AND usr.usr_mail IS NOT NULL ';
         }
 
         if ($this->only_templates === true) {
@@ -435,6 +445,18 @@ class User_Query implements User_QueryInterface
     public function only_templates($boolean)
     {
         $this->only_templates = ! ! $boolean;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param  boolean    $boolean
+     * @return User_Query
+     */
+    public function email_not_null($boolean)
+    {
+        $this->email_not_null = ! ! $boolean;
 
         return $this;
     }

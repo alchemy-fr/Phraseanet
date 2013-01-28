@@ -10,8 +10,9 @@
  */
 
 use Alchemy\Phrasea\Application;
-
 use Alchemy\Phrasea\Notification\Mail\MailInfoValidationRequest;
+use Alchemy\Phrasea\Notification\Emitter;
+use Alchemy\Phrasea\Notification\Receiver;
 
 class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
 {
@@ -89,34 +90,32 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         $mailed = false;
 
         if ($this->shouldSendNotificationFor($params['to'])) {
+
+            $readyToSend = false;
             try {
                 $user_from = User_Adapter::getInstance($params['from'], $this->app);
                 $user_to = User_Adapter::getInstance($params['to'], $this->app);
-            } catch (Exception $e) {
-                return false;
-            }
 
-            try {
                 $basket = $this->app['EM']
                     ->getRepository('\Entities\Basket')
                     ->find($params['ssel_id']);
                 $title = $basket->getName();
+
+                $receiver = Receiver::fromUser($user_to);
+                $emitter = Emitter::fromUser($user_from);
+
+                $readyToSend = true;
             } catch (\Exception $e) {
-                $title = '';
+
             }
 
-            $receiver = Receiver::fromUser($user_to);
-            $emitter = Receiver::fromUser($user_from);
-
-            try {
+            if ($readyToSend) {
                 $mail = MailInfoValidationRequest::create($this->app, $receiver, $emitter, $params['message']);
                 $mail->setButtonUrl($params['url']);
                 $mail->setTitle($title);
 
                 $this->app['notification.deliverer']->deliver($mail, $params['accuse']);
                 $mailed = true;
-            } catch (\Exception $e) {
-
             }
         }
 

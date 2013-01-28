@@ -14,6 +14,15 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
     public function setUp()
     {
         parent::setUp();
+
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
+            ->method('deliver')
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
+
         $this->feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
         $publishers = $this->feed->get_publishers();
         $publisher = array_shift($publishers);
@@ -315,6 +324,8 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
     public function testAjaxSetRelease()
     {
         $basket = $this->insertOneBasket();
+
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone');
 
         $crawler = self::$DI['client']->request('POST', '/lightbox/ajax/SET_RELEASE/' . $basket->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());

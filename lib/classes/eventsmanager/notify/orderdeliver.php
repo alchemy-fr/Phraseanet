@@ -96,30 +96,29 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         $mailed = false;
 
         if ($this->shouldSendNotificationFor($params['to'])) {
+            $readyToSend = false;
             try {
                 $user_from = User_Adapter::getInstance($params['from'], $this->app);
                 $user_to = User_Adapter::getInstance($params['to'], $this->app);
-            } catch (Exception $e) {
-                return false;
-            }
-
-            try {
-                $repository = $this->app['EM']->getRepository('\Entities\Basket');
-
-                $basket = $repository->find($params['ssel_id']);
 
                 $receiver = Receiver::fromUser($user_to);
                 $emitter = Emitter::fromUser($user_from);
 
+                $repository = $this->app['EM']->getRepository('\Entities\Basket');
+                $basket = $repository->find($params['ssel_id']);
+
+                $readyToSend = true;
+            } catch (Exception $e) {
+
+            }
+
+            if ($readyToSend) {
                 $mail = MailInfoOrderDelivered::create($this->app, $receiver, $emitter);
                 $mail->setBasket($basket);
                 $mail->setDeliverer($user_from);
 
                 $this->app['notification.deliverer']->deliver($mail);
                 $mailed = true;
-
-            } catch (Exception $e) {
-
             }
         }
 

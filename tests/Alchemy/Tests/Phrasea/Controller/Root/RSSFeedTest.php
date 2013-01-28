@@ -71,9 +71,93 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
     protected static $feed_4_public_subtitle = 'Feed 4 subtitle';
     protected $client;
 
+    private static $initialized = false;
+
     public function setUp()
     {
         parent::setUp();
+
+        if (!self::$initialized) {
+
+            @unlink('/tmp/db.sqlite');
+            copy(__DIR__ . '/../../../../../db-ref.sqlite', '/tmp/db.sqlite');
+
+            self::$DI['app']['session']->clear();
+            self::$DI['app']['session']->set('usr_id', self::$DI['user']->get_id());
+
+            self::$feed_1_private = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_1_private_title, self::$feed_1_private_subtitle);
+            self::$feed_1_private->set_public(false);
+            self::$feed_1_private->set_icon(__DIR__ . '/../../../../../files/logocoll.gif');
+
+            self::$feed_2_private = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_2_private_title, self::$feed_2_private_subtitle);
+            self::$feed_2_private->set_public(false);
+
+            self::$feed_3_public = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_3_public_title, self::$feed_3_public_subtitle);
+            self::$feed_3_public->set_public(true);
+            self::$feed_3_public->set_icon(__DIR__ . '/../../../../../files/logocoll.gif');
+
+            self::$feed_4_public = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_4_public_title, self::$feed_4_public_subtitle);
+            self::$feed_4_public->set_public(true);
+
+            $publishers = self::$feed_4_public->get_publishers();
+            $publisher = array_shift($publishers);
+
+            self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+                ->disableOriginalConstructor()
+                ->getMock();
+
+            self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
+                ->method('deliver')
+                ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
+
+            for ($i = 1; $i != 15; $i++) {
+                $entry = \Feed_Entry_Adapter::create(self::$DI['app'], self::$feed_4_public, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
+
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_6']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_7']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_8']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_9']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_10']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_13']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_15']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_16']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_19']);
+
+                $entry = \Feed_Entry_Adapter::create(self::$DI['app'], self::$feed_1_private, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
+
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_6']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_7']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_8']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_9']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_10']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_13']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_15']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_16']);
+                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_19']);
+
+                self::$feed_4_entries[] = $entry;
+            }
+
+
+            self::$public_feeds = \Feed_Collection::load_public_feeds(self::$DI['app']);
+            self::$private_feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
+            self::$DI['app']['session']->clear();
+
+            self::$initialized = true;
+        }
+
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
+            ->method('deliver')
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
+
         self::$feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], 'title', 'subtitle');
         self::$publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], self::$feed, self::$DI['user']);
         self::$entry = \Feed_Entry_Adapter::create(self::$DI['app'], self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
@@ -102,65 +186,6 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
         $application = new Application('test');
 
-        @unlink('/tmp/db.sqlite');
-        copy(__DIR__ . '/../../../../../db-ref.sqlite', '/tmp/db.sqlite');
-
-        $application['session']->clear();
-        $application['session']->set('usr_id', self::$DI['user']->get_id());
-
-        self::$feed_1_private = \Feed_Adapter::create($application, self::$DI['user'], self::$feed_1_private_title, self::$feed_1_private_subtitle);
-        self::$feed_1_private->set_public(false);
-        self::$feed_1_private->set_icon(__DIR__ . '/../../../../../files/logocoll.gif');
-
-        self::$feed_2_private = \Feed_Adapter::create($application, self::$DI['user'], self::$feed_2_private_title, self::$feed_2_private_subtitle);
-        self::$feed_2_private->set_public(false);
-
-        self::$feed_3_public = \Feed_Adapter::create($application, self::$DI['user'], self::$feed_3_public_title, self::$feed_3_public_subtitle);
-        self::$feed_3_public->set_public(true);
-        self::$feed_3_public->set_icon(__DIR__ . '/../../../../../files/logocoll.gif');
-
-        self::$feed_4_public = \Feed_Adapter::create($application, self::$DI['user'], self::$feed_4_public_title, self::$feed_4_public_subtitle);
-        self::$feed_4_public->set_public(true);
-
-        $publishers = self::$feed_4_public->get_publishers();
-        $publisher = array_shift($publishers);
-
-        for ($i = 1; $i != 15; $i++) {
-            $entry = \Feed_Entry_Adapter::create($application, self::$feed_4_public, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
-
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_1']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_6']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_7']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_8']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_9']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_10']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_1']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_13']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_15']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_16']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_19']);
-
-            $entry = \Feed_Entry_Adapter::create($application, self::$feed_1_private, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
-
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_1']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_6']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_7']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_8']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_9']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_10']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_1']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_13']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_15']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_16']);
-            $item = \Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_19']);
-
-            self::$feed_4_entries[] = $entry;
-        }
-
-
-        self::$public_feeds = \Feed_Collection::load_public_feeds($application);
-        self::$private_feeds = \Feed_Collection::load_all($application, self::$DI['user']);
-        $application['session']->clear();
     }
 
     public static function tearDownAfterClass()

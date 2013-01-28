@@ -238,7 +238,7 @@ class Export implements ControllerProviderInterface
         $list = $download->prepare_export(
             $app['phraseanet.user'],
             $app['filesystem'],
-            $request->request->get('obj'),
+            (array) $request->request->get('obj'),
             $request->request->get("type") == "title" ? : false,
             $request->request->get('businessfields')
         );
@@ -288,9 +288,9 @@ class Export implements ControllerProviderInterface
                 $receiver = new Receiver(null, trim($mail));
 
                 $mail = MailRecordsExport::create($app, $receiver, $emitter, $request->request->get('textmail'));
-                $mail->setUrl($url);
-                $mail->setEnddate($endDateObject);
-                
+                $mail->setButtonUrl($url);
+                $mail->setExpiration($endDateObject);
+
                 try {
                     $app['notification.deliverer']->deliver($mail);
                     unset($remaingEmails[$key]);

@@ -48,6 +48,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteRightsApply()
     {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate', 2);
 
         $username = uniqid('user_');
         $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
@@ -241,12 +242,43 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($datas->error);
     }
 
-    public function testRouteCreateUser()
+    public function testRouteCreateUserAndValidateEmail()
     {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup');
         $username = uniqid('user_');
-        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
 
-        self::$DI['client']->request('POST', '/admin/users/create/', array('value'    => $username . "@email.com", 'template' => '0'));
+        self::$DI['client']->request('POST', '/admin/users/create/', array(
+            'value'         => $username . "@email.com",
+            'template'      => '0',
+            'validate_mail' => true,
+        ));
+
+        $response = self::$DI['client']->getResponse();
+
+        $this->assertTrue($response->isOK());
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
+        $datas = json_decode($response->getContent());
+        $this->assertTrue(is_object($datas));
+        $this->assertFalse($datas->error);
+
+        try {
+            $user = \User_Adapter::getInstance((int) $datas->data, self::$DI['app']);
+            $user->delete();
+        } catch (\Exception $e) {
+            $this->fail("could not delete created user " . $e->getMessage());
+        }
+    }
+
+    public function testRouteCreateUserAndSendCredentials()
+    {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered');
+        $username = uniqid('user_');
+
+        self::$DI['client']->request('POST', '/admin/users/create/', array(
+            'value'            => $username . "@email.com",
+            'template'         => '0',
+            'send_credentials' => true,
+        ));
 
         $response = self::$DI['client']->getResponse();
 

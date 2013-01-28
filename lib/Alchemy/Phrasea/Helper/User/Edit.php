@@ -546,12 +546,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, sprintf(_('You will now receive notifications at %s'), $new_email));
             $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, sprintf(_('You will no longer receive notifications at %s'), $old_email));
 
-            try {
-                $this->app['notification.deliverer']->deliver($mailOldAddress);
-                $this->app['notification.deliverer']->deliver($mailNewAddress);
-            } catch (\Exception $e) {
-
-            }
+            $this->app['notification.deliverer']->deliver($mailOldAddress);
+            $this->app['notification.deliverer']->deliver($mailNewAddress);
         }
 
         return $this;
