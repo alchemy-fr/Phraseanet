@@ -103,7 +103,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                     try {
                         $receiver = Receiver::fromUser($user_to_notif);
                         $mail = MailInfoNewPublication::create($this->app, $receiver);
-                        $mail->setUrl($url);
+                        $mail->setButtonUrl($url);
                         $mail->setAuthor($entry->get_author_name());
                         $mail->setTitle($entry->get_title());
                         $mailed = true;

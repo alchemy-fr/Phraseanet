@@ -108,7 +108,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
             try {
                 $mail = MailInfoValidationReminder::create($this->app, $receiver, $emitter);
-                $mail->setUrl($params['url']);
+                $mail->setButtonUrl($params['url']);
                 $mail->setTitle($title);
 
                 $this->app['notification.deliverer']->deliver($mail);

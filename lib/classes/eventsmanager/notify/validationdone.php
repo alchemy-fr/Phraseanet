@@ -106,7 +106,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
             try {
                 $mail = MailInfoValidationDone::create($this->app, $receiver, $emitter);
-                $mail->setUrl($params['url']);
+                $mail->setButtonUrl($params['url']);
                 $mail->setTitle($title);
 
                 $this->app['notification.deliverer']->deliver($mail);
