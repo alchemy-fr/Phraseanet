@@ -32,10 +32,16 @@ class CLI extends Application
     {
         parent::__construct($environment);
 
+        $app = $this;
+
         $this['session.test'] = true;
 
         $this['console'] = $this->share(function () use ($name, $version) {
             return new Console\Application($name, $version);
+        });
+
+        $this['dispatcher']->addListener('phraseanet.notification.sent', function() use ($app) {
+            $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
         });
     }
 
