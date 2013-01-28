@@ -105,6 +105,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpFoundation\Response;
 
 class Application extends SilexApplication
 {
@@ -523,7 +524,7 @@ class Application extends SilexApplication
 
     public function bindRoutes()
     {
-        $this->get('/', function(PhraseaApplication $app) {
+        $this->get('/', function(Application $app) {
             if ($app['browser']->isMobile()) {
                 return $app->redirect("/login/?redirect=lightbox");
             } elseif ($app['browser']->isNewGeneration()) {
@@ -533,7 +534,7 @@ class Application extends SilexApplication
             }
         })->bind('root');
 
-        $this->get('/robots.txt', function(PhraseaApplication $app) {
+        $this->get('/robots.txt', function(Application $app) {
 
             if ($app['phraseanet.registry']->get('GV_allow_search_engine') === true) {
                 $buffer = "User-Agent: *\n" . "Allow: /\n";

@@ -127,12 +127,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 return $browser;
             }));
 
-            $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            $app['notification.deliverer'] = $phpunit->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
                 ->disableOriginalConstructor()
                 ->getMock();
-            $app['notification.deliverer']->expects($this->any())
+            $app['notification.deliverer']->expects($phpunit->any())
                 ->method('deliver')
-                ->will($this->returnCallback(function() use ($phpunit){
+                ->will($phpunit->returnCallback(function() use ($phpunit){
                     $phpunit->fail('Notification deliverer must be mocked');
                 }));
 
