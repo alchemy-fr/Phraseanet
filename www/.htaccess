@@ -45,6 +45,9 @@
   RewriteRule ^download/.*$                     /index.php [L]
   RewriteRule ^session/.*$                      /index.php [L]
 
+  RewriteRule ^client/.*$                       /index.php [L]
+  RewriteRule ^client/baskets.*$                /index.php [L]
+
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^api/v1/.*$             /api/v1/index.php [L]
   RewriteCond %{REQUEST_FILENAME} !-f

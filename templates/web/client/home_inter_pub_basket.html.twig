@@ -1,0 +1,112 @@
+<div style="height:50px;" class="homePubTitleBox">
+    <div style="float:left;width:350px;"><h1 style="font-size:20px;margin-top:15px;">
+            <h1>{% trans "publications:: dernieres publications" %}</h1>
+    </div>
+</div>
+
+<div>
+    {% for entry in feeds.get_aggregate().get_entries(0, 5).get_entries() %}
+    <div class="boxPubli">
+        <div class="titlePubli">
+            <h2 class="htitlePubli">
+                <a class="homePubTitle" onclick="openCompare('{{ entry.get_id() }}');">
+                    {{ entry.get_title() }}
+                </a>
+            </h2>
+            <span class="publiInfos">
+                {{ app['date-formatter'].getPrettyString(entry.get_created_on()) }}
+                {% if entry.get_author_email() %}
+                    <a class="homePubLink" href="mailto:{{ entry.get_author_email() }}">
+                        {{ entry.get_author_name() }}
+                    </a>
+                    {% if entry.get_updated_on() > entry.get_created_on() %}
+                        <br/>
+                        <span style="font-style:italic;">
+                            {% trans "publications:: derniere mise a jour" %} {{ app['date-formatter'].getPrettyString(entry.get_updated_on()) }}
+                        </span>
+                        <br />
+                        <br />
+                    {% endif %}
+                {% endif %}
+            </span>
+        </div>
+        <div class="descPubli">
+            <div style="margin:10px 0 10px 20px;width:80%;">
+                {% if entry.get_subtitle()|trim is not empty %}
+                    {{ entry.get_subtitle()|nl2br }}
+                {% endif %}
+            </div>
+        </div>
+        <div style="width:100%;position:relative;float:left;" id="PUBLICONT{{ entry.get_id() }}">
+            {% for item in entry.get_content() %}
+                {% set record = item.get_record() %}
+                {% set thumbnail = record.get_thumbnail() %}
+                {% set docType = record.get_type() %}
+                {% set duration = "" %}
+                {% set ratio = thumbnail.get_width() / thumbnail.get_height() %}
+                {% set wrapper_size = image_size + 30 %}
+
+                {% set types = {
+                    "isVideo" : (docType == "video" ? true : false),
+                    "isAudio" : (docType == "audio" ? true : false),
+                    "isImage" : (docType == "image" or (docType != "video" and docType != "audio") ? true : false)
+                } %}
+
+                {% if types["isVideo"] or types["isAudio"] %}
+                    {% set duration = record.get_formated_duration() %}
+                {% endif %}
+
+                {% if ratio > 1 %}
+                    {% set cw = [(image_size - 30), (thumbnail.get_width())]|min %}
+                    {% set ch = cw / ratio %}
+                    {% set pv = ((image_size - ch) / 2)|floor %}
+                    {% set ph = ((image_size - cw) / 2)|floor %}
+
+                    {% set image_style %}
+                        width:{{ cw }}px;xpadding:{{ pv }}px {{ ph }}px;
+                    {% endset %}
+                {% else %}
+                    {% set ch = [(image_size - 30), (thumbnail.get_height())]|min %}
+                    {% set cw = cw * ratio %}
+                    {% set pv = ((image_size - ch) / 2)|floor %}
+                    {% set ph = ((image_size - cw) / 2)|floor %}
+
+                    {% set image_style %}
+                        height:{{ ch }}px;xpadding:{{ pv }}px {{ ph }}px;
+                    {% endset %}
+                {% endif %}
+
+                <div style="width:{{ wrapper_size }}px;" sbas="{{ record.get_sbas_id() }}" id="{{"IMGT_" ~ record.get_serialize_key() ~ "_PUB_" ~ entry.get_id() }}" class="IMGT diapo" onclick="openPreview('FEED','{{ item.get_ord() }}','{{ entry.get_id() }}');">
+                    <div>
+                        <div class="title" style="height:40px;">
+                            {{ record.get_title() }}
+                        </div>
+                    </div>
+                    <table class="thumb w160px h160px" style="xheight:{{ image_size }}px;" cellpadding="0" valign="middle">
+                        <tr>
+                            <td>
+                                {% if duration is not empty %}
+                                    <div class="duration">
+                                        {{ duration }}
+                                    </div>
+                                {% endif %}
+                                <img title="{% embed "common/caption.html.twig" with {'view': 'publi', 'record': record} %}{% endembed %}" class="captionTips" src="{{ thumbnail.get_url() }}" style="{{ image_style }}" />
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="height: 25px;position:relative;">
+                        <table class="bottom">
+                            <tr>
+                                <td></td>
+                                <td style='text-align:right;' valign='bottom' nowrap>
+                                    <div tooltipsrc="/prod/tooltip/preview/{{ record.get_sbas_id() }}/{{ record.get_record_id() }}/" class="previewTips"></div>&nbsp;
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>

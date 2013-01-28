@@ -28,6 +28,8 @@ use Alchemy\Phrasea\Controller\Admin\SearchEngine;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
 use Alchemy\Phrasea\Controller\Admin\TaskManager;
 use Alchemy\Phrasea\Controller\Admin\Users;
+use Alchemy\Phrasea\Controller\Client\Root as ClientRoot;
+use Alchemy\Phrasea\Controller\Client\Baskets as ClientBasket;
 use Alchemy\Phrasea\Controller\Prod\Basket;
 use Alchemy\Phrasea\Controller\Prod\Bridge;
 use Alchemy\Phrasea\Controller\Prod\Download;
@@ -165,6 +167,9 @@ return call_user_func(function($environment = null) {
 
     $app->mount('/download/', new DoDownload());
     $app->mount('/session/', new Session());
+
+    $app->mount('/client/', new ClientRoot());
+    $app->mount('/client/baskets', new ClientBasket());
 
     $app->error(function(\Exception $e) use ($app) {
         $request = $app['request'];
