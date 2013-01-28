@@ -1,29 +1,50 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Notification\Mail;
 
 class MailTest extends AbstractMail
 {
-    public function subject()
+    /**
+     * {@inheritdoc}
+     */
+    public function getSubject()
     {
         return _('mail:: test d\'envoi d\'email');
     }
 
-    public function message()
+    /**
+     * {@inheritdoc}
+     */
+    public function getMessage()
     {
         return sprintf("%s\n%s", sprintf(
             _('Ce mail est un test d\'envoi de mail depuis %s'),
-            $this->registry->get('GV_ServerName')
+            $this->getPhraseanetTitle()
         ), $this->message);
     }
 
-    public function buttonText()
+    /**
+     * {@inheritdoc}
+     */
+    public function getButtonText()
     {
-        return $this->app['phraseanet.registry']->get('GV_homeTitle');
+        return $this->getPhraseanetTitle();
     }
 
-    public function buttonURL()
+    /**
+     * {@inheritdoc}
+     */
+    public function getButtonURL()
     {
-        return $this->registry->get('GV_ServerName');
+        return $this->app['url_generator']->generate('root', array(), true);
     }
 }

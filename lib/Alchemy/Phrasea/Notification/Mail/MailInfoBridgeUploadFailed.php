@@ -1,6 +1,17 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Notification\Mail;
+
+use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoBridgeUploadFailed extends AbstractMailWithLink
 {
@@ -16,24 +27,47 @@ class MailInfoBridgeUploadFailed extends AbstractMailWithLink
         $this->reason = $reason;
     }
 
-    public function subject()
+    /**
+     * {@inheritdoc}
+     */
+    public function getSubject()
     {
         return sprintf(
             _('Upload failed on %s'),
-            $this->app['phraseanet.registry']->get('GV_homeTitle')
+            $this->getPhraseanetTitle()
         );
     }
 
-    public function message()
+    /**
+     * {@inheritdoc}
+     */
+    public function getMessage()
     {
-        return _('An upload on %s failed, the resaon is : %s', $this->adapter, $this->reason);
+        if (null === $this->adapter) {
+            throw new LogicException('You must set an adapter before calling getMessage');
+        }
+        if (null === $this->reason) {
+            throw new LogicException('You must set a reason before calling getMessage');
+        }
+
+        return sprintf(
+            _('An upload on %s failed, the resaon is : %s'),
+            $this->adapter,
+            $this->reason
+        );
     }
 
-    public function buttonText()
+    /**
+     * {@inheritdoc}
+     */
+    public function getButtonText()
     {
     }
 
-    public function buttonURL()
+    /**
+     * {@inheritdoc}
+     */
+    public function getButtonURL()
     {
     }
 }

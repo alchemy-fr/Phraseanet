@@ -122,16 +122,7 @@ interface MailInterface
      *
      * @return \DateTime
      */
-    public function getExpirationMessage();
-
-    /**
-     * Sets an expiration date for the message meaning
-     *
-     * @param \DateTime|null $expiration
-     *
-     * @return MailInterface
-     */
-    public function setExpirationMessage(\DateTime $expiration = null);
+    public function getExpiration();
 
     /**
      * Returns the message for the link button

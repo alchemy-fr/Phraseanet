@@ -1,34 +1,46 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Notification\Mail;
 
 class MailRequestEmailConfirmation extends AbstractMailWithLink
 {
-    public function subject()
+    /**
+     * {@inheritdoc}
+     */
+    public function getSubject()
     {
         return _('login::register: sujet email : confirmation de votre adresse email');
     }
 
-    public function message()
+    /**
+     * {@inheritdoc}
+     */
+    public function getMessage()
     {
-        _('login::register: email confirmation email Pour valider votre inscription a la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous.');
+        return _('login::register: email confirmation email Pour valider votre inscription a la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous.');
     }
 
-    public function getExpirationMessage()
-    {
-        return sprintf(
-            _('Attention, ce lien lien est valable jusqu\'au %s %s'),
-            $this->app['date-formatter']->getDate($this->expiration),
-            $this->app['date-formatter']->getTime($this->expiration)
-        );
-    }
-
-    public function buttonText()
+    /**
+     * {@inheritdoc}
+     */
+    public function getButtonText()
     {
         return _('Validate e-mail address');
     }
 
-    public function buttonURL()
+    /**
+     * {@inheritdoc}
+     */
+    public function getButtonURL()
     {
         return $this->url;
     }

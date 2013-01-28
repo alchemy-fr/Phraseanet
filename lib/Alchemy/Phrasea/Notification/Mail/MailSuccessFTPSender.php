@@ -11,14 +11,30 @@
 
 namespace Alchemy\Phrasea\Notification\Mail;
 
-class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
+use Alchemy\Phrasea\Exception\LogicException;
+
+class MailSuccessFTPSender extends AbstractMail
 {
+    private $server;
+
+    public function setServer($server)
+    {
+        $this->server = $server;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getSubject()
     {
-        return _('Email successfully confirmed');
+        if (!$this->server) {
+            throw new LogicException('You must set server before calling getSubject');
+        }
+
+        return sprintf(
+            _('task::ftp:Status about your FTP transfert from %1$s to %2$s'),
+            $this->getPhraseanetTitle(), $this->server
+        );
     }
 
     /**
@@ -26,7 +42,7 @@ class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return _('login::register: merci d\'avoir confirme votre adresse email');
+        return $this->message;
     }
 
     /**
@@ -34,7 +50,6 @@ class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return sprintf(_('Access %'), $this->app['phraseanet.registry']->get('GV_homeTile'));
     }
 
     /**
@@ -42,6 +57,5 @@ class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
      */
     public function getButtonURL()
     {
-        return $this->app['url_generator']->generate('root', array(), true);
     }
 }

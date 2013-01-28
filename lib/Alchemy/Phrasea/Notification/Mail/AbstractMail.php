@@ -31,6 +31,8 @@ abstract class AbstractMail implements MailInterface
     protected $logoText;
     /** @var \DateTime */
     protected $expiration;
+    /** @var string */
+    protected $url;
 
     public function __construct(Application $app, ReceiverInterface $receiver, EmitterInterface $emitter = null, $message = null)
     {
@@ -54,7 +56,7 @@ abstract class AbstractMail implements MailInterface
             'senderName'        => $this->getEmitter() ? $this->getEmitter()->getName() : null,
             'senderMail'        => $this->getEmitter() ? $this->getEmitter()->getEmail() : null,
             'messageText'       => $this->getMessage(),
-            'expirationMessage' => $this->getExpirationMessage(),
+            'expiration'        => $this->getExpiration(),
             'buttonUrl'         => $this->getButtonURL(),
             'buttonText'        => $this->getButtonText(),
         ));
@@ -151,19 +153,14 @@ abstract class AbstractMail implements MailInterface
     /**
      * {@inheritdoc}
      */
-    public function setExpirationMessage(\DateTime $expiration = null)
-    {
-        $this->expiration = $expiration;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getExpirationMessage()
+    public function getExpiration()
     {
         return $this->expiration;
+    }
+
+    public function setButtonUrl($url)
+    {
+        $this->url = $url;
     }
 
     /**

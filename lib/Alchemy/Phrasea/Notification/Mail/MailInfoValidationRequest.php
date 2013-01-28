@@ -1,32 +1,68 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Notification\Mail;
+
+use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoValidationRequest extends AbstractMailWithLink
 {
     private $title;
+    private $user;
 
     public function setTitle($title)
     {
         $this->title = $title;
     }
 
-    public function subject()
+    public function setUser($user)
     {
-        return sprintf(_("Validation request from %s : '%s'", $this->emitter->name(), $this->title));
+        $this->user = $user;
     }
 
-    public function message()
+    /**
+     * {@inheritdoc}
+     */
+    public function getSubject()
+    {
+        if (!$this->user) {
+            throw new LogicException('You must set an user before calling getSubject');
+        }
+        if (!$this->title) {
+            throw new LogicException('You must set a title before calling getSubject');
+        }
+
+        return sprintf(_("Validation request from %s : '%s'"), $this->user->get_display_name(), $this->title);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMessage()
     {
         return $this->message;
     }
 
-    public function buttonText()
+    /**
+     * {@inheritdoc}
+     */
+    public function getButtonText()
     {
         return _('Validate');
     }
 
-    public function buttonURL()
+    /**
+     * {@inheritdoc}
+     */
+    public function getButtonURL()
     {
         return $this->url;
     }
