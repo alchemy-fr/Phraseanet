@@ -182,26 +182,6 @@ return call_user_func(function($app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Gestionnaire d\'evenements'),
-            'vars'    => array(
-                array(
-                    'type'      => \registry::TYPE_ENUM_MULTI,
-                    'name'      => 'GV_events',
-                    'default'   => null,
-                    'comment'   => _('reglages:: Evenements'),
-//                    'available' => $app['events-manager']->list_all('event'),
-//                    'default'   => array_keys($app['events-manager']->list_all('event'))
-                ),
-                array(
-                    'type'      => \registry::TYPE_ENUM_MULTI,
-                    'name'      => 'GV_notifications',
-                    'default'   => null,
-                    'comment'   => _('reglages:: Notifications'),
-//                    'available' => $app['events-manager']->list_all('notify'),
-//                    'default'   => array_keys($app['events-manager']->list_all('notify'))
-                )
-            )
-        ), array(
             'section' => _('GV::section:: Stockage des documents'),
             'vars'    => array(
                 array(
