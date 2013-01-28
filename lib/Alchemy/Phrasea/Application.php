@@ -199,35 +199,44 @@ class Application extends SilexApplication
         $this->register(new SwiftmailerServiceProvider());
 
         $this['swiftmailer.transport'] = $this->share(function ($app) {
-            $transport = new \Swift_Transport_MailTransport(
-                new \Swift_Transport_SimpleMailInvoker(),
-                $app['swiftmailer.transport.eventdispatcher']
-            );
-//            $transport = new \Swift_Transport_EsmtpTransport(
-//                    $app['swiftmailer.transport.buffer'],
-//                    array($app['swiftmailer.transport.authhandler']),
-//                    $app['swiftmailer.transport.eventdispatcher']
-//            );
-//
-//            $options = $app['swiftmailer.options'] = array_replace(array(
-//                'host'       => 'localhost',
-//                'port'       => 25,
-//                'username'   => '',
-//                'password'   => '',
-//                'encryption' => null,
-//                'auth_mode'  => null,
-//                ), $app['swiftmailer.options']);
-//
-//            $transport->setHost($options['host']);
-//            $transport->setPort($options['port']);
-//            $transport->setEncryption($options['encryption']);
-//            $transport->setUsername($options['username']);
-//            $transport->setPassword($options['password']);
-//            $transport->setAuthMode($options['auth_mode']);
+
+            if ($app['phraseanet.registry']->get('GV_smtp')) {
+
+                $transport = new \Swift_Transport_EsmtpTransport(
+                        $app['swiftmailer.transport.buffer'],
+                        array($app['swiftmailer.transport.authhandler']),
+                        $app['swiftmailer.transport.eventdispatcher']
+                );
+
+                $options = $app['swiftmailer.options'] = array_replace(array(
+                    'host'       => $app['phraseanet.registry']->get('GV_smtp_host'),
+                    'port'       => $app['phraseanet.registry']->get('GV_smtp_port'),
+                    'username'   => $app['phraseanet.registry']->get('GV_smtp_user'),
+                    'password'   => $app['phraseanet.registry']->get('GV_smtp_password'),
+                    'encryption' => $app['phraseanet.registry']->get('GV_smtp_secure') ? 'ssl' : null,
+                    'auth_mode'  => null,
+                ), $app['swiftmailer.options']);
+
+                $transport->setHost($options['host']);
+                $transport->setPort($options['port']);
+                // tls or ssl
+                $transport->setEncryption($options['encryption']);
+
+                if ($app['phraseanet.registry']->get('GV_smtp_auth')) {
+                    $transport->setUsername($options['username']);
+                    $transport->setPassword($options['password']);
+                    $transport->setAuthMode($options['auth_mode']);
+                }
+
+            } else {
+                $transport = new \Swift_Transport_MailTransport(
+                    new \Swift_Transport_SimpleMailInvoker(),
+                    $app['swiftmailer.transport.eventdispatcher']
+                );
+            }
 
             return $transport;
         });
-
 
 //        $this->register(new \Silex\Provider\HttpCacheServiceProvider());
 //        $this->register(new \Silex\Provider\SecurityServiceProvider());
