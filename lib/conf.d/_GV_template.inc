@@ -2,7 +2,7 @@
 
 use Alchemy\Phrasea\Application;
 
-return call_user_func(function($app) {
+return call_user_func_array(function(Application $app) {
 
     $avLanguages = Application::getAvailableLanguages();
 
@@ -412,6 +412,12 @@ return call_user_func(function($app) {
                     'name'    => 'GV_defaulmailsenderaddr',
                     'comment' => _('reglages:: Expediteur mail par defaut'),
                     'default' => 'phraseanet@example.com'
+                ),
+                array(
+                    'type'    => \registry::TYPE_STRING,
+                    'name'    => 'GV_email_prefix',
+                    'comment' => _('Prefix for notification emails'),
+                    'default' => ''
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
