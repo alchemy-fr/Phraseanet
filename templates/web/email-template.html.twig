@@ -15,7 +15,7 @@
                         <tr>
                             <td width="10" height="40" valign="center" align="left" style="font-size:0px;"></td>
                             <td width="150" height="40" valign="center" align="left" style="font-family:Tahoma,sans-serif; font-size:22px; font-weight:normal; color:#FFF;">
-                            {% if logoUrl is defined %}
+                            {% if logoUrl is not none %}
                                 <img src="{{ logoUrl }}" alt="{{ logoText }}" title="{{ logoText }}" width="140" height="30" style="display:block; outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;" />
                             {% else %}
                                 {{ logoText }}
@@ -40,7 +40,7 @@
                                     </tr>
                                     <tr>
                                         <td width="620" height="115" valign="center" align="left" style="font-family:sans-serif,'Lucida Console'; font-size:14px; color:#494949;">
-                                            {% if senderName is defined and senderMail is defined %}
+                                            {% if senderName is not none and senderMail is not none %}
                                                 {{ senderName }} - <a href="mailto:{{ senderMail }}" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">
                                                 <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">{{ senderMail }}</span></a><br/>
                                             {% endif %}
@@ -53,14 +53,14 @@
                                 <!-- End of message table -->
                             </td>
                         </tr>
-                        {% if expirationMessage is defined %}
+                        {% if expiration is not none %}
                         <tr>
                             <td colspan="2" width="720" height="60" valign="center" align="center" style="font-family:sans-serif,'Lucida Console'; font-size:15px; font-weight:bold; text-transform:uppercase; color:#494949;">
-                                Le lien suivant est valable jusque {{ expirationMessage | app['date-formater']->getDate() }} {{ expirationMessage | app['date-formater']->getTime() }}
+                                Le lien suivant est valable jusque {{ app['date-formatter'].getDate(expiration) }} {{ app['date-formatter'].getTime(expiration) }}
                             </td>
                         </tr>
                         {% endif %}
-                        {% if buttonText is defined and buttonUrl is defined %}
+                        {% if buttonText is not none and buttonUrl is not none %}
                         <tr>
                             <td colspan="2" width="720" height="70" valign="center" align="center" style="">
                                 <!-- Button Table -->
@@ -100,7 +100,7 @@
                                 Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur.<br/>
                                 Message automatique de Phraseanet - Pour gérer l'envoi d'email automatique, connectez-vous à
                                 <a href="{{ phraseanetURL }}" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; font-weight:bold; cursor:pointer;">
-                                    <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; font-weight:bold; cursor:pointer;">{{ phraseanetURL }}</span>
+                                    <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; font-weight:bold; cursor:pointer;">{{ phraseanetTitle }}</span>
                                 </a>
                             </td>
                         </tr>
