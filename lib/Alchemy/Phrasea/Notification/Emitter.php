@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Notification;
 
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+
 class Emitter implements EmitterInterface
 {
     private $name;
@@ -47,6 +49,10 @@ class Emitter implements EmitterInterface
      */
     public static function fromUser(\User_Adapter $user)
     {
+        if (!\Swift_Validate::email($user->get_email())) {
+            throw new InvalidArgumentException(sprintf('User provided does not have a valid e-mail address'));
+        }
+
         return new static($user->get_display_name(), $user->get_email());
     }
 }

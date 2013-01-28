@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Notification;
 
 use Alchemy\Phrasea\Notification\Emitter;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
 class EmitterTest extends \PHPUnit_Framework_TestCase
 {
@@ -56,5 +57,30 @@ class EmitterTest extends \PHPUnit_Framework_TestCase
         $object = Emitter::fromUser($user);
         $this->assertEquals($this->email, $object->getEmail());
         $this->assertEquals($this->name, $object->getName());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Notification\Emitter::fromUser
+     */
+    public function testFromUserFails()
+    {
+        $user = $this->getMockBuilder('\User_Adapter')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $user->expects($this->any())
+            ->method('get_display_name')
+            ->will($this->returnValue($this->name));
+
+        $user->expects($this->any())
+            ->method('get_email')
+            ->will($this->returnValue('wrong email'));
+
+        try {
+            Emitter::fromUser($user);
+            $this->fail('Should have raised an exception');
+        } catch (InvalidArgumentException $e) {
+
+        }
     }
 }
