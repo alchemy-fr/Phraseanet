@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Exception\SessionNotFound;
 use Silex\Application as SilexApplication;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,8 +44,11 @@ class Root implements ControllerProviderInterface
         });
 
         $controllers->get('/', function(Application $app) {
-
-            \User_Adapter::updateClientInfos($app, 1);
+            try {
+                \User_Adapter::updateClientInfos($app, 1);
+            } catch (SessionNotFound $e) {
+                return $app->redirect($app['url_generator']->generate('logout'));
+            }
 
             $cssPath = $app['phraseanet.registry']->get('GV_RootPath') . 'www/skins/prod/';
 

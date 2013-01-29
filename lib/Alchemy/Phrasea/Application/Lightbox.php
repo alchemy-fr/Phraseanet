@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
@@ -60,7 +61,11 @@ class Lightbox implements ControllerProviderInterface
         });
 
         $controllers->get('/', function (SilexApplication $app) {
-            \User_Adapter::updateClientInfos($app, 6);
+            try {
+                \User_Adapter::updateClientInfos($app, 6);
+            } catch (SessionNotFound $e) {
+                return $app->redirect($app['url_generator']->generate('logout'));
+            }
 
             $repository = $app['EM']->getRepository('\Entities\Basket');
 
@@ -184,7 +189,11 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->get('/validate/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
 
-            \User_Adapter::updateClientInfos($app, 6);
+            try {
+                \User_Adapter::updateClientInfos($app, 6);
+            } catch (SessionNotFound $e) {
+                return $app->redirect($app['url_generator']->generate('logout'));
+            }
 
             $repository = $app['EM']->getRepository('\Entities\Basket');
 
@@ -232,7 +241,11 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->get('/compare/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
 
-            \User_Adapter::updateClientInfos($app, 6);
+            try {
+                \User_Adapter::updateClientInfos($app, 6);
+            } catch (SessionNotFound $e) {
+                return $app->redirect($app['url_generator']->generate('logout'));
+            }
 
             $repository = $app['EM']->getRepository('\Entities\Basket');
 
@@ -282,7 +295,11 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
 
-            \User_Adapter::updateClientInfos($app, 6);
+            try {
+                \User_Adapter::updateClientInfos($app, 6);
+            } catch (SessionNotFound $e) {
+                return $app->redirect($app['url_generator']->generate('logout'));
+            }
 
             $feed_entry = \Feed_Entry_Adapter::load_from_id($app, $entry_id);
 
