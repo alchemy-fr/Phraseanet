@@ -11,6 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Exception\SessionNotFound;
+
 /**
  *
  * @package     User
@@ -1464,6 +1466,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         }
 
         $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
+
+        if (!$session) {
+            throw new SessionNotFound('No session found');
+        }
 
         if (!$session->hasModuleId($app_id)) {
             $module = new \Entities\SessionModule();
