@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication;
+
 /**
  *
  *
@@ -64,7 +67,10 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
         $Query = new \User_Query($this->app);
 
-        $Query->include_phantoms(true)->include_invite(false)->include_templates(false);
+        $Query->include_phantoms(true)
+            ->include_invite(false)
+            ->include_templates(false)
+            ->email_not_null(true);
 
         if ($entry->get_feed()->get_collection()) {
             $Query->on_base_ids(array($entry->get_feed()->get_collection()->get_base_id()));
@@ -80,30 +86,39 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
         do {
             $results = $Query->limit($start, $perLoop)->execute()->get_results();
-
+            
             foreach ($results as $user_to_notif) {
                 /* @var $user_to_notif \User_Adapter */
                 $mailed = false;
 
-                $send_notif = ($this->get_prefs(__CLASS__, $user_to_notif->get_id()) != '0');
-                if ($send_notif) {
-                    $email = array(
-                        'email' => $user_to_notif->get_email(),
-                        'name'  => $user_to_notif->get_display_name()
-                    );
+                if ($this->shouldSendNotificationFor($user_to_notif->get_id())) {
+                    $readyToSend = false;
+                    try {
+                        $token = \random::getUrlToken(
+                                $this->app,
+                                \random::TYPE_FEED_ENTRY
+                                , $user_to_notif->get_id()
+                                , null
+                                , $entry->get_id()
+                        );
 
-                    $token = \random::getUrlToken(
-                            $this->app,
-                            \random::TYPE_FEED_ENTRY
-                            , $user_to_notif->get_id()
-                            , null
-                            , $entry->get_id()
-                    );
+                        $url = $this->app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/index.php?LOG=' . $token;
 
-                    $url = $this->app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/index.php?LOG=' . $token;
+                        $receiver = Receiver::fromUser($user_to_notif);
+                        $readyToSend = true;
+                    } catch (\Exception $e) {
 
-                    if (self::mail($email, $from, $url, $entry))
+                    }
+
+                    if ($readyToSend) {
+                        $mail = MailInfoNewPublication::create($this->app, $receiver);
+                        $mail->setButtonUrl($url);
+                        $mail->setAuthor($entry->get_author_name());
+                        $mail->setTitle($entry->get_title());
+
+                        $this->app['notification.deliverer']->deliver($mail);
                         $mailed = true;
+                    }
                 }
 
                 $this->broker->notify($user_to_notif->get_id(), __CLASS__, $datas, $mailed);
@@ -167,33 +182,5 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
     public function is_available()
     {
         return true;
-    }
-
-    /**
-     *
-     * @param  Array   $to
-     * @param  Array   $from
-     * @param  string  $message
-     * @param  string  $url
-     * @param  boolean $accuse
-     * @return boolean
-     */
-    public function mail($to, $from, $url, \Feed_Entry_Adapter $entry)
-    {
-        $subject = sprintf(_('Nouvelle publication : %s'), $entry->get_title());
-
-        $body = "<div>"
-            . sprintf('%s vient de publier %s', $entry->get_author_name(), $entry->get_title())
-            . _('Connectez vous a l\'adresse suivante pour la consulter')
-            . "</div>\n";
-
-        $body .= '<div><a href="' . $url . '">' . $url . "</a></div>\n";
-
-        $body .= " <br/> ";
-
-        $body .= "<br/>\n<br/>\n<br/>\n"
-            . _('push::atention: ce lien est unique et son contenu confidentiel, ne divulguez pas');
-
-        return mail::send_mail($this->app, $subject, $body, $to, $from, array());
     }
 }

@@ -8,11 +8,10 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessFTP;
+use Alchemy\Phrasea\Notification\Receiver;
+
 class task_period_ftp extends task_appboxAbstract
 {
     protected $proxy;
@@ -650,26 +649,41 @@ class task_period_ftp extends task_appboxAbstract
             $ftp_server = $row['addr'];
         }
 
-        $message = "\n<br/>----------------------------------------<br/>\n";
-        $message = "<div>" . $connection_status . "</div>\n";
-        $message .= "<div>" . $transfert_status . "</div>\n";
-        $message .= "<div>" . _("task::ftp:Details des fichiers") . "</div>\n";
+        $message = "\n\n----------------------------------------\n\n";
+        $message =  $connection_status . "\n";
+        $message .= $transfert_status . "\n";
+        $message .= _("task::ftp:Details des fichiers") . "\n\n";
 
-        $message .= "<ul>";
         $message .= implode("\n", $transferts);
-        $message .= "</ul>";
 
         $sender_message = $text_mail_sender . $message;
         $receiver_message = $text_mail_receiver . $message;
 
-        $subject = sprintf(
-            _('task::ftp:Status about your FTP transfert from %1$s to %2$s')
-            , $this->dependencyContainer['phraseanet.registry']->get('GV_homeTitle'), $ftp_server
-        );
+        $receiver = null;
+        try {
+            $receiver = new Receiver(null, $sendermail);
+        } catch (InvalidArgumentException $e) {
 
-        mail::ftp_sent($this->dependencyContainer, $sendermail, $subject, $sender_message);
+        }
 
-        mail::ftp_receive($this->dependencyContainer, $mail, $receiver_message);
+        if ($receiver) {
+            $mail = MailSuccessFTP::create($this->dependencyContainer, $receiver, null, $sender_message);
+            $mail->setServer($ftp_server);
+            $this->dependencyContainer['notification.deliverer']->deliver($mail);
+        }
+
+        $receiver = null;
+        try {
+            $receiver = new Receiver(null, $mail);
+        } catch (InvalidArgumentException $e) {
+
+        }
+
+        if ($receiver) {
+            $mail = MailSuccessFTP::create($this->dependencyContainer, $receiver, null, $receiver_message);
+            $mail->setServer($ftp_server);
+            $this->dependencyContainer['notification.deliverer']->deliver($mail);
+        }
     }
 
     public function logexport(record_adapter $record, $obj, $ftpLog)

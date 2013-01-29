@@ -54,6 +54,8 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailTest');
+
         self::$DI['client']->request('POST', '/admin/dashboard/send-mail-test/', array(
             'email' => self::$DI['user']->get_email()
         ));

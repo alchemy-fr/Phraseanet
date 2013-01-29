@@ -15,14 +15,14 @@
                         <tr>
                             <td width="10" height="40" valign="center" align="left" style="font-size:0px;"></td>
                             <td width="150" height="40" valign="center" align="left" style="font-family:Tahoma,sans-serif; font-size:22px; font-weight:normal; color:#FFF;">
-                            {% if logoUrl is defined %}
+                            {% if logoUrl is not none %}
                                 <img src="{{ logoUrl }}" alt="{{ logoText }}" title="{{ logoText }}" width="140" height="30" style="display:block; outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;" />
                             {% else %}
                                 {{ logoText }}
                             {% endif %}
                             </td>
                             <td width="400" height="40" valign="center" align="center" style="font-family:Tahoma,sans-serif; font-size:14px; font-weight:bold; color:#FFF;">
-                                {{ title }}
+                                {{ subject }}
                             </td>
                             <td width="160" height="40" valign="center" align="left" style="font-size:0px;"></td>
                         </tr>
@@ -40,12 +40,12 @@
                                     </tr>
                                     <tr>
                                         <td width="620" height="115" valign="center" align="left" style="font-family:sans-serif,'Lucida Console'; font-size:14px; color:#494949;">
-                                        {% if senderName is defined and senderMail is defined %}
-                                            {{ senderName }} - <a href="mailto:{{ authorMail }}" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">
-                                                <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">{{ senderMail }}</span></a><br/>
-                                        {% endif %}
+                                            {% if senderName is not none and senderMail is not none %}
+                                                {{ senderName }} - <a href="mailto:{{ senderMail }}" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">
+                                                <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">{{ senderMail }}</span></a><br/>
+                                            {% endif %}
                                             <br/>
-                                            {{ messageText }}
+                                            {{ messageText | nl2br }}
                                             <br/>
                                         </td>
                                     </tr>
@@ -53,7 +53,14 @@
                                 <!-- End of message table -->
                             </td>
                         </tr>
-                        {% if buttonText is defined and buttonUrl is defined %}
+                        {% if expiration is not none %}
+                        <tr>
+                            <td colspan="2" width="720" height="60" valign="center" align="center" style="font-family:sans-serif,'Lucida Console'; font-size:15px; font-weight:bold; text-transform:uppercase; color:#494949;">
+                                Le lien suivant est valable jusque {{ app['date-formatter'].getDate(expiration) }} {{ app['date-formatter'].getTime(expiration) }}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% if buttonText is not none and buttonUrl is not none %}
                         <tr>
                             <td colspan="2" width="720" height="70" valign="center" align="center" style="">
                                 <!-- Button Table -->
@@ -92,8 +99,8 @@
                             <td width="710" height="50" valign="center" align="left" style="font-family:Tahoma,sans-serif; font-size:11px; font-style:italic; color:#FFF;">
                                 Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur.<br/>
                                 Message automatique de Phraseanet - Pour gérer l'envoi d'email automatique, connectez-vous à
-                                <a href="{{ phraseanetUrl }}" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; font-weight:bold; cursor:pointer;">
-                                    <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; font-weight:bold; cursor:pointer;">{{ phraseanetUrl }}</span>
+                                <a href="{{ phraseanetURL }}" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; font-weight:bold; cursor:pointer;">
+                                    <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; font-weight:bold; cursor:pointer;">{{ phraseanetTitle }}</span>
                                 </a>
                             </td>
                         </tr>

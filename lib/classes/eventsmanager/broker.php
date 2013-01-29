@@ -25,8 +25,24 @@ class eventsmanager_broker
     public function start()
     {
         $iterators_pool = array(
-            'event' => (is_array($this->app['phraseanet.registry']->get('GV_events')) ? $this->app['phraseanet.registry']->get('GV_events') : array()),
-            'notify' => (is_array($this->app['phraseanet.registry']->get('GV_notifications')) ? $this->app['phraseanet.registry']->get('GV_notifications') : array())
+            'event' => array(
+                'eventsmanager_event_test'
+            ),
+            'notify' => array(
+                'eventsmanager_notify_autoregister',
+                'eventsmanager_notify_bridgeuploadfail',
+                'eventsmanager_notify_downloadmailfail',
+                'eventsmanager_notify_feed',
+                'eventsmanager_notify_order',
+                'eventsmanager_notify_orderdeliver',
+                'eventsmanager_notify_ordernotdelivered',
+                'eventsmanager_notify_push',
+                'eventsmanager_notify_register',
+                'eventsmanager_notify_uploadquarantine',
+                'eventsmanager_notify_validate',
+                'eventsmanager_notify_validationdone',
+                'eventsmanager_notify_validationreminder',
+            )
         );
 
         foreach ($iterators_pool as $type => $iterators) {
@@ -47,47 +63,6 @@ class eventsmanager_broker
         }
 
         return;
-    }
-
-    public function list_all($type)
-    {
-        $iterators_pool = array();
-
-        $root = __DIR__ . '/../../';
-
-        if ($type == 'event') {
-            $iterators_pool['event'][] = new DirectoryIterator(__DIR__ . '/event/');
-            if (file_exists(__DIR__ . '/event/'))
-                $iterators_pool['event'][] = new DirectoryIterator(__DIR__ . '/event/');
-        }
-        if ($type == 'notify') {
-            $iterators_pool['notify'][] = new DirectoryIterator(__DIR__ . '/notify/');
-        }
-
-        $ret = array();
-
-        foreach ($iterators_pool as $type => $iterators) {
-            foreach ($iterators as $iterator) {
-                foreach ($iterator as $fileinfo) {
-                    if ( ! $fileinfo->isDot()) {
-                        if (substr($fileinfo->getFilename(), 0, 1) == '.')
-                            continue;
-
-                        $filename = explode('.', $fileinfo->getFilename());
-                        $classname = 'eventsmanager_' . $type . '_' . $filename[0];
-
-                        if ( ! class_exists($classname)) {
-                            continue;
-                        }
-                        $obj = new $classname($this->app, $this);
-
-                        $ret[$classname] = $obj->get_name();
-                    }
-                }
-            }
-        }
-
-        return $ret;
     }
 
     public function trigger($event, $array_params = array(), &$object = false)

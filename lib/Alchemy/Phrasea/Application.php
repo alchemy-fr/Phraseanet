@@ -11,6 +11,60 @@
 
 namespace Alchemy\Phrasea;
 
+use Alchemy\Phrasea\Application\Lightbox;
+use Alchemy\Phrasea\Controller\Datafiles;
+use Alchemy\Phrasea\Controller\Permalink;
+use Alchemy\Phrasea\Controller\Admin\Collection;
+use Alchemy\Phrasea\Controller\Admin\ConnectedUsers;
+use Alchemy\Phrasea\Controller\Admin\Dashboard;
+use Alchemy\Phrasea\Controller\Admin\Databox;
+use Alchemy\Phrasea\Controller\Admin\Databoxes;
+use Alchemy\Phrasea\Controller\Admin\Description;
+use Alchemy\Phrasea\Controller\Admin\Fields;
+use Alchemy\Phrasea\Controller\Admin\Publications;
+use Alchemy\Phrasea\Controller\Admin\Root;
+use Alchemy\Phrasea\Controller\Admin\Setup;
+use Alchemy\Phrasea\Controller\Admin\SearchEngine;
+use Alchemy\Phrasea\Controller\Admin\Subdefs;
+use Alchemy\Phrasea\Controller\Admin\TaskManager;
+use Alchemy\Phrasea\Controller\Admin\Users;
+use Alchemy\Phrasea\Controller\Client\Baskets as ClientBasket;
+use Alchemy\Phrasea\Controller\Client\Root as ClientRoot;
+use Alchemy\Phrasea\Controller\Prod\Basket;
+use Alchemy\Phrasea\Controller\Prod\Bridge;
+use Alchemy\Phrasea\Controller\Prod\Download;
+use Alchemy\Phrasea\Controller\Prod\DoDownload;
+use Alchemy\Phrasea\Controller\Prod\Edit;
+use Alchemy\Phrasea\Controller\Prod\Export;
+use Alchemy\Phrasea\Controller\Prod\Feed;
+use Alchemy\Phrasea\Controller\Prod\Language;
+use Alchemy\Phrasea\Controller\Prod\Lazaret;
+use Alchemy\Phrasea\Controller\Prod\MoveCollection;
+use Alchemy\Phrasea\Controller\Prod\MustacheLoader;
+use Alchemy\Phrasea\Controller\Prod\Order;
+use Alchemy\Phrasea\Controller\Prod\Printer;
+use Alchemy\Phrasea\Controller\Prod\Push;
+use Alchemy\Phrasea\Controller\Prod\Query;
+use Alchemy\Phrasea\Controller\Prod\Property;
+use Alchemy\Phrasea\Controller\Prod\Records;
+use Alchemy\Phrasea\Controller\Prod\Root as Prod;
+use Alchemy\Phrasea\Controller\Prod\Share;
+use Alchemy\Phrasea\Controller\Prod\Story;
+use Alchemy\Phrasea\Controller\Prod\Tools;
+use Alchemy\Phrasea\Controller\Prod\Tooltip;
+use Alchemy\Phrasea\Controller\Prod\TOU;
+use Alchemy\Phrasea\Controller\Prod\Upload;
+use Alchemy\Phrasea\Controller\Prod\UsrLists;
+use Alchemy\Phrasea\Controller\Prod\WorkZone;
+use Alchemy\Phrasea\Controller\Root\Account;
+use Alchemy\Phrasea\Controller\Root\Developers;
+use Alchemy\Phrasea\Controller\Root\Login;
+use Alchemy\Phrasea\Controller\Root\RSSFeeds;
+use Alchemy\Phrasea\Controller\Root\Session;
+use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
+use Alchemy\Phrasea\Controller\Utils\PathFileTest;
+use Alchemy\Phrasea\Controller\User\Notifications;
+use Alchemy\Phrasea\Controller\User\Preferences;
 use Alchemy\Phrasea\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Event\Subscriber\Logout;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
@@ -20,6 +74,7 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
+use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
@@ -38,6 +93,7 @@ use Silex\Application as SilexApplication;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TwigServiceProvider;
+use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Unoconv\UnoconvServiceProvider;
@@ -49,14 +105,15 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpFoundation\Response;
 
 class Application extends SilexApplication
 {
     private static $availableLanguages = array(
-        'de_DE' => 'Deutsch'
-        , 'en_GB' => 'English'
-        , 'fr_FR' => 'Français'
-        , 'nl_NL' => 'Dutch'
+        'de_DE' => 'Deutsch',
+        'en_GB' => 'English',
+        'fr_FR' => 'Français',
+        'nl_NL' => 'Dutch',
     );
     private $environment;
     private $sessionCookieEnabled = true;
@@ -126,6 +183,7 @@ class Application extends SilexApplication
         $this->register(new MediaVorusServiceProvider());
         $this->register(new MonologServiceProvider());
         $this->register(new MP4BoxServiceProvider());
+        $this->register(new NotificationDelivererServiceProvider());
         $this->register(new ORMServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
@@ -139,10 +197,50 @@ class Application extends SilexApplication
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
         $this->register(new XPDFServiceProvider());
+        $this->register(new SwiftmailerServiceProvider());
+
+        $this['swiftmailer.transport'] = $this->share(function ($app) {
+
+            if ($app['phraseanet.registry']->get('GV_smtp')) {
+
+                $transport = new \Swift_Transport_EsmtpTransport(
+                    $app['swiftmailer.transport.buffer'],
+                    array($app['swiftmailer.transport.authhandler']),
+                    $app['swiftmailer.transport.eventdispatcher']
+                );
+
+                $options = $app['swiftmailer.options'] = array_replace(array(
+                    'host'       => $app['phraseanet.registry']->get('GV_smtp_host'),
+                    'port'       => $app['phraseanet.registry']->get('GV_smtp_port'),
+                    'username'   => $app['phraseanet.registry']->get('GV_smtp_user'),
+                    'password'   => $app['phraseanet.registry']->get('GV_smtp_password'),
+                    'encryption' => $app['phraseanet.registry']->get('GV_smtp_secure') ? 'ssl' : null,
+                    'auth_mode'  => null,
+                ), $app['swiftmailer.options']);
+
+                $transport->setHost($options['host']);
+                $transport->setPort($options['port']);
+                // tls or ssl
+                $transport->setEncryption($options['encryption']);
+
+                if ($app['phraseanet.registry']->get('GV_smtp_auth')) {
+                    $transport->setUsername($options['username']);
+                    $transport->setPassword($options['password']);
+                    $transport->setAuthMode($options['auth_mode']);
+                }
+
+            } else {
+                $transport = new \Swift_Transport_MailTransport(
+                    new \Swift_Transport_SimpleMailInvoker(),
+                    $app['swiftmailer.transport.eventdispatcher']
+                );
+            }
+
+            return $transport;
+        });
 
 //        $this->register(new \Silex\Provider\HttpCacheServiceProvider());
 //        $this->register(new \Silex\Provider\SecurityServiceProvider());
-//        $this->register(new \Silex\Provider\SwiftmailerServiceProvider());
 
         $this['imagine.factory'] = $this->share(function(Application $app) {
             if ($app['phraseanet.registry']->get('GV_imagine_driver') != '') {
@@ -342,7 +440,7 @@ class Application extends SilexApplication
                 $twig->addExtension(new \Twig_Extension_Core());
                 $twig->addExtension(new \Twig_Extension_Optimizer());
                 $twig->addExtension(new \Twig_Extension_Escaper());
-                
+
                 // add filter trans
                 $twig->addExtension(new \Twig_Extensions_Extension_I18n());
                 // add filter localizeddate
@@ -422,6 +520,91 @@ class Application extends SilexApplication
             \cache_databox::insertClient($this, $databox);
         }
         $this->reinitUser();
+    }
+
+    public function bindRoutes()
+    {
+        $this->get('/', function(Application $app) {
+            if ($app['browser']->isMobile()) {
+                return $app->redirect("/login/?redirect=lightbox");
+            } elseif ($app['browser']->isNewGeneration()) {
+                return $app->redirect("/login/?redirect=prod");
+            } else {
+                return $app->redirect("/login/?redirect=client");
+            }
+        })->bind('root');
+
+        $this->get('/robots.txt', function(Application $app) {
+
+            if ($app['phraseanet.registry']->get('GV_allow_search_engine') === true) {
+                $buffer = "User-Agent: *\n" . "Allow: /\n";
+            } else {
+                $buffer = "User-Agent: *\n" . "Disallow: /\n";
+            }
+
+            return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
+        })->bind('robots');
+
+        $this->mount('/feeds/', new RSSFeeds());
+        $this->mount('/account/', new Account());
+        $this->mount('/login/', new Login());
+        $this->mount('/developers/', new Developers());
+        $this->mount('/lightbox/', new Lightbox());
+
+        $this->mount('/datafiles/', new Datafiles());
+        $this->mount('/permalink/', new Permalink());
+
+        $this->mount('/admin/', new Root());
+        $this->mount('/admin/dashboard', new Dashboard());
+        $this->mount('/admin/collection', new Collection());
+        $this->mount('/admin/databox', new Databox());
+        $this->mount('/admin/databoxes', new Databoxes());
+        $this->mount('/admin/setup', new Setup());
+        $this->mount('/admin/search-engine', new SearchEngine());
+        $this->mount('/admin/connected-users', new ConnectedUsers());
+        $this->mount('/admin/publications', new Publications());
+        $this->mount('/admin/users', new Users());
+        $this->mount('/admin/fields', new Fields());
+        $this->mount('/admin/task-manager', new TaskManager());
+        $this->mount('/admin/subdefs', new Subdefs());
+        $this->mount('/admin/description', new Description());
+        $this->mount('/admin/tests/connection', new ConnectionTest());
+        $this->mount('/admin/tests/pathurl', new PathFileTest());
+
+        $this->mount('/client/', new ClientRoot());
+        $this->mount('/client/baskets', new ClientBasket());
+
+        $this->mount('/prod/query/', new Query());
+        $this->mount('/prod/order/', new Order());
+        $this->mount('/prod/baskets', new Basket());
+        $this->mount('/prod/download', new Download());
+        $this->mount('/prod/story', new Story());
+        $this->mount('/prod/WorkZone', new WorkZone());
+        $this->mount('/prod/lists', new UsrLists());
+        $this->mount('/prod/MustacheLoader', new MustacheLoader());
+        $this->mount('/prod/records/', new Records());
+        $this->mount('/prod/records/edit', new Edit());
+        $this->mount('/prod/records/property', new Property());
+        $this->mount('/prod/records/movecollection', new MoveCollection());
+        $this->mount('/prod/bridge/', new Bridge());
+        $this->mount('/prod/push/', new Push());
+        $this->mount('/prod/printer/', new Printer());
+        $this->mount('/prod/share/', new Share());
+        $this->mount('/prod/export/', new Export());
+        $this->mount('/prod/TOU/', new TOU());
+        $this->mount('/prod/feeds', new Feed());
+        $this->mount('/prod/tooltip', new Tooltip());
+        $this->mount('/prod/language', new Language());
+        $this->mount('/prod/tools/', new Tools());
+        $this->mount('/prod/lazaret/', new Lazaret());
+        $this->mount('/prod/upload/', new Upload());
+        $this->mount('/prod/', new Prod());
+
+        $this->mount('/user/preferences/', new Preferences());
+        $this->mount('/user/notifications/', new Notifications());
+
+        $this->mount('/download/', new DoDownload());
+        $this->mount('/session/', new Session());
     }
 
     private function reinitUser()

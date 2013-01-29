@@ -471,7 +471,7 @@ class set_order extends set_abstract
             $stmt->closeCursor();
             $n ++;
         }
-
+        
         if ($n > 0) {
             $params = array(
                 'from' => $this->app['phraseanet.user']->get_id(),

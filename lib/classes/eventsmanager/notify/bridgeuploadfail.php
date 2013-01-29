@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailInfoBridgeUploadFailed;
+
 /**
  *
  *
@@ -78,21 +81,26 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
 
         $mailed = false;
 
-        $send_notif = ($this->get_prefs(__CLASS__, $params['usr_id']) != '0');
+        if ($this->shouldSendNotificationFor($params['usr_id'])) {
 
-        if ($send_notif) {
-            $user = User_Adapter::getInstance($params['usr_id'], $this->app);
-            $name = $user->get_display_name();
+            $readyToSend = false;
+            try {
+                $user = User_Adapter::getInstance($params['usr_id'], $this->app);
+                $account = Bridge_Account::load_account($this->app, $params['account_id']);
+                $receiver = Receiver::fromUser($user);
+                $readyToSend = true;
+            } catch (\Exception $e) {
 
-            $to = array('email' => $user->get_email(), 'name'  => $name);
+            }
 
-            $from = array(
-                'email' => $this->app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
-                'name'  => $this->app['phraseanet.registry']->get('GV_homeTitle')
-            );
-
-            if (self::mail($to, $from, $datas))
+            if ($readyToSend) {
+                /** ADD MAIL TEST */
+                $mail = MailInfoBridgeUploadFailed::create($this->app, $receiver);
+                $mail->setAdapter($account->get_api()->get_connector()->get_name());
+                $mail->setReason($params['reason']);
+                $this->app['notification.deliverer']->deliver($mail);
                 $mailed = true;
+            }
         }
 
         $this->broker->notify($params['usr_id'], __CLASS__, $datas, $mailed);
@@ -148,26 +156,6 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
     {
         return _('Recevoir des notifications lorsqu\'un'
                 . ' upload echoue sur un bridge');
-    }
-
-    /**
-     *
-     * @param  Array   $to
-     * @param  Array   $from
-     * @param  Array   $datas
-     * @return boolean
-     */
-    public function mail($to, $from, $datas)
-    {
-        $subject = sprintf('Echec upload sur %s'
-            , $this->app['phraseanet.registry']->get('GV_homeTitle'));
-
-        $sx = simplexml_load_string($datas);
-
-        $reason = (string) $sx->reason;
-        $body = "reason : " . $reason;
-
-        return mail::send_mail($this->app, $subject, $body, $to, $from);
     }
 
     /**

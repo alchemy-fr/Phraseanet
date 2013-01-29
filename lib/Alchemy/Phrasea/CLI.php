@@ -32,11 +32,28 @@ class CLI extends Application
     {
         parent::__construct($environment);
 
+        $app = $this;
+
         $this['session.test'] = true;
 
         $this['console'] = $this->share(function () use ($name, $version) {
             return new Console\Application($name, $version);
         });
+
+        $this['dispatcher']->addListener('phraseanet.notification.sent', function() use ($app) {
+            $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
+        });
+
+        $this->bindRoutes();
+
+        $data = parse_url($this['phraseanet.registry']->get('GV_ServerName'));
+
+        if (isset($data['scheme'])) {
+            $this['url_generator']->getContext()->setScheme($data['scheme']);
+        }
+        if (isset($data['host'])) {
+            $this['url_generator']->getContext()->setHost($data['host']);
+        }
     }
 
     /**

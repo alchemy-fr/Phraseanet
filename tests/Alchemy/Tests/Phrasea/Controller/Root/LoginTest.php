@@ -127,6 +127,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterConfirmMail()
     {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered');
+
         self::$DI['app']->closeAccount();
         $email = $this->generateEmail();
         $appboxRegister = new \appbox_register(self::$DI['app']['phraseanet.appbox']);
@@ -139,7 +141,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?redirect=prod&notice=confirm-ok-wait', $response->headers->get('location'));
+        $this->assertEquals('/login/?redirect=prod&notice=confirm-ok', $response->headers->get('location'));
         $this->assertFalse(self::$DI['user']->get_mail_locked());
     }
 
@@ -148,11 +150,15 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterConfirmMailNoCollAwait()
     {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered');
+
+        $user = \User_Adapter::create(self::$DI['app'], 'test'.mt_rand(), \random::generatePassword(), 'email-random'.mt_rand().'@phraseanet.com', false);
+
         self::$DI['app']->closeAccount();
         $email = $this->generateEmail();
-        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_EMAIL, self::$DI['user']->get_id(), null, $email);
+        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_EMAIL, $user->get_id(), null, $email);
 
-        self::$DI['user']->set_mail_locked(true);
+        $user->set_mail_locked(true);
 
         $this->deleteRequest();
 
@@ -161,7 +167,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($response->isRedirect());
 
-        $this->assertEquals('/login/?redirect=prod&notice=confirm-ok', $response->headers->get('location'));
+        $this->assertEquals('/login/?redirect=prod&notice=confirm-ok-wait', $response->headers->get('location'));
+        $user->delete();
     }
 
     /**
@@ -195,6 +202,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewPasswordMail()
     {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation');
+
         self::$DI['app']->closeAccount();
         self::$DI['client']->request('POST', '/login/forgot-password/', array('mail'    => self::$DI['user']->get_email()));
         $response = self::$DI['client']->getResponse();
@@ -562,6 +571,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostRegister()
     {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation');
+
         self::$DI['app']->closeAccount();
         $bases = array();
 
@@ -633,6 +644,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSendConfirmMail()
     {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation');
+
         self::$DI['app']->closeAccount();
         self::$DI['client']->request('GET', '/login/send-mail-confirm/', array('usr_id' => self::$DI['user']->get_id()));
 

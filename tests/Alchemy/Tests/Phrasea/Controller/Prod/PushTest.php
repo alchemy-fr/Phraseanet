@@ -35,6 +35,8 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRoutePOSTsend()
     {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoPushReceived', 2);
+
         $route = '/prod/push/send/';
 
         $records = array(
@@ -69,6 +71,8 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRoutePOSTvalidate()
     {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationRequest', 3);
+
         $route = '/prod/push/validate/';
 
         $records = array(

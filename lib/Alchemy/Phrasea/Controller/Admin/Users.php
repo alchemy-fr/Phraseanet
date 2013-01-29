@@ -538,7 +538,7 @@ class Users implements ControllerProviderInterface
 
                     if ($row) {
 
-                        if (\PHPMailer::ValidateAddress($row['usr_mail'])) {
+                        if (\Swift_Validate::email($row['usr_mail'])) {
                             foreach ($bases as $bas => $isok) {
                                 if ($isok) {
                                     $accept .= '<li>' . \phrasea::bas_names($bas, $app) . "</li>\n";
@@ -547,7 +547,18 @@ class Users implements ControllerProviderInterface
                                 }
                             }
                             if (($accept != '' || $deny != '')) {
-                                \mail::register_confirm($app, $row['usr_mail'], $accept, $deny);
+                                $message = '';
+                                if ($accept != '') {
+                                    $message .= "\n" . _('login::register:email: Vous avez ete accepte sur les collections suivantes : ') . implode(', ', $accept). "\n";
+                                }
+                                if ($deny != '') {
+                                    $message .= "\n" . _('login::register:email: Vous avez ete refuse sur les collections suivantes : ') . implode(', ', $deny) . "\n";
+                                }
+
+                                $receiver = new Receiver(null, $row['usr_mail']);
+                                $mail = MailSuccessEmailUpdate::create($this->app, $receiver, null, $message);
+
+                                $this->app['notification.deliverer']->deliver($mail);
                             }
                         }
                     }
@@ -771,7 +782,6 @@ class Users implements ControllerProviderInterface
 
             return $app->redirect('/admin/users/search/?user-updated=' . $nbCreation);
         })->bind('users_submit_import');
-
 
         $controllers->get('/import/example/csv/', function(Application $app, Request $request) {
 

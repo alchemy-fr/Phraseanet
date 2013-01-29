@@ -1651,6 +1651,13 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedsContent()
     {
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
+            ->method('deliver')
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
 
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
@@ -1710,6 +1717,13 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedEntry()
     {
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
+            ->method('deliver')
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
 
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
@@ -1749,6 +1763,13 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedEntryNoAccess()
     {
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
+            ->method('deliver')
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
 
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
@@ -1786,6 +1807,14 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedContent()
     {
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
+            ->method('deliver')
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
+
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
         $entry_title = 'Superman';

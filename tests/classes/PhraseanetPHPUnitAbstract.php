@@ -73,6 +73,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             self::generateRecords($application);
 
+            self::$DI['user']->set_email('valid@phraseanet.com');
+
             self::$updated = true;
         }
     }
@@ -103,8 +105,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
 
+        $phpunit = $this;
 
-        self::$DI['app'] = self::$DI->share(function($DI) {
+        self::$DI['app'] = self::$DI->share(function($DI) use ($phpunit) {
             $environment = 'test';
             $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Root.php';
 
@@ -123,6 +126,15 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
                 return $browser;
             }));
+
+            $app['notification.deliverer'] = $phpunit->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+                ->disableOriginalConstructor()
+                ->getMock();
+            $app['notification.deliverer']->expects($phpunit->any())
+                ->method('deliver')
+                ->will($phpunit->returnCallback(function() use ($phpunit){
+                    $phpunit->fail('Notification deliverer must be mocked');
+                }));
 
             return $app;
         });
@@ -872,5 +884,16 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $data = json_decode($response->getContent(), true);
         $this->assertTrue(is_array($data));
         $this->assertFalse($data['success']);
+    }
+
+    protected function mockNotificationDeliverer($expectedMail, $qty = 1, $receipt = null)
+    {
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['notification.deliverer']->expects($this->exactly($qty))
+            ->method('deliver')
+            ->with($this->isInstanceOf($expectedMail), $this->equalTo($receipt));
     }
 }

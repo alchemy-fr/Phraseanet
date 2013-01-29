@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailInfoRecordQuarantined;
+
 /**
  *
  *
@@ -106,15 +109,18 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     {
         $mailed = false;
 
-        if ( ! ! (int) $this->get_prefs(__CLASS__, $user->get_id())) {
-            $to = array('email' => $user->get_email(), 'name'  => $user->get_display_name());
+        if ($this->shouldSendNotificationFor($user->get_id())) {
+            $readyToSend = false;
+            try {
+                $receiver = Receiver::fromUser($user);
+                $readyToSend = true;
+            } catch (\Exception $e) {
 
-            $from = array(
-                'email' => $this->app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
-                'name'  => $this->app['phraseanet.registry']->get('GV_homeTitle')
-            );
+            }
 
-            if (self::mail($to, $from, $datas)) {
+            if ($readyToSend) {
+                $mail = MailInfoRecordQuarantined::create($this->app, $receiver);
+                $this->app['notification.deliverer']->deliver($mail);
                 $mailed = true;
             }
         }
@@ -171,20 +177,6 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     public function get_description()
     {
         return _('be notified when a document is placed in quarantine');
-    }
-
-    /**
-     * @return boolean
-     */
-    public function mail($to, $from, $datas)
-    {
-        $subject = _('A document has been quarantined');
-
-        $datas = $this->datas($datas, false);
-
-        $body = $datas['text'];
-
-        return \mail::send_mail($this->app, $subject, $body, $to, $from);
     }
 
     /**

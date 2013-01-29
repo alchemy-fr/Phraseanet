@@ -72,7 +72,14 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpload()
     {
-        $params = array('base_id' => self::$DI['collection']->get_base_id());
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $params = array(
+            'base_id' => self::$DI['collection']->get_base_id()
+        );
+
         $files = array(
             'files' => array(
                 new UploadedFile(
@@ -95,6 +102,36 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
             $record = new \record_adapter($id[0], $id[1]);
         }
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getJsonResponse
+     */
+    public function testUploadingTwiceTheSameRecordShouldSendToQuantantine()
+    {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoRecordQuarantined');
+
+        $params = array(
+            'base_id' => self::$DI['collection']->get_base_id()
+        );
+
+        $files = array(
+            'files' => array(
+                new UploadedFile(
+                    $this->tmpFile, 'KIKOO.JPG'
+                )
+            )
+        );
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+
+        $response = self::$DI['client']->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertTrue($datas['success']);
     }
 
     /**

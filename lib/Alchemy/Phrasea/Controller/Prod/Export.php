@@ -13,6 +13,10 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Notification\Emitter;
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailRecordsExport;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -235,7 +239,7 @@ class Export implements ControllerProviderInterface
         $list = $download->prepare_export(
             $app['phraseanet.user'],
             $app['filesystem'],
-            $request->request->get('obj'),
+            (array) $request->request->get('obj'),
             $request->request->get("type") == "title" ? : false,
             $request->request->get('businessfields')
         );
@@ -279,25 +283,21 @@ class Export implements ControllerProviderInterface
 
             $url = $app['phraseanet.registry']->get('GV_ServerName') . 'download/' . $token . '/prepare/?anonymous';
 
-            $from = array(
-                'name'  => $app['phraseanet.user']->get_display_name(),
-                'email' => $app['phraseanet.user']->get_email()
-            );
+            $emitter = new Emitter($app['phraseanet.user']->get_display_name(), $app['phraseanet.user']->get_email());
 
-            //send mails
             foreach ($destMails as $key => $mail) {
-                if (\mail::send_documents(
-                        $app,
-                        trim($mail),
-                        $url,
-                        $from,
-                        $endDateObject,
-                        $request->request->get('textmail'),
-                        $request->request->get('reading_confirm') == '1' ? : false
-                    )
-                ) {
-                    unset($remaingEmails[$key]);
+                try {
+                    $receiver = new Receiver(null, trim($mail));
+                } catch (InvalidArgumentException $e) {
+                    continue;
                 }
+
+                $mail = MailRecordsExport::create($app, $receiver, $emitter, $request->request->get('textmail'));
+                $mail->setButtonUrl($url);
+                $mail->setExpiration($endDateObject);
+
+                $app['notification.deliverer']->deliver($mail);
+                unset($remaingEmails[$key]);
             }
 
             //some mails failed

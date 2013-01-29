@@ -26,7 +26,13 @@ abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
     protected function get_prefs($class, $usr_id)
     {
         $user = User_Adapter::getInstance($usr_id, $this->app);
+        $pref = $user->getPrefs('notification_' . $class);
 
-        return $user->getPrefs('notification_' . $class);
+        return null !== $pref ? $pref : 1;
+    }
+
+    protected function shouldSendNotificationFor($usr_id)
+    {
+        return 0 !== (int) $this->get_prefs(get_class($this), $usr_id);
     }
 }

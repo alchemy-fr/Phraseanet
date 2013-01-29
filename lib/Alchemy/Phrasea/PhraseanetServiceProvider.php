@@ -36,7 +36,7 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
         $app['firewall'] = $app->share(function(SilexApplication $app) {
             return new Firewall($app);
         });
-
+        
         $app['events-manager'] = $app->share(function(SilexApplication $app) {
             $events = new \eventsmanager_broker($app);
             $events->start();

@@ -13,6 +13,9 @@ namespace Alchemy\Phrasea\Controller\Root;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -285,7 +288,7 @@ class Account implements ControllerProviderInterface
         } catch (\Exception $e) {
             return $app->redirect('/account/reset-email/?notice=bad-password');
         }
-        if (!\PHPMailer::ValidateAddress($email)) {
+        if (!\Swift_Validate::email($email)) {
             return $app->redirect('/account/reset-email/?notice=mail-invalid');
         }
 
@@ -293,9 +296,19 @@ class Account implements ControllerProviderInterface
             return $app->redirect('/account/reset-email/?notice=mail-match');
         }
 
-        if (!\mail::reset_email($app, $email, $app['phraseanet.user']->get_id()) === true) {
-            return $app->redirect('/account/reset-email/?notice=mail-server');
+        $date = new \DateTime('1 day');
+        $token = \random::getUrlToken($app, \random::TYPE_EMAIL, $app['phraseanet.user']->get_id(), $date, $app['phraseanet.user']->get_email());
+        $url = $app['phraseanet.registry']->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
+
+        try {
+            $receiver = Receiver::fromUser($app['phraseanet.user']);
+        } catch (InvalidArgumentException $e) {
+            return $app->redirect('/account/reset-email/?notice=mail-not-send');
         }
+
+        $mail = MailRequestEmailUpdate::create($app, $receiver, null);
+        $mail->setButtonUrl($url);
+        $mail->setExpiration($date);
 
         return $app->redirect('/account/reset-email/?update=mail-send');
     }

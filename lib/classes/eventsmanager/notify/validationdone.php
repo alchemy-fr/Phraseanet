@@ -10,13 +10,10 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone;
+use Alchemy\Phrasea\Notification\Emitter;
+use Alchemy\Phrasea\Notification\Receiver;
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 {
     /**
@@ -88,27 +85,33 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
         $mailed = false;
 
-        $send_notif = ($this->get_prefs(__CLASS__, $params['to']) != '0');
-
-        if ($send_notif) {
+        if ($this->shouldSendNotificationFor($params['to'])) {
+            $readyToSend = false;
             try {
                 $user_from = User_Adapter::getInstance($params['from'], $this->app);
                 $user_to = User_Adapter::getInstance($params['to'], $this->app);
-            } catch (Exception $e) {
-                return false;
+
+                $basket = $this->app['EM']
+                    ->getRepository('\Entities\Basket')
+                    ->find($params['ssel_id']);
+                $title = $basket->getName();
+
+                $receiver = Receiver::fromUser($user_to);
+                $emitter = Emitter::fromUser($user_from);
+
+                $readyToSend = true;
+            } catch (\Exception $e) {
+
             }
 
-            $to = array(
-                'email' => $user_to->get_email(),
-                'name'  => $user_to->get_display_name()
-            );
-            $from = array(
-                'email' => $user_from->get_email(),
-                'name'  => $user_from->get_display_name()
-            );
+            if ($readyToSend) {
+                $mail = MailInfoValidationDone::create($this->app, $receiver, $emitter);
+                $mail->setButtonUrl($params['url']);
+                $mail->setTitle($title);
 
-            if (self::mail($to, $from, $params['ssel_id'], $params['url']))
+                $this->app['notification.deliverer']->deliver($mail);
                 $mailed = true;
+            }
         }
 
         return $this->broker->notify($params['to'], __CLASS__, $datas, $mailed);
@@ -171,36 +174,6 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
     public function get_description()
     {
         return _('Reception d\'un rapport de validation');
-    }
-
-    /**
-     *
-     * @param  Array   $to
-     * @param  Array   $from
-     * @param  int     $ssel_id
-     * @return boolean
-     */
-    public function mail($to, $from, $ssel_id, $url)
-    {
-        try {
-            $repository = $this->app['EM']->getRepository('\Entities\Basket');
-
-            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['phraseanet.user'], false);
-        } catch (Exception $e) {
-            return false;
-        }
-
-        $subject = sprintf(
-            _('push::mail:: Rapport de validation de %1$s pour %2$s'), $from['name'], $basket->getName()
-        );
-
-        $body = "<div>" . sprintf(
-                _('%s a rendu son rapport, consulter le en ligne a l\'adresse suivante'), $from['name']
-            ) . "</div>\n";
-
-        $body .= "<br/>\n" . $url;
-
-        return mail::send_mail($this->app, $subject, $body, $to, $from, array());
     }
 
     /**

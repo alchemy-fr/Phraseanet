@@ -43,6 +43,8 @@ abstract class Command extends SymfoCommand
         return $this->doExecute($input, $output);
     }
 
+    abstract protected function doExecute(InputInterface $input, OutputInterface $output);
+
     /**
      * Sets the application container containing all services.
      *
