@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Exception\SessionNotFound;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +33,11 @@ class Root implements ControllerProviderInterface
         });
 
         $controllers->get('/', function(Application $app, Request $request) {
-            \User_Adapter::updateClientInfos($app, 3);
+            try {
+                \User_Adapter::updateClientInfos($app, 3);
+            } catch (SessionNotFound $e) {
+                return $app->redirect($app['url_generator']->generate('logout'));
+            }
 
             $section = $request->query->get('section', false);
 
@@ -96,7 +101,11 @@ class Root implements ControllerProviderInterface
         })->bind('admin');
 
         $controllers->get('/tree/', function(Application $app, Request $request) {
-            \User_Adapter::updateClientInfos($app, 3);
+            try {
+                \User_Adapter::updateClientInfos($app, 3);
+            } catch (SessionNotFound $e) {
+                return $app->redirect($app['url_generator']->generate('logout'));
+            }
 
             $section = $request->query->get('section', false);
 

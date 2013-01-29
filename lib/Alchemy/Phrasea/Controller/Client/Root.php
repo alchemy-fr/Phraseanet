@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Client;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\Exception\SessionNotFound;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\Finder\Finder;
@@ -285,7 +286,11 @@ class Root implements ControllerProviderInterface
      */
     public function getClient(Application $app, Request $request)
     {
-        \User_Adapter::updateClientInfos($app, 2);
+        try {
+            \User_Adapter::updateClientInfos($app, 2);
+        } catch (SessionNotFound $e) {
+            return $app->redirect($app['url_generator']->generate('logout'));
+        }
         $renderTopics = '';
 
         if ($app['phraseanet.registry']->get('GV_client_render_topics') == 'popups') {
