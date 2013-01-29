@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTP;
 use Alchemy\Phrasea\Notification\Receiver;
 
@@ -658,17 +659,31 @@ class task_period_ftp extends task_appboxAbstract
         $sender_message = $text_mail_sender . $message;
         $receiver_message = $text_mail_receiver . $message;
 
-        $receiver = new Receiver(null, $sendermail);
-        $mail = MailSuccessFTP::create($this->dependencyContainer, $receiver, null, $sender_message);
-        $mail->setServer($ftp_server);
+        $receiver = null;
+        try {
+            $receiver = new Receiver(null, $sendermail);
+        } catch (InvalidArgumentException $e) {
 
-        $this->dependencyContainer['notification.deliverer']->deliver($mail);
+        }
 
-        $receiver = new Receiver(null, $mail);
-        $mail = MailSuccessFTP::create($this->dependencyContainer, $receiver, null, $receiver_message);
-        $mail->setServer($ftp_server);
+        if ($receiver) {
+            $mail = MailSuccessFTP::create($this->dependencyContainer, $receiver, null, $sender_message);
+            $mail->setServer($ftp_server);
+            $this->dependencyContainer['notification.deliverer']->deliver($mail);
+        }
 
-        $this->dependencyContainer['notification.deliverer']->deliver($mail);
+        $receiver = null;
+        try {
+            $receiver = new Receiver(null, $mail);
+        } catch (InvalidArgumentException $e) {
+
+        }
+
+        if ($receiver) {
+            $mail = MailSuccessFTP::create($this->dependencyContainer, $receiver, null, $receiver_message);
+            $mail->setServer($ftp_server);
+            $this->dependencyContainer['notification.deliverer']->deliver($mail);
+        }
     }
 
     public function logexport(record_adapter $record, $obj, $ftpLog)

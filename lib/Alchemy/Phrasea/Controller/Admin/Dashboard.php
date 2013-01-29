@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailTest;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -187,7 +188,12 @@ class Dashboard implements ControllerProviderInterface
             $app->abort(400, 'Bad request missing email parameter');
         };
 
-        $receiver = new Receiver(null, $mail);
+        try {
+            $receiver = new Receiver(null, $mail);
+        } catch (InvalidArgumentException $e) {
+            return $app->redirect('/admin/dashboard/?email=not-sent');
+        }
+
         $mail = MailTest::create($app, $receiver);
 
         $app['notification.deliverer']->deliver($mail);

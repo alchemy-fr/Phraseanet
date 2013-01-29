@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRecordsExport;
@@ -285,7 +286,11 @@ class Export implements ControllerProviderInterface
             $emitter = new Emitter($app['phraseanet.user']->get_display_name(), $app['phraseanet.user']->get_email());
 
             foreach ($destMails as $key => $mail) {
-                $receiver = new Receiver(null, trim($mail));
+                try {
+                    $receiver = new Receiver(null, trim($mail));
+                } catch (InvalidArgumentException $e) {
+                    continue;
+                }
 
                 $mail = MailRecordsExport::create($app, $receiver, $emitter, $request->request->get('textmail'));
                 $mail->setButtonUrl($url);

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Helper\User;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\Request;
@@ -539,15 +540,27 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $new_email = $user->get_email();
 
         if ($old_email != $new_email) {
+            try {
+                $oldReceiver = new Receiver(null, $old_email);
+            } catch (InvalidArgumentException $e) {
 
-            $newReceiver = new Receiver(null, $new_email);
-            $oldReceiver = new Receiver(null, $old_email);
+            }
 
-            $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, sprintf(_('You will now receive notifications at %s'), $new_email));
-            $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, sprintf(_('You will no longer receive notifications at %s'), $old_email));
+            if ($oldReceiver) {
+                $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, sprintf(_('You will now receive notifications at %s'), $new_email));
+                $this->app['notification.deliverer']->deliver($mailOldAddress);
+            }
 
-            $this->app['notification.deliverer']->deliver($mailOldAddress);
-            $this->app['notification.deliverer']->deliver($mailNewAddress);
+            try {
+                $newReceiver = new Receiver(null, $new_email);
+            } catch (InvalidArgumentException $e) {
+
+            }
+
+            if ($newReceiver) {
+                $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, sprintf(_('You will no longer receive notifications at %s'), $old_email));
+                $this->app['notification.deliverer']->deliver($mailNewAddress);
+            }
         }
 
         return $this;
