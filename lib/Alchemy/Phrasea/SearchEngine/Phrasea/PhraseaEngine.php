@@ -530,6 +530,7 @@ class PhraseaEngine implements SearchEngineInterface
                     , $this->options->getSearchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
                     , $sort
                     , $BF
+                    , $this->options->getLocale()
             );
 
             if ($results) {
@@ -701,9 +702,9 @@ class PhraseaEngine implements SearchEngineInterface
             }
 
             if ($this->needthesaurus[$sbas_id]) {
-                if ($databox->get_dom_thesaurus()) {
-                    $this->qp[$sbas_id]->thesaurus2($this->indep_treeq[$sbas_id], $sbas_id, $databox->get_dbname(), $databox->get_dom_thesaurus(), true);
-                    $this->qp['main']->thesaurus2($this->indep_treeq['main'], $sbas_id, $databox->get_dbname(), $databox->get_dom_thesaurus(), true);
+                if (($domth = $databox->get_dom_thesaurus())) {
+                    $this->qp[$sbas_id]->thesaurus2($this->indep_treeq[$sbas_id], $sbas_id, $databox->get_dbname(), $domth, true);
+                    $this->qp['main']->thesaurus2($this->indep_treeq['main'], $sbas_id, $databox->get_dbname(), $domth, true);
                 }
             }
 
