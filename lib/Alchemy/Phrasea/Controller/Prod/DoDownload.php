@@ -77,16 +77,17 @@ class DoDownload implements ControllerProviderInterface
             ->bind('execute_download')
             ->assert('token', '[a-zA-Z0-9]{8,16}');
 
-
         return $controllers;
     }
 
     /**
      * Prepare a set of documents for download
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  Response
+     * @param Application $app
+     * @param Request     $request
+     * @param String      $token
+     *
+     * @return Response
      */
     public function prepareDownload(Application $app, Request $request, $token)
     {
@@ -96,21 +97,21 @@ class DoDownload implements ControllerProviderInterface
             $app->abort(404, 'Invalid token');
         }
 
-        if (false === $list = @unserialize((string)$datas['datas'])) {
+        if (false === $list = @unserialize((string) $datas['datas'])) {
             $app->abort(500, 'Invalid datas');
         }
 
         $records = array();
 
-        foreach($list['files'] as $file) {
-            if(!is_array($file) || !isset($file['base_id']) || !isset($file['record_id'])) {
+        foreach ($list['files'] as $file) {
+            if (!is_array($file) || !isset($file['base_id']) || !isset($file['record_id'])) {
                 continue;
             }
             $sbasId = \phrasea::sbasFromBas($app, $file['base_id']);
 
             try {
                 $record = new \record_adapter($app, $sbasId, $file['record_id']);
-            } catch (\Exception $e){
+            } catch (\Exception $e) {
                 continue;
             }
 
@@ -131,9 +132,11 @@ class DoDownload implements ControllerProviderInterface
     /**
      * Download a set of documents
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  Response
+     * @param Application $app
+     * @param Request     $request
+     * @param String      $token
+     *
+     * @return Response
      */
     public function downloadDocuments(Application $app, Request $request, $token)
     {
@@ -149,7 +152,7 @@ class DoDownload implements ControllerProviderInterface
 
         $exportName = $list['export_name'];
 
-        if($list['count'] === 1) {
+        if ($list['count'] === 1) {
             $file = end($list['files']);
             $subdef = end($file['subdefs']);
             $exportName = sprintf('%s%s.%s', $file['export_name'], $subdef['ajout'], $subdef['exportExt']);
@@ -161,7 +164,7 @@ class DoDownload implements ControllerProviderInterface
             $mime = 'application/zip';
         }
 
-        if(!$app['filesystem']->exists($exportFile)) {
+        if (!$app['filesystem']->exists($exportFile)) {
             $app->abort(404, 'Download file not found');
         }
 
@@ -186,13 +189,14 @@ class DoDownload implements ControllerProviderInterface
         return $response;
     }
 
-
     /**
      * Build a zip of downloaded documents
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  Response
+     * @param Application $app
+     * @param Request     $request
+     * @param String      $token
+     *
+     * @return Response
      */
     public function downloadExecute(Application $app, Request $request, $token)
     {

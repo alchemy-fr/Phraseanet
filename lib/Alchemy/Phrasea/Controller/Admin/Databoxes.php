@@ -33,7 +33,6 @@ class Databoxes implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('admin');
         });
 
-
         /**
          * Get Databases control panel
          *
@@ -49,7 +48,6 @@ class Databoxes implements ControllerProviderInterface
          */
         $controllers->get('/', $this->call('getDatabases'))
             ->bind('admin_databases');
-
 
         /**
          * Create Database
@@ -114,9 +112,9 @@ class Databoxes implements ControllerProviderInterface
     /**
      * Get Databases control panel
      *
-     * @param   $app        Application $app
-     * @param   $request    Request $request
-     * @return  Response
+     * @param           $app     Application $app
+     * @param           $request Request $request
+     * @return Response
      */
     public function getDatabases(Application $app, Request $request)
     {
@@ -194,10 +192,10 @@ class Databoxes implements ControllerProviderInterface
     /**
      * Create a new databox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   RedirectResponse
+     * @param Application $app     The silex application
+     * @param Request     $request The current HTTP request
+     *
+     * @return RedirectResponse
      */
     public function createDatabase(Application $app, Request $request)
     {
@@ -267,9 +265,9 @@ class Databoxes implements ControllerProviderInterface
     /**
      * Mount a databox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @return   RedirectResponse
+     * @param  Application      $app     The silex application
+     * @param  Request          $request The current HTTP request
+     * @return RedirectResponse
      */
     public function databaseMount(Application $app, Request $request)
     {
@@ -299,6 +297,7 @@ class Databoxes implements ControllerProviderInterface
                 return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
             } catch (\Exception $e) {
                 $app['phraseanet.appbox']->get_connection()->rollBack();
+
                 return $app->redirect('/admin/databoxes/?success=0&error=mount-failed');
             }
         }
@@ -328,14 +327,13 @@ class Databoxes implements ControllerProviderInterface
     /**
      * Upgrade all databases
      *
-     * @param   $app        Application $app
-     * @param   $request    Request $request
-     * @return  RedirectResponse
+     * @param                   $app     Application $app
+     * @param                   $request Request $request
+     * @return RedirectResponse
      */
     public function databasesUpgrade(Application $app, Request $request)
     {
         if (\phrasea::is_scheduler_started($app)) {
-
             return $app->redirect('/admin/databoxes/?success=0&error=scheduler-started');
         }
 

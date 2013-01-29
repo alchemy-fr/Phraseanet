@@ -42,9 +42,10 @@ class caption_field implements cache_cacheableInterface
 
     /**
      *
-     * @param  databox_field    $databox_field
-     * @param  record_Interface $record
-     * @param  int              $id
+     * @param Application      $app
+     * @param databox_field    $databox_field
+     * @param record_Interface $record
+     *
      * @return caption_field
      */
     public function __construct(Application $app, databox_field $databox_field, record_Interface $record)
@@ -197,8 +198,9 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
+     * @param String  $custom_separator
+     * @param Boolean $highlightTheso
      *
-     * @param  string $custom_separator
      * @return mixed
      */
     public function get_serialized_values($custom_separator = false, $highlightTheso = false)

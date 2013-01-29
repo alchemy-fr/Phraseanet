@@ -98,7 +98,7 @@ class module_console_systemExport extends Command
 
         $export_directory = realpath(substr($directory, 0, 1) === '/' ? $directory : getcwd() . '/' . $directory . '/');
 
-        if ( ! $export_directory) {
+        if (! $export_directory) {
             throw new Exception('Export directory does not exists or is not accessible');
         }
 
@@ -147,7 +147,7 @@ class module_console_systemExport extends Command
                 }
             }
 
-            if ( ! $go) {
+            if (! $go) {
                 $output->writeln(sprintf("Collections not selected, bypassing ..."));
                 continue;
             }

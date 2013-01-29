@@ -157,11 +157,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param  <int>          $base_id
-     * @param  <int>          $record_id
-     * @param  <int>          $number
-     * @param  <string>       $xml
-     * @param  <string>       $status
+     * @param Application $app
+     * @param integer     $sbas_id
+     * @param integer     $record_id
+     * @param integer     $number
+     *
      * @return record_adapter
      */
     public function __construct(Application $app, $sbas_id, $record_id, $number = null)
@@ -1126,9 +1126,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     /**
-     *
      * @todo move this function to caption_record
-     * @param  array          $metadatas
+     *
+     * @param array   $metadatas
+     * @param boolean $force_readonly
+     *
      * @return record_adapter
      */
     public function set_metadatas(Array $metadatas, $force_readonly = false)
@@ -1243,7 +1245,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param  \collection     $collection
+     * @param Application $app
+     * @param \collection $collection
+     *
      * @return \record_adapter
      */
     public static function createStory(Application $app, \collection $collection)
@@ -1296,7 +1300,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param File $file
+     * @param File        $file
+     * @param Application $app
+     *
      * @return \record_adapter
      */
     public static function createFromFile(File $file, Application $app)
@@ -1404,9 +1410,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param  int            $base_id
-     * @param  int            $record_id
+     * @param  Application    $app
+     * @param  integer        $sbas_id
      * @param  string         $sha256
+     * @param  integer        $record_id
      * @return record_adapter
      */
     public static function get_record_by_sha(Application $app, $sbas_id, $sha256, $record_id = null)
@@ -1442,9 +1449,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      * Search for a record on a databox by UUID
      *
-     * @param  \databox        $databox
-     * @param  string          $uuid
-     * @param  int             $record_id Restrict check on a record_id
+     * @param Application $app
+     * @param \databox    $databox
+     * @param string      $uuid
+     * @param int         $record_id Restrict check on a record_id
+     *
      * @return \record_adapter
      */
     public static function get_record_by_uuid(Application $app, \databox $databox, $uuid, $record_id = null)
@@ -1874,10 +1883,13 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param  databox $databox
-     * @param  int     $offset_start
-     * @param  int     $how_many
-     * @return type
+     * @param databox $databox
+     * @param integer $original_name
+     * @param integer $caseSensitive
+     * @param integer $offset_start
+     * @param integer $how_many
+     *
+     * @return array
      */
     public static function get_records_by_originalname(databox $databox, $original_name, $caseSensitive = false, $offset_start = 0, $how_many = 10)
     {

@@ -65,4 +65,3 @@ class patch_320 implements patchInterface
         return true;
     }
 }
-

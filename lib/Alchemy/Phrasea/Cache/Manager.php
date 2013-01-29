@@ -110,4 +110,3 @@ class Manager
         file_put_contents($this->cacheFile->getPathname(), $datas);
     }
 }
-

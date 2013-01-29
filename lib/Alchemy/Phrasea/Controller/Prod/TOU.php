@@ -70,9 +70,9 @@ class TOU implements ControllerProviderInterface
     /**
      * Deny database terms of use
      *
-     * @param Application   $app
-     * @param Request       $request
-     * @param integer       $sbas_id
+     * @param  Application  $app
+     * @param  Request      $request
+     * @param  integer      $sbas_id
      * @return JsonResponse
      */
     public function denyTermsOfUse(Application $app, Request $request, $sbas_id)
@@ -100,9 +100,9 @@ class TOU implements ControllerProviderInterface
     /**
      * Display database terms of use
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  Response
+     * @param  Application $app
+     * @param  Request     $request
+     * @return Response
      */
     public function displayTermsOfUse(Application $app, Request $request)
     {

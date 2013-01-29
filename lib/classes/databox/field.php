@@ -199,7 +199,7 @@ class databox_field implements cache_cacheableInterface
         try {
             $this->Vocabulary = Vocabulary\Controller::get($this->app, $row['VocabularyControlType']);
             $this->VocabularyRestriction = ! ! $row['RestrictToVocabularyControl'];
-        } catch (Exception $e) {
+        } catch (\InvalidArgumentException $e) {
 
         }
 
@@ -244,8 +244,10 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param  \databox       $databox
-     * @param  int            $id
+     * @param Application $app
+     * @param \databox    $databox
+     * @param int         $id
+     *
      * @return \databox_field
      */
     public static function get_instance(Application $app, databox $databox, $id)
@@ -562,7 +564,8 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param  boolean       $bool
+     * @param boolean $readonly
+     *
      * @return databox_field
      */
     public function set_readonly($readonly)
@@ -581,7 +584,7 @@ class databox_field implements cache_cacheableInterface
     {
         $this->Business = ! ! $boolean;
 
-        if($this->Business) {
+        if ($this->Business) {
             $this->thumbtitle = '0';
         }
 
@@ -590,7 +593,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param  boolean       $bool
+     * @param  boolean       $required
      * @return databox_field
      */
     public function set_required($required)
@@ -602,7 +605,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param  boolean       $bool
+     * @param  boolean       $report
      * @return databox_field
      */
     public function set_report($report)
@@ -626,7 +629,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param  string        $type
+     * @param  string        $branch
      * @return databox_field
      */
     public function set_tbranch($branch)
@@ -638,7 +641,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param  string        $type
+     * @param  string        $separator
      * @return databox_field
      */
     public function set_separator($separator)
@@ -657,7 +660,7 @@ class databox_field implements cache_cacheableInterface
      */
     protected static function checkMultiSeparator($separator, $multi)
     {
-        if ( ! $multi) {
+        if (! $multi) {
             return '';
         }
 
@@ -670,14 +673,14 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param  string        $type
+     * @param  string        $value
      * @return databox_field
      */
     public function set_thumbtitle($value)
     {
         $this->thumbtitle = $value;
 
-        if($this->thumbtitle != '0') {
+        if ($this->thumbtitle != '0') {
             $this->Business = false;
         }
 

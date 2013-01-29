@@ -35,7 +35,7 @@ abstract class task_appboxAbstract extends task_abstract
                     $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
                     // DON'T do sleep(600) because it prevents ticks !
-                    for ($t = 60 * 10; $this->running && $t; $t -- ) {
+                    for ($t = 60 * 10; $this->running && $t; $t --) {
                         sleep(1);
                     }
                     // because connection is lost we cannot change status to 'torestart'
@@ -67,7 +67,7 @@ abstract class task_appboxAbstract extends task_abstract
             }
 
             if ($row) {
-                if ( ! $this->running) {
+                if (! $this->running) {
                     break;
                 }
 

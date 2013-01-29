@@ -39,7 +39,7 @@ abstract class task_databoxAbstract extends task_abstract
                     $this->log("appbox connection lost, restarting in 10 min.", self::LOG_ERROR);
 
                     // DON'T do sleep(600) because it prevents ticks !
-                    for ($t = 60 * 10; $this->running && $t; $t-- ) {
+                    for ($t = 60 * 10; $this->running && $t; $t--) {
                         sleep(1);
                     }
                     // because connection is lost we cannot change status to 'torestart'
@@ -77,7 +77,7 @@ abstract class task_databoxAbstract extends task_abstract
             }
 
             foreach ($rs as $row) { // every sbas
-                if ( ! $this->running) {
+                if (! $this->running) {
                     break;
                 }
 
@@ -174,4 +174,3 @@ abstract class task_databoxAbstract extends task_abstract
         return $ret;
     }
 }
-

@@ -60,7 +60,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
         foreach ($request->request->get('date_fields', array()) as $field) {
             $configuration['date_fields'][] = $field;
         }
-        
+
         $configuration['default_sort'] = $request->request->get('default_sort');
 
         file_put_contents($this->getConfigPathFile(), json_encode($configuration));
@@ -96,7 +96,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     public function saveConfiguration(array $configuration)
     {
         file_put_contents($this->getConfigPathFile(), json_encode($configuration));
-        
+
         return $this;
     }
 }

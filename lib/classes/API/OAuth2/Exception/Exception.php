@@ -104,7 +104,7 @@ class API_OAuth2_Exception_Exception extends Exception implements API_OAuth2_Exc
 
     /**
      *
-     * @param  string                         $scope
+     * @param  string                         $error
      * @return API_OAuth2_Exception_Exception
      */
     public function setError($error)
@@ -125,7 +125,7 @@ class API_OAuth2_Exception_Exception extends Exception implements API_OAuth2_Exc
 
     /**
      *
-     * @param  string                         $scope
+     * @param  string                         $error_description
      * @return API_OAuth2_Exception_Exception
      */
     public function setError_description($error_description)
@@ -146,7 +146,7 @@ class API_OAuth2_Exception_Exception extends Exception implements API_OAuth2_Exc
 
     /**
      *
-     * @param  string                         $scope
+     * @param  string                         $error_uri
      * @return API_OAuth2_Exception_Exception
      */
     public function setError_uri($error_uri)

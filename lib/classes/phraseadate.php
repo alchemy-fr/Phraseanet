@@ -211,7 +211,7 @@ class phraseadate
             $patfound = false;
             foreach ($paterns as $pat => $idx) {
                 if (substr($format, 0, ($l = strlen($pat))) == $pat) {
-                    for ($i = 0; $i < $l; $i ++ ) {
+                    for ($i = 0; $i < $l; $i ++) {
                         $bal_out = "";
                         if (isset($tc[$idx + $i])) {
                             foreach ($tc[$idx + $i]["bals"] as $b) {
@@ -226,7 +226,7 @@ class phraseadate
                     break;
                 }
             }
-            if ( ! $patfound) {
+            if (! $patfound) {
                 $strdate .= $format[0];
                 $format = substr($format, 1);
             }

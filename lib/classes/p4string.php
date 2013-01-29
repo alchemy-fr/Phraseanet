@@ -83,7 +83,7 @@ class p4string
     }
 
     /**
-     * @deprecated
+     * deprecated
      *
      * @param  type $s
      * @return type
@@ -94,12 +94,11 @@ class p4string
     }
 
     /**
-     * @deprecated
+     * deprecated
      *
-     * @param  type $s
-     * @param  type $context
-     * @param  type $quoted
-     * @return type
+     * @param string $s
+     * @param string $context
+     * @param string $quoted
      */
     public static function MakeString($s, $context = 'html', $quoted = '')
     {

@@ -41,10 +41,12 @@ interface Cache extends DoctrineCache
     /**
      * Get an entry from the cache.
      *
-     * @param  string $key cache id The id of the cache entry to fetch.
+     * @param string $key cache id The id of the cache entry to fetch.
+     *
      * @return string The cached data.
      * @return FALSE, if no cache entry exists for the given id.
-     * @ throws Alchemy\Phrasea\Cache\Exception if provided key does not exist
+     *
+     * @throws Alchemy\Phrasea\Cache\Exception if provided key does not exist
      */
     public function get($key);
 

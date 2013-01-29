@@ -62,7 +62,7 @@ class module_console_systemMailCheck extends Command
     {
         $is_stopped = false;
 
-        while ( ! $is_stopped) {
+        while (! $is_stopped) {
             $this->write_infos($email, $users, $output, $appbox);
 
             $dialog = $this->getHelperSet()->get('dialog');

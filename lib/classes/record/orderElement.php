@@ -33,10 +33,11 @@ class record_orderElement extends record_adapter
 
     /**
      *
-     * @param int     $base_id
-     * @param int     $record_id
-     * @param boolean $deny
-     * @param int     $order_master_id
+     * @param Application $app
+     * @param int         $sbas_id
+     * @param int         $record_id
+     * @param boolean     $deny
+     * @param int         $order_master_id
      */
     public function __construct(Application $app, $sbas_id, $record_id, $deny, $order_master_id)
     {

@@ -44,8 +44,6 @@ class Login implements ControllerProviderInterface
             }
         });
 
-
-
         /**
          * Login
          *
@@ -227,9 +225,9 @@ class Login implements ControllerProviderInterface
     /**
      * Send a confirmation mail after register
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @return  RedirectResponse
+     * @param  Application      $app     A Silex application where the controller is mounted on
+     * @param  Request          $request The current request
+     * @return RedirectResponse
      */
     public function sendConfirmMail(Application $app, Request $request)
     {
@@ -268,9 +266,9 @@ class Login implements ControllerProviderInterface
     /**
      * Validation of email adress
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @return  RedirectResponse
+     * @param  Application      $app     A Silex application where the controller is mounted on
+     * @param  Request          $request The current request
+     * @return RedirectResponse
      */
     public function registerConfirm(Application $app, Request $request)
     {
@@ -321,9 +319,9 @@ class Login implements ControllerProviderInterface
     /**
      * Submit the new password
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @return  RedirectResponse
+     * @param  Application      $app     A Silex application where the controller is mounted on
+     * @param  Request          $request The current request
+     * @return RedirectResponse
      */
     public function renewPassword(Application $app, Request $request)
     {
@@ -358,13 +356,10 @@ class Login implements ControllerProviderInterface
             && (null !== $passwordConfirm = $request->request->get('form_password_confirm'))) {
 
             if ($password !== $passwordConfirm) {
-
                 return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-match')));
             } elseif (strlen(trim($password)) < 8) {
-
                 return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-short')));
             } elseif (trim($password) !== str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
-
                 return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-invalid')));
             }
 
@@ -386,9 +381,9 @@ class Login implements ControllerProviderInterface
     /**
      * Get the fogot password form
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @return  Response
+     * @param  Application $app     A Silex application where the controller is mounted on
+     * @param  Request     $request The current request
+     * @return Response
      */
     public function displayForgotPasswordForm(Application $app, Request $request)
     {
@@ -457,9 +452,9 @@ class Login implements ControllerProviderInterface
     /**
      * Get the register form
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @return  Response
+     * @param  Application $app     A Silex application where the controller is mounted on
+     * @param  Request     $request The current request
+     * @return Response
      */
     public function displayRegisterForm(Application $app, Request $request)
     {
@@ -521,8 +516,6 @@ class Login implements ControllerProviderInterface
             }
         }
 
-
-
         $arrayVerif = $this->getRegisterFieldConfiguration($app);
 
         return $app['twig']->render('login/register.html.twig', array(
@@ -539,9 +532,9 @@ class Login implements ControllerProviderInterface
     /**
      * Do the registration
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @return  RedirectResponse
+     * @param  Application      $app     A Silex application where the controller is mounted on
+     * @param  Request          $request The current request
+     * @return RedirectResponse
      */
     public function register(Application $app, Request $request)
     {
@@ -724,9 +717,9 @@ class Login implements ControllerProviderInterface
     /**
      * Logout from Phraseanet
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @return  RedirectResponse
+     * @param  Application      $app     A Silex application where the controller is mounted on
+     * @param  Request          $request The current request
+     * @return RedirectResponse
      */
     public function logout(PhraseaApplication $app, Request $request)
     {
@@ -748,9 +741,9 @@ class Login implements ControllerProviderInterface
     /**
      * Login into Phraseanet
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @return  Response
+     * @param  Application $app     A Silex application where the controller is mounted on
+     * @param  Request     $request The current request
+     * @return Response
      */
     public function login(Application $app, Request $request)
     {
@@ -862,9 +855,9 @@ class Login implements ControllerProviderInterface
     /**
      * Authenticate to phraseanet
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @return  RedirectResponse
+     * @param  Application      $app     A Silex application where the controller is mounted on
+     * @param  Request          $request The current request
+     * @return RedirectResponse
      */
     public function authenticate(Application $app, Request $request)
     {
@@ -1067,7 +1060,7 @@ class Login implements ControllerProviderInterface
     /**
      * Get required fields configuration
      *
-     * @param Application $app
+     * @param  Application $app
      * @return boolean
      */
     private function getRegisterFieldConfiguration(Application $app)

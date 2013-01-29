@@ -233,8 +233,8 @@ class Bridge_Account
 
     /**
      *
-     * @param  appbox         $appbox
-     * @param  int            $account_id
+     * @param  Application    $app
+     * @param  integer        $account_id
      * @return Bridge_Account
      */
     public static function load_account(Application $app, $account_id)
@@ -313,7 +313,7 @@ class Bridge_Account
 
     /**
      *
-     * @param  Application $app
+     * @param  Application    $app
      * @param  user_adapter   $user
      * @return Bridge_Account
      */
@@ -346,11 +346,12 @@ class Bridge_Account
 
     /**
      *
-     * @param  appbox         $appbox
-     * @param  Bridge_Api     $api
-     * @param  User_Adapter   $user
-     * @param  string         $dist_id
-     * @param  string         $name
+     * @param Application  $app
+     * @param Bridge_Api   $api
+     * @param User_Adapter $user
+     * @param string       $dist_id
+     * @param string       $name
+     *
      * @return Bridge_Account
      */
     public static function create(Application $app, Bridge_Api $api, User_Adapter $user, $dist_id, $name)

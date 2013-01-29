@@ -452,7 +452,7 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * Format proposals from QueryParser to HTML
      *
-     * @param array $proposals
+     * @param  array  $proposals
      * @return string
      */
     private static function proposalsToHTML($proposals)
@@ -480,7 +480,7 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * Factory
      *
-     * @param Application $app
+     * @param  Application   $app
      * @return PhraseaEngine
      */
     public static function create(Application $app)
@@ -491,7 +491,7 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * Executes the Phrasea query
      *
-     * @param string $query
+     * @param  string        $query
      * @return PhraseaEngine
      */
     private function executeQuery($query)
@@ -623,7 +623,7 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * Prepares the query
      *
-     * @param string $query
+     * @param  string        $query
      * @return PhraseaEngine
      */
     private function addQuery($query)
@@ -723,8 +723,8 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * Parses the query for search engine
      *
-     * @param integer $sbas
-     * @param string $query
+     * @param  integer       $sbas
+     * @param  string        $query
      * @return PhraseaEngine
      */
     private function singleParse($sbas, $query)

@@ -161,7 +161,6 @@ class gatekeeper
         return $this;
     }
 
-
     /**
      * Checks if session is open
      * Redirect if session is missing

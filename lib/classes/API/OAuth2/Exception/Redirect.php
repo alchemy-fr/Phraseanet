@@ -69,7 +69,7 @@ class API_OAuth2_Exception_Redirect extends API_OAuth2_Exception_Exception
 
     /**
      *
-     * @param  string                        $redirect_uri
+     * @param  string                        $state
      * @return API_OAuth2_Exception_Redirect
      */
     public function setState($state)

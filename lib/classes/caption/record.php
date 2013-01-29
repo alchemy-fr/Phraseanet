@@ -46,8 +46,10 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     /**
      *
-     * @param  record_Interface $record
-     * @param  databox          $databox
+     * @param Application      $app
+     * @param record_Interface $record
+     * @param databox          $databox
+     *
      * @return caption_record
      */
     public function __construct(Application $app, record_Interface $record, databox $databox)
@@ -177,7 +179,9 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     /**
      *
-     * @param  array $grep_fields
+     * @param array   $grep_fields
+     * @param Boolean $IncludeBusiness
+     *
      * @return array
      */
     public function get_fields(Array $grep_fields = null, $IncludeBusiness = false)
@@ -233,9 +237,11 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     /**
      *
-     * @param  string                $highlight
-     * @param  array                 $grep_fields
-     * @param  SearchEngineInterface $searchEngine
+     * @param string                $highlight
+     * @param array                 $grep_fields
+     * @param SearchEngineInterface $searchEngine
+     * @param Boolean               $includeBusiness
+     *
      * @return array
      */
     public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false)

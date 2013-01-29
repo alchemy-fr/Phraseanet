@@ -196,4 +196,3 @@ class patch_370a6 implements patchInterface
         $root->set_subdef($groupname, $baseSubdef->get_name() . '_OGG', $baseSubdef->get_class(), false, $newSubdefOptionsOgg);
     }
 }
-

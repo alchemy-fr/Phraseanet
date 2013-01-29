@@ -98,9 +98,9 @@ class API_V1_result
     /**
      * API v1 Result constructor
      *
-     * @param  Request        $request
-     * @param  API_V1_adapter $api
-     * @param  string         $response_type One of the API_V1_result 'FORMAT_*' constants
+     * @param Request        $request
+     * @param API_V1_adapter $api
+     *
      * @return API_V1_result
      */
     public function __construct(Request $request, API_V1_adapter $api)
@@ -248,7 +248,9 @@ class API_V1_result
      * Set the API_V1_result http_code, error_type, error_message and error_details
      * with the appropriate datas
      *
-     * @param  string        $const
+     * @param string $const
+     * @param string $message
+     *
      * @return API_V1_result
      */
     public function set_error_message($const, $message)
@@ -298,7 +300,8 @@ class API_V1_result
      * Set the API_V1_result http_code, error_message and error_details
      * with the appropriate datas
      *
-     * @param  string        $const
+     * @param integer $code
+     *
      * @return API_V1_result
      */
     public function set_error_code($code)

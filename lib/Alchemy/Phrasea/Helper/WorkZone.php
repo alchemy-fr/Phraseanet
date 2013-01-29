@@ -65,4 +65,3 @@ class WorkZone extends Helper
         $tmp_baskets = array();
     }
 }
-

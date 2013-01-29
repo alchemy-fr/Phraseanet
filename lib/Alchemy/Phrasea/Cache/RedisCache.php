@@ -28,7 +28,7 @@ class RedisCache extends CacheProvider implements Cache
     /**
      * Sets the redis instance to use.
      *
-     * @param Redis $memcache
+     * @param Redis $redis
      */
     public function setRedis(\Redis $redis)
     {
@@ -38,7 +38,7 @@ class RedisCache extends CacheProvider implements Cache
     /**
      * Gets the memcache instance used by the cache.
      *
-     * @return Memcache
+     * @return Redis
      */
     public function getRedis()
     {

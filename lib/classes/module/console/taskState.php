@@ -114,4 +114,3 @@ class module_console_taskState extends Command
         return $exitCode;
     }
 }
-

@@ -72,11 +72,13 @@ class MoveCollection implements ControllerProviderInterface
         try {
             if (null === $request->request->get('base_id')) {
                 $datas['message'] = _('Missing target collection');
+
                 return $app->json($datas);
             }
 
             if (!$app['phraseanet.user']->ACL()->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
                 $datas['message'] = sprintf(_("You do not have the permission to move records to %s"), \phrasea::bas_names($move->getBaseIdDestination(), $app));
+
                 return $app->json($datas);
             }
 
@@ -84,6 +86,7 @@ class MoveCollection implements ControllerProviderInterface
                 $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
             } catch (\Exception_Databox_CollectionNotFound $e) {
                 $datas['message'] = _('Invalid target collection');
+
                 return $app->json($datas);
             }
 

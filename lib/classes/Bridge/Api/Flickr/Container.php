@@ -75,7 +75,6 @@ class Bridge_Api_Flickr_Container implements Bridge_Api_ContainerInterface
      */
     public function get_thumbnail($width = 120, $height = 90)
     {
-
         return $this->thumbnail;
     }
 

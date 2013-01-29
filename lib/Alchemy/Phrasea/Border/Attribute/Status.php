@@ -37,7 +37,7 @@ class Status implements AttributeInterface
         } else {
             throw new \InvalidArgumentException('Invalid status argument');
         }
-        
+
         $this->status = $status;
     }
 

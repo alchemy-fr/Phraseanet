@@ -305,7 +305,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                     ),
                     'page' => ! $offset_start ? 1 : $offset_start);
                 //add quantity
-                if ( ! ! $quantity) {
+                if (! ! $quantity) {
                     $params["limit"] = $quantity;
                 }
                 $url = sprintf('/me/%ss', $object);
@@ -347,9 +347,11 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     /**
      *
      * @see http://www.dailymotion.com/doc/api/obj-video.html
-     * @param  string                 $object
-     * @param  string                 $object_id
-     * @param  Request                $request
+     *
+     * @param string $object
+     * @param string $object_id
+     * @param array  $datas
+     *
      * @return Bridge_Api_Dailymotion
      */
     public function update_element($object, $object_id, Array $datas)
@@ -482,7 +484,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param  string $element_id
+     * @param Bridge_Element $element
+     *
      * @return Array
      */
     public function get_element_status(Bridge_Element $element)
@@ -593,8 +596,9 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param  string                         $object
-     * @param  string                         $element_id
+     * @param string $element_id
+     * @param string $object
+     *
      * @return Bridge_Api_Dailymotion_Element
      */
     public function get_element_from_id($element_id, $object)
@@ -793,7 +797,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      * @todo implement in bridge_api°interface
      *
      * Check if data uploaded via the current connector is conform
-     * @param  Request        $request
+     * @param  array          $datas
      * @param  record_adapter $record
      * @return array
      */
@@ -850,7 +854,10 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      * Returns dats needed for an uploaded record
-     * @param  record_adapter $record
+     *
+     * @param Request        $request
+     * @param record_adapter $record
+     *
      * @return array
      */
     public function get_upload_datas(Request $request, record_adapter $record)
@@ -868,7 +875,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      * Returns datas needed for an uploaded record
-     * @param  record_adapter $record
+     * @param  Request $request
      * @return array
      */
     public function get_update_datas(Request $request)

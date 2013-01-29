@@ -28,7 +28,7 @@ class queries
         if (file_exists(__DIR__ . '/../../config/topics/topics_' . $I18N . '.xml'))
             $xmlTopics = __DIR__ . '/../../config/topics/topics_' . $I18N . '.xml';
 
-        if ( ! $xmlTopics) {
+        if (! $xmlTopics) {
             if (file_exists(__DIR__ . '/../../config/topics/topics.xml')) {
                 $xmlTopics = __DIR__ . '/../../config/topics/topics.xml';
             }
@@ -171,7 +171,7 @@ class queries
                             </table>
                             ' . _('client::recherche: dans les categories') . '<br/>';
 
-        for ($i = 0; $i <= $maxdepth; $i ++ ) {
+        for ($i = 0; $i <= $maxdepth; $i ++) {
             $out .= '<p id="divTopic_' . $i . '" style="margin:0px;margin-bottom:5px;" >
                                 <select style="width:100%;" id="popTopic_' . $i . '" name="popTopic_' . $i . '" onchange="chgPopTopic(' . ($i + 1) . ');">
                                 </select>

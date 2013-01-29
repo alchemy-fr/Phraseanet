@@ -68,9 +68,9 @@ class Notifications implements ControllerProviderInterface
     /**
      * Set notifications as readed
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function readNotifications(Application $app, Request $request)
     {
@@ -86,7 +86,6 @@ class Notifications implements ControllerProviderInterface
 
             return $app->json(array('success' => true, 'message' => ''));
         } catch (\Exception $e) {
-
             return $app->json(array('success' => false, 'message' => $e->getMessage()));
         }
     }
@@ -94,9 +93,9 @@ class Notifications implements ControllerProviderInterface
     /**
      * Get all notifications
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function listNotifications(Application $app, Request $request)
     {
@@ -105,6 +104,7 @@ class Notifications implements ControllerProviderInterface
         }
 
         $page = (int) $request->query->get('page', 1);
+
         return $app->json($app['events-manager']->get_json_notifications(($page < 1 ? 1 : $page)));
     }
 

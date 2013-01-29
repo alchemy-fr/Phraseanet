@@ -52,9 +52,9 @@ class Download implements ControllerProviderInterface
     /**
      * Download a set of documents
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  RedirectResponse
+     * @param  Application      $app
+     * @param  Request          $request
+     * @return RedirectResponse
      */
     public function checkDownload(Application $app, Request $request)
     {
@@ -64,7 +64,7 @@ class Download implements ControllerProviderInterface
 
         $download = new \set_export($app, $lst, $ssttid);
 
-        if(0 === $download->get_total_download()) {
+        if (0 === $download->get_total_download()) {
             $app->abort(403);
         }
 

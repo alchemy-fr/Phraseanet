@@ -231,7 +231,7 @@ abstract class Feed_XML_Abstract
             return $this;
         }
 
-        if ( ! $preview_permalink || ! $thumbnail_permalink) {
+        if (! $preview_permalink || ! $thumbnail_permalink) {
             return $this;
         }
 

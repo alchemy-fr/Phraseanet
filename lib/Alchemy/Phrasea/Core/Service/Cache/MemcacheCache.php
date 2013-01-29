@@ -43,7 +43,7 @@ class MemcacheCache extends ServiceAbstract
             throw new \Exception('The Memcache cache requires the Memcache extension.');
         }
 
-        if ( ! $this->cache) {
+        if (! $this->cache) {
             $memcache = new \Memcache();
 
             $memcache->addServer($this->host, $this->port);
@@ -80,4 +80,3 @@ class MemcacheCache extends ServiceAbstract
         return $this->port;
     }
 }
-

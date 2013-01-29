@@ -104,6 +104,8 @@ class ZipArchiveImproved extends ZipArchive
      *
      * @param  string            $fileName  the path to file to be added to archive
      * @param  string [optional] $localname the name of the file in the ZIP archive
+     * @param  integer           $start
+     * @param  integer           $length
      * @return bool
      */
     public function addFile($fileName, $localname = null, $start = 0, $length = 0)

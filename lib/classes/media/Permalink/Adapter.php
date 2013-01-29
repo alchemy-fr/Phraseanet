@@ -299,6 +299,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
+     * @param  Application             $app
      * @param  databox                 $databox
      * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
@@ -316,6 +317,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
+     * @param  Application             $app
      * @param  databox                 $databox
      * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
@@ -345,6 +347,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
+     * @param  Application    $app
      * @param  databox        $databox
      * @param  string         $token
      * @param  int            $record_id

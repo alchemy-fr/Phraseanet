@@ -38,7 +38,7 @@ class FlexPaper extends Provider
 
     public function getMediaAlchemystSpec()
     {
-        if ( ! $this->spec) {
+        if (! $this->spec) {
             $this->spec = new \MediaAlchemyst\Specification\Flash();
         }
 

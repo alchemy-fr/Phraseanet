@@ -106,8 +106,10 @@ class ACL implements cache_cacheableInterface
     /**
      * Constructor
      *
-     * @param  User_Interface $user
-     * @return ACL
+     * @param User_Interface $user
+     * @param Application    $app
+     *
+     * @return \ACL
      */
     public function __construct(User_Interface $user, Application $app)
     {
@@ -649,8 +651,9 @@ class ACL implements cache_cacheableInterface
      * Return an array of base_id which are granted, with
      * optionnal filter by rights
      *
-     * @param  Array $rights
-     * @return Array
+     * @param  array      $rights
+     * @param  array|null $sbas_ids Optionnal sbas_id to restrict the query on
+     * @return array      An array of collection
      */
     public function get_granted_base(Array $rights = array(), array $sbas_ids = null)
     {

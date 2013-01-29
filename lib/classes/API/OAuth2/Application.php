@@ -128,7 +128,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param  Application             $app
+     * @param  Application            $app
      * @param  int                    $application_id
      * @return API_OAuth2_Application
      */
@@ -596,7 +596,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param  Application               $app
+     * @param  Application            $app
      * @param  User_Adapter           $user
      * @param  type                   $name
      * @return API_OAuth2_Application
@@ -644,7 +644,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param  Application             $app
+     * @param  Application            $app
      * @param  type                   $client_id
      * @return API_OAuth2_Application
      */

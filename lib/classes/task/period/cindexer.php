@@ -176,13 +176,13 @@ class task_period_cindexer extends task_abstract
 
             function taskFillGraphic_<?php echo(get_class($this));?>(xml)
             {
-                if(xml)
-                {
+                if (xml) {
                     xml = $.parseXML(xml);
                     xml = $(xml);
 
                     var isyes = function(v) {
                         v = v.toUpperCase().trim();
+
                         return v=='O' || v=='Y' || v=='OUI' || v=='YES' || v=='1';
                     }
 
@@ -247,6 +247,7 @@ class task_period_cindexer extends task_abstract
 
         </script>
         <?php
+
         return;
     }
 
@@ -296,7 +297,6 @@ class task_period_cindexer extends task_abstract
             <input type="checkbox" name="nolog">&nbsp;<?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
             <br/>
 
-
             <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
             <input type="checkbox" name="winsvc_run">&nbsp;<?php echo _('task::cindexer:run as application, not as service') ?>
         </form>
@@ -305,6 +305,7 @@ class task_period_cindexer extends task_abstract
             <div style="margin:10px; padding:5px; border:1px #000000 solid; font-family:monospace; font-size:14px; text-align:left; color:#00e000; background-color:#404040" id="cmd">cmd</div>
         </center>
         <?php
+
         return ob_get_clean();
     }
 
@@ -466,7 +467,7 @@ class task_period_cindexer extends task_abstract
                     if (socket_connect($sock, '127.0.0.1', $this->socket) === true) {
                         socket_write($sock, 'Q', 1);
                         socket_write($sock, "\r\n", strlen("\r\n"));
-                        for ($i = 0; $this->running && $i < 5; $i ++ ) {
+                        for ($i = 0; $this->running && $i < 5; $i ++) {
                             sleep(1);
                         }
                         $qsent = 'Q';
@@ -479,7 +480,7 @@ class task_period_cindexer extends task_abstract
             }
 
             $proc_status = proc_get_status($process);
-            if ( ! $proc_status['running']) {
+            if (! $proc_status['running']) {
                 // the cindexer died
                 if ($qsent == 'Q') {
                     $this->log(_('task::cindexer:the cindexer clean-quit'));
@@ -504,7 +505,7 @@ class task_period_cindexer extends task_abstract
                     }
                 }
             }
-            for ($i = 0; $this->running && $i < 5; $i ++ ) {
+            for ($i = 0; $this->running && $i < 5; $i ++) {
                 sleep(1);
             }
         }

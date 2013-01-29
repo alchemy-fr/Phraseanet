@@ -56,10 +56,10 @@ class Feed_TokenAggregate extends Feed_Token
      */
     public function get_feed()
     {
-        if ( ! $this->feed) {
+        if (! $this->feed) {
             $this->feed = Feed_Aggregate::load_with_user($this->app, $this->get_user());
         }
-        
+
         return $this->feed;
     }
 }

@@ -46,7 +46,7 @@ class SearchEngineResult
 
     /**
      * An collection of results
-     * 
+     *
      * @return ArrayCollection
      */
     public function getResults()
@@ -56,7 +56,7 @@ class SearchEngineResult
 
     /**
      * The query related to these results
-     * 
+     *
      * @return string
      */
     public function getQuery()
@@ -66,7 +66,7 @@ class SearchEngineResult
 
     /**
      * The duration of the query
-     * 
+     *
      * @return float
      */
     public function getDuration()
@@ -76,8 +76,8 @@ class SearchEngineResult
 
     /**
      * Return the number of page depending on the amount displayed on each page
-     * 
-     * @param integer   $amountPerPage
+     *
+     * @param  integer $amountPerPage
      * @return integer
      */
     public function getTotalPages($amountPerPage)
@@ -86,10 +86,10 @@ class SearchEngineResult
     }
 
     /**
-     * Return the number of the current page depending on the amount displayed 
+     * Return the number of the current page depending on the amount displayed
      * on each page
-     * 
-     * @param integer   $amountPerPage
+     *
+     * @param  integer $amountPerPage
      * @return integer
      */
     public function getCurrentPage($amountPerPage)
@@ -99,11 +99,11 @@ class SearchEngineResult
 
     /**
      * Return the number of results that can be returned by the search engine
-     * 
+     *
      * The difference with 'total' is that this method return the actual number
-     * of results that can be fetched whereas 'total' returns the number of 
+     * of results that can be fetched whereas 'total' returns the number of
      * results that matches the query (can be greater than available quantity)
-     * 
+     *
      * @return int
      */
     public function getAvailable()
@@ -115,7 +115,7 @@ class SearchEngineResult
      * Return the number of items that match the query. Some items may be not
      * retrievable. To get the number of results that can be retrieved, use
      * the 'available' method
-     * 
+     *
      * @return int
      */
     public function getTotal()
@@ -125,7 +125,7 @@ class SearchEngineResult
 
     /**
      * Return an error message returned by the search engine
-     * 
+     *
      * @return string
      */
     public function getError()
@@ -135,7 +135,7 @@ class SearchEngineResult
 
     /**
      * Return a warning message returned by the search engine
-     * 
+     *
      * @return string
      */
     public function getWarning()
@@ -145,7 +145,7 @@ class SearchEngineResult
 
     /**
      * Return a collection of SearchEngineSuggestion
-     * 
+     *
      * @return ArrayCollection
      */
     public function getSuggestions()
@@ -155,7 +155,7 @@ class SearchEngineResult
 
     /**
      * Return HTML proposals
-     * 
+     *
      * @return string
      */
     public function getProposals()
@@ -165,7 +165,7 @@ class SearchEngineResult
 
     /**
      * Return the index name where the query happened
-     * 
+     *
      * @return string
      */
     public function getIndexes()
@@ -173,4 +173,3 @@ class SearchEngineResult
         return $this->indexes;
     }
 }
-

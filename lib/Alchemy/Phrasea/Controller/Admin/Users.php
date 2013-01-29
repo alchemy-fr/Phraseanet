@@ -350,7 +350,6 @@ class Users implements ControllerProviderInterface
             $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-
             $sql = "
             SELECT demand.date_modif,demand.base_id, usr.usr_id , usr.usr_login ,usr.usr_nom,usr.usr_prenom,
             usr.societe, usr.fonction, usr.usr_mail, usr.tel, usr.activite,
@@ -434,7 +433,6 @@ class Users implements ControllerProviderInterface
                 }
             }
 
-
             if (count($templates) > 0 || count($deny) > 0 || count($accept) > 0) {
                 $done = array();
                 $cache_to_update = array();
@@ -447,7 +445,6 @@ class Users implements ControllerProviderInterface
                     $base_ids = array_keys($user_template->ACL()->get_granted_base());
 
                     $user->ACL()->apply_model($user_template, $base_ids);
-
 
                     if (!isset($done[$usr])) {
                         $done[$usr] = array();
@@ -575,7 +572,6 @@ class Users implements ControllerProviderInterface
         $controllers->post('/import/file/', function(Application $app, Request $request) {
 
             if ((null === $file = $request->files->get('files')) || !$file->isValid()) {
-
                 return $app->redirect('/admin/users/import/file/?error=file-invalid');
             }
 
@@ -604,12 +600,10 @@ class Users implements ControllerProviderInterface
             }
 
             if (!$loginDefined) {
-
                 return $app->redirect('/admin/users/import/file/?error=row-login');
             }
 
             if (!$pwdDefined) {
-
                 return $app->redirect('/admin/users/import/file/?error=row-pwd');
             }
 
@@ -667,12 +661,10 @@ class Users implements ControllerProviderInterface
             }
 
             if (count($out['errors']) > 0) {
-
                 return $app['twig']->render('admin/user/import/file.html.twig', array(
                         'errors' => $out['errors']
                     ));
-            } else if ($nbUsrToAdd === 0) {
-
+            } elseif ($nbUsrToAdd === 0) {
                 return $app->redirect('/admin/users/import/file/?error=no-user');
             } else {
                 for ($i = 1; $i < sizeof($array); $i++) {
@@ -905,4 +897,3 @@ class Users implements ControllerProviderInterface
         return $equivalenceToMysqlField;
     }
 }
-

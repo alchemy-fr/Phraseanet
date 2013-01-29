@@ -41,4 +41,3 @@ class thesaurus_xpath extends DOMXPath
         return(self::$r[$context_path]);
     }
 }
-

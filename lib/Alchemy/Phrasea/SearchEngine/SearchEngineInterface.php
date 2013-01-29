@@ -32,8 +32,8 @@ interface SearchEngineInterface
     /**
      * Check the status of the search engine
      *
-     * @return array An array of key/value parameters
-     * @throws RuntimeException  if something is wrong
+     * @return array            An array of key/value parameters
+     * @throws RuntimeException if something is wrong
      */
     public function getStatus();
 
@@ -41,27 +41,27 @@ interface SearchEngineInterface
      * @return ConfigurationPanelInterface
      */
     public function getConfigurationPanel();
-    
+
     /**
      * @return array an array of field names
      */
     public function getAvailableDateFields();
-    
+
     /**
      * @return array an array containing criteria values as key and criteria names as value
      */
     public function getAvailableSort();
-    
+
     /**
-     * @return string The default sort 
+     * @return string The default sort
      */
     public function getDefaultSort();
-    
+
     /**
      * @return array an array containing sort order values as key and sort order names as value
      */
     public function getAvailableOrder();
-    
+
     /**
      * @return Boolean return true if the search engine supports stemmed search
      */
@@ -76,7 +76,7 @@ interface SearchEngineInterface
     /**
      * Add a record to index
      *
-     * @param \record_adapter $record
+     * @param  \record_adapter       $record
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -85,7 +85,7 @@ interface SearchEngineInterface
     /**
      * Remove a record from index
      *
-     * @param \record_adapter $record
+     * @param  \record_adapter       $record
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -94,7 +94,7 @@ interface SearchEngineInterface
     /**
      * Update a record in index
      *
-     * @param \record_adapter $record
+     * @param  \record_adapter       $record
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -103,7 +103,7 @@ interface SearchEngineInterface
     /**
      * Add a story to index
      *
-     * @param \record_adapter $story
+     * @param  \record_adapter       $story
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -112,7 +112,7 @@ interface SearchEngineInterface
     /**
      * Remove a story from index
      *
-     * @param \record_adapter $story
+     * @param  \record_adapter       $story
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -121,7 +121,7 @@ interface SearchEngineInterface
     /**
      * Update a story in index
      *
-     * @param \record_adapter $story
+     * @param  \record_adapter       $story
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -130,7 +130,7 @@ interface SearchEngineInterface
     /**
      * Add an entry to index
      *
-     * @param \Feed_Entry_Adapter $entry
+     * @param  \Feed_Entry_Adapter   $entry
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -139,7 +139,7 @@ interface SearchEngineInterface
     /**
      * Remove an entry to index
      *
-     * @param \Feed_Entry_Adapter $entry
+     * @param  \Feed_Entry_Adapter   $entry
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -147,8 +147,8 @@ interface SearchEngineInterface
 
     /**
      * Update an entry in the index
-     * 
-     * @param \Feed_Entry_Adapter $entry
+     *
+     * @param  \Feed_Entry_Adapter   $entry
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -156,8 +156,8 @@ interface SearchEngineInterface
 
     /**
      * Set options to search-engine
-     * 
-     * @param SearchEngineOptions $options
+     *
+     * @param  SearchEngineOptions   $options
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -165,7 +165,7 @@ interface SearchEngineInterface
 
     /**
      * Reset search-engine options
-     * 
+     *
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -173,7 +173,7 @@ interface SearchEngineInterface
 
     /**
      *
-     * @param string $query
+     * @param string  $query
      * @param integer $offset
      * @param integer $perPage
      *
@@ -194,8 +194,8 @@ interface SearchEngineInterface
     /**
      * Highlight the fields of a record
      *
-     * @param type $query
-     * @param type $fields
+     * @param type            $query
+     * @param type            $fields
      * @param \record_adapter $record
      *
      * @return array The array of highlighted fields
@@ -225,4 +225,3 @@ interface SearchEngineInterface
      */
     public function clearAllCache(\DateTime $date = null);
 }
-

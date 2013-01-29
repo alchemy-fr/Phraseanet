@@ -34,7 +34,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     public function count()
     {
         $n = 0;
-        foreach($this->AvSubdefs as $subdefs) {
+        foreach ($this->AvSubdefs as $subdefs) {
             $n += count($subdefs);
         }
 
@@ -84,7 +84,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
             'flash' => array()
         );
 
-        if ( ! $sx_struct) {
+        if (! $sx_struct) {
             return $this;
         }
 
@@ -160,7 +160,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
             . 'subdef[@name="' . $name . '"]'
         );
 
-        for($i = 0; $i < $nodes->length; $i++) {
+        for ($i = 0; $i < $nodes->length; $i++) {
             $node = $nodes->item($i);
             $parent = $node->parentNode;
             $parent->removeChild($node);
@@ -177,7 +177,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
 
     /**
      *
-     * @param  string                   $group
+     * @param  string                   $groupname
      * @param  string                   $name
      * @param  string                   $class
      * @return databox_subdefsStructure
@@ -273,7 +273,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
 
         $refNode = null;
         if ($nodes->length > 0) {
-            for ($i = 0; $i < $nodes->length; $i ++ ) {
+            for ($i = 0; $i < $nodes->length; $i ++) {
                 $refNode = $nodes->item($i)->nextSibling;
                 $dom_group->removeChild($nodes->item($i));
             }

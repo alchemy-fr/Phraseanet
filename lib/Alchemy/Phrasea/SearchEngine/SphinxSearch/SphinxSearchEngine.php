@@ -70,7 +70,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         return $this;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -238,8 +238,8 @@ class SphinxSearchEngine implements SearchEngineInterface
                     ," . (int) $value->getDatabox_field()->isBusiness() . "
                     ," . sprintf("%u", crc32($record->get_collection()->get_coll_id() . '_' . (int) $value->getDatabox_field()->isBusiness())) . "
                     ," . $record->get_creation_date()->format('U') . "
-                    " . $sql_date_fields . "    
-                    ,(" . implode(',', $status) . ")  
+                    " . $sql_date_fields . "
+                    ,(" . implode(',', $status) . ")
                     )");
             }
         }
@@ -257,8 +257,8 @@ class SphinxSearchEngine implements SearchEngineInterface
             ," . sprintf("%u", crc32($record->get_type())) . "
             ,0
             ," . $record->get_creation_date()->format('U') . "
-            " . $sql_date_fields . "  
-            ,(" . implode(',', $status) . ") 
+            " . $sql_date_fields . "
+            ,(" . implode(',', $status) . ")
             )";
 
         $this->rt_conn->exec($sql);
@@ -316,7 +316,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $this->removeRecord($record);
         $this->addRecord($record);
-        
+
         return $this;
     }
 
@@ -375,7 +375,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $this->options = $options;
         $this->applyOptions($options);
-        
+
         return $this;
     }
 
@@ -386,7 +386,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $this->options = new SearchEngineOptions();
         $this->resetSphinx();
-        
+
         return $this;
     }
 
@@ -394,7 +394,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $this->sphinx->ResetGroupBy();
         $this->sphinx->ResetFilters();
-        
+
         return $this;
     }
 
@@ -457,7 +457,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
                         $results->add($record);
                     } catch (Exception $e) {
-                        
+
                     }
                     $resultOffset++;
                 }
@@ -526,7 +526,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * Return unique integer key for a databox
      *
-     * @param \databox $databox
+     * @param  \databox $databox
      * @return int
      */
     public function CRCdatabox(\databox $databox)
@@ -545,7 +545,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      *
      * Only apply filters and group by
      *
-     * @param SearchEngineOptions $options
+     * @param  SearchEngineOptions $options
      * @return SphinxSearch
      */
     protected function applyOptions(SearchEngineOptions $options)
@@ -689,7 +689,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * Remove all keywords, operators, quotes from a query string
      *
-     * @param string $query
+     * @param  string $query
      * @return string
      */
     private function cleanupQuery($query)
@@ -700,7 +700,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * Return a collection of suggestion corresponding a query
      *
-     * @param string $query
+     * @param  string          $query
      * @return ArrayCollection An array collection of SearchEngineSuggestion
      */
     private function getSuggestions($query)
@@ -1007,4 +1007,3 @@ class SphinxSearchEngine implements SearchEngineInterface
     }
 
 }
-

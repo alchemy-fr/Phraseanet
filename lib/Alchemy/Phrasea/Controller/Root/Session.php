@@ -45,13 +45,13 @@ class Session implements ControllerProviderInterface
     /**
      * Check session state
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function updateSession(Application $app, Request $request)
     {
-        if(!$request->isXmlHttpRequest()) {
+        if (!$request->isXmlHttpRequest()) {
             $app->abort(400);
         }
 
@@ -66,10 +66,12 @@ class Session implements ControllerProviderInterface
             $usr_id = $app['phraseanet.user']->get_id();
             if ($usr_id != $request->request->get('usr')) { // I logged with another user
                 $ret['status'] = 'disconnected';
+
                 return $app->json($ret);
             }
         } else {
             $ret['status'] = 'disconnected';
+
             return $app->json($ret);
         }
 
@@ -81,6 +83,7 @@ class Session implements ControllerProviderInterface
 
         if ($moduleId = (int) $request->request->get('module') < 1) {
             $ret['message'] = 'Missing or Invalid `module` parameter';
+
             return $app->json($ret);
         }
 
@@ -120,7 +123,6 @@ class Session implements ControllerProviderInterface
 
         return $app->json($ret);
     }
-
 
     /**
      * Prefix the method to call with the controller class name

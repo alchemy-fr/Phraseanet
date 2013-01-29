@@ -315,8 +315,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param  type         $id
-     * @param  appbox       $appbox
+     * @param Integer     $id
+     * @param Application $app
+     *
      * @return User_Adapter
      */
     public function __construct($id, Application $app)
@@ -480,7 +481,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     /**
      * Query in the cache
      *
-     * @param  unknown_type $query
+     * @param Application $app
+     * @param string      $query
+     *
      * @return boolean
      */
     public static function saveQuery(Application $app, $query)
@@ -520,8 +523,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param  string $login
-     * @return int
+     * @param Application $app
+     * @param string      $login
+     *
+     * @return integer
      */
     public static function get_usr_id_from_login(Application $app, $login)
     {
@@ -1243,7 +1248,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function get_applied_template()
     {
-
         return $this->applied_template;
     }
 
@@ -1473,7 +1477,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
             $app['EM']->flush();
         }
-
 
         $usr_id = $app['phraseanet.user']->get_id();
 

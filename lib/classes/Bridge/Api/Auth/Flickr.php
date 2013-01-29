@@ -47,7 +47,7 @@ class Bridge_Api_Auth_Flickr extends Bridge_Api_Auth_Abstract implements Bridge_
      */
     protected function get_api()
     {
-        if ( ! $this->_api) {
+        if (! $this->_api) {
             $this->_api = new Phlickr_Api(
                     $this->flickr_client_id,
                     $this->flickr_client_secret

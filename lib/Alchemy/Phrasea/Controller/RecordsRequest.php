@@ -26,10 +26,10 @@ class RecordsRequest extends ArrayCollection
     /**
      * Constructor
      *
-     * @param array $elements
+     * @param array           $elements
      * @param ArrayCollection $received
-     * @param Basket $basket
-     * @param Boolean $flatten
+     * @param Basket          $basket
+     * @param Boolean         $flatten
      */
     public function __construct(array $elements, ArrayCollection $received, Basket $basket = null, $flatten = false)
     {
@@ -184,11 +184,11 @@ class RecordsRequest extends ArrayCollection
     /**
      * Create a new RecordRequest from current request
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @param   boolean         $flattenStories
-     * @param   array           $rightsColl
-     * @param   array           $rightsDatabox
+     * @param  Application    $app
+     * @param  Request        $request
+     * @param  boolean        $flattenStories
+     * @param  array          $rightsColl
+     * @param  array          $rightsDatabox
      * @return RecordsRequest
      */
     public static function fromRequest(Application $app, Request $request, $flattenStories = false, array $rightsColl = array(), array $rightsDatabox = array())

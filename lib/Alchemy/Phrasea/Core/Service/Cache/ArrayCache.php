@@ -26,7 +26,7 @@ class ArrayCache extends ServiceAbstract
 
     public function getDriver()
     {
-        if ( ! $this->cache) {
+        if (! $this->cache) {
             $this->cache = new CacheDriver\ArrayCache();
 
             $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
@@ -40,4 +40,3 @@ class ArrayCache extends ServiceAbstract
         return 'array';
     }
 }
-

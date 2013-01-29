@@ -21,13 +21,15 @@ class connection_pdo extends connection_abstract implements connection_interface
 
     /**
      *
-     * @param  string         $name
-     * @param  string         $hostname
-     * @param  int            $port
-     * @param  string         $user
-     * @param  string         $passwd
-     * @param  string         $dbname
-     * @param  array          $options
+     * @param string  $name
+     * @param string  $hostname
+     * @param int     $port
+     * @param string  $user
+     * @param string  $passwd
+     * @param string  $dbname
+     * @param array   $options
+     * @param Boolean $debug
+     *
      * @return connection_pdo
      */
     public function __construct($name, $hostname, $port, $user, $passwd, $dbname = false, $options = array(), $debug = false)

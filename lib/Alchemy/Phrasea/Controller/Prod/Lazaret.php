@@ -401,7 +401,7 @@ class Lazaret implements ControllerProviderInterface
      * Empty lazaret
      *
      * @param Application $app
-     * @param Request $request
+     * @param Request     $request
      *
      * @return Response
      */
@@ -516,7 +516,6 @@ class Lazaret implements ControllerProviderInterface
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
-
             return new Response(null, 404);
         }
 

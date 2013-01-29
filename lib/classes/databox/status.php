@@ -190,7 +190,7 @@ class databox_status
                             $set = true;
                         }
                     }
-                    if ( ! $set) {
+                    if (! $set) {
                         $stats[$bit][] = array(
                             'sbas' => array($sbas_id),
                             'labeloff' => $props['labeloff'],
@@ -202,7 +202,7 @@ class databox_status
                     }
                 }
 
-                if ( ! $set) {
+                if (! $set) {
                     $stats[$bit] = array(
                         array(
                             'sbas' => array($sbas_id),
@@ -360,7 +360,7 @@ class databox_status
 
         $switch = in_array($switch, array('on', 'off')) ? $switch : false;
 
-        if ( ! $switch) {
+        if (! $switch) {
             return false;
         }
 
@@ -380,7 +380,7 @@ class databox_status
     {
         $switch = in_array($switch, array('on', 'off')) ? $switch : false;
 
-        if ( ! $switch) {
+        if (! $switch) {
             throw new Exception_InvalidArgument();
         }
 
