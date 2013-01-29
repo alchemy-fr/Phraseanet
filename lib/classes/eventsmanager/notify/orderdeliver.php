@@ -108,7 +108,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
                 $basket = $repository->find($params['ssel_id']);
 
                 $readyToSend = true;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
 

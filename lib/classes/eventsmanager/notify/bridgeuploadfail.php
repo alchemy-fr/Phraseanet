@@ -87,13 +87,13 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
             try {
                 $user = User_Adapter::getInstance($params['usr_id'], $this->app);
                 $account = Bridge_Account::load_account($this->app, $params['account_id']);
+                $receiver = Receiver::fromUser($user);
                 $readyToSend = true;
             } catch (\Exception $e) {
 
             }
 
             if ($readyToSend) {
-                $receiver = Receiver::fromUser($user);
                 /** ADD MAIL TEST */
                 $mail = MailInfoBridgeUploadFailed::create($this->app, $receiver);
                 $mail->setAdapter($account->get_api()->get_connector()->get_name());

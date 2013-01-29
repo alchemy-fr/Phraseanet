@@ -46,6 +46,8 @@ class Receiver implements ReceiverInterface
      * @param \User_Adapter $user
      *
      * @return Receiver
+     *
+     * @throws InvalidArgumentException In case no valid email is found for user
      */
     public static function fromUser(\User_Adapter $user)
     {

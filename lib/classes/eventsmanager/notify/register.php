@@ -124,7 +124,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
                     $admin_user = User_Adapter::getInstance($usr_id, $this->app);
                     $receiver = Receiver::fromUser($admin_user);
                     $readyToSend = true;
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     continue;
                 }
 

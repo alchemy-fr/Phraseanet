@@ -115,7 +115,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
                 try {
                     $receiver = Receiver::fromUser($user);
                     $readyToSend = true;
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     continue;
                 }
 

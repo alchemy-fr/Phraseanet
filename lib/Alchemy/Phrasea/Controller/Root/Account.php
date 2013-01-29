@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Root;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -299,14 +300,15 @@ class Account implements ControllerProviderInterface
         $token = \random::getUrlToken($app, \random::TYPE_EMAIL, $app['phraseanet.user']->get_id(), $date, $app['phraseanet.user']->get_email());
         $url = $app['phraseanet.registry']->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
 
-        $receiver = Receiver::fromUser($app['phraseanet.user']);
+        try {
+            $receiver = Receiver::fromUser($app['phraseanet.user']);
+        } catch (InvalidArgumentException $e) {
+            return $app->redirect('/account/reset-email/?notice=mail-not-send');
+        }
+
         $mail = MailRequestEmailUpdate::create($app, $receiver, null);
         $mail->setButtonUrl($url);
         $mail->setExpiration($date);
-
-        if (!$app['notification.deliverer']->deliver($mail)) {
-            return $app->redirect('/account/reset-email/?notice=mail-server');
-        }
 
         return $app->redirect('/account/reset-email/?update=mail-send');
     }

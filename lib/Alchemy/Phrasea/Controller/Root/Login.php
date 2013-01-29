@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Root;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered;
@@ -242,16 +243,24 @@ class Login implements ControllerProviderInterface
             return $app->redirect('/login/?error=user-not-found');
         }
 
-        $expire = new \DateTime('+3 days');
+        $receiver = null;
+        try {
+            $receiver = Receiver::fromUser($user);
+        } catch (InvalidArgumentException $e) {
 
-        $receiver = Receiver::fromUser($user);
-        $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+        }
 
-        $mail = MailRequestEmailConfirmation::create($app, $receiver);
-        $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
-        $mail->setExpiration($expire);
+        if ($receiver) {
+            $expire = new \DateTime('+3 days');
 
-        $app['notification.deliverer']->deliver($mail);
+            $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+
+            $mail = MailRequestEmailConfirmation::create($app, $receiver);
+            $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
+            $mail->setExpiration($expire);
+
+            $app['notification.deliverer']->deliver($mail);
+        }
 
         return $app->redirect('/login/?notice=mail-sent');
     }
@@ -287,7 +296,9 @@ class Login implements ControllerProviderInterface
 
         \random::removeToken($app, $code);
 
-        if (!\Swift_Validate::email($user->get_email())) {
+        try {
+            $receiver = Receiver::fromUser($user);
+        } catch (InvalidArgumentException $e) {
             return $app->redirect('/login/?redirect=prod&notice=invalid-email');
         }
 
@@ -295,12 +306,12 @@ class Login implements ControllerProviderInterface
         \random::removeToken($app, $code);
 
         if (count($user->ACL()->get_granted_base()) > 0) {
-            $mail = MailSuccessEmailConfirmationRegistered::create($app, Receiver::fromUser($user));
+            $mail = MailSuccessEmailConfirmationRegistered::create($app, $receiver);
             $app['notification.deliverer']->deliver($mail);
 
             return $app->redirect('/login/?redirect=prod&notice=confirm-ok');
         } else {
-            $mail = MailSuccessEmailConfirmationUnregistered::create($app, Receiver::fromUser($user));
+            $mail = MailSuccessEmailConfirmationUnregistered::create($app, $receiver);
             $app['notification.deliverer']->deliver($mail);
 
             return $app->redirect('/login/?redirect=prod&notice=confirm-ok-wait');
@@ -317,14 +328,16 @@ class Login implements ControllerProviderInterface
     public function renewPassword(Application $app, Request $request)
     {
         if (null !== $mail = $request->request->get('mail')) {
-            if (!\Swift_Validate::email($mail)) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'invalidmail')));
-            }
-
             try {
                 $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $mail), $app);
             } catch (\Exception $e) {
                 return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'noaccount')));
+            }
+
+            try {
+                $receiver = Receiver::fromUser($user);
+            } catch (InvalidArgumentException $e) {
+                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'invalidmail')));
             }
 
             $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
@@ -332,7 +345,7 @@ class Login implements ControllerProviderInterface
             if ($token) {
                 $url = $app['url_generator']->generate('login_forgot_password', array('token' => $token), true);
 
-                $mail = MailRequestEmailConfirmation::create($app, Receiver::fromUser($user));
+                $mail = MailRequestEmailConfirmation::create($app, $receiver);
                 $mail->setButtonUrl($url);
                 $app['notification.deliverer']->deliver($mail);
 
@@ -688,12 +701,18 @@ class Login implements ControllerProviderInterface
         $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
         $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
 
+        try {
+            $receiver = Receiver::fromUser($user);
+        } catch (InvalidArgumentException $e) {
+            return $app->redirect('/login/?notice=mail-not-sent');
+        }
+
         $user->set_mail_locked(true);
 
         $expire = new \DateTime('+3 days');
         $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
 
-        $mail = MailRequestEmailConfirmation::create($app, Receiver::fromUser($user));
+        $mail = MailRequestEmailConfirmation::create($app, $receiver);
         $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
         $mail->setExpiration($expire);
 

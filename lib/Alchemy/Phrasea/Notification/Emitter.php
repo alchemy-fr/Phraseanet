@@ -46,6 +46,8 @@ class Emitter implements EmitterInterface
      * @param \User_Adapter $user
      *
      * @return Emitter
+     * 
+     * @throws InvalidArgumentException In case no valid email is found for user
      */
     public static function fromUser(\User_Adapter $user)
     {

@@ -95,7 +95,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
                 $receiver = Receiver::fromUser($user_from);
                 $emitter = Emitter::fromUser($user_to);
                 $readyToSend = true;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
             }
 
