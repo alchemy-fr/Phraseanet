@@ -444,10 +444,11 @@ return call_user_func_array(function(Application $app) {
                     'default' => ''
                 ),
                 array(
-                    'type'    => \registry::TYPE_BOOLEAN,
-                    'name'    => 'GV_smtp_secure',
-                    'comment' => _('reglages:: Utiliser une conenction SSL'),
-                    'default' => false
+                    'type'      => \registry::TYPE_ENUM,
+                    'name'      => 'GV_smtp_secure',
+                    'comment'   => _('SMTP encryption'),
+                    'default'   => 'tls',
+                    'available' => array('none' => _('None'), 'ssl' => 'SSL', 'tls' => 'TLS'),
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,

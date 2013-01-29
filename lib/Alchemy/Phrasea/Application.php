@@ -209,12 +209,18 @@ class Application extends SilexApplication
                     $app['swiftmailer.transport.eventdispatcher']
                 );
 
+                $encryption = null;
+
+                if (in_array($app['phraseanet.registry']->get('GV_smtp_secure'), array('ssl', 'tls'))) {
+                    $encryption = $app['phraseanet.registry']->get('GV_smtp_secure');
+                }
+
                 $options = $app['swiftmailer.options'] = array_replace(array(
                     'host'       => $app['phraseanet.registry']->get('GV_smtp_host'),
                     'port'       => $app['phraseanet.registry']->get('GV_smtp_port'),
                     'username'   => $app['phraseanet.registry']->get('GV_smtp_user'),
                     'password'   => $app['phraseanet.registry']->get('GV_smtp_password'),
-                    'encryption' => $app['phraseanet.registry']->get('GV_smtp_secure') ? 'ssl' : null,
+                    'encryption' => $encryption,
                     'auth_mode'  => null,
                 ), $app['swiftmailer.options']);
 
