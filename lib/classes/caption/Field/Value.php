@@ -86,7 +86,7 @@ class caption_Field_Value implements cache_cacheableInterface
             $this->VocabularyId = $datas['vocabularyId'];
 
             return $this;
-        } catch (\InvalidArgumentException $e) {
+        } catch (\Exception $e) {
 
         }
 

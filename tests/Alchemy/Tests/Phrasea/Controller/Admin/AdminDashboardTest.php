@@ -57,11 +57,25 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailTest');
 
         self::$DI['client']->request('POST', '/admin/dashboard/send-mail-test/', array(
-            'email' => self::$DI['user']->get_email()
+            'email' => 'user-test@phraseanet.com'
         ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegexp('/email=/', self::$DI['client']->getResponse()->headers->get('location'));
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::sendMail
+     */
+    public function testSendMailTestWithWrongMail()
+    {
+        $this->setAdmin(true);
+
+        self::$DI['client']->request('POST', '/admin/dashboard/send-mail-test/', array(
+            'email' => 'user-test-phraseanet.com'
+        ));
+
+        $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     /**

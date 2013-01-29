@@ -309,6 +309,8 @@ class Account implements ControllerProviderInterface
         $mail->setButtonUrl($url);
         $mail->setExpiration($date);
 
+        $app['notification.deliverer']->deliver($mail);
+
         return $app->redirect('/account/reset-email/?update=mail-send');
     }
 

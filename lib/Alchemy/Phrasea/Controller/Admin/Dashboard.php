@@ -183,7 +183,7 @@ class Dashboard implements ControllerProviderInterface
             $app->abort(400, 'Bad request missing email parameter');
         };
 
-        if (\Swift_Validate::email($request->request->get('email'))) {
+        if (!\Swift_Validate::email($request->request->get('email'))) {
             $app->abort(400, 'Bad request missing email parameter');
         };
 

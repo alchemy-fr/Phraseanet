@@ -181,7 +181,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/forgot-password/?error=invalidmail', $response->headers->get('location'));
+        $this->assertEquals('/login/forgot-password/?error=noaccount', $response->headers->get('location'));
     }
 
     /**
