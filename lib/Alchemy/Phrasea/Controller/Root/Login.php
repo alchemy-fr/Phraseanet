@@ -238,22 +238,22 @@ class Login implements ControllerProviderInterface
 
         try {
             $user = \User_Adapter::getInstance((int) $usrId, $app);
-
-            $expire = new \DateTime('+3 days');
-            $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
-
-            $mail = MailRequestEmailConfirmation::create($app, Receiver::fromUser($user));
-            $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
-            $mail->setExpiration($expire);
-
-            $app['notification.deliverer']->deliver($mail);
-
-            return $app->redirect('/login/?notice=mail-sent');
         } catch (\Exception $e) {
-
+            return $app->redirect('/login/?error=user-not-found');
         }
 
-        return $app->redirect('/login/?error=user-not-found');
+        $expire = new \DateTime('+3 days');
+
+        $receiver = Receiver::fromUser($user);
+        $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+
+        $mail = MailRequestEmailConfirmation::create($app, $receiver);
+        $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
+        $mail->setExpiration($expire);
+
+        $app['notification.deliverer']->deliver($mail);
+
+        return $app->redirect('/login/?notice=mail-sent');
     }
 
     /**

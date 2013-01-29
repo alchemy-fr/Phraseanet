@@ -291,12 +291,8 @@ class Export implements ControllerProviderInterface
                 $mail->setButtonUrl($url);
                 $mail->setExpiration($endDateObject);
 
-                try {
-                    $app['notification.deliverer']->deliver($mail);
-                    unset($remaingEmails[$key]);
-                } catch (\Exception $e) {
-
-                }
+                $app['notification.deliverer']->deliver($mail);
+                unset($remaingEmails[$key]);
             }
 
             //some mails failed

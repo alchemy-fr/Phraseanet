@@ -183,18 +183,17 @@ class Dashboard implements ControllerProviderInterface
             $app->abort(400, 'Bad request missing email parameter');
         };
 
-        try {
-            $receiver = new Receiver(null, $mail);
-            $mail = MailTest::create($app, $receiver);
-            $app['notification.deliverer']->deliver($mail);
-            $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
+        if (\Swift_Validate::email($request->request->get('email'))) {
+            $app->abort(400, 'Bad request missing email parameter');
+        };
 
-            return $app->redirect('/admin/dashboard/?email=sent');
-        } catch (\Exception $e) {
+        $receiver = new Receiver(null, $mail);
+        $mail = MailTest::create($app, $receiver);
 
-        }
+        $app['notification.deliverer']->deliver($mail);
+        $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
 
-        return $app->redirect('/admin/dashboard/?email=error');
+        return $app->redirect('/admin/dashboard/?email=sent');
     }
 
     /**

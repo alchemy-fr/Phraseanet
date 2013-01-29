@@ -559,11 +559,7 @@ class Users implements ControllerProviderInterface
                                 $receiver = new Receiver(null, $row['usr_mail']);
                                 $mail = MailSuccessEmailUpdate::create($this->app, $receiver, null, $message);
 
-                                try {
-                                    $this->app['notification.deliverer']->deliver($mail);
-                                } catch (\Exception $e) {
-
-                                }
+                                $this->app['notification.deliverer']->deliver($mail);
                             }
                         }
                     }

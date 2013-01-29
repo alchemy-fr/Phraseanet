@@ -295,18 +295,16 @@ class Account implements ControllerProviderInterface
             return $app->redirect('/account/reset-email/?notice=mail-match');
         }
 
-        try {
-            $date = new \DateTime('1 day');
-            $token = \random::getUrlToken($app, \random::TYPE_EMAIL, $app['phraseanet.user']->get_id(), $date, $app['phraseanet.user']->get_email());
-            $url = $app['phraseanet.registry']->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
+        $date = new \DateTime('1 day');
+        $token = \random::getUrlToken($app, \random::TYPE_EMAIL, $app['phraseanet.user']->get_id(), $date, $app['phraseanet.user']->get_email());
+        $url = $app['phraseanet.registry']->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
 
-            $receiver = Receiver::fromUser($app['phraseanet.user']);
-            $mail = MailRequestEmailUpdate::create($app, $receiver, null);
-            $mail->setButtonUrl($url);
-            $mail->setExpiration($date);
+        $receiver = Receiver::fromUser($app['phraseanet.user']);
+        $mail = MailRequestEmailUpdate::create($app, $receiver, null);
+        $mail->setButtonUrl($url);
+        $mail->setExpiration($date);
 
-            $app['notification.deliverer']->deliver($mail);
-        } catch (\Exception $e) {
+        if (!$app['notification.deliverer']->deliver($mail)) {
             return $app->redirect('/account/reset-email/?notice=mail-server');
         }
 
