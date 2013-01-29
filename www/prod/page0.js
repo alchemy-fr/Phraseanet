@@ -201,9 +201,9 @@ function checkFilters(save)
 
     $('#sbasfiltercont select option.field_switch').hide();
 
-    $('#sbasfiltercont input:checked').removeAttr('checked');
+    $('#sbasfiltercont input.field_switch:checked').removeAttr('checked');
 
-    $('#sbasfiltercont input:checkbox').parent().hide();
+    $('#sbasfiltercont input.field_switch:checkbox').parent().hide();
 
     $('.field_filter, .status_filter, .date_filter', adv_box).removeClass('danger');
 
