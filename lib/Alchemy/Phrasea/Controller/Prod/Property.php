@@ -102,9 +102,9 @@ class Property implements ControllerProviderInterface
     /**
      *  Display Status property
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  Response
+     * @param  Application $app
+     * @param  Request     $request
+     * @return Response
      */
     public function displayStatusProperty(Application $app, Request $request)
     {
@@ -162,9 +162,9 @@ class Property implements ControllerProviderInterface
     /**
      * Display type property
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  Response
+     * @param  Application $app
+     * @param  Request     $request
+     * @return Response
      */
     public function displayTypeProperty(Application $app, Request $request)
     {
@@ -200,9 +200,9 @@ class Property implements ControllerProviderInterface
     /**
      * Change record status
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function changeStatus(Application $app, Request $request)
     {
@@ -235,8 +235,8 @@ class Property implements ControllerProviderInterface
     /**
      * Change record type
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application $app
+     * @param  Request     $request
      * @return type
      */
     public function changeType(Application $app, Request $request)
@@ -265,9 +265,9 @@ class Property implements ControllerProviderInterface
     /**
      * Set new status to selected record
      *
-     * @param   \record_adapter $record
-     * @param   array           $postStatus
-     * @return  array|null
+     * @param  \record_adapter $record
+     * @param  array           $postStatus
+     * @return array|null
      */
     private function updateRecordStatus(\record_adapter $record, Array $postStatus)
     {

@@ -160,7 +160,7 @@ class Application extends SilexApplication
 
         if ($this['debug'] === true) {
             ini_set('display_errors', 'on');
-            if($this->getEnvironment() === 'dev') {
+            if ($this->getEnvironment() === 'dev') {
                 ini_set('log_errors', 'on');
                 ini_set('error_log', __DIR__ . '/../../../logs/php_error.log');
             }
@@ -368,8 +368,8 @@ class Application extends SilexApplication
         $response = $event->getResponse();
 
         foreach ($response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY) as $cookie_domains) {
-            foreach($cookie_domains as $cookie_paths) {
-                foreach($cookie_paths as $cookie) {
+            foreach ($cookie_domains as $cookie_paths) {
+                foreach ($cookie_paths as $cookie) {
                     $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
                 }
             }
@@ -408,11 +408,12 @@ class Application extends SilexApplication
                 return $event->getRequest()->getLocale();
             }
 
-            foreach($app['bad-faith']->headerLists['accept_language']->items as $language) {
+            foreach ($app['bad-faith']->headerLists['accept_language']->items as $language) {
                 $code = $language->lang.'_'.$language->sublang;
-                if(isset($languages[$code])) {
+                if (isset($languages[$code])) {
 
                     $event->getRequest()->setLocale($code);
+
                     return $event->getRequest()->getLocale();
                     break;
                 }
@@ -499,8 +500,8 @@ class Application extends SilexApplication
     /**
      * Open user session
      *
-     * @param \Session_Authentication_Interface $auth
-     * @param integer $ses_id use previous phrasea session id
+     * @param  \Session_Authentication_Interface $auth
+     * @param  integer                           $ses_id use previous phrasea session id
      * @throws \Exception_InternalServerError
      */
     public function openAccount(\Session_Authentication_Interface $auth, $ses_id = null)
@@ -651,4 +652,3 @@ class Application extends SilexApplication
         $this->sessionCookieEnabled = false;
     }
 }
-

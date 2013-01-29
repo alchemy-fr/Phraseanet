@@ -28,6 +28,7 @@ class Probe31 implements ProbeInterface
         /**
          * We can not use registry to inject a path as the install is not yet done
          */
+
         return is_file(__DIR__ . "/../../../../../../config/connexion.inc")
             && is_file(__DIR__ . "/../../../../../../config/_GV.php");
     }

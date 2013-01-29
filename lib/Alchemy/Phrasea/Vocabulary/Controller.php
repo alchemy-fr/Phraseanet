@@ -27,9 +27,9 @@ class Controller
     /**
      * Factory of ControlProvider
      *
-     * @param string $type
+     * @param  string                                                               $type
      * @return \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface
-     * @throws \Exception when ControlProvider is not found
+     * @throws \Exception                                                           when ControlProvider is not found
      */
     public static function get(Application $app, $type)
     {

@@ -48,7 +48,7 @@ class BorderManager extends ServiceAbstract
 
         $registeredCheckers = array();
 
-        if ( ! ! $options['enabled']) {
+        if (! ! $options['enabled']) {
             foreach ($options['checkers'] as $checker) {
 
                 if ( ! isset($checker['type'])) {

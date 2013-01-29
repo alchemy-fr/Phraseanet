@@ -71,6 +71,7 @@ class RecordAdd extends Command
 
         if (strtolower($continue) !== 'y') {
             $output->writeln('Aborted !');
+
             return;
         }
 

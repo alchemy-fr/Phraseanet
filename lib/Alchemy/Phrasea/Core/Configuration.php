@@ -42,12 +42,12 @@ class Configuration
     /**
      *
      * @param  ApplicationSpecification $specifications
-     * @param  type                                   $environment
+     * @param  type                     $environment
      * @return Configuration
      */
     public static function build($specifications = null, $environment = null)
     {
-        if ( ! $specifications) {
+        if (! $specifications) {
             $specifications = new ApplicationSpecification();
         }
 
@@ -56,8 +56,8 @@ class Configuration
 
     /**
      *
-     * @param  SpecificationInterface         $specifications
-     * @param  type                                $environment
+     * @param  SpecificationInterface $specifications
+     * @param  type                   $environment
      * @return Configuration
      */
     public function __construct(SpecificationInterface $specifications, $environment = null)
@@ -104,7 +104,6 @@ class Configuration
      */
     public function getEnvironnement()
     {
-
         return $this->environment;
     }
 

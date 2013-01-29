@@ -44,7 +44,7 @@ class SearchEngineLogger
         ));
 
         $stmt->closeCursor();
-        
+
         return $this;
     }
 

@@ -45,8 +45,7 @@ class Multi implements OptionType
             $this->available[$k] = false;
         }
 
-        if ( ! $value) {
-
+        if (! $value) {
             return $this;
         }
 

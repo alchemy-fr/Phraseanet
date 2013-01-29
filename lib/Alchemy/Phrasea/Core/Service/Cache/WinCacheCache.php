@@ -32,7 +32,7 @@ class WinCacheCache extends ServiceAbstract
             throw new \Exception('The WinCache cache requires the WinCache extension.');
         }
 
-        if ( ! $this->cache) {
+        if (! $this->cache) {
             $this->cache = new CacheDriver\WinCacheCache();
 
             $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
@@ -46,4 +46,3 @@ class WinCacheCache extends ServiceAbstract
         return 'wincache';
     }
 }
-

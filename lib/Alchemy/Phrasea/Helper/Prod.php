@@ -29,7 +29,7 @@ class Prod extends Helper
 
         $bases = $fields = $dates = array();
 
-        if ( ! $this->app['phraseanet.user'] instanceof \User_Adapter) {
+        if (! $this->app['phraseanet.user'] instanceof \User_Adapter) {
             return $search_datas;
         }
 
@@ -80,7 +80,7 @@ class Prod extends Helper
                 }
             }
 
-            if ( ! $bases[$sbas_id]['thesaurus']) {
+            if (! $bases[$sbas_id]['thesaurus']) {
                 continue;
             }
             if ( ! $this->app['phraseanet.user']->ACL()->has_right_on_sbas($sbas_id, 'bas_modif_th')) {

@@ -136,7 +136,7 @@ class Tooltip implements ControllerProviderInterface
 
         try {
             $document = $record->get_subdef('document');
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $document = null;
         }
 

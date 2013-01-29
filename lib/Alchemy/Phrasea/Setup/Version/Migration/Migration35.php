@@ -75,7 +75,6 @@ class Migration35 implements MigrationInterface
         rename(__DIR__ . '/../../../../../../config/connexion.inc', __DIR__ . '/../../../../../../config/connexion.inc.old');
         rename(__DIR__ . '/../../../../../../config/config.inc', __DIR__ . '/../../../../../../config/config.inc.old');
 
-
         $this->app['phraseanet.configuration']->setConfigurations($configs);
         $this->app['phraseanet.configuration']->setEnvironnement('prod');
     }

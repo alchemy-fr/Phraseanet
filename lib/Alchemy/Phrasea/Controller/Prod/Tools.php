@@ -129,7 +129,6 @@ class Tools implements ControllerProviderInterface
                     $tempoFile = $tempoFile . DIRECTORY_SEPARATOR . $fileName;
                     copy($file->getPathname(), $tempoFile);
 
-
                     try {
                         $record = new \record_adapter(
                                 $app,

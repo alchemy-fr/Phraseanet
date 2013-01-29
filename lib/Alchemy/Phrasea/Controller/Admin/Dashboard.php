@@ -121,9 +121,9 @@ class Dashboard implements ControllerProviderInterface
     /**
      * Display admin dashboard page
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  Response
+     * @param  Application $app
+     * @param  Request     $request
+     * @return Response
      */
     public function slash(Application $app, Request $request)
     {
@@ -157,14 +157,13 @@ class Dashboard implements ControllerProviderInterface
     /**
      * Flush all cash services
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  RedirectResponse
+     * @param  Application      $app
+     * @param  Request          $request
+     * @return RedirectResponse
      */
     public function flush(Application $app, Request $request)
     {
         if ($app['phraseanet.cache-service']->flushAll()) {
-
             return $app->redirect('/admin/dashboard/?flush_cache=ok');
         }
 
@@ -174,9 +173,9 @@ class Dashboard implements ControllerProviderInterface
     /**
      * Test a mail address
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  RedirectResponse
+     * @param  Application      $app
+     * @param  Request          $request
+     * @return RedirectResponse
      */
     public function sendMail(Application $app, Request $request)
     {
@@ -205,9 +204,9 @@ class Dashboard implements ControllerProviderInterface
     /**
      * Reset admin rights
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  RedirectResponse
+     * @param  Application      $app
+     * @param  Request          $request
+     * @return RedirectResponse
      */
     public function resetAdminRights(Application $app, Request $request)
     {
@@ -219,9 +218,9 @@ class Dashboard implements ControllerProviderInterface
     /**
      * Grant to an user admin rights
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  RedirectResponse
+     * @param  Application      $app
+     * @param  Request          $request
+     * @return RedirectResponse
      */
     public function addAdmins(Application $app, Request $request)
     {

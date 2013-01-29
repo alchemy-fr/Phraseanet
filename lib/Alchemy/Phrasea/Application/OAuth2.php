@@ -83,7 +83,6 @@ return call_user_func(function($environment = 'prod') {
 
                     $app->openAccount($auth);
                 } catch (\Exception $e) {
-
                     return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
                 }
             } else {

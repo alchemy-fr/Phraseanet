@@ -68,9 +68,9 @@ class Preferences implements ControllerProviderInterface
     /**
      *  Save temporary user preferences
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function saveTemporaryPref(Application $app, Request $request)
     {
@@ -95,9 +95,9 @@ class Preferences implements ControllerProviderInterface
     /**
      *  Save user preferenes
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function saveUserPref(Application $app, Request $request)
     {

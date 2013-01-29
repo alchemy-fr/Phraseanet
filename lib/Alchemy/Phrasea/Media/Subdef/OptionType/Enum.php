@@ -39,7 +39,7 @@ class Enum implements OptionType
 
     public function setValue($value)
     {
-        if ( ! $value) {
+        if (! $value) {
             $this->value = null;
 
             return $this;

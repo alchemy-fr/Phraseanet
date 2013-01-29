@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class ConnectedUsers implements ControllerProviderInterface
 {
@@ -26,7 +25,6 @@ class ConnectedUsers implements ControllerProviderInterface
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('Admin');
         });
-
 
         $controllers->get('/', $this->call('listConnectedUsers'));
 
@@ -74,7 +72,7 @@ class ConnectedUsers implements ControllerProviderInterface
     /**
      * Return module name according to its ID
      *
-     * @param integer $appId
+     * @param  integer $appId
      * @return string
      * @return null
      */

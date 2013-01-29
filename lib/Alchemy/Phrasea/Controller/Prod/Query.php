@@ -88,9 +88,9 @@ class Query implements ControllerProviderInterface
     /**
      * Query Phraseanet to fetch records
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function query(Application $app, Request $request)
     {
@@ -244,9 +244,9 @@ class Query implements ControllerProviderInterface
     /**
      * Get a preview answer train
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function queryAnswerTrain(Application $app, Request $request)
     {
@@ -277,9 +277,9 @@ class Query implements ControllerProviderInterface
     /**
      * Get a preview reg train
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  Response
+     * @param  Application $app
+     * @param  Request     $request
+     * @return Response
      */
     public function queryRegTrain(Application $app, Request $request)
     {

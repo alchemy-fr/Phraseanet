@@ -77,9 +77,9 @@ class Setup implements ControllerProviderInterface
     /**
      * Display global values
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  Response
+     * @param  Application $app
+     * @param  Request     $request
+     * @return Response
      */
     public function getGlobals(Application $app, Request $request)
     {
@@ -103,9 +103,9 @@ class Setup implements ControllerProviderInterface
     /**
      * Submit global values
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  RedirectResponse
+     * @param  Application      $app
+     * @param  Request          $request
+     * @return RedirectResponse
      */
     public function postGlobals(Application $app, Request $request)
     {

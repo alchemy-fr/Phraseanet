@@ -131,8 +131,8 @@ class SearchEngineOptions
 
     /**
      *
-     * @param  const                $sort_by
-     * @param  const                $sort_ord
+     * @param  const               $sort_by
+     * @param  const               $sort_ord
      * @return SearchEngineOptions
      */
     public function setSort($sort_by, $sort_ord = self::SORT_MODE_DESC)
@@ -146,7 +146,7 @@ class SearchEngineOptions
     /**
      * Allows business fields query on the given collections
      *
-     * @param array $collection An array of collection
+     * @param  array               $collection An array of collection
      * @return SearchEngineOptions
      */
     public function allowBusinessFieldsOn(Array $collection)
@@ -202,7 +202,7 @@ class SearchEngineOptions
     /**
      * Tells whether to use stemming or not
      *
-     * @param  boolean              $boolean
+     * @param  boolean             $boolean
      * @return SearchEngineOptions
      */
     public function setStemming($boolean)
@@ -225,7 +225,7 @@ class SearchEngineOptions
     /**
      * Set document type to search for
      *
-     * @param  int                  $search_type
+     * @param  int                 $search_type
      * @return SearchEngineOptions
      */
     public function setSearchType($search_type)
@@ -256,7 +256,7 @@ class SearchEngineOptions
     /**
      * Set the collections where to search for
      *
-     * @param array $collections An array of collection
+     * @param  array               $collections An array of collection
      * @return SearchEngineOptions
      */
     public function onCollections(Array $collections)
@@ -295,7 +295,7 @@ class SearchEngineOptions
 
     /**
      *
-     * @param  array                $fields An array of Databox fields
+     * @param array $fields An array of Databox fields
      */
     public function setFields(Array $fields)
     {
@@ -315,7 +315,7 @@ class SearchEngineOptions
 
     /**
      *
-     * @param  array                $status
+     * @param  array               $status
      * @return SearchEngineOptions
      */
     public function setStatus(Array $status)
@@ -353,7 +353,7 @@ class SearchEngineOptions
 
     /**
      *
-     * @param  string               $record_type
+     * @param  string              $record_type
      * @return SearchEngineOptions
      */
     public function setRecordType($record_type)
@@ -417,7 +417,7 @@ class SearchEngineOptions
 
     /**
      *
-     * @param  string               $max_date
+     * @param  string              $max_date
      * @return SearchEngineOptions
      */
     public function setMaxDate(\DateTime $max_date = null)
@@ -442,7 +442,7 @@ class SearchEngineOptions
 
     /**
      *
-     * @param  array                $fields
+     * @param  array               $fields
      * @return SearchEngineOptions
      */
     public function setDateFields(Array $fields)
@@ -491,7 +491,7 @@ class SearchEngineOptions
 
     /**
      *
-     * @param  string               $serialized
+     * @param  string              $serialized
      * @return SearchEngineOptions
      */
     public static function hydrate(Application $app, $serialized)
@@ -603,7 +603,7 @@ class SearchEngineOptions
      * Creates options based on a Symfony Request object
      *
      * @param Application $app
-     * @param Request $request
+     * @param Request     $request
      *
      * @return SearchEngineOptions
      */
@@ -613,7 +613,6 @@ class SearchEngineOptions
 
         $options->disallowBusinessFields();
         $options->setLocale($app['locale.I18n']);
-
 
         if (is_array($request->get('bases'))) {
             $bas = array_map(function($base_id) use ($app) {
@@ -669,7 +668,7 @@ class SearchEngineOptions
 
         $options->setFields($databoxFields);
         $options->setStatus($status);
-        
+
         $options->onCollections($bas);
 
         $options->setSearchType($request->get('search_type'));

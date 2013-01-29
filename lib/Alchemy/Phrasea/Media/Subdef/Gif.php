@@ -40,7 +40,7 @@ class Gif extends Image
 
     public function getMediaAlchemystSpec()
     {
-        if ( ! $this->spec) {
+        if (! $this->spec) {
             $this->spec = new \MediaAlchemyst\Specification\Animation();
         }
 

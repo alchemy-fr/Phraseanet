@@ -29,7 +29,7 @@ class XcacheCache extends ServiceAbstract
             throw new \Exception('The XCache cache requires the XCache extension.');
         }
 
-        if ( ! $this->cache) {
+        if (! $this->cache) {
             $this->cache = new CacheDriver\XcacheCache();
 
             $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
