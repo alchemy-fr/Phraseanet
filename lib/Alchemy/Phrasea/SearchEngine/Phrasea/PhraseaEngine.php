@@ -131,7 +131,7 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function hasStemming()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -530,7 +530,7 @@ class PhraseaEngine implements SearchEngineInterface
                     , $this->options->getSearchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
                     , $sort
                     , $BF
-                    , $this->options->getLocale()
+                    , $this->options->isStemmed() ? $this->options->getLocale() : null
             );
 
             if ($results) {
