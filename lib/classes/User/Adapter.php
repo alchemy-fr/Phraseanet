@@ -1463,10 +1463,15 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         if (!$session->hasModuleId($app_id)) {
             $module = new \Entities\SessionModule();
+
             $module->setModuleId($app_id);
             $module->setSession($session);
+            $session->addSessionModule($module);
+
             $app['EM']->persist($module);
             $app['EM']->persist($session);
+
+            $app['EM']->flush();
         }
 
 

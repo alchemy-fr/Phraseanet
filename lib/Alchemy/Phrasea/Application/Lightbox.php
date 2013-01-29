@@ -276,7 +276,9 @@ class Lightbox implements ControllerProviderInterface
             $response->setCharset('UTF-8');
 
             return $response;
-        })->assert('ssel_id', '\d+');
+        })
+        ->assert('ssel_id', '\d+')
+        ->bind('lightbox_compare')    ;
 
         $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
 

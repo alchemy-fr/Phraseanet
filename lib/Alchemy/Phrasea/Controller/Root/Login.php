@@ -14,6 +14,11 @@ namespace Alchemy\Phrasea\Controller\Root;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -234,14 +239,30 @@ class Login implements ControllerProviderInterface
 
         try {
             $user = \User_Adapter::getInstance((int) $usrId, $app);
-            $email = $user->get_email();
-
-            if (true === \mail::mail_confirmation($app, $email, $usrId)) {
-                return $app->redirect('/login/?notice=mail-sent');
-            }
         } catch (\Exception $e) {
             return $app->redirect('/login/?error=user-not-found');
         }
+
+        $receiver = null;
+        try {
+            $receiver = Receiver::fromUser($user);
+        } catch (InvalidArgumentException $e) {
+
+        }
+
+        if ($receiver) {
+            $expire = new \DateTime('+3 days');
+
+            $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+
+            $mail = MailRequestEmailConfirmation::create($app, $receiver);
+            $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
+            $mail->setExpiration($expire);
+
+            $app['notification.deliverer']->deliver($mail);
+        }
+
+        return $app->redirect('/login/?notice=mail-sent');
     }
 
     /**
@@ -275,31 +296,25 @@ class Login implements ControllerProviderInterface
 
         \random::removeToken($app, $code);
 
-        if (\PHPMailer::ValidateAddress($user->get_email())) {
-            if (count($user->ACL()->get_granted_base()) > 0) {
-                \mail::mail_confirm_registered($app, $user->get_email());
-            }
+        try {
+            $receiver = Receiver::fromUser($user);
+        } catch (InvalidArgumentException $e) {
+            return $app->redirect('/login/?redirect=prod&notice=invalid-email');
+        }
 
-            $user->set_mail_locked(false);
-            \random::removeToken($app, $code);
+        $user->set_mail_locked(false);
+        \random::removeToken($app, $code);
 
-            $appboxRegister = new \appbox_register($app['phraseanet.appbox']);
-
-            $list = $appboxRegister->get_collection_awaiting_for_user($app, $user);
-
-            if (count($list) > 0) {
-                $others = array();
-
-                foreach ($list as $collection) {
-                    $others[] = $collection->get_name();
-                }
-
-                \mail::mail_confirm_unregistered($app, $user->get_email(), $others);
-
-                return $app->redirect('/login/?redirect=prod&notice=confirm-ok-wait');
-            }
+        if (count($user->ACL()->get_granted_base()) > 0) {
+            $mail = MailSuccessEmailConfirmationRegistered::create($app, $receiver);
+            $app['notification.deliverer']->deliver($mail);
 
             return $app->redirect('/login/?redirect=prod&notice=confirm-ok');
+        } else {
+            $mail = MailSuccessEmailConfirmationUnregistered::create($app, $receiver);
+            $app['notification.deliverer']->deliver($mail);
+
+            return $app->redirect('/login/?redirect=prod&notice=confirm-ok-wait');
         }
     }
 
@@ -313,14 +328,16 @@ class Login implements ControllerProviderInterface
     public function renewPassword(Application $app, Request $request)
     {
         if (null !== $mail = $request->request->get('mail')) {
-            if (!\PHPMailer::ValidateAddress($mail)) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'invalidmail')));
-            }
-
             try {
                 $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $mail), $app);
             } catch (\Exception $e) {
                 return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'noaccount')));
+            }
+
+            try {
+                $receiver = Receiver::fromUser($user);
+            } catch (InvalidArgumentException $e) {
+                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'invalidmail')));
             }
 
             $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
@@ -328,11 +345,11 @@ class Login implements ControllerProviderInterface
             if ($token) {
                 $url = $app['url_generator']->generate('login_forgot_password', array('token' => $token), true);
 
-                if (\mail::forgot_passord($app, $mail, $user->get_login(), $url)) {
-                    return $app->redirect($app['url_generator']->generate('login_forgot_password', array('sent' => 'ok')));
-                } else {
-                    return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'mailserver')));
-                }
+                $mail = MailRequestEmailConfirmation::create($app, $receiver);
+                $mail->setButtonUrl($url);
+                $app['notification.deliverer']->deliver($mail);
+
+                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('sent' => 'ok')));
             }
         }
 
@@ -573,7 +590,7 @@ class Login implements ControllerProviderInterface
             $needed['form_password'] = 'pass-invalid';
         }
 
-        if (false === \PHPMailer::ValidateAddress($email = $request->request->get('form_email'))) {
+        if (false === \Swift_Validate::email($email = $request->request->get('form_email'))) {
             $needed['form_email'] = 'mail-invalid';
         }
 
@@ -630,71 +647,78 @@ class Login implements ControllerProviderInterface
             }
         }
 
-        try {
-            $user = \User_Adapter::create($app, $request->request->get('form_login'), $request->request->get("form_password"), $request->request->get("form_email"), false);
+        $user = \User_Adapter::create($app, $request->request->get('form_login'), $request->request->get("form_password"), $request->request->get("form_email"), false);
 
-            $user->set_gender($request->request->get('form_gender'))
-                ->set_firstname($request->request->get('form_firstname'))
-                ->set_lastname($request->request->get('form_lastname'))
-                ->set_address($request->request->get('form_address'))
-                ->set_zip($request->request->get('form_zip'))
-                ->set_tel($request->request->get('form_phone'))
-                ->set_fax($request->request->get('form_fax'))
-                ->set_job($request->request->get('form_job'))
-                ->set_company($request->request->get('form_company'))
-                ->set_position($request->request->get('form_activity'))
-                ->set_geonameid($request->request->get('form_geonameid'));
+        $user->set_gender($request->request->get('form_gender'))
+            ->set_firstname($request->request->get('form_firstname'))
+            ->set_lastname($request->request->get('form_lastname'))
+            ->set_address($request->request->get('form_address'))
+            ->set_zip($request->request->get('form_zip'))
+            ->set_tel($request->request->get('form_phone'))
+            ->set_fax($request->request->get('form_fax'))
+            ->set_job($request->request->get('form_job'))
+            ->set_company($request->request->get('form_company'))
+            ->set_position($request->request->get('form_activity'))
+            ->set_geonameid($request->request->get('form_geonameid'));
 
-            $demandOK = array();
+        $demandOK = array();
 
-            if (!!$app['phraseanet.registry']->get('GV_autoregister')) {
+        if (!!$app['phraseanet.registry']->get('GV_autoregister')) {
 
-                $template_user_id = \User_Adapter::get_usr_id_from_login($app, 'autoregister');
+            $template_user_id = \User_Adapter::get_usr_id_from_login($app, 'autoregister');
 
-                $template_user = \User_Adapter::getInstance($template_user_id, $app);
+            $template_user = \User_Adapter::getInstance($template_user_id, $app);
 
-                $base_ids = array();
+            $base_ids = array();
 
-                foreach (array_keys($inscOK) as $base_id) {
-                    $base_ids[] = $base_id;
-                }
-                $user->ACL()->apply_model($template_user, $base_ids);
+            foreach (array_keys($inscOK) as $base_id) {
+                $base_ids[] = $base_id;
             }
-
-            $autoReg = $user->ACL()->get_granted_base();
-
-            $appbox_register = new \appbox_register($app['phraseanet.appbox']);
-
-            foreach ($demands as $base_id) {
-                if (false === $inscOK[$base_id] || $user->ACL()->has_access_to_base($base_id)) {
-                    continue;
-                }
-
-                $collection = \collection::get_from_base_id($app, $base_id);
-                $appbox_register->add_request($user, $collection);
-                unset($collection);
-                $demandOK[$base_id] = true;
-            }
-
-            $params = array(
-                'demand'       => $demandOK,
-                'autoregister' => $autoReg,
-                'usr_id'       => $user->get_id()
-            );
-
-            $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
-            $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
-
-            $user->set_mail_locked(true);
-            if (true === \mail::mail_confirmation($app, $user->get_email(), $user->get_id())) {
-
-                return $app->redirect('/login/?notice=mail-sent');
-            }
-
-            return $app->redirect(sprintf('/login/?usr=%d', $user->get_id()));
-        } catch (\Exception $e) {
-            return $app->redirect('/login/?error=unexpected');
+            $user->ACL()->apply_model($template_user, $base_ids);
         }
+
+        $autoReg = $user->ACL()->get_granted_base();
+
+        $appbox_register = new \appbox_register($app['phraseanet.appbox']);
+
+        foreach ($demands as $base_id) {
+            if (false === $inscOK[$base_id] || $user->ACL()->has_access_to_base($base_id)) {
+                continue;
+            }
+
+            $collection = \collection::get_from_base_id($app, $base_id);
+            $appbox_register->add_request($user, $collection);
+            unset($collection);
+            $demandOK[$base_id] = true;
+        }
+
+        $params = array(
+            'demand'       => $demandOK,
+            'autoregister' => $autoReg,
+            'usr_id'       => $user->get_id()
+        );
+
+        $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
+        $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
+
+        try {
+            $receiver = Receiver::fromUser($user);
+        } catch (InvalidArgumentException $e) {
+            return $app->redirect('/login/?notice=mail-not-sent');
+        }
+
+        $user->set_mail_locked(true);
+
+        $expire = new \DateTime('+3 days');
+        $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+
+        $mail = MailRequestEmailConfirmation::create($app, $receiver);
+        $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
+        $mail->setExpiration($expire);
+
+        $app['notification.deliverer']->deliver($mail);
+
+        return $app->redirect('/login/?notice=mail-sent');
     }
 
     /**
@@ -709,9 +733,9 @@ class Login implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
 
         $app->closeAccount();
-        
+
         $appRedirect = $request->query->get("app");
-        
+
         $response = new RedirectResponse("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=%s", ltrim($appRedirect, '/')) : ""));
 
         $response->headers->removeCookie('persistent');

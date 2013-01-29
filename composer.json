@@ -8,7 +8,6 @@
         "php": ">=5.3.3",
         "alchemy/oauth2php": "master",
         "alchemy/phlickr": "master",
-        "alchemy/phpmailer": "master",
         "dailymotion/sdk": "*",
         "data-uri/data-uri": "dev-master",
         "doctrine/orm": "2.2.2",

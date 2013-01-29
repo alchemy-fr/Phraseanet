@@ -21,7 +21,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\MimeType\FileBinaryMimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * Upload controller collection
@@ -303,7 +302,7 @@ class Upload implements ControllerProviderInterface
 
         foreach ($user->ACL()->get_granted_base(array('canaddrecord')) as $collection) {
             $databox = $collection->get_databox();
-             
+
             if ( ! isset($collections[$databox->get_sbas_id()])) {
                 $collections[$databox->get_sbas_id()] = array(
                     'databox'             => $databox,

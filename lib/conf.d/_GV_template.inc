@@ -2,7 +2,7 @@
 
 use Alchemy\Phrasea\Application;
 
-return call_user_func(function($app) {
+return call_user_func_array(function(Application $app) {
 
     $avLanguages = Application::getAvailableLanguages();
 
@@ -179,26 +179,6 @@ return call_user_func(function($app) {
                     'comment'  => _('reglages:: Authoriser l\'application smartphone *Phraseanet Navigator* a se connecter sur cette instance'),
                     'default'  => false,
                     'required' => true
-                )
-            )
-        ), array(
-            'section' => _('GV::section:: Gestionnaire d\'evenements'),
-            'vars'    => array(
-                array(
-                    'type'      => \registry::TYPE_ENUM_MULTI,
-                    'name'      => 'GV_events',
-                    'default'   => null,
-                    'comment'   => _('reglages:: Evenements'),
-//                    'available' => $app['events-manager']->list_all('event'),
-//                    'default'   => array_keys($app['events-manager']->list_all('event'))
-                ),
-                array(
-                    'type'      => \registry::TYPE_ENUM_MULTI,
-                    'name'      => 'GV_notifications',
-                    'default'   => null,
-                    'comment'   => _('reglages:: Notifications'),
-//                    'available' => $app['events-manager']->list_all('notify'),
-//                    'default'   => array_keys($app['events-manager']->list_all('notify'))
                 )
             )
         ), array(
@@ -432,6 +412,12 @@ return call_user_func(function($app) {
                     'name'    => 'GV_defaulmailsenderaddr',
                     'comment' => _('reglages:: Expediteur mail par defaut'),
                     'default' => 'phraseanet@example.com'
+                ),
+                array(
+                    'type'    => \registry::TYPE_STRING,
+                    'name'    => 'GV_email_prefix',
+                    'comment' => _('Prefix for notification emails'),
+                    'default' => ''
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,

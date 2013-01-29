@@ -63,6 +63,14 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         self::$DI['app']['phraseanet.user']->ACL()->update_rights_to_base(self::$DI['record_1']->get_base_id(), array('order_master' => true));
 
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
+            ->method('deliver')
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewOrder'), $this->equalTo(null));
+
         return \set_order::create(
                 self::$DI['app'], new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$DI['user_alt2'], 'I need this photos', new \DateTime('+10 minutes')
         );

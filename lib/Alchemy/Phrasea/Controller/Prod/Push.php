@@ -507,7 +507,7 @@ class Push implements ControllerProviderInterface
                 if (!$request->request->get('email'))
                     throw new ControllerException(_('Email is required'));
 
-                if (!\mail::validateEmail($request->request->get('email')))
+                if (!\Swift_Validate::email($request->request->get('email')))
                     throw new ControllerException(_('Email is invalid'));
             } catch (ControllerException $e) {
                 $result['message'] = $e->getMessage();

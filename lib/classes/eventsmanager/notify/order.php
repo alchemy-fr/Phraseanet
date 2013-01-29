@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailInfoNewOrder;
+
 /**
  *
  *
@@ -98,26 +101,34 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
         $datas = $dom_xml->saveXml();
 
+        try {
+            $orderInitiator = User_Adapter::getInstance($params['usr_id'], $this->app);
+        } catch (\Exception $e) {
+            return;
+        }
+
         foreach ($users as $user) {
-            $usr_id = $user->get_id();
             $mailed = false;
 
-            $send_notif = ($this->get_prefs(__CLASS__, $usr_id) != '0');
-            if ($send_notif) {
-                $dest = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
+            if ($this->shouldSendNotificationFor($user->get_id())) {
+                $readyToSend = false;
+                try {
+                    $receiver = Receiver::fromUser($user);
+                    $readyToSend = true;
+                } catch (\Exception $e) {
+                    continue;
+                }
 
-                $to = array('email' => $user->get_email(), 'name'  => $dest);
-                $from = array(
-                    'email' => $this->app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
-                    'name'  => $this->app['phraseanet.registry']->get('GV_homeTitle')
-                );
+                if ($readyToSend) {
+                    $mail = MailInfoNewOrder::create($this->app, $receiver);
+                    $mail->setUser($orderInitiator);
 
-                if (self::mail($to, $from, $datas)) {
+                    $this->app['notification.deliverer']->deliver($mail);
                     $mailed = true;
                 }
             }
 
-            $this->broker->notify($usr_id, __CLASS__, $datas, $mailed);
+            $this->broker->notify($user->get_id(), __CLASS__, $datas, $mailed);
         }
 
         return;
@@ -171,62 +182,6 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
     public function get_description()
     {
         return _('Recevoir des notifications lorsqu\'un utilisateur commande des documents');
-    }
-
-    /**
-     *
-     * @param  Array   $to
-     * @param  Array   $from
-     * @param  Array   $datas
-     * @return boolean
-     */
-    public function mail($to, $from, $datas)
-    {
-        $subject = sprintf(_('admin::register: Nouvelle commande sur %s')
-            , $this->app['phraseanet.registry']->get('GV_homeTitle'));
-
-        $body = "<div>"
-            . _('admin::register: un utilisateur a commande des documents')
-            . "</div>\n";
-
-        $sx = simplexml_load_string($datas);
-
-        $usr_id = (string) $sx->usr_id;
-
-        try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
-        } catch (Exception $e) {
-            return false;
-        }
-
-        $body .= "<br/>\n<div>Login : "
-            . $registered_user->get_login() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur nom')
-            . " : " . $registered_user->get_firstname() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur prenom')
-            . " : " . $registered_user->get_lastname() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur email')
-            . " : " . $registered_user->get_email() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur adresse')
-            . " : " . $registered_user->get_address() . "</div>\n";
-        $body .= "<div>" . $registered_user->get_city()
-            . " " . $registered_user->get_zipcode() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur telephone')
-            . " : " . $registered_user->get_tel() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur fax')
-            . " : " . $registered_user->get_fax() . "</div>\n";
-        $body .= "<div>" . _('admin::compte-utilisateur poste')
-            . "/" . _('admin::compte-utilisateur societe')
-            . " " . $registered_user->get_job()
-            . " " . $registered_user->get_company() . "</div>\n";
-
-        $base_ids = $sx->base_ids;
-
-        $body .= "<br/>\n<div>"
-            . _('Retrouvez son bon de commande dans l\'interface')
-            . "</div>\n";
-
-        return mail::send_mail($this->app, $subject, $body, $to, $from);
     }
 
     /**

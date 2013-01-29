@@ -125,7 +125,7 @@ class Root implements ControllerProviderInterface
                 'thesau_json_bas2sbas' => json_encode($bas2sbas),
                 'thesau_languages'     => $app->getAvailableLanguages(),
             ));
-        });
+        })->bind('prod');
 
         return $controllers;
     }

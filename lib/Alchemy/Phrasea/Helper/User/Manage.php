@@ -11,7 +11,11 @@
 
 namespace Alchemy\Phrasea\Helper\User;
 
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Helper\Helper;
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
 
 /**
  *
@@ -146,7 +150,7 @@ class Manage extends Helper
     {
         $email = $this->request->get('value');
 
-        if (!\mail::validateEmail($email)) {
+        if ( ! \Swift_Validate::email($email)) {
             throw new \Exception_InvalidArgument(_('Invalid mail address'));
         }
 
@@ -163,17 +167,36 @@ class Manage extends Helper
 
             $createdUser = \User_Adapter::create($this->app, $email, \random::generatePassword(16), $email, false, false);
             /* @var $createdUser \User_Adapter */
+
+            $receiver = null;
+            try {
+                $receiver = Receiver::fromUser($createdUser);
+            } catch (InvalidArgumentException $e) {
+
+            }
+
             if ($validateMail) {
                 $createdUser->set_mail_locked(true);
-                \mail::mail_confirmation($this->app, $email, $createdUser->get_id());
+
+                if ($receiver) {
+                    $expire = new \DateTime('+3 days');
+                    $token = \random::getUrlToken($this->app, \random::TYPE_PASSWORD, $createdUser->get_id(), $expire, $createdUser->get_email());
+
+                    $mail = MailRequestPasswordSetup::create($this->app, $receiver);
+                    $mail->setButtonUrl($this->app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
+                    $mail->setExpiration($expire);
+
+                    $this->app['notification.deliverer']->deliver($mail);
+                }
             }
 
             if ($sendCredentials) {
                 $urlToken = \random::getUrlToken($this->app, \random::TYPE_PASSWORD, $createdUser->get_id());
 
-                if (false !== $urlToken) {
-                    $url =  $this->app['url_generator']->generate('login_forgot_password', array('token' => $urlToken), true);
-                    \mail::send_credentials($this->app, $url, $createdUser->get_login(), $createdUser->get_email());
+                if ($receiver && false !== $urlToken) {
+                    $mail = MailSuccessEmailConfirmationUnregistered::create($this->app, $receiver);
+                    $mail->setButtonUrl($this->app['url_generator']->generate('login_forgot_password', array('token' => $urlToken), true));
+                    $this->app['notification.deliverer']->deliver($mail);
                 }
             }
 
