@@ -16,15 +16,16 @@ use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoPushReceived extends AbstractMailWithLink
 {
+    /** @var Basket */
     private $basket;
+    /** @var \User_Adapter */
     private $pusher;
-    private $quantity;
 
-    public function setQuantity($quantity)
-    {
-        $this->quantity = (int) $quantity;
-    }
-
+    /**
+     * Sets the basket
+     *
+     * @param \Entities\Basket $basket
+     */
     public function setBasket(Basket $basket)
     {
         $this->basket = $basket;
@@ -55,12 +56,12 @@ class MailInfoPushReceived extends AbstractMailWithLink
         if (!$this->pusher) {
             throw new LogicException('You must set a basket before calling getMessage');
         }
-        if (!$this->quantity) {
-            throw new LogicException('You must set quantity before calling getMessage');
+        if (!$this->basket) {
+            throw new LogicException('You must set basket before calling getMessage');
         }
 
         return
-            sprintf(_('You just received a push containing %s documents from %s'), $this->quantity, $this->pusher->get_display_name())
+            sprintf(_('You just received a push containing %s documents from %s'), count($this->basket->getElements()), $this->pusher->get_display_name())
             . "\n" . $this->message;
     }
 
