@@ -55,11 +55,11 @@ class Share implements ControllerProviderInterface
     /**
      *  Share a record
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @param   integer         $base_id
-     * @param   integer         $record_id
-     * @return  Response
+     * @param  Application $app
+     * @param  Request     $request
+     * @param  integer     $base_id
+     * @param  integer     $record_id
+     * @return Response
      */
     public function shareRecord(Application $app, Request $request, $base_id, $record_id)
     {

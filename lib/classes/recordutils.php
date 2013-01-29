@@ -41,7 +41,6 @@ class recordutils
 
     public function binary_datas($type, $bas, $rec, $usr = false, $ses = false)
     {
-
         return false;
     }
 }

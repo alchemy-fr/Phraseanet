@@ -103,15 +103,14 @@ class Records implements ControllerProviderInterface
     /**
      * Get record detailed view
      *
-     * @param   Application   $app
-     * @param   Request       $request
-     * @param   integer       $sbas_id
-     * @param   integer       $record_id
-     * @return  JsonResponse
+     * @param Application $app
+     * @param Request     $request
+     *
+     * @return JsonResponse
      */
     public function getRecord(Application $app, Request $request)
     {
-        if(!$request->isXmlHttpRequest()){
+        if (!$request->isXmlHttpRequest()) {
             $app->abort(400);
         }
 
@@ -195,9 +194,9 @@ class Records implements ControllerProviderInterface
     /**
      *  Delete a record or a list of records
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function doDeleteRecords(Application $app, Request $request)
     {
@@ -240,9 +239,9 @@ class Records implements ControllerProviderInterface
     /**
      *  Delete a record or a list of records
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function whatCanIDelete(Application $app, Request $request)
     {
@@ -258,11 +257,10 @@ class Records implements ControllerProviderInterface
     /**
      *  Renew url list of records
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @param   integer         $databox_id
-     * @param   integer         $record_id
-     * @return  JsonResponse
+     * @param Application $app
+     * @param Request     $request
+     *
+     * @return JsonResponse
      */
     public function renewUrl(Application $app, Request $request)
     {

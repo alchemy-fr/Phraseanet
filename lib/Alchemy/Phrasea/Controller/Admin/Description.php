@@ -16,7 +16,6 @@ use PHPExiftool\Driver\TagProvider;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  *
@@ -205,7 +204,7 @@ class Description implements ControllerProviderInterface
                             $vocabulary = VocabularyController::get($app, $request->request->get('vocabulary_' . $id));
                             $field->setVocabularyControl($vocabulary);
                             $field->setVocabularyRestricted($request->request->get('vocabularyrestricted_' . $id));
-                        } catch (\Exception $e) {
+                        } catch (\InvalidArgumentException $e) {
 
                         }
 
@@ -226,7 +225,6 @@ class Description implements ControllerProviderInterface
             if ($request->request->get('newfield')) {
                 $field = \databox_field::create($app, $databox, $request->request->get('newfield'), $request->request->get('newfield_multi'));
             }
-
 
             if (is_array($request->request->get('todelete_ids'))) {
                 foreach ($request->request->get('todelete_ids') as $id) {

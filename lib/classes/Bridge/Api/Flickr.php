@@ -261,10 +261,9 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      *
-     * @param  string  $object
-     * @param  string  $object_id
-     * @param  Request $request
-     * @return Void
+     * @param string $object
+     * @param string $object_id
+     * @param array  $datas
      */
     public function update_element($object, $object_id, Array $datas)
     {
@@ -742,7 +741,9 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      * Returns datas needed for an uploaded record
-     * @param  record_adapter $record
+     *
+     * @param Request $request
+     *
      * @return array
      */
     public function get_update_datas(Request $request)
@@ -757,7 +758,10 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      * Returns datas needed for an uploaded record
-     * @param  record_adapter $record
+     *
+     * @param Request        $request
+     * @param record_adapter $record
+     *
      * @return array
      */
     public function get_upload_datas(Request $request, record_adapter $record)

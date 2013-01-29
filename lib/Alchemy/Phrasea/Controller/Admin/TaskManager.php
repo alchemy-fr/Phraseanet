@@ -32,8 +32,6 @@ class TaskManager implements ControllerProviderInterface
             return $app->redirect('/admin/task-manager/tasks/');
         });
 
-
-
         /*
          * route /admin/task-manager/tasks/
          *  tasks status in json
@@ -43,7 +41,6 @@ class TaskManager implements ControllerProviderInterface
         $controllers->get('/tasks/', function(Application $app, Request $request) {
 
             if ($request->getContentType() == 'json') {
-
                 return $app->json($app['task-manager']->toArray());
             } else {
 
@@ -126,7 +123,6 @@ class TaskManager implements ControllerProviderInterface
             }, 200, array('Content-Type' => 'text/html'));
         });
 
-
         $controllers->get('/task/{id}/log', function(Application $app, Request $request, $id) {
             $logdir = \p4string::addEndSlash($app['phraseanet.registry']->get('GV_RootPath') . 'logs');
 
@@ -183,6 +179,7 @@ class TaskManager implements ControllerProviderInterface
                 /*
                  * todo : add a message back
                  */
+
                 return $app->redirect('/admin/task-manager/tasks/');
             }
         });
@@ -246,7 +243,6 @@ class TaskManager implements ControllerProviderInterface
 
                 return $app->json(true);
             } catch (\Exception $e) {
-
                 return $app->json(false);
             }
         });
@@ -279,7 +275,6 @@ class TaskManager implements ControllerProviderInterface
 
                 return $app->json(true);
             } catch (\Exception $e) {
-
                 return new Response(
                         'Bad task ID',
                         404    // Not Found
@@ -327,6 +322,7 @@ class TaskManager implements ControllerProviderInterface
                     );
                     break;
             }
+
             return $ret;
         });
 
@@ -339,6 +335,7 @@ class TaskManager implements ControllerProviderInterface
             $task = $app['task-manager']->getTask($id);
 
             $template = 'admin/task.html.twig';
+
             return $app['twig']->render($template, array(
                     'task' => $task,
                     'view' => 'XML'
@@ -364,6 +361,7 @@ class TaskManager implements ControllerProviderInterface
                         412    // Precondition Failed
                 );
             }
+
             return $ret;
         });
 

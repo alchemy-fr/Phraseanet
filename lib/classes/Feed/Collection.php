@@ -49,7 +49,7 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
 
     /**
      *
-     * @param  Application $app
+     * @param  Application     $app
      * @param  User_Adapter    $user
      * @return Feed_Collection
      */
@@ -102,7 +102,7 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
 
     /**
      *
-     * @param  Application $app
+     * @param  Application     $app
      * @return Feed_Collection
      */
     public static function load_public_feeds(Application $app)

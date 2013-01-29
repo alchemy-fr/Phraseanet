@@ -85,7 +85,6 @@ class Edit implements ControllerProviderInterface
                     }
                 }
 
-
                 /**
                  * generate javascript sugg values
                  */
@@ -116,7 +115,6 @@ class Edit implements ControllerProviderInterface
                     }
                     unset($collection);
                 }
-
 
                 /**
                  * generate javascript status
@@ -401,8 +399,6 @@ class Edit implements ControllerProviderInterface
                         ->log($record, \Session_Logger::EVENT_EDIT, '', '');
                 }
             }
-
-
 
             return $app['twig']->render('prod/actions/edit_default.html.twig', array('edit'    => $editing, 'message' => ''));
         });

@@ -50,7 +50,7 @@ class Video extends Audio
 
     public function getMediaAlchemystSpec()
     {
-        if ( ! $this->spec) {
+        if (! $this->spec) {
             $this->spec = new \MediaAlchemyst\Specification\Video();
         }
 

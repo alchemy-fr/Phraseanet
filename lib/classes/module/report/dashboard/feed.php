@@ -64,13 +64,14 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
     private $app;
 
     /**
-     * @desc return l'objet stockee dans le cache si i l existe sinon instancie
+     * return l'objet stockee dans le cache si i l existe sinon instancie
      * un nouveau objet dashboard_feed
-     * @param  <int>    $sbasid
-     * @param  <string> $sbas_coll
-     * @param  <string> $dmin
-     * @param  <string> $dmax
-     * @return self
+     *
+     * @param Application $app
+     * @param integer     $sbasid
+     * @param string      $sbas_coll
+     * @param mixed       $dmin
+     * @param mixed       $dmax
      */
     public static function getInstance(Application $app, $sbasid, $sbas_coll, $dmin, $dmax)
     {
@@ -90,12 +91,13 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
     }
 
     /**
-     * @desc Remplis les resultats bruts pour valeures passees en param
-     * @param <int>    $sbasid
-     * @param <string> $sbas_collection, les collection sous forme de string
-     * séparés par une virgule
-     * @param <string> $dmin, Y-m-d
-     * @param <string> $dmax, Y-m-d
+     * Remplis les resultats bruts pour valeures passees en param
+     *
+     * @param Application $app
+     * @param integer     $sbasid
+     * @param string      $sbas_collection les collection sous forme de string séparés par une virgule
+     * @param string      $dmin            Y-m-d
+     * @param string      $dmax            Y-m-d
      */
     public function __construct(Application $app, $sbasid, $sbas_collection, $dmin, $dmax)
     {
@@ -237,4 +239,3 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
         }
     }
 }
-

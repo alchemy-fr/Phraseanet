@@ -85,7 +85,7 @@ class task_Scheduler
 
         $lockdir = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/locks/';
 
-        for ($try = 1; true; $try ++ ) {
+        for ($try = 1; true; $try ++) {
             $lockfile = ($lockdir . 'scheduler.lock');
             if (($schedlock = fopen($lockfile, 'a+')) != FALSE) {
                 if (flock($schedlock, LOCK_EX | LOCK_NB) === FALSE) {
@@ -156,10 +156,10 @@ class task_Scheduler
                 }
 
                 unset($conn);
-                if ( ! $connwaslost) {
+                if (! $connwaslost) {
                     $this->log(sprintf("Warning : abox connection lost, restarting in 10 min."));
                 }
-                for ($i = 0; $i < 60 * 10; $i ++ ) {
+                for ($i = 0; $i < 60 * 10; $i ++) {
                     sleep(1);
                 }
                 try {
@@ -328,7 +328,7 @@ class task_Scheduler
                         $taskPoll[$tkey]["killat"] = NULL;
 
                         if ($this->method == self::METHOD_PROC_OPEN) {
-                            if ( ! $taskPoll[$tkey]["process"]) {
+                            if (! $taskPoll[$tkey]["process"]) {
 
                                 $nullfile = defined('PHP_WINDOWS_VERSION_BUILD') ? 'NUL' : '/dev/null';
 
@@ -429,7 +429,7 @@ class task_Scheduler
                             $crashed = true;
                         }
 
-                        if ( ! $crashed) {
+                        if (! $crashed) {
                             $taskPoll[$tkey]["killat"] = NULL;
                             $runningtask ++;
                         } else {
@@ -469,7 +469,7 @@ class task_Scheduler
                             // send ctrl-c to tell the task to CLEAN quit
                             // (just in case the task doesn't pool his status 'tostop' fast enough)
                             if (function_exists('posix_kill')) {
-                                if ( ! $taskPoll[$tkey]['sigterm_sent']) {
+                                if (! $taskPoll[$tkey]['sigterm_sent']) {
                                     posix_kill($pid, SIGTERM);
                                     $this->log(
                                         sprintf(
@@ -551,7 +551,7 @@ class task_Scheduler
                 }
             }
 
-            for ($i = 0; $i < $sleeptime; $i ++ ) {
+            for ($i = 0; $i < $sleeptime; $i ++) {
                 sleep(1);
             }
         }

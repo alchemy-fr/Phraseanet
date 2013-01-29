@@ -38,7 +38,7 @@ class registry implements registryInterface
 
     /**
      *
-     * @param  \Alchemy\Phrasea\Cache\Cache $cache
+     * @param  Application $app
      * @return registry
      */
     public function __construct(Application $app)
@@ -129,7 +129,9 @@ class registry implements registryInterface
 
     /**
      *
-     * @param  string $key
+     * @param string $key
+     * @param mixed  $defaultvalue
+     *
      * @return mixed
      */
     public function get($key, $defaultvalue = null)
@@ -146,8 +148,10 @@ class registry implements registryInterface
 
     /**
      *
-     * @param  string   $key
-     * @param  mixed    $value
+     * @param string $key
+     * @param mixed  $value
+     * @param string $type
+     *
      * @return registry
      */
     public function set($key, $value, $type)

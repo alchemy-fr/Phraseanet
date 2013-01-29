@@ -102,7 +102,6 @@ class Datafiles extends AbstractDelivery
             return $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
         })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
-
         return $controllers;
     }
 }

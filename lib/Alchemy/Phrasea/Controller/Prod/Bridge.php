@@ -122,9 +122,9 @@ class Bridge implements ControllerProviderInterface
 
                     $account->delete();
                     $success = true;
-                } catch(\Bridge_Exception_AccountNotFound $e) {
+                } catch (\Bridge_Exception_AccountNotFound $e) {
                     $message = _('Account is not found.');
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     $message = _('Something went wrong, please contact an administrator');
                 }
 
@@ -320,7 +320,6 @@ class Bridge implements ControllerProviderInterface
 
                         $account->get_api()->create_container($container_type, $app['request']);
                     } catch (\Exception $e) {
-
                         return $app->redirect('/prod/bridge/action/' . $account_id . '/' . $action . '/' . $element_type . '/?error=' . get_class($e) . ' : ' . $e->getMessage());
                     }
 

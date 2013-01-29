@@ -73,7 +73,7 @@ class ftpclient
                 $done = true;
             }
         }
-        if ( ! $done) {
+        if (! $done) {
             throw new Exception('Impossible de s\'authentifier sur le serveur FTP');
         }
 
@@ -312,7 +312,7 @@ class ftpclient
     {
         if ($this->debug)
             echo "Fermeture de la connexion\n<br>";
-        if ( ! $this->connexion) {
+        if (! $this->connexion) {
             return $this;
         }
 
@@ -384,7 +384,7 @@ class ftpclient
             $file = $this->add_end_slash($current_dir) . $info[8];
 
             $date = strtotime($info[6] . ' ' . $info[5] . ' ' . $info[7]);
-            if ( ! $date) {
+            if (! $date) {
                 $date = strtotime($info[6] . ' ' . $info[5] . ' ' . date('Y') . ' ' . $info[7]);
             }
 
@@ -396,4 +396,3 @@ class ftpclient
         return $list;
     }
 }
-

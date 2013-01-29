@@ -68,12 +68,12 @@ class ConfigurationPanel extends AbstractConfigurationPanel
         foreach ($request->request->get('date_fields', array()) as $field) {
             $configuration['date_fields'][] = $field;
         }
-        
+
         $configuration['host'] = $request->request->get('host');
         $configuration['host'] = $request->request->get('port');
         $configuration['rt_host'] = $request->request->get('rt_host');
         $configuration['rt_port'] = $request->request->get('rt_port');
-        
+
         $this->saveConfiguration($configuration);
 
         return $app->redirect($app['url_generator']->generate('admin_searchengine_get'));
@@ -116,20 +116,20 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
         return $configuration;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function saveConfiguration(array $configuration)
     {
         file_put_contents($this->getConfigPathFile(), json_encode($configuration));
-        
+
         return $this;
     }
 
     /**
      * Returns all the charset Sphinx Search supports
-     * 
+     *
      * @return array An array of charsets
      */
     public function getAvailableCharsets()
@@ -158,9 +158,9 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
     /**
      * Generates Sphinx Search configuration depending on the service configuration
-     * 
-     * @param array $databoxes The databoxes to index
-     * @param array $configuration The configuration
+     *
+     * @param  array  $databoxes     The databoxes to index
+     * @param  array  $configuration The configuration
      * @return string The sphinx search configuration
      */
     public function generateSphinxConf(array $databoxes, array $configuration)

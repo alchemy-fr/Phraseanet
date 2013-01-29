@@ -25,7 +25,8 @@ class Filename extends AbstractChecker
     /**
      * Constructor
      *
-     * @param boolean $sensitive Toggle case-sensitive mode, default : false
+     * @param Application $app
+     * @param array       $options An array of options. available : 'sensitive' (false by default)
      */
     public function __construct(Application $app, array $options = array())
     {

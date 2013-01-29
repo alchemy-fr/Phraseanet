@@ -32,4 +32,3 @@ interface DatasUpgraderInterface
      */
     public function getTimeEstimation();
 }
-

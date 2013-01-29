@@ -138,9 +138,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TC_DATA_LIGHTVALUE = 'LightValue';
 
     /**
-     * @todo    the presence of file is checked on constructor, it would be better
-     *          to check it when needed (stop disk access)
-     *
+     * @param  Application    $app
      * @param  record_adapter $record
      * @param  type           $name
      * @param  type           $substitute
@@ -223,7 +221,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             throw new Exception_Media_SubdefNotFound($this->name . ' not found');
         }
 
-        if ( ! $row) {
+        if (! $row) {
             $this->find_substitute_file();
         }
 
@@ -529,22 +527,22 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         try {
-
             return $this->record
                     ->get_databox()
                     ->get_subdef_structure()
                     ->get_subdef($this->record->get_type(), $this->get_name())
                     ->getDevices();
         } catch (\Exception_Databox_SubdefNotFound $e) {
-
             return array();
         }
     }
 
     /**
      *
-     * @param  registryInterface $registry
-     * @param  int               $angle
+     * @param int        $angle
+     * @param Alchemyst  $alchemyst
+     * @param MediaVorus $mediavorus
+     *
      * @return media_subdef
      */
     public function rotate($angle, Alchemyst $alchemyst, MediaVorus $mediavorus)
@@ -685,7 +683,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            if ( ! $row) {
+            if (! $row) {
                 throw new \Exception_Media_SubdefNotFound('Require the real one');
             }
 
@@ -719,6 +717,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         unset($media);
+
         return $subdef;
     }
 
@@ -777,4 +776,3 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         return $databox->delete_data_from_cache($this->get_cache_key($option));
     }
 }
-

@@ -58,7 +58,9 @@ class databox_subdef
 
     /**
      *
-     * @param  SimpleXMLElement $sd
+     * @param SubdefType       $type
+     * @param SimpleXMLElement $sd
+     *
      * @return databox_subdef
      */
     public function __construct(SubdefType $type, SimpleXMLElement $sd)

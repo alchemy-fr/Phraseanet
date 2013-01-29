@@ -26,6 +26,7 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
                 ->getService($app['phraseanet.configuration']->getTaskManager());
 
             $service = Builder::create($app, $configuration);
+
             return $service->getDriver();
         });
     }

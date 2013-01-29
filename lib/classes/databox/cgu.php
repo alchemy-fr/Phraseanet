@@ -63,7 +63,7 @@ class databox_cgu
                 $value = $cgus[$app['locale']]['value'];
                 $userValidation = true;
 
-                if ( ! $home) {
+                if (! $home) {
                     if ( ! $app['phraseanet.user']->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }

@@ -376,9 +376,9 @@ class Collection implements ControllerProviderInterface
     /**
      * Display collection information page
      *
-     * @param  Application   $app        The silex application
-     * @param  Request       $request    The current request
-     * @param  integer       $bas_id     The collection base_id
+     * @param  Application $app     The silex application
+     * @param  Request     $request The current request
+     * @param  integer     $bas_id  The collection base_id
      * @return Response
      */
     public function getCollection(Application $app, Request $request, $bas_id)
@@ -421,10 +421,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Set new admin to handle orders
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  RedirectResponse
+     * @param  Application      $app     The silex application
+     * @param  Request          $request The current request
+     * @param  integer          $bas_id  The collection base_id
+     * @return RedirectResponse
      */
     public function setOrderAdmins(Application $app, Request $request, $bas_id)
     {
@@ -471,9 +471,9 @@ class Collection implements ControllerProviderInterface
     /**
      * Empty a collection
      *
-     * @param Application   $app        The silex application
-     * @param Request       $request    The current request
-     * @param integer       $bas_id     The collection base_id
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
      * @return JsonResponse|RedirectResponse
      */
     public function emptyCollection(Application $app, Request $request, $bas_id)
@@ -499,7 +499,6 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
                     'success' => $success,
                     'msg'     => $msg,
@@ -513,10 +512,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Delete the collection banner
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse|RedirectResponse
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
+     * @return JsonResponse|RedirectResponse
      */
     public function deleteBanner(Application $app, Request $request, $bas_id)
     {
@@ -532,7 +531,6 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
                 'success' => $success,
                 'msg'     => $success ? _('Successful removal') : _('An error occured'),
@@ -546,10 +544,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Delete the collection stamp
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse|RedirectResponse
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
+     * @return JsonResponse|RedirectResponse
      */
     public function deleteStamp(Application $app, Request $request, $bas_id)
     {
@@ -565,7 +563,6 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
                 'success' => $success,
                 'msg'     => $success ? _('Successful removal') : _('An error occured'),
@@ -579,10 +576,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Delete the collection watermark
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse|RedirectResponse
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
+     * @return JsonResponse|RedirectResponse
      */
     public function deleteWatermark(Application $app, Request $request, $bas_id)
     {
@@ -598,7 +595,6 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
                 'success' => $success,
                 'msg'     => $success ? _('Successful removal') : _('An error occured'),
@@ -612,10 +608,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Delete the current collection logo
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse|RedirectResponse
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
+     * @return JsonResponse|RedirectResponse
      */
     public function deleteLogo(Application $app, Request $request, $bas_id)
     {
@@ -632,7 +628,6 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
                 'success' => $success,
                 'msg'     => $success ? _('Successful removal') : _('An error occured'),
@@ -646,10 +641,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Set a collection banner
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  RedirectResponse
+     * @param  Application      $app     The silex application
+     * @param  Request          $request The current request
+     * @param  integer          $bas_id  The collection base_id
+     * @return RedirectResponse
      */
     public function setBanner(Application $app, Request $request, $bas_id)
     {
@@ -681,10 +676,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Set a collection stamp
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  RedirectResponse
+     * @param  Application      $app     The silex application
+     * @param  Request          $request The current request
+     * @param  integer          $bas_id  The collection base_id
+     * @return RedirectResponse
      */
     public function setStamp(Application $app, Request $request, $bas_id)
     {
@@ -716,10 +711,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Set a collection watermark
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  RedirectResponse
+     * @param  Application      $app     The silex application
+     * @param  Request          $request The current request
+     * @param  integer          $bas_id  The collection base_id
+     * @return RedirectResponse
      */
     public function setWatermark(Application $app, Request $request, $bas_id)
     {
@@ -750,10 +745,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Set collection minilogo
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  RedirectResponse
+     * @param  Application      $app     The silex application
+     * @param  Request          $request The current request
+     * @param  integer          $bas_id  The collection base_id
+     * @return RedirectResponse
      */
     public function setMiniLogo(Application $app, Request $request, $bas_id)
     {
@@ -784,10 +779,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Delete a Collection
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse|RedirectResponse
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
+     * @return JsonResponse|RedirectResponse
      */
     public function delete(Application $app, Request $request, $bas_id)
     {
@@ -810,7 +805,6 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
                 'success' => $success,
                 'msg'     => $msg
@@ -831,10 +825,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Unmount a collection from application box
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse|RedirectResponse
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
+     * @return JsonResponse|RedirectResponse
      */
     public function unmount(Application $app, Request $request, $bas_id)
     {
@@ -862,10 +856,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Rename a collection
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse|RedirectResponse
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
+     * @return JsonResponse|RedirectResponse
      */
     public function rename(Application $app, Request $request, $bas_id)
     {
@@ -897,10 +891,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Set public presentation watermark
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse|RedirectResponse
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
+     * @return JsonResponse|RedirectResponse
      */
     public function setPublicationDisplay(Application $app, Request $request, $bas_id)
     {
@@ -932,10 +926,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Enable a collection
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse|RedirectResponse
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
+     * @return JsonResponse|RedirectResponse
      */
     public function enable(Application $app, Request $request, $bas_id)
     {
@@ -963,10 +957,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Disable a collection
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse|RedirectResponse
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
+     * @return JsonResponse|RedirectResponse
      */
     public function disabled(Application $app, Request $request, $bas_id)
     {
@@ -994,9 +988,9 @@ class Collection implements ControllerProviderInterface
     /**
      * Display suggested values
      *
-     * @param Application   $app        The silex application
-     * @param Request       $request    The current request
-     * @param integer       $bas_id     The collection base_id
+     * @param Application $app     The silex application
+     * @param Request     $request The current request
+     * @param integer     $bas_id  The collection base_id
      */
     public function getSuggestedValues(Application $app, Request $request, $bas_id)
     {
@@ -1035,7 +1029,7 @@ class Collection implements ControllerProviderInterface
 
                     if ($ki == 'status') {
                         $pref['status'] = $vi;
-                    } else if ($ki != 'sugestedValues') {
+                    } elseif ($ki != 'sugestedValues') {
                         $pref['xml'] = $vi->asXML();
                     }
 
@@ -1056,10 +1050,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Register suggested values
      *
-     * @param   Application   $app        The silex application
-     * @param   Request       $request    The current request
-     * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse|RedirectResponse
+     * @param  Application                   $app     The silex application
+     * @param  Request                       $request The current request
+     * @param  integer                       $bas_id  The collection base_id
+     * @return JsonResponse|RedirectResponse
      */
     public function submitSuggestedValues(Application $app, Request $request, $bas_id)
     {
@@ -1078,7 +1072,6 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
                 'success' => $success,
                 'msg'     => $success ? _('Successful update') : _('An error occured'),
@@ -1092,9 +1085,9 @@ class Collection implements ControllerProviderInterface
     /**
      * Get document details in the requested collection
      *
-     * @param Application   $app        The silex application
-     * @param Request       $request    The current request
-     * @param integer       $bas_id     The collection base_id
+     * @param  Application $app     The silex application
+     * @param  Request     $request The current request
+     * @param  integer     $bas_id  The collection base_id
      * @return Response
      */
     public function getDetails(Application $app, Request $request, $bas_id)

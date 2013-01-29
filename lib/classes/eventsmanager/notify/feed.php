@@ -86,7 +86,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
         do {
             $results = $Query->limit($start, $perLoop)->execute()->get_results();
-            
+
             foreach ($results as $user_to_notif) {
                 /* @var $user_to_notif \User_Adapter */
                 $mailed = false;

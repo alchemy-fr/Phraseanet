@@ -268,8 +268,8 @@ class API_OAuth2_Token
 
     /**
      *
-     * @param  appbox           $appbox
-     * @param  type             $oauth_token
+     * @param  Application      $app
+     * @param  string           $oauth_token
      * @return API_OAuth2_Token
      */
     public static function load_by_oauth_token(Application $app, $oauth_token)

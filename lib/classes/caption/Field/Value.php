@@ -60,6 +60,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
     /**
      *
+     * @param  Application          $app
      * @param  databox_field        $databox_field
      * @param  record_adapter       $record
      * @param  type                 $id
@@ -85,7 +86,7 @@ class caption_Field_Value implements cache_cacheableInterface
             $this->VocabularyId = $datas['vocabularyId'];
 
             return $this;
-        } catch (\Exception $e) {
+        } catch (\InvalidArgumentException $e) {
 
         }
 
@@ -104,7 +105,7 @@ class caption_Field_Value implements cache_cacheableInterface
         try {
             $this->VocabularyType = $row['VocabularyType'] ? Vocabulary\Controller::get($this->app, $row['VocabularyType']) : null;
             $this->VocabularyId = $row['VocabularyId'];
-        } catch (\Exception $e) {
+        } catch (\InvalidArgumentException $e) {
 
         }
 
@@ -293,7 +294,7 @@ class caption_Field_Value implements cache_cacheableInterface
                 /* @var $value \caption_Field_Value */
                 $caption_field_value->set_value($value);
 
-                if ( ! $vocabulary || ! $vocabularyId) {
+                if (! $vocabulary || ! $vocabularyId) {
                     $caption_field_value->removeVocabulary();
                 } else {
                     $caption_field_value->setVocab($vocabulary, $vocabularyId);
@@ -348,7 +349,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
         $tbranch = $this->databox_field->get_tbranch();
 
-        if ( ! $tbranch || ! $XPATH_thesaurus) {
+        if (! $tbranch || ! $XPATH_thesaurus) {
             return $value;
         }
 
@@ -402,7 +403,7 @@ class caption_Field_Value implements cache_cacheableInterface
                         }
                     }
                 }
-                if ( ! $lngfound) {
+                if (! $lngfound) {
                     list($term, $context) = $this->splitTermAndContext($fvalue);
                     $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
                     $context = str_replace(array("<em>", "</em>"), array("", ""), $context);

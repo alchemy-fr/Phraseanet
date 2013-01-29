@@ -162,7 +162,7 @@ class http_request
                 }
             }
         } else {
-            for ($i = 0; $i < $nargs; $i ++ ) {
+            for ($i = 0; $i < $nargs; $i ++) {
                 $nom = func_get_arg($i);
                 $parm[$nom] = isset($_GET[$nom]) ?
                     $_GET[$nom] : (isset($_POST[$nom]) ? $_POST[$nom] : NULL);

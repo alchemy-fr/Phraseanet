@@ -398,9 +398,11 @@ class Databox implements ControllerProviderInterface
 
     /**
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Application $app
+     * @param Request     $request
+     * @param integer     $databox_id
+     *
+     * @return Response
      */
     public function getDatabase(Application $app, Request $request, $databox_id)
     {
@@ -429,10 +431,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Get databox CGU's
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   Response
+     * @param  Application $app        The silex application
+     * @param  Request     $request    The current HTTP request
+     * @param  integer     $databox_id The requested databox
+     * @return Response
      */
     public function getDatabaseCGU(Application $app, Request $request, $databox_id)
     {
@@ -446,10 +448,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Delete a databox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse|RedirectResponse
+     * @param  Application                   $app        The silex application
+     * @param  Request                       $request    The current HTTP request
+     * @param  integer                       $databox_id The requested databox
+     * @return JsonResponse|RedirectResponse
      */
     public function deleteBase(Application $app, Request $request, $databox_id)
     {
@@ -485,10 +487,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Reindex databox content
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse|RedirectResponse
+     * @param  Application                   $app        The silex application
+     * @param  Request                       $request    The current HTTP request
+     * @param  integer                       $databox_id The requested databox
+     * @return JsonResponse|RedirectResponse
      */
     public function reindex(Application $app, Request $request, $databox_id)
     {
@@ -515,10 +517,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Make a databox indexable
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse|RedirectResponse
+     * @param  Application                   $app        The silex application
+     * @param  Request                       $request    The current HTTP request
+     * @param  integer                       $databox_id The requested databox
+     * @return JsonResponse|RedirectResponse
      */
     public function setIndexable(Application $app, Request $request, $databox_id)
     {
@@ -545,10 +547,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Update databox CGU's
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   RedirectResponse
+     * @param  Application      $app        The silex application
+     * @param  Request          $request    The current HTTP request
+     * @param  integer          $databox_id The requested databox
+     * @return RedirectResponse
      */
     public function updateDatabaseCGU(Application $app, Request $request, $databox_id)
     {
@@ -568,10 +570,11 @@ class Databox implements ControllerProviderInterface
     /**
      * Mount a collection on a databox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   RedirectResponse
+     * @param  Application      $app           The silex application
+     * @param  Request          $request       The current HTTP request
+     * @param  integer          $databox_id    The requested databox
+     * @param  integer          $collection_id The requested collection id
+     * @return RedirectResponse
      */
     public function mountCollection(Application $app, Request $request, $databox_id, $collection_id)
     {
@@ -609,10 +612,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Set a new logo for a databox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   RedirectResponse
+     * @param  Application      $app        The silex application
+     * @param  Request          $request    The current HTTP request
+     * @param  integer          $databox_id The requested databox
+     * @return RedirectResponse
      */
     public function sendLogoPdf(Application $app, Request $request, $databox_id)
     {
@@ -639,10 +642,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Delete an existing logo for a databox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse|RedirectResponse
+     * @param  Application                   $app        The silex application
+     * @param  Request                       $request    The current HTTP request
+     * @param  integer                       $databox_id The requested databox
+     * @return JsonResponse|RedirectResponse
      */
     public function deleteLogoPdf(Application $app, Request $request, $databox_id)
     {
@@ -669,10 +672,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Clear databox logs
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse|RedirectResponse
+     * @param  Application                   $app        The silex application
+     * @param  Request                       $request    The current HTTP request
+     * @param  integer                       $databox_id The requested databox
+     * @return JsonResponse|RedirectResponse
      */
     public function clearLogs(Application $app, Request $request, $databox_id)
     {
@@ -699,10 +702,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Change the name of a databox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse|RedirectResponse
+     * @param  Application                   $app        The silex application
+     * @param  Request                       $request    The current HTTP request
+     * @param  integer                       $databox_id The requested databox
+     * @return JsonResponse|RedirectResponse
      */
     public function changeViewName(Application $app, Request $request, $databox_id)
     {
@@ -733,10 +736,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Unmount a databox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse|RedirectResponse
+     * @param  Application                   $app        The silex application
+     * @param  Request                       $request    The current HTTP request
+     * @param  integer                       $databox_id The requested databox
+     * @return JsonResponse|RedirectResponse
      */
     public function unmountDatabase(Application $app, Request $request, $databox_id)
     {
@@ -765,10 +768,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Empty a databox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse|RedirectResponse
+     * @param  Application                   $app        The silex application
+     * @param  Request                       $request    The current HTTP request
+     * @param  integer                       $databox_id The requested databox
+     * @return JsonResponse|RedirectResponse
      */
     public function emptyDatabase(Application $app, Request $request, $databox_id)
     {
@@ -808,10 +811,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Get number of indexed items for a databox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse
+     * @param  Application  $app        The silex application
+     * @param  Request      $request    The current HTTP request
+     * @param  integer      $databox_id The requested databox
+     * @return JsonResponse
      */
     public function progressBarInfos(Application $app, Request $request, $databox_id)
     {
@@ -860,10 +863,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Display page for reaorder collections on a databox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   Response
+     * @param  Application $app        The silex application
+     * @param  Request     $request    The current HTTP request
+     * @param  integer     $databox_id The requested databox
+     * @return Response
      */
     public function getReorder(Application $app, Request $request, $databox_id)
     {
@@ -875,10 +878,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Apply collection reorder changes
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse|RedirectResponse
+     * @param  Application                   $app        The silex application
+     * @param  Request                       $request    The current HTTP request
+     * @param  integer                       $databox_id The requested databox
+     * @return JsonResponse|RedirectResponse
      */
     public function setReorder(Application $app, Request $request, $databox_id)
     {
@@ -910,10 +913,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Display page to create a new collection
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   Response
+     * @param  Application $app        The silex application
+     * @param  Request     $request    The current HTTP request
+     * @param  integer     $databox_id The requested databox
+     * @return Response
      */
     public function getNewCollection(Application $app, Request $request, $databox_id)
     {
@@ -923,15 +926,14 @@ class Databox implements ControllerProviderInterface
     /**
      * Create a new collection
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   Response
+     * @param  Application $app        The silex application
+     * @param  Request     $request    The current HTTP request
+     * @param  integer     $databox_id The requested databox
+     * @return Response
      */
     public function createCollection(Application $app, Request $request, $databox_id)
     {
         if (($name = trim($request->request->get('name', ''))) === '') {
-
             return $app->redirect('/admin/databox/' . $databox_id . '/collection/error=name');
         }
 
@@ -962,10 +964,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Display page to get some details on a appbox
      *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   Response
+     * @param  Application $app        The silex application
+     * @param  Request     $request    The current HTTP request
+     * @param  integer     $databox_id The requested databox
+     * @return Response
      */
     public function getDetails(Application $app, Request $request, $databox_id)
     {

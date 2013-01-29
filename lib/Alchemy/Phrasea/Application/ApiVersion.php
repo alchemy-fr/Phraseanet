@@ -15,7 +15,6 @@ use Silex\Application as SilexApplication;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpFoundation\Request;
 
-
 return call_user_func(function($environment = 'prod') {
 
     $app = new PhraseaApplication($environment);

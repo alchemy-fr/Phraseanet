@@ -157,7 +157,7 @@ function giveMeBases(Application $app, $usr = null)
                     $inscriptions[$sbas_id]['CollsNonactif'][$collection->get_coll_id()] = $lacgu;
                 elseif ($usrerRegis[$databox->get_dbname()][$collection->get_coll_id()] === true)
                     $inscriptions[$sbas_id]['CollsRegistered'][$collection->get_coll_id()] = $lacgu;
-            } elseif ( ! $cguSpec && $collInscript) {//ne va pas.. si l'inscriptio na la coll est explicitement non autorise, je refuse'
+            } elseif (! $cguSpec && $collInscript) {//ne va pas.. si l'inscriptio na la coll est explicitement non autorise, je refuse'
                 $inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()] = $collection->get_name();
             } elseif ($cguSpec) {
                 $inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]['name'] = $collection->get_name();

@@ -146,8 +146,7 @@ class task_period_archive extends task_abstract
         <script type="text/javascript">
             function taskFillGraphic_<?php echo(get_class($this));?>(xml)
             {
-                if(xml)
-                {
+                if (xml) {
                     xml2 = $.parseXML(xml);
                     xml2 = $(xml2);
 
@@ -182,8 +181,7 @@ class task_period_archive extends task_abstract
                 } ;
                 $(".formElem").change(function(){
                     fieldname = $(this).attr("name");
-                    switch((this.nodeName+$(this).attr("type")).toLowerCase())
-                    {
+                    switch ((this.nodeName+$(this).attr("type")).toLowerCase()) {
                         case "inputtext":
                             if (typeof(limits[fieldname])!='undefined') {
                                 var v = 0|this.value;
@@ -201,6 +199,7 @@ class task_period_archive extends task_abstract
         </script>
 
         <?php
+
         return;
     }
 
@@ -218,7 +217,7 @@ class task_period_archive extends task_abstract
             <select class="formElem" name="base_id">
                 <option value="">...</option>
                 <?php
-                foreach($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $databox) {
                     foreach ($databox->get_collections() as $collection) {
                         print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
                     }
@@ -245,6 +244,7 @@ class task_period_archive extends task_abstract
             <input class="formElem" type="checkbox" name="delfolder">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
         </form>
         <?php
+
         return ob_get_clean();
     }
 
@@ -602,10 +602,8 @@ class task_period_archive extends task_abstract
             // something happened : a least one file has moved
             return 'MAXRECSDONE';
         } elseif (memory_get_usage() >> 20 > 25) {
-
             return 'MAXMEGSREACHED';
         } else {
-
             return 'NORECSTODO';
         }
     }
@@ -1711,7 +1709,7 @@ class task_period_archive extends task_abstract
 
         $record = null;
 
-        $postProcess = function($element, $visa, $code) use(&$record) {
+        $postProcess = function($element, $visa, $code) use (&$record) {
                 $record = $element;
             };
 
@@ -2049,7 +2047,7 @@ class task_period_archive extends task_abstract
      * indexed by **FieldNames**
      *
      * @param  \databox_descriptionStructure $metadatasStructure The databox structure related
-     * @param  ExiftoolMetadataBag                   $bag                The metadata bag
+     * @param  ExiftoolMetadataBag           $bag                The metadata bag
      * @return MetadataBag
      */
     protected function getIndexByFieldName(\databox_descriptionStructure $metadatasStructure, ExiftoolMetadataBag $bag)

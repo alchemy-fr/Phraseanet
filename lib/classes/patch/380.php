@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Border\Checker;
 
 /**
  *
@@ -55,7 +54,8 @@ class patch_380 implements patchInterface
     }
 
     /**
-     * @param base $databox
+     * @param base        $databox
+     * @param Application $app
      */
     public function apply(base $databox, Application $app)
     {
@@ -68,4 +68,3 @@ class patch_380 implements patchInterface
         $app['phraseanet.configuration']->setConnexions($connexions);
     }
 }
-

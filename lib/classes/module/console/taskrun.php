@@ -95,7 +95,6 @@ class module_console_taskrun extends Command
             }
         }
 
-
         if ($input->getOption('verbose')) {
             $this->container['monolog']->pushHandler(new StreamHandler('php://stdout'));
         }

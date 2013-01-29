@@ -277,12 +277,12 @@ class File
      *
      * @param string      $pathfile     The path to the file
      * @param \collection $collection   The destination collection
-     * @param MediaVorus  $mediavorus   A MediaVorus object
+     * @param Application $app          An application
      * @param string      $originalName An optionnal original name (if
-     *                                      different from the $pathfile filename)
+     *                                  different from the $pathfile filename)
      * @throws \InvalidArgumentException
      *
-     * @return \Alchemy\Phrasea\Border\File
+     * @return File
      */
     public static function buildFromPathfile($pathfile, \collection $collection, Application $app, $originalName = null)
     {

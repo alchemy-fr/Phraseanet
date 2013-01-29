@@ -38,7 +38,7 @@ class Session_Authentication_Guest implements Session_Authentication_Interface
 
     /**
      *
-     * @param  Application                       $app
+     * @param  Application                  $app
      * @return Session_Authentication_Guest
      */
     public function __construct(Application $app)

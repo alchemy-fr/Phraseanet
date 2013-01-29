@@ -49,8 +49,6 @@ class Developers implements ControllerProviderInterface
         $controllers->get('/applications/', $this->call('listApps'))
             ->bind('developers_applications');
 
-
-
         /**
          * Get the form to create a new application
          *
@@ -82,7 +80,6 @@ class Developers implements ControllerProviderInterface
          */
         $controllers->post('/application/', $this->call('newApp'))
             ->bind('submit_developers_application');
-
 
         /**
          * Get application information
@@ -176,10 +173,10 @@ class Developers implements ControllerProviderInterface
     /**
      * Delete application
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @param   integer         $id      The application id
-     * @return  JsonResponse
+     * @param  Application  $app     A Silex application where the controller is mounted on
+     * @param  Request      $request The current request
+     * @param  integer      $id      The application id
+     * @return JsonResponse
      */
     public function deleteApp(Application $app, Request $request, $id)
     {
@@ -202,10 +199,10 @@ class Developers implements ControllerProviderInterface
     /**
      * Change application callback
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @param   integer         $id      The application id
-     * @return  JsonResponse
+     * @param  Application  $app     A Silex application where the controller is mounted on
+     * @param  Request      $request The current request
+     * @param  integer      $id      The application id
+     * @return JsonResponse
      */
     public function renewAppCallback(Application $app, Request $request, $id)
     {
@@ -233,10 +230,10 @@ class Developers implements ControllerProviderInterface
     /**
      * Authorize application to use a grant password type
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @param   integer         $id      The application id
-     * @return  JsonResponse
+     * @param  Application  $app     A Silex application where the controller is mounted on
+     * @param  Request      $request The current request
+     * @param  integer      $id      The application id
+     * @return JsonResponse
      */
     public function renewAccessToken(Application $app, Request $request, $id)
     {
@@ -270,10 +267,10 @@ class Developers implements ControllerProviderInterface
     /**
      * Authorize application to use a grant password type
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @param   integer         $id      The application id
-     * @return  JsonResponse
+     * @param  Application  $app     A Silex application where the controller is mounted on
+     * @param  Request      $request The current request
+     * @param  integer      $id      The application id
+     * @return JsonResponse
      */
     public function authorizeGrantpassword(Application $app, Request $request, $id)
     {
@@ -296,9 +293,9 @@ class Developers implements ControllerProviderInterface
     /**
      * Create a new developer applications
      *
-     * @param   Application $app     A Silex application where the controller is mounted on
-     * @param   Request     $request The current request
-     * @return  Response
+     * @param  Application $app     A Silex application where the controller is mounted on
+     * @param  Request     $request The current request
+     * @return Response
      */
     public function newApp(Application $app, Request $request)
     {
@@ -332,9 +329,9 @@ class Developers implements ControllerProviderInterface
     /**
      * List of apps created by the user
      *
-     * @param   Application $app     A Silex application where the controller is mounted on
-     * @param   Request     $request The current request
-     * @return  Response
+     * @param  Application $app     A Silex application where the controller is mounted on
+     * @param  Request     $request The current request
+     * @return Response
      */
     public function listApps(Application $app, Request $request)
     {
@@ -346,9 +343,9 @@ class Developers implements ControllerProviderInterface
     /**
      * Display form application
      *
-     * @param   Application $app     A Silex application where the controller is mounted on
-     * @param   Request     $request The current request
-     * @return  Response
+     * @param  Application $app     A Silex application where the controller is mounted on
+     * @param  Request     $request The current request
+     * @return Response
      */
     public function displayFormApp(Application $app, Request $request)
     {
@@ -362,10 +359,10 @@ class Developers implements ControllerProviderInterface
     /**
      * Get application information
      *
-     * @param   Application     $app     A Silex application where the controller is mounted on
-     * @param   Request         $request The current request
-     * @param   integer         $id      The application id
-     * @return  Response
+     * @param  Application $app     A Silex application where the controller is mounted on
+     * @param  Request     $request The current request
+     * @param  integer     $id      The application id
+     * @return Response
      */
     public function getApp(Application $app, Request $request, $id)
     {

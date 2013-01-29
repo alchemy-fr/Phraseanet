@@ -29,7 +29,7 @@ class ApcCache extends ServiceAbstract
             throw new \Exception('The APC cache requires the APC extension.');
         }
 
-        if ( ! $this->cache) {
+        if (! $this->cache) {
             $this->cache = new CacheDriver\ApcCache();
 
             $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
@@ -43,4 +43,3 @@ class ApcCache extends ServiceAbstract
         return 'apc';
     }
 }
-

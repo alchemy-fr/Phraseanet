@@ -63,7 +63,7 @@ class patch_370 implements patchInterface
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $result) {
+        if (! $result) {
             throw new \RuntimeException('Unable to find structure');
         }
 
@@ -90,4 +90,3 @@ class patch_370 implements patchInterface
         return true;
     }
 }
-

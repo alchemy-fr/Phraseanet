@@ -61,7 +61,7 @@ class API_OAuth2_RefreshToken
      */
     public function get_account()
     {
-        if ( ! $this->account) {
+        if (! $this->account) {
             $this->account = new API_OAuth2_Account($this->app, $this->account_id);
         }
 
@@ -96,7 +96,7 @@ class API_OAuth2_RefreshToken
 
     /**
      *
-     * @param  Application             $app
+     * @param  Application        $app
      * @param  API_OAuth2_Account $account
      * @return array
      */
@@ -121,7 +121,7 @@ class API_OAuth2_RefreshToken
 
     /**
      *
-     * @param  Application                  $app
+     * @param  Application             $app
      * @param  API_OAuth2_Account      $account
      * @param  int                     $expires
      * @param  type                    $refresh_token

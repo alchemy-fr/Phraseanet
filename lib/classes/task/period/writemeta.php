@@ -123,8 +123,7 @@ class task_period_writemeta extends task_databoxAbstract
         <script type="text/javascript">
             function taskFillGraphic_<?php echo(get_class($this));?>(xml)
             {
-                if(xml)
-                {
+                if (xml) {
                     xml = $.parseXML(xml);
                     xml = $(xml);
 
@@ -146,8 +145,7 @@ class task_period_writemeta extends task_databoxAbstract
                 } ;
                 $(".formElem").change(function(){
                     fieldname = $(this).attr("name");
-                    switch((this.nodeName+$(this).attr("type")).toLowerCase())
-                    {
+                    switch ((this.nodeName+$(this).attr("type")).toLowerCase()) {
                         case "inputtext":
                             if (typeof(limits[fieldname])!='undefined') {
                                 var v = 0|this.value;
@@ -331,4 +329,3 @@ class task_period_writemeta extends task_databoxAbstract
         return $this;
     }
 }
-

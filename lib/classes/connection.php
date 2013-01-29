@@ -105,7 +105,9 @@ class connection
 
     /**
      *
-     * @param  string         $name
+     * @param Application $app
+     * @param string      $name
+     *
      * @return connection_pdo
      */
     public static function getPDOConnection(Application $app, $name = null)

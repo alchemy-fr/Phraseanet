@@ -46,8 +46,10 @@ class Session_Logger
 
     /**
      *
-     * @param  databox        $databox
-     * @param  int            $log_id
+     * @param Application $app
+     * @param databox     $databox
+     * @param integer     $log_id
+     *
      * @return Session_Logger
      */
     public function __construct(Application $app, databox $databox, $log_id)
@@ -92,9 +94,10 @@ class Session_Logger
 
     /**
      *
-     * @param  databox         $databox
-     * @param  User_Adapter    $user
-     * @param  Browser         $browser
+     * @param Application $app
+     * @param databox     $databox
+     * @param Browser     $browser
+     *
      * @return Session_Logger
      */
     public static function create(Application $app, databox $databox, Browser $browser)

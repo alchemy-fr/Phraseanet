@@ -44,7 +44,7 @@ class Monolog extends ServiceAbstract
         //defaut to main handler
         $handler = isset($options["handler"]) ? $options["handler"] : false;
 
-        if ( ! $handler) {
+        if (! $handler) {
             throw new \Exception(sprintf(
                     "You must specify at least one handler for '%s' service"
                     , __CLASS__
@@ -117,4 +117,3 @@ class Monolog extends ServiceAbstract
         return array('channel', 'handler', 'filename');
     }
 }
-

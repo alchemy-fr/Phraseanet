@@ -47,7 +47,7 @@ class RedisCache extends ServiceAbstract
             throw new \Exception('The Redis cache requires the Redis extension.');
         }
 
-        if ( ! $this->cache) {
+        if (! $this->cache) {
             $redis = new \Redis();
 
             if ($redis->connect($this->host, $this->port)) {
@@ -81,4 +81,3 @@ class RedisCache extends ServiceAbstract
         return $this->port;
     }
 }
-

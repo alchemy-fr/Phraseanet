@@ -59,7 +59,7 @@ class Bridge_Api
     /**
      *
      * @param  Application $app
-     * @param  int        $id
+     * @param  int         $id
      * @return Bridge_Api
      */
     public function __construct(Application $app, $id)
@@ -199,7 +199,7 @@ class Bridge_Api
      *
      * @param  string               $object
      * @param  string               $object_id
-     * @param  Request              $request
+     * @param  array                $datas
      * @return Bridge_Api_Interface
      */
     public function update_element($object, $object_id, Array $datas)
@@ -316,7 +316,8 @@ class Bridge_Api
 
     /**
      *
-     * @param  string $element_id
+     * @param Bridge_Element $element
+     *
      * @return string
      */
     public function get_element_status(Bridge_Element $element)

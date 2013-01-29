@@ -102,7 +102,7 @@ EOF
     {
         $this->generateUpgradesFromOption($input);
 
-        if ( ! $this->upgrades) {
+        if (! $this->upgrades) {
             throw new \Exception('No upgrade available');
         }
 

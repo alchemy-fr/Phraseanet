@@ -141,10 +141,10 @@ class Order implements ControllerProviderInterface
     /**
      * Create a new order
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @param   integer         $order_id
-     * @return  RedirectResponse|JsonResponse
+     * @param Application $app
+     * @param Request     $request
+     *
+     * @return RedirectResponse|JsonResponse
      */
     public function createOrder(Application $app, Request $request)
     {
@@ -203,7 +203,6 @@ class Order implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
                 'success' => $success,
                 'msg'     => $msg,
@@ -219,10 +218,10 @@ class Order implements ControllerProviderInterface
     /**
      * Display list of orders
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @param   integer         $order_id
-     * @return  Response
+     * @param Application $app
+     * @param Request     $request
+     *
+     * @return Response
      */
     public function displayOrders(Application $app, Request $request)
     {
@@ -249,10 +248,10 @@ class Order implements ControllerProviderInterface
     /**
      * Display a single order identified by its id
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @param   integer         $order_id
-     * @return  Response
+     * @param  Application $app
+     * @param  Request     $request
+     * @param  integer     $order_id
+     * @return Response
      */
     public function displayOneOrder(Application $app, Request $request, $order_id)
     {
@@ -270,10 +269,10 @@ class Order implements ControllerProviderInterface
     /**
      * Send an order
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @param   integer         $order_id
-     * @return  RedirectResponse|JsonResponse
+     * @param  Application                   $app
+     * @param  Request                       $request
+     * @param  integer                       $order_id
+     * @return RedirectResponse|JsonResponse
      */
     public function sendOrder(Application $app, Request $request, $order_id)
     {
@@ -293,7 +292,6 @@ class Order implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
                 'success'  => $success,
                 'msg'      => $success ? _('Order has been sent') : _('An error occured while sending, please retry  or contact an admin if problem persists'),
@@ -310,10 +308,10 @@ class Order implements ControllerProviderInterface
     /**
      * Deny an order
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @param   integer         $order_id
-     * @return  RedirectResponse|JsonResponse
+     * @param  Application                   $app
+     * @param  Request                       $request
+     * @param  integer                       $order_id
+     * @return RedirectResponse|JsonResponse
      */
     public function denyOrder(Application $app, Request $request, $order_id)
     {
@@ -333,7 +331,6 @@ class Order implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
                 'success'  => $success,
                 'msg'      => $success ? _('Order has been denied') : _('An error occured while denying, please retry  or contact an admin if problem persists'),

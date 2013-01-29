@@ -26,7 +26,7 @@ class FirePHP extends ServiceAbstract
 
     public function getDriver()
     {
-        if ( ! $this->logger) {
+        if (! $this->logger) {
             $this->logger = new Logger('FirePHP');
 
             $this->logger->pushHandler(new FirePHPHandler());

@@ -143,7 +143,6 @@ class PhraseaEngineQueryParser
                 if (is_array($tree["VALUE"])) {
                     return(implode(" ", $tree["VALUE"]));
                 } else {
-
                     return($tree["VALUE"]);
                 }
                 break;
@@ -1140,7 +1139,6 @@ class PhraseaEngineQueryParser
             "LB"       => $newTreeLB,
             "RB"       => $newTreeRB);
 
-
         return $tree;
     }
 
@@ -1893,4 +1891,3 @@ class PhraseaEngineQueryParser
         }
     }
 }
-

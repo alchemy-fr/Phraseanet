@@ -15,17 +15,17 @@ class SearchEngineSuggestion
 {
 
     /**
-     * @var string 
+     * @var string
      */
     private $query;
 
     /**
-     * @var string 
+     * @var string
      */
     private $suggestion;
 
     /**
-     * @var int 
+     * @var int
      */
     private $hits;
 
@@ -38,7 +38,7 @@ class SearchEngineSuggestion
 
     /**
      * The query related to the suggestion
-     * 
+     *
      * @return string
      */
     public function getQuery()
@@ -48,7 +48,7 @@ class SearchEngineSuggestion
 
     /**
      * The actual suggestion
-     * 
+     *
      * @return string
      */
     public function getSuggestion()
@@ -58,7 +58,7 @@ class SearchEngineSuggestion
 
     /**
      * The number of hits
-     * 
+     *
      * @return int
      */
     public function getHits()

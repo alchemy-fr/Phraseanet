@@ -293,7 +293,7 @@ class Upload implements ControllerProviderInterface
     /**
      * Get current user's granted collections where he can upload
      *
-     * @param \User_Adapter $user
+     * @param  \User_Adapter $user
      * @return array
      */
     private function getGrantedCollections(\User_Adapter $user)

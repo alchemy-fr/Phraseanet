@@ -94,4 +94,3 @@ class module_report_dashboard_group implements module_report_dashboard_component
         return new module_report_dashboard_merge($this);
     }
 }
-

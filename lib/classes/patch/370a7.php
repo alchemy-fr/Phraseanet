@@ -70,6 +70,7 @@ class patch_370a7 implements patchInterface
             if ($e->getCode() == '42S02') {
 
             }
+
             return;
         }
 
@@ -148,7 +149,6 @@ class patch_370a7 implements patchInterface
             $app['EM']->close();
         }
 
-
         $stmt->closeCursor();
 
         return;
@@ -160,4 +160,3 @@ class patch_370a7 implements patchInterface
         $query->execute();
     }
 }
-

@@ -77,7 +77,7 @@ class module_report_activity extends module_report
     {
         $hours = array();
 
-        for ($i = 0; $i < 24; $i ++ ) {
+        for ($i = 0; $i < 24; $i ++) {
             array_push($this->display, $i);
             $hours[$i] = 0;
         }
@@ -153,8 +153,10 @@ class module_report_activity extends module_report
     }
 
     /**
-     * @desc get all questions by user
-     * @param string $idUser
+     * Get all questions by user
+     *
+     * @param string $value
+     * @param string $what
      */
     public function getAllQuestionByUser($value, $what)
     {
@@ -362,7 +364,6 @@ class module_report_activity extends module_report
     {
         $this->title = _('report:: telechargements par jour');
 
-
         $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
@@ -546,9 +547,11 @@ class module_report_activity extends module_report
     }
 
     /**
-     * @desc get the deail of download by users
-     * @param  bool  $ext false for your appbox conn, true for external connections
-     * @param  array $tab config for the html table
+     * Get the deail of download by users
+     *
+     * @param array  $tab config for the html table
+     * @param String $on
+     *
      * @return array
      */
     public function getDetailDownload($tab = false, $on = "")

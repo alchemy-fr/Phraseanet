@@ -106,9 +106,9 @@ class Export implements ControllerProviderInterface
     /**
      * Display form to export documents
      *
-     * @param   Application $app
-     * @param   Request     $request
-     * @return  Response
+     * @param  Application $app
+     * @param  Request     $request
+     * @return Response
      */
     public function displayMultiExport(Application $app, Request $request)
     {
@@ -131,9 +131,9 @@ class Export implements ControllerProviderInterface
     /**
      * Test a FTP connexion
      *
-     * @param   Application     $app
-     * @param   Request         $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function testFtpConnexion(Application $app, Request $request)
     {
@@ -160,9 +160,9 @@ class Export implements ControllerProviderInterface
 
     /**
      *
-     * @param   Application   $app
-     * @param   Request       $request
-     * @return  JsonResponse
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
      */
     public function exportFtp(Application $app, Request $request)
     {
@@ -210,7 +210,6 @@ class Export implements ControllerProviderInterface
                 'message' => _('Export saved in the waiting queue')
             ));
         } catch (\Exception $e) {
-
             return $app->json(array(
                 'success' => false,
                 'message' => _('Something went wrong')
@@ -221,8 +220,8 @@ class Export implements ControllerProviderInterface
     /**
      * Export document by mail
      *
-     * @param   Application $app
-     * @param   Request     $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function exportMail(Application $app, Request $request)

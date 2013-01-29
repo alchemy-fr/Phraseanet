@@ -85,7 +85,7 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param  Application          $app
+     * @param  Application        $app
      * @return API_OAuth2_Adapter
      */
     public function __construct(Application $app)
@@ -418,7 +418,7 @@ class API_OAuth2_Adapter extends OAuth2
          * check for valid client_id
          * check for valid redirect_uri
          */
-        if ( ! $input["client_id"]) {
+        if (! $input["client_id"]) {
             if ($input["redirect_uri"])
                 $this->errorDoRedirectUriCallback(
                     $input["redirect_uri"], OAUTH2_ERROR_INVALID_CLIENT, NULL, NULL, $input["state"]
@@ -472,7 +472,7 @@ class API_OAuth2_Adapter extends OAuth2
         /**
          * Check response_type
          */
-        if ( ! $input["response_type"]) {
+        if (! $input["response_type"]) {
             $this->errorDoRedirectUriCallback($input["redirect_uri"], OAUTH2_ERROR_INVALID_REQUEST, 'Invalid response type.', NULL, $input["state"]);
         }
 

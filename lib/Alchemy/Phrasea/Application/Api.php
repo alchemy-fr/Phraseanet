@@ -710,7 +710,6 @@ return call_user_func(function($environment = 'prod') {
     })->assert('databox_id', '\d+')->assert('story_id', '\d+');
     $app->get('/stories/{any_id}/{anyother_id}/', $bad_request_exception);
 
-
     /**
      * Route Errors
      */
