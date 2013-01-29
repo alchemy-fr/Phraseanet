@@ -29,4 +29,3 @@ class system_url
         return $this->url;
     }
 }
-

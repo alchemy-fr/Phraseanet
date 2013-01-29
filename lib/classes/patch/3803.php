@@ -116,4 +116,3 @@ class patch_3803 implements patchInterface
     }
 
 }
-

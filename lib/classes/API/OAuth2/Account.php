@@ -176,7 +176,7 @@ class API_OAuth2_Account
      */
     public function get_token()
     {
-        if ( ! $this->token) {
+        if (! $this->token) {
             try {
                 $this->token = new API_OAuth2_Token($this->app['phraseanet.appbox'], $this);
             } catch (Exception_NotFound $e) {
@@ -262,7 +262,7 @@ class API_OAuth2_Account
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $row) {
+        if (! $row) {
             throw new Exception_NotFound();
         }
 

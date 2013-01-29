@@ -1,6 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Application;
 use Monolog\Logger;
 
 abstract class task_abstract
@@ -149,7 +148,7 @@ abstract class task_abstract
         $stmt->execute(array(':taskid' => $this->getID()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        if ( ! $row) {
+        if (! $row) {
             throw new Exception('Unknown task id');
         }
         $this->title = $row['name'];
@@ -183,14 +182,14 @@ abstract class task_abstract
     {
         static $stmt = NULL;
         $conn = connection::getPDOConnection($this->dependencyContainer);
-        if ( ! $stmt) {
+        if (! $stmt) {
             $sql = 'SELECT status FROM task2 WHERE task_id = :taskid';
             $stmt = $conn->prepare($sql);
         }
         $stmt->execute(array(':taskid' => $this->taskid));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        if ( ! $row) {
+        if (! $row) {
             throw new Exception('Unknown task id');
         }
         unset($conn);
@@ -303,8 +302,7 @@ abstract class task_abstract
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
-        if(!@$dom->loadXML($settings))
-        {
+        if (!@$dom->loadXML($settings)) {
             throw new Exception_InvalidArgument('Bad XML');
         }
 
@@ -539,7 +537,7 @@ abstract class task_abstract
         if ($this->running) {       // && $this->records_done == 0)
             $when_started = time() - $when_started;
             if ($when_started < $this->period) {
-                for ($t = $this->period - $when_started; $this->running && $t > 0; $t -- ) { // DON'T do sleep($this->period - $when_started) because it prevents ticks !
+                for ($t = $this->period - $when_started; $this->running && $t > 0; $t --) { // DON'T do sleep($this->period - $when_started) because it prevents ticks !
                     $s = $this->getState();
                     if ($s == self::STATE_TOSTOP) {
                         $this->setState(self::STATE_STOPPED);
@@ -717,7 +715,7 @@ abstract class task_abstract
                 $this->running = FALSE;
             }
 
-            if ( ! $this->running) {
+            if (! $this->running) {
                 break;
             }
         }
@@ -851,7 +849,7 @@ abstract class task_abstract
         $domdoc = new DOMDocument();
         if ($settings && ! $domdoc->loadXML($settings)) {
             throw new Exception('settings invalide');
-        } elseif ( ! $settings) {
+        } elseif (! $settings) {
             $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
         }
 

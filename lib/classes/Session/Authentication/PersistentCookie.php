@@ -42,7 +42,6 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
         $this->app= $app;
         $this->persistent_cookie = $persistent_cookie;
 
-
         $dql = 'SELECT s FROM Entities\Session s
             WHERE s.token = :token';
 
@@ -50,7 +49,7 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
         $query->setParameters(array('token'  => $persistent_cookie));
         $session = $query->getOneOrNullResult();
 
-        if ( ! $session) {
+        if (! $session) {
             throw new \Exception_Session_WrongToken('Persistent cookie value does not have any valid session');
         }
 

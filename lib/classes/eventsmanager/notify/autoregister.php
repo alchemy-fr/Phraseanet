@@ -202,7 +202,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
             $receiver = Receiver::fromUser($to);
             $readyToSend = true;
         } catch (Exception $e) {
-            
+
         }
 
         if ($readyToSend) {

@@ -94,7 +94,7 @@ class appbox extends base
 
                 $media = $this->app['mediavorus']->guess($filename);
 
-                if($media->getWidth() > 120 || $media->getHeight() > 24) {
+                if ($media->getWidth() > 120 || $media->getHeight() > 24) {
                     $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
                     $imageSpec->setDimensions(120, 24);
                 }
@@ -110,7 +110,7 @@ class appbox extends base
                 } catch (\MediaAlchemyst\Exception $e) {
 
                 }
-            } else if ($pic_type === collection::PIC_PRESENTATION) {
+            } elseif ($pic_type === collection::PIC_PRESENTATION) {
                 //resize collection logo
                 $imageSpec = new ImageSpecification();
                 $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);

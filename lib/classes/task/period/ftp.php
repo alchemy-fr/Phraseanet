@@ -91,8 +91,7 @@ class task_period_ftp extends task_appboxAbstract
         <script type="text/javascript">
             function taskFillGraphic_<?php echo(get_class($this));?>(xml)
             {
-                if(xml)
-                {
+                if (xml) {
                     xml = $.parseXML(xml);
                     xml = $(xml);
 
@@ -111,8 +110,7 @@ class task_period_ftp extends task_appboxAbstract
                 } ;
                 $(".formElem").change(function(){
                     fieldname = $(this).attr("name");
-                    switch((this.nodeName+$(this).attr("type")).toLowerCase())
-                    {
+                    switch ((this.nodeName+$(this).attr("type")).toLowerCase()) {
                         case "inputtext":
                             if (typeof(limits[fieldname])!='undefined') {
                                 var v = 0|this.value;
@@ -129,6 +127,7 @@ class task_period_ftp extends task_appboxAbstract
             });
         </script>
         <?php
+
         return;
     }
 
@@ -153,6 +152,7 @@ class task_period_ftp extends task_appboxAbstract
             &nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
         </form>
         <?php
+
         return ob_get_clean();
     }
 
@@ -696,4 +696,3 @@ class task_period_ftp extends task_appboxAbstract
         return $this;
     }
 }
-

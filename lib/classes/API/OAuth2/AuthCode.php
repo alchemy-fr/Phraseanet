@@ -135,7 +135,7 @@ class API_OAuth2_AuthCode
 
     /**
      *
-     * @param  Application             $app
+     * @param  Application        $app
      * @param  API_OAuth2_Account $account
      * @return array
      */
@@ -162,7 +162,7 @@ class API_OAuth2_AuthCode
 
     /**
      *
-     * @param  Application              $app
+     * @param  Application         $app
      * @param  API_OAuth2_Account  $account
      * @param  type                $code
      * @param  int                 $expires

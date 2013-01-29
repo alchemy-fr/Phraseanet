@@ -305,7 +305,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                     ),
                     'page' => ! $offset_start ? 1 : $offset_start);
                 //add quantity
-                if ( ! ! $quantity) {
+                if (! ! $quantity) {
                     $params["limit"] = $quantity;
                 }
                 $url = sprintf('/me/%ss', $object);

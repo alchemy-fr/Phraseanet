@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Border\Checker;
 
 /**
  *
@@ -59,9 +58,8 @@ class patch_371 implements patchInterface
      */
     public function apply(base $databox, Application $app)
     {
-        foreach($databox->get_meta_structure() as $databox_field) {
+        foreach ($databox->get_meta_structure() as $databox_field) {
             $databox_field->save();
         }
     }
 }
-

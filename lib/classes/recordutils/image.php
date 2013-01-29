@@ -109,7 +109,7 @@ class recordutils_image extends recordutils
         }
 
         $vars = $xpprefs->query('/baseprefs/stamp/*/var');
-        for ($i = 0; $i < $vars->length; $i ++ ) {
+        for ($i = 0; $i < $vars->length; $i ++) {
             $varval = '';
             $n = $vars->item($i);
             switch (strtoupper($n->getAttribute('name'))) {
@@ -131,7 +131,7 @@ class recordutils_image extends recordutils
         }
 
         $fields = $xpprefs->query('/baseprefs/stamp/*/field');
-        for ($i = 0; $i < $fields->length; $i ++ ) {
+        for ($i = 0; $i < $fields->length; $i ++) {
             $fldval = '';
             $n = $fields->item($i);
             $fieldname = $n->getAttribute('name');
@@ -211,7 +211,7 @@ class recordutils_image extends recordutils
         $txtblock = array();
         $texts = $xpprefs->query('/baseprefs/stamp/text');
         $fontsize = "100%";
-        for ($i = 0; $i < $texts->length; $i ++ ) {
+        for ($i = 0; $i < $texts->length; $i ++) {
             if (($tmpfontsize = trim($texts->item($i)->getAttribute('size'))) != '') {
                 if (substr($tmpfontsize, -1) == '%')
                     $tmpfontsize = (int) ($tmpfontsize * $image_width / 4000);
@@ -308,7 +308,7 @@ class recordutils_image extends recordutils
 
     /**
      *
-     * @param \media_subdef $subdef
+     * @param  \media_subdef  $subdef
      * @return boolean|string
      */
     public static function watermark(Application $app, \media_subdef $subdef)

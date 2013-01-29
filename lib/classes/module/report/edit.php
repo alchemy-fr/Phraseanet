@@ -127,4 +127,3 @@ class module_report_edit extends module_report
         }
     }
 }
-

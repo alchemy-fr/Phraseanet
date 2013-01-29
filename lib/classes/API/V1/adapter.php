@@ -43,7 +43,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * API constructor
      *
-     * @param  Application         $app     The application context
+     * @param  Application    $app The application context
      * @return API_V1_adapter
      */
     public function __construct(Application $app)
@@ -94,7 +94,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Return an array of key-values informations about scheduler
      *
-     * @param  Application $app The silex application
+     * @param  Application    $app The silex application
      * @return \API_V1_result
      */
     public function get_scheduler(Application $app)
@@ -825,7 +825,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Search for results
      *
-     * @param Request $request
+     * @param  Request        $request
      * @return \API_V1_result
      */
     public function search(Request $request)
@@ -885,7 +885,7 @@ class API_V1_adapter extends API_V1_Abstract
         $options = SearchEngineOptions::fromRequest($this->app, $request);
 
         $offsetStart = (int) ($request->get('offset_start') ? : 0);
-        $perPage = (int)  $request->get('per_page') ? : 10;
+        $perPage = (int) $request->get('per_page') ? : 10;
 
         $query = (string) $request->request->get('query');
 

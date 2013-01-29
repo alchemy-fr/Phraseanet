@@ -130,4 +130,3 @@ class module_report_push extends module_report
         }
     }
 }
-

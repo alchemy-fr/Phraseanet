@@ -92,9 +92,9 @@ class Session_Logger
 
     /**
      *
-     * @param  databox         $databox
-     * @param  User_Adapter    $user
-     * @param  Browser         $browser
+     * @param  databox        $databox
+     * @param  User_Adapter   $user
+     * @param  Browser        $browser
      * @return Session_Logger
      */
     public static function create(Application $app, databox $databox, Browser $browser)

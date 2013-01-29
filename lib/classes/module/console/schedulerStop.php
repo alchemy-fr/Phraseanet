@@ -39,7 +39,6 @@ class module_console_schedulerStop extends Command
 
             return 0;
         } catch (\Exception $e) {
-
             return 1;
         }
 

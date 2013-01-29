@@ -128,4 +128,3 @@ class patch_361 implements patchInterface
         return true;
     }
 }
-

@@ -369,7 +369,7 @@ class collection implements cache_cacheableInterface
     {
         $coll_id = phrasea::collFromBas($app, $base_id);
         $sbas_id = phrasea::sbasFromBas($app, $base_id);
-        if ( ! $sbas_id || ! $coll_id) {
+        if (! $sbas_id || ! $coll_id) {
             throw new Exception_Databox_CollectionNotFound(sprintf("Collection could not be found"));
         }
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);

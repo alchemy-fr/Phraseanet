@@ -70,4 +70,3 @@ class patch_370a3 implements patchInterface
         }
     }
 }
-

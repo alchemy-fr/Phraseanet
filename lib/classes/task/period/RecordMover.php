@@ -152,8 +152,7 @@ class task_period_RecordMover extends task_appboxAbstract
             {
                 $("#sqlu").text("");
                 $("#sqls").text("");
-                if(xml)
-                {
+                if (xml) {
                     xml2 = $.parseXML(xml);
                     xml2 = $(xml2);
 
@@ -258,8 +257,7 @@ class task_period_RecordMover extends task_appboxAbstract
                     } ;
                     $(".formElem").change(function(){
                         fieldname = $(this).attr("name");
-                        switch((this.nodeName+$(this).attr("type")).toLowerCase())
-                        {
+                        switch ((this.nodeName+$(this).attr("type")).toLowerCase()) {
                             case "inputtext":
                                 if (typeof(limits[fieldname])!='undefined') {
                                     var v = 0|this.value;
@@ -301,6 +299,7 @@ class task_period_RecordMover extends task_appboxAbstract
             <div class="terminal" id="sqla"></div>
         </center>
         <?php
+
         return ob_get_clean();
     }
     /**
@@ -395,8 +394,8 @@ class task_period_RecordMover extends task_appboxAbstract
     /**
      * work on ONE record
      *
-     * @param  appbox                  $appbox
-     * @param  array                   $row
+     * @param  appbox                   $appbox
+     * @param  array                    $row
      * @return \task_period_RecordMover
      */
     protected function processOneContent(appbox $appbox, Array $row)
@@ -459,8 +458,8 @@ class task_period_RecordMover extends task_appboxAbstract
     /**
      * all work done on processOneContent, so nothing to do here
      *
-     * @param  appbox                  $appbox
-     * @param  array                   $row
+     * @param  appbox                   $appbox
+     * @param  array                    $row
      * @return \task_period_RecordMover
      */
     protected function postProcessOneContent(appbox $appbox, Array $row)

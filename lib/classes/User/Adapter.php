@@ -1243,7 +1243,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function get_applied_template()
     {
-
         return $this->applied_template;
     }
 
@@ -1473,7 +1472,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
             $app['EM']->flush();
         }
-
 
         $usr_id = $app['phraseanet.user']->get_id();
 

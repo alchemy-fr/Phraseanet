@@ -1296,7 +1296,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param File $file
+     * @param  File            $file
      * @return \record_adapter
      */
     public static function createFromFile(File $file, Application $app)

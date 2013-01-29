@@ -52,7 +52,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
 
     /**
      *
-     * @param  Application                        $app
+     * @param  Application                   $app
      * @param  string                        $login
      * @param  string                        $password
      * @return Session_Authentication_Native

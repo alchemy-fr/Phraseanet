@@ -59,7 +59,7 @@ class set_selection extends set_abstract
             $base_id = $record->get_base_id();
             $sbas_id = $record->get_sbas_id();
             $record_id = $record->get_record_id();
-            if ( ! $rights) {
+            if (! $rights) {
                 if ($this->app['phraseanet.user']->ACL()->has_hd_grant($record)) {
                     continue;
                 }
@@ -157,4 +157,3 @@ class set_selection extends set_abstract
         return $ret;
     }
 }
-

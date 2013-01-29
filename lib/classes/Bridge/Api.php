@@ -59,7 +59,7 @@ class Bridge_Api
     /**
      *
      * @param  Application $app
-     * @param  int        $id
+     * @param  int         $id
      * @return Bridge_Api
      */
     public function __construct(Application $app, $id)

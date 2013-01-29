@@ -180,7 +180,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
      */
     protected function getPlotLegendDay($dmin, $dmax = false)
     {
-        if ( ! $dmax) {
+        if (! $dmax) {
             $date = new Datetime();
             $dmax = $date->format('d-m-Y');
         } else {

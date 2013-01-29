@@ -570,7 +570,7 @@ class databox extends base
      */
     public function get_subdef_structure()
     {
-        if ( ! $this->subdef_struct) {
+        if (! $this->subdef_struct) {
             $this->subdef_struct = new databox_subdefsStructure($this);
         }
 
@@ -579,7 +579,7 @@ class databox extends base
 
     public static function dispatch(Filesystem $filesystem, $repository_path, $date = false)
     {
-        if ( ! $date) {
+        if (! $date) {
             $date = date('Y-m-d H:i:s');
         }
 

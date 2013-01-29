@@ -258,4 +258,3 @@ class module_report_sqlfilter
         return;
     }
 }
-

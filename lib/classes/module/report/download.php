@@ -272,4 +272,3 @@ class module_report_download extends module_report
         return $array;
     }
 }
-

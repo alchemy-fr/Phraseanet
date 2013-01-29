@@ -77,7 +77,7 @@ class module_report_activity extends module_report
     {
         $hours = array();
 
-        for ($i = 0; $i < 24; $i ++ ) {
+        for ($i = 0; $i < 24; $i ++) {
             array_push($this->display, $i);
             $hours[$i] = 0;
         }
@@ -361,7 +361,6 @@ class module_report_activity extends module_report
     public function getDownloadByBaseByDay($tab = false)
     {
         $this->title = _('report:: telechargements par jour');
-
 
         $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();

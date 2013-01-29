@@ -83,4 +83,3 @@ class patch_370a5 implements patchInterface
         return true;
     }
 }
-

@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Border\Checker;
 
 /**
  *
@@ -73,4 +72,3 @@ class patch_3802 implements patchInterface
         return;
     }
 }
-

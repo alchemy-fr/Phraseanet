@@ -84,4 +84,3 @@ class DailymotionWithoutOauth2 extends Dailymotion
         return $result['url'];
     }
 }
-

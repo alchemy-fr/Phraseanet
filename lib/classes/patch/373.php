@@ -131,4 +131,3 @@ class patch_373 implements patchInterface
         return true;
     }
 }
-

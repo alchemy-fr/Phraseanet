@@ -226,9 +226,9 @@ class random
     /**
      * Get the validation token for one user and one validation basket
      *
-     * @param integer $userId
-     * @param integer $basketId
-     * @return string The desired token
+     * @param  integer             $userId
+     * @param  integer             $basketId
+     * @return string              The desired token
      * @throws \Exception_NotFound
      */
     public static function getValidationToken(Application $app, $userId, $basketId)
@@ -250,7 +250,7 @@ class random
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $row) {
+        if (! $row) {
             throw new \Exception_NotFound('Token not found');
         }
 

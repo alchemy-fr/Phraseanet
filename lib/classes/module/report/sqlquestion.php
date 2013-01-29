@@ -103,4 +103,3 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
         return array('sql'    => $sql, 'params' => $params);
     }
 }
-

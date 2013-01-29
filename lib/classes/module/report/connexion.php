@@ -174,4 +174,3 @@ class module_report_connexion extends module_report
         return (int) $row['nb'];
     }
 }
-

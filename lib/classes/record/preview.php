@@ -95,7 +95,7 @@ class record_preview extends record_adapter
 
         switch ($env) {
             case "RESULT":
-                if(null === $search_engine) {
+                if (null === $search_engine) {
                     throw new \LogicException('Search Engine should be provided');
                 }
 
@@ -329,7 +329,7 @@ class record_preview extends record_adapter
                 AND d.record_id = :record_id ';
         $params = array(':record_id' => $this->get_record_id());
 
-        if ( ! $report) {
+        if (! $report) {
             $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
             $params[':usr_id'] = $this->app['phraseanet.user']->get_id();
             $params[':site'] = $this->app['phraseanet.registry']->get('GV_sit');
@@ -376,7 +376,7 @@ class record_preview extends record_adapter
             }
 
             if ( ! in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final'])) {
-                if($action == 'collection') {
+                if ($action == 'collection') {
                     $tab[$hour][$site][$action][$row['usr_id']]['final'][] = phrasea::baseFromColl($this->get_sbas_id(), $row['final'], $this->app);
                 } else {
                     $tab[$hour][$site][$action][$row['usr_id']]['final'][] = $row['final'];

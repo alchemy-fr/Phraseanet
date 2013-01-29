@@ -81,4 +81,3 @@ class patch_3804 implements patchInterface
         return false;
     }
 }
-

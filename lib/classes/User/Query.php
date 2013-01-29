@@ -217,18 +217,18 @@ class User_Query implements User_QueryInterface
        LEFT JOIN sbasusr ON (usr.usr_id = sbasusr.usr_id)
       WHERE 1 ';
 
-        if ( ! $this->include_special_users) {
+        if (! $this->include_special_users) {
             $sql .= ' AND usr_login != "autoregister"
               AND usr_login != "invite" ';
         }
 
         $sql .= ' AND usr_login NOT LIKE "(#deleted_%" ';
 
-        if ( ! $this->include_invite) {
+        if (! $this->include_invite) {
             $sql .= ' AND usr.invite=0 ';
         }
 
-        if ( ! $this->email_not_null) {
+        if (! $this->email_not_null) {
             $sql .= ' AND usr.usr_mail IS NOT NULL ';
         }
 
@@ -714,7 +714,7 @@ class User_Query implements User_QueryInterface
      */
     public function on_base_ids(Array $base_ids = null)
     {
-        if ( ! $base_ids) {
+        if (! $base_ids) {
             return $this;
         }
 
@@ -739,7 +739,7 @@ class User_Query implements User_QueryInterface
      */
     public function on_sbas_ids(Array $sbas_ids = null)
     {
-        if ( ! $sbas_ids) {
+        if (! $sbas_ids) {
             return $this;
         }
 

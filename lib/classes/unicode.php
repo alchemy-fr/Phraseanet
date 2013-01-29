@@ -1351,7 +1351,7 @@ class unicode
 
         $l = mb_strlen($string, "UTF-8");
         $lastwasblank = false;
-        for ($i = 0; $i < $l; $i ++ ) {
+        for ($i = 0; $i < $l; $i ++) {
             $c = mb_substr($string, $i, 1, "UTF-8");
             $c = isset($this->map[$c]) ? $this->map[$c] : $c;
             if (mb_strpos($this->endCharacters_utf8, $c) !== FALSE) {
@@ -1374,7 +1374,7 @@ class unicode
         $l = mb_strlen($string);
 
         $regexp = '/[a-zA-Z0-9]{1}/';
-        for ($i = 0; $i < $l; $i ++ ) {
+        for ($i = 0; $i < $l; $i ++) {
             $c = mb_substr($string, $i, 1);
             if ( ! preg_match($regexp, $c))
                 $c = isset($this->map[$c]) ? $this->map[$c] : $c;
@@ -1404,7 +1404,7 @@ class unicode
         $out = '';
 
         $l = mb_strlen($string);
-        for ($i = 0; $i < $l; $i ++ ) {
+        for ($i = 0; $i < $l; $i ++) {
             $c = mb_substr($string, $i, 1);
             if (preg_match($regexp, $c))
                 $out .= $c;
@@ -1478,7 +1478,7 @@ class unicode
 
             $chars_in = array();
 
-            for ($cc = 0; $cc < 32; $cc ++ ) {
+            for ($cc = 0; $cc < 32; $cc ++) {
                 if (in_array($cc, array(9, 10, 13))) {
                     continue;
                 }

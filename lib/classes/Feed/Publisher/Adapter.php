@@ -177,7 +177,7 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
 
     /**
      *
-     * @param  Application                 $app
+     * @param  Application            $app
      * @param  User_Adapter           $user
      * @param  Feed_Adapter           $feed
      * @param  boolean                $owner

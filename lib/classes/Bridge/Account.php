@@ -313,7 +313,7 @@ class Bridge_Account
 
     /**
      *
-     * @param  Application $app
+     * @param  Application    $app
      * @param  user_adapter   $user
      * @return Bridge_Account
      */

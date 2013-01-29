@@ -63,7 +63,6 @@ class Session_Authentication_Token implements Session_Authentication_Interface
      */
     public function signOn()
     {
-
         return $this->user;
     }
 
@@ -73,7 +72,6 @@ class Session_Authentication_Token implements Session_Authentication_Interface
      */
     public function get_user()
     {
-
         return $this->user;
     }
 

@@ -172,7 +172,7 @@ class record_exportElement extends record_adapter
 
             $downloadable_settings = $subdef->is_downloadable();
 
-            if ( ! $downloadable_settings || $go_dl[$class] === false) {
+            if (! $downloadable_settings || $go_dl[$class] === false) {
                 continue;
             }
 
@@ -233,7 +233,7 @@ class record_exportElement extends record_adapter
      */
     private function add_count($name, $size)
     {
-        if ( ! $this->size) {
+        if (! $this->size) {
             $objectsize = array();
         } else
             $objectsize = $this->size;

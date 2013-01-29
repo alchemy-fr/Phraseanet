@@ -83,7 +83,7 @@ class API_V1_Log
 
     /**
      *
-     * @param Application             $app
+     * @param Application        $app
      * @param Request            $request
      * @param API_OAuth2_Account $account
      */

@@ -237,4 +237,3 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
         }
     }
 }
-

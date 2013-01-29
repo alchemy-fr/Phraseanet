@@ -43,7 +43,7 @@ class task_period_emptyColl extends task_appboxAbstract
 
     protected function retrieveContent(appbox $appbox)
     {
-        if ( ! $this->base_id) {
+        if (! $this->base_id) {
             $this->setState(self::STATE_STOPPED);
 
             return array();

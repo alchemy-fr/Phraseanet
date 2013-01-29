@@ -153,7 +153,6 @@ class cache_databox
 
         $connbas = \connection::getPDOConnection($app, $sbas_id);
 
-
         $sql = 'SELECT distinct site_id as site_id
             FROM clients
             WHERE site_id != :site_id';
@@ -180,7 +179,6 @@ class cache_databox
     public static function insertClient(Application $app, \databox $databox)
     {
         $connbas = $databox->get_connection();
-
 
         $sql = 'SELECT site_id FROM clients WHERE site_id = :site_id';
         $stmt = $connbas->prepare($sql);

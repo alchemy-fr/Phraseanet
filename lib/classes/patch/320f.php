@@ -82,7 +82,7 @@ class patch_320f implements patchInterface
 
             $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink']);
 
-            if ( ! $feed instanceof Feed_Adapter) {
+            if (! $feed instanceof Feed_Adapter) {
                 continue;
             }
 

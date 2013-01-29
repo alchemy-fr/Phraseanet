@@ -142,4 +142,3 @@ class patch_370a9 implements patchInterface
         $app['phraseanet.configuration']->setConfigurations($configs);
     }
 }
-

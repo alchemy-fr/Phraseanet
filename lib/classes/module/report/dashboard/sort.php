@@ -158,4 +158,3 @@ class module_report_dashboard_sort implements module_report_dashboard_componentI
         return $tmp;
     }
 }
-

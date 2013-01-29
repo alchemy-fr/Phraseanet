@@ -13,10 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\Media\MediaInterface;
-use Monolog\Logger;
-use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  *

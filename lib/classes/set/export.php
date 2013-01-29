@@ -754,11 +754,11 @@ class set_export extends set_abstract
 
     /**
      *
-     * @param  Application                                $app
-     * @param  string                                     $file
-     * @param  string                                     $exportname
-     * @param  string                                     $mime
-     * @param  string                                     $disposition
+     * @param  Application $app
+     * @param  string      $file
+     * @param  string      $exportname
+     * @param  string      $mime
+     * @param  string      $disposition
      * @return Response
      */
     public static function stream_file(Application $app, $file, $exportname, $mime, $disposition = 'inline')
@@ -828,7 +828,7 @@ class set_export extends set_abstract
     public static function stream_data($data, $exportname, $mime, $disposition = 'attachment')
     {
         $unicode = new \unicode();
-        
+
         header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: no-store, no-cache, must-revalidate");

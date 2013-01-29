@@ -109,4 +109,3 @@ class module_report_question extends module_report
         }
     }
 }
-

@@ -581,7 +581,7 @@ class databox_field implements cache_cacheableInterface
     {
         $this->Business = ! ! $boolean;
 
-        if($this->Business) {
+        if ($this->Business) {
             $this->thumbtitle = '0';
         }
 
@@ -657,7 +657,7 @@ class databox_field implements cache_cacheableInterface
      */
     protected static function checkMultiSeparator($separator, $multi)
     {
-        if ( ! $multi) {
+        if (! $multi) {
             return '';
         }
 
@@ -677,7 +677,7 @@ class databox_field implements cache_cacheableInterface
     {
         $this->thumbtitle = $value;
 
-        if($this->thumbtitle != '0') {
+        if ($this->thumbtitle != '0') {
             $this->Business = false;
         }
 

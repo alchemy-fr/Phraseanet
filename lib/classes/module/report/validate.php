@@ -130,4 +130,3 @@ class module_report_validate extends module_report
         }
     }
 }
-

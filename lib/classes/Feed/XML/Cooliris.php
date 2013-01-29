@@ -360,7 +360,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
             return $this;
         }
 
-        if ( ! $preview_permalink || ! $thumbnail_permalink) {
+        if (! $preview_permalink || ! $thumbnail_permalink) {
             return $this;
         }
 
