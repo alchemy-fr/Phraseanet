@@ -555,7 +555,6 @@ class Users implements ControllerProviderInterface
                                     $message .= "\n" . _('login::register:email: Vous avez ete refuse sur les collections suivantes : ') . implode(', ', $deny) . "\n";
                                 }
 
-
                                 $receiver = new Receiver(null, $row['usr_mail']);
                                 $mail = MailSuccessEmailUpdate::create($this->app, $receiver, null, $message);
 
@@ -783,7 +782,6 @@ class Users implements ControllerProviderInterface
 
             return $app->redirect('/admin/users/search/?user-updated=' . $nbCreation);
         })->bind('users_submit_import');
-
 
         $controllers->get('/import/example/csv/', function(Application $app, Request $request) {
 

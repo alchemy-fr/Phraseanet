@@ -110,10 +110,10 @@ use Symfony\Component\HttpFoundation\Response;
 class Application extends SilexApplication
 {
     private static $availableLanguages = array(
-        'de_DE' => 'Deutsch'
-        , 'en_GB' => 'English'
-        , 'fr_FR' => 'Français'
-        , 'nl_NL' => 'Dutch'
+        'de_DE' => 'Deutsch',
+        'en_GB' => 'English',
+        'fr_FR' => 'Français',
+        'nl_NL' => 'Dutch',
     );
     private $environment;
     private $sessionCookieEnabled = true;
@@ -204,9 +204,9 @@ class Application extends SilexApplication
             if ($app['phraseanet.registry']->get('GV_smtp')) {
 
                 $transport = new \Swift_Transport_EsmtpTransport(
-                        $app['swiftmailer.transport.buffer'],
-                        array($app['swiftmailer.transport.authhandler']),
-                        $app['swiftmailer.transport.eventdispatcher']
+                    $app['swiftmailer.transport.buffer'],
+                    array($app['swiftmailer.transport.authhandler']),
+                    $app['swiftmailer.transport.eventdispatcher']
                 );
 
                 $options = $app['swiftmailer.options'] = array_replace(array(
