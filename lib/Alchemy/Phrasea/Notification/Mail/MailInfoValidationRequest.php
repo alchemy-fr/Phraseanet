@@ -15,14 +15,26 @@ use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoValidationRequest extends AbstractMailWithLink
 {
+    /** @var string */
     private $title;
+    /** @var \User_Adapter */
     private $user;
 
+    /**
+     * Sets the title of the validation
+     *
+     * @param string $title
+     */
     public function setTitle($title)
     {
         $this->title = $title;
     }
 
+    /**
+     * Sets the user that asks for the validation
+     *
+     * @param string $user
+     */
     public function setUser($user)
     {
         $this->user = $user;

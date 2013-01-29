@@ -27,6 +27,18 @@ abstract class AbstractMailWithLink extends AbstractMail implements MailWithLink
         $this->expiration = $expiration;
     }
 
+    /**
+     * Creates a new Mail
+     *
+     * @param Application       $app
+     * @param ReceiverInterface $receiver
+     * @param EmitterInterface  $emitter
+     * @param string            $message
+     * @param string            $url
+     * @param \DateTime         $expiration
+     *
+     * @return MailWithLinkInterface
+     */
     public static function create(Application $app, ReceiverInterface $receiver, EmitterInterface $emitter = null, $message = null, $url = null, \DateTime $expiration = null)
     {
         $mail = new static($app, $receiver, $emitter, $message);

@@ -15,14 +15,26 @@ use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoNewPublication extends AbstractMailWithLink
 {
+    /** @string */
     private $author;
+    /** @string */
     private $title;
 
+    /**
+     * Sets the title
+     *
+     * @param string $title
+     */
     public function setTitle($title)
     {
         $this->title = $title;
     }
 
+    /**
+     * Sets the author
+     *
+     * @param string $author
+     */
     public function setAuthor($author)
     {
         $this->author = $author;

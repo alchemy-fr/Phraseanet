@@ -16,14 +16,26 @@ use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoOrderDelivered extends AbstractMail
 {
+    /** @var Basket */
     private $basket;
+    /** @var \User_Adapter */
     private $deliverer;
 
+    /**
+     * Sets the basket where the order has been delivered
+     *
+     * @param Basket $basket
+     */
     public function setBasket(Basket $basket)
     {
         $this->basket = $basket;
     }
 
+    /**
+     * Sets the user that delivers the order
+     *
+     * @param \User_Adapter $deliverer
+     */
     public function setDeliverer(\User_Adapter $deliverer)
     {
         $this->deliverer = $deliverer;

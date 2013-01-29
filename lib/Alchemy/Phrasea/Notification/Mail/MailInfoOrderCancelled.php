@@ -15,14 +15,26 @@ use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoOrderCancelled extends AbstractMail
 {
+    /** @var \User_Adapter */
     private $deliverer;
+    /** @var integer */
     private $quantity;
 
+    /**
+     * Sets the quantity that has been denied
+     *
+     * @param integer $quantity
+     */
     public function setQuantity($quantity)
     {
         $this->quantity = $quantity;
     }
 
+    /**
+     * Sets the user that has denied the some of the order
+     *
+     * @param \User_Adapter $deliverer
+     */
     public function setDeliverer(\User_Adapter $deliverer)
     {
         $this->deliverer = $deliverer;

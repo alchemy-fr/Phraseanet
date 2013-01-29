@@ -15,8 +15,14 @@ use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoValidationReminder extends AbstractMailWithLink
 {
+    /** @var string */
     private $title;
 
+    /**
+     * Sets the title of the validation to remind
+     *
+     * @param string $title
+     */
     public function setTitle($title)
     {
         $this->title = $title;

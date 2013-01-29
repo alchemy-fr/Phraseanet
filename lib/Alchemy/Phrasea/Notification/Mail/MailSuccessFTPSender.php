@@ -15,8 +15,14 @@ use Alchemy\Phrasea\Exception\LogicException;
 
 class MailSuccessFTPSender extends AbstractMail
 {
+    /** @var string */
     private $server;
 
+    /**
+     * Sets the server related to the FTP export
+     *
+     * @param string $server
+     */
     public function setServer($server)
     {
         $this->server = $server;

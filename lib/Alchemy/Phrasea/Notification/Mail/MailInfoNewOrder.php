@@ -15,8 +15,14 @@ use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoNewOrder extends AbstractMail
 {
+    /** @var \User_Adapter */
     private $user;
 
+    /**
+     * Set the user that initiates the order
+     *
+     * @param \User_Adapter $user
+     */
     public function setUser(\User_Adapter $user)
     {
         $this->user = $user;

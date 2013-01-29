@@ -158,6 +158,9 @@ abstract class AbstractMail implements MailInterface
         return $this->expiration;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setButtonUrl($url)
     {
         $this->url = $url;
@@ -186,10 +189,10 @@ abstract class AbstractMail implements MailInterface
     /**
      * Creates an Email
      *
-     * @param Application $app
+     * @param Application       $app
      * @param ReceiverInterface $receiver
-     * @param EmitterInterface $emitter
-     * @param string $message
+     * @param EmitterInterface  $emitter
+     * @param string            $message
      *
      * @return MailInterface
      */

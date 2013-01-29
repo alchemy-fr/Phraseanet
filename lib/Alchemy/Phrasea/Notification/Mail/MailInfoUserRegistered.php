@@ -15,9 +15,15 @@ use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoUserRegistered extends AbstractMail
 {
+    /** @var \User_Adapter */
     private $registeredUser;
 
-    public function setRegisteredUser($registeredUser)
+    /**
+     * Sets the user that just registered
+     *
+     * @param \User_Adapter $registeredUser
+     */
+    public function setRegisteredUser(\User_Adapter $registeredUser)
     {
         $this->registeredUser = $registeredUser;
     }

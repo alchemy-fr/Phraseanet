@@ -15,8 +15,14 @@ use Alchemy\Phrasea\Exception\LogicException;
 
 class MailRequestPasswordSetup extends AbstractMailWithLink
 {
+    /** @var string */
     private $login;
 
+    /**
+     * Sets the login related to the password renewal
+     *
+     * @param string $login
+     */
     public function setLogin($login)
     {
         $this->login = $login;

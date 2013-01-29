@@ -15,13 +15,26 @@ use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoBridgeUploadFailed extends AbstractMailWithLink
 {
+    /** @var string */
     private $adapter;
+    /** @var string */
     private $reason;
 
+    /**
+     * Sets the adapter name
+     *
+     * @param string $adapter
+     */
     public function setAdapter($adapter)
     {
         $this->adapter = $adapter;
     }
+
+    /**
+     * Sets the reason
+     *
+     * @param string $reason
+     */
     public function setReason($reason)
     {
         $this->reason = $reason;

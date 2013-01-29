@@ -41,9 +41,9 @@ class Deliverer
     /**
      * Delivers an email
      *
-     * @param MailInterface $mail
-     * @param Boolean $readReceipt
-     * @return int the number of messages that have been sent
+     * @param  MailInterface $mail
+     * @param  Boolean       $readReceipt
+     * @return int           the number of messages that have been sent
      *
      * @throws LogicException In case no Receiver provided
      * @throws LogicException In case a read-receipt is asked but no Emitter provided
