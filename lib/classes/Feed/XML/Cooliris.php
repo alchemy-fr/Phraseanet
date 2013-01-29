@@ -114,7 +114,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param  string       $language
+     * @param  string       $copyright
      * @return Feed_XML_RSS
      */
     public function set_copyright($copyright)
@@ -210,7 +210,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param  string       $skipHours
+     * @param  string       $hour
      * @return Feed_XML_RSS
      */
     public function set_skipHour($hour)
@@ -222,7 +222,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param  string       $skipDays
+     * @param  string       $day
      * @return Feed_XML_RSS
      */
     public function set_skipDays($day)

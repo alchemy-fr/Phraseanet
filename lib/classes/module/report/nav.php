@@ -46,10 +46,11 @@ class module_report_nav extends module_report
     /**
      * constructor
      *
-     * @name nav::__construct()
-     * @param $arg1 start date of the report
-     * @param $arg2 end date of the report
-     * @param $sbas_id databox id
+     * @param Application $app
+     * @param string      $arg1    start date of the report
+     * @param string      $arg2    end date of the report
+     * @param integer     $sbas_id databox id
+     * @param string      $collist
      */
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
@@ -435,13 +436,6 @@ class module_report_nav extends module_report
         return $this->report;
     }
 
-    /**
-     * @desc report basic user informations
-     * @param  int    $val user id
-     * @param  array  $tab config for the html table
-     * @param  string $on  the field
-     * @return array
-     */
     public function buildTabGrpInfo($req, array $params, $val, $tab = false, $on = false)
     {
         $this->initialize();
@@ -525,11 +519,12 @@ class module_report_nav extends module_report
     }
 
     /**
-     * @desc return basic information about a record
-     * @param $ses session id
-     * @param $bid base id
-     * @param $rid record id
-     * @param $tab config for the html table
+     * Return basic information about a record
+     *
+     * @param integer $bid base id
+     * @param integer $rid record id
+     * @param array   $tab config for the html table
+     *
      * @return array
      */
     public function buildTabUserWhat($bid, $rid, $tab = false)

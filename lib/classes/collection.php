@@ -362,7 +362,8 @@ class collection implements cache_cacheableInterface
 
     /**
      *
-     * @param  int        $base_id
+     * @param  Application $app
+     * @param  int         $base_id
      * @return collection
      */
     public static function get_from_base_id(Application $app, $base_id)
@@ -379,8 +380,9 @@ class collection implements cache_cacheableInterface
 
     /**
      *
-     * @param  int        $sbas_id
-     * @param  int        $coll_id
+     * @param  Application $app
+     * @param  databox     $databox
+     * @param  int         $coll_id
      * @return collection
      */
     public static function get_from_coll_id(Application $app, databox $databox, $coll_id)

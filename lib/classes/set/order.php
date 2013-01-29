@@ -72,10 +72,12 @@ class set_order extends set_abstract
     /**
      * Create a new order entry
      *
-     * @param  RecordsRequest $recordsRequest
-     * @param  integer        $orderer
-     * @param  string         $usage
-     * @param  \DateTime      $deadline
+     * @param Application    $app
+     * @param RecordsRequest $records
+     * @param \User_Adapter  $orderer
+     * @param string         $usage
+     * @param \DateTime      $deadline
+     *
      * @return boolean
      */
     public static function create(Application $app, RecordsRequest $records, \User_Adapter $orderer, $usage, \DateTime $deadline = null)
@@ -130,10 +132,12 @@ class set_order extends set_abstract
     /**
      * List orders
      *
-     * @param  appbox  $appbox
-     * @param  array   $baseIds
-     * @param  integer $offsetStart
-     * @param  integer $perPage
+     * @param Application $app
+     * @param array       $baseIds
+     * @param integer     $offsetStart
+     * @param integer     $perPage
+     * @param string      $sort
+     *
      * @return array
      */
     public static function listOrders(Application $app, array $baseIds, $offsetStart = 0, $perPage = 10, $sort = null)
@@ -201,7 +205,9 @@ class set_order extends set_abstract
 
     /**
      *
-     * @param  int       $id
+     * @param Application $app
+     * @param int         $id
+     *
      * @return set_order
      */
     public function __construct(Application $app, $id)
@@ -335,8 +341,10 @@ class set_order extends set_abstract
 
     /**
      *
-     * @param  Array     $elements_ids
-     * @param  boolean   $force
+     * @param Application $app
+     * @param Array       $elements_ids
+     * @param boolean     $force
+     *
      * @return set_order
      */
     public function send_elements(Application $app, Array $elements_ids, $force)

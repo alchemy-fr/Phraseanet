@@ -392,8 +392,10 @@ class Account implements ControllerProviderInterface
     /**
      * Display authorized applications that can access user informations
      *
-     * @param  Application  $app     A Silex application where the controller is mounted on
-     * @param  Request      $request The current request
+     * @param Application $app            A Silex application where the controller is mounted on
+     * @param Request     $request        The current request
+     * @param Integer     $application_id The application id
+     *
      * @return JsonResponse
      */
     public function grantAccess(Application $app, Request $request, $application_id)

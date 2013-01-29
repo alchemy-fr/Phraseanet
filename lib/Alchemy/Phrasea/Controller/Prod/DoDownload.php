@@ -83,8 +83,10 @@ class DoDownload implements ControllerProviderInterface
     /**
      * Prepare a set of documents for download
      *
-     * @param  Application $app
-     * @param  Request     $request
+     * @param Application $app
+     * @param Request     $request
+     * @param String      $token
+     *
      * @return Response
      */
     public function prepareDownload(Application $app, Request $request, $token)
@@ -130,8 +132,10 @@ class DoDownload implements ControllerProviderInterface
     /**
      * Download a set of documents
      *
-     * @param  Application $app
-     * @param  Request     $request
+     * @param Application $app
+     * @param Request     $request
+     * @param String      $token
+     *
      * @return Response
      */
     public function downloadDocuments(Application $app, Request $request, $token)
@@ -188,8 +192,10 @@ class DoDownload implements ControllerProviderInterface
     /**
      * Build a zip of downloaded documents
      *
-     * @param  Application $app
-     * @param  Request     $request
+     * @param Application $app
+     * @param Request     $request
+     * @param String      $token
+     *
      * @return Response
      */
     public function downloadExecute(Application $app, Request $request, $token)

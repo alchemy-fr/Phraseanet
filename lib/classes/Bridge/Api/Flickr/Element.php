@@ -33,9 +33,11 @@ class Bridge_Api_Flickr_Element implements Bridge_Api_ElementInterface
 
     /**
      *
-     * @param  SimpleXMLElement          $entry
-     * @param  string                    $user_id
-     * @param  string                    $type
+     * @param SimpleXMLElement $entry
+     * @param string           $user_id
+     * @param string           $type
+     * @param Boolean          $entry_from_list
+     *
      * @return Bridge_Api_Flickr_Element
      */
     public function __construct(SimpleXMLElement $entry, $user_id, $type, $entry_from_list = true)

@@ -51,10 +51,12 @@ class record_exportElement extends record_adapter
 
     /**
      *
-     * @param  int                  $base_id
-     * @param  int                  $record_id
-     * @param  string               $directory
-     * @param  int                  $remain_hd
+     * @param Application $app
+     * @param integer     $sbas_id
+     * @param integer     $record_id
+     * @param string      $directory
+     * @param integer     $remain_hd
+     *
      * @return record_exportElement
      */
     public function __construct(Application $app, $sbas_id, $record_id, $directory = '', $remain_hd = false)

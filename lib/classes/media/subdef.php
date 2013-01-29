@@ -138,9 +138,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TC_DATA_LIGHTVALUE = 'LightValue';
 
     /**
-     * @todo    the presence of file is checked on constructor, it would be better
-     *          to check it when needed (stop disk access)
-     *
+     * @param  Application    $app
      * @param  record_adapter $record
      * @param  type           $name
      * @param  type           $substitute
@@ -541,8 +539,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     /**
      *
-     * @param  registryInterface $registry
-     * @param  int               $angle
+     * @param int        $angle
+     * @param Alchemyst  $alchemyst
+     * @param MediaVorus $mediavorus
+     *
      * @return media_subdef
      */
     public function rotate($angle, Alchemyst $alchemyst, MediaVorus $mediavorus)

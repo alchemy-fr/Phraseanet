@@ -244,11 +244,11 @@ class module_report
     /**
      * Constructor
      *
-     *
-     * @name report::__construct()
-     * @param $arg1 the minimal date of the report
-     * @param $arg2 the maximal date of the report
-     * @param $sbas_id the id of the base where we want to connect
+     * @param Application $app
+     * @param string      $d1      the minimal date of the report
+     * @param string      $d2      the maximal date of the report
+     * @param integer     $sbas_id the id of the base where we want to connect
+     * @param string      $collist
      */
     public function __construct(Application $app, $d1, $d2, $sbas_id, $collist)
     {
@@ -810,10 +810,14 @@ class module_report
     }
 
     /**
-     * @desc build the final formated array which contains all the result,
-     *  we construct the html code from this array
-     * @param  array $tab pass the configcolumn parameter to this tab
-     * @return the   formated array
+     * Build the final formated array which contains all the result,
+     * we construct the html code from this array
+     *
+     * @param array $tab     pass the configcolumn parameter to this tab
+     * @param array $groupby
+     * @param array $on
+     *
+     * @return the formated array
      */
     public function buildReport($tab = false, $groupby = false, $on = false)
     {

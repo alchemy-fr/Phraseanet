@@ -184,9 +184,9 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param  Array   $to
-     * @param  Array   $from
-     * @param  Array   $datas
+     * @param \User_Adapter $to
+     * @param \User_Adapter $registeredUser
+     *
      * @return boolean
      */
     public function mail(\User_Adapter $to, \User_Adapter $registeredUser)

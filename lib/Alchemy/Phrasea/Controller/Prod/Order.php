@@ -141,9 +141,9 @@ class Order implements ControllerProviderInterface
     /**
      * Create a new order
      *
-     * @param  Application                   $app
-     * @param  Request                       $request
-     * @param  integer                       $order_id
+     * @param Application $app
+     * @param Request     $request
+     *
      * @return RedirectResponse|JsonResponse
      */
     public function createOrder(Application $app, Request $request)
@@ -218,9 +218,9 @@ class Order implements ControllerProviderInterface
     /**
      * Display list of orders
      *
-     * @param  Application $app
-     * @param  Request     $request
-     * @param  integer     $order_id
+     * @param Application $app
+     * @param Request     $request
+     *
      * @return Response
      */
     public function displayOrders(Application $app, Request $request)

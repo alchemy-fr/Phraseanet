@@ -398,9 +398,11 @@ class Databox implements ControllerProviderInterface
 
     /**
      *
-     * @param  \Silex\Application                         $app
-     * @param  \Symfony\Component\HttpFoundation\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Application $app
+     * @param Request     $request
+     * @param integer     $databox_id
+     *
+     * @return Response
      */
     public function getDatabase(Application $app, Request $request, $databox_id)
     {
@@ -568,9 +570,10 @@ class Databox implements ControllerProviderInterface
     /**
      * Mount a collection on a databox
      *
-     * @param  Application      $app        The silex application
-     * @param  Request          $request    The current HTTP request
-     * @param  integer          $databox_id The requested databox
+     * @param  Application      $app           The silex application
+     * @param  Request          $request       The current HTTP request
+     * @param  integer          $databox_id    The requested databox
+     * @param  integer          $collection_id The requested collection id
      * @return RedirectResponse
      */
     public function mountCollection(Application $app, Request $request, $databox_id, $collection_id)

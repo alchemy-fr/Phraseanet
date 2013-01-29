@@ -491,8 +491,13 @@ class SearchEngineOptions
 
     /**
      *
-     * @param  string              $serialized
+     * @param Application $app
+     * @param string      $serialized
+     *
      * @return SearchEngineOptions
+     *
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public static function hydrate(Application $app, $serialized)
     {

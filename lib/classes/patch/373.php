@@ -55,7 +55,8 @@ class patch_373 implements patchInterface
     }
 
     /**
-     * @param base $databox
+     * @param base        $appbox
+     * @param Application $app
      */
     public function apply(base $appbox, Application $app)
     {

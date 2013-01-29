@@ -177,7 +177,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
 
     /**
      *
-     * @param  string                   $group
+     * @param  string                   $groupname
      * @param  string                   $name
      * @param  string                   $class
      * @return databox_subdefsStructure

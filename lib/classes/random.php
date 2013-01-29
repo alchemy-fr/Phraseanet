@@ -103,10 +103,12 @@ class random
 
     /**
      *
-     * @param  string        $type
-     * @param  int           $usr
-     * @param  string        $end_date
-     * @param  mixed content $datas
+     * @param Application   $app
+     * @param string        $type
+     * @param int           $usr
+     * @param DateTime      $end_date
+     * @param mixed content $datas
+     *
      * @return boolean
      */
     public static function getUrlToken(Application $app, $type, $usr, DateTime $end_date = null, $datas = '')
@@ -226,9 +228,12 @@ class random
     /**
      * Get the validation token for one user and one validation basket
      *
-     * @param  integer             $userId
-     * @param  integer             $basketId
-     * @return string              The desired token
+     * @param Application $app
+     * @param integer     $userId
+     * @param integer     $basketId
+     *
+     * @return string The token
+     *
      * @throws \Exception_NotFound
      */
     public static function getValidationToken(Application $app, $userId, $basketId)

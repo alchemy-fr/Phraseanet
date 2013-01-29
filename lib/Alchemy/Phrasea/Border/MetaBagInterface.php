@@ -19,7 +19,7 @@ interface MetaBagInterface
      * The structure of the array depends of the target databox description
      * structure.
      *
-     * @param \databox_descriptionStructure $metadatasStructure
+     * @param \databox_descriptionStructure $structure
      *
      * @return array
      */

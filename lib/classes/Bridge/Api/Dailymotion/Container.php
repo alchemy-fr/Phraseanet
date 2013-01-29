@@ -33,8 +33,9 @@ class Bridge_Api_Dailymotion_Container implements Bridge_Api_ContainerInterface
     /**
      *
      * @param  array                            $entry
-     * @param  type                             $type
-     * @param  type                             $thumbnail
+     * @param  String                           $type
+     * @param  String                           $thumbnail
+     * @param  String                           $url
      * @return Bridge_Api_Dailymotion_Container
      */
     public function __construct(Array $entry, $type, $thumbnail = '', $url = '')

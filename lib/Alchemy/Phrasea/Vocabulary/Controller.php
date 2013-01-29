@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Vocabulary;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 
 /**
  * Vocabulary Controller
@@ -23,20 +24,22 @@ use Alchemy\Phrasea\Application;
  */
 class Controller
 {
-
     /**
      * Factory of ControlProvider
      *
-     * @param  string                                                               $type
-     * @return \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface
-     * @throws \Exception                                                           when ControlProvider is not found
+     * @param Application $app
+     * @param string      $type
+     *
+     * @return ControlProviderInterface
+     *
+     * @throws \InvalidArgumentException
      */
     public static function get(Application $app, $type)
     {
         $classname = __NAMESPACE__ . '\\ControlProvider\\' . $type . 'Provider';
 
         if ( ! class_exists($classname)) {
-            throw new \Exception('Vocabulary type not found');
+            throw new \InvalidArgumentException('Vocabulary type not found');
         }
 
         return new $classname($app);

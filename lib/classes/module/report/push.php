@@ -40,10 +40,11 @@ class module_report_push extends module_report
     /**
      * constructor
      *
-     * @name download::__construct()
-     * @param $arg1 start date of the  report
-     * @param $arg2 end date of the report
-     * @param $sbas_id id of the databox
+     * @param Application $app
+     * @param string      $arg1    start date of the  report
+     * @param string      $arg2    end date of the report
+     * @param integer     $sbas_id id of the databox
+     * @param string      $collist
      */
     public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {

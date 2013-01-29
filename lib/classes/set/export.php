@@ -39,7 +39,8 @@ class set_export extends set_abstract
      *
      * @param  Application $app
      * @param  string      $lst
-     * @param  int         $sstid
+     * @param  integer     $sstid
+     * @param  integer     $storyWZid
      * @return set_export
      */
     public function __construct(Application $app, $lst, $sstid, $storyWZid = null)
@@ -395,8 +396,12 @@ class set_export extends set_abstract
 
     /**
      *
-     * @param  Array   $subdefs
-     * @param  boolean $rename_title
+     * @param User_Adapter $user
+     * @param Filesystem   $filesystem
+     * @param Array        $subdefs
+     * @param boolean      $rename_title
+     * @param boolean      $includeBusinessFields
+     *
      * @return Array
      */
     public function prepare_export(User_Adapter $user, Filesystem $filesystem, Array $subdefs, $rename_title, $includeBusinessFields)
@@ -691,9 +696,11 @@ class set_export extends set_abstract
 
     /**
      *
-     * @param  String $token
-     * @param  Array  $list
-     * @param  string $zipFile
+     * @param Application $app
+     * @param String      $token
+     * @param Array       $list
+     * @param string      $zipFile
+     *
      * @return string
      */
     public static function build_zip(Application $app, $token, Array $list, $zipFile)
@@ -848,9 +855,12 @@ class set_export extends set_abstract
     /**
      * @todo a revoir le cas anonymous
      *
-     * @param  Array   $list
-     * @param  String> $type
-     * @param  boolean $anonymous
+     * @param Application $app
+     * @param Array       $list
+     * @param String      $type
+     * @param boolean     $anonymous
+     * @param string      $comment
+     *
      * @return Void
      */
     public static function log_download(Application $app, Array $list, $type, $anonymous = false, $comment = '')

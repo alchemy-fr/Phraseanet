@@ -61,7 +61,9 @@ class appbox_register
      * Return an array of collection objects where provided
      * user is waiting for approbation
      *
-     * @param  User_Interface $user
+     * @param Application    $app
+     * @param User_Interface $user
+     *
      * @return array
      */
     public function get_collection_awaiting_for_user(Application $app, User_Interface $user)

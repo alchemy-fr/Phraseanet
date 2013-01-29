@@ -103,10 +103,9 @@ class Records implements ControllerProviderInterface
     /**
      * Get record detailed view
      *
-     * @param  Application  $app
-     * @param  Request      $request
-     * @param  integer      $sbas_id
-     * @param  integer      $record_id
+     * @param Application $app
+     * @param Request     $request
+     *
      * @return JsonResponse
      */
     public function getRecord(Application $app, Request $request)
@@ -258,10 +257,9 @@ class Records implements ControllerProviderInterface
     /**
      *  Renew url list of records
      *
-     * @param  Application  $app
-     * @param  Request      $request
-     * @param  integer      $databox_id
-     * @param  integer      $record_id
+     * @param Application $app
+     * @param Request     $request
+     *
      * @return JsonResponse
      */
     public function renewUrl(Application $app, Request $request)

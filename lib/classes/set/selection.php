@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Entities\Basket;
 
 /**
  *
@@ -34,10 +35,10 @@ class set_selection extends set_abstract
 
     /**
      *
-     * @param  \Entities\Basket $basket
+     * @param  Basket        $Basket
      * @return set_selection
      */
-    public function load_basket(\Entities\Basket $Basket)
+    public function load_basket(Basket $Basket)
     {
         foreach ($Basket->getElements() as $basket_element) {
             $this->add_element($basket_element->getRecord($this->app));
@@ -48,7 +49,9 @@ class set_selection extends set_abstract
 
     /**
      *
-     * @param  array         $rights
+     * @param array $rights
+     * @param array $sbas_rights
+     *
      * @return set_selection
      */
     public function grep_authorized(Array $rights = array(), Array $sbas_rights = array())
@@ -116,7 +119,9 @@ class set_selection extends set_abstract
 
     /**
      *
-     * @param  array         $lst
+     * @param array   $lst
+     * @param Boolean $flatten_groupings
+     *
      * @return set_selection
      */
     public function load_list(Array $lst, $flatten_groupings = false)

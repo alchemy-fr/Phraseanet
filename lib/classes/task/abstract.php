@@ -828,9 +828,9 @@ abstract class task_abstract
 
     /**
      *
-     * @param  appbox        $appbox
+     * @param  \Pimple       $dependencyContainer
      * @param  string        $class_name
-     * @param  string        $settings   (xml string)
+     * @param  string        $settings
      * @return task_abstract
      */
     public static function create(\Pimple $dependencyContainer, $class_name, $settings = null)

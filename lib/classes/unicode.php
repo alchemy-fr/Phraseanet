@@ -1465,10 +1465,10 @@ class unicode
     /**
      * Removes ctrl chars (tous < 32 sauf 9,10,13)
      *
-     * @staticvar null $a_in
-     * @staticvar null $a_out
-     * @param  type $s
-     * @return type
+     * @param string $string
+     * @param string $substitution
+     *
+     * @return string
      */
     public function substituteCtrlCharacters($string, $substitution = '_')
     {

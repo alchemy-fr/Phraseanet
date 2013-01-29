@@ -192,9 +192,9 @@ class Databoxes implements ControllerProviderInterface
     /**
      * Create a new databox
      *
-     * @param  Application      $app        The silex application
-     * @param  Request          $request    The current HTTP request
-     * @param  integer          $databox_id The requested databox
+     * @param Application $app     The silex application
+     * @param Request     $request The current HTTP request
+     *
      * @return RedirectResponse
      */
     public function createDatabase(Application $app, Request $request)

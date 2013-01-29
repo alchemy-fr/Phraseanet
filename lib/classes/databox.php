@@ -469,12 +469,13 @@ class databox extends base
 
     /**
      *
-     * @param  string   $host
-     * @param  int      $port
-     * @param  string   $user
-     * @param  string   $password
-     * @param  string   $dbname
-     * @param  registry $registry
+     * @param  Application $app
+     * @param  string      $host
+     * @param  int         $port
+     * @param  string      $user
+     * @param  string      $password
+     * @param  string      $dbname
+     * @param  registry    $registry
      * @return databox
      */
     public static function mount(Application $app, $host, $port, $user, $password, $dbname, registry $registry)
@@ -962,8 +963,6 @@ class databox extends base
     }
 
     /**
-     *
-     * @param  <type>      $sbas_id
      * @return DOMDocument
      */
     public function get_dom_thesaurus()
@@ -988,8 +987,6 @@ class databox extends base
     }
 
     /**
-     *
-     * @param  <type>   $sbas_id
      * @return DOMXpath
      */
     public function get_xpath_thesaurus()
@@ -1010,8 +1007,6 @@ class databox extends base
     }
 
     /**
-     *
-     * @param  int              $sbas_id
      * @return SimpleXMLElement
      */
     public function get_sxml_thesaurus()
@@ -1032,8 +1027,6 @@ class databox extends base
     }
 
     /**
-     *
-     * @param  int    $sbas_id
      * @return string
      */
     public function get_thesaurus()
@@ -1063,7 +1056,6 @@ class databox extends base
     }
 
     /**
-     *
      * @return string
      */
     public function get_structure()
@@ -1123,8 +1115,6 @@ class databox extends base
     }
 
     /**
-     *
-     * @param  <type>      $sbas_id
      * @return DOMDocument
      */
     public function get_dom_structure()
@@ -1150,8 +1140,6 @@ class databox extends base
     }
 
     /**
-     *
-     * @param  <type>      $sbas_id
      * @return DOMDocument
      */
     public function get_dom_cterms()
@@ -1197,8 +1185,6 @@ class databox extends base
     }
 
     /**
-     *
-     * @param  <type>   $sbas_id
      * @return DOMXpath
      */
     public function get_xpath_structure()

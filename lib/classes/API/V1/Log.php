@@ -6,7 +6,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Symfony\Component\HttpFoundation\Request;
 
 class API_V1_Log
 {
@@ -83,9 +82,8 @@ class API_V1_Log
 
     /**
      *
-     * @param Application        $app
-     * @param Request            $request
-     * @param API_OAuth2_Account $account
+     * @param Application $app
+     * @param integer     $log_id
      */
     public function __construct(Application $app, $log_id)
     {

@@ -204,7 +204,7 @@ class Description implements ControllerProviderInterface
                             $vocabulary = VocabularyController::get($app, $request->request->get('vocabulary_' . $id));
                             $field->setVocabularyControl($vocabulary);
                             $field->setVocabularyRestricted($request->request->get('vocabularyrestricted_' . $id));
-                        } catch (\Exception $e) {
+                        } catch (\InvalidArgumentException $e) {
 
                         }
 

@@ -67,9 +67,9 @@ class recordutils_image extends recordutils
 
     /**
      *
-     * @param  int     $bas
-     * @param  int     $rec
-     * @param  boolean $hd
+     * @param Application   $app
+     * @param \media_subdef $subdef
+     *
      * @return string
      */
     public static function stamp(Application $app, \media_subdef $subdef)
@@ -308,7 +308,9 @@ class recordutils_image extends recordutils
 
     /**
      *
-     * @param  \media_subdef  $subdef
+     * @param Application   $app
+     * @param \media_subdef $subdef
+     *
      * @return boolean|string
      */
     public static function watermark(Application $app, \media_subdef $subdef)
