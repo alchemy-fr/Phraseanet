@@ -1,67 +1,65 @@
 {
-    "name": "phraseanet/phraseanet",
-    "description": "Phraseanet",
+    "name"        : "phraseanet/phraseanet",
+    "description" : "Phraseanet",
+    "license"     : "GPL-3.0",
     "config": {
-        "bin-dir": "bin/"
+        "bin-dir" : "bin/"
     },
     "require": {
-        "php": ">=5.3.3",
-        "alchemy/oauth2php": "master",
-        "alchemy/phlickr": "master",
-        "dailymotion/sdk": "*",
-        "data-uri/data-uri": "dev-master",
-        "doctrine/orm": "2.2.2",
-        "gedmo/doctrine-extensions": "2.2.*",
-        "grom/silex-service-provider": "dev-master",
-        "mediavorus/mediavorus": "0.2.x-dev",
-        "media-alchemyst/media-alchemyst": "0.2.x-dev",
-        "monolog/monolog": "1.0.*",
-        "neutron/silex-badfaith-provider": "dev-master",
+        "php"                              : ">=5.3.3",
+        "alchemy/oauth2php"                : "dev-master",
+        "alchemy/phlickr"                  : "dev-master",
+        "badfaith/badfaith"                : "dev-master",
+        "dailymotion/sdk"                  : "dev-master",
+        "data-uri/data-uri"                : "dev-master",
+        "doctrine/orm"                     : "~2.3.0",
+        "gedmo/doctrine-extensions"        : "~2.3.0",
+        "grom/silex-service-provider"      : "dev-master",
+        "knplabs/knp-snappy"               : "dev-master",
+        "mediavorus/mediavorus"            : "~0.3.0",
+        "media-alchemyst/media-alchemyst"  : "~0.2.0",
+        "monolog/monolog"                  : "~1.3.0",
+        "neutron/silex-badfaith-provider"  : "dev-master",
         "neutron/silex-filesystem-provider": "dev-master",
-        "neutron/sphinxsearch-api": ">=2.0.6",
-        "php-xpdf/php-xpdf": "dev-master",
-        "phpexiftool/phpexiftool": "dev-master",
-        "silex/silex": "1.0.*",
-        "swiftmailer/swiftmailer": "4.1.*",
-        "symfony/symfony": ">=2.1",
-        "tecnick.com/tcpdf": "dev-master",
-        "twig/twig": ">=1.9",
-        "twig/extensions": "master",
-        "zend/gdata": ">1.11"
+        "neutron/sphinxsearch-api"         : "~2.0.6",
+        "php-xpdf/php-xpdf"                : "~0.1.1",
+        "phpexiftool/phpexiftool"          : "~0.1.0",
+        "phpexiftool/exiftool"             : "dev-master",
+        "silex/silex"                      : "1.0.x-dev@dev",
+        "swiftmailer/swiftmailer"          : "~4.3.0",
+        "symfony/symfony"                  : "~2.1.7",
+        "tecnick.com/tcpdf"                : "dev-master",
+        "twig/twig"                        : "~1.12",
+        "twig/extensions"                  : "1.0.x-dev@dev",
+        "zend/gdata"                       : "~1.12.1"
     },
-    "minimum-stability": "dev",
     "require-dev": {
-        "doctrine/data-fixtures": "dev-master",
-        "fabpot/php-cs-fixer": "dev-master"
+        "doctrine/data-fixtures"           : "dev-master"
     },
     "repositories": [
     {
-        "type": "git",
-        "url": "https://github.com/winmillwill/BadFaith"
+        "type" : "git",
+        "url"  : "https://github.com/winmillwill/BadFaith"
     },
     {
-        "type": "git",
-        "url": "https://github.com/alchemy-fr/oauth2-php"
+        "type" : "git",
+        "url"  : "https://github.com/alchemy-fr/oauth2-php"
     },
     {
-        "type": "git",
-        "url": "https://github.com/alchemy-fr/Phlickr"
-    },
-    {
-        "type": "git",
-        "url": "https://github.com/alchemy-fr/PHPMailer_v5.1"
+        "type" : "git",
+        "url"  : "https://github.com/alchemy-fr/Phlickr"
     }
     ],
     "autoload": {
         "psr-0": {
-            "": "lib/classes",
-            "Alchemy": "lib",
-            "Doctrine": "lib",
-            "Entities": "lib/Doctrine",
-            "Types": "lib/Doctrine",
-            "Repositories": "lib/Doctrine",
-            "Proxies": "lib/Doctrine",
-            "PhraseaFixture": "lib/conf.d"
+            ""               : "lib/classes",
+            "Alchemy"        : "lib",
+            "Doctrine"       : "lib",
+            "Entities"       : "lib/Doctrine",
+            "Types"          : "lib/Doctrine",
+            "Repositories"   : "lib/Doctrine",
+            "Proxies"        : "lib/Doctrine",
+            "PhraseaFixture" : "lib/conf.d"
         }
     },
     "include-path": ["vendor/zend/gdata/library"]
