@@ -323,6 +323,7 @@ function display_basket_element(compare, sselcont_id)
 	{
 		container = $('#record_main');
 	}
+    $('.record_image', container).removeAttr('ondragstart');
 	$('.record_image', container).draggable();
 
 	var options_container = $('.options',container);

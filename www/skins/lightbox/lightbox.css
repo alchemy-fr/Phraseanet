@@ -64,6 +64,8 @@ img {
 
 .record_display_box .record {
     position: relative;
+    max-width: none;
+    max-height: none;
 }
 
 .record_display_box .header .title {
