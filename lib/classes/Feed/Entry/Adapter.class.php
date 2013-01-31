@@ -373,8 +373,13 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
      */
     public function get_publisher()
     {
-        if ( ! $this->publisher instanceof Feed_Publisher_Adapter)
-            $this->publisher = new Feed_Publisher_Adapter($this->appbox, $this->publisher_id);
+        if ( ! $this->publisher instanceof Feed_Publisher_Adapter) {
+            try {
+                $this->publisher = new Feed_Publisher_Adapter($this->appbox, $this->publisher_id);
+            } catch (\Exception_Feed_PublisherNotFound $e) {
+
+            }
+        }
 
         return $this->publisher;
     }
@@ -386,7 +391,13 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
      */
     public function is_publisher(User_adapter $user)
     {
-        return $user->get_id() === $this->get_publisher()->get_user()->get_id();
+        $publisher = $this->get_publisher();
+
+        if ($publisher instanceof Feed_Publisher_Interface) {
+            return $user->get_id() === $publisher->get_user()->get_id();
+        }
+
+        return false;
     }
 
     /**
