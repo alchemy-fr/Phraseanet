@@ -954,6 +954,20 @@ div.diapo {
     margin: 0 5px 0 0;
 }
 
+#baskets .SSTT .menu table td {
+    width:20px;
+}
+
+#baskets .SSTT .workzone-menu-title {
+    text-overflow: ellipsis;
+    padding-right:65px;
+}
+
+/** hack IE7 only */
+*:first-child+html .workzone-menu-title {
+    margin-right:65px;
+}
+
 #baskets .SSTT img {
     max-height: 18px;
     vertical-align: top;
