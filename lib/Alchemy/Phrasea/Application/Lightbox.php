@@ -508,6 +508,12 @@ return call_user_func(
                         if ( ! $basket->getValidation()->getParticipant($user)->getCanAgree()) {
                             throw new ControllerException('You have not right to agree');
                         }
+                        /* @var $basket \Entities\Basket */
+                        foreach ($basket->getElements() as $element) {
+                            if (null === $element->getUserValidationDatas($user)->getAgreement()) {
+                                throw new ControllerException(_('You have to give your feedback at least on one document to send a report'));
+                            }
+                        }
 
                         /* @var $basket \Entities\Basket */
                         $participant = $basket->getValidation()->getParticipant($user);
