@@ -23,9 +23,20 @@
             </span>
           </a>
           <div class="menu">
-            <img title="{% trans  'Vous avez recu une demande de validation de document sur ce panier' %}"
-                 class="basketTips" src="/skins/icons/valid.png"/>
-            <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">&#9660;</a>
+              <table>
+                  <tr>
+                      <td>
+                          <img
+                              title="{% trans  'Vous avez recu une demande de validation de document sur ce panier' %}"
+                              class="basketTips"
+                              src="/skins/icons/valid.png"
+                            />
+                      </td>
+                      <td>
+                          <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">&#9660;</a>
+                      </td>
+                  </tr>
+              </table>
 
             <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
               <tbody>
@@ -89,27 +100,25 @@
           <div class="menu">
             <table>
                   <tr>
-                        {% if basket.getValidation() %}
-                            <td>
+                        <td>
+                            {% if basket.getValidation() %}
                                 <img
                                     style="display:inline;padding:0;margin:0;"
                                     title="{% trans 'Vous avez envoye une demande de validation de document sur ce panier' %}"
                                     class="basketTips"
                                     src="/skins/icons/myvalid.png"
                                 />
-                            </td>
-                        {% endif %}
-
-                        {% if basket.getPusher() %}
-                            <td>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if basket.getPusher() %}
                                 {% set pusher = basket.getPusher().get_display_name() %}
-                                <img
-                                    class="basketTips"
-                                    title="{% trans %}paniers:: panier recu de {{pusher}}{% endtrans %}"
-                                    src="/skins/icons/push16.png"
-                                />
-                            </td>
-                        {% endif %}
+                                    <img
+                                        class="basketTips"
+                                        title="{% trans %}paniers:: panier recu de {{pusher}}{% endtrans %}"
+                                        src="/skins/icons/push16.png"/>
+                            {% endif %}
+                        </td>
                         <td>
                             <a
                                 style="cursor:pointer;display:inline;padding:0;margin:0;"
@@ -203,9 +212,15 @@
             </span>
           </a>
           <div class="menu">
-            <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">
-              &#9660;
-            </a>
+              <table>
+                  <tr>
+                      <td>
+                          <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">
+                            &#9660;
+                          </a>
+                      </td>
+                  </tr>
+              </table>
 
             <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
               <tbody>
