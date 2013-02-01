@@ -32,12 +32,6 @@
                 "url": "https://github.com/alchemy-fr/Phlickr",
                 "reference": "89993abd6a02b42e0b765114c34c26c4056762fa"
             },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/alchemy-fr/Phlickr/zipball/89993abd6a02b42e0b765114c34c26c4056762fa",
-                "reference": "89993abd6a02b42e0b765114c34c26c4056762fa",
-                "shasum": ""
-            },
             "time": "2012-04-13 17:43:31",
             "type": "library",
             "autoload": {
@@ -110,12 +104,6 @@
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/oauth2-php",
                 "reference": "5f949209461e8f4c31e8476155188923aafa2ae5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/alchemy-fr/oauth2-php/zipball/5f949209461e8f4c31e8476155188923aafa2ae5",
-                "reference": "5f949209461e8f4c31e8476155188923aafa2ae5",
-                "shasum": ""
             },
             "time": "2012-03-30 15:47:07",
             "type": "library",
@@ -997,16 +985,16 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "dev-master",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg",
-                "reference": "1d326e08bbd74c73825e71fb22a9b92ee2636f13"
+                "reference": "0.2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/archive/1d326e08bbd74c73825e71fb22a9b92ee2636f13.zip",
-                "reference": "1d326e08bbd74c73825e71fb22a9b92ee2636f13",
+                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/archive/0.2.0.zip",
+                "reference": "0.2.0",
                 "shasum": ""
             },
             "require": {
@@ -1023,7 +1011,7 @@
             "suggest": {
                 "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
             },
-            "time": "2012-12-13 17:26:20",
+            "time": "2012-12-13 12:05:15",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1303,7 +1291,7 @@
         },
         {
             "name": "pimple/pimple",
-            "version": "dev-master",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Pimple.git",
@@ -1570,16 +1558,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "2.1.x-dev",
+            "version": "v2.1.7",
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "e7059b44c78ca8e1e892adb4d93b5a482f4eb9b3"
+                "reference": "v2.1.7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/zipball/e7059b44c78ca8e1e892adb4d93b5a482f4eb9b3",
-                "reference": "e7059b44c78ca8e1e892adb4d93b5a482f4eb9b3",
+                "url": "https://github.com/symfony/symfony/archive/v2.1.7.zip",
+                "reference": "v2.1.7",
                 "shasum": ""
             },
             "require": {
@@ -1626,15 +1614,10 @@
                 "doctrine/orm": ">=2.2.3,<2.4-dev",
                 "doctrine/data-fixtures": "1.0.*",
                 "propel/propel1": "dev-master",
-                "monolog/monolog": "1.*"
+                "monolog/monolog": ">=1.0,<1.3-dev"
             },
-            "time": "2012-09-06 10:12:03",
+            "time": "2013-01-17 21:21:51",
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.1-dev"
-                }
-            },
             "autoload": {
                 "psr-0": {
                     "Symfony": "src/",
@@ -1765,22 +1748,22 @@
         },
         {
             "name": "twig/twig",
-            "version": "dev-master",
+            "version": "v1.12.1",
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Twig.git",
-                "reference": "61393dc9fb8982110048624aa573aec4aee0b465"
+                "reference": "v1.12.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Twig/zipball/61393dc9fb8982110048624aa573aec4aee0b465",
-                "reference": "61393dc9fb8982110048624aa573aec4aee0b465",
+                "url": "https://github.com/fabpot/Twig/archive/v1.12.1.zip",
+                "reference": "v1.12.1",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-10-20 12:53:18",
+            "time": "2013-01-15 20:03:52",
             "type": "library",
             "extra": {
                 "branch-alias": {
