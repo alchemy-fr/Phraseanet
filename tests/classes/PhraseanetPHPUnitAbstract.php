@@ -500,15 +500,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $loader->addFixture($validationSession);
 
             $this->insertFixtureInDatabase($loader);
-
-            //add current user as participant
-            $validationParticipant = new PhraseaFixture\ValidationParticipant\LoadParticipantWithSession();
-            $validationParticipant->setSession($validationSession->validationSession);
-            $validationParticipant->setUser($currentUser);
-
-            $loader = new Loader();
-            $loader->addFixture($validationParticipant);
-            $this->insertFixtureInDatabase($loader);
         } catch (\Exception $e) {
             $this->fail('Fail load one WorkingZone : ' . $e->getMessage());
         }
