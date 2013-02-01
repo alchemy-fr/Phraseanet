@@ -133,5 +133,10 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
             $this->assertInstanceof('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineSuggestion', $suggestion);
         }
     }
+
+    protected function updateIndex(array $stemms = array())
+    {
+        return $this;
+    }
 }
 

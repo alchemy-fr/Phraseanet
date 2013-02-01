@@ -58,13 +58,6 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         return $this->options;
     }
 
-    abstract public function initialize();
-
-    protected function updateIndex()
-    {
-        return $this;
-    }
-
     public function testQueryRecordId()
     {
         $record = self::$DI['record_24'];
@@ -338,9 +331,31 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         self::$searchEngine->setOptions($options);
 
         $record = self::$DI['record_24'];
-        $query_string = 'boomboklot' . $record->get_record_id() . 'stemmedfr';
+        $index_string = 'boomboklot' . $record->get_record_id() . 'stemmedfr chevaux';
+        $query_string = 'boomboklot' . $record->get_record_id() . 'stemmedfr cheval';
 
-        $this->editRecord($query_string, $record);
+        $this->editRecord($index_string, $record);
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(1, $results->getTotal());
+    }
+
+    public function testUpdateRecordEN()
+    {
+        $options = $this->getDefaultOptions();
+        $options->setStemming(true);
+        $options->setLocale('en');
+        self::$searchEngine->setOptions($options);
+
+        $record = self::$DI['record_24'];
+        $index_string = 'boomboklot' . $record->get_record_id() . 'stemmeden consistency';
+        $query_string = 'boomboklot' . $record->get_record_id() . 'stemmeden consistent';
+
+        $this->editRecord($index_string, $record);
 
         self::$searchEngine->addRecord($record);
         $this->updateIndex();
@@ -679,5 +694,9 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         }
     }
 
-    abstract function testAutocomplete();
+    abstract public function initialize();
+
+    abstract public function testAutocomplete();
+
+    abstract protected function updateIndex(array $stemms = array());
 }

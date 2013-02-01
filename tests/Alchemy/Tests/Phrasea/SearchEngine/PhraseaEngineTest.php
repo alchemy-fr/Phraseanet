@@ -21,7 +21,7 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
         self::$searchEngine = PhraseaEngine::create(self::$DI['app']);
     }
 
-    protected function updateIndex()
+    protected function updateIndex(array $stemms = array())
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
         $cmd = '/usr/local/bin/phraseanet_indexer '
@@ -132,6 +132,16 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
         foreach ($rs as $row) {
             $this->assertEquals($first_id, $row['session_id']);
         }
+    }
+
+    public function testUpdateRecordFR()
+    {
+        $this->markTestSkipped('Phrasea engine does not currently support french stemmatisation');
+    }
+
+    public function testUpdateRecordEN()
+    {
+        $this->markTestSkipped('Phrasea engine does not currently support english stemmatisation');
     }
 }
 

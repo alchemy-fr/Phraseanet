@@ -361,7 +361,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
   }
 
   #--------------------------------------
-  ### Metadatas Index Stemmed FR
+  ### Metadatas Index Stemmed
 
   index metadatas' . $index_crc . '_stemmed_fr : suggest' . $index_crc . '
   {
@@ -383,27 +383,22 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     index_exact_words     = 1
   }
 
-  #--------------------------------------
-  ### Metadatas Index Stemmed EN
-
-  index metadatas' . $index_crc . '_stemmed_en : suggest' . $index_crc . '
+  index metadatas' . $index_crc . '_stemmed_en : metadatas' . $index_crc . '_stemmed_fr
   {
-    source                = src_metadatas' . $index_crc . '
-
     path                  = /var/sphinx/datas/metadatas_' . $index_crc . '_stemmed_en
-
     morphology            = libstemmer_en
+  }
 
-    # minimum word length at which to enable stemming
-    # optional, default is 1 (stem everything)
-    #
-    min_stemming_len      = 1
+  index metadatas' . $index_crc . '_stemmed_nl : metadatas' . $index_crc . '_stemmed_fr
+  {
+    path                  = /var/sphinx/datas/metadatas_' . $index_crc . '_stemmed_nl
+    morphology            = libstemmer_nl
+  }
 
-    # whether to index original keywords along with stemmed versions
-    # enables "=exactform" operator to work
-    # optional, default is 0
-    #
-    index_exact_words     = 1
+  index metadatas' . $index_crc . '_stemmed_de : metadatas' . $index_crc . '_stemmed_fr
+  {
+    path                  = /var/sphinx/datas/metadatas_' . $index_crc . '_stemmed_de
+    morphology            = libstemmer_de
   }
 
   #--------------------------------------
@@ -418,7 +413,6 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
     rt_field              = value
     rt_field              = meta_struct_id
-
     rt_attr_uint          = record_id
     rt_attr_uint          = sbas_id
     rt_attr_uint          = coll_id
@@ -438,6 +432,33 @@ class ConfigurationPanel extends AbstractConfigurationPanel
             }
 
             $conf .= '    rt_attr_multi         = status
+  }
+
+  index metas_realtime_stemmed_fr_' . $index_crc . ' : metas_realtime' . $index_crc . '
+  {
+    type                  = rt
+    morphology            = libstemmer_fr
+    min_stemming_len      = 1
+    index_exact_words     = 1
+    path                  = /var/sphinx/datas/metas_realtime_stemmed_fr_' . $index_crc . '
+  }
+
+  index metas_realtime_stemmed_en_' . $index_crc . ' : metas_realtime_stemmed_fr_' . $index_crc . '
+  {
+    morphology            = libstemmer_en
+    path                  = /var/sphinx/datas/metas_realtime_stemmed_en_' . $index_crc . '
+  }
+
+  index metas_realtime_stemmed_de_' . $index_crc . ' : metas_realtime_stemmed_fr_' . $index_crc . '
+  {
+    morphology            = libstemmer_de
+    path                  = /var/sphinx/datas/metas_realtime_stemmed_de_' . $index_crc . '
+  }
+
+  index metas_realtime_stemmed_nl_' . $index_crc . ' : metas_realtime_stemmed_fr_' . $index_crc . '
+  {
+    morphology            = libstemmer_nl
+    path                  = /var/sphinx/datas/metas_realtime_stemmed_nl_' . $index_crc . '
   }
 
   #--------------------------------------
@@ -522,19 +543,19 @@ class ConfigurationPanel extends AbstractConfigurationPanel
   index documents' . $index_crc . '_stemmed_en : documents' . $index_crc . '
   {
     path                  = /var/sphinx/datas/documents_' . $index_crc . '_stemmed_en
-
     morphology            = libstemmer_en
+  }
 
-    # minimum word length at which to enable stemming
-    # optional, default is 1 (stem everything)
-    #
-    min_stemming_len      = 1
+  index documents' . $index_crc . '_stemmed_de : documents' . $index_crc . '
+  {
+    path                  = /var/sphinx/datas/documents_' . $index_crc . '_stemmed_de
+    morphology            = libstemmer_de
+  }
 
-    # whether to index original keywords along with stemmed versions
-    # enables "=exactform" operator to work
-    # optional, default is 0
-    #
-    index_exact_words     = 1
+  index documents' . $index_crc . '_stemmed_nl : documents' . $index_crc . '
+  {
+    path                  = /var/sphinx/datas/documents_' . $index_crc . '_stemmed_nl
+    morphology            = libstemmer_nl
   }
 
   #--------------------------------------
@@ -548,13 +569,10 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     ' . $charset_abstract . '
 
     rt_field              = value
-#    rt_field              = meta_struct_id
-
     rt_attr_uint          = record_id
     rt_attr_uint          = sbas_id
     rt_attr_uint          = coll_id
     rt_attr_uint          = parent_record_id
-#    rt_attr_uint          = crc_struct_id
     rt_attr_uint          = crc_sbas_coll
     rt_attr_uint          = crc_sbas_record
     rt_attr_uint          = crc_type
@@ -567,6 +585,36 @@ class ConfigurationPanel extends AbstractConfigurationPanel
             }
 
             $conf .= '    rt_attr_multi         = status
+  }
+
+  index docs_realtime_stemmed_fr_' . $index_crc . ' : docs_realtime' . $index_crc . '
+  {
+    type                  = rt
+    morphology            = libstemmer_fr
+    min_stemming_len      = 1
+    index_exact_words     = 1
+    path                  = /var/sphinx/datas/docs_realtime_stemmed_fr_' . $index_crc . '
+  }
+
+  index docs_realtime_stemmed_en_' . $index_crc . ' : docs_realtime_stemmed_fr_' . $index_crc . '
+  {
+    type                  = rt
+    morphology            = libstemmer_en
+    path                  = /var/sphinx/datas/docs_realtime_stemmed_en_' . $index_crc . '
+  }
+
+  index docs_realtime_stemmed_de_' . $index_crc . ' : docs_realtime_stemmed_fr_' . $index_crc . '
+  {
+    type                  = rt
+    morphology            = libstemmer_de
+    path                  = /var/sphinx/datas/docs_realtime_stemmed_de_' . $index_crc . '
+  }
+
+  index docs_realtime_stemmed_nl_' . $index_crc . ' : docs_realtime_stemmed_fr_' . $index_crc . '
+  {
+    type                  = rt
+    morphology            = libstemmer_nl
+    path                  = /var/sphinx/datas/docs_realtime_stemmed_nl_' . $index_crc . '
   }
 
 #------------------------------------------------------------------------------
