@@ -79,8 +79,11 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_creation_date()
     {
         $date_obj = new DateTime();
-        $this->assertTrue((self::$DI['record_1']->get_creation_date() instanceof DateTime));
-        $this->assertTrue((self::$DI['record_1']->get_creation_date() <= $date_obj));
+        $this->assertTrue(self::$DI['record_1']->get_creation_date() instanceof DateTime);
+        $this->assertTrue(
+            self::$DI['record_1']->get_creation_date() <= $date_obj,
+            sprintf('Asserting that %s is before %s', self::$DI['record_1']->get_creation_date()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
+        );
     }
 
     protected function assertDateAtom($date)
@@ -97,7 +100,10 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $date_obj = new DateTime();
         $this->assertTrue((self::$DI['record_1']->get_creation_date() instanceof DateTime));
-        $this->assertTrue((self::$DI['record_1']->get_creation_date() <= $date_obj));
+        $this->assertTrue(
+            self::$DI['record_1']->get_creation_date() <= $date_obj,
+            sprintf('Asserting that %s is before %s', self::$DI['record_1']->get_creation_date()->format(DATE_ATOM), $date_obj->format(DATE_ATOM))
+        );
     }
 
     public function testGet_number()

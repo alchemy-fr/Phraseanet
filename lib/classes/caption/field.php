@@ -215,8 +215,11 @@ class caption_field implements cache_cacheableInterface
         } else {
             foreach ($this->values as $value) {
                 /* @var $value Caption_Field_Value */
-
-                return $value->highlight_thesaurus();
+                if ($highlightTheso) {
+                    return $value->highlight_thesaurus();
+                } else {
+                    return $value->getValue();
+                }
             }
         }
 

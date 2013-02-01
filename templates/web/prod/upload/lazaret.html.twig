@@ -7,7 +7,7 @@
                     <img src="/skins/icons/delete.png">{% trans "Empty quarantine"%}
                 </button>
             </div>
-    
+
             <ul>
                 {% for file in lazaretFiles %}
                     <li class="row-fluid wrapper-item well">
@@ -309,7 +309,7 @@
                         <li class="records-subititution span3">
                             <div class="thumbnail">
                                 <div class="record-thumb" style="text-align:center;">
-                                    {{ thumb.format(record.get_thumbnail(), 260, 180, "", false, false) }}
+                                    {{ thumb.format(record.get_thumbnail(), 169, 180, "", false, false) }}
                                     <input name="record_id" value="{{ record.get_record_id() }}" type="hidden"/>
                                 </div>
                                 <div class="caption">

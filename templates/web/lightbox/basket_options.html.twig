@@ -1,5 +1,5 @@
 {% if basket.getValidation() and basket.getValidation().getParticipant(app['phraseanet.user'], app).getCanAgree() %}
-    <button class="confirm_report" title="{% trans 'validation::envoyer mon rapport'%}">
+    <button class="confirm_report" style="width:100%;" title="{% trans 'validation::envoyer mon rapport'%}">
     <img src="/skins/lightbox/envoyer.png"/>
     {% trans 'validation::envoyer mon rapport'%}
     <img src="/skins/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>

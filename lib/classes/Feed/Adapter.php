@@ -316,7 +316,11 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $publisher = new Feed_Publisher_Adapter($this->app, $row['id']);
+            try {
+                $publisher = new Feed_Publisher_Adapter($this->app, $row['id']);
+            } catch (\Exception_Feed_PublisherNotFound $e) {
+                continue;
+            }
             $this->publishers[$row['usr_id']] = $publisher;
             if ($publisher->is_owner()) {
                 $this->owner = $publisher;

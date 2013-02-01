@@ -76,7 +76,7 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/entry/{id}/edit/', function(Application $app, Request $request, $id) {
             $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
 
-            if ($entry->get_publisher()->get_user()->get_id() !== $app['phraseanet.user']->get_id()) {
+            if (!$entry->is_publisher($app['phraseanet.user'])) {
                 throw new \Exception_UnauthorizedAction();
             }
 
@@ -97,7 +97,7 @@ class Feed implements ControllerProviderInterface
 
                 $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
 
-                if ($entry->get_publisher()->get_user()->get_id() !== $app['phraseanet.user']->get_id()) {
+                if (!$entry->is_publisher($app['phraseanet.user'])) {
                     throw new \Exception_UnauthorizedAction();
                 }
 
@@ -170,7 +170,7 @@ class Feed implements ControllerProviderInterface
 
                 $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
 
-                if ($entry->get_publisher()->get_user()->get_id() !== $app['phraseanet.user']->get_id()
+                if (!$entry->is_publisher($app['phraseanet.user'])
                     && $entry->get_feed()->is_owner($app['phraseanet.user']) === false) {
                     throw new \Exception_UnauthorizedAction(_('Action Forbidden : You are not the publisher'));
                 }

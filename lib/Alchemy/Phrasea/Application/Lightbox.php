@@ -465,6 +465,18 @@ class Lightbox implements ControllerProviderInterface
                     throw new ControllerException('You have not right to agree');
                 }
 
+                $agreed = false;
+                /* @var $basket \Entities\Basket */
+                foreach ($basket->getElements() as $element) {
+                    if (null !== $element->getUserValidationDatas($user)->getAgreement()) {
+                        $agreed = true;
+                    }
+                }
+
+                if (!$agreed) {
+                    throw new ControllerException(_('You have to give your feedback at least on one document to send a report'));
+                }
+
                 /* @var $basket \Entities\Basket */
                 $participant = $basket->getValidation()->getParticipant($app['phraseanet.user'], $app);
 

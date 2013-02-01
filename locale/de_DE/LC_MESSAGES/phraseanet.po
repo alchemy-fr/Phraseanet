@@ -2,19 +2,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-09 14:47+0100\n"
-"PO-Revision-Date: 2012-11-09 14:47+0100\n"
+"POT-Creation-Date: 2012-11-09 13:13+0100\n"
+"PO-Revision-Date: 2013-02-01 10:29+0100\n"
 "Last-Translator: Romain Neutron <imprec@gmail.com>\n"
 "Language-Team: \n"
-"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-11-09 13:44+0000\n"
+"X-Launchpad-Export-Date: 2013-02-01 09:08+0000\n"
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
+"Language: de_DE\n"
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
@@ -124,7 +124,6 @@ msgstr ""
 
 #: lib/classes/login.class.php:34
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:212
-#: tmp/cache_twig/c9/57/bc905354c8ec93689c0ce054e68d.php:212
 #: www/login/register.php:259 www/login/register.php:373
 #: www/login/register.php:379
 msgid "login:: register"
@@ -169,7 +168,6 @@ msgstr "ACHTUNG: Dieser link ist nur bis %s gültig"
 #: tmp/cache_twig/90/8f/be239422702191c3ce43f92b0786.php:35
 #: tmp/cache_twig/98/80/6ddc09182c922aed8c9358e434da.php:93
 #: tmp/cache_twig/be/38/48c916291f94f22767d6966a0765.php:35
-#: tmp/cache_twig/d5/78/2dac4ae9f9a47e55d874534e2085.php:35
 #: www/login/forgotpwd.php:253
 msgid "login:: Forgot your password"
 msgstr "Passwort vergessen?"
@@ -2868,7 +2866,6 @@ msgstr "Guten Tag! Bitte melden Sie sich auf  %home_title% an :"
 #: tmp/cache_twig/98/80/6ddc09182c922aed8c9358e434da.php:67
 #: tmp/cache_twig/b3/da/5f79e5a88d2f7e42c1bc80d755df.php:238
 #: tmp/cache_twig/be/38/48c916291f94f22767d6966a0765.php:92
-#: tmp/cache_twig/d5/78/2dac4ae9f9a47e55d874534e2085.php:92
 #: tmp/cache_twig/e2/a9/077eeb1f99487d0754c930228951.php:95
 #: tmp/cache_twig/eb/b2/79c015458ed339c9be1c206a7ab1.php:1442
 #: www/admin/demand.php:349 www/admin/demand.php:388
@@ -2884,7 +2881,6 @@ msgstr "Benutzername"
 #: tmp/cache_twig/90/8f/be239422702191c3ce43f92b0786.php:102
 #: tmp/cache_twig/98/80/6ddc09182c922aed8c9358e434da.php:80
 #: tmp/cache_twig/be/38/48c916291f94f22767d6966a0765.php:107
-#: tmp/cache_twig/d5/78/2dac4ae9f9a47e55d874534e2085.php:107
 #: tmp/cache_twig/e2/a9/077eeb1f99487d0754c930228951.php:99
 #: tmp/cache_twig/eb/b2/79c015458ed339c9be1c206a7ab1.php:1458
 #: www/login/account.php:621 www/login/register.php:421
@@ -4351,7 +4347,6 @@ msgstr ""
 #: tmp/cache_twig/90/8f/be239422702191c3ce43f92b0786.php:49
 #: tmp/cache_twig/98/80/6ddc09182c922aed8c9358e434da.php:117
 #: tmp/cache_twig/be/38/48c916291f94f22767d6966a0765.php:49
-#: tmp/cache_twig/d5/78/2dac4ae9f9a47e55d874534e2085.php:49
 msgid "login:: connexion"
 msgstr "Einloggen"
 
@@ -6574,7 +6569,6 @@ msgstr "(%length%)"
 #: tmp/cache_twig/90/8f/be239422702191c3ce43f92b0786.php:63
 #: tmp/cache_twig/98/80/6ddc09182c922aed8c9358e434da.php:43
 #: tmp/cache_twig/be/38/48c916291f94f22767d6966a0765.php:68
-#: tmp/cache_twig/d5/78/2dac4ae9f9a47e55d874534e2085.php:68
 msgid "login::erreur: Les cookies sont desactives sur votre navigateur"
 msgstr ""
 "Ihr Webbrowser sollte unbedingt Cookies akzeptieren, damit Sie Phraseanet IV "
@@ -6583,7 +6577,6 @@ msgstr ""
 #: tmp/cache_twig/90/8f/be239422702191c3ce43f92b0786.php:73
 #: tmp/cache_twig/98/80/6ddc09182c922aed8c9358e434da.php:53
 #: tmp/cache_twig/be/38/48c916291f94f22767d6966a0765.php:78
-#: tmp/cache_twig/d5/78/2dac4ae9f9a47e55d874534e2085.php:78
 msgid "Vous etes maintenant deconnecte. A bientot."
 msgstr "Sie sind nun erfolgreich abgemeldet. Bis bald!"
 
@@ -6867,7 +6860,6 @@ msgstr "Seite"
 
 #: tmp/cache_twig/98/80/6ddc09182c922aed8c9358e434da.php:106
 #: tmp/cache_twig/be/38/48c916291f94f22767d6966a0765.php:54
-#: tmp/cache_twig/d5/78/2dac4ae9f9a47e55d874534e2085.php:54
 msgid "login::Remember me"
 msgstr "angemeldet bleiben"
 
@@ -7299,28 +7291,24 @@ msgid "Please select at least one valid file"
 msgstr "Bitte wählen Sie mindestens eine gültige Datei aus."
 
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:37
-#: tmp/cache_twig/c9/57/bc905354c8ec93689c0ce054e68d.php:37
 msgid "phraseanet::noscript"
 msgstr ""
 "Wahrscheinlich ist JavaScript in Ihrem Browser deaktiviert. Sie müssen "
 "JavaScript aktivieren, um alle Funktionen benutzen zu können"
 
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:50
-#: tmp/cache_twig/c9/57/bc905354c8ec93689c0ce054e68d.php:50
 msgid "phraseanet::browser not compliant"
 msgstr ""
 "Ihre Browser Einstellungen müssen geändert werden um Phraseanet IV nutzen zu "
 "können"
 
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:52
-#: tmp/cache_twig/c9/57/bc905354c8ec93689c0ce054e68d.php:52
 msgid "phraseanet::recommend browser"
 msgstr ""
 "Aus Geschwindigkeit- und Zuverlässigkeitsgründen empfehlen wir Ihnen, die "
 "neuesten Versionen der folgenden Webbrowser zu nutzen"
 
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:129
-#: tmp/cache_twig/c9/57/bc905354c8ec93689c0ce054e68d.php:129
 msgid ""
 "Phraseanet recommande l'utilisation de Google Chrome Frame pour Internet "
 "Explorer"
@@ -7328,7 +7316,6 @@ msgstr ""
 "Phraseanet empfiehlt Google Chrome Frame für Internet Explorer zu benutzen"
 
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:133
-#: tmp/cache_twig/c9/57/bc905354c8ec93689c0ce054e68d.php:133
 msgid ""
 "C'est gratuit et s'installe en quelques secondes. Pour Internet Explorer 6, "
 "7, et 8 sur Windows 7 / Vista / XP SP2."
@@ -7337,29 +7324,24 @@ msgstr ""
 "Internet Explorer 6, 7 und 8 auf Windows 7 / Vista / XP SP2."
 
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:138
-#: tmp/cache_twig/c9/57/bc905354c8ec93689c0ce054e68d.php:138
 msgid "Ne plus afficher ce message"
 msgstr "Diese Meldung nicht mehr anzeigen"
 
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:205
-#: tmp/cache_twig/c9/57/bc905354c8ec93689c0ce054e68d.php:205
 #: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:340
 msgid "phraseanet:: aide"
 msgstr "Hilfe"
 
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:221
-#: tmp/cache_twig/c9/57/bc905354c8ec93689c0ce054e68d.php:221
 msgid "login:: CGUs"
 msgstr "ANB"
 
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:227
-#: tmp/cache_twig/c9/57/bc905354c8ec93689c0ce054e68d.php:227
 #: www/login/register.php:383
 msgid "login:: accueil"
 msgstr "Startseite"
 
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:296
-#: tmp/cache_twig/c9/57/bc905354c8ec93689c0ce054e68d.php:296
 #: www/thesaurus2/newsy_dlg.php:95
 msgid "phraseanet:: language"
 msgstr "Sprache"
@@ -7378,7 +7360,7 @@ msgstr "Bridge unverfügbar. Bitte kontaktieren Sie einen Administrator."
 
 #: tmp/cache_twig/c2/c8/415e2b8850cc5270892aa87440f8.php:317
 msgid "You are about to delete this account. Would you like to continue ?"
-msgstr ""
+msgstr "Der Zugang wird gelöscht. Möchten Sie fortfahren?"
 
 #: tmp/cache_twig/c2/c8/415e2b8850cc5270892aa87440f8.php:551
 msgid "Vous n'avez pas assez de droits sur les elements selectionnes"
@@ -10243,11 +10225,11 @@ msgstr "%d Datensätze verschoben"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:135
 msgid "Account is not found."
-msgstr ""
+msgstr "Konto wurde nicht gefunden"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:137
 msgid "Something went wrong, please contact an administrator"
-msgstr ""
+msgstr "Es ist etwas schief gelaufen. Wenden Sie sich an den Administrator"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:237
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:301
@@ -10965,377 +10947,367 @@ msgstr "Liste nicht gefunden"
 msgid "You have not access to this list"
 msgstr "Sie haben keinen Zugriff auf diese Liste"
 
-#~ msgid "reglages:: Nom de linstallation"
-#~ msgstr "Name der Datenbank"
+msgid "reglages:: Nom de linstallation"
+msgstr "Name der Datenbank"
 
-#~ msgid "reglages:: executable PHP CLI"
-#~ msgstr "Pfad zu PHP CLI (Common Line Interface)"
+msgid "reglages:: executable PHP CLI"
+msgstr "Pfad zu PHP CLI (Common Line Interface)"
 
-#~ msgid "reglages:: chemin de l'executable convert"
-#~ msgstr "Pfad zum ImageMajick Bestandteil (konvertieren)"
+msgid "reglages:: chemin de l'executable convert"
+msgstr "Pfad zum ImageMajick Bestandteil (konvertieren)"
 
-#~ msgid "reglages:: chemin de l'executable composite"
-#~ msgstr "Pfad zum Composite Bestandteil"
+msgid "reglages:: chemin de l'executable composite"
+msgstr "Pfad zum Composite Bestandteil"
 
-#~ msgid "reglages:: chemin de l'executable swfextract"
-#~ msgstr "Pfad zur SWF extract ausführbare Datei"
+msgid "reglages:: chemin de l'executable swfextract"
+msgstr "Pfad zur SWF extract ausführbare Datei"
 
-#~ msgid "reglages:: chemin de l'executable pdf2swf"
-#~ msgstr "Pfad zur PDF 2 SWF ausführbare Datei"
+msgid "reglages:: chemin de l'executable pdf2swf"
+msgstr "Pfad zur PDF 2 SWF ausführbare Datei"
 
-#~ msgid "reglages:: chemin de l'executable swfrender"
-#~ msgstr "Pfad zur SWF render ausführbare Datei"
+msgid "reglages:: chemin de l'executable swfrender"
+msgstr "Pfad zur SWF render ausführbare Datei"
 
-#~ msgid "reglages:: chemin de l'executable unoconv"
-#~ msgstr "Pfad zum Unoconv Bestandteil"
+msgid "reglages:: chemin de l'executable unoconv"
+msgstr "Pfad zum Unoconv Bestandteil"
 
-#~ msgid "reglages:: chemin de l'executable FFmpeg"
-#~ msgstr "Pfad zum FFmpeg Bestandteil"
+msgid "reglages:: chemin de l'executable FFmpeg"
+msgstr "Pfad zum FFmpeg Bestandteil"
 
-#~ msgid "reglages:: chemin de l'executable MP4Box"
-#~ msgstr "Pfad zur MP4Box ausführbare Datei"
+msgid "reglages:: chemin de l'executable MP4Box"
+msgstr "Pfad zur MP4Box ausführbare Datei"
 
-#~ msgid "reglages:: chemin de l'executable pdftotext (xpdf)"
-#~ msgstr "Pfad für ausführbares Programm pdftotext (xpdf)"
+msgid "reglages:: chemin de l'executable pdftotext (xpdf)"
+msgstr "Pfad für ausführbares Programm pdftotext (xpdf)"
 
-#~ msgid "prod::thesaurusTab:dlg:supprimer le terme ?"
-#~ msgstr "Begriff löschen?"
+msgid "prod::thesaurusTab:dlg:supprimer le terme ?"
+msgstr "Begriff löschen?"
 
-#~ msgid "prod::thesaurusTab:dlg:accepter le terme ?"
-#~ msgstr "Begriff annehmen?"
+msgid "prod::thesaurusTab:dlg:accepter le terme ?"
+msgstr "Begriff annehmen?"
 
-#~ msgid "prod::thesaurusTab:dlg:Remplacer par \"%s\""
-#~ msgstr "durch \"%s\" ersetzen"
+msgid "prod::thesaurusTab:dlg:Remplacer par \"%s\""
+msgstr "durch \"%s\" ersetzen"
 
-#~ msgid "boutton::ok"
-#~ msgstr "OK"
+msgid "boutton::ok"
+msgstr "OK"
 
-#~ msgid "prod::thesaurusTab:dlg:OK"
-#~ msgstr "OK"
+msgid "prod::thesaurusTab:dlg:OK"
+msgstr "OK"
 
-#~ msgid "prod::thesaurusTab:dlg:Annuler"
-#~ msgstr "Abbrechen"
+msgid "prod::thesaurusTab:dlg:Annuler"
+msgstr "Abbrechen"
 
-#~ msgid "task::workflow02"
-#~ msgstr "Workflow02"
+msgid "task::workflow02"
+msgstr "Workflow02"
 
-#~ msgid "task::archive:Can't create or go to folder '%s'"
-#~ msgstr "unmöglich, '%s' Ordner zu erstellen oder zu erreichen"
+msgid "task::archive:Can't create or go to folder '%s'"
+msgstr "unmöglich, '%s' Ordner zu erstellen oder zu erreichen"
 
-#~ msgid "upgrade to v3.2"
-#~ msgstr "Upgrade auf Version 3.2"
+msgid "upgrade to v3.2"
+msgstr "Upgrade auf Version 3.2"
 
-#~ msgid "upgrade to v3.1"
-#~ msgstr "auf Version 3.1 upgraden"
+msgid "upgrade to v3.1"
+msgstr "auf Version 3.1 upgraden"
 
-#~ msgid "prod::collection::Changer de collection"
-#~ msgstr "verschieben nach"
+msgid "prod::collection::Changer de collection"
+msgstr "verschieben nach"
 
-#~ msgid "phraseanet:: panier"
-#~ msgstr "Sammelkorb"
+msgid "phraseanet:: panier"
+msgstr "Sammelkorb"
 
-#~ msgid "tache d'archivage"
-#~ msgstr "Archivierungsaufgabe"
+msgid "tache d'archivage"
+msgstr "Archivierungsaufgabe"
 
-#~ msgid "L'element n'existe pas ou plus"
-#~ msgstr "Bestandteil existiert nicht oder nicht mehr"
+msgid "L'element n'existe pas ou plus"
+msgstr "Bestandteil existiert nicht oder nicht mehr"
 
-#~ msgid "Impossible dajouter le fichier a la base"
-#~ msgstr "Es ist nicht möglich, diese Datei zur Datenbank hinzuzufügen"
+msgid "Impossible dajouter le fichier a la base"
+msgstr "Es ist nicht möglich, diese Datei zur Datenbank hinzuzufügen"
 
-#~ msgid "Impossible de trouver la base"
-#~ msgstr "Die Datenbank kann nicht gefunden werden"
+msgid "Impossible de trouver la base"
+msgstr "Die Datenbank kann nicht gefunden werden"
 
-#~ msgid "report:: sujet"
-#~ msgstr "Objekt"
+msgid "report:: sujet"
+msgstr "Objekt"
 
-#~ msgid "reglages:: Nom d'utilisateur pour l'api bit.ly"
-#~ msgstr "bit.ly Benutzername"
+msgid "reglages:: Nom d'utilisateur pour l'api bit.ly"
+msgstr "bit.ly Benutzername"
 
-#~ msgid "reglages:: ccle d'api pour l'api bit.ly"
-#~ msgstr "bit.ly API Key"
+msgid "reglages:: ccle d'api pour l'api bit.ly"
+msgstr "bit.ly API Key"
 
-#~ msgid ""
-#~ "reglages:: extensions de fichier autorisees en upload, separees par des "
-#~ "virgules. * pour autoriser tous les fichiers"
-#~ msgstr ""
-#~ "Dateierweiterungen, die zum Hochladen in Phraseanet IV erlaubt sind, "
-#~ "auflisten (Komma als Trennzeichen benutzen. \" * \" benutzen, um alle "
-#~ "Dateiformate zu erlauben)"
+msgid ""
+"reglages:: extensions de fichier autorisees en upload, separees par des "
+"virgules. * pour autoriser tous les fichiers"
+msgstr ""
+"Dateierweiterungen, die zum Hochladen in Phraseanet IV erlaubt sind, "
+"auflisten (Komma als Trennzeichen benutzen. \" * \" benutzen, um alle "
+"Dateiformate zu erlauben)"
 
-#~ msgid ""
-#~ "reglages:: dossier de stockage des vignettes publiees en acces direct"
-#~ msgstr ""
-#~ "direkter Zugriff auf Datenspeicher für Speicherung der Miniaturansichten"
+msgid "reglages:: dossier de stockage des vignettes publiees en acces direct"
+msgstr ""
+"direkter Zugriff auf Datenspeicher für Speicherung der Miniaturansichten"
 
-#~ msgid ""
-#~ "reglages:: dossier de stockage des fichiers proteges de l'acces direct"
-#~ msgstr "Datenspeicher für Speicherung der geschützten Dateien"
+msgid "reglages:: dossier de stockage des fichiers proteges de l'acces direct"
+msgstr "Datenspeicher für Speicherung der geschützten Dateien"
 
-#~ msgid "reglages:: point de montage des vignettes publiees en acces direct"
-#~ msgstr "Web Miniaturansichten Ordner Alias"
+msgid "reglages:: point de montage des vignettes publiees en acces direct"
+msgstr "Web Miniaturansichten Ordner Alias"
 
-#~ msgid "reglages:: chemin de l'executable exiftools"
-#~ msgstr "Pfad zum Exiftool Bestandteil"
+msgid "reglages:: chemin de l'executable exiftools"
+msgstr "Pfad zum Exiftool Bestandteil"
 
-#~ msgid "reglages:: chemin de l'executable Mplayer"
-#~ msgstr "Pfad zur Mplayer ausführbare Datei"
+msgid "reglages:: chemin de l'executable Mplayer"
+msgstr "Pfad zur Mplayer ausführbare Datei"
 
-#~ msgid "Largeur"
-#~ msgstr "Breite"
+msgid "Largeur"
+msgstr "Breite"
 
-#~ msgid "Hauteur"
-#~ msgstr "Höhe"
+msgid "Hauteur"
+msgstr "Höhe"
 
-#~ msgid "Type Mime"
-#~ msgstr "Mime Typ"
+msgid "Type Mime"
+msgstr "Mime Typ"
 
-#~ msgid "Taille"
-#~ msgstr "Grösse"
+msgid "Taille"
+msgstr "Grösse"
 
-#~ msgid "Dimensions a l'impression"
-#~ msgstr "Grösse beim Drucken"
+msgid "Dimensions a l'impression"
+msgstr "Grösse beim Drucken"
 
-#~ msgid "Debit video"
-#~ msgstr "Video Durchsatz"
+msgid "Debit video"
+msgstr "Video Durchsatz"
 
-#~ msgid "Debit audio"
-#~ msgstr "Audio Durchsatz"
+msgid "Debit audio"
+msgstr "Audio Durchsatz"
 
-#~ msgid "action en lot"
-#~ msgstr "Stapel Aktion"
+msgid "action en lot"
+msgstr "Stapel Aktion"
 
-#~ msgid "Pour le GROUPE %key%"
-#~ msgstr "Für die Gruppe %key%"
+msgid "Pour le GROUPE %key%"
+msgstr "Für die Gruppe %key%"
 
-#~ msgid "Derniere version uploadee"
-#~ msgstr "letzte Version"
+msgid "Derniere version uploadee"
+msgstr "letzte Version"
 
-#~ msgid "%potenlength% enregistrements correspondent cet identifiant unique"
-#~ msgstr "%potenlength% Datensätze entsprechen diesem einzigen Login"
+msgid "%potenlength% enregistrements correspondent cet identifiant unique"
+msgstr "%potenlength% Datensätze entsprechen diesem einzigen Login"
 
-#~ msgid "Voici enregistrement correspondant a  cet identifiant unique"
-#~ msgstr "Datensatz für dieses enzige Login"
+msgid "Voici enregistrement correspondant a  cet identifiant unique"
+msgstr "Datensatz für dieses enzige Login"
 
-#~ msgid "D'autres versions de ce document ont ete prealablement uploadees "
-#~ msgstr "Andere Versionen für dieses Dokument wurden vorher hochgeladen "
+msgid "D'autres versions de ce document ont ete prealablement uploadees "
+msgstr "Andere Versionen für dieses Dokument wurden vorher hochgeladen "
 
-#~ msgid "Voir/Cacher"
-#~ msgstr "sehen/verstecken"
+msgid "Voir/Cacher"
+msgstr "sehen/verstecken"
 
-#~ msgid "Precedents uploads"
-#~ msgstr "vorhergehende Uploads"
+msgid "Precedents uploads"
+msgstr "vorhergehende Uploads"
 
-#~ msgid "Record %recordid% - %title%"
-#~ msgstr "Datensatz"
+msgid "Record %recordid% - %title%"
+msgstr "Datensatz"
 
-#~ msgid "Aucun document dans la quarantaine actuellement"
-#~ msgstr "Kein Dokument ist zur Zeit in Quarantäne"
+msgid "Aucun document dans la quarantaine actuellement"
+msgstr "Kein Dokument ist zur Zeit in Quarantäne"
 
-#~ msgid ""
-#~ "Document ajoute le %date% par %display_name% sur la collection %basname%"
-#~ msgstr ""
-#~ "hinzugefügtes Dokument am %date% von %display_name% in die Kollektion "
-#~ "%basname%"
+msgid ""
+"Document ajoute le %date% par %display_name% sur la collection %basname%"
+msgstr ""
+"hinzugefügtes Dokument am %date% von %display_name% in die Kollektion "
+"%basname%"
 
-#~ msgid "Document ajoute le %date% sur la collection %basname%"
-#~ msgstr "hinzugefügtes Dokumen am %date% in die Kollektion %basname%"
+msgid "Document ajoute le %date% sur la collection %basname%"
+msgstr "hinzugefügtes Dokumen am %date% in die Kollektion %basname%"
 
-#~ msgid "Ajouter ce document a la base %basname%"
-#~ msgstr "Dieses Dokument zur Datenbank %basname% hinzufügen"
+msgid "Ajouter ce document a la base %basname%"
+msgstr "Dieses Dokument zur Datenbank %basname% hinzufügen"
 
-#~ msgid "Document a substituer"
-#~ msgstr "Dokument zu ersetzen"
+msgid "Document a substituer"
+msgstr "Dokument zu ersetzen"
 
-#~ msgid "Baseurl"
-#~ msgstr "Baseurl"
+msgid "Baseurl"
+msgstr "Baseurl"
 
-#~ msgid "prod::substitution::erreur : document de substitution invalide"
-#~ msgstr "ungültiges Dateiformat"
+msgid "prod::substitution::erreur : document de substitution invalide"
+msgstr "ungültiges Dateiformat"
 
-#~ msgid "prod::substitution::document remplace avec succes"
-#~ msgstr "Dokument wurden erfolgreich ersetzt"
+msgid "prod::substitution::document remplace avec succes"
+msgstr "Dokument wurden erfolgreich ersetzt"
 
-#~ msgid "prod::substitution::erreur : impossible d'ajouter ce document"
-#~ msgstr "Dieses Dokument kann nicht hinzugefügt werden"
+msgid "prod::substitution::erreur : impossible d'ajouter ce document"
+msgstr "Dieses Dokument kann nicht hinzugefügt werden"
 
-#~ msgid "prod::tools: outils image"
-#~ msgstr "Unterauflösung drehen"
+msgid "prod::tools: outils image"
+msgstr "Unterauflösung drehen"
 
-#~ msgid "prod::tools: substitution de sous definition"
-#~ msgstr "Unterauflösungen ersetzen"
+msgid "prod::tools: substitution de sous definition"
+msgstr "Unterauflösungen ersetzen"
 
-#~ msgid "prod::tools::image: Cette action n'a d'effet que sur les images :"
-#~ msgstr "Diese Handlung wirkt nur auf die Bilder"
+msgid "prod::tools::image: Cette action n'a d'effet que sur les images :"
+msgstr "Diese Handlung wirkt nur auf die Bilder"
 
-#~ msgid "Selectionner une action"
-#~ msgstr "eine Aktion auswählen"
+msgid "Selectionner une action"
+msgstr "eine Aktion auswählen"
 
-#~ msgid "Aucune enregistrement selectionne"
-#~ msgstr "Keine Datensätze ausgewählt"
+msgid "Aucune enregistrement selectionne"
+msgstr "Keine Datensätze ausgewählt"
 
-#~ msgid "Transfert en court, vous devez attendre la fin du transfert"
-#~ msgstr "Transfer in Bearbeitung, bitte warten Sie die Ende"
+msgid "Transfert en court, vous devez attendre la fin du transfert"
+msgstr "Transfer in Bearbeitung, bitte warten Sie die Ende"
 
-#~ msgid ""
-#~ "File d'attente n'est pas vide, souhaitez vous supprimer ces elements ?"
-#~ msgstr ""
-#~ "die Warteschlange ist nicht leer, möchten Sie diese Bestandteile löschen?"
+msgid "File d'attente n'est pas vide, souhaitez vous supprimer ces elements ?"
+msgstr ""
+"die Warteschlange ist nicht leer, möchten Sie diese Bestandteile löschen?"
 
-#~ msgid "upload:: %d fichiers uploades"
-#~ msgstr "%d Dateien hochgeladen"
+msgid "upload:: %d fichiers uploades"
+msgstr "%d Dateien hochgeladen"
 
-#~ msgid "upload:: %d fichier uploade"
-#~ msgstr "%d Datei hochgeladen"
+msgid "upload:: %d fichier uploade"
+msgstr "%d Datei hochgeladen"
 
-#~ msgid "Certains elements uploades sont passes en quarantaine"
-#~ msgstr "Einige hochgeladene Dokumente wurden in Quarantäne gelegt"
+msgid "Certains elements uploades sont passes en quarantaine"
+msgstr "Einige hochgeladene Dokumente wurden in Quarantäne gelegt"
 
-#~ msgid "upload :: choisir les fichiers  a uploader (max : %d MB)"
-#~ msgstr "Dateien zum upload auswählen (max: %d MB)"
+msgid "upload :: choisir les fichiers  a uploader (max : %d MB)"
+msgstr "Dateien zum upload auswählen (max: %d MB)"
 
-#~ msgid "Upload Manager"
-#~ msgstr "Upload Manager"
+msgid "Upload Manager"
+msgstr "Upload Manager"
 
-#~ msgid "Utiliser l'upload classique"
-#~ msgstr "klassicher Upload benutzen"
+msgid "Utiliser l'upload classique"
+msgstr "klassicher Upload benutzen"
 
-#~ msgid "upload:: Re-ordonner les fichiers"
-#~ msgstr "Dateien neu anordnen"
+msgid "upload:: Re-ordonner les fichiers"
+msgstr "Dateien neu anordnen"
 
-#~ msgid "upload:: inverser"
-#~ msgstr "invertieren"
+msgid "upload:: inverser"
+msgstr "invertieren"
 
-#~ msgid "upload:: Selectionner des fichiers"
-#~ msgstr "Dateien auswählen"
+msgid "upload:: Selectionner des fichiers"
+msgstr "Dateien auswählen"
 
-#~ msgid "upload:: Que faire avec les fichiers"
-#~ msgstr "hinzufügen:"
+msgid "upload:: Que faire avec les fichiers"
+msgstr "hinzufügen:"
 
-#~ msgid "upload:: demarrer"
-#~ msgstr "starten"
+msgid "upload:: demarrer"
+msgstr "starten"
 
-#~ msgid "upload:: annuler tous les telechargements"
-#~ msgstr "Alle downloads abbrechen"
+msgid "upload:: annuler tous les telechargements"
+msgstr "Alle downloads abbrechen"
 
-#~ msgid "Action"
-#~ msgstr "Aktion"
+msgid "Action"
+msgstr "Aktion"
 
-#~ msgid "Ajouter les documents bloques"
-#~ msgstr "blockierte Dokumente hinzufügen"
+msgid "Ajouter les documents bloques"
+msgstr "blockierte Dokumente hinzufügen"
 
-#~ msgid "Substituer quand possible ou Ajouter les documents bloques"
-#~ msgstr "blockierte Dokumente wenn möglich ersetzen oder hinzufügen?"
+msgid "Substituer quand possible ou Ajouter les documents bloques"
+msgstr "blockierte Dokumente wenn möglich ersetzen oder hinzufügen?"
 
-#~ msgid "Supprimer les documents bloques"
-#~ msgstr "blockierte Dokumente löschen"
+msgid "Supprimer les documents bloques"
+msgstr "blockierte Dokumente löschen"
 
-#~ msgid "Supprimer precedentes propositions a la substitution"
-#~ msgstr "vorausgegangenen Vorschläge für Ersatz löschen"
+msgid "Supprimer precedentes propositions a la substitution"
+msgstr "vorausgegangenen Vorschläge für Ersatz löschen"
 
-#~ msgid "Internal Server Error"
-#~ msgstr "Interner Serverfehler"
+msgid "Internal Server Error"
+msgstr "Interner Serverfehler"
 
-#~ msgid "erreur lors de l'archivage"
-#~ msgstr "Fehler bei Archiverung"
+msgid "erreur lors de l'archivage"
+msgstr "Fehler bei Archiverung"
 
-#~ msgid "Fichier uploade, en attente"
-#~ msgstr "hochgeladene Datei, anhängig..."
+msgid "Fichier uploade, en attente"
+msgstr "hochgeladene Datei, anhängig..."
 
-#~ msgid "Fichier uploade !"
-#~ msgstr "hochgeladene Datei !"
+msgid "Fichier uploade !"
+msgstr "hochgeladene Datei !"
 
-#~ msgid "phraseanet::technique::datetime-edit-explain"
-#~ msgstr "yyyy/mm/dd hh:mm:ss"
+msgid "phraseanet::technique::datetime-edit-explain"
+msgstr "yyyy/mm/dd hh:mm:ss"
 
-#~ msgid "phraseanet::technique::datetime-edit-format"
-#~ msgstr "YYYY/MM/DD HH:NN:SS"
+msgid "phraseanet::technique::datetime-edit-format"
+msgstr "YYYY/MM/DD HH:NN:SS"
 
-#~ msgid "phraseanet::technique::date-edit-format"
-#~ msgstr "YYYY/MM/DD"
+msgid "phraseanet::technique::date-edit-format"
+msgstr "YYYY/MM/DD"
 
-#~ msgid "phraseanet::technique::date-edit-explain"
-#~ msgstr "yyyy/mm/dd"
+msgid "phraseanet::technique::date-edit-explain"
+msgstr "yyyy/mm/dd"
 
-#~ msgid "phraseanet::technique::time-edit-format"
-#~ msgstr "HH:NN:SS"
+msgid "phraseanet::technique::time-edit-format"
+msgstr "HH:NN:SS"
 
-#~ msgid "phraseanet::technique::time-edit-explain"
-#~ msgstr "hh:mm:ss"
+msgid "phraseanet::technique::time-edit-explain"
+msgstr "hh:mm:ss"
 
-#~ msgid "admin::Le serveur memcached a ete flushe"
-#~ msgstr "Kein memcached Server verbunden"
+msgid "admin::Le serveur memcached a ete flushe"
+msgstr "Kein memcached Server verbunden"
 
-#~ msgid "export::mail: erreur lors de l'envoi aux adresses emails %s"
-#~ msgstr "Fehler beim Senden zu E-Mail Addressen %s"
+msgid "export::mail: erreur lors de l'envoi aux adresses emails %s"
+msgstr "Fehler beim Senden zu E-Mail Addressen %s"
 
-#~ msgid "Impossible d'ecrire dans le fichier %s"
-#~ msgstr "Unmöglich, in %s Datei zu schreiben"
+msgid "Impossible d'ecrire dans le fichier %s"
+msgstr "Unmöglich, in %s Datei zu schreiben"
 
-#~ msgid "Le serveur memcached ne repond pas, vous devriez desactiver le cache"
-#~ msgstr ""
-#~ "Der memcached Server antwortet nicht, Sie sollten den Cache deaktivieren"
+msgid "Le serveur memcached ne repond pas, vous devriez desactiver le cache"
+msgstr ""
+"Der memcached Server antwortet nicht, Sie sollten den Cache deaktivieren"
 
-#~ msgid "GV::section:: Serveurs de cache"
-#~ msgstr "Cache Servers"
+msgid "GV::section:: Serveurs de cache"
+msgstr "Cache Servers"
 
-#~ msgid "reglages:: Utiliser un serveur de cache"
-#~ msgstr "ein Cache Server benutzen"
+msgid "reglages:: Utiliser un serveur de cache"
+msgstr "ein Cache Server benutzen"
 
-#~ msgid "setup:: Hote du Serveur de cache"
-#~ msgstr "Cache Server Host"
+msgid "setup:: Hote du Serveur de cache"
+msgstr "Cache Server Host"
 
-#~ msgid "reglages:: port du serveur de cache"
-#~ msgstr "Cache Server Schnittstelle"
+msgid "reglages:: port du serveur de cache"
+msgstr "Cache Server Schnittstelle"
 
-#~ msgid "Impossible d'ecrire dans le dossier %s"
-#~ msgstr "Unmöglich, im Ordner %s zu schreiben"
+msgid "Impossible d'ecrire dans le dossier %s"
+msgstr "Unmöglich, im Ordner %s zu schreiben"
 
-#~ msgid "Impossible d'effacer le fichier %s"
-#~ msgstr "Unmöglich, Datei %s zu löschen"
+msgid "Impossible d'effacer le fichier %s"
+msgstr "Unmöglich, Datei %s zu löschen"
 
-#~ msgid "recherche"
-#~ msgstr "Suche"
+msgid "recherche"
+msgstr "Suche"
 
-#~ msgid "Chercher tous les mots"
-#~ msgstr "Alle Wörter"
+msgid "Chercher tous les mots"
+msgstr "Alle Wörter"
 
-#~ msgid "Cette expression exacte"
-#~ msgstr "Mit genauer Ausdruck"
+msgid "Cette expression exacte"
+msgstr "Mit genauer Ausdruck"
 
-#~ msgid "Au moins un des mots suivants"
-#~ msgstr "Mindestens ein Wort"
+msgid "Au moins un des mots suivants"
+msgstr "Mindestens ein Wort"
 
-#~ msgid "Aucun des mots suivants"
-#~ msgstr "Keines dieser Wörter"
+msgid "Aucun des mots suivants"
+msgstr "Keines dieser Wörter"
 
-#~ msgid "recherche :: Bases"
-#~ msgstr "Datenbanken"
+msgid "recherche :: Bases"
+msgstr "Datenbanken"
 
-#~ msgid "recherche :: Historique"
-#~ msgstr "History"
+msgid "recherche :: Historique"
+msgstr "History"
 
-#~ msgid "recherche :: Themes"
-#~ msgstr "Themen"
+msgid "recherche :: Themes"
+msgstr "Themen"
 
-#~ msgid "Expire dans %expiration_date%"
-#~ msgstr "erlischt in %expiration_date%"
+msgid "Expire dans %expiration_date%"
+msgstr "erlischt in %expiration_date%"
 
-#~ msgid "%application_name% wants to acces to your data on %home_title%"
-#~ msgstr ""
-#~ "%application_name% will einen Zugriff auf Ihre Daten auf %home_title%"
+msgid "%application_name% wants to acces to your data on %home_title%"
+msgstr "%application_name% will einen Zugriff auf Ihre Daten auf %home_title%"
 
-#~ msgid "phraseanet::technique::datetime"
-#~ msgstr "%b, %d %Y %l:%s %p"
+msgid "phraseanet::technique::datetime"
+msgstr "%b, %d %Y %l:%s %p"
 
-#~ msgid "phraseanet::technique::date"
-#~ msgstr "%d- %m- %Y"
+msgid "phraseanet::technique::date"
+msgstr "%d- %m- %Y"
 
-#~ msgid "publications:: publication non lue"
-#~ msgstr "ungelesen"
-
-#~ msgid "prod::thesaurusTab:dlg:remplacer le terme ?"
-#~ msgstr "Begriff ersetzen?"
-
-#~ msgid "prod::thesaurusTab:dlg:Remplacement du candidat \"%s\" :"
-#~ msgstr "Ersetzung des möglichen Begriffes \"%s\":"
+msgid "publications:: publication non lue"
+msgstr "ungelesen"

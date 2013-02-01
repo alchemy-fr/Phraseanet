@@ -97,7 +97,7 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
         $stmt->closeCursor();
 
         if ( ! $row)
-            throw new Exception_Feed_PublisherNotFound();
+            throw new Exception_Feed_PublisherNotFound('Publisher is not Found');
 
         $this->user = User_Adapter::getInstance($row['usr_id'], $this->app);
         $this->owner = ! ! $row['owner'];

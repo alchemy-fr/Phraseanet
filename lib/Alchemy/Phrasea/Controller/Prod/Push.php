@@ -29,6 +29,8 @@ class Push implements ControllerProviderInterface
     protected function getUserFormatter()
     {
         return function(\User_Adapter $user) {
+            $subtitle = array_filter(array($user->get_job(), $user->get_company()));
+
             return array(
                 'type'         => 'USER'
                 , 'usr_id'       => $user->get_id()
@@ -36,7 +38,7 @@ class Push implements ControllerProviderInterface
                 , 'lastname'     => $user->get_lastname()
                 , 'email'        => $user->get_email()
                 , 'display_name' => $user->get_display_name()
-                , 'subtitle'     => sprintf('%s, %s', $user->get_job(), $user->get_company())
+                , 'subtitle'     => implode(', ', $subtitle)
             );
         };
     }

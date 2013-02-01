@@ -74,7 +74,7 @@
 				.apps_hover{
 					background-color:#353535;
 				}
-				
+
 				.app_title, .app_name, .app_name a{
 					margin:0 0 0 10px;
 					font-size:13px;
@@ -105,9 +105,7 @@
 					color:red;
 				}
 				#lng-select{
-					background-color:#525252;
 					border:1px solid #444;
-					color:white;
 					font-size:10px;
 				}
 				.title-desc{
@@ -119,7 +117,7 @@
 					 font-size:28px;
 					 color:#b1b1b1;
 				}
-				
+
 			/*register && account*/
 					#form_register_table tr{
 						height:22px;
@@ -148,13 +146,13 @@
 						text-align:left;
 						width:200px;
 					}
-					
+
 					.notice{
 						background:#00a8FF;
 					}
-					
-					
-					
+
+
+
 					.password-meter {
 						position:relative;
 						width: 180px;
@@ -171,7 +169,7 @@
 						top: 8px;
 						background: #e0e0e0;
 					}
-					
+
 					.password-meter-message-very-weak {
 						color: #aa0033;
 					}
@@ -184,7 +182,7 @@
 					.password-meter-message-strong {
 						color: #008000;
 					}
-					
+
 					.password-meter-bg .password-meter-very-weak {
 						background: #aa0033;
 						width: 30px;
@@ -201,14 +199,14 @@
 						background: #008000;
 						width: 180px;
 					}
-     
+
           ul.app-list {
                 border-top: 1px solid #EEEEEE;
                 margin: 10px 0 20px;
                 list-style: none outside none;
                 padding:0;
           }
-          
+
           ul.app-list li {
               border-bottom: 1px solid #EEEEEE;
               font-size: 14px;
@@ -219,7 +217,7 @@
               clear:both;
               display:block;
           }
-          
+
           ul.app-list li span.app-row {
             padding:0;
             margin:0;
@@ -227,12 +225,12 @@
             text-align: left;
             padding-left:30px;
           }
-          
+
           ul.app-list li span.app-row a{
             color: #2D76B9;
             text-decoration:none;
           }
-          
+
           ul.app-list li .app-btn{
             border-color: #DDDDDD #DDDDDD #CCCCCC;
             border-radius: 4px 4px 4px 4px;
@@ -247,7 +245,7 @@
             float:right;
             cursor:pointer;
           }
-          
+
           #tab-account-cat .ui-tabs-nav li a{
             font-size: 0.95em;
             color: #FFF;
@@ -256,23 +254,23 @@
           #tab-account-cat .ui-tabs-nav li.ui-tabs-selected a{
             color: #2D76B9;
           }
-          
+
           #content-apps{
             text-align:left;
           }
-          
+
           div.side-section {
-              
+
           }
-          
+
           table.app-placement{
             table-layout: fixed;
             width:100%;
           }
-          
+
           #app_dev_create{
           }
-          
+
           .link_button{
             text-decoration:none;
             background-color: #00A0D1;
@@ -286,24 +284,24 @@
           a.no_underline{
             text-decoration: none;
           }
-          
+
           #app-oauth-setting{
             border-top: 1px solid #EEEEEE;
             margin: 0 0 3em;
             width: 100%;
           }
-          
+
           #app-oauth-setting td:first-child {
               width: 25%;
           }
-          
-          
+
+
           #app-oauth-setting td{
             padding: 8px 0;
             vertical-align: top;
             text-align: left;
           }
-          
+
           #generate_access{
              background-color: #00A0D1;
               border: 1px solid #095B7E;
@@ -316,13 +314,13 @@
             vertical-align: top;
             text-align: left;
           }
-          
+
           #app-access-token-setting {
             width:100%;
             border-top:1px solid whitesmoke;
           }
-          
-          
+
+
           #tab-account-cat .ui-tabs-nav{
             height:30px;
             border-bottom:1px solid white;
@@ -331,7 +329,7 @@
             table-layout: fixed;
             width:100%;
           }
-          
+
           #app-dev-create td input[type=text], #app-dev-create td textarea, #app-dev-create td select{
             display:inline-block;
             width:95%;
@@ -341,40 +339,40 @@
             margin: 0;
             padding: 6px;
           }
-          
+
           #app-dev-create td input[name=callback], #app-dev-create td input[name=website]{
             width:85%;
           }
-          
+
           #app-dev-create .url-td select{
             width:12%;
           }
-          
+
           #app-dev-create td{
             text-align:left;
           }
-          
+
           #app-dev-create tr td:first-child{
             padding-right:10px;
             text-align:right;
             font-weight: 700;
           }
-          
+
           #app-dev-create td:first-child{
             width:25%;
           }
-          
+
           .app_submit{
             background-color: #00A0D1;
               border: 1px solid #095B7E;
               color: #BFE4EF;
               width: 120px
           }
-          
+
           #updatingDemand input[type=submit]{
             margin:0 auto;
           }
-          
+
           .delete_app{
             text-decoration:none;
             background-color: #BCB5B5;
@@ -387,7 +385,7 @@
             float:right;
             display: none;
           }
-            
+
           .ui-dialog{
             color:black;
             background-color: white;
@@ -396,7 +394,7 @@
             border: 1px solid #1A1A1A;
             border-radius: 4px 4px 4px 4px;
           }
-          
+
           .ui-dialog button{
             background-color: #BCB5B5;
             border: 1px solid #1A1A1A;
@@ -405,16 +403,16 @@
             padding: 2px 6px;
             margin-left:10px;
           }
-          
+
           .ui-dialog-buttonset{
             text-align: right;
           }
-          
+
           .ui-dialog a{
             color:black;
             float:right;
           }
-          
+
           /* Tabs
 ----------------------------------*/
 .ui-tabs { padding: .2em; zoom: 1; }
