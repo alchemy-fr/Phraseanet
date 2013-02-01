@@ -336,6 +336,11 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
         $validationBasket = $this->insertOneValidationBasket();
 
+        foreach ($validationBasket->getElements() as $element) {
+            $element->getUserValidationDatas(self::$DI['app']['phraseanet.user'], self::$DI['app'])->setAgreement(true);
+            break;
+        }
+
         $crawler = self::$DI['client']->request('POST', '/lightbox/ajax/SET_RELEASE/' . $validationBasket->getId() . '/');
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasket->getId()));

@@ -468,7 +468,7 @@ class Lightbox implements ControllerProviderInterface
                 $agreed = false;
                 /* @var $basket \Entities\Basket */
                 foreach ($basket->getElements() as $element) {
-                    if (null !== $element->getUserValidationDatas($user)->getAgreement()) {
+                    if (null !== $element->getUserValidationDatas($app['phraseanet.user'], $app)->getAgreement()) {
                         $agreed = true;
                     }
                 }
