@@ -41,7 +41,7 @@
                     </div>
                     <div class="container left">
                         {% if first_item %}
-                            {% if user.ACL().has_preview_grant(first_item.get_record()) %}
+                            {% if user.ACL().has_access_to_subdef(first_item.get_record(), 'preview') %}
                                 {% set preview = first_item.get_record().get_preview() %}
                             {% else %}
                                 {% set preview = first_item.get_record().get_thumbnail() %}

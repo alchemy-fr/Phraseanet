@@ -87,7 +87,7 @@ class Feed implements ControllerProviderInterface
 
                 $entry = \Feed_Entry_Adapter::load_from_id($appbox, $id);
 
-                if ($entry->get_publisher()->get_user()->get_id() !== $user->get_id()) {
+                if (!$entry->is_publisher($user)) {
                     throw new \Exception_UnauthorizedAction();
                 }
 
@@ -107,7 +107,7 @@ class Feed implements ControllerProviderInterface
 
                     $entry = \Feed_Entry_Adapter::load_from_id($appbox, $id);
 
-                    if ($entry->get_publisher()->get_user()->get_id() !== $user->get_id()) {
+                    if (!$entry->is_publisher($user)) {
                         throw new \Exception_UnauthorizedAction();
                     }
 
@@ -186,7 +186,7 @@ class Feed implements ControllerProviderInterface
 
                     $entry = \Feed_Entry_Adapter::load_from_id($appbox, $id);
 
-                    if ($entry->get_publisher()->get_user()->get_id() !== $user->get_id()
+                    if (!$entry->is_publisher($user)
                         && $entry->get_feed()->is_owner($user) === false) {
                         throw new \Exception_UnauthorizedAction(_('Action Forbidden : You are not the publisher'));
                     }
