@@ -12,7 +12,7 @@ before_script:
   - sudo apt-get update
   - sudo apt-get install -y -qq xpdf ffmpeg libavcodec-extra-53 openoffice.org-writer unoconv ghostscript gsfonts dcraw ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
   - sudo apt-get clean
-  - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz 
+  - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
   - tar xzf sphinx-2.0.6-release.tar.gz
   - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make --quiet && sudo make install"
   - sudo mkdir -p /var/sphinx/datas
