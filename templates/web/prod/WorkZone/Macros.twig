@@ -16,16 +16,27 @@
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
-          <a href="/prod/baskets/{{ basket.getId() }}/" style="text-overflow: ellipsis;">
+          <a class="workzone-menu-title" href="/prod/baskets/{{ basket.getId() }}/">
             <span>
               <img src='/skins/icons/basket.gif' title=''/>
               {{basket.getName()}}
             </span>
           </a>
           <div class="menu">
-            <img title="{% trans  'Vous avez recu une demande de validation de document sur ce panier' %}"
-                 class="basketTips" src="/skins/icons/valid.png"/>
-            <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">&#9660;</a>
+              <table>
+                  <tr>
+                      <td>
+                          <img
+                              title="{% trans  'Vous avez recu une demande de validation de document sur ce panier' %}"
+                              class="basketTips"
+                              src="/skins/icons/valid.png"
+                            />
+                      </td>
+                      <td>
+                          <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">&#9660;</a>
+                      </td>
+                  </tr>
+              </table>
 
             <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
               <tbody>
@@ -80,24 +91,42 @@
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
-          <a href="/prod/baskets/{{ basket.getId() }}/" style="text-overflow: ellipsis;">
+          <a class="workzone-menu-title" href="/prod/baskets/{{ basket.getId() }}/" style="">
             <span>
               <img src='/skins/icons/basket.gif' title=''/>
               {{basket.getName()}}
             </span>
           </a>
           <div class="menu">
-          {% if basket.getValidation() %}
-            <img title="{% trans 'Vous avez envoye une demande de validation de document sur ce panier' %}"
-                 class="basketTips" src="/skins/icons/myvalid.png"/>
-          {% endif %}
-          {% if basket.getPusher() %}
-            {% set pusher = basket.getPusher().get_display_name() %}
-            <img class="basketTips" title="{% trans %}paniers:: panier recu de {{pusher}}{% endtrans %}"
-                 src="/skins/icons/push16.png"/>
-          {% endif %}
-
-            <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">&#9660;</a>
+            <table>
+                  <tr>
+                        <td>
+                            {% if basket.getValidation() %}
+                                <img
+                                    style="display:inline;padding:0;margin:0;"
+                                    title="{% trans 'Vous avez envoye une demande de validation de document sur ce panier' %}"
+                                    class="basketTips"
+                                    src="/skins/icons/myvalid.png"
+                                />
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if basket.getPusher() %}
+                                {% set pusher = basket.getPusher().get_display_name() %}
+                                    <img
+                                        class="basketTips"
+                                        title="{% trans %}paniers:: panier recu de {{pusher}}{% endtrans %}"
+                                        src="/skins/icons/push16.png"/>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a
+                                style="cursor:pointer;display:inline;padding:0;margin:0;"
+                                class="contextMenuTrigger">&#9660;
+                            </a>
+                        </td>
+                  </tr>
+            </table>
 
             <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
               <tbody>
@@ -176,16 +205,22 @@
              class="STORY_{{ story.getRecord().get_serialize_key() }} basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT grouping
                     {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
-          <a href="/prod/story/{{ story.getRecord().get_sbas_id }}/{{ story.getRecord().get_record_id() }}/">
+          <a class="workzone-menu-title"  href="/prod/story/{{ story.getRecord().get_sbas_id }}/{{ story.getRecord().get_record_id() }}/">
             <span>
             {{ story.getRecord().get_base_id()|get_collection_logo|raw }}
             <i> {{ story.getRecord().get_title() }} </i>
             </span>
           </a>
           <div class="menu">
-            <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">
-              &#9660;
-            </a>
+              <table>
+                  <tr>
+                      <td>
+                          <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">
+                            &#9660;
+                          </a>
+                      </td>
+                  </tr>
+              </table>
 
             <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
               <tbody>

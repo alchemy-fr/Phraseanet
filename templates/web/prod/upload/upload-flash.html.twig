@@ -213,6 +213,7 @@
                     $("#"+file.id).find('.canva-wrapper').remove();
                     $("#"+file.id).find(".remove-element").bind('click', function(){
                         $this.cancelUpload(file.id);
+                        $(this).closest("li").remove();
                     });
                 });
             },

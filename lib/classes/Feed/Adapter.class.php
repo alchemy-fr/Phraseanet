@@ -224,7 +224,11 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
     {
         $this->load_publishers();
 
-        return $this->owner->get_user()->get_id() === $user->get_id();
+        if ($this->owner) {
+            return $this->owner->get_user()->get_id() === $user->get_id();
+        }
+
+        return false;
     }
 
     /**
@@ -318,10 +322,15 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $publisher = new Feed_Publisher_Adapter($this->appbox, $row['id']);
+            try {
+                $publisher = new Feed_Publisher_Adapter($this->appbox, $row['id']);
+            } catch (\Exception_Feed_PublisherNotFound $e) {
+                continue;
+            }
             $this->publishers[$row['usr_id']] = $publisher;
-            if ($publisher->is_owner())
+            if ($publisher->is_owner()) {
                 $this->owner = $publisher;
+            }
         }
 
         return $this->publishers;
