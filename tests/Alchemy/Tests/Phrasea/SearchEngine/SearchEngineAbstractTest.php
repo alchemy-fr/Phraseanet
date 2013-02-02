@@ -358,7 +358,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $this->editRecord($index_string, $record);
 
         self::$searchEngine->addRecord($record);
-        $this->updateIndex();
+        $this->updateIndex(array($language));
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
