@@ -211,6 +211,14 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $sql_date_fields = $this->getSqlDateFields($record);
 
+        $indexes = array(
+            "metas_realtime" . $this->CRCdatabox($record->get_databox()),
+            "metas_realtime_stemmed_fr_" . $this->CRCdatabox($record->get_databox()),
+            "metas_realtime_stemmed_nl_" . $this->CRCdatabox($record->get_databox()),
+            "metas_realtime_stemmed_de_" . $this->CRCdatabox($record->get_databox()),
+            "metas_realtime_stemmed_en_" . $this->CRCdatabox($record->get_databox()),
+        );
+
         foreach ($record->get_caption()->get_fields(null, true) as $field) {
             if (!$field->is_indexable()) {
                 continue;
@@ -221,47 +229,57 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
 
             foreach ($field->get_values() as $value) {
-                $this->rt_conn->exec("REPLACE INTO "
-                        . "metas_realtime" . $this->CRCdatabox($record->get_databox()) . " VALUES (
-                    '" . $value->getId() . "'
-                    ,'" . str_replace("'", "\'", $value->getValue()) . "'
-                    ,'" . $value->getDatabox_field()->get_id() . "'
-                    ," . $record->get_record_id() . "
-                    ," . $record->get_sbas_id() . "
-                    ," . $record->get_collection()->get_coll_id() . "
-                    ," . (int) $record->is_grouping() . "
-                    ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $value->getDatabox_field()->get_id())) . "
-                    ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_collection()->get_coll_id())) . "
-                    ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_record_id())) . "
-                    ," . sprintf("%u", crc32($record->get_type())) . "
-                    ,0
-                    ," . (int) $value->getDatabox_field()->isBusiness() . "
-                    ," . sprintf("%u", crc32($record->get_collection()->get_coll_id() . '_' . (int) $value->getDatabox_field()->isBusiness())) . "
-                    ," . $record->get_creation_date()->format('U') . "
-                    " . $sql_date_fields . "
-                    ,(" . implode(',', $status) . ")
-                    )");
+                foreach ($indexes as $index) {
+                    $this->rt_conn->exec("REPLACE INTO "
+                            . $index . " VALUES (
+                        '" . $value->getId() . "'
+                        ,'" . str_replace("'", "\'", $value->getValue()) . "'
+                        ,'" . $value->getDatabox_field()->get_id() . "'
+                        ," . $record->get_record_id() . "
+                        ," . $record->get_sbas_id() . "
+                        ," . $record->get_collection()->get_coll_id() . "
+                        ," . (int) $record->is_grouping() . "
+                        ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $value->getDatabox_field()->get_id())) . "
+                        ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_collection()->get_coll_id())) . "
+                        ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_record_id())) . "
+                        ," . sprintf("%u", crc32($record->get_type())) . "
+                        ,0
+                        ," . (int) $value->getDatabox_field()->isBusiness() . "
+                        ," . sprintf("%u", crc32($record->get_collection()->get_coll_id() . '_' . (int) $value->getDatabox_field()->isBusiness())) . "
+                        ," . $record->get_creation_date()->format('U') . "
+                        " . $sql_date_fields . "
+                        ,(" . implode(',', $status) . ")
+                        )");
+                }
             }
         }
 
-        $sql = "REPLACE INTO "
-                . "docs_realtime" . $this->CRCdatabox($record->get_databox()) . " VALUES (
-            '" . $record->get_record_id() . "'
-            ,'" . str_replace("'", "\'", implode(' ', $all_datas)) . "'
-            ," . $record->get_record_id() . "
-            ," . $record->get_sbas_id() . "
-            ," . $record->get_collection()->get_coll_id() . "
-            ," . (int) $record->is_grouping() . "
-            ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_collection()->get_coll_id())) . "
-            ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_record_id())) . "
-            ," . sprintf("%u", crc32($record->get_type())) . "
-            ,0
-            ," . $record->get_creation_date()->format('U') . "
-            " . $sql_date_fields . "
-            ,(" . implode(',', $status) . ")
-            )";
+        $indexes = array(
+            "docs_realtime" . $this->CRCdatabox($record->get_databox()),
+            "docs_realtime_stemmed_fr_" . $this->CRCdatabox($record->get_databox()),
+            "docs_realtime_stemmed_nl_" . $this->CRCdatabox($record->get_databox()),
+            "docs_realtime_stemmed_en_" . $this->CRCdatabox($record->get_databox()),
+            "docs_realtime_stemmed_de_" . $this->CRCdatabox($record->get_databox()),
+        );
 
-        $this->rt_conn->exec($sql);
+        foreach ($indexes as $index) {
+            $this->rt_conn->exec("REPLACE INTO "
+                    . $index . " VALUES (
+                '" . $record->get_record_id() . "'
+                ,'" . str_replace("'", "\'", implode(' ', $all_datas)) . "'
+                ," . $record->get_record_id() . "
+                ," . $record->get_sbas_id() . "
+                ," . $record->get_collection()->get_coll_id() . "
+                ," . (int) $record->is_grouping() . "
+                ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_collection()->get_coll_id())) . "
+                ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_record_id())) . "
+                ," . sprintf("%u", crc32($record->get_type())) . "
+                ,0
+                ," . $record->get_creation_date()->format('U') . "
+                " . $sql_date_fields . "
+                ,(" . implode(',', $status) . ")
+            )");
+        }
 
         return $this;
     }
@@ -280,6 +298,15 @@ class SphinxSearchEngine implements SearchEngineInterface
             "metadatas" . $CRCdatabox,
             "metadatas" . $CRCdatabox . "_stemmed_en",
             "metadatas" . $CRCdatabox . "_stemmed_fr",
+            "metadatas" . $CRCdatabox . "_stemmed_de",
+            "metadatas" . $CRCdatabox . "_stemmed_nl",
+        );
+        $RTindexes = array(
+            "metas_realtime" . $CRCdatabox,
+            "metas_realtime_stemmed_fr_" . $CRCdatabox,
+            "metas_realtime_stemmed_en_" . $CRCdatabox,
+            "metas_realtime_stemmed_nl_" . $CRCdatabox,
+            "metas_realtime_stemmed_de_" . $CRCdatabox,
         );
 
         foreach ($record->get_caption()->get_fields(null, true) as $field) {
@@ -290,21 +317,34 @@ class SphinxSearchEngine implements SearchEngineInterface
                     $this->sphinx->UpdateAttributes($index, array("deleted"), array($value->getId() => array(1)));
                 }
 
-                $this->rt_conn->exec("DELETE FROM metas_realtime" . $CRCdatabox . " WHERE id = " . $value->getId());
+                foreach ($RTindexes as $index) {
+                    $this->rt_conn->exec("DELETE FROM " . $index . " WHERE id = " . $value->getId());
+                }
             }
         }
 
         $indexes = array(
             "documents" . $CRCdatabox,
             "documents" . $CRCdatabox . "_stemmed_fr",
-            "documents" . $CRCdatabox . "_stemmed_en"
+            "documents" . $CRCdatabox . "_stemmed_en",
+            "documents" . $CRCdatabox . "_stemmed_de",
+            "documents" . $CRCdatabox . "_stemmed_nl"
+        );
+        $RTindexes = array(
+            "docs_realtime" . $CRCdatabox,
+            "docs_realtime_stemmed_fr_" . $CRCdatabox,
+            "docs_realtime_stemmed_en_" . $CRCdatabox,
+            "docs_realtime_stemmed_nl_" . $CRCdatabox,
+            "docs_realtime_stemmed_de_" . $CRCdatabox,
         );
 
         foreach ($indexes as $index) {
             $this->sphinx->UpdateAttributes($index, array("deleted"), array($record->get_record_id() => array(1)));
         }
 
-        $this->rt_conn->exec("DELETE FROM docs_realtime" . $CRCdatabox . " WHERE id = " . $record->get_record_id());
+        foreach ($RTindexes as $index) {
+            $this->rt_conn->exec("DELETE FROM " . $index . " WHERE id = " . $record->get_record_id());
+        }
 
         return $this;
     }
@@ -433,7 +473,8 @@ class SphinxSearchEngine implements SearchEngineInterface
             $warning = $this->sphinx->GetLastWarning();
 
             $total = $available = $duration = 0;
-            $suggestions = $propositions = array();
+            $suggestions = new ArrayCollection();
+            $propositions = array();
         } else {
             $error = $res['error'];
             $warning = $res['warning'];
@@ -868,17 +909,19 @@ class SphinxSearchEngine implements SearchEngineInterface
             if ($this->options->getFields() || $this->options->getBusinessFieldsOn()) {
                 if ($query !== '' && $this->options->isStemmed() && $this->options->getLocale()) {
                     $index = 'metadatas' . implode('_stemmed_' . $this->options->getLocale() . ', metadatas', $index_keys) . '_stemmed_' . $this->options->getLocale();
+                    $index .= ', metas_realtime_stemmed_' . $this->options->getLocale() . '_' . implode(', metas_realtime_stemmed_' . $this->options->getLocale() . '_', $index_keys);
                 } else {
                     $index = 'metadatas' . implode(',metadatas', $index_keys);
+                    $index .= ', metas_realtime' . implode(', metas_realtime', $index_keys);
                 }
-                $index .= ', metas_realtime' . implode(', metas_realtime', $index_keys);
             } else {
                 if ($query !== '' && $this->options->isStemmed() && $this->options->getLocale()) {
                     $index = 'documents' . implode('_stemmed_' . $this->options->getLocale() . ', documents', $index_keys) . '_stemmed_' . $this->options->getLocale();
+                    $index .= ', docs_realtime_stemmed_' . $this->options->getLocale() . '_' . implode(', docs_realtime_stemmed_' . $this->options->getLocale() . '_', $index_keys);
                 } else {
                     $index = 'documents' . implode(', documents', $index_keys);
+                    $index .= ', docs_realtime' . implode(', docs_realtime', $index_keys);
                 }
-                $index .= ', docs_realtime' . implode(', docs_realtime', $index_keys);
             }
         }
 
