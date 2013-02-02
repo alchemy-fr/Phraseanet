@@ -133,15 +133,5 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
             $this->assertEquals($first_id, $row['session_id']);
         }
     }
-
-    public function testUpdateRecordFR()
-    {
-        $this->markTestSkipped('Phrasea engine does not currently support french stemmatisation');
-    }
-
-    public function testUpdateRecordEN()
-    {
-        $this->markTestSkipped('Phrasea engine does not currently support english stemmatisation');
-    }
 }
 

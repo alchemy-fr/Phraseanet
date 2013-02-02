@@ -2,12 +2,12 @@
 
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
 abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 {
-
     protected  $options;
     protected static $searchEngine;
     protected static $initialized = false;
@@ -323,16 +323,37 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         return $options;
     }
 
-    public function testUpdateRecordFR()
+    /**
+     * @dataProvider provideStemmData
+     */
+    public function testUpdateRecordWithStemm($language, $word, $stemm)
     {
+        if (!self::$searchEngine->hasStemming()) {
+            $this->markTestSkipped(sprintf(
+                '%s does not support stemm, passing stemmatization for language %s',
+                get_class(self::$searchEngine),
+                $language
+            ));
+        }
+
         $options = $this->getDefaultOptions();
         $options->setStemming(true);
-        $options->setLocale('fr');
+        $options->setLocale($language);
         self::$searchEngine->setOptions($options);
 
         $record = self::$DI['record_24'];
-        $index_string = 'boomboklot' . $record->get_record_id() . 'stemmedfr chevaux';
-        $query_string = 'boomboklot' . $record->get_record_id() . 'stemmedfr cheval';
+        $index_string = sprintf(
+            'boomboklot%dstemmed%s %s',
+            $record->get_record_id(),
+            $language,
+            $word
+        );
+        $query_string = sprintf(
+            'boomboklot%dstemmed%s %s',
+            $record->get_record_id(),
+            $language,
+            $stemm
+        );
 
         $this->editRecord($index_string, $record);
 
@@ -344,25 +365,34 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $this->assertEquals(1, $results->getTotal());
     }
 
-    public function testUpdateRecordEN()
+    public function provideStemmData()
     {
-        $options = $this->getDefaultOptions();
-        $options->setStemming(true);
-        $options->setLocale('en');
-        self::$searchEngine->setOptions($options);
+        $data = array();
 
-        $record = self::$DI['record_24'];
-        $index_string = 'boomboklot' . $record->get_record_id() . 'stemmeden consistency';
-        $query_string = 'boomboklot' . $record->get_record_id() . 'stemmeden consistent';
+        $examples = array(
+            'fr' => array('word' => 'chevaux', 'stemm' => 'cheval'),
+            'en' => array('word' => 'consistency', 'stemm' => 'consistent'),
+            'de' => array('word' => 'aufeinanderfolgender', 'stemm' => 'aufeinanderfolg'),
+            'nl' => array('word' => 'lichamelijk', 'stemm' => 'licham'),
+        );
 
-        $this->editRecord($index_string, $record);
+        foreach (Application::getAvailableLanguages() as $language => $name) {
 
-        self::$searchEngine->addRecord($record);
-        $this->updateIndex();
+            $codes = explode('_', $language);
+            $languageCode = $codes[0];
 
-        self::$searchEngine->resetCache();
-        $results = self::$searchEngine->query($query_string, 0, 1);
-        $this->assertEquals(1, $results->getTotal());
+            if (!isset($examples[$languageCode])) {
+                $this->fail(sprintf('Missing stemm examples for language %s', $languageCode));
+            }
+
+            $data[] = array(
+                $languageCode,
+                $examples[$languageCode]['word'],
+                $examples[$languageCode]['stemm'],
+            );
+        }
+
+        return $data;
     }
 
     public function testUpdateQueryOnField()
