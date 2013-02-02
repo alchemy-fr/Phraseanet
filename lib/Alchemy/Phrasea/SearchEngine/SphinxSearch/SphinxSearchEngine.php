@@ -301,6 +301,13 @@ class SphinxSearchEngine implements SearchEngineInterface
             "metadatas" . $CRCdatabox . "_stemmed_de",
             "metadatas" . $CRCdatabox . "_stemmed_nl",
         );
+        $RTindexes = array(
+            "metas_realtime" . $CRCdatabox,
+            "metas_realtime_stemmed_fr_" . $CRCdatabox,
+            "metas_realtime_stemmed_en_" . $CRCdatabox,
+            "metas_realtime_stemmed_nl_" . $CRCdatabox,
+            "metas_realtime_stemmed_de_" . $CRCdatabox,
+        );
 
         foreach ($record->get_caption()->get_fields(null, true) as $field) {
 
@@ -310,7 +317,9 @@ class SphinxSearchEngine implements SearchEngineInterface
                     $this->sphinx->UpdateAttributes($index, array("deleted"), array($value->getId() => array(1)));
                 }
 
-                $this->rt_conn->exec("DELETE FROM metas_realtime" . $CRCdatabox . " WHERE id = " . $value->getId());
+                foreach ($RTindexes as $index) {
+                    $this->rt_conn->exec("DELETE FROM " . $index . " WHERE id = " . $value->getId());
+                }
             }
         }
 
@@ -321,16 +330,21 @@ class SphinxSearchEngine implements SearchEngineInterface
             "documents" . $CRCdatabox . "_stemmed_de",
             "documents" . $CRCdatabox . "_stemmed_nl"
         );
+        $RTindexes = array(
+            "docs_realtime" . $CRCdatabox,
+            "docs_realtime_stemmed_fr_" . $CRCdatabox,
+            "docs_realtime_stemmed_en_" . $CRCdatabox,
+            "docs_realtime_stemmed_nl_" . $CRCdatabox,
+            "docs_realtime_stemmed_de_" . $CRCdatabox,
+        );
 
         foreach ($indexes as $index) {
             $this->sphinx->UpdateAttributes($index, array("deleted"), array($record->get_record_id() => array(1)));
         }
 
-        $this->rt_conn->exec("DELETE FROM docs_realtime" . $CRCdatabox . " WHERE id = " . $record->get_record_id());
-        $this->rt_conn->exec("DELETE FROM docs_realtime_stemmed_fr_" . $CRCdatabox . " WHERE id = " . $record->get_record_id());
-        $this->rt_conn->exec("DELETE FROM docs_realtime_stemmed_en_" . $CRCdatabox . " WHERE id = " . $record->get_record_id());
-        $this->rt_conn->exec("DELETE FROM docs_realtime_stemmed_de_" . $CRCdatabox . " WHERE id = " . $record->get_record_id());
-        $this->rt_conn->exec("DELETE FROM docs_realtime_stemmed_nl_" . $CRCdatabox . " WHERE id = " . $record->get_record_id());
+        foreach ($RTindexes as $index) {
+            $this->rt_conn->exec("DELETE FROM " . $index . " WHERE id = " . $record->get_record_id());
+        }
 
         return $this;
     }

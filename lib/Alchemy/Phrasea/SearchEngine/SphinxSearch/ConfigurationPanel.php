@@ -598,21 +598,18 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
   index docs_realtime_stemmed_en_' . $index_crc . ' : docs_realtime_stemmed_fr_' . $index_crc . '
   {
-    type                  = rt
     morphology            = libstemmer_en
     path                  = /var/sphinx/datas/docs_realtime_stemmed_en_' . $index_crc . '
   }
 
   index docs_realtime_stemmed_de_' . $index_crc . ' : docs_realtime_stemmed_fr_' . $index_crc . '
   {
-    type                  = rt
     morphology            = libstemmer_de
     path                  = /var/sphinx/datas/docs_realtime_stemmed_de_' . $index_crc . '
   }
 
   index docs_realtime_stemmed_nl_' . $index_crc . ' : docs_realtime_stemmed_fr_' . $index_crc . '
   {
-    type                  = rt
     morphology            = libstemmer_nl
     path                  = /var/sphinx/datas/docs_realtime_stemmed_nl_' . $index_crc . '
   }

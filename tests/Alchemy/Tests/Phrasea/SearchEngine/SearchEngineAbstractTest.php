@@ -498,12 +498,54 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $record = self::$DI['record_24'];
         $query_string = 'boomboklot' . $record->get_record_id() . 'deleteRecord';
 
-        $this->editRecord($query_string, $record);
+        $field = $this->editRecord($query_string, $record);
 
         self::$searchEngine->addRecord($record);
         $this->updateIndex();
         self::$searchEngine->removeRecord($record);
         $this->updateIndex();
+
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->getTotal());
+
+        $options = $this->getDefaultOptions();
+        $options->setFields(array($field));
+        self::$searchEngine->setOptions($options);
+
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->getTotal());
+    }
+
+    /**
+     * @dataProvider provideStemmData
+     */
+    public function testDeleteRecordWithinStemmContext($language, $word, $stemm)
+    {
+        $record = self::$DI['record_24'];
+        $index_string = 'boomboklot' . $record->get_record_id() . 'deleteRecordInStemmContext '.$word;
+        $query_string = 'boomboklot' . $record->get_record_id() . 'deleteRecordInStemmContext '.$stemm;
+
+        $options = $this->getDefaultOptions();
+        $options->setStemming(true);
+        $options->setLocale($language);
+
+        self::$searchEngine->setOptions($options);
+
+        $field = $this->editRecord($index_string, $record);
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+        self::$searchEngine->removeRecord($record);
+        $this->updateIndex();
+
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->getTotal());
+
+        $options->setFields(array($field));
+        self::$searchEngine->setOptions($options);
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
