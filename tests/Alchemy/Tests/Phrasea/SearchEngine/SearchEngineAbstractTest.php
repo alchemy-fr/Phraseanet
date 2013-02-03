@@ -2,12 +2,12 @@
 
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
 abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 {
-
     protected  $options;
     protected static $searchEngine;
     protected static $initialized = false;
@@ -56,13 +56,6 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     private function getOptions()
     {
         return $this->options;
-    }
-
-    abstract public function initialize();
-
-    protected function updateIndex()
-    {
-        return $this;
     }
 
     public function testQueryRecordId()
@@ -330,24 +323,76 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         return $options;
     }
 
-    public function testUpdateRecordFR()
+    /**
+     * @dataProvider provideStemmData
+     */
+    public function testUpdateRecordWithStemm($language, $word, $stemm)
     {
+        if (!self::$searchEngine->hasStemming()) {
+            $this->markTestSkipped(sprintf(
+                '%s does not support stemm, passing stemmatization for language %s',
+                get_class(self::$searchEngine),
+                $language
+            ));
+        }
+
         $options = $this->getDefaultOptions();
         $options->setStemming(true);
-        $options->setLocale('fr');
+        $options->setLocale($language);
         self::$searchEngine->setOptions($options);
 
         $record = self::$DI['record_24'];
-        $query_string = 'boomboklot' . $record->get_record_id() . 'stemmedfr';
+        $index_string = sprintf(
+            'boomboklot%dstemmed%s %s',
+            $record->get_record_id(),
+            $language,
+            $word
+        );
+        $query_string = sprintf(
+            'boomboklot%dstemmed%s %s',
+            $record->get_record_id(),
+            $language,
+            $stemm
+        );
 
-        $this->editRecord($query_string, $record);
+        $this->editRecord($index_string, $record);
 
         self::$searchEngine->addRecord($record);
-        $this->updateIndex();
+        $this->updateIndex(array($language));
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(1, $results->getTotal());
+    }
+
+    public function provideStemmData()
+    {
+        $data = array();
+
+        $examples = array(
+            'fr' => array('word' => 'chevaux', 'stemm' => 'cheval'),
+            'en' => array('word' => 'consistency', 'stemm' => 'consistent'),
+            'de' => array('word' => 'aufeinanderfolgender', 'stemm' => 'aufeinanderfolg'),
+            'nl' => array('word' => 'lichamelijk', 'stemm' => 'licham'),
+        );
+
+        foreach (Application::getAvailableLanguages() as $language => $name) {
+
+            $codes = explode('_', $language);
+            $languageCode = $codes[0];
+
+            if (!isset($examples[$languageCode])) {
+                $this->fail(sprintf('Missing stemm examples for language %s', $languageCode));
+            }
+
+            $data[] = array(
+                $languageCode,
+                $examples[$languageCode]['word'],
+                $examples[$languageCode]['stemm'],
+            );
+        }
+
+        return $data;
     }
 
     public function testUpdateQueryOnField()
@@ -453,12 +498,54 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $record = self::$DI['record_24'];
         $query_string = 'boomboklot' . $record->get_record_id() . 'deleteRecord';
 
-        $this->editRecord($query_string, $record);
+        $field = $this->editRecord($query_string, $record);
 
         self::$searchEngine->addRecord($record);
         $this->updateIndex();
         self::$searchEngine->removeRecord($record);
         $this->updateIndex();
+
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->getTotal());
+
+        $options = $this->getDefaultOptions();
+        $options->setFields(array($field));
+        self::$searchEngine->setOptions($options);
+
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->getTotal());
+    }
+
+    /**
+     * @dataProvider provideStemmData
+     */
+    public function testDeleteRecordWithinStemmContext($language, $word, $stemm)
+    {
+        $record = self::$DI['record_24'];
+        $index_string = 'boomboklot' . $record->get_record_id() . 'deleteRecordInStemmContext '.$word;
+        $query_string = 'boomboklot' . $record->get_record_id() . 'deleteRecordInStemmContext '.$stemm;
+
+        $options = $this->getDefaultOptions();
+        $options->setStemming(true);
+        $options->setLocale($language);
+
+        self::$searchEngine->setOptions($options);
+
+        $field = $this->editRecord($index_string, $record);
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+        self::$searchEngine->removeRecord($record);
+        $this->updateIndex();
+
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->getTotal());
+
+        $options->setFields(array($field));
+        self::$searchEngine->setOptions($options);
 
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
@@ -679,5 +766,9 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         }
     }
 
-    abstract function testAutocomplete();
+    abstract public function initialize();
+
+    abstract public function testAutocomplete();
+
+    abstract protected function updateIndex(array $stemms = array());
 }

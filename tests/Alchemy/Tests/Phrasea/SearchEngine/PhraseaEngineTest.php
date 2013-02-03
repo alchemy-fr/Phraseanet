@@ -21,7 +21,7 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
         self::$searchEngine = PhraseaEngine::create(self::$DI['app']);
     }
 
-    protected function updateIndex()
+    protected function updateIndex(array $stemms = array())
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
         $cmd = '/usr/local/bin/phraseanet_indexer '
