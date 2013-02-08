@@ -551,12 +551,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/MediaVorus",
-                "reference": "0.1.2"
+                "reference": "0.1.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/0.1.2",
-                "reference": "0.1.2",
+                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/0.1.3",
+                "reference": "0.1.3",
                 "shasum": ""
             },
             "require": {
@@ -571,7 +571,7 @@
                 "fabpot/php-cs-fixer": "*",
                 "silex/silex": "dev-master"
             },
-            "time": "2013-02-07 16:34:04",
+            "time": "2013-02-08 10:14:22",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1190,12 +1190,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "e7059b44c78ca8e1e892adb4d93b5a482f4eb9b3"
+                "reference": "e0637fa9b75e9a74e6a23dd0167cf74ee9518403"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/zipball/e7059b44c78ca8e1e892adb4d93b5a482f4eb9b3",
-                "reference": "e7059b44c78ca8e1e892adb4d93b5a482f4eb9b3",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/e0637fa9b75e9a74e6a23dd0167cf74ee9518403",
+                "reference": "e0637fa9b75e9a74e6a23dd0167cf74ee9518403",
                 "shasum": ""
             },
             "require": {
@@ -1242,16 +1242,10 @@
                 "doctrine/orm": ">=2.2.3,<2.4-dev",
                 "doctrine/data-fixtures": "1.0.*",
                 "propel/propel1": "dev-master",
-                "monolog/monolog": "1.*"
+                "monolog/monolog": ">=1.0,<1.3-dev"
             },
-            "time": "2012-11-26 10:27:20",
+            "time": "2013-02-07 22:54:50",
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.1-dev"
-                }
-            },
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Symfony": "src/",

@@ -20,7 +20,7 @@
         "phpexiftool/phpexiftool": "dev-master",
         "silex/silex": "1.0.*",
         "swiftmailer/swiftmailer": "4.1.*",
-        "symfony/symfony": ">=2.1",
+        "symfony/symfony": "2.1.*@dev",
         "tecnick.com/tcpdf": "dev-master",
         "twig/twig": ">=1.9",
         "twig/extensions": "master",
