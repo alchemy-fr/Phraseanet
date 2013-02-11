@@ -1,5 +1,5 @@
 {
-    "hash": "c16362614b85420352973bbc06e3e451",
+    "hash": "4548c42f5b9886493cc93dfbc50c0754",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -31,6 +31,12 @@
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Phlickr",
                 "reference": "89993abd6a02b42e0b765114c34c26c4056762fa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/alchemy-fr/Phlickr/zipball/89993abd6a02b42e0b765114c34c26c4056762fa",
+                "reference": "89993abd6a02b42e0b765114c34c26c4056762fa",
+                "shasum": ""
             },
             "time": "2012-04-13 17:43:31",
             "type": "library",
@@ -105,6 +111,12 @@
                 "url": "https://github.com/alchemy-fr/oauth2-php",
                 "reference": "5f949209461e8f4c31e8476155188923aafa2ae5"
             },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/alchemy-fr/oauth2-php/zipball/5f949209461e8f4c31e8476155188923aafa2ae5",
+                "reference": "5f949209461e8f4c31e8476155188923aafa2ae5",
+                "shasum": ""
+            },
             "time": "2012-03-30 15:47:07",
             "type": "library",
             "autoload": {
@@ -153,7 +165,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-dataURI/archive/c29d1cca49d6ba38d532025db5bf0cd06031da06.zip",
+                "url": "https://github.com/alchemy-fr/PHP-dataURI/zipball/c29d1cca49d6ba38d532025db5bf0cd06031da06",
                 "reference": "c29d1cca49d6ba38d532025db5bf0cd06031da06",
                 "shasum": ""
             },
@@ -172,7 +184,6 @@
                     "DataURI": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -450,16 +461,16 @@
         },
         {
             "name": "gedmo/doctrine-extensions",
-            "version": "v2.3.3",
+            "version": "v2.3.4",
             "source": {
                 "type": "git",
                 "url": "git://github.com/l3pp4rd/DoctrineExtensions.git",
-                "reference": "v2.3.3"
+                "reference": "v2.3.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/l3pp4rd/DoctrineExtensions/archive/v2.3.3.zip",
-                "reference": "v2.3.3",
+                "url": "https://api.github.com/repos/l3pp4rd/DoctrineExtensions/zipball/v2.3.4",
+                "reference": "v2.3.4",
                 "shasum": ""
             },
             "require": {
@@ -467,18 +478,19 @@
                 "doctrine/common": ">=2.2,<2.5-dev"
             },
             "require-dev": {
-                "doctrine/mongodb": ">=1.0.0-BETA1",
-                "doctrine/mongodb-odm": ">=1.0.0-BETA6",
+                "doctrine/mongodb": "1.0.1",
+                "doctrine/mongodb-odm": "1.0.0-BETA7",
                 "doctrine/orm": ">=2.2",
-                "doctrine/dbal": ">=2.2"
+                "doctrine/dbal": ">=2.2",
+                "symfony/yaml": "2.*"
             },
             "suggest": {
-                "doctrine/mongodb": ">=1.0.0-BETA1",
-                "doctrine/mongodb-odm": ">=1.0.0-BETA6",
-                "doctrine/orm": ">=2.2",
-                "doctrine/dbal": ">=2.2"
+                "doctrine/mongodb": ">=1.0.1",
+                "doctrine/mongodb-odm": ">=1.0.0-BETA7",
+                "doctrine/orm": ">=2.3.2",
+                "doctrine/dbal": ">=2.3.2"
             },
-            "time": "2012-12-18 21:02:17",
+            "time": "2013-02-05 13:39:54",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -496,8 +508,16 @@
             ],
             "authors": [
                 {
+                    "name": "David Buchmann",
+                    "email": "david@liip.ch"
+                },
+                {
                     "name": "Gediminas Morkevicius",
                     "email": "gediminas.morkevicius@gmail.com"
+                },
+                {
+                    "name": "Gustavo Falco",
+                    "email": "comfortablynumb84@gmail.com"
                 }
             ],
             "description": "Doctrine2 behavioral extensions",
@@ -513,7 +533,9 @@
                 "translatable",
                 "nestedset",
                 "sortable",
-                "timestampable"
+                "timestampable",
+                "Blameable",
+                "uploadable"
             ]
         },
         {
@@ -615,21 +637,23 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/KnpLabs/snappy.git",
-                "reference": "0.1.0"
+                "reference": "f33e3d62098b837e1b73b38970ef5f118d1d267c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/KnpLabs/snappy/archive/0.1.0.zip",
-                "reference": "0.1.0",
+                "url": "https://api.github.com/repos/KnpLabs/snappy/zipball/f33e3d62098b837e1b73b38970ef5f118d1d267c",
+                "reference": "f33e3d62098b837e1b73b38970ef5f118d1d267c",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
             "suggest": {
-                "symfony/process": "Process Component of Symfony2."
+                "symfony/process": "Process Component of Symfony2.",
+                "google/wkhtmltopdf-amd64": "Provide wkhtmltopdf-amd64 binary as composer dependencies",
+                "google/wkhtmltopdf-i386": "Provide wkhtmltopdf-i386 binary as composer dependencies"
             },
-            "time": "2012-11-07 09:48:01",
+            "time": "2013-02-05 12:11:50",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -985,16 +1009,16 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.2.0",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg",
-                "reference": "0.2.0"
+                "reference": "0.2.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/archive/0.2.0.zip",
-                "reference": "0.2.0",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0.2.1",
+                "reference": "0.2.1",
                 "shasum": ""
             },
             "require": {
@@ -1011,7 +1035,7 @@
             "suggest": {
                 "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
             },
-            "time": "2012-12-13 12:05:15",
+            "time": "2013-02-04 11:49:20",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1379,12 +1403,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Silex.git",
-                "reference": "a23c221e609a17dfc2923066e1680149b7678cf9"
+                "reference": "3563829af174cae24d99938c8c1dab45c33946fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Silex/archive/a23c221e609a17dfc2923066e1680149b7678cf9.zip",
-                "reference": "a23c221e609a17dfc2923066e1680149b7678cf9",
+                "url": "https://api.github.com/repos/fabpot/Silex/zipball/3563829af174cae24d99938c8c1dab45c33946fa",
+                "reference": "3563829af174cae24d99938c8c1dab45c33946fa",
                 "shasum": ""
             },
             "require": {
@@ -1420,7 +1444,7 @@
                 "symfony/css-selector": ">=2.1,<2.3-dev",
                 "symfony/dom-crawler": ">=2.1,<2.3-dev"
             },
-            "time": "2013-01-25 06:59:19",
+            "time": "2013-02-08 11:41:41",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1558,16 +1582,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.1.7",
+            "version": "2.1.x-dev",
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "v2.1.7"
+                "reference": "e0637fa9b75e9a74e6a23dd0167cf74ee9518403"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/archive/v2.1.7.zip",
-                "reference": "v2.1.7",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/e0637fa9b75e9a74e6a23dd0167cf74ee9518403",
+                "reference": "e0637fa9b75e9a74e6a23dd0167cf74ee9518403",
                 "shasum": ""
             },
             "require": {
@@ -1616,7 +1640,7 @@
                 "propel/propel1": "dev-master",
                 "monolog/monolog": ">=1.0,<1.3-dev"
             },
-            "time": "2013-01-17 21:21:51",
+            "time": "2013-02-07 22:54:50",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -1650,12 +1674,12 @@
             "source": {
                 "type": "git",
                 "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "a3bcc0957faf1e3786de13f1a4d3d307766526b0"
+                "reference": "6b317b4e2e46b5412b72fb17a4bc36ff4c8a174c"
             },
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2013-01-30 17:13:12",
+            "time": "2013-02-06 20:04:08",
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -1910,6 +1934,7 @@
         "neutron/silex-filesystem-provider": 20,
         "phpexiftool/exiftool": 20,
         "silex/silex": 20,
+        "symfony/symfony": 20,
         "tecnick.com/tcpdf": 20,
         "twig/extensions": 20,
         "doctrine/data-fixtures": 20
