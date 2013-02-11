@@ -1611,7 +1611,7 @@ class task_period_archive extends task_abstract
         $metadatasStructure = $databox->get_meta_structure();
 
         $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getMetadatas());
-
+        $metaFields = null;
         if ($captionFile !== null && true === $this->dependencyContainer['filesystem']->exists($captionFile)) {
             $metaFields = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
@@ -1625,7 +1625,8 @@ class task_period_archive extends task_abstract
         $story->substitute_subdef('document', $media, $this->dependencyContainer);
 
         $story->set_metadatas($metadatas->toMetadataArray($metadatasStructure), true);
-        $story->set_metadatas($metaFields->toMetadataArray($metadatasStructure), true);
+        if($metaFields)
+            $story->set_metadatas($metaFields->toMetadataArray($metadatasStructure), true);
 
         $story->set_binary_status(databox_status::operation_or($this->dependencyContainer, $stat0, $stat1));
         $story->rebuild_subdefs();
@@ -1675,7 +1676,7 @@ class task_period_archive extends task_abstract
         $metadatasStructure = $databox->get_meta_structure();
 
         $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getMetadatas());
-
+        $metaFields = array();
         if ($captionFile !== null && true === $this->dependencyContainer['filesystem']->exists($captionFile)) {
             $metaFields = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(@simplexml_load_file($captionFile));
