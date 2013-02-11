@@ -91,6 +91,9 @@ class MailInfoOrderDeliveredTest extends MailTestCase
         $basket->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('Hello basket'));
+        $basket->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(42));
 
         $user = $this->getMockBuilder('User_Adapter')
             ->disableOriginalConstructor()
