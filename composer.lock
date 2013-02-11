@@ -1,5 +1,5 @@
 {
-    "hash": "4548c42f5b9886493cc93dfbc50c0754",
+    "hash": "fc5fa4c5fd4b320e0ff3c53ec0ad8705",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -31,12 +31,6 @@
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Phlickr",
                 "reference": "89993abd6a02b42e0b765114c34c26c4056762fa"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/alchemy-fr/Phlickr/zipball/89993abd6a02b42e0b765114c34c26c4056762fa",
-                "reference": "89993abd6a02b42e0b765114c34c26c4056762fa",
-                "shasum": ""
             },
             "time": "2012-04-13 17:43:31",
             "type": "library",
@@ -111,12 +105,6 @@
                 "url": "https://github.com/alchemy-fr/oauth2-php",
                 "reference": "5f949209461e8f4c31e8476155188923aafa2ae5"
             },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/alchemy-fr/oauth2-php/zipball/5f949209461e8f4c31e8476155188923aafa2ae5",
-                "reference": "5f949209461e8f4c31e8476155188923aafa2ae5",
-                "shasum": ""
-            },
             "time": "2012-03-30 15:47:07",
             "type": "library",
             "autoload": {
@@ -161,29 +149,29 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/alchemy-fr/PHP-dataURI.git",
-                "reference": "c29d1cca49d6ba38d532025db5bf0cd06031da06"
+                "reference": "0.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-dataURI/zipball/c29d1cca49d6ba38d532025db5bf0cd06031da06",
-                "reference": "c29d1cca49d6ba38d532025db5bf0cd06031da06",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-dataURI/zipball/0.1.0",
+                "reference": "0.1.0",
                 "shasum": ""
             },
             "require": {
-                "symfony/http-foundation": "2.1.*",
-                "php": ">=5.3.2"
+                "php": ">=5.3.2",
+                "symfony/http-foundation": ">=2.0,<3.0"
             },
             "require-dev": {
-                "fabpot/php-cs-fixer": "dev-master",
                 "sami/sami": "dev-master"
             },
-            "time": "2012-06-01 00:09:00",
+            "time": "2013-02-11 11:12:52",
             "type": "library",
             "autoload": {
                 "psr-0": {
                     "DataURI": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -193,7 +181,12 @@
                     "email": "legoff.n@gmail.com"
                 }
             ],
-            "description": "PHP DataURI component"
+            "description": "PHP DataURI component",
+            "keywords": [
+                "data",
+                "uri",
+                "data-uri"
+            ]
         },
         {
             "name": "doctrine/collections",
@@ -548,7 +541,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/GromNaN/SilexServiceProvider/archive/1d37fa54aaecfacb68fde4c60392da0c1ca6300d.zip",
+                "url": "https://api.github.com/repos/GromNaN/SilexServiceProvider/zipball/1d37fa54aaecfacb68fde4c60392da0c1ca6300d",
                 "reference": "1d37fa54aaecfacb68fde4c60392da0c1ca6300d",
                 "shasum": ""
             },
@@ -885,7 +878,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/romainneutron/BadFaith-ServiceProvider/archive/5bc683cea2996fe5fda6f72b1f9c83299a381336.zip",
+                "url": "https://api.github.com/repos/romainneutron/BadFaith-ServiceProvider/zipball/5bc683cea2996fe5fda6f72b1f9c83299a381336",
                 "reference": "5bc683cea2996fe5fda6f72b1f9c83299a381336",
                 "shasum": ""
             },
@@ -931,7 +924,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/romainneutron/Silex-Filesystem-Service-Provider/archive/98771524bba1ffa58373c4c06d438f5fb5442ff4.zip",
+                "url": "https://api.github.com/repos/romainneutron/Silex-Filesystem-Service-Provider/zipball/98771524bba1ffa58373c4c06d438f5fb5442ff4",
                 "reference": "98771524bba1ffa58373c4c06d438f5fb5442ff4",
                 "shasum": ""
             },
@@ -1009,39 +1002,32 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.2.1",
+            "version": "0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg",
-                "reference": "0.2.1"
+                "reference": "0.2.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0.2.1",
-                "reference": "0.2.1",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0.2.2",
+                "reference": "0.2.2",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<=2.2",
-                "monolog/monolog": "1.*"
+                "symfony/process": ">=2.0,<3.0",
+                "monolog/monolog": ">=1.0,<2.0"
             },
             "require-dev": {
-                "fabpot/php-cs-fixer": "master",
-                "sami/sami": "dev-master",
-                "silex/silex": "dev-master",
-                "phpunit/phpunit": "3.7.*"
+                "sami/sami": "dev-master@dev",
+                "silex/silex": "1.0.x-dev@dev"
             },
             "suggest": {
                 "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
             },
-            "time": "2013-02-04 11:49:20",
+            "time": "2013-02-11 11:24:37",
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.2.x-dev"
-                }
-            },
             "autoload": {
                 "psr-0": {
                     "FFMpeg": "src"
@@ -1077,28 +1063,27 @@
         },
         {
             "name": "php-mp4box/php-mp4box",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "git://github.com/alchemy-fr/PHP-MP4Box.git",
-                "reference": "0.1.0"
+                "reference": "0.1.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-MP4Box/archive/0.1.0.zip",
-                "reference": "0.1.0",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-MP4Box/zipball/0.1.1",
+                "reference": "0.1.1",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<=2.2",
-                "monolog/monolog": "1.*"
+                "symfony/process": ">=2.0,<3.0",
+                "monolog/monolog": ">=1.0,<2.0"
             },
             "require-dev": {
-                "fabpot/php-cs-fixer": "dev-master",
-                "silex/silex": "dev-master"
+                "silex/silex": "1.0.x-dev@dev"
             },
-            "time": "2012-12-21 16:44:13",
+            "time": "2013-02-11 11:30:00",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -1125,28 +1110,27 @@
         },
         {
             "name": "php-unoconv/php-unoconv",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-Unoconv",
-                "reference": "0.1.0"
+                "reference": "0.1.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-Unoconv/archive/0.1.0.zip",
-                "reference": "0.1.0",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-Unoconv/zipball/0.1.1",
+                "reference": "0.1.1",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<=2.2",
-                "monolog/monolog": "1.*"
+                "symfony/process": ">=2.0,<3.0",
+                "monolog/monolog": ">=1.0,<2.0"
             },
             "require-dev": {
-                "silex/silex": "dev-master",
-                "fabpot/php-cs-fixer": "dev-master"
+                "silex/silex": "1.0.x-dev@dev"
             },
-            "time": "2012-12-21 16:41:47",
+            "time": "2013-02-11 11:38:30",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -1165,11 +1149,14 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "support@alchemy.fr",
+                    "email": "info@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
-            "description": "Unoconv PHP, an Object Oriented library for easy file conversion with LibreOffice's unoconv"
+            "description": "Unoconv PHP, an Object Oriented library for easy file conversion with LibreOffice's unoconv",
+            "keywords": [
+                "unoconv"
+            ]
         },
         {
             "name": "php-xpdf/php-xpdf",
@@ -1403,12 +1390,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Silex.git",
-                "reference": "3563829af174cae24d99938c8c1dab45c33946fa"
+                "reference": "28e87dac825bd7f4e85d96087fe7709d7802f799"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Silex/zipball/3563829af174cae24d99938c8c1dab45c33946fa",
-                "reference": "3563829af174cae24d99938c8c1dab45c33946fa",
+                "url": "https://api.github.com/repos/fabpot/Silex/zipball/28e87dac825bd7f4e85d96087fe7709d7802f799",
+                "reference": "28e87dac825bd7f4e85d96087fe7709d7802f799",
                 "shasum": ""
             },
             "require": {
@@ -1444,7 +1431,7 @@
                 "symfony/css-selector": ">=2.1,<2.3-dev",
                 "symfony/dom-crawler": ">=2.1,<2.3-dev"
             },
-            "time": "2013-02-08 11:41:41",
+            "time": "2013-02-11 07:40:10",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1479,29 +1466,28 @@
         },
         {
             "name": "swftools/swftools",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPSwftools",
-                "reference": "0.1.0"
+                "reference": "0.1.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHPSwftools/archive/0.1.0.zip",
-                "reference": "0.1.0",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPSwftools/zipball/0.1.1",
+                "reference": "0.1.1",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<=2.2",
-                "monolog/monolog": "1.*"
+                "symfony/process": ">=2.0,<3.0",
+                "monolog/monolog": ">=1.0,<2.0"
             },
             "require-dev": {
-                "fabpot/php-cs-fixer": "dev-master",
-                "sami/sami": "dev-master",
-                "silex/silex": "dev-master"
+                "sami/sami": "dev-master@dev",
+                "silex/silex": "1.0.x-dev@dev"
             },
-            "time": "2012-12-21 16:29:27",
+            "time": "2013-02-11 11:46:21",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -1582,71 +1568,82 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "2.1.x-dev",
+            "version": "2.2.x-dev",
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "e0637fa9b75e9a74e6a23dd0167cf74ee9518403"
+                "reference": "95ba9449e2d5e77bd945c1a0c611c30c4f0237c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/e0637fa9b75e9a74e6a23dd0167cf74ee9518403",
-                "reference": "e0637fa9b75e9a74e6a23dd0167cf74ee9518403",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/95ba9449e2d5e77bd945c1a0c611c30c4f0237c7",
+                "reference": "95ba9449e2d5e77bd945c1a0c611c30c4f0237c7",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
-                "doctrine/common": ">2.2,<2.4-dev",
-                "twig/twig": ">=1.9.1,<2.0-dev"
+                "psr/log": ">=1.0,<2.0",
+                "doctrine/common": ">=2.2,<3.0",
+                "twig/twig": ">=1.11.0,<2.0"
             },
             "replace": {
-                "symfony/doctrine-bridge": "self.version",
-                "symfony/monolog-bridge": "self.version",
-                "symfony/propel1-bridge": "self.version",
-                "symfony/swiftmailer-bridge": "self.version",
-                "symfony/twig-bridge": "self.version",
-                "symfony/framework-bundle": "self.version",
-                "symfony/security-bundle": "self.version",
-                "symfony/twig-bundle": "self.version",
-                "symfony/web-profiler-bundle": "self.version",
                 "symfony/browser-kit": "self.version",
                 "symfony/class-loader": "self.version",
                 "symfony/config": "self.version",
                 "symfony/console": "self.version",
                 "symfony/css-selector": "self.version",
                 "symfony/dependency-injection": "self.version",
+                "symfony/doctrine-bridge": "self.version",
                 "symfony/dom-crawler": "self.version",
                 "symfony/event-dispatcher": "self.version",
                 "symfony/filesystem": "self.version",
                 "symfony/finder": "self.version",
                 "symfony/form": "self.version",
+                "symfony/framework-bundle": "self.version",
                 "symfony/http-foundation": "self.version",
                 "symfony/http-kernel": "self.version",
                 "symfony/locale": "self.version",
+                "symfony/monolog-bridge": "self.version",
                 "symfony/options-resolver": "self.version",
                 "symfony/process": "self.version",
+                "symfony/propel1-bridge": "self.version",
+                "symfony/property-access": "self.version",
                 "symfony/routing": "self.version",
                 "symfony/security": "self.version",
+                "symfony/security-bundle": "self.version",
                 "symfony/serializer": "self.version",
+                "symfony/stopwatch": "self.version",
+                "symfony/swiftmailer-bridge": "self.version",
                 "symfony/templating": "self.version",
                 "symfony/translation": "self.version",
+                "symfony/twig-bridge": "self.version",
+                "symfony/twig-bundle": "self.version",
                 "symfony/validator": "self.version",
+                "symfony/web-profiler-bundle": "self.version",
                 "symfony/yaml": "self.version"
             },
             "require-dev": {
-                "doctrine/dbal": ">=2.2,<2.4-dev",
-                "doctrine/orm": ">=2.2.3,<2.4-dev",
                 "doctrine/data-fixtures": "1.0.*",
-                "propel/propel1": "dev-master",
-                "monolog/monolog": ">=1.0,<1.3-dev"
+                "monolog/monolog": ">=1.3,<2.0",
+                "doctrine/dbal": ">=2.2,<3.0",
+                "doctrine/orm": ">=2.2,<3.0,>=2.2.3",
+                "propel/propel1": "1.6.*"
             },
-            "time": "2013-02-07 22:54:50",
+            "time": "2013-02-11 11:43:49",
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
-                    "Symfony": "src/",
-                    "SessionHandlerInterface": "src/Symfony/Component/HttpFoundation/Resources/stubs"
-                }
+                    "Symfony\\": "src/"
+                },
+                "classmap": [
+                    "src/Symfony/Component/HttpFoundation/Resources/stubs",
+                    "src/Symfony/Component/Locale/Resources/stubs"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1733,7 +1730,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Twig-extensions/archive/5c2d515d4624bdd588226d688173cf0399a4d8cf.zip",
+                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/5c2d515d4624bdd588226d688173cf0399a4d8cf",
                 "reference": "5c2d515d4624bdd588226d688173cf0399a4d8cf",
                 "shasum": ""
             },
@@ -1772,22 +1769,22 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.12.1",
+            "version": "v1.12.2",
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Twig.git",
-                "reference": "v1.12.1"
+                "reference": "v1.12.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Twig/archive/v1.12.1.zip",
-                "reference": "v1.12.1",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/v1.12.2",
+                "reference": "v1.12.2",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2013-01-15 20:03:52",
+            "time": "2013-02-09 18:21:53",
             "type": "library",
             "extra": {
                 "branch-alias": {
