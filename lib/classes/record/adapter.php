@@ -489,6 +489,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function move_to_collection(collection $collection, appbox $appbox)
     {
+        if ($collection->get_base_id() === $this->get_collection()->get_base_id()) {
+            return $this;
+        }
+
         $sql = "UPDATE record SET coll_id = :coll_id WHERE record_id =:record_id";
 
         $params = array(

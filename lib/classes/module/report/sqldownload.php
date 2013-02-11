@@ -30,7 +30,7 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
         if ($this->groupby == false) {
             $this->sql = "
-                SELECT DISTINCT(log.id), log.user, log.societe, log.pays, log.activite,
+                SELECT DISTINCT(log.id), log.user, log.societe, log.pays, log.activite, log_colls.coll_id,
                 log.fonction, log.usrid, log_docs.date AS ddate, log_docs.record_id, log_docs.final, log_docs.comment
                 FROM log_docs
                 INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_docs.log_id)

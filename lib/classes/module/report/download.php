@@ -21,7 +21,7 @@ class module_report_download extends module_report
         'activite'  => 'log.activite',
         'fonction'  => 'log.fonction',
         'usrid'     => 'log.usrid',
-        'coll_id'   => 'record.coll_id',
+        'coll_id'   => 'log_colls.coll_id',
         'ddate'     => "log_docs.date",
         'id'        => 'log_docs.id',
         'log_id'    => 'log_docs.log_id',

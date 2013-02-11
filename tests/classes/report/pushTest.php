@@ -45,8 +45,7 @@ class pushReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
             'date' => array("", 1, 0, 1, 1),
             'record_id' => array("", 1, 1, 1, 1),
             'file' => array("", 1, 0, 1, 1),
-            'mime' => array("", 1, 0, 1, 1),
-            'size' => array("", 1, 0, 1, 1)
+            'mime' => array("", 1, 0, 1, 1)
         );
 
         foreach ($this->ret as $sbasid => $collections) {
