@@ -2,6 +2,7 @@
   RewriteEngine on
   RewriteRule ^include/minify/([a-z]=.*)          /include/minify/index.php$1  [L,NE]
 
+  RewriteRule ^_profiler/.*$                    /index.php [L]
   RewriteRule ^lightbox/.*$                     /index.php [L]
   RewriteRule ^admin/.*$                        /index.php [L]
   RewriteRule ^permalink/.*$                    /index.php [L]

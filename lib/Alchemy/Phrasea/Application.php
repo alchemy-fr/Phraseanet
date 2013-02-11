@@ -96,6 +96,8 @@ use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
+use Silex\Provider\ServiceControllerServiceProvider;
+use Silex\Provider\WebProfilerServiceProvider;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -182,6 +184,10 @@ class Application extends SilexApplication
         $this->register(new MediaAlchemystServiceProvider());
         $this->register(new MediaVorusServiceProvider());
         $this->register(new MonologServiceProvider());
+        $this['monolog.name'] = 'Phraseanet logger';
+        $this['monolog.handler'] = $this->share(function () {
+            return new NullHandler();
+        });
         $this->register(new MP4BoxServiceProvider());
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new ORMServiceProvider());
@@ -191,13 +197,29 @@ class Application extends SilexApplication
         $this->register(new SessionServiceProvider(), array(
             'session.test' => $this->getEnvironment() == 'test'
         ));
+        $this->register(new ServiceControllerServiceProvider());
+        $this->register(new SwiftmailerServiceProvider());
         $this->register(new TaskManagerServiceProvider());
+        $this->register(new TwigServiceProvider(), array(
+            'twig.options' => array(
+                'cache'           => realpath(__DIR__ . '/../../../../../../tmp/cache_twig/'),
+            )
+        ));
+
+        $this->setupTwig();
         $this->register(new UnoconvServiceProvider());
         $this->register(new UrlGeneratorServiceProvider());
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
+
+        if ('dev' === $this->environment) {
+            $this->register($p = new WebProfilerServiceProvider(), array(
+                'profiler.cache_dir' => __DIR__ . '/../../../cache/profiler',
+            ));
+            $this->mount('/_profiler', $p);
+        }
+
         $this->register(new XPDFServiceProvider());
-        $this->register(new SwiftmailerServiceProvider());
 
         $this['swiftmailer.transport'] = $this->share(function ($app) {
 
@@ -266,10 +288,6 @@ class Application extends SilexApplication
             throw new \RuntimeException('No Imagine driver available');
         });
 
-        $this['monolog.name'] = 'Phraseanet logger';
-        $this['monolog.handler'] = $this->share(function () {
-            return new NullHandler();
-        });
 
         $app = $this;
         $this['phraseanet.logger'] = $this->protect(function($databox) use ($app) {
@@ -295,14 +313,6 @@ class Application extends SilexApplication
                 return $pdf2text;
             })
         );
-
-        $this->register(new TwigServiceProvider(), array(
-            'twig.options' => array(
-                'cache'           => realpath(__DIR__ . '/../../../../../../tmp/cache_twig/'),
-            )
-        ));
-
-        $this->setupTwig();
 
         $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 255);
         $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initSession'), 254);

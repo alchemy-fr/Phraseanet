@@ -26,6 +26,7 @@
         "phpexiftool/phpexiftool"          : "~0.1.0",
         "phpexiftool/exiftool"             : "dev-master",
         "silex/silex"                      : "1.0.x-dev@dev",
+        "silex/web-profiler"               : "1.0.x-dev@dev",
         "swiftmailer/swiftmailer"          : "~4.3.0",
         "symfony/symfony"                  : "2.2.x-dev@dev",
         "tecnick.com/tcpdf"                : "dev-master",

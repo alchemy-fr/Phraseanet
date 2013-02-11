@@ -1,5 +1,5 @@
 {
-    "hash": "fc5fa4c5fd4b320e0ff3c53ec0ad8705",
+    "hash": "3214068afe9eec2f5219bcb246f8e0cf",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -1465,6 +1465,51 @@
             ]
         },
         {
+            "name": "silex/web-profiler",
+            "version": "dev-master",
+            "target-dir": "Silex/Provider",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sensiolabs/Silex-WebProfiler",
+                "reference": "61207f087efbdc568d1d380f5d8ff54b4bbc1bab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sensiolabs/Silex-WebProfiler/zipball/61207f087efbdc568d1d380f5d8ff54b4bbc1bab",
+                "reference": "61207f087efbdc568d1d380f5d8ff54b4bbc1bab",
+                "shasum": ""
+            },
+            "require": {
+                "silex/silex": ">=1.0,<2.0",
+                "symfony/web-profiler-bundle": ">=2.2,<3.0",
+                "symfony/stopwatch": ">=2.2,<3.0"
+            },
+            "time": "2013-02-07 16:48:25",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Silex\\Provider\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "A WebProfiler for Silex",
+            "homepage": "http://silex.sensiolabs.org/"
+        },
+        {
             "name": "swftools/swftools",
             "version": "0.1.1",
             "source": {
@@ -1572,12 +1617,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "95ba9449e2d5e77bd945c1a0c611c30c4f0237c7"
+                "reference": "f410931dd808cc7054599ba8fcb3d02e55b43584"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/95ba9449e2d5e77bd945c1a0c611c30c4f0237c7",
-                "reference": "95ba9449e2d5e77bd945c1a0c611c30c4f0237c7",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/f410931dd808cc7054599ba8fcb3d02e55b43584",
+                "reference": "f410931dd808cc7054599ba8fcb3d02e55b43584",
                 "shasum": ""
             },
             "require": {
@@ -1629,7 +1674,7 @@
                 "doctrine/orm": ">=2.2,<3.0,>=2.2.3",
                 "propel/propel1": "1.6.*"
             },
-            "time": "2013-02-11 11:43:49",
+            "time": "2013-02-11 12:46:49",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1931,6 +1976,7 @@
         "neutron/silex-filesystem-provider": 20,
         "phpexiftool/exiftool": 20,
         "silex/silex": 20,
+        "silex/web-profiler": 20,
         "symfony/symfony": 20,
         "tecnick.com/tcpdf": 20,
         "twig/extensions": 20,

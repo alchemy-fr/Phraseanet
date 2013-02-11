@@ -172,6 +172,21 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals('123456', $sessionId);
     }
 
+    public function testWebProfilerDisableByDefault()
+    {
+        $app = new Application('prod');
+        $this->assertFalse(isset($app['profiler']));
+
+        $app = new Application('test');
+        $this->assertFalse(isset($app['profiler']));
+    }
+
+    public function testWebProfilerEnableInDevMode()
+    {
+        $app = new Application('dev');
+        $this->assertTrue(isset($app['profiler']));
+    }
+
     private function getAppThatReturnLocale()
     {
         $app = new Application('test');
