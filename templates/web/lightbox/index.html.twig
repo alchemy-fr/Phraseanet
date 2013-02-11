@@ -1,0 +1,153 @@
+{% extends "common/index_bootstrap.html.twig" %}
+
+{% import 'common/thumbnail.html.twig' as thumbnail %}
+
+{% block javascript %}
+    <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+        <script type="text/javascript" src="/include/minify/g=lightbox"></script>
+{% endblock %}
+
+{% block stylesheet %}
+    <link type="text/css" rel="stylesheet"
+        href="/include/minify/f=include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/lightbox/lightbox.css" media="screen"/>
+{% endblock %}
+
+  {% block icon %}
+  <link rel="shortcut icon" type="image/x-icon" href="/skins/lightbox/favicon.ico">
+  {% endblock %}
+
+{% block content %}
+    <div id="main_index">
+        <table id="main_wrapper" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>
+                    <th class="title">
+                        <h1>{% trans 'Validations' %}</h1>
+                    </th>
+                    <th>
+                        <i>{% trans 'Voici vos validations en cours' %}</i>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for basket in baskets_collection %}
+                  {% if basket.getValidation() %}
+                      {% set basket_length = basket.getElements().count() %}
+      <tr>
+          <td colspan="2">
+              <div class="basket_wrapper ui-corner-all clickable">
+                  <table cellspacing="0" cellpadding="0" border="0">
+                      <tbody>
+                          <tr>
+                              <td style="width:170px;">
+                                  {% if basket_length > 0%}
+                                      {{thumbnail.format(basket.getElements().first().getRecord(app).get_thumbnail, 170, 170, '', true, false)}}
+                                  {% endif %}
+                              </td>
+                              <td style="width:20px;">
+                              </td>
+                              <td valign="top">
+                                  <div class="basket_description">
+                                      <table cellspacing="0" cellpadding="0" style="margin:0;width:100%;">
+                                          <tr>
+                                              <td>
+                                                  <h2 class="title15">
+                                                      {{basket.getName()|raw}}
+                                                  </h2>
+                                                  {% if basket.getValidation().isFinished() %}
+                                                      {% trans '(validation) session terminee' %}
+                                                  {% elseif basket.getValidation().getParticipant(app['phraseanet.user'], app).getIsConfirmed() %}
+                                                      {% trans '(validation) envoyee' %}
+                                                  {% else %}
+                                                      {% trans '(validation) a envoyer' %}
+                                                  {% endif %}
+                                              </td>
+                                              <td class="right">
+                                                  ({% trans %}{{basket_length}} documents{% endtrans %})
+                                              </td>
+                                          </tr>
+                                          <tr style="height:20px;">
+                                              <td colspan="2"></td>
+                                          </tr>
+                                          <tr>
+                                              <td colspan="2">
+                                                  <div>{{ basket.getDescription() }}</div>
+                                                  <div>{{ basket.getValidation().getValidationString(app, app['phraseanet.user']) }}</div>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </div>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+                  <input type="hidden" name="ssel_id" value="{{basket.getId()}}"/>
+              </div>
+          </td>
+      </tr>
+                  {% endif %}
+                {% endfor %}
+                <tr>
+                    <th class="title">
+                        <h1>{% trans 'Paniers'%}</h1>
+                    </th>
+                    <th>
+                        <i>{% trans 'Voici vos paniers' %}</i>
+                    </th>
+                </tr>
+                {% for basket in baskets_collection %}
+                  {% if basket.getValidation is null %}
+                      {% set basket_length = basket.getElements().count() %}
+      <tr>
+          <td colspan="2">
+              <div class="basket_wrapper ui-corner-all clickable">
+                  <table cellspacing="0" cellpadding="0" border="0">
+                      <tbody>
+                          <tr>
+                              <td style="width:170px;">
+                                  {% if basket_length > 0%}
+                                      {{thumbnail.format(basket.getElements().first().getRecord(app).get_thumbnail, 170, 170, '', true, false)}}
+                                  {% endif %}
+                              </td>
+                              <td style="width:20px;">
+                              </td>
+                              <td valign="top">
+                                  <div class="basket_description">
+                                      <table cellspacing="0" cellpadding="0" style="margin:0;width:100%;">
+                                          <tr>
+                                              <td>
+                                                  <h2 class="title15">
+                                                      {{ basket.getName()|raw}}
+                                                  </h2>
+                                              </td>
+                                              <td class="right">
+                                                  ({% trans %}{{basket_length}} documents{% endtrans %})
+                                              </td>
+                                          </tr>
+                                          <tr style="height:20px;">
+                                              <td colspan="2"></td>
+                                          </tr>
+                                          <tr>
+                                              <td colspan="2">
+                                                  <div>{{ basket.getDescription() }}</div>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </div>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+                  <input type="hidden" name="ssel_id" value="{{ basket.getId() }}"/>
+              </div>
+          </td>
+      </tr>
+                  {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,11 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Setup;
 
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
-use \Symfony\Component\Yaml\Dumper;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -29,289 +27,198 @@ class Installer implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/', function() use ($app) {
-                $request = $app['request'];
+        $controllers->get('/', $this->call('rootInstaller'));
 
-                $php_constraint = \setup::check_php_version();
-                $writability_constraints = \setup::check_writability(new \Setup_Registry());
-                $extension_constraints = \setup::check_php_extension();
-                $opcode_constraints = \setup::check_cache_opcode();
-                $php_conf_constraints = \setup::check_php_configuration();
-                $locales_constraints = \setup::check_system_locales();
+        $controllers->get('/step2/', $this->call('getInstallForm'));
 
-                $constraints_coll = array(
-                    'php_constraint'          => $php_constraint
-                    , 'writability_constraints' => $writability_constraints
-                    , 'extension_constraints'   => $extension_constraints
-                    , 'opcode_constraints'      => $opcode_constraints
-                    , 'php_conf_constraints'    => $php_conf_constraints
-                    , 'locales_constraints'     => $locales_constraints
-                );
-                $redirect = true;
-
-                foreach ($constraints_coll as $key => $constraints) {
-                    $unset = true;
-                    foreach ($constraints as $constraint) {
-                        if ( ! $constraint->is_ok() && $constraint->is_blocker())
-                            $redirect = $unset = false;
-                    }
-                    if ($unset === true) {
-                        unset($constraints_coll[$key]);
-                    }
-                }
-
-                if ($redirect) {
-                    return $app->redirect('/setup/installer/step2/');
-                }
-
-                $ld_path = array(__DIR__ . '/../../../../../templates/web');
-                $loader = new \Twig_Loader_Filesystem($ld_path);
-                $twig = new \Twig_Environment($loader);
-
-                $html = $twig->render(
-                    '/setup/index.html.twig'
-                    , array_merge($constraints_coll, array(
-                        'locale'             => \Session_Handler::get_locale()
-                        , 'available_locales'  => $app['Core']::getAvailableLanguages()
-                        , 'version_number'     => $app['Core']['Version']->getNumber()
-                        , 'version_name'       => $app['Core']['Version']->getName()
-                        , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
-                    ))
-                );
-
-                return new Response($html);
-            });
-
-        $controllers->get('/step2/', function() use ($app) {
-                \phrasea::use_i18n(\Session_Handler::get_locale());
-
-                $ld_path = array(__DIR__ . '/../../../../../templates/web');
-                $loader = new \Twig_Loader_Filesystem($ld_path);
-
-                $twig = new \Twig_Environment($loader);
-                $twig->addExtension(new \Twig_Extensions_Extension_I18n());
-
-                $request = $app['request'];
-
-                $warnings = array();
-
-                $php_constraint = \setup::check_php_version();
-                $writability_constraints = \setup::check_writability(new \Setup_Registry());
-                $extension_constraints = \setup::check_php_extension();
-                $opcode_constraints = \setup::check_cache_opcode();
-                $php_conf_constraints = \setup::check_php_configuration();
-                $locales_constraints = \setup::check_system_locales();
-
-                $constraints_coll = array(
-                    'php_constraint'          => $php_constraint
-                    , 'writability_constraints' => $writability_constraints
-                    , 'extension_constraints'   => $extension_constraints
-                    , 'opcode_constraints'      => $opcode_constraints
-                    , 'php_conf_constraints'    => $php_conf_constraints
-                    , 'locales_constraints'     => $locales_constraints
-                );
-
-                foreach ($constraints_coll as $key => $constraints) {
-                    $unset = true;
-                    foreach ($constraints as $constraint) {
-                        if ( ! $constraint->is_ok() && ! $constraint->is_blocker()) {
-                            $warnings[] = $constraint->get_message();
-                        }
-                    }
-                }
-
-                if ($request->getScheme() == 'http') {
-                    $warnings[] = _('It is not recommended to install Phraseanet without HTTPS support');
-                }
-
-                $html = $twig->render(
-                    '/setup/step2.html.twig'
-                    , array(
-                    'locale'              => \Session_Handler::get_locale()
-                    , 'available_locales'   => $app['Core']::getAvailableLanguages()
-                    , 'available_templates' => \appbox::list_databox_templates()
-                    , 'version_number'      => $app['Core']['Version']->getNumber()
-                    , 'version_name'        => $app['Core']['Version']->getName()
-                    , 'warnings'            => $warnings
-                    , 'error'               => $request->get('error')
-                    , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
-                    , 'discovered_binaries' => \setup::discover_binaries()
-                    , 'rootpath'            => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
-                    )
-                );
-
-                return new Response($html);
-            });
-
-        $controllers->post('/install/', function() use ($app) {
-                set_time_limit(360);
-                \phrasea::use_i18n(\Session_Handler::get_locale());
-                $request = $app['request'];
-
-                $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
-
-                $setupRegistry = new \Setup_Registry();
-                $setupRegistry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
-
-                $conn = $connbas = null;
-
-                $hostname = $request->get('ab_hostname');
-                $port = $request->get('ab_port');
-                $user_ab = $request->get('ab_user');
-                $password = $request->get('ab_password');
-
-                $appbox_name = $request->get('ab_name');
-                $databox_name = $request->get('db_name');
-
-                try {
-                    $conn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $password, $appbox_name, array(), $setupRegistry);
-                } catch (\Exception $e) {
-                    return $app->redirect('/setup/installer/step2/?error=' . _('Appbox is unreachable'));
-                }
-
-                try {
-                    if ($databox_name) {
-                        $connbas = new \connection_pdo('databox', $hostname, $port, $user_ab, $password, $databox_name, array(), $setupRegistry);
-                    }
-                } catch (\Exception $e) {
-                    return $app->redirect('/setup/installer/step2/?error=' . _('Databox is unreachable'));
-                }
-
-                \setup::rollback($conn, $connbas);
-
-                try {
-
-                    $appbox = \appbox::create($app['Core'], $setupRegistry, $conn, $appbox_name, true);
-
-                    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
-
-                    if ($configuration->isInstalled()) {
-                        $serviceName = $configuration->getOrm();
-                        $confService = $configuration->getService($serviceName);
-
-                        $ormService = \Alchemy\Phrasea\Core\Service\Builder::create(
-                                $app['Core']
-                                , $confService
-                        );
-
-                        if ($ormService->getType() === 'doctrine') {
-                            /* @var $em \Doctrine\ORM\EntityManager */
-
-                            $em = $ormService->getDriver();
-
-                            $metadatas = $em->getMetadataFactory()->getAllMetadata();
-
-                            if ( ! empty($metadatas)) {
-                                // Create SchemaTool
-                                $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-                                // Create schema
-                                $tool->dropSchema($metadatas);
-                                $tool->createSchema($metadatas);
-                            }
-                        }
-                    }
-
-                    $binaries = array(
-                        'php_binary'         => $request->get('binary_php'),
-                        'convert_binary'     => $request->get('binary_convert'),
-                        'composite_binary'   => $request->get('binary_composite'),
-                        'swf_extract_binary' => $request->get('binary_swfextract'),
-                        'pdf2swf_binary'     => $request->get('binary_pdf2swf'),
-                        'swf_render_binary'  => $request->get('binary_swfrender'),
-                        'unoconv_binary'     => $request->get('binary_unoconv'),
-                        'ffmpeg_binary'      => $request->get('binary_ffmpeg'),
-                        'mp4box_binary'      => $request->get('binary_MP4Box'),
-                        'pdftotext_binary'   => $request->get('binary_xpdf'),
-                        'ghostscript_binary' => '',
-                    );
-
-                    $app['Core']->getConfiguration()->setBinaries(array('binaries' => $binaries));
-
-                    $registry = \registry::get_instance();
-                    \setup::create_global_values($registry);
-
-                    $appbox->set_registry($registry);
-
-                    $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->get('datapath_noweb')), \registry::TYPE_STRING);
-
-                    $user = \User_Adapter::create($appbox, $request->get('email'), $request->get('password'), $request->get('email'), true);
-
-                    \phrasea::start($app['Core']);
-
-                    $auth = new \Session_Authentication_None($user);
-
-                    $appbox->get_session()->authenticate($auth);
-
-                    if ($databox_name && ! \p4string::hasAccent($databox_name)) {
-                        $template = new \SplFileInfo(__DIR__ . '/../../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
-                        $databox = \databox::create($appbox, $connbas, $template, $registry);
-                        $user->ACL()
-                            ->give_access_to_sbas(array($databox->get_sbas_id()))
-                            ->update_rights_to_sbas(
-                                $databox->get_sbas_id(), array(
-                                'bas_manage'        => 1, 'bas_modify_struct' => 1,
-                                'bas_modif_th'      => 1, 'bas_chupub'        => 1
-                                )
-                        );
-
-                        $a = \collection::create($databox, $appbox, 'test', $user);
-
-                        $user->ACL()->give_access_to_base(array($a->get_base_id()));
-                        $user->ACL()->update_rights_to_base($a->get_base_id(), array(
-                            'canpush'         => 1, 'cancmd'          => 1
-                            , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
-                            , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
-                            , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
-                            , 'modify_struct'   => 1, 'nowatermark'     => 1
-                            )
-                        );
-
-                        $tasks = $request->get('create_task', array());
-                        foreach ($tasks as $task) {
-                            switch ($task) {
-                                case 'cindexer';
-                                case 'subdef';
-                                case 'writemeta';
-                                    $class_name = sprintf('task_period_%s', $task);
-                                    if ($task === 'cindexer') {
-                                        $credentials = $databox->get_connection()->get_credentials();
-
-                                        $host = $credentials['hostname'];
-                                        $port = $credentials['port'];
-                                        $user_ab = $credentials['user'];
-                                        $password = $credentials['password'];
-
-                                        $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<binpath>"
-                                            . str_replace('/phraseanet_indexer', '', $request->get('binary_phraseanet_indexer'))
-                                            . "</binpath><host>" . $host . "</host><port>"
-                                            . $port . "</port><base>"
-                                            . $appbox_name . "</base><user>"
-                                            . $user_ab . "</user><password>"
-                                            . $password . "</password><socket>25200</socket>"
-                                            . "<use_sbas>1</use_sbas><nolog>0</nolog><clng></clng>"
-                                            . "<winsvc_run>0</winsvc_run><charset>utf8</charset></tasksettings>";
-                                    } else {
-                                        $settings = null;
-                                    }
-
-                                    \task_abstract::create($appbox, $class_name, $settings);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-
-                    $redirection = '/admin/?section=taskmanager&notice=install_success';
-
-                    return $app->redirect($redirection);
-                } catch (\Exception $e) {
-                    \setup::rollback($conn, $connbas);
-                }
-
-                return $app->redirect('/setup/installer/step2/?error=' . sprintf(_('an error occured : %s'), $e->getMessage()));
-            });
+        $controllers->post('/install/', $this->call('doInstall'));
 
         return $controllers;
+    }
+
+    public function rootInstaller(Application $app, Request $request)
+    {
+        $php_constraint = \setup::check_php_version();
+        $writability_constraints = \setup::check_writability(new \Setup_Registry());
+        $extension_constraints = \setup::check_php_extension();
+        $opcode_constraints = \setup::check_cache_opcode();
+        $php_conf_constraints = \setup::check_php_configuration();
+        $locales_constraints = \setup::check_system_locales($app);
+
+        $constraints_coll = array(
+            'php_constraint'          => $php_constraint
+            , 'writability_constraints' => $writability_constraints
+            , 'extension_constraints'   => $extension_constraints
+            , 'opcode_constraints'      => $opcode_constraints
+            , 'php_conf_constraints'    => $php_conf_constraints
+            , 'locales_constraints'     => $locales_constraints
+        );
+        $redirect = true;
+
+        foreach ($constraints_coll as $key => $constraints) {
+            $unset = true;
+            foreach ($constraints as $constraint) {
+                if (!$constraint->is_ok() && $constraint->is_blocker())
+                    $redirect = $unset = false;
+            }
+            if ($unset === true) {
+                unset($constraints_coll[$key]);
+            }
+        }
+
+        if ($redirect) {
+            return $app->redirect('/setup/installer/step2/');
+        }
+
+        $app['twig.loader.filesystem']->setPaths(array(
+            __DIR__ . '/../../../../../templates/web'
+        ));
+
+        return $app['twig']->render(
+                '/setup/index.html.twig'
+                , array_merge($constraints_coll, array(
+                    'locale'             => $app['locale']
+                    , 'available_locales'  => $app->getAvailableLanguages()
+                    , 'version_number'     => $app['phraseanet.version']->getNumber()
+                    , 'version_name'       => $app['phraseanet.version']->getName()
+                    , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
+                ))
+        );
+    }
+
+    public function getInstallForm(Application $app, Request $request)
+    {
+        \phrasea::use_i18n($app['locale']);
+
+        $ld_path = array(__DIR__ . '/../../../../../templates/web');
+        $loader = new \Twig_Loader_Filesystem($ld_path);
+
+        $twig = new \Twig_Environment($loader);
+        $twig->addExtension(new \Twig_Extensions_Extension_I18n());
+
+        $warnings = array();
+
+        $php_constraint = \setup::check_php_version();
+        $writability_constraints = \setup::check_writability(new \Setup_Registry());
+        $extension_constraints = \setup::check_php_extension();
+        $opcode_constraints = \setup::check_cache_opcode();
+        $php_conf_constraints = \setup::check_php_configuration();
+        $locales_constraints = \setup::check_system_locales($app);
+
+        $constraints_coll = array(
+            'php_constraint'          => $php_constraint
+            , 'writability_constraints' => $writability_constraints
+            , 'extension_constraints'   => $extension_constraints
+            , 'opcode_constraints'      => $opcode_constraints
+            , 'php_conf_constraints'    => $php_conf_constraints
+            , 'locales_constraints'     => $locales_constraints
+        );
+
+        foreach ($constraints_coll as $key => $constraints) {
+            $unset = true;
+            foreach ($constraints as $constraint) {
+                if (!$constraint->is_ok() && !$constraint->is_blocker()) {
+                    $warnings[] = $constraint->get_message();
+                }
+            }
+        }
+
+        if ($request->getScheme() == 'http') {
+            $warnings[] = _('It is not recommended to install Phraseanet without HTTPS support');
+        }
+
+        return $twig->render(
+                '/setup/step2.html.twig'
+                , array(
+                'locale'              => $app['locale']
+                , 'available_locales'   => $app->getAvailableLanguages()
+                , 'available_templates' => array('en', 'fr')
+                , 'version_number'      => $app['phraseanet.version']->getNumber()
+                , 'version_name'        => $app['phraseanet.version']->getName()
+                , 'warnings'            => $warnings
+                , 'error'               => $request->query->get('error')
+                , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
+                , 'discovered_binaries' => \setup::discover_binaries()
+                , 'rootpath'            => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
+            ));
+    }
+
+    public function doInstall(Application $app, Request $request)
+    {
+        set_time_limit(360);
+        \phrasea::use_i18n($app['locale']);
+
+        $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
+
+        $abConn = $dbConn = null;
+
+        $hostname = $request->request->get('ab_hostname');
+        $port = $request->request->get('ab_port');
+        $user_ab = $request->request->get('ab_user');
+        $ab_password = $request->request->get('ab_password');
+
+        $appbox_name = $request->request->get('ab_name');
+        $databox_name = $request->request->get('db_name');
+        $setupRegistry = new \Setup_Registry();
+
+        try {
+            $abConn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $ab_password, $appbox_name, array(), $app['debug']);
+        } catch (\Exception $e) {
+            return $app->redirect('/setup/installer/step2/?error=' . _('Appbox is unreachable'));
+        }
+
+        try {
+            if ($databox_name) {
+                $dbConn = new \connection_pdo('databox', $hostname, $port, $user_ab, $ab_password, $databox_name, array(), $app['debug']);
+            }
+        } catch (\Exception $e) {
+            return $app->redirect('/setup/installer/step2/?error=' . _('Databox is unreachable'));
+        }
+
+        $email = $request->request->get('email');
+        $password = $request->request->get('password');
+        $template = $request->request->get('db_template');
+        $dataPath = $request->request->get('datapath_noweb');
+
+        try {
+            $installer = new \Alchemy\Phrasea\Setup\Installer($app, $email, $password, $abConn, $servername, $dataPath, $dbConn, $template);
+            $installer->setPhraseaIndexerPath($request->request->get('binary_phraseanet_indexer'));
+
+            foreach (array(
+            'php_binary'           => $request->request->get('binary_php'),
+            'convert_binary'       => $request->request->get('binary_convert'),
+            'composite_binary'     => $request->request->get('binary_composite'),
+            'swf_extract_binary'   => $request->request->get('binary_swfextract'),
+            'pdf2swf_binary'       => $request->request->get('binary_pdf2swf'),
+            'swf_render_binary'    => $request->request->get('binary_swfrender'),
+            'unoconv_binary'       => $request->request->get('binary_unoconv'),
+            'ffmpeg_binary'        => $request->request->get('binary_ffmpeg'),
+            'mp4box_binary'        => $request->request->get('binary_MP4Box'),
+            'pdftotext_binary'     => $request->request->get('binary_xpdf'),
+            ) as $key => $path) {
+                $installer->addBinaryData($key, $path);
+            }
+
+            $installer->install();
+
+            $redirection = '/admin/?section=taskmanager&notice=install_success';
+
+            return $app->redirect($redirection);
+        } catch (\Exception $e) {
+
+        }
+
+        return $app->redirect('/setup/installer/step2/?error=' . sprintf(_('an error occured : %s'), $e->getMessage()));
+    }
+
+    /**
+     * Prefix the method to call with the controller class name
+     *
+     * @param  string $method The method to call
+     * @return string
+     */
+    private function call($method)
+    {
+        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

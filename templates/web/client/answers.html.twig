@@ -1,0 +1,225 @@
+{% set available_results = result.getTotal() %}
+{% set query_string = result.getQuery() %}
+{% set current_page = result.getCurrentPage(per_page) %}
+{% set total_page = result.getTotalPages(per_page) %}
+{% set pagination_html = '' %}
+{% set pagination_offset = 3 %}
+{% set max = 2 * pagination_offset + 3 %}
+
+
+{% if app['phraseanet.registry'].get('GV_thesaurus') %}
+    <script type="text/javascript" language="javascript">
+        $('#proposals').empty().append("<div style='height:0px; overflow:hidden'>{{ query_string|e('js') }}</div>{{ proposals is not none ? proposals|e('js') : ''}}");
+
+        {% if app['phraseanet.registry'].get('GV_clientAutoShowProposals') %}
+
+            {% if proposals is not none %}
+                chgOng(4);
+            {% endif %}
+        {% endif %}
+    </script>
+{% endif %}
+
+<script language="javascript" type="text/javascript">
+    $("#history").empty().append("{{ history|e('js') }}")
+</script>
+
+{% set tooltip_html %}
+    <div>{% trans "client::answers: rapport de questions par bases" %}</div>
+{% endset %}
+
+{% set txt %}
+    <b>
+        {{ query_string[0:36] }}{% if query_string|length > 36 %}...{% endif %}
+    </b>
+    {% trans %}
+        client::answers: {{ available_results }} reponses
+    {% endtrans %}
+
+    <a style="float:none;display:inline-block;padding:2px 3px" class="infoTips" title="{{ tooltip_html }}">&nbsp;</a>
+{% endset %}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function(){
+       p4.tot = {{ available_results > 0 ? available_results : 0 }};
+       $("#nb_answers").append("{{ txt|e('js') }}");
+    });
+</script>
+
+{% if total_page > 0 %}
+    {% if total_page > max %}
+        {% for p in 1..total_page %}
+            {% if p == current_page %}
+                {% set pagination_html = pagination_html ~ '<span class="naviButton sel">' ~ p ~ '</span>' %}
+            {% elseif (p >= (current_page - pagination_offset)) and ((p - 1) <= (current_page + pagination_offset)) %}
+                {% set pagination_html = pagination_html ~ '<span onclick="gotopage(' ~ p ~  ');" class="naviButton">' ~ p ~ '</span>' %}
+            {% elseif (current_page < (pagination_offset + 2)) and (p < (max - pagination_offset + 2)) %}
+                {% set pagination_html = pagination_html ~ '<span onclick="gotopage(' ~ p ~  ');" class="naviButton">' ~ p ~ '</span>' %}
+            {% elseif (current_page >= (total_page - pagination_offset - 2)) and (p >= (total_page - (2 * pagination_offset))) %}
+                {% set pagination_html = pagination_html ~ '<span onclick="gotopage(' ~ p ~  ');" class="naviButton">' ~ p ~ '</span>' %}
+            {% elseif p == (total_page - 1) %}
+                {% set pagination_html = pagination_html ~ '<span onclick="gotopage(' ~ p ~  ');" class="naviButton">...' ~ p ~ '</span>' %}
+            {% elseif p == 1 %}
+                {% set pagination_html = pagination_html ~ '<span onclick="gotopage(' ~ p ~  ');" class="naviButton">' ~ p ~ '...</span>' %}
+            {% endif %}
+
+            {% if p != (total_page - 1) %}
+                {% set pagination_html = pagination_html ~ '<span class="naviButton" style="cursor:default;"> - </span>' %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% for p in 1..total_page %}
+            {% if p == current_page %}
+                {% set pagination_html = pagination_html ~ '<span class="naviButton sel">' ~ p ~ '</span>' %}
+            {% else %}
+                {% set pagination_html = pagination_html ~ '<span onclick="gotopage(' ~ p ~  ');" class="naviButton">' ~ p ~ '</span>' %}
+            {% endif %}
+
+            {% if p < total_page %}
+                {% set pagination_html = pagination_html ~ '<span class="naviButton" style="cursor:default;"> - </span>' %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% set pagination_html = pagination_html ~ '<div class="navigButtons"><div id="PREV_PAGE" class="PREV_PAGE"></div><div id="NEXT_PAGE" class="NEXT_PAGE"></div></div>' %}
+{% endif %}
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function(){
+        $("#navigation").empty().append("{{ pagination_html|e('js') }}");
+
+        {% if current_page != 0 and available_results > 0 %}
+            $("#PREV_PAGE").bind('click',function(){gotopage({{ current_page - 1 }})});
+        {% else %}
+            $("#PREV_PAGE").unbind('click');
+        {% endif %}
+
+        {% if current_page != (total_page - 1) and available_results > 0 %}
+            $("#NEXT_PAGE").bind('click',function(){gotopage({{ current_page + 1 }})});
+        {% else %}
+            $("#NEXT_PAGE").unbind('click');
+        {% endif %}
+    });
+</script>
+
+
+{% if result_data|length > 0 %}
+    <div>
+        <table  id="grid" cellpadding="0" cellspacing="0" border="0" style="xwidth:95%;">
+            {% if mod_col == 1 %}
+                <tr style="visibility:hidden">
+                    <td class="w160px"></td>
+                    <td></td>
+                </tr>
+            {% else %}
+                <tr style="visibility:hidden">
+                    {% for i in 1..mod_col %}
+                       <td class="w160px"></td>
+                    {% endfor %}
+                </tr>
+            {% endif %}
+
+            {% for data in result_data %}
+                {% set record = data['record'] %}
+                {% set thumbnail = record.get_thumbnail() %}
+
+                {% if loop.first %}
+                    <tr>
+                {% endif %}
+
+                {% if (loop.index0 % mod_col) == 0 and not loop.first %}
+                    </tr>
+                    <tr>
+                {% endif %}
+
+                {% if mod_col == 1 and not loop.first %}
+                    </tr>
+                    <tr style="height:20px;">
+                        <td colspan="2" class="td_mod_lst_img"><hr /></td>
+                    </tr>
+                    <tr>
+                {% endif %}
+
+                {% if mod_col == 1 %}
+                    <td valign="top" class="td_mod_lst_desc">
+                {% else %}
+                    <td class="w160px">
+                {% endif %}
+                    <div class="diapo w160px" style="margin-bottom:0;border-bottom:none;">
+                        <div class="title">{{ record.get_title() }}</div>
+                        <div class="status">{{ record.get_status_icons()|raw }}</div>
+                        <table cellpadding="0" cellspacing="0" style="margin: 0pt auto;">
+                            <tr class="h160px">
+                                <td class="image w160px h160px">
+                                    {% if data['is_video'] or data['is_audio'] %}
+                                        {% if record.get_formated_duration() is not empty %}
+                                            <div class="dmco_text duration">{{ record.get_formated_duration() }}</div>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if record.is_grouping %}
+                                        {% set on_click_html = "openPreview('REG',0, '" ~ record.get_serialize_key() ~ "');" %}
+                                    {% else %}
+                                        {% set on_click_html = "openPreview('RESULT','" ~ record.get_number() ~ "');" %}
+                                    {% endif %}
+
+                                    {% if mod_col == 1 %}
+                                        {% set pic_roll = "/prod/tooltip/preview/" ~ record.get_sbas_id() ~ "/" ~ record.get_record_id() ~ "/" %}
+                                    {% else  %}
+                                        {% set pic_roll = "/prod/tooltip/caption/" ~ record.get_sbas_id() ~ "/" ~ record.get_record_id() ~ "/answer/" %}
+                                    {% endif %}
+
+                                    <img
+                                        onclick="{{ on_click_html }}"
+                                        class="captionTips {{ thumbnail.get_width() > thumbnail.get_height() ? 'hthbimg' : 'vthbimg' }}"
+                                        id="IMG{{ record.get_serialize_key() }}"
+                                        src="{{ thumbnail.get_url() }}"
+                                        tooltipsrc="{{ pic_roll }}"
+                                    />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="diapo w160px" style="border-top:none;">
+                        <div class="buttons">
+                            <div class="minilogos">{{ data['mini_logo']|raw }}</div>
+                            {% if data['can_download'] %}
+                                <div class="downloader" title="{% trans 'action : exporter' %}" onclick="evt_dwnl('{{ record.get_serialize_key() }}');"></div>
+                            {% endif %}
+
+                            <div class="printer" title="{% trans 'action : print' %}" onClick="evt_print('{{ record.get_serialize_key() }}');"></div>
+
+                            {% if data['can_add_to_basket'] %}
+                                <div class="baskAdder" title="{% trans 'action : ajouter au panier' %}" onClick="evt_add_in_chutier({{ record.get_sbas_id() }}, {{ record.get_record_id() }});"></div>
+                            {% endif %}
+
+                            {% if mod_col != 1 %}
+                                <div style="margin-right:3px;" class="infoTips" id="INFO{{ record.get_serialize_key() }}" tooltipsrc="/prod/tooltip/tc_datas/{{ record.get_sbas_id() }}/{{ record.get_record_id() }}/"></div>
+                                {% if data['preview_exists'] %}
+                                    <div class="previewTips" tooltipsrc="/prod/tooltip/preview/{{ record.get_sbas_id() }}/{{ record.get_record_id() }}/" id="ZOOM{{ record.get_serialize_key() }}">&nbsp;</div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                 </td>
+                 {% if mod_col == 1 %}
+                    <td valign="top">
+                        <div class="desc1">
+                            <div class="caption" class="desc2">
+                                {{ data['caption'] }}
+                                <hr />
+                                {{ data['light_info'] }}
+                            </div>
+                        </div>
+                    </td>
+                 {% endif %}
+            {% endfor %}
+        </table>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                p4.tot = {{ available_results }};
+                p4.tot_options = '{{ search_engine_option|raw }}';
+                p4.tot_query = "{{ query_string }}";
+            });
+        </script>
+    </div>
+{% endif %}

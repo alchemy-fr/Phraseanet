@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,20 +13,15 @@ namespace Alchemy\Phrasea\Core\Configuration;
 
 use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Symfony\Component\Yaml\Yaml;
 
-/**
- * Precise some informations about phraseanet configuration mechanism
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-class ApplicationSpecification implements Specification
+class ApplicationSpecification implements SpecificationInterface
 {
     protected $parser;
 
     public function __construct()
     {
-        $this->parser = new \Symfony\Component\Yaml\Yaml();
+        $this->parser = new Yaml();
     }
 
     public function setConfigurations($configurations)
@@ -41,6 +36,29 @@ class ApplicationSpecification implements Specification
         return file_put_contents(
                 $this->getConnexionsPathFile(), $this->parser->dump($connexions, 7)
         );
+    }
+
+    public function resetServices($name = null)
+    {
+        $services = $this->getServices();
+
+        if (!$name) {
+            $newServices = $services;
+        } else {
+            $newServices = $services;
+
+            $legacyServices = $this->parser->parse(
+                file_get_contents($this->getRealRootPath() . "/conf.d/services.yml")
+            );
+
+            if (!isset($legacyServices[$name])) {
+                throw new InvalidArgumentException(sprintf('%s is not a valid service name'));
+            }
+
+            $newServices[$name] = $legacyServices[$name];
+        }
+
+        return $this->setServices($newServices);
     }
 
     public function setServices($services)
@@ -89,21 +107,6 @@ class ApplicationSpecification implements Specification
         );
     }
 
-    protected function getConfigurationsFile()
-    {
-        return new SymfonyFile($this->getConfigurationsPathFile(), true);
-    }
-
-    protected function getConnexionsFile()
-    {
-        return new SymfonyFile($this->getConnexionsPathFile(), true);
-    }
-
-    protected function getServicesFile()
-    {
-        return new SymfonyFile($this->getServicesPathFile(), true);
-    }
-
     public function delete()
     {
         $files = array(
@@ -123,19 +126,21 @@ class ApplicationSpecification implements Specification
         $this->delete();
 
         copy(
-            $this->getRealRootPath() . "/config/connexions.sample.yml"
+            $this->getRealRootPath() . "/lib/conf.d/connexions.yml"
             , $this->getConnexionsPathFile()
         );
 
         copy(
-            $this->getRealRootPath() . "/config/services.sample.yml"
+            $this->getRealRootPath() . "/lib/conf.d/services.yml"
             , $this->getServicesPathFile()
         );
 
         copy(
-            $this->getRealRootPath() . "/config/config.sample.yml"
+            $this->getRealRootPath() . "/lib/conf.d/config.yml"
             , $this->getConfigurationsPathFile()
         );
+
+        $this->setBinaries(array('binaries' => array()));
 
         if (function_exists('chmod')) {
             chmod($this->getConnexionsPathFile(), 0700);
@@ -183,5 +188,20 @@ class ApplicationSpecification implements Specification
     protected function getRealRootPath()
     {
         return realpath(__DIR__ . '/../../../../../');
+    }
+
+    protected function getConfigurationsFile()
+    {
+        return new SymfonyFile($this->getConfigurationsPathFile(), true);
+    }
+
+    protected function getConnexionsFile()
+    {
+        return new SymfonyFile($this->getConnexionsPathFile(), true);
+    }
+
+    protected function getServicesFile()
+    {
+        return new SymfonyFile($this->getServicesPathFile(), true);
     }
 }

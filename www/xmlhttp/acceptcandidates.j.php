@@ -3,20 +3,21 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Alchemy\Phrasea\Application;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
-
-$registry = registry::get_instance();
+require_once __DIR__ . "/../../vendor/autoload.php";
+$app = new Application();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -34,7 +35,7 @@ $refresh = array();
 $sbas_id = (int) $parm["sbid"];
 
 try {
-    $databox = databox::get_instance($sbas_id);
+    $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
     $connbas = $databox->get_connection();
 
     $domct = $databox->get_dom_cterms();

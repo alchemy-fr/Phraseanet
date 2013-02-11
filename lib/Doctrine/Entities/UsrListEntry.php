@@ -3,13 +3,15 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 namespace Entities;
+
+use Alchemy\Phrasea\Application;
 
 /**
  *
@@ -133,9 +135,9 @@ class UsrListEntry
         return $this->list;
     }
 
-    public function getUser()
+    public function getUser(Application $app)
     {
-        return \User_Adapter::getInstance($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
+        return \User_Adapter::getInstance($this->getUsrId(), $app);
     }
 
     public function setUser(\User_Adapter $user)

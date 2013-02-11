@@ -159,10 +159,10 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return parent::setPusher($user);
     }
 
-    public function getPusher()
+    public function getPusher(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getPusher();
+        return parent::getPusher($app);
     }
 
     public function setOwner(\User_Adapter $user)
@@ -171,10 +171,10 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return parent::setOwner($user);
     }
 
-    public function getOwner()
+    public function getOwner(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getOwner();
+        return parent::getOwner($app);
     }
 
     public function setValidation(\Entities\ValidationSession $validation)
@@ -201,16 +201,16 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return parent::getIsRead();
     }
 
-    public function hasRecord(\record_adapter $record)
+    public function hasRecord(\Alchemy\Phrasea\Application $app, \record_adapter $record)
     {
         $this->__load();
-        return parent::hasRecord($record);
+        return parent::hasRecord($app, $record);
     }
 
-    public function getSize()
+    public function getSize(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getSize();
+        return parent::getSize($app);
     }
 
 
@@ -228,7 +228,7 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

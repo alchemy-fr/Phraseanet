@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,72 +11,34 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Symfony\Component\HttpFoundation\Response;
-use Alchemy\Phrasea\Controller\Setup as Controller;
-use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Setup\Installer;
+use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
+use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 return call_user_func(function() {
-            $app = new \Silex\Application();
 
-            $app['Core'] = \bootstrap::getCore();
+    $app = new Application();
 
-            $app['install'] = false;
-            $app['upgrade'] = false;
+    $app->get('/', function(PhraseaApplication $app) {
+        if (!$app['phraseanet.configuration-tester']->isBlank()) {
+            return $app->redirect('/login/');
+        }
 
-            $app->before(function($a) use ($app) {
-                    if (\setup::is_installed()) {
-                        $appbox = \appbox::get_instance($app['Core']);
+        return $app->redirect('/setup/installer/');
+    });
 
-                        if ( ! $appbox->need_major_upgrade()) {
-                            throw new \Exception_Setup_PhraseaAlreadyInstalled();
-                        }
+    $app->mount('/installer/', new Installer());
+    $app->mount('/test', new PathFileTest());
+    $app->mount('/connection_test', new ConnectionTest());
 
-                        $app['upgrade'] = true;
-                    } elseif (\setup::needUpgradeConfigurationFile()) {
+    $app->error(function($e) use ($app) {
+            if ($e instanceof \Exception_Setup_PhraseaAlreadyInstalled) {
+                return $app->redirect('/login/');
+            }
 
-                        if (\setup::requireGVUpgrade()) {
-                            \setup::upgradeGV($app['Core']['Registry']);
-                        }
-
-                        $connexionInc = new \SplFileInfo(__DIR__ . '/../../../../config/connexion.inc');
-                        $configInc = new \SplFileInfo(__DIR__ . '/../../../../config/config.inc');
-
-                        $configuration = \Alchemy\Phrasea\Core\Configuration::build();
-                        $configuration->upgradeFromOldConf($configInc, $connexionInc);
-
-                        $app['install'] = true;
-                    } else {
-                        $app['install'] = true;
-                    }
-
-                    return;
-                });
-
-            $app->get('/', function() use ($app) {
-                    if ($app['install'] === true) {
-                        return $app->redirect('/setup/installer/');
-                    }if ($app['upgrade'] === true) {
-                        return $app->redirect('/setup/upgrader/');
-                    }
-                });
-
-            $app->mount('/installer/', new Controller\Installer());
-            $app->mount('/upgrader/', new Controller\Upgrader());
-            $app->mount('/test', new ControllerUtils\PathFileTest());
-            $app->mount('/connection_test', new ControllerUtils\ConnectionTest());
-
-            $app->error(function($e) use ($app) {
-                    if ($e instanceof \Exception_Setup_PhraseaAlreadyInstalled) {
-                        return $app->redirect('/login/');
-                    }
-
-                    return new Response('Internal Server Error', 500);
-                });
-
-            return $app;
+            return new Response('Internal Server Error', 500, array('X-Status-Code' => 500));
         });
+
+    return $app;
+});

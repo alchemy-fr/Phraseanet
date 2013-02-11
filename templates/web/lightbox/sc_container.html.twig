@@ -1,0 +1,29 @@
+
+{% block basket %}
+<div id="sc_container">
+    {% for element in basket.getElements() %}
+        <div class="basket_element_wrapper">
+      <a href="/lightbox/ajax/LOAD_BASKET_ELEMENT/{{element.getId()}}/">
+        <div id="scid_{{element.getId()}}" class="basket_element ui-corner-all {% if basket_element and basket_element.getId() == element.getId() %}selected{% endif %}">
+          {% set record = element.getRecord(app).set_number(loop.index) %}
+          <div class="display_id">{{record.get_number()}}</div>
+          {% if basket.getValidation() %}
+            <div class="agreement">
+              <img src="/skins/lightbox/agree.png"
+                class="agree_button {%if element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() == false or element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() is null %}not_decided{%endif%} agree_{{element.getId()}}" />
+              <img src="/skins/lightbox/disagree.png"
+                class="disagree_button {%if element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() == true or element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() is null %}not_decided{%endif%} disagree_{{element.getId()}}" />
+            </div>
+          {% endif %}
+          {{thumbnail.format(element.getRecord(app).get_thumbnail,114,85, '', true, false)}}
+          <form name="download_form" class="download_form" style="display:none;">
+            <input type="hidden" name="basrec" value="{{element.getRecord(app).get_serialize_key()}}"/>
+          </form>
+          <div tooltipsrc="/prod/tooltip/preview/{{element.getRecord(app).get_sbas_id()}}/{{element.getRecord(app).get_record_id()}}/" class="previewTips"></div>
+        </div>
+      </a>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock basket %}

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +11,8 @@
 
 namespace Alchemy\Phrasea\Out\Module;
 
-use \Alchemy\Phrasea\Out\Tool\PhraseaPDF;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
 
 /**
  * Creates a PDF
@@ -21,6 +22,7 @@ use \Alchemy\Phrasea\Out\Tool\PhraseaPDF;
  */
 class PDF
 {
+    protected $app;
     protected $records;
     protected $pdf;
 
@@ -30,8 +32,10 @@ class PDF
     const LAYOUT_THUMBNAILLIST = 'thumbnailList';
     const LAYOUT_THUMBNAILGRID = 'thumbnailGrid';
 
-    public function __construct(array $records, $layout)
+    public function __construct(Application $app, array $records, $layout)
     {
+        $this->app = $app;
+
         $list = array();
 
         foreach ($records as $record) {
@@ -120,10 +124,6 @@ class PDF
 
     protected function print_thumbnailGrid($links = false)
     {
-        $core = \bootstrap::getCore();
-        $appbox = \appbox::get_instance($core);
-        $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
-
         $NDiapoW = 3;
         $NDiapoH = 4;
 
@@ -166,9 +166,9 @@ class PDF
 
             $fimg = $subdef->get_pathfile();
 
-            if (!$user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
+            if (!$this->app['phraseanet.user']->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
-                $fimg = \recordutils_image::watermark($subdef);
+                $fimg = \recordutils_image::watermark($this->app, $subdef);
             }
 
             $wimg = $himg = $ImgSize;
@@ -249,7 +249,7 @@ class PDF
 
             $y = $this->pdf->GetY();
 
-            $t = \phrasea::bas_names($rec->get_base_id());
+            $t = \phrasea::bas_names($rec->get_base_id(), $this->app);
             $this->pdf->SetFont(PhraseaPDF::FONT, '', 10);
             $this->pdf->SetFillColor(220, 220, 220);
             $this->pdf->SetLeftMargin($lmargin);
@@ -308,11 +308,6 @@ class PDF
 
     protected function print_preview($withtdm, $write_caption)
     {
-        $core = \bootstrap::getCore();
-        $appbox = \appbox::get_instance($core);
-        $registry = \registry::get_instance();
-        $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
-
         if ($withtdm === true) {
             $this->print_thumbnailGrid($this->pdf, $this->records, true);
         }
@@ -339,7 +334,7 @@ class PDF
             $RIGHT_TEXT = "";
             $RIGHT_IMG = NULL;
 
-            $LEFT__IMG = $registry->get('GV_RootPath') . "config/minilogos/logopdf_"
+            $LEFT__IMG = $this->app['phraseanet.registry']->get('GV_RootPath') . "config/minilogos/logopdf_"
                 . $rec->get_sbas_id() . "";
 
             if (!is_file($LEFT__IMG)) {
@@ -351,7 +346,7 @@ class PDF
                 }
             }
 
-            $collection = \collection::get_from_base_id($rec->get_base_id());
+            $collection = \collection::get_from_base_id($this->app, $rec->get_base_id());
 
             $vn = "";
             if (false !== $str = simplexml_load_string($collection->get_prefs())) {
@@ -359,9 +354,9 @@ class PDF
             }
 
             if ($vn == "" || $vn == "1") {
-                $RIGHT_TEXT = \phrasea::bas_names($rec->get_base_id());
+                $RIGHT_TEXT = \phrasea::bas_names($rec->get_base_id(), $this->app);
             } elseif ($vn == "2") {
-                $RIGHT_IMG = $registry->get('GV_RootPath') . "config/minilogos/" . $rec->get_base_id();
+                $RIGHT_IMG = $this->app['phraseanet.registry']->get('GV_RootPath') . "config/minilogos/" . $rec->get_base_id();
             }
 
             $xtmp = $this->pdf->GetX();
@@ -435,9 +430,9 @@ class PDF
 
             $f = $subdef->get_pathfile();
 
-            if (!$user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
+            if (!$this->app['phraseanet.user']->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE)
-                $f = \recordutils_image::watermark($subdef);
+                $f = \recordutils_image::watermark($this->app, $subdef);
 
             $wimg = $himg = 150; // preview dans un carre de 150 mm
             if ($subdef->get_width() > 0 && $subdef->get_height() > 0) {

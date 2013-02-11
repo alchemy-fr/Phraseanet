@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,13 +11,15 @@
 
 namespace Alchemy\Phrasea\Border\Attribute;
 
+use Alchemy\Phrasea\Application;
+
 /**
  * Phraseanet Border MetaField Attribute
  *
  * This attribute is used to store a value related to a fieldname for a file
  * prior to their record creation
  */
-class MetaField implements Attribute
+class MetaField implements AttributeInterface
 {
     /**
      *
@@ -96,19 +98,18 @@ class MetaField implements Attribute
      *
      * @return MetaField
      */
-    public static function loadFromString($string)
+    public static function loadFromString(Application $app, $string)
     {
-        if ( ! $datas = @unserialize($string)) {
+        if (!$datas = @unserialize($string)) {
             throw new \InvalidArgumentException('Unable to load metadata from string');
         }
 
         try {
-            $databox = \databox::get_instance($datas['sbas_id']);
-            $field = $databox->get_meta_structure()->get_element($datas['id']);
+            return new static($app['phraseanet.appbox']
+                    ->get_databox($datas['sbas_id'])
+                    ->get_meta_structure()->get_element($datas['id']), $datas['value']);
         } catch (\Exception_NotFound $e) {
             throw new \InvalidArgumentException('Field does not exist anymore');
         }
-
-        return new static($field, $datas['value']);
     }
 }

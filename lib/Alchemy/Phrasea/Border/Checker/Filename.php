@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
 
@@ -24,15 +25,17 @@ class Filename extends AbstractChecker
     /**
      * Constructor
      *
-     * @param boolean $sensitive Toggle case-sensitive mode, default : false
+     * @param Application $app
+     * @param array       $options An array of options. available : 'sensitive' (false by default)
      */
-    public function __construct(array $options = array())
+    public function __construct(Application $app, array $options = array())
     {
         if ( ! isset($options['sensitive'])) {
             $options['sensitive'] = false;
         }
 
         $this->sensitive = (boolean) $options['sensitive'];
+        parent::__construct($app);
     }
 
     /**

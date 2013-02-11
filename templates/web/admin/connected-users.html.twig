@@ -1,0 +1,144 @@
+{% macro tooltip_connected_users(row) %}
+
+{% set user = row.getUser(app) %}
+<span id="tooltip-usr">
+    <table id="tabledescexp" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="tooltip-title" colspan="2" valign="center" >usr_id : {{ user.get_id() }}</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="height: 10px;"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>{{ 'admin::compte-utilisateur nom' | trans }} : </strong>{{ user.get_display_name() }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>{{ 'admin::compte-utilisateur societe' | trans }} : </strong>{{ user.get_company() }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>{{ 'admin::compte-utilisateur telephone' | trans }} : </strong>{{ user.get_tel() }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>{{ 'admin::compte-utilisateur email' | trans }} : </strong>{{ user.get_email() }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>{{ 'admin::monitor: bases sur lesquelles l\'utilisateur est connecte : ' | trans }} :</strong></td>
+        </tr>
+        {% for databox in user.ACL().get_granted_sbas() %}
+            <tr>
+                <td colspan="2" style="overflow:hidden;" >{{ databox.get_viewname() }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="2" valign="center" >
+                <strong>{{ row.getPlatform() }} / {{ row.getBrowserName() }} - {{ row.getBrowserVersion() }}</strong><br/>
+                {% if row.getToken() %}
+                    {{ 'Session persistente' | trans }}
+                {%endif%}
+            </td>
+        </tr>
+    </table>
+</span>
+
+{% endmacro %}
+
+<div class="tableTitle">{{ 'admin::utilisateurs: utilisateurs connectes' | trans }}</div>
+
+<div class="center">
+    <table class="whoisTable" >
+        <tr>
+            <td class="colTitle" nowrap >{{ 'admin::monitor: module production' | trans }}</td>
+            <td class="colValue" nowrap >{{ data['applications'][1]  }}</td>
+        </tr>
+        <tr>
+            <td class="colTitle" nowrap >{{ 'admin::monitor: module client' | trans }}</td>
+            <td class="colValue" >{{ data['applications'][2] }}</td>
+        </tr>
+        <tr>
+            <td  class="colTitle" >{{ 'admin::monitor: module admin' | trans }}</td>
+            <td  class="colValue" >{{ data['applications'][3] }}</td>
+        </tr>
+        <tr>
+            <td  class="colTitle" >{{ 'admin::monitor: module report' | trans }}</td>
+            <td  class="colValue" >{{ data['applications'][4] }}</td>
+        </tr>
+        <tr>
+            <td  class="colTitle" >{{ 'admin::monitor: module thesaurus' | trans }}</td>
+            <td  class="colValue" >{{ data['applications'][5] }}</td>
+        </tr>
+        <tr>
+            <td  class="colTitle" >{{ 'admin::monitor: module comparateur' | trans }}</td>
+            <td  class="colValue" >{{ data['applications'][6] }}</td>
+        </tr>
+        <tr>
+            <td  class="colTitle" >{{ 'admin::monitor: module validation' | trans }}</td>
+            <td  class="colValue" >{{ data['applications'][7] }}</td>
+        </tr>
+        {% if data['applications'][0] != 0 %}
+        <tr>
+            <td  class="colTitle" >{{ 'admin::monitor: total des utilisateurs uniques : ' | trans }}</td>
+            <td  class="colValue" >{{ data['applications'][0] }}</td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+
+<hr class="spacehr">
+
+<div class="center">
+    <table class='admintable'>
+        <thead>
+            <tr>
+                <th style="width:140px;" >{{ 'admin::monitor: utilisateur' | trans }}</th>
+                <th style="width:100px;" >{{ 'admin::monitor: modules' | trans }}</th>
+                <th style="width:120px;" >{{ 'phraseanet:: adresse' | trans }}</th>
+                <th style="width:140px;" >{{ 'admin::monitor: date de connexion' | trans }}</th>
+                <th style="width:140px;" >{{ 'admin::monitor: dernier access' | trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data['sessions'] %}
+            <tr title="{{ _self.tooltip_connected_users(row) | e }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
+
+                {% if row.getId() == app['session'].get('session_id') %}
+                    <td style="color:#ff0000"><i>{{ row.getUser(app).get_display_name() }}</i></td>
+                {% else %}
+                    <td>{{ row.getUser(app).get_display_name() }}</td>
+                {% endif %}
+
+                <td>
+                    {% for module in row.getModules() %}
+                        {{ module.getmoduleId() | AppName }}<br>
+                    {% endfor %}
+                </td>
+
+                {% set geoname = app['geonames'].find_geoname_from_ip(row.getIpAddress()) %}
+
+                {% if geoname['city']  %}
+                    {% set ip_infos = geoname['city'] ~ ' (' ~ geoname['country'] ~ ')' %}
+                {% elseif geoname['fips'] %}
+                    {% set ip_infos = geoname['fips'] ~ ' (' ~ geoname['country'] ~ ')' %}
+                {% elseif geoname['country'] %}
+                    {% set ip_infos = geoname['country'] %}
+                {% else %}
+                    {% set ip_infos = '' %}
+                {% endif %}
+
+
+                <td>{{ row.getIpAddress() }}<br/>{{ ip_infos }}</td>
+                <td>{{ app['date-formatter'].getDate(row.getCreated()) }}</td>
+                <td>{{ app['date-formatter'].getPrettyString(row.getUpdated()) }}</td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(
+    function(){
+        $('.usrTips').tooltip();
+    }
+);
+</script>

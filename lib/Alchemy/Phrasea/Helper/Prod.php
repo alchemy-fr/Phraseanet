@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -28,15 +28,14 @@ class Prod extends Helper
         );
 
         $bases = $fields = $dates = array();
-        $user = $this->getCore()->getAuthenticatedUser();
 
-        if ( ! $user instanceof \User_Adapter) {
+        if (! $this->app['phraseanet.user'] instanceof \User_Adapter) {
             return $search_datas;
         }
 
-        $searchSet = json_decode($user->getPrefs('search'), true);
+        $searchSet = json_decode($this->app['phraseanet.user']->getPrefs('search'), true);
 
-        foreach ($user->ACL()->get_granted_sbas() as $databox) {
+        foreach ($this->app['phraseanet.user']->ACL()->get_granted_sbas() as $databox) {
             $sbas_id = $databox->get_sbas_id();
 
             $bases[$sbas_id] = array(
@@ -46,7 +45,7 @@ class Prod extends Helper
                 'sbas_id' => $sbas_id
             );
 
-            foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
+            foreach ($this->app['phraseanet.user']->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
                 $selected = (isset($searchSet['bases']) &&
                     isset($searchSet['bases'][$sbas_id])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbas_id])) : true;
                 $bases[$sbas_id]['collections'][] =
@@ -81,10 +80,12 @@ class Prod extends Helper
                 }
             }
 
-            if ( ! $bases[$sbas_id]['thesaurus'])
+            if (! $bases[$sbas_id]['thesaurus']) {
                 continue;
-            if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modif_th'))
+            }
+            if ( ! $this->app['phraseanet.user']->ACL()->has_right_on_sbas($sbas_id, 'bas_modif_th')) {
                 continue;
+            }
 
             if (false !== simplexml_load_string($databox->get_cterms())) {
                 $bases[$sbas_id]['cterms'] = true;

@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {{ module_name }} </title>
+    <link type="text/css" rel="stylesheet" href="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/skins/common/main.css">
+    {% block stylesheet %}{% endblock %}
+    {% block icon %}{% endblock %}
+    {% block rss %}{% endblock %}
+    {% block javascript %}{% endblock %}
+
+  </head>
+  <body>
+    <div id="mainContainer" style="height:100%">
+      {% include 'common/menubar.html.twig' %}
+      <div style="top:30px;height:100%;">
+        <div id="mainContent" style="height:100%;min-width:900px;">
+                {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+    {% include 'common/analytics.html.twig' %}
+  </body>
+</html>

@@ -2,6 +2,7 @@
 
 namespace Repositories;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -13,7 +14,7 @@ use Doctrine\ORM\EntityRepository;
 class StoryWZRepository extends EntityRepository
 {
 
-    public function findByUser(\User_Adapter $user, $sort)
+    public function findByUser(Application $app, \User_Adapter $user, $sort)
     {
         $dql = 'SELECT s FROM Entities\StoryWZ s WHERE s.usr_id = :usr_id ';
 
@@ -28,7 +29,7 @@ class StoryWZRepository extends EntityRepository
 
         foreach ($stories as $key => $story) {
             try {
-                $story->getRecord()->get_title();
+                $story->getRecord($app)->get_title();
             } catch (\Exception_NotFound $e) {
                 $this->getEntityManager()->remove($story);
                 unset($stories[$key]);
@@ -40,7 +41,7 @@ class StoryWZRepository extends EntityRepository
         if ($sort == 'name') {
             $sortedStories = array();
             foreach ($stories as $story) {
-                $sortedStories[] = $story->getRecord()->get_title();
+                $sortedStories[] = $story->getRecord($app)->get_title();
             }
 
             uasort($sortedStories, function($a, $b) {
@@ -59,20 +60,20 @@ class StoryWZRepository extends EntityRepository
         return $stories;
     }
 
-    public function findByUserAndId(\User_Adapter $user, $id)
+    public function findByUserAndId(Application $app, \User_Adapter $user, $id)
     {
         $story = $this->find($id);
 
         if ($story) {
             try {
-                $story->getRecord()->get_title();
-            } catch (\Exception_Record_AdapterNotFound $e) {
+                $story->getRecord($app)->get_title();
+            } catch (\Exception_NotFound $e) {
                 $this->getEntityManager()->remove($story);
                 throw new \Exception_NotFound('Story not found');
             }
 
-            if ($story->getUser()->get_id() !== $user->get_id()) {
-                throw new \Exception_Forbidden('You have not access to this story');
+            if ($story->getUser($app)->get_id() !== $user->get_id()) {
+                throw new \Exception_Forbidden('You have not access to ths story');
             }
         } else {
             throw new \Exception_NotFound('Story not found');
@@ -81,7 +82,7 @@ class StoryWZRepository extends EntityRepository
         return $story;
     }
 
-    public function findUserStory(\User_Adapter $user, \record_adapter $Story)
+    public function findUserStory(Application $app, \User_Adapter $user, \record_adapter $Story)
     {
         $story = $this->findOneBy(
             array(
@@ -93,7 +94,7 @@ class StoryWZRepository extends EntityRepository
 
         if ($story) {
             try {
-                $record = $story->getRecord();
+                $record = $story->getRecord($app);
             } catch (\Exception_NotFound $e) {
                 $this->getEntityManager()->remove($story);
                 $this->getEntityManager()->flush();

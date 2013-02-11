@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,11 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -27,50 +26,38 @@ class Fields implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = \appbox::get_instance($app['Core']);
-
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/checkmulti/', function() use ($app, $appbox) {
-                $request = $app['request'];
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAccessToModule('admin')
+                ->requireRight('bas_modify_struct');
+        });
 
-                $multi = ($request->get('multi') === 'true');
+        $controllers->get('/checkmulti/', function(PhraseaApplication $app, Request $request) {
+            $multi = ($request->query->get('multi') === 'true');
 
-                $tag = \databox_field::loadClassFromTagName($request->get('source'));
+            $tag = \databox_field::loadClassFromTagName($request->query->get('source'));
 
-                $datas = array(
-                    'result'   => ($multi === $tag->isMulti()),
-                    'is_multi' => $tag->isMulti(),
-                );
+            $datas = array(
+                'result'   => ($multi === $tag->isMulti()),
+                'is_multi' => $tag->isMulti(),
+            );
 
-                $Serializer = $app['Core']['Serializer'];
+            return $app->json($datas);
+        });
 
-                return new Response(
-                        $Serializer->serialize($datas, 'json')
-                        , 200
-                        , array('Content-Type' => 'application/json')
-                );
-            });
+        $controllers->get('/checkreadonly/', function(PhraseaApplication $app, Request $request) {
+            $readonly = ($request->query->get('readonly') === 'true');
 
-        $controllers->get('/checkreadonly/', function() use ($app, $appbox) {
-                $request = $app['request'];
-                $readonly = ($request->get('readonly') === 'true');
+            $tag = \databox_field::loadClassFromTagName($request->query->get('source'));
 
-                $tag = \databox_field::loadClassFromTagName($request->get('source'));
+            $datas = array(
+                'result'      => ($readonly !== $tag->isWritable()),
+                'is_readonly' => !$tag->isWritable(),
+            );
 
-                $datas = array(
-                    'result'      => ($readonly !== $tag->isWritable()),
-                    'is_readonly' => ! $tag->isWritable(),
-                );
-
-                $Serializer = $app['Core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize($datas, 'json'),
-                        200,
-                        array('Content-Type' => 'application/json')
-                );
-            });
+            return $app->json($datas);
+        });
 
         return $controllers;
     }

@@ -2,80 +2,78 @@
 
 <ul id="tree" class="filetree">
 
-  {% if user.is_admin() %}
+  {% if app['phraseanet.user'].ACL().is_admin() %}
   <li>
-    <a target="right" href="sitestruct.php">
+    <a target="right" href="/admin/dashboard/" class="ajax">
       <img src="/skins/admin/Dashboard.png" />
-      {% trans 'Tableau de bord' %}
+      <span>{% trans 'Tableau de bord' %}</span>
     </a>
   </li>
   {% else %}
   <li>
-    {{ registry.get('GV_ServerName') }}
+    <span>{{ app['phraseanet.registry'].get('GV_ServerName') }}</span>
   </li>
   {% endif %}
 
-  {% if user.is_admin() %}
+  {% if app['phraseanet.user'].ACL().is_admin() %}
   <li>
-    <a target="right" href="/admin/global_values.php">
+    <a target="right" href="/admin/setup/" class="ajax">
       <img src="/skins/admin/Setup.png" />
-      Setup
+      <span>Setup</span>
     </a>
   </li>
-    {% if registry.get('GV_sphinx') %}
   <li>
-    <a target="right" href="/admin/sphinxconf.php">
-      Sphinx Conf
+    <a target="right" href="/admin/search-engine/">
+      <span>{% trans 'SearchEngine settings' %}</span>
     </a>
   </li>
-    {% endif %}
   {% endif %}
 
   <li class="{% if feature == 'connected' %}selected{% endif %}">
-    <a target="right" href="sessionwhois.php" class="ajax zone_online_users">
+    <a target="right" href="/admin/connected-users/" class="ajax zone_online_users">
       <img src="/skins/admin/Connected.png" />
-      {% trans 'admin::utilisateurs: utilisateurs connectes' %}
+      <span>{% trans 'admin::utilisateurs: utilisateurs connectes' %}</span>
     </a>
   </li>
 
-  {% if user.ACL().has_right('manageusers') %}
+  {% if app['phraseanet.user'].ACL().has_right('manageusers') %}
   <li class="{% if feature == 'users' %}selected{% endif %}">
     <a target="right" href="/admin/users/search/" class="ajax zone_editusers">
       <img src="/skins/admin/Users.png" />
-      {% trans 'admin::utilisateurs: utilisateurs' %}
+      <span>{% trans 'admin::utilisateurs: utilisateurs' %}</span>
     </a>
   </li>
   <li class="{% if feature == 'registrations' %}selected{% endif %}">
-    <a target="right" href="demand.php?act=LISTUSERS">
+    <a target="right" href="/admin/users/demands/" class="ajax">
       <img src="/skins/admin/Demandes.png" />
-      {% trans 'admin::utilisateurs: demandes en cours' %}
+      <span>{% trans 'admin::utilisateurs: demandes en cours' %}</span>
     </a>
   </li>
   {% endif %}
 
-  {% if user.ACL().has_right('bas_chupub') %}
+  {% if app['phraseanet.user'].ACL().has_right('bas_chupub') %}
   <li class="">
     <a target="right" href="/admin/publications/list/" class="ajax">
       <img src="/skins/icons/rss16.png" />
-      {% trans 'Publications' %}
+      <span>{% trans 'Publications' %}</span>
     </a>
   </li>
   {% endif %}
 
-  {% if user.ACL().has_right('taskmanager') %}
+  {% if app['phraseanet.user'].ACL().has_right('taskmanager') %}
   <li class="{% if feature == 'taskmanager' %}selected{% endif %}">
-    <a target="right" href="taskmanager.php">
+    <a target="right" href="/admin/task-manager/tasks/" class="ajax">
       <img src="/skins/admin/TaskManager.png" />
-      {% trans 'admin::utilisateurs: gestionnaire de taches' %}
+      <span>{% trans 'admin::utilisateurs: gestionnaire de taches' %}</span>
     </a>
   </li>
   {% endif %}
 
   <li class="open">
     <div class="{% if feature == 'bases' %}selected{% endif %}" style="padding:0 0 2px 0;">
-      <a id="TREE_DATABASES" target="right" href="databases.php">
+      <a id="TREE_DATABASES" target="right" href="{{ path('admin_databases') }}" class="ajax">
         <img src="/skins/admin/DatabasesAvailable.png" />
-        {% trans 'admin::utilisateurs: bases de donnees' %}
+        <span>{% trans 'admin::utilisateurs: bases de donnees' %}</span>
       </a>
     </div>
     <ul>
@@ -98,47 +96,47 @@
 
       <li class="{% if this_is_open %}open{% endif %}">
         <div style="padding:0 0 2px 0;" class="{% if this_is_selected %}selected{% endif %}">
-          <a target="right" href="database.php?p0={{ sbas_id }}">
-            <img src="/skins/admin/Database.png"/>
-            {{ databox.get_viewname() }}
-          </a>
+            <a target="right" href="/admin/databox/{{ sbas_id }}/" class="ajax">
+                <img src="/skins/admin/Database.png"/>
+                <span>{{ databox.get_viewname() }}</span>
+            </a>
         </div>
         <ul>
 
-        {% if user.ACL().has_right_on_sbas( sbas_id , 'bas_modify_struct') %}
+        {% if app['phraseanet.user'].ACL().has_right_on_sbas( sbas_id , 'bas_modify_struct') %}
           <li>
-            <a target="right" href="structure.php?act=STRUCTURE&p0={{ sbas_id }}">
+            <a target="right" class="ajax" href="/admin/structure/{{ sbas_id }}/">
               <img src="/skins/icons/miniadjust01.gif"/>
-              {% trans 'admin::structure: reglage de la structure' %}
+              <span>{% trans 'admin::structure: reglage de la structure' %}</span>
             </a>
           </li>
           <li>
             <a target="right" href="/admin/description/{{ sbas_id }}/" class="ajax">
               <img src="/skins/icons/miniadjust01.gif"/>
-              {% trans 'CHAMPS' %}
+              <span>{% trans 'CHAMPS' %}</span>
             </a>
           </li>
           <li>
             <a target="right" href="/admin/subdefs/{{ sbas_id }}/">
               <img src="/skins/icons/miniadjust01.gif"/>
-              {% trans 'SUBDEFS' %}
+              <span>{% trans 'SUBDEFS' %}</span>
             </a>
           </li>
           <li>
-            <a target="right" href="statbits.php?act=STATBITS&p0={{ sbas_id }}">
+            <a target="right" href="/admin/statusbit/{{ sbas_id }}/" class="ajax">
               <img src="/skins/icons/miniadjust02.gif"/>
-              {% trans 'admin::status: reglage des status' %}
+              <span>{% trans 'admin::status: reglage des status' %}</span>
             </a>
           </li>
           <li>
-            <a target="right" href="cgus.php?p0={{ sbas_id }}">
-              {% trans 'admin:: CGUs' %}
+            <a target="right" href="/admin/databox/{{ sbas_id }}/cgus/" class="ajax">
+              <span>{% trans 'admin:: CGUs' %}</span>
             </a>
           </li>
           <li>
-            <a target="right" href="collorder.php?p0={{ sbas_id }}">
+              <a target="right" href="/admin/databox/{{ sbas_id }}/collections/order/" class="ajax">
               <img src="/skins/icons/miniadjust03.gif"/>
-              {% trans 'admin::collection: ordre des collections' %}
+              <span>{% trans 'admin::collection: ordre des collections' %}</span>
             </a>
           </li>
         {% endif %}
@@ -146,7 +144,7 @@
         {% set seeUsrGene = false %}
 
         {% for coll in databox.get_collections() %}
-          {% if user.ACL.has_right_on_base( coll.get_base_id() , 'canadmin') %}
+          {% if app['phraseanet.user'].ACL.has_right_on_base( coll.get_base_id() , 'canadmin') %}
             {% set seeUsrGene = true %}
           {% endif %}
         {% endfor %}
@@ -155,41 +153,41 @@
           <li>
             <a target="right" href="/admin/users/search/?sbas_id[]={{ sbas_id }}" class="ajax">
               <img src="/skins/admin/Users.png"/>
-              {% trans 'admin::utilisateurs: utilisateurs' %}
+              <span>{% trans 'admin::utilisateurs: utilisateurs' %}</span>
             </a>
           </li>
         {% endif %}
 
         {% for collection in databox.get_collections() %}
-          {% if (collection.get_base_id() in user.ACL.get_granted_base(['canadmin'])|keys
-              or collection.get_base_id() in user.ACL.get_granted_base(['manage'])|keys
-              or collection.get_base_id() in user.ACL.get_granted_base(['modify_struct'])|keys) %}
+          {% if (collection.get_base_id() in app['phraseanet.user'].ACL.get_granted_base(['canadmin'])|keys
+              or collection.get_base_id() in app['phraseanet.user'].ACL.get_granted_base(['manage'])|keys
+              or collection.get_base_id() in app['phraseanet.user'].ACL.get_granted_base(['modify_struct'])|keys) %}
 
           <li>
             <div style="padding:0 0 2px 0;">
-              <a target="right" href="collection.php?act=COLLECTION&p0={{ sbas_id }}&p1={{ collection.get_base_id() }}">
-                {{ collection.get_name() }}
-              </a>
+                <a target="right" href="/admin/collection/{{ collection.get_base_id() }}/" class="ajax">
+                    <span>{{ collection.get_name() }}</span>
+                </a>
             </div>
             <ul>
 
-            {% if (user.ACL.has_right_on_base(collection.get_base_id(), 'modify_struct')) %}
+            {% if (app['phraseanet.user'].ACL.has_right_on_base(collection.get_base_id(), 'modify_struct')) %}
               <li>
-                <a target="right" href="sugval.php?p0={{ sbas_id }}&p1={{ collection.get_base_id() }}">
+                <a target="right" href="/admin/collection/{{ collection.get_base_id() }}/suggested-values/" class="ajax">
                   <img src="/skins/icons/foldph20open_0.gif"/>
-                  {% trans 'admin::base: preferences de collection' %}
+                  <span>{% trans 'admin::base: preferences de collection' %}</span>
                 </a>
               </li>
             {% endif %}
 
-            {% if (user.ACL.has_right_on_base( collection.get_base_id(), 'canadmin')) %}
-              {% if (user.ACL.has_right_on_base( collection.get_base_id(), 'canmodifrecord')
-                 and user.ACL.has_right_on_base( collection.get_base_id(), 'manage')
-                 and user.ACL.has_right_on_sbas( sbas_id, 'bas_manage') ) %}
+            {% if (app['phraseanet.user'].ACL.has_right_on_base( collection.get_base_id(), 'canadmin')) %}
+              {% if (app['phraseanet.user'].ACL.has_right_on_base( collection.get_base_id(), 'canmodifrecord')
+                 and app['phraseanet.user'].ACL.has_right_on_base( collection.get_base_id(), 'manage')
+                 and app['phraseanet.user'].ACL.has_right_on_sbas( sbas_id, 'bas_manage') ) %}
               <li>
                 <a target="right" href="/admin/users/search/?base_id[]={{ collection.get_base_id() }}" class="ajax">
                   <img src="/skins/admin/Users.png"/>
-                  {% trans 'admin::utilisateurs: utilisateurs' %}
+                  <span>{% trans 'admin::utilisateurs: utilisateurs' %}</span>
                 </a>
               </li>
               {% endif %}
@@ -211,7 +209,7 @@
   {% for databox in off_databoxes %}
   <li>
     <img src="/skins/icons/db-remove.png"/>
-    ' . $row["dbname"] . '(' . $row["host"] . ':' . $row["port"] . ')
+    {{ databox.get_dbname() }} ({{ databox.get_host() }} {{ databox.get_port() }})
   </li>
   {% endfor %}
 </ul>

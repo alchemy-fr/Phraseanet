@@ -5,22 +5,15 @@
  *
  */
 
+use Symfony\Component\Finder\Finder;
+
+require __DIR__ . '/vendor/autoload.php';
+
 printf('Retrieve vendors ...' . PHP_EOL);
 
 system('./vendors.php --no-dev');
-/**
- *
- * Vendors has to be called two times.
- * We should fix that
- *
- */
-system('./vendors.php --no-dev');
 
-require_once __DIR__ . '/lib/classes/bootstrap.class.php';
-
-\bootstrap::register_autoloads();
-
-use Symfony\Component\Finder\Finder;
+system(__DIR__ . '/composer.phar dump-autoload');
 
 chdir(__DIR__);
 
@@ -35,6 +28,7 @@ $finder
     ->name('.gitignore')
     ->name('check_cs.php')
     ->name('cleaner.php')
+    ->name('build-env.sh')
     ->name('phpunit.xml.dist')
     ->name('launchpadToLocales.php')
     ->name('localesToLaunchPad.php')

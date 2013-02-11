@@ -3,18 +3,20 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Alchemy\Phrasea\Application;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../vendor/autoload.php";
 
 /* get all the post parameters from report.php's form */
 
@@ -50,8 +52,8 @@ $param = $request->get_parms(
     "from", "printcsv", "docwhat"
 );
 
-$core = \bootstrap::getCore();
-$twig = $core->getTwig();
+$app = new Application();
+$twig = $app['twig'];
 
 $conf_info_usr = array(
     'config' => array(
@@ -106,12 +108,12 @@ function doLimit($obj, $param)
         ( ! empty($param['page']) && ! empty($param['limit'])) ? $obj->setLimit($param['page'], $param['limit']) : $obj->setLimit(false, false);
 }
 
-function doFilter($obj, $param, $twig)
+function doFilter(Application $app, $obj, $param, $twig)
 {
     $cor = $obj->getTransQueryString();
     $currentfilter = unserializeFilter($param['liste_filter']);
 
-    $filter = new module_report_filter($currentfilter, $cor);
+    $filter = new module_report_filter($app, $currentfilter, $cor);
 
     if ( ! empty($param['filter_column'])) {
         $field = getFilterField($param);
@@ -131,10 +133,10 @@ function doFilter($obj, $param, $twig)
     return $filter;
 }
 
-function doPreff($conf, $param)
+function doPreff(Application $app, $conf, $param)
 {
     $conf_pref = array();
-    $pref = module_report::getPreff($param['sbasid']);
+    $pref = module_report::getPreff($app, $param['sbasid']);
     foreach ($pref as $key => $field)
         $conf_pref[$field] = array($field, 0, 0, 0, 0);
     $conf = array_merge($conf, $conf_pref);
@@ -142,10 +144,9 @@ function doPreff($conf, $param)
     return $conf;
 }
 
-function doReport($obj, $param, $conf, $twig, $what = false)
+function doReport(Application $app, $obj, $param, $conf, $twig, $what = false)
 {
-    $registry = registry::get_instance();
-    if ($registry->get('GV_anonymousReport') == true) {
+    if ($app['phraseanet.registry']->get('GV_anonymousReport') == true) {
         if (isset($conf['user']))
             unset($conf['user']);
         if (isset($conf['ip']))
@@ -161,7 +162,7 @@ function doReport($obj, $param, $conf, $twig, $what = false)
     doOrder($obj, $param);
 
     //return a filter object
-    $filter = doFilter($obj, $param, $twig);
+    $filter = doFilter($app, $obj, $param, $twig);
 
     //set new request filter if user asking for them
     if ($param['precise'] == 1)
@@ -227,14 +228,14 @@ function doHtml($report, $param, $twig, $template, $type = false)
     return ($twig->render($template, $var));
 }
 
-function doCsv($obj, $param, $conf, $twig)
+function doCsv(Application $app, $obj, $param, $conf, $twig)
 {
     $scv = "";
     //disable limit
     $obj->setHasLimit(false);
     $obj->setPrettyString(false);
     //construct new report
-    doReport($obj, $param, $conf, $twig);
+    doReport($app, $obj, $param, $conf, $twig);
 
     //get resulst
     $result_csv = $obj->getResult();
@@ -283,7 +284,7 @@ function sendCsv($csv)
 function getBasId($param)
 {
     try {
-        $record = new record_adapter($param['sbasid'], $param['rid']);
+        $record = new record_adapter(new Application(), $param['sbasid'], $param['rid']);
 
         return $record->get_base_id();
     } catch (Exception $e) {
@@ -325,7 +326,7 @@ function doUserConf($conf, $param)
 function displayListColumn($conf, $param, $twig)
 {
     if ($param['conf'] == "on") {
-        $html = $twig->render('report/listColumn.twig', array(
+        $html = $twig->render('report/listColumn.html.twig', array(
             'conf'  => $conf,
             'param' => $param
             ));
@@ -343,7 +344,7 @@ function groupBy($obj, $param, $twig, $on = false)
     if ($groupby) {
         $obj->setConfig(false);
         $report = $obj->buildReport(false, $groupby[0], $on);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig', 'group');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig', 'group');
         $title = "Groupement des resultats sur le champ " . $report['display'][$report['allChamps'][0]]['title'];
         sendReport($html, false, $title);
         exit();
@@ -352,7 +353,7 @@ function groupBy($obj, $param, $twig, $on = false)
 
 function displayColValue($tab, $column, $twig, $on = false)
 {
-    $test = $twig->render('report/colFilter.twig', array(
+    $test = $twig->render('report/colFilter.html.twig', array(
         'result' => $tab,
         'field'  => $column
         ));
@@ -361,9 +362,9 @@ function displayColValue($tab, $column, $twig, $on = false)
     exit();
 }
 
-function getHistory($obj, $param, $twig, $conf, $dl = false, $title)
+function getHistory(Application $app, $obj, $param, $twig, $conf, $dl = false, $title)
 {
-    $filter = doFilter($obj, $param, $twig);
+    $filter = doFilter($app, $obj, $param, $twig);
 
     if ( ! empty($param['user']) && empty($param['on']))
         $filter->addfilter('usrid', '=', $param['user']);
@@ -382,16 +383,16 @@ function getHistory($obj, $param, $twig, $conf, $dl = false, $title)
 
 
     if ($param['printcsv'] == "on") {
-        $csv = doCsv($obj, $param, $conf, $twig);
+        $csv = doCsv($app, $obj, $param, $conf, $twig);
         sendCsv($csv);
     } else {
         $report = $obj->buildReport($conf);
     }
 
     if ($dl) {
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig', "user");
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig', "user");
     } else {
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
     }
     $request = $obj->getReq();
 
@@ -399,9 +400,9 @@ function getHistory($obj, $param, $twig, $conf, $dl = false, $title)
 }
 ################################################ACTION FUNCTIONS#######################################################
 
-function cnx($param, $twig)
+function cnx(Application $app, $param, $twig)
 {
-    $cnx = new module_report_connexion($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $cnx = new module_report_connexion($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
     $conf = array(
         'user' => array(_('phraseanet::utilisateurs'), 1, 1, 1, 1),
@@ -415,19 +416,19 @@ function cnx($param, $twig)
     );
 
     if ($param['printcsv'] == "on") {
-        $csv = doCsv($cnx, $param, $conf, $twig);
+        $csv = doCsv($app, $cnx, $param, $conf, $twig);
         sendCsv($csv);
     } else {
-        $report = doReport($cnx, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $report = doReport($app, $cnx, $param, $conf, $twig);
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
 /* generate all the html string to display all the valid download in <table></table>, the result is encoded in json */
 
-function gen($param, $twig)
+function gen(Application $app, $param, $twig)
 {
-    $dl = new module_report_download($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $dl = new module_report_download($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $conf = array(
         'user' => array(_('report:: utilisateurs'), 1, 1, 1, 1),
         'ddate' => array(_('report:: date'), 1, 0, 1, 1),
@@ -440,22 +441,22 @@ function gen($param, $twig)
         'pays' => array(_('report:: pays'), 1, 1, 1, 1),
         'societe' => array(_('report:: societe'), 1, 1, 1, 1)
     );
-    $conf = doPreff($conf, $param);
+    $conf = doPreff($app, $conf, $param);
 
     if ($param['printcsv'] == "on") {
-        $csv = doCsv($dl, $param, $conf, $twig);
+        $csv = doCsv($app, $dl, $param, $conf, $twig);
         sendCsv($csv);
     } else {
-        $report = doReport($dl, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $report = doReport($app, $dl, $param, $conf, $twig);
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
 /* generate all the html string to display all the valid question in <table></table>, the result is encoded in json */
 
-function ask($param, $twig)
+function ask(Application $app, $param, $twig)
 {
-    $ask = new module_report_question($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $ask = new module_report_question($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $conf = array(
         'user' => array(_('report:: utilisateur'), 1, 1, 1, 1),
         'search' => array(_('report:: question'), 1, 0, 1, 1),
@@ -467,19 +468,19 @@ function ask($param, $twig)
     );
 
     if ($param['printcsv'] == "on") {
-        $csv = doCsv($ask, $param, $conf, $twig);
+        $csv = doCsv($app, $ask, $param, $conf, $twig);
         sendCsv($csv);
     } else {
-        $report = doReport($ask, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $report = doReport($app, $ask, $param, $conf, $twig);
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
 /* generate the html code to display the download by doc (records or string in xml description), the result is encoded in json */
 
-function doc($param, $twig)
+function doc(Application $app, $param, $twig)
 {
-    $dl = new module_report_download($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $dl = new module_report_download($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $conf = array(
         'telechargement' => array(_('report:: telechargements'), 1, 0, 0, 0),
         'record_id' => array(_('report:: record id'), 1, 1, 1, 0),
@@ -488,22 +489,22 @@ function doc($param, $twig)
         'mime' => array(_('report:: type'), 1, 0, 1, 1),
         'size' => array(_('report:: taille'), 1, 0, 1, 1)
     );
-    $conf = doPreff($conf, $param);
+    $conf = doPreff($app, $conf, $param);
 
     if ($param['printcsv'] == "on") {
-        $csv = doCsv($dl, $param, $conf, $twig);
+        $csv = doCsv($app, $dl, $param, $conf, $twig);
         sendCsv($csv);
     } else {
-        $report = doReport($dl, $param, $conf, $twig, 'record_id');
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig', 'doc');
+        $report = doReport($app, $dl, $param, $conf, $twig, 'record_id');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig', 'doc');
         sendReport($html, $report);
     }
 }
 /* generate the html string to display the result from different report (see below) in <table></table>, the result is encoded in json */
 
-function cnxb($param, $twig)
+function cnxb(Application $app, $param, $twig)
 {
-    $nav = new module_report_nav($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $nav = new module_report_nav($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $conf_nav = array('nav' => array(_('report:: navigateur'), 0, 1, 0, 0),
         'nb' => array(_('report:: nombre'), 0, 0, 0, 0),
         'pourcent' => array(_('report:: pourcentage'), 0, 0, 0, 0)
@@ -544,15 +545,15 @@ function cnxb($param, $twig)
 
         sendCsv($csv);
     } else {
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig', 'nav');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig', 'nav');
         sendReport($html);
     }
 }
 /* generate the html string to display the number of connexion by user in <table></table>, the result is encoded in json */
 
-function cnxu($param, $twig)
+function cnxu(Application $app, $param, $twig)
 {
-    $connex = new module_report_activity($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $connex = new module_report_activity($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $connex->setConfig(false);
     $connex->setBound("user", true);
     doLimit($connex, $param);
@@ -566,20 +567,20 @@ function cnxu($param, $twig)
         sendCsv($csv);
     } else {
         $report = $connex->getConnexionBase(false, $param['on']);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html);
     }
 }
 /* generate all the html string to display the top 20 question by databox in <table></table>, the result is encoded in json */
 
-function bestOf($param, $twig)
+function bestOf(Application $app, $param, $twig)
 {
     $conf = array(
         'search' => array(_('report:: question'), 0, 0, 0, 0),
         'nb' => array(_('report:: nombre'), 0, 0, 0, 0),
         'nb_rep' => array(_('report:: nombre de reponses'), 0, 0, 0, 0)
     );
-    $activity = new module_report_activity($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $activity = new module_report_activity($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
     $activity->setLimit(1, $param['limit']);
     $activity->setTop(20);
@@ -595,19 +596,19 @@ function bestOf($param, $twig)
         sendCsv($csv);
     } else {
         $report = $activity->getTopQuestion($conf);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html);
     }
 }
 /* generate all the html string to display all the resot of questions <table></table>, the result is encoded in json */
 
-function noBestOf($param, $twig)
+function noBestOf(Application $app, $param, $twig)
 {
     $conf = array('search' => array(_('report:: question'), 0, 0, 0, 0),
         'nb' => array(_('report:: nombre'), 0, 0, 0, 0),
         'nb_rep' => array(_('report:: nombre de reponses'), 0, 0, 0, 0)
     );
-    $activity = new module_report_activity($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $activity = new module_report_activity($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $activity->setConfig(false);
     doLimit($activity, $param);
 
@@ -621,15 +622,15 @@ function noBestOf($param, $twig)
         sendCsv($csv);
     } else {
         $report = $activity->getTopQuestion($conf, true);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html);
     }
 }
 /* generate all the html string to display the users connexions activity by hour in <table></table>, the result is encoded in json */
 
-function tableSiteActivityPerHours($param, $twig)
+function tableSiteActivityPerHours(Application $app, $param, $twig)
 {
-    $activity = new module_report_activity($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $activity = new module_report_activity($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $activity->setConfig(false);
     $report = $activity->getActivityPerHours();
 
@@ -639,20 +640,20 @@ function tableSiteActivityPerHours($param, $twig)
         $csv = format::arr_to_csv($result, $display);
         sendCsv($csv);
     } else {
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig', 'plot');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig', 'plot');
         sendReport($html);
     }
 }
 /* generate all the html string to display all number of download day by day in <table></table>, the result is encoded in json */
 
-function day($param, $twig)
+function day(Application $app, $param, $twig)
 {
     $conf = array('ddate' => array(_('report:: jour'), 0, 0, 0, 0),
         'total' => array(_('report:: total des telechargements'), 0, 0, 0, 0),
         'preview' => array(_('report:: preview'), 0, 0, 0, 0),
         'document' => array(_('report:: document original'), 0, 0, 0, 0)
     );
-    $activity = new module_report_activity($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $activity = new module_report_activity($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     doLimit($activity, $param);
     $activity->setConfig(false);
 
@@ -665,13 +666,13 @@ function day($param, $twig)
         sendCsv($csv);
     } else {
         $report = $activity->getDownloadByBaseByDay($conf);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html);
     }
 }
 /* generate all the html string to display all the details of download user by user in <table></table>, the result is encoded in json */
 
-function usr($param, $twig)
+function usr(Application $app, $param, $twig)
 {
     $conf = array('user' => array(_('report:: utilisateur'), 0, 1, 0, 0),
         'nbdoc' => array(_('report:: nombre de documents'), 0, 0, 0, 0),
@@ -680,7 +681,7 @@ function usr($param, $twig)
         'poidprev' => array(_('report:: poids des previews'), 0, 0, 0, 0)
     );
 
-    $activity = new module_report_activity($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $activity = new module_report_activity($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     doLimit($activity, $param);
     $activity->setConfig(false);
 
@@ -694,16 +695,15 @@ function usr($param, $twig)
         sendCsv($csv);
     } else {
         $report = $activity->getDetailDownload($conf, $param['on']);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html);
     }
 }
 /* Display basic informations about an user */
 
-function infoUsr($param, $twig, $conf)
+function infoUsr(Application $app, $param, $twig, $conf)
 {
-    $registry = registry::get_instance();
-    if ($registry->get('GV_anonymousReport') == true) {
+    if ($app['phraseanet.registry']->get('GV_anonymousReport') == true) {
         $conf['conf'] = array(
             $param['on'] => array($param['on'], 0, 0, 0, 0),
             'nb' => array(_('report:: nombre'), 0, 0, 0, 0)
@@ -717,33 +717,33 @@ function infoUsr($param, $twig, $conf)
     $is_dl = false;
 
     if ($param['from'] == 'CNXU' || $param['from'] == 'CNX') {
-        $histo = new module_report_connexion($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+        $histo = new module_report_connexion($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
         $conf_array = $conf['config_cnx'];
         $title = _("report:: historique des connexions");
     } elseif ($param['from'] == "USR" || $param['from'] == "GEN") {
-        $histo = new module_report_download($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+        $histo = new module_report_download($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
         $conf_array = $conf['config_dl'];
         $is_dl = true;
         $title = _("report:: historique des telechargements");
     } elseif ($param['from'] == "ASK") {
-        $histo = new module_report_question($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+        $histo = new module_report_question($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
         $conf_array = $conf['config_ask'];
         $title = _("report:: historique des questions");
     }
 
     if (isset($histo)) {
-        $rs = getHistory($histo, $param, $twig, $conf_array, $is_dl, $title);
+        $rs = getHistory($app, $histo, $param, $twig, $conf_array, $is_dl, $title);
         $html = $rs['html'];
         $request = $rs['req'];
         $params = $rs['params'];
     }
 
-    $info = new module_report_nav($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $info = new module_report_nav($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $info->setPeriode("");
     $info->setCsv(false);
     $report = $info->buildTabGrpInfo($request, $params, $param['user'], $conf['conf'], $param['on']);
-    if ($registry->get('GV_anonymousReport') == false) {
-        $html_info .= doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+    if ($app['phraseanet.registry']->get('GV_anonymousReport') == false) {
+        $html_info .= doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         (empty($param['on']) && isset($report['result'])) ? $title = $report['result'][0]['identifiant'] : $title = $param['user'];
     }
     else
@@ -753,9 +753,8 @@ function infoUsr($param, $twig, $conf)
 }
 /* Display some basics informations about a Document */
 
-function what($param, $twig)
+function what(Application $app, $param, $twig)
 {
-    $registry = registry::get_instance();
     $config = array(
         'photo' => array(_('report:: document'), 0, 0, 0, 0),
         'record_id' => array(_('report:: record id'), 0, 0, 0, 0),
@@ -781,14 +780,14 @@ function what($param, $twig)
     $html = "";
     $basid = getBasId($param);
 
-    $what = new module_report_nav($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $what = new module_report_nav($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $what->setPeriode("");
     $what->setCsv(false);
     $what->setPrint(false);
     $report = $what->buildTabUserWhat($basid, $param['rid'], $config);
     $title = $what->getTitle();
 
-    $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+    $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
 
     if ($param['from'] == 'TOOL') {
         $what->setTitle("");
@@ -796,9 +795,9 @@ function what($param, $twig)
 
         return false;
     } elseif ($param['from'] != 'DASH' && $param['from'] != "PUSHDOC") {
-        $histo = new module_report_download($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+        $histo = new module_report_download($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
-        $filter = doFilter($histo, $param, $twig);
+        $filter = doFilter($app, $histo, $param, $twig);
         if ( ! empty($param['rid']))
             $filter->addfilter('record_id', '=', $param['rid']);
 
@@ -808,14 +807,14 @@ function what($param, $twig)
         $histo->setTitle(_("report:: historique des telechargements"));
         $histo->setConfig(false);
         if ($param['printcsv'] == "on") {
-            $csv = doCsv($histo, $param, $config_dl, $twig);
+            $csv = doCsv($app, $histo, $param, $config_dl, $twig);
             sendCsv($csv);
         } else {
             $report = $histo->buildReport($config_dl);
-            $html .= doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+            $html .= doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
             sendReport($html, false, $title);
         }
-    } elseif ($registry->get('GV_anonymousReport') == false && $param['from'] != 'DOC' && $param['from'] != 'DASH' && $param['from'] != "GEN" && $param['from'] != "PUSHDOC") {
+    } elseif ($app['phraseanet.registry']->get('GV_anonymousReport') == false && $param['from'] != 'DOC' && $param['from'] != 'DASH' && $param['from'] != "GEN" && $param['from'] != "PUSHDOC") {
         $conf = array(
             'identifiant' => array(_('report:: identifiant'), 0, 0, 0, 0),
             'nom' => array(_('report:: nom'), 0, 0, 0, 0),
@@ -823,7 +822,7 @@ function what($param, $twig)
             'adresse' => array(_('report:: adresse'), 0, 0, 0, 0),
             'tel' => array(_('report:: telephone'), 0, 0, 0, 0)
         );
-        $info = new module_report_nav($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+        $info = new module_report_nav($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
         $info->setPeriode("");
         $info->setConfig(false);
         $info->setTitle(_('report:: utilisateur'));
@@ -833,7 +832,7 @@ function what($param, $twig)
             sendCsv($csv);
         } else {
             $report = $info->buildTabGrpInfo(false, array(), $param['user'], $conf, false);
-            $html .= doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+            $html .= doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
             sendReport($html, false, $title);
         }
     }
@@ -842,21 +841,21 @@ function what($param, $twig)
 }
 /* Display informations about navigators */
 
-function infoNav($param, $twig)
+function infoNav(Application $app, $param, $twig)
 {
     $conf = array(
         'version' => array(_('report::version '), 0, 0, 0, 0),
         'nb' => array(_('report:: nombre'), 0, 0, 0, 0)
     );
-    $infonav = new module_report_nav($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $infonav = new module_report_nav($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $infonav->setCsv(false);
     $infonav->setConfig(false);
     $report = $infonav->buildTabInfoNav($conf, $param['user']);
-    $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+    $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
     sendReport($html, false, $param['user']);
 }
 
-function pushDoc($param, $twig)
+function pushDoc(Application $app, $param, $twig)
 {
     $conf = array(
         'user' => array("", 1, 0, 1, 1),
@@ -867,20 +866,20 @@ function pushDoc($param, $twig)
         'mime' => array("", 1, 0, 1, 1),
         'size' => array("", 1, 0, 1, 1)
     );
-    $dl = new module_report_push($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $dl = new module_report_push($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
     $dl->setConfig(false);
     if ($param['printcsv'] == "on") {
-        $csv = doCsv($dl, $param, $conf, $twig);
+        $csv = doCsv($app, $dl, $param, $conf, $twig);
         sendCsv($csv);
     } else {
-        $report = doReport($dl, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $report = doReport($app, $dl, $param, $conf, $twig);
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
 
-function addDoc($param, $twig)
+function addDoc(Application $app, $param, $twig)
 {
     $conf = array(
         'user' => array("", 1, 0, 1, 1),
@@ -890,20 +889,20 @@ function addDoc($param, $twig)
         'mime' => array("", 1, 0, 1, 1),
         'size' => array("", 1, 0, 1, 1)
     );
-    $dl = new module_report_add($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $dl = new module_report_add($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
     $dl->setConfig(false);
     if ($param['printcsv'] == "on") {
-        $csv = doCsv($dl, $param, $conf, $twig);
+        $csv = doCsv($app, $dl, $param, $conf, $twig);
         sendCsv($csv);
     } else {
-        $report = doReport($dl, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $report = doReport($app, $dl, $param, $conf, $twig);
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
 
-function ediDoc($param, $twig)
+function ediDoc(Application $app, $param, $twig)
 {
     $conf = array(
         'user' => array("", 1, 0, 1, 1),
@@ -913,20 +912,20 @@ function ediDoc($param, $twig)
         'mime' => array("", 1, 0, 1, 1),
         'size' => array("", 1, 0, 1, 1)
     );
-    $dl = new module_report_edit($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $dl = new module_report_edit($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
     $dl->setConfig(false);
     if ($param['printcsv'] == "on") {
-        $csv = doCsv($dl, $param, $conf, $twig);
+        $csv = doCsv($app, $dl, $param, $conf, $twig);
         sendCsv($csv);
     } else {
-        $report = doReport($dl, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $report = doReport($app, $dl, $param, $conf, $twig);
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
 
-function validDoc($param, $twig)
+function validDoc(Application $app, $param, $twig)
 {
     $conf = array(
         'user' => array("", 1, 0, 1, 1),
@@ -937,35 +936,35 @@ function validDoc($param, $twig)
         'mime' => array("", 1, 0, 1, 1),
         'size' => array("", 1, 0, 1, 1)
     );
-    $dl = new module_report_validate($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
+    $dl = new module_report_validate($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
     $dl->setConfig(false);
     if ($param['printcsv'] == "on") {
-        $csv = doCsv($dl, $param, $conf, $twig);
+        $csv = doCsv($app, $dl, $param, $conf, $twig);
         sendCsv($csv);
     } else {
-        $report = doReport($dl, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $report = doReport($app, $dl, $param, $conf, $twig);
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
 
-function whichDoc($param, $twig)
+function whichDoc(Application $app, $param, $twig)
 {
     switch ($param['docwhat']) {
         case "ADDDOC":
-            addDoc($param, $twig);
+            addDoc($app, $param, $twig);
             break;
 
         case "EDIDOC":
-            ediDoc($param, $twig);
+            ediDoc($app, $param, $twig);
             break;
 
         case "PUSHDOC":
-            pushDoc($param, $twig);
+            pushDoc($app, $param, $twig);
             break;
         case "VALIDATEDOC" :
-            validDoc($param, $twig);
+            validDoc($app, $param, $twig);
             break;
     }
 }
@@ -973,63 +972,63 @@ function whichDoc($param, $twig)
 
 switch ($param['tbl']) {
     case "CNX":
-        cnx($param, $twig);
+        cnx($app, $param, $twig);
         break;
 
     case "CNXU":
-        cnxu($param, $twig);
+        cnxu($app, $param, $twig);
         break;
 
     case "CNXB":
-        cnxb($param, $twig);
+        cnxb($app, $param, $twig);
         break;
 
     case "GEN":
-        gen($param, $twig);
+        gen($app, $param, $twig);
         break;
 
     case "DAY":
-        day($param, $twig);
+        day($app, $param, $twig);
         break;
 
     case "DOC":
-        doc($param, $twig);
+        doc($app, $param, $twig);
         break;
 
     case "BESTOF":
-        bestOf($param, $twig);
+        bestOf($app, $param, $twig);
         break;
 
     case "NOBESTOF":
-        noBestOf($param, $twig);
+        noBestOf($app, $param, $twig);
         break;
 
     case "SITEACTIVITY":
-        tableSiteActivityPerHours($param, $twig);
+        tableSiteActivityPerHours($app, $param, $twig);
         break;
 
     case "USR":
-        usr($param, $twig);
+        usr($app, $param, $twig);
         break;
 
     case "ASK":
-        ask($param, $twig);
+        ask($app, $param, $twig);
         break;
 
     case "infouser":
-        infoUsr($param, $twig, $conf_info_usr);
+        infoUsr($app, $param, $twig, $conf_info_usr);
         break;
 
     case "what":
-        what($param, $twig);
+        what($app, $param, $twig);
         break;
 
     case "infonav":
-        infoNav($param, $twig);
+        infoNav($app, $param, $twig);
         break;
 
     case "WDOC":
-        whichDoc($param, $twig);
+        whichDoc($app, $param, $twig);
         break;
 }
 ?>

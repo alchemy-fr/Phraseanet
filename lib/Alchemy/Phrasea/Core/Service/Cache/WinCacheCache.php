@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -32,7 +32,7 @@ class WinCacheCache extends ServiceAbstract
             throw new \Exception('The WinCache cache requires the WinCache extension.');
         }
 
-        if ( ! $this->cache) {
+        if (! $this->cache) {
             $this->cache = new CacheDriver\WinCacheCache();
 
             $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
@@ -46,4 +46,3 @@ class WinCacheCache extends ServiceAbstract
         return 'wincache';
     }
 }
-

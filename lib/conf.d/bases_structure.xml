@@ -118,7 +118,7 @@
           </field>
           <field>
             <name>server_coll_id</name>
-            <type>bigint(20)</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
             <default>0</default>
@@ -1076,7 +1076,7 @@
         <fields>
           <field>
             <name>id</name>
-            <type>bigint(11) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra>auto_increment</extra>
             <default></default>
@@ -1211,7 +1211,7 @@
           </field>
           <field>
             <name>mask_and</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(11) unsigned</type>
 
             <null></null>
             <extra></extra>
@@ -1222,7 +1222,7 @@
           <field>
             <name>mask_xor</name>
 
-            <type>bigint(20) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
 
@@ -1502,62 +1502,6 @@
             <comment></comment>
           </field>
           <field>
-            <name>app</name>
-            <type>varchar(255)</type>
-            <null></null>
-            <extra></extra>
-            <default>a:1:{i:0;i:0;}</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>user_agent</name>
-            <type>varchar(1024)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>ip</name>
-            <type>char(40)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>platform</name>
-            <type>char(128)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>browser</name>
-            <type>char(128)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>browser_version</name>
-            <type>char(16)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>screen</name>
-            <type>char(16)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
             <name>query</name>
             <type>varchar(128)</type>
             <null></null>
@@ -1574,22 +1518,20 @@
             <comment></comment>
           </field>
           <field>
-            <name>token</name>
-            <type>char(128)</type>
-            <null>YES</null>
+            <name>duration</name>
+            <type>float</type>
+            <null></null>
             <extra></extra>
             <default></default>
             <comment></comment>
-            <collation>ascii_bin</collation>
           </field>
           <field>
-            <name>nonce</name>
-            <type>char(16)</type>
-            <null>YES</null>
+            <name>total</name>
+            <type>int(11) unsigned</type>
+            <null></null>
             <extra></extra>
             <default></default>
             <comment></comment>
-            <collation>ascii_bin</collation>
           </field>
         </fields>
         <indexes>
@@ -1961,7 +1903,7 @@
           </field>
           <field>
             <name>sbas_id</name>
-            <type>bigint(11) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -1969,7 +1911,7 @@
           </field>
           <field>
             <name>usr_id</name>
-            <type>bigint(11) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -2657,7 +2599,7 @@
           <field>
             <name>pwd</name>
             <type>char(64)</type>
-            <null></null>
+            <null>YES</null>
 
             <extra></extra>
 
@@ -3599,7 +3541,7 @@
           </field>
           <field>
             <name>ord</name>
-            <type>bigint(11) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
 
@@ -4146,7 +4088,7 @@
           </field>
           <field>
             <name>defaultftpdatasent</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(11) unsigned</type>
 
             <null></null>
             <extra></extra>
@@ -4556,7 +4498,7 @@
           </field>
           <field>
             <name>mask_and</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
             <default>0</default>
@@ -4564,7 +4506,7 @@
           </field>
           <field>
             <name>mask_xor</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
             <default>0</default>
@@ -4813,7 +4755,7 @@
         <fields>
           <field>
             <name>id</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(10) unsigned</type>
             <null></null>
             <extra>auto_increment</extra>
             <default></default>
@@ -4900,7 +4842,7 @@
         <fields>
           <field>
             <name>id</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(10) unsigned</type>
             <null></null>
             <extra>auto_increment</extra>
             <default></default>
@@ -6128,7 +6070,7 @@
           <field>
 
             <name>status</name>
-            <type>bigint(20) unsigned</type>
+            <type>int(10) unsigned</type>
             <null></null>
             <extra></extra>
 

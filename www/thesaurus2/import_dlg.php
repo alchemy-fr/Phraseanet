@@ -2,21 +2,22 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Alchemy\Phrasea\Application;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
+
+require_once __DIR__ . "/../../vendor/autoload.php";
+$app = new Application();
 phrasea::headers(200, true);
 
 $request = http_request::getInstance();
@@ -33,7 +34,7 @@ if ($parm["dlg"]) {
     $opener = "opener";
 }
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
+<html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
         <base target="_self">
         <title><?php echo p4string::MakeString(_('thesaurus:: Importer')) ?></title>

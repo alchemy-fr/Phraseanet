@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,9 +11,9 @@
 
 namespace Alchemy\Phrasea\Helper\Record;
 
-use Alchemy\Phrasea\Core;
-use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper,
-    Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Edit Record Helper
@@ -30,12 +30,14 @@ class Printer extends RecordHelper
 
     /**
      *
-     * @param  \Alchemy\Phrasea\Core $core
-     * @return Printer
+     * @param Application $app
+     * @param Request     $Request
+     *
+     * @return Helper
      */
-    public function __construct(Core $core, Request $Request)
+    public function __construct(Application $app, Request $Request)
     {
-        parent::__construct($core, $Request);
+        parent::__construct($app, $Request);
 
         $grep = function(\record_adapter $record) {
 

@@ -1,38 +1,21 @@
 {% extends "common/index_bootstrap.html.twig" %}
 
 {% block icon %}
-<link rel="shortcut icon" type="image/x-icon" href="/admin/favicon.ico">
+<link rel="shortcut icon" type="image/x-icon" href="/skins/admin/favicon.ico">
 {% endblock %}
 
 {% block rss %}
 {% endblock %}
 
 {% block stylesheet %}
-<link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/admin/admincolor.css,login/geonames.css,include/jslibs/jquery.contextmenu.css" />
-
-<style>
-
-    li.selected, div.selected{
-      background-color:#f0ad30;
-      color:white;
-    }
-    li.selected a, div.selected a{
-      background-color:#f0ad30;
-      color:white;
-    }
-    #right-ajax.loading{
-      background-image: url(/skins/icons/loaderFFF.gif);
-      background-position: center center;
-      background-repeat: no-repeat;
-    }
-  </style>
+<link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,include/jslibs/jquery-treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/account/geonames.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css" />
 {% endblock %}
 
 
 {% block javascript %}
-
-
   <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+  <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.validate.js"></script>
+  <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.validate.password.js"></script>
   <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
   <script type="text/javascript" src="/include/vendor/javascript-load-image/load-image.min.js"></script>
   <script type="text/javascript" src="/include/minify/g=admin"></script>
@@ -42,7 +25,7 @@
     var bodySize = {x:0,y:0};
 
     var language = {
-        serverName: '{{ registry.get('GV_ServerName') }}',
+        serverName: '{{ app['phraseanet.registry'].get('GV_ServerName') }}',
         serverError: '{% trans 'phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique' %}',
         serverTimeout:  '{% trans 'phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible' %}',
         serverDisconnected: '{% trans 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' %}',
@@ -72,11 +55,11 @@
     function sessionactive(){
       $.ajax({
         type: "POST",
-        url: "/include/updses.php",
+        url: "/session/update/",
         dataType: 'json',
         data: {
-          app : 3,
-          usr : {{ session.get_usr_id() }}
+          module : 3,
+          usr : {{ app['phraseanet.user'].get_id() }}
         },
         error: function(){
           window.setTimeout("sessionactive();", 10000);
@@ -97,34 +80,84 @@
       })
     };
 
+    function enableForms(forms) {
+        forms.bind('submit', function(){
+
+            var method = $(this).attr('method');
+            var url = $(this).attr('action');
+            var datas = $(this).serializeArray();
+
+            if(!method) {
+                method = 'GET';
+            }
+            $('#right-ajax').empty().addClass('loading');
+            if(url) {
+                $.ajax({
+                    type: method,
+                    url: url,
+                    data: datas,
+                    success: function(datas){
+                        $('#right-ajax').removeClass('loading').html(datas);
+                        enableForms($('#right-ajax form:not(.no-ajax)'));
+
+                        $.each($('#right-ajax a'),function(i, el){
+                            enableLink($(el));
+                        });
+                        return;
+                    }
+                });
+                return false;
+            }
+        });
+    }
+
+    function enableLink(link) {
+
+        $(link).bind('click',function(event){
+
+            var dest = link.attr('href');
+
+            if(dest && dest.indexOf('#') !== 0) {
+                $('#right-ajax').empty().addClass('loading').parent().show();
+
+                $.get(dest, function(data) {
+                  $('#right-ajax').removeClass('loading').html(data);
+                  enableForms($('#right-ajax form:not(.no-ajax)'));
+                    $.each($('#right-ajax a'),function(i, el){
+                        enableLink($(el));
+                    });
+                });
+                return false;
+            }
+
+        });
+    }
+
     function activeTree(click)
     {
-      $('#FNDR').treeview({
-        collapsed: true,
-        animated: "medium"
-      });
+        $('#FNDR').treeview({
+          collapsed: true,
+          animated: "medium"
+        });
 
       $.each($('#tree a[target=right]'),function(){
         var dest = $(this).attr('href');
 
         $(this).bind('click',function(){
-          if($(this).hasClass('ajax'))
-          {
             $('#right-ajax').empty().addClass('loading').parent().show();
-            $('#right').hide();
-            $.get(dest, function(data) {
-              $('#right-ajax').removeClass('loading').html(data);
-            });
-          }
-          else
-          {
-            $('#right-ajax').empty().parent().hide();
-            $('#right').show().addClass('loading').attr('src',dest);
-          }
-          $('#tree .selected').removeClass('selected');
-          $(this).parent().addClass('selected');
 
-          return false;
+            $.get(dest, function(data) {
+                $('#right-ajax').removeClass('loading').html(data);
+                enableForms($('#right-ajax form:not(.no-ajax)'));
+
+                $.each($('#right-ajax a'),function(i, el){
+                    enableLink($(el));
+                });
+            });
+            $('#tree .selected').removeClass('selected');
+            $(this).parent().addClass('selected');
+
+            return false;
         });
 
         $(this).removeAttr('target');
@@ -132,11 +165,12 @@
       if(click === true)
       {
         if($('#tree li.selected').length > 0)
-          $('#tree li.selected a').trigger('click');
+            $('#tree li.selected a').trigger('click');
         else
-          $('.zone_online_users').trigger('click');
+            $('.zone_online_users').trigger('click');
       }
     }
+
     $(document).ready(
     function(){
       resize();
@@ -145,14 +179,8 @@
     }
   );
 
-  function refreshBaskets()
-  {
-    return;
-  }
   function resize()
   {
-    $('#right').height($(this).height()-$('#mainMenu').height()-20);
-    $('#right').width($('#mainContent').width()-$('#left').width()-20);
     bodySize.y = $(window).height() - $('#mainMenu').outerHeight();
     bodySize.x = $(window).width();
   }
@@ -161,10 +189,9 @@
 
   function reloadTree(position, click){
     $.ajax({
-      type: "POST",
-      url: "adminFeedback.php",
+      type: "GET",
+      url: "/admin/tree/",
       data: {
-        action : 'TREE',
         position : position
       },
       success: function(datas){
@@ -173,7 +200,7 @@
 
         return;
       }
-    })
+    });
   }
 
     </script>
@@ -182,31 +209,29 @@
 
 {% block content %}
     <div id="left" class="PNB" style="width:250px;right:auto;">
-      <div class="PNB10" style="right:0">
-        <div id="FNDR">
+        <div class="PNB10" style="right:0">
+            <div id="FNDR">
         {% include 'admin/tree.html.twig' %}
-          </div>
+            </div>
         </div>
-      </div>
+    </div>
 
-      {% if notice %}
-        <div class="right PNB10 notice" style="left:260px;">
-            {% if notice == "install_success" %}
-              {% trans %}Successful install{% endtrans %}
-            {% endif %}
-        </div>
-      {% endif %}
+    {% if notice %}
+    <div class="right PNB10 notice" style="left:260px;">
+        {% if notice == "install_success" %}
+            {% trans %}Successful install{% endtrans %}
+        {% endif %}
+    </div>
+    {% endif %}
 
-        <iframe class="right PNB10" src="about:blank;" name="right" id="right" frameborder="1" border="0" framespacing="0" style="left:260px;border:none;right:0;{{ notice ? "top:30px" : "top:0" }}"></iframe>
-        <div class="right PNB" style="left:250px;overflow:auto;">
-          <div id="right-ajax" class="PNB10"></div>
-        </div>
-
-        <div id="quotas_dialog"></div>
-        <div id="masks_dialog"></div>
-        <div id="time_dialog"></div>
-        <div id="user_add_dialog" title="{% trans 'Ajouter un nouvel utilisateur' %}">
-          <form>
+    <div class="right PNB" style="left:250px;overflow:auto;">
+        <div id="right-ajax" class="PNB10"></div>
+    </div>
+    <div id="quotas_dialog"></div>
+    <div id="masks_dialog"></div>
+    <div id="time_dialog"></div>
+    <div id="user_add_dialog" title="{% trans 'Ajouter un nouvel utilisateur' %}">
+        <form>
             <label for="new_user_mail">{% trans 'Adresse email du nouvel utilisateur' %}</label>
             <input id="new_user_mail"  type="text" name="value" />
             <label class="checkbox" for="send_credentials">
@@ -218,14 +243,14 @@
                 {% trans "Require email validation to activate the account" %}
             </label>
             <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
-          </form>
-        </div>
-        <div id="template_add_dialog" title="{% trans 'Creer un modele' %}">
-          <form>
+        </form>
+    </div>
+    <div id="template_add_dialog" title="{% trans 'Creer un modele' %}">
+        <form>
             <label>{% trans 'Nom du nouveau modele' %}</label>
             <input type="text" name="value" />
             <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
-          </form>
-        </div>
-        <div id="DIALOG" style="color:white;"></div>
+        </form>
+    </div>
+    <div id="DIALOG" style="color:white;"></div>
 {% endblock %}

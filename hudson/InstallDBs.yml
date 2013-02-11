@@ -1,5 +1,5 @@
 database:
-  host: localhost
+  host: 127.0.0.1
   port: port
   user: phraseaUnitTests
   password: iWvGxPE8

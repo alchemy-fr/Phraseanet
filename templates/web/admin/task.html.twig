@@ -1,0 +1,229 @@
+    <div id="taskBody">
+        <style>
+             #taskBody label
+             {
+                 display: inline;
+             }
+        </style>
+
+        <!-- _____________  head added part of graphic interface of '{{task.getName()}}'   _____________ -->
+        {{task.printInterfaceHEAD()}}
+        <!-- ______________ end of head part of graphic interface of '{{task.getName()}}' ______________ -->
+
+         <!-- _____________  javascript of graphic interface of '{{task.getName()}}'   _____________ -->
+        {{task.printInterfaceJS()}}
+        <!-- _____________ end javascript of graphic interface of '{{task.getName()}}' _____________ -->
+
+        <div>
+
+            {{task.getName()}} <span id="taskid">id : {{task.getID()}}</span>
+
+            <form name="__ftask" onsubmit="return(false);" method="post">
+                <label for="taskTaskname">{% trans 'admin::tasks: nom de la tache' %}</label>
+                <input type="text" id="taskTaskname" value="{{task.getTitle()}}" onchange="setDirty();" />
+
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                <label for="taskTaskActive">{% trans 'admin::tasks: lancer au demarrage du scheduler' %}</label>
+                <input type="checkbox" id="taskTaskActive" {% if task.isActive() %}checked="checked"{% endif %} onchange="setDirty();" />
+            </form>
+            <div id="idCrashLine" style="display:{% if task.getCrashCounter() == 0 %}none{% endif %}">
+                {% trans 'admin::tasks: Nombre de crashes : ' %} {{task.getCrashCounter()}}
+
+                <button id="taskResetCrashCounterButton">
+                    {% trans 'admin::tasks: reinitialiser el compteur de crashes' %}
+                </button>
+            </div>
+        </div>
+
+
+        <div id="taskTabs">
+        	<ul>
+                <li><a href="#taskGuiTab">{% trans 'boutton::vue graphique' %}</a></li>
+                <li><a href="#taskXmlTab">{% trans 'boutton::vue xml' %}</a></li>
+            </ul>
+
+            <!-- ______________   graphic interface '{{task.getName()}}'   ___________________ -->
+            <div id="taskGuiTab" >
+                {{task.getInterfaceHTML()|raw}}
+            </div>
+            <!-- _____________  end graphic interface '{{task.getName()}}'   _________________ -->
+
+            <!-- _____________      xml interface    _____________ -->
+            <div id="taskXmlTab">
+                <form onsubmit="return(false);" name="fxml" method="post">
+                    <textarea nowrap id="txtareaxml" style="white-space:pre; width:100%; height:250px" name="txtareaxml" >{{task.getSettings()}}</textarea>
+                </form>
+            </div>
+            <!-- ___________   end xml interface    ___________ -->
+        </div>
+
+
+        <!-- ___________   form to go back on list    ___________ -->
+        <form id="taskFormByeBye" action="./task-manager/tasks/" method="get">
+        </form>
+        <!-- __________ end form to go back on list   __________ -->
+
+
+        <button id="taskCancelButton">{% trans 'boutton::annuler' %}</button>
+        <button id="taskSaveButton">{% trans 'boutton::valider' %}</button>
+        <br/>
+        <br/>
+    </div>
+
+        <script type="text/javascript">
+
+            function setDirty()
+            {
+                // jsTaskObj.SettingsIsDirty = true;
+            }
+
+
+            (function( $ ){
+                $.fn.serializeJSON=function() {
+                    var json = {};
+                    jQuery.map($(this).serializeArray(), function(n, i){
+                        json[n['name']] = n['value'];
+                    });
+
+                    return json;
+                };
+            })( jQuery );
+
+
+            $(document).ready(function(){
+
+                $("#taskTabs").tabs({
+                    selected: 1,
+                    select: function(event, ui) {
+                        switch(ui.panel.id)
+                        {
+{% if task.getInterfaceHTML() is not empty %}
+                            case "taskGuiTab":
+                                var context = { acceptTab: true };
+                                // click on gui tab : fill the gui from xml, then switch to the gui view
+                                $.ajax({ url: "/admin/task-manager/task/checkxml/"
+                                    , context:context
+                                    , data: {xml:$("#txtareaxml").val()}
+                                    , dataType:'text'
+                                    , type:"POST"
+                                    , async:false
+                                    , success:function(data) {
+                                        if(typeof(taskFillGraphic_{{task.getClass()}}) == "function")
+                                        {
+                                            var x = $("#txtareaxml").val();
+                                            try
+                                            {
+                                                taskFillGraphic_{{task.getClass()}}(x);
+                                            }
+                                            catch(e)
+                                            {
+                                                alert("heu...");
+                                                console.log(e);
+                                                context.acceptTab = false;
+                                            }
+                                        }
+                                    }
+                                    , error:function(jqXHR, textStatus, errorThrown) {
+                                        this.acceptTab = false;
+                                        alert("Erreur XML:\n\n" + jqXHR.responseText);
+                                    }
+                                });
+
+                                return context.acceptTab;
+
+                                break;
+{% endif %}
+                            case "taskXmlTab":
+                                // click on xml tab : fill the xml from gui, then switch to the xml view
+                                var data = $("form[name='graphicForm']").serializeJSON();
+                                data["__action"] = "FORM2XML";
+                                data["__xml"] = $("#txtareaxml").val();
+                                $.ajax({ url: "/admin/task-manager/task/{{task.getID()}}/facility/"
+                                    , data: data
+                                    , dataType:'text'
+                                    , type:"POST"
+                                    , async:false
+                                    , success:function(data) {
+                                        $("#txtareaxml").val(data);
+                                    }
+                                    , error:function(jqXHR, textStatus, errorThrown) {
+                                        alert(jqXHR.responseText);
+                                    }
+                                });
+                                break;
+                        }
+                    }
+                });
+
+{% if task.getInterfaceHTML() is empty %}
+                $("#taskTabs").tabs("disable", 0);
+{% else %}
+                $("#taskTabs").tabs("select", 0);
+{% endif %}
+
+                $("#taskResetCrashCounterButton").click(function()
+                {
+                    // click on resetCrashCounter button
+                    $.ajax({ url: "/admin/task-manager/task/{{task.getID()}}/resetcrashcounter/"
+                        , data: {}
+                        , dataType:'json'
+                        , type:"GET"
+                        , async:false
+                        , success:function(data) {
+                            if(data == true)
+                            {
+                                $("#idCrashLine").hide();
+                            }
+                        }
+                    });
+                });
+
+
+                $("#taskSaveButton").click(function()
+                {
+                    // click on save button
+
+                    var data = $("form[name='graphicForm']").serializeJSON();
+                    data["__action"] = "FORM2XML";
+                    data["__xml"] = $("#txtareaxml").val();
+                    $.ajax({ url: "/admin/task-manager/task/{{task.getID()}}/facility/"
+                        , data: data
+                        , dataType:'text'
+                        , type:"POST"
+                        , async:false
+                        , success:function(data) {
+                            $("#txtareaxml").val(data);
+                            $.ajax({ url: "/admin/task-manager/task/{{task.getID()}}/save/"
+                                , data: {
+                                            title:$("#taskTaskname").val(),
+                                            active:!!$("#taskTaskActive").attr("checked"),
+                                            xml:data
+                                        }
+                                , dataType:'json'
+                                , type:"POST"
+                                , async:false
+                                , success:function(data) {
+                                    $("#taskFormByeBye").submit();
+                                }
+                                , error:function(jqXHR, textStatus, errorThrown) {
+                                    alert("Erreur XML:\n\n" + jqXHR.responseText);
+                                }
+                            });
+                        }
+                        , error:function(jqXHR, textStatus, errorThrown) {
+                            alert(jqXHR.responseText);
+                        }
+                    });
+                });
+
+
+                $("#taskCancelButton").click(function()
+                {
+                    // click on cancel button
+                    $("#taskFormByeBye").submit();
+                });
+
+            });
+
+        </script>

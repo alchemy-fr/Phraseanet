@@ -1,0 +1,319 @@
+{% if reloadTree %}
+    <script type="text/javascript">
+        reloadTree('base:{{ collection.get_sbas_id() }}');
+    </script>
+{% endif %}
+
+{% set bas_id = collection.get_base_id() %}
+
+<div class="page-header">
+    <h1>
+        {% trans 'phraseanet:: collection' %} {{ collection.get_name() }}
+    </h1>
+</div>
+
+{% if app['request'].query.get('success') == '1' %}
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'Successful update' %}
+    </div>
+{% elseif app['request'].query.get('success') == '0' %}
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <strong>{% trans 'An error occured' %}</strong>
+        {% if errorMsg is not none %}
+            {{ errorMsg }}
+        {% endif %}
+    </div>
+{% endif %}
+
+<ul>
+    <li>{% trans 'phraseanet:: adresse' %} : {{ collection.get_databox().get_serialized_server_info() }}</li>
+    <li>{% trans 'admin::base:collection: numero de collection distante' %} : {{ collection.get_coll_id() }}</li>
+    <li>{% trans 'admin::base:collection: etat de la collection' %} : {{ collection.is_active() ? "admin::base:collection: activer la collection"| trans : "admin::base:collection: descativer la collection"|trans }}</li>
+    <li>{{ collection.get_record_amount() }} records <a target="_self" href="/admin/collection/{{ collection.get_base_id() }}/informations/details/">{% trans 'phraseanet:: details' %}</a></li>
+</ul>
+
+{% if app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
+<div class="well well-small">
+    <h5>{% trans 'admin::collection:: Gestionnaires des commandes' %}</h5>
+    <form id="admin_adder" action="/admin/collection/{{ bas_id }}/order/admins/" method="post" style="margin:0;">
+        {% if admins | length > 0 %}
+            <ul>
+                {% for user in admins %}
+                    <li>
+                        <label for="adm_{{ user.get_id() }}" class="checkbox">
+                            <input name="admins[]" type="checkbox" value="{{ user.get_id() }}" id="adm_{{ user.get_id() }}" checked />
+                            {{ user.get_display_name() }}
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <h6>{% trans 'setup:: ajouter un administrateur des commandes' %}</h6>
+
+        <div>
+            <input class="admin_adder"/>
+            <input type="hidden" name="admins[]"/>
+            <input type="submit" value="{% trans 'boutton::valider' %}" />
+        </div>
+    </form>
+</div>
+
+<div class="well well-small action-block">
+    <h5>{% trans 'admin::collection:: presentation des elements lors de la diffusion aux utilisateurs externes (publications)' %}</h5>
+    <form method="post" action="/admin/collection/{{ bas_id }}/publication/display/" style="margin:0;">
+        <label class="radio" for="pub_wm_none">
+            <input id="pub_wm_none" type="radio" name="pub_wm" {{ collection.get_pub_wm() == 'none' ? 'checked' : ''}} value="none"  />
+            {% trans 'admin::colelction::presentation des elements : rien' %}
+        </label>
+        <label class="radio"  for="pub_wm_wm">
+            <input id="pub_wm_wm" type="radio" name="pub_wm" {{ collection.get_pub_wm() == 'wm' ? 'checked' : ''}} value="wm"    />
+            {% trans 'admin::colelction::presentation des elements : watermark' %}
+        </label>
+        <label class="radio"  for="pub_wm_stamp">
+            <input id="pub_wm_stamp" type="radio" name="pub_wm" {{ collection.get_pub_wm() == 'stamp' ? 'checked' : ''}} value="stamp" />
+            {% trans 'admin::colelction::presentation des elements : stamp' %}
+        </label>
+    </form>
+</div>
+
+<div class="well well-small action-block">
+    <form class="form-inline" method="post" action="/admin/collection/{{ bas_id }}/rename/" style="margin:0;">
+        <div class="input-append">
+            <input name="name" class="span2" type="text" size="16">
+            <button class="btn reload-tree" type="submit">
+                <img src="/skins/icons/edit_0.gif" />
+                {% trans 'admin::base:collection: renommer la collection' %}
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="well well-small btn-group">
+    <form style="display:inline; margin:0;" method="post" action="/admin/collection/{{ bas_id }}/{{ collection.is_active() ? 'disabled'  : 'enable' }}/">
+        <button class="btn confirm" data-confirm-msg="{{ collection.is_active() ? 'admin::base:collection: etes vous sur darreter la publication de cette collection'|trans  : 'admin::base:collection: etes vous sur de publier cette collection ?'|trans }}">
+            <img src="/skins/icons/db-remove.png"/>
+            {{ collection.is_active() ? 'admin::base:collection: descativer la collection' | trans  : 'admin::base:collection: activer la collection'| trans }}
+        </button>
+    </form>
+
+    <form style="display:inline; margin:0;" method="post" action="/admin/collection/{{ bas_id }}/empty/">
+        <button class="btn confirm" data-confirm-msg="{% trans 'admin::base:collection: etes vous sur de vider la collection ?' %}">
+            <img src="/skins/icons/trash.png" />
+            {% trans 'admin::base:collection: vider la collection' %}
+        </button>
+    </form>
+
+    <form style="display:inline; margin:0;" method="post" action="/admin/collection/{{ bas_id }}/delete/">
+        <button class="btn confirm" data-confirm-msg="{% trans 'admin::collection: Confirmez vous la suppression de cette collection ?' %}">
+            <img src="/skins/icons/delete.gif" />
+            {% trans 'boutton::supprimer' %}
+        </button>
+    </form>
+</div>
+{% endif %}
+
+{# mini logo #}
+<div class="well well-small action-block">
+    <h5>{% trans 'admin::base:collection: minilogo actuel' %}</h5>
+    {% if collection.getLogo(bas_id, app) is not empty %}
+        <div class="thumbnail" style="width:120px;height:24px;margin-top:5px;margin-bottom:5px">{{ collection.getLogo(bas_id, app) | raw }}</div>
+        {% if app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
+            <form method="post" action="/admin/collection/{{ bas_id }}/picture/mini-logo/delete/" style="margin:0;">
+                <button class="btn btn-danger btn-mini" >
+                    <i class="icon-trash icon-white"></i>
+                    {% trans 'boutton::supprimer' %}
+                </button>
+            </form>
+        {% endif%}
+    {% elseif app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
+        <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
+        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/mini-logo/" style="margin:0;">
+            <input name="newLogo" type="file" accept="image/*" />
+        </form>
+    {% endif %}
+</div>
+
+{# watermark #}
+<div class="well well-small action-block">
+    <h5>{% trans "Watermark" %}</h5>
+    {% if collection.getWatermark(bas_id) is not empty %}
+        <div class="thumbnail">{{ collection.getWatermark(bas_id)| raw }}</div>
+        {% if app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
+            <form method="post" action="/admin/collection/{{ bas_id }}/picture/watermark/delete/" style="margin:0;">
+                <button class="btn btn-danger btn-mini">
+                    <i class="icon-trash icon-white"></i>
+                    {% trans 'boutton::supprimer' %}
+                </button>
+            </form>
+        {% endif%}
+    {% elseif app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
+        <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
+        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/watermark/" style="margin:0;">
+            <input name="newWm" type="file" accept="image/*" />
+        </form>
+    {% endif %}
+</div>
+
+{# stamp logo #}
+<div class="well well-small action-block">
+    <h5>{% trans "Stamp logo" %}</h5>
+    {% if collection.getStamp(bas_id) is not empty %}
+        <div class="thumbnail" style="max-height:120px;max-width:260px">{{ collection.getStamp(bas_id)| raw }}</div>
+        {% if app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
+            <form method="post" action="/admin/collection/{{ bas_id }}/picture/stamp-logo/delete/" style="margin:0;">
+                <button class="btn btn-danger btn-mini">
+                    <i class="icon-trash icon-white"></i>
+                    {% trans 'boutton::supprimer' %}
+                </button>
+            </form>
+        {% endif%}
+    {% elseif app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
+        <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
+        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/stamp-logo/" style="margin:0;">
+            <input name="newStamp" type="file" accept="image/*" />
+        </form>
+    {% endif %}
+</div>
+
+{# Bandeau de présentation #}
+<div class="well well-small action-block">
+    <h5>{% trans 'admin::base:collection: image de presentation : ' %}</h5>
+    {% if collection.getPresentation(bas_id) is not empty %}
+        <div class="thumbnail" style="width:650px;height:200px">{{ collection.getPresentation(bas_id)| raw }}</div>
+        {% if app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
+            <form method="post" action="/admin/collection/{{ bas_id }}/picture/banner/delete/" style="margin:0;">
+                <button class="btn btn-danger btn-mini">
+                    <i class="icon-trash icon-white"></i>
+                    {% trans 'boutton::supprimer' %}
+                </button>
+            </form>
+        {% endif%}
+    {% elseif app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
+        <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
+        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/banner/" style="margin:0;">
+            <input name="newBanner" type="file" accept="image/*" />
+        </form>
+    {% endif %}
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        //add admins
+        $( ".admin_adder" ).autocomplete({
+            source: "/admin/users/typeahead/search/?have_not_right[]=order_master&on_base[]={{ bas_id }}",
+            minLength: 2,
+            select: function( event, ui ) {
+                var form = $('#admin_adder');
+                $('input[name="admins[]"]:last', form).val(ui.item.id);
+                form.submit();
+            }
+        }).data( "autocomplete" )._renderItem = function( ul, item ) {
+            var email = item.email ? '<br/>'+item.email : '';
+            var login = item.login != item.name ? " ("+ item.login +")" : '';
+
+            return $( "<li></li>" )
+            .data( "item.autocomplete", item )
+            .append( "<a>" + item.name + login + email + "</a>" )
+            .appendTo( ul );
+        };
+
+        //change display
+        $('#pub_wm_none, #pub_wm_wm, #pub_wm_stamp').bind('click', function(){
+            var $this = $(this);
+            var form = $this.closest('form');
+
+            $.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: {
+                    pub_wm: $this.val()
+                },
+                success: function(datas) {
+                    if(datas.success) {
+                        p4.Mustache.Render('Alert-Success', {content:datas.msg}, function(html){
+                            $this.closest('.action-block').prepend(html);
+                        });
+                    } else {
+                        p4.Mustache.Render('Alert-Error', {content:datas.msg}, function(html){
+                            $this.closest('.action-block').prepend(html);
+                        });
+                    }
+                }
+            });
+        });
+
+        $("div.right .submiter").bind("click", function() {
+            var $this = $(this);
+            var form = $this.closest('form');
+
+            if($this.hasClass('confirm')) {
+                if(confirm($this.data('confirm-msg'))) {
+                    submitForm($this, form);
+                }
+            } else {
+                submitForm($this, form);
+            }
+        });
+
+        function submitForm(submitLink, form) {
+
+            form.bind('submit', function() {
+                return false;
+            });
+
+            $.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serializeArray(),
+                beforeSend : function() {
+                    submitLink.attr('disabled', true).addClass('disabled');
+                },
+                success: function(datas) {
+                    if(datas.success) {
+                        if(submitLink.hasClass('reload')) {
+                            reloadTree('base:{{ collection.get_sbas_id() }}');
+                        }
+                    } else {
+                        alert(datas.msg);
+                    }
+                },
+                complete: function() {
+                    submitLink.attr('disabled', false).removeClass('disabled');
+                }
+            });
+        }
+
+        $('.fileupload').each(function () {
+            $(this).fileupload({
+                dataType: 'html',
+                add: function(e, data) {
+                    if( ! /(\.|\/)(png|jpeg|jpg|pjpg|gif)$/i.test(data.files[0].type)) {
+                        {% set supported_file_types = ['jpg', 'jpeg', 'pjpg', 'gif', 'png']|join(' | ') %}
+                        alert("{% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}");
+
+                        return false;
+                    }
+
+                    data.submit();
+                },
+                submit: function(e, data) {
+                  $('#right-ajax').empty().addClass('loading');
+                },
+                done: function (e, data) {
+                    $('#right-ajax').removeClass('loading').html(data.result);
+                    enableForms($('#right-ajax form:not(.no-ajax)'));
+
+                    $.each($('#right-ajax a'),function(i, el){
+                        enableLink($(el));
+                    });
+                }
+            });
+        });
+
+    });
+</script>

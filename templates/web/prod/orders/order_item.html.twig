@@ -1,0 +1,280 @@
+{% import 'common/thumbnail.html.twig' as thumbnail %}
+{% set displayName = order.get_user().get_display_name() %}
+
+<div class="page-header">
+  <h1>{% trans %} {{ displayName }} wants to place an order {% endtrans %}</h1>
+</div>
+
+<div id="order_manager">
+    {% set success = app['request'].query.get('success') %}
+    {% set action = app['request'].query.get('action') %}
+
+    {% if  success == '1' %}
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+             {% if action == 'send' %}
+                {% trans 'Order has been sent' %}
+            {% elseif action == 'deny' %}
+                {% trans 'Order has been denied' %}
+            {% endif %}
+        </div>
+    {% elseif   success == '0'%}
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {% trans 'An error occured, please retry or contact an admin if problem persists' %}
+        </div>
+    {% endif %}
+
+    <div class="well">
+        <table class="table" style="color:#333;">
+            <tr>
+                <td>{% trans 'Destinataire' %}</td>
+                <td>{{ displayName }}({{ order.get_user().get_email() }})</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Date de commande' %}</td>
+                <td>{{ app['date-formatter'].getPrettyString(order.get_created_on()) }}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Deadline' %}</td>
+                <td>{{ app['date-formatter'].getPrettyString(order.get_deadline()) }}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Utilisation prevue' %}</td>
+                <td>{{ order.get_usage()|raw }}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Nombre total d\'element commandes' %}</td>
+                <td>{{ order.get_total() }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="alert">
+        {% trans 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' %}
+    </div>
+
+    <div class="order_list well-small">
+        <ul>
+            {% for order_element_id,element in order %}
+                <li>
+                    <div id="order_wrapper_{{order.get_order_id()}}_{{element.get_base_id()}}_{{element.get_record_id()}}" class="order_wrapper {% if element.get_order_master_id() == false %}selectable{% endif %}">
+                        {{ thumbnail.format(element.get_thumbnail() ,80, 80, '', true, false) }}
+                        {% if element.get_order_master_id() %}
+                            {% set name = element.get_order_master_name() %}
+                            {% if element.get_deny() == 1 %}
+                                {% set title %}
+                                     {% trans %}Document refuse par {{name}} {% endtrans %}
+                                {% endset %}
+                                {% set title_send %}
+                                    {% trans %}Forcer l'envoi du document{% endtrans %}
+                                {% endset %}
+                                <img style="cursor:help;" src="/skins/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                <img style="cursor:pointer;" class="force_sender" src="/skins/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
+                            {% else %}
+                                {% set title %}
+                                    {% trans %}Document envoye par {{name}} {% endtrans %}
+                                {% endset %}
+                                <img style="cursor:help;" src="/skins/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                            {% endif %}
+                        {% endif %}
+                        <input type="hidden" name="order_element_id" value="{{order_element_id}}"/>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="form-actions" style="color:#333;">
+        {% trans 'Selectionnez des documents et ' %}
+        <button class="btn btn-primary send">Envoyer</button>
+        <button class="btn deny">Refuser</button>
+        <button class="order_launcher btn">{% trans 'Retour aux commandes' %}</button>
+        <img src="/skins/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+        <input name="order_id" type="hidden" value="{{ order.get_order_id() }}" />
+    </div>
+</div>
+<script type="text/javascript">
+
+$(document).ready(function(){
+    if ($('#notification_box').is(':visible')) {
+        $('#notification_trigger').trigger('mousedown');
+    }
+
+    var dialog = p4.Dialog.get(1);
+    var order_id = $('input[name=order_id]').val();
+
+    $('.order_launcher', dialog.getDomElement()).bind('click',function(){
+        dialog.load('{{ path('prod_orders') }}')
+    });
+
+    $('.order_list .selectable', dialog.getDomElement()).bind('click',function(event){
+
+        var $this = $(this);
+
+        if(is_ctrl_key(event))
+        {
+            if($this.hasClass('selected')) {
+                $this.removeClass('selected');
+            } else {
+                $this.addClass('selected');
+            }
+        }
+        else
+        {
+            if(is_shift_key(event))
+            {
+                var first = false, last = false;
+
+                $('.order_list .selectable', dialog.getDomElement()).each(function(i,n){
+                    if (last) {
+                        first = last = false;
+                    }
+
+                    if ($(n).attr('id') == $this.attr('id') || $(n).hasClass('last_selected'))
+                    {
+                        if (first) {
+                            last = true;
+                        }
+
+                        first = true;
+                    }
+
+                    if (first || last) {
+                        $(n).addClass('selected');
+                    }
+                });
+            }
+            else
+            {
+                $('.order_list .selectable.selected', dialog.getDomElement()).removeClass('selected');
+                $this.addClass('selected');
+            }
+        }
+
+        $('.order_list .selectable.last_selected', dialog.getDomElement()).removeClass('last_selected');
+        $this.addClass('last_selected');
+    });
+
+    $('button.send', dialog.getDomElement()).bind('click',function(){
+        send_documents(order_id);
+    });
+
+    $('button.deny', dialog.getDomElement()).bind('click',function(){
+        deny_documents(order_id);
+    });
+
+    $('.force_sender', dialog.getDomElement()).bind('click',function(){
+        if(confirm(language.forceSendDocument))
+        {
+            var element_id = [];
+            element_id.push($(this).closest('.order_wrapper').find('input[name=order_element_id]').val());
+            do_send_documents(order_id, element_id, true);
+        }
+    });
+});
+
+function do_send_documents(order_id, elements_ids, force)
+{
+    var dialog = p4.Dialog.get(1);
+    var cont = dialog.getDomElement();
+
+    $('button.deny, button.send', cont).attr('disabled','disabled');
+    $('.activity_indicator', cont).show();
+
+    $.ajax({
+        type: "POST",
+        url: "/prod/order/"+order_id+"/send/",
+        dataType:'json',
+        data: {
+            'elements[]':elements_ids,
+            force:(force?1:0)
+        },
+        success: function(data){
+            var success = '0';
+
+            if(data.success)
+            {
+                success = '1';
+            }
+
+            dialog.load('/prod/order/' + order_id + '/?success=' + success + '&action=send');
+        },
+        error: function(){
+            $('button.deny, button.send', cont).removeAttr('disabled');
+            $('.activity_indicator', cont).hide();
+        },
+        timeout: function(){
+            $('button.deny, button.send', cont).removeAttr('disabled');
+            $('.activity_indicator', cont).hide();
+        }
+    });
+}
+
+function deny_documents(order_id)
+{
+    var dialog = p4.Dialog.get(1);
+    var cont = dialog.getDomElement();
+
+    var elements = $('.order_list .selectable.selected', cont);
+
+    var elements_ids = [];
+
+    elements.each(function(i,n){
+        elements_ids.push($(n).find('input[name=order_element_id]').val());
+    });
+
+    if(elements_ids.length == 0) {
+        alert(language.nodocselected);
+        return;
+    }
+
+    $('button.deny, button.send', cont).attr('disabled','disabled');
+    $('.activity_indicator', cont).show();
+
+    $.ajax({
+        type: "POST",
+        url: "/prod/order/"+ order_id +"/deny/",
+        dataType:'json',
+        data: {
+            'elements[]':elements_ids
+        },
+        success: function(data){
+            var success = '0';
+
+            if(data.success)
+            {
+                success = '1';
+            }
+
+            dialog.load('/prod/order/' + order_id + '/?success=' + success + '&action=deny');
+        },
+        error: function(){
+            $('button.deny, button.send', cont).removeAttr('disabled');
+            $('.activity_indicator', cont).hide();
+        },
+        timeout: function(){
+            $('button.deny, button.send', cont).removeAttr('disabled');
+            $('.activity_indicator', cont).hide();
+        }
+    });
+}
+
+
+function send_documents(order_id)
+{
+    var dialog = p4.Dialog.get(1);
+    var elements_ids = [];
+
+    $('.order_list .selectable.selected', dialog.getDomElement()).each(function(i,n){
+        elements_ids.push($(n).find('input[name=order_element_id]').val());
+    });
+
+    if(elements_ids.length == 0) {
+        alert(language.nodocselected);
+        return;
+    }
+
+    do_send_documents(order_id, elements_ids, false);
+}
+
+</script>

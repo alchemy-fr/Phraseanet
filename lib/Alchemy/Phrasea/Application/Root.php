@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,57 +11,114 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Alchemy\Phrasea\Controller\Root as Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-return call_user_func(function() {
-            $app = new \Silex\Application();
+return call_user_func(function($environment = null) {
 
-            $app['Core'] = \bootstrap::getCore();
+    $app = new PhraseaApplication($environment);
 
-            if ( ! \setup::is_installed()) {
-                $response = new \Symfony\Component\HttpFoundation\RedirectResponse('/setup/');
+    $app->before(function () use ($app) {
+        $app['firewall']->requireSetup();
+    });
 
-                return $response->send();
+    $app->before(function(Request $request) use ($app) {
+        if ($request->cookies->has('persistent') && !$app->isAuthenticated()) {
+            try {
+                $auth = new \Session_Authentication_PersistentCookie($app, $request->cookies->get('persistent'));
+                $app->openAccount($auth, $auth->getSessionId());
+            } catch (\Exception $e) {
+
+            }
+        }
+    });
+
+    $app->bindRoutes();
+
+    $app->error(function(\Exception $e) use ($app) {
+        $request = $app['request'];
+
+        if ($e instanceof \Bridge_Exception) {
+            $params = array(
+                'message'      => $e->getMessage()
+                , 'file'         => $e->getFile()
+                , 'line'         => $e->getLine()
+                , 'r_method'     => $request->getMethod()
+                , 'r_action'     => $request->getRequestUri()
+                , 'r_parameters' => ($request->getMethod() == 'GET' ? array() : $request->request->all())
+            );
+
+            if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
+                $params = array_merge($params, array('account' => $app['current_account']));
+
+                $response = new Response($app['twig']->render('/prod/actions/Bridge/notconfigured.html.twig', $params), 200, array('X-Status-Code' => 200));
+            } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
+                $params = array_merge($params, array('account' => $app['current_account']));
+
+                $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, array('X-Status-Code' => 200));
+            } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
+                $params = array_merge($params, array('account' => $app['current_account']));
+
+                $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, array('X-Status-Code' => 200));
+            } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
+                $params = array_merge($params, array('api' => $e->get_api()));
+
+                $response = new Response($app['twig']->render('/prod/actions/Bridge/deactivated.html.twig', $params), 200, array('X-Status-Code' => 200));
+            } else {
+                $response = new Response($app['twig']->render('/prod/actions/Bridge/error.html.twig', $params), 200, array('X-Status-Code' => 200));
             }
 
-            $app->get('/', function() use ($app) {
-                    $browser = \Browser::getInstance();
-                    if ($browser->isMobile()) {
-                        return $app->redirect("/login/?redirect=/lightbox");
-                    } elseif ($browser->isNewGeneration()) {
-                        return $app->redirect("/login/?redirect=/prod");
-                    } else {
-                        return $app->redirect("/login/?redirect=/client");
-                    }
-                });
+            $response->headers->set('Phrasea-StatusCode', 200);
 
-            $app->get('/robots.txt', function() use ($app) {
-                    $appbox = \appbox::get_instance($app['Core']);
-
-                    $registry = $appbox->get_registry();
-
-                    if ($registry->get('GV_allow_search_engine') === true) {
-                        $buffer = "User-Agent: *\n"
-                            . "Allow: /\n";
-                    } else {
-                        $buffer = "User-Agent: *\n"
-                            . "Disallow: /\n";
-                    }
-
-                    $response = new Response($buffer, 200, array('Content-Type' => 'text/plain'));
-                    $response->setCharset('UTF-8');
-
-                    return $response;
-                });
-
-            $app->mount('/feeds/', new Controller\RSSFeeds());
-
-            return $app;
+            return $response;
         }
-);
+
+        if ($request->getRequestFormat() == 'json') {
+            $datas = array(
+                'success' => false
+                , 'message' => $e->getMessage()
+            );
+
+            return $app->json($datas, 200, array('X-Status-Code' => 200));
+        }
+
+        if ($e instanceof HttpExceptionInterface) {
+            $headers = $e->getHeaders();
+
+            if (isset($headers['X-Phraseanet-Redirect'])) {
+                return new RedirectResponse($headers['X-Phraseanet-Redirect'], 302, array('X-Status-Code' => 302));
+            }
+
+            $message = isset(Response::$statusTexts[$e->getStatusCode()]) ? Response::$statusTexts[$e->getStatusCode()] : '';
+
+            return new Response($message, $e->getStatusCode(), $e->getHeaders());
+        }
+
+        if ($e instanceof \Exception_BadRequest) {
+            return new Response('Bad Request', 400, array('X-Status-Code' => 400));
+        }
+        if ($e instanceof \Exception_Forbidden) {
+            return new Response('Forbidden', 403, array('X-Status-Code' => 403));
+        }
+
+        if ($e instanceof \Exception_Session_NotAuthenticated) {
+            $code = 403;
+            $message = 'Forbidden';
+        } elseif ($e instanceof \Exception_NotAllowed) {
+            $code = 403;
+            $message = 'Forbidden';
+        } elseif ($e instanceof \Exception_NotFound) {
+            $code = 404;
+            $message = 'Not Found';
+        } else {
+            throw $e;
+        }
+
+        return new Response($message, $code, array('X-Status-Code' => $code));
+    });
+
+    return $app;
+}, isset($environment) ? $environment : null);

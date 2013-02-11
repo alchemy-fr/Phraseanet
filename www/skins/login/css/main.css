@@ -1,0 +1,57 @@
+/******* GLOBAL CSS for LOGIN *************************************************/
+body,
+html {
+  margin: 0;
+  padding: 0;
+  background-color: #000000;
+  color: #ffffff;
+}
+* {
+  font-size: 13px;
+}
+a {
+  cursor: pointer;
+  color: #0088cc;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 18px;
+}
+a:hover {
+  text-decoration: underline;
+}
+/******* NAVBAR ***************************************************************/
+#tab-account-cat ul {
+  list-style: none;
+}
+#tab-account-cat ul li {
+  display: inline;
+}
+#tab-account-cat ul li a {
+  color: #0088cc;
+  text-decoration: none;
+  font-size: 13px;
+}
+#tab-account-cat ul li a:hover {
+  color: #0088cc;
+}
+/******* FORM *****************************************************************/
+legend {
+  margin-bottom: 15px;
+  color: #ffffff;
+}
+label {
+  color: #ffffff;
+}
+.form-horizontal .control-group {
+  margin-bottom: 10px;
+}
+legend + .control-group {
+  margin-top: 10px;
+}
+
+#id-main .account-menu li {
+    display: inline-block;
+    width:130px;
+    font-size:16px;
+}

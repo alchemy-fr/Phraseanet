@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,9 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Service\Border;
 
-use Alchemy\Phrasea\Border;
-use Alchemy\Phrasea\Core;
-use Alchemy\Phrasea\Core\Service;
+use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Core\Service\ServiceAbstract;
 
 /**
@@ -24,8 +22,8 @@ use Alchemy\Phrasea\Core\Service\ServiceAbstract;
  */
 class BorderManager extends ServiceAbstract
 {
-    /** `
-     * `@var \Alchemy\Phrasea\Border\Manager
+    /**
+     * @var Manager
      */
     protected $borderManager;
 
@@ -40,18 +38,17 @@ class BorderManager extends ServiceAbstract
      */
     protected function init()
     {
+        $borderManager = new Manager($this->app);
 
-        $borderManager = new Border\Manager($this->core['EM'], $this->core['file-system']);
-
-        if ($this->core['pdf-to-text']) {
-            $borderManager->setPdfToText($this->core['pdf-to-text']);
+        if ($this->app['xpdf.pdf2text']) {
+            $borderManager->setPdfToText($this->app['xpdf.pdf2text']);
         }
 
         $options = $this->getOptions();
 
         $registeredCheckers = array();
 
-        if ( ! ! $options['enabled']) {
+        if (! ! $options['enabled']) {
             foreach ($options['checkers'] as $checker) {
 
                 if ( ! isset($checker['type'])) {
@@ -80,13 +77,13 @@ class BorderManager extends ServiceAbstract
                 }
 
                 try {
-                    $checkerObj = new $className($options);
+                    $checkerObj = new $className($this->app, $options);
                     if (isset($checker['databoxes'])) {
 
                         $databoxes = array();
                         foreach ($checker['databoxes'] as $sbas_id) {
                             try {
-                                $databoxes[] = \databox::get_instance($sbas_id);
+                                $databoxes[] = $this->app['phraseanet.appbox']->get_databox($sbas_id);
                             } catch (\Exception $e) {
                                 throw new \InvalidArgumentException('Invalid databox option');
                             }
@@ -99,7 +96,7 @@ class BorderManager extends ServiceAbstract
                         $collections = array();
                         foreach ($checker['collections'] as $base_id) {
                             try {
-                                $collections[] = \collection::get_from_base_id($base_id);
+                                $collections[] = \collection::get_from_base_id($this->app, $base_id);
                             } catch (\Exception $e) {
                                 throw new \InvalidArgumentException('Invalid collection option');
                             }
@@ -125,7 +122,7 @@ class BorderManager extends ServiceAbstract
      * Set and return a new Border Manager instance and set the proper checkers
      * according to the services configuration
      *
-     * @return \Alchemy\Phrasea\Border\Manager
+     * @return Manager
      */
     public function getDriver()
     {

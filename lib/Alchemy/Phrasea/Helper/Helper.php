@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper;
 
-use Alchemy\Phrasea\Core;
+use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -23,9 +23,9 @@ class Helper
 {
     /**
      *
-     * @var \Alchemy\Phrasea\Core\Kernel
+     * @var Application
      */
-    protected $core;
+    protected $app;
 
     /**
      *
@@ -35,24 +35,17 @@ class Helper
 
     /**
      *
-     * @param  Kernel $kernel
+     * @param Application $app
+     * @param Request     $Request
+     *
      * @return Helper
      */
-    public function __construct(Core $core, Request $Request)
+    public function __construct(Application $app, Request $Request)
     {
-        $this->core = $core;
+        $this->app = $app;
         $this->request = $Request;
 
         return $this;
-    }
-
-    /**
-     *
-     * @return \Alchemy\Phrasea\Core
-     */
-    public function getCore()
-    {
-        return $this->core;
     }
 
     /**

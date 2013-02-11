@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -28,7 +28,7 @@ class RedisCache extends CacheProvider implements Cache
     /**
      * Sets the redis instance to use.
      *
-     * @param Redis $memcache
+     * @param Redis $redis
      */
     public function setRedis(\Redis $redis)
     {
@@ -38,7 +38,7 @@ class RedisCache extends CacheProvider implements Cache
     /**
      * Gets the memcache instance used by the cache.
      *
-     * @return Memcache
+     * @return Redis
      */
     public function getRedis()
     {

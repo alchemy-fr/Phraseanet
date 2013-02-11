@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,11 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Silex\Application,
-    Silex\ControllerProviderInterface,
-    Silex\ControllerCollection;
-use Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\HttpFoundation\Response;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -30,20 +28,20 @@ class MustacheLoader implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function(Application $app, Request $request) {
-                $template_name = $request->get('template');
+            $template_name = $request->query->get('template');
 
-                if ( ! preg_match('/^[a-zA-Z0-9-_]+$/', $template_name)) {
-                    throw new \Exception_BadRequest('Wrong template name : ' . $template_name);
-                }
+            if (!preg_match('/^[a-zA-Z0-9-_]+$/', $template_name)) {
+                throw new \Exception_BadRequest('Wrong template name : ' . $template_name);
+            }
 
-                $template_path = realpath(__DIR__ . '/../../../../../templates/web/Mustache/Prod/' . $template_name . '.Mustache.html');
+            $template_path = realpath(__DIR__ . '/../../../../../templates/web/Mustache/Prod/' . $template_name . '.Mustache.html');
 
-                if ( ! file_exists($template_path)) {
-                    throw new \Exception_NotFound('Template does not exists : ' . $template_path);
-                }
+            if (!file_exists($template_path)) {
+                throw new \Exception_NotFound('Template does not exists : ' . $template_path);
+            }
 
-                return new \Symfony\Component\HttpFoundation\Response(file_get_contents($template_path));
-            });
+            return new \Symfony\Component\HttpFoundation\Response(file_get_contents($template_path));
+        });
 
         return $controllers;
     }

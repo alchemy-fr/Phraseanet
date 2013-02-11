@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Command;
 
-use Monolog\Handler;
+use Monolog\Handler\StreamHandler;
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,8 +25,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class BuildMissingSubdefs extends Command
 {
-    protected $appbox;
-
     /**
      * Constructor
      */
@@ -42,30 +40,17 @@ class BuildMissingSubdefs extends Command
     /**
      * {@inheritdoc}
      */
-    public function requireSetup()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $core = \bootstrap::getCore();
-        $this->appbox = \appbox::get_instance($core);
-
         if ($input->getOption('verbose')) {
-            $logger = $this->getLogger();
-            $handler = new Handler\StreamHandler('php://stdout');
-            $logger->pushHandler($handler);
-            $this->setLogger($logger);
+            $handler = new StreamHandler('php://stdout');
+            $this->container['monolog']->pushHandler($handler);
         }
 
         $start = microtime(true);
         $n = 0;
 
-        foreach ($this->appbox->get_databoxes() as $databox) {
+        foreach ($this->container['phraseanet.appbox']->get_databoxes() as $databox) {
 
             $subdefStructure = $databox->get_subdef_structure();
 
@@ -106,8 +91,8 @@ class BuildMissingSubdefs extends Command
                         }
 
                         if ($todo) {
-                            $record->generate_subdefs($databox, $this->getLogger(), array($subdef->get_name()));
-                            $this->getLogger()->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
+                            $record->generate_subdefs($databox, $this->container, array($subdef->get_name()));
+                            $this->container['monolog']->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
                             $n ++;
                         }
                     }
@@ -117,11 +102,11 @@ class BuildMissingSubdefs extends Command
             }
         }
 
-        $this->getLogger()->addInfo($n . " subdefs done");
+        $this->container['monolog']->addInfo($n . " subdefs done");
         $stop = microtime(true);
         $duration = $stop - $start;
 
-        $this->getLogger()->addInfo(sprintf("process took %s, (%f sd/s.)", $this->getFormattedDuration($duration), round($n / $duration, 3)));
+        $this->container['monolog']->addInfo(sprintf("process took %s, (%f sd/s.)", $this->getFormattedDuration($duration), round($n / $duration, 3)));
 
         return;
     }

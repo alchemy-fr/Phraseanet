@@ -1,0 +1,153 @@
+{% if update_post_datas is not none %}
+    <div class='alert'>
+        {{ update_post_datas }}
+    </div>
+{% endif %}
+
+<form class="form-horizontal" id="GV_form_head">
+    <div class="control-group">
+        <label class="control-label">Adresse : </label>
+        <div class="controls">
+            <input type="text" class="input-xlarge" readonly="readonly" value="{{ app['phraseanet.registry'].get('GV_ServerName') }}" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Installation : </label>
+        <div class="controls">
+            <input type="text" class="input-xlarge" readonly="readonly" value="{{ app['phraseanet.registry'].get('GV_RootPath') }}" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Maintenance : </label>
+        <div class="controls">
+            <input type="checkbox" readonly="readonly" disabled="disabled" {{ app['phraseanet.registry'].get('GV_maintenance') == true ? "checked='checked'" : '' }} />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Debug : </label>
+        <div class="controls">
+            <input type="checkbox" readonly="readonly" disabled="disabled" {{ app['phraseanet.registry'].get('GV_debug') == true ? "checked='checked'" : '' }} />
+        </div>
+    </div>
+</form>
+
+{% set rules = [] %}
+{% set messages = [] %}
+
+<form id="GV_form" class="form-horizontal" method="post" action = "{{ path('setup_submit_globals') }}">
+    {% for section in GV %}
+        <div class="section">
+            <h1> {{ section['section'] }} </h1>
+
+            {% for value in section['vars'] %}
+
+                {% autoescape true js %}
+                    {% if value['required'] is defined %}
+                        {% set rules = rules | merge({ (value['name']) : {required : (value['required']) }})%}
+                        {% set messages = messages | merge({ (value['name']) : {required : ('Required field'| trans ) }})%}
+                    {% endif %}
+                {% endautoescape %}
+
+                {% set readonly = false %}
+                {% if value['readonly'] is defined and value['readonly'] == true %}
+                    {% set readonly = true %}
+                {% endif %}
+
+                {% set currentValue = '' %}
+                {% set is_new = false %}
+                {% if app['phraseanet.registry'].is_set(value['name']) %}
+                    {% set currentValue =  app['phraseanet.registry'].get(value['name']) %}
+                    {% set is_new = true %}
+                {% elseif value['default'] is defined %}
+                    {% set currentValue = value['default'] %}
+                {% endif %}
+
+                <div class="control-group">
+                    <div class="controls">
+                        <label class="control-label" for="id_{{ value['name'] }}"><span class="NEW">{{ is_new == false ? 'NEW' : '' }} </span>{{ value['comment'] | raw }}</label>
+                        {% if value['type'] == 'boolean' %}
+                            <label class="radio inline" for="id_{{ value['name'] }}_no"><input {{ readonly ? 'readonly="readonly"' : '' }} {{ currentValue == '0' ? 'checked="selected"' : '' }} type="radio"  name="{{ value['name'] }}" value="False" id="id_{{ value['name'] }}_no" />False</label>
+                            <label class="radio inline" for="id_{{ value['name'] }}_yes"><input {{ readonly ? 'readonly="readonly"' : '' }} {{ currentValue == '1' ? 'checked="checked"' : '' }} type="radio"  name="{{ value['name'] }}" value="True" id="id_{{ value['name'] }}_tes" />True</label>
+                        {% elseif value['type'] == 'string' %}
+                            <input {{ readonly ? 'readonly="readonly"' : '' }} name=" {{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}"/>
+                        {% elseif value['type'] == 'text' %}
+                            <textarea {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">{{ currentValue }}</textarea>
+                        {% elseif value['type'] == 'enum' %}
+                            <select {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">
+                                {% if value['available'] is defined and value['available'] is iterable %}
+                                    {% for key, val in value['available'] %}
+                                        <option value="{{ key }}" {{ currentValue == key ? 'selected="selected"' : '' }} >{{ val }}</option>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="alert">
+                                        {% set name = value['name'] %}
+                                        {% trans %}
+                                            erreur avec la valeur {{ name }}
+                                        {% endtrans %}
+                                    </p>
+                                {% endif %}
+                            </select>
+                        {% elseif value['type'] == 'enum_multi' %}
+                            {% if value['available'] is defined and value['available'] is iterable %}
+                                {% for key, availableValue in value['available'] %}
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="{{ value['name'] ~ '[]' }}" {{ readonly ? 'readonly="readonly"' : ''}} value="{{ key }}" {{ currentValue is iterable and key in currentValue| keys ? 'checked="checked"' : '' }} /> {{ availableValue }}</label>
+                                {% endfor %}
+                            {% else %}
+                                <p class='alert'>
+                                    {% set name = value['name'] %}
+                                    {% trans %}
+                                        erreur avec la valeur {{ name }}
+                                    {% endtrans %}
+                                </p>
+                            {% endif %}
+                        {% elseif value['type'] == 'integer' %}
+                                <input {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}"/>
+                        {% elseif value['type'] == 'password' %}
+                                <input {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="password" value="{{ currentValue }}"/>
+                        {% elseif value['type'] == 'timezone' %}
+                            {% if currentValue is not empty %}
+                                {% set date = date() %}
+                                {% set currentValue = date.getTimezone().getName() %}
+                            {% endif %}
+                                <select name="{{ value['name'] }}" id="id_{{ value['name'] }}">
+                                    {% set times = [] %}
+                                    {% for k, v in listTimeZone %}
+                                        {% for val in v %}
+                                            {% if val['timezone_id'] is defined and val['timezone_id'] | trim is not empty and val['timezone_id'] not in times %}
+                                                {% set times = times|merge([val['timezone_id']]) %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+
+                                    {% for time in times %}
+                                        <option {{ currentValue == time ? "selected" : "" }} value="{{ time }}"> {{ time }} </option>
+                                    {% endfor %}
+                                </select>
+                        {% endif %}
+                     </div>
+                </div>
+            {% endfor %}
+
+            {% if section['javascript'] is defined %}
+                <div><input type='button' onclick='{{ section['javascript'] ~ '(this);' }}' value='Tester' /></div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <input type="submit" class="btn btn-warning" style="margin-bottom: 10px;" value="{% trans 'boutton::valider' %}"/>
+</form>
+
+<script type='text/javascript'>
+    {% autoescape false %}
+    $(document).ready(function() {
+        // validate signup form on keyup and submit
+        $("#GV_form").validate({
+            rules: {{ rules|json_encode() }},
+            messages: {{ messages|json_encode() }},
+            errorPlacement: function(error, element) {
+                error.prependTo( element.parent().next() );
+            }
+        });
+    });
+    {% endautoescape %}
+</script>

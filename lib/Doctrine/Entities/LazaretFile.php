@@ -2,6 +2,8 @@
 
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
+
 /**
  * Entities\LazaretFile
  */
@@ -312,9 +314,9 @@ class LazaretFile
      *
      * @return \collection
      */
-    public function getCollection()
+    public function getCollection(Application $app)
     {
-        return \collection::get_from_base_id($this->getBaseId());
+        return \collection::get_from_base_id($app, $this->getBaseId());
     }
 
     /**
@@ -322,16 +324,16 @@ class LazaretFile
      *
      * @return array
      */
-    public function getRecordsToSubstitute()
+    public function getRecordsToSubstitute(Application $app)
     {
         $ret = array();
 
         $shaRecords = \record_adapter::get_record_by_sha(
-                $this->getCollection()->get_sbas_id(), $this->getSha256()
+                $app, $this->getCollection($app)->get_sbas_id(), $this->getSha256()
         );
 
         $uuidRecords = \record_adapter::get_record_by_uuid(
-                $this->getCollection()->get_databox(), $this->getUuid()
+                $app, $this->getCollection($app)->get_databox(), $this->getUuid()
         );
 
         $merged = array_merge($uuidRecords, $shaRecords);

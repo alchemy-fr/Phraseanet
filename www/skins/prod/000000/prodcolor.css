@@ -3067,6 +3067,15 @@ dans l'onglet thesaurus : arbres, menus contextuels
     margin: 10px;
 }
 
+#order_manager .order_list li {
+    display: inline-block;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    border: 1px solid white;
+    margin: 0 5px;
+}
+
 #order_manager .order_list .thumb {
     float: left;
     position: relative;

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Entities\LazaretFile;
 use Alchemy\Phrasea\Border;
+use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,6 +40,11 @@ class Lazaret implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
+
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication()
+                ->requireRight('addrecord');
+        });
 
         /**
          * Lazaret Elements route
@@ -168,26 +174,21 @@ class Lazaret implements ControllerProviderInterface
      */
     public function listElement(Application $app, Request $request)
     {
-        $em = $app['Core']->getEntityManager();
-        $user = $app['Core']->getAuthenticatedUser();
-        /* @var $user \User_Adapter */
-        $baseIds = array_keys($user->ACL()->get_granted_base(array('canaddrecord')));
+        $baseIds = array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('canaddrecord')));
 
         $lazaretFiles = null;
 
         if (count($baseIds) > 0) {
-            $lazaretRepository = $em->getRepository('Entities\LazaretFile');
+            $lazaretRepository = $app['EM']->getRepository('Entities\LazaretFile');
 
             $lazaretFiles = $lazaretRepository->findPerPage(
-                $baseIds, $request->get('offset', 0), $request->get('limit', 10)
+                $baseIds, $request->query->get('offset', 0), $request->query->get('limit', 10)
             );
         }
 
-        $html = $app['Core']['Twig']->render(
+        return $app['twig']->render(
             'prod/upload/lazaret.html.twig', array('lazaretFiles' => $lazaretFiles)
         );
-
-        return new Response($html);
     }
 
     /**
@@ -203,13 +204,13 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
-        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Entities\LazaretFile', $file_id);
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
         $file = array(
@@ -217,7 +218,7 @@ class Lazaret implements ControllerProviderInterface
             'base_id'  => $lazaretFile->getBaseId(),
             'created'  => $lazaretFile->getCreated()->format(\DateTime::ATOM),
             'updated'  => $lazaretFile->getUpdated()->format(\DateTime::ATOM),
-            'pathname' => $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename(),
+            'pathname' => $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename(),
             'sha256'   => $lazaretFile->getSha256(),
             'uuid'     => $lazaretFile->getUuid(),
         );
@@ -225,7 +226,7 @@ class Lazaret implements ControllerProviderInterface
         $ret['result'] = $file;
         $ret['success'] = true;
 
-        return self::formatJson($app['Core']['Serializer'], $ret);
+        return $app->json($ret);
     }
 
     /**
@@ -242,31 +243,31 @@ class Lazaret implements ControllerProviderInterface
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
         //Optional parameter
-        $keepAttributes = ! ! $request->get('keep_attributes', false);
-        $attributesToKeep = $request->get('attributes', array());
+        $keepAttributes = !!$request->request->get('keep_attributes', false);
+        $attributesToKeep = $request->request->get('attributes', array());
 
         //Mandatory parameter
-        if (null === $baseId = $request->get('bas_id')) {
+        if (null === $baseId = $request->request->get('bas_id')) {
             $ret['message'] = _('You must give a destination collection');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
-        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Entities\LazaretFile', $file_id);
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
-        $lazaretFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
-        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+        $lazaretFileName = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         try {
             $borderFile = Border\File::buildFromPathfile(
-                    $lazaretFileName, $lazaretFile->getCollection(), $lazaretFile->getOriginalName()
+                    $lazaretFileName, $lazaretFile->getCollection($app), $app, $lazaretFile->getOriginalName()
             );
 
             $record = null;
@@ -278,9 +279,11 @@ class Lazaret implements ControllerProviderInterface
                 };
 
             //Force creation record
-            $app['Core']['border-manager']->process(
+            $app['border-manager']->process(
                 $lazaretFile->getSession(), $borderFile, $callBack, Border\Manager::FORCE_RECORD
             );
+
+            $app['phraseanet.SE']->addRecord($record);
 
             if ($keepAttributes) {
                 //add attribute
@@ -290,32 +293,32 @@ class Lazaret implements ControllerProviderInterface
 
                 foreach ($lazaretFile->getAttributes() as $attr) {
                     //Check which ones to keep
-                    if ( ! ! count($attributesToKeep)) {
-                        if ( ! in_array($attr->getId(), $attributesToKeep)) {
+                    if (!!count($attributesToKeep)) {
+                        if (!in_array($attr->getId(), $attributesToKeep)) {
                             continue;
                         }
                     }
 
                     try {
-                        $attribute = Border\Attribute\Factory::getFileAttribute($attr->getName(), $attr->getValue());
+                        $attribute = Border\Attribute\Factory::getFileAttribute($app, $attr->getName(), $attr->getValue());
                     } catch (\InvalidArgumentException $e) {
                         continue;
                     }
 
-                    /* @var $attribute Border\Attribute\Attribute */
+                    /* @var $attribute AttributeInterface */
 
                     switch ($attribute->getName()) {
-                        case Border\Attribute\Attribute::NAME_METADATA:
+                        case AttributeInterface::NAME_METADATA:
                             $value = $attribute->getValue();
                             $metadataBag->set($value->getTag()->getTagname(), new \PHPExiftool\Driver\Metadata\Metadata($value->getTag(), $value->getValue()));
                             break;
-                        case Border\Attribute\Attribute::NAME_STORY:
+                        case AttributeInterface::NAME_STORY:
                             $attribute->getValue()->appendChild($record);
                             break;
-                        case Border\Attribute\Attribute::NAME_STATUS:
+                        case AttributeInterface::NAME_STATUS:
                             $record->set_binary_status($attribute->getValue());
                             break;
-                        case Border\Attribute\Attribute::NAME_METAFIELD:
+                        case AttributeInterface::NAME_METAFIELD:
                             $metaFields->set($attribute->getField()->get_name(), $attribute->getValue());
                             break;
                     }
@@ -329,8 +332,8 @@ class Lazaret implements ControllerProviderInterface
             }
 
             //Delete lazaret file
-            $app['Core']['EM']->remove($lazaretFile);
-            $app['Core']['EM']->flush();
+            $app['EM']->remove($lazaretFile);
+            $app['EM']->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {
@@ -338,13 +341,12 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['Core']['file-system']->remove($lazaretFileName);
-            $app['Core']['file-system']->remove($lazaretThumbFileName);
+            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
         } catch (IOException $e) {
 
         }
 
-        return self::formatJson($app['Core']['Serializer'], $ret);
+        return $app->json($ret);
     }
 
     /**
@@ -360,12 +362,12 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
-        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Entities\LazaretFile', $file_id);
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
         try {
@@ -375,20 +377,19 @@ class Lazaret implements ControllerProviderInterface
 
         }
 
-        return self::formatJson($app['Core']['Serializer'], $ret);
+        return $app->json($ret);
     }
 
     protected function denyLazaretFile(Application $app, LazaretFile $lazaretFile)
     {
-        $lazaretFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
-        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+        $lazaretFileName = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
-        $app['Core']['EM']->remove($lazaretFile);
-        $app['Core']['EM']->flush();
+        $app['EM']->remove($lazaretFile);
+        $app['EM']->flush();
 
         try {
-            $app['Core']['file-system']->remove($lazaretFileName);
-            $app['Core']['file-system']->remove($lazaretThumbFileName);
+            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
         } catch (IOException $e) {
 
         }
@@ -400,7 +401,7 @@ class Lazaret implements ControllerProviderInterface
      * Empty lazaret
      *
      * @param Application $app
-     * @param Request $request
+     * @param Request     $request
      *
      * @return Response
      */
@@ -408,22 +409,22 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
-        $lazaretFiles = $app['Core']['EM']->getRepository('Entities\LazaretFile')->findAll();
+        $lazaretFiles = $app['EM']->getRepository('Entities\LazaretFile')->findAll();
 
-        $app['Core']['EM']->beginTransaction();
+        $app['EM']->beginTransaction();
 
         try {
             foreach ($lazaretFiles as $lazaretFile) {
                 $this->denyLazaretFile($app, $lazaretFile);
             }
-            $app['Core']['EM']->commit();
+            $app['EM']->commit();
             $ret['success'] = true;
         } catch (\Exception $e) {
-            $app['Core']['EM']->rollback();
+            $app['EM']->rollback();
             $ret['message'] = _('An error occured');
         }
 
-        return self::formatJson($app['Core']['Serializer'], $ret);
+        return $app->json($ret);
     }
 
     /**
@@ -440,25 +441,25 @@ class Lazaret implements ControllerProviderInterface
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
         //Mandatory parameter
-        if (null === $recordId = $request->get('record_id')) {
+        if (null === $recordId = $request->request->get('record_id')) {
             $ret['message'] = _('You must give a destination record');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
-        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Entities\LazaretFile', $file_id);
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
         $found = false;
 
         //Check if the choosen record is eligible to the substitution
-        foreach ($lazaretFile->getRecordsToSubstitute() as $record) {
+        foreach ($lazaretFile->getRecordsToSubstitute($app) as $record) {
             if ($record->get_record_id() !== (int) $recordId) {
                 continue;
             }
@@ -467,24 +468,24 @@ class Lazaret implements ControllerProviderInterface
             break;
         }
 
-        if ( ! $found) {
+        if (!$found) {
             $ret['message'] = _('The destination record provided is not allowed');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
-        $lazaretFileName = $app['Core']['Registry']->get('GV_RootPath').'tmp/lazaret/'.$lazaretFile->getFilename();
-        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath').'tmp/lazaret/'.$lazaretFile->getThumbFilename();
+        $lazaretFileName = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         try {
-            $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($lazaretFileName));
+            $media = $app['mediavorus']->guess($lazaretFileName);
 
-            $record = $lazaretFile->getCollection()->get_databox()->get_record($recordId);
-            $record->substitute_subdef('document', $media);
+            $record = $lazaretFile->getCollection($app)->get_databox()->get_record($recordId);
+            $record->substitute_subdef('document', $media, $app);
 
             //Delete lazaret file
-            $app['Core']['EM']->remove($lazaretFile);
-            $app['Core']['EM']->flush();
+            $app['EM']->remove($lazaretFile);
+            $app['EM']->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {
@@ -492,13 +493,12 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['Core']['file-system']->remove($lazaretFileName);
-            $app['Core']['file-system']->remove($lazaretThumbFileName);
+            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
         } catch (IOException $e) {
 
         }
 
-        return self::formatJson($app['Core']['Serializer'], $ret);
+        return $app->json($ret);
     }
 
     /**
@@ -512,26 +512,18 @@ class Lazaret implements ControllerProviderInterface
      */
     public function thumbnailElement(Application $app, Request $request, $file_id)
     {
-        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['EM']->find('Entities\LazaretFile', $file_id);
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
-
             return new Response(null, 404);
         }
 
-        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+        $lazaretThumbFileName = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
-        $response = \set_export::stream_file(
-                $lazaretThumbFileName, $lazaretFile->getOriginalName(), 'image/jpeg', 'inline'
+        return \set_export::stream_file(
+                $app, $lazaretThumbFileName, $lazaretFile->getOriginalName(), 'image/jpeg', 'inline'
         );
-
-        return $response;
-    }
-
-    protected static function formatJson(\Symfony\Component\Serializer\Serializer $serializer, $datas)
-    {
-        return new Response($serializer->serialize($datas, 'json'), 200, array('content-type' => 'application/json'));
     }
 
     /**

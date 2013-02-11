@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,10 +11,6 @@
 
 namespace Alchemy\Phrasea\Core\Service\Log\Doctrine;
 
-use Alchemy\Phrasea\Core,
-    Alchemy\Phrasea\Core\Service,
-    Alchemy\Phrasea\Core\Service\ServiceAbstract,
-    Alchemy\Phrasea\Core\Service\ServiceInterface;
 use Alchemy\Phrasea\Core\Service\Log\Monolog as ParentLog;
 use Doctrine\Logger\MonologSQLLogger;
 

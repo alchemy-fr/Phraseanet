@@ -1041,32 +1041,19 @@ function download_basket()
 
 function download(value)
 {
-  var dialog_box = $('#dialog_dwnl');
+    var dialog = p4.Dialog.Create({title: typeof(language) !== 'undefined' ? language['export']: ''});
 
-  dialog_box = $('#dialog_dwnl');
+    $.post("/prod/export/multi-export/", "lst="+value, function(data) {
 
-  dialog_box.empty().addClass('loading').dialog({
-    width:800,
-    height:600,
-    modal:true,
-    closeOnEscape : false,
-    resizable : false,
-    overlay: {
-      backgroundColor: '#000',
-      opacity: 0.7
-    }
-  }).dialog('open');
+        dialog.setContent(data);
 
-  $.post("/include/multiexports.php", "lst="+value, function(data) {
+        $('.tabs', dialog.getDomElement()).tabs();
 
-    dialog_box.removeClass('loading').empty().append(data);
-    $('.tabs', dialog_box).tabs();
+        $('.close_button', dialog.getDomElement()).bind('click',function(){
+            dialog.Close();
+		});
 
-    $('.close_button', dialog_box).bind('click',function(){
-      dialog_box.dialog('close').dialog('destroy');
+        return false;
     });
-    return false;
-  });
-
 }
 

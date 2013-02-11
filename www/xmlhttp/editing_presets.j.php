@@ -2,23 +2,25 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Alchemy\Phrasea\Application;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$usr_id = $Core->getAuthenticatedUser()->get_id();
+require_once __DIR__ . "/../../vendor/autoload.php";
 
-$appbox = appbox::get_instance($Core);
+$app = new Application();
+$usr_id = $app['phraseanet.user']->get_id();
+
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -37,11 +39,11 @@ switch ($parm['act']) {
             ':usr_id'       => $usr_id
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $ret['html'] = xlist($parm['sbas'], $usr_id);
+        $ret['html'] = xlist($app, $parm['sbas'], $usr_id);
         break;
     case 'SAVE':
         $dom = new DOMDocument('1.0', 'UTF-8');
@@ -62,20 +64,20 @@ switch ($parm['act']) {
             , ':presets' => $dom->saveXML()
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
 
-        $ret['html'] = xlist($parm['sbas'], $usr_id);
+        $ret['html'] = xlist($app, $parm['sbas'], $usr_id);
         break;
     case 'LIST':
-        $ret['html'] = xlist($parm['sbas'], $usr_id);
+        $ret['html'] = xlist($app, $parm['sbas'], $usr_id);
         break;
     case "LOAD":
         $sql = 'SELECT edit_preset_id, creation_date, title, xml
             FROM edit_presets
             WHERE edit_preset_id = :edit_preset_id';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':edit_preset_id' => $parm['presetid']));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -93,9 +95,9 @@ switch ($parm['act']) {
         break;
 }
 
-function xlist($sbas_id, $usr_id)
+function xlist(Application $app, $sbas_id, $usr_id)
 {
-    $conn = connection::getPDOConnection();
+    $conn = connection::getPDOConnection($app);
 
     $html = '';
     $sql = 'SELECT edit_preset_id, creation_date, title, xml FROM edit_presets

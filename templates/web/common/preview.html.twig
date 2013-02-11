@@ -1,0 +1,21 @@
+
+{% import 'common/thumbnail.html.twig' as thumbnail %}
+
+{% if not_wrapped is defined and not_wrapped %}
+    {% set wrap = false %}
+{% else %}
+    {% set wrap = true %}
+{% endif %}
+
+{% set previewHtml5 = null %}
+
+{% if app['phraseanet.user'].ACL().has_access_to_subdef(record, 'preview') %}
+    {% set preview_obj = record.get_preview() %}
+{% else %}
+    {% set preview_obj = record.get_thumbnail() %}
+{% endif %}
+
+{% set width = preview_obj.get_width() %}
+{% set height = preview_obj.get_height() %}
+
+{{ thumbnail.format(preview_obj, preview_obj.get_width(), preview_obj.get_height(), '', wrap, false) }}

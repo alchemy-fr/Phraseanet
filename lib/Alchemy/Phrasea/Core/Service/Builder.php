@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,8 +11,8 @@
 
 namespace Alchemy\Phrasea\Core\Service;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag,
-    Alchemy\Phrasea\Core;
+use Alchemy\Phrasea\Application;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
  *
@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag,
 class Builder
 {
 
-    public static function create(Core $core, ParameterBag $configuration)
+    public static function create(Application $app, ParameterBag $configuration)
     {
         $classname = __NAMESPACE__ . '\\' . $configuration->get("type");
 
@@ -31,11 +31,11 @@ class Builder
         }
 
         try {
-            $options = $configuration->get("options");
+            $options = $configuration->get("options") ?: array() ;
         } catch (\Exception $e) {
             $options = array();
         }
 
-        return new $classname($core, $options);
+        return new $classname($app, $options);
     }
 }

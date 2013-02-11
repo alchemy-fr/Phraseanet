@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,14 +11,11 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Helper;
+use Alchemy\Phrasea\Controller\RecordsRequest;
 use DataURI;
-use MediaVorus\MediaVorus;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -32,143 +29,176 @@ class Tools implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication()
+                ->requireRight('doctools');
+        });
+
         $controllers->get('/', function(Application $app, Request $request) {
-                $helper = new Helper\Record\Tools($app['Core'], $request);
 
-                $selection = $helper->get_elements();
+            $records = RecordsRequest::fromRequest($app, $request, false);
 
-                $metadatas = false;
+            $metadatas = false;
+            $record = null;
 
-                $record = null;
+            if (count($records) == 1) {
+                $record = $records->first();
+                if (!$record->is_grouping()) {
+                    try {
+                        $metadatas = $app['exiftool.reader']
+                                ->files($record->get_subdef('document')->get_pathfile())
+                                ->first()->getMetadatas();
+                    } catch (\PHPExiftool\Exception\Exception $e) {
 
-                if (count($selection) == 1) {
+                    } catch (\Exception_Media_SubdefNotFound $e) {
 
-                    $record = reset($selection);
-
-                    if ( ! $record->is_grouping()) {
-                        try {
-
-                            $reader = new \PHPExiftool\Reader();
-
-                            $metadatas = $reader
-                                    ->files($record->get_subdef('document')->get_pathfile())
-                                    ->first()->getMetadatas();
-                        } catch (\PHPExiftool\Exception\Exception $e) {
-
-                        } catch (\Exception_Media_SubdefNotFound $e) {
-
-                        }
                     }
                 }
+            }
 
-                $reader = null;
+            $var = array(
+                'records'   => $records,
+                'record'    => $record,
+                'metadatas' => $metadatas,
+            );
 
-                $template = 'prod/actions/Tools/index.html.twig';
-
-                $var = array(
-                    'helper'    => $helper,
-                    'selection' => $selection,
-                    'record'    => $record,
-                    'metadatas' => $metadatas,
-                );
-
-                return new Response($app['Core']->getTwig()->render($template, $var));
-            });
+            return $app['twig']->render('prod/actions/Tools/index.html.twig', $var);
+        });
 
         $controllers->post('/rotate/', function(Application $app, Request $request) {
-                $return = array('success'      => false, 'errorMessage' => '');
+            $return = array('success'      => true, 'errorMessage' => '');
 
-                $helper = new Helper\Record\Tools($app['Core'], $request);
+            $records = RecordsRequest::fromRequest($app, $request, false);
 
-                $rotation = in_array($request->get('rotation'), array('-90', '90', '180')) ? $request->get('rotation', 90) : 90;
+            $rotation = in_array($request->request->get('rotation'), array('-90', '90', '180')) ? $request->request->get('rotation', 90) : 90;
 
-                $selection = $helper->get_elements();
+            foreach ($records as $record) {
+                foreach ($record->get_subdefs() as $name => $subdef) {
+                    if ($name == 'document')
+                        continue;
 
-                foreach ($selection as $record) {
                     try {
-                        $record->rotate_subdefs($rotation);
-                        $return['success'] = true;
+                        $subdef->rotate($rotation, $app['media-alchemyst'], $app['mediavorus']);
                     } catch (\Exception $e) {
-                        $return['errorMessage'] = $e->getMessage();
+
                     }
                 }
+            }
 
-                $json = $app['Core']->getSerializer()->serialize($return, 'json');
-
-                return new Response($json, 200, array('content-type' => 'application/json'));
-            });
+            return $app->json($return);
+        });
 
         $controllers->post('/image/', function(Application $app, Request $request) {
-                $return = array('success' => true);
+            $return = array('success' => true);
 
-                $helper = new Helper\Record\Tools($app['Core'], $request);
+            $selection = RecordsRequest::fromRequest($app, $request, false, array('canmodifrecord'));
 
-                $selection = $helper->get_elements();
+            foreach ($selection as $record) {
 
-                foreach ($selection as $record) {
-
-                    $substituted = false;
-                    foreach ($record->get_subdefs() as $subdef) {
-                        if ($subdef->is_substituted()) {
-                            $substituted = true;
-                            break;
-                        }
-                    }
-
-                    if ( ! $substituted || $request->get('ForceThumbSubstit') == '1') {
-                        $record->rebuild_subdefs();
+                $substituted = false;
+                foreach ($record->get_subdefs() as $subdef) {
+                    if ($subdef->is_substituted()) {
+                        $substituted = true;
+                        break;
                     }
                 }
 
-                $json = $app['Core']->getSerializer()->serialize($return, 'json');
+                if (!$substituted || $request->request->get('ForceThumbSubstit') == '1') {
+                    $record->rebuild_subdefs();
+                }
+            }
 
-                return new Response($json, 200, array('content-type' => 'application/json'));
-            });
+            return $app->json($return);
+        });
 
         $controllers->post('/hddoc/', function(Application $app, Request $request) {
-                $success = false;
-                $errorMessage = "";
-                $fileName = null;
+            $success = false;
+            $errorMessage = "";
+            $fileName = null;
 
-                if ($file = $request->files->get('newHD')) {
+            if ($file = $request->files->get('newHD')) {
 
-                    if ($file->isValid()) {
+                if ($file->isValid()) {
 
-                        $fileName = $file->getClientOriginalName();
-                        $size = $file->getClientSize();
+                    $fileName = $file->getClientOriginalName();
+                    $size = $file->getClientSize();
 
-                        $tempoFile = tempnam(sys_get_temp_dir(), 'substit');
-                        unlink($tempoFile);
-                        mkdir($tempoFile);
-                        $tempoFile = $tempoFile . DIRECTORY_SEPARATOR . $fileName;
-                        copy($file->getPathname(), $tempoFile);
+                    $tempoFile = tempnam(sys_get_temp_dir(), 'substit');
+                    unlink($tempoFile);
+                    mkdir($tempoFile);
+                    $tempoFile = $tempoFile . DIRECTORY_SEPARATOR . $fileName;
+                    copy($file->getPathname(), $tempoFile);
 
+                    try {
+                        $record = new \record_adapter(
+                                $app,
+                                $request->request->get('sbas_id')
+                                , $request->request->get('record_id')
+                        );
 
-                        try {
-                            $record = new \record_adapter(
-                                    $request->get('sbas_id')
-                                    , $request->get('record_id')
-                            );
+                        $media = $app['mediavorus']->guess($tempoFile);
 
-                            $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($tempoFile));
+                        $record->substitute_subdef('document', $media, $app);
 
-                            $record->substitute_subdef('document', $media);
-
-                            if ((int) $request->get('ccfilename') === 1) {
-                                $record->set_original_name($fileName);
-                            }
-
-                            $success = true;
-                        } catch (\Exception $e) {
-                            $errorMessage = $e->getMessage();
+                        if ((int) $request->request->get('ccfilename') === 1) {
+                            $record->set_original_name($fileName);
+                            $app['phraseanet.SE']->updateRecord($record);
                         }
 
-                        unlink($tempoFile);
-                        rmdir(dirname($tempoFile));
-                        unlink($file->getPathname());
-                    } else {
-                        $errorMessage = _('file is not valid');
+                        $success = true;
+                    } catch (\Exception $e) {
+                        $errorMessage = $e->getMessage();
                     }
+
+                    unlink($tempoFile);
+                    rmdir(dirname($tempoFile));
+                    unlink($file->getPathname());
+                } else {
+                    $errorMessage = _('file is not valid');
+                }
+            }
+
+            $template = 'prod/actions/Tools/iframeUpload.html.twig';
+            $var = array(
+                'success'      => $success
+                , 'fileName'     => $fileName
+                , 'errorMessage' => $errorMessage
+            );
+
+            return $app['twig']->render($template, $var);
+        });
+
+        $controllers->post('/chgthumb/', function(Application $app, Request $request) {
+            $success = false;
+            $errorMessage = "";
+
+            if ($file = $request->files->get('newThumb')) {
+
+                $size = $file->getClientSize();
+                $fileName = $file->getClientOriginalName();
+
+                if ($size && $fileName && $file->isValid()) {
+                    try {
+                        $rootPath = $app['phraseanet.registry']->get('GV_RootPath');
+                        $tmpFile = $rootPath . 'tmp/' . $fileName;
+                        rename($file->getPathname(), $tmpFile);
+
+                        $record = new \record_adapter(
+                                $app,
+                                $request->request->get('sbas_id')
+                                , $request->request->get('record_id')
+                        );
+
+                        $media = $app['mediavorus']->guess($tmpFile);
+
+                        $record->substitute_subdef('thumbnail', $media, $app);
+
+                        $success = true;
+                    } catch (\Exception $e) {
+                        $errorMessage = $e->getMessage();
+                    }
+                } else {
+                    $errorMessage = _('file is not valid');
                 }
 
                 $template = 'prod/actions/Tools/iframeUpload.html.twig';
@@ -178,109 +208,59 @@ class Tools implements ControllerProviderInterface
                     , 'errorMessage' => $errorMessage
                 );
 
-                return new Response($app['Core']->getTwig()->render($template, $var));
-
-                /**
-                 *
-                 */
-            });
-
-        $controllers->post('/chgthumb/', function(Application $app, Request $request) {
-                $success = false;
-                $errorMessage = "";
-
-                if ($file = $request->files->get('newThumb')) {
-
-                    $size = $file->getClientSize();
-                    $fileName = $file->getClientOriginalName();
-
-                    if ($size && $fileName && $file->isValid()) {
-                        try {
-                            $rootPath = $app['Core']->getRegistry()->get('GV_RootPath');
-                            $tmpFile = $rootPath . 'tmp/' . $fileName;
-                            rename($file->getPathname(), $tmpFile);
-
-                            $record = new \record_adapter(
-                                    $request->get('sbas_id')
-                                    , $request->get('record_id')
-                            );
-
-                            $media = $app['Core']['mediavorus']->guess($file);
-
-                            $record->substitute_subdef('thumbnail', $media);
-
-                            $success = true;
-                        } catch (\Exception $e) {
-                            $errorMessage = $e->getMessage();
-                        }
-                    } else {
-                        $errorMessage = _('file is not valid');
-                    }
-
-                    $template = 'prod/actions/Tools/iframeUpload.html.twig';
-                    $var = array(
-                        'success'      => $success
-                        , 'fileName'     => $fileName
-                        , 'errorMessage' => $errorMessage
-                    );
-
-                    return new Response($app['Core']->getTwig()->render($template, $var));
-                }
-            });
+                return $app['twig']->render($template, $var);
+            }
+        });
 
         $controllers->post('/thumb-extractor/confirm-box/', function(Application $app, Request $request) {
-                $return = array('error'   => false, 'datas'   => '');
-                $template = 'prod/actions/Tools/confirm.html.twig';
+            $return = array('error'   => false, 'datas'   => '');
+            $template = 'prod/actions/Tools/confirm.html.twig';
 
-                try {
-                    $record = new \record_adapter($request->get('sbas_id'), $request->get('record_id'));
-                    $var = array(
-                        'video_title'    => $record->get_title()
-                        , 'image'          => $request->get('image', '')
-                    );
-                    $return['datas'] = $app['Core']->getTwig()->render($template, $var);
-                } catch (\Exception $e) {
-                    $return['datas'] = _('an error occured');
-                    $return['error'] = true;
-                }
+            try {
+                $record = new \record_adapter($app, $request->request->get('sbas_id'), $request->request->get('record_id'));
+                $var = array(
+                    'video_title'    => $record->get_title()
+                    , 'image'          => $request->request->get('image', '')
+                );
+                $return['datas'] = $app['twig']->render($template, $var);
+            } catch (\Exception $e) {
+                $return['datas'] = _('an error occured');
+                $return['error'] = true;
+            }
 
-                $json = $app['Core']->getSerializer()->serialize($return, 'json');
-
-                return new Response($json, 201, array('content-type' => 'application/json'));
-            });
+            return $app->json($return);
+        });
 
         $controllers->post('/thumb-extractor/apply/', function(Application $app, Request $request) {
-                $return = array('success' => false, 'message' => '');
+            $return = array('success' => false, 'message' => '');
 
-                try {
-                    $record = new \record_adapter($request->get('sbas_id'), $request->get('record_id'));
+            try {
+                $record = new \record_adapter($app, $request->request->get('sbas_id'), $request->request->get('record_id'));
 
-                    $dataUri = DataURI\Parser::parse($request->get('image', ''));
+                $dataUri = DataURI\Parser::parse($request->request->get('image', ''));
 
-                    $path = $app['Core']->getRegistry()->get('GV_RootPath') . 'tmp';
+                $path = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp';
 
-                    $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
+                $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
 
-                    $fileName = sprintf('%s/%s.png', $path, $name);
+                $fileName = sprintf('%s/%s.png', $path, $name);
 
-                    file_put_contents($fileName, $dataUri->getData());
+                file_put_contents($fileName, $dataUri->getData());
 
-                    $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($fileName));
+                $media = $app['mediavorus']->guess($fileName);
 
-                    $record->substitute_subdef('thumbnail', $media);
+                $record->substitute_subdef('thumbnail', $media, $app);
 
-                    unset($media);
-                    $app['Core']['file-system']->remove($fileName);
+                unset($media);
+                $app['filesystem']->remove($fileName);
 
-                    $return['success'] = true;
-                } catch (\Exception $e) {
-                    $return['message'] = $e->getMessage();
-                }
+                $return['success'] = true;
+            } catch (\Exception $e) {
+                $return['message'] = $e->getMessage();
+            }
 
-                $json = $app['Core']->getSerializer()->serialize($return, 'json');
-
-                return new Response($json, 201, array('content-type' => 'application/json'));
-            });
+            return $app->json($return);
+        });
 
         return $controllers;
     }

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -47,7 +47,8 @@ class patch_th_2_0_1
             $stmt->execute();
             $stmt->closeCursor();
 
-            $domct = @DOMDocument::load("../thesaurus2/blank_cterms.xml");
+            $domct = new DOMDocument();
+            $domct->load("../thesaurus2/blank_cterms.xml");
             $ct = $domct->documentElement;
             $ct->setAttribute("creation_date", $now = date("YmdHis"));
             $ct->setAttribute("modification_date", $now);

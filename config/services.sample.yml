@@ -195,3 +195,21 @@ Border:
             enabled: false
             options:
               mediatypes: [Audio, Document, Flash, Image, Video]
+SearchEngine:
+  phrasea:
+    type: SearchEngine\PhraseaEngine
+  sphinxsearch:
+    type: SearchEngine\SphinxSearch
+    options:
+      host: localhost
+      port: 9306
+      rt_host: localhost
+      rt_port: 9308
+TaskManager:
+  task_manager:
+    type: TaskManager\TaskManager
+    options:
+      # set the threshold for sending task logs to syslog or by mail
+      # values : task_abstract::[LOG_DEBUG | LOG_INFO | LOG_WARNING | LOG_ERROR | LOG_CRITICAL | LOG_ALERT]
+      #syslog_level: task_abstract::LOG_ERROR
+      #maillog_level: task_abstract::LOG_ERROR

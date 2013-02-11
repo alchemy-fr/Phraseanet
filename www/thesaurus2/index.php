@@ -2,29 +2,29 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Alchemy\Phrasea\Application;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
-$registry = $appbox->get_registry();
+
+require_once __DIR__ . "/../../vendor/autoload.php";
+$app = new Application();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     "bas", "res"
 );
 
-$conn = $appbox->get_connection();
+$conn = $app['phraseanet.appbox']->get_connection();
 
 phrasea::headers();
 
@@ -42,10 +42,10 @@ FROM
 HAVING bas_edit_thesaurus>0
 ORDER BY sbas.ord";
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
+<html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
-        <title><?php echo $appbox->get_registry()->get('GV_homeTitle'); ?> - <?php echo p4string::MakeString(_('phraseanet:: thesaurus')) ?></title>
+        <title><?php echo $app['phraseanet.registry']->get('GV_homeTitle'); ?> - <?php echo p4string::MakeString(_('phraseanet:: thesaurus')) ?></title>
 
         <link rel="shortcut icon" type="image/x-icon" href="/thesaurus2/favicon.ico">
         <link REL="stylesheet" TYPE="text/css" HREF="./thesaurus.css?u=<?php echo mt_rand() ?>" />
@@ -62,20 +62,20 @@ ORDER BY sbas.ord";
 $select_bases = "";
 $nbases = 0;
 $last_base = null;
-$usr_id = $session->get_usr_id();
+$usr_id = $app['phraseanet.user']->get_id();
 
 $stmt = $conn->prepare($sql);
-$stmt->execute(array(':usr_id' => $session->get_usr_id()));
+$stmt->execute(array(':usr_id' => $app['phraseanet.user']->get_id()));
 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt->closeCursor();
 
 foreach ($rs as $row) {
     try {
-        $connbas = connection::getPDOConnection($row['sbas_id']);
+        $connbas = connection::getPDOConnection($app, $row['sbas_id']);
     } catch (Exception $e) {
         continue;
     }
-    $name = phrasea::sbas_names($row['sbas_id']);
+    $name = phrasea::sbas_names($row['sbas_id'], $app);
     $select_bases .= "<option value=\"" . $row["sbas_id"] . "\">" . $name . "</option>\n";
     $last_base = array("sbid" => $row["sbas_id"], "name" => $name);
     $nbases ++;
@@ -129,8 +129,9 @@ if ($nbases > 0) {
     }
 
     $nf = 0;
-    $tlng = User_Adapter::avLanguages();
-    foreach ($tlng as $lng_code => $lng) {
+    foreach (Application::getAvailableLanguages() as $lng_code => $lng) {
+        $lng_code = explode('_', $lng_code);
+        $lng_code = $lng_code[0];
         printf("<tr><td>%s</td>", $nf == 0 ? p4string::MakeString(_('thesaurus:: langue pivot')) /* Langue pivot : */ : "");
         print("<td style=\"text-align:left\"><input type='radio' onclick=\"ckok();return(true);\" value='$lng_code' name='piv'><img src='/skins/lng/" . $lng_code . "_flag_18.gif' />&nbsp;(" . $lng_code . ")</td></tr>\n");
         $nf ++;
@@ -139,8 +140,6 @@ if ($nbases > 0) {
                 </table>
                 <br/>
                 <br/>
-                <input type="hidden" name="ses" value="<?php echo $session->get_ses_id() ?>" />
-                <input type="hidden" name="usr" value="<?php echo $session->get_usr_id() ?>" />
                 <input id="button_ok" type="submit" style="width:80px;" value="<?php echo p4string::MakeString(_('boutton::valider')) ?>" /><br/>
             </form>
                     <?php

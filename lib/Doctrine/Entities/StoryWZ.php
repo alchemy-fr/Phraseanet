@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,11 +11,7 @@
 
 namespace Entities;
 
-require_once __DIR__ . '/../../classes/record/Interface.class.php';
-require_once __DIR__ . '/../../classes/record/adapter.class.php';
-require_once __DIR__ . '/../../classes/cache/cacheableInterface.class.php';
-require_once __DIR__ . '/../../classes/User/Interface.class.php';
-require_once __DIR__ . '/../../classes/User/Adapter.class.php';
+use Alchemy\Phrasea\Application;
 
 /**
  *
@@ -144,16 +140,16 @@ class StoryWZ
         $this->setUsrId($user->get_id());
     }
 
-    public function getUser()
+    public function getUser(Application $app)
     {
         if ($this->getUsrId()) {
-            return new \User_Adapter($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
+            return \User_Adapter::getInstance($this->getUsrId(), $app);
         }
     }
 
-    public function getRecord()
+    public function getRecord(Application $app)
     {
-        return new \record_adapter($this->getSbasId(), $this->getRecordId());
+        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId());
     }
 
     public function setRecord(\record_adapter $record)

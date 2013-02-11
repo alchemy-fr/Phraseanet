@@ -1,0 +1,76 @@
+{% extends 'account/base.html.twig' %}
+
+{% block title %}
+    {% trans 'Mes sessions' %}
+{% endblock %}
+
+{% block content %}
+<div>
+    <table style="width: 80%; margin: 0 auto;">
+        <tbody>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    {% trans 'Date de connexion' %}
+                </td>
+                <td>
+                    {% trans 'Dernier access' %}
+                </td>
+                <td>
+                    {% trans 'IP' %}
+                </td>
+                <td>
+                    {% trans 'Browser' %}
+                </td>
+                <td>
+                    {% trans 'ecran' %}
+                </td>
+                <td>
+                    {% trans 'Session persistante' %}
+                </td>
+            </tr>
+            {% for row in sessions %}
+                <tr>
+                    <td>
+                        {% if app['session'].get('phrasea_session_id') != row.Id() %}
+                            <img src="/skins/icons/delete.png"/>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ app['date-formatter'].getDate(row.getCreated()) }}
+                    </td>
+                    <td>
+                        {{ app['date-formatter'].getDate(row.getUpdated()) }}
+                    </td>
+                    <td>
+                        {% set geoname = app['geonames'].find_geoname_from_ip(row.getIpAddress()) %}
+
+                        {% if geoname['city']  %}
+                            {% set ip_infos = geoname['city'] ~ ' (' ~ geoname['country'] ~ ')' %}
+                        {% elseif geoname['fips'] %}
+                            {% set ip_infos = geoname['fips'] ~ ' (' ~ geoname['country'] ~ ')' %}
+                        {% elseif geoname['country'] %}
+                            {% set ip_infos = geoname['country'] %}
+                        {% else %}
+                            {% set ip_infos = '' %}
+                        {% endif %}
+
+                        {{ row.getIpAddress() }}
+                        {{ ip_infos }}
+                    </td>
+                    <td>
+                        {{ row.getBrowserName() }} {{ row.getBrowserVersion() }}
+                    </td>
+                    <td>
+                        {{ row.getScreenWidth() }} x {{ row.getScreenHeight() }}
+                    </td>
+                    <td>
+                        {% if row.getToken %}{{ yes }}{% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,10 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Utils;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 
 /**
  *
@@ -29,44 +27,23 @@ class PathFileTest implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/path/', function() use ($app) {
-                $path = $app['request']->get('path');
+        /**
+         * @todo : check this as it would lead to a security issue
+         */
+        $controllers->get('/path/', function(Application $app, Request $request) {
+            return $app->json(array(
+                    'exists'     => file_exists($request->query->get('path'))
+                    , 'file'       => is_file($request->query->get('path'))
+                    , 'dir'        => is_dir($request->query->get('path'))
+                    , 'readable'   => is_readable($request->query->get('path'))
+                    , 'writeable'  => is_writable($request->query->get('path'))
+                    , 'executable' => is_executable($request->query->get('path'))
+                ));
+        });
 
-                $Serializer = $app['Core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize(
-                            array(
-                            'exists'     => file_exists($path)
-                            , 'file'       => is_file($path)
-                            , 'dir'        => is_dir($path)
-                            , 'readable'   => is_readable($path)
-                            , 'writeable'  => is_writable($path)
-                            , 'executable' => is_executable($path)
-                            )
-                            , 'json'
-                        )
-                        , 200
-                        , array('content-type' => 'application/json')
-                );
-            });
-
-        $controllers->get('/url/', function() use ($app) {
-                $url = $app['request']->get('url');
-
-                $Serializer = $app['Core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize(
-                            array(
-                            'code' => \http_query::getHttpCodeFromUrl($url)
-                            )
-                            , 'json'
-                        )
-                        , 200
-                        , array('content-type' => 'application/json')
-                );
-            });
+        $controllers->get('/url/', function(Application $app, Request $request) {
+            return $app->json(array('code' => \http_query::getHttpCodeFromUrl($request->query->get('url'))));
+        });
 
         return $controllers;
     }

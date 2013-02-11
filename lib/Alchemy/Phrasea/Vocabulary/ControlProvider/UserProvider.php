@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Vocabulary\ControlProvider;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Vocabulary\Term;
 
@@ -22,6 +23,13 @@ use Alchemy\Phrasea\Vocabulary\Term;
  */
 class UserProvider implements ControlProviderInterface
 {
+
+    private $app;
+
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
 
     /**
      * @return string
@@ -49,9 +57,7 @@ class UserProvider implements ControlProviderInterface
      */
     public function find($query, \User_Adapter $for_user, \databox $on_databox = null)
     {
-        $Core = \bootstrap::getCore();
-
-        $user_query = new \User_Query(\appbox::get_instance($Core));
+        $user_query = new \User_Query($this->app);
 
         $users = $user_query
                 ->like(\User_Query::LIKE_EMAIL, $query)
@@ -81,10 +87,8 @@ class UserProvider implements ControlProviderInterface
      */
     public function validate($id)
     {
-        $Core = \bootstrap::getCore();
-
         try {
-            \User_Adapter::getInstance($id, \appbox::get_instance($Core));
+            \User_Adapter::getInstance($id, $this->app);
 
             return true;
         } catch (\Exception $e) {
@@ -101,9 +105,7 @@ class UserProvider implements ControlProviderInterface
      */
     public function getValue($id)
     {
-        $Core = \bootstrap::getCore();
-
-        $user = \User_Adapter::getInstance($id, \appbox::get_instance($Core));
+        $user = \User_Adapter::getInstance($id, $this->app);
 
         return $user->get_display_name();
     }
@@ -115,8 +117,6 @@ class UserProvider implements ControlProviderInterface
      */
     public function getRessource($id)
     {
-        $Core = \bootstrap::getCore();
-
-        return \User_Adapter::getInstance($id, \appbox::get_instance($Core));
+        return \User_Adapter::getInstance($id, $this->app);
     }
 }

@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class TfHeight extends \PHPExiftool\Driver\Tag
+use PHPExiftool\Driver\AbstractTag;
+
+class TfHeight extends AbstractTag
 {
     protected $Id = 'tf-height';
     protected $Name = 'tf-height';

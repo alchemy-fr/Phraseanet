@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border\Attribute;
 
+use Alchemy\Phrasea\Application;
 use PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
 
 /**
@@ -19,7 +20,7 @@ use PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
  * This attribute is used to store a PHPExiftool metadatas with file prior to
  * their record creation
  */
-class Metadata implements Attribute
+class Metadata implements AttributeInterface
 {
     protected $metadata;
 
@@ -72,13 +73,13 @@ class Metadata implements Attribute
      *
      * @return Metadata
      */
-    public static function loadFromString($string)
+    public static function loadFromString(Application $app, $string)
     {
         if ( ! $metadata = @unserialize($string)) {
             throw new \InvalidArgumentException('Unable to load metadata from string');
         }
 
-        if ( ! $metadata instanceof ExiftoolMeta) {
+        if (! $metadata instanceof ExiftoolMeta) {
             throw new \InvalidArgumentException('Unable to load metadata from string');
         }
 

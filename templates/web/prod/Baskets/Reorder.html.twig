@@ -1,4 +1,4 @@
-{% import 'common/thumbnail.html' as thumbnail %}
+{% import 'common/thumbnail.html.twig' as thumbnail %}
 <div id="reorder_box" class="PNB" style="top:10px; overflow:auto; padding:10px;">
     <div id="reorder_options" style="height:32px; margin-bottom:10px;">
         <span>{% trans 'Reordonner automatiquement' %}</span>
@@ -19,12 +19,12 @@
     <div class="elements">
     {% for element in basket.getElements() %}
         <div id="ORDER_{{ element.getId() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
-            <div class="title" title="{{ element.getRecord().get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:visible;text-align:center;">
-                <span>{{ element.getRecord().get_title() }}</span>
-                {{ thumbnail.format(element.getRecord().get_thumbnail(), 80, 80, '', session, false, false) }}
+            <div class="title" title="{{ element.getRecord(app).get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:visible;text-align:center;">
+                <span>{{ element.getRecord(app).get_title() }}</span>
+                {{ thumbnail.format(element.getRecord(app).get_thumbnail(), 80, 80, '', false, false) }}
                 <form style="display:none;">
                     <input type="hidden" name="id" value="{{ element.getId() }}"/>
-                    <input type="hidden" name="title" value="{{ element.getRecord().get_title() }}"/>
+                    <input type="hidden" name="title" value="{{ element.getRecord(app).get_title() }}"/>
                     <input type="hidden" name="default" value="{{ element.getOrd() }}"/>
                 </form>
             </div>

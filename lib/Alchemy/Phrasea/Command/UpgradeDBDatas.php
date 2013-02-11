@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,8 +13,6 @@ namespace Alchemy\Phrasea\Command;
 
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -24,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class UpgradeDBDatas extends Command
 {
-    protected $upgrades =array();
+    protected $upgrades = array();
 
     /**
      * Constructor
@@ -34,8 +32,8 @@ class UpgradeDBDatas extends Command
         parent::__construct($name);
 
         $this
-        ->setDescription("Upgrade Phraseanet datas")
-        ->setHelp(<<<EOF
+            ->setDescription("Upgrade Phraseanet datas")
+            ->setHelp(<<<EOF
 Upgrade Phraseanet datas from older version
 
 Steps are
@@ -43,7 +41,7 @@ Steps are
     - version 3.1 : records UUID
     - version 3.5 : metadatas upgrade
 EOF
-            );
+        );
 
         $this->addOption('from', 'f', null, 'The version where to start upgrade');
         $this->addOption('at-version', null, null, 'The version step to upgrade');
@@ -60,7 +58,6 @@ EOF
         if (false !== $input->getOption('from') && false !== $input->getOption('at-version')) {
             throw new \Exception('You CAN NOT provide a `from` AND `at-version` option at the same time');
         }
-        $core = \bootstrap::getCore();
 
         $versions = array(
             'Upgrade\\Step31' => '3.1',
@@ -74,17 +71,9 @@ EOF
                 }
 
                 $classname = __NAMESPACE__ . '\\' . $classname;
-                $this->upgrades[] = new $classname($core, $this->logger);
+                $this->upgrades[] = new $classname($this->container);
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function requireSetup()
-    {
-        return true;
     }
 
     public function setUpgrades(array $upgrades)
@@ -113,7 +102,7 @@ EOF
     {
         $this->generateUpgradesFromOption($input);
 
-        if ( ! $this->upgrades) {
+        if (! $this->upgrades) {
             throw new \Exception('No upgrade available');
         }
 
@@ -128,7 +117,7 @@ EOF
         $dialog = $this->getHelperSet()->get('dialog');
 
         do {
-            $continue = strtolower($dialog->ask($output, $question. '<question>Continue ? (Y/n)</question>', 'Y'));
+            $continue = strtolower($dialog->ask($output, $question . '<question>Continue ? (Y/n)</question>', 'Y'));
         } while ( ! in_array($continue, array('y', 'n')));
 
         if (strtolower($continue) !== 'y') {

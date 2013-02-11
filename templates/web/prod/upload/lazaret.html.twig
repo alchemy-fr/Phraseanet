@@ -11,7 +11,7 @@
             <ul>
                 {% for file in lazaretFiles %}
                     <li class="row-fluid wrapper-item well">
-                       {{ _self.lazaretElement(file) }}
+                       {{ _self.lazaretElement(app, file) }}
                     </li>
                 {% endfor %}
             </ul>
@@ -244,9 +244,9 @@
     });
 </script>
 
-{% macro lazaretElement(file) %}
-    {% import "common/thumbnail.html" as thumb %}
-    {% set records = file.getRecordsToSubstitute() %}
+{% macro lazaretElement(app, file) %}
+    {% import "common/thumbnail.html.twig" as thumb %}
+    {% set records = file.getRecordsToSubstitute(app) %}
     <div class="lazaret-file span4">
         <h5>{% trans "Last uploaded version" %}</h5>
         <ul class="thumbnails">
@@ -255,16 +255,16 @@
                     <img src="/prod/lazaret/{{ file.getId() }}/thumbnail/"/>
                     <div class="caption">
                         <p>{% trans "Filename" %} : <span class="info">{{ file.getOriginalName() }}</span></p>
-                        <p>{% trans "Date" %} : <span class="info">{{ file.getCreated() | prettyDate }}</span></p>
-                        {% if file.getSession().getUser() is not none %}
+                        <p>{% trans "Date" %} : <span class="info">{{ app['date-formatter'].getPrettyString(file.getCreated()) }}</span></p>
+                        {% if file.getSession().getUser(app) is not none %}
                             <p>
-                                {% set username = '<a href="#" class="username userTips" tooltipsrc="/prod/tooltip/user/' ~ file.getSession().getUser().get_id() ~ '/">' ~ file.getSession().getUser().get_display_name() ~ '</a>' %}
+                                {% set username = '<a href="#" class="username userTips" tooltipsrc="/prod/tooltip/user/' ~ file.getSession().getUser(app).get_id() ~ '/">' ~ file.getSession().getUser(app).get_display_name() ~ '</a>' %}
                                 {% trans %}
                                     Uploaded by : {{ username }}
                                 {% endtrans %}
                             </p>
                         {% endif %}
-                        <p>{% trans "Collection" %} : <span class="info">{{ file.getCollection().get_name() }}</span></p>
+                        <p>{% trans "Collection" %} : <span class="info">{{ file.getCollection(app).get_name() }}</span></p>
                     </div>
                     <div class="caption">
                         {% for check in file.getChecks() %}
@@ -304,12 +304,12 @@
             </h5>
             <ul class="thumbnails">
                 {% for record in records %}
-                    {% if user.ACL().has_right_on_base(record.get_base_id(), "canaddrecord")
-                        and user.ACL().has_right_on_base(record.get_base_id(), "candeleterecord") %}
+                    {% if app['phraseanet.user'].ACL().has_right_on_base(record.get_base_id(), "canaddrecord")
+                        and app['phraseanet.user'].ACL().has_right_on_base(record.get_base_id(), "candeleterecord") %}
                         <li class="records-subititution span3">
                             <div class="thumbnail">
                                 <div class="record-thumb" style="text-align:center;">
-                                    {{ thumb.format(record.get_thumbnail(), 169, 180, "", session, false, false) }}
+                                    {{ thumb.format(record.get_thumbnail(), 169, 180, "", false, false) }}
                                     <input name="record_id" value="{{ record.get_record_id() }}" type="hidden"/>
                                 </div>
                                 <div class="caption">

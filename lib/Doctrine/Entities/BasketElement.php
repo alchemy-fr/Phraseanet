@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,8 +11,7 @@
 
 namespace Entities;
 
-require_once __DIR__ . '/../../classes/record/Interface.class.php';
-require_once __DIR__ . '/../../classes/record/adapter.class.php';
+use Alchemy\Phrasea\Application;
 
 /**
  * Kernel
@@ -187,9 +186,9 @@ class BasketElement
         return $this->basket;
     }
 
-    public function getRecord()
+    public function getRecord(Application $app)
     {
-        return new \record_adapter($this->getSbasId(), $this->getRecordId(), $this->getOrd());
+        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
     }
 
     public function setRecord(\record_adapter $record)
@@ -237,10 +236,10 @@ class BasketElement
      * @param  \User_Adapter            $user
      * @return \Entities\ValidationData
      */
-    public function getUserValidationDatas(\User_Adapter $user)
+    public function getUserValidationDatas(\User_Adapter $user, Application $app)
     {
         foreach ($this->validation_datas as $validationData) {
-            if ($validationData->getParticipant()->getUser()->get_id() == $user->get_id()) {
+            if ($validationData->getParticipant($app)->getUser($app)->get_id() == $user->get_id()) {
                 return $validationData;
             }
         }

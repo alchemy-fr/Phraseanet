@@ -2,6 +2,7 @@
 
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
 
 /**
  * Entities\LazaretSession
@@ -66,13 +67,12 @@ class LazaretSession
      *
      * @return \User_Adapter
      */
-    public function getUser()
+    public function getUser(Application $app)
     {
         $user = null;
 
         try {
-            $appbox = \appbox::get_instance(\bootstrap::getCore());
-            $user = \User_Adapter::getInstance($this->usr_id, $appbox);
+            $user = \User_Adapter::getInstance($this->usr_id, $app);
         } catch (\Exception $e) {
 
         }
@@ -165,7 +165,7 @@ class LazaretSession
     /**
      * Get usr_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getUsrId()
     {

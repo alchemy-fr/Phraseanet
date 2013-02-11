@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class TfMimetype extends \PHPExiftool\Driver\Tag
+use PHPExiftool\Driver\AbstractTag;
+
+class TfMimetype extends AbstractTag
 {
     protected $Id = 'tf-mimetype';
     protected $Name = 'tf-mimetype';

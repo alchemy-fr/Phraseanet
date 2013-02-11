@@ -1,0 +1,153 @@
+{% set nb_basket_elements = selected_basket_elements.count() %}
+<div id="blocBask" class="bodyLeft" style="height:314px;bottom:0px;">
+    <div class="baskTitle">
+        <div id="flechenochu" class="flechenochu"></div>
+        <div class="baskName">
+            {% if selected_basket is not none  %}
+                {{ selected_basket.getName() }}
+                    :
+                {% trans %}
+                    paniers:: {{ nb_basket_elements }} documents dans le panier
+                {% endtrans %}
+                {% if app['phraseanet.registry'].get('GV_viewSizeBaket') %}
+                    ({{ selected_basket.getSize(app) }} Mo)
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <div>
+        <table style='width:99%' class='baskIndicator' id='baskMainTable'>
+            <tr>
+                <td>
+                    {% if total_baskets > 0 %}
+                        <select id="chutier_name" name="chutier_name" onChange="chg_chu();" style="width:120px;">
+                            <optgroup label="{% trans 'paniers::categories: mes paniers' %}">
+                                {% for basket in user_baskets %}
+                                    <option class="chut_choice" {% if basket.getId() == selected_basket.getId() %}selected{% endif %} value="{{ basket.getId() }}">
+                                        {{ basket.getName() }}
+                                    </option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="{% trans 'paniers::categories: paniers recus' %}">
+                                {% for basket in recept_user_basket %}
+                                    <option class="chut_choice" {% if basket.getId() == selected_basket.getId() %}selected{% endif %} value="{{ basket.getId() }}">
+                                        {{ basket.getName() }}
+                                    </option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                    {% endif %}
+                </td>
+                <td style="width:40%">
+                    {% if total_baskets > 0 %}
+                        <div class="baskDel" title="{% trans 'action : supprimer' %}" onclick="evt_chutier('DELSSEL');"/></div>
+                    {% endif %}
+                    <div class="baskCreate" title="{% trans 'action:: nouveau panier' %}" onclick="newBasket();"></div>
+                    <div style="float:right;position:relative;width:3px;height:16px;"></div>
+
+                    {% if total_baskets > 0 and (app['phraseanet.user'].ACL().has_right("candwnldhd") or app['phraseanet.user'].ACL().has_right("candwnldpreview") or app['phraseanet.user'].ACL().has_right("cancmd") > 0) %}
+                        <div class="baskDownload" title="{% trans 'action : exporter' %}" onclick="evt_dwnl();"></div>
+                    {% endif %}
+
+                    {% if total_baskets > 0%}
+                        <div class="baskPrint" title="{% trans 'action : print' %}" onclick="evt_print();"></div>
+                    {% endif %}
+
+                    {% if total_baskets > 0 %}
+                        <div class="baskComparator" onclick="openCompare({{ selected_basket.getId() }})" title="{% trans 'action : ouvrir dans le comparateur' %}"></div>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="divexterne" style="height:270px;overflow-x:hidden;overflow-y:auto;position:relative">
+        {% if selected_basket is not none and selected_basket.getPusher(app) is not none %}
+            {% set pusher_name = selected_basket.getPusher(app).get_display_name() %}
+            <div class="txtPushClient">
+                {% trans %}
+                    paniers:: panier emis par {{ pusher_name }}
+                {% endtrans %}
+            </div>
+        {% endif %}
+
+        {% for element in selected_basket_elements %}
+            {% set record = element.getRecord(app) %}
+            {% set thumbnail = record.get_thumbnail() %}
+
+            {% if thumbnail.get_width() > thumbnail.get_height() %} {# paysage #}
+                {% if thumbnail.get_width() > 67 %}
+                    {% set width = 67 %}
+                    {% set top = ((67 - (67 * thumbnail.get_height() / thumbnail.get_width())) / 2)|round(0, constant('PHP_ROUND_HALF_UP')) %}
+                {% else %}
+                    {% set width = thumbnail.get_width() %}
+                    {% set top = ((67 - thumbnail.get_height()) / 2)|round(0, constant('PHP_ROUND_HALF_UP')) %}
+                {% endif %}
+
+                {% set dim = "width:" ~ width ~ "px" %}
+            {% else %} {# portrait #}
+                {% if thumbnail.get_height() > 55 %}
+                    {% set height = 55 %}
+                    {% set top = ((67 - 55) / 2)|round(0, constant('PHP_ROUND_HALF_UP')) %}
+                {% else %}
+                    {% set height = thumbnail.get_height() %}
+                    {% set top = ((67 - thumbnail.get_height()) / 2)|round(0, constant('PHP_ROUND_HALF_UP')) %}
+                {% endif %}
+
+                {% set dim = "height:" ~ height ~ "px" %}
+            {% endif %}
+
+            {% set tooltip = '' %}
+            {% if app['phraseanet.registry'].get('GV_rollover_chu') %}
+                {% set tooltip = 'tooltipsrc="/prod/tooltip/caption/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/basket/"' %}
+            {% endif %}
+
+            <div class="diapochu">
+                <div class="image">
+                    <img
+                        onclick="openPreview('BASK',{{ record.get_number() }}, {{ selected_basket.getId() }}); return(false);"
+                        {{ tooltip }}
+                        style="position:relative; top:{{ top }}px; {{ dim }}"
+                        class="{{ thumbnail.get_height() > 42 ? 'hThumbnail' : 'vThumbnail' }} baskTips"
+                        src="{{ thumbnail.get_url() }}"
+                    />
+                </div>
+                <div class="tools">
+                    <div
+                        class="baskOneDel"
+                        onclick="evt_del_in_chutier({{ element.getId() }});"
+                        title="{% trans 'action : supprimer' %}">
+                    </div>
+                    {% if app['phraseanet.user'].ACL().has_right_on_base(record.get_base_id(), 'candwnldhd')
+                            or app['phraseanet.user'].ACL().has_right_on_base(record.get_base_id(), 'candwnldpreview')
+                            or app['phraseanet.user'].ACL().has_right_on_base(record.get_base_id(), 'cancmd')
+                            or app['phraseanet.user'].ACL().has_preview_grant(record) %}
+                        <div class="baskOneDownload" onclick="evt_dwnl('{{ record.get_serialize_key() }}');" title="{% trans 'action : exporter' %}"></div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<div id="blocNoBask" class="bodyLeft" style="height: 22px;display:none;bottom:0px;">
+    <div class="baskTitle">
+        <div id="flechechu" class="flechenochu"></div>
+        <div id="viewtext" class="baskName">
+            {% if selected_basket is not none %}
+                {{ selected_basket.getName() }}
+                    :
+                {% trans %}
+                    paniers:: {{ nb_basket_elements }} documents dans le panier
+                {% endtrans %}
+            {% endif %}
+            <span style="width:16px;height:16px;position: absolute; right: 10px;background-position:center center;" class='baskIndicator'></span></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var oldNoview = p4.nbNoview;
+    p4.nbNoview = 0;
+
+    if(p4.nbNoview > oldNoview) {
+        alert('{% trans 'paniers:: vous avez de nouveaux paniers non consultes' %}');
+    }
+</script>

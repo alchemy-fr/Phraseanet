@@ -1,0 +1,92 @@
+{% extends "common/indexfloat.html.twig" %}
+
+{% set local_title = record.get_title() %}
+
+{% block icon %}
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+{% endblock %}
+
+{% block stylesheet %}
+    <link type="text/css" rel="stylesheet" href="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css" >
+        <style type="text/css">
+      html{
+
+                color:white;
+                background-color:#212121;
+        }
+
+
+            body{
+                font-family:Helvetica, Arial, sans-serif;
+                font-size:14px;
+        overflow:auto;
+        min-height:100%;
+        width:100%;
+        top:0;
+        left:0;
+        position:absolute;
+            }
+            h1{
+                font-size:26px;
+                font-weight:bold;
+                padding:50px 0 20px;
+            }
+            #page{
+                width:860px;
+                background-color:#414141;
+                padding:0 20px;
+                margin:0 auto;
+                height:100%;
+            }
+      .preview .thumb_wrapper{
+        overflow:hidden;
+      }
+            .caption{
+                padding:50px 0 20px;
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </style>
+{% endblock %}
+{% block javascript %}
+        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.mousewheel.js,include/jquery.image_enhancer.js,include/jslibs/swfobject/swfobject.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+        <script type="text/javascript" src="/include/jslibs/flowplayer/flowplayer-3.2.11.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('.preview .thumb_wrapper').width('100%');
+        $('.preview.enhancable').image_enhance({
+          zoomable:true
+        });
+      })
+    </script>
+{% endblock %}
+
+
+
+
+{% block content %}
+        <div id="page">
+      <h1>{{record.get_title()}}</h1>
+      <div class="preview enhancable">
+        {% import 'common/thumbnail.html.twig' as thumbnail %}
+        {% set subdef = record.get_subdef(subdef_name) %}
+
+        {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', true, false) }}
+      </div>
+            <div class="caption">
+        {% include 'common/caption.html.twig' %}
+      </div>
+        </div>
+{% endblock %}

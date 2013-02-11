@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,10 +12,6 @@
 namespace Alchemy\Phrasea\Command;
 
 use Alchemy\Phrasea\Command\Command;
-use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Border\Manager;
-use Entities\LazaretFile;
-use Entities\LazaretSession;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,26 +42,16 @@ class CreateCollection extends Command
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $core = \bootstrap::getCore();
+        $databox = $this->container['phraseanet.appbox']
+            ->get_databox((int) $input->getArgument('databox_id'));
 
-        $appbox = \appbox::get_instance($core);
-        $databox = $appbox->get_databox((int) $input->getArgument('databox_id'));
-
-        $new_collection = \collection::create($databox, $appbox, $input->getArgument('collname'));
+        $new_collection = \collection::create($app, $databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
 
         if ($new_collection && $input->getOption('base_id_rights')) {
 
-            $query = new \User_Query($appbox);
+            $query = new \User_Query($this->container);
             $total = $query->on_base_ids(array($input->getOption('base_id_rights')))->get_total();
 
             $n = 0;
@@ -78,6 +64,6 @@ class CreateCollection extends Command
             }
         }
 
-        User_Adapter::reset_sys_admins_rights();
+        \User_Adapter::reset_sys_admins_rights($this->container);
     }
 }

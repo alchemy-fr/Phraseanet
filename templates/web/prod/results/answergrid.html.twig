@@ -1,0 +1,11 @@
+
+{% extends "prod/results/answerabstract.html.twig" %}
+
+{% block content %}
+
+  {% for record in results.getResults() %}
+    {{record_format.block(record, highlight, searchEngine, 'IMGT', false)}}
+  {% endfor %}
+
+{% endblock %}
+

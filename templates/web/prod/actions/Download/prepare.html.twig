@@ -1,0 +1,118 @@
+{% extends "common/index_bootstrap.html.twig" %}
+
+{% block stylesheet %}
+    <style type="text/css">
+
+        #mainMenu, .publi_group {
+            background-color: #404040;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">{% trans "Download of documents" %}</h1>
+
+    <div class="well-small">
+       {% if (list['complete'] is not defined or not list['complete']) and list['count'] > 1%}
+            <div class="alert alert-info">
+                {% trans "Please wait while your files are being gathered for the download, this operation may take a few minutes." %}
+            </div>
+       {% elseif list['complete'] is defined and list['complete'] %}
+            <div class="alert alert-success">
+                {% set url = path('document_download', {'token': token}) %}
+                {% trans %}
+                    Your documents are ready. If the download does not start, <a href="{{ url }}" target="_self">click here</a>
+                {% endtrans %}
+            </div>
+       {% endif %}
+    </div>
+
+    <div class="well-small">
+        <table class="table table-bordered table-condensed">
+            <caption>
+                <h3>{% trans "The file contains the following elements" %}</h3>
+            </caption>
+            <thead>
+                <tr>
+                    <th>{% trans "Base" %}</th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Sub definition" %}</th>
+                    <th>{% trans "Weight" %}</th>
+                    <th>{% trans "Thumbnail" %}</th>
+                </tr>
+            </thead>
+
+            {% set total_size = 0 %}
+            {% for file in list["files"] %}
+                {% set size = 0 %}
+                <tr valign="middle">
+                    <td>{{ app|sbas_from_bas(file['base_id'])|sbas_names(app) }} {{ file['base_id']|bas_names(app) }}</td>
+                    <td>{{ file['original_name'] }}</td>
+                    <td>
+                        {% if file['subdefs'] is iterable and file['subdefs']|length > 0 %}
+                            <ul class='unstyled'>
+                            {% for subdef in file['subdefs'] %}
+                                <li>{{ subdef['label'] }}</li>
+                                {% set size = size + subdef['size'] %}
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </td>
+                    <td>{{ size|formatOctets }}</td>
+                    <td style="text-align:center;">
+                        {% set record_key = app|sbas_from_bas(file['base_id']) ~'_'~ file['record_id']%}
+
+                        {% if record_key in records|keys %}
+                            {% set record  = attribute(records, record_key) %}
+                            {% set thumbnail = record.get_thumbnail() %}
+                            {% if thumbnail.is_paysage() %}
+                                {% set w = 140 %}
+                                {% set h = (w / (thumbnail.get_width() / thumbnail.get_height()))|round %}
+                            {% else %}
+                                {% set h = 105 %}
+                                {% set w = (h * (thumbnail.get_width() / thumbnail.get_height()))|round %}
+                            {% endif %}
+
+                            <img width="{{ w ~ 'px' }}" height="{{ h ~ 'px' }}" src="{{ thumbnail.get_url() }}" />
+                        {% endif %}
+                    </td>
+                </tr>
+                {% set total_size = total_size + size %}
+            {% endfor %}
+        </table>
+    </div>
+
+    <div style="display:none">
+        <form name="download" action="{{ path('document_download', {'token': token}) }}" method="post" target="file_frame">
+        {% if anonymous %}
+                <input type="hidden" name="anonymous" value="1" />
+        {% endif%}
+        </form>
+        <iframe name="file_frame"></iframe>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            {% set time = (total_size / (1024 * 1024 * 3))|round %}
+            {% set time = time < 1 ? 2 : (time > 10 ? 10 : time) %}
+
+            {% if list['complete'] is not defined %} {# Zip not done #}
+                $.post("{{ path('execute_download', {'token': token}) }}", function(data){
+                    var data = $.parseJSON(data);
+                    if(data.success) {
+                        $('form[name=download]').submit();
+                    }
+                    return false;
+                });
+
+                setTimeout("location.reload()", "{{ time ~ "000" }}");
+            {% elseif (list['complete'] is defined and list['complete'])%} {# Zip done #}
+                // Get files
+                $('form[name=download]').submit();
+            {% else %}
+
+                setTimeout("location.reload()", "{{ time ~ "000" }}");
+            {% endif %}
+        });
+    </script>
+{% endblock %}

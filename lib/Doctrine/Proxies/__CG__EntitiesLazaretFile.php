@@ -171,16 +171,16 @@ class LazaretFile extends \Entities\LazaretFile implements \Doctrine\ORM\Proxy\P
         return parent::getForced();
     }
 
-    public function getCollection()
+    public function getCollection(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getCollection();
+        return parent::getCollection($app);
     }
 
-    public function getRecordsToSubstitute()
+    public function getRecordsToSubstitute(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getRecordsToSubstitute();
+        return parent::getRecordsToSubstitute($app);
     }
 
     public function setFilename($filename)

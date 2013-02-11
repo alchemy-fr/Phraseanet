@@ -87,7 +87,7 @@ function login(what)
 		{
 			EcrireCookie('last_act',what,null,'/');
 		}
-		self.location.replace('/login/index.php?postlog=1');
+		self.location.replace('/login/?postlog=1');
 	}
 	return false;
 }
@@ -174,10 +174,9 @@ function print_notifications(page)
 
 	$.ajax({
 		type: "POST",
-		url: "/prod/prodFeedBack.php",
+		url: "/user/notifications/",
 		dataType : 'json',
 		data: {
-			action: "NOTIFICATIONS_FULL",
 			page:page
 		},
 		error: function(data){
@@ -252,9 +251,8 @@ function read_notifications()
 
 	$.ajax({
 		type: "POST",
-		url: "/prod/prodFeedBack.php",
+		url: "/user/notifications/read/",
 		data: {
-			action: "READ_NOTIFICATIONS",
 			notifications:notifications.join('_')
 		},
 		success: function(data){
@@ -304,9 +302,8 @@ function setPref(name,value)
 
 	jQuery.data['pref_'+name] = $.ajax({
 		type: "POST",
-		url: "/prod/UserPreferences/save/",
+		url: "/user/preferences/",
 		data: {
-			action: "SAVEPREF",
 			prop:name,
 			value:value
 		},
@@ -412,7 +409,7 @@ function manageSession(data, showMessages)
             }
           }
 			}
-		if(data.message !== false)
+		if('' !== $.trim(data.message))
 		{
 			if($('#MESSAGE').length === 0)
 				$('body').append('<div id="#MESSAGE"></div>');

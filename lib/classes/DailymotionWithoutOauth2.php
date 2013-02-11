@@ -16,8 +16,9 @@ class DailymotionWithoutOauth2 extends Dailymotion
     /**
      * Call a remote method.
      *
-     * @param $method String the method name to call.
-     * @param $args Array an associative array of arguments.
+     * @param String $method       the method name to call.
+     * @param Array  $args         an associative array of arguments.
+     * @param String $access_token
      *
      * @return mixed the method response
      *
@@ -69,7 +70,8 @@ class DailymotionWithoutOauth2 extends Dailymotion
     /**
      * Upload a file on the Dailymotion servers and generate an URL to be used with API methods.
      *
-     * @param $filePath String a path to the file to upload
+     * @param String $filePath    a path to the file to upload
+     * @param String $oauth_token a path to the file to upload
      *
      * @return String the resulting URL
      */
@@ -84,4 +86,3 @@ class DailymotionWithoutOauth2 extends Dailymotion
         return $result['url'];
     }
 }
-

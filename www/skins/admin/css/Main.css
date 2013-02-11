@@ -1,0 +1,314 @@
+/******* GLOBAL CSS for ADMIN *************************************************/
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  color: #333333;
+  overflow-y: auto;
+}
+.clear {
+  clear: both;
+}
+h1 {
+  font-weight: bold;
+  font-size: 24px;
+  text-align: left;
+  margin: 10px 0;
+}
+h2 {
+  font-weight: bold;
+  font-size: 18px;
+  text-align: left;
+  margin: 7px 0;
+}
+h3 {
+  font-weight: bold;
+  font-size: 14px;
+  text-align: left;
+  margin: 4px 0;
+}
+h4 {
+  font-weight: bold;
+  font-size: 12px;
+  text-align: left;
+  margin: 2px 0;
+}
+a {
+  color: #333333;
+  text-decoration: underline;
+  cursor: pointer;
+}
+a:hover {
+  color: #0088cc;
+  text-decoration: underline;
+  cursor: pointer;
+}
+blockquote {
+  margin: 20px 15px;
+  padding: 10px;
+  border: 1px dotted #000000;
+  background-color: #f2f2f2;
+}
+img {
+  vertical-align: middle;
+}
+input,
+textarea,
+.uneditable-input {
+  margin: 0;
+  padding: 4px;
+}
+select {
+  margin: 0;
+  padding: 5px 4px;
+  *padding: 4px;
+}
+.help-block,
+.help-inline {
+  color: #666666;
+}
+li.selected,
+div.selected {
+  background-color: #faa732;
+  color: #ffffff;
+}
+li.selected a,
+div.selected a {
+  background-color: #faa732;
+  color: #ffffff;
+}
+.treeview ul {
+  background-color: transparent;
+}
+#right-ajax.loading {
+  background-image: url('/skins/icons/loaderFFF.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+div.finder div.content div.title {
+  margin-top: -2px;
+  position: relative;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/******* MAIN MENU ************************************************************/
+#mainMenu {
+  background-color: #fceb3f;
+}
+#mainMenu a,
+#mainMenu b,
+#mainMenu .title,
+#mainMenu span {
+  color: #000000;
+}
+#mainMenu a:hover span {
+  background-color: #fffbcd;
+}
+#mainMenu span.selected {
+  border-top: 3px solid #000000;
+}
+/******* LEFT SIDE ************************************************************/
+#left {
+  background-color: #fffbcd;
+  overflow: auto;
+}
+#FNDR {
+  overflow: auto;
+}
+#FNDR li.selected {
+  background-color: #faa732;
+  color: #ffffff;
+}
+#FNDR a {
+  text-decoration: none;
+}
+#FNDR a:hover {
+  text-decoration: none;
+}
+#FNDR a span {
+  text-decoration: underline;
+}
+#FNDR a span:hover {
+  text-decoration: underline;
+}
+/******* USERS ****************************************************************/
+.admin_head_opts {
+  margin: 5px 0 10px 0;
+}
+.admin_head_opts span {
+  margin: 0 10px;
+}
+.admin_head_opts a {
+  margin: 0 5px;
+}
+#users_page_form p {
+  margin: 5px 5px 10px;
+}
+#users_page_form .input-mini {
+  width: 30px;
+}
+#users_check_uncheck div {
+  padding: 5px 10px;
+  background-color: #cccccc;
+  color: #000000;
+  cursor: pointer;
+}
+#users_check_uncheck div.hovered {
+  padding: 5px 10px;
+  background-color: #4d4d4d;
+  color: #ffffff;
+}
+/******* EDIT USERS ***********************************************************/
+div.no_switch {
+  width: 12px;
+  height: 12px;
+  margin: 0 auto;
+  background-image: url('/skins/icons/ccoch5.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+div.switch_quota,
+div.switch_masks,
+div.switch_time,
+div.switch_right {
+  width: 12px;
+  height: 12px;
+  margin: 0 auto;
+}
+div.switch_quota.mixed,
+div.switch_masks.mixed,
+div.switch_time.mixed,
+div.switch_right.mixed {
+  background-image: url('/skins/icons/ccoch2.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+div.switch_quota.checked,
+div.switch_masks.checked,
+div.switch_time.checked,
+div.switch_right.checked {
+  background-image: url('/skins/icons/ccoch1.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+div.switch_quota.unchecked,
+div.switch_masks.unchecked,
+div.switch_time.unchecked,
+div.switch_right.unchecked {
+  background-image: url('/skins/icons/ccoch0.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.ui-datepicker {
+  z-index: 1500;
+}
+/******* BOARD ****************************************************************/
+.board_section {
+  margin: 0 0 30px;
+}
+.board_section ul,
+.board_section #mail_checker {
+  margin: 0 0 20px 15px;
+}
+.board_section div[class^="section_"] {
+  width: 400px;
+  height: auto;
+}
+.board_section div[class^="section_"] h2 {
+  line-height: 24px;
+}
+.board_section div[class^="section_"] ul.setup {
+  width: 360px;
+  border: 1px solid #cccccc;
+  list-style-type: none;
+}
+.board_section div[class^="section_"] ul.setup li {
+  padding: 2px 5px 2px 30px;
+  background-image: url(/skins/icons/ok.png);
+  background-repeat: no-repeat;
+  background-position: 5px center;
+}
+.board_section div[class^="section_"] ul.setup li.non-blocker {
+  background-image: url(/skins/icons/alert.png);
+}
+.board_section div[class^="section_"] ul.setup li.blocker {
+  background-image: url(/skins/icons/delete.png);
+}
+.board_section div[class^="section_"] ul.setup li:hover {
+  background-color: #fffbcd;
+}
+.board_section div[class^="section_"] #cache_flusher {
+  margin: -10px 0 20px 0;
+}
+.board_section .section_left {
+  float: left;
+}
+.board_section .section_right {
+  margin-left: 430px;
+  padding-top: 1px;
+}
+.board_section #flush_button {
+  width: 362px;
+  margin-left: 15px;
+}
+/******* PUBLICATIONS *********************************************************/
+.form_publication .controls {
+  margin-left: 10px;
+}
+#pub_icon {
+  width: 42px;
+  height: 42px;
+  float: left;
+}
+#pub_icon .thumb_wrapper {
+  width: 32px;
+  height: 32px;
+  margin: 5px auto;
+}
+#pub_icon .thumb_wrapper img {
+  width: 32px;
+  height: 32px;
+}
+#pub_fileupload {
+  height: 42px;
+  line-height: 42px;
+  margin-left: 47px;
+}
+/******* GLOBAL VALUES FORM ***************************************************/
+#GV_form_head .control-label {
+  width: 100px;
+  text-align: left;
+}
+#GV_form_head .controls {
+  margin-left: 110px;
+}
+#GV_form_head .controls input[type="checkbox"] {
+  margin-top: 8px;
+}
+#GV_form .error,
+#GV_form .NEW {
+  color: #ff0000;
+  font-weight: bold;
+}
+#GV_form .section {
+  padding-bottom: 10px;
+}
+#GV_form .section h1 {
+  font-weight: bold;
+  font-size: 16px;
+  text-align: left;
+  margin: 10px 0;
+  line-height: 22px;
+}
+#GV_form .section .control-label {
+  width: auto;
+  margin-left: 230px;
+  float: none;
+  text-align: left;
+}
+#GV_form .section .controls {
+  margin-left: 0;
+  float: left;
+}

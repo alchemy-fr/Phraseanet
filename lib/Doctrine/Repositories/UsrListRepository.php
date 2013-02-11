@@ -2,6 +2,7 @@
 
 namespace Repositories;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -42,7 +43,7 @@ class UsrListRepository extends EntityRepository
      * @param  type              $list_id
      * @return \Entities\UsrList
      */
-    public function findUserListByUserAndId(\User_Adapter $user, $list_id)
+    public function findUserListByUserAndId(Application $app, \User_Adapter $user, $list_id)
     {
         $list = $this->find($list_id);
 
@@ -51,7 +52,7 @@ class UsrListRepository extends EntityRepository
             throw new \Exception_NotFound(_('List is not found'));
         }
 
-        if ( ! $list->hasAccess($user)) {
+        if ( ! $list->hasAccess($user, $app)) {
             throw new \Exception_Forbidden(_('You have not access to this list'));
         }
 

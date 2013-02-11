@@ -1,0 +1,387 @@
+{% extends 'account/base.html.twig' %}
+
+{% block title %}
+    {% trans 'login:: register' %}
+{% endblock %}
+
+{% block menu %}
+
+{% endblock %}
+
+{% block head %}
+<script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.js,include/jslibs/jquery.validate.password.js,include/jslibs/jquery.validate.login.js"></script>
+<script type="text/javascript" src="/include/minify/f=include/account/geonames.js"></script>
+<script type="text/javascript">
+
+{% set sep = '' %}
+{% set msg ='' %}
+{% set rules = '' %}
+{% set msgRequiredField = 'forms::ce champ est requis' | trans %}
+{% set msgTooShortField = 'forms::la valeur donnee est trop courte' | trans %}
+{% set msgMatchField = 'forms::les mots de passe ne correspondent pas' | trans %}
+{% set msgInvalidMail = 'forms::l\'email semble invalide' | trans | e('js') %}
+{% set msgInvalidLogin = 'login invalide (5 caracteres sans accents ni espaces)' | trans | e('js') %}
+
+{% for ar, ver in arrayVerif if not ver %}
+    {% if ar != 'form_password' %}
+        {% if loop.first %}
+            {% set sep = ',' %}
+        {% endif %}
+
+        {% set rules = rules ~ sep ~ ar ~ ':{required:true}' %}
+        {% set msg = msg ~ sep ~ ar ~ ': {' %}
+        {% set msg = msg ~ 'required : "' ~ msgRequiredField ~ '"' %}
+
+        {% if ar == 'form_login' or ar == 'form_password' %}
+            {% set msg = msg ~ ' ,minlength: "' ~ msgTooShortField ~ '"' %}
+        {% endif %}
+        {% if ar == 'form_password' %}
+            {% set msg = msg ~ ' ,minlength: "' ~ msgTooShortField ~ '"' %}
+        {% endif %}
+        {% if ar == 'form_password_confirm' %}
+            {% set msg = msg ~ ' ,equalTo: "' ~ msgMatchField ~ '"' %}
+        {% endif %}
+        {% if ar == 'form_email' %}
+            {% set msg = msg ~ ',email:"' ~ msgInvalidMail ~ '"' %}
+        {% endif %}
+
+        {% set msg = msg ~ ',login:"' ~ msgInvalidLogin ~ '"' %}
+        {% set msg = msg ~ '}' %}
+    {% endif %}
+{% endfor %}
+
+
+    $(document).ready(function() {
+
+        $.validator.passwordRating.messages = {
+            "similar-to-username": "{% trans 'forms::le mot de passe est trop similaire a l\'identifiant' %}",
+            "too-short": "{% trans 'forms::la valeur donnee est trop courte' %}",
+            "very-weak": "{% trans 'forms::le mot de passe est trop simple' %}",
+            "weak": "{% trans 'forms::le mot de passe est simple' %}",
+            "good": "{% trans 'forms::le mot de passe est bon' %}",
+            "strong": "{% trans 'forms::le mot de passe est tres bon' %}"
+        }
+
+        $("#register").validate(
+        {
+            rules: {
+                {{ rules }}
+            },
+            messages: {
+                {{ msg }}
+            },
+            errorPlacement: function(error, element) {
+                error.prependTo(  element.parent().parent().find('.form_alert') );
+            }
+        }
+    );
+
+        $('#form_email').rules("add",{email:true});
+
+        $('#form_login').rules("add",{
+            minlength: 5
+        });
+
+        $('#form_password').rules("add",{password: "#form_login"});
+        $('#form_password_confirm').rules("add",{equalTo: "#form_password"});
+
+
+        $("#form_password").valid();
+
+        initialize_geoname_field($('#form_geonameid'));
+    });
+
+</script>
+{% endblock %}
+
+{% block content %}
+    {% if captcha_system != '' %}
+        <script type="text/javascript">
+        var RecaptchaOptions = {
+           theme : 'custom',
+           tabindex : 3,
+           lang : '{{ app['locale'] }}'
+        };
+        </script>
+    {% endif %}
+    <form id="register" class="form-horizontal" name="creation" action="/login/register/" method="POST">
+        <div id="form_register_table" style="font-size: 11px; margin: 0 auto;">
+            <div class="control-group">
+                <label class="form_label control-label" for="form_login">
+                    {% if arrayVerif['form_login'] is defined and arrayVerif['form_login'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur identifiant' %}<br/>
+                    <span style="font-size: 10px;">{% trans '5 caracteres minimum' %}</span>
+                </label>
+                <div class="controls">
+                    <input type="text" id="form_login" class="input_element" name="form_login" autocomplete="off" value="{{ parms['form_login'] is defined ? parms['form_login'] : '' }}" />
+                    <p class="form_alert help-block">{{ needed['form_login'] is defined ? needed['form_login'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_password">
+                    {% if arrayVerif['form_password'] is defined and arrayVerif['form_password'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur mot de passe' %}<br/>
+                    <span style="font-size: 10px;">{% trans '8 caracteres minimum' %}</span>
+                </label>
+                <div class="controls">
+                    <input type="password" id="form_password" class="input_element password" name="form_password" autocomplete="off" value="{{ parms['form_password'] is defined ? parms['form_password'] : '' }}" />
+                    <p class="form_alert help-block">
+                        <span style="color: #FFF;">{% trans 'Resistance du mot de passe' %}</span><br/>
+                        {{ needed['form_password'] is defined ? needed['form_password'] : '' }}
+                        <div class="password-meter">
+                            <p class="password-meter-message">&nbsp;</p>
+                            <div class="password-meter-bg">
+                                <div class="password-meter-bar"></div>
+                            </div>
+                        </div>
+                    </p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_password_confirm">
+                    {% if arrayVerif['form_password_confirm'] is defined and arrayVerif['form_password_confirm'] == true %}<span class="requiredField">*</span>{% endif %}
+                    <span style="font-size: 10px;">{% trans 'Confirmation' %}</span>
+                </label>
+                <div class="controls">
+                    <input type="password" id="form_password_confirm" class="input_element" name="form_password_confirm" autocomplete="off" type="password" value="{{ parms['form_password_confirm'] is defined ? parms['form_password_confirm']  : '' }}" />
+                    <p class="form_alert help-block">{{ needed['form_password_confirm'] is defined ? needed['form_password_confirm'] : '' }}</p>
+                </div>
+            </div>
+            <div style="margin: 20px 0;">
+                <a href="#" onclick="$('#password_infos').slideToggle();return false;" style="color: #FFF; font-size: 13px;">{% trans 'admin::compte-utilisateur A propos de la securite des mots de passe' %}</a>
+                <div id="password_infos" style="display: none;">
+                    <p style="text-align: center; margin: 20px 0 0;">
+                        {% trans 'admin::compte-utilisateur Les mots de passe doivent etre clairement distincts du login et contenir au moins deux types parmis les caracteres suivants :' %}
+                    </p>
+                    <ul style="text-align: left; width: 300px;">
+                        <li>{% trans 'admin::compte-utilisateur::securite caracteres speciaux' %}</li>
+                        <li>{% trans 'admin::compte-utilisateur::securite caracteres majuscules' %}</li>
+                        <li>{% trans 'admin::compte-utilisateur::securite caracteres minuscules' %}</li>
+                        <li>{% trans 'admin::compte-utilisateur::securite caracteres numeriques' %}</li>
+                    </ul>
+                </div>
+            </div>
+            <hr />
+            <div class="control-group">
+                <label class="form_label control-label" for="form_email">
+                    {% if arrayVerif['form_email'] is defined and arrayVerif['form_email'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur email' %}
+                </label>
+                <div class="controls">
+                    <input type="text" id="form_email" class="input_element" name="form_email" autocomplete="off" value="{{ parms['form_email'] is defined ? parms['form_email'] : '' }}" />
+                    <p class="form_alert help-block">{{ needed['form_email'] is defined ? needed['form_email'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_city">
+                    {% if arrayVerif['form_geonameid'] is defined and arrayVerif['form_geonameid'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur ville' %}
+                </label>
+                <div class="controls">
+                    <input type="text" id="form_geonameid" class="input_element geoname_field" name="form_geonameid" geonameid="{{ parms['form_geonameid'] is defined ? parms['form_geonameid'] : '' }}" value="{{ parms['form_geonameid'] is defined ? geonames.name_from_id(parms['form_geonameid'], app) : ''}}" />
+                    <p class="form_alert help-block">{{ needed['form_geonameid'] is defined ? needed['form_geonameid'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label">
+                    {% trans 'admin::compte-utilisateur sexe' %}
+                </label>
+                <div class="controls">
+                    <label class="radio">
+                        <input type="radio" class="radio" name="form_gender" style="width: 10px;"{% if parms["form_gender"] is defined and parms["form_gender"] == 0 %}checked{% endif %} value="0" />
+                        {% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}
+                    </label>
+                    <label class="radio">
+                        <input type="radio" class="radio" name="form_gender" style="width: 10px;"{% if parms["form_gender"] is defined and parms["form_gender"] == 1 %}checked{% endif %} value="1" />
+                        {% trans 'admin::compte-utilisateur:sexe: madame' %}
+                    </label>
+                    <label class="radio">
+                        <input type="radio" class="radio" name="form_gender" style="width: 10px;"{% if parms["form_gender"] is defined and parms["form_gender"] == 2 %}checked{% endif %} value="2" />
+                        {% trans 'admin::compte-utilisateur:sexe: monsieur' %}
+                    </label>
+                    <p class="form_alert help-block">{{ needed['form_gender'] is defined ? needed['form_gender'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_lastname">
+                    {% if arrayVerif['form_lastname'] is defined and arrayVerif['form_lastname'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur nom' %}
+                </label>
+                <div class="controls">
+                    <input type="text" id="form_lastname" class="input_element" name="form_lastname" autocomplete="off" value="{{ parms['form_lastname'] is defined ? parms['form_lastname'] : '' }}" />
+                    <p class="form_alert help-block">{{ needed['form_lastname'] is defined ? needed['form_lastname'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_firstname">
+                    {% if arrayVerif['form_firstname'] is defined and arrayVerif['form_firstname'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur prenom' %}
+                </label>
+                <div class="controls">
+                    <input type="text" id="form_firstname" class="input_element" name="form_firstname" autocomplete="off" value="{{ parms['form_firstname'] is defined ? parms['form_firstname'] : '' }}" />
+                    <p class="form_alert help-block">{{ needed['form_firstname'] is defined ? needed['form_firstname'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_job">
+                    {% if arrayVerif['form_job'] is defined and arrayVerif['form_job'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur poste' %}
+                </label>
+                <div class="controls">
+                    <input type="text" id="form_job" class="input_element" name="form_job" autocomplete="off" value="{{ parms['form_job'] is defined ? parms['form_job'] : '' }}" />
+                    <p class="form_alert help-block">{{ needed['form_job'] is defined ? needed['form_job'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_activity">
+                    {% if arrayVerif['form_activity'] is defined and arrayVerif['form_activity'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur activite' %}
+                </label>
+                <div class="controls">
+                    <input type="text" id="form_activity" class="input_element" name="form_activity" autocomplete="off" value="{{ parms['form_activity'] is defined ? parms['form_activity'] : '' }}" />
+                    <p class="form_alert help-block">{{ needed['form_activity'] is defined ? needed['form_activity'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_phone">
+                    {% if arrayVerif['form_phone'] is defined and arrayVerif['form_phone'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur telephone' %}
+                </label>
+                <div class="controls">
+                    <input type="text" id="form_phone" class="input_element" name="form_phone" autocomplete="off" value="{{ parms['form_phone'] is defined ? parms['form_phone'] : '' }}" />
+                    <p class="form_alert help-block">{{ needed['form_phone'] is defined ? needed['form_phone'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_fax">
+                    {% if arrayVerif['form_fax'] is defined and arrayVerif['form_fax'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur fax' %}
+                </label>
+                <div class="controls">
+                    <input type="text" id="form_fax" class="input_element" name="form_fax" autocomplete="off" value="{{ parms['form_fax'] is defined ? parms['form_fax'] : '' }}" />
+                    <p class="form_alert help-block">{{ needed['form_fax'] is defined ? needed['form_fax'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_company">
+                    {% if arrayVerif['form_company'] is defined and arrayVerif['form_company'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur societe' %}
+                </label>
+                <div class="controls">
+                    <input type="text" id="form_company" class="input_element" name="form_company" autocomplete="off" value="{{ parms['form_company'] is defined ? parms['form_company'] : '' }}" />
+                    <p class="form_alert help-block">{{ needed['form_company'] is defined ? needed['form_company'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_address">
+                    {% if arrayVerif['form_address'] is defined and arrayVerif['form_address'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur adresse' %}
+                </label>
+                <div class="controls">
+                    <input type="text" id="form_address" class="input_element" name="form_address" autocomplete="off" value="{{ parms['form_address'] is defined ? parms['form_address'] : '' }}" />
+                    <p class="form_alert help-block">{{ needed['form_address'] is defined ? needed['form_address'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="form_zip">
+                    {% if arrayVerif['form_zip'] is defined and arrayVerif['form_zip'] == true %}<span class="requiredField">*</span>{% endif %}
+                    {% trans 'admin::compte-utilisateur code postal' %}
+                </label>
+                <div class="controls">
+                    <input id="form_zip" autocomplete="off" type="text" value="{{ parms['form_zip'] is defined ? parms['form_zip'] : '' }}" class="input_element" name="form_zip" />
+                    <p class="form_alert help-block">{{ needed['form_zip'] is defined ? needed['form_zip'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="captcha_protecion">
+                    {% trans 'Robots SPAM protection :l' %}
+                </label>
+                <div class="controls">
+                    {{ captcha_system | raw }}
+                </div>
+            </div>
+            <hr />
+        </div><!-- /form_register_table -->
+
+        {% if app['phraseanet.registry'].get('GV_autoselectDB') %}
+            <div class="well-small">
+                <p style="text-align:center">
+                    {% trans 'admin::compte-utilisateur actuellement, acces aux bases suivantes : ' %}
+                </p>
+
+                <p class="requiredField" style="text-align:center">
+                    {{ needed['demand'] is defined ? needed['demand'] : '' }}
+                </p>
+
+                <table border="0" style="width:100%">
+                    {% for sbasId, baseInsc in inscriptions %}
+                        {% if (baseInsc['CollsCGU'] or baseInsc['Colls']) and baseInsc['inscript'] %}
+                            <tr>
+                                <td colspan="3" style="text-align: center;">
+                                    <h3 style="margin: 15px 0pt 2px;" class="inscriptbase">{{ sbasId |sbas_names(app) }}</h3>
+                                </td>
+                            </tr>
+                            {% if baseInsc['Colls'] %}
+                                {% if baseInsc['CGU'] %}
+                                    <tr>
+                                        <td colspan="3" style="text-align: center;">
+                                            {% trans 'login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes' %}<br/>
+                                            <a target="_blank" class="inscriptlink" href="/prod/TOU/?to_display[]={{sbasId}}">{% trans 'login::register::CGU: ouvrir dans une nouvelle fenetre' %}</a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                {% for collId, collName in baseInsc['Colls'] %}
+                                    {% set baseId = sbasId |base_from_coll(collId, app) %}
+                                    <tr>
+                                        <td style="text-align: right;">{{ collName }}</td>
+                                        <td style="text-align: left;">
+                                            <input type="checkbox" class="checkbox" checked="{{ baseId in demandes ? 'checked' : '' }}" name="demand[]" value="{{ baseId }}" style="width: 15px;" >
+                                            <span>{% trans 'login::register: Faire une demande d\'acces' %}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            {% if baseInsc['CollsCGU'] %}
+                                {% for collId, collDesc in baseInsc['CollsCGU'] %}
+                                    {% set baseId = sbasId |base_from_coll(collId, app) %}
+                                    <tr>
+                                        <td colspan="3" style="text-align: center;">
+                                            <hr style="width: 80%"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" style="text-align:center;">
+                                            {% trans 'login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes' %}<br/>
+                                            <a target="_blank" class="inscriptlink" href="/prod/TOU/?to_display[]={{sbasId}}">{% trans 'login::register::CGU: ouvrir dans une nouvelle fenetre' %}</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right;">{{ collDesc['name'] }}</td>
+                                        <td style="text-align: left;">
+                                            <input style="width:15px;" class="checkbox" type="checkbox" checked="{{ baseId in demandes ? 'checked' : '' }}" name="demand[]" value="{{ baseId }}" >
+                                            <span>{% trans 'login::register: Faire une demande d\'acces' %}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            </div>
+        {% endif %}
+
+        <input type="hidden" value="{{ lng }}" name="lng">
+        <div style="margin: 10px 0; text-align: center;">
+            <input type="submit" class="btn" value="{% trans 'boutton::valider' %}" />
+        </div>
+    </form>
+
+    <script type="text/javascript">
+
+        $('.tab').hover(function(){
+            $(this).addClass('active');
+        }, function(){
+            $(this).removeClass('active');
+        });
+    </script>
+{% endblock %}

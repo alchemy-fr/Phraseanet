@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,11 +11,8 @@
 
 namespace Alchemy\Phrasea\Core\Service\Cache;
 
-use Alchemy\Phrasea\Core,
-    Alchemy\Phrasea\Core\Service,
-    Alchemy\Phrasea\Core\Service\ServiceAbstract,
-    Alchemy\Phrasea\Core\Service\ServiceInterface,
-    Alchemy\Phrasea\Cache as CacheDriver;
+use Alchemy\Phrasea\Core\Service\ServiceAbstract;
+use Alchemy\Phrasea\Cache as CacheDriver;
 
 /**
  *
@@ -50,7 +47,7 @@ class RedisCache extends ServiceAbstract
             throw new \Exception('The Redis cache requires the Redis extension.');
         }
 
-        if ( ! $this->cache) {
+        if (! $this->cache) {
             $redis = new \Redis();
 
             if ($redis->connect($this->host, $this->port)) {
@@ -84,4 +81,3 @@ class RedisCache extends ServiceAbstract
         return $this->port;
     }
 }
-

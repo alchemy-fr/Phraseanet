@@ -57,10 +57,10 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
         return parent::setUsrId($usrId);
     }
 
-    public function getUser()
+    public function getUser(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getUser();
+        return parent::getUser($app);
     }
 
     public function setCreated($created)
@@ -126,7 +126,7 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

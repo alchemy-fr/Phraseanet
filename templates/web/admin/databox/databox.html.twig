@@ -1,0 +1,372 @@
+{% if reloadTree %}
+    <script type="text/javascript">
+        reloadTree('bases:bases');
+    </script>
+{% endif %}
+
+<div class="header">
+    <h1>{{ databox.get_serialized_server_info() }}</h1>
+</div>
+
+{% if app['request'].query.get('success') == '1' %}
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'forms::operation effectuee OK' %}
+    </div>
+{% elseif app['request'].query.get('success') == '0' %}
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <strong>{% trans 'An error occured' %}</strong>
+        {% if errorMsg is not none %}
+            {{ errorMsg }}
+        {% endif %}
+    </div>
+{% endif %}
+
+<ul>
+    <li>
+        ID : {{ databox.get_sbas_id() }}
+    </li>
+
+    <li>
+    {% trans 'admin::base: Alias' %} : <span id="viewname">{{ databox.get_viewname() }}</span>
+    {% if app['phraseanet.user'].ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
+        <img src="/skins/icons/edit_0.gif" id="show-view-name" />
+        <div class="well well-small" id="change-view-name" style="display:none;">
+            <form method="post" action="{{ path('admin_database_rename', {'databox_id': databox.get_sbas_id()}) }}">
+                <div class="input-append">
+                    <input id="db-view-name" name="viewname" class="span2" type="text" size="16">
+                    <button class="btn" type="submit">{% trans 'Rename' %}</button>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+    </li>
+
+    <li>
+        {% trans 'admin::base: nombre d\'enregistrements sur la base :' %}
+        <span id="nrecords">{{ databox.get_record_amount() }}</span>
+
+        (<a href="{{ path('admin_database_display_document_details', {'databox_id': databox.get_sbas_id()}) }}" class="ajax" target="rights">{% trans 'phraseanet:: details'%}</a>)
+    </li>
+
+    {% if showDetail %}
+        <li>
+            {% trans 'admin::base: nombre de mots uniques sur la base : ' %}
+            {{ databox.get_unique_keywords() }}
+        </li>
+        <li>
+            {% trans 'admin::base: nombre de mots indexes sur la base' %}
+            {{ databox.get_index_amount() }}
+        </li>
+        {% if app['phraseanet.registry'].get('GV_thesaurus') %}
+            <li>
+            {% trans 'admin::base: nombre de termes de Thesaurus indexes :' %}
+            {{ databox.get_thesaurus_hits() }}
+            </li>
+        {% endif %}
+    {% endif %}
+</ul>
+
+<div id="INDEX_P_BAR" style="margin-bottom:20px;">
+    <div style="height: 35px;">
+        <p>
+            {% trans "admin::base: document indexes en utilisant la fiche xml" %} :
+            <span id="xml_indexed"></span>
+        </p>
+        <div id="xml_indexed_bar"></div>
+        <div id="xml_indexed_percent"></div>
+    </div>
+    <div style="height: 35px;">
+        <p>
+            {% trans "admin::base: document indexes en utilisant le thesaurus" %} :
+            <span id="thesaurus_indexed"></span>
+        </p>
+        <div id="thesaurus_indexed_bar"></div>
+        <div id="thesaurus_indexed_percent"></div>
+    </div>
+</div>
+
+{% if app['phraseanet.user'].ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
+    <div class="well well-small">
+         <form method="post" action="{{ path('admin_database_set_indexable', {'databox_id': databox.get_sbas_id()}) }}" style="margin:0;">
+             <label class="checkbox" for="is_indexable">
+                <input type="checkbox" id="is_indexable" name="indexable" {{ app['phraseanet.appbox'].is_databox_indexable(databox) ? 'checked' : ''}} />
+                {% trans "admin::base: Cette base est indexable" %}
+            </label>
+        </form>
+    </div>
+
+    <div class="btn-group well well-small">
+
+        <form method="post" action="{{ path('admin_database_reindex', {'databox_id': databox.get_sbas_id()}) }}">
+            <button type="button" class="btn submiter confirm" data-confirm-msg="{% trans 'Confirmez-vous la re-indexation de la base ?' %}">
+                {% trans "base:: re-indexer" %}
+            </button>
+        </form>
+
+        <a style="display:inline-block; margin-right:3px;" target="right" class="ajax btn" href="{{ path('admin_database_display_new_collection_form', {'databox_id': databox.get_sbas_id()}) }}">
+            <img src="/skins/icons/create_coll.png" />
+            {% trans "admin::base:collection: Creer une collection" %}
+        </a>
+
+        <form style="display:inline;" method="post" action="{{ path('admin_database_clear_logs', {'databox_id': databox.get_sbas_id()}) }}">
+            <button type="button" class="btn submiter confirm"
+                    data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de tous les logs' %}">
+                <img src="/skins/icons/clearLogs.png" />
+                {% trans "admin::base: supprimer tous les logs" %}
+            </button>
+        </form>
+
+        <form style="display:inline;" method="post" action="{{ path('admin_database_unmount', {'databox_id': databox.get_sbas_id()}) }}">
+            <button class="btn confirm" data-confirm-msg="{% trans 'admin::base: Confirmer vous l\'arret de la publication de la base' %}">
+                <img src="/skins/icons/db-remove.png" />
+                {% trans "admin::base: arreter la publication de la base" %}
+            </button>
+        </form>
+
+        <form style="display:inline;" method="post" action="{{ path('admin_database_empty', {'databox_id': databox.get_sbas_id()}) }}">
+            <button type="button" class="btn submiter confirm" data-confirm-msg="{% trans 'admin::base: Confirmer le vidage complet de la base' %}">
+                <img src="/skins/icons/trash.png" />
+                {% trans "admin::base: vider la base" %}
+            </button>
+        </form>
+
+         <form style="display:inline;" method="post" action="{{ path('admin_database_delete', {'databox_id': databox.get_sbas_id()}) }}">
+            <button type="button" class="btn submiter confirm" data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de la base' %}">
+                <img src="/skins/icons/delete.gif" />
+                {% trans "admin::base: supprimer la base" %}
+            </button>
+         </form>
+    </div>
+
+    {% if databox.get_mountable_colls()| length > 0 %}
+        <div class="well well-small">
+            <a href="#" class="btn" id="show-mount-coll">
+                <img src="/skins/icons/create_coll.png" />
+                {% trans "admin::base:collection: Monter une collection" %}
+            </a>
+            <div class="well well-small" id="mount-coll" style="display:none;">
+                <ul>
+                {% for collId, name in databox.get_mountable_colls() %}
+                    <li>
+                        <form class="form-inline" method="post" action="{{ path('admin_database_mount_collection', {'databox_id': databox.get_sbas_id(), 'collection_id' : collId }) }}">
+                            {% trans "Monter" %} {{ name }}
+                            {% if app['phraseanet.user'].ACL().get_granted_base(["canadmin"]) | length > 0 %}
+                                <label for="othcollsel">{% trans "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces " %}</label>
+                                <select id="othcollsel" name="othcollsel" >
+                                    <option>{% trans "choisir" %}</option>
+                                    {% for collection in databox.get_collections() %}
+                                        <option value="{{ collection.get_base_id() }}">{{ collection. get_name() }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                            <a href="#" class="btn btn-mini submiter">
+                                <img src="/skins/icons/create_coll.png" />
+                                {% trans "admin::base:collection: Monter une collection" %}
+                            </a>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+
+    {% if databox.get_activable_colls()| length > 0 %}
+        <div class="well well-small">
+            <a href="#" class="btn" id="show-activate-coll">
+                <img src="/skins/icons/create_coll.png"/>
+                {% trans "Activer une collection" %}
+            </a>
+            <div class="well well-small" id="activate-coll" style="display:none;">
+                <ul>
+                {% for baseId in databox.get_activable_colls() %}
+                    <li>
+                        <form class='form-inline' method="post" action="{{ path('admin_collection_enable', {'bas_id': baseId}) }}">
+                            {{ baseId|bas_names(app) }}
+                            <a href="#" class="btn btn-mini submiter">{% trans "Activer" %}></a>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
+
+<div class="logo_box">
+    <hr>
+    <h4>{% trans "admin::base: logo impression PDF" %}</h4>
+    <div id="printLogoDIV_OK">
+        <img class="thumbnail" id="printLogo" src="/custom/minilogos/logopdf_{{ databox.get_sbas_id() }}.jpg" />
+        {% if app['phraseanet.user'].ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
+            <form method="post" target="right" action="{{ path('admin_database_delete_logo', {'databox_id': databox.get_sbas_id()}) }}" >
+                <button class="btn btn-mini btn-danger">{% trans "admin::base:collection: supprimer le logo" %}</button>
+            </form>
+        {% endif %}
+    </div>
+    <div id="printLogoDIV_NONE">
+        {% trans "admin::base:collection: aucun fichier (minilogo, watermark ...)" %}
+            {% if app['phraseanet.user'].ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
+                <input id="fileupload" class="no-ajax" type="file" name="newLogoPdf" data-url="{{ path('admin_database_submit_logo', {'databox_id': databox.get_sbas_id()}) }}" accept="image/jpg, image/jpeg">
+                <i>{% trans "admin::base: envoyer un logo (jpeg 35px de hauteur max)" %}</i>
+            {% endif %}
+    </div>
+</div>
+
+<script type="text/javascript">
+    function refreshDatabaseInformations()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/admin/databox/{{ databox.get_sbas_id() }}/informations/documents/",
+            dataType: 'json',
+            data: {},
+            success: function(data){
+                if(data.viewname == '') {
+                    $("#viewname").html("{% trans 'admin::base: aucun alias' %}");
+                } else {
+                    $("#viewname").html(data.viewname);
+                }
+
+                $("#nrecords").text(data.records);
+                $("#is_indexable").attr('checked', data.indexable);
+                $("#xml_indexed").text(data.xml_indexed);
+                $("#thesaurus_indexed").text(data.thesaurus_indexed);
+
+                if(data.records > 0)
+                {
+                    var p;
+                    p = 100*data.xml_indexed/data.records;
+                    $("#xml_indexed_bar").width(Math.round(2*p)); // 0..200px
+                    $("#xml_indexed_percent").text((Math.round(p*100)/100)+" %");
+                    p = 100*data.thesaurus_indexed/data.records;
+                    $("#thesaurus_indexed_bar").width(Math.round(2*p));
+                    $("#thesaurus_indexed_percent").text((Math.round(p*100)/100)+" %");
+                }
+
+                if(data.printLogoURL)
+                {
+                    $("#printLogo").attr("src", data.printLogoURL);
+                    $("#printLogoDIV_NONE").hide();
+                    $("#printLogoDIV_OK").show();
+                }
+                else
+                {
+                    $("#printLogoDIV_OK").hide();
+                    $("#printLogoDIV_NONE").show();
+                }
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        refreshDatabaseInformations();
+
+        $('#is_indexable').bind('click', function(){
+            var form = $(this).closest('form');
+
+            $.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serializeArray(),
+                success: function(datas) {
+                    if(datas.success) {
+                        if(submitLink.hasClass('reload')) {
+                            reloadTree('base:{{ databox.get_sbas_id() }}');
+                        }
+                    } else {
+                        alert(datas.msg);
+                    }
+                }
+             });
+        });
+
+        $("#show-view-name").bind('click', function(){
+            $("#change-view-name").toggle();
+        });
+
+        $("#show-activate-coll").bind('click', function(){
+            $("#activate-coll").toggle();
+        });
+
+        $("#show-mount-coll").bind('click', function(){
+            $("#mount-coll").toggle();
+        });
+
+        $("div.right .submiter").bind("click", function() {
+            var $this = $(this);
+            var form = $this.closest('form');
+
+            if($this.hasClass('confirm')) {
+                if(confirm($this.data('confirm-msg'))) {
+                    submitForm($this, form);
+                }
+            } else {
+                submitForm($this, form);
+            }
+        });
+
+        function submitForm(submitLink, form) {
+
+            form.bind('submit', function(){
+                return false;
+            });
+
+            $.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serializeArray(),
+                before : function() {
+                    submitLink.attr('disabled', true).addClass('disabled');
+                },
+                success: function(datas) {
+                    if(datas.success) {
+                        if(submitLink.hasClass('reload')) {
+                            reloadTree('base:{{ databox.get_sbas_id() }}');
+                        }
+                    } else {
+                        alert(datas.msg);
+                    }
+                },
+                complete: function() {
+                    submitLink.attr('disabled', false).removeClass('disabled');
+                }
+            });
+        }
+
+        setTimeout("refreshDatabaseInformations();", 6000);
+
+
+
+        $('#fileupload').fileupload({
+            dataType: 'html',
+            add: function(e, data) {
+                if( ! /(\.|\/)(jpe?g)$/i.test(data.files[0].type)) {
+                    {% set supported_file_types = ['jpg']|join(' | ') %}
+                    alert("{% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}");
+
+                    return false;
+                }
+
+                data.submit();
+            },
+            submit: function(e, data) {
+              $('#right-ajax').empty().addClass('loading');
+            },
+            done: function (e, data) {
+               $('#right-ajax').removeClass('loading').html(data.result);
+                enableForms($('#right-ajax form:not(.no-ajax)'));
+
+                $.each($('#right-ajax a'),function(i, el){
+                    enableLink($(el));
+                });
+            }
+        });
+    });
+
+</script>

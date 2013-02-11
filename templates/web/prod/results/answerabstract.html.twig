@@ -1,0 +1,22 @@
+{% import 'prod/results/record.html.twig' as record_format %}
+
+{% if results.getError() %}
+<div>{{results.getError()}}</div>
+{% else %}
+  {% if results.getWarning() %}
+    <div>{{results.getWarning()}}</div>
+  {% endif %}
+
+  {% if suggestions %}
+    {% set suggestions = suggestions|e %}
+    {% set link = '<a href="#" onclick="doSpecialSearch(\'' ~ suggestions ~ '\');return false;">' ~ suggestions ~ '</a>' %}
+    {% trans %}
+      Voulez-vous dire {{link}} ?
+    {% endtrans %}
+    <br/>
+  {% endif %}
+  {% set th_size = app['phraseanet.user'].getPrefs('images_size')%}
+  <div class="selectable" style="margin:10px 0; float:left;">
+    {% block content %}{% endblock %}
+  </div>
+{% endif %}

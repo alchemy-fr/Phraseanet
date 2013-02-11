@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use \Doctrine\Common\Cache\MemcacheCache as DoctrineMemcache;
+use Doctrine\Common\Cache\MemcacheCache as DoctrineMemcache;
 
 /**
  *
@@ -21,7 +21,7 @@ use \Doctrine\Common\Cache\MemcacheCache as DoctrineMemcache;
 class MemcacheCache extends DoctrineMemcache implements Cache
 {
 
-     /**
+    /**
      * {@inheritdoc}
      */
     public function getName()
@@ -37,7 +37,7 @@ class MemcacheCache extends DoctrineMemcache implements Cache
         return $this->getMemcache()->getstats();
     }
 
-     /**
+    /**
      * {@inheritdoc}
      */
     public function isServer()
@@ -45,7 +45,7 @@ class MemcacheCache extends DoctrineMemcache implements Cache
         return true;
     }
 
-     /**
+    /**
      * {@inheritdoc}
      */
     public function get($key)
@@ -57,7 +57,7 @@ class MemcacheCache extends DoctrineMemcache implements Cache
         return $this->fetch($key);
     }
 
-     /**
+    /**
      * {@inheritdoc}
      */
     public function deleteMulti(array $keys)

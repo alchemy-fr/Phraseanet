@@ -81,10 +81,9 @@ function getHome(cas, page){
         case 'HELP':
             $.ajax({
                 type: "POST",
-                url: "/client/clientFeedBack.php",
+                url: "/client/home/",
                 dataType: 'html',
                 data: {
-                    action: "HOME",
                     type: cas
                 },
                 beforeSend: function(){
@@ -202,9 +201,9 @@ function checkFilters(save)
 
     $('#sbasfiltercont select option.field_switch').hide();
 
-    $('#sbasfiltercont input:checked').removeAttr('checked');
+    $('#sbasfiltercont input.field_switch:checked').removeAttr('checked');
 
-    $('#sbasfiltercont input:checkbox').parent().hide();
+    $('#sbasfiltercont input.field_switch:checkbox').parent().hide();
 
     $('.field_filter, .status_filter, .date_filter', adv_box).removeClass('danger');
 
@@ -265,9 +264,9 @@ function checkFilters(save)
         $('.status_filter', adv_box) .addClass('danger');
     });
 
-    search.dates.minbound 	= $('.date_filter input[name=datemin]', adv_box).val();
-    search.dates.maxbound 	= $('.date_filter input[name=datemax]', adv_box).val();
-    search.dates.field 		= $('.date_filter select[name=datefield]', adv_box).val();
+    search.dates.minbound 	= $('.date_filter input[name=date_min]', adv_box).val();
+    search.dates.maxbound 	= $('.date_filter input[name=date_max]', adv_box).val();
+    search.dates.field 		= $('.date_filter select[name=date_field]', adv_box).val();
 
     if($.trim(search.dates.minbound) || $.trim(search.dates.maxbound))
     {
@@ -1623,67 +1622,27 @@ function toggleRemoveReg(el)
 
 function deleteThis(lst)
 {
-    var n = lst.split(';').length;
+    if(lst.split(';').length === 0 ) {
+        alert(langage.nodocselected);
+        return false;
+    }
+
+    var $dialog = p4.Dialog.Create({
+        size:'Small',
+        title: language.deleteRecords
+    });
 
     $.ajax({
         type: "POST",
-        url: "/prod/prodFeedBack.php",
-        dataType: 'json',
-        data: {
-            action: "DELETE",
-            lst: lst
-        },
+        url: "/prod/records/delete/what/",
+        dataType: 'html',
+        data: {lst: lst},
         success: function(data){
-
-            if(data.lst.length > 0)
-            {
-                if(data.lst.length != n)
-                {
-                    alert(language.candeletesome);
-                }
-
-                var texte = '<p style="padding: 10px 0pt; background-color: red; color: black; font-weight: bold;">' + '<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>'+language.confirmDelete;
-                if(data.groupings > 0)
-                    texte += '<div><input type="checkbox" id="del_children" /><label for="del_children">' + language.confirmGroup + '</label></div>';
-                texte += '</p>';
-
-                var buttons = {};
-
-                buttons[language.deleteTitle+' ('+data.lst.length+')'] = function() {
-                    $("#DIALOG").dialog('close').dialog('destroy');
-                    doDelete(data.lst);
-                };
-
-                buttons[language.annuler] = function() {
-                    $("#DIALOG").dialog('close').dialog('destroy');
-                };
-
-
-                $("#DIALOG").dialog('destroy').attr('title',language.deleteTitle)
-                .empty()
-                .append(texte)
-                .dialog({
-
-                    autoOpen:false,
-                    closeOnEscape:true,
-                    resizable:false,
-                    draggable:false,
-                    modal:true,
-                    draggable:false,
-                    overlay: {
-                        backgroundColor: '#000',
-                        opacity: 0.7
-                    }
-                }).dialog('open').dialog('option','buttons',buttons);
-                $('#tooltip').hide();
-
-            }
-            else
-            {
-                alert(language.candeletedocuments);
-            }
+            $dialog.setContent(data);
         }
     });
+
+    return false;
 }
 
 function chgCollThis(datas)
@@ -1703,31 +1662,6 @@ function chgCollThis(datas)
     });
 }
 
-function chgStatusThis(url)
-{
-    url = "docfunction.php?"+url;
-    $('#MODALDL').attr('src','about:blank');
-    $('#MODALDL').attr('src',url);
-
-
-    var t = (bodySize.y - 400) / 2;
-    var l = (bodySize.x - 550) / 2;
-
-    $('#MODALDL').css({
-        'display': 'block',
-        'opacity': 0,
-        'width': '550px',
-        'position': 'absolute',
-        'top': t,
-        'left': l,
-        'height': '400px'
-    }).fadeTo(500, 1);
-
-    showOverlay(2);
-    $('#tooltip').hide();
-}
-
-
 function pushThis(sstt_id, lst, story)
 {
     $dialog = p4.Dialog.Create({
@@ -1735,20 +1669,15 @@ function pushThis(sstt_id, lst, story)
         title:'Push'
     });
 
-    $.post("/prod/push/sendform/"
-        , {
-            lst : lst,
-            ssel : sstt_id,
-            story : story
-        }
-        , function(data){
-            $dialog.setContent(data);
-            return;
-        }
-        );
-
+    $.post("/prod/push/sendform/", {
+        lst : lst,
+        ssel : sstt_id,
+        story : story
+    }, function(data){
+        $dialog.setContent(data);
+        return;
+    });
 }
-
 
 function feedbackThis(sstt_id, lst, story)
 {
@@ -1758,17 +1687,14 @@ function feedbackThis(sstt_id, lst, story)
         title:'Feedback'
     });
 
-    $.post("/prod/push/validateform/"
-        , {
-            lst : lst,
-            ssel : sstt_id,
-            story : story
-        }
-        , function(data){
-            $dialog.setContent(data);
-            return;
-        }
-        );
+    $.post("/prod/push/validateform/", {
+        lst : lst,
+        ssel : sstt_id,
+        story : story
+    }, function(data){
+        $dialog.setContent(data);
+        return;
+    });
 }
 
 function toolREFACTOR(datas){
@@ -1930,7 +1856,6 @@ function activeIcons()
                 }
             }
         }
-
         if(type !== '')
         {
             checkDeleteThis(type, el);
@@ -2152,52 +2077,39 @@ function activeIcons()
     });
 
     $('.TOOL_chgstatus_btn').live('click', function(){
-        var value="";
+        var params = {};
+        var $this = $(this);
 
-
-        if($(this).hasClass('results_window'))
-        {
-            if(p4.Results.Selection.length() > 0)
-                value = "lst=" + p4.Results.Selection.serialize();
-        }
-        else
-        {
-            if($(this).hasClass('basket_window'))
-            {
-                if(p4.WorkZone.Selection.length() > 0)
-                    value = "lst=" + p4.WorkZone.Selection.serialize();
-                else
-                    value = "SSTTID=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+        if ($this.hasClass('results_window')) {
+            if (p4.Results.Selection.length() > 0) {
+                params.lst = p4.Results.Selection.serialize();
             }
-            else
-            {
-                if($(this).hasClass('basket_element'))
-                {
-                    value = "SSTTID=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+        } else {
+            if ($this.hasClass('basket_window')) {
+                if (p4.WorkZone.Selection.length() > 0) {
+                    params.lst = p4.WorkZone.Selection.serialize();
+                } else {
+                    params.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
                 }
-                else
-                {
-                    if($(this).hasClass('story_window'))
-                    {
-                        if(p4.WorkZone.Selection.length() > 0)
-                        {
-                            value = "lst=" + p4.WorkZone.Selection.serialize();
-                        }
-                        else
-                        {
-                            value = "story=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            } else {
+                if ($this.hasClass('basket_element')) {
+                     params.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+                } else {
+                    if ($this.hasClass('story_window')) {
+                        if (p4.WorkZone.Selection.length() > 0) {
+                            params.lst = p4.WorkZone.Selection.serialize();
+                        } else {
+                            params.story = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
                         }
                     }
                 }
             }
         }
 
-        if(value !== '')
-        {
-            chgStatusThis(value);
-        }
-        else
-        {
+        if (false === $.isEmptyObject(params)) {
+            var dialog = p4.Dialog.Create();
+            dialog.load('/prod/records/property/', 'GET', params);
+        } else {
             alert(language.nodocselected);
         }
     });
@@ -2371,14 +2283,14 @@ function activeIcons()
                 }
                 else
                 {
-                    datas.SSTTID = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+                    datas.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
                 }
             }
             else
             {
                 if($(this).hasClass('basket_element'))
                 {
-                    datas.SSTTID = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+                    datas.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
                 }
                 else
                 {
@@ -2459,27 +2371,8 @@ function checkDeleteThis(type, el)
 }
 function shareThis(bas,rec)
 {
-    var url = "/prod/share.php?bas="+bas+"&rec="+rec;
-
-    $('#MODALDL').attr('src','about:blank');
-    $('#MODALDL').attr('src',url);
-
-
-    var t = (bodySize.y - 400) / 2;
-    var l = (bodySize.x - 550) / 2;
-
-    $('#MODALDL').css({
-        'display': 'block',
-        'opacity': 0,
-        'width': '550px',
-        'position': 'absolute',
-        'top': t,
-        'left': l,
-        'height': '400px'
-    }).fadeTo(500, 1);
-
-    showOverlay(2);
-    $('#tooltip').hide();
+    var dialog = p4.Dialog.Create({title: language['share'], size:'Small'});
+    dialog.load("/prod/share/record/"+bas+"/"+rec+ "/","GET");
 }
 
 function printThis(value)
@@ -2514,34 +2407,20 @@ function printThis(value)
 
 function downloadThis(datas)
 {
-    var dialog_box = $('#dialog_dwnl');
+    var dialog = p4.Dialog.Create({title: language['export']});
 
-    dialog_box = $('#dialog_dwnl');
+    $.post("/prod/export/multi-export/", datas, function(data) {
 
-    dialog_box.empty().addClass('loading').dialog({
-        width:Math.min(bodySize.x - 30, 800),
-        height:Math.min(bodySize.y - 30, 600),
-        modal:true,
-        closeOnEscape : true,
-        resizable : false,
-        zIndex:1300,
-        overlay: {
-            backgroundColor: '#000',
-            opacity: 0.7
-        }
-    }).dialog('open');
+        dialog.setContent(data);
 
-    $.post("/include/multiexports.php", datas, function(data) {
+        $('.tabs', dialog.getDomElement()).tabs();
 
-        dialog_box.removeClass('loading').empty().append(data);
-        $('.tabs', dialog_box).tabs();
+        $('.close_button', dialog.getDomElement()).bind('click',function(){
+            dialog.Close();
+		});
 
-        $('.close_button', dialog_box).bind('click',function(){
-            dialog_box.dialog('close').dialog('destroy');
-        });
         return false;
     });
-
 }
 
 
@@ -2671,10 +2550,9 @@ function doDelete(lst)
         children = '1';
     $.ajax({
         type: "POST",
-        url: "/prod/prodFeedBack.php",
+        url: "/prod/delete/",
         dataType: 'json',
         data: {
-            action: "DODELETE",
             lst: lst.join(';'),
             del_children: children
         },
@@ -3029,25 +2907,6 @@ function gotopage(pag)
     $('#formAnswerPage').val(pag);
     $('#searchForm').submit();
 }
-
-
-window.onbeforeunload = function()
-{
-
-    var xhr_object = null;
-    if(window.XMLHttpRequest) // Firefox
-        xhr_object = new XMLHttpRequest();
-    else if(window.ActiveXObject) // Internet Explorer
-        xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-    else  // XMLHttpRequest non supporte par le navigateur
-        return;
-    url= "/include/delses.php?app=1&t="+Math.random();
-    xhr_object.open("GET", url, false);
-    xhr_object.send(null);
-
-};
-
-
 
 function addFilterMulti(filter,link,sbasid)
 {

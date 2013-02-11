@@ -2,21 +2,22 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Alchemy\Phrasea\Application;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . '/../../lib/bootstrap.php';
-$registry = registry::get_instance();
+require_once __DIR__ . "/../../vendor/autoload.php";
+$app = new Application();
 phrasea::headers();
-$debug = false;
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -34,11 +35,11 @@ function fixW(&$node, $depth = 0)
             fixW($c, $depth + 1);
     }
 }
-if ($hdir = opendir($registry->get('GV_RootPath') . "www/thesaurus2/patch")) {
+if ($hdir = opendir($app['phraseanet.registry']->get('GV_RootPath') . "www/thesaurus2/patch")) {
     while (false !== ($file = readdir($hdir))) {
         if (substr($file, 0, 1) == ".")
             continue;
-        if (is_file($f = $registry->get('GV_RootPath') . "www/thesaurus2/patch/" . $file)) {
+        if (is_file($f = $app['phraseanet.registry']->get('GV_RootPath') . "www/thesaurus2/patch/" . $file)) {
             require_once($f);
             print("<!-- patch '$f' included -->\n");
         }
@@ -73,11 +74,11 @@ function fixThesaurus(&$domct, &$domth, &$connbas)
 $th = $ct = $name = "";
 $found = false;
 if ($parm["bid"] !== null) {
-    $name = phrasea::sbas_names($parm['bid']);
+    $name = phrasea::sbas_names($parm['bid'], $app);
     $loaded = false;
     try {
-        $databox = databox::get_instance((int) $parm['bid']);
-        $connbas = connection::getPDOConnection($parm['bid']);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $parm['bid']);
+        $connbas = connection::getPDOConnection($app, $parm['bid']);
 
         $domct = $databox->get_dom_cterms();
         $domth = $databox->get_dom_thesaurus();
@@ -91,12 +92,14 @@ if ($parm["bid"] !== null) {
         $now = date("YmdHis");
 
         if ( ! $domct && $parm['repair'] == 'on') {
-            $domct = DOMDocument::load("./blank_cterms.xml");
+            $domct = new DOMDocument();
+            $domct->load("./blank_cterms.xml");
             $domct->documentElement->setAttribute("creation_date", $now);
             $databox->saveCterms($domct);
         }
         if ( ! $domth && $parm['repair'] == 'on') {
-            $domth = DOMDocument::load("./blank_thesaurus.xml");
+            $domth = new DOMDocument();
+            $domth->load("./blank_thesaurus.xml");
             $domth->documentElement->setAttribute("creation_date", $now);
             $databox->saveThesaurus($domth);
         }

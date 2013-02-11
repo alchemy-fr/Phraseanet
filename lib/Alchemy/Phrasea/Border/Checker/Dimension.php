@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
 
@@ -19,7 +20,7 @@ class Dimension extends AbstractChecker
     protected $width;
     protected $height;
 
-    public function __construct(array $options)
+    public function __construct(Application $app, array $options)
     {
         if ( ! isset($options['width'])) {
             throw new \InvalidArgumentException('Missing "width" option');
@@ -35,6 +36,7 @@ class Dimension extends AbstractChecker
 
         $this->width = $options['width'];
         $this->height = $options['height'];
+        parent::__construct($app);
     }
 
     public function check(EntityManager $em, File $file)

@@ -1,7 +1,18 @@
 <?php
 
-require_once __DIR__ . "/../../../lib/bootstrap.php";
-$registry = registry::get_instance();
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+use Alchemy\Phrasea\Application;
+
+require_once __DIR__ . "/../../../vendor/autoload.php";
+$app = new Application();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -30,8 +41,8 @@ $root->appendChild($ret->createCDATASection(var_export($parm, true)));
 if ($parm["bid"] !== null) {
     $loaded = false;
     try {
-        $databox = databox::get_instance((int) $parm['bid']);
-        $connbas = connection::getPDOConnection($parm['bid']);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $parm['bid']);
+        $connbas = connection::getPDOConnection($app, $parm['bid']);
 
         $s_thits = ';';
         $sql = "SELECT DISTINCT value FROM thit";

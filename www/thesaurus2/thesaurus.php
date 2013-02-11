@@ -2,22 +2,23 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Alchemy\Phrasea\Application;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
+require_once __DIR__ . "/../../vendor/autoload.php";
 phrasea::headers();
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
+$app = new Application();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -27,13 +28,13 @@ $parm = $request->get_parms(
 $dispdbg = $parm["dbg"] ? "" : " visibility:hidden; ";
 
 
-$lng = Session_Handler::get_locale();
+$lng = $app['locale'];
 
-User_Adapter::updateClientInfos(5);
+User_Adapter::updateClientInfos($app, 5);
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
+<html lang="<?php echo $app['locale.I18n'] ?>">
     <head>
-        <title><?php echo $appbox->get_registry()->get('GV_homeTitle'); ?> - <?php echo p4string::MakeString(_('phraseanet:: thesaurus')) ?></title>
+        <title><?php echo $app['phraseanet.registry']->get('GV_homeTitle'); ?> - <?php echo p4string::MakeString(_('phraseanet:: thesaurus')) ?></title>
 
         <style id="STYLES">
             DIV.glossaire DIV.r1_
@@ -154,11 +155,11 @@ User_Adapter::updateClientInfos(5);
             function sessionactive(){
                 $.ajax({
                     type: "POST",
-                    url: "/include/updses.php",
+                    url: "/session/update/",
                     dataType: 'json',
                     data: {
-                        app : 5,
-                        usr : <?php echo $session->get_usr_id() ?>
+                        module : 5,
+                        usr : <?php echo $app['phraseanet.user']->get_id() ?>
                     },
                     error: function(){
                         window.setTimeout("sessionactive();", 10000);
@@ -177,23 +178,8 @@ User_Adapter::updateClientInfos(5);
                     }
                 })
             };
-            window.onbeforeunload = function()
-            {
-                xhr_object = null;
-                if(window.XMLHttpRequest) // Firefox
-                    xhr_object = new XMLHttpRequest();
-                else if(window.ActiveXObject) // Internet Explorer
-                    xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-                else  // XMLHttpRequest non supporte par le navigateur
 
-                return;
-            url= "/include/delses.php?app=5&t="+Math.random();
-            xhr_object.open("GET", url, false);
-            xhr_object.send(null);
-
-        };
-
-        sessionactive();
+            sessionactive();
         </script>
 
     </head>
@@ -204,8 +190,9 @@ User_Adapter::updateClientInfos(5);
 <?php
 // on liste tous les drapeaux
 $jsFlags = "";
-$tlng = User_Adapter::avLanguages();
-foreach ($tlng as $lng_code => $lng) {
+foreach (Application::getAvailableLanguages() as $lng_code => $lng) {
+    $lng_code = explode('_', $lng_code);
+    $lng_code = $lng_code[0];
     if (file_exists("/skins/lng/" . $lng_code . "_flag_18.gif") && ($s = getimagesize("/skins/lng/" . $lng_code . "_flag_18.gif") )) {
         printf("\t<img id='flagMenu_%s' src='/skins/lng/%s_flag_18.gif' />\n", $lng_code, $lng_code);
 

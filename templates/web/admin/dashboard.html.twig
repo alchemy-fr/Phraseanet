@@ -1,0 +1,196 @@
+{% macro board_sub_section(sub_section_title, constraints_type) %}
+    <h2>{{ sub_section_title }}</h2>
+    <ul class="setup">
+        {% for constraint in constraints_type %}
+            <li class="{% if not constraint.is_ok() %}{% if constraint.is_blocker() %}blocker{% else %}non-blocker{% endif %}{% else %}good-enough{% endif %}">
+                {{ constraint.get_message() }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+<style type="text/css">
+    .ui-autocomplete {
+        max-height: 200px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+        /* add padding to account for vertical scrollbar */
+        padding-right: 20px;
+    }
+    /* IE 6 doesn't support max-height
+        * we use height instead, but this forces the menu to always be this tall
+    */
+    * html .ui-autocomplete {
+        height: 200px;
+    }
+    .ui-autocomplete-loading { background: white url('/skins/icons/ui-anim_basic_16x16.gif') right center no-repeat; }
+</style>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+
+        var container = $('#right-ajax');
+        $( ".admin_adder", container ).autocomplete({
+            source: "/admin/users/typeahead/search/",
+            minLength: 2,
+            select: function( event, ui ) {
+                var form = $('#admin_adder');
+                $('input.new[name="admins[]"]', form).val(ui.item.id);
+                form.submit();
+            }
+        }).data( "autocomplete" )._renderItem = function( ul, item ) {
+            var email = item.email ? '<br/>'+item.email : '';
+            var login = item.login != item.name ? " ("+ item.login +")" : '';
+
+            return $( "<li></li>" )
+            .data( "item.autocomplete", item )
+            .append( "<a>" + item.name + login + email + "</a>" )
+            .appendTo( ul );
+        };
+
+    });
+</script>
+
+
+
+{% if cache_flushed %}
+    <div>
+        {% trans 'all caches services have been flushed' %}
+    </div>
+{% endif %}
+
+
+<div class="board_section">
+    <h1>{% trans 'setup:: administrateurs de l\'application' %}</h1>
+    <form id="admin_adder" action="/admin/dashboard/add-admins/" method="post">
+        <ul>
+        {% for usr_id, usr_login in admins %}
+            <li>
+                <label class="checkbox" for="adm_{{ usr_id }}">
+                    <input type="checkbox" id="adm_{{ usr_id }}" name="admins[]" value="{{ usr_id }}" checked />
+                    {{ usr_login }}
+                </label>
+            </li>
+        {% endfor %}
+        </ul>
+        <label>{% trans 'setup:: ajouter un administrateur de l\'application' %} :</label>
+        <input class="admin_adder input-large" />
+        <input type="hidden" class="new" name="admins[]" />
+        <input type="submit" class="btn btn-warning" value="{% trans 'boutton::valider' %}" />
+    </form>
+    <h2>{% trans 'setup:: Reinitialisation des droits admins' %}</h2>
+    <form id="admin_reset" action="/admin/dashboard/reset-admin-rights/" method="post">
+        <input type="submit" class="btn btn-warning" value="{% trans 'boutton::reinitialiser' %}" />
+    </form>
+</div>
+
+<div class="board_section">
+    <h1 style="margin-bottom: 0;">{% trans 'setup:: Reglages generaux' %}</h1>
+    <h2 style="margin-top: 0; font-style: italic;">{% trans 'setup::Votre configuration' %}</h2>
+    <div class="section_left">
+
+        <h2>{% trans 'setup::Tests d\'envois d\'emails' %}</h2>
+        <form id="mail_checker" method="post" action="/admin/dashboard/send-mail-test/" target="_self">
+            <label>Email : </label><input name="email" type="text" />
+            <input type="submit" class="btn btn-warning" value="{% trans 'boutton::valider' %}"/>
+            {% if email_status %}
+                <p>{% trans 'result : ' %}{{ email_status }}</p>
+            {% endif %}
+        </form>
+
+        {% for constraint in php_version_constraints %}
+            <h2>{{ constraint.get_name() }}</h2>
+            <ul class="setup">
+                <li class="{% if constraint.is_ok() %}good-enough{% else %}blocker{% endif %}">
+                    {{ constraint.get_message() }}
+                </li>
+            </ul>
+        {% endfor %}
+
+        {% set sub_section_title %}
+            {% trans 'setup::Filesystem configuration' %}
+        {% endset %}
+        {{ _self.board_sub_section(sub_section_title, writability_constraints) }}
+
+        {% set sub_section_title %}
+            {% trans 'setup::Executables' %}
+        {% endset %}
+        {{ _self.board_sub_section(sub_section_title, binaries_constraints) }}
+
+        {% set sub_section_title %}
+            {% trans 'setup::PHP extensions' %}
+        {% endset %}
+        {{ _self.board_sub_section(sub_section_title, php_extension_constraints) }}
+
+        {% set sub_section_title %}
+            {% trans 'setup::Serveur de cache' %}
+        {% endset %}
+        {{ _self.board_sub_section(sub_section_title, cache_constraints) }}
+
+    </div>
+
+    <div class="section_right">
+
+        {% set sub_section_title %}
+            {% trans 'Phrasea Module' %}
+        {% endset %}
+        {{ _self.board_sub_section(sub_section_title, phrasea_constraints) }}
+
+        {% set sub_section_title %}
+            {% trans 'setup::Serveur de cache' %}
+        {% endset %}
+        {{ _self.board_sub_section(sub_section_title, cache_opcode_constraints) }}
+
+        <h2>{% trans 'setup:: Serveur Memcached' %}</h2>
+        <ul class="setup">
+            {% if app['cache'].isServer() %}
+                {% set stats = app['cache'].getStats() %}
+                <li>{% trans 'setup::Serveur actif sur %s' %} {{app['phraseanet.registry'].get('GV_cache_server_host')}} : {{app['phraseanet.registry'].get('GV_cache_server_port')}}</li>
+                <table>
+                    {% for name, stat in stats%}
+                        <tr class="even"><td>{{ name }}</td><td> {{ stat }}</td></tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <li class="non-blocker">{% trans 'setup::Aucun serveur memcached rattache.' %}</li>
+            {% endif %}
+        </ul>
+        {% if app['cache'].isServer() %}
+            <form id="cache_flusher" method="post" action="/admin/dashboard/flush-cache/">
+                <input type="submit" id="flush_button" class="btn btn-warning" value="Flush All Caches" />
+            </form>
+        {% endif %}
+
+        <h2>{% trans 'OPCode cache' %}</h2>
+        <ul class="setup">
+            {% if app['opcode-cache'].getName() == 'array' %}
+                <li class="non-blocker">{% trans 'Array opcode cache is activated, but phrasea strongly recommand the use of APC or Xcache in production' %}</li>
+            {% else %}
+                <li>{{ app['opcode-cache'].getName() }}</li>
+            {% endif %}
+        </ul>
+
+        {% if search_engine_status %}
+            <h2>{% trans 'setup::Etat du moteur de recherche' %}</h2>
+            <ul class="setup">
+                {% for value in search_engine_status %}
+                    <li>{{ value[0] }} : {{ value[1] }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h2>{% trans 'setup::Sphinx confguration' %}</h2>
+            <ul class="setup">
+                <li class="blocker">{% trans 'Search Engine not available' %}</li>
+            </ul>
+        {% endif %}
+
+        {% set sub_section_title %}
+            {% trans 'PHP Configuration' %}
+        {% endset %}
+        {{ _self.board_sub_section(sub_section_title, php_configuration_constraints) }}
+
+    </div>
+</div>

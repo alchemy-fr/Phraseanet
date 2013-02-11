@@ -16,31 +16,19 @@ namespace KonsoleKommander;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Core\Version;
-use Alchemy\Phrasea\Command\UpgradeDBDatas;
-use Alchemy\Phrasea\Command\RescanTechnicalDatas;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
-use Alchemy\Phrasea\Command\RecordAdd;
 use Alchemy\Phrasea\Command\CreateCollection;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Application;
+use Alchemy\Phrasea\Command\MailTest;
+use Alchemy\Phrasea\Command\RecordAdd;
+use Alchemy\Phrasea\Command\RescanTechnicalDatas;
+use Alchemy\Phrasea\Command\UpgradeDBDatas;
+use Alchemy\Phrasea\CLI;
 
-require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
-
-\bootstrap::register_autoloads();
-
-$configuration = Configuration::build();
-if ($configuration->isInstalled()) {
-    require_once dirname(__FILE__) . '/../lib/bootstrap.php';
-}
+require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
-    $app = new Application("
+    $app = new CLI("
   _____  _    _ _____            _____ ______          _   _ ______ _______
  |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
  | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |
@@ -58,47 +46,55 @@ try {
  under certain conditions; type `about:license' for details.\n\n"
             . ' KONSOLE KOMMANDER', Version::getName() . ' ' . Version::getNumber());
 
-    $app->add(new \module_console_aboutAuthors('about:authors'));
-    $app->add(new \module_console_aboutLicense('about:license'));
+    if (!$app['phraseanet.configuration-tester']->isInstalled()) {
+        throw new \RuntimeException('Phraseanet is not installed, use setup command instead');
+    }
+    if (!$app['phraseanet.configuration-tester']->isUpToDate()) {
+        throw new \RuntimeException('Phraseanet is not up-to-date, use setup command instead');
+    }
 
-    $app->add(new \module_console_checkExtension('check:extension'));
+    $app->command(new \module_console_aboutAuthors('about:authors'));
+    $app->command(new \module_console_aboutLicense('about:license'));
 
-    $app->add(new \module_console_systemUpgrade('system:upgrade'));
-    $app->add(new UpgradeDBDatas('system:upgrade-datas'));
+    $app->command(new \module_console_checkExtension('check:extension'));
 
-    $app->add(new \module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
+    $app->command(new UpgradeDBDatas('system:upgrade-datas'));
 
-    $app->add(new \module_console_systemMailCheck('system:mail-check'));
-    $app->add(new \module_console_systemBackupDB('system:backup-db'));
-    $app->add(new \module_console_systemClearCache('system:clear-cache'));
-    $app->add(new \module_console_systemTemplateGenerator('system:template-generator'));
-    $app->add(new \module_console_systemExport('system:export'));
+    $app->command(new \module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
 
-    $app->add(new \module_console_taskrun('task:run'));
-    $app->add(new \module_console_tasklist('task:list'));
-    $app->add(new \module_console_taskState('task:state'));
-    $app->add(new \module_console_schedulerState('scheduler:state'));
-    $app->add(new \module_console_schedulerStop('scheduler:stop'));
-    $app->add(new \module_console_schedulerStart('scheduler:start'));
-    $app->add(new \module_console_fileEnsureProductionSetting('check:ensure-production-settings'));
-    $app->add(new \module_console_fileEnsureDevSetting('check:ensure-dev-settings'));
-    $app->add(new \module_console_systemConfigCheck('check:system'));
+    $app->command(new \module_console_systemMailCheck('system:mail-check'));
+    $app->command(new \module_console_systemBackupDB('system:backup-db'));
+    $app->command(new \module_console_systemClearCache('system:clear-cache'));
+    $app->command(new \module_console_systemTemplateGenerator('system:template-generator'));
+    $app->command(new \module_console_systemExport('system:export'));
 
+    $app->command(new \module_console_taskrun('task:run'));
+    $app->command(new \module_console_tasklist('task:list'));
+    $app->command(new \module_console_taskState('task:state'));
+    $app->command(new \module_console_schedulerState('scheduler:state'));
+    $app->command(new \module_console_schedulerStop('scheduler:stop'));
+    $app->command(new \module_console_schedulerStart('scheduler:start'));
+    $app->command(new \module_console_fileEnsureProductionSetting('check:ensure-production-settings'));
+    $app->command(new \module_console_fileEnsureDevSetting('check:ensure-dev-settings'));
+    $app->command(new \module_console_systemConfigCheck('check:system'));
 
-    $app->add(new \module_console_fieldsList('fields:list'));
-    $app->add(new \module_console_fieldsDelete('fields:delete'));
-    $app->add(new \module_console_fieldsRename('fields:rename'));
-    $app->add(new \module_console_fieldsMerge('fields:merge'));
+    $app->command(new Mailtest('mail:test'));
 
-    $app->add(new CreateCollection('collection:create'));
+    $app->command(new \module_console_fieldsList('fields:list'));
+    $app->command(new \module_console_fieldsDelete('fields:delete'));
+    $app->command(new \module_console_fieldsRename('fields:rename'));
+    $app->command(new \module_console_fieldsMerge('fields:merge'));
 
-    $app->add(new RecordAdd('records:add'));
-    $app->add(new RescanTechnicalDatas('records:rescan-technical-datas'));
-    $app->add(new BuildMissingSubdefs('records:build-missing-subdefs'));
+    $app->command(new CreateCollection('collection:create'));
+
+    $app->command(new RecordAdd('records:add'));
+    $app->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
+    $app->command(new BuildMissingSubdefs('records:build-missing-subdefs'));
 
     $result_code = is_int($app->run()) ? : 1;
-} catch (Exception $e) {
-    echo sprintf("an error occured : %s", $e->getMessage());
+} catch (\Exception $e) {
+    $result_code = 1;
+    echo sprintf("\nAn error occured :\n\n\t\033[0;31m%s\033[0;37m\n\n", $e->getMessage());
 }
 
 exit($result_code);

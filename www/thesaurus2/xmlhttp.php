@@ -3,11 +3,13 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Alchemy\Phrasea\Application;
 
 /**
  *
@@ -16,8 +18,8 @@
  */
 function xmlhttp($url)
 {
-    $registry = registry::get_instance();
-    $fullurl = $registry->get('GV_ServerName') . $url;
+    $app = new Application();
+    $fullurl = $app['phraseanet.registry']->get('GV_ServerName') . $url;
     $xml = http_query::getUrl($fullurl);
     $ret = new DOMDocument();
     $ret->loadXML($xml);

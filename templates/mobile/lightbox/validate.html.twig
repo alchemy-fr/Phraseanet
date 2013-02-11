@@ -1,0 +1,49 @@
+{% import "common/thumbnail.html.twig" as thumbnail %}
+{% extends "common/index.html.twig" %}
+
+{% block javascript %}
+  <script type="text/javascript" src="/include/minify/f=skins/lightbox/jquery.validator.mobile.js"></script>
+{% endblock %}
+
+{% block stylesheet %}
+  <link rel="stylesheet" href="/include/minify/f=skins/lightbox/jquery.validator.mobile.css" />
+{% endblock %}
+
+{% block content %}
+<div id="home" data-role="page">
+    <div data-role="header">
+    <a href="/lightbox/{% if basket.getValidation() %}#validation{% else %}#baskets{% endif %}" data-rel="back" data-icon="arrow-l">{% trans 'Back' %}</a>
+    <h1>{{basket.getName()}}</h1>
+    <a rel="external" href="/lightbox/" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{% trans 'Home' %}</a>
+  </div>
+    <div data-role="content">
+    <p>
+      {% set basket_length = basket.getElements().count() %}
+      {% trans %}{{basket_length}} documents{% endtrans %}
+    </p>
+    <ul class="image_set">
+    {% for basket_element in basket.getElements() %}
+      <li class="image_box" id="sselcontid_{{basket_element.getId()}}">
+        {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app['phraseanet.user'], app).getCanAgree() %}
+          <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() == false and basket_element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() is not null %}disagree{% endif %}">
+          </div>
+        {% endif %}
+        <a href="/lightbox/ajax/LOAD_BASKET_ELEMENT/{{basket_element.getId()}}/">
+          {{thumbnail.format(basket_element.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
+        </a>
+        <input type="hidden" class="display_id" name="display_id" value="{{basket_element.getOrd()}}" />
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+    <div data-role="footer">
+
+  </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

@@ -1,0 +1,130 @@
+{% if app['request'].query.get('success') == '1' %}
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'Successful update' %}
+    </div>
+{% elseif app['request'].query.get('success') == '0' %}
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <strong>{% trans 'An error occured' %}</strong>
+        {% if error_msg is not none %}
+            {{ error_msg }}
+        {% endif %}
+    </div>
+{% endif %}
+
+{% if app['request'].query.get('notice') == 'restart' %}
+    <div class="alert">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'Do not forget to restart the tasks scheduler' %}
+    </div>
+{% endif %}
+
+<div class="db_infos">
+    <h2>Bases actuelles :</h2>
+    <ul>
+        {% if sbas | length > 0 %}
+            {% for key, value in sbas %}
+                <li>
+                    <a href='{{ path('admin_database', {'databox_id': key}) }}' target='_self'>
+                      <img src="{{ value['image'] }}" /> {{ value['name'] }} ({% trans "version" %} {{ value['version'] }}) {{ value['server_info'] }}
+                    </a>
+                </li>
+            {% endfor %}
+         {% else %}
+                <li>None</li>
+         {% endif %}
+    </ul>
+</div>
+
+{% if app['phraseanet.user'].ACL().is_admin() %}
+    <div class="db_infos">
+        <h2>{% trans 'admin::base: Version' %}</h2>
+
+        {% if not app['phraseanet.configuration-tester'].isUpToDate() %}
+            <p>{% trans 'update::Votre application necessite une mise a jour vers : ' %} {{ app['phraseanet.version'].getNumber() }}</p>
+        {% else %}
+            <p>{% trans 'update::Votre version est a jour : ' %} {{ app['phraseanet.version'].getNumber() }}</p>
+        {% endif %}
+
+        {% if recommendations | length > 0%}
+            {% for recommendation in recommendations %}
+                <p>{{ recommendation['0'] }}</p>
+                <pre>
+                    <blockquote>{{ recommendation['1'] }}</blockquote>
+                </pre>
+            {% endfor %}
+        {% endif %}
+
+        {% if advices | length > 0 %}
+            <b>{% trans 'Propositions de modifications des tables' %}</b>
+            {% for advice in advices %}
+                <blockquote>{{ advice['sql'] }}</blockquote>
+            {% endfor %}
+        {% endif %}
+
+        <form action="{{ path('admin_databases_upgrade') }}" method="post" >
+            <input type="hidden" value="" name="upgrade" />
+            <input type="submit" class="btn btn-warning" value="{% trans 'update::Verifier els tables' %}" />
+        </form>
+    </div>
+
+    <div class="db_infos">
+        <h2>{% trans 'admin::base: creer une base' %}</h2>
+        <div id="create_base">
+            <form class="form-vertical" method="post" action="{{ path('admin_database_new') }}">
+                <label class="checkbox">
+                    <input type="checkbox" name="new_settings" onchange="if(this.checked == true)$('#server_opts').slideDown();else $('#server_opts').slideUp();" />
+                    {% trans 'phraseanet:: Creer une base sur un serveur different de l\'application box' %}
+                </label>
+                <div id="server_opts" style="display:none;">
+                    <label>{% trans 'phraseanet:: hostname' %}</label>
+                    <input name="new_hostname" value="" type="text" />
+                    <label>{% trans 'phraseanet:: port' %}</label>
+                    <input name="new_port" value="3306" type="text" />
+                    <label>{% trans 'phraseanet:: user' %}</label>
+                    <input name="new_user" value="" type="text" />
+                    <label>{% trans 'phraseanet:: password' %}</label>
+                    <input name="new_password" value="" type="password" />
+                </div>
+                <label>{% trans 'phraseanet:: dbname' %}</label>
+                <input name="new_dbname" value="" type="text" />
+                <label>{% trans 'phraseanet:: Modele de donnees' %}</label>
+                <select name="new_data_template">
+                    {% for file in files %}
+                        {% if file.isFile() %}
+                            <option value="{{ file.getBasename('.xml') }}">{{ file.getBasename('.xml') }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <input type="submit" class="btn" value="{% trans 'boutton::creer' %}" />
+            </form>
+        </div>
+    </div>
+
+    <div class="db_infos">
+        <h2>{% trans 'admin::base: Monter une base' %}</h2>
+        <div id="mount_base">
+            <form method="post" action="{{ path('admin_database_mount') }}">
+                <label class="checkbox">
+                    <input type="checkbox" name="new_settings" onchange="if(this.checked == true)$('#servermount_opts').slideDown();else $('#servermount_opts').slideUp();" />
+                    {% trans "phraseanet:: Monter une base provenant d\'un serveur different de l\'application box" %}
+                </label>
+                <div id="servermount_opts" style="display:none;">
+                    <label>{% trans 'phraseanet:: hostname' %}</label>
+                    <input name="new_hostname" value="" type="text" />
+                    <label>{% trans 'phraseanet:: port' %}</label>
+                    <input name="new_port" value="3306" type="text" />
+                    <label>{% trans 'phraseanet:: user' %}</label>
+                    <input name="new_user" value="" type="text" />
+                    <label>{% trans 'phraseanet:: password' %}</label>
+                    <input name="new_password" value="" type="password" />
+                </div>
+                <label>{% trans 'phraseanet:: dbname' %}</label>
+                <input type="text" name="new_dbname" value="" />
+                <input type="hidden" name="mount_base" value="yes" />
+                <input type="submit" class="btn" value="{% trans 'boutton::monter' %}" />
+            </form>
+        </div>
+    </div>
+{% endif %}

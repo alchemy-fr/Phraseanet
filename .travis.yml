@@ -4,27 +4,35 @@ services:
   - mysql
 
 before_script:
-  - cp hudson/*.yml config/
-  - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install --dev
+  - rm -f config/services.yml config/connexions.yml config/config.yml config/config.inc config/connexion.inc config/_GV.php config/_GV.php.old
+  - cp -f hudson/connexion.inc config/
+  - cp -f hudson/_GV.php config/
+  - composer self-update
+  - composer install --dev --prefer-source
   - sudo apt-get update
-  - sudo apt-get install -y xpdf ffmpeg libavcodec-extra-53 openoffice.org-writer unoconv ghostscript gsfonts dcraw ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
-  - sudo apt-get autoremove
+  - sudo apt-get install -y -qq xpdf ffmpeg libavcodec-extra-53 openoffice.org-writer unoconv ghostscript gsfonts dcraw ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
   - sudo apt-get clean
+  - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
+  - tar xzf sphinx-2.0.6-release.tar.gz
+  - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make --quiet && sudo make install"
+  - sudo mkdir -p /var/sphinx/datas
+  - sudo chmod -R 0777 /var/sphinx
   - mysql -e 'create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;'
   - sudo mysql -e "GRANT ALL PRIVILEGES ON ab_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - sudo mysql -e "GRANT ALL PRIVILEGES ON db_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - mysql -e "source `pwd`/hudson/fixtures.sql"
-  - mysql -e 'SET GLOBAL time_zone = "+01:00";'
   - mysql -e 'SET @@global.sql_mode= "";'
   - mysql -e 'SET @@global.wait_timeout= 999999;'
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
-  - sh -c "cd Phraseanet-Extension && phpize && ./configure && make && sudo make install"
+  - sh -c "cd Phraseanet-Extension && phpize && ./configure --quiet && make --quiet && sudo make install"
   - echo "extension=phrasea2.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+  - git clone git://github.com/alchemy-fr/Phraseanet-Indexer.git
+  - sh -c "cd Phraseanet-Indexer && autoreconf --force --install && ./configure --quiet && make --quiet && sudo make install"
   - wget http://pecl.php.net/get/imagick-3.1.0RC2.tgz
   - tar -xzf imagick-3.1.0RC2.tgz
   - sh -c "cd imagick-3.1.0RC2 && phpize && ./configure --with-imagick=/usr/local && make && sudo make install"
   - echo "extension=imagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+  - bin/setup system:upgrade -y -v -f
 #  - wget http://pecl.php.net/get/gmagick-1.1.0RC2.tgz
 #  - tar -xzf gmagick-1.1.0RC2.tgz
 #  - sh -c "cd gmagick-1.1.0RC2 && phpize && ./configure --with-gmagick=/usr/local && make && sudo make install"

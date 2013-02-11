@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,11 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Silex\Application,
-    Silex\ControllerProviderInterface,
-    Silex\ControllerCollection;
-use Alchemy\Phrasea\Helper\Record as RecordHelper,
-    Alchemy\Phrasea\Out\Module\PDF as PDFExport;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+use Alchemy\Phrasea\Helper\Record as RecordHelper;
+use Alchemy\Phrasea\Out\Module\PDF as PDFExport;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -31,39 +30,31 @@ class Printer implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->post('/', function(Application $app) {
-                $printer = new RecordHelper\Printer($app['Core'], $app['request']);
+                $printer = new RecordHelper\Printer($app, $app['request']);
 
-                $template = 'prod/actions/printer_default.html.twig';
-
-                /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
-
-                return $twig->render($template, array('printer' => $printer, 'message' => ''));
+                return $app['twig']->render('prod/actions/printer_default.html.twig', array('printer' => $printer, 'message' => ''));
             }
         );
 
         $controllers->post('/print.pdf', function(Application $app) {
-                $printer = new RecordHelper\Printer($app['Core'], $app['request']);
+            $printer = new RecordHelper\Printer($app, $app['request']);
 
-                $request = $app['request'];
+            $request = $app['request'];
 
-                $session = \Session_Handler::getInstance(\appbox::get_instance($app['Core']));
+            $layout = $request->request->get('lay');
 
-                $layout = $request->get('lay');
-
-                foreach ($printer->get_elements() as $record) {
-                    $session->get_logger($record->get_databox())
-                        ->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
-                }
-                $PDF = new PDFExport($printer->get_elements(), $layout);
-
-                $response =  new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
-                $response->headers->set('Pragma', 'public', true);
-                $response->setMaxAge(0);
-
-                return $response;
+            foreach ($printer->get_elements() as $record) {
+                $app['phraseanet.logger']($record->get_databox())
+                    ->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
             }
-        );
+            $PDF = new PDFExport($app, $printer->get_elements(), $layout);
+
+            $response =  new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
+            $response->headers->set('Pragma', 'public', true);
+            $response->setMaxAge(0);
+
+            return $response;
+        });
 
         return $controllers;
     }

@@ -1,0 +1,97 @@
+{% set nbReceived = records.received().count() %}
+{% set nbEligibleDocuments = records.count() %}
+
+{% if nbEligibleDocuments > 0 %}
+    {% if nbReceived != records.count() %}
+        <div class="well-small" style="text-align:center;">
+            <span class="label label-info">{% trans "You do not have rights to remove all selected documents. Are you sure ?" %}</span>
+        </div>
+    {% endif %}
+
+    <form method="POST" action="/prod/records/delete/">
+        <input type="hidden" value="{{ records.serializedList() }}" name="lst" />
+        <div class="well-small label-important" style="background-color: red;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;">
+            <span class="ui-icon ui-icon-alert" ></span>
+            {% trans "These records will be definitely deleted and can not be recovered" %}
+        </div>
+        {% if records.stories().count() %}
+            <label class="checkbox">
+            <input type="checkbox" id="del_children" name="del_children" value="1"> {% trans "Also delete records that rely on groupings." %}
+          </label>
+        {% endif %}
+        <div class="form-actions" style="background-color:transparent;">
+            <button type="button" class="btn btn-danger submiter">{% trans "Delete" %} ({{ nbEligibleDocuments }})</button>
+            <button type="button" class="btn cancel">{% trans "Cancel" %}</button>
+            <span class="form-action-loader" style="display:none;">
+                <img src="../skins/icons/loader000.gif" />
+            </span>
+        </div>
+    </form>
+
+    <script type="text/javascript">
+        var $dialog = p4.Dialog.get(1);
+        var $dialogBox = $dialog.getDomElement();
+
+        $("button.cancel", $dialogBox).bind("click", function(){
+            $dialog.Close();
+        });
+
+        $("button.submiter", $dialogBox).bind("click", function(){
+            var $this = $(this);
+            var form = $(this).closest("form");
+            var loader = form.find("form-action-loader");
+
+            $.ajax({
+                type: form.attr("method"),
+                url: form.attr("action"),
+                data: form.serializeArray(),
+                dataType: "json",
+                beforeSend:function(){
+                    $this.attr("disabled", true);
+                    loader.show();
+                },
+                success: function(data){
+                    $dialog.Close();
+                    $.each(data,function(i,n){
+                        var imgt = $('#IMGT_'+n),
+                        chim = $('.CHIM_'+n),
+                        stories = $('.STORY_'+n);
+                        $('.doc_infos', imgt).remove();
+                        imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").draggable("destroy").removeClass("IMGT").find("img").unbind();
+                        imgt.find(".thumb img").attr("src","/skins/icons/deleted.png").css({
+                            width:'100%',
+                            height:'auto',
+                            margin: '0 10px',
+                            top: '0'
+                        });
+                        chim.parent().slideUp().remove();
+                        imgt.find(".status,.title,.bottom").empty();
+
+                        p4.Results.Selection.remove(n);
+                        if(stories.length > 0)
+                        {
+                            p4.WorkZone.refresh();
+                        }
+                        else
+                        {
+                            p4.WorkZone.Selection.remove(n);
+                        }
+                    });
+                    viewNbSelect();
+                },
+                complete: function(){
+                    $this.attr("disabled", false);
+                    loader.hide();
+                }
+            });
+        });
+    </script>
+{% elseif nbReceived == 0 %}
+    <div class="well-small" style="text-align:center;">
+        <span class="label label-important">{% trans "No document selected" %}</span>
+    </div>
+{% else %}
+    <div class="well-small" style="text-align:center;">
+        <span class="label label-info">{% trans "You do not have rights to remove selected documents" %}</span>
+    </div>
+{% endif %}

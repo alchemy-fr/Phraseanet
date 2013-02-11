@@ -46,6 +46,7 @@
               {% trans 'Any time' %}
             </label>
           </li>
+          {% set CurrentYear = current_date.format('Y') %}
           <li>
             <input id="basket_browse_this_year" type="radio" name="Year" value="{{ CurrentYear }}" />
             <label for="basket_browse_this_year">

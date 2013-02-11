@@ -3,23 +3,25 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Alchemy\Phrasea\Application;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$user = $Core->getAuthenticatedUser();
+require_once __DIR__ . "/../../vendor/autoload.php";
 
-if ( ! $user->ACL()->has_right('report'))
+$app = new Application();
+
+if ( ! $app['phraseanet.user']->ACL()->has_right('report'))
     phrasea::headers(403);
 
 
@@ -28,7 +30,7 @@ $dmin = isset($_POST['dmin']) ? $_POST['dmin'] : false;
 $dmax = isset($_POST['dmax']) ? $_POST['dmax'] : false;
 ///////Construct dashboard
 try {
-    $dashboard = new module_report_dashboard($user, $sbasid);
+    $dashboard = new module_report_dashboard($app, $app['phraseanet.user'], $sbasid);
 
     if ($dmin && $dmax) {
         $dashboard->setDate($dmin, $dmax);
@@ -39,11 +41,10 @@ try {
     echo 'Exception reçue : ', $e->getMessage(), "\n";
 }
 
-
-$twig = $Core->getTwig();
+$twig = $app['twig'];
 
 $html = $twig->render(
-    "report/ajax_dashboard_content_child.twig", array(
+    "report/ajax_dashboard_content_child.html.twig", array(
     'dashboard' => $dashboard
     )
 );

@@ -1,0 +1,83 @@
+{% set status = databox.get_statusbits() %}
+{% set databox_id = databox.get_sbas_id() %}
+
+<h1>
+    {% trans 'phraseanet::status bit' %}
+</h1>
+
+<table class="table table-striped table-condensed">
+    <thead>
+        <th>{% trans 'status:: numero de bit' %}</th>
+        <th colspan='2'></th>
+        <th>{% trans 'status:: nom' %}</th>
+        <th>{% trans 'status:: icone A' %}</th>
+        <th>{% trans 'status:: icone B' %}</th>
+        <th>{% trans 'status:: cherchable par tous' %}</th>
+        <th>{% trans 'status:: Affichable pour tous' %}</th>
+    </thead>
+    <tbody>
+        {% for bit in range(4, 31) %}
+            <tr>
+                <td>
+                    {{ bit }}
+                </td>
+                {% if attribute(status, bit) is defined %}
+                    <td>
+                        <a target="right" href="/admin/statusbit/{{ databox_id }}/status/{{ bit }}/" class="ajax">
+                            <img class="editer" src="/skins/icons/edit_0.gif" />
+                        </a>
+                    </td>
+                    <td>
+                        <form method="post" action="/admin/statusbit/{{ databox_id }}/status/{{ bit }}/delete/">
+                            <img class="deleter submiter" src="/skins/icons/delete_0.gif" />
+                        </form>
+                    </td>
+                {% else %}
+                    <td colspan="2">
+                        <a target="right" href="/admin/statusbit/{{ databox_id }}/status/{{ bit }}/" class="ajax">
+                            <img class="adder" src="/skins/icons/light_new.gif" />
+                        </a>
+                    </td>
+                {% endif %}
+
+                {% if attribute(status, bit) is defined %}
+                    {% set statusbit = attribute(status, bit) %}
+                    <td>{{ statusbit['name'] }}</td>
+                    <td>{% if statusbit['img_off'] %}<img title='{{ statusbit['labeloff'] }}' src='{{ statusbit['img_off'] }}' />{% endif %}</td>
+                    <td>{% if statusbit['img_on'] %}<img title='{{ statusbit['labelon'] }}' src='{{ statusbit['img_on'] }}' />{% endif %}</td>
+                    <td>{{ statusbit['searchable'] is defined and statusbit['searchable'] == '1' ? 'oui'| trans : 'non'| trans }}</td>
+                    <td>{{ statusbit['printable'] is defined and statusbit['printable'] == '1' ? 'oui'| trans : 'non'| trans }}</td>
+                {% else %}
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".submiter").click(function(){
+            var $this = $(this);
+            var form = $this.closest('form');
+
+            $.ajax({
+                dataType: 'JSON',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                datas: {},
+                success: function(data){
+                    if (data.success) {
+                        $(".treeview li.selected a").trigger("click");
+                    } else {
+                        alert('{% trans 'An error occurred' %}');
+                    }
+                }
+            });
+        });
+    });
+</script>

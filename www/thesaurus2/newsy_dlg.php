@@ -2,22 +2,23 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Alchemy\Phrasea\Application;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
+require_once __DIR__ . "/../../vendor/autoload.php";
 phrasea::headers(200, true);
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
+$app = new Application();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -26,7 +27,7 @@ $parm = $request->get_parms(
 );
 
 
-$lng = Session_Handler::get_locale();
+$lng = $app['locale'];
 
 switch ($parm["typ"]) {
     case "TS":
@@ -40,7 +41,7 @@ switch ($parm["typ"]) {
         break;
 }
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
+<html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
         <title><?php echo $tstr[0] ?></title>
 
@@ -96,8 +97,9 @@ switch ($parm["typ"]) {
                     <td></td>
                     <td valign="bottom">
 <?php
-$tlng = User_Adapter::avLanguages();
-foreach ($tlng as $lng_code => $lng) {
+foreach (Application::getAvailableLanguages() as $lng_code => $lng) {
+    $lng_code = explode('_', $lng_code);
+    $lng_code = $lng_code[0];
     $ck = $lng_code == $parm["piv"] ? " checked" : "";
     ?>
                             <span style="display:inline-block">

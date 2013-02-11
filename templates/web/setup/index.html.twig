@@ -23,7 +23,7 @@
       <table style="width:100%;">
         <tr>
           <td>
-            {% if php_constraints %}
+            {% if php_constraints is defined %}
               <h2>PHP Version</h2>
               <ul class="setup">
                 {%for constraint in php_constraints %}
@@ -31,7 +31,7 @@
                 {% endfor %}
               </ul>
             {% endif %}
-            {% if writability_constraints %}
+            {% if writability_constraints is defined %}
               <h2>Filesystem configuration</h2>
               <ul class="setup">
                 {%for constraint in writability_constraints %}
@@ -39,7 +39,7 @@
                 {% endfor %}
               </ul>
             {% endif %}
-            {% if extension_constraints %}
+            {% if extension_constraints is defined %}
               <h3>PHP extensions</h3>
               <ul class="setup">
                 {%for constraint in extension_constraints %}
@@ -49,7 +49,7 @@
             {% endif %}
           </td>
           <td>
-            {% if opcode_constraints %}
+            {% if opcode_constraints is defined %}
               <h2>PHP Cache System</h2>
               <ul class="setup">
                 {%for constraint in opcode_constraints %}
@@ -57,7 +57,7 @@
                 {% endfor %}
               </ul>
             {% endif %}
-            {% if php_conf_constraints %}
+            {% if php_conf_constraints is defined %}
               <h2>PHP configuration</h2>
               <ul class="setup">
                 {%for constraint in php_conf_constraints %}
@@ -65,7 +65,7 @@
                 {% endfor %}
               </ul>
             {% endif %}
-            {% if locales_constraints %}
+            {% if locales_constraints is defined %}
               <h2>Locales Support</h2>
               <ul class="setup">
                 {%for constraint in locales_constraints %}
