@@ -1,6 +1,7 @@
 rewrite ^/include/minify/([a-z]=.*)           /include/minify/index.php?$1 last;
 
 rewrite ^/admin/.*$                         /index.php last;
+rewrite ^/_profiler/.*$                     /index.php last;
 rewrite ^/lightbox.?$                       /index.php last;
 rewrite ^/robots.txt$                       /index.php last;
 rewrite ^/feeds/.*$                         /index.php last;
