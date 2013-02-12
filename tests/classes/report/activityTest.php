@@ -65,7 +65,6 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->detailDownload($report);
             $this->downloadByBaseByDay($report);
             $this->otherTest($report);
-            $this->push($report);
             $this->topQuestion($report);
             $this->topTenUser($report, $sbasid, $colllist);
         }
@@ -119,12 +118,6 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $detailDl = $report->getDetailDownload();
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $detailDl);
-    }
-
-    public function push($report)
-    {
-        $push = $report->getPush();
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $push);
     }
 
     public function topTenUser($report, $sbasid, $colllist)

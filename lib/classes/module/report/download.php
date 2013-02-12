@@ -11,12 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @package     module_report
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class module_report_download extends module_report
 {
     protected $cor_query = array(
@@ -27,7 +21,7 @@ class module_report_download extends module_report
         'activite'  => 'log.activite',
         'fonction'  => 'log.fonction',
         'usrid'     => 'log.usrid',
-        'coll_id'   => 'record.coll_id',
+        'coll_id'   => 'log_colls.coll_id',
         'ddate'     => "log_docs.date",
         'id'        => 'log_docs.id',
         'log_id'    => 'log_docs.log_id',
@@ -72,12 +66,12 @@ class module_report_download extends module_report
     public function colFilter($field, $on = false)
     {
         $ret = array();
-        $s = $this->sqlBuilder('download');
-        $var = $s->sqlDistinctValByField($field);
+        $sqlBuilder = $this->sqlBuilder('download');
+        $var = $sqlBuilder->sqlDistinctValByField($field);
         $sql = $var['sql'];
         $params = $var['params'];
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -118,7 +112,11 @@ class module_report_download extends module_report
             }
 
             if (array_key_exists('record_id', $row)) {
-                $record = new \record_adapter($app, $this->sbas_id, $row['record_id']);
+                try {
+                    $record = new \record_adapter($app, $this->sbas_id, $row['record_id']);
+                } catch (Exception_Record_AdapterNotFound $e) {
+                    continue;
+                }
 
                 foreach ($pref as $field) {
                     try {
@@ -187,18 +185,17 @@ class module_report_download extends module_report
 
         $sql = '
             SELECT SUM(1) AS nb
-            FROM (  log
-                INNER JOIN log_docs as log_date ON log.id = log_date.log_id
-                INNER JOIN record on log_date.record_id = record.record_id
-            )
-            WHERE (
-                ' . $finalfilter . '
-            )
-            AND (
-                log_date.action = \'download\'
-                OR log_date.action = \'mail\'
-            )
-            ORDER BY log_date.date DESC
+            FROM (
+                SELECT DISTINCT(log.id)
+                FROM log FORCE INDEX (date_site)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                    INNER JOIN log_docs as log_date ON (log.id = log_date.log_id)
+                WHERE ' . $finalfilter . '
+                AND (
+                    log_date.action = \'download\'
+                    OR log_date.action = \'mail\'
+                )
+            ) AS tt
         ';
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -229,21 +226,22 @@ class module_report_download extends module_report
         $finalfilter .= 'log.site = :site_id';
 
         $sql = '
-            SELECT record.record_id as id, SUM(1) AS nb, subdef.name
-            FROM ( log
-                INNER JOIN log_docs as log_date  ON log.id = log_date.log_id
-                INNER JOIN record    ON log_date.record_id = record.record_id
-                INNER JOIN subdef    ON subdef.record_id = record.record_id
-            )
-            WHERE (
-                    ' . $finalfilter . '
-            )
-            AND ( log_date.action = \'download\'
-                OR log_date.action = \'mail\'
-            )
-            AND subdef.name = log_date.final
+            SELECT tt.id, tt.name, SUM(1) AS nb
+            FROM (
+                SELECT DISTINCT(log.id) AS log_id, log_date.record_id as id, subdef.name
+                FROM ( log )
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
+                    INNER JOIN log_docs as log_date  ON (log.id = log_date.log_id)
+                    INNER JOIN subdef ON (log_date.record_id = subdef.record_id)
+                WHERE (
+                        ' . $finalfilter . '
+                )
+                AND ( log_date.action = \'download\'
+                    OR log_date.action = \'mail\'
+                )
+                AND subdef.name = log_date.final
+            ) AS tt
             GROUP BY id, name
-            ORDER BY nb DESC
         ';
 
         $stmt = $conn->prepare($sql);

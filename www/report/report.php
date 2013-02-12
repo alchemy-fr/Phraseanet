@@ -10,6 +10,10 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
  *
@@ -19,6 +23,14 @@ use Alchemy\Phrasea\Application;
 require_once __DIR__ . "/../../vendor/autoload.php";
 
 $app = new Application();
+
+/**
+ * @todo Remove this in next refactor
+ */
+$event = new GetResponseEvent($app, Request::createFromGlobals(), HttpKernelInterface::MASTER_REQUEST);
+
+$app->addLocale($event);
+$app->initSession($event);
 $request = http_request::getInstance();
 
 $parm = $request->get_parms(

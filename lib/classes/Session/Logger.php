@@ -111,12 +111,14 @@ class Session_Logger
             }
         }
 
+        $conn =  $databox->get_connection();
+
         $sql = "INSERT INTO log
-              (id, date,sit_session, user, site, usrid,coll_list, nav,
+              (id, date,sit_session, user, site, usrid, nav,
                 version, os, res, ip, user_agent,appli, fonction,
                 societe, activite, pays)
             VALUES
-              (null,now() , :ses_id, :usr_login, :site_id, :usr_id, :coll_list
+              (null,now() , :ses_id, :usr_login, :site_id, :usr_id
               , :browser, :browser_version,  :platform, :screen, :ip
               , :user_agent, :appli, :fonction, :company, :activity, :country)";
 
@@ -125,7 +127,6 @@ class Session_Logger
             ':usr_login'       => $app['phraseanet.user'] ? $app['phraseanet.user']->get_login() : null,
             ':site_id'         => $app['phraseanet.registry']->get('GV_sit'),
             ':usr_id'          => $app['phraseanet.user'] ? $app['phraseanet.user']->get_id() : null,
-            ':coll_list'       => implode(',', $colls),
             ':browser'         => $browser->getBrowser(),
             ':browser_version' => $browser->getExtendedVersion(),
             ':platform'        => $browser->getPlatform(),
@@ -139,11 +140,23 @@ class Session_Logger
             ':country'  => $app['phraseanet.user'] ? $app['phraseanet.user']->get_country() : null
         );
 
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->execute($params);
-
-        $log_id = $databox->get_connection()->lastInsertId();
+        $log_id = $conn->lastInsertId();
         $stmt->closeCursor();
+
+        $sql = "INSERT INTO log_colls (id, log_id, coll_id) VALUES (null, :log_id, :coll_id)";
+        $stmt = $conn->prepare($sql);
+
+        foreach ($colls as $collId) {
+            $stmt->execute(array(
+                ':log_id'  => $log_id,
+                ':coll_id' => $collId
+            ));
+        }
+
+        $stmt->closeCursor();
+        unset($stmt, $conn);
 
         return new Session_Logger($app, $databox, $log_id);
     }
