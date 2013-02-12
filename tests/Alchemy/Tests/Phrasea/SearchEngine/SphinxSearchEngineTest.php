@@ -10,6 +10,7 @@ use Symfony\Component\Process\Process;
 
 class SphinxSearchEngineTest extends SearchEngineAbstractTest
 {
+    private static $skipped = false;
     protected static $config;
     protected static $searchd;
 
@@ -19,6 +20,17 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
+
+        $binaryFinder = new ExecutableFinder();
+        $indexer = $binaryFinder->find('indexer');
+
+        $searchd = $binaryFinder->find('searchd');
+
+        if (!$indexer || !$searchd) {
+            self::$skipped = true;
+
+            return;
+        }
 
         $app = new Application('test');
         $appbox = $app['phraseanet.appbox'];
@@ -45,11 +57,6 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
         file_put_contents(self::$config, $configFile);
 
-        $binaryFinder = new ExecutableFinder();
-        $indexer = $binaryFinder->find('indexer');
-
-        $searchd = $binaryFinder->find('searchd');
-
         $process = new Process($indexer . ' --all -c ' . self::$config);
         $process->run();
 
@@ -59,9 +66,18 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 19306, '127.0.0.1', 19308);
     }
 
+    public function setUp() {
+        parent::setUp();
+        if (self::$skipped) {
+            $this->markTestSkipped('SphinxSearch is not present on system');
+        }
+    }
+
     public function tearDown()
     {
-        self::$searchEngine->removeRecord(self::$DI['record_24']);
+        if (!self::$skipped) {
+            self::$searchEngine->removeRecord(self::$DI['record_24']);
+        }
 
         parent::tearDown();
     }
@@ -72,13 +88,15 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
     public static function tearDownAfterClass()
     {
-        $binaryFinder = new ExecutableFinder();
-        $searchd = $binaryFinder->find('searchd');
+        if (!self::$skipped) {
+            $binaryFinder = new ExecutableFinder();
+            $searchd = $binaryFinder->find('searchd');
 
-        self::$searchd = new Process($searchd . ' --stop -c ' . self::$config);
-        self::$searchd->run();
+            self::$searchd = new Process($searchd . ' --stop -c ' . self::$config);
+            self::$searchd->run();
 
-        unlink(self::$config);
+            unlink(self::$config);
+        }
 
         parent::tearDownAfterClass();
     }
