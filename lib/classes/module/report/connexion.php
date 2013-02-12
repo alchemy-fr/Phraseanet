@@ -11,27 +11,20 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @package     module_report
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class module_report_connexion extends module_report
 {
     protected $cor_query = array(
-        'user'        => 'log.user'
-        , 'usrid'       => 'log.usrid'
-        , 'ddate'       => 'log.date'
-        , 'societe'     => 'log.societe'
-        , 'pays'        => 'log.pays'
-        , 'activite'    => 'log.activite'
-        , 'fonction'    => 'log.fonction'
-        , 'site'        => 'log.site'
-        , 'sit_session' => 'log.sit_session'
-        , 'coll_list'   => 'log.coll_list'
-        , 'appli'       => 'log.appli'
-        , 'ip'          => 'log.ip'
+        'user'        => 'log.user',
+        'usrid'       => 'log.usrid',
+        'ddate'       => 'log.date',
+        'societe'     => 'log.societe',
+        'pays'        => 'log.pays',
+        'activite'    => 'log.activite',
+        'fonction'    => 'log.fonction',
+        'site'        => 'log.site',
+        'sit_session' => 'log.sit_session',
+        'appli'       => 'log.appli',
+        'ip'          => 'log.ip'
     );
 
     /**
@@ -72,12 +65,12 @@ class module_report_connexion extends module_report
     public function colFilter($field)
     {
         $ret = array();
-        $s = $this->sqlBuilder('connexion');
-        $var = $s->sqlDistinctValByField($field);
+        $sqlBuilder = $this->sqlBuilder('connexion');
+        $var = $sqlBuilder->sqlDistinctValByField($field);
         $sql = $var['sql'];
         $params = $var['params'];
 
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -107,26 +100,17 @@ class module_report_connexion extends module_report
         $i = 0;
 
         foreach ($rs as $row) {
-            if ($this->enable_limit && ($i > $this->nb_record))
+            if ($this->enable_limit && ($i > $this->nb_record)) {
                 break;
+            }
+
             foreach ($this->champ as $key => $value) {
                 if ( ! isset($row[$value])) {
                     $this->result[$i][$value] = '<i>' . _('report:: non-renseigne') . '</i>';
                     continue;
                 }
 
-                if ($value == 'coll_list') {
-                    $coll = explode(",", $row[$value]);
-                    $this->result[$i][$value] = "";
-                    foreach ($coll as $id) {
-                        if ($this->result[$i][$value] != "") {
-                            $this->result[$i][$value].= " / ";
-                            $this->result[$i][$value] .= phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $id, $this->app), $this->app);
-                        } elseif ($this->result[$i][$value] == "") {
-                            $this->result[$i][$value] = phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $id, $this->app), $this->app);
-                        }
-                    }
-                } elseif ($value == 'appli') {
+                if ($value == 'appli') {
                     $applis = false;
                     if (($applis = @unserialize($row[$value])) !== false) {
                         if (empty($applis)) {
@@ -156,15 +140,20 @@ class module_report_connexion extends module_report
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
-        $params = array_merge($params, $datefilter['params'], $collfilter['params']);
+        $params = array_merge(array(
+                ':site_id' => $app['phraseanet.registry']->get('GV_sit')
+            ),
+            $datefilter['params'],
+            $collfilter['params']
+        );
 
         $finalfilter = $datefilter['sql'] . ' AND ';
-        $finalfilter .= '(' . $collfilter['sql'] . ') AND ';
+        $finalfilter .= $collfilter['sql'] . ' AND ';
         $finalfilter .= 'log_date.site = :site_id';
 
-        $sql = "SELECT    COUNT(usrid) as nb
-                FROM    log as log_date
+        $sql = "SELECT COUNT(DISTINCT(log_date.id)) as nb
+                FROM log as log_date FORCE INDEX (date_site)
+                    INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
                 WHERE " . $finalfilter;
 
         $stmt = $conn->prepare($sql);

@@ -11,12 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @package     module_report
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class module_report_sqlfilter
 {
     public $conn;
@@ -38,7 +32,7 @@ class module_report_sqlfilter
     public static function constructDateFilter($dmin, $dmax)
     {
         return array(
-            'sql'    => ($dmin && $dmax ? ' log_date.date > :date_min AND log_date.date < :date_max ' : false)
+            'sql' => ($dmin && $dmax ? ' log_date.date > :date_min AND log_date.date < :date_max ' : false)
             , 'params' => ($dmin && $dmax ? array(':date_min' => $dmin, ':date_max' => $dmax) : array())
         );
     }
@@ -47,10 +41,13 @@ class module_report_sqlfilter
     {
         $ret = array('sql'    => '', 'params' => array());
         $coll_filter = array();
-        foreach (explode(',', $list_coll_id) as $val) {
-            $coll_filter [] = " position('," . phrasea::collFromBas($app, $val) . ",' in concat(',' ,coll_list, ',')) > 0 ";
+        foreach (array_filter(explode(',', $list_coll_id)) as $val) {
+            $val = \phrasea::collFromBas($app, $val);
+            if ($val) {
+                $coll_filter[] =  'log_colls.coll_id = ' . $val;
+            }
         }
-        $ret['sql'] = implode(' OR ', $coll_filter);
+        $ret['sql'] = ' (' . implode(' OR ', array_unique($coll_filter)) . ') ';
 
         return $ret;
     }
@@ -75,30 +72,30 @@ class module_report_sqlfilter
             $params = array_merge($params, $this->filter['user']['params']);
         }
         if ($this->filter['collection']) {
-            $finalfilter .= '(' . $this->filter['collection']['sql'] . ') AND ';
+            $finalfilter .= $this->filter['collection']['sql'] . ' AND ';
             $params = array_merge($params, $this->filter['collection']['params']);
         }
         $finalfilter .= ' log.site = :log_site';
 
-        return array('sql'    => $finalfilter, 'params' => $params);
+        return array('sql' => $finalfilter, 'params' => $params);
     }
 
     public function getGvSitFilter()
     {
         $params = array();
-        $sql = '';
+        $sql = '1';
 
         if ($this->app['phraseanet.registry']->is_set('GV_sit')) {
             $sql = 'log.site = :log_site_gv_filter';
             $params[':log_site_gv_filter'] = $this->app['phraseanet.registry']->get('GV_sit');
         }
 
-        return array('sql'    => $sql, 'params' => $params);
+        return array('sql' => $sql, 'params' => $params);
     }
 
     public function getUserIdFilter($id)
     {
-        return array('sql'    => "log.usrid = :usr_id_filter", 'params' => array(':usr_id_filter' => $id));
+        return array('sql' => "log.usrid = :usr_id_filter", 'params' => array(':usr_id_filter' => $id));
     }
 
     public function getDateFilter()
@@ -173,7 +170,7 @@ class module_report_sqlfilter
 
                 $n ++;
             }
-            $filter_user = array('sql'    => implode(' AND ', $filter), 'params' => $params);
+            $filter_user = array('sql' => implode(' AND ', $filter), 'params' => $params);
 
             $this->filter['user'] = $filter_user;
         }
@@ -190,12 +187,17 @@ class module_report_sqlfilter
             return;
         }
 
-        $tab = explode(",", $report->getListCollId());
+        $tab = array_filter(explode(",", $report->getListCollId()));
+
         if (count($tab) > 0) {
             foreach ($tab as $val) {
-                $coll_filter[] = " position('," . phrasea::collFromBas($this->app, $val) . ",' in concat(',' ,coll_list, ',')) > 0 ";
+                $val = \phrasea::collFromBas($this->app, $val);
+                if (!!$val) {
+                    $coll_filter[] =  'log_colls.coll_id = ' . $val;
+                }
             }
-            $this->filter['collection'] = array('sql'    => implode(' OR ', $coll_filter), 'params' => array());
+
+            $this->filter['collection'] = array('sql' => ' (' . implode(' OR ', array_unique($coll_filter)) . ') ', 'params' => array());
         }
 
         return;
@@ -213,7 +215,7 @@ class module_report_sqlfilter
                 $params[":record_fil" . $n] = phrasea::collFromBas($this->app, $val);
                 $n ++;
             }
-            $this->filter['record'] = array('sql'    => implode(' OR ', $dl_coll_filter), 'params' => $params);
+            $this->filter['record'] = array('sql' => implode(' OR ', $dl_coll_filter), 'params' => $params);
         }
 
         return;

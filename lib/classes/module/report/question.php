@@ -11,28 +11,21 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- *
- * @package     module_report
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class module_report_question extends module_report
 {
     protected $cor_query = array(
-        'user'        => 'log.user'
-        , 'usrid'       => 'log.usrid'
-        , 'ddate'       => 'log_search.date'
-        , 'date'        => 'log_search.date'
-        , 'societe'     => 'log.societe'
-        , 'pays'        => 'log.pays'
-        , 'activite'    => 'log.activite'
-        , 'fonction'    => 'log.fonction'
-        , 'site'        => 'log.site'
-        , 'sit_session' => 'log.sit_session'
-        , 'coll_list'   => 'log.coll_list'
-        , 'appli'       => 'log.appli'
-        , 'ip'          => 'log.ip'
+        'user'        => 'log.user',
+        'usrid'       => 'log.usrid',
+        'ddate'       => 'log_search.date',
+        'date'        => 'log_search.date',
+        'societe'     => 'log.societe',
+        'pays'        => 'log.pays',
+        'activite'    => 'log.activite',
+        'fonction'    => 'log.fonction',
+        'site'        => 'log.site',
+        'sit_session' => 'log.sit_session',
+        'appli'       => 'log.appli',
+        'ip'          => 'log.ip'
     );
 
     /**
@@ -66,11 +59,11 @@ class module_report_question extends module_report
     public function colFilter($field)
     {
         $ret = array();
-        $s = $this->sqlBuilder('question');
-        $var = $s->sqlDistinctValByField($field);
+        $sqlBuilder = $this->sqlBuilder('question');
+        $var = $sqlBuilder->sqlDistinctValByField($field);
         $sql = $var['sql'];
         $params = $var['params'];
-        $stmt = $s->getConnBas()->prepare($sql);
+        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
