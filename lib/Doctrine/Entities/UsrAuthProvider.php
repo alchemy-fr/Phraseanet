@@ -33,12 +33,17 @@ class UsrAuthProvider
      * @var \DateTime
      */
     private $created;
+    
+    /**
+     * @var string
+     */
+    private $distant_id;
 
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -54,14 +59,14 @@ class UsrAuthProvider
     public function setUsrId($usrId)
     {
         $this->usr_id = $usrId;
-    
+
         return $this;
     }
 
     /**
      * Get usr_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getUsrId()
     {
@@ -77,14 +82,14 @@ class UsrAuthProvider
     public function setProvider($provider)
     {
         $this->provider = $provider;
-    
+
         return $this;
     }
 
     /**
      * Get provider
      *
-     * @return string 
+     * @return string
      */
     public function getProvider()
     {
@@ -100,14 +105,14 @@ class UsrAuthProvider
     public function setUpdated($updated)
     {
         $this->updated = $updated;
-    
+
         return $this;
     }
 
     /**
      * Get updated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -123,17 +128,40 @@ class UsrAuthProvider
     public function setCreated($created)
     {
         $this->created = $created;
-    
+
         return $this;
     }
 
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
         return $this->created;
+    }
+
+    /**
+     * Set distant_id
+     *
+     * @param string $distantId
+     * @return UsrAuthProvider
+     */
+    public function setDistantId($distantId)
+    {
+        $this->distant_id = $distantId;
+
+        return $this;
+    }
+
+    /**
+     * Get distant_id
+     *
+     * @return string
+     */
+    public function getDistantId()
+    {
+        return $this->distant_id;
     }
 }
