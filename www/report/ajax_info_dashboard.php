@@ -24,7 +24,9 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 require_once __DIR__ . "/../../vendor/autoload.php";
 
 $app = new Application();
-
+/**
+ * @todo Remove this in next refactor
+ */
 $event = new GetResponseEvent($app, Request::createFromGlobals(), HttpKernelInterface::MASTER_REQUEST);
 
 $app->addLocale($event);

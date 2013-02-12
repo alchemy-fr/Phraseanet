@@ -75,28 +75,38 @@ class patch_380a3 implements patchInterface
               DECLARE i INT DEFAULT 0;
               DECLARE dest_coll_id INT;
               DECLARE done INT DEFAULT 0;
-              DECLARE cur1 CURSOR FOR SELECT  l.id, l.coll_list FROM log l LEFT JOIN log_colls lc ON (lc.log_id = l.id) WHERE (lc.log_id IS NULL) AND coll_list != '';
+              DECLARE result_set CURSOR FOR
+                SELECT l.id, l.coll_list
+                FROM log l
+                LEFT JOIN log_colls lc ON (lc.log_id = l.id)
+                WHERE (lc.log_id IS NULL) AND coll_list != '';
               DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-              OPEN cur1;
+              OPEN result_set;
                 read_loop: LOOP
-                  FETCH cur1 INTO l_log_id, l_coll_list;
+                  FETCH result_set INTO l_log_id, l_coll_list;
                   IF done THEN
                     LEAVE read_loop;
                   END IF;
-
                   SET occurance = (SELECT  LENGTH(l_coll_list) - LENGTH(REPLACE(l_coll_list, bound, ''))+1);
                   SET i=1;
               START TRANSACTION;
                   WHILE i <= occurance DO
-                    SET dest_coll_id = (SELECT  REPLACE(SUBSTRING(SUBSTRING_INDEX(l_coll_list, bound, i), LENGTH(SUBSTRING_INDEX(l_coll_list, bound, i - 1)) + 1), ',', ''));
+                    SET dest_coll_id = (SELECT REPLACE(
+                        SUBSTRING(
+                            SUBSTRING_INDEX(l_coll_list, bound, i),
+                            LENGTH(SUBSTRING_INDEX(l_coll_list, bound, i - 1)) + 1
+                        ),
+                        ',',
+                        ''
+                    ));
                     IF dest_coll_id > 0 THEN
                       INSERT INTO log_colls VALUES (null, l_log_id, dest_coll_id);
-                END IF;
+                    END IF;
                     SET i = i + 1;
                   END WHILE;
               COMMIT;
                 END LOOP;
-              CLOSE cur1;
+              CLOSE result_set;
             END;";
 
             $stmt = $conn->prepare($procedure);

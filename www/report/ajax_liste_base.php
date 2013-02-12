@@ -76,7 +76,9 @@ foreach ($popbases as $key => $val) {
 $selection[$id_sbas]['liste'] = $liste;
 
 $app = new Application();
-
+/**
+ * @todo Remove this in next refactor
+ */
 $event = new GetResponseEvent($app, Request::createFromGlobals(), HttpKernelInterface::MASTER_REQUEST);
 
 $app->addLocale($event);

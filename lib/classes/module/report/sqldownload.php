@@ -25,7 +25,7 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
     public function buildSql()
     {
-        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql'         => false);
+        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
         $this->params = array_merge(array(), $filter['params']);
 
         if ($this->groupby == false) {
@@ -96,7 +96,7 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
     public function sqlDistinctValByField($field)
     {
-        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql'         => false);
+        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
         $this->params = array_merge(array(), $filter['params']);
 
         $this->sql = '
@@ -116,6 +116,6 @@ class module_report_sqldownload extends module_report_sql implements module_repo
         $this->sql .= $this->filter->getOrderFilter() ? : '';
         $this->sql .= $this->filter->getLimitFilter() ? : '';
 
-        return array('sql'    => $this->sql, 'params' => $this->params);
+        return array('sql' => $this->sql, 'params' => $this->params);
     }
 }

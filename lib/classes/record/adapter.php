@@ -489,7 +489,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function move_to_collection(collection $collection, appbox $appbox)
     {
-        if ($collection->get_base_id() === $this->get_collection()->get_base_id()) {
+        if ($this->get_collection()->get_base_id() === $collection->get_base_id()) {
             return $this;
         }
 

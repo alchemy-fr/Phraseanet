@@ -56,7 +56,9 @@ $parm = $request->get_parms("dmin", // date minimal of the reporting
 
 
 $app = new Application();
-
+/**
+ * @todo Remove this in next refactor
+ */
 $event = new GetResponseEvent($app, Request::createFromGlobals(), HttpKernelInterface::MASTER_REQUEST);
 
 $app->addLocale($event);

@@ -38,7 +38,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
 
     public function buildSql()
     {
-        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql'         => false);
+        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
         $this->params = array_merge(array(':action' => $this->action), $filter['params']);
 
         if ($this->groupby == false) {
@@ -87,7 +87,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
 
     public function sqlDistinctValByField($field)
     {
-        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql'         => false);
+        $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
         $this->params = array_merge(array(':action' => $this->action), $filter['params']);
 
         $this->sql = "
@@ -103,6 +103,6 @@ class module_report_sqlaction extends module_report_sql implements module_report
                 AND (d.action = :action)
             ) AS tt " . ($this->filter->getOrderFilter() ? $this->filter->getOrderFilter() : '');
 
-        return array('sql'    => $this->sql, 'params' => $this->params);
+        return array('sql' => $this->sql, 'params' => $this->params);
     }
 }

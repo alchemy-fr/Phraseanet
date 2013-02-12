@@ -58,6 +58,9 @@ $param = $request->get_parms(
 
 $app = new Application();
 
+/**
+ * @todo Remove this in next refactor
+ */
 $event = new GetResponseEvent($app, Request::createFromGlobals(), HttpKernelInterface::MASTER_REQUEST);
 
 $app->addLocale($event);
