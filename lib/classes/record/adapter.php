@@ -1929,7 +1929,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             throw new Exception('This record is not a grouping');
         }
 
-        $sql = 'SELECT record_id
+        if ($this->app['phraseanet.user']) {
+            $sql = 'SELECT record_id
               FROM regroup g
                 INNER JOIN (record r
                   INNER JOIN collusr c
@@ -1942,11 +1943,22 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 ON (g.rid_child = r.record_id AND g.rid_parent = :record_id)
               ORDER BY g.ord ASC, dateadd ASC, record_id ASC';
 
-        $params = array(
-            ':GV_site'   => $this->app['phraseanet.registry']->get('GV_sit')
-            , ':usr_id'    => $this->app['phraseanet.user']->get_id()
-            , ':record_id' => $this->get_record_id()
-        );
+            $params = array(
+                ':GV_site'   => $this->app['phraseanet.registry']->get('GV_sit'),
+                ':usr_id'    => $this->app['phraseanet.user']->get_id(),
+                ':record_id' => $this->get_record_id(),
+            );
+        } else {
+            $sql = 'SELECT record_id
+              FROM regroup g
+                INNER JOIN record r
+                ON (g.rid_child = r.record_id AND g.rid_parent = :record_id)
+              ORDER BY g.ord ASC, dateadd ASC, record_id ASC';
+
+            $params = array(
+                ':record_id' => $this->get_record_id()
+            );
+        }
 
         $stmt = $this->get_databox()->get_connection()->prepare($sql);
         $stmt->execute($params);
