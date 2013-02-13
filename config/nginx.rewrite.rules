@@ -45,6 +45,8 @@ rewrite ^/user/notifications/.*$            /index.php last;
 rewrite ^/download/.*$                      /index.php last;
 rewrite ^/session/.*$                       /index.php last;
 
+rewrite ^/report/.*$                       /index.php last;
+
 rewrite ^/client/.*$                        /index.php last;
 rewrite ^/client/baskets.*$                 /index.php last;
 

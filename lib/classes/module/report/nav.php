@@ -415,13 +415,6 @@ class module_report_nav extends module_report
         $filter_id_apbox = $filter_id_datbox = array();
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
-        $datefilter = array();
-
-        if ($this->dmin && $this->dmax) {
-            $params = array(':dmin'     => $this->dmin, ':dmax'     => $this->dmax);
-            $datefilter = "date > :dmin AND date < :dmax";
-        }
-
         $this->title = sprintf(_('report:: Information sur les utilisateurs correspondant a %s'), $val);
 
         if ($on) {
@@ -446,7 +439,7 @@ class module_report_nav extends module_report
                     usr_mail as mail,
                     adresse, tel
                 FROM usr
-                WHERE $on = :value AND (" . $filter_id_apbox . ")";
+                WHERE $on = :value " . (('' !== $filter_id_apbox) ? "AND (" . $filter_id_apbox . ")" : '');
         } else {
             $sql = '
                 SELECT
@@ -548,19 +541,19 @@ class module_report_nav extends module_report
             _('report:: Information sur le navigateur %s'), $navigator);
         $sqlBuilder = new module_report_sql($this->app, $this);
         $filter = $sqlBuilder->getFilters();
-        $params = array(':browser' => $navigator);
         $report_filter = $filter->getReportFilter();
+        $params = array_merge($report_filter['params'], array(':browser' => $navigator));
 
         $sql = "
-            SELECT DISTINCT(version), COUNT(version) as nb
+            SELECT DISTINCT(tt.version), COUNT(tt.version) as nb
             FROM (
-                SELECT DISTINCT (log.id)
+                SELECT DISTINCT (log.id), version
                 FROM log FORCE INDEX (date_site, nav, version)
                 INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                WHERE ". $report_filter['sql'] . "
                 WHERE nav = :browser
+                AND ". $report_filter['sql'] . "
             ) AS tt
-            GROUP BY tt.version
+            GROUP BY version
             ORDER BY nb DESC";
 
         $stmt = $conn->prepare($sql);

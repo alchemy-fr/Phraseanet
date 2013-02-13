@@ -39,10 +39,10 @@
                           data : ({
                             tbl : 'what',
                             rid : riid,
-                            sbasid : '{{ param.sbasid }}',
-                            collection : '{{ param.collection }}',
-                            dmin : '{{ param.dmin }}',
-                            dmax : '{{ param.dmax }}',
+                            sbasid : '{{ app['request'].get('sbasid') }}',
+                            collection : '{{ app['request'].get('collection') }}',
+                            dmin : '{{ app['request'].get('dmin') }}',
+                            dmax : '{{ app['request'].get('dmax') }}',
                             from : 'TOOL'
                         })
                     },
