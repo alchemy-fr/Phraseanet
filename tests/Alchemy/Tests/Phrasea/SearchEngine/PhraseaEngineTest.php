@@ -29,10 +29,6 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
             . ' -b=' . $appbox->get_dbname() . ' -u=' . $appbox->get_user()
             . ' -p=' . $appbox->get_passwd()
             . ' --default-character-set=utf8 -n -o --quit';
-        $stemms = implode(',', $stemms);
-        if ($stemms !== '') {
-            $cmd .= " --stem=" . $stemms;
-        }
         $process = new Process($cmd);
         $process->run();
     }
