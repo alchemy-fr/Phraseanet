@@ -1,0 +1,23 @@
+Entities\AuthFailure:
+  type: entity
+  table: AuthFailuress
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    username:
+      type: string
+      size: 128
+    ip:
+      type: string
+      size: 128
+      nullable: true
+    locked:
+      type: boolean
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
