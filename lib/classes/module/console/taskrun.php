@@ -118,7 +118,9 @@ class module_console_taskrun extends Command
 
         if (($ttyloglevel = strtoupper($input->getOption('ttyloglevel'))) != '') {
             if (!array_key_exists($ttyloglevel, $lib2v)) {
-                throw new RuntimeException("Bad value '%s' for option loglevel\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $ttyloglevel);
+                throw(new RuntimeException(sprintf(
+                        "Bad value '%s' for option loglevel\nuse DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT", $ttyloglevel))
+                );
             }
             $handler = new StreamHandler("php://stdout", $lib2v[$ttyloglevel]);
             $logger->pushHandler($handler);

@@ -83,6 +83,18 @@ class task_period_cindexer extends task_abstract
      *
      * @var string
      */
+    protected $stem;
+
+    /**
+     *
+     * @var string
+     */
+    protected $sortempty;
+
+    /**
+     *
+     * @var string
+     */
     protected $nolog;
 
     /**
@@ -125,13 +137,13 @@ class task_period_cindexer extends task_abstract
         $request = http_request::getInstance();
 
         $parm2 = $request->get_parms(
-            'binpath', 'host', 'port', 'base', 'user', 'password', 'socket', 'use_sbas', 'nolog', 'clng', 'winsvc_run', 'charset', 'debugmask'
+            'binpath', 'host', 'port', 'base', 'user', 'password', 'socket', 'use_sbas', 'nolog', 'clng', 'winsvc_run', 'charset', 'debugmask', 'stem', 'sortempty'
         );
         $dom = new DOMDocument();
         $dom->formatOutput = true;
         if ($dom->loadXML($oldxml)) {
             $xmlchanged = false;
-            foreach (array("str:binpath", "str:host", "str:port", "str:base", "str:user", "str:password", "str:socket", "boo:use_sbas", "boo:nolog", "str:clng", "boo:winsvc_run", "str:charset", 'str:debugmask') as $pname) {
+            foreach (array("str:binpath", "str:host", "str:port", "str:base", "str:user", "str:password", "str:socket", "boo:use_sbas", "boo:nolog", "str:clng", "boo:winsvc_run", "str:charset", 'str:debugmask', 'str:stem', 'str:sortempty') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -200,6 +212,8 @@ class task_period_cindexer extends task_abstract
                         nolog.checked      = isyes(xml.find("nolog").text());
                         winsvc_run.checked = isyes(xml.find("winsvc_run").text());
                         charset.value      = xml.find("charset").text();
+                        stem.value         = xml.find("stem").text();
+                        sortempty.value    = xml.find("sortempty").text();
                         debugmask.value    = 0|xml.find("debugmask").text();
                     }
                 }
@@ -231,6 +245,10 @@ class task_period_cindexer extends task_abstract
                         cmd += " -n";
                     if(clng.value)
                         cmd += " -c=" + clng.value;
+                    if(stem.value)
+                        cmd += " --stem=" + stem.value;
+                    if(sortempty.value)
+                        cmd += " --sort-empty=" + sortempty.value;
                     if(debugmask.value)
                         cmd += " -d=" + debugmask.value;
                     if(winsvc_run.checked)
@@ -294,6 +312,22 @@ class task_period_cindexer extends task_abstract
             <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" value="">
             <br/>
 
+            <?php echo _('task::cindexer:stemming languages') ?>&nbsp;:&nbsp;<input type="text" name="stem" style="width:150px;" value="">
+            &nbsp;<?php echo _('task::cindexer:ex.: fr,en') ?>
+            <br/>
+<!--
+            <?php echo _('task::cindexer:sort empty') ?>&nbsp;:&nbsp;<input type="text" name="sortempty" style="width:20px;" value="">
+            &nbsp;<?php echo _('task:: A | Z') ?>
+            <br/>
+-->
+            <?php echo _('task::cindexer:sort records with an empty field') ?>&nbsp;
+            <select name="sortempty">
+                <option value=""><?php echo _('task::not shown') ?></option>
+                <option value="A"><?php echo _('task::at the beginning') ?></option>
+                <option value="Z"><?php echo _('task::at the end') ?></option>
+            </select>
+            <br/>
+
             <input type="checkbox" name="nolog">&nbsp;<?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
             <br/>
 
@@ -324,6 +358,8 @@ class task_period_cindexer extends task_abstract
         $this->socket = trim($sx_task_settings->socket);
         $this->use_sbas = p4field::isyes(trim($sx_task_settings->use_sbas));
         $this->charset = trim($sx_task_settings->charset);
+        $this->stem = trim($sx_task_settings->stem);
+        $this->sortempty = trim($sx_task_settings->sortempty);
         $this->debugmask = (int) (trim($sx_task_settings->debugmask));
         $this->nolog = p4field::isyes(trim($sx_task_settings->nolog));
         $this->winsvc_run = p4field::isyes(trim($sx_task_settings->winsvc_run));
@@ -389,6 +425,14 @@ class task_period_cindexer extends task_abstract
         if ($this->charset) {
             $args[] = '--default-character-set=' . $this->charset;
             $args_nopwd[] = '--default-character-set=' . $this->charset;
+        }
+        if ($this->stem) {
+            $args[] = '--stem=' . $this->stem;
+            $args_nopwd[] = '--stem=' . $this->stem;
+        }
+        if ($this->sortempty) {
+            $args[] = '--sort-empty=' . $this->sortempty;
+            $args_nopwd[] = '--sort-empty=' . $this->sortempty;
         }
         if ($this->debugmask > 0) {
             $args[] = '-d=' . $this->debugmask;
