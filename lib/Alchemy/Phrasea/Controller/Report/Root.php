@@ -15,6 +15,7 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class Root implements ControllerProviderInterface
 {
@@ -90,27 +91,46 @@ class Root implements ControllerProviderInterface
         $controllers->post('/informations/document', $this->call('doReportInformationsDocument'))
             ->bind('report_infomations_document');
 
+        $controllers->post('/export/csv', $this->call('exportCSV'))
+            ->bind('report_export_csv');
+
         return $controllers;
     }
 
     public function getDashboard(Application $app, Request $request)
     {
-        \User_Adapter::updateClientInfos($app, 4);
-
         $dashboard = new \module_report_dashboard($app, $app['phraseanet.user']);
+
+        if ('json' !== $request->getContentType()) {
+            \User_Adapter::updateClientInfos($app, 4);
+
+            $dashboard->execute();
+
+            return $app['twig']->render('report/report_layout_child.html.twig', array(
+                'ajax_dash'   => true,
+                'dashboard'   => $dashboard,
+                'home_title'  => $app['phraseanet.registry']->get('GV_homeTitle'),
+                'module'      => "report",
+                "module_name" => "Report",
+                'anonymous'   => $app['phraseanet.registry']->get('GV_anonymousReport'),
+                'g_anal'      => $app['phraseanet.registry']->get('GV_googleAnalytics'),
+                'ajax'        => false,
+                'ajax_chart'  => false
+            ));
+        }
+
+        $dmin = $request->request->get('dmin');
+        $dmax = $request->request->get('dmax');
+
+        if ($dmin && $dmax) {
+            $dashboard->setDate($dmin, $dmax);
+        }
+
         $dashboard->execute();
 
-        return $app['twig']->render('report/report_layout_child.html.twig', array(
-            'ajax_dash'   => true,
-            'dashboard'   => $dashboard,
-            'home_title'  => $app['phraseanet.registry']->get('GV_homeTitle'),
-            'module'      => "report",
-            "module_name" => "Report",
-            'anonymous'   => $app['phraseanet.registry']->get('GV_anonymousReport'),
-            'g_anal'      => $app['phraseanet.registry']->get('GV_googleAnalytics'),
-            'ajax'        => false,
-            'ajax_chart'  => false
-        ));
+        return $app->json(array('html' => $app['twig']->render("report/ajax_dashboard_content_child.html.twig", array(
+                'dashboard' => $dashboard
+        ))));
     }
 
     public function initReport(Application $app, Request $request)
@@ -1461,6 +1481,33 @@ class Root implements ControllerProviderInterface
             'display_nav' => false,
             'title'       => $title
         ));
+    }
+
+    public function exportCSV(Application $app, Request $request)
+    {
+        $name = $request->request->get('name', 'export');
+
+        if (null === $data = $request->request->get('csv')) {
+            $app->abort(400);
+        }
+
+        $filename = mb_strtolower('report_' . $name . '_' . date('dmY') . '.csv');
+        $data = preg_replace('/[ \t\r\f]+/', '', $data);
+
+        $response = new Response($data, 200, array(
+            'Expires'           => 'Mon, 26 Jul 1997 05:00:00 GMT',
+            'Last-Modified'     => gmdate("D, d M Y H:i:s"). ' GMT',
+            'Cache-Control'     => 'no-store, no-cache, must-revalidate',
+            'Cache-Control'     => 'post-check=0, pre-check=0',
+            'Pragma'            => 'no-cache',
+            'Content-Type'      => 'text/csv',
+            'Content-Length'    => strlen($data),
+            'Cache-Control'     => 'max-age=3600, must-revalidate',
+        ));
+
+        $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename);
+
+        return $response;
     }
 
     private function doReport(Application $app, Request $request, \module_report $report, $conf, $what = false)
