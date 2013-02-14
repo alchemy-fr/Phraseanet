@@ -28,24 +28,11 @@
             <collation>utf8_bin</collation>
           </field>
           <field>
-            <name>pwd</name>
-            <type>varchar(128)</type>
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-            <collation>utf8_bin</collation>
-
-          </field>
-          <field>
             <name>ip</name>
             <type>varchar(64)</type>
             <null></null>
             <extra></extra>
-
             <default></default>
-
             <comment></comment>
           </field>
           <field>
