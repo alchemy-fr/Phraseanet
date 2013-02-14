@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class ApplicationTest extends \PhraseanetPHPUnitAbstract
 {
@@ -185,6 +186,46 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application('dev');
         $this->assertTrue(isset($app['profiler']));
+    }
+
+    public function testGeneratePath()
+    {
+        $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $app = new Application();
+        $app['url_generator'] = $generator;
+
+        $ret = 'retval-' . mt_rand();
+        $route = 'route';
+
+        $generator->expects($this->once())
+            ->method('generate')
+            ->with($this->equalTo($route), $this->equalTo(array()), $this->equalTo(UrlGenerator::ABSOLUTE_PATH))
+            ->will($this->returnValue($ret));
+
+        $this->assertEquals($ret, $app->path($route));
+    }
+
+    public function testGenerateUrl()
+    {
+        $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $app = new Application();
+        $app['url_generator'] = $generator;
+
+        $ret = 'retval-' . mt_rand();
+        $route = 'route';
+
+        $generator->expects($this->once())
+            ->method('generate')
+            ->with($this->equalTo($route), $this->equalTo(array()), $this->equalTo(UrlGenerator::ABSOLUTE_URL))
+            ->will($this->returnValue($ret));
+
+        $this->assertEquals($ret, $app->url($route));
     }
 
     private function getAppThatReturnLocale()
