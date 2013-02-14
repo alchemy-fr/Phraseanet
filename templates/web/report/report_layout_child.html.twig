@@ -52,12 +52,12 @@
                     <div class="form_titre">{% trans "report:: 3 - Type de report" %} </div>
                     {% if not anonymous %}
                         <div>
-                            <input name="tbl" type="radio" value="CNXU" id="CNXU-input" class="formsubmiter" />
+                            <input name="tbl" type="radio" value="CNXU" data-action="{{ app.path('report_activity_users_connexions') }}" id="CNXU-input" class="formsubmiter" />
                             <label for="CNXU-input">{% trans "report:: (connexions) Par utilisateurs" %}</label>
                         </div>
                     {% else %}
                         <div>
-                            <input name="tbl" type="radio" value="CNXU" id="CNXU-input" class="formsubmiter" />
+                            <input name="tbl" type="radio" value="CNXU" data-action="{{ app.path('report_activity_users_connexions') }}" id="CNXU-input" class="formsubmiter" />
                             <label for="CNXU-input">{% trans "report:: Grouper par" %}</label>
                             <select class="options" style="display:inline;display:none;" id="list-select" name="on" >
                                 <option selected ="selected" value="fonction" class="formsubmiter">{% trans "report:: fonction" %}</option>
@@ -68,11 +68,11 @@
                         </div>
                     {% endif %}
                     <div>
-                        <input name="tbl" type="radio" value="CNX" id="CNX-input" class="formsubmiter" />
+                        <input name="tbl" type="radio" value="CNX" data-action="{{ app.path('report_connexions') }}" id="CNX-input" class="formsubmiter" />
                         <label for="CNX-input">{% trans "report:: (connexions) Globales" %}</label>
                     </div>
                     <div>
-                        <input name="tbl" type="radio" value="CNXB" id="CNXB-input" class="formsubmiter" />
+                        <input name="tbl" type="radio" value="CNXB" data-action="{{ app.path('report_clients') }}" id="CNXB-input" class="formsubmiter" />
                         <label for="CNXB-input">{% trans "report:: (connexions) OS et navigateurs" %}</label>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                     <div class="form_titre">{%trans "report:: 3 - Type de report" %}</div>
                     {% if anonymous %}
                         <div>
-                            <input name="tbl" type="radio" value="USR" id="USR-dl" class="formsubmiter" />
+                            <input name="tbl" type="radio" value="USR" data-action="{{ app.path('report_activity_users_downloads') }}" id="USR-dl" class="formsubmiter" />
                             <label for="USR-dl">{% trans "report:: Grouper par" %}</label>
                             <select class="options" style="display:inline;display:none;" id="list-select2" name="on" >
                                 <option selected ="selected" value="fonction" class="formsubmiter">{% trans "report:: fonction" %}</option>
@@ -109,20 +109,20 @@
                         </div>
                     {% else %}
                         <div>
-                            <input name="tbl" type="radio" value="USR" id="USR-input" class="formsubmiter" />
+                            <input name="tbl" type="radio" value="USR" data-action="{{ app.path('report_activity_users_downloads') }}" id="USR-input" class="formsubmiter" />
                             <label for="USR-input">{% trans "report:: par utilisateurs" %}</label>
                         </div>
                     {% endif %}
                     <div>
-                        <input name="tbl" type="radio" value="GEN" id="GEN-input" class="formsubmiter" />
+                        <input name="tbl" type="radio" value="GEN" data-action="{{ app.path('report_downloads') }}" id="GEN-input" class="formsubmiter" />
                         <label for="GEN-input">{% trans "report:: (telechargement) Global" %}</label>
                     </div>
                     <div>
-                        <input name="tbl" type="radio" value="DAY" id="DAY-input" class="formsubmiter" />
+                        <input name="tbl" type="radio" value="DAY" data-action="{{ app.path('report_activity_instance_days') }}" id="DAY-input" class="formsubmiter" />
                         <label for="DAY-input">{% trans "report:: (telechargement) Par jours base par base" %}</label>
                     </div>
                     <div>
-                        <input name="tbl" type="radio" value="DOC" id="DOC-input" class="formsubmiter" />
+                        <input name="tbl" type="radio" value="DOC" data-action="{{ app.path('report_documents') }}" id="DOC-input" class="formsubmiter" />
                         <label for="DOC-input">{% trans "report:: (telechargement) Par documents sur la base" %}</label>
                         <select class="options" id="precise" name="precise" style="display:none;">
                             <option value="0">{% trans "report::aucune precision" %}</option>
@@ -156,29 +156,29 @@
                         <input name="on" type="hidden" value="" checked="checked"/>
                     {% endif %}
                     <div>
-                        <input name="tbl" type="radio" value="ASK" id="ASK-input" class="formsubmiter" />
+                        <input name="tbl" type="radio" value="ASK" data-action="{{ app.path('report_questions') }}" id="ASK-input" class="formsubmiter" />
                         <label for="ASK-input">{% trans "report:: toutes les questions" %}</label>
                     </div>
                     <div>
-                        <input name="tbl" type="radio" value="BESTOF" id="BESTOF-input" class="formsubmiter" />
+                        <input name="tbl" type="radio" value="BESTOF" data-action="{{ app.path('report_activity_questions_bestof') }}" id="BESTOF-input" class="formsubmiter" />
                         <label for="BESTOF-input">{% trans "report:: Les questions les plus posees" %}</label>
                     </div>
                     <div>
-                        <input name="tbl" type="radio" value="NOBESTOF" id="NOBESTOF-input" class="formsubmiter" />
+                        <input name="tbl" type="radio" value="NOBESTOF" data-action="{{ app.path('report_activity_questions_nobestof') }}" id="NOBESTOF-input" class="formsubmiter" />
                         <label for="NOBESTOF-input">{% trans "report:: questions sans reponses" %}</label>
                     </div>
                     <div>
-                        <input name="tbl" type="radio" value="SITEACTIVITY" id="SITEACTIVITY-input" class="formsubmiter" />
+                        <input name="tbl" type="radio" value="SITEACTIVITY" data-action="{{ app.path('report_activity_questions_nobestof') }}" id="SITEACTIVITY-input" class="formsubmiter" />
                         <label for="SITEACTIVITY-input">{% trans "report:: activite du site" %}</label>
                     </div>
                     <div>
-                        <input name="tbl" type="radio" value="WDOC" id="WDOC" class="formsubmiter" />
+                        <input name="tbl" type="radio" value="WDOC" data-action="{{ app.path('report_activity_documents_pushed') }}" id="WDOC" class="formsubmiter" />
                         <label for="WDOC">{% trans "report:: document" %}</label>
                         <select class="options" style="display:inline;display:none;" id="list-select3" name="docwhat" >
-                            <option selected ="selected" value="PUSHDOC" class="formsubmiter">{% trans "report:: pushe" %}</option>
-                            <option value="ADDDOC" class="formsubmiter">{% trans "report:: ajoute" %}</option>
-                            <option value="EDIDOC" class="formsubmiter">{% trans "report:: edite" %}</option>
-              <option value="VALIDATEDOC" class="formsubmiter">{% trans "report:: valide" %}</option>
+                            <option selected ="selected" value="PUSHDOC" data-action="{{ app.path('report_activity_documents_pushed') }}" class="formsubmiter">{% trans "report:: pushe" %}</option>
+                            <option value="ADDDOC" data-action="{{ app.path('report_activity_documents_added') }}" class="formsubmiter">{% trans "report:: ajoute" %}</option>
+                            <option value="EDIDOC" data-action="{{ app.path('report_activity_documents_edited') }}" class="formsubmiter">{% trans "report:: edite" %}</option>
+                            <option value="VALIDOC" data-action="{{ app.path('report_activity_documents_validated') }}" class="formsubmiter">{% trans "report:: valide" %}</option>
                         </select>
                     </div>
                 </div>
