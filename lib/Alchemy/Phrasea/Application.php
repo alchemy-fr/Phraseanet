@@ -108,6 +108,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class Application extends SilexApplication
 {
@@ -335,6 +336,32 @@ class Application extends SilexApplication
 
             return $data[1];
         };
+    }
+
+    /**
+     * Generates a path from the given parameters.
+     *
+     * @param string $route      The name of the route
+     * @param mixed  $parameters An array of parameters
+     *
+     * @return string The generated path
+     */
+    public function path($route, $parameters = array())
+    {
+        return $this['url_generator']->generate($route, $parameters, UrlGenerator::ABSOLUTE_PATH);
+    }
+
+    /**
+     * Generates an absolute URL from the given parameters.
+     *
+     * @param string $route      The name of the route
+     * @param mixed  $parameters An array of parameters
+     *
+     * @return string The generated URL
+     */
+    public function url($route, $parameters = array())
+    {
+        return $this['url_generator']->generate($route, $parameters, UrlGenerator::ABSOLUTE_URL);
     }
 
     public function initSession(GetResponseEvent $event)
