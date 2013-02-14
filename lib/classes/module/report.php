@@ -246,14 +246,17 @@ class module_report
      */
     public function __construct(Application $app, $d1, $d2, $sbas_id, $collist)
     {
+        $d1 = \DateTime::createFromFormat('d-m-Y H:i:s', sprintf('%s 00:00:00', $d1));
+        $d2 = \DateTime::createFromFormat('d-m-Y H:i:s', sprintf('%s 23:59:59', $d2));
+
         $this->app = $app;
-        $this->dmin = $d1;
-        $this->dmax = $d2;
+        $this->dmin = $d1->format('Y-m-d H:i:s');
+        $this->dmax = $d2->format('Y-m-d H:i:s');
         $this->sbas_id = $sbas_id;
         $this->list_coll_id = $collist;
         $this->user_id = $this->app['phraseanet.user']->get_id();
-        $this->periode = $this->app['date-formatter']->getPrettyString(new DateTime($d1))
-            . ' - ' . $this->app['date-formatter']->getPrettyString(new DateTime($d2));
+        $this->periode = $this->app['date-formatter']->getPrettyString($d1)
+            . ' - ' . $this->app['date-formatter']->getPrettyString($d2);
         $this->dbname = phrasea::sbas_names($sbas_id, $app);
         $this->cor = $this->setCor();
         $this->jour = $this->setDay();
