@@ -26,45 +26,65 @@ class Root implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('report');
         });
 
-        $controllers->get('/dashboard', $this->call('getDashboard'));
+        $controllers->get('/dashboard', $this->call('getDashboard'))
+            ->bind('report_dashboard');
 
-        $controllers->post('/init', $this->call('initReport'));
+        $controllers->post('/init', $this->call('initReport'))
+            ->bind('report_init');
 
-        $controllers->post('/connexions', $this->call('doReportConnexions'));
+        $controllers->post('/connexions', $this->call('doReportConnexions'))
+            ->bind('report_connexions');
 
-        $controllers->post('/questions', $this->call('doReportQuestions'));
+        $controllers->post('/questions', $this->call('doReportQuestions'))
+            ->bind('report_questions');
 
-        $controllers->post('/downloads', $this->call('doReportDownloads'));
+        $controllers->post('/downloads', $this->call('doReportDownloads'))
+            ->bind('report_downloads');
 
-        $controllers->post('/documents', $this->call('doReportDocuments'));
+        $controllers->post('/documents', $this->call('doReportDocuments'))
+            ->bind('report_documents');
 
-        $controllers->post('/clients', $this->call('doReportClients'));
+        $controllers->post('/clients', $this->call('doReportClients'))
+            ->bind('report_clients');
 
-        $controllers->post('/activity/users/connexions', $this->call('doReportConnexionsByUsers'));
+        $controllers->post('/activity/users/connexions', $this->call('doReportConnexionsByUsers'))
+            ->bind('report_activity_users_connexions');
 
-        $controllers->post('/activity/users/downloads', $this->call('doReportDownloadsByUsers'));
+        $controllers->post('/activity/users/downloads', $this->call('doReportDownloadsByUsers'))
+            ->bind('report_activity_users_downloads');;
 
-        $controllers->post('/activity/questions/best-of', $this->call('doReportBestOfQuestions'));
+        $controllers->post('/activity/questions/best-of', $this->call('doReportBestOfQuestions'))
+            ->bind('report_activity_questions_bestof');
 
-        $controllers->post('/activity/questions/no-best-of', $this->call('doReportNoBestOfQuestions'));
+        $controllers->post('/activity/questions/no-best-of', $this->call('doReportNoBestOfQuestions'))
+            ->bind('report_activity_questions_nobestof');
 
-        $controllers->post('/activity/instance/hours', $this->call('doReportSiteActiviyPerHours'));
+        $controllers->post('/activity/instance/hours', $this->call('doReportSiteActiviyPerHours'))
+            ->bind('report_activity_instance_hours');
 
-        $controllers->post('/activity/instance/days', $this->call('doReportSiteActiviyPerDays'));
+        $controllers->post('/activity/instance/days', $this->call('doReportSiteActiviyPerDays'))
+            ->bind('report_activity_instance_days');
 
-        $controllers->post('/activity/documents/pushed', $this->call('doReportPushedDocuments'));
+        $controllers->post('/activity/documents/pushed', $this->call('doReportPushedDocuments'))
+            ->bind('report_activity_documents_pushed');
 
-        $controllers->post('/activity/documents/added', $this->call('doReportAddedDocuments'));
+        $controllers->post('/activity/documents/added', $this->call('doReportAddedDocuments'))
+            ->bind('report_activity_documents_added');
 
-        $controllers->post('/activity/documents/edited', $this->call('doReportEditedDocuments'));
+        $controllers->post('/activity/documents/edited', $this->call('doReportEditedDocuments'))
+            ->bind('report_activity_documents_edited');
 
-        $controllers->post('/activity/documents/validated', $this->call('doReportValidatedDocuments'));
+        $controllers->post('/activity/documents/validated', $this->call('doReportValidatedDocuments'))
+            ->bind('report_activity_documents_validated');
 
-        $controllers->post('/informations/user', $this->call('doReportInformationsUser'));
+        $controllers->post('/informations/user', $this->call('doReportInformationsUser'))
+            ->bind('report_infomations_user');
 
-        $controllers->post('/informations/browser', $this->call('doReportInformationsBrowser'));
+        $controllers->post('/informations/browser', $this->call('doReportInformationsBrowser'))
+            ->bind('report_infomations_browser');
 
-        $controllers->post('/informations/document', $this->call('doReportInformationsDocument'));
+        $controllers->post('/informations/document', $this->call('doReportInformationsDocument'))
+            ->bind('report_infomations_document');
 
         return $controllers;
     }
