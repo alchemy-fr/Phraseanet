@@ -101,7 +101,7 @@ class Root implements ControllerProviderInterface
     {
         $dashboard = new \module_report_dashboard($app, $app['phraseanet.user']);
 
-        if ('json' !== $request->getContentType()) {
+        if ('json' !== $request->getRequestFormat()) {
             \User_Adapter::updateClientInfos($app, 4);
 
             $dashboard->execute();
@@ -135,23 +135,18 @@ class Root implements ControllerProviderInterface
 
     public function initReport(Application $app, Request $request)
     {
-        $dmin = $request->request->get('dmin', '');
-        $dmax = $request->request->get('dmax', '');
         $popbases = $request->request->get('popbases', array());
 
-        if ($dmin == '') {
+        if ('' !== $dmin = $request->request->get('dmin', '')) {
             $dmin = '01-' . date('m') . '-' . date('Y');
         }
 
-        if ($dmax == '') {
+        if ('' !== $dmax = $request->request->get('dmax', '')) {
             $dmax = date("d") . "-" . date("m") . "-" . date("Y");
         }
 
-        $td = explode('-', $dmin);
-        $dmin = date('Y-m-d H:i:s', mktime(0, 0, 0, $td[1], $td[0], $td[2]));
-
-        $td = explode('-', $dmax);
-        $dmax = date('Y-m-d H:i:s', mktime(23, 59, 59, $td[1], $td[0], $td[2]));
+        $dmin = \DateTime::createFromFormat('d-m-Y H:i:s', sprintf('%s 00:00:00', $dmin));
+        $dmax = \DateTime::createFromFormat('d-m-Y H:i:s', sprintf('%s 23:59:59', $dmax));
 
         //get user's sbas & collections selection from popbases
         $selection = array();
@@ -174,7 +169,9 @@ class Root implements ControllerProviderInterface
         return $app['twig']->render('report/ajax_report_content.html.twig', array(
             'selection' => $selection,
             'anonymous' => $app['phraseanet.registry']->get('GV_anonymousReport'),
-            'ajax'      => true
+            'ajax'      => true,
+            'dmin'      => $dmin->format('Y-m-d H:i:s'),
+            'dmax'      => $dmax->format('Y-m-d H:i:s'),
         ));
     }
 
@@ -508,9 +505,12 @@ class Root implements ControllerProviderInterface
         $activity->setBound("user", true);
 
         //set Limit
-        if ($activity->getEnableLimit()) {
-            ('' !== $page = $request->request->get('page', '')) &&  ('' !== $limit = $request->request->get('limit', '')) ?
-                    $activity->setLimit($page, $limit) : $activity->setLimit(false, false);
+        if ($activity->getEnableLimit()
+                && ('' !== $page = $request->request->get('page', ''))
+                && ('' !== $limit = $request->request->get('limit', ''))) {
+            $activity->setLimit($page, $limit);
+        } else  {
+            $activity->setLimit(false, false);
         }
 
         if ($request->request->get('printcsv') == 'on') {
