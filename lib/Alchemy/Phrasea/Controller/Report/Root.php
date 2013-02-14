@@ -26,6 +26,10 @@ class Root implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('report');
         });
 
+        $controllers->get('/', function(Application $app) {
+            return $app->redirect($app->path('report_dashboard'));
+        })->bind('report');
+
         $controllers->get('/dashboard', $this->call('getDashboard'))
             ->bind('report_dashboard');
 
