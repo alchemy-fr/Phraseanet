@@ -56,6 +56,10 @@ use Alchemy\Phrasea\Controller\Prod\TOU;
 use Alchemy\Phrasea\Controller\Prod\Upload;
 use Alchemy\Phrasea\Controller\Prod\UsrLists;
 use Alchemy\Phrasea\Controller\Prod\WorkZone;
+use Alchemy\Phrasea\Controller\Report\Activity as ReportActivity;
+use Alchemy\Phrasea\Controller\Report\Informations as ReportInformations;
+use Alchemy\Phrasea\Controller\Report\Export as ReportExport;
+use Alchemy\Phrasea\Controller\Report\Root as ReportRoot;
 use Alchemy\Phrasea\Controller\Root\Account;
 use Alchemy\Phrasea\Controller\Root\Developers;
 use Alchemy\Phrasea\Controller\Root\Login;
@@ -649,6 +653,11 @@ class Application extends SilexApplication
 
         $this->mount('/download/', new DoDownload());
         $this->mount('/session/', new Session());
+
+        $this->mount('/report/', new ReportRoot());
+        $this->mount('/report/activity', new ReportActivity());
+        $this->mount('/report/informations', new ReportInformations());
+        $this->mount('/report/export', new ReportExport());
     }
 
     private function reinitUser()

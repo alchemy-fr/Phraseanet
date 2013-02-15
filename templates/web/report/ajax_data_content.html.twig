@@ -27,9 +27,9 @@
         <script type="text/javascript">
             $('#dialog .bound').each( function () {
                   var riid = $(this).html();
-                var new_a = $(this).html('<img style="float:right;margin-right:5px;" src="./images/loupe2.png" />');
+                var new_a = $(this).html('<img style="float:right;margin-right:5px;" src="/skins/report/img/loupe2.png" />');
                 $(this).before(riid);
-                $(this).attr('rel', './tab.php').cluetip({
+                $(this).attr('rel', '{{ path('report_infomations_document') }}').cluetip({
                     width: 600,
                     ajaxCache: true,
                     arrows: true,
@@ -37,12 +37,11 @@
                         type : 'POST',
                           dataType: 'json',
                           data : ({
-                            tbl : 'what',
                             rid : riid,
-                            sbasid : '{{ param.sbasid }}',
-                            collection : '{{ param.collection }}',
-                            dmin : '{{ param.dmin }}',
-                            dmax : '{{ param.dmax }}',
+                            sbasid : '{{ app['request'].get('sbasid') }}',
+                            collection : '{{ app['request'].get('collection') }}',
+                            dmin : '{{ app['request'].get('dmin') }}',
+                            dmax : '{{ app['request'].get('dmax') }}',
                             from : 'TOOL'
                         })
                     },

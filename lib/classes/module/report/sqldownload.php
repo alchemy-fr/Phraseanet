@@ -25,6 +25,8 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
     public function buildSql()
     {
+        $customFieldMap = array();
+
         $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
         $this->params = array_merge(array(), $filter['params']);
 
@@ -54,6 +56,16 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
                        INNER JOIN record ON (log_docs.record_id = record.record_id)
                        INNER JOIN subdef ON (log_docs.record_id = subdef.record_id)';
+
+                $customFieldMap = array(
+                    $field => $name,
+                    'log_docs.comment'  => 'tt.comment',
+                    'subdef.size'       => 'tt.size',
+                    'subdef.file'       => 'tt.file',
+                    'subdef.mime'       => 'tt.mime',
+                    'log_docs.final'    => 'tt.final',
+                );
+
             } elseif ($this->on == 'DOC') {
                 $this->sql = '
                     SELECT ' . $name . ', SUM(1) AS telechargement
@@ -88,7 +100,12 @@ class module_report_sqldownload extends module_report_sql implements module_repo
         $this->total = $stmt->rowCount();
         $stmt->closeCursor();
 
-        $this->sql .= $this->filter->getOrderFilter() ? : '';
+        if (count($customFieldMap) > 0) {
+            $this->sql .= $this->filter->getOrderFilter($customFieldMap) ? : '';
+        } else {
+             $this->sql .= $this->filter->getOrderFilter() ? : '';
+        }
+
         $this->sql .= $this->filter->getLimitFilter() ? : '';
 
         return $this;

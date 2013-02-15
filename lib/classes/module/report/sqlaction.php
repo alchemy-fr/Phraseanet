@@ -38,6 +38,8 @@ class module_report_sqlaction extends module_report_sql implements module_report
 
     public function buildSql()
     {
+        $customFieldMap = array();
+
         $filter = $this->filter->getReportFilter() ? : array('params' => array(), 'sql' => false);
         $this->params = array_merge(array(':action' => $this->action), $filter['params']);
 
@@ -53,12 +55,22 @@ class module_report_sqlaction extends module_report_sql implements module_report
                     WHERE (" . $filter['sql'] . ") AND (d.action = :action)
                 ) AS tt";
 
+            $customFieldMap = array(
+                'log.usrid'     => 'tt.usrid',
+                'log.user'      => 'tt.user',
+                'd.final'       => 'getter',
+                'd.record_id'   => 'tt.record_id',
+                'd.date'        => 'tt.date',
+                'record.mime'   => 'tt.mime',
+                'file'          => 'tt.file',
+            );
+
             $stmt = $this->getConnBas()->prepare($this->sql);
             $stmt->execute($this->params);
             $this->total = $stmt->rowCount();
             $stmt->closeCursor();
 
-            $this->sql .= $this->filter->getOrderFilter() ? : '';
+            $this->sql .= $this->filter->getOrderFilter($customFieldMap) ? : '';
             $this->sql .= $this->filter->getLimitFilter() ? : '';
         } else {
             $this->sql = "

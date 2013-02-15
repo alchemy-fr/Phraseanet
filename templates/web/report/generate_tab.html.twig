@@ -12,13 +12,13 @@
                 <div class="left titleleft">
                     <div class="title left">{{ result.title }}</div>
                     {% if result.config %}
-                        <a href="#" class="config left"><img title="{% trans 'report :: configurer le tableau' %}" src="images/config.png"/></a>
+                        <a href="#" class="config left"><img title="{% trans 'report :: configurer le tableau' %}" src="/skins/report/img/config.png"/></a>
                     {% endif %}
                     {% if result.print %}
-                        <a href="#" class="jqprint left"><img  title="{% trans 'report :: imprimer le tableau' %}" src="images/print.png"/></a>
+                        <a href="#" class="jqprint left"><img  title="{% trans 'report :: imprimer le tableau' %}" src="/skins/report/img/print.png"/></a>
                     {% endif %}
                     {% if result.csv %}
-                        <form class="form_csv left" method="POST" action="export_csv.php" target="iframe" >
+                        <form class="form_csv left" method="POST" action="{{ path('report_export_csv') }}" target="iframe" >
                             <input type="submit" name ="submit" value=""/>
                             <input style="display:none;" type="submit"  name="doit"/>
                             <input type="hidden" name="name" value="{{ result.title }}" size="68"/>
@@ -42,8 +42,8 @@
                 <th class="{{ key }}" scope="col" >
                 {% if value.sort == 1 %}
                     <div class="orderby">
-                        <img title="{% trans "Trier" %}" style="float:left;top:0;left:0;" class="asc" src="images/arrow_up.png"  />
-                        <img title="{% trans "Trier" %}" style="float:left;top:0;left:0;" class="desc" src="images/arrow_down.png" />
+                        <img title="{% trans "Trier" %}" style="float:left;top:0;left:0;" class="asc" src="/skins/report/img/arrow_up.png"  />
+                        <img title="{% trans "Trier" %}" style="float:left;top:0;left:0;" class="desc" src="/skins/report/img/arrow_down.png" />
                 {% endif %}
 
                 <div class="title_th" style="clear:both;color:black;">{{ value.title }}</div>
@@ -106,7 +106,7 @@
     <div  class="report-table center" style="margin-top:50px;" >
         <b>{{ result.title }}</b>
         <br />
-        <img src="images/noresults.png" />
+        <img src="/skins/report/img/noresults.png" />
         <br />
         <i>{% trans "report :: aucun resultat trouve" %}</i><br />
     </div>

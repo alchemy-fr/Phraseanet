@@ -46,6 +46,8 @@
   RewriteRule ^download/.*$                     /index.php [L]
   RewriteRule ^session/.*$                      /index.php [L]
 
+  RewriteRule ^report/.*$                      /index.php [L]
+
   RewriteRule ^client/.*$                       /index.php [L]
   RewriteRule ^client/baskets.*$                /index.php [L]
 
