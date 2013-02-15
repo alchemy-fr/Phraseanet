@@ -116,10 +116,38 @@ class Session_Authentication_Native implements Session_Authentication_Interface
 
     /**
      *
+     * @param  Browser                       $browser
      * @return Session_Authentication_Native
      */
-    public function postlog()
+    public function challenge_password(Browser $browser = null)
     {
+        $conn = $this->app['phraseanet.appbox']->get_connection();
+
+        $sql = 'SELECT usr_id
+      FROM usr
+      WHERE usr_login = :login
+        AND usr.usr_password = :password
+        AND usr_login NOT IN ("invite","autoregister")
+        AND usr_login NOT LIKE "(#deleted_%"
+        AND salted_password = 1
+        AND model_of="0" AND invite="0"';
+
+        $salt = $this->app['auth.password-encoder']->encodePassword($this->password, $this->user->get_nonce());
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(
+            ':login'    => $this->login,
+            ':password' => $salt
+        ));
+
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if (count($rs) == 0) {
+            if ($browser instanceof Browser)
+                $this->save_badlog($browser);
+            throw new Exception_Unauthorized('Bad login/Password');
+        }
+
         return $this;
     }
 
@@ -142,43 +170,6 @@ class Session_Authentication_Native implements Session_Authentication_Interface
 
         if ($row && $row['mail_locked'] == "1")
             throw new Exception_Session_MailLocked($this->user->get_id());
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  Browser                       $browser
-     * @return Session_Authentication_Native
-     */
-    public function challenge_password(Browser $browser = null)
-    {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-
-        $sql = 'SELECT usr_id
-      FROM usr
-      WHERE usr_login = :login
-        AND usr.usr_password = :password
-        AND usr_login NOT IN ("invite","autoregister")
-        AND usr_login NOT LIKE "(#deleted_%"
-        AND salted_password = 1
-        AND model_of="0" AND invite="0"';
-
-        $salt = User_Adapter::salt_password($this->app, $this->password, $this->user->get_nonce());
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(
-            ':login'    => $this->login,
-            ':password' => $salt
-        ));
-
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if (count($rs) == 0) {
-            if ($browser instanceof Browser)
-                $this->save_badlog($browser);
-            throw new Exception_Unauthorized('Bad login/Password');
-        }
 
         return $this;
     }

@@ -146,7 +146,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         try {
             $repository = $this->app['EM']->getRepository('\Entities\Basket');
 
-            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['phraseanet.user'], false);
+            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
 
             $basket_name = trim($basket->getName()) ? : _('Une selection');
         } catch (Exception $e) {

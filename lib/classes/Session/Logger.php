@@ -104,8 +104,8 @@ class Session_Logger
     {
         $colls = array();
 
-        if ($app['phraseanet.user']) {
-            $bases = $app['phraseanet.user']->ACL()->get_granted_base(array(), array($databox->get_sbas_id()));
+        if ($app['authentication']->getUser()) {
+            $bases = $app['authentication']->getUser()->ACL()->get_granted_base(array(), array($databox->get_sbas_id()));
             foreach ($bases as $collection) {
                 $colls[] = $collection->get_coll_id();
             }
@@ -124,7 +124,7 @@ class Session_Logger
 
         $params = array(
             ':ses_id'          => $app['session']->get('session_id'),
-            ':usr_login'       => $app['phraseanet.user'] ? $app['phraseanet.user']->get_login() : null,
+            ':usr_login'       => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_login() : null,
             ':site_id'         => $app['phraseanet.registry']->get('GV_sit'),
             ':usr_id'          => $app['phraseanet.user'] ? $app['phraseanet.user']->get_id() : null,
             ':browser'         => $browser->getBrowser(),
@@ -134,10 +134,10 @@ class Session_Logger
             ':ip'              => $browser->getIP(),
             ':user_agent'      => $browser->getUserAgent(),
             ':appli'           => serialize(array()),
-            ':fonction' => $app['phraseanet.user'] ? $app['phraseanet.user']->get_job() : null,
-            ':company'  => $app['phraseanet.user'] ? $app['phraseanet.user']->get_company() : null,
-            ':activity' => $app['phraseanet.user'] ? $app['phraseanet.user']->get_position() : null,
-            ':country'  => $app['phraseanet.user'] ? $app['phraseanet.user']->get_country() : null
+            ':fonction' => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_job() : null,
+            ':company'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_company() : null,
+            ':activity' => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_position() : null,
+            ':country'  => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_country() : null
         );
 
         $stmt = $conn->prepare($sql);
@@ -163,7 +163,7 @@ class Session_Logger
 
     public static function load(Application $app, databox $databox)
     {
-        if ( ! $app->isAuthenticated()) {
+        if ( ! $app['authentication']->isAuthenticated()) {
             throw new Exception_Session_LoggerNotFound('Not authenticated');
         }
 

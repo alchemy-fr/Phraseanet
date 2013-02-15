@@ -233,11 +233,11 @@ class User_Query implements User_QueryInterface
         }
 
         if ($this->only_templates === true) {
-            $sql .= ' AND model_of = ' . $this->app['phraseanet.user']->get_id();
+            $sql .= ' AND model_of = ' . $this->app['authentication']->getUser()->get_id();
         } elseif ($this->include_templates === false) {
             $sql .= ' AND model_of=0';
         } else {
-            $sql .= ' AND (model_of=0 OR model_of = ' . $this->app['phraseanet.user']->get_id() . ' ) ';
+            $sql .= ' AND (model_of=0 OR model_of = ' . $this->app['authentication']->getUser()->get_id() . ' ) ';
         }
 
         if ($this->activities) {

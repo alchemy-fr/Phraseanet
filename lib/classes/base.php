@@ -468,7 +468,7 @@ abstract class base implements cache_cacheableInterface
                 foreach ($default->data as $data) {
                     $k = trim($data['key']);
                     if ($k === 'usr_password')
-                        $data = User_Adapter::salt_password($this->app, $data, $nonce);
+                        $data = $this->app['auth.password-encoder']->encodePassword($data, $nonce);
                     if ($k === 'nonce')
                         $data = $nonce;
                     $v = trim(str_replace(array("\r\n", "\r", "\n", "\t"), '', $data));

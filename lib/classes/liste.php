@@ -23,23 +23,23 @@ class liste
                 continue;
             }
 
-            if ($app['phraseanet.user']->ACL()->has_hd_grant($record)) {
+            if ($app['authentication']->getUser()->ACL()->has_hd_grant($record)) {
                 $okbrec[] = implode('_', $basrec);
                 continue;
             }
-            if ($app['phraseanet.user']->ACL()->has_preview_grant($record)) {
+            if ($app['authentication']->getUser()->ACL()->has_preview_grant($record)) {
                 $okbrec[] = implode('_', $basrec);
                 continue;
             }
 
-            if ( ! $app['phraseanet.user']->ACL()->has_access_to_base($record->get_base_id()))
+            if ( ! $app['authentication']->getUser()->ACL()->has_access_to_base($record->get_base_id()))
                 continue;
 
             try {
                 $connsbas = connection::getPDOConnection($app, $basrec[0]);
 
-                $sql = 'SELECT record_id FROM record WHERE ((status ^ ' . $app['phraseanet.user']->ACL()->get_mask_xor($record->get_base_id()) . ')
-                    & ' . $app['phraseanet.user']->ACL()->get_mask_and($record->get_base_id()) . ')=0' .
+                $sql = 'SELECT record_id FROM record WHERE ((status ^ ' . $app['authentication']->getUser()->ACL()->get_mask_xor($record->get_base_id()) . ')
+                    & ' . $app['authentication']->getUser()->ACL()->get_mask_and($record->get_base_id()) . ')=0' .
                     ' AND record_id = :record_id';
 
                 $stmt = $connsbas->prepare($sql);

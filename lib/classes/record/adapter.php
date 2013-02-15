@@ -400,7 +400,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         if (isset($dstatus[$sbas_id])) {
             foreach ($dstatus[$sbas_id] as $n => $statbit) {
                 if ($statbit['printable'] == '0' &&
-                    !$this->app['phraseanet.user']->ACL()->has_right_on_base($this->base_id, 'chgstatus')) {
+                    !$this->app['authentication']->getUser()->ACL()->has_right_on_base($this->base_id, 'chgstatus')) {
                     continue;
                 }
 
@@ -1930,7 +1930,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             throw new Exception('This record is not a grouping');
         }
 
-        if ($this->app['phraseanet.user']) {
+        if ($this->app['authentication']->getUser()) {
             $sql = 'SELECT record_id
               FROM regroup g
                 INNER JOIN (record r
@@ -1946,7 +1946,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             $params = array(
                 ':GV_site'   => $this->app['phraseanet.registry']->get('GV_sit'),
-                ':usr_id'    => $this->app['phraseanet.user']->get_id(),
+                ':usr_id'    => $this->app['authentication']->getUser()->get_id(),
                 ':record_id' => $this->get_record_id(),
             );
         } else {
@@ -1997,7 +1997,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $params = array(
             ':GV_site'   => $this->app['phraseanet.registry']->get('GV_sit')
-            , ':usr_id'    => $this->app['phraseanet.user']->get_id()
+            , ':usr_id'    => $this->app['authentication']->getUser()->get_id()
             , ':record_id' => $this->get_record_id()
         );
 

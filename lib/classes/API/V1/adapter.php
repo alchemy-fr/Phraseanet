@@ -665,7 +665,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $collection = \collection::get_from_base_id($this->app, $request->get('base_id'));
 
-        if (!$app['phraseanet.user']->ACL()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
+        if (!$app['authentication']->getUser()->ACL()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
             throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_name()));
         }
 
@@ -678,7 +678,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         $session = new Entities\LazaretSession();
-        $session->setUsrId($app['phraseanet.user']->get_id());
+        $session->setUsrId($app['authentication']->getUser()->get_id());
 
         $app['EM']->persist($session);
         $app['EM']->flush();
@@ -740,7 +740,7 @@ class API_V1_adapter extends API_V1_Abstract
         $offset_start = max($request->get('offset_start', 0), 0);
         $per_page = min(max($request->get('per_page', 10), 1), 20);
 
-        $baseIds = array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('canaddrecord')));
+        $baseIds = array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('canaddrecord')));
 
         $lazaretFiles = array();
 
@@ -778,7 +778,7 @@ class API_V1_adapter extends API_V1_Abstract
             throw new \API_V1_exception_notfound(sprintf('Lazaret file id %d not found', $lazaret_id));
         }
 
-        if (!$app['phraseanet.user']->ACL()->has_right_on_base($lazaretFile->getBaseId(), 'canaddrecord')) {
+        if (!$app['authentication']->getUser()->ACL()->has_right_on_base($lazaretFile->getBaseId(), 'canaddrecord')) {
             throw new \API_V1_exception_forbidden('You do not have access to this quarantine item');
         }
 
@@ -943,7 +943,7 @@ class API_V1_adapter extends API_V1_Abstract
             }, (array) $this->app['phraseanet.appbox']
                 ->get_databox($databox_id)
                 ->get_record($record_id)
-                ->get_container_baskets($this->app['EM'], $this->app['phraseanet.user'])
+                ->get_container_baskets($this->app['EM'], $this->app['authentication']->getUser())
         );
 
         $record = $this->app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
@@ -1233,7 +1233,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $usr_id = $session = $this->app['phraseanet.user']->get_id();
+        $usr_id = $session = $this->app['authentication']->getUser()->get_id();
 
         $result->set_datas(array('baskets' => $this->list_baskets($usr_id)));
 
@@ -1251,7 +1251,7 @@ class API_V1_adapter extends API_V1_Abstract
         $repo = $this->app['EM']->getRepository('\Entities\Basket');
         /* @var $repo \Repositories\BasketRepository */
 
-        $baskets = $repo->findActiveByUser($this->app['phraseanet.user']);
+        $baskets = $repo->findActiveByUser($this->app['authentication']->getUser());
 
         $ret = array();
         foreach ($baskets as $basket) {
@@ -1278,7 +1278,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         $Basket = new \Entities\Basket();
-        $Basket->setOwner($this->app['phraseanet.user']);
+        $Basket->setOwner($this->app['authentication']->getUser());
         $Basket->setName($name);
 
         $this->app['EM']->persist($Basket);
@@ -1302,7 +1302,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         /* @var $repository \Repositories\BasketRepository */
 
-        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['phraseanet.user'], true);
+        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
         $this->app['EM']->remove($Basket);
         $this->app['EM']->flush();
 
@@ -1324,7 +1324,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         /* @var $repository \Repositories\BasketRepository */
 
-        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['phraseanet.user'], false);
+        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), false);
 
         $result->set_datas(
                 array(
@@ -1384,14 +1384,14 @@ class API_V1_adapter extends API_V1_Abstract
                         'confirmed'      => $participant->getIsConfirmed(),
                         'can_agree'      => $participant->getCanAgree(),
                         'can_see_others' => $participant->getCanSeeOthers(),
-                        'readonly'       => $user->get_id() != $this->app['phraseanet.user']->get_id(),
+                        'readonly'       => $user->get_id() != $this->app['authentication']->getUser()->get_id(),
                     ),
                     'agreement'      => $validation_datas->getAgreement(),
                     'updated_on'     => $validation_datas->getUpdated()->format(DATE_ATOM),
                     'note'           => null === $validation_datas->getNote() ? '' : $validation_datas->getNote(),
                 );
 
-                if ($user->get_id() == $this->app['phraseanet.user']->get_id()) {
+                if ($user->get_id() == $this->app['authentication']->getUser()->get_id()) {
                     $agreement = $validation_datas->getAgreement();
                     $note = null === $validation_datas->getNote() ? '' : $validation_datas->getNote();
                 }
@@ -1423,7 +1423,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         /* @var $repository \Repositories\BasketRepository */
 
-        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['phraseanet.user'], true);
+        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
         $Basket->setName($name);
 
         $this->app['EM']->merge($Basket);
@@ -1451,7 +1451,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         /* @var $repository \Repositories\BasketRepository */
 
-        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['phraseanet.user'], true);
+        $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
         $Basket->setDescription($desc);
 
         $this->app['EM']->merge($Basket);
@@ -1819,7 +1819,7 @@ class API_V1_adapter extends API_V1_Abstract
                     'confirmed'      => $participant->getIsConfirmed(),
                     'can_agree'      => $participant->getCanAgree(),
                     'can_see_others' => $participant->getCanSeeOthers(),
-                    'readonly'       => $user->get_id() != $this->app['phraseanet.user']->get_id(),
+                    'readonly'       => $user->get_id() != $this->app['authentication']->getUser()->get_id(),
                 );
             }
 
@@ -1833,9 +1833,9 @@ class API_V1_adapter extends API_V1_Abstract
                     array(
                 'validation_users'     => $users,
                 'expires_on'           => $expires_on_atom,
-                'validation_infos'     => $basket->getValidation()->getValidationString($this->app, $this->app['phraseanet.user']),
-                'validation_confirmed' => $basket->getValidation()->getParticipant($this->app['phraseanet.user'], $this->app)->getIsConfirmed(),
-                'validation_initiator' => $basket->getValidation()->isInitiator($this->app['phraseanet.user']),
+                'validation_infos'     => $basket->getValidation()->getValidationString($this->app, $this->app['authentication']->getUser()),
+                'validation_confirmed' => $basket->getValidation()->getParticipant($this->app['authentication']->getUser(), $this->app)->getIsConfirmed(),
+                'validation_initiator' => $basket->getValidation()->isInitiator($this->app['authentication']->getUser()),
                     ), $ret
             );
         }

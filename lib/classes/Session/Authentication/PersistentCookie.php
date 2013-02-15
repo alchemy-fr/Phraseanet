@@ -55,7 +55,7 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
 
         $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
 
-        if (\User_Adapter::salt_password($this->app, $string, $session->getNonce()) !== $session->getToken()) {
+        if ($this->app['auth.password-encoder']->encodePassword($string, $session->getNonce()) !== $session->getToken()) {
             throw new \Exception_Session_WrongToken('Persistent cookie value is corrupted');
         }
 

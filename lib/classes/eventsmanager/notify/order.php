@@ -191,11 +191,11 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
     public function is_available()
     {
         $bool = false;
-        if ( !$this->app->isAuthenticated()) {
+        if ( !$this->app['authentication']->isAuthenticated()) {
             return false;
         }
 
-        if ($this->app['phraseanet.user']->ACL()->has_right('order_master')) {
+        if ($this->app['authentication']->getUser()->ACL()->has_right('order_master')) {
             $bool = true;
         }
 

@@ -401,7 +401,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $sql = 'UPDATE usr SET usr_password = :password, salted_password = "1"
             WHERE usr_id = :usr_id';
 
-        $password = self::salt_password($this->app, $pasword, $this->get_nonce());
+        $password = $this->app['auth.password-encoder']->encodePassword($pasword, $this->get_nonce());
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':password' => $password, ':usr_id'   => $this->get_id()));
@@ -496,13 +496,13 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute(array(
                 ':name'   => $query,
-                ':usr_id' => $app['phraseanet.user']->get_id(),
+                ':usr_id' => $app['authentication']->getUser()->get_id(),
                 ':query'  => $query
             ));
             $stmt->closeCursor();
 
-            if ($app['phraseanet.user']->getPrefs('start_page') == 'LAST_QUERY')
-                $app['phraseanet.user']->setPrefs('start_page_query', $query);
+            if ($app['authentication']->getUser()->getPrefs('start_page') == 'LAST_QUERY')
+                $app['authentication']->getUser()->setPrefs('start_page_query', $query);
         } catch (Exception $e) {
             return false;
         }
@@ -1461,7 +1461,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public static function updateClientInfos(Application $app, $app_id)
     {
-        if (!$app->isAuthenticated()) {
+        if (!$app['authentication']->isAuthenticated()) {
             return;
         }
 
@@ -1484,7 +1484,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $app['EM']->flush();
         }
 
-        $usr_id = $app['phraseanet.user']->get_id();
+        $usr_id = $app['authentication']->getUser()->get_id();
 
         $user = User_Adapter::getInstance($usr_id, $app);
 
@@ -1563,7 +1563,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         try {
             $sql = "UPDATE usr SET create_db='0' WHERE create_db='1' AND usr_id != :usr_id";
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':usr_id' => $app['phraseanet.user']->get_id()));
+            $stmt->execute(array(':usr_id' => $app['authentication']->getUser()->get_id()));
             $stmt->closeCursor();
 
             $sql = "UPDATE usr SET create_db='1' WHERE usr_id IN (" . implode(',', $admins) . ")";
@@ -1676,7 +1676,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt->execute(array(
             ':login'    => $login,
             ':nonce'    => $nonce,
-            ':password' => self::salt_password($app, $password, $nonce),
+            ':password' => $app['auth.password-encoder']->encodePassword($password, $nonce),
             ':email'    => ($email ? $email : null),
             ':admin'    => ($admin ? '1' : '0'),
             ':invite'   => ($invite ? '1' : '0')
@@ -1695,10 +1695,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return self::getInstance($usr_id, $app);
     }
 
-    public static function salt_password(Application $app, $password, $nonce)
-    {
-        return hash_hmac('sha512', $password . $nonce, $app['phraseanet.registry']->get('GV_sit'));
-    }
     protected $nonce;
 
     public function get_nonce()
