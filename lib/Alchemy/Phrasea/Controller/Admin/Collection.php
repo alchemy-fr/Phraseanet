@@ -387,7 +387,7 @@ class Collection implements ControllerProviderInterface
 
         $admins = array();
 
-        if ($app['phraseanet.user']->ACL()->has_right_on_base($bas_id, 'manage')) {
+        if ($app['authentication']->getUser()->ACL()->has_right_on_base($bas_id, 'manage')) {
             $query = new \User_Query($app);
             $admins = $query->on_base_ids(array($bas_id))
                 ->who_have_right(array('order_master'))

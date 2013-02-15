@@ -33,12 +33,11 @@ class Lightbox implements ControllerProviderInterface
                 $app['authentication']->closeAccount();
             }
 
-            try {
-                $auth = new \Session_Authentication_Token($app, $request->query->get('LOG'));
-                $app['authentication']->openAccount($auth);
-            } catch (Exception $e) {
+            if (false === $usr_id = $app['authentication.token-validator']->isValid($request->query->get('LOG'))) {
                 return $app->redirect("/login/?error=" . urlencode($e->getMessage()));
             }
+
+            $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
 
             try {
                 $datas = $app['tokens']->helloToken($request->query->get('LOG'));
@@ -468,7 +467,7 @@ class Lightbox implements ControllerProviderInterface
                 $agreed = false;
                 /* @var $basket \Entities\Basket */
                 foreach ($basket->getElements() as $element) {
-                    if (null !== $element->getUserValidationDatas($app['phraseanet.user'], $app)->getAgreement()) {
+                    if (null !== $element->getUserValidationDatas($app['authentication']->getUser(), $app)->getAgreement()) {
                         $agreed = true;
                     }
                 }

@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Authentication\Manager;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Authentication\Provider\Facebook;
 use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
+use Alchemy\Phrasea\Authentication\PersistentCookie\Manager as CookieManager;
 use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
@@ -36,6 +37,10 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
             return new TokenValidator($app);
         });
 
+        $app['authentication.persistent-manager'] = $app->share(function (Application $app){
+            return new CookieManager($app['auth.password-encoder'], $app['EM'], $app['browser']);
+        });
+
 
 //        $app['authentication.suggestion-finder'] = $app->share(function (Application $app) {
 //            return new SuggestionFinder($app);
@@ -43,14 +48,14 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
         $app['authentication.providers'] = $app->share(function (Application $app) {
 
-            $config = array();
-            $config['appId'] = '252378391562465';
-            $config['secret'] = 'd9df4bb1ad34aab4f6728b4076e1f9c4';
-
-            $facebook = new \Facebook($config);
+//            $config = array();
+//            $config['appId'] = '252378391562465';
+//            $config['secret'] = 'd9df4bb1ad34aab4f6728b4076e1f9c4';
+//
+//            $facebook = new \Facebook($config);
 
             $providers = new ProvidersCollection();
-            $providers->register(new Facebook($facebook, $app['url_generator']));
+//            $providers->register(new Facebook($facebook, $app['url_generator']));
 
             return $providers;
         });

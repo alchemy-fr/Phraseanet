@@ -33,11 +33,8 @@ return call_user_func(function($environment = null) {
 
     $app->before(function(Request $request) use ($app) {
         if ($request->cookies->has('persistent') && !$app['authentication']->isAuthenticated()) {
-            try {
-                $auth = new \Session_Authentication_PersistentCookie($app, $request->cookies->get('persistent'));
-                $app['authentication']->openAccount($auth, $auth->getSessionId());
-            } catch (\Exception $e) {
-
+            if (false !== $session = $app['authentication.persistent-manager']->getSession($request->cookies->get('persistent'))) {
+                $app['authentication']->refreshAccount($session);
             }
         }
     });

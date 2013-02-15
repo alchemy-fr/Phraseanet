@@ -119,7 +119,7 @@ class Push implements ControllerProviderInterface
             $params = array(
                 'push'             => $push,
                 'message'          => '',
-                'lists'            => $repository->findUserLists($app['phraseanet.user']),
+                'lists'            => $repository->findUserLists($app['authentication']->getUser()),
                 'context'          => 'Push',
                 'RecommendedUsers' => $RecommendedUsers
             );
@@ -137,7 +137,7 @@ class Push implements ControllerProviderInterface
             $params = array(
                 'push'             => $push,
                 'message'          => '',
-                'lists'            => $repository->findUserLists($app['phraseanet.user']),
+                'lists'            => $repository->findUserLists($app['authentication']->getUser()),
                 'context'          => 'Feedback',
                 'RecommendedUsers' => $RecommendedUsers
             );
@@ -159,7 +159,7 @@ class Push implements ControllerProviderInterface
                 $push_name = $request->request->get('name');
 
                 if (trim($push_name) === '') {
-                    $push_name = sprintf(_('Push from %s'), $app['phraseanet.user']->get_display_name());
+                    $push_name = sprintf(_('Push from %s'), $app['authentication']->getUser()->get_display_name());
                 }
 
                 $push_description = $request->request->get('push_description');
@@ -185,7 +185,7 @@ class Push implements ControllerProviderInterface
                     $Basket->setName($push_name);
                     $Basket->setDescription($push_description);
                     $Basket->setOwner($user_receiver);
-                    $Basket->setPusher($app['phraseanet.user']);
+                    $Basket->setPusher($app['authentication']->getUser());
                     $Basket->setIsRead(false);
 
                     $app['EM']->persist($Basket);
@@ -202,13 +202,13 @@ class Push implements ControllerProviderInterface
                         if ($receiver['HD']) {
                             $user_receiver->ACL()->grant_hd_on(
                                 $BasketElement->getRecord($app)
-                                , $app['phraseanet.user']
+                                , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_PUSH
                             );
                         } else {
                             $user_receiver->ACL()->grant_preview_on(
                                 $BasketElement->getRecord($app)
-                                , $app['phraseanet.user']
+                                , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_PUSH
                             );
                         }
@@ -223,8 +223,8 @@ class Push implements ControllerProviderInterface
                     $receipt = $request->get('recept') ? $app['phraseanet.user']->get_email() : '';
 
                     $params = array(
-                        'from'       => $app['phraseanet.user']->get_id()
-                        , 'from_email' => $app['phraseanet.user']->get_email()
+                        'from'       => $app['authentication']->getUser()->get_id()
+                        , 'from_email' => $app['authentication']->getUser()->get_email()
                         , 'to'         => $user_receiver->get_id()
                         , 'to_email'   => $user_receiver->get_email()
                         , 'to_name'    => $user_receiver->get_display_name()
@@ -277,7 +277,7 @@ class Push implements ControllerProviderInterface
                 $validation_name = $request->request->get('name');
 
                 if (trim($validation_name) === '') {
-                    $validation_name = sprintf(_('Validation from %s'), $app['phraseanet.user']->get_display_name());
+                    $validation_name = sprintf(_('Validation from %s'), $app['authentication']->getUser()->get_display_name());
                 }
 
                 $validation_description = $request->request->get('validation_description');
@@ -298,7 +298,7 @@ class Push implements ControllerProviderInterface
                     $Basket = new \Entities\Basket();
                     $Basket->setName($validation_name);
                     $Basket->setDescription($validation_description);
-                    $Basket->setOwner($app['phraseanet.user']);
+                    $Basket->setOwner($app['authentication']->getUser());
                     $Basket->setIsRead(false);
 
                     $app['EM']->persist($Basket);
@@ -319,7 +319,7 @@ class Push implements ControllerProviderInterface
 
                 if (!$Basket->getValidation()) {
                     $Validation = new \Entities\ValidationSession();
-                    $Validation->setInitiator($app['phraseanet.user']);
+                    $Validation->setInitiator($app['authentication']->getUser());
                     $Validation->setBasket($Basket);
 
                     $duration = (int) $request->request->get('duration');
@@ -337,16 +337,16 @@ class Push implements ControllerProviderInterface
 
                 $found = false;
                 foreach ($participants as $key => $participant) {
-                    if ($participant['usr_id'] == $app['phraseanet.user']->get_id()) {
+                    if ($participant['usr_id'] == $app['authentication']->getUser()->get_id()) {
                         $found = true;
                         break;
                     }
                 }
 
                 if (!$found) {
-                    $participants[$app['phraseanet.user']->get_id()] = array(
+                    $participants[$app['authentication']->getUser()->get_id()] = array(
                         'see_others' => 1,
-                        'usr_id'     => $app['phraseanet.user']->get_id(),
+                        'usr_id'     => $app['authentication']->getUser()->get_id(),
                         'agree'      => 0,
                         'HD'         => 0
                     );
@@ -389,13 +389,13 @@ class Push implements ControllerProviderInterface
                         if ($participant['HD']) {
                             $participant_user->ACL()->grant_hd_on(
                                 $BasketElement->getRecord($app)
-                                , $app['phraseanet.user']
+                                , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_VALIDATE
                             );
                         } else {
                             $participant_user->ACL()->grant_preview_on(
                                 $BasketElement->getRecord($app)
-                                , $app['phraseanet.user']
+                                , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_VALIDATE
                             );
                         }
@@ -420,8 +420,8 @@ class Push implements ControllerProviderInterface
                     $receipt = $request->get('recept') ? $app['phraseanet.user']->get_email() : '';
 
                     $params = array(
-                        'from'       => $app['phraseanet.user']->get_id()
-                        , 'from_email' => $app['phraseanet.user']->get_email()
+                        'from'       => $app['authentication']->getUser()->get_id()
+                        , 'from_email' => $app['authentication']->getUser()->get_email()
                         , 'to'         => $participant_user->get_id()
                         , 'to_email'   => $participant_user->get_email()
                         , 'to_name'    => $participant_user->get_display_name()
@@ -466,7 +466,7 @@ class Push implements ControllerProviderInterface
 
             $query = new \User_Query($app);
 
-            $query->on_bases_where_i_am($app['phraseanet.user']->ACL(), array('canpush'));
+            $query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canpush'));
 
             $query->in(array($usr_id));
 
@@ -488,7 +488,7 @@ class Push implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
             if ($list) {
                 $datas = $listFormatter($list);
@@ -501,7 +501,7 @@ class Push implements ControllerProviderInterface
             $result = array('success' => false, 'message' => '', 'user'    => null);
 
             try {
-                if (!$app['phraseanet.user']->ACL()->has_right('manageusers'))
+                if (!$app['authentication']->getUser()->ACL()->has_right('manageusers'))
                     throw new ControllerException(_('You are not allowed to add users'));
 
                 if (!$request->request->get('firstname'))
@@ -573,7 +573,7 @@ class Push implements ControllerProviderInterface
 
             $query = new \User_Query($app);
 
-            $query->on_bases_where_i_am($app['phraseanet.user']->ACL(), array('canpush'));
+            $query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canpush'));
 
             $query->like(\User_Query::LIKE_FIRSTNAME, $request->query->get('query'))
                 ->like(\User_Query::LIKE_LASTNAME, $request->query->get('query'))
@@ -586,7 +586,7 @@ class Push implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $lists = $repository->findUserListLike($app['phraseanet.user'], $request->query->get('query'));
+            $lists = $repository->findUserListLike($app['authentication']->getUser(), $request->query->get('query'));
 
             $datas = array();
 
@@ -609,11 +609,11 @@ class Push implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
             $query = new \User_Query($app);
 
-            $query->on_bases_where_i_am($app['phraseanet.user']->ACL(), array('canpush'));
+            $query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canpush'));
 
             if ($request->get('query')) {
                 $query->like($request->get('like_field'), $request->get('query'))

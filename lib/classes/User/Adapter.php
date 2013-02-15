@@ -315,6 +315,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      */
     protected $template_owner;
 
+    protected $password;
+
     /**
      *
      * @param Integer     $id
@@ -1045,7 +1047,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      */
     public function load($id)
     {
-        $sql = 'SELECT usr_id, ldap_created, create_db, usr_login, usr_nom, activite,
+        $sql = 'SELECT usr_id, ldap_created, create_db, usr_login, usr_password, usr_nom, activite,
             usr_prenom, usr_sexe as gender, usr_mail, adresse, usr_creationdate, usr_modificationdate,
             ville, cpostal, tel, fax, fonction, societe, geonameid, lastModel, invite,
             defaultftpdatasent, mail_notifications, activeftp, addrftp, loginftp,
@@ -1065,6 +1067,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $this->id = (int) $row['usr_id'];
         $this->email = $row['usr_mail'];
         $this->login = $row['usr_login'];
+        $this->password = $row['usr_password'];
 
         $this->ldap_created = $row['ldap_created'];
 
@@ -1164,6 +1167,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public function get_login()
     {
         return $this->login;
+    }
+
+    public function get_password()
+    {
+        return $this->password;
     }
 
     public function get_email()

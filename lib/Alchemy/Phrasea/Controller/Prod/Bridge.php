@@ -52,7 +52,7 @@ class Bridge implements ControllerProviderInterface
             $route = new RecordHelper\Bridge($app, $app['request']);
 
             $params = array(
-                'user_accounts'      => \Bridge_Account::get_accounts_by_user($app, $app['phraseanet.user'])
+                'user_accounts'      => \Bridge_Account::get_accounts_by_user($app, $app['authentication']->getUser())
                 , 'available_apis'     => \Bridge_Api::get_availables($app)
                 , 'route'              => $route
                 , 'current_account_id' => ''
@@ -78,9 +78,9 @@ class Bridge implements ControllerProviderInterface
                 $user_id = $connector->get_user_id();
 
                 try {
-                    $account = \Bridge_Account::load_account_from_distant_id($app, $api, $app['phraseanet.user'], $user_id);
+                    $account = \Bridge_Account::load_account_from_distant_id($app, $api, $app['authentication']->getUser(), $user_id);
                 } catch (\Bridge_Exception_AccountNotFound $e) {
-                    $account = \Bridge_Account::create($app, $api, $app['phraseanet.user'], $user_id, $connector->get_user_name());
+                    $account = \Bridge_Account::create($app, $api, $app['authentication']->getUser(), $user_id, $connector->get_user_name());
                 }
                 $settings = $account->get_settings();
 
@@ -116,7 +116,7 @@ class Bridge implements ControllerProviderInterface
                 try {
                     $account = \Bridge_Account::load_account($app, $account_id);
 
-                     if ($account->get_user()->get_id() !== $app['phraseanet.user']->get_id()) {
+                     if ($account->get_user()->get_id() !== $app['authentication']->getUser()->get_id()) {
                          throw new HttpException(403, 'Access forbiden');
                      }
 

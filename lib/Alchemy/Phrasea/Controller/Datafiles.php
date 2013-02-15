@@ -31,7 +31,7 @@ class Datafiles extends AbstractDelivery
         $that = $this;
 
         $controllers->before(function(Request $request) use ($app) {
-            if (!$app->isAuthenticated()) {
+            if (!$app['authentication']->isAuthenticated()) {
                 $app->abort(403, 'You are not autorized to see this');
             }
         });
@@ -62,12 +62,12 @@ class Datafiles extends AbstractDelivery
                     throw new NotFoundHttpException;
                 }
 
-                if (!$app['phraseanet.user']->ACL()->has_access_to_subdef($record, $subdef)) {
+                if (!$app['authentication']->getUser()->ACL()->has_access_to_subdef($record, $subdef)) {
                     throw new \Exception_UnauthorizedAction(sprintf('User has not access to subdef %s', $subdef));
                 }
 
                 $stamp = false;
-                $watermark = !$app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
+                $watermark = !$app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 
                 if ($watermark && !$all_access) {
                     $subdef_class = $databox
@@ -75,9 +75,9 @@ class Datafiles extends AbstractDelivery
                         ->get_subdef($record->get_type(), $subdef)
                         ->get_class();
 
-                    if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $app['phraseanet.user']->ACL()->has_preview_grant($record)) {
+                    if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $app['authentication']->getUser()->ACL()->has_preview_grant($record)) {
                         $watermark = false;
-                    } elseif ($subdef_class == \databox_subdef::CLASS_DOCUMENT && $app['phraseanet.user']->ACL()->has_hd_grant($record)) {
+                    } elseif ($subdef_class == \databox_subdef::CLASS_DOCUMENT && $app['authentication']->getUser()->ACL()->has_hd_grant($record)) {
                         $watermark = false;
                     }
                 }
@@ -88,8 +88,8 @@ class Datafiles extends AbstractDelivery
 
                     /* @var $repository \Repositories\BasketElementRepository */
 
-                    $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $app['phraseanet.user']);
-                    $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $app['phraseanet.user']);
+                    $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $app['authentication']->getUser());
+                    $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $app['authentication']->getUser());
 
                     if ($ValidationByRecord && count($ValidationByRecord) > 0) {
                         $watermark = false;

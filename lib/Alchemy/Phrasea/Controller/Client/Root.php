@@ -27,7 +27,12 @@ class Root implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function() use ($app) {
+        $controllers->before(function(Request $request) use ($app) {
+            if (!$app['authentication']->isAuthenticated() && null !== $request->query->get('nolog')) {
+                return $app->redirect(
+                    $app->path('login_authenticate_as_guest', array('redirect' => '/prod/'))
+                );
+            }
             $app['firewall']->requireAuthentication();
         });
 
@@ -186,9 +191,9 @@ class Root implements ControllerProviderInterface
                 $isImage = true;
             }
 
-            $canDownload = $app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
-                $app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
-                $app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), 'cancmd');
+            $canDownload = $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
+                $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
+                $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'cancmd');
 
             try {
                 $previewExists = $record->get_preview()->is_physically_present();
@@ -207,7 +212,7 @@ class Root implements ControllerProviderInterface
                 'is_image'          => $isImage,
                 'is_document'       => $isDocument,
                 'can_download'      => $canDownload,
-                'can_add_to_basket' => $app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), 'canputinalbum')
+                'can_add_to_basket' => $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'canputinalbum')
             );
         }
 
@@ -218,7 +223,7 @@ class Root implements ControllerProviderInterface
             'per_page'             => $perPage,
             'search_engine'        =>  $app['phraseanet.SE'],
             'search_engine_option' => $options->serialize(),
-            'history'              => \queries::history($app['phraseanet.appbox'], $app['phraseanet.user']->get_id()),
+            'history'              => \queries::history($app['phraseanet.appbox'], $app['authentication']->getUser()->get_id()),
             'result'               => $result,
             'proposals'            => $currentPage === 1 ? $result->getProposals() : null,
             'help'                 => count($resultData) === 0 ? $this->getHelpStartPage($app) : '',
@@ -300,7 +305,7 @@ class Root implements ControllerProviderInterface
         }
 
         return new Response($app['twig']->render('client/index.html.twig', array(
-            'last_action'       => !$app['phraseanet.user']->is_guest() && false !== $request->cookies->has('last_act') ? $request->cookies->has('last_act') : null,
+            'last_action'       => !$app['authentication']->getUser()->is_guest() && false !== $request->cookies->has('last_act') ? $request->cookies->has('last_act') : null,
             'phrasea_home'      => $this->getDefaultClientStartPage($app),
             'render_topics'     => $renderTopics,
             'grid_properties'   => $this->getGridProperty(),
@@ -309,10 +314,10 @@ class Root implements ControllerProviderInterface
             'tabs_setup'        => $this->getTabSetup($app),
             'menubar'           => $app['twig']->render('common/menubar.html.twig', array('module'           => 'client')),
             'css_file'          => $this->getCssFile($app),
-            'basket_status'     => null !== $app['phraseanet.user']->getPrefs('client_basket_status') ? $app['phraseanet.user']->getPrefs('client_basket_status') : "1",
-            'mod_pres'          => null !== $app['phraseanet.user']->getPrefs('client_view') ? $app['phraseanet.user']->getPrefs('client_view') : '',
-            'start_page'        => $app['phraseanet.user']->getPrefs('start_page'),
-            'start_page_query'  => null !== $app['phraseanet.user']->getPrefs('start_page_query') ? $app['phraseanet.user']->getPrefs('start_page_query') : ''
+            'basket_status'     => null !== $app['authentication']->getUser()->getPrefs('client_basket_status') ? $app['authentication']->getUser()->getPrefs('client_basket_status') : "1",
+            'mod_pres'          => null !== $app['authentication']->getUser()->getPrefs('client_view') ? $app['authentication']->getUser()->getPrefs('client_view') : '',
+            'start_page'        => $app['authentication']->getUser()->getPrefs('start_page'),
+            'start_page_query'  => null !== $app['authentication']->getUser()->getPrefs('start_page_query') ? $app['authentication']->getUser()->getPrefs('start_page_query') : ''
         )));
     }
 
@@ -344,13 +349,13 @@ class Root implements ControllerProviderInterface
     {
         $allDataboxes = $allCollections = array();
 
-        foreach ($app['phraseanet.user']->ACL()->get_granted_sbas() as $databox) {
+        foreach ($app['authentication']->getUser()->ACL()->get_granted_sbas() as $databox) {
             if (count($app['phraseanet.appbox']->get_databoxes()) > 0) {
                 $allDataboxes[$databox->get_sbas_id()] = array('databox'     => $databox, 'collections' => array());
             }
 
             if (count($databox->get_collections()) > 0) {
-                foreach ($app['phraseanet.user']->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
+                foreach ($app['authentication']->getUser()->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
                     $allDataboxes[$databox->get_sbas_id()]['collections'][$coll->get_base_id()] = $coll;
                     $allCollections[$coll->get_base_id()] = $coll;
                 }
@@ -396,7 +401,7 @@ class Root implements ControllerProviderInterface
         $cssPath = __DIR__ . '/../../../../../www/skins/client/';
 
         $css = array();
-        $cssFile = $app['phraseanet.user']->getPrefs('client_css');
+        $cssFile = $app['authentication']->getUser()->getPrefs('client_css');
 
         $finder = new Finder();
 
@@ -464,7 +469,7 @@ class Root implements ControllerProviderInterface
      */
     private function getDefaultClientStartPage(Application $app)
     {
-        $startPage = strtoupper($app['phraseanet.user']->getPrefs('start_page'));
+        $startPage = strtoupper($app['authentication']->getUser()->getPrefs('start_page'));
 
         if ($startPage === 'PUBLI') {
             return $this->getPublicationStartPage($app);
@@ -487,19 +492,19 @@ class Root implements ControllerProviderInterface
     {
         $collections = $queryParameters = array();
 
-        $searchSet = json_decode($app['phraseanet.user']->getPrefs('search'));
+        $searchSet = json_decode($app['authentication']->getUser()->getPrefs('search'));
 
         if ($searchSet && isset($searchSet->bases)) {
             foreach ($searchSet->bases as $bases) {
                 $collections = array_merge($collections, $bases);
             }
         } else {
-            $collections = array_keys($app['phraseanet.user']->ACL()->get_granted_base());
+            $collections = array_keys($app['authentication']->getUser()->ACL()->get_granted_base());
         }
 
-        $queryParameters["mod"] = $app['phraseanet.user']->getPrefs('client_view') ?: '3X6';
+        $queryParameters["mod"] = $app['authentication']->getUser()->getPrefs('client_view') ?: '3X6';
         $queryParameters["bas"] = $collections;
-        $queryParameters["qry"] = $app['phraseanet.user']->getPrefs('start_page_query') ?: 'all';
+        $queryParameters["qry"] = $app['authentication']->getUser()->getPrefs('start_page_query') ?: 'all';
         $queryParameters["pag"] = 0;
         $queryParameters["search_type"] = SearchEngineOptions::RECORD_RECORD;
         $queryParameters["qryAdv"] = '';
@@ -524,8 +529,8 @@ class Root implements ControllerProviderInterface
     private function getPublicationStartPage(Application $app)
     {
         return $app['twig']->render('client/home_inter_pub_basket.html.twig', array(
-            'feeds'         => \Feed_Collection::load_all($app, $app['phraseanet.user']),
-            'image_size'    => (int) $app['phraseanet.user']->getPrefs('images_size')
+            'feeds'         => \Feed_Collection::load_all($app, $app['authentication']->getUser()),
+            'image_size'    => (int) $app['authentication']->getUser()->getPrefs('images_size')
         ));
     }
 

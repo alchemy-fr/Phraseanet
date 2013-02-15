@@ -68,7 +68,7 @@ class Root implements ControllerProviderInterface
             $databoxes = $off_databoxes = array();
             foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                 try {
-                    if (!$app['phraseanet.user']->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                    if (!$app['authentication']->getUser()->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }
                     $databox->get_connection();
@@ -137,7 +137,7 @@ class Root implements ControllerProviderInterface
             $databoxes = $off_databoxes = array();
             foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                 try {
-                    if (!$app['phraseanet.user']->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                    if (!$app['authentication']->getUser()->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }
 
@@ -194,7 +194,7 @@ class Root implements ControllerProviderInterface
         });
 
         $controllers->get('/structure/{databox_id}/', function(Application $app, Request $request, $databox_id) {
-            if (!$app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 
@@ -221,7 +221,7 @@ class Root implements ControllerProviderInterface
           ->bind('database_display_stucture');
 
         $controllers->post('/structure/{databox_id}/', function(Application $app, Request $request, $databox_id) {
-            if (!$app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 
@@ -247,7 +247,7 @@ class Root implements ControllerProviderInterface
           ->bind('database_submit_stucture');
 
         $controllers->get('/statusbit/{databox_id}/', function(Application $app, Request $request, $databox_id) {
-            if (!$app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 
@@ -258,7 +258,7 @@ class Root implements ControllerProviderInterface
           ->bind('database_display_statusbit');
 
         $controllers->get('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {
-            if (!$app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 
@@ -297,7 +297,7 @@ class Root implements ControllerProviderInterface
                 $app->abort(400, _('Bad request format, only JSON is allowed'));
             }
 
-            if (!$app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 
@@ -313,7 +313,7 @@ class Root implements ControllerProviderInterface
         })->assert('databox_id', '\d+')->assert('bit', '\d+');
 
         $controllers->post('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {
-            if (!$app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
 

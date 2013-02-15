@@ -199,7 +199,7 @@ class RecordsRequest extends ArrayCollection
         if ($request->get('ssel')) {
             $repository = $app['EM']->getRepository('\Entities\Basket');
 
-            $basket = $repository->findUserBasket($app, $request->get('ssel'), $app['phraseanet.user'], false);
+            $basket = $repository->findUserBasket($app, $request->get('ssel'), $app['authentication']->getUser(), false);
 
             foreach ($basket->getElements() as $basket_element) {
                 $received[$basket_element->getRecord($app)->get_serialize_key()] = $basket_element->getRecord($app);
@@ -208,7 +208,7 @@ class RecordsRequest extends ArrayCollection
             $repository = $app['EM']->getRepository('\Entities\StoryWZ');
 
             $storyWZ = $repository->findByUserAndId(
-                $app, $app['phraseanet.user']
+                $app, $app['authentication']->getUser()
                 , $request->get('story')
             );
 
@@ -235,20 +235,20 @@ class RecordsRequest extends ArrayCollection
 
         foreach ($elements as $id => $record) {
 
-            if (!$app['phraseanet.user']->ACL()->has_access_to_record($record)) {
+            if (!$app['authentication']->getUser()->ACL()->has_access_to_record($record)) {
                 $to_remove[] = $id;
                 continue;
             }
 
             foreach ($rightsColl as $right) {
-                if (!$app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), $right)) {
+                if (!$app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }
             }
 
             foreach ($rightsDatabox as $right) {
-                if (!$app['phraseanet.user']->ACL()->has_right_on_sbas($record->get_sbas_id(), $right)) {
+                if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($record->get_sbas_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }

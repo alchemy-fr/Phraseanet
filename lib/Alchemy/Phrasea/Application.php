@@ -74,6 +74,7 @@ use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
 use Alchemy\Phrasea\Core\Event\Subscriber\Logout;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
+use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
@@ -101,6 +102,7 @@ use Monolog\Handler\NullHandler;
 use MP4Box\MP4BoxServiceProvider;
 use Neutron\Silex\Provider\BadFaithServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
+use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Provider\MonologServiceProvider;
@@ -188,6 +190,7 @@ class Application extends SilexApplication
             ini_set('display_errors', 'off');
         }
 
+        $this->register(new AuthenticationManagerServiceProvider());
         $this->register(new BadFaithServiceProvider());
         $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
@@ -227,6 +230,19 @@ class Application extends SilexApplication
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
+        $this->register(new ReCaptchaServiceProvider());
+
+        $this['recaptcha.public-key'] = $this->share(function (Application $app) {
+            if($app['phraseanet.registry']->get('GV_captchas')) {
+                return $app['phraseanet.registry']->get('GV_captcha_public_key');
+            }
+        });
+        $this['recaptcha.private-key'] = $this->share(function (Application $app) {
+            if($app['phraseanet.registry']->get('GV_captchas')) {
+                return $app['phraseanet.registry']->get('GV_captcha_private_key');
+            }
+        });
+
         $this->register(new SearchEngineServiceProvider());
         $this->register(new SessionServiceProvider(), array(
             'session.test' => $this->getEnvironment() == 'test'
@@ -331,8 +347,6 @@ class Application extends SilexApplication
                 return \Session_Logger::create($app, $databox, $app['browser']);
             }
         });
-
-        $this->reinitUser();
 
         $this['date-formatter'] = $this->share(function(Application $app) {
             return new \phraseadate($app);
@@ -525,16 +539,6 @@ class Application extends SilexApplication
     }
 
     /**
-     * Tell if current a session is open
-     *
-     * @return boolean
-     */
-    public function isAuthenticated()
-    {
-        return $this['session']->has('usr_id');
-    }
-
-    /**
      * Returns an an array of available collection for offline queries
      *
      * @return array
@@ -542,38 +546,6 @@ class Application extends SilexApplication
     public function getOpenCollections()
     {
         return array();
-    }
-
-    /**
-     * Open user session
-     *
-     * @param  \Session_Authentication_Interface $auth
-     * @param  integer                           $ses_id use previous phrasea session id
-     * @throws \Exception_InternalServerError
-     */
-    public function openAccount(\Session_Authentication_Interface $auth, $ses_id = null)
-    {
-        $user = $auth->get_user();
-
-        $this['session']->clear();
-        $this['session']->set('usr_id', $user->get_id());
-
-        $session = new \Entities\Session();
-        $session->setBrowserName($this['browser']->getBrowser())
-            ->setBrowserVersion($this['browser']->getVersion())
-            ->setPlatform($this['browser']->getPlatform())
-            ->setUserAgent($this['browser']->getUserAgent())
-            ->setUsrId($user->get_id());
-
-        $this['EM']->persist($session);
-        $this['EM']->flush();
-
-        $this['session']->set('session_id', $session->getId());
-
-        foreach ($user->ACL()->get_granted_sbas() as $databox) {
-            \cache_databox::insertClient($this, $databox);
-        }
-        $this->reinitUser();
     }
 
     public function bindRoutes()
@@ -672,28 +644,6 @@ class Application extends SilexApplication
 
         $this->mount('/thesaurus', new Thesaurus());
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
-    }
-
-    private function reinitUser()
-    {
-        $this['phraseanet.user'] = $this->share(function(Application $app) {
-            if ($app->isAuthenticated()) {
-                return \User_Adapter::getInstance($app['session']->get('usr_id'), $app);
-            }
-
-            return null;
-        });
-    }
-
-    /**
-     * Closes user session
-     */
-    public function closeAccount()
-    {
-        $this['session']->clear();
-        $this->reinitUser();
-
-        return $this;
     }
 
     /**

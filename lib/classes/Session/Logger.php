@@ -126,7 +126,7 @@ class Session_Logger
             ':ses_id'          => $app['session']->get('session_id'),
             ':usr_login'       => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_login() : null,
             ':site_id'         => $app['phraseanet.registry']->get('GV_sit'),
-            ':usr_id'          => $app['phraseanet.user'] ? $app['phraseanet.user']->get_id() : null,
+            ':usr_id'          => $app['authentication']->isAuthenticated() ? $app['authentication']->getUser()->get_id() : null,
             ':browser'         => $browser->getBrowser(),
             ':browser_version' => $browser->getExtendedVersion(),
             ':platform'        => $browser->getPlatform(),
