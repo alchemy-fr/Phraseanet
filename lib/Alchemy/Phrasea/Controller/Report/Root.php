@@ -101,8 +101,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display dashboard informations
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function getDashboard(Application $app, Request $request)
@@ -145,8 +145,8 @@ class Root implements ControllerProviderInterface
      * Gets available collections where current user can see report and
      * format date
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function initReport(Application $app, Request $request)
@@ -194,8 +194,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display instance connexion report
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportConnexions(Application $app, Request $request)
@@ -260,8 +260,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display instance questions report
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportQuestions(Application $app, Request $request)
@@ -325,8 +325,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display instance download report
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportDownloads(Application $app, Request $request)
@@ -399,8 +399,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display instance document report
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportDocuments(Application $app, Request $request)
@@ -469,8 +469,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display informations about client (browser, resolution etc ..)
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportClients(Application $app, Request $request)
@@ -545,8 +545,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display connexions report group by user
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportConnexionsByUsers(Application $app, Request $request)
@@ -567,7 +567,7 @@ class Root implements ControllerProviderInterface
                 && ('' !== $page = $request->request->get('page', ''))
                 && ('' !== $limit = $request->request->get('limit', ''))) {
             $activity->setLimit($page, $limit);
-        } else  {
+        } else {
             $activity->setLimit(false, false);
         }
 
@@ -603,8 +603,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display download report group by user
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportDownloadsByUsers(Application $app, Request $request)
@@ -664,8 +664,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display the most asked question
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportBestOfQuestions(Application $app, Request $request)
@@ -722,8 +722,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display report about questions that return no result
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportNoBestOfQuestions(Application $app, Request $request)
@@ -784,8 +784,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display an overview of connexion among hours of the da
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportSiteActiviyPerHours(Application $app, Request $request)
@@ -832,8 +832,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display an overview of downloaded document grouped by day
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportSiteActiviyPerDays(Application $app, Request $request)
@@ -893,8 +893,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display report about pushed documents
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportPushedDocuments(Application $app, Request $request)
@@ -959,8 +959,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display report about added documents
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportAddedDocuments(Application $app, Request $request)
@@ -1024,8 +1024,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display report about edited documents
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportEditedDocuments(Application $app, Request $request)
@@ -1089,8 +1089,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display report about validated documents
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportValidatedDocuments(Application $app, Request $request)
@@ -1155,8 +1155,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display informations about a user
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportInformationsUser(Application $app, Request $request)
@@ -1356,8 +1356,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display a browser version
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportinformationsBrowser(Application $app, Request $request)
@@ -1401,8 +1401,8 @@ class Root implements ControllerProviderInterface
     /**
      * Display informations about a document
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function doReportInformationsDocument(Application $app, Request $request)
@@ -1628,8 +1628,8 @@ class Root implements ControllerProviderInterface
     /**
      * Export data to a csv file
      *
-     * @param Application $app
-     * @param Request $request
+     * @param  Application  $app
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function exportCSV(Application $app, Request $request)
@@ -1662,11 +1662,11 @@ class Root implements ControllerProviderInterface
     /**
      * Set Report configuration according to request parameters
      *
-     * @param Application $app An application instance
-     * @param Request $request A request instance
-     * @param \module_report $report A report instance
-     * @param Array $conf A report column configuration
-     * @param Boolean $what Whether to group on a particular field or not
+     * @param  Application    $app     An application instance
+     * @param  Request        $request A request instance
+     * @param  \module_report $report  A report instance
+     * @param  Array          $conf    A report column configuration
+     * @param  Boolean        $what    Whether to group on a particular field or not
      * @return Array
      */
     private function doReport(Application $app, Request $request, \module_report $report, $conf, $what = false)
@@ -1676,7 +1676,7 @@ class Root implements ControllerProviderInterface
                 unset($conf['user']);
             }
 
-            if (isset($conf['ip'])){
+            if (isset($conf['ip'])) {
                 unset($conf['ip']);
             }
         }
@@ -1698,7 +1698,6 @@ class Root implements ControllerProviderInterface
 
         //display content of a table column when user click on it
         if ($request->request->get('conf') == 'on') {
-
             return $app->json(array('liste' => $app['twig']->render('report/listColumn.html.twig', array(
                 'conf'  => $base_conf
             )), "title" => _("configuration")));
@@ -1751,7 +1750,7 @@ class Root implements ControllerProviderInterface
         $report->setPostingFilter($filter->getPostingFilter());
 
         // display a new arraywhere results are group
-        if ('' !== $groupby = $request->request->get('groupby', ''))  {
+        if ('' !== $groupby = $request->request->get('groupby', '')) {
             $report->setConfig(false);
             $groupby = current(explode(' ', $groupby));
 
@@ -1759,7 +1758,7 @@ class Root implements ControllerProviderInterface
 
             if (count($reportArray['allChamps']) > 0 && count($reportArray['display']) > 0) {
                 $groupField = isset($reportArray['display'][$reportArray['allChamps'][0]]['title']) ? $reportArray['display'][$reportArray['allChamps'][0]]['title'] : '';
-            } else  {
+            } else {
                 $groupField = isset($conf[strtolower($groupby)]['title']) ? $conf[strtolower($groupby)]['title'] : '';
             }
 
@@ -1789,6 +1788,7 @@ class Root implements ControllerProviderInterface
         } else {
             $reportArray = $report->buildReport($conf, $what, $request->request->get('tbl', false));
         }
+
         return $reportArray;
     }
 
