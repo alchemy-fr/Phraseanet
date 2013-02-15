@@ -10,7 +10,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
     public function provideServiceDescription()
     {
         return array(
-            array('Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider', 'authentication', 'Alchemy\\Phrasea\\Authentication\\Manager'),
+            array('Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider', 'authentication', 'Alchemy\\Phrasea\\Authentication\\Authenticator'),
         );
     }
 }
