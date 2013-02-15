@@ -246,7 +246,7 @@ class Developers implements ControllerProviderInterface
 
         try {
             $clientApp = new \API_OAuth2_Application($app, $id);
-            $account = $clientApp->get_user_account($app['phraseanet.user']);
+            $account = $clientApp->get_user_account($app['authentication']->getUser());
 
             $token = $account->get_token();
 
@@ -308,7 +308,7 @@ class Developers implements ControllerProviderInterface
         $violations = $app['validator']->validate($form);
 
         if ($violations->count() === 0) {
-            $application = \API_OAuth2_Application::create($app, $app['phraseanet.user'], $form->getName());
+            $application = \API_OAuth2_Application::create($app, $app['authentication']->getUser(), $form->getName());
             $application
                 ->set_description($form->getDescription())
                 ->set_redirect_uri($form->getSchemeCallback() . $form->getCallback())
@@ -336,7 +336,7 @@ class Developers implements ControllerProviderInterface
     public function listApps(Application $app, Request $request)
     {
         return $app['twig']->render('developers/applications.html.twig', array(
-            "applications" => \API_OAuth2_Application::load_dev_app_by_user($app, $app['phraseanet.user'])
+            "applications" => \API_OAuth2_Application::load_dev_app_by_user($app, $app['authentication']->getUser())
         ));
     }
 
@@ -372,11 +372,11 @@ class Developers implements ControllerProviderInterface
             $app->abort(404);
         }
 
-        $token = $client->get_user_account($app['phraseanet.user'])->get_token()->get_value();
+        $token = $client->get_user_account($app['authentication']->getUser())->get_token()->get_value();
 
         return $app['twig']->render('developers/application.html.twig', array(
             "application" => $client,
-            "user"        => $app['phraseanet.user'],
+            "user"        => $app['authentication']->getUser(),
             "token"       => $token
         ));
     }

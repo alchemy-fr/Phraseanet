@@ -281,12 +281,12 @@ class Account implements ControllerProviderInterface
             $app->abort(400, _('Could not perform request, please contact an administrator.'));
         }
 
-        try {
-            $auth = new \Session_Authentication_Native($app, $app['phraseanet.user']->get_login(), $password);
-            $auth->challenge_password();
-        } catch (\Exception $e) {
+        $user = $app['authentication']->getUser();
+
+        if ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $password, $user->get_nonce())) {
             return $app->redirect('/account/reset-email/?notice=bad-password');
         }
+
         if (!\Swift_Validate::email($email)) {
             return $app->redirect('/account/reset-email/?notice=mail-invalid');
         }
@@ -296,11 +296,11 @@ class Account implements ControllerProviderInterface
         }
 
         $date = new \DateTime('1 day');
-        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['phraseanet.user']->get_id(), $date, $app['phraseanet.user']->get_email());
+        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->get_id(), $date, $app['authentication']->getUser()->get_email());
         $url = $app['phraseanet.registry']->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
 
         try {
-            $receiver = Receiver::fromUser($app['phraseanet.user']);
+            $receiver = Receiver::fromUser($app['authentication']->getUser());
         } catch (InvalidArgumentException $e) {
             return $app->redirect('/account/reset-email/?notice=mail-not-send');
         }
@@ -378,16 +378,15 @@ class Account implements ControllerProviderInterface
                 return $app->redirect('/account/reset-password/?pass-error=pass-invalid');
             }
 
-            try {
-                $auth = new \Session_Authentication_Native($app, $app['phraseanet.user']->get_login(), $request->request->get('form_old_password', ''));
-                $auth->challenge_password();
+            $user = $app['authentication']->getUser();
 
-                $app['phraseanet.user']->set_password($passwordConfirm);
-
-                return $app->redirect('/account/?notice=pass-ok');
-            } catch (\Exception $e) {
+            if ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $request->request->get('form_old_password'), $user->get_nonce())) {
                 return $app->redirect('/account/?notice=pass-ko');
             }
+
+            $user->set_password($passwordConfirm);
+
+            return $app->redirect('/account/?notice=pass-ok');
         }
     }
 
@@ -412,7 +411,7 @@ class Account implements ControllerProviderInterface
             $account = \API_OAuth2_Account::load_with_user(
                     $app
                     , new \API_OAuth2_Application($app, $application_id)
-                    , $app['phraseanet.user']
+                    , $app['authentication']->getUser()
             );
 
             $account->set_revoked((bool) $request->query->get('revoke'), false);
@@ -435,7 +434,7 @@ class Account implements ControllerProviderInterface
         require_once $app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
 
         return $app['twig']->render('account/access.html.twig', array(
-            'inscriptions' => giveMeBases($app, $app['phraseanet.user']->get_id())
+            'inscriptions' => giveMeBases($app, $app['authentication']->getUser()->get_id())
         ));
     }
 
@@ -449,7 +448,7 @@ class Account implements ControllerProviderInterface
     public function accountAuthorizedApps(Application $app, Request $request)
     {
         return $app['twig']->render('account/authorized_apps.html.twig', array(
-            "applications" => \API_OAuth2_Application::load_app_by_user($app, $app['phraseanet.user']),
+            "applications" => \API_OAuth2_Application::load_app_by_user($app, $app['authentication']->getUser()),
         ));
     }
 
@@ -501,10 +500,10 @@ class Account implements ControllerProviderInterface
         }
 
         return $app['twig']->render('account/account.html.twig', array(
-            'user'          => $app['phraseanet.user'],
+            'user'          => $app['authentication']->getUser(),
             'notice'        => $notice,
             'evt_mngr'      => $app['events-manager'],
-            'notifications' => $app['events-manager']->list_notifications_available($app['phraseanet.user']->get_id()),
+            'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()),
         ));
     }
 
@@ -526,7 +525,7 @@ class Account implements ControllerProviderInterface
 
             foreach ($demands as $baseId) {
                 try {
-                    $register->add_request($app['phraseanet.user'], \collection::get_from_base_id($app, $baseId));
+                    $register->add_request($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
                     $notice = 'demand-ok';
                 } catch (\Exception $e) {
 
@@ -573,7 +572,7 @@ class Account implements ControllerProviderInterface
             try {
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
-                $app['phraseanet.user']->set_gender($request->request->get("form_gender"))
+                $app['authentication']->getUser()->set_gender($request->request->get("form_gender"))
                     ->set_firstname($request->request->get("form_firstname"))
                     ->set_lastname($request->request->get("form_lastname"))
                     ->set_address($request->request->get("form_address"))
@@ -604,15 +603,15 @@ class Account implements ControllerProviderInterface
 
         $requestedNotifications = (array) $request->request->get('notifications', array());
 
-        foreach ($app['events-manager']->list_notifications_available($app['phraseanet.user']->get_id()) as $notifications) {
+        foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifId = $notification['id'];
                 $notifName = sprintf('notification_%d', $notifId);
 
                 if (isset($requestedNotifications[$notifId])) {
-                    $app['phraseanet.user']->setPrefs($notifName, '1');
+                    $app['authentication']->getUser()->setPrefs($notifName, '1');
                 } else {
-                    $app['phraseanet.user']->setPrefs($notifName, '0');
+                    $app['authentication']->getUser()->setPrefs($notifName, '0');
                 }
             }
         }

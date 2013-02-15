@@ -12,19 +12,25 @@
 namespace Alchemy\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
+use Alchemy\Phrasea\Core\Event\PreAuthenticate;
+use Alchemy\Phrasea\Core\Event\PostAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
+use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
+use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -92,6 +98,40 @@ class Login implements ControllerProviderInterface
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_authenticate');
+
+        $controllers->match('/authenticate/guest/', $this->call('authenticateAsGuest'))
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })
+            ->bind('login_authenticate_as_guest')
+            ->method('GET|POST');
+
+        $controllers->get('/provider/{providerId}/authenticate/', $this->call('authenticateWithProvider'))
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_authentication_provider_authenticate');
+
+        $controllers->get('/provider/{providerId}/callback/', $this->call('authenticationCallback'))
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_authentication_provider_callback');
+
+        $controllers->get('/provider/{providerId}/add-mapping/', $this->call('authenticationMapping'))
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_authentication_provider_mapping');
+
+        $controllers->get('/provider/{providerId}/bind-account/', $this->call('authenticationBindToAccount'))
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_authentication_provider_bind');
+
+        $controllers->post('/provider/{providerId}/bind-account/', $this->call('authenticationDoBindToAccount'))
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_authentication_provider_do_bind');
+
+
 
         /**
          * Logout
@@ -725,7 +765,7 @@ class Login implements ControllerProviderInterface
     {
         $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
 
-        $app->closeAccount();
+        $app['authentication']->closeAccount();
 
         $appRedirect = $request->query->get("app");
 
@@ -748,9 +788,6 @@ class Login implements ControllerProviderInterface
     public function login(Application $app, Request $request)
     {
         require_once($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
-        if ($app['phraseanet.registry']->get('GV_captchas') && trim($app['phraseanet.registry']->get('GV_captcha_private_key')) !== '' && trim($app['phraseanet.registry']->get('GV_captcha_public_key')) !== '') {
-            require_once $app['phraseanet.registry']->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php';
-        }
 
         $warning = $request->query->get('error', '');
 
@@ -760,7 +797,7 @@ class Login implements ControllerProviderInterface
             $warning = 'no-connection';
         }
 
-        if (!!$app['phraseanet.registry']->get('GV_maintenance')) {
+        if ($app['phraseanet.registry']->get('GV_maintenance')) {
             $warning = 'maintenance';
         }
 
@@ -778,7 +815,7 @@ class Login implements ControllerProviderInterface
             case 'captcha':
                 $warning = _('login::erreur: Erreur de captcha');
                 break;
-            case 'mail-not-confirmed' :
+            case 'account-locked' :
                 $warning = _('login::erreur: Vous n\'avez pas confirme votre email');
                 break;
             case 'no-base' :
@@ -861,189 +898,282 @@ class Login implements ControllerProviderInterface
      */
     public function authenticate(Application $app, Request $request)
     {
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request));
 
-        $is_guest = false;
+        $params = array();
 
-        if (null !== $request->get('nolog') && \phrasea::guest_allowed($app)) {
-            $is_guest = true;
+        if (null !== $redirect = $request->get('redirect')) {
+            $params['redirect'] = ltrim($redirect, '/');
         }
 
-        if (((null !== $login = $request->request->get('login')) && (null !== $pwd = $request->request->get('pwd'))) || $is_guest) {
+        try {
+            $usr_id = $app['auth.native']->isValid($request->request->get('login'), $request->request->get('pwd'), $request);
+        } catch (RequireCaptchaException $e) {
+            $params = array_merge($params, array('error' => 'captcha'));
 
-            /**
-             * @todo dispatch an event that can be used to tweak the authentication
-             * (LDAP....)
-             */
-            try {
-                if ($is_guest) {
-                    $auth = new \Session_Authentication_Guest($app);
-                } else {
-                    $captcha = false;
+            return $app->redirect($app->path('homepage', $params));
+        } catch (AccountLockedException $e) {
+            $params = array_merge($params, array(
+                'error' => 'account-locked',
+                'usr_id' => $e->getUsrId()
+            ));
 
-                    if ($app['phraseanet.registry']->get('GV_captchas')
-                        && '' !== $privateKey = trim($app['phraseanet.registry']->get('GV_captcha_private_key'))
-                        && trim($app['phraseanet.registry']->get('GV_captcha_public_key')) !== ''
-                        && null !== $challenge = $request->request->get("recaptcha_challenge_field")
-                        && null !== $captachResponse = $request->request->get("recaptcha_response_field")) {
+            return $app->redirect($app->path('homepage', $params));
+        }
 
-                        require_once $app['phraseanet.registry']->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php';
+        if (!$usr_id) {
+            $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
 
-                        $checkCaptcha = recaptcha_check_answer($privateKey, $_SERVER["REMOTE_ADDR"], $challenge, $captachResponse);
+            return $app->redirect($app->path('homepage', $params));
+        }
 
-                        if ($checkCaptcha->is_valid) {
-                            $captcha = true;
-                        }
-                    }
+        $user = \User_Adapter::getInstance($usr_id, $app);
 
-                    $auth = new \Session_Authentication_Native($app, $login, $pwd);
-                    $auth->set_captcha_challenge($captcha);
-                }
+        $session = $this->postAuthProcess($app, $user);
 
-                $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
+        $response = $this->generateAuthResponse($app['browser'], $request->request->get('redirect'));
+        $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
 
-                foreach ($app['EM']
-                    ->getRepository('\Entities\ValidationParticipant')
-                    ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
+        $user->ACL()->inject_rights();
 
-                    /* @var $participant \Entities\ValidationParticipant */
+        if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
+            if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
+                if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
 
-                    $validationSession = $participant->getSession();
-                    $participantId = $participant->getUsrId();
-                    $basketId = $validationSession->getBasket()->getId();
+                    $repo = $app['EM']->getRepository('Entities\Basket');
+                    $baskets = $repo->findBy(array('usr_id' => $inviteUsrId));
 
-                    try {
-                        $token = $this->app['tokens']->getValidationToken($participantId, $basketId);
-                    } catch (\Exception_NotFound $e) {
-                        continue;
-                    }
-
-                    $app['events-manager']->trigger('__VALIDATION_REMINDER__', array(
-                        'to'          => $participantId,
-                        'ssel_id'     => $basketId,
-                        'from'        => $validationSession->getInitiatorId(),
-                        'validate_id' => $validationSession->getId(),
-                        'url'         => $app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/validate/' . $basketId . '/?LOG=' . $token
-                    ));
-
-                    $participant->setReminded(new \DateTime('now'));
-                    $app['EM']->persist($participant);
-                }
-
-                $app['EM']->flush();
-
-                /**
-                 * IMPORTANT
-                 */
-                $auth->prelog();
-
-                if ($app->isAuthenticated() && $app['session']->get('usr_id') == $auth->get_user()->get_id()) {
-                    return $app->redirect('/' . ltrim($request->request->get('redirect', 'prod'), '/'));
-                }
-
-                $user = $auth->signOn();
-
-                /**
-                 * @todo move this to phrasea engine
-                 */
-                $user->ACL()->inject_rights();
-
-                if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
-                    if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
-                        if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
-
-                            $repo = $app['EM']->getRepository('Entities\Basket');
-                            $baskets = $repo->findBy(array('usr_id' => $inviteUsrId));
-
-                            foreach ($baskets as $basket) {
-                                $basket->setUsrId($user->get_id());
-                                $app['EM']->persist($basket);
-                            }
-                        }
+                    foreach ($baskets as $basket) {
+                        $basket->setUsrId($user->get_id());
+                        $app['EM']->persist($basket);
                     }
                 }
-
-                $app->openAccount($auth);
-
-                if ($auth->get_user()->get_locale() != $app['locale']) {
-                    $auth->get_user()->set_locale($app['locale']);
-                }
-
-                /**
-                 * IMPORTANT
-                 */
-                $auth->postlog();
-
-                if ($app['browser']->isMobile()) {
-                    $response = new RedirectResponse("/lightbox/");
-                } elseif ($request->request->get('redirect')) {
-                    $response = new RedirectResponse('/' . ltrim($request->request->get('redirect'),'/'));
-                } elseif (true !== $app['browser']->isNewGeneration()) {
-                    $response = new RedirectResponse('/client/');
-                } else {
-                    $response = new RedirectResponse('/prod/');
-                }
-
-                $response->headers->removeCookie('postlog');
-
-                $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
-
-                if ($request->request->get('remember-me') == '1') {
-                    $nonce = \random::generatePassword(16);
-                    $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
-
-                    $token = \User_Adapter::salt_password($app, $string, $nonce);
-
-                    $session->setToken($token)
-                        ->setNonce($nonce);
-                    $cookie = new Cookie('persistent', $token);
-                    $response->headers->setCookie($cookie);
-                }
-
-                $width = $height = null;
-                if ($app['request']->cookies->has('screen')) {
-                    $data = explode('x', $app['request']->cookies->get('screen'));
-                    $width = $data[0];
-                    $height = $data[1];
-                }
-                $session->setIpAddress($request->getClientIp())
-                    ->setScreenHeight($height)
-                    ->setScreenWidth($width);
-
-                $app['EM']->persist($session);
-                $app['EM']->flush();
-
-                $response->headers->removeCookie('last_act');
-
-                return $response;
-            } catch (\Exception_Session_StorageClosed $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=session");
-            } catch (\Exception_Session_RequireCaptcha $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=captcha");
-            } catch (\Exception_Unauthorized $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=auth");
-            } catch (\Exception_Session_MailLocked $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=mail-not-confirmed&usr=" . $e->get_usr_id());
-            } catch (\Exception_Session_WrongToken $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=token");
-            } catch (\Exception_InternalServerError $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=session");
-            } catch (\Exception_ServiceUnavailable $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=maintenance");
-            } catch (\Exception_Session_BadSalinity $e) {
-                $date = new \DateTime('5 minutes');
-                $usr_id = \User_Adapter::get_usr_id_from_login($app, $request->request->get('login'));
-
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array(
-                    'salt'  => 1,
-                    'token' => $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $usr_id, $date)
-                )));
-            } catch (\Exception $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'), '/') . "&error=unexpected");
             }
-        } else {
-            return $app->redirect("/login/");
         }
+
+
+        if ($request->request->get('remember-me') == '1') {
+            $nonce = \random::generatePassword(16);
+            $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
+
+            $token = $app['auth.password-encoder']->encodePassword($string, $nonce);
+
+            $session->setToken($token)
+                ->setNonce($nonce);
+            $cookie = new Cookie('persistent', $token);
+            $response->headers->setCookie($cookie);
+        }
+
+        $event = new PostAuthenticate($request, $response);
+        $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+
+        $response = $event->getResponse();
+
+        return $response;
+    }
+
+    public function authenticateAsGuest(Application $app, Request $request)
+    {
+        if (!\phrasea::guest_allowed($app)) {
+            $app->abort(403, _('Phraseanet guest-access is disabled'));
+        }
+
+        $password = \random::generatePassword(24);
+        $user = \User_Adapter::create($app, 'invite', $password, null, false, true);
+
+        $inviteUsrid = \User_Adapter::get_usr_id_from_login($app, 'invite');
+        $invite_user = \User_Adapter::getInstance($inviteUsrid, $app);
+
+        $usr_base_ids = array_keys($user->ACL()->get_granted_base());
+        $user->ACL()->revoke_access_from_bases($usr_base_ids);
+
+        $invite_base_ids = array_keys($invite_user->ACL()->get_granted_base());
+        $user->ACL()->apply_model($invite_user, $invite_base_ids);
+
+        $this->postAuthProcess($app, $user);
+
+        $response = $this->generateAuthResponse($app['browser'], $request->request->get('redirect'));
+        $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
+
+        return $response;
+    }
+
+    private function generateAuthResponse(\Browser $browser, $redirect)
+    {
+        if ($browser->isMobile()) {
+            $response = new RedirectResponse("/lightbox/");
+        } elseif ($redirect) {
+            $response = new RedirectResponse('/' . ltrim($redirect,'/'));
+        } elseif (true !== $browser->isNewGeneration()) {
+            $response = new RedirectResponse('/client/');
+        } else {
+            $response = new RedirectResponse('/prod/');
+        }
+
+        $response->headers->removeCookie('postlog');
+        $response->headers->removeCookie('last_act');
+
+        return $response;
+    }
+
+    // move this in an event
+    private function postAuthProcess(Application $app, \User_Adapter $user)
+    {
+        $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
+
+        foreach ($app['EM']
+            ->getRepository('\Entities\ValidationParticipant')
+            ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
+
+            /* @var $participant \Entities\ValidationParticipant */
+
+            $validationSession = $participant->getSession();
+            $participantId = $participant->getUsrId();
+            $basketId = $validationSession->getBasket()->getId();
+
+            try {
+                $token = $this->app['tokens']->getValidationToken($participantId, $basketId);
+            } catch (\Exception_NotFound $e) {
+                continue;
+            }
+
+            $app['events-manager']->trigger('__VALIDATION_REMINDER__', array(
+                'to'          => $participantId,
+                'ssel_id'     => $basketId,
+                'from'        => $validationSession->getInitiatorId(),
+                'validate_id' => $validationSession->getId(),
+                'url'         => $app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/validate/' . $basketId . '/?LOG=' . $token
+            ));
+
+            $participant->setReminded(new \DateTime('now'));
+            $app['EM']->persist($participant);
+        }
+
+        $app['EM']->flush();
+
+        $session = $app['authentication']->openAccount($user);
+
+        if ($user->get_locale() != $app['locale']) {
+            $user->set_locale($app['locale']);
+        }
+
+        $width = $height = null;
+        if ($app['request']->cookies->has('screen')) {
+            $data = explode('x', $app['request']->cookies->get('screen'));
+            $width = $data[0];
+            $height = $data[1];
+        }
+        $session->setIpAddress($app['request']->getClientIp())
+            ->setScreenHeight($height)
+            ->setScreenWidth($width);
+
+        $app['EM']->persist($session);
+        $app['EM']->flush();
+
+        return $session;
+    }
+
+    public function authenticateWithProvider(Application $app, Request $request, $providerId)
+    {
+        $provider = $app['authentication.providers']->get($providerId);
+
+        return $provider->authenticate($request->query->all());
+    }
+
+    public function authenticationCallback(Application $app, Request $request, $providerId)
+    {
+        try {
+            $provider = $app['authentication.providers']->get($providerId);
+        } catch (InvalidArgumentException $e) {
+            throw new NotFoundHttpException('The requested provider does not exist');
+        }
+
+        // triggers what's necessary
+        try {
+            $provider->onCallback($app, $request);
+        } catch (NotAuthenticatedException $e) {
+            $app['session']->getFlashBag()->add('error', sprintf(_('Unable to authenticate with %s'), $provider->getName()));
+
+            return $app->redirect('homepage');
+        }
+
+        $token = $provider->getToken();
+
+        // Let's find a match
+        $userAuthProvider = $app['EM']
+            ->getRepository('Entities\UsrAuthProvider')
+            ->findOneBy(array(
+                'provider'   => $token->getProvider()->getId(),
+                'distant_id' => $token->getId(),
+            ));
+
+        if ($userAuthProvider) {
+            $app['authentication']->openAccount($userAuthProvider->getUser());
+            $target = $request->query->get('redirect');
+
+            if (!$target) {
+                $target = $app['url_generator']->generate();
+            }
+
+            return $app->redirect($target);
+        }
+
+        if ($app['authentication.suggestion-finder']->find($token)) {
+            return $app->redirect($app['url_generator']->generate('login_authentication_provider_mapping', array(
+                'providerId' => $providerId,
+                'id'         => $token->getId(),
+            )));
+        } else {
+            return $app->redirect($app['url_generator']->generate('login_authentication_provider_bind', array(
+                'providerId' => $providerId,
+                'id'         => $token->getId(),
+            )));
+        }
+    }
+
+    public function authenticationMapping(Application $app, Request $request, $providerId)
+    {
+        try {
+            $provider = $app['authentication.providers']->get($providerId);
+        } catch (InvalidArgumentException $e) {
+            throw new NotFoundHttpException('The requested provider does not exist');
+        }
+
+        $token = $provider->getToken();
+
+        return $app['twig']->render('login/providers/mapping.html.twig', array(
+            'token'      => $token,
+            'suggestion' => $app['authentication.suggestion-finder']->find($token),
+        ));
+    }
+
+    public function authenticationBindToAccount(Application $app, Request $request, $providerId)
+    {
+        try {
+            $provider = $app['authentication.providers']->get($providerId);
+        } catch (InvalidArgumentException $e) {
+            throw new NotFoundHttpException('The requested provider does not exist');
+        }
+
+        return $app['twig']->render('login/providers/bind.html.twig', array(
+            'token'      => $provider->getToken()
+        ));
+    }
+
+    public function authenticationDoBindToAccount(Application $app, Request $request, $providerId)
+    {
+        if (!$app['authentication.phrasea']->verify($request->query->get('username'), $request->query->get('password'))) {
+//            $app
+        }
+//        try {
+//            $provider = $app['authentication.providers']->get($providerId);
+//        } catch (InvalidArgumentException $e) {
+//            throw new NotFoundHttpException('The requested provider does not exist');
+//        }
+//
+//        return $app['twig']->render('login/providers/bind.html.twig', array(
+//            'token'      => $provider->getToken()
+//        ));
     }
 
     /**
