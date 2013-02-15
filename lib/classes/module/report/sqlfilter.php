@@ -17,6 +17,7 @@ class module_report_sqlfilter
     private $filter;
     private $cor_query = array();
     private $app;
+    private $report;
 
     public function __construct(Application $app, module_report $report)
     {
@@ -27,6 +28,8 @@ class module_report_sqlfilter
             $this->cor_query = $report->getTransQueryString();
 
         $this->buildFilter($report);
+
+        $this->report = $report;
     }
 
     public static function constructDateFilter($dmin, $dmax)
@@ -123,9 +126,13 @@ class module_report_sqlfilter
         return $this->filter['limit'];
     }
 
-    public function getOrderFilter()
+    public function getOrderFilter($customFieldMap = null)
     {
-        return $this->filter['order'];
+        if (null === $customFieldMap) {
+            return $this->filter['order'];
+        }
+
+        return $this->overrideOrderFilter($customFieldMap);
     }
 
     private function dateFilter(module_report $report)
@@ -258,5 +265,20 @@ class module_report_sqlfilter
         $this->collectionFilter($report);
 
         return;
+    }
+
+    private function overrideOrderFilter($customFieldMap)
+    {
+        if (sizeof($this->report->getOrder()) > 0) {
+            if (!isset($customFieldMap[$this->cor_query[$this->report->getOrder('champ')]])) {
+                return false;
+            }
+
+            return " ORDER BY "
+                . $customFieldMap[$this->cor_query[$this->report->getOrder('champ')]]
+                . ' ' . $this->report->getOrder('order');
+        }
+
+        return false;
     }
 }

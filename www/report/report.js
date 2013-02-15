@@ -170,6 +170,9 @@ function submiterAction(domSubmiter)
   var container = domSubmiter.closest('.inside-container');
 
   data = form.serializeArray();
+
+  data[data.length] = {name: "action", value: domSubmiter.data('action')};
+
   //check if a base is selected, pop an alert message if not
   if(!isOneBaseSelected(form))
   {
@@ -186,8 +189,8 @@ function submiterAction(domSubmiter)
 
     request = $.ajax({
       type: "POST",
-      url: "./report.php",
-      data:form.serializeArray(),
+      url: "/report/init",
+      data:data,
       beforeSend:function(){
         container.find('.content').empty();
         container.find('.answers').addClass('onload');
@@ -311,7 +314,7 @@ function tableLinkAction(domLink)
   {
     $.ajax({
       type: "POST",
-      url: "./tab.php",
+      url: "/report/informations/document",
       dataType : "json",
       data: ({
         tbl : "what",
@@ -332,7 +335,7 @@ function tableLinkAction(domLink)
   {
     $.ajax({
       type: "POST",
-      url: "./tab.php",
+      url: "/report/informations/user",
       dataType : "json",
       data: ({
         tbl : "infouser",
@@ -397,7 +400,7 @@ function changeDash(sbasid)
   $.ajax({
     type:"POST",
     dataType:"json",
-    url:"ajax_info_dashboard.php",
+    url:"/report/dashboard",
     data:{
       sbasid: sbasid,
       dmin:dmin,
@@ -627,7 +630,7 @@ function who()
     //load content
     $.ajax({
       type: "POST",
-      url: "./tab.php",
+      url: form.find("input[name=action]").val(),
       dataType: "json",
       data:form.serializeArray(),
       success: function(data){
@@ -649,7 +652,7 @@ function group()
     form.find("input[name=groupby]").val(col);
     $.ajax({
       type: "POST",
-      url: "./tab.php",
+      url: form.find("input[name=action]").val(),
       dataType: "json",
       data:form.serializeArray(),
       success: function(data){
@@ -675,7 +678,7 @@ function what()
     form.find("input[name=user]").val(usrid);
     $.ajax({
       type: "POST",
-      url: "./tab.php",
+      url: "/report/informations/document",
       dataType: "json",
       data: form.serializeArray(),
       success: function(data){
@@ -789,7 +792,7 @@ function dofilter(submit, form, f_val)
     form.find("input[name=liste]").val("on");
     $.ajax({
       type : "POST",
-      url : "./tab.php",
+      url : form.find("input[name=action]").val(),
       dataType : "json",
       data : form.serializeArray(),
       success : function(data){
@@ -806,7 +809,7 @@ function conf(submit, form, f_val)
     form.find("input[name=conf]").val("on");
     $.ajax({
       type : "POST",
-      url : "./tab.php",
+      url :  form.find("input[name=action]").val(),
       dataType : "json",
       data : form.serializeArray(),
       success : function(data){
@@ -881,7 +884,7 @@ function csv()
 
     var query = $.ajax({
       type : "POST",
-      url : "./tab.php",
+      url : $form.find("input[name=action]").val(),
       dataType : "json",
       data : $form.serializeArray(),
       beforeSend:function(){
@@ -1032,6 +1035,7 @@ function go(submit, form, f_val, data)
 {
   $(".submiter").bind("click", function(){
     form.find("input[name=liste_filter]").attr("value", data.filter);
+    form.find("input[name=action]").attr("value", $(this).data('action'));
     f_val = form.serialize(true);
     update_tab(submit, form, f_val);
   });
@@ -1051,9 +1055,10 @@ function update_tab(submit, form, f_val)
   form.find("input[name=liste_filter]").attr("value", array_val["liste_filter"]);
 
   var datas = form.serializeArray();
+
   $.ajax({
     type: "POST",
-    url: "./tab.php",
+    url: form.find("input[name=action]").val(),
     dataType: "json",
     data:datas,
     beforeSend:function(){

@@ -252,8 +252,11 @@ class module_report
         $this->sbas_id = $sbas_id;
         $this->list_coll_id = $collist;
         $this->user_id = $this->app['phraseanet.user']->get_id();
-        $this->periode = $this->app['date-formatter']->getPrettyString(new DateTime($d1))
-            . ' - ' . $this->app['date-formatter']->getPrettyString(new DateTime($d2));
+        $this->periode = sprintf(
+            '%s - %s ',
+            $this->app['date-formatter']->getPrettyString(new \DateTime($d1)),
+            $this->app['date-formatter']->getPrettyString(new \DateTime($d2))
+        );
         $this->dbname = phrasea::sbas_names($sbas_id, $app);
         $this->cor = $this->setCor();
         $this->jour = $this->setDay();

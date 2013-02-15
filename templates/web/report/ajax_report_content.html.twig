@@ -3,12 +3,12 @@
     <div class="horizontal-scroller">
         <ul class="tabb">
             {% for key in selection|keys %}
-                <li class ="number_{{ key }}"><a href="#tab-{{ key }}-{{ param.tbl }}">{{ key|sbas_names(app)}}</a></li>
+                <li class ="number_{{ key }}"><a href="#tab-{{ key }}-{{ app['request'].get('tbl') }}">{{ key|sbas_names(app)}}</a></li>
             {% endfor %}
         </ul>
     </div>
     {% for key, value in selection %}
-        <div id="tab-{{ key }}-{{ param.tbl }}">
+        <div id="tab-{{ key }}-{{ app['request'].get('tbl') }}">
             <div class="load">
             {% block ajax_data_content %}{% endblock %}
             </div>
@@ -28,14 +28,15 @@
                         <input type="button" name="go" value ="ok" class="submiter" />
                     </div>
                 </fieldset>
-                <input type="hidden" name="tbl" value ="{{ param['tbl'] }}"/>
-                <input type="hidden" name="dmin" value ="{{ param['dmin'] }}"/>
-                <input type="hidden" name="dmax" value ="{{ param['dmax'] }}"/>
+                <input type="hidden" name="tbl" value ="{{ app['request'].get('tbl') }}"/>
+                <input type="hidden" name="action" value ="{{ app['request'].get('action') }}"/>
+                <input type="hidden" name="dmin" value ="{{ dmin }}"/>
+                <input type="hidden" name="dmax" value ="{{ dmax }}"/>
                 <input type="hidden" name="sbasid" value ="{{ key }}"/>
                 <input type="hidden" name="collection" value ="{{ value.liste }}"/>
                 <input type="hidden" name="user" value =""/>
-                <input type="hidden" name="word" value ="{{ param['tbl'] == 'DOC' ? param['preciseWord'] : '' }}"/>
-                <input type="hidden" name="precise" value ="{{ param['tbl'] == 'DOC' ? param['precise'] : ''  }}"/>
+                <input type="hidden" name="word" value ="{{ app['request'].get('tbl') == 'DOC' ? app['request'].get('preciseWord') : '' }}"/>
+                <input type="hidden" name="precise" value ="{{ app['request'].get('tbl') == 'DOC' ? app['request'].get('precise') : ''  }}"/>
                 <input type="hidden" name="order" value =""/>
                 <input type="hidden" name="champ" value =""/>
                 <input type="hidden" name="rid" value =""/>
@@ -51,11 +52,11 @@
                 <input type="hidden" name="fonction" value =""/>
                 <input type="hidden" name="activite" value =""/>
                 {% if anonymous %}
-                    <input type="hidden" name="on" value ="{{ param['on'] }}"/>
+                    <input type="hidden" name="on" value ="{{ app['request'].get('on') }}"/>
                 {% else %}
                     <input type="hidden" name="on" value =""/>
                 {% endif %}
-                <input type="hidden" name="docwhat" value ="{{ param['tbl'] == 'WDOC' ? param['docwhat'] : ''  }}"/>
+                <input type="hidden" name="docwhat" value ="{{ app['request'].get('tbl') == 'WDOC' ? app['request'].get('docwhat') : ''  }}"/>
                 <input type="hidden" name="from" value =""/>
                 <input type="hidden" name="printcsv" value ="off"/>
             </form>
