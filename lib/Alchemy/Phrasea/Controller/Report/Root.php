@@ -15,6 +15,7 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class Root implements ControllerProviderInterface
@@ -97,6 +98,13 @@ class Root implements ControllerProviderInterface
         return $controllers;
     }
 
+    /**
+     * Display dashboard informations
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function getDashboard(Application $app, Request $request)
     {
         $dashboard = new \module_report_dashboard($app, $app['phraseanet.user']);
@@ -133,6 +141,14 @@ class Root implements ControllerProviderInterface
         ))));
     }
 
+    /**
+     * Gets available collections where current user can see report and
+     * format date
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function initReport(Application $app, Request $request)
     {
         $popbases = $request->request->get('popbases', array());
@@ -175,6 +191,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Display instance connexion report
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportConnexions(Application $app, Request $request)
     {
         $cnx = new \module_report_connexion(
@@ -234,6 +257,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Display instance questions report
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportQuestions(Application $app, Request $request)
     {
         $questions = new \module_report_question(
@@ -292,6 +322,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Display instance download report
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportDownloads(Application $app, Request $request)
     {
         $download = new \module_report_download(
@@ -359,6 +396,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Display instance document report
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportDocuments(Application $app, Request $request)
     {
         $document = new \module_report_download(
@@ -422,6 +466,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Display informations about client (browser, resolution etc ..)
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportClients(Application $app, Request $request)
     {
         $nav = new \module_report_nav(
@@ -491,6 +542,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Display connexions report group by user
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportConnexionsByUsers(Application $app, Request $request)
     {
         $activity = new \module_report_activity(
@@ -542,6 +600,13 @@ class Root implements ControllerProviderInterface
         }
     }
 
+    /**
+     * Display download report group by user
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportDownloadsByUsers(Application $app, Request $request)
     {
         $conf = array(
@@ -596,6 +661,13 @@ class Root implements ControllerProviderInterface
         }
     }
 
+    /**
+     * Display the most asked question
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportBestOfQuestions(Application $app, Request $request)
     {
         $conf = array(
@@ -647,6 +719,13 @@ class Root implements ControllerProviderInterface
         }
     }
 
+    /**
+     * Display report about questions that return no result
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportNoBestOfQuestions(Application $app, Request $request)
     {
         $conf = array(
@@ -702,6 +781,13 @@ class Root implements ControllerProviderInterface
         }
     }
 
+    /**
+     * Display an overview of connexion among hours of the da
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportSiteActiviyPerHours(Application $app, Request $request)
     {
         $activity = new \module_report_activity(
@@ -743,6 +829,13 @@ class Root implements ControllerProviderInterface
          }
     }
 
+    /**
+     * Display an overview of downloaded document grouped by day
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportSiteActiviyPerDays(Application $app, Request $request)
     {
         $conf = array(
@@ -797,6 +890,13 @@ class Root implements ControllerProviderInterface
          }
     }
 
+    /**
+     * Display report about pushed documents
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportPushedDocuments(Application $app, Request $request)
     {
         $conf = array(
@@ -856,6 +956,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Display report about added documents
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportAddedDocuments(Application $app, Request $request)
     {
         $conf = array(
@@ -914,6 +1021,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Display report about edited documents
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportEditedDocuments(Application $app, Request $request)
     {
         $conf = array(
@@ -972,6 +1086,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Display report about validated documents
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportValidatedDocuments(Application $app, Request $request)
     {
         $conf = array(
@@ -1031,6 +1152,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Display informations about a user
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportInformationsUser(Application $app, Request $request)
     {
         $conf = array(
@@ -1225,6 +1353,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Display a browser version
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportinformationsBrowser(Application $app, Request $request)
     {
         $conf = array(
@@ -1263,6 +1398,13 @@ class Root implements ControllerProviderInterface
             ));
     }
 
+    /**
+     * Display informations about a document
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function doReportInformationsDocument(Application $app, Request $request)
     {
         $config = array(
@@ -1483,6 +1625,13 @@ class Root implements ControllerProviderInterface
         ));
     }
 
+    /**
+     * Export data to a csv file
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function exportCSV(Application $app, Request $request)
     {
         $name = $request->request->get('name', 'export');
@@ -1510,6 +1659,16 @@ class Root implements ControllerProviderInterface
         return $response;
     }
 
+    /**
+     * Set Report configuration according to request parameters
+     *
+     * @param Application $app An application instance
+     * @param Request $request A request instance
+     * @param \module_report $report A report instance
+     * @param Array $conf A report column configuration
+     * @param Boolean $what Whether to group on a particular field or not
+     * @return Array
+     */
     private function doReport(Application $app, Request $request, \module_report $report, $conf, $what = false)
     {
         if ($app['phraseanet.registry']->get('GV_anonymousReport') == true) {
