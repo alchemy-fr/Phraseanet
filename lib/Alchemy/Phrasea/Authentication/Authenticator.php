@@ -86,7 +86,7 @@ class Authenticator
         return $this;
     }
 
-    private function reinitUser()
+    public function reinitUser()
     {
         if ($this->isAuthenticated()) {
             $this->user = \User_Adapter::getInstance($this->session->get('usr_id'), $this->app);
