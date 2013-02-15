@@ -36,8 +36,8 @@ class Export implements ControllerProviderInterface
     /**
      * Export data to a csv file
      *
-     * @param  Application  $app
-     * @param  Request      $request
+     * @param  Application $app
+     * @param  Request     $request
      * @return Response
      */
     public function exportCSV(Application $app, Request $request)

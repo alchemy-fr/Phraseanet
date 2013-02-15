@@ -307,4 +307,3 @@ class InformationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
     }
 }
-

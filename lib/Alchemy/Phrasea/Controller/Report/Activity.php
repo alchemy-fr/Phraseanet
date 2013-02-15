@@ -670,7 +670,6 @@ class Activity implements ControllerProviderInterface
         ));
     }
 
-
     /**
      * Set Report configuration according to request parameters
      *

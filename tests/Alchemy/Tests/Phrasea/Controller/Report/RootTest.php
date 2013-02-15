@@ -144,7 +144,6 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
     }
 
-
     public function testDoReportQuestions()
     {
         self::$DI['client']->request('POST', '/report/questions', array(
@@ -460,4 +459,3 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
     }
 }
-

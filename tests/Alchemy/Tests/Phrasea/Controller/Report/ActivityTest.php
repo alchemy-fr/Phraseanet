@@ -579,4 +579,3 @@ class ActivityTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
     }
 }
-
