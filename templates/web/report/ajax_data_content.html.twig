@@ -29,7 +29,7 @@
                   var riid = $(this).html();
                 var new_a = $(this).html('<img style="float:right;margin-right:5px;" src="/skins/report/img/loupe2.png" />');
                 $(this).before(riid);
-                $(this).attr('rel', '{{ app.path('report_infomations_document') }}').cluetip({
+                $(this).attr('rel', '{{ path('report_infomations_document') }}').cluetip({
                     width: 600,
                     ajaxCache: true,
                     arrows: true,
