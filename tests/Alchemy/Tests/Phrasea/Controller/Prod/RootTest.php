@@ -11,8 +11,7 @@ class ControllerRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
-        $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']['authentication']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
 
         $crawler = self::$DI['client']->request('GET', '/prod/');
 

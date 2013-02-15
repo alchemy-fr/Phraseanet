@@ -84,7 +84,7 @@ class ApplicationRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $nonce = \random::generatePassword(16);
         $string = $browser->getBrowser() . '_' . $browser->getPlatform();
 
-        $token = \User_Adapter::salt_password($app, $string, $nonce);
+        $token = self::$DI['app']['auth.password-encoder']->encodePassword($string, $nonce);
 
         $app['browser'] = $browser;
 

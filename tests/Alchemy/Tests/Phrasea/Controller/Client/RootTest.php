@@ -24,8 +24,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetClient()
     {
         \phrasea::start(self::$DI['app']['phraseanet.configuration']);
-        $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']['authentication']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
         self::$DI['client']->request("GET", "/client/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }

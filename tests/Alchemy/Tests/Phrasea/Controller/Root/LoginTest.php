@@ -57,7 +57,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             array('maintenance', 'already'),
             array('no-connection', 'mail-sent'),
             array('captcha', 'register-ok'),
-            array('mail-not-confirmed', 'register-ok-wait'),
+            array('account-locked', 'register-ok-wait'),
             array('no-base', 'password-update-ok'),
             array('session', 'no-register-available')
         );
@@ -729,7 +729,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['client'] = new Client(self::$DI['app'], array());
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
-        self::$DI['client']->request('POST', '/login/authenticate/?nolog');
+        self::$DI['client']->request('POST', '/login/authenticate/guest/');
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegExp('/^\/prod\/$/', self::$DI['client']->getResponse()->headers->get('Location'));
@@ -743,13 +743,13 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     /**
      * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
      */
-    public function testGuestAuthenticateWithPostParam()
+    public function testGuestAuthenticateWithGetMethod()
     {
         self::$DI['app']['authentication']->closeAccount();
 
         self::$DI['client'] = new Client(self::$DI['app'], array());
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
-        self::$DI['client']->request('POST', '/login/authenticate/', array('nolog'=>''));
+        self::$DI['client']->request('GET', '/login/authenticate/guest/');
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertRegExp('/^\/prod\/$/', self::$DI['client']->getResponse()->headers->get('Location'));
@@ -772,7 +772,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertRegexp('/error=auth/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertTrue(self::$DI['app']['session']->getFlashBag()->has('error'));
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
     }
 
@@ -807,7 +807,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertRegexp('/error=mail-not-confirmed/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertRegexp('/error=account-locked/', self::$DI['client']->getResponse()->headers->get('location'));
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
         self::$DI['user']->set_mail_locked(false);
     }

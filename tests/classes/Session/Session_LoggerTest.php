@@ -16,9 +16,8 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
     protected function feed_datas()
     {
         $user = self::$DI['user'];
-        $auth = new Session_Authentication_None($user);
 
-        self::$DI['app']['authentication']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
         $logger_creater = self::$DI['app']['phraseanet.logger'];
 
         foreach ($user->ACL()->get_granted_sbas() as $databox) {

@@ -213,16 +213,27 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals(array('BAMBA'), $app->getFlash('notice'));
     }
 
-    private function getAuthMock()
+    private function getAppThatReturnLocale()
     {
-        $auth = $this->getMockBuilder('Session_Authentication_Interface')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $auth->expects($this->any())
-            ->method('get_user')
-            ->will($this->returnValue(self::$DI['user']));
+        $app = new Application('test');
 
-        return $auth;
+        $app->get('/', function(Application $app, Request $request) {
+
+            return $app['locale'];
+        });
+        unset($app['exception_handler']);
+
+        return $app;
+    }
+
+    private function mockRegistryAndReturnLocale(Application $app, $locale)
+    {
+        $app['phraseanet.registry'] = $this->getMockBuilder('\registry')
+            ->disableOriginalConstructor()
+            ->getmock();
+        $app['phraseanet.registry']->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($locale));
     }
 
     private function getApp()

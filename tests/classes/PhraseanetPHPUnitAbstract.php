@@ -862,11 +862,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
         $app['session']->clear();
         $app['session']->set('usr_id', self::$DI['user']->get_id());
+        self::$DI['app']['authentication']->reinitUser();
     }
 
     protected function logout(Application $app)
     {
         $app['session']->clear();
+        self::$DI['app']['authentication']->reinitUser();
     }
 
     protected function assertXMLHTTPBadJsonResponse(Response $response)
