@@ -423,4 +423,27 @@ class Basket
 
         return $totSize;
     }
+
+    /**
+     * Add elements
+     *
+     * @param \Entities\BasketElement $elements
+     * @return Basket
+     */
+    public function addElement(\Entities\BasketElement $elements)
+    {
+        $this->elements[] = $elements;
+    
+        return $this;
+    }
+
+    /**
+     * Remove elements
+     *
+     * @param \Entities\BasketElement $elements
+     */
+    public function removeElement(\Entities\BasketElement $elements)
+    {
+        $this->elements->removeElement($elements);
+    }
 }
