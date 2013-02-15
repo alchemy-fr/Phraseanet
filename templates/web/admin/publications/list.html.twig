@@ -21,7 +21,7 @@
         <div class="controls">
             <select id="add_pub_base_id" class="input-large" name="base_id">
                 <option value="">{% trans 'Non-Restreinte (publique)' %}</option>
-                {% for databox in app['phraseanet.user'].ACL().get_granted_sbas('bas_chupub') %}
+                {% for databox in app['authentication'].getUser().ACL().get_granted_sbas('bas_chupub') %}
                     <optgroup label="{{ databox.get_viewname() }}">
                         {% for collection in databox.get_collections() %}
                             <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
@@ -81,7 +81,7 @@
                     {% endif %}
                 </td>
                 <td valign="center" align="center">
-                    {% if feed.is_owner(app['phraseanet.user']) %}
+                    {% if feed.is_owner(app['authentication'].getUser()) %}
                         <form class="no-ajax form_publication" action="/admin/publications/feed/{{feed.get_id()}}/delete/" method="post" style="margin:0;">
                             <button class="feed_remover btn btn-mini">{% trans 'boutton::supprimer' %}</button>
                         </form>

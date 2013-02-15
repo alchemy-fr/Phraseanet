@@ -20,7 +20,7 @@
                 {% set s_width = subdef.get_width() %}
                 {% set s_height = subdef.get_height() %}
             {% endif %}
-            {% if app.isAuthenticated() == true %}
+            {% if app['authentication'].isAuthenticated() == true %}
                 {% set url = subdef.get_url() %}
             {% else %}
                 {% set url = subdef.get_permalink().get_url() %}

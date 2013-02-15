@@ -40,7 +40,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
     public function testRouteSlash()
     {
         $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount($auth);
 
         $baskets = $this->insertFiveBasket();
 
@@ -67,7 +67,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     public function testAuthenticationWithToken()
     {
-        self::$DI['app']->closeAccount();
+        self::$DI['app']['authentication']->closeAccount();
 
         $Basket = $this->insertOneBasket();
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_VIEW, self::$DI['user_alt2']->get_id(), null, $Basket->getId());
@@ -189,7 +189,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
     public function testValidate()
     {
         $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount($auth);
 
         $basket = $this->insertOneValidationBasket();
 
@@ -215,7 +215,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
     public function testCompare()
     {
         $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount($auth);
 
         $basket = $this->insertOneBasket();
 
@@ -241,7 +241,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
     public function testFeedEntry()
     {
         $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount($auth);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 

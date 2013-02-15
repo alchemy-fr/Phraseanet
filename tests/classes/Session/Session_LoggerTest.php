@@ -18,7 +18,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $user = self::$DI['user'];
         $auth = new Session_Authentication_None($user);
 
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount($auth);
         $logger_creater = self::$DI['app']['phraseanet.logger'];
 
         foreach ($user->ACL()->get_granted_sbas() as $databox) {
@@ -40,7 +40,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
         $params = array(
             ':ses_id' => self::$DI['app']['session']->get('session_id')
-            , ':usr_id' => self::$DI['app']['phraseanet.user']->get_id()
+            , ':usr_id' => self::$DI['app']['authentication']->getUser()->get_id()
             , ':site'   => self::$DI['app']['phraseanet.registry']->get('GV_sit')
         );
 
@@ -51,9 +51,9 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $this->assertEquals($this->object->get_id(), $row['id']);
         $log_id = $this->object->get_id();
         $ses_id = self::$DI['app']['session']->get('session_id');
-        $usr_id = self::$DI['app']['phraseanet.user']->get_id();
+        $usr_id = self::$DI['app']['authentication']->getUser()->get_id();
 
-        self::$DI['app']->closeAccount();
+        self::$DI['app']['authentication']->closeAccount();
 
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';

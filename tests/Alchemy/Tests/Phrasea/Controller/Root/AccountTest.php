@@ -150,7 +150,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostResetMailBadEmail()
     {
         $password = \random::generatePassword();
-        self::$DI['app']['phraseanet.user']->set_password($password);
+        self::$DI['app']['authentication']->getUser()->set_password($password);
         self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => "invalid#!&&@@email.x",
@@ -168,7 +168,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostResetMailEmailNotIdentical()
     {
         $password = \random::generatePassword();
-        self::$DI['app']['phraseanet.user']->set_password($password);
+        self::$DI['app']['authentication']->getUser()->set_password($password);
         self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
@@ -188,7 +188,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate');
 
         $password = \random::generatePassword();
-        self::$DI['app']['phraseanet.user']->set_password($password);
+        self::$DI['app']['authentication']->getUser()->set_password($password);
         self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
@@ -325,7 +325,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('No collections');
         }
 
-        foreach (self::$DI['app']['events-manager']->list_notifications_available(self::$DI['app']['phraseanet.user']->get_id()) as $notifications) {
+        foreach (self::$DI['app']['events-manager']->list_notifications_available(self::$DI['app']['authentication']->getUser()->get_id()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifs[] = $notification['id'];
             }
@@ -358,11 +358,11 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('minet', self::$DI['app']['phraseanet.user']->get_lastname());
+        $this->assertEquals('minet', self::$DI['app']['authentication']->getUser()->get_lastname());
 
         $sql = 'SELECT base_id FROM demand WHERE usr_id = :usr_id AND en_cours="1" ';
         $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => self::$DI['app']['phraseanet.user']->get_id()));
+        $stmt->execute(array(':usr_id' => self::$DI['app']['authentication']->getUser()->get_id()));
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -436,7 +436,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostRenewPasswordBadArguments($oldPassword, $password, $passwordConfirm, $redirect)
     {
-        self::$DI['app']['phraseanet.user']->set_password($oldPassword);
+        self::$DI['app']['authentication']->getUser()->set_password($oldPassword);
 
         self::$DI['client']->request('POST', '/account/reset-password/', array(
             'form_password'         => $password,
@@ -468,7 +468,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $password = \random::generatePassword();
 
-        self::$DI['app']['phraseanet.user']->set_password($password);
+        self::$DI['app']['authentication']->getUser()->set_password($password);
 
         self::$DI['client']->request('POST', '/account/reset-password/', array(
             'form_password'         => 'password',

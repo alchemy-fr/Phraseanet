@@ -31,11 +31,11 @@ class QueryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testQueryAnswerTrain()
     {
         $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount($auth);
         self::$DI['record_24'];
 
         $options = new SearchEngineOptions();
-        $options->onCollections(self::$DI['app']['phraseanet.user']->ACL()->get_granted_base());
+        $options->onCollections(self::$DI['app']['authentication']->getUser()->ACL()->get_granted_base());
         $serializedOptions = $options->serialize();
 
         self::$DI['client']->request('POST', '/prod/query/answer-train/', array(

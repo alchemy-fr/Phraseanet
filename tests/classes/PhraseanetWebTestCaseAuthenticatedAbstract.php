@@ -20,7 +20,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
     public function setAdmin($bool)
     {
-        $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')//, array('is_admin', 'ACL'), array(self::$DI['app']['phraseanet.user']->get_id(), self::$DI['app']))
+        $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')//, array('is_admin', 'ACL'), array(self::$DI['app']['authentication']->getUser()->get_id(), self::$DI['app']))
             ->setMethods(array('ACL', 'get_id'))
             ->disableOriginalConstructor()
             ->getMock();
@@ -81,7 +81,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             ->method('get_id')
             ->will($this->returnValue(self::$DI['user']->get_id()));
 
-        self::$DI['app']['phraseanet.user'] = $stubAuthenticatedUser;
+        self::$DI['app']['authentication']->setUser($stubAuthenticatedUser);
 
         self::$DI['client'] = self::$DI->share(function($DI) {
                 return new Client($DI['app'], array());
@@ -118,10 +118,10 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             , 'bas_chupub'        => '1'
         );
 
-        self::$DI['app']['phraseanet.user']->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+        self::$DI['app']['authentication']->getUser()->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
 
-        $databox->registerAdmin(self::$DI['app']['phraseanet.user']);
+        $databox->registerAdmin(self::$DI['app']['authentication']->getUser());
 
         return $databox;
     }

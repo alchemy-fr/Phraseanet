@@ -11,12 +11,12 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSaveUserPref()
     {
-        self::$DI['app']['phraseanet.user'] = $this->getMockBuilder('\User_Adapter')
+        self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
             ->setMethods(array('setPrefs'))
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock());
 
-        self::$DI['app']['phraseanet.user']->expects($this->once())
+        self::$DI['app']['authentication']->getUser()->expects($this->once())
             ->method('setPrefs')
             ->with($this->equalTo('prop_test'), $this->equalTo('val_test'))
             ->will($this->returnValue(true));

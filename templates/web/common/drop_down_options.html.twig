@@ -8,7 +8,7 @@
             <tr>
             <td>
                 <div class="context-menu context-menu-theme-vista">
-                {% if app['phraseanet.user'].ACL.has_right_on_base(record.get_base_id, 'canputinalbum') and not record.is_grouping() %}
+                {% if app['authentication'].getUser().ACL.has_right_on_base(record.get_base_id, 'canputinalbum') and not record.is_grouping() %}
                 <div title="" class="context-menu-item">
                     <div class="context-menu-item-inner"
                         onclick="evt_add_in_chutier('{{record.get_sbas_id}}','{{record.get_record_id}}',false,this);return(false);">
@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 {% endif %}
-                {% if app['phraseanet.user'].ACL.has_right_on_base(record.get_base_id, 'candwnldpreview') or app['phraseanet.user'].ACL.has_right_on_base(record.get_base_id, 'candwnldhd') %}
+                {% if app['authentication'].getUser().ACL.has_right_on_base(record.get_base_id, 'candwnldpreview') or app['authentication'].getUser().ACL.has_right_on_base(record.get_base_id, 'candwnldhd') %}
                 <div title="" class="context-menu-item">
                     <div class="context-menu-item-inner"
                         onclick="evt_dwnl('{{record.get_sbas_id}}_{{record.get_record_id}}',false,this);return(false);">

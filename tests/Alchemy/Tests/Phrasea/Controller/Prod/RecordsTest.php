@@ -84,11 +84,11 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetRecordDetailResult()
     {
         $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount($auth);
         self::$DI['record_24'];
 
         $options = new SearchEngineOptions();
-        $acl = self::$DI['app']['phraseanet.user']->ACL();
+        $acl = self::$DI['app']['authentication']->getUser()->ACL();
         $options->onCollections($acl->get_granted_base());
         $serializedOptions = $options->serialize();
 
@@ -121,7 +121,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetRecordDetailREG()
     {
         $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount($auth);
         self::$DI['record_story_1'];
 
         $this->XMLHTTPRequest('POST', '/prod/records/', array(
@@ -152,7 +152,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetRecordDetailBasket()
     {
         $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount($auth);
         $basket = $this->insertOneBasket();
         $record = self::$DI['record_1'];
 
@@ -195,7 +195,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetRecordDetailFeed()
     {
         $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount($auth);
 
         self::$feed = \Feed_Adapter::create(
             self::$DI['app'],

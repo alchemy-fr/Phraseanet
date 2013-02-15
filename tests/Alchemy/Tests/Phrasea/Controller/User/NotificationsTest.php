@@ -60,12 +60,12 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRequireAuthentication()
     {
-        self::$DI['app']['phraseanet.user'] = $this->getMockBuilder('\User_Adapter')
+        self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
             ->setMethods(array('is_guest'))
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock());
 
-        self::$DI['app']['phraseanet.user']->expects($this->once())
+        self::$DI['app']['authentication']->getUser()->expects($this->once())
             ->method('is_guest')
             ->will($this->returnValue(true));
 

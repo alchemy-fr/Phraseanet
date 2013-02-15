@@ -32,10 +32,10 @@ return call_user_func(function($environment = null) {
     });
 
     $app->before(function(Request $request) use ($app) {
-        if ($request->cookies->has('persistent') && !$app->isAuthenticated()) {
+        if ($request->cookies->has('persistent') && !$app['authentication']->isAuthenticated()) {
             try {
                 $auth = new \Session_Authentication_PersistentCookie($app, $request->cookies->get('persistent'));
-                $app->openAccount($auth, $auth->getSessionId());
+                $app['authentication']->openAccount($auth, $auth->getSessionId());
             } catch (\Exception $e) {
 
             }

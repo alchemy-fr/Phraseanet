@@ -76,27 +76,58 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     /**
      * @covers Alchemy\Phrasea\Application
      */
-    public function testOpenAccount()
+    public function testCookieLocale()
     {
-        $app = new Application('test');
+        $app = $this->getAppThatReturnLocale();
 
-        $this->assertFalse($app->isAuthenticated());
-        $app->openAccount($this->getAuthMock());
-        $this->assertTrue($app->isAuthenticated());
+        foreach (array('fr_FR', 'en_GB', 'de_DE') as $locale) {
+            $client = $this->getClientWithCookie($app, $locale);
+            $client->request('GET', '/');
+
+            $this->assertEquals($locale, $client->getResponse()->getContent());
+        }
     }
 
     /**
      * @covers Alchemy\Phrasea\Application
      */
-    public function testCloseAccount()
+    public function testNoCookieLocaleReturnsDefaultLocale()
     {
-        $app = new Application('test');
+        $app = $this->getAppThatReturnLocale();
+        $this->mockRegistryAndReturnLocale($app, 'en_USA');
 
-        $this->assertFalse($app->isAuthenticated());
-        $app->openAccount($this->getAuthMock());
-        $this->assertTrue($app->isAuthenticated());
-        $app->closeAccount();
-        $this->assertFalse($app->isAuthenticated());
+        $client = $this->getClientWithCookie($app, null);
+        $client->request('GET', '/');
+
+        $this->assertEquals('en_USA', $client->getResponse()->getContent());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
+    public function testWrongCookieLocaleReturnsDefaultLocale()
+    {
+        $app = $this->getAppThatReturnLocale();
+        $this->mockRegistryAndReturnLocale($app, 'en_USA');
+
+        $client = $this->getClientWithCookie($app, 'de_PL');
+        $client->request('GET', '/');
+
+        $this->assertEquals('en_USA', $client->getResponse()->getContent());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
+    public function testNoCookieReturnsContentNegotiated()
+    {
+        $app = $this->getAppThatReturnLocale();
+        $this->mockRegistryAndReturnLocale($app, 'en_USA');
+
+        $client = $this->getClientWithCookie($app, null);
+        $client->request('GET', '/', array(), array(), array('accept_language' => 'en-US;q=0.75,en;q=0.8,fr-FR;q=0.9'));
+
+        $this->assertEquals('fr_FR', $client->getResponse()->getContent());
     }
 
     /**

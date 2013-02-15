@@ -61,7 +61,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $receveid = array(self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']);
 
-        self::$DI['app']['phraseanet.user']->ACL()->update_rights_to_base(self::$DI['record_1']->get_base_id(), array('order_master' => true));
+        self::$DI['app']['authentication']->getUser()->ACL()->update_rights_to_base(self::$DI['record_1']->get_base_id(), array('order_master' => true));
 
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
@@ -515,7 +515,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $sbas_id = self::$DI['record_1']->get_sbas_id();
         $record_id = self::$DI['record_1']->get_record_id();
 
-        foreach (self::$DI['record_1']->get_container_baskets(self::$DI['app']['EM'], self::$DI['app']['phraseanet.user']) as $c_basket) {
+        foreach (self::$DI['record_1']->get_container_baskets(self::$DI['app']['EM'], self::$DI['app']['authentication']->getUser()) as $c_basket) {
             if ($c_basket->getId() == $basket->getId()) {
                 $found = true;
                 foreach ($c_basket->getElements() as $b_el) {

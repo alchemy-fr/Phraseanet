@@ -54,9 +54,9 @@
 
 {% block rss %}
     {% for feed in feeds %}
-        {% set link = feed.get_user_link(app['phraseanet.registry'], app['phraseanet.user'], 'rss') %}
+        {% set link = feed.get_user_link(app['phraseanet.registry'], app['authentication'].getUser(), 'rss') %}
         <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
-        {% set link = feed.get_user_link(app['phraseanet.registry'], app['phraseanet.user'], 'atom') %}
+        {% set link = feed.get_user_link(app['phraseanet.registry'], app['authentication'].getUser(), 'atom') %}
         <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
     {% endfor %}
 {% endblock %}
@@ -110,12 +110,12 @@
 
     <style title="color_selection" type="text/css">
         /*  .diapo.ui-selecting,#reorder_box .diapo.selecting, #EDIT_ALL .diapo.selecting, .list.selecting, .list.selecting .diapo {
-            color: #{% if app['phraseanet.user'].getPrefs('fontcolor-selection') != '' %}{{app['phraseanet.user'].getPrefs('fontcolor-selection')}}{% else %}FFFFFF{% endif %};
-            background-color: #{% if app['phraseanet.user'].getPrefs('background-selection-disabled') != '' %}{{app['phraseanet.user'].getPrefs('background-selection-disabled')}}{% else %}333333{% endif %};
+            color: #{% if app['authentication'].getUser().getPrefs('fontcolor-selection') != '' %}{{app['authentication'].getUser().getPrefs('fontcolor-selection')}}{% else %}FFFFFF{% endif %};
+            background-color: #{% if app['authentication'].getUser().getPrefs('background-selection-disabled') != '' %}{{app['authentication'].getUser().getPrefs('background-selection-disabled')}}{% else %}333333{% endif %};
         }*/
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
-            color: #{% if app['phraseanet.user'].getPrefs('fontcolor-selection') != '' %}{{app['phraseanet.user'].getPrefs('fontcolor-selection')}}{% else %}FFFFFF{% endif %};
-            background-color: #{% if app['phraseanet.user'].getPrefs('background-selection') != '' %}{{app['phraseanet.user'].getPrefs('background-selection')}}{% else %}404040{% endif %};
+            color: #{% if app['authentication'].getUser().getPrefs('fontcolor-selection') != '' %}{{app['authentication'].getUser().getPrefs('fontcolor-selection')}}{% else %}FFFFFF{% endif %};
+            background-color: #{% if app['authentication'].getUser().getPrefs('background-selection') != '' %}{{app['authentication'].getUser().getPrefs('background-selection')}}{% else %}404040{% endif %};
         }
     </style>
 {% endblock %}
@@ -140,7 +140,7 @@
 
     <div id="desktop" class="PNB" style="overflow:hidden;">
 
-        {% set ratio = app['phraseanet.user'].getPrefs('search_window') %}
+        {% set ratio = app['authentication'].getUser().getPrefs('search_window') %}
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}
         {% endif %}
@@ -186,7 +186,7 @@
                         <div id="THPD_tabs">
                             <ul>
                                 <li class="th_tab"><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
-                                {% if app['phraseanet.user'].ACL().has_access_to_module('thesaurus') %}
+                                {% if app['authentication'].getUser().ACL().has_access_to_module('thesaurus') %}
                                     <li class="th_tab"><a href="#THPD_C"><span>{% trans 'prod::thesaurusTab:candidats' %}</span></a></li>
                                 {% endif %}
                             </ul>
@@ -224,7 +224,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                {% if app['phraseanet.user'].ACL().has_access_to_module('thesaurus') %}
+                                {% if app['authentication'].getUser().ACL().has_access_to_module('thesaurus') %}
                                 <div id="THPD_C">
                                     <div id='THPD_C_treeBox' class="searchZone">
                                         <div onclick="Xclick(event);return(false);" ondblclick="CXdblClick(event);">
@@ -297,7 +297,7 @@
             <div id="headBlock" class="PNB" style="height: 90px; bottom: auto;">
                 <div style="margin: 15px auto; line-height: 30px; width: 580px;">
                     <form id="searchForm" action="/prod/query/" name="phrasea_query" class="phrasea_query">
-                        <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['phraseanet.user'].getPrefs('start_page_query')}}">
+                        <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}">
                         <a href="#" class="adv_trigger adv_search_button">
                             <img src="/skins/icons/settings.png" title="{% trans 'Advanced Search' %}"/>
                         </a>
@@ -536,19 +536,19 @@
                     </span>
 
                     {% set actions = {} %}
-                    {% if app['phraseanet.user'].ACL().has_right('modifyrecord') %}
+                    {% if app['authentication'].getUser().ACL().has_right('modifyrecord') %}
                         {% set label %}
                             {% trans 'action : editer' %}
                         {% endset %}
                         {% set actions = actions|merge( { 'edit' : {'icon': "/skins/prod/000000/images/ppen_history.gif", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
                     {% endif %}
-                    {% if app['phraseanet.user'].ACL().has_right('changestatus') %}
+                    {% if app['authentication'].getUser().ACL().has_right('changestatus') %}
                         {% set label %}
                             {% trans 'action : status' %}
                         {% endset %}
                         {% set actions = actions|merge( { 'status' : {'icon': "/skins/prod/000000/images/chgstatus_history.gif", 'class':'TOOL_chgstatus_btn', 'label' : label} }) %}
                     {% endif %}
-                    {% if app['phraseanet.user'].ACL().has_right('deleterecord') and app['phraseanet.user'].ACL().has_right('addrecord') %}
+                    {% if app['authentication'].getUser().ACL().has_right('deleterecord') and app['authentication'].getUser().ACL().has_right('addrecord') %}
                         {% set label %}
                             {% trans 'action : collection' %}
                         {% endset %}
@@ -596,7 +596,7 @@
                         </span>
                     {% endif %}
 
-                    {% if app['phraseanet.user'].ACL().has_right('push') and app['phraseanet.user'].ACL().has_right('bas_chupub') %}
+                    {% if app['authentication'].getUser().ACL().has_right('push') and app['authentication'].getUser().ACL().has_right('bas_chupub') %}
                         <span class="dropdownButton">
                             <div class="btn-group">
                                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">
@@ -627,7 +627,7 @@
                                 </ul>
                             </div>
                         </span>
-                    {% elseif app['phraseanet.user'].ACL().has_right('push') %}
+                    {% elseif app['authentication'].getUser().ACL().has_right('push') %}
                         <span class="dropdownButton">
                             <div class="btn-group">
                                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse" >
@@ -644,7 +644,7 @@
                                 </ul>
                             </div>
                         </span>
-                    {% elseif app['phraseanet.user'].ACL().has_right('bas_chupub') %}
+                    {% elseif app['authentication'].getUser().ACL().has_right('bas_chupub') %}
                         <span class="dropdownButton">
                             <div class="btn-group">
                                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse" >
@@ -663,7 +663,7 @@
                         </span>
                     {% endif %}
 
-                    {% if app['phraseanet.user'].ACL().has_right('doctools') %}
+                    {% if app['authentication'].getUser().ACL().has_right('doctools') %}
                         <span class="classicButton">
                             <div class="btn-group">
                                 <button class="TOOL_imgtools_btn results_window btn btn-inverse" >
@@ -672,7 +672,7 @@
                             </div>
                         </span>
                     {% endif %}
-                    {% if app['phraseanet.user'].ACL().has_right('deleterecord') %}
+                    {% if app['authentication'].getUser().ACL().has_right('deleterecord') %}
                         <span class="classicButton">
                             <div class="btn-group">
                                 <button class="TOOL_trash_btn results_window btn btn-inverse" >
@@ -685,11 +685,11 @@
                 <div id="answers" class=" PNB10" style="top:48px; bottom:30px;">
                     <script>
                         $(document).ready(function(){
-                            {% if app['phraseanet.user'].getPrefs('start_page') == 'QUERY' %}
+                            {% if app['authentication'].getUser().getPrefs('start_page') == 'QUERY' %}
                                 $('form[name="phrasea_query"]').addClass('triggerAfterInit')
-                            {% elseif app['phraseanet.user'].getPrefs('start_page') == 'LAST_QUERY' %}
+                            {% elseif app['authentication'].getUser().getPrefs('start_page') == 'LAST_QUERY' %}
                                 $('form[name="phrasea_query"]').addClass('triggerAfterInit')
-                            {% elseif app['phraseanet.user'].getPrefs('start_page') == 'PUBLI' %}
+                            {% elseif app['authentication'].getUser().getPrefs('start_page') == 'PUBLI' %}
                                 getHome('PUBLI');
                             {% endif %}
                         });
@@ -746,7 +746,7 @@
     <div id="MESSAGE-push"></div>
     <div id="MESSAGE-publi"></div>
     <div id="DIALOG"></div>
-    <div id="keyboard-dialog" class="{% if app['phraseanet.user'].getPrefs('keyboard_infos') != '0' %}auto{% endif %}" style="display:none;" title="{% trans 'raccourci :: a propos des raccourcis claviers' %}">
+    <div id="keyboard-dialog" class="{% if app['authentication'].getUser().getPrefs('keyboard_infos') != '0' %}auto{% endif %}" style="display:none;" title="{% trans 'raccourci :: a propos des raccourcis claviers' %}">
         <div>
             <h1>{% trans 'Raccourcis claviers en cours de recherche : ' %}</h1>
             <ul>
@@ -810,7 +810,7 @@
                 <div class="box">
                     <div class="" style="float:left; width:49%;">
                         <h1>{% trans 'Mode de presentation' %}</h1>
-                        {% set mod = app['phraseanet.user'].getPrefs('view') %}
+                        {% set mod = app['authentication'].getUser().getPrefs('view') %}
                         <label class="radio inline" for="thumbs_view">
                             <input onchange="setPref('view',$(this).val())" name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio" value="thumbs" id="thumbs_view" {% if mod == 'thumbs' %}checked="checked"{% endif %}/>
                             {% trans 'reponses:: mode vignettes' %}
@@ -829,7 +829,7 @@
                     </div>
                 </div>
                 <div class="box">
-                    {% set rollover_thumbnail = app['phraseanet.user'].getPrefs('rollover_thumbnail') %}
+                    {% set rollover_thumbnail = app['authentication'].getUser().getPrefs('rollover_thumbnail') %}
                     <h1>{% trans 'Presentation de vignettes' %}</h1>
                     <label class="radio" for="rollover_caption">
                         <input onchange="setPref('rollover_thumbnail',$(this).val())" name="rollover_thumbnail" type="radio" class="radio" value="caption" id="rollover_caption" {% if rollover_thumbnail == 'caption' %}checked="checked" {% endif %}/>
@@ -841,7 +841,7 @@
                     </label>
                 </div>
                 <div class="box">
-                    {% set technical_display = app['phraseanet.user'].getPrefs('technical_display') %}
+                    {% set technical_display = app['authentication'].getUser().getPrefs('technical_display') %}
                     <h1>{% trans 'Informations techniques' %}</h1>
                     <label class="radio" for="technical_show">
                         <input onchange="setPref('technical_display',$(this).val())" name="technical_display" type="radio" class="radio" value="1" id="technical_show" {% if technical_display == '1' %}checked="checked"{% endif %}/>
@@ -857,7 +857,7 @@
                     </label>
                 </div>
                 <div class="box">
-                    {% set doctype_display = app['phraseanet.user'].getPrefs('doctype_display') %}
+                    {% set doctype_display = app['authentication'].getUser().getPrefs('doctype_display') %}
                     <h1>{% trans 'Type de documents' %}</h1>
                     <label class="checkbox" for="doctype_display_show">
                         <input onchange="setPref('doctype_display',($(this).attr('checked') ? '1' :'0'))" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
@@ -870,14 +870,14 @@
                         <h1>{% trans 'reponses:: images par pages : ' %}</h1>
                         <div class="box">
                             <div id="nperpage_slider" class="ui-corner-all" style="width:100px; display:inline-block;"></div>
-                            <input type="text" readonly style="width:35px;" value="{{app['phraseanet.user'].getPrefs('images_per_page')}}" id="nperpage_value"/>
+                            <input type="text" readonly style="width:35px;" value="{{app['authentication'].getUser().getPrefs('images_per_page')}}" id="nperpage_value"/>
                         </div>
                     </div>
                     <div style="float:right; width:49%;">
                         <h1>{% trans 'reponses:: taille des images : ' %}</h1>
                         <div class="box">
                             <div id="sizeAns_slider" class="ui-corner-all" style="width:100px;display:inline-block;"></div>
-                            <input type="hidden" value="{{app['phraseanet.user'].getPrefs('images_size')}}" id="sizeAns_value"/>
+                            <input type="hidden" value="{{app['authentication'].getUser().getPrefs('images_size')}}" id="sizeAns_value"/>
                         </div>
                     </div>
                 </div>
@@ -892,7 +892,7 @@
                 <div class="box">
                     <div class="" style="float:left;width:100%;">
                         <h1>{% trans 'Affichage au demarrage' %}</h1>
-                        {% set start_page_pref = app['phraseanet.user'].getPrefs('start_page') %}
+                        {% set start_page_pref = app['authentication'].getUser().getPrefs('start_page') %}
                         <div class="box" >
                             <select class="span2" name="start_page" onchange="start_page_selector();">
                                 <option value="LAST_QUERY" {% if start_page_pref == 'LAST_QUERY' %}selected="selected"{% endif %} >
@@ -908,7 +908,7 @@
                                     {% trans 'Aide' %}
                                 </option>
                             </select>
-                            <input type="text" class="input-small" name="start_page_value" value="{{app['phraseanet.user'].getPrefs('start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
+                            <input type="text" class="input-small" name="start_page_value" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
                             <input type="button" class="btn btn-inverse" value="{% trans 'boutton::valider' %}" onclick="set_start_page();" />
                         </div>
                     </div>
@@ -978,7 +978,7 @@
         <div class="box">
             <h1>{% trans 'Presentation de vignettes de panier' %}</h1>
             <div>
-                {% set basket_status_display = app['phraseanet.user'].getPrefs('basket_status_display') %}
+                {% set basket_status_display = app['authentication'].getUser().getPrefs('basket_status_display') %}
                 <label for="basket_status_display" class="checkbox">
                     <input onchange="setPref('basket_status_display',($(this).attr('checked') ? '1' :'0'))"
                     name="basket_status_display" type="checkbox" class="checkbox" value="1"
@@ -987,7 +987,7 @@
                 </label>
             </div>
             <div>
-                {% set basket_caption_display = app['phraseanet.user'].getPrefs('basket_caption_display') %}
+                {% set basket_caption_display = app['authentication'].getUser().getPrefs('basket_caption_display') %}
                 <label for="basket_caption_display" class="checkbox">
                     <input onchange="setPref('basket_caption_display',($(this).attr('checked') ? '1' :'0'))"
                     name="basket_caption_display" type="checkbox" class="checkbox" value="1"
@@ -996,7 +996,7 @@
                 </label>
             </div>
             <div>
-                {% set basket_title_display = app['phraseanet.user'].getPrefs('basket_title_display') %}
+                {% set basket_title_display = app['authentication'].getUser().getPrefs('basket_title_display') %}
                 <label for="basket_title_display" class="checkbox">
                     <input onchange="setPref('basket_title_display',($(this).attr('checked') ? '1' :'0'))"
                     name="basket_title_display" type="checkbox" class="checkbox" value="1"
@@ -1025,7 +1025,7 @@
     <script type="text/javascript" src="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            p4.reg_delete="{% if app['phraseanet.user'].getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";
+            p4.reg_delete="{% if app['authentication'].getUser().getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";
         });
 
         function sessionactive(){
@@ -1035,7 +1035,7 @@
                 dataType: "json",
                 data: {
                     module : 1,
-                    usr : {{app['phraseanet.user'].get_id()}}
+                    usr : {{app['authentication'].getUser().get_id()}}
                 },
                 error: function(){
                     window.setTimeout("sessionactive();", 10000);

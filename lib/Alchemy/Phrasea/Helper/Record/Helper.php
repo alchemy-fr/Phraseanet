@@ -116,7 +116,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
             $repository = $app['EM']->getRepository('\Entities\Basket');
 
             /* @var $$repository \Repositories\BasketRepository */
-            $Basket = $repository->findUserBasket($this->app, $Request->get('ssel'), $app['phraseanet.user'], false);
+            $Basket = $repository->findUserBasket($this->app, $Request->get('ssel'), $app['authentication']->getUser(), false);
 
             $this->selection->load_basket($Basket);
 
@@ -125,7 +125,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
         } elseif (trim($Request->get('story')) !== '') {
             $repository = $app['EM']->getRepository('\Entities\StoryWZ');
 
-            $storyWZ = $repository->findByUserAndId($app, $app['phraseanet.user'], $Request->get('story'));
+            $storyWZ = $repository->findByUserAndId($app, $app['authentication']->getUser(), $Request->get('story'));
 
             $this->selection->load_list(array($storyWZ->getRecord($this->app)->get_serialize_key()), $this->flatten_groupings);
         } else {

@@ -11,6 +11,12 @@
 
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
+use Alchemy\Phrasea\Core\Event\PreAuthenticate;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,6 +42,9 @@ class Oauth2 implements ControllerProviderInterface
         $authorize_func = function() use ($app) {
             $request = $app['request'];
             $oauth2_adapter = $app['oauth'];
+
+            $context = new Context(Context::CONTEXT_OAUTH2_NATIVE);
+            $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
             //Check for auth params, send error or redirect if not valid
             $params = $oauth2_adapter->getAuthorizationRequestParameters($request);
@@ -65,17 +74,23 @@ class Oauth2 implements ControllerProviderInterface
                 );
             }
 
-            if (!$app->isAuthenticated()) {
+            if (!$app['authentication']->isAuthenticated()) {
                 if ($action_login !== null) {
                     try {
-                        $auth = new \Session_Authentication_Native(
-                                $app, $request->get("login"), $request->get("password")
-                        );
+                        $usr_id = $app['auth.native']->isValid($request->get("login"), $request->get("password"), $request);
 
-                        $app->openAccount($auth);
-                    } catch (\Exception $e) {
-                        return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
+                        if (!$usr_id) {
+                            $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
+
+                            return $app->redirect($app->path('oauth2_authorize'));
+                        }
+                    } catch (RequireCaptchaException $e) {
+                        return $app->redirect($app->path('oauth2_authorize'), array('error' => 'captcha'));
+                    } catch (AccountLockedException $e) {
+                        return $app->redirect($app->path('oauth2_authorize'), array('error' => 'account-locked'));
                     }
+
+                    $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
                 } else {
                     return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
                 }
@@ -84,7 +99,7 @@ class Oauth2 implements ControllerProviderInterface
             //check if current client is already authorized by current user
             $user_auth_clients = \API_OAuth2_Application::load_authorized_app_by_user(
                     $app
-                    , $app['phraseanet.user']
+                    , $app['authentication']->getUser()
             );
 
             foreach ($user_auth_clients as $auth_client) {
@@ -93,7 +108,7 @@ class Oauth2 implements ControllerProviderInterface
                 }
             }
 
-            $account = $oauth2_adapter->updateAccount($app['phraseanet.user']->get_id());
+            $account = $oauth2_adapter->updateAccount($app['authentication']->getUser()->get_id());
 
             $params['account_id'] = $account->get_id();
 
@@ -119,7 +134,9 @@ class Oauth2 implements ControllerProviderInterface
             }
         };
 
-        $controllers->match('/authorize', $authorize_func)->method('GET|POST');
+        $controllers->match('/authorize', $authorize_func)
+            ->method('GET|POST')
+            ->bind('oauth2_authorize');
 
         /**
          *  TOKEN ENDPOINT
@@ -130,7 +147,7 @@ class Oauth2 implements ControllerProviderInterface
                 throw new HttpException(400, 'This route requires the use of the https scheme', null, array('content-type' => 'application/json'));
             }
 
-            $app['oauth']->grantAccessToken();
+            $app['oauth']->grantAccessToken($request);
             ob_flush();
             flush();
 

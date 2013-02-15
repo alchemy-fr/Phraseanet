@@ -33,7 +33,7 @@
                     <h1 id="namePhr">{{home_title}}</h1>
                 </div>
 
-                {% if not app.isAuthenticated() %}
+                {% if not app['authentication'].isAuthenticated() %}
                     <div id="content-box" class="span6 offset3">
                         <form id="login-form" class="form-vertical" method="post">
                             {% for key,value in auth.getParams %}
@@ -56,8 +56,8 @@
                         </p>
                     </div>
                 {% else %}
-                    {% if app['phraseanet.user'] is not none %}
-                        {% set username = '<b>' ~ app['phraseanet.user'].get_display_name() ~ '</b>' %}
+                    {% if app['authentication'].getUser() is not none %}
+                        {% set username = '<b>' ~ app['authentication'].getUser().get_display_name() ~ '</b>' %}
                         <div id="hello-box" class="span6 offset3">
                             <p class="login_hello">
                                 {% trans %}

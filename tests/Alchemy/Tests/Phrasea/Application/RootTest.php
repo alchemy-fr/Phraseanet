@@ -48,12 +48,12 @@ class ApplicationRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testNoPersistentCookie()
     {
         $app = self::$DI['app'];
-        $app->closeAccount();
+        $app['authentication']->closeAccount();
 
         $boolean = false;
 
         $app->get('/unit-test-route', function(Application $app) use (&$boolean) {
-            $boolean = $app->isAuthenticated();
+            $boolean = $app['authentication']->isAuthenticated();
 
             return new Response();
         });
@@ -67,7 +67,7 @@ class ApplicationRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPersistentCookie()
     {
         $app = self::$DI['app'];
-        $app->closeAccount();
+        $app['authentication']->closeAccount();
 
         $browser = $this->getMockBuilder('\Browser')
             ->disableOriginalConstructor()
@@ -102,7 +102,7 @@ class ApplicationRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $boolean = false;
 
         $app->get('/unit-test-route', function(Application $app) use (&$boolean) {
-            $boolean = $app->isAuthenticated();
+            $boolean = $app['authentication']->isAuthenticated();
 
             return new Response();
         });

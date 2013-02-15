@@ -465,21 +465,21 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
 
         foreach ($bases as $base_id) {
-            $stmt->execute(array(':usr_id'  => self::$DI['app']['phraseanet.user']->get_id(), ':base_id' => $base_id));
+            $stmt->execute(array(':usr_id'  => self::$DI['app']['authentication']->getUser()->get_id(), ':base_id' => $base_id));
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->assertEquals(1, $row['actif']);
 
             $this->assertTrue(self::$DI['user']->ACL()->has_access_to_base($base_id));
             self::$DI['user']->ACL()->update_rights_to_base($base_id, array('actif' => false));
 
-            $stmt->execute(array(':usr_id'  => self::$DI['app']['phraseanet.user']->get_id(), ':base_id' => $base_id));
+            $stmt->execute(array(':usr_id'  => self::$DI['app']['authentication']->getUser()->get_id(), ':base_id' => $base_id));
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->assertEquals(0, $row['actif']);
 
             $this->assertFalse(self::$DI['user']->ACL()->has_access_to_base($base_id));
             self::$DI['user']->ACL()->update_rights_to_base($base_id, array('actif' => true));
 
-            $stmt->execute(array(':usr_id'  => self::$DI['app']['phraseanet.user']->get_id(), ':base_id' => $base_id));
+            $stmt->execute(array(':usr_id'  => self::$DI['app']['authentication']->getUser()->get_id(), ':base_id' => $base_id));
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->assertEquals(1, $row['actif']);
 
