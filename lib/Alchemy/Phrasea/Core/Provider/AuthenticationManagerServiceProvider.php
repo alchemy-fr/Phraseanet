@@ -11,15 +11,16 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Authentication\Manager;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Authentication\Manager;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Authentication\Provider\Facebook;
-use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
 use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
+use Alchemy\Phrasea\Authentication\SuggestionFinder;
+use Alchemy\Phrasea\Authentication\Token\TokenValidator;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -30,6 +31,11 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         $app['authentication'] = $app->share(function (Application $app){
             return new Authenticator($app, $app['browser'], $app['session'], $app['EM'], $app['phraseanet.registry']);
         });
+
+        $app['authentication.token-validator'] = $app->share(function (Application $app){
+            return new TokenValidator($app);
+        });
+
 
 //        $app['authentication.suggestion-finder'] = $app->share(function (Application $app) {
 //            return new SuggestionFinder($app);
