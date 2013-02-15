@@ -105,7 +105,7 @@ class Activity implements ControllerProviderInterface
             $report = $activity->getConnexionBase(false, $request->request->get('on', 'user'));
 
             return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
                     'result'      => isset($report['report']) ? $report['report'] : $report,
                     'is_infouser' => false,
                     'is_nav'      => false,
@@ -147,9 +147,12 @@ class Activity implements ControllerProviderInterface
         $activity->setConfig(false);
 
         //set Limit
-        if ($activity->getEnableLimit()) {
-            ('' !== $page = $request->request->get('page', '')) &&  ('' !== $limit = $request->request->get('limit', '')) ?
-                    $activity->setLimit($page, $limit) : $activity->setLimit(false, false);
+        if ($activity->getEnableLimit()
+                && ('' !== $page = $request->request->get('page', ''))
+                && ('' !== $limit = $request->request->get('limit', ''))) {
+            $activity->setLimit($page, $limit);
+        } else {
+            $activity->setLimit(false, false);
         }
 
         $report = $activity->getDetailDownload($conf, $request->request->get('on'));
@@ -166,7 +169,7 @@ class Activity implements ControllerProviderInterface
             return $app->json(array('rs' => $csv));
         } else {
             return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
                     'result'      => isset($report['report']) ? $report['report'] : $report,
                     'is_infouser' => false,
                     'is_nav'      => false,
@@ -224,7 +227,7 @@ class Activity implements ControllerProviderInterface
             $report = $activity->getTopQuestion($conf);
 
             return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
                     'result'      => isset($report['report']) ? $report['report'] : $report,
                     'is_infouser' => false,
                     'is_nav'      => false,
@@ -262,9 +265,12 @@ class Activity implements ControllerProviderInterface
         );
 
         //set Limit
-        if ($activity->getEnableLimit()) {
-            ('' !== $page = $request->request->get('page', '')) &&  ('' !== $limit = $request->request->get('limit', '')) ?
-                    $activity->setLimit($page, $limit) : $activity->setLimit(false, false);
+        if ($activity->getEnableLimit()
+                && ('' !== $page = $request->request->get('page', ''))
+                && ('' !== $limit = $request->request->get('limit', ''))) {
+            $activity->setLimit($page, $limit);
+        } else {
+            $activity->setLimit(false, false);
         }
 
         $activity->setConfig(false);
@@ -286,7 +292,7 @@ class Activity implements ControllerProviderInterface
             $report = $activity->getTopQuestion($conf, true);
 
             return $app->json(array(
-                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+                'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
                     'result'      => isset($report['report']) ? $report['report'] : $report,
                     'is_infouser' => false,
                     'is_nav'      => false,
@@ -334,7 +340,7 @@ class Activity implements ControllerProviderInterface
              return $app->json(array('rs' => $csv));
          } else {
              return $app->json(array(
-                 'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+                 'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
                      'result'      => isset($report['report']) ? $report['report'] : $report,
                      'is_infouser' => false,
                      'is_nav'      => false,
@@ -373,9 +379,12 @@ class Activity implements ControllerProviderInterface
         );
 
         //set Limit
-        if ($activity->getEnableLimit()) {
-            ('' !== $page = $request->request->get('page', '')) &&  ('' !== $limit = $request->request->get('limit', '')) ?
-                    $activity->setLimit($page, $limit) : $activity->setLimit(false, false);
+        if ($activity->getEnableLimit()
+                && ('' !== $page = $request->request->get('page', ''))
+                && ('' !== $limit = $request->request->get('limit', ''))) {
+            $activity->setLimit($page, $limit);
+        } else {
+            $activity->setLimit(false, false);
         }
 
         $activity->setConfig(false);
@@ -395,7 +404,7 @@ class Activity implements ControllerProviderInterface
              return $app->json(array('rs' => $csv));
          } else {
              return $app->json(array(
-                 'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+                 'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
                      'result'      => isset($report['report']) ? $report['report'] : $report,
                      'is_infouser' => false,
                      'is_nav'      => false,
@@ -419,12 +428,12 @@ class Activity implements ControllerProviderInterface
     public function doReportPushedDocuments(Application $app, Request $request)
     {
         $conf = array(
-            'user'      => array("", 1, 0, 1, 1),
+            'user'      => array('', 1, 0, 1, 1),
             'getter'    => array("Destinataire", 1, 0, 1, 1),
-            'date'      => array("", 1, 0, 1, 1),
-            'record_id' => array("", 1, 1, 1, 1),
-            'file'      => array("", 1, 0, 1, 1),
-            'mime'      => array("", 1, 0, 1, 1),
+            'date'      => array('', 1, 0, 1, 1),
+            'record_id' => array('', 1, 1, 1, 1),
+            'file'      => array('', 1, 0, 1, 1),
+            'mime'      => array('', 1, 0, 1, 1),
         );
 
         $activity = new \module_report_push(
@@ -485,11 +494,11 @@ class Activity implements ControllerProviderInterface
     public function doReportAddedDocuments(Application $app, Request $request)
     {
         $conf = array(
-            'user'      => array("", 1, 0, 1, 1),
-            'date'      => array("", 1, 0, 1, 1),
-            'record_id' => array("", 1, 1, 1, 1),
-            'file'      => array("", 1, 0, 1, 1),
-            'mime'      => array("", 1, 0, 1, 1),
+            'user'      => array('', 1, 0, 1, 1),
+            'date'      => array('', 1, 0, 1, 1),
+            'record_id' => array('', 1, 1, 1, 1),
+            'file'      => array('', 1, 0, 1, 1),
+            'mime'      => array('', 1, 0, 1, 1),
         );
 
         $activity = new \module_report_add(
@@ -550,11 +559,11 @@ class Activity implements ControllerProviderInterface
     public function doReportEditedDocuments(Application $app, Request $request)
     {
         $conf = array(
-            'user'      => array("", 1, 0, 1, 1),
-            'date'      => array("", 1, 0, 1, 1),
-            'record_id' => array("", 1, 1, 1, 1),
-            'file'      => array("", 1, 0, 1, 1),
-            'mime'      => array("", 1, 0, 1, 1),
+            'user'      => array('', 1, 0, 1, 1),
+            'date'      => array('', 1, 0, 1, 1),
+            'record_id' => array('', 1, 1, 1, 1),
+            'file'      => array('', 1, 0, 1, 1),
+            'mime'      => array('', 1, 0, 1, 1),
         );
 
         $activity = new \module_report_edit(
@@ -615,12 +624,12 @@ class Activity implements ControllerProviderInterface
     public function doReportValidatedDocuments(Application $app, Request $request)
     {
         $conf = array(
-            'user'      => array("", 1, 0, 1, 1),
+            'user'      => array('', 1, 0, 1, 1),
             'getter'    => array("Destinataire", 1, 0, 1, 1),
-            'date'      => array("", 1, 0, 1, 1),
-            'record_id' => array("", 1, 1, 1, 1),
-            'file'      => array("", 1, 0, 1, 1),
-            'mime'      => array("", 1, 0, 1, 1),
+            'date'      => array('', 1, 0, 1, 1),
+            'record_id' => array('', 1, 1, 1, 1),
+            'file'      => array('', 1, 0, 1, 1),
+            'mime'      => array('', 1, 0, 1, 1),
         );
 
         $activity = new \module_report_validate(
@@ -775,7 +784,7 @@ class Activity implements ControllerProviderInterface
             }
 
             return $app->json(array(
-                'rs'          => $app['twig']->render('report/ajax_data_content.html.twig', array(
+                'rs' => $app['twig']->render('report/ajax_data_content.html.twig', array(
                     'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                     'is_infouser' => false,
                     'is_nav'      => false,
@@ -789,9 +798,12 @@ class Activity implements ControllerProviderInterface
         }
 
         //set Limit
-        if ($report->getEnableLimit()) {
-            ('' !== $page = $request->request->get('page', '')) &&  ('' !== $limit = $request->request->get('limit', '')) ?
-                    $report->setLimit($page, $limit) : $report->setLimit(false, false);
+        if ($report->getEnableLimit()
+                && ('' !== $page = $request->request->get('page', ''))
+                && ('' !== $limit = $request->request->get('limit', ''))) {
+            $report->setLimit($page, $limit);
+        } else {
+            $report->setLimit(false, false);
         }
 
         //time to build our report

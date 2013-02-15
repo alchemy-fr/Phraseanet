@@ -107,8 +107,8 @@ class Informations implements ControllerProviderInterface
                 $request->request->get('collection'
             ));
             $conf_array = $conf['config_cnx'];
-            $title = _("report:: historique des connexions");
-        } elseif ($from == "USR" || $from == "GEN") {
+            $title = _('report:: historique des connexions');
+        } elseif ($from == 'USR' || $from == 'GEN') {
             $report = new \module_report_download(
                 $app,
                 $request->request->get('dmin'),
@@ -117,8 +117,8 @@ class Informations implements ControllerProviderInterface
                 $request->request->get('collection')
             );
             $conf_array = $conf['config_dl'];
-            $title = _("report:: historique des telechargements");
-        } elseif ($from == "ASK") {
+            $title = _('report:: historique des telechargements');
+        } elseif ($from == 'ASK') {
             $report = new \module_report_question(
                 $app,
                 $request->request->get('dmin'),
@@ -127,7 +127,7 @@ class Informations implements ControllerProviderInterface
                 $request->request->get('collection')
             );
             $conf_array = $conf['config_ask'];
-            $title = _("report:: historique des questions");
+            $title = _('report:: historique des questions');
         }
 
         if ($report) {
@@ -149,7 +149,7 @@ class Informations implements ControllerProviderInterface
                     return $app->json(array('diag'  => $app['twig']->render('report/colFilter.html.twig', array(
                         'result' => $report->colFilter($field),
                         'field'  => $field
-                    )), "title"  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)));
+                    )), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)));
                 }
 
                 if ($field === $value) {
@@ -318,7 +318,7 @@ class Informations implements ControllerProviderInterface
         //format conf according user preferences
         if ('' !== $columnsList = $request->request->get('list_column', '')) {
             $new_conf = $config_dl;
-            $columns = explode(",", $columnsList);
+            $columns = explode(',', $columnsList);
 
             foreach (array_keys($config_dl) as $col) {
                 if (!in_array($col, $columns)) {
@@ -407,7 +407,7 @@ class Informations implements ControllerProviderInterface
                     return $app->json(array('diag'  => $app['twig']->render('report/colFilter.html.twig', array(
                         'result' => $download->colFilter($field),
                         'field'  => $field
-                    )), "title"  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)));
+                    )), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)));
                 }
 
                 if ($field === $value) {
@@ -421,7 +421,7 @@ class Informations implements ControllerProviderInterface
 
             $download->setFilter($filter->getTabFilter());
             $download->setOrder('ddate', 'DESC');
-            $download->setTitle(_("report:: historique des telechargements"));
+            $download->setTitle(_('report:: historique des telechargements'));
             $download->setConfig(false);
 
             $reportArray = $download->buildReport($config_dl);
@@ -454,7 +454,7 @@ class Informations implements ControllerProviderInterface
             ));
         }
 
-        if ($app['phraseanet.registry']->get('GV_anonymousReport') == false && $from !== 'DOC' && $from !== 'DASH' && $from !== "GEN" && $from !== "PUSHDOC") {
+        if ($app['phraseanet.registry']->get('GV_anonymousReport') == false && $from !== 'DOC' && $from !== 'DASH' && $from !== 'GEN' && $from !== 'PUSHDOC') {
             $conf = array(
                 'identifiant'   => array(_('report:: identifiant'), 0, 0, 0, 0),
                 'nom'           => array(_('report:: nom'), 0, 0, 0, 0),
@@ -471,7 +471,7 @@ class Informations implements ControllerProviderInterface
                 $request->request->get('collection')
             );
 
-            $info->setPeriode("");
+            $info->setPeriode('');
             $info->setConfig(false);
             $info->setTitle(_('report:: utilisateur'));
 

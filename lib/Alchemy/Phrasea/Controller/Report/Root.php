@@ -76,8 +76,8 @@ class Root implements ControllerProviderInterface
                 'ajax_dash'   => true,
                 'dashboard'   => $dashboard,
                 'home_title'  => $app['phraseanet.registry']->get('GV_homeTitle'),
-                'module'      => "report",
-                "module_name" => "Report",
+                'module'      => 'report',
+                'module_name' => 'Report',
                 'anonymous'   => $app['phraseanet.registry']->get('GV_anonymousReport'),
                 'g_anal'      => $app['phraseanet.registry']->get('GV_googleAnalytics'),
                 'ajax'        => false,
@@ -94,7 +94,7 @@ class Root implements ControllerProviderInterface
 
         $dashboard->execute();
 
-        return $app->json(array('html' => $app['twig']->render("report/ajax_dashboard_content_child.html.twig", array(
+        return $app->json(array('html' => $app['twig']->render('report/ajax_dashboard_content_child.html.twig', array(
             'dashboard' => $dashboard
         ))));
     }
@@ -116,7 +116,7 @@ class Root implements ControllerProviderInterface
         }
 
         if ('' === $dmax = $request->request->get('dmax', '')) {
-            $dmax = date("d") . "-" . date("m") . "-" . date("Y");
+            $dmax = date('d') . '-' . date('m') . '-' . date('Y');
         }
 
         $dmin = \DateTime::createFromFormat('d-m-Y H:i:s', sprintf('%s 00:00:00', $dmin));
@@ -127,7 +127,7 @@ class Root implements ControllerProviderInterface
         $liste = $id_sbas = '';
         $i = 0;
         foreach (array_fill_keys($popbases, 0) as $key => $val) {
-            $exp = explode("_", $key);
+            $exp = explode('_', $key);
             if ($exp[0] != $id_sbas && $i != 0) {
                 $selection[$id_sbas]['liste'] = $liste;
                 $liste = '';
@@ -487,7 +487,7 @@ class Root implements ControllerProviderInterface
          }
 
          return $app->json(array(
-            'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+            'rs' =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
                 'result'      => isset($report['report']) ? $report['report'] : $report,
                 'is_infouser' => false,
                 'is_nav'      => true,
@@ -526,7 +526,7 @@ class Root implements ControllerProviderInterface
         //format conf according user preferences
         if ('' !== $columnsList = $request->request->get('list_column', '')) {
             $new_conf = $conf;
-            $columns = explode(",", $columnsList);
+            $columns = explode(',', $columnsList);
 
             foreach (array_keys($conf) as $col) {
                 if (!in_array($col, $columns)) {
@@ -541,7 +541,7 @@ class Root implements ControllerProviderInterface
         if ($request->request->get('conf') == 'on') {
             return $app->json(array('liste' => $app['twig']->render('report/listColumn.html.twig', array(
                 'conf'  => $base_conf
-            )), "title" => _("configuration")));
+            )), 'title' => _('configuration')));
         }
 
         //set order
@@ -568,7 +568,7 @@ class Root implements ControllerProviderInterface
                 return $app->json(array('diag'  => $app['twig']->render('report/colFilter.html.twig', array(
                     'result' => $report->colFilter($field),
                     'field'  => $field
-                )), "title"  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)));
+                )), 'title'  => sprintf(_('filtrer les resultats sur la colonne %s'), $field)));
             }
 
             if ($field === $value) {
@@ -604,7 +604,7 @@ class Root implements ControllerProviderInterface
             }
 
             return $app->json(array(
-                'rs'          => $app['twig']->render('report/ajax_data_content.html.twig', array(
+                'rs' => $app['twig']->render('report/ajax_data_content.html.twig', array(
                     'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                     'is_infouser' => false,
                     'is_nav'      => false,
@@ -618,9 +618,12 @@ class Root implements ControllerProviderInterface
         }
 
         //set Limit
-        if ($report->getEnableLimit()) {
-            ('' !== $page = $request->request->get('page', '')) &&  ('' !== $limit = $request->request->get('limit', '')) ?
-                    $report->setLimit($page, $limit) : $report->setLimit(false, false);
+        if ($report->getEnableLimit()
+                && ('' !== $page = $request->request->get('page', ''))
+                && ('' !== $limit = $request->request->get('limit', ''))) {
+            $report->setLimit($page, $limit);
+        } else {
+            $report->setLimit(false, false);
         }
 
         //time to build our report
