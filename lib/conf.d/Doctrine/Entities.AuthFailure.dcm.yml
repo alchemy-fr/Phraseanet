@@ -1,6 +1,7 @@
 Entities\AuthFailure:
   type: entity
-  table: AuthFailuress
+  repositoryClass: Repositories\AuthFailureRepository
+  table: AuthFailures
   id:
     id:
       type: integer

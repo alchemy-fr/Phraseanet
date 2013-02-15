@@ -2,6 +2,7 @@
 
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -33,7 +34,7 @@ class UsrAuthProvider
      * @var \DateTime
      */
     private $created;
-    
+
     /**
      * @var string
      */
@@ -71,6 +72,11 @@ class UsrAuthProvider
     public function getUsrId()
     {
         return $this->usr_id;
+    }
+
+    public function getUser(Application $app)
+    {
+        return \User_Adapter::getInstance($this->usr_id, $app);
     }
 
     /**

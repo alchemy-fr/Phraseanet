@@ -5,8 +5,7 @@ Entities\UsrAuthProvider:
   uniqueConstraints:
     unique_provider_per_user:
       columns: [ usr_id, provider ]
-  indexes:
-    provider_distant_id:
+    provider_ids:
       columns: [ provider, distant_id ]
   id:
     id:
@@ -18,10 +17,10 @@ Entities\UsrAuthProvider:
       type: integer
     provider:
       type: string
-      length: 64
+      length: 32
     distant_id:
       type: string
-      length: 256
+      length: 192
     updated:
       type: datetime
       gedmo:
