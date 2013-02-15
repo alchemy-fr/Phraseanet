@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Browser;
 use Doctrine\ORM\EntityManager;
 use Entities\Session;
@@ -70,6 +71,31 @@ class Authenticator
         foreach ($user->ACL()->get_granted_sbas() as $databox) {
             \cache_databox::insertClient($this->app, $databox);
         }
+        $this->reinitUser();
+
+        return $session;
+    }
+
+    public function refreshAccount(Session $session)
+    {
+        if (!$this->em->getRepository('Entities\Session')->findOneBy(array('id' => $session->getId()))) {
+            throw new RuntimeException('Unable to refresh the session, it does not exist anymore');
+        }
+
+        try {
+            $user = \User_Adapter::getInstance($session->getUsrId(), $this->app);
+        } catch (\Exception_NotFound $e) {
+            throw new RuntimeException('Unable to refresh the session', $e->getCode(), $e);
+        }
+
+        $this->session->clear();
+        $this->session->set('usr_id', $session->getUsrId());
+        $this->session->set('session_id', $session->getId());
+
+        foreach ($user->ACL()->get_granted_sbas() as $databox) {
+            \cache_databox::insertClient($this->app, $databox);
+        }
+
         $this->reinitUser();
 
         return $session;

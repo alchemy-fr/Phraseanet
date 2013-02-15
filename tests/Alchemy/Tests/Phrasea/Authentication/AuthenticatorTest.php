@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Exception\RuntimeException;
 
 class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
 {
@@ -114,6 +115,105 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertInstanceOf('Entities\Session', $phsession);
         $this->assertEquals($sessionId, $session->get('session_id'));
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Authentication\Authenticator::refreshAccount
+     */
+    public function testRefreshAccount()
+    {
+        $app = new Application();
+
+        $user = self::$DI['user'];
+
+        $app['browser'] = $browser = $this->getBrowserMock();
+        $app['session'] = $SFsession = $this->getSessionMock();
+        $app['EM'] = $em = $this->getEntityManagerMock();
+        $app['phraseanet.registry'] = $registry = $this->getRegistryMock();
+
+        $app['phraseanet.registry']->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue('random-data' . mt_rand()));
+
+        $usrId = $user->get_id();
+        $sessionId = 4224242;
+
+        $session = new \Entities\Session();
+        $session->setUsrId($usrId);
+
+        $ref = new \ReflectionObject($session);
+        $prop = $ref->getProperty('id');
+        $prop->setAccessible(true);
+        $prop->setValue($session, $sessionId);
+
+        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repo->expects($this->once())
+            ->method('findOneBy')
+            ->with($this->equalTo(array('id' => $session->getId())))
+            ->will($this->returnValue($session));
+
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->with($this->equalTo('Entities\Session'))
+            ->will($this->returnValue($repo));
+
+        $authenticator = new Authenticator($app, $browser, $SFsession, $em, $registry);
+        $this->assertEquals($session, $authenticator->refreshAccount($session));
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Authentication\Authenticator::refreshAccount
+     */
+    public function testRefreshAccountWithWrongSessionShouldThrowException()
+    {
+        $app = new Application();
+
+        $user = self::$DI['user'];
+
+        $app['browser'] = $browser = $this->getBrowserMock();
+        $app['session'] = $SFsession = $this->getSessionMock();
+        $app['EM'] = $em = $this->getEntityManagerMock();
+        $app['phraseanet.registry'] = $registry = $this->getRegistryMock();
+
+        $app['phraseanet.registry']->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue('random-data' . mt_rand()));
+
+        $usrId = $user->get_id();
+        $sessionId = 4224242;
+
+        $session = new \Entities\Session();
+        $session->setUsrId($usrId);
+
+        $ref = new \ReflectionObject($session);
+        $prop = $ref->getProperty('id');
+        $prop->setAccessible(true);
+        $prop->setValue($session, $sessionId);
+
+        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $repo->expects($this->once())
+            ->method('findOneBy')
+            ->with($this->equalTo(array('id' => $session->getId())))
+            ->will($this->returnValue(null));
+
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->with($this->equalTo('Entities\Session'))
+            ->will($this->returnValue($repo));
+
+        $authenticator = new Authenticator($app, $browser, $SFsession, $em, $registry);
+        try {
+            $authenticator->refreshAccount($session);
+            $this->fail('Should have raised an exception');
+        } catch (RuntimeException $e) {
+            $this->assertEquals('Unable to refresh the session, it does not exist anymore', $e->getMessage());
+        }
     }
 
     /**
