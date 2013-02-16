@@ -515,6 +515,30 @@ class Application extends SilexApplication
     }
 
     /**
+     * Adds a flash message for type.
+     *
+     * @param string $type
+     * @param string $message
+     */
+    public function addFlash($type, $message)
+    {
+        return $this['session']->getFlashBag()->add($type, $message);
+    }
+
+    /**
+     * Gets and clears flash from the stack.
+     *
+     * @param string $type
+     * @param array  $default Default value if $type does not exist.
+     *
+     * @return array
+     */
+    public function getFlash($type, array $default = array())
+    {
+        return $this['session']->getFlashBag()->get($type, $default);
+    }
+
+    /**
      * Tell if current a session is open
      *
      * @return boolean
