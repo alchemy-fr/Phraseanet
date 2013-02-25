@@ -1,0 +1,813 @@
+/*
+ * HTML5 Boilerplate
+ *
+ * What follows is the result of much research on cross-browser styling.
+ * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
+ * Kroc Camen, and the H5BP dev community and team.
+ */
+
+/* ==========================================================================
+   Base styles: opinionated defaults
+   ========================================================================== */
+
+/*
+ * Remove text-shadow in selection highlight: h5bp.com/i
+ * These selection declarations have to be separate.
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+/*
+ * A better looking default horizontal rule
+ */
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+/*
+ * Remove the gap between images and the bottom of their containers: h5bp.com/i/440
+ */
+
+img {
+    vertical-align: middle;
+}
+
+/*
+ * Remove default fieldset styles.
+ */
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/*
+ * Allow only vertical resizing of textareas.
+ */
+
+textarea {
+    resize: vertical;
+}
+
+/* ==========================================================================
+   Chrome Frame prompt
+   ========================================================================== */
+
+.chromeframe {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+html, body {
+    background: @background;
+    color: @textColor;
+    -webkit-font-smoothing: antialiased;
+    text-shadow: 0 0 1px rgba(0,0,0,0.3);
+}
+
+.close {
+    color: @white;
+    opacity: 1;
+}
+
+.alert {
+    padding: 0px;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+    line-height: 16px;
+    @glow: 0 1px 7px rgba(0, 0, 0, 1);
+    .glow(@glow);
+}
+
+
+.alert .alert-block-close {
+    width:45px;
+    text-align: center;
+    font-size:36px
+}
+
+form input.ng-invalid.ng-dirty {
+  background-color: #FA787E;
+}
+
+form input.ng-valid.ng-dirty {
+  background-color: #78FA89;
+}
+
+.text-error {
+    color: @colorError;
+}
+
+help-block-error {
+    border: 1px solid @colorError;
+}
+
+.alert .alert-block-logo {
+    width: 45px;
+    vertical-align: top;
+    text-align: center;
+}
+
+.alert .alert-block-close a:hover {
+    text-decoration: none;
+}
+
+.alert.alert-success .alert-block-content {
+    border-right: 1px solid lighten(@successBackground, 10%);
+}
+.alert.alert-success .alert-block-close {
+    border-left: 1px solid darken(@successBackground, 20%);
+}
+
+.alert.alert-error .alert-block-content {
+    border-right: 1px solid lighten(@errorBackground, 10%);
+}
+
+.alert.alert-error .alert-block-close {
+    border-left: 1px solid darken(@errorBackground, 20%);
+}
+
+.alert.alert-info .alert-block-content {
+    border-right: 1px solid lighten(@infoBackground, 10%);
+}
+.alert.alert-info .alert-block-close {
+    border-left: 1px solid darken(@infoBackground, 20%);
+}
+
+.alert.alert-warning .alert-block-content {
+    border-right: 1px solid lighten(@warningBackground, 10%);
+}
+.alert.alert-warning .alert-block-close {
+    border-left: 1px solid darken(@warningBackground, 20%);
+}
+
+.alert .close {
+    position: static;
+}
+
+.alert table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.alert table td {
+   padding: 9px 5px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+.input-table textarea:hover,
+.input-table input:hover,
+.input-table textarea:active,
+.input-table input:active,
+.input-table textarea:focus,
+.input-table input:focus {
+  outline: none;
+  border: none !important;
+  box-shadow: none !important;
+  box-radius: @inputBorderRadius !important;
+}
+
+.btn {
+    @glow: inset 0 1px 0 rgba(255, 255, 255, 0.2),  0 1px 7px rgba(0, 0, 0, 1);
+    .glow(@glow);
+    .border-radius(@borderRadiusSmall);
+    text-shadow : 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.btn-success {
+    .gradient (@btnSuccessBackground, 0.7);
+}
+
+.btn-info {
+    .gradient (@btnInfoBackground, 0.7);
+}
+
+.btn-success:hover {
+    .gradient (@btnSuccessBackgroundHighlight, 0.7);
+}
+
+.btn-info:hover {
+    .gradient (@btnInfoBackgroundHighlight, 0.7);
+}
+
+.well-large {
+    padding: 20px;
+}
+
+.btn-trigger {
+    padding: 7px 12px;
+    min-width: 100px;
+}
+
+.facebook-badge {
+    background-color: @colorFacebook;
+    .gradient(@colorFacebook, 0.8);
+}
+
+.google-plus-badge {
+    background-color: @colorGooglePlus;
+    .gradient(@colorGooglePlus, 0.8);
+}
+
+.input-table input {
+    border: @inputBorder !important;
+    background-color: @inputBackground !important;
+    color: @textColor  !important;
+    margin: 0 !important;
+}
+
+.match-hint {
+    font-size: 13px;
+}
+
+.input-block-level {
+    min-height: 36px;
+}
+
+.show-grid [class*="span"] {
+    background-color: #eee;
+    text-align: center;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    min-height: 40px;
+    line-height: 40px;
+    color: @black;
+}
+
+#recaptcha_widget .btn-toolbar {
+    width: 300px;
+}
+
+#recaptcha_widget .btn-toolbar .btn {
+    min-width: 20%;
+}
+
+#recaptcha_widget table tr td {
+    text-align: center;
+}
+
+#recaptcha_image {
+    width: 100% !important;
+}
+
+#recaptcha_image img {
+    width: 100% !important;
+}
+
+.one-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-menu {
+    border-radius: 0px;
+    min-width: 60px;
+    .glow(@dropDownLanguageGlow);
+}
+
+div#authentication-sidebar-language button {
+    background-color: @backgroundSideBar;
+    color: @white;
+    border-radius: 0px;
+    text-shadow: none;
+    border-left: 1px solid @inputOutsideBorder;
+    background-image: none;
+    font-size: @fontSizeSmall;
+    padding: 0 12px;
+}
+
+div#authentication-sidebar-language li a {
+    font-size: @fontSizeSmall
+}
+
+div#authentication-sidebar-language .language {
+    margin-right: 8px;
+}
+
+.left-content h1 {
+    font-size: @fontSizeLarge;
+}
+
+div#authentication-sidebar-language .caret {
+   margin:9px 0px  0px 7px;
+   border-top-color: @languageCaretColor;
+}
+
+a.forget-password-link {
+    font-size: @fontSizeSmall;
+    text-decoration: underline;
+}
+
+label[for=remember-me]{
+    padding-top: 5px;
+}
+
+.logo, .header {
+    padding: 10px 0;
+}
+
+.left-content .logo img {
+    max-height: 100px;
+}
+
+button[type=submit] {
+    margin: 30px 0px 0px 0px;
+    width: 100%;
+}
+
+div.authentication-sidebar {
+    min-height: 550px;
+    height: 100%;
+    background: @backgroundSideBar;
+    border-radius: 0;
+    .glow(@sideBarGlow);
+}
+
+.authentication-sidebar .text-title {
+    margin: 15px 0;
+}
+
+div.sidebar-block {
+    border-radius :0px;
+    border-bottom: 1px solid @sideBarBlockBorderColorBottom;
+    border-top: 1px solid @sideBarBlockBorderColorTop;
+}
+
+ul.provider-list li {
+    padding: 0;
+}
+
+div.sidebar-block:first-child {
+    border-top: none;
+}
+
+div.sidebar-block:last-child {
+    margin-bottom: 20px;
+    border-bottom: none;
+}
+
+span.authentication-no-account {
+    padding: 4px 12px;
+}
+
+.authentication-sidebar form .input-prepend {
+    margin-left: 0px;
+}
+
+.authentication-sidebar form input {
+    padding: 8px 5px;
+}
+
+.authentication-sidebar form label {
+    margin-top: 15px;
+}
+
+.authentication-sidebar form .switch label {
+    margin-top: 0;
+}
+
+.authentication-sidebar .switch-control {
+    margin-top: 15px;
+}
+
+.authentication-sidebar form table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.authentication-sidebar form table tr {
+    border:1px solid @inputOutsideBorder;
+}
+
+.authentication-sidebar form table td.icon {
+    width: 20px;
+    padding-left: 8px;
+}
+
+.btn-flat {
+    filter:progid:DXImageTransform.Microsoft.Gradient(enabled='false');
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-image:none;
+    border:0;
+    text-shadow: none;
+}
+
+.sidebar-hint {
+    margin: 10px 0;
+    font-size: @fontSizeSmall;
+}
+
+.text-title {
+    font-size: 36px;
+    line-height: 36px;
+}
+
+#forgot-password {
+    margin-top: 50px;
+}
+
+.input-table.input-table-error tr {
+    border: 1px solid @colorError;
+}
+
+.input-table.input-table-error td {
+    color: @colorError;
+}
+
+.input-table.input-table-error input {
+    color: @colorError;
+}
+
+.input-table.input-table-error input::-webkit-input-placeholder {
+  color: @colorError;
+}
+.input-table.input-table-error input:-moz-placeholder {
+  color: @colorError;
+}
+.input-table.input-table-error input:-ms-input-placeholder {
+  color: @colorError;
+}
+
+.input-table.input-table-success tr {
+    border: 1px solid @colorSuccess;
+}
+
+.input-table.input-table-success td {
+    color: @colorSuccess;
+}
+
+.input-table.input-table-success input {
+    color: @colorSuccess;
+}
+
+.input-table.input-table-success input::-webkit-input-placeholder {
+  color: @colorSuccess;
+}
+.input-table.input-table-success input:-moz-placeholder {
+  color: @colorSuccess;
+}
+.input-table.input-table-success input:-ms-input-placeholder {
+  color: @colorSuccess;
+}
+
+.input-table td {
+    background-color: @inputBackground;
+}
+
+form[name=forgot_password] {
+    margin-top: 50px;
+}
+
+form[name=loginForm] label,form[name=register] label {
+    font-size: @fontSizeLarge;
+}
+
+form[name=loginForm] label[for=remember-me],
+form[name=register] label[for=terms-of-use] {
+    font-size: @fontSizeSmall;
+}
+
+
+
+.provider-badge table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+form[name=loginForm] label[for=remember-me] input,
+form[name=register] label[for=terms-of-use] input{
+    margin-right: 5px !important;
+}
+
+div.cgu-content {
+    margin: 50px 0;
+}
+
+.alert table {
+    border-collapse: separate;
+}
+
+.left-content .content {
+    border-radius: 0;
+    min-height: 550px;
+    height: 100%;
+}
+
+div.footer {
+    padding: 10px 0;
+}
+
+ul.footer-list {
+    margin: 0;
+    padding: 0;
+    height: 16px;
+}
+
+ul.footer-list li {
+    border-left: 1px solid @textColor;
+    padding: 0 10px;
+    line-height: 16px;
+}
+
+ul.footer-list li.item-first{
+    border: none;
+    padding: 0 10px 0 0;
+}
+
+.authentication-sidebar form .field-error {
+    position: relative;
+    display: block;
+    margin: 15px;
+    color: @white;
+    max-width: none;
+    background-color: @colorError;
+    color: @white;
+    border: 1px solid lighten(@colorError, 10%);
+    .border-radius(@borderRadiusSmall);
+    line-height: 16px;
+}
+
+.authentication-sidebar form .field-error table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.authentication-sidebar form .field-error table tr {
+    border: none;
+}
+
+.authentication-sidebar form .field-error td {
+    vertical-align: middle;
+}
+
+.authentication-sidebar form .field-error table td.icon {
+    width:30px;
+}
+
+.authentication-sidebar form .field-error.bottom .arrow::after {
+     border-bottom-color: @colorError;
+}
+
+.container {
+    max-width: 980px;
+}
+
+.provider-badge {
+    margin: 15px 0 5px 0;
+    min-height: 55px;
+    @glow: 0 1px 7px rgba(0, 0, 0, 1);
+    .glow(@glow);
+}
+
+.provider-badge img {
+    height: 55px;
+    max-width: 55px;
+}
+
+.provider-badge .pseudo {
+    font-size: 15px;
+    min-width: 80px;
+}
+
+.provider-badge .email {
+    font-size: @fontSizeSmall;
+    min-width: 80px;
+}
+
+.icon {
+    background-color: @black;
+}
+
+.provider-badge ul {
+    margin: 5px 0 5px 10px;;
+}
+
+div.authentication-user-pres-phraseanet {
+    margin: 5px 0;
+    padding: 15px 15px 20px 15px;
+    color: @identityPhraseanetColor;
+    background: @identityPhraseanetBackgroundColor;
+    font-size: @fontSizeSmall;
+}
+
+div.authentication-user-pres-phraseanet i {
+    color: @identityPhraseanetIconColor;
+}
+
+.sidebar-hint-large {
+    font-size: 16px;
+}
+
+div.authentication-user-pres-phraseanet ul li{
+    height: 25px;
+    line-height: 25px;
+}
+
+div.authentication-user-pres-phraseanet ul li  i {
+    padding: 5px;
+}
+
+.no-overflow {
+    overflow: hidden;
+}
+
+.switch {
+    background: none;
+}
+
+.rounded {
+    .border-radius(@borderRadiusSmall);
+}
+
+
+#headerDetail {
+    height: auto;
+    margin: 15px 0;
+}
+
+
+/* Portrait tablet to landscape and desktop */
+@media (max-width: 979px) {
+    div.authentication-sidebar-title {
+        font-size: @fontSizeLarge;
+    }
+}
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+    #recaptcha_widget .btn {
+        min-width:33%;
+    }
+
+    div#authentication-sidebar-language {
+        position: absolute;
+        top: 0;
+        right: 20px;
+    }
+
+    .left-content .text-title, .right-content .text-title {
+        font-size :26px;
+    }
+
+    #headerDetail {
+        height: 0;
+    }
+
+    div.footer-block {
+        text-align: center;
+    }
+
+    .header, .logo, .footer {
+        background-color: @backgroundSideBar;
+        .border-radius(0px);
+        padding: 20px;
+    }
+
+    .logo {
+        padding-top: 40px;
+    }
+
+    div.authentication-sidebar {
+         border-top: 1px solid @sideBarBlockBorderColorTop;
+         .glow(none);
+    }
+
+    .header {
+        border-bottom: 1px solid @black;
+    }
+
+    .container {
+        .glow(@sideBarGlow);
+    }
+
+    .footer .footer-block {
+        padding: 15px 0;
+    }
+}
+
+/* Landscape phones and down */
+@media (max-width: 480px) {
+
+}
+
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   Theses examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
