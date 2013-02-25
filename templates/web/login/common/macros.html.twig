@@ -1,0 +1,124 @@
+{% macro fieldInput(id, label, name, value, type, required, icon, placeholder, state, size) %}
+    {% if label is not none and label is not empty %}
+        <label for="{{ id }}">{{ label|trans }}</label>
+    {% endif %}
+
+    <table class="input-table input-table-{{ state|default("") }}">
+        <tr>
+            <td class="icon"><i class="{{icon|default("icon-angle-right")}} icon-white"></i></td>
+            <td>
+                <input
+                    id="{{ id }}"
+                    name="{{ name }}"
+                    value="{{ value|e }}"
+                    class="input-block-level"
+                    type="{{ type|default("text") }}"
+                    placeholder="{{ placeholder|default("") }}"
+                    {% if required %}required{% endif %}
+                    {% if type == "email" %}ng-model="login.email"{% endif %}
+                >
+            </td>
+        </tr>
+    </table>
+{% endmacro %}
+
+{% macro checkboxInput (id, label, name, checked) %}
+    <div class="hidden-phone control-group">
+        <div class="controls">
+            <label for="{{ id }}" class="checkbox">
+                <input id="{{ id }}" name="{{ name }}" type="checkbox" {% if checked|default(null) %}checked{% endif %}> {{ label }}
+            </label>
+        </div>
+    </div>
+    <div class="visible-phone switch-control">
+        <ul class="unstyle inline">
+            <li>
+                <div class="switch switch-small">
+                    <input id="{{ id }}" name="{{ name }}" type="checkbox" {% if checked|default(null) %}checked{% endif %}>
+                </div>
+            </li>
+            <li> {{ label }} </li>
+        </ul>
+    </div>
+{% endmacro %}
+
+{% macro providerList() %}
+    <ul class="unstyled inline provider-list">
+        <li><a href="#"><img src="/skins/login/img/facebook.png" /></a></li>
+        <li><a href="#"><img src="/skins/login/img/twitter.png" /></a></li>
+        <li><a href="#"><img src="/skins/login/img/google.png" /></a></li>
+        <li><a href="#"><img src="/skins/login/img/linkedin.png" /></a></li>
+    </ul>
+{% endmacro %}
+
+{% macro fieldError(errors) %}
+    <div class="hidden-phone popover bottom field-error">
+        <div class="arrow"></div>
+        <div class="popover-content">
+            <table>
+                <tr>
+                    <td style="width:35px;"><i class="icon-warning-sign icon-white"></i></td>
+                        {% if errors|keys|length >= 1 %}
+                            {% for error in errors if error.messagePluralization is defined %}
+                                <td>
+                                    {{ error.messageTemplate|trans(error.messageParameters, 'validators') }}
+                                </td>
+                            {% endfor %}
+                        {% else %}
+                            <td>{{ errors|trans }}</td>
+                        {% endif %}
+                    </tr>
+            </table>
+        </div>
+     </div>
+
+    <span class="visible-phone text-error help-block help-block-error">
+        {% if errors|keys|length >=  1 %}
+            {% for error in errors if error.messagePluralization is defined %}
+                {{ error.messageTemplate|trans(error.messageParameters, 'validators') }}
+            {% endfor %}
+        {% else %}
+            {{ errors|trans }}
+        {% endif %}
+    </span>
+{% endmacro %}
+
+{% macro providerBadge(provider, img_url, full_name, email) %}
+    <div class="{{ provider }} no-overflow provider-badge rounded">
+        <table>
+            <tr>
+                <td style="width:55px;">
+                    <img src="{{ img_url }}"/>
+                </td>
+                <td>
+                    <ul class="unstyled">
+                        <li class="pseudo one-line"><b>{{ full_name }}</b></li>
+                        <li class="email one-line">{{ email }}</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+     </div>
+{% endmacro %}
+
+{% macro phraseanetBadge(full_name, email, company) %}
+    <div class="authentication-user-pres-phraseanet well">
+        <ul class="unstyled">
+            <li class="one-line"><i class="icon-user"></i>{{ full_name }}</li>
+            <li class="one-line"><i class="icon-envelope"></i>{{ email }}</li>
+            <li class="one-line"><i class="icon-briefcase"></i>{{ company }}</li>
+        </ul>
+    </div>
+{% endmacro %}
+
+{% macro alert() %}
+    {% for type, messages in app['session'].getFlashBag().all() %}
+        {% for message in messages %}
+            <alert type="{{ type }}">{{ message|trans }}</alert>
+        {% endfor %}
+    {% endfor %}
+
+    {% if app.request.query.get("notice") is not none %}
+        <alert type="warning">{{ app.request.query.get("notice") }}</alert>
+    {% endif %}
+{% endmacro %}

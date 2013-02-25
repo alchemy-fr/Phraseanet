@@ -1,0 +1,50 @@
+{% extends "login/layout/base-layout.html.twig" %}
+
+{% block scaffholding %}
+    <div class="row-fluid">
+        <div class="span8 left-content">
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="logo">
+                        {% block logo %}<img src="/skins/login/img/logo.png" />{% endblock %}
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="header">
+                        {% block header %}
+                            <div class="text-title">
+                                Welcome on {{ app['phraseanet.registry'].get('GV_homeTitle')|default('Tf1') }}  Media gallery
+                            </div>
+                            <a class="visible-phone text-right" data-toggle="collapse" data-target="#headerDetail">More ...</a>
+                            <p id="headerDetail" class="collapse">
+                                Vivamus justo mauris, elementum eu auctor tincidunt, viverra et erat. Nunc pretium dui eget purus rutrum malesuada. Donec pellentesque arcu quis lectus blandit ac mollis magna vehicula. Fusce non leo id leo blandit feugiat et nec massa. Sed viverra viverra fermentum. In sit amet varius turpis.
+                            </p>
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid hidden-phone">
+                <div class="span12">
+                    <div class="content">
+                        {% include "login/common/main-content.html.twig" with {"home_title" : home_title} %}
+                    </div>
+               </div>
+            </div>
+        </div><!--/span-->
+        <div class="span4 right-content">
+            <div class="authentication-sidebar">
+                {% include "login/common/language-block.html.twig" %}
+                <div class="row-fluid">
+                    <div class="span12">
+                        {% block sidebar %} {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div><!--/span-->
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
