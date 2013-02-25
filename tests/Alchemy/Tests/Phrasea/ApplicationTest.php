@@ -228,6 +228,17 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals($ret, $app->url($route));
     }
 
+    public function addSetFlash()
+    {
+        $app = new Application('test');
+
+        $this->assertEquals(array(), $app->getFlash('hello'));
+        $this->assertEquals('BOUM', $app->getFlash('hello', 'BOUM'));
+
+        $app->setFlash('notice', 'BAMBA');
+        $this->assertEquals(array('BAMBA'), $app->getFlash('notice'));
+    }
+
     private function getAppThatReturnLocale()
     {
         $app = new Application('test');
