@@ -259,6 +259,32 @@ class Login implements ControllerProviderInterface
                 $app['firewall']->requireNotAuthenticated();
             })->bind('submit_login_forgot_password');
 
+        /********
+         *
+         *  Added some controllers because I don't know where to plug this templates..
+         */
+
+        /**
+         * @todo This a route test to display cgus
+         */
+        $controllers->get('/cgus', function(Application $app, Request $request) {
+            return $app['twig']->render('login/cgus.html.twig');
+        })->bind('login_cgus');
+
+        /**
+         * Register classic form
+         */
+        $controllers->get('/register-classic', function(Application $app, Request $request) {
+            return $app['twig']->render('login/register-classic.html.twig');
+        })->bind('login_register_classic');
+
+        /**
+         * Register throught providers
+         */
+        $controllers->get('/register-provider', function(Application $app, Request $request) {
+            return $app['twig']->render('login/register-provider.html.twig');
+        })->bind('login_register_provider');
+
         return $controllers;
     }
 
