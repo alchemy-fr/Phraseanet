@@ -17,6 +17,19 @@ chdir(__DIR__);
 
 set_time_limit(0);
 
+$bower = 'bower';
+exec($bower, $output, $code);
+
+if (0 !== $code) {
+    exit('bower required to install vendors');
+}
+
+system(sprintf('%s install', $bower));
+
+if (0 !== $code) {
+    exit('Failed to install bower dependencies');
+}
+
 $composer = __DIR__ . '/composer.phar';
 
 if ( ! file_exists($composer)) {
