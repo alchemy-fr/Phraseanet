@@ -17,7 +17,10 @@
                  <form novalidate name="loginForm" ng-submit="submit();">
                     <div class="row-fluid">
                           <div class="span12">
-                              {# todo bind with form macro using div_form_layout #}
+                                <label for="login-email">
+                                      {% trans "E-mail" %}*
+                                </label>
+                                {# todo bind with form macro using div_form_layout #}
                                 <table class="input-table" ng-class="getInputClass('email')">
                                     <tr>
                                         <td class="icon"><i class="icon-envelope-alt icon-white"></i></td>
