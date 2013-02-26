@@ -1,9 +1,13 @@
 {% import "login/common/macros.html.twig" as auth_macro %}
 
-{% set text %}
-Best check yo self, you're not looking too good. Best check yo self, you're not looking too good. Best check yo self, you're not looking too good.
-{% endset %}
+{% set display_layout = app['phraseanet.registry'].get('GV_home_publi') %}
 
-<alert type="success">{{ text }}</alert>
-<alert type="info">{{ text }}</alert>
-<alert type="error">{{ text }}</alert>
+{% if display_layout == 'DISPLAYx1' %}
+    {% include 'login/include/x1-content.html.twig' %}
+{% elseif display_layout == "COOLIRIS" %}
+    {% include 'login/include/cooliris-content.html.twig' %}
+{% elseif display_layout == "SCROLL" %}
+    {% include 'login/include/scroll-content.html.twig' %}
+{% endif %}
+
+
