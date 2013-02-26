@@ -18,7 +18,8 @@ chdir(__DIR__);
 system('bin/setup less:compile', $code);
 
 if (0 !== $code) {
-    exit('Failed to build less files');
+    echo "Failed to build less files\n";
+    exit(1);
 }
 
 set_time_limit(0);
