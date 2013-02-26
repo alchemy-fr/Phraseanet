@@ -1,3 +1,9 @@
+{#
+    variable "provider_name" should be setted The current provider name
+    variable "recaptcha_display" should be setted Tell whether the recaptch should be displayed
+    variable "recaptacha" should be setted  The recaptcha object
+ #}
+
 {% extends "login/layout/sidebar-layout.html.twig" %}
 
 {% import "common/macros.html.twig" as macro %}
@@ -9,7 +15,6 @@
             <div class="span12">
                 <div class="text-title">{% trans "Connexion" %}</div>
                 <div class="match-hint">
-                    {% set provider_name = "Facebook" %}
                     {% trans %}
                        Your {{ provider_name }} account matchs a Phraseanet account
                     {% endtrans %}
@@ -43,75 +48,26 @@
         <div class="row-fluid">
              <div class="span12" ng-controller="LoginFormController">
                  {{ auth_macro.alert() }}
-                 <form novalidate name="loginForm" ng-submit="submit();">
-                     {# Note this is hidden for the moment to see how submit the user login #}
+                 <form novalidate name="{{ form.vars.name }}" ng-submit="submit();">
                     <div class="row-fluid hidden">
-                          <div class="span12">
-                                <table class="input-table" ng-class="getInputClass('email')">
-                                    <tr>
-                                        <td class="icon"><i class="icon-envelope-alt icon-white"></i></td>
-                                        <td>
-                                            <input
-                                                id="login-email"
-                                                name="email"
-                                                value=""
-                                                class="input-block-level"
-                                                type="email"
-                                                placeholder=""
-                                                required
-                                                ng-model="email"
-                                                force-model-update
-                                            >
-                                        </td>
-                                    </tr>
-                                </table>
-                                <div ng-show="!loginForm.email.errors.filled">
-                                    {{ auth_macro.fieldError("This field is required") }}
-                                </div>
-                                <div ng-show="loginForm.email.errors.filled && !loginForm.email.errors.valid">
-                                    {{ auth_macro.fieldError("This field is not valid") }}
-                                </div>
-                          </div>
+                        <div class="span12">
+                            {{ auth_macro.fieldInput(form.email, form.vars.name, 'icon-envelope') }}
+                        </div>
                     </div>
 
                     <div class="row-fluid">
-                          <div class="span12">
-                                <label for="login-password">
-                                    {% trans "Password" %}*
-                                </label>
-                                <table class="input-table" ng-class="getInputClass('password')">
-                                    <tr>
-                                        <td class="icon"><i class="icon-lock icon-white"></i></td>
-                                        <td>
-                                            <input
-                                                id="login-password"
-                                                name="password"
-                                                value=""
-                                                class="input-block-level"
-                                                type="password"
-                                                placeholder=""
-                                                required
-                                                ng-model="password"
-                                                force-model-update
-                                            >
-                                        </td>
-                                    </tr>
-                                </table>
-                                <div ng-show="!loginForm.password.errors.filled">
-                                    {{ auth_macro.fieldError("This field is required") }}
-                                </div>
-                          </div>
+                        <div class="span12">
+                            {{ auth_macro.fieldInput(form.password, form.vars.name, 'icon-lock') }}
+                        </div>
                     </div>
 
                      <div class="text-right">
                          <a class="forget-password-link" href="{{ path("login_forgot_password") }}">{% trans "Forgot password?" %}</a>
                      </div>
 
-                    {% set recaptcha_display = true %}
                     {% if recaptcha_display %}
                         <div class="row-fluid">
                             <div class="span12">
-                                {% set recaptcha = "" %}
                                 {{ macro.captcha(recaptcha) }}
                             </div>
                          </div>
@@ -138,16 +94,5 @@
             </div>
         </div>
     </div>
-    <div class="well-large sidebar-block last-item">
-        <div class="row-fluid">
-            <div class="span12 text-center">
-                {% trans "No account yet?" %}
-            </div>
-        </div>
-        <div class="row-fluid">
-            <div class="span12 text-center">
-                <a class="btn  btn-success btn-trigger" href="{{ path("login_register") }}">{% trans "Register" %}</a>
-            </div>
-        </div>
-    </div>
+    {% include "login/include/register-link-block.html.twig" with {"login" : login } %}
 {% endblock %}

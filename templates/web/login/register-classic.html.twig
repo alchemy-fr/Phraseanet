@@ -18,28 +18,28 @@
         <div class="row-fluid">
              <div class="span12">
                  <form name="register" class="authentication-sidebar-form">
-                     <div class="row-fluid">
-                          <div class="span12">
-                              {{ auth_macro.fieldInput("first-name","First name","first_name",null,"text","icon-user", "Your first name") }}
-                          </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            {{ auth_macro.fieldInput(form.firstName, form.vars.name, 'icon-user') }}
+                        </div>
                     </div>
 
                      <div class="row-fluid">
-                          <div class="span12">
-                              {{ auth_macro.fieldInput("last-name","Last name","last_name",null,"text","icon-user", "Your last name") }}
-                          </div>
+                        <div class="span12">
+                            {{ auth_macro.fieldInput(form.lastName, form.vars.name, 'icon-user') }}
+                        </div>
                     </div>
 
                      <div class="row-fluid">
-                          <div class="span12">
-                              {{ auth_macro.fieldInput("email","E-mail","email",null,"email","icon-envelope", "Your e-mail address") }}
-                          </div>
+                        <div class="span12">
+                            {{ auth_macro.fieldInput(form.email, form.vars.name, 'icon-envelope') }}
+                        </div>
                     </div>
 
-                     <div class="row-fluid">
-                          <div class="span12">
-                              {{ auth_macro.fieldInput("company","Company","company",null,"text","icon-briefcase", "Your company name") }}
-                          </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            {{ auth_macro.fieldInput(form.company, form.vars.name, 'icon-briefcase') }}
+                        </div>
                     </div>
 
                      <div class="sidebar-hint">

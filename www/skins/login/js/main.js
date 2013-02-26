@@ -50,7 +50,6 @@ angular.module('phraseanetAuthentication', ['ui'])
                         case 'info' :
                             scope.icon = 'icon-info-sign';
                             break;
-
                     }
                 }
             }
@@ -62,7 +61,7 @@ angular.module('phraseanetAuthentication', ['ui'])
 function LoginFormController($scope) {
     $scope.$watch('loginForm', function() {
         $scope.loginForm.email.errors = {'filled' : true, 'valid' : true};
-        $scope.loginForm.password.errors = {'filled' : true};
+        $scope.loginForm.password.errors = {'filled' : true, 'valid' : true};
     });
 
     $scope.submit = function() {
@@ -70,7 +69,7 @@ function LoginFormController($scope) {
 
         if (true === $scope.loginForm.$valid) {
             $scope.loginForm.email.errors = {'filled' : true, 'valid' : true};
-            $scope.loginForm.password.errors = {'filled' : true};
+            $scope.loginForm.password.errors = {'filled' : true,'valid' : true};
             // submit
             return;
         }
@@ -119,16 +118,16 @@ function forgottenPasswordFormCtrl($scope) {
 
 function passwordChangeFormCtrl($scope) {
     $scope.$watch('passwordChangeForm', function() {
-        $scope.passwordChangeForm.password.errors = {'filled' : true};
-        $scope.passwordChangeForm.passwordConfirm.errors = {'filled' : true};
+        $scope.passwordChangeForm.password.errors = {'filled' : true, 'valid' : true};
+        $scope.passwordChangeForm.passwordConfirm.errors = {'filled' : true, 'valid' : true};
     });
 
     $scope.submit = function() {
         $scope.$broadcast('event:force-model-update');
 
         if (true === $scope.passwordChangeForm.$valid) {
-            $scope.passwordChangeForm.password.errors = {'filled' : true};
-            $scope.passwordChangeForm.passwordConfirm.errors = {'filled' : true};
+            $scope.passwordChangeForm.password.errors = {'filled' : true, 'valid' : true};
+            $scope.passwordChangeForm.passwordConfirm.errors = {'filled' : true, 'valid' : true};
             // submit
             return;
         }
