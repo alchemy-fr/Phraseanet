@@ -65,6 +65,7 @@ use Alchemy\Phrasea\Controller\Root\Developers;
 use Alchemy\Phrasea\Controller\Root\Login;
 use Alchemy\Phrasea\Controller\Root\RSSFeeds;
 use Alchemy\Phrasea\Controller\Root\Session;
+use Alchemy\Phrasea\Controller\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
@@ -658,6 +659,8 @@ class Application extends SilexApplication
         $this->mount('/report/activity', new ReportActivity());
         $this->mount('/report/informations', new ReportInformations());
         $this->mount('/report/export', new ReportExport());
+
+        $this->mount('/xmlhttp', new ThesaurusXMLHttp());
     }
 
     private function reinitUser()
