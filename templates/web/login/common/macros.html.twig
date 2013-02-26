@@ -1,25 +1,55 @@
-{% macro fieldInput(id, label, name, value, type, required, icon, placeholder, state, size) %}
-    {% if label is not none and label is not empty %}
-        <label for="{{ id }}">{{ label|trans }}</label>
-    {% endif %}
+{% macro fieldInput(field, form_name, icon_name, custom_attributes, validation_messages) %}
+    {% set input_name = field.vars.name %}
 
-    <table class="input-table input-table-{{ state|default("") }}">
+    {% set validation_messages = {
+            "required_message" : "This field is required" |trans,
+            "is_valid_message" : "This field is not valid"|trans,
+            "validate_message" : "This field is not valid"|trans
+        }|merge(validation_messages|default({}))
+    %}
+
+    {% set attributes = custom_attributes|default({})|merge({
+            'class': app['browser'].isNewGeneration() ? 'input-block-level' : '',
+            'ng-model' : input_name,
+            'force-model-update' : ''
+        })
+    %}
+
+    {{ form_label(field) }}
+
+    <table class="input-table" ng-class="getInputClass('{{ input_name }}')">
         <tr>
-            <td class="icon"><i class="{{icon|default("icon-angle-right")}} icon-white"></i></td>
+            <td class="icon"><i class="icon-envelope-alt icon-white"></i></td>
             <td>
-                <input
-                    id="{{ id }}"
-                    name="{{ name }}"
-                    value="{{ value|e }}"
-                    class="input-block-level"
-                    type="{{ type|default("text") }}"
-                    placeholder="{{ placeholder|default("") }}"
-                    {% if required %}required{% endif %}
-                    {% if type == "email" %}ng-model="login.email"{% endif %}
-                >
+                {{  form_widget(field, { 'attr': attributes })}}
             </td>
         </tr>
     </table>
+
+    {% if field.vars.required %}
+        <div ng-show="!{{ form_name }}.{{ input_name }}.errors.filled">
+            {{ _self.fieldError(validation_messages.required_message) }}
+        </div>
+    {% endif %}
+
+    <div ng-show="{{ form_name }}.{{ input_name }}.errors.filled && !{{ form_name }}.{{ input_name }}.errors.valid">
+        {{ _self.fieldError(validation_messages.is_valid_message) }}
+    </div>
+
+    {% if attributes['ui-validate'] is defined %}
+        <div ng-show="{{ form_name }}.{{ input_name }}.$error.validator">
+            {{ _self.fieldError(validation_messages.validate_message) }}
+        </div>
+    {% endif %}
+
+    {{ form_errors(field) }}
+
+    <tt>{{ form_name }}.{{ input_name }}.$valid = {{ "{{"|raw }} {{ form_name }}.{{ input_name }}.$valid {{ "}}"|raw }}</tt><br>
+    <tt>{{ form_name }}.{{ input_name }}.$error = {{ "{{"|raw }} {{ form_name }}.{{ input_name }}.$error {{ "}}"|raw }}</tt><br>
+    <tt>{{ form_name }}.$valid = {{ "{{"|raw }} {{ form_name }}.$valid {{ "}}"|raw }}</tt><br>
+    <tt>{{ form_name }}.{{ input_name }}.errors.filled = {{ "{{"|raw }} {{ form_name }}.{{ input_name }}.errors.filled {{ "}}"|raw }}</tt><br>
+    <tt>{{ form_name }}.{{ input_name }}.errors.valid = {{ "{{"|raw }} {{ form_name }}.{{ input_name }}.errors.valid {{ "}}"|raw }}</tt><br>
+
 {% endmacro %}
 
 {% macro checkboxInput (id, label, name, checked) %}
@@ -59,13 +89,13 @@
                 <tr>
                     <td style="width:35px;"><i class="icon-warning-sign icon-white"></i></td>
                         {% if errors|keys|length >= 1 %}
-                            {% for error in errors if error.messagePluralization is defined %}
+                            {% for error in errors %}
                                 <td>
-                                    {{ error.messageTemplate|trans(error.messageParameters, 'validators') }}
+                                    {{ error.message }}
                                 </td>
                             {% endfor %}
                         {% else %}
-                            <td>{{ errors|trans }}</td>
+                            <td>{{ errors}}</td>
                         {% endif %}
                     </tr>
             </table>
@@ -74,11 +104,11 @@
 
     <span class="visible-phone text-error help-block help-block-error">
         {% if errors|keys|length >=  1 %}
-            {% for error in errors if error.messagePluralization is defined %}
-                {{ error.messageTemplate|trans(error.messageParameters, 'validators') }}
+            {% for error in errors %}
+                {{ error.message }}
             {% endfor %}
         {% else %}
-            {{ errors|trans }}
+            {{ errors }}
         {% endif %}
     </span>
 {% endmacro %}
@@ -112,9 +142,9 @@
 {% endmacro %}
 
 {% macro alert() %}
-    {% for type, messages in app.getFlash() %}
+    {% for type, messages in app['session'].getFlashBag().all() %}
         {% for message in messages %}
-            <alert type="{{ type }}">{{ message|trans }}</alert>
+            <alert type="{{ type }}">{{ message }}</alert>
         {% endfor %}
     {% endfor %}
 {% endmacro %}
