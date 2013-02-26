@@ -10,6 +10,7 @@
     "underscore": "~1.4.4",
     "modernizr": "~2.6.2",
     "normalize-css" : "~2.1.0",
+    "json3" : "3.2.4",
     "jquery-file-upload": "~7",
     "blueimp-load-image": "latest",
     "requirejs" : "~2.1",

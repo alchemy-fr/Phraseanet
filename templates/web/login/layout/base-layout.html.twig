@@ -1,10 +1,12 @@
 {# variable "login" a login object #}
-
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html ng-app="phraseanetAuthentication" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html ng-app="phraseanetAuthentication" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html ng-app="phraseanetAuthentication" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html ng-app="phraseanetAuthentication" class="no-js"> <!--<![endif]-->
+<!--[if lt IE 7]>      <html ng-app="phraseanetAuthentication" class="no-js lt-ie9 lt-ie8 lt-ie7" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
+<!--[if IE 7]>         <html ng-app="phraseanetAuthentication" class="no-js lt-ie9 lt-ie8" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
+<!--[if IE 8]>         <html ng-app="phraseanetAuthentication" class="no-js lt-ie9" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
+<!--[if gt IE 8]>
+<!-->
+<html ng-app="phraseanetAuthentication" class="no-js" xmlns:phraseanet="http://phraseanet.com">
+<!--<![endif]-->
     <head>
         {% block header %}
             <meta charset="utf-8">
@@ -34,6 +36,10 @@
             {% endblock header_stylesheet %}
 
             {% block header_javascript %}
+                <!--[if lt IE 10]>
+                    cript src="/assets/json3/lib/json3.min.js"></script>
+                <![endif]-->
+
                 <script src="/assets/modernizr/modernizr.js"></script>
                 <script src="/assets/jquery/jquery.js"></script>
                 <script src="/assets/bootstrap/js/bootstrap-transition.js"></script>
