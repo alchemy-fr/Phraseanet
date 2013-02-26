@@ -3,19 +3,8 @@
 {% block content %}
     <div class="row-fluid">
         <div class="span12">
-            <div class="text-title">
-                Condition Générale d'Utilisation de la Base Beta Version 3.0
-            </div>
             <div class="cgu-content">
-                <p>
-                    Nulla pharetra vestibulum mollis. Donec auctor ultricies libero sit amet tempus. Quisque vulputate, metus non lacinia euismod, justo ipsum accumsan metus, id volutpat quam ante varius massa. In interdum sapien nec dolor tincidunt pulvinar. Nulla mattis, purus a pharetra sollicitudin, massa elit fringilla libero, non blandit velit diam vel sapien. Mauris consectetur, orci elementum tincidunt hendrerit, lorem tortor blandit arcu, ac elementum risus turpis a nisl. Donec at laoreet nisl.
-                </p>
-                <p>
-                    Sed tortor lorem, semper eget volutpat id, placerat vel nibh. Quisque ornare, libero quis sagittis dictum, nunc leo scelerisque nisi, eu facilisis nisi sapien ac nisl. Vestibulum feugiat vestibulum orci, nec pharetra quam placerat nec. Vestibulum condimentum rhoncus scelerisque. Duis quis ipsum nec orci pellentesque luctus id quis ipsum. Curabitur placerat, neque non viverra sagittis, nisl orci pharetra lectus, ut sodales massa eros a orci. Quisque ac felis risus, hendrerit laoreet augue. Donec ac ante ipsum, ac placerat elit. Duis volutpat, turpis ut imperdiet ultrices, mauris nisi dignissim eros, a venenatis lacus elit id dui.
-                </p>
-                <p>
-                    Sed at enim et felis dapibus rhoncus. Quisque bibendum diam at ipsum tempor blandit. Proin ut urna purus, faucibus aliquet lorem. Phasellus eu eros fermentum nunc gravida tincidunt. Nulla ac diam risus. Nulla ac lectus justo, ac sodales orci. Suspendisse volutpat neque sed sapien tempor quis lacinia magna rhoncus. Aliquam erat volutpat. Suspendisse bibendum lacinia euismod. Nulla sit amet scelerisque neque. Sed nec nunc ac leo pellentesque tempus non at urna.
-                </p>
+                {% block cgu_content %} {% endblock %}
             </div>
             <a href="{{ path("homepage") }}" class="btn btn-success ">
                 <i class="icon-arrow-left icon-white"></i> {% trans "Return to login page" %}

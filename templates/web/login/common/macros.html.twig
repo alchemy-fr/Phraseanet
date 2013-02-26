@@ -112,13 +112,9 @@
 {% endmacro %}
 
 {% macro alert() %}
-    {% for type, messages in app['session'].getFlashBag().all() %}
+    {% for type, messages in app.getFlash() %}
         {% for message in messages %}
             <alert type="{{ type }}">{{ message|trans }}</alert>
         {% endfor %}
     {% endfor %}
-
-    {% if app.request.query.get("notice") is not none %}
-        <alert type="warning">{{ app.request.query.get("notice") }}</alert>
-    {% endif %}
 {% endmacro %}

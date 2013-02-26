@@ -1,58 +1,76 @@
-{% set home_title =  app['phraseanet.registry'].get('GV_homeTitle')|default('Phraseanet') %}
-
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html ng-app="phraseanetAuthentication" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html ng-app="phraseanetAuthentication" class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html ng-app="phraseanetAuthentication" class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html ng-app="phraseanetAuthentication" class="no-js"> <!--<![endif]-->
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Phraseanet</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block header %}
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+            <title>{% block title %}Phraseanet{% endblock title %}</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href="/assets/normalize-css/normalize.css">
-        <link rel="stylesheet" href="/skins/login/css/bootstrap-switch.css">
-        <link rel="stylesheet" href="/skins/login/css/style.css">
+            <meta content="{{ app['phraseanet.registry'].get('GV_metaDescription') }}" name="description"/>
+            <meta http-equiv="X-UA-Compatible" content="chrome=1">
+            <meta content="{{ app['phraseanet.registry'].get('GV_metaKeywords') }}" name="keywords"/>
+            <meta content="phraseanet" name="generator"/>
 
-        <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome.css">
-        <!--[if IE 7]>
-        <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome-ie7.min.css">
-        <![endif]-->
+            {% for feed in feeds %}
+                {% set link = feed.get_homepage_link(app['phraseanet.registry'], 'rss') %}
+                <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
+                {% set link = feed.get_homepage_link(app['phraseanet.registry'], 'atom') %}
+                <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
+            {% endfor %}
 
-        <script src="/assets/modernizr/modernizr.js"></script>
-        <script src="/assets/jquery/jquery.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-transition.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-alert.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-modal.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-dropdown.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-scrollspy.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-tab.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-tooltip.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-popover.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-button.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-collapse.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-carousel.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-typeahead.js"></script>
-        <script src="/assets/bootstrap/js/bootstrap-affix.js"></script>
-        <script src="/assets/angular/angular.js"></script>
-        <script src="/assets/angular-ui/build/angular-ui.js"></script>
-        <script src="/skins/login/js/bootstrap-switch.js"></script>
-        <script src="/assets/underscore/underscore.js"></script>
-        <script src="/skins/login/js/main.js"></script>
+            {% block favicon %}
+                <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+            {% endblock favicon %}
 
-        <!--[if lte IE 8]>
-            <script>
-            // The ieshiv takes care of our ui.directives, bootstrap module directives and
-            // AngularJS's ng-view, ng-include, ng-pluralize and ng-switch directives.
-            // However, IF you have custom directives (yours or someone else's) then
-            // enumerate the list of tags in window.myCustomTags
+            {% block header_stylesheet %}
+                <link rel="stylesheet" href="/assets/normalize-css/normalize.css">
+                <link rel="stylesheet" href="/skins/login/css/bootstrap-switch.css">
+                <link rel="stylesheet" href="/skins/login/css/style.css">
+                <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome.css">
+                <!--[if IE 7]>
+                <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome-ie7.min.css">
+                <![endif]-->
+            {% endblock header_stylesheet %}
 
-            window.myCustomTags = ['alert']; // optional
-            </script>
-            <script src="/assets/angular-ui/build/angular-ui-ieshiv.js"></script>
-        <![endif]-->
+            {% block header_javascript %}
+                <script src="/assets/modernizr/modernizr.js"></script>
+                <script src="/assets/jquery/jquery.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-transition.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-alert.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-modal.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-dropdown.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-scrollspy.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-tab.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-tooltip.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-popover.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-button.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-collapse.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-carousel.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-typeahead.js"></script>
+                <script src="/assets/bootstrap/js/bootstrap-affix.js"></script>
+                <script src="/assets/angular/angular.js"></script>
+                <script src="/assets/angular-ui/build/angular-ui.js"></script>
+                <script src="/skins/login/js/bootstrap-switch.js"></script>
+                <script src="/assets/underscore/underscore.js"></script>
+                <script src="/skins/login/js/main.js"></script>
+
+                <!--[if lte IE 8]>
+                    <script>
+                    // The ieshiv takes care of our ui.directives, bootstrap module directives and
+                    // AngularJS's ng-view, ng-include, ng-pluralize and ng-switch directives.
+                    // However, IF you have custom directives (yours or someone else's) then
+                    // enumerate the list of tags in window.myCustomTags
+
+                    window.myCustomTags = ['alert']; // optional
+                    </script>
+                    <script src="/assets/angular-ui/build/angular-ui-ieshiv.js"></script>
+                <![endif]-->
+            {% endblock header_javascript %}
+        {% endblock header %}
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -63,23 +81,29 @@
 
             {% endblock %}
              <div class="row-fluid">
-                <div class="span12 footer well-small">
-                    <div class="row-fluid">
-                        <div class="span9" >
-                             <div class="footer-block">
-                                <ul class="inline footer-list unstyled">
-                                    <li class="item-first" >{% trans "Home" %}</li>
-                                    <li>{% trans "Help" %}</li>
-                                    <li><a href="{{ path("login_cgus") }}">{% trans "Terms of use" %}</a></li>
-                                    <li>&copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</li>
-                                </ul>
-                             </div>
-                        </div>
-                        <div class="span3">
-                            <div class="footer-block text-right">
-                                Phraseanet
+                <div class="span12">
+                    <div class="footer well-small">
+                        {% block footer %}
+                            <div class="row-fluid">
+                                <div class="span9" >
+                                    {% block footer_content %}
+                                        <div class="footer-block">
+                                           <ul class="inline footer-list unstyled">
+                                               <li class="item-first" >{% trans "Home" %}</li>
+                                               <li>{% trans "Help" %}</li>
+                                               <li><a href="{{ path("login_cgus") }}">{% trans "Terms of use" %}</a></li>
+                                               <li>&copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</li>
+                                           </ul>
+                                        </div>
+                                    {% endblock footer_content %}
+                                </div>
+                                <div class="span3">
+                                    <div class="footer-block text-right">
+                                        {% block footer_logo %}Phraseanet{% endblock footer_logo %}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        {% endblock footer %}
                     </div>
                 </div><!--/span-->
             </div><!--/row-->
