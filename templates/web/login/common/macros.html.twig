@@ -9,7 +9,7 @@
     %}
 
     {% set attributes = custom_attributes|default({})|merge({
-            'class': app['browser'].isNewGeneration() ? 'input-block-level' : '',
+            'class': app['browser'].getBrowser() == constant('Browser::BROWSER_IE') and app['browser'].getVersion() <= 7  ? '' : 'input-block-level',
             'ng-model' : input_name,
             'force-model-update' : ''
         })
@@ -43,13 +43,6 @@
     {% endif %}
 
     {{ form_errors(field) }}
-
-    <tt>{{ form_name }}.{{ input_name }}.$valid = {{ "{{"|raw }} {{ form_name }}.{{ input_name }}.$valid {{ "}}"|raw }}</tt><br>
-    <tt>{{ form_name }}.{{ input_name }}.$error = {{ "{{"|raw }} {{ form_name }}.{{ input_name }}.$error {{ "}}"|raw }}</tt><br>
-    <tt>{{ form_name }}.$valid = {{ "{{"|raw }} {{ form_name }}.$valid {{ "}}"|raw }}</tt><br>
-    <tt>{{ form_name }}.{{ input_name }}.errors.filled = {{ "{{"|raw }} {{ form_name }}.{{ input_name }}.errors.filled {{ "}}"|raw }}</tt><br>
-    <tt>{{ form_name }}.{{ input_name }}.errors.valid = {{ "{{"|raw }} {{ form_name }}.{{ input_name }}.errors.valid {{ "}}"|raw }}</tt><br>
-
 {% endmacro %}
 
 {% macro checkboxInput (id, label, name, checked) %}
@@ -144,7 +137,7 @@
 {% macro alert() %}
     {% for type, messages in app['session'].getFlashBag().all() %}
         {% for message in messages %}
-            <alert type="{{ type }}">{{ message }}</alert>
+            <phraseanet-alert type="{{ type }}">{{ message }}</phraseanet-alert>
         {% endfor %}
     {% endfor %}
 {% endmacro %}
