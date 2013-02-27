@@ -243,11 +243,19 @@ ul {
     .gradient(@colorGooglePlus, 0.8);
 }
 
+.lt-ie8 .input-table {
+    border: 1px solid @inputOutsideBorder;
+}
+
 .input-table input {
     border: @inputBorder !important;
     background-color: @inputBackground !important;
     color: @textColor  !important;
     margin: 0 !important;
+}
+
+.lt-ie8 .input-table input, .lt-ie8 .input-table .input {
+   background-color: @inputIEBackground !important;
 }
 
 .match-hint {
