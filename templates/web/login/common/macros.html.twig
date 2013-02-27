@@ -19,7 +19,7 @@
 
     <table class="input-table" ng-class="getInputClass('{{ input_name }}')">
         <tr>
-            <td class="icon"><i class="icon-envelope-alt icon-white"></i></td>
+            <td class="icon"><i class="{{ icon_name|default('icon-angle-right') }} icon-white"></i></td>
             <td class="input">
                 {{  form_widget(field, { 'attr': attributes })}}
             </td>
