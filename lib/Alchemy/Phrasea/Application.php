@@ -65,6 +65,7 @@ use Alchemy\Phrasea\Controller\Root\Developers;
 use Alchemy\Phrasea\Controller\Root\Login;
 use Alchemy\Phrasea\Controller\Root\RSSFeeds;
 use Alchemy\Phrasea\Controller\Root\Session;
+use Alchemy\Phrasea\Controller\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\Controller\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
@@ -660,6 +661,7 @@ class Application extends SilexApplication
         $this->mount('/report/informations', new ReportInformations());
         $this->mount('/report/export', new ReportExport());
 
+        $this->mount('/thesaurus2', new Thesaurus());
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
     }
 
