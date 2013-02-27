@@ -86,7 +86,7 @@
             </div>
         </div>
     </div>
-    <div class="well-large sidebar-block">
+    <div class="well-large sidebar-block {% if not login.register_enabled(app) %}last-child{% endif %}">
         <div class="row-fluid">
             <div class="span12 text-center">
               {% trans "These informations do not match?" %}
@@ -98,5 +98,5 @@
             </div>
         </div>
     </div>
-    {% include "login/include/register-link-block.html.twig" with {"login" : login, "last_item" : true} %}
+    {% include "login/include/register-link-block.html.twig" with {"login" : login, "last_item" : login.register_enabled(app)} %}
 {% endblock %}
