@@ -1,13 +1,1 @@
 {% import "login/common/macros.html.twig" as auth_macro %}
-
-{% set display_layout = app['phraseanet.registry'].get('GV_home_publi') %}
-
-{% if display_layout == 'DISPLAYx1' %}
-    {% include 'login/include/x1-content.html.twig' %}
-{% elseif display_layout == "COOLIRIS" %}
-    {% include 'login/include/cooliris-content.html.twig' %}
-{% elseif display_layout == "SCROLL" %}
-    {% include 'login/include/scroll-content.html.twig' %}
-{% endif %}
-
-

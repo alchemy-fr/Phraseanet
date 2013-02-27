@@ -32,7 +32,9 @@
             <div class="row-fluid hidden-phone">
                 <div class="span12">
                     <div class="content">
-                        {% include "login/include/main-content.html.twig" %}
+                        {% block left_content %}
+                            {% include "login/include/main-content.html.twig" %}
+                        {% endblock %}
                     </div>
                </div>
             </div>
