@@ -9,6 +9,10 @@
 {% import "common/macros.html.twig" as macro %}
 {% import "login/common/macros.html.twig" as auth_macro %}
 
+{% block title %}
+    {% trans "Login" %}
+{% endblock %}
+
 {% block sidebar %}
     <div class="well-large sidebar-block">
         <div class="row-fluid">

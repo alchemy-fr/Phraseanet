@@ -9,6 +9,10 @@
 {% import "common/macros.html.twig" as macro %}
 {% import "login/common/macros.html.twig" as auth_macro %}
 
+{% block title %}
+    {% trans "Login" %}
+{% endblock %}
+
 {% block header_rss %}
     {% for feed in feeds %}
         {% set link = feed.get_homepage_link(app['phraseanet.registry'], 'rss') %}
