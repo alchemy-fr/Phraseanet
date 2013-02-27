@@ -1,11 +1,11 @@
-{# variable "login" a login object #}
+{# variable "login" a login object for all template as i is inherited #}
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html ng-app="phraseanetAuthentication" class="no-js lt-ie9 lt-ie8 lt-ie7" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
-<!--[if IE 7]>         <html ng-app="phraseanetAuthentication" class="no-js lt-ie9 lt-ie8" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
-<!--[if IE 8]>         <html ng-app="phraseanetAuthentication" class="no-js lt-ie9" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
 <!--[if gt IE 8]>
 <!-->
-<html ng-app="phraseanetAuthentication" class="no-js" xmlns:phraseanet="http://phraseanet.com">
+<html class="no-js" xmlns:phraseanet="http://phraseanet.com">
 <!--<![endif]-->
     <head>
         {% block header %}
@@ -31,13 +31,24 @@
                 <link rel="stylesheet" href="/skins/login/css/style.css">
                 <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome.css">
                 <!--[if IE 7]>
-                <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome-ie7.min.css">
+                    <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome-ie7.min.css">
                 <![endif]-->
             {% endblock header_stylesheet %}
 
             {% block header_javascript %}
-                <!--[if lt IE 10]>
-                    cript src="/assets/json3/lib/json3.min.js"></script>
+                <!--[if lte IE 8]>
+                    <script src="/assets/json3/lib/json3.min.js"></script>
+
+                    <script>
+                        // The ieshiv takes care of our ui.directives, bootstrap module directives and
+                        // AngularJS's ng-view, ng-include, ng-pluralize and ng-switch directives.
+                        // However, IF you have custom directives (yours or someone else's) then
+                        // enumerate the list of tags in window.myCustomTags
+
+                        window.myCustomTags = ['phraseanetAlert']; // optional
+                    </script>
+
+                    <script src="/assets/angular-ui/build/angular-ui-ieshiv.js"></script>
                 <![endif]-->
 
                 <script src="/assets/modernizr/modernizr.js"></script>
@@ -60,18 +71,6 @@
                 <script src="/skins/login/js/bootstrap-switch.js"></script>
                 <script src="/assets/underscore/underscore.js"></script>
                 <script src="/skins/login/js/main.js"></script>
-
-                <!--[if lte IE 8]>
-                    <script>
-                    // The ieshiv takes care of our ui.directives, bootstrap module directives and
-                    // AngularJS's ng-view, ng-include, ng-pluralize and ng-switch directives.
-                    // However, IF you have custom directives (yours or someone else's) then
-                    // enumerate the list of tags in window.myCustomTags
-
-                    window.myCustomTags = ['alert']; // optional
-                    </script>
-                    <script src="/assets/angular-ui/build/angular-ui-ieshiv.js"></script>
-                <![endif]-->
             {% endblock header_javascript %}
         {% endblock header %}
     </head>

@@ -145,3 +145,7 @@ function passwordChangeFormCtrl($scope) {
     };
 }
 
+// bootstrap angular
+angular.element(document).ready(function() {
+    angular.bootstrap(document, ['phraseanetAuthentication']);
+});
