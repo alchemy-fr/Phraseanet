@@ -135,8 +135,8 @@
 {% endmacro %}
 
 {% macro alert() %}
-    {% for type, messages in app['session'].getFlashBag().all() %}
-        {% for message in messages %}
+    {% for type, messages in ["warning", "info", "success", "error"] %}
+        {% for message in app.getFlash(type) %}
             <phraseanet-alert type="{{ type }}">{{ message }}</phraseanet-alert>
         {% endfor %}
     {% endfor %}
