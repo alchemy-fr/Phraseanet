@@ -14,10 +14,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class patch_th_
+class patchthesaurus_100
 {
 
-    function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
     {
         if ($version == "") {
             $th = $domth->documentElement;
@@ -32,7 +32,7 @@ class patch_th_
                 $th->setAttribute("nextid", $te0->getAttribute("nextid"));
                 $te = $xp->query("te", $te0);
                 $te1 = array();
-                for ($i = 0; $i < $te->length; $i ++ ) {
+                for ($i = 0; $i < $te->length; $i ++) {
                     $te1[] = $te->item($i);
                 }
                 foreach ($te1 as $tei) {
@@ -52,7 +52,7 @@ class patch_th_
         return($version);
     }
 
-    function fixThesaurus2(&$domth, &$tenode, $depth = 0)
+    public function fixThesaurus2(&$domth, &$tenode, $depth = 0)
     {
         $unicode = new unicode();
         $sy = $tenode->appendChild($domth->createElement("sy"));
@@ -80,5 +80,3 @@ class patch_th_
         }
     }
 }
-
-?>

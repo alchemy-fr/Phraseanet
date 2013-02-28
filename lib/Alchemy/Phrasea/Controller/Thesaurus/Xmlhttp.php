@@ -24,6 +24,11 @@ class Xmlhttp implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function() use ($app) {
+            $app['firewall']->requireAuthentication();
+            $app['firewall']->requireAccessToModule('thesaurus');
+        });
+
         $controllers->match('acceptcandidates.j.php', $this->call('AcceptCandidatesJson'));
         $controllers->match('checkcandidatetarget.j.php', $this->call('CheckCandidateTargetJson'));
         $controllers->match('editing_presets.j.php', $this->call('EditingPresetsJson'));

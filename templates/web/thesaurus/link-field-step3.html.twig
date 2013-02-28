@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <title>{% trans 'thesaurus:: Lier la branche de thesaurus' %}</title>
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+    </head>
+    <body  class="dialog">
+    <center>
+        <br/>
+        <br/>
+        <br/>
+        <form onsubmit="return(false);">
+            <div style="width:70%; height:200px; overflow:scroll;" class="x3Dbox">
+                {% for field in field2del %}
+                    {% trans %}
+                        thesaurus:: suppression du lien du champ {{ field }}
+                    {% endtrans %}
+                    <br/>
+                {% endfor %}
+                {% for candidate in candidates2del %}
+                    {% set field = candidate2del["field"] %}
+                    {% trans %}
+                        thesaurus:: suppression de la branche de mot candidats pour le champ {{ field }}
+                    {% endtrans %}
+                    <br/>
+                {% endfor %}
+                {% for field in branch2del %}
+                    {% trans %}
+                        thesaurus:: suppression de la branche de mot candidats pour le champ {{ field }}
+                    {% endtrans %}
+                    <br/>
+                {% endfor %}
+
+                {% if ctchanged %}
+                    {% trans 'thesaurus:: enregistrement de la liste modifiee des mots candidats.' %}
+                    <br/>
+                {% endif %}
+
+                {% for field in field2del %}
+                    {% trans %}
+                        thesaurus:: suppression des indexes vers le thesaurus pour le champ {{ field }}
+                    {% endtrans %}
+                    <br/>
+                {% endfor %}
+
+                {% if reindexed %}
+                    {% trans 'thesaurus:: reindexer tous les enregistrements' %}
+                    <br/>
+                {% endif %}
+            </div>
+            <br/>
+            <input type="button" value="{% trans 'boutton::fermer' %}" onclick="self.close();">
+        </form>
+    </center>
+</body>
+</html>

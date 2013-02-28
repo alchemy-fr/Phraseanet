@@ -102,9 +102,10 @@ $groups = array(
          '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
-        , '//thesaurus2/win.js'
-        , '//thesaurus2/xmlhttp.js'
-        , '//thesaurus2/thesaurus.js'
+        , '//skins/thesaurus/win.js'
+        , '//skins/thesaurus/xmlhttp.js'
+        , '//skins/thesaurus/thesaurus.js'
+        , '//skins/thesaurus/sprintf.js'
     ),
     'lightbox' => array(
          '//include/jslibs/jquery.mousewheel.js'

@@ -11,16 +11,42 @@
 
 namespace Alchemy\Phrasea\Controller\Thesaurus;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
+// check ***::***
 
 class Thesaurus implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
+
+        $controllers->before(function() use ($app) {
+            $app['firewall']->requireAuthentication();
+            $app['firewall']->requireAccessToModule('thesaurus');
+        });
+
+        $controllers->match('/', $this->call('indexThesaurus'));
+        $controllers->match('accept.php', $this->call('accept'));
+        $controllers->match('export_text.php', $this->call('exportText'));
+        $controllers->match('export_text_dlg.php', $this->call('exportTextDialog'));
+        $controllers->match('export_topics.php', $this->call('exportTopics'));
+        $controllers->match('export_topics_dlg.php', $this->call('exportTopicsDialog'));
+        $controllers->match('import.php', $this->call('import'));
+        $controllers->match('import_dlg.php', $this->call('importDialog'));
+        $controllers->match('linkfield.php', $this->call('linkFieldStep1'));
+        $controllers->match('linkfield2.php', $this->call('linkFieldStep2'));
+        $controllers->match('linkfield3.php', $this->call('linkFieldStep3'));
+        $controllers->match('loadth.php', $this->call('loadThesaurus'));
+        $controllers->match('newsy_dlg.php', $this->call('newSynonymDialog'));
+        $controllers->match('newterm.php', $this->call('newTerm'));
+        $controllers->match('properties.php', $this->call('properties'));
+        $controllers->match('search.php', $this->call('search'));
+        $controllers->match('thesaurus.php', $this->call('thesaurus'));
 
         $controllers->match('xmlhttp/accept.x.php', $this->call('acceptXml'));
         $controllers->match('xmlhttp/acceptcandidates.x.php', $this->call('acceptCandidatesXml'));
@@ -42,6 +68,1184 @@ class Thesaurus implements ControllerProviderInterface
 
         return $controllers;
     }
+
+    public function accept(Application $app, Request $request)
+    {
+        if (null === $bid = $request->get("bid")) {
+            return new Response('Missing bid parameter', 400);
+        }
+
+        $dom = $this->getXMLTerm($app, $bid, $request->get('src'), 'CT', $request->get('piv'), '0', null, '1', null);
+
+        $cterm_found = (int) $dom->documentElement->getAttribute('found');
+
+        $fullpath_src = $fullpath_tgt = $nts = $cfield = $term_found = $acceptable = null;
+
+        if ($cterm_found) {
+            $fullpath_src = $dom->getElementsByTagName("fullpath_html")->item(0)->firstChild->nodeValue;
+            $nts = $dom->getElementsByTagName("ts_list")->item(0)->getAttribute("nts");
+
+            if (($cfield = $dom->getElementsByTagName("cfield")->item(0))) {
+                if ($cfield->getAttribute("delbranch")) {
+                    $cfield = '*';
+                } else {
+                    $cfield = $cfield->getAttribute("field");
+                }
+            } else {
+                $cfield = null;
+            }
+
+            $dom = $this->getXMLTerm($app, $bid, $request->get('tgt'), 'TH', $request->get('piv'), '0', null, '1', $cfield);
+
+            $term_found = (int) $dom->documentElement->getAttribute('found');
+
+            if ($term_found) {
+                $fullpath_tgt = $dom->getElementsByTagName("fullpath_html")->item(0)->firstChild->nodeValue;
+                $acceptable = (int) $dom->getElementsByTagName("cfield")->item(0)->getAttribute("acceptable");
+            }
+        }
+
+        return $app['twig']->render('thesaurus/accept.html.twig', array(
+            'dlg'          => $request->get('dlg'),
+            'bid'          => $request->get('bid'),
+            'piv'          => $request->get('piv'),
+            'src'          => $request->get('src'),
+            'tgt'          => $request->get('tgt'),
+            'cterm_found'  => $cterm_found,
+            'term_found'   => $term_found,
+            'cfield'       => $cfield,
+            'nts'          => $nts,
+            'fullpath_tgt' => $fullpath_tgt,
+            'fullpath_src' => $fullpath_src,
+            'acceptable'   => $acceptable,
+        ));
+    }
+
+    public function exportText(Application $app, Request $request)
+    {
+        $thits = $tnodes = array();
+        $output = '';
+
+        if (null === $bid = $request->get("bid")) {
+            return new Response('Missing bid parameter', 400);
+        }
+
+        if ($request->get("typ") == "TH" || $request->get("typ") == "CT") {
+            try {
+                $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+                $connbas = \connection::getPDOConnection($app, $bid);
+
+                if ($request->get("typ") == "TH") {
+                    $domth = $databox->get_dom_thesaurus();
+                } else {
+                    $domth = $databox->get_dom_cterms();
+                }
+
+                if ($domth) {
+                    $sql = "SELECT value, SUM(1) as hits FROM thit GROUP BY value";
+
+                    $stmt = $connbas->prepare($sql);
+                    $stmt->execute();
+                    $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                    $stmt->closeCursor();
+
+                    foreach ($rs as $rowbas2) {
+                        $thits[str_replace('d', '.', $rowbas2["value"])] = $rowbas2["hits"];
+                    }
+
+                    $xpathth = new \DOMXPath($domth);
+                    if ($request->get("id") == "T") {
+                        $q = "/thesaurus";
+                    } elseif ($request->get("id") == "C") {
+                        $q = "/cterms";
+                    } else {
+                        $q = "//te[@id='" . $request->get("id") . "']";
+                    }
+                    $this->export0($xpathth->query($q)->item(0), $tnodes, $thits, $output, $request->get('iln'), $request->get('hit'), $request->get('ilg'), $request->get('osl'));
+                }
+            } catch (\Exception $e) {
+
+            }
+        }
+
+        return $app['twig']->render('thesaurus/export-text.html.twig', array(
+            'output'  => $output,
+            'smp' => $request->get('smp'),
+        ));
+    }
+
+    private function printTNodes(&$output, &$tnodes, $iln, $hit, $ilg, $osl)
+    {
+        $numlig = $iln == "1";
+        $hits = $hit == "1";
+        $ilg = $ilg == "1";
+        $oneline = $osl == "1";
+
+        $ilig = 1;
+        foreach ($tnodes as $node) {
+            $tabs = str_repeat("\t", $node["depth"]);
+            switch ($node["type"]) {
+                case "ROOT":
+                    if ($numlig) {
+                        $output .= $ilig ++ . "\t";
+                    }
+                    if ($hits && ! $oneline) {
+                        $output .= "\t";
+                    }
+                    $output .= $tabs . $node["name"] . "\n";
+                    break;
+                case "TRASH":
+                    if ($numlig) {
+                        $output .= $ilig ++ . "\t";
+                    }
+                    if ($hits && ! $oneline) {
+                        $output .= "\t";
+                    }
+                    $output .= $tabs . "{TRASH}\n";
+                    break;
+                case "FIELD":
+                    if ($numlig) {
+                        $output .= $ilig ++ . "\t";
+                    }
+                    if ($hits && ! $oneline) {
+                        $output .= "\t";
+                    }
+                    $output .= $tabs . $node["name"] . "\n";
+                    break;
+                case "TERM":
+                    $isyn = 0;
+                    if ($oneline) {
+                        if ($numlig) {
+                            $output .= $ilig ++ . "\t";
+                        }
+                        $output .= $tabs;
+                        $isyn = 0;
+                        foreach ($node["syns"] as $syn) {
+                            if ($isyn > 0) {
+                                $output .= " ; ";
+                            }
+                            $output .= $syn["v"];
+                            if ($ilg) {
+                                $output .= " [" . $syn["lng"] . "]";
+                            }
+                            if ($hits) {
+                                $output .= " [" . $syn["hits"] . "]";
+                            }
+                            $isyn ++;
+                        }
+                        $output .= "\n";
+                    } else {
+                        $isyn = 0;
+                        foreach ($node["syns"] as $syn) {
+                            if ($numlig) {
+                                $output .= $ilig ++ . "\t";
+                            }
+                            if ($hits) {
+                                $output .= $syn["hits"] . "\t";
+                            }
+                            $output .= $tabs;
+
+                            if ($isyn > 0) {
+                                $output .= "; ";
+                            }
+
+                            $output .= $syn["v"];
+
+                            if ($ilg) {
+                                $output .= " [" . $syn["lng"] . "]";
+                            }
+                            $output .= "\n";
+                            $isyn ++;
+                        }
+                    }
+                    break;
+            }
+            if (! $oneline) {
+                if ($numlig) {
+                    $output .= $ilig ++ . "\t";
+                }
+                $output .= "\n";
+            }
+        }
+    }
+
+    private function exportNode(&$node, &$tnodes, &$thits, $depth)
+    {
+        if ($node->nodeType == XML_ELEMENT_NODE) {
+            if (($nname = $node->nodeName) == "thesaurus" || $nname == "cterms") {
+                $tnodes[] = array(
+                    "type"  => "ROOT",
+                    "depth" => $depth,
+                    "name"  => $nname,
+                    "cdate" => $node->getAttribute("creation_date"),
+                    "mdate" => $node->getAttribute("modification_date")
+                );
+            } elseif (($fld = $node->getAttribute("field"))) {
+                if ($node->getAttribute("delbranch")) {
+                    $tnodes[] = array(
+                        "type"    => "TRASH",
+                        "depth"   => $depth,
+                        "name"    => $fld
+                    );
+                } else {
+                    $tnodes[] = array(
+                        "type"  => "FIELD",
+                        "depth" => $depth,
+                        "name"  => $fld
+                    );
+                }
+            } else {
+                $tsy = array();
+                for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
+                    if ($n->nodeName == "sy") {
+                        $id = $n->getAttribute("id");
+                        if (array_key_exists($id . '.', $thits)) {
+                            $hits = 0 + $thits[$id . '.'];
+                        } else {
+                            $hits = 0;
+                        }
+
+                        $tsy[] = array(
+                            "v"       => $n->getAttribute("v"),
+                            "lng"     => $n->getAttribute("lng"),
+                            "hits"    => $hits
+                        );
+                    }
+                }
+                $tnodes[] = array("type"  => "TERM", "depth" => $depth, "syns"  => $tsy);
+            }
+        }
+    }
+
+    private function export0($znode, &$tnodes, &$thits, &$output, $iln, $hit, $ilg, $osl)
+    {
+        $nodes = array();
+        $depth = 0;
+
+        for ($node = $znode->parentNode; $node; $node = $node->parentNode) {
+            if ($node->nodeType == XML_ELEMENT_NODE)
+                $nodes[] = $node;
+        }
+        $nodes = array_reverse($nodes);
+
+        foreach ($nodes as $depth => $node) {
+            $this->exportNode($node, $tnodes, $thits, $depth);
+        }
+
+        $this->export($znode, $tnodes, $thits, count($nodes));
+        $this->printTNodes($output, $tnodes, $iln, $hit, $ilg, $osl);
+    }
+
+    private function export($node, &$tnodes, &$thits, $depth = 0)
+    {
+        if ($node->nodeType == XML_ELEMENT_NODE) {
+            $this->exportNode($node, $tnodes, $thits, $depth);
+        }
+        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
+            if ($n->nodeName == "te") {
+                $this->export($n, $tnodes, $thits, $depth + 1);
+            }
+        }
+    }
+
+    public function exportTextDialog(Application $app, Request $request)
+    {
+        return $app['twig']->render('thesaurus/export-text-dialog.html.twig', array(
+            'dlg' => $request->get('dlg'),
+            'bid' => $request->get('bid'),
+            'typ' => $request->get('typ'),
+            'piv' => $request->get('piv'),
+            'id'  => $request->get('id'),
+        ));
+    }
+
+    public function exportTopics(Application $app, Request $request)
+    {
+        $lng = $app['locale'];
+        $obr = explode(';', $request->get('obr'));
+
+        $t_lng = array();
+
+        if ($request->get('ofm') == 'tofiles') {
+            $t_lng = array_map(function ($code) {
+                $lng_code = explode('_', $code);
+
+                return $lng_code[0];
+            }, array_keys(PhraseaApplication::getAvailableLanguages()));
+        } else {
+            $t_lng[] = $request->get('piv');
+        }
+
+        switch ($request->get('obrf')) {
+            case 'from_itf_closable':
+                $default_display = 'closed';
+                $opened_display = 'opened';
+                break;
+            case 'from_itf_static':
+                $default_display = 'closed';
+                $opened_display = 'static';
+                break;
+            case 'all_opened_closable':
+                $default_display = 'opened';
+                $opened_display = '';
+                break;
+            case 'all_opened_static':
+                $default_display = 'static';
+                $opened_display = '';
+                break;
+            case 'all_closed':
+                $default_display = 'closed';
+                $opened_display = '';
+                break;
+        }
+
+        $now = date('YmdHis');
+        $lngs = array();
+        try {
+            $databox = $app['phraseanet.appbox']->get_databox((int) $request->get("bid"));
+            if ($request->get("typ") == "TH") {
+                $domth = $databox->get_dom_thesaurus();
+            } else {
+                $domth = $databox->get_dom_cterms();
+            }
+
+            if ($domth) {
+                $xpathth = new \DOMXPath($domth);
+                if ($request->get("id") == "T") {
+                    $q = "/thesaurus";
+                } elseif ($request->get("id") == "C") {
+                    $q = "/cterms";
+                } else {
+                    $q = "//te[@id='" . $request->get("id") . "']";
+                }
+
+                if ($request->get('ofm') == 'toscreen') {
+                    printf("<pre style='font-size: 12px;'>\n");
+                }
+
+                foreach ($t_lng as $lng) {
+                    $dom = new \DOMDocument("1.0", "UTF-8");
+                    $dom->standalone = true;
+                    $dom->preserveWhiteSpace = false;
+                    $dom->formatOutput = true;
+                    $root = $dom->appendChild($dom->createElementNS('www.phraseanet.com', 'phraseanet:topics'));
+
+                    $root->appendChild($dom->createComment(sprintf(_('thesaurus:: fichier genere le %s'), $now)));
+
+                    $root->appendChild($dom->createElement('display'))
+                        ->appendChild($dom->createElement('defaultview'))
+                        ->appendChild($dom->createTextNode($default_display));
+
+                    $this->export0Topics($xpathth->query($q)->item(0), $dom, $root, $lng, $request->get("srt"), $request->get("sth"), $request->get("sand"), $opened_display, $obr);
+
+                    if ($request->get("ofm") == 'toscreen') {
+                        $lngs[$lng] = str_replace(array('&', '<', '>'), array('&amp;', '&lt;', '&gt;'), $dom->saveXML());
+                    } elseif ($request->get("ofm") == 'tofiles') {
+                        $fname = 'topics_' . $lng . '.xml';
+
+                        @rename($app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/' . $fname, $app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/topics_' . $lng . '_BKP_' . $now . '.xml');
+
+                        if ($dom->save($app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/' . $fname)) {
+                            $lngs[$lng] = \p4string::MakeString(sprintf(_('thesaurus:: fichier genere : %s'), $fname));
+                        } else {
+                            $lngs[$lng] = \p4string::MakeString(_('thesaurus:: erreur lors de l\'enregsitrement du fichier'));
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+
+        }
+
+        return $app['twig']->render('thesaurus/export-topics.html.twig', array(
+            'lngs' => $lngs,
+            'ofm'  => $request->get('ofm'),
+        ));
+    }
+
+    private function export0Topics($znode, &$dom, &$root, $lng, $srt, $sth, $sand, $opened_display, $obr)
+    {
+        $topics = $root->appendChild($dom->createElement('topics'));
+        $this->doExportTopics($znode, $dom, $topics, '', $lng, $srt, $sth, $sand, $opened_display, $obr, 0);
+    }
+
+    private function doExportTopics($node, &$dom, &$topics, $prevQuery, $lng, $srt, $sth, $sand, $opened_display, $obr, $depth = 0)
+    {
+        $ntopics = 0;
+        if ($node->nodeType == XML_ELEMENT_NODE) {
+            $t_node = array();
+            $t_sort = array();
+            $i = 0;
+            for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
+                if ($n->nodeName == "te") {
+                    $ntopics ++;
+                    $label0 = $label = "";
+                    $query0 = $query = "";
+                    for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
+                        if ($n2->nodeName == "sy") {
+                            if (! $query0) {
+                                $query0 = $n2->getAttribute("w");
+                                if ($n2->getAttribute("k")) {
+                                    $query0 .= ( ' (' . $n2->getAttribute("k") . ')');
+                                }
+                                $label0 = $n2->getAttribute("v");
+                            }
+                            if ($n2->getAttribute("lng") == $lng) {
+                                $query = $n2->getAttribute("w");
+                                if ($n2->getAttribute("k"))
+                                    $query .= ( ' (' . $n2->getAttribute("k") . ')');
+                                $label = $n2->getAttribute("v");
+                                break;
+                            }
+                        }
+                    }
+                    if ( ! $query) {
+                        $query = $query0;
+                    }
+                    if ( ! $label) {
+                        $label = $label0;
+                    }
+
+                    $t_sort[$i] = $query; // tri sur w
+                    $t_node[$i] = array('label' => $label, 'node'  => $n);
+
+                    $i ++;
+                }
+            }
+
+            if ($srt)
+                natcasesort($t_sort);
+
+            foreach ($t_sort as $i => $query) {
+                $topic = $topics->appendChild($dom->createElement('topic'));
+                // $topic->setAttribute('id', $n->getAttribute('id'));
+                if ($opened_display != '' && in_array($t_node[$i]['node']->getAttribute('id'), $obr)) {
+                    $topic->setAttribute('view', $opened_display);
+                }
+                $topic->appendChild($dom->createElement('label'))->appendChild($dom->createTextNode($t_node[$i]['label']));
+
+                $query = '"' . $query . '"';
+                if ($sth) {
+                    $query = '*:' . $query;
+                    if ($sand) {
+                        $query = '(' . $query . ')';
+                    }
+                }
+
+                if ($sand && $prevQuery != '') {
+                    $query = $prevQuery . ' ' . _('phraseanet::technique:: et') . ' ' . $query . '';
+                }
+
+                $topic->appendChild($dom->createElement('query'))->appendChild($dom->createTextNode('' . $query . ''));
+
+                $topics2 = $dom->createElement('topics');
+
+                if ($this->doExportTopics($t_node[$i]['node'], $dom, $topics2, $query, $lng, $srt, $sth, $sand, $opened_display, $obr, $depth + 1) > 0) {
+                    $topic->appendChild($topics2);
+                }
+            }
+        }
+
+        return $ntopics;
+    }
+
+    public function exportTopicsDialog(Application $app, Request $request)
+    {
+        return $app['twig']->render('thesaurus/export-topics-dialog.html.twig', array(
+            'bid' => $request->get('bid'),
+            'piv' => $request->get('piv'),
+            'typ' => $request->get('typ'),
+            'dlg' => $request->get('dlg'),
+            'id'  => $request->get('id'),
+            'obr'  => $request->get('obr'),
+        ));
+    }
+
+    public function import(Application $app, Request $request)
+    {
+        set_time_limit(300);
+
+        $imported = false;
+        $err = '';
+
+        if (null === $bid = $request->get("bid")) {
+            return new Response('Missing bid parameter', 400);
+        }
+
+        try {
+            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $connbas = \connection::getPDOConnection($app, $bid);
+
+            $dom = $databox->get_dom_thesaurus();
+
+            if ($dom) {
+                if ($request->get('id') == '') {
+                    // on importe un theaurus entier
+                    $node = $dom->documentElement;
+                    while ($node->firstChild) {
+                        $node->removeChild($node->firstChild);
+                    }
+
+                    $cbad = array();
+                    $cok = array();
+                    for ($i = 0; $i < 32; $i ++) {
+                        $cbad[] = chr($i);
+                        $cok[] = '_';
+                    }
+
+                    $file = $request->files->get('fil')->getPathname();
+
+                    if (($fp = fopen($file, 'rb'))) {
+                        $iline = 0;
+                        $curdepth = -1;
+                        $tid = array(-1    => -1, 0     => -1);
+                        while ( ! $err && ! feof($fp) && ($line = fgets($fp)) !== FALSE) {
+                            $iline ++;
+                            if (trim($line) == '') {
+                                continue;
+                            }
+                            for ($depth = 0; $line != '' && $line[0] == "\t"; $depth ++) {
+                                $line = substr($line, 1);
+                            }
+                            if ($depth > $curdepth + 1) {
+                                $err = sprintf(_("over-indent at line %s"), $iline);
+                                continue;
+                            }
+
+                            $line = trim($line);
+
+                            if ( ! $this->checkEncoding($line, 'UTF-8')) {
+                                $err = sprintf(_("bad encoding at line %s"), $iline);
+                                continue;
+                            }
+
+                            $line = str_replace($cbad, $cok, ($oldline = $line));
+                            if ($line != $oldline) {
+                                $err = sprintf(_("bad character at line %s"), $iline);
+                                continue;
+                            }
+
+                            while ($curdepth >= $depth) {
+                                $curdepth --;
+                                $node = $node->parentNode;
+                            }
+                            $curdepth = $depth;
+
+                            $nid = (int) ($node->getAttribute('nextid'));
+                            $id = $node->getAttribute('id') . '.' . $nid;
+                            $pid = $node->getAttribute('id');
+
+                            $te_id = ($pid ? ($pid . '.') : 'T') . $nid;
+
+                            $node->setAttribute('nextid', (string) ($nid + 1));
+
+                            $te = $node->appendChild($dom->createElement('te'));
+                            $te->setAttribute('id', $te_id);
+
+                            $node = $te;
+
+                            $tsy = explode(';', $line);
+                            $nsy = 0;
+                            foreach ($tsy as $syn) {
+                                $lng = $request->get('piv');
+                                $hit = '';
+                                $kon = '';
+
+                                if (($ob = strpos($syn, '[')) !== false) {
+                                    if (($cb = strpos($syn, ']', $ob)) !== false) {
+                                        $lng = trim(substr($syn, $ob + 1, $cb - $ob - 1));
+                                        $syn = substr($syn, 0, $ob) . substr($syn, $cb + 1);
+                                    } else {
+                                        $lng = trim(substr($syn, $ob + 1));
+                                        $syn = substr($syn, 0, $ob);
+                                    }
+
+                                    if (($ob = strpos($syn, '[')) !== false) {
+                                        if (($cb = strpos($syn, ']', $ob)) !== false) {
+                                            $hit = trim(substr($syn, $ob + 1, $cb - $ob - 1));
+                                            $syn = substr($syn, 0, $ob) . substr($syn, $cb + 1);
+                                        } else {
+                                            $hit = trim(substr($syn, $ob + 1));
+                                            $syn = substr($syn, 0, $ob);
+                                        }
+                                    }
+                                }
+                                if (($ob = strpos($syn, '(')) !== false) {
+                                    if (($cb = strpos($syn, ')', $ob)) !== false) {
+                                        $kon = trim(substr($syn, $ob + 1, $cb - $ob - 1));
+                                        $syn = substr($syn, 0, $ob) . substr($syn, $cb + 1);
+                                    } else {
+                                        $kon = trim(substr($syn, $ob + 1));
+                                        $syn = substr($syn, 0, $ob);
+                                    }
+                                }
+
+                                $syn = trim($syn);
+
+                                $sy = $node->appendChild($dom->createElement('sy'));
+                                $sy->setAttribute('id', $te_id . '.' . $nsy);
+                                $v = $syn;
+                                if ($kon) {
+                                    $v .= ' (' . $kon . ')';
+                                }
+                                $sy->setAttribute('v', $v);
+                                $sy->setAttribute('w', $app['unicode']->remove_indexer_chars($syn));
+                                if ($kon) {
+                                    $sy->setAttribute('k', $app['unicode']->remove_indexer_chars($kon));
+                                }
+                                $sy->setAttribute('lng', $lng);
+
+                                $nsy ++;
+                            }
+
+                            $te->setAttribute('nextid', (string) $nsy);
+                        }
+
+                        fclose($fp);
+                    }
+
+                } else {
+                    // on importe dans une branche
+                    $err = 'not implemented';
+                }
+
+                if (! $err) {
+                    $imported = true;
+                    $databox->saveThesaurus($dom);
+                }
+            }
+
+            if (! $err) {
+                $meta_struct = $databox->get_meta_structure();
+
+                foreach ($meta_struct->get_elements() as $meta_field) {
+                    $meta_field->set_tbranch('')->save();
+                }
+
+                $dom = $databox->get_dom_cterms();
+                if ($dom) {
+                    $node = $dom->documentElement;
+                    while ($node->firstChild) {
+                        $node->removeChild($node->firstChild);
+                    }
+                    $databox->saveCterms($dom);
+                }
+
+                $sql = 'UPDATE RECORD SET status=status & ~3';
+                $stmt = $connbas->prepare($sql);
+                $stmt->execute();
+                $stmt->closeCursor();
+            }
+        } catch (\Exception $e) {
+
+        }
+
+        return $app['twig']->render('thesaurus/import.html.twig', array('err' => $err));
+    }
+
+    private function checkEncoding($string, $string_encoding)
+    {
+        $fs = $string_encoding == 'UTF-8' ? 'UTF-32' : $string_encoding;
+        $ts = $string_encoding == 'UTF-32' ? 'UTF-8' : $string_encoding;
+
+        return $string === mb_convert_encoding(mb_convert_encoding($string, $fs, $ts), $ts, $fs);
+    }
+
+    public function importDialog(Application $app, Request $request)
+    {
+        return $app['twig']->render('thesaurus/import-dialog.html.twig', array(
+            'dlg' => $request->get('dlg'),
+            'bid' => $request->get('bid'),
+            'id'  => $request->get('id'),
+            'piv' => $request->get('piv'),
+        ));
+    }
+
+    public function indexThesaurus(Application $app, Request $request)
+    {
+        $sql = "SELECT
+                    sbas.sbas_id,
+                    sbasusr.bas_manage AS bas_manage,
+                    sbasusr.bas_modify_struct AS bas_modify_struct,
+                    sbasusr.bas_modif_th AS bas_edit_thesaurus
+                FROM
+                    (usr INNER JOIN sbasusr
+                        ON usr.usr_id = :usr_id
+                        AND usr.usr_id = sbasusr.usr_id
+                        AND model_of = 0)
+                INNER JOIN
+                    sbas ON sbas.sbas_id = sbasusr.sbas_id
+                HAVING bas_edit_thesaurus > 0
+                ORDER BY sbas.ord";
+
+        $bases = $languages = array();
+
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':usr_id' => $app['phraseanet.user']->get_id()));
+        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        foreach ($rs as $row) {
+            try {
+                $connbas = \connection::getPDOConnection($app, $row['sbas_id']);
+            } catch (\Exception $e) {
+                continue;
+            }
+            $bases[$row['sbas_id']] = \phrasea::sbas_names($row['sbas_id'], $app);
+        }
+
+        foreach (PhraseaApplication::getAvailableLanguages() as $lng_code => $lng) {
+            $lng_code = explode('_', $lng_code);
+            $languages[$lng_code[0]] = $lng;
+        }
+
+        return $app['twig']->render('thesaurus/index.html.twig', array(
+            'languages' => $languages,
+            'bases'     => $bases,
+        ));
+    }
+
+    public function linkFieldStep1(Application $app, Request $request)
+    {
+        if (null === $bid = $request->get("bid")) {
+            return new Response('Missing bid parameter', 400);
+        }
+
+        try {
+            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $domstruct = $databox->get_dom_structure();
+            $domth = $databox->get_dom_thesaurus();
+
+            if ($domstruct && $domth) {
+                $xpathth = new \DOMXPath($domth);
+                $xpathstruct = new \DOMXPath($domstruct);
+
+                    if ($request->get('tid') !== "") {
+                        $q = "//te[@id='" . $request->get('tid') . "']";
+                    } else {
+                        $q = "//te[not(@id)]";
+                    }
+
+                    $nodes = $xpathth->query($q);
+                    $fullBranch = "";
+                    if ($nodes->length == 1) {
+                        for ($n = $nodes->item(0); $n && $n->nodeType == XML_ELEMENT_NODE && $n->getAttribute("id") !== ""; $n = $n->parentNode) {
+                            $sy = $xpathth->query("sy", $n)->item(0);
+                            $sy = $sy ? $sy->getAttribute("v") : "";
+                            if (! $sy) {
+                                $sy = $sy = "...";
+                            }
+                            $fullBranch = " / " . $sy . $fullBranch;
+                        }
+                    }
+                    $fieldnames = array();
+                    $nodes = $xpathstruct->query("/record/description/*");
+                    for ($i = 0; $i < $nodes->length; $i ++) {
+                        $fieldname = $nodes->item($i)->nodeName;
+                        $tbranch = $nodes->item($i)->getAttribute("tbranch");
+                        $ck = false;
+                        if ($tbranch) {
+                            // ce champ a deje un tbranch, est-ce qu'il pointe sur la branche selectionnee ?
+                            $thnodes = $xpathth->query($tbranch);
+                            for ($j = 0; $j < $thnodes->length; $j ++) {
+                                if ($thnodes->item($j)->getAttribute("id") == $request->get('tid')) {
+                                    $ck = true;
+                                }
+                            }
+                        }
+                        $fieldnames[$fieldname] = $ck;
+                    }
+            }
+        } catch (\Exception $e) {
+
+        }
+
+        return $app['twig']->render('thesaurus/link-field-step1.html.twig', array(
+            'piv'        => $request->get('piv'),
+            'bid'        => $request->get('bid'),
+            'tid'        => $request->get('tid'),
+            'fullBranch' => $fullBranch,
+            'fieldnames' => $fieldnames
+        ));
+    }
+
+    public function linkFieldStep2(Application $app, Request $request)
+    {
+        if (null === $bid = $request->get("bid")) {
+            return new Response('Missing bid parameter', 400);
+        }
+
+        $oldlinks = array();
+        $needreindex = false;
+
+        try {
+            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $domstruct = $databox->get_dom_structure();
+            $domth = $databox->get_dom_thesaurus();
+
+            if ($domstruct && $domth) {
+                $xpathth = new \DOMXPath($domth);
+                $xpathstruct = new \DOMXPath($domstruct);
+                $nodes = $xpathstruct->query("/record/description/*");
+
+                for ($i = 0; $i < $nodes->length; $i ++) {
+                    $fieldname = $nodes->item($i)->nodeName;
+                    $oldbranch = $nodes->item($i)->getAttribute("tbranch");
+                    $ck = false;
+                    $tids = array(); // les ids de branches liees e ce champ
+                    if ($oldbranch) {
+                        // ce champ a deje un tbranch, on balaye les branches auxquelles il est lie
+                        $thnodes = $xpathth->query($oldbranch);
+                        for ($j = 0; $j < $thnodes->length; $j ++) {
+                            if ($thnodes->item($j)->getAttribute("id") == $request->get('tid')) {
+                                // il etait deje lie e la branche selectionnee
+                                $tids[$thnodes->item($j)->getAttribute("id")] = $thnodes->item($j);
+                                $ck = true;
+                            } else {
+                                // il etait lie e une autre branche
+                                $tids[$thnodes->item($j)->getAttribute("id")] = $thnodes->item($j);
+                            }
+                        }
+                    }
+
+                    if (in_array($fieldname, $request->get('field', array())) != $ck) {
+                        if ($ck) {
+                            // print("il etait lie a la branche, il ne l'est plus<br/>\n");
+                            unset($tids[$request->get('tid')]);
+                        } else {
+                            // print("il n'etait pas lie a la branche, il l'est maintenant<br/>\n");
+                            $tids[$request->get('tid')] = $xpathth->query("/thesaurus//te[@id='" . \thesaurus::xquery_escape($request->get('tid')) . "']")->item(0);
+                        }
+                        $newtbranch = "";
+                        foreach ($tids as $kitd => $node) {
+                            if ($kitd === "") {
+                                $newtbranch .= ( $newtbranch ? " | " : "") . "/thesaurus";
+                            } else {
+                                $neb = "";
+                                while ($node && $node->nodeName == "te") {
+                                    $neb = "/te[@id='" . $node->getAttribute("id") . "']" . $neb;
+                                    $node = $node->parentNode;
+                                }
+                                $newtbranch .= ( $newtbranch ? " | " : "") . "/thesaurus" . $neb;
+                            }
+                        }
+
+                        $oldlinks[$fieldname] = array(
+                            'old_branch' => $oldbranch,
+                            'new_branch' => $newtbranch
+                        );
+
+                        if ($newtbranch != "") {
+                            $needreindex = true;
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+
+        }
+
+        return $app['twig']->render('thesaurus/link-field-step2.html.twig', array(
+            'piv'          => $request->get('piv'),
+            'bid'          => $request->get('bid'),
+            'tid'          => $request->get('tid'),
+            'oldlinks'     => $oldlinks,
+            'need_reindex' => $needreindex,
+        ));
+    }
+
+    public function linkFieldStep3(Application $app, Request $request)
+    {
+        if (null === $bid = $request->get("bid")) {
+            return new Response('Missing bid parameter', 400);
+        }
+
+        try {
+            $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
+            $connbas = \connection::getPDOConnection($app, $bid);
+            $meta_struct = $databox->get_meta_structure();
+            $domct = $databox->get_dom_cterms();
+            $domst = $databox->get_dom_structure();
+
+            if ($domct && $domst) {
+                $xpathct = new \DOMXPath($domct);
+                $xpathst = new \DOMXPath($domst);
+                $ctchanged = false;
+
+                $candidates2del = array();
+                foreach ($request->get("f2unlk", array()) as $f2unlk) {
+                    $q = "/cterms/te[@field='" . \thesaurus::xquery_escape($f2unlk) . "']";
+                    $nodes = $xpathct->query($q);
+                    for ($i = 0; $i < $nodes->length; $i ++) {
+                        $candidates2del[] = array(
+                            "field" => $f2unlk,
+                            "node"  => $nodes->item($i)
+                        );
+                    }
+
+                    $field = $meta_struct->get_element_by_name($f2unlk);
+                    if ($field) {
+                        $field->set_tbranch('')->save();
+                    }
+                }
+                foreach ($candidates2del as $candidate2del) {
+                    $candidate2del["node"]->parentNode->removeChild($candidate2del["node"]);
+                    $ctchanged = true;
+                }
+
+                foreach ($request->get("fbranch", array()) as $fbranch) {
+                    $p = strpos($fbranch, "<");
+                    if ($p > 1) {
+                        $fieldname = substr($fbranch, 0, $p);
+                        $tbranch = substr($fbranch, $p + 1);
+                        $field = $meta_struct->get_element_by_name($fieldname);
+                        if ($field) {
+                            $field->set_tbranch($tbranch)->save();
+                        }
+                    }
+                }
+
+                if ($ctchanged) {
+                    $databox->saveCterms($domct);
+                }
+            }
+
+            $sql = "DELETE FROM thit WHERE name = :name";
+            $stmt = $connbas->prepare($sql);
+            foreach ($request->get("f2unlk", array()) as $f2unlk) {
+                $stmt->execute(array(':name' => $f2unlk));
+            }
+            $stmt->closeCursor();
+
+            if ($request->get("reindex")) {
+                $sql = "UPDATE record SET status=status & ~2";
+                $stmt = $connbas->prepare($sql);
+                $stmt->execute();
+                $stmt->closeCursor();
+            }
+        } catch (\Exception $e) {
+
+        }
+
+        return $app['twig']->render('thesaurus/link-field-step3.html.twig', array(
+            'field2del'      => $request->get('f2unlk', array()),
+            'candidates2del' => $candidates2del,
+            'branch2del'     => $request->get('fbranch', array()),
+            'ctchanged'      => $ctchanged,
+            'reindexed'      => $request->get('reindex'),
+        ));
+    }
+
+    private function fixThesaurus($app, &$domct, &$domth, &$connbas)
+    {
+        $oldversion = $version = $domth->documentElement->getAttribute("version");
+
+        if ('' === trim($version)) {
+            $version = '1.0.0';
+        }
+
+        while (class_exists($cls = "patchthesaurus_" . str_replace(".", "", $version))) {
+
+            $last_version = $version;
+            $zcls = new $cls;
+            $version = $zcls->patch($version, $domct, $domth, $connbas);
+
+            if ($version == $last_version) {
+                break;
+            }
+        }
+
+        return $version;
+    }
+
+    public function loadThesaurus(Application $app, Request $request)
+    {
+        if (null === $bid = $request->get("bid")) {
+            return new Response('Missing bid parameter', 400);
+        }
+
+        $updated = false;
+        $validThesaurus = true;
+        $ctlist = array();
+        $name = \phrasea::sbas_names($request->get('bid'), $app);
+
+        try {
+            $databox = $app['phraseanet.appbox']->get_databox((int) $request->get('bid'));
+            $connbas = \connection::getPDOConnection($app, $request->get('bid'));
+
+            $domct = $databox->get_dom_cterms();
+            $domth = $databox->get_dom_thesaurus();
+            $now = date("YmdHis");
+
+            if ( ! $domct && $request->get('repair') == 'on') {
+                $domct = new \DOMDocument();
+                $domct->load(__DIR__ . "/../../../../conf.d/blank_cterms.xml");
+                $domct->documentElement->setAttribute("creation_date", $now);
+                $databox->saveCterms($domct);
+            }
+            if ( ! $domth && $request->get('repair') == 'on') {
+                $domth = new \DOMDocument();
+                $domth->load(__DIR__ . "/../../../../conf.d/blank_thesaurus.xml");
+                $domth->documentElement->setAttribute("creation_date", $now);
+                $databox->saveThesaurus($domth);
+            }
+
+            if ($domct && $domth) {
+
+                $oldversion = $domth->documentElement->getAttribute("version");
+                if (($version = $this->fixThesaurus($app, $domct, $domth, $connbas)) != $oldversion) {
+                    $updated = true;
+                    $databox->saveCterms($domct);
+                    $databox->saveThesaurus($domth);
+                }
+
+                for ($ct = $domct->documentElement->firstChild; $ct; $ct = $ct->nextSibling) {
+                    if ($ct->nodeName == "te") {
+                        $ctlist[] = array(
+                            'id' => $ct->getAttribute("id"),
+                            'field' => $ct->getAttribute("field")
+                        );
+                    }
+                }
+            } else {
+                $validThesaurus = false;
+            }
+        } catch (\Exception $e) {
+
+        }
+
+        return $app['twig']->render('thesaurus/load-thesaurus.html.twig', array(
+            'bid' => $request->get('bid'),
+            'name' => $name,
+            'cterms' => $ctlist,
+            'valid_thesaurus' => $validThesaurus,
+            'updated' => $updated
+        ));
+    }
+
+    public function newSynonymDialog(Application $app, Request $request)
+    {
+        $languages = array();
+
+        foreach (PhraseaApplication::getAvailableLanguages() as $lng_code => $lng) {
+            $lng_code = explode('_', $lng_code);
+            $languages[$lng_code[0]] = $lng;
+        }
+
+        return $app['twig']->render('thesaurus/new-synonym-dialog.html.twig', array(
+            'piv'       => $request->get('piv'),
+            'typ'       => $request->get('typ'),
+            'languages' => $languages,
+        ));
+    }
+
+
+    public function newTerm(Application $app, Request $request)
+    {
+        list($term, $context) = $this->splitTermAndContext($request->get("t"));
+
+        $dom = $this->doSearchCandidate($app, $request->get('bid'), $request->get('pid'), $request->get('term'), $request->get('context'), $request->get('piv'));
+
+        $xpath = new \DOMXPath($dom);
+
+        $candidates = $xpath->query("/result/candidates_list/ct");
+
+        $nb_candidates_ok = $nb_candidates_bad = 0;
+        $flist_ok = $flist_bad = "";
+        for ($i = 0; $i < $candidates->length; $i ++) {
+            if ($candidates->item($i)->getAttribute("sourceok") == "1") { // && $candidates->item($i)->getAttribute("cid"))
+                $flist_ok .= ( $flist_ok ? ", " : "") . $candidates->item($i)->getAttribute("field");
+                $nb_candidates_ok ++;
+            } else {
+                $flist_bad .= ( $flist_bad ? ", " : "") . $candidates->item($i)->getAttribute("field");
+                $nb_candidates_bad ++;
+            }
+        }
+        $candidates_list = array();
+        for ($i = 0; $i < $candidates->length; $i ++) {
+            if ($candidates->item($i)->getAttribute("sourceok") == "1") {
+                $candidates_list = array(
+                    'id'    => $candidates->item($i)->getAttribute("id"),
+                    'field' => $candidates->item($i)->getAttribute("field"),
+                );
+            }
+        }
+
+        return $app['twig']->render('thesaurus/new-term.html.twig', array(
+            'typ' => $request->get('typ'),
+            'bid' => $request->get('bid'),
+            'piv' => $request->get('piv'),
+            'pid' => $request->get('pid'),
+            'sylng' => $request->get('sylng'),
+            'dlg' => $request->get('dlg'),
+            'candidates' => $candidates_list,
+            'term' => $term,
+            'context' => $context,
+            'nb_candidates_ok' => $nb_candidates_ok,
+            'nb_candidates_bad' => $nb_candidates_bad,
+        ));
+    }
+
+    public function properties(Application $app, Request $request)
+    {
+        $dom = $this->getXMLTerm($app, $request->get('bid'), $request->get('id'), $request->get('typ'), $request->get('piv'), '0', null, '1', null);
+        $fullpath = $dom->getElementsByTagName("fullpath_html")->item(0)->firstChild->nodeValue;
+        $hits = $dom->getElementsByTagName("allhits")->item(0)->firstChild->nodeValue;
+
+        $languages = $synonyms = array();
+
+        $sy_list = $dom->getElementsByTagName("sy_list")->item(0);
+        for ($n = $sy_list->firstChild; $n; $n = $n->nextSibling) {
+            $synonyms[] = array(
+                'id' => $n->getAttribute("id"),
+                'lng' => $n->getAttribute("lng"),
+                't' => $n->getAttribute("t"),
+                'hits' => $n->getAttribute("hits"),
+            );
+        }
+
+        foreach (PhraseaApplication::getAvailableLanguages() as $code => $language) {
+            $lng_code = explode('_', $code);
+            $languages[$lng_code[0]] = $language;
+        }
+
+        return $app['twig']->render('thesaurus/properties.html.twig', array(
+            'typ' => $request->get('typ'),
+            'bid' => $request->get('bid'),
+            'piv' => $request->get('piv'),
+            'id' => $request->get('id'),
+            'dlg' => $request->get('dlg'),
+            'languages' => $languages,
+            'fullpath' => $fullpath,
+            'hits' => $hits,
+            'synonyms' => $synonyms,
+        ));
+    }
+
+    public function search(Application $app, Request $request)
+    {
+        return $app['twig']->render('thesaurus/search.html.twig');
+    }
+
+    public function thesaurus(Application $app, Request $request)
+    {
+        $flags = $jsFlags = array();
+
+        foreach (PhraseaApplication::getAvailableLanguages() as $code => $language) {
+            $lng_code = explode('_', $code);
+            $flags[$lng_code[0]] = $language;
+            $jsFlags[$lng_code[0]] = array('w' => 18, 'h' => 13);
+        }
+        $jsFlags = json_encode($jsFlags);
+
+        return $app['twig']->render('thesaurus/thesaurus.html.twig', array(
+            'piv'     => $request->get('piv'),
+            'bid'     => $request->get('bid'),
+            'flags'   => $flags,
+            'jsFlags' => $jsFlags,
+        ));
+    }
+
 
     public function acceptXml(Application $app, Request $request)
     {
@@ -1125,7 +2329,7 @@ class Thesaurus implements ControllerProviderInterface
                             // le champ "*" est la corbeille, il est toujours accepte
                             $cfield->setAttribute("acceptable", "1");
                         } else {
-                            if (($databox_field = $meta->get_element_by_name($acf)) instanceof databox_field) {
+                            if (($databox_field = $meta->get_element_by_name($acf)) instanceof \databox_field) {
                                 $tbranch = $databox_field->get_tbranch();
                                 $q = "(" . $tbranch . ")/descendant-or-self::te[@id='" . $id . "']";
 
@@ -1258,7 +2462,6 @@ class Thesaurus implements ControllerProviderInterface
                             $newts->setAttribute("nts", $ts["nchild"]);
                             $newts->appendChild($ret->createTextNode($ts["allsy"]));
                         }
-
 
                         $fullpath_html = $fullpath = "";
                         for ($depth = 0, $n = $nodes->item(0); $n; $n = $n->parentNode, $depth -- ) {
@@ -1595,6 +2798,7 @@ class Thesaurus implements ControllerProviderInterface
             "reindex" => $request->get('reindex'),
             "debug"   => $request->get('debug'),
         ), true)));
+        
         $refresh_list = $root->appendChild($ret->createElement("refresh_list"));
 
         if (null === $bid = $request->get("bid")) {
@@ -1891,7 +3095,7 @@ class Thesaurus implements ControllerProviderInterface
         return new Response($ret->saveXML(), 200, array('Content-Type' => 'text/xml'));
     }
 
-    private function doRejectBranch(connection_pdo $connbas, &$node)
+    private function doRejectBranch(\connection_pdo $connbas, &$node)
     {
         if (strlen($oldid = $node->getAttribute("id")) > 1) {
             $node->setAttribute("id", $newid = ("R" . substr($oldid, 1)));
@@ -1912,25 +3116,32 @@ class Thesaurus implements ControllerProviderInterface
 
     public function searchCandidateXml(Application $app, Request $request)
     {
+        if (null === $bid = $request->get("bid")) {
+            return new Response('Missing bid parameter', 400);
+        }
+
+        $ret = $this->doSearchCandidate($app, $request->get('bid'), $request->get('pid'), $request->get('t'), $request->get('k'), $request->get('piv'), $request->get('debug'));
+
+        return new Response($ret->saveXML(), 200, array('Content-Type' => 'text/xml'));
+    }
+
+    private function doSearchCandidate(Application $app, $bid, $pid, $t, $k, $piv, $debug = false)
+    {
         $ret = new \DOMDocument("1.0", "UTF-8");
         $ret->standalone = true;
         $ret->preserveWhiteSpace = false;
 
         $root = $ret->appendChild($ret->createElement("result"));
         $root->appendChild($ret->createCDATASection(var_export(array(
-            "bid"   => $request->get('bid'),
-            "pid"   => $request->get('pid'),
-            "t"     => $request->get('t'),
-            "k"     => $request->get('k'),
-            "piv"   => $request->get('piv'),
-            "debug" => $request->get('debug'),
+            "bid"   => $bid,
+            "pid"   => $pid,
+            "t"     => $t,
+            "k"     => $k,
+            "piv"   => $piv,
+            "debug" => $debug,
         ), true)));
 
         $ctlist = $root->appendChild($ret->createElement("candidates_list"));
-
-        if (null === $bid = $request->get("bid")) {
-            return new Response('Missing bid parameter', 400);
-        }
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
@@ -1950,8 +3161,8 @@ class Thesaurus implements ControllerProviderInterface
                 for ($i = 0; $i < $nodes->length; $i ++) {
                     $fieldname = $nodes->item($i)->nodeName;
                     $tbranch = $nodes->item($i)->getAttribute("tbranch");
-                    if ($request->get('pid') != "") {
-                        $q = "(" . $tbranch . ")/descendant-or-self::te[@id='" . $request->get('pid') . "']";
+                    if ($pid != "") {
+                        $q = "(" . $tbranch . ")/descendant-or-self::te[@id='" . $pid . "']";
                     } else {
                         $q = "(" . $tbranch . ")/descendant-or-self::te[not(@id)]";
                     }
@@ -1968,7 +3179,7 @@ class Thesaurus implements ControllerProviderInterface
                     }
 
                     $l = $xpathth->query($q)->length;
-                    if ($request->get('debug')) {
+                    if ($debug) {
                         printf("field '%s' : %s --: %d nodes<br/>\n", $fieldname, $q, $l);
                     }
 
@@ -1990,42 +3201,36 @@ class Thesaurus implements ControllerProviderInterface
                 );
 
                 if (count($fields) > 0) {
-                    // on cherche le terme dans les candidats
-                    $domct = new \DOMDocument;
-                    if ($domct->loadXML($rowbas["cterms"])) {
-                        $xpathct = new \DOMXPath($domct);
-
-                        $q = "@w='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($request->get('k'))) . "'";
-                        if ($request->get('k')) {
-                            if ($request->get('k') != "*") {
-                                $q .= " and @k='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($request->get('k'))) . "'";
-                            }
-                        } else {
-                            $q .= " and not(@k)";
+                    $q = "@w='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($k)) . "'";
+                    if ($k) {
+                        if ($k != "*") {
+                            $q .= " and @k='" . \thesaurus::xquery_escape($app['unicode']->remove_indexer_chars($k)) . "'";
                         }
-                        $q = "/cterms//te[./sy[$q]]";
+                    } else {
+                        $q .= " and not(@k)";
+                    }
+                    $q = "/cterms//te[./sy[$q]]";
 
-                        if ($request->get('debug')) {
-                            printf("xquery : %s<br/>\n", $q);
+                    if ($debug) {
+                        printf("xquery : %s<br/>\n", $q);
+                    }
+
+                    // $root->appendChild($ret->createCDATASection( $q ));
+                    $nodes = $xpathct->query($q);
+                    // le terme peut etre present dans plusieurs candidats
+                    for ($i = 0; $i < $nodes->length; $i ++) {
+                        // on a trouve le terme dans les candidats, mais en provenance de quel champ ?.. on remonte au champ candidat
+                        for ($n = $nodes->item($i)->parentNode; $n && $n->parentNode && $n->parentNode->nodeName != "cterms"; $n = $n->parentNode) {
+                            ;
                         }
-
-                        // $root->appendChild($ret->createCDATASection( $q ));
-                        $nodes = $xpathct->query($q);
-                        // le terme peut etre present dans plusieurs candidats
-                        for ($i = 0; $i < $nodes->length; $i ++) {
-                            // on a trouve le terme dans les candidats, mais en provenance de quel champ ?.. on remonte au champ candidat
-                            for ($n = $nodes->item($i)->parentNode; $n && $n->parentNode && $n->parentNode->nodeName != "cterms"; $n = $n->parentNode) {
-                                ;
-                            }
-                            if ($request->get('debug')) {
-                                printf("proposed in field %s<br/>\n", $n->getAttribute("field"));
-                            }
-                            if ($n && array_key_exists($f = $n->getAttribute("field"), $fields)) {
-                                $fields[$f]["cid"] = $nodes->item($i)->getAttribute("id");
-                            }
+                        if ($debug) {
+                            printf("proposed in field %s<br/>\n", $n->getAttribute("field"));
+                        }
+                        if ($n && array_key_exists($f = $n->getAttribute("field"), $fields)) {
+                            $fields[$f]["cid"] = $nodes->item($i)->getAttribute("id");
                         }
                     }
-                    if ($request->get('debug')) {
+                    if ($debug) {
                         printf("fields:<pre>%s</pre><br/>\n", var_export($fields, true));
                     }
                 }
@@ -2046,7 +3251,7 @@ class Thesaurus implements ControllerProviderInterface
 
         }
 
-        return new Response($ret->saveXML(), 200, array('Content-Type' => 'text/xml'));
+        return $ret;
     }
 
     public function searchNoHitsXml(Application $app, Request $request)

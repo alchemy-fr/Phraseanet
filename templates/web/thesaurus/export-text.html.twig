@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <title>{% trans 'thesaurus:: export au format texte' %}</title>
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <script type="text/javascript">
+            function loaded()
+            {
+                self.focus();
+            }
+        </script>
+    </head>
+    <body id="idbody" onload="loaded();" style="background-color:#ffffff" >
+        <pre style='font-size: {% if smp %}9{% else %}12{% endif %}px;'>
+{{ output }}
+        </pre>
+    </body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <title>{% trans 'thesaurus:: Lier la branche de thesaurus au champ' %}</title>
+
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+
+        <script type="text/javascript">
+            function ckField()
+            {
+                fields = document.getElementsByName("field[]");
+                changed = false;
+                for(i=0; i<fields.length && !changed; i++)
+                {
+                    if( (fields[i].checked?"1":"0") != fields[i].ck0)
+                        changed = true;
+                }
+                document.getElementById("submit_button").disabled = !changed;
+
+                return(true);
+            }
+            function clkBut(button)
+            {
+                switch(button)
+                {
+                    case "submit":
+                        // document.forms[0].target="LINKFIELD";
+                        document.forms[0].submit();
+                        break;
+                    case "cancel":
+                        self.close();
+                        break;
+                }
+            }
+            function loaded()
+            {
+                window.name="LINKFIELD";
+                ckField();
+            }
+        </script>
+    </head>
+    <body onload="loaded();" class="dialog">
+        <center>
+            <form action="linkfield2.php" method="post" target="LINKFIELD">
+                <input type="hidden" name="piv" value="{{ piv }}">
+                <input type="hidden" name="bid" value="{{ bid }}">
+                <input type="hidden" name="tid" value="{{ tid }}">
+
+                {% set branch = "<br/><b>" ~ fullBranch ~ "</b><br/>" %}
+                {% trans %}
+                    thesaurus:: Lier la branche de thesaurus au champ {{ branch }}
+                {% endtrans %}
+
+                <div style="width:70%; height:200px; overflow:scroll;" class="x3Dbox">
+                {% for fieldname, checked in fieldnames %}
+                    <input type="checkbox" name="field[]" value="{{ fieldname }}" {% if checked %}checked{% endif %} ck0="{% if checked %}1{% else %}0{% endif %}" onclick="return(ckField());">{{ fieldname }}<br/>
+                {% endfor %}
+                </div>
+                <br/>
+                <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');">
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');">
+            </form>
+        </center>
+    </body>
+</html>

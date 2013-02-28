@@ -661,7 +661,7 @@ class Application extends SilexApplication
         $this->mount('/report/informations', new ReportInformations());
         $this->mount('/report/export', new ReportExport());
 
-        $this->mount('/thesaurus2', new Thesaurus());
+        $this->mount('/thesaurus', new Thesaurus());
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
     }
 

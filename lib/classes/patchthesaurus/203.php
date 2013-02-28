@@ -14,20 +14,19 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class patch_th_2_0_4
+class patchthesaurus_203
 {
 
-    function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
     {
         global $debug;
         global $ctchanged, $thchanged, $needreindex;
-
         $unicode = new unicode();
-        // $debug = true;
-        if ($version == "2.0.4") {
+
+        if ($version == "2.0.3") {
             $xp = new DOMXPath($domth);
             $sy = $xp->query("//sy");
-            for ($i = 0; $i < $sy->length; $i ++ ) {
+            for ($i = 0; $i < $sy->length; $i ++) {
                 if (($k = $sy->item($i)->getAttribute("k"))) {
                     $v = $sy->item($i)->getAttribute("v");
                     if (strpos($v, "(") === false) {
@@ -45,7 +44,7 @@ class patch_th_2_0_4
                     }
                 }
             }
-            $domth->documentElement->setAttribute("version", "2.0.5");
+            $domth->documentElement->setAttribute("version", "2.0.4");
             $domth->documentElement->setAttribute("modification_date", date("YmdHis"));
 
             $thchanged = true;
@@ -73,20 +72,18 @@ class patch_th_2_0_4
                 print("//     $ctdel nodes removed\n");
 
                 $sql2 = "UPDATE record SET status=((status | 15) & ~2)";
-
-                $stmt = $connbas->prepare($sql);
+                $stmt = $connbas->prepare($sql2);
                 $stmt->execute();
                 $stmt->closeCursor();
             }
 
             $sy = $xp->query("//sy");
-            for ($i = 0; $i < $sy->length; $i ++ ) {
+            for ($i = 0; $i < $sy->length; $i ++) {
                 if (($k = $sy->item($i)->getAttribute("k"))) {
-                    if (strpos($v = $sy->item($i)->getAttribute("v"), "(") === false) {
+                    if (strpos($v = $sy->item($i)->getAttribute("v"), "(") === false)
                         $sy->item($i)->setAttribute("v", $v . " (" . $k . ")");
-                    } else {
+                    else
                         printf("//   <font color=\"#ff8000\">warning</font> : &lt;sy id='%s' v='%s' ...&gt already had context (left unchanged)\n", $sy->item($i)->getAttribute("id"), htmlentities($v));
-                    }
                     $sy->item($i)->setAttribute("k", $unicode->remove_indexer_chars($k));
                 }
             }
@@ -97,17 +94,17 @@ class patch_th_2_0_4
 
             $this->fixIds($connbas, $domct->documentElement);
 
-            $domct->documentElement->setAttribute("version", "2.0.5");
+            $domct->documentElement->setAttribute("version", "2.0.4");
             $domct->documentElement->setAttribute("modification_date", date("YmdHis"));
             $ctchanged = true;
 
-            $version = "2.0.5";
+            $version = "2.0.4";
         }
 
         return($version);
     }
 
-    function fixRejected(connection_pdo &$connbas, &$node, $rejected)
+    public function fixRejected(connection_pdo &$connbas, &$node, $rejected)
     {
         global $debug;
 
@@ -139,7 +136,7 @@ class patch_th_2_0_4
             $this->fixRejected($connbas, $n, $rejected);
     }
 
-    function fixIds(connection_pdo &$connbas, &$node)
+    public function fixIds(connection_pdo &$connbas, &$node)
     {
         global $debug;
 

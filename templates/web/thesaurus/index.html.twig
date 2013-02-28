@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {% trans 'phraseanet:: thesaurus' %}</title>
+        <link rel="shortcut icon" type="image/x-icon" href="/skins/thesaurus/favicon.ico">
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+    </head>
+    <body>
+        <br/>
+        <br/>
+        <br/>
+    <center>
+    {% set count_bases = bases | length %}
+    {% if count_bases > 0 %}
+
+        <form name="fBase" action="/thesaurus/thesaurus.php" method="post">
+            {% trans 'thesaurus:: Editer le thesaurus' %}
+            <select name="bid" onchange="ckok();return(true);">
+                <option value="">{% trans 'phraseanet:: choisir' %}</option>
+                {% for sbas_id, name in bases %}
+                <option value="{{ sbas_id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
+            <br/>
+            <br/>
+            <script type="text/javascript">
+                function ckok()
+                {
+                    ck = false;
+                    fl = document.getElementsByName("piv");
+                    for(i=0; !ck && i<fl.length; i++)
+                        ck = fl[i].checked;
+                    ck &= document.forms[0].bid.selectedIndex > 0;
+                    document.getElementById("button_ok").disabled = !ck;
+                }
+            </script>
+            <table>
+                <tr>
+                    <td>{% trans 'thesaurus:: langue pivot' %}</td>
+            {% for code, language in languages %}
+                    <td style="text-align:left">
+                        <input type='radio' onclick="ckok();return(true);" value='{{ code }}' name='piv'>
+                        <img src='/skins/lng/{{ code }}_flag_18.gif' />( {{ language }} )
+                    </td>
+            {% endfor %}
+                </tr>
+            </table>
+            <br/>
+            <br/>
+            <input disabled="disabled" id="button_ok" type="submit" style="width:80px;" value="{% trans 'boutton::valider' %}" /><br/>
+        </form>
+    {% else %}
+        {% trans 'thesaurus:: Vous n\'avez acces a aucune base' %}
+    {% endif %}
+    </center>
+</body>
+</html>

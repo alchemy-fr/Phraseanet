@@ -14,10 +14,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class patch_th_2_0_1
+class patchthesaurus_201
 {
 
-    function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
     {
         if ($version == "2.0.1") {
             $th = $domth->documentElement;
@@ -25,7 +25,7 @@ class patch_th_2_0_1
 
             $xp = new DOMXPath($domth);
             $te = $xp->query("/thesaurus//te");
-            for ($i = 0; $i < $te->length; $i ++ ) {
+            for ($i = 0; $i < $te->length; $i ++) {
                 // $id  = "S" . substr($te->item($i)->getAttribute("id"), 1);
                 $id = $te->item($i)->getAttribute("id");
                 $nid = (int) ($te->item($i)->getAttribute("nextid"));
@@ -48,7 +48,7 @@ class patch_th_2_0_1
             $stmt->closeCursor();
 
             $domct = new DOMDocument();
-            $domct->load("../thesaurus2/blank_cterms.xml");
+            $domct->load(__DIR__ . "/../../../lib/conf.d/blank_cterms.xml");
             $ct = $domct->documentElement;
             $ct->setAttribute("creation_date", $now = date("YmdHis"));
             $ct->setAttribute("modification_date", $now);

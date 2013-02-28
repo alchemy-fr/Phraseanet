@@ -35,7 +35,7 @@
 
           {% if app['browser'].isNewGeneration and app['phraseanet.registry'].get('GV_thesaurus') == true and app['phraseanet.user'].ACL.has_access_to_module('thesaurus') %}
           <li>
-            <a target="_blank" href="/thesaurus2/">
+            <a target="_blank" href="/thesaurus/">
               <span class="{% if module == "thesaurus" %}selected{% endif %}">
               {% trans 'admin::monitor: module thesaurus' %}
               </span>

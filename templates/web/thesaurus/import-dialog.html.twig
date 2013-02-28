@@ -1,0 +1,76 @@
+{% if dlg is not none %}
+    {% set opener = "window.dialogArguments.win" %}
+{% else %}
+    {% set opener = "opener" %}
+{% endif %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <base target="_self">
+        <title>{% trans 'thesaurus:: Importer' %}</title>
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <script type="text/javascript">
+            function clkBut(button)
+            {
+                switch(button)
+                {
+                    case "submit":
+                        document.forms[0].target='IFRIM';
+                        document.forms[0].submit();
+                        break;
+                    case "cancel":
+                            self.returnValue = null;
+                        self.close();
+                        break;
+                }
+            }
+            function loaded()
+            {
+            }
+            function importDone(err)
+            {
+                if(!err)
+                {
+                    {{ opener }}.reload();
+                    self.close();
+                }
+                else
+                {
+                    alert(err);
+                }
+            }
+        </script>
+    </head>
+    <body onload="loaded();" class="dialog">
+        <br/>
+        <form onsubmit="clkBut('submit');return(false);" action="import.php" enctype="multipart/form-data" method="post">
+            <input type="hidden" name="bid" value="{{ bid }}" >
+            <input type="hidden" name="piv" value="{{ piv }}" >
+            <input type="hidden" name="id" value="{{ id }}" >
+            <input type="hidden" name="dlg" value="{{ dlg }}" >
+            <div>
+                <div style="float:right">{% trans 'thesaurus:: langue par default' %} <img src='/skins/icons/flag_18.gif' /> {{ piv }}</div>
+            </div>
+            <br/>
+            {% trans 'Fichier ASCII tabule' %}
+            <input type="file" name="fil" /> (max 16Mo)
+            <br/>
+
+            <div style="text-align:center">
+                <table>
+                    <tr>
+                        <td style="text-align:left"><input type="checkbox" disabled="disabled" name="dlk" checked="checked">{% trans 'thesaurus:: supprimer les liens des champs tbranch' %}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left"><input type="checkbox" disabled="disabled" name="rdx">{% trans 'thesaurus:: reindexer la base apres l\'import' %}</td>
+                    </tr>
+                </table>
+                <br/>
+                <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');" style="width:100px;">
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');" style="width:100px;">
+            </div>
+        </form>
+        <iframe style="display:block; height:50px;" name="IFRIM"></iframe>
+    </body>
+</html>

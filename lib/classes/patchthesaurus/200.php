@@ -14,10 +14,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class patch_th_2_0_0
+class patchthesaurus_200
 {
 
-    function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
     {
         if ($version == "2.0.0") {
             $th = $domth->documentElement;
@@ -26,7 +26,7 @@ class patch_th_2_0_0
             $xp = new DOMXPath($domth);
 
             $te = $xp->query("/thesaurus//te");
-            for ($i = 0; $i < $te->length; $i ++ ) {
+            for ($i = 0; $i < $te->length; $i ++) {
                 $id = $te->item($i)->getAttribute("id");
                 if ($id[0] >= "0" && $id[0] <= "9")
                     $te->item($i)->setAttribute("id", "T" . $id);
