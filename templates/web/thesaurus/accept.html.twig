@@ -1,0 +1,187 @@
+{% if dlg %}
+    {% set opener = "window.dialogArguments.win" %}
+{% else %}
+    {% set opener = "opener" %}
+{% endif %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <title>{% trans 'thesaurus:: accepter...' %}</title>
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <style type="text/css">
+            .path_separator
+            {
+                color:#ffff00;
+            }
+            .main_term
+            {
+                font-weight:900;
+            }
+        </style>
+        <script type="text/javascript" src="/skins/thesaurus/xmlhttp.js"></script>
+        <script type="text/javascript">
+            function loaded()
+            {
+                window.name="ACCEPT";
+                self.focus();
+            }
+            function ok()
+            {
+                as = "";
+                if((n=document.forms[0].as.length) > 0)
+                {
+                    for(i=0; i<n && as==""; i++)
+                    {
+                        if(document.forms[0].as[i].checked)
+                            as = document.forms[0].as[i].value;
+                    }
+                }
+                else
+                {
+                    as = document.forms[0].as.value;
+                }
+                if(as == "TS")
+                {
+                    url = "xmlhttp/acceptcandidates.x.php";
+                    parms  = "bid={{ bid | url_encode }}";
+                    parms += "&piv={{ piv | url_encode }}";
+                    parms += "&cid[]={{ src | url_encode }}";
+                    parms += "&pid={{ tgt | url_encode }}";
+                    parms += "&typ=TS";
+
+                    ret = loadXMLDoc(url, parms, true);
+
+                    refresh = ret.getElementsByTagName("refresh");
+                    for(i=0; i<refresh.length; i++)
+                    {
+                        switch(refresh.item(i).getAttribute("type"))
+                        {
+                            case "CT":
+                                {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                            break;
+                        case "TH":
+                                {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                            break;
+                        }
+                    }
+                    self.close();
+                }
+                else if(as == "SY")
+                {
+                    url = "xmlhttp/acceptcandidates.x.php";
+                    parms  = "bid={{ bid | url_encode }}";
+                    parms += "&piv={{ piv | url_encode }}";
+                    parms += "&cid[]={{ src | url_encode }}";
+                    parms += "&pid={{ tgt | url_encode }}";
+                    parms += "&typ=SY";
+
+                    ret = loadXMLDoc(url, parms, true);
+
+                    refresh = ret.getElementsByTagName("refresh");
+                    for(i=0; i<refresh.length; i++)
+                    {
+                        switch(refresh.item(i).getAttribute("type"))
+                        {
+                            case "CT":
+                                {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                break;
+                            case "TH":
+                                {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                break;
+                            }
+                        }
+                        self.close();
+                    }
+                }
+        </script>
+    </head>
+    <body id="desktop" onload="loaded();" class="dialog">
+
+        {% if not cterm_found %}
+            <center>
+                <br/>
+                <br/>
+                <br/>
+                {% trans 'thesaurus:: removed_src' %}
+                <br/>
+                <br/>
+                {% trans 'thesaurus:: refresh' %}
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{% trans 'boutton::fermer' %}" onclick="self.close();">
+        {% else %}
+            {% if not term_found %}
+                <center>
+                    <br/>
+                    <br/>
+                    <br/>
+                    {% trans 'thesaurus:: removed tgt' %}
+                    <br/>
+                    <br/>
+                    {% trans 'thesaurus:: refresh' %}
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{% trans 'boutton::fermer' %}" onclick="self.close();">
+            {% else %}
+                {% if acceptable %}
+                    <center>
+                        <br/>
+                        <form method="?" action="?" target="?" onsubmit="return(false);">
+                            <input type="hidden" name="bid" value="{{ bid | url_encode }}">
+                            <input type="hidden" name="piv" value="{{ piv | url_encode }}">
+                            <input type="hidden" name="src" value="{{ src | url_encode }}">
+                            <input type="hidden" name="tgt" value="{{ tgt | url_encode }}">
+                            <input type="hidden" name="tgt" value="{{ tgt | url_encode }}">
+                    {% if nts == 0 %}
+                        {% trans 'thesaurus:: Accepter le terme comme' %}
+                        <br/><br/><h4>{{ fullpath_src | raw }}</h4><br/><br/>
+                        <br/>
+                        <input type='radio' name='as' value='TS' checked>{% trans 'thesaurus:: comme terme specifique' %}
+                        <br/><br/>
+                        <input type='radio' name='as' value='SY'>
+                        {% set fullpath_tgt_raw = fullpath_tgt | raw %}
+                        {% trans %}
+                            thesaurus:: comme synonyme de {{ fullpath_tgt_raw }}
+                        {% endtrans %}
+                        <br/>
+                    {% else %}
+                        <br/><br/><h4>{{ fullpath_src | raw }}</h4><br/><br/>
+                        {% trans 'thesaurus:: Accepter la branche comme' %}
+                        &nbsp;{% trans 'thesaurus:: comme terme specifique' %}
+                        <br/><br/><h4>{{ fullpath_tgt | raw }}</h4><br/><br/>
+                        <input type='hidden' name='as' value='TS'>
+                    {% endif %}
+                            <br/>
+                            <br/>
+                            <input style="position:relative; z-index:2; width:100px" type="button" id="ok_button" value="{% trans 'boutton::valider' %}" onclick="ok();">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="self.close();">
+                        </form>
+                    </center>
+                {% else %}
+                    <center>
+                        <br/>
+                        <br/>
+                        <br/>
+                        {% trans %}
+                            thesaurus:: A cet emplacement du thesaurus , un candidat du champ {{ cfield }} ne peut etre accepte
+                        {% endtrans %}
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="self.close();">
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </body>
+</html>

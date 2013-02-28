@@ -1,0 +1,427 @@
+{% if dlg is not none %}
+    {% set opener = "window.dialogArguments.win" %}
+{% else %}
+    {% set opener = "opener" %}
+{% endif %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <title>{% trans 'thesaurus:: Proprietes' %}</title>
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <style type="text/css">
+            a
+            {
+                text-decoration:none;
+                font-size: 10px;
+            }
+            .path_separator
+            {
+                color:#ffff00;
+            }
+            .main_term
+            {
+                font-weight:900;
+            }
+        </style>
+
+        <script type="text/javascript" src="/skins/thesaurus/win.js"></script>
+        <script type="text/javascript" src="/skins/thesaurus/xmlhttp.js"></script>
+        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.sprintf.1.0.3.js"></script>
+        <script type="text/javascript" src="/skins/thesaurus/sprintf.js"></script>
+
+        <script type="text/javascript">
+            function loaded()
+            {
+                window.name="PROPERTIES";
+                self.focus();
+            }
+        </script>
+    </head>
+    <body id="desktop" onload="loaded();" class="dialog">
+        <div class="menu" id="flagsMenu" style="z-index:50">
+            {% for code, language in languages %}
+                <a id='flagMenu_{{ code }}' href='javascript:void(0)' class=''>
+                <img src='/skins/lng/{{ code }}_flag_18.gif' />{{ language }}</a>
+            {% endfor %}
+        </div>
+        <div class="menu" id="syMenu" style="z-index:50">
+            <a href="javascript:void(0)" id="delete_sy">{% trans 'thesaurus::menu: supprimer' %}</a>
+            <a href="javascript:void(0)" id="replace_sy" class="disabled">{% trans 'thesaurus:: remplacer' %}</a>
+        </div>
+
+        <div style='text-align:right'>
+            <b>id:</b>&nbsp;{{ id }}
+        </div>
+        <H4>{{ fullpath | raw }}</H4><br/>
+        {% if typ == "CT" %}
+            <br/>
+        {% elseif typ == "TH" %}
+            {% trans %}
+                thesaurus:: {{ hits }} reponses retournees
+            {% endtrans %}
+            <br/>
+            <br/>
+        {% endif %}
+        <div id="TSY" class="tableContainer" style="margin:10px; position:relative; top:0px; left:0px">
+            <div>
+                <table border="0" cellpadding="0" cellspacing="0" style="width:100%; ">
+                    <col style="width:40px;" />
+                    <col style="width:30px;" />
+                    <col style="width:auto;" />
+                    <col style="width:40px;" />
+                    <col style="width:140px;" />
+                    <col style="width:14px;" />
+                    <thead>
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th>&nbsp;</th>
+                            <th>{% trans 'thesaurus:: synonymes' %}</th>
+                            <th>{% trans 'thesaurus:: hits' %}</th>
+                            <th>{% trans 'thesaurus:: ids' %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div style="position:relative; height:150px; overflow:scroll">
+                <div style="position:relative; height:150px; ">
+                    <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+                        <col style="width:40px;" />
+                        <col style="width:30px;" />
+                        <col style="width:auto;" />
+                        <col style="width:40px;" />
+                        <col style="width:140px;" />
+                        <tbody id="LSY" style="">
+
+                        {% for data in synonyms %}
+                            <tr class='s_' id='SYN_{{ data['id'] }}' hits='{{ data['hits'] }}'>
+                                <td style='text-align:center;'>
+                                {% if loop.index > 0 %}
+                                    <img id="BTNU_{{ data['id'] }}" src="/skins/thesaurus/images/up.gif" />
+                                {% endif %}
+                                {% if not loop.last %}
+                                    <img id="BTND_{{ data['id'] }}" src="/skins/thesaurus/images/down.gif" />
+                                {% endif %}
+                                </td>
+                                {% if data['lng'] %}
+                                    <td id='FLG_{{ data['id'] }}'><img src='/skins/lng/{{ data['lng'] }}_flag_18.gif' /></td>
+                                {% else %}
+                                    <td id='FLG_{{ data['id'] }}'><img src='/skins/thesaurus/images/noflag.gif' /></td>
+                                {% endif %}
+                                <td>{{ data['t'] }}</td>
+                                <td>{{ data['hits'] }}</td>
+                                <td>{{ data['id'] }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <center>
+        <form onsubmit="return(false);">
+            <input style="position:relative; z-index:2" type="button" id="close_button" value="{% trans 'boutton::fermer' %}" onclick="self.close();">
+        </form>
+    </center>
+    <script type="text/javascript">
+        // gui callback du menu des drapeaux
+        var nsy = {{ synonyms | length }};
+
+        function cbME_flags(action, cbParm, menuelem_id)
+        {
+            if(action != "SELECT" || !menuelem_id) {
+                return;
+            }
+            lng = menuelem_id.substr(9,2);
+
+            url = "xmlhttp/changesylng.x.php";
+            parms  = "bid={{ bid | url_encode }}";
+            parms += "&typ={{ typ | url_encode }}";
+            parms += "&piv={{ piv | url_encode }}";
+            parms += "&id=" + cbParm.id.substr(4);
+            parms += "&newlng=" + encodeURIComponent(lng);
+
+            ret = loadXMLDoc(url, parms, true);
+            sy_list = ret.getElementsByTagName("sy_list").item(0);
+
+            refresh_sy(sy_list);
+
+            refresh = ret.getElementsByTagName("refresh");
+
+            for(i=0; i<refresh.length; i++)
+            {
+                switch(refresh.item(i).getAttribute("type"))
+                {
+                    case "CT":
+                    {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                        break;
+                    case "TH":
+                    {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                        break;
+                }
+            }
+        }
+
+        // gui callback du menu des synonymes
+        function cbME_synonym(action, cbParm, menuelem_id)
+        {
+
+            if(action == "INIT")
+            {
+                if(nsy <= 1)
+                {
+                    // pas d'action possible s'il ne reste qu'un seul synonyme
+                    // alert(nsy);
+                    document.getElementById("delete_sy").className = "disabled";
+                    // document.getElementById("reject_sy").className = "disabled";
+                }
+                else
+                {
+                    if(cbParm && cbParm.hits > 0)
+                    {
+                        // y'a des hits, on peut pas supprimer
+                        // document.getElementById("reject_sy").className = "";
+                        document.getElementById("delete_sy").className = "";
+                    }
+                    else
+                    {
+                        // pas de hits : on peut supprimer
+                        // document.getElementById("reject_sy").className = "";
+                        document.getElementById("delete_sy").className = "";
+                    }
+                }
+                // si on ne connait pas encore le client mais que start est ouvert, on lui demande
+                //    if(!opener.wClient && opener.opener.wClient)
+                //      opener.wClient = opener.opener.wClient;
+                // si on connait le client et qu'on peut s'en servir pour chercher, on active l'option dans le menu
+                //    if(opener.wClient && opener.wClient.externQuery)
+                //      document.getElementById("searchcli_sy").className = "";
+                //    else
+                //      document.getElementById("searchcli_sy").className = "disabled";
+                return;
+            }
+
+            if(action != "SELECT" || !menuelem_id) {
+                return;      // pas d'option de menu : on est sorti du menu sans cliquer
+            }
+
+            switch(menuelem_id)
+            {
+                case "delete_sy":    // cbParm = objet 'TR'
+                    url = "xmlhttp/getsy.x.php";
+                    url +=  "?bid={{ bid | url_encode }}";
+                    url += "&id=" + cbParm.id.substr(4);
+                    url += "&typ={{ typ | url_encode }}";
+                    ret = loadXMLDoc(url, null, true);
+                    // alert(ret);
+                    fullpath = ret.getElementsByTagName("fullpath").item(0).firstChild.nodeValue;
+                    //alert("delete : cbParm.obj={id:'" + cbParm.id + "'} ; menuelem_id='" + menuelem_id + "'");
+
+                    url = "xmlhttp/delsy.x.php";
+                    parms  = "bid={{ bid | url_encode }}";
+                    parms += "&piv={{ piv | url_encode }}";
+                    parms += "&typ={{ typ | url_encode }}";
+                    parms += "&id=" + cbParm.id.substr(4);
+
+                    if(confirm($.sprintf("{{ 'thesaurus:: Confirmer la suppression du terme %s' | trans | e('js') }}","\n\n"+fullpath+"\n\n")))
+                    {
+                        ret = loadXMLDoc(url, parms, true);
+
+                        sy_list = ret.getElementsByTagName("sy_list").item(0);
+                        refresh_sy(sy_list);
+
+                        refresh = ret.getElementsByTagName("refresh");
+                        for(i=0; i<refresh.length; i++)
+                        {
+                            switch(refresh.item(i).getAttribute("type"))
+                            {
+                                case "CT":
+                                    {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                                    break;
+                                case "TH":
+                                    {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                                    break;
+                            }
+                        }
+                    }
+                    break;
+                case "searchcli_sy":    // cbParm = objet 'TR'
+                    url = "xmlhttp/getsy.x.php";
+                    url +=  "?bid={{ bid | url_encode }}";
+                    url += "&id=" + cbParm.id.substr(4);
+                    url += "&typ={{ typ | url_encode }}";
+                    ret = loadXMLDoc(url, null, true);
+                    t = ret.getElementsByTagName("sy").item(0).getAttribute("t");
+
+                    if(opener.wClient && opener.wClient.externQuery)
+                    {
+                        opener.wClient.focus();
+                        opener.wClient.externQuery(opener.currentBaseId, t);
+                    }
+
+                    break;
+                case "replace_sy":
+                    url  = "replace.php";
+                    url += "?bid={{ bid }}";
+                    url += "&piv={{ piv }}";
+                    url += "&pid={{ id }}"
+                    url += "&id=" + o.id.substr(4);
+                    url += "&typ={{ typ | url_encode }}";
+                    w = window.open(url, "REPLACE", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                    break;
+            }
+        }
+
+        function refresh_sy(sy_list)
+        {
+            oldtbody = document.getElementById("LSY");
+            tbody = document.createElement("tbody");
+            tbody.setAttribute("id", "LSY");
+
+            for(nsy=0, n=sy_list.firstChild; n; n=n.nextSibling, nsy++)
+            {
+                tr = tbody.appendChild(document.createElement("tr"));
+                // tr.className = n.getAttribute("sel") ? "S_" : "s_";
+                tr.className = "s_";
+                tr.id = "SYN_" + (id=n.getAttribute("id"));
+
+                td = tr.appendChild(document.createElement("td"));
+                td.style.textAlign = "center";
+                if(nsy > 0)
+                {
+                    img = td.appendChild(document.createElement("img"));
+                    img.id = "BTNU_" + id;
+                    img.src = "/skins/thesaurus/images/up.gif";
+                    if(n.nextSibling)
+                    {
+                        td.appendChild(document.createTextNode(" "));
+                    }
+                }
+                if(n.nextSibling)
+                {
+                    img = td.appendChild(document.createElement("img"));
+                    img.id = "BTND_" + id;
+                    img.src = "/skins/thesaurus/images/down.gif";
+                }
+
+                td = tr.appendChild(document.createElement("td"));
+                td.id = "FLG_"+(nsy+1);
+                // td.innerText = n.getAttribute("lng");
+                img = td.appendChild(document.createElement("img"));
+                img.setAttribute("src", "/skins/lng/"+n.getAttribute("lng")+"_flag_18.gif");
+
+                td = tr.appendChild(document.createElement("td"));
+                // td.colSpan = "2";
+                // td.setAttribute("colSpan", "3");          // attention au 'S' majuscule !!!
+                td.innerHTML = n.getAttribute("t");
+
+                td = tr.appendChild(document.createElement("td"));
+                td.innerHTML = n.getAttribute("hits");
+
+                td = tr.appendChild(document.createElement("td"));
+                td.innerHTML = n.getAttribute("id");
+
+                if(n.getAttribute("sel")) {
+                    myGUI.select(tr);
+                }
+            }
+
+            newtbody = oldtbody.parentNode.replaceChild(tbody, oldtbody);
+        }
+
+
+        function cbDD_TSY(evt, type, eventObj)
+        {
+            ret = true;
+            switch(type)
+            {
+                case "RMOUSEDOWN":
+                    if(o = eventObj.Src0)
+                    {
+                        for(tr=o; tr && (tr.nodeName!="TR" || !tr.id || tr.id.substr(0, 4)!="SYN_"); tr=tr.parentNode)
+                            ;
+                        if(tr)
+                            myGUI.select(tr);
+                        switch(o.id.substr(0, 4))
+                        {
+                            case "FLG_":    // le drapeau
+                                document.getElementById("flagsMenu").runAsMenu( evt, tr );
+                                break;
+                            case "SYN_":    // le synonyme
+                                document.getElementById("syMenu").runAsMenu( evt, tr );
+                                break;
+                        }
+                    }
+                    break;
+                case "MOUSEDOWN":
+                    if(o = eventObj.Src0)
+                    {
+                        for(tr=o; tr && (tr.nodeName!="TR" || !tr.id || tr.id.substr(0, 4)!="SYN_"); tr=tr.parentNode)
+                            ;
+                        if(tr)
+                            myGUI.select(tr);
+                        switch(o.id.substr(0, 5))
+                        {
+                            case "BTNU_":
+                                syChgPos(1);
+                                break;
+                            case "BTND_":
+                                syChgPos(-1);
+                                break;
+                        }
+                    }
+                    break;
+                case "DBLCLICK":
+                    break;
+            }
+
+            return(ret);
+        }
+
+        function syChgPos(dir)
+        {
+            if(!myGUI.selectedObject || myGUI.selectedObject.id.substr(0, 4)!="SYN_") {
+                return;
+            }
+
+            url = "xmlhttp/changesypos.x.php";
+            parms  = "bid={{ bid | url_encode }}";
+            parms += "&piv={{ piv | url_encode }}";
+            parms += "&typ={{ typ | url_encode }}";
+            parms += "&id=" + myGUI.selectedObject.id.substr(4);
+            parms += "&dir=" + dir;
+
+            ret = loadXMLDoc(url, parms, true);
+
+            sy_list = ret.getElementsByTagName("sy_list").item(0);
+            refresh_sy(sy_list);
+
+            refresh = ret.getElementsByTagName("refresh");
+            for(i=0; i<refresh.length; i++)
+            {
+                switch(refresh.item(i).getAttribute("type"))
+                {
+                    case "CT":
+                        {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                        {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                        break;
+                    case "TH":
+                        {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                        {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                        break;
+                }
+            }
+        }
+
+        myGUI = new GUI("myGUI", "desktop", "FR");
+        myGUI.setClickable("TSY", cbDD_TSY);
+        myGUI.setAsMenu("flagsMenu", cbME_flags);
+        myGUI.setAsMenu("syMenu", cbME_synonym);
+
+    </script>
+    </body>
+</html>

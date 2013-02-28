@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <title>{% trans 'thesaurus:: export en topics' %}</title>
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <script type="text/javascript">
+            var format = '???';
+            function clkBut(button)
+            {
+                switch(button)
+                {
+                    case "submit":
+                        document.forms[0].target = (format == 'tofiles' ? "_self" : "EXPORT2");
+                        document.forms[0].submit();
+                        break;
+                    case "cancel":
+                        self.returnValue = null;
+                        self.close();
+                        break;
+                }
+            }
+            function loaded()
+            {
+                chgFormat();
+            }
+            function ckis()
+            {
+                document.getElementById("submit_button").disabled = document.forms[0].t.value=="";
+            }
+            function enable_inputs(o, stat)
+            {
+                if(o.nodeType==1)  // element
+                {
+                    if(o.nodeName=='INPUT')
+                    {
+                        if(stat)
+                            o.removeAttribute('disabled');
+                        else
+                            o.setAttribute('disabled', true);
+                    }
+                    for(var oo=o.firstChild; oo; oo=oo.nextSibling)
+                        enable_inputs(oo, stat)
+                }
+            }
+            function chgFormat()
+            {
+                var i, f;
+                for(i=0; i<document.forms[0].ofm.length; i++)
+                {
+                    f = document.forms[0].ofm[i].value;
+                    if(document.forms[0].ofm[i].checked)
+                    {
+                        format = f;
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body onload="loaded();" class="dialog">
+    <center>
+        <form onsubmit="clkBut('submit');return(false);" action="export_topics.php">
+            <input type="hidden" name="bid" value="{{ bid }}" >
+            <input type="hidden" name="piv" value="{{ piv }}" >
+            <input type="hidden" name="id" value="{{ id }}" >
+            <input type="hidden" name="typ" value="{{ typ }}" >
+            <input type="hidden" name="dlg" value="{{ dlg }}" >
+            <input type="hidden" name="obr" value="{{ obr }}" >
+
+            <div style="padding:10px;">
+                <div class="x3Dbox">
+                    <span class="title">{% trans 'thesaurus:: exporter' %}</span>
+                    <div style="white-space:nowrap">
+                        <input type='radio' name='ofm' checked value='tofiles' onclick="chgFormat();">
+                        {% trans 'thesaurus:: exporter vers topics pour toutes les langues' %}
+                    </div>
+                    <div style="white-space:nowrap">
+                        <input type='radio' name='ofm' value='toscreen' onclick="chgFormat();">
+                        {% trans %}
+                            thesaurus:: exporter a l'ecran pour la langue {{ piv }}
+                        {% endtrans %}
+                    </div>
+                </div>
+
+                <br/>
+
+                <div class="x3Dbox">
+                    <span class="title">{% trans 'phraseanet:: tri' %}</span>
+                    <div style="white-space:nowrap">
+                        <input type='checkbox' name='srt' checked onclick="chgFormat();">
+                        {% trans 'phraseanet:: tri par date' %}
+                    </div>
+                </div>
+
+                <br/>
+
+                <div class="x3Dbox">
+                    <span class="title">{% trans 'thesaurus:: recherche' %}</span>
+                    <div style="white-space:nowrap">
+                        <input type='radio' name='sth' value="1" checked onclick="chgFormat();">
+                        {% trans 'thesaurus:: recherche thesaurus *:"query"' %}
+                    </div>
+                    <div style="white-space:nowrap">
+                        <input type='radio' name='sth' value="0" onclick="chgFormat();">
+                        {% trans 'thesaurus:: recherche fulltext' %}
+                    </div>
+                    <div style="white-space:nowrap">
+                        <input type='checkbox' name='sand' onclick="chgFormat();">
+                        {% trans 'thesaurus:: question complete (avec operateurs)' %}
+                    </div>
+                </div>
+
+                <br/>
+
+                <div class="x3Dbox">
+                    <span class="title">{% trans 'thesaurus:: presentation' %}</span>
+                    <div style="white-space:nowrap">
+                        <input type='radio' name='obrf' value="from_itf_closable" checked onclick="chgFormat();">
+                        {% trans 'thesaurus:: presentation : branches refermables' %}
+                    </div>
+                    <div style="white-space:nowrap">
+                        <input type='radio' name='obrf' value="from_itf_static" onclick="chgFormat();">
+                        {% trans 'thesaurus:: presentation : branche ouvertes' %}
+                    </div>
+                    <div style="white-space:nowrap">
+                        <input type='radio' name='obrf' value="all_opened_closable" onclick="chgFormat();">
+                        {% trans 'thesaurus:: tout deployer - refermable' %}
+                    </div>
+                    <div style="white-space:nowrap">
+                        <input type='radio' name='obrf' value="all_opened_static" onclick="chgFormat();">
+                        {% trans 'thesaurus:: tout deployer - statique' %}
+                    </div>
+                    <div style="white-space:nowrap">
+                        <input type='radio' name='obrf' value="all_closed" onclick="chgFormat();">
+                        {% trans 'thesaurus:: tout fermer' %}
+                    </div>
+                </div>
+            </div>
+            <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');" style="width:100px;">
+            &nbsp;&nbsp;&nbsp;
+            <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');" style="width:100px;">
+        </form>
+    </center>
+</body>
+</html>
