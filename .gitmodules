@@ -1,6 +1,3 @@
-[submodule "www/include/vendor/humane-js"]
-	path = www/include/vendor/humane-js
-	url = https://github.com/wavded/humane-js.git
 [submodule "www/include/vendor/qunit"]
 	path = www/include/vendor/qunit
 	url = git://github.com/jquery/qunit.git
