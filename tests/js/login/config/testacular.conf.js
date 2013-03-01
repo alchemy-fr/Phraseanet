@@ -13,4 +13,4 @@ files = [
 
 autoWatch = true;
 
-browsers = ['firefox'];
+browsers = ['PhantomJS'];
