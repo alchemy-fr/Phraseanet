@@ -1,0 +1,1403 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {% trans 'phraseanet:: thesaurus' %}</title>
+        <style id="STYLES">
+            DIV.glossaire DIV.r1_
+            {
+                display: none;
+            }
+        </style>
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <script type="text/javascript">
+            var p4 = {};
+        </script>
+
+        <link rel="shortcut icon" type="image/x-icon" href="/skins/thesaurus/favicon.ico">
+        <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+        <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+        <script type="text/javascript" src="/include/minify/g=thesaurus"></script>
+        <script type="text/javascript">
+
+            var currentBaseName = "";
+            var currentBaseId = null;
+            var thesaurusChanged = false;
+
+            // le lanceur nous passe la fenetre du client
+            var wClient = null;
+            function catchClient(w)
+            {
+                wClient = w;
+            }
+
+            // recharger tout
+            function reload()
+            {
+                self.location.replace("thesaurus.php?piv={{ piv }}&bid={{ bid }}") ;
+            }
+
+            function test(div)
+            {
+                t = document.getElementById(div).innerHTML;
+                t = t.replace(/&/g, "&amp;");
+                t = t.replace(/</g, "&lt;");
+                t = t.replace(/>/g, "&gt;");
+                // t = escape(t);
+                w = window.open("about:blank", div+"wSRC", "left=2, top=2, directories=yes, width=1000, height=800, location=yes, menubar=yes, toolbar=yes, help=yes, status=yes, resizable=yes, scrollbars=yes", true);
+                w.document.write("<pre>"+t+"</pre>");
+                w.document.close();
+            }
+
+            var o_thbox_bck = null;
+            var o_TabT0 = null;
+            var o_TabT0k = null;
+            var o_TabT1 = null;
+            var o_TabT1k = null;
+            function loaded()
+            {
+                o_thbox_bck = document.getElementById("id_thbox_bck");
+                o_TabT0     = document.getElementById("TabT0") ;
+                o_TabT0k    = document.getElementById("TabT0k") ;
+                o_TabT1     = document.getElementById("TabT1") ;
+                o_TabT1k    = document.getElementById("TabT1k") ;
+
+                f = document.forms["fBase"];
+
+                document.getElementById("T0").innerHTML = document.getElementById("T1").innerHTML = "{% trans 'phraseanet::chargement' %}";
+
+                f.target = "IFR0";
+                f.submit();
+            }
+
+            function chgCkShowRejected()
+            {
+                // document.styleSheets("STYLES", 0).rules[0].style.display  = document.forms["fTh"].ckShowRejected.checked ? "" : "none";
+                var rules = document.styleSheets[0].cssRules ? document.styleSheets[0].cssRules : document.styleSheets[0].rules;
+                rules[0].style.display  = document.forms["fTh"].ckShowRejected.checked ? "" : "none";
+
+                return(true);
+            }
+
+
+            var timer_scrolling = null;
+            function evtScrollBody()
+            {
+                if(timer_scrolling)
+                {
+                    window.clearTimeout(timer_scrolling);
+                    timer_scrolling = null;
+                }
+                timer_scrolling = window.setTimeout("scrollEnd(0);", 50);
+            }
+
+            function scrollEnd(n)
+            {
+                document.getElementById("desktop").scrollTop = 0;
+            }
+            var xhr_object;
+            function sessionactive(){
+                $.ajax({
+                    type: "POST",
+                    url: "/session/update/",
+                    dataType: 'json',
+                    data: {
+                        module : 5,
+                        usr : {{ app['phraseanet.user'].get_id() }}
+                    },
+                    error: function(){
+                        window.setTimeout("sessionactive();", 10000);
+                    },
+                    timeout: function(){
+                        window.setTimeout("sessionactive();", 10000);
+                    },
+                    success: function(data){
+                        //if(manageSession(data))
+                        var t = 120000;
+                        if(data.apps && parseInt(data.apps)>1)
+                            t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
+                        window.setTimeout("sessionactive();", t);
+
+                        return;
+                    }
+                })
+            };
+
+            sessionactive();
+        </script>
+
+    </head>
+
+    <body id="desktop" style="background-color:#808080; overflow:hidden" onload="loaded();" onscroll="evtScrollBody();" >
+
+        <div class="menu" id="flagsMenu" style="z-index:50">
+            {% for code, language in flags %}
+                <img id='flagMenu_{{ code }}' src='/skins/lng/{{ code }}_flag_18.gif' />
+            {% endfor %}
+        </div>
+        <div class="menu" id="kctermMenu" style="z-index:50; width:240px;">
+            <a href="javascript:void(0)" class=""         id="kcterm_properties" style="font-weight:700">{% trans 'thesaurus::menu: proprietes' %}</a>
+            <a href="javascript:void(0)" class=""         id="kcterm_reject">{% trans 'thesaurus::menu: refuser' %}</a>
+            <a href="javascript:void(0)" class="disabled" id="kcterm_accept">{% trans 'thesaurus::menu: accepter' %}</a>
+            <div class="line"></div>
+            <a href="javascript:void(0)" class=""         id="kcterm_delete">{% trans 'thesaurus::menu: supprimer' %}</a>
+            <a href="javascript:void(0)" class=""         id="kcterm_delete0hits">{% trans 'thesaurus::menu: supprimer les candidats a 0 hits' %}</a>
+            <div class="line"></div>
+            <a href="javascript:void(0)" class=""         id="kcterm_search">{% trans 'thesaurus::menu: chercher' %}</a>
+            <a href="javascript:void(0)" class=""         id="kcterm_export">{% trans 'thesaurus::menu: exporter' %}</a>
+        </div>
+
+        <div class="menu" id="kThMenu" style="z-index:50; width:200px;">
+            <a href="javascript:void(0)" class="" id="kth_import">{% trans 'thesaurus::menu: importer' %}</a>
+        </div>
+
+        <div class="menu" id="ktermMenu" style="z-index:50; width:200px;">
+            <a href="javascript:void(0)" class="" id="kterm_properties" style="font-weight:700">{% trans 'thesaurus::menu: proprietes' %}</a>
+            <a href="javascript:void(0)" class="" id="kterm_newts">{% trans 'thesaurus::menu: Nouveau terme' %}</a>
+            <a href="javascript:void(0)" class="" id="kterm_newsy">{% trans 'thesaurus::menu: Nouveau synonyme' %}</a>
+            <a href="javascript:void(0)" class="" id="kterm_delete">{% trans 'thesaurus::menu: supprimer' %}</a>
+            <div class="line"></div>
+            <a href="javascript:void(0)" class="" id="kterm_search">{% trans 'thesaurus::menu: chercher' %}</a>
+            <a href="javascript:void(0)" class="" id="kterm_export">{% trans 'thesaurus::menu: exporter' %}</a>
+            <a href="javascript:void(0)" class="" id="kterm_topics">{% trans 'thesaurus::menu: export topics' %}</a>
+            <div class="line"></div>
+            <a href="javascript:void(0)" class="" id="kterm_link">{% trans 'thesaurus::menu: lier au champ' %}</a>
+        </div>
+
+        <form name="fBase" action="/thesaurus/loadth.php" method="post" target="?">
+            <input type="hidden" name="bid" value="{{ bid }}" />
+            <input type="hidden" name="piv" value="{{ piv }}" />
+            <input type="hidden" name="repair" value="" />
+        </form>
+
+        <form name="fSave" action="/thesaurus/savethesaurus1.php" method="post">
+            <input type="hidden" name="bid" value="?" />
+            <input type="hidden" name="th" value="?" />
+            <input type="hidden" name="ch" value="?" />
+        </form>
+
+        <form name="fTh" style="position:absolute; top:0px; left:0px; right:0px; bottom:0px;">
+
+            <br/>
+            <br/>
+            <div id="id_thbox_bck" class="thbox" style="position:absolute; top:28px; left:8px; right:8px; bottom:8px; background-color:#f4f4f4; xoverflow:hidden">
+
+                <div class="onglet" style="background-color:#f0f0f0; border-bottom:1px solid #f4f4f4">
+                    <span id="baseName">{% trans 'phraseanet:: thesaurus' %}</span>
+                    <a href="javascript:void();" onclick="fixTh();return(false);" style="visibility:hidden;">X</a>
+                </div>
+
+
+                <div id="TabT0" style="position:absolute; top:28px; left:0px; bottom:0px; width:40%;">
+
+                    <div class="thbox" style="position:absolute; top:0px; bottom:8px; left:6px; right:3px;">
+                        <div class="onglet">{% trans 'thesaurus:: onglet stock' %} <a href="javascript:void();" onclick="test('T0');return(false);" style="visibility:hidden;">X</a>
+                        </div>
+                        <div style="width:100%; overflow:hidden">
+                            <input type="checkbox" name="ckShowRejected" onClick="return(chgCkShowRejected());" /><span style="white-space:nowrap; overflow:hidden">{% trans 'thesaurus:: afficher les termes refuses' %}</span>
+                        </div>
+                        <div id="TabT0k" style="position:absolute; top:20px; bottom:0px; left:0px; right:0px; overflow:scroll; border:0px #000000 none">
+                            <div id="T0" style="position:absolute; top:0px; left:0px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="TabT1" style="position:absolute; top:28px; right:0px; bottom:0px; width:60%;">
+                    <div class="thbox"  style="position:absolute; top:0px; bottom:8px; left:3px; right:6px;">
+                        <div class="onglet"><span id='TabT1Title' style="cursor:pointer">{% trans 'thesaurus:: onglet thesaurus' %}</span>
+                            &nbsp;
+                            <a href="javascript:void();" onclick="test('T1');return(false);" style="visibility:hidden;">X</a>
+                        </div>
+                        <div id="TabT1k" style="position:absolute; top:0px; bottom:0px; left:0px; right:0px; overflow:scroll; border:0px #000000 none">
+                            <div id="T1" style="position:absolute; top:0px; left:0px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br/>
+
+        </form>
+
+        <div id="clipboard" style="position:absolute; top:0px; left:0px; z-index:99">&nbsp;</div>
+
+
+        <iframe src="about:blank" name="IFRsave" id="IFRsave" style="visibility:hidden; ; position:absolute; top:0px; left:5px;   height:50px; width:50px; overflow:scroll"></iframe>
+        <iframe src="about:blank" name="IFR0"    id="IFR0"    style="visibility:hidden; ; position:absolute; top:0px; left:400px; height:50px; width:50px; overflow:scroll"></iframe>
+
+        <script type="text/javascript">
+
+        document.body.oncontextmenu = function(){
+            return false;
+        }
+
+        tFlags = {{ jsFlags | raw }};
+
+        myGUI = new GUI("myGUI", "desktop", "FR");
+
+        var selectedObject = null;        // l'object selectionné dans l'interface
+
+        var selectedThesaurusItem = null;    // le thesaurus item en cours d'édition
+
+        function buidTermBalloon(xmlobj)
+        {
+            var html = "";
+            var syl = xmlobj.getElementsByTagName("sy_list");
+            if(syl.length==1)
+            {
+                html = "<table>";
+                for(var sy=syl.item(0).firstChild; sy; sy=sy.nextSibling )
+                {
+                    var lng = sy.getAttribute("lng");
+                    html += "<tr>";
+                    if(lng)
+                        if(tFlags[lng])
+                            html += "<td><img width='"+tFlags[lng].w+"' height='"+tFlags[lng].h+"' src='/skins/lng/"+lng+"_flag_18.gif'></td>";
+                    else
+                        html += "<td><span style='background-color:#cccccc'>&nbsp;"+lng+"&nbsp;</span></td>";
+                    else
+                        html += "<td><span style='background-color:#cccccc'>&nbsp;?&nbsp;</span></td>";
+
+                    html += "<td>&nbsp;"+sy.getAttribute("v")+"</td>";
+
+                    var hits = 0+sy.getAttribute("hits");
+                    if(hits == 1)
+                        html += "<td>&nbsp;&nbsp;<i>"+sy.getAttribute("hits")+" hit</i></td></tr>";
+                    else
+                        html += "<td>&nbsp;&nbsp;<i>"+sy.getAttribute("hits")+" hits</i></td></tr>";
+                }
+                html += "</table>";
+            }
+
+            return(html);
+        }
+
+
+        // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //
+        //     T0
+        //
+        // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // gui callback du menu contextuel sur terme candidat
+        function cbME_kcterm(action, cbParm, menuelem_id)
+        {
+            // alert("id=" + cbParm.id + "menuelem_id='" + menuelem_id + "'");
+            // alert("cbParm.obj={obj:'" + cbParm.obj + "', id:'" + cbParm.id + "'} ; menuelem_id='" + menuelem_id + "'");
+            var o = null;
+            var om;
+            //  o = document.getElementById(cbParm);
+            o = cbParm;
+            switch(action)
+            {
+                case "INIT":
+                    // last chance to change menu content
+                    switch(o.id.substr(0, 4))
+                    {
+                        case "TCE_":    // racine (STOCK) ou premier niveau (champ ou [trash])
+                            //       alert(o.id);
+                            if(o.id == "TCE_C")
+                            {
+                                // racine
+                                if(om=document.getElementById("kcterm_delete0hits"))
+                                    om.className = "disabled";
+                            }
+                            else
+                            {
+                                // premier niveau
+                                if(om=document.getElementById("kcterm_delete0hits"))
+                                    om.className = "";
+                            }
+                            if(om=document.getElementById("kcterm_reject"))
+                                om.className = "disabled";
+                            if(om=document.getElementById("kcterm_accept"))
+                                om.className = "disabled";
+                            if(om=document.getElementById("kcterm_delete"))
+                                om.className = "disabled";
+                            if(om=document.getElementById("kcterm_properties"))
+                                om.className = "disabled";
+                            // if(om=document.getElementById("kcterm_candidate"))
+                            //  om.className = "disabled";
+                            if(om=document.getElementById("kcterm_search"))
+                                om.className = "";
+                            break;
+                        case "THE_":    // terme candidat
+                            //          alert("id: "+o.id+" ; p: "+o.parentNode.id);
+                            if(om=document.getElementById("kcterm_delete0hits"))
+                                om.className = "disabled";
+                            if(o.id.substr(4, 1)=="R")
+                            {
+                                if(om=document.getElementById("kcterm_reject"))
+                                    om.className = "disabled";
+                                if(om=document.getElementById("kcterm_delete"))
+                                    om.className = "";
+                                if(o.parentNode.id.indexOf(".") == -1)
+                                {
+                                    // terme de premier niveau sous un champ : on peut retablir
+                                    if(om=document.getElementById("kcterm_accept"))
+                                        om.className = "";
+                                }
+                                else
+                                {
+                                    // terme 'profond' (dans deleted) : on peut pas retablir
+                                    if(om=document.getElementById("kcterm_accept"))
+                                        om.className = "disabled";
+                                }
+                            }
+                            else
+                            {
+                                if(om=document.getElementById("kcterm_accept"))
+                                    om.className = "disabled";
+                                if(om=document.getElementById("kcterm_delete"))
+                                    om.className = "";
+                                if(o.parentNode.id.indexOf(".") == -1)
+                                {
+                                    // terme de premier niveau sous un champ : on peut refuser
+                                    if(om=document.getElementById("kcterm_reject"))
+                                        om.className = "";
+                                }
+                                else
+                                {
+                                    // terme 'profond' (dans deleted) : on peut pas refuser
+                                    if(om=document.getElementById("kcterm_reject"))
+                                        om.className = "disabled";
+                                }
+                            }
+                            if(om=document.getElementById("kcterm_properties"))
+                                om.className = "";
+
+                            // document.getElementById("kcterm_replace").className = "";
+                            if(om = document.getElementById("kcterm_replace"))
+                                om.className = ""; // "disabled";
+
+                            if(o.firstChild.className == "nots")  // carre en face du terme (+- ; balise 'U') == grise ?
+                            {
+                                if(om = document.getElementById("kcterm_search"))
+                                    om.className = "disabled";  // carre grise
+                            }
+                            else
+                            {
+                                if(om=document.getElementById("kcterm_search"))
+                                    om.className = "";
+                            }
+                            break;
+                    }
+                    // alert(o.id);
+                    break;
+                case "SELECT":
+                    switch(menuelem_id)
+                    {
+                        case "kcterm_delete":
+                            url  = "xmlhttp/getterm.x.php";
+                            url += "?bid={{ bid }}";
+                            url += "&id=" + o.id.substr(4);
+                            url += "&typ=CT";
+
+                            // alert(url);
+
+                            ret = loadXMLDoc(url, null, true);
+                            // alert(ret);
+                            allhits = ret.getElementsByTagName("allhits").item(0).firstChild.nodeValue;
+
+                            if(allhits==0)
+                                msg = "{% trans 'thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)' %}";
+                            else
+                                msg = "{% trans 'thesaurus:: Des reponses sont retournees par cette branche. &#10;Supprimer quand meme ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)' %}";
+
+                            if(confirm(msg))
+                            {
+                                var myObj = { "win":window };
+                                url  = "/thesaurus/xmlhttp/killterm.x.php";
+                                url += "?bid={{ bid }}";
+                                url += "&piv={{ piv }}";
+                                url += "&id=" + o.id.substr(4);
+                                // url += "&typ=CT";
+
+                                // alert(url);
+
+                                ret = loadXMLDoc(url, parms, true);
+
+                                refresh = ret.getElementsByTagName("refresh");
+                                for(i=0; i<refresh.length; i++)
+                                {
+                                    switch(refresh.item(i).getAttribute("type"))
+                                    {
+                                        case "CT":
+                                            reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                            break;
+                                        case "TH":
+                                            reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                            break;
+                                    }
+                                }
+                            }
+                            break;
+                        case "kcterm_delete0hits":
+                            url  = "xmlhttp/searchnohits.x.php";
+                            url += "?bid={{ bid }}";
+                            url += "&id=" + o.id.substr(4);
+                            url += "&typ=CT";
+
+                            ret = loadXMLDoc(url, null, true);
+                            // alert(ret);
+                            n_nohits = ret.documentElement.getAttribute("n_nohits");
+
+                            if(n_nohits==0)
+                            {
+                                alert("{{ 'thesaurus:: Tous les termes ont des hits' | trans | e('js') }}");
+
+                                return;
+                            }
+                            else
+                            {
+                                if(confirm("{{ 'thesaurus:: Des termes de cette branche ne renvoient pas de hits. Les supprimer ?' | trans | e('js') }}"));
+                                {
+                                    url  = "xmlhttp/deletenohits.x.php";
+                                    url += "?bid={{ bid }}";
+                                    url += "&id=" + o.id.substr(4);
+                                    url += "&typ=CT";
+
+                                    ret = loadXMLDoc(url, null, true);
+
+                                    reloadCtermsBranch(o.id.substr(4));
+                                }
+                            }
+                            break;
+
+                        case "kcterm_reject":
+                            var myObj = { "win":window };
+                            url  = "/thesaurus/xmlhttp/reject.x.php";
+                            url += "?bid={{ bid }}";
+                            url += "&piv={{ piv }}";
+                            url += "&id=" + o.id.substr(4);
+                            // url += "&typ=CT";
+
+                            // alert(url);
+
+                            ret = loadXMLDoc(url, parms, true);
+
+                            refresh = ret.getElementsByTagName("refresh");
+                            for(i=0; i<refresh.length; i++)
+                            {
+                                switch(refresh.item(i).getAttribute("type"))
+                                {
+                                    case "CT":
+                                        reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                        break;
+                                    case "TH":
+                                        reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                        break;
+                                }
+                            }
+                            break;
+                        case "kcterm_accept":
+                            var myObj = { "win":window };
+                            url  = "/thesaurus/xmlhttp/accept.x.php";
+                            url += "?bid={{ bid }}";
+                            url += "&piv={{ piv }}";
+                            url += "&id=" + o.id.substr(4);
+                            // url += "&typ=CT";
+
+                            //    alert(url);
+
+                            ret = loadXMLDoc(url, parms, true);
+
+                            refresh = ret.getElementsByTagName("refresh");
+                            for(i=0; i<refresh.length; i++)
+                            {
+                                switch(refresh.item(i).getAttribute("type"))
+                                {
+                                    case "CT":
+                                        reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                        break;
+                                    case "TH":
+                                        reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                        break;
+                                }
+                            }
+                            break;
+                        case "kcterm_candidate":
+                            if( o )
+                            {
+                                o.className = o.className.replace("R_", "r_");
+                                if(!o.oldid)
+                                {
+                                    o.setAttribute("oldid", o.id.substr(4) );
+                                }
+                                o.id = "TCE_C" + o.id.substr(5);
+                            }
+                            break;
+                        case "kcterm_properties":
+                            var myObj = { "win":window };
+                            url  = "properties.php";
+                            url += "?bid={{ bid }}";
+                            url += "&piv={{ piv }}";
+                            url += "&id=" + o.id.substr(4);
+                            url += "&typ=CT";
+                            url += "&dlg=1";
+                            ret = window.showModalDialog(url, myObj, "dialogHeight:340px; dialogWidth:500px; center:yes; help:no; resizable:no; scroll:no; status:no; unadorned:yes");
+                            break;
+                        case "kcterm_search":
+                            ret = window.showModalDialog("search.php?dlg=1", null, "dialogHeight:240px; dialogWidth:300px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
+                            if(ret && ret.t != "")
+                            {
+                                url = "/thesaurus/xmlhttp/openbranches.x.php";
+                                parms  = "bid={{ bid }}";
+                                parms += "&id=" + cbParm.id.substr(4);
+                                parms += "&typ=CT";
+                                parms += "&method=" + ret.method;
+                                parms += "&t=" + encodeURIComponent(ret.t);
+                                //alert(url + "?" + parms);
+
+                                ret = loadXMLDoc(url, parms, true);
+                                // alert(ret);
+                                thb = document.getElementById("THB_" + cbParm.id.substr(4));
+
+                                ts = ret.getElementsByTagName("html");
+                                if(ts.length==1)
+                                {
+                                    replaceContent(thb, ts.item(0));
+                                    thb.className = "hb";
+                                    document.getElementById("THP_" + cbParm.id.substr(4)).innerText="...";
+                                }
+                            }
+                            break;
+                        case "kcterm_export":
+                            var myObj = { "win":window };
+                            url  = "export_text_dlg.php";
+                            url += "?bid={{ bid }}";
+                            url += "&piv={{ piv }}";
+                            url += "&id=" + o.id.substr(4);
+                            url += "&typ=CT";
+                            w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                            break;
+                            break;
+                        }
+                        break;
+                    }
+                }
+
+                function cbDD_T0(event, type, eventObj)
+                {
+                    ret = true;
+                    switch(type)
+                    {
+                        case "RMOUSEDOWN":
+                            if(o = eventObj.Src0)
+                            {
+                                // alert(o.id.substr(0, 4));
+                                switch(o.id.substr(0, 4))
+                                {
+                                    case "TCE_":    // une branche (champ) de candidats
+                                        myGUI.select(o);
+                                        document.getElementById("kctermMenu").runAsMenu( event, o );
+                                        break;
+                                    case "THE_":    // le terme candidat
+                                        myGUI.select(o);
+                                        document.getElementById("kctermMenu").runAsMenu( event, o );
+                                        break;
+                                }
+                            }
+                            break;
+                        /*
+            case "CONTEXTMENU":
+              if(o = eventObj.Src0)
+              {
+                // alert(o.id.substr(0, 4));
+                switch(o.id.substr(0, 4))
+                {
+                  case "TCE_":    // une branche (champ) de candidats
+                  case "THE_":    // le terme candidat
+                    myGUI.select(o);
+                    // document.getElementById("kctermMenu").runAsMenu( event, o );
+                    self.setTimeout('document.getElementById("kctermMenu").runAsMenu( event, o.id );', 3000);
+                    break;
+                }
+              }
+              break;
+                         */
+                    case "DBLCLICK":
+                        if(o = eventObj.Src0)
+                        {
+                            switch(o.id.substr(0, 4))
+                            {
+                                case "THE_":    // terme candidat
+                                    if(o.id.indexOf(".") != -1)
+                                    {
+                                        var myObj = { "win":window };
+                                        url  = "properties.php";
+                                        url += "?bid={{ bid }}";
+                                        url += "&piv={{ piv }}";
+                                        url += "&id=" + o.id.substr(4);
+                                        url += "&typ=CT";
+                                        url += "&dlg=1";
+                                        ret = window.showModalDialog(url, myObj, "dialogHeight:340px; dialogWidth:500px; center:yes; help:no; resizable:no; scroll:no; status:no; unadorned:yes");
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
+                        case "MOUSEDOWN":
+                            if(o = eventObj.Src0)
+                            {
+                                // alert(o.id);
+                                switch(o.id.substr(0, 4))
+                                {
+                                    case "THP_":  // + ou - devant un terme
+                                        thid = o.id.substr(4);
+                                        if(tce = document.getElementById("TCE_"+thid))
+                                            myGUI.select(tce);
+                                        else
+                                            if(the = document.getElementById("THE_"+thid))
+                                                myGUI.select(the);
+                                        if(o.className=="" && (thb = document.getElementById("THB_"+thid)))
+                                        {
+                                            // alert(thb.className);
+                                            // alert(thb.className + " " + thb.className.indexOf("OB"));
+                                            /*
+                      if(thb.className.indexOf("OB") != -1)
+                      {
+                        eventObj.Src0.innerHTML = "+";
+
+                        // thb.className = "ob";
+                        thb.className = thb.className.replace(/OB/, "ob");
+                      }
+                      else
+                      {
+                        new_thb = reloadbranch(thb, thid, "CT");
+
+                        eventObj.Src0.innerHTML = "-";
+                        new_thb.className = new_thb.className.replace(/ob/, "OB");
+                        //new_thb.className = "OB";
+                        //alert(new_thb.className);
+                      }
+                                             */
+                                            if(thb.className == "ob")
+                                            {
+                                                new_thb = reloadbranch(thb, thid, "CT");
+
+                                                eventObj.Src0.innerHTML = "-";
+                                                new_thb.className = "OB";
+                                            }
+                                            else
+                                            {
+                                                eventObj.Src0.innerHTML = "+";
+
+                                                // thb.className = "ob";
+                                                thb.className = "ob";
+                                            }
+                                            // document.getElementById("THE_").style.display = "none";
+                                            // document.getElementById("THE_").style.display = "";
+                                        }
+                                        ret = false;  // empêchera le drag/drop à partir du +-
+                                        break;
+                                    case "THE_":    // le terme candidat
+                                        myGUI.select(o);
+                                        if(o.id.substr(4, 1) != "C")  // on ne peut pas draguer que les candidats, pas les refuses ---
+                                        {
+                                            ret = false;
+                                        }
+                                        break;
+                                    case "TCE_":    // le nom de champ
+                                        myGUI.select(o);
+                                        // if(o.id.substr(4, 1) != "C")  // on ne peut pas draguer que les candidats, pas les refuses ---
+                                        //{
+                                        ret = false;
+                                        // }
+                                        break;
+                                }
+                            }
+                            break;
+                        case "DRAGSTART":
+                            if(o = eventObj.Src0)
+                            {
+                                if(o.id.substr(0, 4)=="THE_")
+                                {
+                                    myGUI.select(null);
+                                    cp = document.getElementById("clipboard");
+                                    //          if(cp = document.getElementById("clipboard"))
+                                    //          {
+
+                                    // o.style.position = "absolute";
+                                    //    cp.style.pixelLeft = eventObj.X+10;
+                                    //    cp.style.pixelTop = eventObj.Y+10;
+
+                                    o2 = o.cloneNode(true);
+                                    //o2.style.position = "absolute";
+                                    //o2.style.pixelLeft = 0;
+                                    //o2.style.pixelTop = 0;
+                                    o2.style.backgroundColor = "#ffff00";
+                                    //o2.style.zIndex = 2;
+
+                                    //    o.style.display = "none";
+                                    if(pp = document.getElementById("clipboard"))
+                                    {
+                                        pp.replaceChild(o2, pp.firstChild);
+                                        pp.style.visibility = "visible";
+                                        myGUI.setDragObj(pp);
+                                    }
+                                    //          }
+                                }
+                                else
+                                {
+                                    ret = false;
+                                }
+                            }
+                            break;
+                        case "BALLOON":
+                            if(o = eventObj.Src0)
+                            {
+                                if(o.id.substr(0, 4)=="THE_") // && o.id.substr(4)!="T")
+                                {
+                                    var url   = "xmlhttp/getterm.x.php";
+                                    var parms = "bid={{ bid }}";
+                                    parms    += "&piv={{ piv }}";
+                                    parms    += "&sortsy=0";
+                                    parms    += "&id=" + o.id.substr(4);
+                                    parms    += "&typ=CT";
+                                    parms    += "&nots=1";
+                                    // alert(url);
+
+                                    var ret = loadXMLDoc(url, parms, true);
+                                    var html = buidTermBalloon(ret);
+                                    if(html)
+                                        myGUI.showBalloon(html);
+                                }
+                            }
+                            break;
+                        }
+
+                        return(ret);
+                    }
+
+
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //
+                    //     T1
+                    //
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    function reloadbranch(thb, thid, typ)
+                    {
+                        // alert(thb.id);
+                        new_thb = null;
+                        url = "xmlhttp/getterm.x.php";
+                        parms  = "bid={{ bid }}";
+                        parms += "&piv={{ piv }}";
+                        parms += "&sortsy=1";
+                        parms += "&id=" + thid;
+                        parms += "&typ=" + typ;
+                        ret = loadXMLDoc(url, parms, true);
+                        ts = ret.getElementsByTagName("ts_list");
+                        // alert(url+"?"+parms);
+                        if(ts.length==1)
+                        {
+                            new_thb = document.createElement("DIV");
+                            new_thb.setAttribute("id", "THB_" + thid);
+                            nts = 0;
+                            for(n=ts.item(0).firstChild; n; n=n.nextSibling)
+                            {
+                                div = new_thb.appendChild(document.createElement("div"));
+                                id = n.getAttribute("id");
+                                if(id.substr(0,1) == "R")
+                                    div.className = "s_ r1_";
+                                else
+                                    div.className = "s_ r0_";
+                                div.setAttribute("id", "THE_" + n.getAttribute("id"));
+
+                                u = div.appendChild(document.createElement("u"));
+                                u.setAttribute("id", "THP_" + n.getAttribute("id"));
+                                if(n.firstChild)
+                                    txt = div.appendChild(document.createTextNode(n.firstChild.nodeValue));
+                                else
+                                    txt = div.appendChild(document.createTextNode(""));
+                                if(n.getAttribute("nts") > 0)
+                                {
+                                    u.appendChild(document.createTextNode("+"));
+                                }
+                                else
+                                {
+                                    u.className = "nots";
+                                    u.appendChild(document.createTextNode(""));
+                                }
+                                new_thb2 = new_thb.appendChild(document.createElement("DIV"));
+                                //  new_thb2.className = "ob r0_";
+                                new_thb2.className = "ob";
+                                new_thb2.setAttribute("id", "THB_" + n.getAttribute("id"));
+                                nts++;
+                            }
+                            thb.parentNode.replaceChild(new_thb, thb);
+                            thp = document.getElementById("THP_"+thid);
+
+                            if(nts > 0)
+                            {
+                                //       alert("thb.className = "+thb.className);
+                                new_thb.className = thb.className;
+                                if(thid.substr(0,1) == "R")
+                                {
+                                    // new_thb.className = "ob r1_";
+                                    new_thb.className = "ob";
+                                }
+                                else
+                                {
+                                    // new_thb.className = "ob r0_";
+                                }
+                                // alert(thid + " " + new_thb.className);
+                                thp.className = "";
+                                thp.innerText = thb.className=="ob"?"+":"-";
+                            }
+                            else
+                            {
+                                //      new_thb.className = "ob r1_";
+                                new_thb.className = "ob";
+                                thp.className = "nots";
+                                thp.innerText = "";
+                            }
+                        }
+
+                        return(new_thb);
+                        // alert(ret.nodeFromID("tsid"));  // marche pas sur safari
+                        // alert(ret.selectSingleNode("//te"));  // marche pas sur safari
+                    }
+                    function reloadCtermsBranch(cid)
+                    {
+                        // alert('reloadCtermsBranch('+cid+')');
+                        return(reloadbranch(document.getElementById("THB_"+cid), cid, "CT"))
+                    }
+                    function reloadThesaurusBranch(tid)
+                    {
+                        if(tid=='')
+                            tid='T';
+
+                        return(reloadbranch(document.getElementById("THB_"+tid), tid, "TH"))
+                    }
+
+
+                    // gui callback du menu contextuel sur terme
+                    function cbME_kterm(action, cbParm, menuelem_id)
+                    {
+                        // alert("id=" + cbParm.id + "menuelem_id='" + menuelem_id + "'");
+                        // alert("cbParm.obj={obj:'" + cbParm.obj + "', id:'" + cbParm.id + "'} ; menuelem_id='" + menuelem_id + "'");
+                        var o = null;
+                        var om;
+                        var ret;
+                        if(cbParm.id)
+                            o = document.getElementById(cbParm.id);
+                        switch(action)
+                        {
+                            case "INIT":
+                                // last chance to change menu content
+                                if(o.id.substr(4) == "T")
+                                {
+                                    // menu contextuel e la racine du thesaurus
+                                    // document.getElementById("kterm_replace").style.display = "none";
+                                    if(om=document.getElementById("kterm_link"))
+                                        om.className = "disabled";
+                                    if(om=document.getElementById("kterm_delete"))
+                                        om.className = "disabled";
+                                    if(om=document.getElementById("kterm_newsy"))
+                                        om.className = "disabled";
+                                    if(om=document.getElementById("kterm_properties"))
+                                        om.className = "disabled";
+                                }
+                                else
+                                {
+                                    // menu contextuel sur un terme du thesaurus
+                                    // document.getElementById("kterm_replace").style.display = "";
+                                    if(om=document.getElementById("kterm_link"))
+                                        om.className = "";
+                                    if(om=document.getElementById("kterm_delete"))
+                                        om.className = "";
+                                    if(om=document.getElementById("kterm_newsy"))
+                                        om.className = "";
+                                    if(om=document.getElementById("kterm_properties"))
+                                        om.className = "";
+                                }
+                                break;
+                            case "SELECT":
+                                switch(menuelem_id)
+                                {
+                                    case "kterm_newts": // nouveau terme specifique
+                                        var myObj = { "win":window };
+                                        url  = "newsy_dlg.php?piv={{ piv }}&typ=TS";
+
+                                        ret = window.showModalDialog(url, myObj, "dialogHeight:200px; dialogWidth:400px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
+
+                                        if(ret && ret.t)
+                                        {
+                                            var myObj = { "win":window };
+                                            url  = "newterm.php";
+                                            url += "?bid={{ bid }}";
+                                            url += "&piv={{ piv }}";
+                                            url += "&pid=" + o.id.substr(4);
+                                            //        url += "&t=" + escape(newts);        // PAS avec un prompt UTF8
+                                            url += "&t=" + encodeURIComponent(ret.t);
+                                            url += "&typ=TS";
+                                            url += "&sylng=" + encodeURIComponent(ret.lng);
+                                            url += "&dlg=1";
+                                            ret = window.showModalDialog(url, myObj, "dialogHeight:290px; dialogWidth:490px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
+                                        }
+                                        break;
+                                    case "kterm_newsy":
+                                        var myObj = { "win":window };
+                                        url  = "newsy_dlg.php?piv={{ piv }}&typ=SY";
+                                        ret = window.showModalDialog(url, myObj, "dialogHeight:200px; dialogWidth:400px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
+                                        if(ret && ret.t)
+                                        {
+                                            var myObj = { "win":window };
+                                            url  = "newterm.php";
+                                            url += "?bid={{ bid }}";
+                                            url += "&piv={{ piv }}";
+                                            url += "&pid=" + o.id.substr(4);
+                                            //        url += "&t=" + escape(newts);        // PAS avec un prompt UTF8
+                                            url += "&t=" + encodeURIComponent(ret.t);
+                                            url += "&typ=SY";
+                                            url += "&sylng=" + encodeURIComponent(ret.lng);
+                                            url += "&dlg=1";
+                                            ret = window.showModalDialog(url, myObj, "dialogHeight:290px; dialogWidth:490px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
+                                        }
+                                        break;
+                                    case "kterm_delete":
+                                        tid = o.id.substr(4);
+                                        url = "/thesaurus/xmlhttp/getterm.x.php";
+                                        url +=  "?bid={{ bid }}";
+                                        url +=  "&piv={{ piv }}";
+                                        url += "&id=" + tid;
+                                        url += "&typ=TH";
+                                        ret = loadXMLDoc(url, null, true);
+                                        // alert(ret);
+                                        fullpath = ret.getElementsByTagName("fullpath").item(0).firstChild.nodeValue;
+
+                                        url = "xmlhttp/delts.x.php";
+                                        parms  = "bid={{ bid }}";
+                                        parms += "&piv={{ piv }}";
+                                        parms += "&id=" + tid;
+
+                                        if(confirm("{{ 'thesaurus:: deplacer le terme dans la corbeille ?' | trans | e('js') }}"+"\n\n"+fullpath+"\n\n"))
+                                        {
+                                            // xmlhttp/delts.x.php?bid=15&id=T1.629&debug=1
+                                            // alert(url+"?"+parms);
+                                            ret = loadXMLDoc(url, parms, true);
+                                            // alert(ret);
+
+                                            refresh = ret.getElementsByTagName("refresh");
+                                            for(i=0; i<refresh.length; i++)
+                                            {
+                                                switch(refresh.item(i).getAttribute("type"))
+                                                {
+                                                    case "CT":
+                                                        reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                                        break;
+                                                    case "TH":
+                                                        reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case "kterm_replace":
+                                        alert("todo...");
+                                        break;
+                                    case "kterm_link":
+                                        var myObj = { "win":window };
+                                        url = "linkfield.php";
+                                        url +=  "?bid={{ bid }}";
+                                        url +=  "&piv={{ piv }}";
+                                        url += "&tid=" + o.id.substr(4);
+                                        url += "&dlg=1";
+                                        ret = window.showModalDialog(url, myObj, "dialogHeight:340px; dialogWidth:500px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
+                                        break;
+                                    case "kterm_properties":
+                                        var myObj = { "win":window };
+                                        url  = "properties.php";
+                                        url += "?bid={{ bid }}";
+                                        url += "&piv={{ piv }}";
+                                        url += "&id=" + o.id.substr(4);
+                                        url += "&typ=TH";
+
+                                        w = window.open(url, "PROPERTIES", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                        break;
+                                    case "kterm_search":
+                                        ret = window.showModalDialog("search.php?dlg=1", myObj, "dialogHeight:240px; dialogWidth:300px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
+                                        if(ret && ret.t != "")
+                                        {
+                                            url = "/thesaurus/xmlhttp/openbranches.x.php";
+                                            parms  = "bid={{ bid }}";
+                                            parms += "&id=" + cbParm.id.substr(4);
+                                            parms += "&typ=TH";
+                                            parms += "&method=" + ret.method;
+                                            parms += "&t=" + encodeURIComponent(ret.t);
+                                            // alert(url + "?" + parms);
+
+                                            ret = loadXMLDoc(url, parms, true);
+                                            // alert(ret);
+
+                                            thb = document.getElementById("THB_" + cbParm.id.substr(4));
+
+                                            ts = ret.getElementsByTagName("html");
+                                            if(ts.length==1)
+                                            {
+                                                replaceContent(thb, ts.item(0));
+                                                thb.className = "hb";
+                                                document.getElementById("THP_" + cbParm.id.substr(4)).innerText="...";
+                                            }
+                                        }
+                                        break;
+                                    case "kterm_export":
+                                        var myObj = { "win":window };
+                                        url  = "export_text_dlg.php";
+                                        url += "?bid={{ bid }}";
+                                        url += "&piv={{ piv }}";
+                                        url += "&id=" + o.id.substr(4);
+                                        url += "&typ=TH";
+                                        w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                        break;
+                                    case "kterm_topics":
+                                        var myObj = { "win":window };
+                                        url  = "export_topics_dlg.php";
+                                        url += "?bid={{ bid }}";
+                                        url += "&piv={{ piv }}";
+                                        url += "&id=" + o.id.substr(4);
+                                        url += "&typ=TH";
+                                        url += "&obr=" + list_opened_branches(o.parentNode);
+                                        w = window.open(url, "EXPORT", "directories=no, height=400, width=550, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                        break;
+                                    }
+                                    break;
+                                }
+                            }
+
+                            function list_opened_branches(o, depth)
+                            {
+                                l = "";
+                                if(o.nodeType==1)  // element
+                                {
+                                    if(o.id.substr(0,4)=="THB_" && o.className=="OB")
+                                        l += o.id.substr(4) + ";";
+                                    for(var oo=o.firstChild; oo; oo=oo.nextSibling)
+                                        l += list_opened_branches(oo);
+                                }
+
+                                return(l);
+                            }
+
+                            function replaceContent(dstNode, newContent)
+                            {
+                                var n;
+                                if(document.importNode)    // safari ?
+                                {
+                                    dstNode.innerHTML = "";
+                                    for(n=newContent.firstChild; n; n=n.nextSibling)
+                                        docImport(n, dstNode);  // assez rapide sous safari, tres tres lent sous explorer
+                                }
+                                else
+                                {
+                                    var t = "";
+                                    for(n=newContent.firstChild; n; n=n.nextSibling)
+                                        t += n.xml;    // marche pas sous safari...
+                                    // IE fails to recognize <tag/> as a closed tag when using innerHTML, so replace it with <tag></tag>
+                                    // except for br, img, and hr elements.
+                                    var expr = new RegExp("<(?:(?!br|img|hr)([a-zA-Z]+))([^>]*)/>", "ig");
+                                    t = t.replace(expr, "<$1$2></$1>");
+
+                                    dstNode.innerHTML = t;  // rapide sous explorer, tres tres lent sous safari
+                                }
+                            }
+
+                            function cbDD_T1(event, type, eventObj)
+                            {
+                                ret = true;
+                                switch(type)
+                                {
+                                    case "RMOUSEDOWN":
+                                        if(o = eventObj.Src0)
+                                        {
+                                            switch(o.id.substr(0, 4))
+                                            {
+                                                case "THE_":    // le terme
+                                                    myGUI.select(o);
+                                                    document.getElementById("ktermMenu").runAsMenu( event, {id:o.id} );
+                                                    ret = false;
+                                                    break;
+                                            }
+                                        }
+                                        break;
+                                    case "MOUSEDOWN":
+                                        if(o = eventObj.Src0)
+                                        {
+                                            switch(o.id.substr(0, 4))
+                                            {
+                                                case "THP_":  // + ou - devant un terme
+                                                    thid = o.id.substr(4);
+                                                    if(the = document.getElementById("THE_"+thid))
+                                                        myGUI.select(the);
+                                                    if(o.className=="" && (thb = document.getElementById("THB_"+thid)))
+                                                    {
+                                                        if(thb.className == "ob")
+                                                        {
+                                                            new_thb = reloadbranch(thb, thid, "TH");
+                                                            eventObj.Src0.innerHTML = "-";
+                                                            new_thb.className = "OB";
+                                                        }
+                                                        else
+                                                        {
+                                                            eventObj.Src0.innerHTML = "+";
+                                                            thb.className = "ob";
+                                                        }
+                                                    }
+                                                    ret = false;  // empêchera le drag/drop à partir du +-
+                                                    break;
+                                                case "THE_":  // terme
+                                                    myGUI.select(o);
+                                                    break;
+                                            }
+                                        }
+                                        break;
+                                    case "DBLCLICK":
+                                        if(o = eventObj.Src0)
+                                        {
+                                            if(o.id.substr(0, 4)=="THE_" && o.id.substr(4)!="T")
+                                            {
+                                                var myObj = { "win":window };
+                                                url  = "properties.php";
+                                                url += "?bid={{ bid }}";
+                                                url += "&piv={{ piv }}";
+                                                url += "&id=" + o.id.substr(4);
+                                                url += "&typ=TH";
+                                                url += "&dlg=1";
+                                                ret = window.showModalDialog(url, myObj, "dialogHeight:340px; dialogWidth:500px; center:yes; help:no; resizable:no; scroll:no; status:no; unadorned:yes");
+                                            }
+                                        }
+                                        break;
+                                    case "BALLOON":
+                                        if(o = eventObj.Src0)
+                                        {
+                                            if(o.id.substr(0, 4)=="THE_") // && o.id.substr(4)!="T")
+                                            {
+                                                var url   = "xmlhttp/getterm.x.php";
+                                                var parms = "bid={{ bid }}";
+                                                parms    += "&piv={{ piv }}";
+                                                parms    += "&sortsy=0";
+                                                parms    += "&id=" + o.id.substr(4);
+                                                parms    += "&typ=TH";
+                                                parms    += "&nots=1";
+                                                // alert(url);
+
+                                                var ret = loadXMLDoc(url, parms, true);
+                                                var syl = ret.getElementsByTagName("sy_list");
+                                                var ret = loadXMLDoc(url, parms, true);
+                                                var html = buidTermBalloon(ret);
+                                                if(html)
+                                                    myGUI.showBalloon(html);
+                                            }
+                                        }
+                                        break;
+                                    case "DRAGLEAVE":
+                                        if(lo = eventObj.lastTarget0)
+                                            lo.style.backgroundColor = ""; // eventObj.lastTarget0Style;
+                                        break;
+                                    case "DRAGOVER":
+                                        //  if(cp = document.getElementById("clipboard"))
+                                        {
+                                            // o.style.position = "absolute";
+                                            //    cp.style.pixelLeft = eventObj.X+10;
+                                            //    cp.style.pixelTop = eventObj.Y+10;
+                                            // o.style.backgroundColor = "#ffff00";
+                                            // o.style.zIndex = 2;
+                                            if(o = eventObj.Target0)
+                                            {
+                                                if(lo = eventObj.lastTarget0)
+                                                {
+                                                    lo.style.backgroundColor = ""; // eventObj.lastTarget0Style;
+                                                    // lo.style.border = "1px none #ffff00"; // eventObj.lastTarget0Style;
+                                                    //            lo.style.color="#ff00ff";
+                                                }
+                                                if(o.id.substr(0, 4) == "THE_") // && o.id != "THE_T")  // pas de drop e la racine du thesaurus
+                                                {
+                                                    // myGUI.select(o);
+                                                    //eventObj.lastTarget0Style = o.style.borderBottom;
+                                                    o.style.backgroundColor =  "#99a2d0";
+                                                    // o.style.border = "1px solid #99a2d0";
+                                                    //          o.style.color="#000000";
+                                                    eventObj.lastTarget0 = o;
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case "DROP":
+                                        if(lo = eventObj.lastTarget0)
+                                            lo.style.backgroundColor = "";
+
+                                        if(cp = document.getElementById("clipboard").firstChild)
+                                        {
+                                            if(tgt0 = eventObj.Target0)
+                                            {
+                                                var myObj = { "win":window };
+                                                url  = "accept.php";
+                                                url += "?bid={{ bid }}";
+                                                url += "&piv={{ piv }}";
+                                                url += "&src=" + eventObj.Src0.id.substr(4);
+                                                url += "&tgt=" + tgt0.id.substr(4);
+                                                w = window.open(url, "ACCEPT", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                            }
+                                        }
+                                        break;
+                                    }
+
+                                    return(ret);
+                                }
+
+                                function cbDD_TabT1(event, type, eventObj)
+                                {
+                                    ret = true;
+                                    switch(type)
+                                    {
+                                        case "RMOUSEDOWN":
+                                            document.getElementById("kThMenu").runAsMenu( event, null );
+                                            break;
+                                        case "MOUSEDOWN":
+                                            break;
+                                        case "DBLCLICK":
+                                            break;
+                                        case "DRAGLEAVE":
+                                            break;
+                                        case "DRAGOVER":
+                                            break;
+                                        case "DROP":
+                                            break;
+                                    }
+
+                                    return(ret);
+                                }
+
+
+
+                                // gui callback du menu contextuel sur l'onglet 'thesaurus'
+                                function cbME_kTh(action, cbParm, menuelem_id)
+                                {
+                                    // alert("id=" + cbParm.id + "menuelem_id='" + menuelem_id + "'");
+                                    // alert("cbParm.obj={obj:'" + cbParm.obj + "', id:'" + cbParm.id + "'} ; menuelem_id='" + menuelem_id + "'");
+                                    var om;
+                                    switch(action)
+                                    {
+                                        case "INIT":
+                                            // last chance to change menu content
+                                            break;
+                                        case "SELECT":
+                                            switch(menuelem_id)
+                                            {
+                                                case "kth_import": // importer
+                                                    var myObj = { "win":window };
+                                                    url  = "import_dlg.php?piv={{ piv }}&bid={{ bid }}&id=&dlg=1";
+                                                    window.showModalDialog(url, myObj, "dialogHeight:400px; dialogWidth:600px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
+                                                    //          url  = "import_dlg.php?piv={{ piv }}&bid={{ bid }}&id=";
+                                                    //          w = window.open(url, "IMPORT", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                    break;
+                                                }
+                                                break;
+                                            }
+                                        }
+
+                                        function docImport(src, dst)
+                                        {
+                                            var n, nn;
+                                            // alert(src.nodeType);
+                                            switch(src.nodeType)
+                                            {
+                                                case 1:  // element
+                                                    // alert(src.nodeName);
+                                                    nn = dst.appendChild(document.createElement(src.nodeName))
+                                                    if(v = src.getAttribute("id"))
+                                                        nn.id = v;
+                                                    if(v = src.getAttribute("name"))
+                                                        nn.name =  v;
+                                                    if(v = src.getAttribute("class"))
+                                                        nn.className =  v;
+                                                    if(v = src.getAttribute("style"))
+                                                        nn.setAttribute("style", v);
+                                                    for(n=src.firstChild; n; n=n.nextSibling)
+                                                        docImport(n, nn);
+                                                    break;
+                                                case 3: // text
+                                                    // alert(src.nodeValue);
+                                                    nn = dst.appendChild(document.createTextNode(src.nodeValue))
+                                                    break;
+                                            }
+                                        }
+
+
+                                        function reloadbranch2(thb, thid, typ)
+                                        {
+                                            new_thb = null;
+                                            url = "xmlhttp/gethtmlbranch.x.php";
+                                            parms  = "bid={{ bid }}";
+                                            parms += "&id=" + thid;
+                                            parms += "&typ=" + typ;
+
+                                            alert(url + "?" + parms);
+
+                                            ret = loadXMLDoc(url, parms, true);
+
+                                            alert(ret);
+
+                                            ts = ret.getElementsByTagName("html");
+                                            if(ts.length==1)
+                                            {
+                                                /*
+    thb.innerHTML = ts.item(0).firstChild.nodeValue;
+                                                 */
+                                                if(document.importNode)    // safari ?
+                                                {
+                                                    thb.innerHTML = "";
+                                                    for(n=ts.item(0).firstChild; n; n=n.nextSibling)
+                                                        docImport(n, thb);
+
+                                                }
+                                                else
+                                                {
+                                                    t = "";
+                                                    for(n=ts.item(0).firstChild; n; n=n.nextSibling)
+                                                        t += n.xml;    // marche pas sous safari...
+                                                    // IE fails to recognize <tag/> as a closed tag when using innerHTML, so replace it with <tag></tag>
+                                                    // except for br, img, and hr elements.
+                                                    var expr = new RegExp("<(?:(?!br|img|hr)([a-zA-Z]+))([^>]*)/>", "ig");
+                                                    t = t.replace(expr, "<$1$2></$1>");
+
+                                                    // alert(t);
+
+                                                    thb.innerHTML = t;
+
+                                                }
+                                            }
+                                        }
+
+                                        myGUI.setClickable("T0", cbDD_T0);
+
+                                        myGUI.setDraggable("T0", cbDD_T0);
+
+
+                                        myGUI.setClickable("TabT1Title", cbDD_TabT1);
+
+
+
+                                        myGUI.setClickable("T1", cbDD_T1);
+
+                                        myGUI.setDroppable("T1", cbDD_T1);
+
+                                        // ttttttttttttttttttttttttttttttttttttttt
+                                        // myGUI.setAsMenu("flagsMenu", cbME_flags);
+
+                                        myGUI.setAsMenu("kctermMenu", cbME_kcterm);
+
+                                        myGUI.setAsMenu("ktermMenu", cbME_kterm);
+
+                                        myGUI.setAsMenu("kThMenu", cbME_kTh);
+                                        /*
+                                         */
+
+        </script>
+
+    </body>
+
+</html>
+
+

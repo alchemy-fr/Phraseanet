@@ -10,6 +10,8 @@ rewrite ^/login/.*$                         /index.php last;
 rewrite ^/developers/.*$                    /index.php last;
 rewrite ^/permalink/.*$                     /index.php last;
 rewrite ^/datafiles/.*$                     /index.php last;
+rewrite ^/thesaurus/$                       /index.php last;
+rewrite ^/xmlhttp/.*$                       /index.php last;
 rewrite ^/prod/records/.*$                  /index.php last;
 rewrite ^/prod/records/edit/.*$             /index.php last;
 rewrite ^/prod/records/property/.*$         /index.php last;

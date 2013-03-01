@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <title>{% trans 'thesaurus:: export en topics' %}</title>
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <style>
+            .toscreen
+            {
+                background-color:#ffffff;
+            }
+            .tofiles
+            {
+                margin: 20px;
+            }
+        </style>
+
+        <script type="text/javascript">
+            function loaded()
+            {
+                self.focus();
+            }
+        </script>
+    </head>
+    <body id="idbody" onload="loaded();" class="dialog">
+        <div class="{{ ofm }}">
+
+            {% for lng, export in lngs %}
+                <pre style='font-size: 12px;'>
+                {{ export }}
+                </pre>
+            {% endfor %}
+
+            {% if ofm == 'tofiles' %}
+                <center>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <input type="button" value="{% trans 'boutton::fermer' %}" onclick="self.close();" style="width:100px;">
+                </center>
+            {% endif %}
+        </div>
+    </body>
+</html>

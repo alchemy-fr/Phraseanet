@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <title>{% if typ == "TS" %}{% trans 'thesaurus:: Nouveau terme specifique' %}{% else %}{% trans 'thesaurus:: Nouveau synonyme' %}{% endif %}</title>
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <script type="text/javascript" src="/skins//thesaurus/xmlhttp.js"></script>
+    </head>
+    <body onload="loaded();" class="dialog" style="text-align:center">
+        {% if dlg is not none %}
+            {% set opener = 'window.dialogArguments.win' %}
+        {% else %}
+            {% set opener = 'opener' %}
+        {% endif %}
+
+        {% if context is not none %}
+            {% set zterm %}
+                {% trans %}
+                    thesaurus:: le terme {{ term }} avec contexte {{ context }}
+                {% endtrans %}
+            {% endset %}
+        {% else %}
+            {% set zterm %}
+                {% trans %}
+                    thesaurus:: le terme {{ term }} sans contexte
+                {% endtrans %}
+            {% endset %}
+        {% endif %}
+
+        {% if nb_candidates_ok > 0 %}
+            {% if nb_candidates_ok == 1 %}
+                {% set prop_label = 'thesaurus:: est deja candidat en provenance du champ acceptable : ' | trans %}
+            {% else %}
+                {% set prop_label = 'thesaurus:: est deja candidat en provenance des champs acceptables : ' | trans %}
+            {% endif %}
+            <br/>
+            <br/>
+            {{ zterm }}
+            <br/>
+            <br/>
+            {{ prop_label }}
+            <br/>
+        <center>
+            <form onsubmit="return(false);">
+                <input type="hidden" name="bid" value="{{ bid }} ">
+                <input type="hidden" name="pid" value="{{ pid }}">
+                <div class='x3Dbox' style='margin:15px; height:100px; overflow:auto;'>
+                    {% for candidate in candidates %}
+                        <input type="radio" name="cid" value="{{ candidate['id'] }}" onclick="return(clkCid());">{{ candidate['field'] }}<br/>
+                    {% endfor %}
+                </div>
+                {% if nb_candidates_ok > 1 %}
+                    {{ 'thesaurus:: selectionner la provenance a accepter' | trans }}
+                {% endif %}
+                <br/>
+                <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');" style="width:100px;">
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');" style="width:100px;">
+            </form>
+        </center>
+        {% else %}
+                {% if nb_candidates_bad > 0 %}
+                    // present dans les candidats, mais aucun champ acceptable : on informe
+                    {% if nb_candidates_bad == 1 %}
+                        {% set prop_label = 'thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus' | trans %}
+                    {% else %}
+                        {% set prop_label = 'thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus' | trans %}
+                    {% endif %}
+                {% else %}
+                    // pas present dans les candidats
+                    {% set prop_label = 'thesaurus:: n\'est pas present dans les candidats' | trans %}
+                {% endif %}
+        <br/>
+        <h3>{% trans 'thesaurus:: attention :' %}</h3>
+        <br/>
+        <br/>
+        {{ zterm }}
+        <br/>
+        <br/>
+        {{ prop_label }}
+        <br/>
+        <form>
+            <center>
+                <div class='x3Dbox' style='margin:15px; height:90px; overflow:auto;'>
+                    <input type="radio" name="reindex" value="0" id="rad0" checked><label for="rad0">{% trans 'thesaurus:: Ajouter le terme dans reindexer' %}</label><br/>
+                    <br/>
+                    <input type="radio" name="reindex" value="1" id="rad1"><label for="rad1">{% trans 'thesaurus:: ajouter le terme et reindexer' %}</label><br/>
+                </div>
+            </center>
+            <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');" style="width:100px;">
+            &nbsp;&nbsp;&nbsp;
+            <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');" style="width:100px;">
+        </form>
+        {% endif %}
+</body>
+
+<script type="text/javascript">
+{% if nb_candidates_ok > 0 %}
+    function clkCid()
+    {
+        cids = document.getElementsByName("cid");
+        f = false;
+        for(i=0; i<cids.length && !f; i++)
+        {
+            if(cids[i].checked)
+                f = true;
+        }
+        document.getElementById("submit_button").disabled = !f;
+
+        return(true);
+    }
+    function clkBut(button)
+    {
+        switch(button)
+        {
+            case "submit":
+                url = "xmlhttp/acceptcandidates.x.php";
+                parms  = "bid={{ bid }}";
+                parms += "&pid={{ pid }}";
+                parms += "&typ={{ typ }}";
+                for(i=0; i<(n=document.getElementsByName("cid")).length; i++)
+                {
+                    if(n[i].checked)
+                        parms += "&cid[]=" + encodeURIComponent(n[i].value);
+                }
+
+                ret = loadXMLDoc(url, parms, true);
+                refresh = ret.getElementsByTagName("refresh");
+                for(i=0; i<refresh.length; i++)
+                {
+                    switch(refresh.item(i).getAttribute("type"))
+                    {
+                        case "CT":
+    {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                            break;
+                        case "TH":
+    {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                            break;
+                        }
+                    }
+                    self.close();
+                    break;
+                case "cancel":
+                    self.close();
+                    break;
+                }
+            }
+{% else %}
+            function clkCid()
+            {}
+            function clkBut(button)
+            {
+                switch(button)
+                {
+                    case "submit":
+    {% if typ == "TS" %}
+                                    url = "xmlhttp/newts.x.php";
+    {% else %}
+                                    url = "xmlhttp/newsy.x.php";
+    {% endif %}
+                        parms  = "bid={{ bid }}";
+                        parms += "&piv={{ piv }}";
+                        parms += "&pid={{ pid }}";
+                        parms += "&t={{ term | url_encode }}";
+    {% if context is not none %}
+                                    parms += "&k={{ context | url_encode }}";
+    {% endif %}
+                        parms += "&sylng={{ sylng }}";
+
+                        for(i=0; i<(n=document.getElementsByName("reindex")).length; i++)
+                        {
+                            if(n[i].checked)
+                            {
+                                parms += "&reindex=" + encodeURIComponent(n[i].value);
+                                break;
+                            }
+                        }
+                        ret = loadXMLDoc(url, parms, true);
+                        refresh = ret.getElementsByTagName("refresh");
+                        for(i=0; i<refresh.length; i++)
+                        {
+                            switch(refresh.item(i).getAttribute("type"))
+                            {
+                                case "CT":
+    {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                    break;
+                                case "TH":
+    {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                    break;
+                                }
+                            }
+                            self.close();
+                            break;
+                        case "cancel":
+                            self.close();
+                            break;
+                        }
+                    }
+{% endif %}
+    function loaded()
+    {
+        clkCid();
+        self.focus();
+    }
+</script>
+</html>

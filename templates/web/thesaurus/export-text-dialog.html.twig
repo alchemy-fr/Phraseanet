@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale.I18n'] }}">
+    <head>
+        <title>{% trans 'thesaurus:: export au format texte' %}</title>
+
+        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <script type="text/javascript">
+            var format = "text";
+
+            function clkBut(button)
+            {
+                switch(button)
+                {
+                    case "submit":
+                        document.forms[0].action = "export_" + format + ".php";
+                        document.forms[0].submit();
+                        break;
+                    case "cancel":
+                        self.returnValue = null;
+                        self.close();
+                        break;
+                }
+            }
+            function loaded()
+            {
+                chgFormat();
+            }
+            function ckis()
+            {
+                document.getElementById("submit_button").disabled = document.forms[0].t.value=="";
+            }
+            function enable_inputs(o, stat)
+            {
+                if(o.nodeType==1)  // element
+                {
+                    if(o.nodeName=='INPUT')
+                    {
+                        if(stat)
+                            o.removeAttribute('disabled');
+                        else
+                            o.setAttribute('disabled', true);
+                    }
+                    for(var oo=o.firstChild; oo; oo=oo.nextSibling)
+                        enable_inputs(oo, stat)
+                }
+            }
+            function chgFormat()
+            {
+                var i, f;
+                url = "./export_"+format+".php?bid={{ bid }}&piv={{ piv }}&id={{ id }}&typ={{ typ }}&dlg=0&smp=1";
+                url += "&osl=" + (document.forms[0].osl[0].checked ? "1" : "0");
+                url += "&iln=" + (document.forms[0].iln.checked ? "1" : "0");
+                url += "&hit=" + (document.forms[0].hit.checked ? "1" : "0");
+                url += "&ilg=" + (document.forms[0].ilg.checked ? "1" : "0");
+                document.getElementById("ifrsample").src = url;
+            }
+        </script>
+    </head>
+    <body onload="loaded();" class="dialog">
+    <center>
+        <br/>
+        <form onsubmit="clkBut('submit');return(false);" action="export_topics.php" target="EXPORT2">
+            <input type="hidden" name="bid" value="{{ bid }}" >
+            <input type="hidden" name="piv" value="{{ piv }}" >
+            <input type="hidden" name="id" value="{{ id }}" >
+            <input type="hidden" name="typ" value="{{ typ }}" >
+            <input type="hidden" name="dlg" value="{{ dlg }}" >
+            <table>
+                <thead>
+                    <tr>
+                        <th>{% trans 'thesaurus:: options d\'export : ' %}</th>
+                        <th>{% trans 'thesaurus:: example' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td valign="top" style="padding:5px">
+                            <div style="white-space:nowrap">
+                                <input type='radio' name='ofm' checked value='text'>
+                                {% trans 'thesaurus:: export au format texte' %}
+                            </div>
+                            <div id='subform_text' style="margin-left:10px;">
+                                <div style="white-space:nowrap">
+                                    <input type='radio' name='osl' checked value='1' onclick="chgFormat();">
+                                    {% trans 'thesaurus:: exporter avec les synonymes sur la meme ligne' %}
+                                </div>
+                                <div style="white-space:nowrap">
+                                    <input type='radio' name='osl' value='0' onclick="chgFormat();">
+                                    {% trans 'thesaurus:: exporter avec une ligne par synonyme' %}
+                                </div>
+                                <div style="white-space:nowrap">
+                                    <input type='checkbox' name='iln' value='1' onclick="chgFormat();">
+                                    {% trans 'thesaurus:: export : numeroter les lignes ' %}
+                                </div>
+                                <div style="white-space:nowrap">
+                                    <input type='checkbox' name='ilg' value='1' onclick="chgFormat();">
+                                    {% trans 'thesaurus:: export : inclure la langue' %}
+                                </div>
+                                <div style="white-space:nowrap">
+                                    <input type='checkbox' name='hit' value='1' onclick="chgFormat();">
+                                    {% trans 'thesaurus:: export : inclure les hits' %}
+                                </div>
+                            </div>
+                        </td>
+                        <td valign="top" style="padding:10px">
+                            <iframe id="ifrsample" frameborder="0" scrolling="No" style="width:400px;height:150px;overflow:hidden;border: 0px solid #b0b0b0; " ></iframe>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+            <br/>
+            <input type="button" id="cancel_button" value="{% trans 'boutton::annuler' %}" onclick="clkBut('cancel');" style="width:100px;">
+            &nbsp;&nbsp;&nbsp;
+            <input type="button" id="submit_button" value="{% trans 'boutton::valider' %}" onclick="clkBut('submit');" style="width:100px;">
+        </form>
+    </center>
+</body>
+</html>
