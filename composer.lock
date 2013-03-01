@@ -164,7 +164,7 @@
         },
         {
             "name": "data-uri/data-uri",
-            "version": "dev-master",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "git://github.com/alchemy-fr/PHP-dataURI.git",

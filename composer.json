@@ -11,7 +11,7 @@
         "alchemy/phlickr"                  : "dev-master",
         "badfaith/badfaith"                : "dev-master",
         "dailymotion/sdk"                  : "dev-master",
-        "data-uri/data-uri"                : "dev-master",
+        "data-uri/data-uri"                : "~0.1.0",
         "doctrine/orm"                     : "~2.3.0",
         "facebook/php-sdk"                 : "~3.0",
         "gedmo/doctrine-extensions"        : "~2.3.0",
