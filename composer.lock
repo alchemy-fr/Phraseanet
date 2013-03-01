@@ -662,16 +662,16 @@
         },
         {
             "name": "facebook/php-sdk",
-            "version": "v3.2.1",
+            "version": "v3.2.2",
             "source": {
                 "type": "git",
-                "url": "git://github.com/facebook/facebook-php-sdk.git",
-                "reference": "v3.2.1"
+                "url": "https://github.com/facebook/facebook-php-sdk.git",
+                "reference": "v3.2.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/facebook/facebook-php-sdk/archive/v3.2.1.zip",
-                "reference": "v3.2.1",
+                "url": "https://api.github.com/repos/facebook/facebook-php-sdk/zipball/v3.2.2",
+                "reference": "v3.2.2",
                 "shasum": ""
             },
             "require": {
@@ -679,7 +679,6 @@
                 "ext-json": "*",
                 "php": ">=5.2.0"
             },
-            "time": "2012-11-27 22:34:17",
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -701,7 +700,8 @@
             "keywords": [
                 "facebook",
                 "sdk"
-            ]
+            ],
+            "time": "2013-01-15 21:37:15"
         },
         {
             "name": "gedmo/doctrine-extensions",
@@ -1186,6 +1186,9 @@
                 "ext-pcre": "*",
                 "php": ">=5.2.1"
             },
+            "suggest": {
+                "symfony/http-foundation": "To bind symfony request to ReCaptcha"
+            },
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -1204,9 +1207,8 @@
                     "role": "Developer"
                 }
             ],
-            "description": "Minify is a PHP5 app that helps you follow several rules for client-side performance. It combines multiple CSS or Javascript files, removes unnecessary whitespace and comments, and serves them with gzip encoding and optimal client-side cache headers",
-            "homepage": "http://code.google.com/p/minify/",
-            "time": "2013-04-01 15:25:27"
+            "description": "ReCaptcha Client",
+            "time": "2013-02-14 13:42:00"
         },
         {
             "name": "neutron/silex-badfaith-provider",
@@ -1975,8 +1977,8 @@
             },
             "require": {
                 "silex/silex": ">=1.0,<2.0",
-                "symfony/stopwatch": ">=2.2,<3.0",
-                "symfony/web-profiler-bundle": ">=2.2,<3.0"
+                "symfony/stopwatch": ">=2.2-RC1,<3.0",
+                "symfony/web-profiler-bundle": ">=2.2-RC1,<3.0"
             },
             "type": "library",
             "extra": {
