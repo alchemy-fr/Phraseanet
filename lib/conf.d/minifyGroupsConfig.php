@@ -85,7 +85,7 @@ $groups = array(
         , '//skins/prod/jquery.Dialog.js'
         , '//skins/prod/jquery.Feedback.js'
         , '//skins/prod/jquery.Results.js'
-        , '//skins/prod/page0.js'
+        , '//skins/prod/jquery.main-prod.js'
         , '//skins/prod/jquery.WorkZone.js'
         , '//skins/prod/jquery.Alerts.js'
         , '//skins/prod/jquery.Upload.js'
