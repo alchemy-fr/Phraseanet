@@ -1,6 +1,3 @@
-[submodule "www/include/vendor/qunit"]
-	path = www/include/vendor/qunit
-	url = git://github.com/jquery/qunit.git
 [submodule "www/include/vendor/mustache-js"]
 	path = www/include/vendor/mustache-js
 	url = https://github.com/janl/mustache.js.git
