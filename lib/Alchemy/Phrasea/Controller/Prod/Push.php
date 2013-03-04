@@ -220,6 +220,8 @@ class Push implements ControllerProviderInterface
                         . 'lightbox/index.php?LOG='
                         . \random::getUrlToken($app, \random::TYPE_VALIDATE, $user_receiver->get_id(), null, $Basket->getId());
 
+                    $receipt = $request->get('recept') ? $user->get_email() : '';
+
                     $params = array(
                         'from'       => $app['phraseanet.user']->get_id()
                         , 'from_email' => $app['phraseanet.user']->get_email()
@@ -227,7 +229,7 @@ class Push implements ControllerProviderInterface
                         , 'to_email'   => $user_receiver->get_email()
                         , 'to_name'    => $user_receiver->get_display_name()
                         , 'url'        => $url
-                        , 'accuse'     => !!$request->request->get('recept', false)
+                        , 'accuse'     => $receipt
                         , 'message'    => $request->request->get('message')
                         , 'ssel_id'    => $Basket->getId()
                     );
@@ -415,6 +417,8 @@ class Push implements ControllerProviderInterface
                         . 'lightbox/index.php?LOG='
                         . \random::getUrlToken($app, \random::TYPE_VIEW, $participant_user->get_id(), null, $Basket->getId());
 
+                    $receipt = $request->get('recept') ? $user->get_email() : '';
+
                     $params = array(
                         'from'       => $app['phraseanet.user']->get_id()
                         , 'from_email' => $app['phraseanet.user']->get_email()
@@ -422,7 +426,7 @@ class Push implements ControllerProviderInterface
                         , 'to_email'   => $participant_user->get_email()
                         , 'to_name'    => $participant_user->get_display_name()
                         , 'url'        => $url
-                        , 'accuse'     => !!$request->request->get('recept', false)
+                        , 'accuse'     => $receipt
                         , 'message'    => $request->request->get('message')
                         , 'ssel_id'    => $Basket->getId()
                     );
