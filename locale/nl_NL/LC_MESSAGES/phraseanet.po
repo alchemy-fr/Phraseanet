@@ -8,25 +8,15 @@ msgstr ""
 "Project-Id-Version: phraseanettranslation\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-11-09 13:13+0100\n"
-"PO-Revision-Date: 2013-02-01 10:45+0100\n"
+"PO-Revision-Date: 2013-03-04 14:13+0100\n"
 "Last-Translator: Romain Neutron <imprec@gmail.com>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
-"X-Launchpad-Export-Date: 2013-02-01 09:08+0000\n"
-"X-Generator: Poedit 1.5.4\n"
-"X-Poedit-SearchPath-0: config\n"
-"X-Poedit-SearchPath-1: lib/classes\n"
-"X-Poedit-SearchPath-2: lib/conf.d\n"
-"X-Poedit-SearchPath-3: tmp\n"
-"X-Poedit-SearchPath-4: www\n"
-"X-Poedit-SearchPath-5: lib/Alchemy\n"
-"X-Poedit-SearchPath-6: lib/Doctrine\n"
-"X-Poedit-SearchPath-7: bin\n"
+"X-Launchpad-Export-Date: 2013-03-04 13:01+0000\n"
+"X-Generator: Poedit 1.5.5\n"
 
 #: lib/classes/appbox.class.php:328 lib/classes/appbox.class.php:411
 msgid "Flushing cache"
@@ -5024,6 +5014,8 @@ msgstr "De gebruiker keurt dit document af"
 #: tmp/cache_twig/55/c5/bba6d6ac2354a5ed21223a7ae48b.php:879
 msgid "This user does not participate to the validation but is only viewer."
 msgstr ""
+"Deze gebruiker maakt geen deel uit van de goedkeuring maar is enkel een "
+"bezoeker."
 
 #: tmp/cache_twig/59/46/9072e2f8e9240ff52020a0c05c65.php:65
 msgid "Erreur lors du contact avec le serveur WEB"
@@ -5396,7 +5388,7 @@ msgstr "Maak de taak voor het lezen van de metadata"
 
 #: tmp/cache_twig/59/46/9072e2f8e9240ff52020a0c05c65.php:1135
 msgid "Creer la tache de creation des sous-definitions"
-msgstr "Maak de taak voor het aanmaken van onderliggende definities"
+msgstr "Maak de taak voor het aanmaken van thumbnails"
 
 #: tmp/cache_twig/59/46/9072e2f8e9240ff52020a0c05c65.php:1144
 msgid "Creer la tache d'indexation"
@@ -6178,7 +6170,7 @@ msgstr "A"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:118
 msgid "regeneration of sub-definitions"
-msgstr "regeneratie van sub-definities"
+msgstr "thumbnails opnieuw genereren"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:138
 msgid "video tool"
@@ -6198,11 +6190,11 @@ msgstr "meta-datas"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:205
 msgid "Reconstruire les sous definitions"
-msgstr "Heropbouw van de definities"
+msgstr "Thumbnails opnieuw aanmaken"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:214
 msgid "Attention, certain documents ont des sous-definitions substituees"
-msgstr "Opgelet, sommige documentent hebben sub-definities gesubstitueerd"
+msgstr "Opgelet, sommige documenten bevatten thumbnails"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:221
 msgid ""
@@ -6216,7 +6208,7 @@ msgstr "hermaak een onder definitie"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:243
 msgid "recreer toutes les sous-definitions"
-msgstr "hermaak alle onder definities"
+msgstr "Thumbnails opnieuw genereren"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:257
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:391
@@ -7328,7 +7320,7 @@ msgstr ""
 
 #: tmp/cache_twig/c2/c8/415e2b8850cc5270892aa87440f8.php:317
 msgid "You are about to delete this account. Would you like to continue ?"
-msgstr ""
+msgstr "U staat op het punt deze gebruiker te verwijderen. Wilt u doorgaan?"
 
 #: tmp/cache_twig/c2/c8/415e2b8850cc5270892aa87440f8.php:551
 msgid "Vous n'avez pas assez de droits sur les elements selectionnes"
@@ -7407,6 +7399,7 @@ msgstr "Volumetrie van de vragen over %home_title%"
 msgid ""
 "prod::thesaurusTab:dlg:Remplacement du candidat \"%(from)s\" par \"%(to)s\""
 msgstr ""
+"prod::thesaurusTab:dlg:Kandidaat \"%(from)s\" vervangen door \"%(to)s\""
 
 #: tmp/cache_twig/cd/52/49abe653b79251910b076e041dee.php:259
 msgid "prod::thesaurusTab:dlg:Remplacement en cours."
@@ -7848,7 +7841,7 @@ msgstr "Sommige velden zijn verplicht, wilt u ze invullen"
 
 #: tmp/cache_twig/eb/b2/79c015458ed339c9be1c206a7ab1.php:1145
 msgid "Vous devez selectionner un type de sous definitions"
-msgstr "U moet sub type definities selecteren"
+msgstr "U moet een type thumbnail selecteren"
 
 #: tmp/cache_twig/eb/b2/79c015458ed339c9be1c206a7ab1.php:1165
 msgid "Terms of Use"
@@ -9249,7 +9242,7 @@ msgstr "Over de veiligheid van de paswoorden"
 
 #: www/login/register.php:638
 msgid "Robots SPAM protection :"
-msgstr ""
+msgstr "Robots SPAM bescherming :"
 
 #: www/login/reset-email.php:66
 msgid "admin::compte-utilisateur: L'email a correctement ete mis a jour"
@@ -10064,12 +10057,12 @@ msgstr "De term in de prullemand plaatsen ?"
 #: www/xmlhttp/replacecandidate.j.php:244
 #, php-format
 msgid "prod::thesaurusTab:dlg:%d record(s) updated"
-msgstr ""
+msgstr "prod::thesaurusTab:dlg:%d record(s) vernieuwd"
 
 #: www/xmlhttp/replacecandidate.j.php:248
 #, php-format
 msgid "prod::thesaurusTab:dlg:too many (%1$d) records to update (limit=%2$d)"
-msgstr ""
+msgstr "prod::thesaurusTab:dlg:teveel (%1$d) records vernieuwen (limit=%2$d)"
 
 #: lib/Alchemy/Phrasea/Application/Api.php:75
 msgid "The use of phraseanet Navigator is not allowed"
@@ -10179,11 +10172,11 @@ msgstr "%d records verplaatst"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:135
 msgid "Account is not found."
-msgstr ""
+msgstr "Gebruiker niet gevonden"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:137
 msgid "Something went wrong, please contact an administrator"
-msgstr ""
+msgstr "Er is iets misgegaan, gelieve de beheerder te contacteren"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:237
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:301
