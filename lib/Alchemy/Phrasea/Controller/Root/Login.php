@@ -45,8 +45,16 @@ class Login implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
+            if ($request->getPathInfo() == $app->path('homepage')) {
+                return;
+            }
             if ($app['phraseanet.registry']->get('GV_maintenance')) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'), '/') . "&error=maintenance");
+                return $app->redirect(
+                    $app->path('homepage', array(
+                        'redirect' => ltrim($request->request->get('redirect'), '/'),
+                        'error'    => 'maintenance'
+                    ))
+                );
             }
         });
 
@@ -439,7 +447,7 @@ class Login implements ControllerProviderInterface
 
                 return $app->redirect('/login/?notice=password-update-ok');
             } catch (\Exception_NotFound $e) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'token')));
+                return $app->redirect($app->path('login_forgot_password', array('error' => 'token')));
             }
         }
     }
@@ -1138,7 +1146,7 @@ class Login implements ControllerProviderInterface
             $target = $request->query->get('redirect');
 
             if (!$target) {
-                $target = $app['url_generator']->generate();
+                $target = $app->path('prod');
             }
 
             return $app->redirect($target);

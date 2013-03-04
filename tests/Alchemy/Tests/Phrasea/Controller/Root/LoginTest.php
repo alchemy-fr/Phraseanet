@@ -835,6 +835,21 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
+     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
+     */
+    public function testMaintenanceOnLoginDoesNotRedirect()
+    {
+        self::$DI['app']['authentication']->closeAccount();
+        self::$DI['app']['phraseanet.registry']->set('GV_maintenance', true , \registry::TYPE_BOOLEAN);
+
+        self::$DI['client'] = new Client(self::$DI['app'], array());
+
+        self::$DI['client']->request('GET', '/login/');
+        self::$DI['app']['phraseanet.registry']->set('GV_maintenance', false, \registry::TYPE_BOOLEAN);
+        $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
+    }
+
+    /**
      * Delete inscription demand made by the current authenticathed user
      * @return void
      */
