@@ -38,9 +38,16 @@
             </div>
         </div>
         <div class="row-fluid">
-             <div class="span12" ng-controller="LoginFormController">
+             <div class="span12">
                  {{ auth_macro.alert() }}
-                 <form novalidate name="{{ form.vars.name }}" ng-submit="submit();">
+                 <form
+                     ng-controller="LoginFormController"
+                     novalidate
+                     name="{{ form.vars.name }}"
+                     ng-submit="submit();"
+                     action="{{ path("login_authentication_provider_mapping") }}"
+                     method="POST"
+                     check-form-submission>
                     <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.email, form.vars.name, 'icon-envelope') }}

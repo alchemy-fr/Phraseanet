@@ -105,6 +105,24 @@ angular.module('phraseanetAuthentication', ['ui'])
             });
         }
     }
+}).directive('checkFormSubmission', function () {
+    // Angular does not prevent form submission if form is not valid  and if action attribute is defined.
+    // This directive change angular's behavior by cancelling form submission
+    // if form is not valid even if action attribute is defined
+    return {
+        link: function (scope, element, attrs, controller) {
+            scope.$watch(attrs.name + '.$valid', function(value) {
+                if(false === value && !!element.attr('action')) {
+                    element.bind('submit', function(event) {
+                        event.preventDefault();
+                        return false;
+                    });
+                } else {
+                     element.unbind('submit').trigger('submit');
+                }
+            });
+        }
+    }
 }).directive('alert', function () {
     return {
         restrict:'EA',
