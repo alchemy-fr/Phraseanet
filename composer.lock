@@ -38,7 +38,8 @@
                 "psr-0": {
                     "Phlickr_": "./"
                 }
-            }
+            },
+            "time": "2012-04-13 17:43:31"
         },
         {
             "name": "alchemy/ghostscript",
@@ -111,7 +112,8 @@
                 "classmap": [
                     "lib/"
                 ]
-            }
+            },
+            "time": "2012-03-30 15:47:07"
         },
         {
             "name": "dailymotion/sdk",
@@ -1626,6 +1628,7 @@
                 "shasum": ""
             },
             "require": {
+                "doctrine/common": ">=2.2,<3.0",
                 "php": ">=5.3.3",
                 "psr/log": ">=1.0,<2.0",
                 "doctrine/common": ">=2.2,<3.0",
@@ -1708,7 +1711,8 @@
             "homepage": "http://symfony.com",
             "keywords": [
                 "framework"
-            ]
+            ],
+            "time": "2013-03-01 10:39:52"
         },
         {
             "name": "tecnick.com/tcpdf",
