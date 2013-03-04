@@ -182,7 +182,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
         $subject = sprintf(_('Nouvelle publication : %s'), $entry->get_title());
 
         $body = "<div>"
-            . sprintf('%s vient de publier %s', $entry->get_author_name(), $entry->get_title())
+            . sprintf('%s vient de publier %s', $entry->get_author_name(), $entry->get_title()) . "</div>\n<div>"
             . _('Connectez vous a l\'adresse suivante pour la consulter')
             . "</div>\n";
 
