@@ -32,7 +32,9 @@ if (0 !== $code) {
 
 $composer = __DIR__ . '/composer.phar';
 
-if ( ! file_exists($composer)) {
+exec('composer', $output, $code);
+
+if (0 !== $code && ! file_exists($composer)) {
     system('curl -s http://getcomposer.org/installer | php');
     system('chmod +x ' . $composer);
 
@@ -43,7 +45,9 @@ if ( ! file_exists($composer)) {
     }
 }
 
-if ( ! is_executable($composer)) {
+if (0 === $code) {
+    $composer = 'composer';
+} elseif ( ! is_executable($composer)) {
     system('chmod +x ' . $composer);
 }
 
