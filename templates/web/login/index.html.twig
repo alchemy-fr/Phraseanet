@@ -2,6 +2,7 @@
     variable "feed" to get public feeds
     variable "recaptcha_display" should be setted Tell whether the recaptch should be displayed
     variable "recaptacha" should be setted  The recaptcha object
+    variable "guest_allowed" phrasea::guest_allowed($app)
  #}
 
 {% extends "login/layout/sidebar-layout.html.twig" %}
@@ -85,7 +86,7 @@
             </div>
         </div>
     </div><!-- /sidebar block -->
-    <div class="well-large sidebar-block {% if not login.register_enabled(app) %}last-child{% endif %}">
+    <div class="well-large sidebar-block {% if not login.register_enabled(app) and not guest_allowed %}last-child{% endif %}">
         <div class="row-fluid">
             <div class="span12 text-center">
                 {% trans "Or login with" %}
@@ -98,7 +99,8 @@
         </div>
     </div><!-- /sidebar block -->
 
-    {% include "login/include/register-link-block.html.twig" with {"login" : login, "last_item" : login.register_enabled(app)} %}
+    {% include "login/include/register-link-block.html.twig" with {"login" : login, "last_item" : login.register_enabled(app) and not guest_allowed} %}
+    {% include "login/include/guest-access-block.html.twig" with {"guest_allowed" : guest_allowed, "last_item" : guest_allowed} %}
 {% endblock %}
 
 {% block left_content %}
