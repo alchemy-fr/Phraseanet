@@ -202,6 +202,33 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals($ret, $app->url($route));
     }
 
+    public function testCreateForm()
+    {
+        $factory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
+
+        $app = new Application();
+        $app['form.factory'] = $factory;
+
+        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $type = $this->getMock('Symfony\Component\Form\FormTypeInterface');
+        $data = array('some' => 'data');
+        $options = array();
+
+        $parent = $this->getMockBuilder('Symfony\Component\Form\FormBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $factory->expects($this->once())
+            ->method('create')
+            ->with($this->equalTo($type), $this->equalTo($data), $this->equalTo($options), $this->equalTo($parent))
+            ->will($this->returnValue($form));
+
+        $this->assertEquals($form, $app->form($type, $data, $options, $parent));
+    }
+
     public function addSetFlash()
     {
         $app = new Application('test');
