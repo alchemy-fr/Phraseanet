@@ -123,7 +123,7 @@ angular.module('phraseanetAuthentication', ['ui'])
             });
         }
     }
-}).directive('alert', function () {
+}).directive('phraseanetFlash', function () {
     return {
         restrict:'EA',
         template: [
