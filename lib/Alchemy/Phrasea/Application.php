@@ -21,7 +21,7 @@ use Alchemy\Phrasea\Controller\Admin\Databox;
 use Alchemy\Phrasea\Controller\Admin\Databoxes;
 use Alchemy\Phrasea\Controller\Admin\Fields;
 use Alchemy\Phrasea\Controller\Admin\Publications;
-use Alchemy\Phrasea\Controller\Admin\Root;
+use Alchemy\Phrasea\Controller\Admin\Root as AdminRoot;
 use Alchemy\Phrasea\Controller\Admin\Setup;
 use Alchemy\Phrasea\Controller\Admin\SearchEngine;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
@@ -63,6 +63,7 @@ use Alchemy\Phrasea\Controller\Report\Root as ReportRoot;
 use Alchemy\Phrasea\Controller\Root\Account;
 use Alchemy\Phrasea\Controller\Root\Developers;
 use Alchemy\Phrasea\Controller\Root\Login;
+use Alchemy\Phrasea\Controller\Root\Root;
 use Alchemy\Phrasea\Controller\Root\RSSFeeds;
 use Alchemy\Phrasea\Controller\Root\Session;
 use Alchemy\Phrasea\Controller\Setup as SetupController;
@@ -550,31 +551,7 @@ class Application extends SilexApplication
 
     public function bindRoutes()
     {
-        $this->get('/', function(Application $app) {
-            if ($app['browser']->isMobile()) {
-                return $app->redirect("/login/?redirect=lightbox");
-            } elseif ($app['browser']->isNewGeneration()) {
-                return $app->redirect("/login/?redirect=prod");
-            } else {
-                return $app->redirect("/login/?redirect=client");
-            }
-        })->bind('root');
-
-        $this->get('/robots.txt', function(Application $app) {
-
-            if ($app['phraseanet.registry']->get('GV_allow_search_engine') === true) {
-                $buffer = "User-Agent: *\n" . "Allow: /\n";
-            } else {
-                $buffer = "User-Agent: *\n" . "Disallow: /\n";
-            }
-
-            return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
-        })->bind('robots');
-
-        $this->mount('/setup', new SetupController());
-        $this->mount('/setup/connection_test/', new ConnectionTest());
-        $this->mount('/setup/test/', new PathFileTest());
-
+        $this->mount('/', new Root());
         $this->mount('/feeds/', new RSSFeeds());
         $this->mount('/account/', new Account());
         $this->mount('/login/', new Login());
@@ -586,7 +563,7 @@ class Application extends SilexApplication
 
         $this->mount('/include/minify/', new Minifier());
 
-        $this->mount('/admin/', new Root());
+        $this->mount('/admin/', new AdminRoot());
         $this->mount('/admin/dashboard', new Dashboard());
         $this->mount('/admin/collection', new Collection());
         $this->mount('/admin/databox', new Databox());
@@ -636,6 +613,10 @@ class Application extends SilexApplication
 
         $this->mount('/download/', new DoDownload());
         $this->mount('/session/', new Session());
+
+        $this->mount('/setup', new SetupController());
+        $this->mount('/setup/connection_test/', new ConnectionTest());
+        $this->mount('/setup/test/', new PathFileTest());
 
         $this->mount('/report/', new ReportRoot());
         $this->mount('/report/activity', new ReportActivity());
