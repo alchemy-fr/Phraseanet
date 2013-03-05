@@ -1,0 +1,77 @@
+{#
+    require provider_name
+#}
+
+{% set provider_name = "Dailymotion" %}
+
+{% extends "login/layout/middle-bar-layout.html.twig" %}
+
+{% block title %}
+    {% trans "Authorization Access" %}
+{% endblock %}
+
+{% block content %}
+    <div class="well-large sidebar-block text-center">
+        <div class="row-fluid">
+            <div class="span12">
+                {% block footer_logo %}
+                    {{ parent() }}
+                {% endblock footer_logo %}
+            </div>
+        </div>
+    </div>
+    <div class="well-large sidebar-block">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="text-title">
+                    {% trans "Authorization Access" %}
+                </div>
+                <div>
+                    {% set application_name %}
+                        <br/><span class="app-name">{{ provider_name }}</span><br/>
+                    {% endset %}
+
+                    {% trans %}
+                        Do you authorize the application {{ application_name }} to access to your Phraseanet content?
+                    {% endtrans %}
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <table class="authorize-panel fixed-table">
+                    <tr>
+                        <td class="span8">
+                            <a href="#" class="btn btn-trigger btn-success full-width">{% trans "Authorize" %}</a>
+                        </td>
+                        <td class="text-right span4">
+                            <a href="#" >{% trans "Deny" %}</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="well-large sidebar-block text-center">
+        <div class="row-fluid">
+            <div class="span12">
+                {% block tou_link %}
+                    {{ parent() }}
+                {% endblock tou_link %}
+            </div>
+        </div>
+    </div>
+    <div class="well-large sidebar-block last-child text-center">
+        <div class="row-fluid">
+            <div class="span12">
+                {% block copyright %}
+                    {{ parent() }}
+                {% endblock copyright %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer_scaffholding %}
+    {# empty footer #}
+{% endblock footer_scaffholding %}
