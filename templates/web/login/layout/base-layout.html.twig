@@ -79,45 +79,53 @@
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
-        <div class="container">
+        <div class="container full-height">
             {% block scaffholding %}
 
             {% endblock %}
-             <div class="row-fluid">
-                <div class="span12">
-                    <div class="footer well-small">
-                        {% block footer %}
-                            <div class="row-fluid">
-                                <div class="span9" >
-                                    {% block footer_content %}
-                                        <div class="footer-block">
-                                           <ul class="inline footer-list unstyled">
-                                               <li class="item-first" >
-                                                   <a href="{{ path("homepage") }}">{% trans "Home" %}</a>
-                                               </li>
-                                               <li>
-                                                   <a href="#">{% trans "Help" %}</a>
-                                               </li>
-                                               {% if login.get_cgus(app) is not empty %}
-                                                    <li>
-                                                        <a href="{{ path("login_cgus") }}">{% trans "Terms of use" %}</a>
-                                                    </li>
-                                               {% endif %}
-                                               <li>&copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</li>
-                                           </ul>
-                                        </div>
-                                    {% endblock footer_content %}
-                                </div>
-                                <div class="span3">
-                                    <div class="footer-block text-right">
-                                        {% block footer_logo %}Phraseanet{% endblock footer_logo %}
-                                    </div>
-                                </div>
-                            </div>
-                        {% endblock footer %}
-                    </div>
-                </div><!--/span-->
-            </div><!--/row-->
+            {% block footer_scaffholding %}
+                <div class="row-fluid">
+                   <div class="span12">
+                       <div class="footer well-small">
+                           {% block footer %}
+                               <div class="row-fluid">
+                                   <div class="span9" >
+                                       {% block footer_content %}
+                                           <div class="footer-block">
+                                               <ul class="inline footer-list unstyled">
+                                                   <li class="item-first" >
+                                                      <a href="{{ path("homepage") }}">{% trans "Home" %}</a>
+                                                   </li>
+                                                   <li>
+                                                      <a href="#">{% trans "Help" %}</a>
+                                                   </li>
+                                                   {% if login.get_cgus(app) is not empty %}
+                                                       <li>
+                                                           {% block tou_link %}
+                                                               <a href="{{ path("login_cgus") }}">{% trans "Terms of use" %}</a>
+                                                           {% endblock tou_link %}
+                                                       </li>
+                                                   {% endif %}
+                                                   <li>
+                                                       {% block copyright %}
+                                                          &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}
+                                                       {% endblock copyright %}
+                                                   </li>
+                                               </ul>
+                                           </div>
+                                       {% endblock footer_content %}
+                                   </div>
+                                   <div class="span3">
+                                       <div class="footer-block text-right">
+                                           {% block footer_logo %}Phraseanet{% endblock footer_logo %}
+                                       </div>
+                                   </div>
+                               </div>
+                           {% endblock footer %}
+                       </div>
+                   </div>
+               </div>
+            {% endblock footer_scaffholding %}
         </div><!--/.fluid-container-->
         {% include 'common/analytics.html.twig' %}
     </body>

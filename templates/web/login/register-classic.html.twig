@@ -10,7 +10,9 @@
     <div class="well-large sidebar-block last-child">
         <div class="row-fluid">
             <div class="span12">
-                <div class="text-title">{% trans "Inscription" %}</div>
+                <div class="text-title">
+                    {% trans "Inscription" %}
+                </div>
                 <div class="sidebar-hint">
                     {% trans %}
                         Complete the fields below to register on {{ home_title }}!
@@ -20,21 +22,21 @@
         </div>
 
         <div class="row-fluid">
-             <div class="span12">
-                 <form name="registerForm" class="authentication-sidebar-form">
+            <div class="span12">
+                <form name="registerForm" class="authentication-sidebar-form">
                     <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.firstName, form.vars.name, 'icon-user') }}
                         </div>
                     </div>
 
-                     <div class="row-fluid">
+                    <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.lastName, form.vars.name, 'icon-user') }}
                         </div>
                     </div>
 
-                     <div class="row-fluid">
+                    <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.email, form.vars.name, 'icon-envelope') }}
                         </div>
@@ -46,25 +48,29 @@
                         </div>
                     </div>
 
-                     <div class="sidebar-hint">
-                         * {% trans "Mandatory fields" %}
-                     </div>
+                    <div class="sidebar-hint">
+                        * {% trans "Mandatory fields" %}
+                    </div>
 
-                     <div class="row-fluid">
+                    <div class="row-fluid">
                         <div class="span12">
                             {% set label %}
-                                <a href="{{ path("login_cgus") }}">{% trans "I have read the terms of use" %}</a>
+                                <a href="{{ path("login_cgus") }}">
+                                    {% trans "I have read the terms of use" %}
+                                </a>
                             {% endset %}
 
                             {{ auth_macro.checkboxInput("terms-of-use",label,"terms_of_use") }}
                         </div>
-                     </div>
+                    </div>
 
-                     <div class="row-fluid">
+                    <div class="row-fluid">
                         <div class="span12">
-                            <button type="submit" class="btn btn-success btn-trigger">{% trans "Resquest access" %}</button>
+                            <button type="submit" class="btn btn-success btn-trigger">
+                                {% trans "Resquest access" %}
+                            </button>
                         </div>
-                     </div>
+                    </div>
                 </form>
             </div>
         </div>

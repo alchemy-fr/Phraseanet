@@ -9,7 +9,7 @@
     %}
 
     {% set attributes = custom_attributes|default({})|merge({
-            'class': app['browser'].getBrowser() == constant('Browser::BROWSER_IE') and app['browser'].getVersion() <= 7  ? '' : 'input-block-level',
+            'class': app['browser'].getBrowser() == constant('Browser::BROWSER_IE') and app['browser'].getVersion() <= 8  ? '' : 'input-block-level',
             'ng-model' : input_name,
             'force-model-update' : ''
         })
@@ -19,7 +19,9 @@
 
     <table class="input-table" ng-class="getInputClass('{{ input_name }}')">
         <tr>
-            <td class="icon"><i class="{{ icon_name|default('icon-angle-right') }} icon-white"></i></td>
+            <td class="icon">
+                <i class="{{ icon_name|default('icon-angle-right') }} icon-white"></i>
+            </td>
             <td class="input">
                 {{  form_widget(field, { 'attr': attributes })}}
             </td>
@@ -67,10 +69,18 @@
 
 {% macro providerList() %}
     <ul class="unstyled inline provider-list">
-        <li><a href="#"><img src="/skins/login/img/facebook.png" /></a></li>
-        <li><a href="#"><img src="/skins/login/img/twitter.png" /></a></li>
-        <li><a href="#"><img src="/skins/login/img/google.png" /></a></li>
-        <li><a href="#"><img src="/skins/login/img/linkedin.png" /></a></li>
+        <li>
+            <a href="#"><img src="/skins/login/img/facebook.png" /></a>
+        </li>
+        <li>
+            <a href="#"><img src="/skins/login/img/twitter.png" /></a>
+        </li>
+        <li
+            ><a href="#"><img src="/skins/login/img/google.png" /></a>
+        </li>
+        <li>
+            <a href="#"><img src="/skins/login/img/linkedin.png" /></a>
+        </li>
     </ul>
 {% endmacro %}
 
@@ -93,7 +103,7 @@
                     </tr>
             </table>
         </div>
-     </div>
+    </div>
 
     <span class="visible-phone text-error help-block help-block-error">
         {% if errors|keys|length >=  1 %}
@@ -115,21 +125,31 @@
                 </td>
                 <td>
                     <ul class="unstyled">
-                        <li class="pseudo one-line"><b>{{ full_name }}</b></li>
-                        <li class="email one-line">{{ email }}</li>
+                        <li class="pseudo one-line">
+                            <b>{{ full_name }}</b>
+                        </li>
+                        <li class="email one-line">
+                            {{ email }}
+                        </li>
                     </ul>
                 </td>
             </tr>
         </table>
-     </div>
+    </div>
 {% endmacro %}
 
 {% macro phraseanetBadge(full_name, email, company) %}
     <div class="authentication-user-pres-phraseanet well">
         <ul class="unstyled">
-            <li class="one-line"><i class="icon-user"></i>{{ full_name }}</li>
-            <li class="one-line"><i class="icon-envelope"></i>{{ email }}</li>
-            <li class="one-line"><i class="icon-briefcase"></i>{{ company }}</li>
+            <li class="one-line">
+                <i class="icon-user"></i>{{ full_name }}
+            </li>
+            <li class="one-line">
+                <i class="icon-envelope"></i>{{ email }}
+            </li>
+            <li class="one-line">
+                <i class="icon-briefcase"></i>{{ company }}
+            </li>
         </ul>
     </div>
 {% endmacro %}

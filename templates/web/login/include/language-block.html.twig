@@ -2,11 +2,14 @@
 <div id="authentication-sidebar-language" class="text-right well-small">
     <span class="language"><b>{% trans "language" %}</b></span>
     <div class="btn-group">
-        <button class="btn btn-mini btn-flat dropdown-toggle" data-toggle="dropdown">{{ attribute(languages, app['locale']) }}<span class="caret"></span></button>
+        <button class="btn btn-mini btn-flat dropdown-toggle" data-toggle="dropdown">
+            En
+            <span class="caret"></span>
+        </button>
         <ul class="dropdown-menu  pull-right">
             {% for code, language in languages if code != app['locale'] %}
                  <li><a href="#" data-country-code="{{ code }}">{{ language }}</a></li>
             {% endfor %}
         </ul>
-     </div>
+    </div>
 </div>
