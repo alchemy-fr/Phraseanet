@@ -1,7 +1,7 @@
 // controllers
 function LoginFormController($scope) {
     $scope.$watch('loginForm', function() {
-        $scope.loginForm.email.errors = {'filled' : true, 'valid' : true};
+        $scope.loginForm.login.errors = {'filled' : true, 'valid' : true};
         $scope.loginForm.password.errors = {'filled' : true, 'valid' : true};
     });
 
@@ -9,14 +9,14 @@ function LoginFormController($scope) {
         $scope.$broadcast('event:force-model-update');
 
         if (true === $scope.loginForm.$valid) {
-            $scope.loginForm.email.errors = {'filled' : true, 'valid' : true};
+            $scope.loginForm.login.errors = {'filled' : true, 'valid' : true};
             $scope.loginForm.password.errors = {'filled' : true,'valid' : true};
             // submit
             return true;
         }
 
-        $scope.loginForm.email.errors.valid = $scope.loginForm.email.$valid;
-        $scope.loginForm.email.errors.filled = !$scope.loginForm.email.$error.required;
+        $scope.loginForm.login.errors.valid = $scope.loginForm.login.$valid;
+        $scope.loginForm.login.errors.filled = !$scope.loginForm.login.$error.required;
 
         $scope.loginForm.password.errors.filled = !$scope.loginForm.password.$error.required;
 
