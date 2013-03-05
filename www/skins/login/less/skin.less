@@ -87,6 +87,7 @@ body {
     -webkit-font-smoothing: antialiased;
     text-shadow: 0 0 1px rgba(0,0,0,0.3);
     cursor: default;
+    height: 100%;
 }
 
 /** Reset style */
@@ -121,7 +122,25 @@ ul {
     .gradient (@btnInfoBackgroundHighlight, 0.7);
 }
 
+.btn-flat {
+    filter:progid:DXImageTransform.Microsoft.Gradient(enabled='false');
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-image:none;
+    border:0;
+    text-shadow: none;
+}
+
 /** Helpers style */
+
+.full-height {
+    height: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
 
 .text-error {
     color: @colorError;
@@ -143,6 +162,11 @@ ul {
 
 .no-overflow {
     overflow: hidden;
+}
+
+.fixed-table {
+    table-layout: fixed;
+    width:100%;
 }
 
 .rounded {
@@ -342,8 +366,8 @@ button[type=submit] {
 }
 
 .authentication-sidebar {
-    min-height: 550px;
-    height: 100%;
+    min-height: 100%;
+    height: auto;
     background: @backgroundSideBar;
     border-radius: 0;
     .glow(@sideBarGlow);
@@ -650,23 +674,50 @@ form[name=registerForm] label[for=terms-of-use] input{
     background-color: @black;
 }
 
+.app-name {
+    color: @colorSuccess;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.authorize-panel {
+    margin-top: 30px;
+}
+
+.authorize-panel a:not(.btn) {
+    text-decoration: underline;
+}
+
+form[name=desktop_code] {
+    margin-top:30px;
+}
+
 /** IE Fixes */
 
 .lt-ie8 authentication-sidebar-language .caret {
    margin: 6px 0px  0px 7px;
 }
 
-.lt-ie8 .inline li {
+.lt-ie8
+.btn-flat {
+    filter:progid:DXImageTransform.Microsoft.Gradient(enabled='false');
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-image:none;
+    border:0;
+    text-shadow: none;
+} .inline li {
     display: inline;
     zoom: 1;
 }
 
-.lt-ie8 .input-table {
+.lt-ie9 .input-table {
     border: 1px solid @inputOutsideBorder;
 }
 
-.lt-ie8 .input-table input,
-.lt-ie8 .input-table .input {
+.lt-ie9 .input-table input,
+.lt-ie9 .input-table .input {
    background-color: @inputIEBackground !important;
 }
 
