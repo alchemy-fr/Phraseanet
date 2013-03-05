@@ -154,10 +154,10 @@
     </div>
 {% endmacro %}
 
-{% macro alert() %}
-    {% for type, messages in ["warning", "info", "success", "error"] %}
+{% macro flashes() %}
+    {% for type in ["warning", "info", "success", "error"] %}
         {% for message in app.getFlash(type) %}
-            <phraseanet-alert type="{{ type }}">{{ message }}</phraseanet-alert>
+            <phraseanet-flash type="{{ type }}">{{ message }}</phraseanet-flash>
         {% endfor %}
     {% endfor %}
 {% endmacro %}
