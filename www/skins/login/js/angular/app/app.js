@@ -118,7 +118,7 @@ angular.module('phraseanetAuthentication', ['ui'])
                         return false;
                     });
                 } else {
-                     element.unbind('submit').trigger('submit');
+                     element.unbind('submit');
                 }
             });
         }
