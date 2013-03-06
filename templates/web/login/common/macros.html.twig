@@ -117,7 +117,7 @@
 {% endmacro %}
 
 {% macro providerBadge(provider, img_url, full_name, email) %}
-    <div class="{{ provider }} no-overflow provider-badge rounded">
+    <div class="{{ provider.getId() }}-badge no-overflow provider-badge rounded">
         <table>
             <tr>
                 <td style="width:55px;">
