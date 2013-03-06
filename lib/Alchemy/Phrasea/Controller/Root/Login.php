@@ -24,6 +24,7 @@ use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -31,6 +32,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
@@ -56,6 +58,10 @@ class Login implements ControllerProviderInterface
                     ))
                 );
             }
+        });
+
+        $controllers->before(function() use ($app) {
+            $app['twig.form.templates'] = array('login/common/form_div_layout.html.twig');
         });
 
         /**
@@ -275,21 +281,21 @@ class Login implements ControllerProviderInterface
         /**
          * @todo This a route test to display cgus
          */
-        $controllers->get('/cgus', function(Application $app, Request $request) {
+        $controllers->get('/cgus', function(PhraseaApplication $app, Request $request) {
             return $app['twig']->render('login/cgus.html.twig');
         })->bind('login_cgus');
 
         /**
          * Register classic form
          */
-        $controllers->get('/register-classic', function(Application $app, Request $request) {
+        $controllers->get('/register-classic', function(PhraseaApplication $app, Request $request) {
             return $app['twig']->render('login/register-classic.html.twig');
         })->bind('login_register_classic');
 
         /**
          * Register throught providers
          */
-        $controllers->get('/register-provider', function(Application $app, Request $request) {
+        $controllers->get('/register-provider', function(PhraseaApplication $app, Request $request) {
             return $app['twig']->render('login/register-provider.html.twig');
         })->bind('login_register_provider');
 
@@ -303,7 +309,7 @@ class Login implements ControllerProviderInterface
      * @param  Request          $request The current request
      * @return RedirectResponse
      */
-    public function sendConfirmMail(Application $app, Request $request)
+    public function sendConfirmMail(PhraseaApplication $app, Request $request)
     {
         if (null === $usrId = $request->query->get('usr_id')) {
             $app->abort(400, sprintf(_('Request to send you the confirmation mail failed, please retry')));
@@ -344,7 +350,7 @@ class Login implements ControllerProviderInterface
      * @param  Request          $request The current request
      * @return RedirectResponse
      */
-    public function registerConfirm(Application $app, Request $request)
+    public function registerConfirm(PhraseaApplication $app, Request $request)
     {
         if (null === $code = $request->query->get('code')) {
             return $app->redirect('/login/?redirect=prod&error=code-not-found');
@@ -397,7 +403,7 @@ class Login implements ControllerProviderInterface
      * @param  Request          $request The current request
      * @return RedirectResponse
      */
-    public function renewPassword(Application $app, Request $request)
+    public function renewPassword(PhraseaApplication $app, Request $request)
     {
         if (null !== $mail = $request->request->get('mail')) {
             try {
@@ -459,7 +465,7 @@ class Login implements ControllerProviderInterface
      * @param  Request     $request The current request
      * @return Response
      */
-    public function displayForgotPasswordForm(Application $app, Request $request)
+    public function displayForgotPasswordForm(PhraseaApplication $app, Request $request)
     {
         $tokenize = false;
         $errorMsg = $request->query->get('error');
@@ -515,7 +521,21 @@ class Login implements ControllerProviderInterface
             }
         }
 
+        $form = $app['form.factory']->createNamedBuilder('loginForm', 'form')
+            ->add('email', 'email', array(
+                'label' => _('E-mail'),
+                'required' => true,
+                'disabled' => $app['phraseanet.registry']->get('GV_maintenance'),
+                'constraints' => array(
+                    new Assert\NotBlank(),
+                    new Assert\Email(),
+                ),
+            ))
+            ->getForm();
+
         return $app['twig']->render('login/forgot-password.html.twig', array(
+            'login'       => new \login(),
+            'form'        => $form->createView(),
             'tokenize'    => $tokenize,
             'passwordMsg' => $passwordMsg,
             'errorMsg'    => $errorMsg,
@@ -530,7 +550,7 @@ class Login implements ControllerProviderInterface
      * @param  Request     $request The current request
      * @return Response
      */
-    public function displayRegisterForm(Application $app, Request $request)
+    public function displayRegisterForm(PhraseaApplication $app, Request $request)
     {
         $captchaSys = '';
 
@@ -610,7 +630,7 @@ class Login implements ControllerProviderInterface
      * @param  Request          $request The current request
      * @return RedirectResponse
      */
-    public function register(Application $app, Request $request)
+    public function register(PhraseaApplication $app, Request $request)
     {
         $captchaOK = true;
 
@@ -798,12 +818,13 @@ class Login implements ControllerProviderInterface
     public function logout(PhraseaApplication $app, Request $request)
     {
         $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
-
         $app['authentication']->closeAccount();
 
-        $appRedirect = $request->query->get("app");
+        $app->addFlash('notice', 'Vous etes maintenant deconnecte. A bientot.');
 
-        $response = new RedirectResponse("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=%s", ltrim($appRedirect, '/')) : ""));
+        $response = new RedirectResponse($app->path('root', array(
+            'redirect' => $request->query->get("redirect")
+        )));
 
         $response->headers->removeCookie('persistent');
         $response->headers->removeCookie('last_act');
@@ -819,107 +840,101 @@ class Login implements ControllerProviderInterface
      * @param  Request     $request The current request
      * @return Response
      */
-    public function login(Application $app, Request $request)
+    public function login(PhraseaApplication $app, Request $request)
     {
         require_once($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
 
-        $warning = $request->query->get('error', '');
+//        $warning = $request->query->get('error', '');
 
         try {
             $app['phraseanet.appbox']->get_connection();
         } catch (\Exception $e) {
-            $warning = 'no-connection';
+            $app->addFlash('error', _('login::erreur: No available connection - Please contact sys-admin'));
         }
+
 
         if ($app['phraseanet.registry']->get('GV_maintenance')) {
-            $warning = 'maintenance';
+            $app->addFlash('notice', _('login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee'));
         }
 
-        switch ($warning) {
-
-            case 'maintenance':
-                $warning = _('login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee');
-                break;
-            case 'no-connection':
-                $warning = _('login::erreur: No available connection - Please contact sys-admin');
-                break;
-            case 'auth':
-                $warning = _('login::erreur: Erreur d\'authentification');
-                break;
-            case 'captcha':
-                $warning = _('login::erreur: Erreur de captcha');
-                break;
-            case 'account-locked' :
-                $warning = _('login::erreur: Vous n\'avez pas confirme votre email');
-                break;
-            case 'no-base' :
-                $warning = _('login::erreur: Aucune base n\'est actuellment accessible');
-                break;
-            case 'session' :
-                $warning = _('Error while authentication, please retry or contact an admin if problem persists');
-                break;
-            case 'unexpected' :
-                $warning = _('An unexpected error occured during authentication process, please contact an admin');
-                break;
-        }
-
-        if (ctype_digit($request->query->get('usr'))) {
-            $warning .= '<div class="notice"><a href="/login/send-mail-confirm/?usr_id=' . $request->query->get('usr') . '" target ="_self" style="color:black;text-decoration:none;">' . _('login:: Envoyer a nouveau le mail de confirmation') . '</a></div>';
-        }
-
-        switch ($notice = $request->query->get('notice', '')) {
-            case 'ok':
-                $notice = _('login::register: sujet email : confirmation de votre adresse email');
-                break;
-            case 'already':
-                $notice = _('login::notification: cette email est deja confirmee');
-                break;
-            case 'mail-sent':
-                $notice = _('login::notification: demande de confirmation par mail envoyee');
-                break;
-            case 'register-ok':
-                $notice = _('login::notification: votre email est desormais confirme');
-                break;
-            case 'register-ok-wait':
-                $notice = _('Your email is now confirmed. You will be informed as soon as your pending request will be managed');
-                break;
-            case 'password-update-ok':
-                $notice = _('login::notification: Mise a jour du mot de passe avec succes');
-                break;
-            case 'no-register-available':
-                $notice = _('User inscriptions are disabled');
-                break;
-        }
-
-        $captchaSys = '';
-        if (!$app['phraseanet.registry']->get('GV_maintenance')
-            && $app['phraseanet.registry']->get('GV_captchas')
-            && trim($app['phraseanet.registry']->get('GV_captcha_private_key')) !== ''
-            && trim($app['phraseanet.registry']->get('GV_captcha_public_key')) !== ''
-            && $request->query->get('error') == 'captcha') {
-            $captchaSys = '<div style="margin:0;float: left;width:330px;"><div id="recaptcha_image" style="float: left;margin:10px 15px 5px"></div>
-                                                                <div style="text-align:center;float: left;margin:0 15px 5px;width:300px;">
-                                                                <a href="javascript:Recaptcha.reload()" class="link">' . _('login::captcha: obtenir une autre captcha') . '</a>
-                                                                </div>
-                                                                <div style="text-align:center;float: left;width:300px;margin:0 15px 0px;">
-                                                                    <span class="recaptcha_only_if_image">' . _('login::captcha: recopier les mots ci dessous') . ' : </span>
-                                                                    <input name="recaptcha_response_field" id="recaptcha_response_field" value="" type="text" style="width:180px;"/>
-                                                                </div>' . recaptcha_get_html($app['phraseanet.registry']->get('GV_captcha_public_key')) . '</div>';
-        }
+//        switch ($warning) {
+//
+//            case 'maintenance':
+//                $warning = _('login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee');
+//                break;
+//            case 'no-connection':
+//                $warning = _('login::erreur: No available connection - Please contact sys-admin');
+//                break;
+//            case 'auth':
+//                $warning = _('login::erreur: Erreur d\'authentification');
+//                break;
+//            case 'captcha':
+//                $warning = _('login::erreur: Erreur de captcha');
+//                break;
+//            case 'account-locked' :
+//                $warning = _('login::erreur: Vous n\'avez pas confirme votre email');
+//                break;
+//            case 'no-base' :
+//                $warning = _('login::erreur: Aucune base n\'est actuellment accessible');
+//                break;
+//            case 'session' :
+//                $warning = _('Error while authentication, please retry or contact an admin if problem persists');
+//                break;
+//            case 'unexpected' :
+//                $warning = _('An unexpected error occured during authentication process, please contact an admin');
+//                break;
+//        }
+//
+//        if (ctype_digit($request->query->get('usr'))) {
+//            $warning .= '<div class="notice">
+//                <a href="/login/send-mail-confirm/?usr_id=' . $request->query->get('usr') . '" target ="_self" style="color:black;text-decoration:none;">' .
+//                _('login:: Envoyer a nouveau le mail de confirmation') . '</a></div>';
+//        }
+//
+//        switch ($notice = $request->query->get('notice', '')) {
+//            case 'ok':
+//                $notice = _('login::register: sujet email : confirmation de votre adresse email');
+//                break;
+//            case 'already':
+//                $notice = _('login::notification: cette email est deja confirmee');
+//                break;
+//            case 'mail-sent':
+//                $notice = _('login::notification: demande de confirmation par mail envoyee');
+//                break;
+//            case 'register-ok':
+//                $notice = _('login::notification: votre email est desormais confirme');
+//                break;
+//            case 'register-ok-wait':
+//                $notice = _('Your email is now confirmed. You will be informed as soon as your pending request will be managed');
+//                break;
+//            case 'password-update-ok':
+//                $notice = _('login::notification: Mise a jour du mot de passe avec succes');
+//                break;
+//            case 'no-register-available':
+//                $notice = _('User inscriptions are disabled');
+//                break;
+//        }
 
         $public_feeds = \Feed_Collection::load_public_feeds($app);
-        $feeds = array_merge(array($public_feeds->get_aggregate()), $public_feeds->get_feeds());
+
+        $feeds = $public_feeds->get_feeds();
+        array_unshift($feeds, $public_feeds->get_aggregate());
+
+        $form = $app->form(new PhraseaAuthenticationForm(), null, array(
+            'disabled' => $app['phraseanet.registry']->get('GV_maintenance')
+        ));
 
         return $app['twig']->render('login/index.html.twig', array(
                 'module_name'    => _('Accueil'),
-                'notice'         => $notice,
-                'warning'        => $warning,
                 'redirect'       => ltrim($request->query->get('redirect'), '/'),
-                'logged_out'     => $request->query->get('logged_out'),
-                'captcha_system' => $captchaSys,
+                'recaptcha_display' => false,
+//                'logged_out'     => $request->query->get('logged_out'),
+//                'captcha_system' => $captchaSys,
                 'login'          => new \login(),
                 'feeds'          => $feeds,
-                'display_layout' => $app['phraseanet.registry']->get('GV_home_publi')
+            'guest_allowed' => \phrasea::guest_allowed($app),
+//                'display_layout' => $app['phraseanet.registry']->get('GV_home_publi'),
+                'form'           => $form->createView(),
             ));
     }
 
@@ -930,9 +945,18 @@ class Login implements ControllerProviderInterface
      * @param  Request          $request The current request
      * @return RedirectResponse
      */
-    public function authenticate(Application $app, Request $request)
+    public function authenticate(PhraseaApplication $app, Request $request)
     {
         $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request));
+
+        $form = $app->form(new PhraseaAuthenticationForm());
+        $form->bind($request);
+
+        if (!$form->isValid()) {
+            $app->addFlash('error', _('An unexpected error occured during authentication process, please contact an admin'));
+
+            return $app->redirect($app->path('homepage'));
+        }
 
         $params = array();
 
@@ -941,7 +965,7 @@ class Login implements ControllerProviderInterface
         }
 
         try {
-            $usr_id = $app['auth.native']->isValid($request->request->get('login'), $request->request->get('pwd'), $request);
+            $usr_id = $app['auth.native']->isValid($request->request->get('login'), $request->request->get('password'), $request);
         } catch (RequireCaptchaException $e) {
             $params = array_merge($params, array('error' => 'captcha'));
 
@@ -1006,7 +1030,7 @@ class Login implements ControllerProviderInterface
         return $response;
     }
 
-    public function authenticateAsGuest(Application $app, Request $request)
+    public function authenticateAsGuest(PhraseaApplication $app, Request $request)
     {
         if (!\phrasea::guest_allowed($app)) {
             $app->abort(403, _('Phraseanet guest-access is disabled'));
@@ -1051,7 +1075,7 @@ class Login implements ControllerProviderInterface
     }
 
     // move this in an event
-    private function postAuthProcess(Application $app, \User_Adapter $user)
+    private function postAuthProcess(PhraseaApplication $app, \User_Adapter $user)
     {
         $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
 
@@ -1107,14 +1131,14 @@ class Login implements ControllerProviderInterface
         return $session;
     }
 
-    public function authenticateWithProvider(Application $app, Request $request, $providerId)
+    public function authenticateWithProvider(PhraseaApplication $app, Request $request, $providerId)
     {
         $provider = $app['authentication.providers']->get($providerId);
 
         return $provider->authenticate($request->query->all());
     }
 
-    public function authenticationCallback(Application $app, Request $request, $providerId)
+    public function authenticationCallback(PhraseaApplication $app, Request $request, $providerId)
     {
         try {
             $provider = $app['authentication.providers']->get($providerId);
@@ -1165,7 +1189,7 @@ class Login implements ControllerProviderInterface
         }
     }
 
-    public function authenticationMapping(Application $app, Request $request, $providerId)
+    public function authenticationMapping(PhraseaApplication $app, Request $request, $providerId)
     {
         try {
             $provider = $app['authentication.providers']->get($providerId);
@@ -1181,7 +1205,7 @@ class Login implements ControllerProviderInterface
         ));
     }
 
-    public function authenticationBindToAccount(Application $app, Request $request, $providerId)
+    public function authenticationBindToAccount(PhraseaApplication $app, Request $request, $providerId)
     {
         try {
             $provider = $app['authentication.providers']->get($providerId);
@@ -1194,7 +1218,7 @@ class Login implements ControllerProviderInterface
         ));
     }
 
-    public function authenticationDoBindToAccount(Application $app, Request $request, $providerId)
+    public function authenticationDoBindToAccount(PhraseaApplication $app, Request $request, $providerId)
     {
         if (!$app['authentication.phrasea']->verify($request->query->get('username'), $request->query->get('password'))) {
 //            $app
@@ -1227,7 +1251,7 @@ class Login implements ControllerProviderInterface
      * @param  Application $app
      * @return boolean
      */
-    private function getRegisterFieldConfiguration(Application $app)
+    private function getRegisterFieldConfiguration(PhraseaApplication $app)
     {
         /**
          * @todo enhance this shit

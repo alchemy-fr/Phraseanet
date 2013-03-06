@@ -186,7 +186,7 @@
         </li>
         <li>
         {% if app['authentication'].isAuthenticated() %}
-          <a href="/login/logout/?app={{module}}" target="_self">
+          <a href="{{ path('logout', { 'redirect' : module }) }}" target="_self">
             <span>
               {% trans 'phraseanet:: deconnection' %}
             </span>
