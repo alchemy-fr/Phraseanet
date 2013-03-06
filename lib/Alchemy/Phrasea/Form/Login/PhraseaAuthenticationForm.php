@@ -36,6 +36,14 @@ class PhraseaAuthenticationForm extends AbstractType
                 new Assert\NotBlank(),
             ),
         ));
+
+        $builder->add('remember-me', 'checkbox', array(
+            'mapped'   => false,
+            'required' => false,
+            'attr'     => array(
+                'checked' => 'checked'
+            )
+        ));
     }
 
     public function getName()
