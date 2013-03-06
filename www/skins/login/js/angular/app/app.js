@@ -1,5 +1,7 @@
 // controllers
-function LoginFormController($scope) {
+function LoginFormController($scope, $element) {
+    $scope.isSubmitted = false;
+
     $scope.$watch('loginForm', function() {
         $scope.loginForm.login.errors = {'filled' : true, 'valid' : true};
         $scope.loginForm.password.errors = {'filled' : true, 'valid' : true};
@@ -9,9 +11,11 @@ function LoginFormController($scope) {
         $scope.$broadcast('event:force-model-update');
 
         if (true === $scope.loginForm.$valid) {
+            $scope.isSubmitted = true;
+
             $scope.loginForm.login.errors = {'filled' : true, 'valid' : true};
             $scope.loginForm.password.errors = {'filled' : true,'valid' : true};
-            // submit
+
             return true;
         }
 
@@ -111,14 +115,14 @@ angular.module('phraseanetAuthentication', ['ui'])
     // if form is not valid even if action attribute is defined
     return {
         link: function (scope, element, attrs, controller) {
-            scope.$watch(attrs.name + '.$valid', function(value) {
+            scope.$watch('isSubmitted', function(value) {
                 if(false === value && !!element.attr('action')) {
                     element.bind('submit', function(event) {
                         event.preventDefault();
                         return false;
                     });
                 } else {
-                     element.unbind('submit');
+                    element.unbind('submit').trigger('submit');
                 }
             });
         }
