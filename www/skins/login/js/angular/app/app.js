@@ -1,5 +1,5 @@
 // controllers
-function LoginFormController($scope, $element) {
+function LoginFormController($scope) {
     $scope.isSubmitted = false;
 
     $scope.$watch('loginForm', function() {
@@ -19,7 +19,6 @@ function LoginFormController($scope, $element) {
             return true;
         }
 
-        $scope.loginForm.login.errors.valid = $scope.loginForm.login.$valid;
         $scope.loginForm.login.errors.filled = !$scope.loginForm.login.$error.required;
 
         $scope.loginForm.password.errors.filled = !$scope.loginForm.password.$error.required;

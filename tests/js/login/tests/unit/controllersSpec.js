@@ -4,9 +4,9 @@ describe('LoginFormController', function(){
     var scope;
     beforeEach(inject(function($rootScope) {
         scope = $rootScope.$new();
-
+        scope.isSubmitted = false;
         scope.loginForm = {
-            email : {
+            login : {
                 errors:{},
                 $valid : true,
                 $error : {
@@ -30,12 +30,12 @@ describe('LoginFormController', function(){
 
         scope.$digest();
 
-        expect(Object.keys(scope.loginForm.email.errors).length).toEqual(2);
+        expect(Object.keys(scope.loginForm.login.errors).length).toEqual(2);
         expect(Object.keys(scope.loginForm.password.errors).length).toEqual(2);
     }));
 
     it('should return input-table-error class when input is not valid', inject(function($controller) {
-        scope.loginForm.email.errors.valid = false;
+        scope.loginForm.login.errors.valid = false;
         scope.loginForm.password.errors.valid = true;
 
         $controller(LoginFormController, {
@@ -43,10 +43,10 @@ describe('LoginFormController', function(){
         });
 
         expect(scope.getInputClass('password')).toBe('');
-        expect(scope.getInputClass('email')).toEqual('input-table-error');
+        expect(scope.getInputClass('login')).toEqual('input-table-error');
     }));
 
-    it('The valid email input validation should be equal to input form validation if form is submited and not valid', inject(function($controller) {
+    it('The valid login input validation should be equal to input form validation if form is submited and not valid', inject(function($controller) {
         scope.loginForm.$valid = false;
 
         $controller(LoginFormController, {
@@ -55,10 +55,10 @@ describe('LoginFormController', function(){
 
         scope.$digest();
 
-        expect(scope.loginForm.email.errors.valid).toBe(scope.loginForm.email.$valid);
+        expect(scope.loginForm.login.errors.valid).toBe(scope.loginForm.login.$valid);
     }));
 
-    it('The filled password and email input validation should be true if input is not required and form is submited and not valid', inject(function($controller) {
+    it('The filled password and login input validation should be true if input is not required and form is submited and not valid', inject(function($controller) {
         scope.loginForm.$valid = false;
 
         $controller(LoginFormController, {
@@ -67,7 +67,7 @@ describe('LoginFormController', function(){
 
         scope.$digest();
 
-        expect(scope.loginForm.email.errors.filled).not.toBe(scope.loginForm.email.$error.required);
+        expect(scope.loginForm.login.errors.filled).not.toBe(scope.loginForm.login.$error.required);
         expect(scope.loginForm.password.errors.filled).not.toBe(scope.loginForm.password.$error.required);
     }));
 
@@ -78,17 +78,17 @@ describe('LoginFormController', function(){
 
         scope.$digest();
 
-        var startEmailState = _.clone(scope.loginForm.email.errors);
+        var startLoginState = _.clone(scope.loginForm.login.errors);
         var startPasswordState = _.clone(scope.loginForm.password.errors);
 
         scope.loginForm.$valid = true;
 
-        scope.loginForm.email.errors.valid = false;
+        scope.loginForm.login.errors.valid = false;
         scope.loginForm.password.errors.valid = false;
-        
+
         scope.submit();
 
-        expect(scope.loginForm.email.errors).toEqual(startEmailState);
+        expect(scope.loginForm.login.errors).toEqual(startLoginState);
         expect(scope.loginForm.password.errors).toEqual(startPasswordState);
     }));
 
