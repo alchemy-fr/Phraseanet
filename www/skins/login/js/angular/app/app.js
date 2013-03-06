@@ -65,6 +65,8 @@ function forgottenPasswordFormCtrl($scope) {
 }
 
 function passwordChangeFormCtrl($scope) {
+    $scope.isSubmitted = false;
+
     $scope.$watch('passwordChangeForm', function() {
         $scope.passwordChangeForm.password.errors = {'filled' : true, 'valid' : true};
         $scope.passwordChangeForm.passwordConfirm.errors = {'filled' : true, 'valid' : true};
@@ -76,7 +78,9 @@ function passwordChangeFormCtrl($scope) {
         if (true === $scope.passwordChangeForm.$valid) {
             $scope.passwordChangeForm.password.errors = {'filled' : true, 'valid' : true};
             $scope.passwordChangeForm.passwordConfirm.errors = {'filled' : true, 'valid' : true};
-            // submit
+
+            $scope.isSubmitted = true;
+
             return true;
         }
 
@@ -98,7 +102,6 @@ angular.element(document).ready(function() {
     angular.bootstrap(document, ['phraseanetAuthentication']);
 });
 
-
 // angular app
 angular.module('phraseanetAuthentication', ['ui'])
 // force model update for autofill inputs. Yuck.
@@ -111,7 +114,7 @@ angular.module('phraseanetAuthentication', ['ui'])
                 ctrl.$setViewValue(element.val());
             });
         }
-    }
+    };
 }).directive('checkFormSubmission', function () {
     // Angular does not prevent form submission if form is not valid  and if action attribute is defined.
     // This directive change angular's behavior by cancelling form submission
@@ -129,7 +132,7 @@ angular.module('phraseanetAuthentication', ['ui'])
                 }
             });
         }
-    }
+    };
 }).directive('phraseanetFlash', function () {
     return {
         restrict:'EA',
@@ -162,7 +165,7 @@ angular.module('phraseanetAuthentication', ['ui'])
                             break;
                     }
                 }
-            }
+            };
         }
     };
 });
