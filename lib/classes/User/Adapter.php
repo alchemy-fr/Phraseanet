@@ -1645,11 +1645,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function set_locale($locale)
     {
-        if (!in_array($locale, $this->app->getAvailableLanguages())) {
+        if (!array_key_exists($locale, $this->app->getAvailableLanguages())) {
             throw new \InvalidArgumentException(sprintf('Locale %s is not recognized', $locale));
         }
 
-        $sql = 'UPDATE usr SET lccale = :locale WHERE usr_id = :usr_id';
+        $sql = 'UPDATE usr SET locale = :locale WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':locale'     => $locale, ':usr_id'  => $this->get_id()));
         $stmt->closeCursor();
