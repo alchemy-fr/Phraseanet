@@ -47,11 +47,13 @@
     {{ form_errors(field) }}
 {% endmacro %}
 
-{% macro checkboxInput (id, label, name, checked) %}
+{% macro checkboxInput (field) %}
     <div class="hidden-phone control-group">
         <div class="controls">
-            <label for="{{ id }}" class="checkbox">
-                <input id="{{ id }}" name="{{ name }}" type="checkbox" {% if checked|default(null) %}checked{% endif %}> {{ label }}
+            <label for="{{ field.vars.id }}" class="checkbox">
+                {{  form_widget(field) }}
+
+                {{ field.vars.label }}
             </label>
         </div>
     </div>
@@ -59,10 +61,10 @@
         <ul class="unstyle inline">
             <li>
                 <div class="switch switch-small">
-                    <input id="{{ id }}" name="{{ name }}" type="checkbox" {% if checked|default(null) %}checked{% endif %}>
+                    {{  form_widget(field) }}
                 </div>
             </li>
-            <li> {{ label }} </li>
+            <li>{{ field.vars.label }}</li>
         </ul>
     </div>
 {% endmacro %}

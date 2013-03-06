@@ -38,6 +38,7 @@ class PhraseaAuthenticationForm extends AbstractType
         ));
 
         $builder->add('remember-me', 'checkbox', array(
+            'label' => _('Remember me'),
             'mapped'   => false,
             'required' => false,
             'attr'     => array(
