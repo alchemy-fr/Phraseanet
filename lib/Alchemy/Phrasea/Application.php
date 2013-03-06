@@ -566,6 +566,36 @@ class Application extends SilexApplication
     }
 
     /**
+     * Asks for a captcha ar next authentication
+     *
+     * @return Application
+     */
+    public function requireCaptcha()
+    {
+        if ($this['phraseanet.registry']->get('GV_captchas')) {
+            $this['session']->add('require_captcha', true);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Tells if a captcha is required for next authentication
+     *
+     * @return boolean
+     */
+    public function isCaptchaRequired()
+    {
+        if ($this['session']->has('require_captcha')) {
+            $this['session']->remove('require_captcha');
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Returns an an array of available collection for offline queries
      *
      * @return array
