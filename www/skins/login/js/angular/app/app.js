@@ -35,6 +35,8 @@ function LoginFormController($scope, $element) {
 }
 
 function forgottenPasswordFormCtrl($scope) {
+    $scope.isSubmitted = false;
+
     $scope.$watch('forgottenPasswordForm', function() {
         $scope.forgottenPasswordForm.email.errors = {'filled' : true, 'valid' : true};
     });
@@ -44,7 +46,8 @@ function forgottenPasswordFormCtrl($scope) {
 
         if (true === $scope.forgottenPasswordForm.$valid) {
             $scope.forgottenPasswordForm.email.errors = {'filled' : true, 'valid' : true};
-            // submit
+            $scope.isSubmitted = true;
+
             return true;
         }
 
