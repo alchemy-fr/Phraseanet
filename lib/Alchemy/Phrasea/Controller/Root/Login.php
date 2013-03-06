@@ -26,6 +26,7 @@ use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
 use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
+use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -287,6 +288,19 @@ class Login implements ControllerProviderInterface
         })->bind('login_cgus');
 
         /**
+         *
+         */
+        $controllers->get('/renew-password', function(PhraseaApplication $app, Request $request) {
+            $form = $app->form(new PhraseaRenewPasswordForm());
+
+            return $app['twig']->render('login/change-password.html.twig', array(
+                'form' => $form->createView(),
+                'login' => new \login(),
+            ));
+
+        })->bind('login_renew_password');
+
+        /**
          * Register classic form
          */
         $controllers->get('/register-classic', function(PhraseaApplication $app, Request $request) {
@@ -468,65 +482,69 @@ class Login implements ControllerProviderInterface
      */
     public function displayForgotPasswordForm(PhraseaApplication $app, Request $request)
     {
-//        $tokenize = false;
-//        $errorMsg = $request->query->get('error');
+        $tokenize = false;
+        $errorMsg = $request->query->get('error');
 
-//        if (null !== $token = $request->query->get('token')) {
-//            try {
-//                \random::helloToken($app, $token);
-//                $tokenize = true;
-//            } catch (\Exception $e) {
-//                $errorMsg = 'token';
-//            }
-//        }
-//
-//        if (null !== $errorMsg) {
-//            switch ($errorMsg) {
-//                case 'invalidmail':
-//                    $errorMsg = _('Invalid email address');
-//                    break;
-//                case 'mailserver':
-//                    $errorMsg = _('phraseanet::erreur: Echec du serveur mail');
-//                    break;
-//                case 'noaccount':
-//                    $errorMsg = _('phraseanet::erreur: Le compte n\'a pas ete trouve');
-//                    break;
-//                case 'mail':
-//                    $errorMsg = _('phraseanet::erreur: Echec du serveur mail');
-//                    break;
-//                case 'token':
-//                    $errorMsg = _('phraseanet::erreur: l\'url n\'est plus valide');
-//                    break;
-//            }
-//        }
-//
-//        if (null !== $sentMsg = $request->query->get('sent')) {
-//            switch ($sentMsg) {
-//                case 'ok':
-//                    $sentMsg = _('phraseanet:: Un email vient de vous etre envoye');
-//                    break;
-//            }
-//        }
-//
-//        if (null !== $passwordMsg = $request->query->get('pass-error')) {
-//            switch ($passwordMsg) {
-//                case 'pass-match':
-//                    $passwordMsg = _('forms::les mots de passe ne correspondent pas');
-//                    break;
-//                case 'pass-short':
-//                    $passwordMsg = _('forms::la valeur donnee est trop courte');
-//                    break;
-//                case 'pass-invalid':
-//                    $passwordMsg = _('forms::la valeur donnee contient des caracteres invalides');
-//                    break;
-//            }
-//        }
+        if (null !== $token = $request->query->get('token')) {
+            try {
+                \random::helloToken($app, $token);
+                $tokenize = true;
+            } catch (\Exception $e) {
+                $errorMsg = 'token';
+            }
+        }
+
+        if (null !== $errorMsg) {
+            switch ($errorMsg) {
+                case 'invalidmail':
+                    $errorMsg = _('Invalid email address');
+                    break;
+                case 'mailserver':
+                    $errorMsg = _('phraseanet::erreur: Echec du serveur mail');
+                    break;
+                case 'noaccount':
+                    $errorMsg = _('phraseanet::erreur: Le compte n\'a pas ete trouve');
+                    break;
+                case 'mail':
+                    $errorMsg = _('phraseanet::erreur: Echec du serveur mail');
+                    break;
+                case 'token':
+                    $errorMsg = _('phraseanet::erreur: l\'url n\'est plus valide');
+                    break;
+            }
+        }
+
+        if (null !== $sentMsg = $request->query->get('sent')) {
+            switch ($sentMsg) {
+                case 'ok':
+                    $sentMsg = _('phraseanet:: Un email vient de vous etre envoye');
+                    break;
+            }
+        }
+
+        if (null !== $passwordMsg = $request->query->get('pass-error')) {
+            switch ($passwordMsg) {
+                case 'pass-match':
+                    $passwordMsg = _('forms::les mots de passe ne correspondent pas');
+                    break;
+                case 'pass-short':
+                    $passwordMsg = _('forms::la valeur donnee est trop courte');
+                    break;
+                case 'pass-invalid':
+                    $passwordMsg = _('forms::la valeur donnee contient des caracteres invalides');
+                    break;
+            }
+        }
 
         $form = $app->form(new PhraseaForgotPasswordForm());
 
         return $app['twig']->render('login/forgot-password.html.twig', array(
-            'form' => $form->createView(),
-            'login' => new \login
+            'login'       => new \login(),
+            'form'        => $form->createView(),
+            'tokenize'    => $tokenize,
+            'passwordMsg' => $passwordMsg,
+            'errorMsg'    => $errorMsg,
+            'sentMsg'     => $sentMsg
         ));
     }
 
@@ -907,7 +925,7 @@ class Login implements ControllerProviderInterface
         $feeds = $public_feeds->get_feeds();
         array_unshift($feeds, $public_feeds->get_aggregate());
 
-        $form = $app->form(new PhraseaAuthenticationForm(), array(
+        $form = $app->form(new PhraseaAuthenticationForm(), null, array(
             'disabled' => $app['phraseanet.registry']->get('GV_maintenance')
         ));
 
