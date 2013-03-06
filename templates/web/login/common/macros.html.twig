@@ -72,7 +72,7 @@
 {% macro providerList() %}
     <ul class="unstyled inline provider-list">
         <li>
-            <a href="#"><img src="/skins/login/img/facebook.png" /></a>
+            <a href="{{ path('login_authentication_provider_authenticate', { 'providerId' : 'facebook' } ) }}"><img src="/skins/login/img/facebook.png" /></a>
         </li>
         <li>
             <a href="#"><img src="/skins/login/img/twitter.png" /></a>
@@ -118,20 +118,20 @@
     </span>
 {% endmacro %}
 
-{% macro providerBadge(provider, img_url, full_name, email) %}
-    <div class="{{ provider.getId() }}-badge no-overflow provider-badge rounded">
+{% macro providerBadge(token) %}
+    <div class="{{ token.getProvider().getId() }}-badge no-overflow provider-badge rounded">
         <table>
             <tr>
                 <td style="width:55px;">
-                    <img src="{{ img_url }}"/>
+                    <img src="{{  token.getIdentity().getImageURI() }}"/>
                 </td>
                 <td>
                     <ul class="unstyled">
                         <li class="pseudo one-line">
-                            <b>{{ full_name }}</b>
+                            <b>{{ token.getIdentity().getDisplayName() }}</b>
                         </li>
                         <li class="email one-line">
-                            {{ email }}
+                            {{ token.getIdentity().getEmail() }}
                         </li>
                     </ul>
                 </td>
@@ -140,18 +140,22 @@
     </div>
 {% endmacro %}
 
-{% macro phraseanetBadge(full_name, email, company) %}
+{% macro phraseanetBadge(user) %}
     <div class="authentication-user-pres-phraseanet well">
         <ul class="unstyled">
             <li class="one-line">
-                <i class="icon-user"></i>{{ full_name }}
+                <i class="icon-user"></i>{{ user.get_display_name() }}
             </li>
+            {% if user.get_email() %}
             <li class="one-line">
-                <i class="icon-envelope"></i>{{ email }}
+                <i class="icon-envelope"></i>{{ user.get_email() }}
             </li>
+            {% endif %}
+            {% if user.get_company() %}
             <li class="one-line">
-                <i class="icon-briefcase"></i>{{ company }}
+                <i class="icon-briefcase"></i>{{ user.get_company() }}
             </li>
+            {% endif %}
         </ul>
     </div>
 {% endmacro %}
