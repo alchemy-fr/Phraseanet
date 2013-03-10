@@ -9,6 +9,35 @@
  * changes. http://yourdomain/min/builder/
  * */
 $groups = array(
+    'authentication_css' => array(
+        '//assets/normalize-css/normalize.css',
+        '//assets/bootstrap-switch/static/stylesheets/bootstrapSwitch.css',
+        '//skins/login/css/style.css',
+        '//assets/font-awesome/css/font-awesome.css',
+    ),
+    'authentication' => array(
+        '//assets/modernizr/modernizr.js',
+        '//assets/jquery/jquery.js',
+        '//assets/bootstrap/js/bootstrap-transition.js',
+        '//assets/bootstrap/js/bootstrap-alert.js',
+        '//assets/bootstrap/js/bootstrap-modal.js',
+        '//assets/bootstrap/js/bootstrap-dropdown.js',
+        '//assets/bootstrap/js/bootstrap-scrollspy.js',
+        '//assets/bootstrap/js/bootstrap-tab.js',
+        '//assets/bootstrap/js/bootstrap-tooltip.js',
+        '//assets/bootstrap/js/bootstrap-popover.js',
+        '//assets/bootstrap/js/bootstrap-button.js',
+        '//assets/bootstrap/js/bootstrap-collapse.js',
+        '//assets/bootstrap/js/bootstrap-carousel.js',
+        '//assets/bootstrap/js/bootstrap-typeahead.js',
+        '//assets/bootstrap/js/bootstrap-affix.js',
+        '//assets/angular/angular.js',
+        '//assets/angular-ui/build/angular-ui.js',
+        '//assets/bootstrap-switch/static/js/bootstrapSwitch.js',
+        '//assets/underscore/underscore.js',
+        '//skins/login/js/main.js',
+        '//skins/login/js/angular/app/app.js'
+    ),
     'client' => array(
         '//include/jslibs/swfobject/swfobject.js'
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'

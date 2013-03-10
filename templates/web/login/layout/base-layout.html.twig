@@ -26,10 +26,8 @@
             {% endblock favicon %}
 
             {% block header_stylesheet %}
-                <link rel="stylesheet" href="/assets/normalize-css/normalize.css">
-                <link rel="stylesheet" href="/assets/bootstrap-switch/static/stylesheets/bootstrapSwitch.css">
-                <link rel="stylesheet" href="/skins/login/css/style.css">
-                <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome.css">
+                <link rel="stylesheet" href="/include/minify/g=authentication_css">
+
                 <!--[if IE 7]>
                     <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome-ie7.min.css">
                 <![endif]-->
@@ -48,30 +46,10 @@
                         window.myCustomTags = ['phraseanetAlert']; // optional
                     </script>
 
-                    <script src="/assets/angular-ui/build/angular-ui-ieshiv.js"></script>
+                    <script src="/assets/angular-ui/build/angular-ui-ieshiv.min.js"></script>
                 <![endif]-->
 
-                <script src="/assets/modernizr/modernizr.js"></script>
-                <script src="/assets/jquery/jquery.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-transition.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-alert.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-modal.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-dropdown.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-scrollspy.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-tab.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-tooltip.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-popover.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-button.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-collapse.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-carousel.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-typeahead.js"></script>
-                <script src="/assets/bootstrap/js/bootstrap-affix.js"></script>
-                <script src="/assets/angular/angular.js"></script>
-                <script src="/assets/angular-ui/build/angular-ui.js"></script>
-                <script src="/assets/bootstrap-switch/static/js/bootstrapSwitch.js"></script>
-                <script src="/assets/underscore/underscore.js"></script>
-                <script src="/skins/login/js/main.js"></script>
-                <script src="/skins/login/js/angular/app/app.js"></script>
+                <script type="text/javascript" src="/include/minify/g=authentication"></script>
             {% endblock header_javascript %}
         {% endblock header %}
     </head>
