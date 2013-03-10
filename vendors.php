@@ -18,18 +18,46 @@ chdir(__DIR__);
 set_time_limit(0);
 
 $bower = 'bower';
-exec($bower, $output, $code);
+$node = 'node';
+$recess = 'recess';
+
+// Test if node exists
+exec(sprintf('%s -v', $node), $output, $code);
 
 if (0 !== $code) {
-    exit('bower required to install vendors');
+    exit(sprintf('%s is required to install vendors', $node));
 }
 
-system(sprintf('%s install', $bower));
+// Test if bower exists else install it
+exec(sprintf('%s -v', $bower), $output, $code);
+
+if (0 !== $code) {
+    exec(sprintf('sudo %s install -g', $bower), $output, $code);
+
+    if (0 !== $code) {
+        exit(sprintf('Failed to install %s', $bower));
+    }
+}
+
+// Tests if recess exists else install it
+exec(sprintf('%s -v', $recess), $output, $code);
+
+if (0 !== $code) {
+    exec(sprintf('sudo %s install -g', $recess), $output, $code);
+
+    if (0 !== $code) {
+        exit(sprintf('Failed to install %s', $recess));
+    }
+}
+
+// Install asset dependencies with bower
+system(sprintf('%s install', $bower), $code);
 
 if (0 !== $code) {
     exit('Failed to install bower dependencies');
 }
 
+// Test if composer exists else install it
 $composer = __DIR__ . '/composer.phar';
 
 exec('composer', $output, $code);
