@@ -16,10 +16,10 @@ use Alchemy\Phrasea\Application;
 use Behat\Behat\Context\BehatContext;
 use Behat\Gherkin\Node\PyStringNode;
 
-use Behat\Mink\Mink,
-    Behat\Mink\Session,
-    Behat\Mink\Driver\Selenium2Driver,
-    Behat\MinkExtension\Context\MinkContext;
+use Behat\Mink\Mink;
+use Behat\Mink\Session;
+use Behat\Mink\Driver\Selenium2Driver;
+use Behat\MinkExtension\Context\MinkContext;
 
 use Selenium\Client as SeleniumClient;
 
