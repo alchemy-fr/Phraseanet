@@ -38,7 +38,13 @@
         "zend/gdata"                       : "~1.12.1"
     },
     "require-dev": {
-        "doctrine/data-fixtures"           : "dev-master"
+        "doctrine/data-fixtures"           : "dev-master",
+        "behat/behat"                      : "~2.4",
+        "behat/mink"                       : "~1.4",
+        "behat/mink-extension"             : "*",
+        "behat/mink-goutte-driver"         : "*",
+        "behat/mink-selenium2-driver"      : "*",
+        "fabpot/goutte"                    : "1.0.x@dev"
     },
     "repositories": [
     {
