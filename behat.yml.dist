@@ -1,0 +1,11 @@
+default:
+  paths:
+    features: features
+    bootstrap: %behat.paths.features%/bootstrap
+  extensions:
+    Behat\MinkExtension\Extension:
+      base_url: 'http://localhost/phraseanet/'
+      selenium2: ~
+      default_session: selenium2
+      javascript_session: selenium2
+      browser_name: firefox
