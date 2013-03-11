@@ -20,22 +20,33 @@ set_time_limit(0);
 $bower = 'bower';
 $node = 'node';
 $recess = 'recess';
+$npm = 'npm';
 
 // Test if node exists
 exec(sprintf('%s -v', $node), $output, $code);
 
 if (0 !== $code) {
-    exit(sprintf('%s is required to install vendors', $node));
+    echo sprintf('%s is required to install vendors', $node);
+    exit(1);
+}
+
+// Test if npm exists
+exec(sprintf('%s -v', $npm), $output, $code);
+
+if (0 !== $code) {
+    echo sprintf('%s is required to install vendors', $npm),
+    exit(1);
 }
 
 // Test if bower exists else install it
 exec(sprintf('%s -v', $bower), $output, $code);
 
 if (0 !== $code) {
-    exec(sprintf('sudo %s install -g', $bower), $output, $code);
+    exec(sprintf('sudo %s install %s -g', $npm, $bower), $output, $code);
 
     if (0 !== $code) {
-        exit(sprintf('Failed to install %s', $bower));
+        echo sprintf('Failed to install %s', $bower);
+        exit(1);
     }
 }
 
@@ -43,10 +54,11 @@ if (0 !== $code) {
 exec(sprintf('%s -v', $recess), $output, $code);
 
 if (0 !== $code) {
-    exec(sprintf('sudo %s install -g', $recess), $output, $code);
+    exec(sprintf('sudo %s install %s -g', $npm, $recess), $output, $code);
 
     if (0 !== $code) {
-        exit(sprintf('Failed to install %s', $recess));
+        echo sprintf('Failed to install %s', $recess);
+        exit(1);
     }
 }
 
@@ -54,7 +66,8 @@ if (0 !== $code) {
 system(sprintf('%s install', $bower), $code);
 
 if (0 !== $code) {
-    exit('Failed to install bower dependencies');
+    echo sprintf('Failed to install %s dependencies', $bower);
+    exit(1);
 }
 
 // Test if composer exists else install it
