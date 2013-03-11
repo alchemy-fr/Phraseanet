@@ -36,7 +36,7 @@ $groups = array(
         '//assets/bootstrap-switch/static/js/bootstrapSwitch.js',
         '//assets/underscore/underscore.js',
         '//skins/login/js/main.js',
-        '//skins/login/js/angular/app/app.js'
+        '//skins/login/js/angular/app/app.js',
     ),
     'client' => array(
         '//include/jslibs/swfobject/swfobject.js'
