@@ -304,7 +304,7 @@ class Login implements ControllerProviderInterface
          * Register classic form
          */
         $controllers->get('/register-classic', function(PhraseaApplication $app, Request $request) {
-            return $app['twig']->render('login/register-classic.html.twig');
+            return $app['twig']->render('login/register-classic.html.twig', array('home_title' => 'blabla'));
         })->bind('login_register_classic');
 
         /**
@@ -625,6 +625,7 @@ class Login implements ControllerProviderInterface
             'demandes'     => $request->query->get('demand', array()),
             'lng'            => $app['locale'],
             'captcha_system' => $captchaSys,
+            'login' => new \login()
         ));
     }
 
