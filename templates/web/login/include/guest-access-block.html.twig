@@ -2,7 +2,9 @@
     <div class="well-large sidebar-block {% if last_item|default(false) %}last-child{% endif %}">
         <div class="row-fluid">
             <div class="span12 text-center">
-                <a class="btn btn-info btn-trigger" href="{{ path("login_authenticate_as_guest") }}">{% trans "Guest access" %}</a>
+                <a id="guest-link" class="btn btn-info btn-trigger" href="{{ path("login_authenticate_as_guest") }}">
+                    {% trans "Guest access" %}
+                </a>
             </div>
         </div>
     </div>
