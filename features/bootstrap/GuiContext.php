@@ -107,4 +107,20 @@ class GuiContext extends MinkContext
     {
         $this->aUserExistsWithAsPassword($login, uniqid());
     }
+
+    /**
+     * @Given /^captcha system is enable$/
+     */
+    public function captchaSystemIsEnable()
+    {
+        $this->app['phraseanet.registry']->set('GV_captchas', true, \registry::TYPE_BOOLEAN);
+    }
+
+    /**
+     * @Given /^captcha system is disable/
+     */
+    public function captchaSystemIsDisable()
+    {
+        $this->app['phraseanet.registry']->set('GV_captchas', false, \registry::TYPE_BOOLEAN);
+    }
 }
