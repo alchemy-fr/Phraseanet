@@ -6,6 +6,9 @@ default:
     Behat\MinkExtension\Extension:
       base_url: 'http://localhost/phraseanet/'
       selenium2: ~
+        #browser:              'firefox'
+        #capabilities:         { "browserName": "firefox", "browser": "firefox", "version":  "13"}
+        #wd_host:              'http://192.168.2.2:4444/wd/hub'
       default_session: selenium2
       javascript_session: selenium2
       browser_name: firefox
