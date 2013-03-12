@@ -20,7 +20,7 @@ Feature: Locale
         And I am on "/login/"
         When I press "language-button"
         And  I click "a[data-country-code='fr_FR']"
-        Then I should see "Connexion"
+        Then I should see "Connection"
 
     Scenario: Change the application language to english
         Given I am not authenticated

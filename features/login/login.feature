@@ -19,7 +19,7 @@ Feature: Login
         When I am on "/login/"
         And I fill in "login" with "john.doe@phraseanet.com"
         And I fill in "password" with "johndoe"
-        And I press "submit-form"
+        And I press "Connection"
         Then I should be on "/prod/"
 
     @javascript
@@ -29,7 +29,7 @@ Feature: Login
         When I am on "/login/"
         And I fill in "login" with "john.doe@phraseanet.com"
         And I fill in "password" with "no-valid"
-        And I press "submit-form"
+        And I press "Connection"
         Then I should see "Authentication error"
 
     @javascript
@@ -38,7 +38,7 @@ Feature: Login
         And I am on "/login/"
         When I fill in "login" with ""
         And I fill in "password" with "johndoe"
-        And I press "submit-form"
+        And I press "Connection"
         Then I should see "This field is required"
 
     @javascript
@@ -47,7 +47,7 @@ Feature: Login
         And I am on "/login/"
         When I fill in "login" with "john.doe@mail.com"
         And I fill in "password" with ""
-        And I press "submit-form"
+        And I press "Connection"
         Then I should see "This field is required"
 
     @javascript
@@ -57,13 +57,13 @@ Feature: Login
         And I am on "/login/"
         When I fill in "login" with "john.doe@mail.com"
         And I fill in "password" with "invalid-credential"
-        And I press "submit-form"
+        And I press "Connection"
         And I fill in "login" with "john.doe@mail.com"
         And I fill in "password" with "invalid-credential"
-        And I press "submit-form"
+        And I press "Connection"
         And I fill in "login" with "john.doe@mail.com"
         And I fill in "password" with "invalid-credential"
-        And I press "submit-form"
+        And I press "Connection"
         Then I should see an "input#recaptcha_response_field" element
 
     @javascript

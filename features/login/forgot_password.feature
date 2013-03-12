@@ -18,7 +18,7 @@ Feature: Forgot password
       Given I am not authenticated
       And I am on "/login/forgot-password/"
       When I fill in "email" with ""
-      And I press "submit-form"
+      And I press "Send"
       Then I should see "This field is required"
 
     @javascript
@@ -26,7 +26,7 @@ Feature: Forgot password
       Given I am not authenticated
       And I am on "/login/forgot-password/"
       When I fill in "email" with "invalid_email@"
-      And I press "submit-form"
+      And I press "Send"
       Then I should see "This field is not valid"
 
     @javascript
@@ -35,7 +35,7 @@ Feature: Forgot password
         And I am not authenticated
         And I am on "/login/forgot-password/"
         When I fill in "email" with "jane.doe@phraseanet.com"
-        And I press "submit-form"
+        And I press "Send"
         Then I should see "Unknown user"
 
     @javascript
@@ -44,5 +44,5 @@ Feature: Forgot password
         And I am not authenticated
         When I am on "/login/forgot-password/"
         When I fill in "email" with "john.doe@phraseanet.com"
-        And I press "submit-form"
+        And I press "Send"
         Then I should see "An email has been sent to you"
