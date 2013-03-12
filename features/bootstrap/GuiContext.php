@@ -170,4 +170,47 @@ class GuiContext extends MinkContext
             $databox->saveStructure($dom);
         }
     }
+
+    /**
+     * @Given /^user guest access is enable$/
+     */
+    public function userGuestAccessIsEnable()
+    {
+        if (false === $usrId = \User_Adapter::get_usr_id_from_login($this->app, 'invite')) {
+            $user = \User_Adapter::create(
+                $this->app,
+                'invite',
+                '',
+                null,
+                false,
+                true
+            );
+        } else {
+            $user = \User_Adapter::getInstance($usrId, $this->app);
+        }
+
+        $user->ACL()->give_access_to_sbas(array_keys($this->app['phraseanet.appbox']->get_databoxes()));
+
+        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+            foreach ($databox->get_collections() as $collection) {
+                $user->ACL()->give_access_to_base(array($collection->get_base_id()));
+            }
+        }
+    }
+
+    /**
+     * @Given /^user guest access is disable/
+     */
+    public function userGuestAccessIsDisable()
+    {
+        if (false !== $usrId = \User_Adapter::get_usr_id_from_login($this->app, 'invite')) {
+            $user = \User_Adapter::getInstance($usrId, $this->app);
+
+            foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($databox->get_collections() as $collection) {
+                    $user->ACL()->revoke_access_from_bases(array($collection->get_base_id()));
+                }
+            }
+        }
+    }
 }
