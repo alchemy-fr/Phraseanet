@@ -15,7 +15,7 @@ Feature: Login
     @javascript
     Scenario: Submit login form with valid credentials
         Given a user "john.doe@phraseanet.com" exists with "johndoe" as password
-        And I am not authenticated
+        And "john.doe@phraseanet.com" is not authenticated
         When I am on "/login/"
         And I fill in "login" with "john.doe@phraseanet.com"
         And I fill in "password" with "johndoe"
@@ -25,7 +25,7 @@ Feature: Login
     @javascript
     Scenario: Submit login form with invalid credentials
         Given a user "john.doe@phraseanet.com" exists with "johndoe" as password
-        And I am not authenticated
+        And "john.doe@phraseanet.com" is not authenticated
         When I am on "/login/"
         And I fill in "login" with "john.doe@phraseanet.com"
         And I fill in "password" with "no-valid"
@@ -50,6 +50,7 @@ Feature: Login
         And I press "submit-form"
         Then I should see "This field is required"
 
+    @javascript
     Scenario: Submit login form with invalid credentials 3 times
         Given I am not authenticated
         And captcha system is enable
@@ -65,3 +66,9 @@ Feature: Login
         And I press "submit-form"
         Then I should see an "input#recaptcha_response_field" element
 
+    @javascript
+    Scenario: Access to login as an authenticated user
+        Given a user "john.doe@phraseanet.com" exists
+        And "john.doe@phraseanet.com" is authenticated
+        When I am on "/login/"
+        Then I should be on "/prod/"
