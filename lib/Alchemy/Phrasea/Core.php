@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea;
 
 use Alchemy\Phrasea\Core\Configuration;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer;
@@ -200,6 +201,24 @@ class Core extends \Pimple
 
                 return new \MediaAlchemyst\Alchemyst($drivers);
             });
+
+        $this['imagine'] = $this->share(function ($app) use ($core) {
+
+            if ($core->getRegistry()->get('GV_imagine_driver')) {
+                $driver = $core->getRegistry()->get('GV_imagine_driver');
+            } elseif (extension_loaded('gmagick')) {
+                $driver = 'Gmagick';
+            } elseif (extension_loaded('imagick')) {
+                $driver = 'Imagick';
+            } elseif (extension_loaded('gd')) {
+                $driver = 'Gd';
+            } else {
+                throw new RuntimeException('Unable to find an Imagine driver');
+            }
+            $classname = sprintf('\Imagine\%s\Imagine', $driver);
+
+            return new $classname();
+        });
 
         $this['border-manager'] = $this->share(function () use ($core) {
                 $serviceName = $core->getConfiguration()->getBorder();

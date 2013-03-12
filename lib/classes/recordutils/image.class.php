@@ -10,6 +10,13 @@
  */
 
 use Symfony\Component\Process\ProcessBuilder;
+use PHPExiftool\Reader;
+use Imagine\Image\ImagineInterface;
+use Imagine\Image\Color;
+use Imagine\Image\Box;
+use Imagine\Image\Point;
+
+// use Imagine\Image\ImageInterface;
 
 /**
  *
@@ -29,39 +36,61 @@ class recordutils_image extends recordutils
      * @param  int    $width
      * @return Array
      */
-    protected function wrap($fontSize, $angle, $fontFace, $string, $width)
+    protected function wrap(&$imagine, $fontSize, $angle, $fontFace, $string, $width)
     {
-        $ret = array();
-
         // str 'Op' used to calculate linespace
-        $testbox = imagettfbbox($fontSize, $angle, $fontFace, 'Op');
-        $height = abs($testbox[1] - ($dy = $testbox[7]));
+        $font = $imagine->font($fontFace, $fontSize, new Color("000000", 0));
+        $testbox = $font->box("0p", $angle);
+        $height = $testbox->getHeight();
+        $testbox = $font->box("M", $angle); // 1 em
+        $dy = $testbox->getHeight();
+        $toth = 0;
+        $ret = array();
 
         foreach (explode("\n", $string) as $lig) {
             if ($lig == '') {
-                $ret[] = '';
+                $ret[] = array('w' => 0, 'h' => $dy, 't' => '');
+                $toth += $dy;
             } else {
-                $buff = '';
-                foreach (explode(' ', $lig) as $wrd) {
-                    $test = $buff . ($buff ? ' ' : '') . $wrd;
-                    $testbox = imagettfbbox($fontSize, $angle, $fontFace, $test);
-                    if (abs($testbox[2] - $testbox[0]) > $width) {
-                        if ($buff == '') {
-                            $ret[] = $test;
+                $twords = array();
+                $iword = -1;
+                $lastc = '';
+                for ($i = 0; $i < strlen($lig); $i++) {
+                    $c = $lig[$i];
+                    if ($iword == -1 || (ctype_space($c) && !ctype_space($lastc))) {
+                        $twords[++$iword] = array(($part = 0) => '', 1         => '');
+                    }
+                    if (!ctype_space($c) && $part == 0) {
+                        $part++;
+                    }
+                    $twords[$iword][$part] .= $lastc = $c;
+                }
+                if ($iword >= 0 && $twords[0][1] != '') {
+                    $buff = '';
+                    $lastw = $lasth = 0;
+                    foreach ($twords as $i => $wrd) {
+                        $test = $buff . $wrd[0] . $wrd[1];
+                        $testbox = $font->box($test, $angle);
+                        $w = $testbox->getWidth();
+                        $h = $testbox->getHeight();
+                        if ($i > 0 && $testbox->getWidth() > $width) {
+                            $ret[] = array('w'   => $lastw, 'h'   => $lasth, 't'   => $buff);
+                            $toth += $lasth;
+                            $buff = $wrd[1];
                         } else {
-                            $ret[] = $buff;
-                            $buff = $wrd;
+                            $buff = $test;
                         }
-                    } else {
-                        $buff = $test;
+                        $lastw = $w;
+                        $lasth = $h;
+                    }
+                    if ($buff != '') {
+                        $ret[] = array('w' => $lastw, 'h' => $lasth, 't' => $buff);
+                        $toth += $lasth;
                     }
                 }
-                if ($buff != '')
-                    $ret[] = $buff;
             }
         }
-
-        return(array('l'  => $ret, 'h'  => $height, 'dy' => $dy));
+        return(array('toth' => $toth, 'l'    => $ret, 'h'    => $height, 'dy'   => $dy));
     }
 
     /**
@@ -73,17 +102,22 @@ class recordutils_image extends recordutils
      */
     public static function stamp(\media_subdef $subdef)
     {
-        $ColorToArray = function($attr, $ret = array(255, 255, 255, 0)) {
+        $xmlToColor = function($attr, $ret = array(255, 255, 255, 0)) {
                 foreach (explode(',', $attr) as $i => $v) {
                     if ($i > 3)
                         break;
                     $v = (int) (trim($v));
-                    if ($v >= 0 && ($v <= 127 || ($i < 3 && $v < 256))) {
+                    if ($v >= 0 && ($v <= 100 || ($i < 3 && $v < 256))) {
                         $ret[$i] = $v;
                     }
                 }
-                return($ret);
+                $alpha = array_pop($ret);
+                return new Color($ret, $alpha);
             };
+
+        $Core = \bootstrap::getCore();
+
+        $imagine = $Core['imagine'];
 
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $registry = $appbox->get_registry();
@@ -101,56 +135,90 @@ class recordutils_image extends recordutils
             return $subdef->get_pathfile();
         }
 
+        $rotation = NULL;
+        try {
+            $reader = new Reader();
+            $metadatas = $reader
+                    ->files($subdef->get_pathfile())
+                    ->first()->getMetadatas();
+            $r = $metadatas['IFD0:Orientation'];
+            if ($r)
+                $rotation = trim($r->getValue());
+        } catch (Exception $e) {
+            // getting orientation failed but we don't care the reason
+        }
+
         $domprefs = new DOMDocument();
 
-        if (false === $domprefs->loadXML($subdef->get_record()->get_collection()->get_prefs())) {
+        if (false === $domprefs->loadXML(
+                $subdef->get_record()->get_collection()->get_prefs())) {
             return $subdef->get_pathfile();
         }
 
-        if (false === $sxxml = simplexml_load_string($subdef->get_record()->get_caption()->serialize(caption_record::SERIALIZE_XML))) {
+        if (false === $sxxml = simplexml_load_string(
+            $subdef->get_record()->get_caption()->serialize(caption_record::SERIALIZE_XML))) {
             return $subdef->get_pathfile();
         }
 
         $xpprefs = new DOMXPath($domprefs);
-
-        $pathIn = $subdef->get_path() . $subdef->get_file();
-        $pathOut = $subdef->get_path() . 'stamp_' . $subdef->get_file();
-
-        $vars = $xpprefs->query('/baseprefs/stamp/*/var');
-        for ($i = 0; $i < $vars->length; $i++) {
-            if (strtoupper($vars->item($i)->getAttribute('name')) == 'DATE') {
-                @unlink($pathOut);  // no cache possible when date changes
-                break;
-            }
-        }
-
-        // get from cache
-        if (is_file($pathOut)) {
-            return $pathOut;
-        }
-
-        $logofile = $registry->get('GV_RootPath') . 'config/stamp/' . $base_id;
-        $logo_phywidth = $logo_phyheight = 0; // physical size
-
-        if (is_array($logosize = @getimagesize($logofile))) {
-            $logo_phywidth = $logosize[0];
-            $logo_phyheight = $logosize[1];
-        }
-
-        $pathTmpStamp = $registry->get('GV_RootPath') . 'tmp/' . time() . '-stamptmp_' . $subdef->get_file();
         $stampNodes = $xpprefs->query('/baseprefs/stamp');
         if ($stampNodes->length == 0) {
             return $subdef->get_pathfile();
         }
 
-        if (!($tailleimg = @getimagesize($pathIn))) {
-            return false;
+
+        $pathIn = $subdef->get_path() . $subdef->get_file();
+        $pathOut = $subdef->get_path() . 'stamp_' . $subdef->get_file();
+
+        $vars = $xpprefs->query('/baseprefs/stamp/*/var');
+
+        // no way to cache when date changes
+        for ($i = 0; $i < $vars->length; $i++) {
+            if (strtoupper($vars->item($i)->getAttribute('name')) == 'DATE') {
+                @unlink($pathOut);
+                break;
+            }
         }
 
-        $image_width = $tailleimg[0];
-        $image_height = $tailleimg[1];
+        // get from cache ?
+        if (is_file($pathOut)) {
+            return $pathOut;
+        }
 
-        $builder = ProcessBuilder::create(array($registry->get('convert_binary')));
+        // open the document
+        $image_in = $imagine->open($pathIn);
+        $image_size = $image_in->getSize();
+        switch ($rotation) {
+            case 6:
+                $image_width = $image_size->getHeight();
+                $image_height = $image_size->getWidth();
+                $image_in->rotate(90);
+                $rotation = '90';
+                break;
+            case 8:
+                $image_width = $image_size->getHeight();
+                $image_height = $image_size->getWidth();
+                $image_in->rotate(270);
+                break;
+            case 3:
+                $image_width = $image_size->getWidth();
+                $image_height = $image_size->getHeight();
+                $image_in->rotate(180);
+                break;
+            default:
+                $image_width = $image_size->getWidth();
+                $image_height = $image_size->getHeight();
+                break;
+        }
+
+        // open the logo
+        $logo_phywidth = $logo_phyheight = 0; // physical size
+        $logo_file = $registry->get('GV_RootPath') . 'config/stamp/' . $base_id;
+        if (($logo_obj = $imagine->open($logo_file))) {
+            $logo_size = $logo_obj->getSize();
+            $logo_phywidth = $logo_size->getWidth();
+            $logo_phyheight = $logo_size->getHeight();
+        }
 
         $tables = array(
             'TOP' => array('h'    => 0, 'rows' => array()),
@@ -162,13 +230,14 @@ class recordutils_image extends recordutils
         for ($istamp = 0; $istamp < $stampNodes->length; $istamp++) {
             $stamp = $stampNodes->item($istamp);
 
-            $stamp_background = $ColorToArray($stamp->getAttribute('background'), array(255, 255, 255, 0));
+            $stamp_background = $xmlToColor($stamp->getAttribute('background'), array(255, 255, 255, 0));
 
             $stamp_position = strtoupper(trim($stamp->getAttribute('position')));
             if (!in_array($stamp_position, array('TOP', 'TOP-OVER', 'BOTTOM-OVER', 'BOTTOM'))) {
                 $stamp_position = 'BOTTOM';
             }
 
+            // replace "var" nodes with their value
             $vars = $xpprefs->query('*/var', $stamp);
             for ($i = 0; $i < $vars->length; $i++) {
                 $varval = '';
@@ -187,6 +256,7 @@ class recordutils_image extends recordutils
                 $n->parentNode->replaceChild($domprefs->createTextNode($varval), $n);
             }
 
+            // replace "field" nodes with their values
             $fields = $xpprefs->query('*/field', $stamp);
             for ($i = 0; $i < $fields->length; $i++) {
                 $fldval = '';
@@ -209,8 +279,8 @@ class recordutils_image extends recordutils
             $text_width = $image_width;
 
             $logopos = null;
-            $imlogo = null; // gd image
 
+            // compute logo position / size
             $logo_reswidth = 0;
             $logo_resheight = 0;
             if ($logo_phywidth > 0 && $logo_phyheight > 0) {
@@ -229,40 +299,27 @@ class recordutils_image extends recordutils
                             ($logo_reswidth / $logo_phywidth));
                     }
 
-                    if (($logopos == 'LEFT' || $logopos == 'RIGHT') &&
-                        $logo_phywidth > 0 && $logo_phyheight > 0) {
-                        switch ($logosize['mime']) {
-                            case 'image/gif':
-                                $imlogo = @imagecreatefromgif($logofile);
-                                break;
-                            case 'image/png':
-                                $imlogo = @imagecreatefrompng($logofile);
-                                break;
-                            case 'image/jpeg':
-                            case 'image/pjpeg':
-                                $imlogo = @imagecreatefromjpeg($logofile);
-                                break;
-                        }
+                    if ($logopos == 'LEFT' || $logopos == 'RIGHT') {
 
-                        if ($imlogo) {
-                            if ($logo_reswidth > $image_width / 2) {
-                                // logo too large, resize please
-                                $logo_reswidth = (int) ($image_width / 2);
-                                $logo_resheight = (int) ($logo_phyheight *
-                                    ($logo_reswidth / $logo_phywidth));
-                            }
-                            $text_width -= $logo_reswidth;
-                            if ($logopos == 'LEFT') {
-                                $logo_xpos = 0;
-                                $text_xpos = $logo_reswidth;
-                            } else {    // RIGHT
-                                $text_xpos = 0;
-                                $logo_xpos = ($image_width - $logo_reswidth);
-                            }
+                        if ($logo_reswidth > $image_width / 2) {
+                            // logo too large, resize please
+                            $logo_reswidth = (int) ($image_width / 2);
+                            $logo_resheight = (int) ($logo_phyheight *
+                                ($logo_reswidth / $logo_phywidth));
+                        }
+                        $text_width -= $logo_reswidth;
+                        if ($logopos == 'LEFT') {
+                            $logo_xpos = 0;
+                            $text_xpos = $logo_reswidth;
+                        } else {    // RIGHT
+                            $text_xpos = 0;
+                            $logo_xpos = ($image_width - $logo_reswidth);
                         }
                     }
                 }
             }
+
+            // compute text blocks
             $txth = 0;
             $txtblock = array();
             $texts = $xpprefs->query('text', $stamp);
@@ -275,7 +332,6 @@ class recordutils_image extends recordutils
                         $tmpfontsize = (int) $tmpfontsize;
                     $fontsize = $tmpfontsize;
                 }
-                $txtColor = $ColorToArray($texts->item($i)->getAttribute('color'), array(0, 0, 0, 0));
 
                 if ($fontsize < 2)
                     $fontsize = 2;
@@ -285,22 +341,15 @@ class recordutils_image extends recordutils
                 $txtline = $texts->item($i)->nodeValue;
 
                 if ($txtline != '') {
-                    $txtlines = recordutils_image::wrap(
-                            $fontsize, 0, __DIR__ . '/arial.ttf', $txtline, $text_width
+                    $wrap = recordutils_image::wrap($imagine, $fontsize, 0, __DIR__ . '/arial.ttf', $txtline, $text_width
                     );
-
-                    foreach ($txtlines['l'] as $txtline) {
-                        $txtblock[] = array(
-                            'x'  => $text_xpos,
-                            'dy' => $txtlines['dy'],
-                            'w'  => $text_width,
-                            'h'  => $txtlines['h'],
-                            't'  => $txtline,
-                            's'  => $fontsize,
-                            'k'  => $txtColor
-                        );
-                        $txth += $txtlines['h'];
-                    }
+                    $txtblock[] = array(
+                        'fontsize'  => $fontsize,
+                        'fontcolor' => $xmlToColor($texts->item($i)->getAttribute('color'), array(0, 0, 0, 0)),
+                        'h'     => $wrap['toth'],
+                        'lines' => $wrap['l']
+                    );
+                    $txth += $wrap['toth'];
                 }
             }
 
@@ -314,78 +363,56 @@ class recordutils_image extends recordutils
             if ($stampheight <= 0) {
                 continue;
             }
-            $imfg = imagecreatetruecolor($image_width, $stampheight);
-            imagesavealpha($imfg, true);
-            imagelayereffect($imfg, IMG_EFFECT_REPLACE);
-            $trans_colour = imagecolorallocatealpha($imfg, 0, 0, 0, 127);
-            imagefilledrectangle($imfg, 0, 0, $image_width, $stampheight, $trans_colour);
-            imagecolordeallocate($imfg, $trans_colour);
 
-            if ($imlogo) {
+            // create the block
+            $imfg = $imagine->create(new Box($image_width, $stampheight), $stamp_background);
+
+            // copy the logo
+            if ($logo_reswidth > 0 && $logo_resheight > 0) {
                 if ($logo_reswidth != $logo_phywidth) {
-                    imagecopyresampled($imfg, $imlogo, $logo_xpos, 0, //  dst_x, dst_y
-                                       0, 0, //  src_x, src_y
-                                       $logo_reswidth, //  dst_w
-                                       $logo_resheight, //  dst_h
-                                       $logo_phywidth, //  src_w
-                                       $logo_phyheight  //  src_h
-                    );
+                    $imfg->paste(
+                        $logo_obj->copy()->resize(new Box($logo_reswidth, $logo_resheight))
+                        , new Point($logo_xpos, 0));
                 } else {
-                    imagecopy($imfg, $imlogo, $logo_xpos, 0, //  dst_x, dst_y
-                              0, 0, //  src_x, src_y
-                              $logo_phywidth, //  src_w
-                              $logo_phyheight  //  src_h
-                    );
+                    $imfg->paste($logo_obj, new Point($logo_xpos, 0));
                 }
             }
 
-            if (count($txtblock) >= 0) {
-                $txt_ypos = 0; //$txtblock[0]['h'];
-                foreach ($txtblock as $block) {
-                    $k = $block['k'];
-                    $color = imagecolorallocatealpha($imfg, $k[0], $k[1], $k[2], $k[3]);
-                    imagettftext($imfg, $block['s'], 0, $block['x'], $txt_ypos - $block['dy'], $color, __DIR__ . '/arial.ttf', $block['t']);
-                    $txt_ypos += $block['h'];
-                    imagecolordeallocate($imfg, $color);
+            // fill with text
+            $draw = $imfg->draw();
+            $txt_ypos = 0;
+            foreach ($txtblock as $block) {
+                $font = $imagine->font(__DIR__ . '/arial.ttf', $block['fontsize'], $block['fontcolor']);
+                foreach ($block['lines'] as $line) {
+                    if ($line['t'] != '') {
+                        $draw->text($line['t'], $font, new Point(0, $txt_ypos), 0);
+                    }
+                    $txt_ypos += $line['h'];
                 }
             }
 
-            imagepng($imfg, $pathTmpStamp . '_' . $istamp . 'fg.png');
-            imagedestroy($imfg);
-
-            $bgfile = null;
-            if ($stamp_background[3] != 127) {   // no need if background is transparent
-                $imbg = imagecreatetruecolor($image_width, $stampheight);
-                imagesavealpha($imbg, true);
-                imagelayereffect($imbg, IMG_EFFECT_REPLACE);
-                $trans_colour = imagecolorallocatealpha($imbg, $stamp_background[0], $stamp_background[1], $stamp_background[2], $stamp_background[3]);
-                imagefilledrectangle($imbg, 0, 0, $image_width, $stampheight, $trans_colour);
-                imagecolordeallocate($imbg, $trans_colour);
-
-                imagepng($imbg, $pathTmpStamp . '_' . $istamp . 'bg.png');
-                imagedestroy($imbg);
-
-                $bgfile = $pathTmpStamp . '_' . $istamp . 'bg.png';
-            }
-
+            // memo into one of the 4 buffer
             $tables[$stamp_position]['rows'][] = array(
-                'x0'     => 0,
-                'y0'     => $tables[$stamp_position]['h'],
-                'w'      => $image_width,
-                'h'      => $stampheight,
-                'bgfile' => $bgfile,
-                'fgfile' => $pathTmpStamp . '_' . $istamp . 'fg.png'
+                'x0'  => 0,
+                'y0'  => $tables[$stamp_position]['h'],
+                'w'   => $image_width,
+                'h'   => $stampheight,
+                'img' => $imfg
             );
 
             $tables[$stamp_position]['h'] += $stampheight;
         }
 
         $newh = $tables['TOP']['h'] + $image_height + $tables['BOTTOM']['h'];
-        if ($newh != $image_height) {
-            $builder->add('-extent')
-                ->add($image_width . 'x' . $newh . '+0-' . $tables['TOP']['h']);
-        }
 
+        // create the output image
+        $image_out = $imagine->create(new Box($image_width, $newh), new Color("FFFFFF", 64));
+
+        // paste the input image into
+        $image_out->paste($image_in, new Point(0, $tables['TOP']['h']));
+
+
+        // fix the coordinates
         foreach ($tables['TOP-OVER']['rows'] as $k => $row) {
             $tables['TOP-OVER']['rows'][$k]['y0'] += $tables['TOP']['h'];
         }
@@ -396,34 +423,17 @@ class recordutils_image extends recordutils
             $tables['BOTTOM']['rows'][$k]['y0'] += $tables['TOP']['h'] + $image_height;
         }
 
+        // paste blocks
         foreach (array('TOP', 'TOP-OVER', 'BOTTOM-OVER', 'BOTTOM') as $ta) {
             foreach ($tables[$ta]['rows'] as $row) {
                 if ($row['h'] > 0) {
-                    if ($row['bgfile']) {
-                        $builder->add('-draw')
-                            ->add('image Over ' . $row['x0'] . ',' . $row['y0'] . ' ' . $row['w'] . ',' . $row['h'] . ' "' . $row['bgfile'] . '"');
-                    }
-                    $builder->add('-draw')
-                        ->add('image Over ' . $row['x0'] . ',' . $row['y0'] . ' ' . $row['w'] . ',' . $row['h'] . ' "' . $row['fgfile'] . '"');
+                    $image_out->paste($row['img'], new Point($row['x0'], $row['y0']));
                 }
             }
         }
 
-        $builder->add($pathIn)
-            ->add($pathOut);
-
-        $process = $builder->getProcess();
-
-        $process->run();
-
-        foreach (array('TOP', 'TOP-OVER', 'BOTTOM-OVER', 'BOTTOM') as $ta) {
-            foreach ($tables[$ta]['rows'] as $row) {
-                if ($row['bgfile']) {
-                    @unlink($row['bgfile']);
-                }
-                @unlink($row['fgfile']);
-            }
-        }
+        // save the output
+        $image_out->save($pathOut);
 
         if (is_file($pathOut)) {
             return $pathOut;
@@ -432,14 +442,20 @@ class recordutils_image extends recordutils
         return $subdef->get_pathfile();
     }
 
-    /**
+
+
+     /**
      *
      * @param \media_subdef $subdef
      * @return boolean|string
      */
     public static function watermark(\media_subdef $subdef)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $Core = \bootstrap::getCore();
+
+        $imagine = $Core['imagine'];
+        $appbox = appbox::get_instance($Core);
+
         $registry = $appbox->get_registry();
         $base_id = $subdef->get_record()->get_base_id();
 
@@ -452,66 +468,80 @@ class recordutils_image extends recordutils
         }
 
         if (!$subdef->is_physically_present()) {
-            return $subdef->get_pathfile();
+            return false;
         }
 
         $pathIn = $subdef->get_path() . $subdef->get_file();
-
-        $pathOut = $subdef->get_path() . 'watermark_' . $subdef->get_file();
 
         if (!is_file($pathIn)) {
             return false;
         }
 
+        $pathOut = $subdef->get_path() . 'watermark_' . $subdef->get_file();
+
+        // cache
         if (is_file($pathOut)) {
             return $pathOut;
         }
 
-        if ($registry->get('composite_binary') &&
-            file_exists($registry->get('GV_RootPath') . 'config/wm/' . $base_id)) {
+        $in_image = $imagine->open($pathIn);
+        $in_size  = $in_image->getSize();
+        $in_w = $in_size->getWidth();
+        $in_h = $in_size->getHeight();
 
-            $builder = ProcessBuilder::create(array(
-                    $registry->get('composite_binary'),
-                    $registry->get('GV_RootPath') . 'config/wm/' . $base_id,
-                    $pathIn,
-                    '-strip', '-watermark', '90%', '-gravity', 'center',
-                    $pathOut
-                ));
+        $wm_file = $registry->get('GV_RootPath') . 'config/wm/' . $base_id;
+        if (0 && file_exists($wm_file)) {
+           $wm_image = $imagine->open($wm_file);
+           $wm_size = $wm_image->getSize();
+           $wm_w = $wm_size->getWidth();
+           $wm_h = $wm_size->getHeight();
 
-            $builder->getProcess()->run();
-        } elseif ($registry->get('convert_binary')) {
-            $collname = phrasea::bas_names($base_id);
-            $tailleimg = @getimagesize($pathIn);
-            $max = ($tailleimg[0] > $tailleimg[1] ? $tailleimg[0] : $tailleimg[1]);
+           if(($wm_w/$wm_h) > ($in_w/$in_h)) {
+               $wm_size = $wm_size->widen($in_w);
+           }
+           else {
+               $wm_size = $wm_size->heighten($in_h);
+           }
+           $wm_image->resize($wm_size);
 
-            $tailleText = (int) ($max / 30);
-
-            if ($tailleText < 8)
-                $tailleText = 8;
-
-            if ($tailleText > 12)
-                $decalage = 2;
-            else
-                $decalage = 1;
-
-            $builder = ProcessBuilder::create(array(
-                    $registry->get('convert_binary'),
-                    '-fill', 'white', '-draw', 'line 0,0 ' . $tailleimg[0] . ',' . $tailleimg[1] . '',
-                    '-fill', 'black', '-draw', 'line 1,0 ' . $tailleimg[0] + 1 . ',' . $tailleimg[1] . '',
-                    '-fill', 'white', '-draw', 'line ' . $tailleimg[0] . ',0 0,' . $tailleimg[1] . '',
-                    '-fill', 'black', '-draw', 'line ' . ($tailleimg[0] + 1) . ',0 0,' . $tailleimg[1] . '',
-                    '-fill', 'white', '-gravity', 'NorthWest', '-pointsize', $tailleText, '-draw', 'text 0,0 ' . $collname,
-                    '-fill', 'black', '-gravity', 'NorthWest', '-pointsize', $tailleText, '-draw', 'text ' . $decalage . ', 1 ' . $collname,
-                    '-fill', 'white', '-gravity', 'center', '-pointsize', $tailleText, '-draw', 'text 0,0 ' . $collname,
-                    '-fill', 'black', '-gravity', 'center', '-pointsize', $tailleText, '-draw', 'text ' . $decalage . ', 1 ' . $collname,
-                    '-fill', 'white', '-gravity', 'SouthEast', '-pointsize', $tailleText, '-draw', 'text 0,0 ' . $collname,
-                    '-fill', 'black', '-gravity', 'SouthEast', '-pointsize', $tailleText, '-draw', 'text ' . $decalage . ', 1 ' . $collname,
-                    $pathIn, $pathOut
-                ));
-
-            $process = $builder->getProcess();
-            $process->run();
+           $in_image->paste($wm_image, new Point(($in_w-$wm_size->getWidth())>>1, ($in_h-$wm_size->getHeight())>>1))->save($pathOut);
         }
+        else {
+             $collname = phrasea::bas_names($base_id);
+             $draw = $in_image->draw();
+             $black = new Color("000000");
+             $white = new Color("FFFFFF");
+             $draw->line(new Point(0, 1), new Point($in_w-2, $in_h-1), $black);
+             $draw->line(new Point(1, 0), new Point($in_w-1, $in_h-2), $white);
+             $draw->line(new Point(0, $in_h-2), new Point($in_w-2, 0), $black);
+             $draw->line(new Point(1, $in_h-1), new Point($in_w-1, 1), $white);
+
+             $fsize = MAX(8, (int)(MAX($in_w, $in_h)/30));
+             $fonts = array(
+                 $imagine->font(__DIR__ . '/arial.ttf', $fsize, $black),
+                 $imagine->font(__DIR__ . '/arial.ttf', $fsize, $white)
+             );
+             $testbox = $fonts[0]->box($collname, 0);
+             $tx_w = MIN($in_w, $testbox->getWidth());
+             $tx_h = MIN($in_h, $testbox->getHeight());
+
+             $x0 = MAX(1, ($in_w-$tx_w)>>1);
+             $y0 = MAX(1, ($in_h-$tx_h)>>1);
+             for($i=0; $i<=1; $i++) {
+                 $x = MAX(1, ($in_w>>2) - ($tx_w>>1));
+                 $draw->text($collname, $fonts[$i], new Point($x-$i, $y0-$i), 0);
+                 $x = MAX(1, $in_w-$x-$tx_w);
+                 $draw->text($collname, $fonts[$i], new Point($x-$i, $y0-$i), 0);
+
+                 $y = MAX(1, ($in_h>>2) - ($tx_h>>1));
+                 $draw->text($collname, $fonts[$i], new Point($x0-$i, $y-$i), 0);
+                 $y = MAX(1, $in_h-$y-$tx_h);
+                 $draw->text($collname, $fonts[$i], new Point($x0-$i, $y-$i), 0);
+             }
+        }
+
+        $in_image->save($pathOut);
+
         if (is_file($pathOut)) {
             return $pathOut;
         }
