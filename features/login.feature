@@ -17,7 +17,7 @@ Feature: Login
         Given a user "john.doe@phraseanet.com" exists with "johndoe" as password
         And I am not authenticated
         When I am on "/login/"
-        When I fill in "login" with "john.doe@phraseanet.com"
+        And I fill in "login" with "john.doe@phraseanet.com"
         And I fill in "password" with "johndoe"
         And I press "submit-form"
         Then I should be on "/prod/"
@@ -27,7 +27,7 @@ Feature: Login
         Given a user "john.doe@phraseanet.com" exists with "johndoe" as password
         And I am not authenticated
         When I am on "/login/"
-        When I fill in "login" with "john.doe@phraseanet.com"
+        And I fill in "login" with "john.doe@phraseanet.com"
         And I fill in "password" with "no-valid"
         And I press "submit-form"
         Then I should see "Authentication error"
