@@ -490,7 +490,7 @@ class recordutils_image extends recordutils
         $in_h = $in_size->getHeight();
 
         $wm_file = $registry->get('GV_RootPath') . 'config/wm/' . $base_id;
-        if (0 && file_exists($wm_file)) {
+        if (file_exists($wm_file)) {
            $wm_image = $imagine->open($wm_file);
            $wm_size = $wm_image->getSize();
            $wm_w = $wm_size->getWidth();
