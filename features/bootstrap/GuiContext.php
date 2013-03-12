@@ -219,7 +219,7 @@ class GuiContext extends MinkContext
     /**
      * @Given /^a user "([^"]*)" exists with a valid password token "([^"]*)"$/
      */
-    public function aUserExistsWithAValidPasswordToken($arg1, $arg2)
+    public function aUserExistsWithAValidPasswordToken($login, $token)
     {
         throw new PendingException();
     }
@@ -227,16 +227,24 @@ class GuiContext extends MinkContext
     /**
      * @Given /^"([^"]*)" is not authenticated$/
      */
-    public function isNotAuthenticated($arg1)
+    public function isNotAuthenticated($login)
     {
-        throw new PendingException();
+        $this->iAmNotAuthenticated();
     }
 
     /**
      * @Given /^"([^"]*)" is authenticated$/
      */
-    public function isAuthenticated($arg1)
+    public function isAuthenticated($login)
     {
+        if (false == $usrId = \User_Adapter::get_usr_id_from_login($this->app, $login)) {
+            throw new \Exception(sprintf('User %s does not exists, use the following definition to create it : a user "%s" exists', $login, $login));
+        }
+
+        $user = \User_Adapter::getInstance($usrId, $this->app);
+
+        $this->app['authentication']->openAccount($user);
+
         throw new PendingException();
     }
 }
