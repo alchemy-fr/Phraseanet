@@ -9,7 +9,7 @@ Scenario: Give access to register page
     And I am on "/login/"
     Then I should see an "a#link-register" element
 
-Scenario: Restrict access to register page if registration is not enable
+Scenario: Revoke access to register page
     Given user registration is disable
     And I am not authenticated
     And I am on "/login/register/"
