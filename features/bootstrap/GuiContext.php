@@ -13,6 +13,8 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Alchemy\Phrasea\Application;
 
+use Behat\Behat\Exception\PendingException;
+
 use Behat\Behat\Context\BehatContext;
 use Behat\Gherkin\Node\PyStringNode;
 
@@ -212,5 +214,29 @@ class GuiContext extends MinkContext
                 }
             }
         }
+    }
+
+    /**
+     * @Given /^a user "([^"]*)" exists with a valid password token "([^"]*)"$/
+     */
+    public function aUserExistsWithAValidPasswordToken($arg1, $arg2)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^"([^"]*)" is not authenticated$/
+     */
+    public function isNotAuthenticated($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^"([^"]*)" is authenticated$/
+     */
+    public function isAuthenticated($arg1)
+    {
+        throw new PendingException();
     }
 }
