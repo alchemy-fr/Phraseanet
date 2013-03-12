@@ -123,4 +123,51 @@ class GuiContext extends MinkContext
     {
         $this->app['phraseanet.registry']->set('GV_captchas', false, \registry::TYPE_BOOLEAN);
     }
+
+    /**
+     * @Given /^user registration is enable$/
+     */
+    public function userRegistrationIsEnable()
+    {
+        $databox = current($this->app['phraseanet.appbox']->get_databoxes());
+
+        $xml = $databox->get_sxml_structure();
+
+        if (!$xml) {
+            throw new \Exception('Invalid databox xml structure');
+        }
+
+        if (!isset($xml->caninscript)) {
+
+            $xml->addChild('caninscript', '1');
+
+            $dom = new \DOMDocument();
+            $dom->loadXML($xml->asXML());
+
+            $databox->saveStructure($dom);
+        }
+    }
+
+    /**
+     * @Given /^user registration is disable/
+     */
+    public function userRegistrationIsDisable()
+    {
+        $databox = current($this->app['phraseanet.appbox']->get_databoxes());
+
+        $xml = $databox->get_sxml_structure();
+
+        if (!$xml) {
+            throw new \Exception('Invalid databox xml structure');
+        }
+
+        if (isset($xml->caninscript)) {
+            unset($xml->caninscript);
+
+            $dom = new \DOMDocument();
+            $dom->loadXML($xml->asXML());
+
+            $databox->saveStructure($dom);
+        }
+    }
 }
