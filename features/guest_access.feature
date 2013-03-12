@@ -3,6 +3,9 @@ Feature: Guest access
     As a a guest
     I need to be able to log in
 
+    Background:
+        Given locale is "en_GB"
+
 Scenario: Give access to guests
     Given user guest access is enable
     And I am not authenticated

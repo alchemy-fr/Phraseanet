@@ -3,6 +3,9 @@ Feature: Locale
     As a user
     I need to be able to change the application locale
 
+    Background:
+        Given locale is "en_GB"
+
 Scenario: Change the application language to german
     Given I am not authenticated
     And locale is "en_GB"

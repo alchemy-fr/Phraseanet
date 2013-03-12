@@ -3,6 +3,9 @@ Feature: Register
     As a non authenticated user
     I need to be able to submit a register form
 
+    Background:
+        Given locale is "en_GB"
+
 Scenario: Give access to register page
     Given user registration is enable
     And I am not authenticated

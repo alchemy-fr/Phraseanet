@@ -3,6 +3,9 @@ Feature: Forgot password
   As a non authenticated user
   I need to be able to get a new password if I forget my own password
 
+    Background:
+        Given locale is "en_GB"
+
 Scenario: Give access to forgot password page
     Given I am not authenticated
     When I am on "/login/"
