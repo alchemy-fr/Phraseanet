@@ -9,8 +9,9 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\Process\ProcessBuilder;
-use PHPExiftool\Reader;
+// use Symfony\Component\Process\ProcessBuilder;
+// use PHPExiftool\Reader;
+use MediaVorus\Media\Media;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Color;
 use Imagine\Image\Box;
@@ -36,7 +37,7 @@ class recordutils_image extends recordutils
      * @param  int    $width
      * @return Array
      */
-    protected function wrap(&$imagine, $fontSize, $angle, $fontFace, $string, $width)
+    protected function wrap(ImagineInterface $imagine, $fontSize, $angle, $fontFace, $string, $width)
     {
         // str 'Op' used to calculate linespace
         $font = $imagine->font($fontFace, $fontSize, new Color("000000", 0));
@@ -58,7 +59,7 @@ class recordutils_image extends recordutils
                 for ($i = 0; $i < strlen($lig); $i++) {
                     $c = $lig[$i];
                     if ($iword == -1 || (ctype_space($c) && !ctype_space($lastc))) {
-                        $twords[++$iword] = array(($part = 0) => '', 1         => '');
+                        $twords[++$iword] = array(($part = 0) => '', 1           => '');
                     }
                     if (!ctype_space($c) && $part == 0) {
                         $part++;
@@ -135,15 +136,13 @@ class recordutils_image extends recordutils
             return $subdef->get_pathfile();
         }
 
-        $rotation = NULL;
+        $rotation = null;
         try {
-            $reader = new Reader();
-            $metadatas = $reader
-                    ->files($subdef->get_pathfile())
-                    ->first()->getMetadatas();
-            $r = $metadatas['IFD0:Orientation'];
-            if ($r)
-                $rotation = trim($r->getValue());
+            $image = $Core['mediavorus']->guess(new SplFileInfo($subdef->get_pathfile()));
+            if (Media::TYPE_IMAGE === $image->getType()) {
+                // One of MediaVorus\Media\Image::ORIENTATION_* constants
+                $rotation = $image->getOrientation();
+            }
         } catch (Exception $e) {
             // getting orientation failed but we don't care the reason
         }
@@ -189,18 +188,18 @@ class recordutils_image extends recordutils
         $image_in = $imagine->open($pathIn);
         $image_size = $image_in->getSize();
         switch ($rotation) {
-            case 6:
+            case MediaVorus\Media\Image::ORIENTATION_90:
                 $image_width = $image_size->getHeight();
                 $image_height = $image_size->getWidth();
                 $image_in->rotate(90);
                 $rotation = '90';
                 break;
-            case 8:
+            case MediaVorus\Media\Image::ORIENTATION_270:
                 $image_width = $image_size->getHeight();
                 $image_height = $image_size->getWidth();
                 $image_in->rotate(270);
                 break;
-            case 3:
+            case MediaVorus\Media\Image::ORIENTATION_180:
                 $image_width = $image_size->getWidth();
                 $image_height = $image_size->getHeight();
                 $image_in->rotate(180);
@@ -442,9 +441,7 @@ class recordutils_image extends recordutils
         return $subdef->get_pathfile();
     }
 
-
-
-     /**
+    /**
      *
      * @param \media_subdef $subdef
      * @return boolean|string
@@ -485,59 +482,57 @@ class recordutils_image extends recordutils
         }
 
         $in_image = $imagine->open($pathIn);
-        $in_size  = $in_image->getSize();
+        $in_size = $in_image->getSize();
         $in_w = $in_size->getWidth();
         $in_h = $in_size->getHeight();
 
         $wm_file = $registry->get('GV_RootPath') . 'config/wm/' . $base_id;
         if (file_exists($wm_file)) {
-           $wm_image = $imagine->open($wm_file);
-           $wm_size = $wm_image->getSize();
-           $wm_w = $wm_size->getWidth();
-           $wm_h = $wm_size->getHeight();
+            $wm_image = $imagine->open($wm_file);
+            $wm_size = $wm_image->getSize();
+            $wm_w = $wm_size->getWidth();
+            $wm_h = $wm_size->getHeight();
 
-           if(($wm_w/$wm_h) > ($in_w/$in_h)) {
-               $wm_size = $wm_size->widen($in_w);
-           }
-           else {
-               $wm_size = $wm_size->heighten($in_h);
-           }
-           $wm_image->resize($wm_size);
+            if (($wm_w / $wm_h) > ($in_w / $in_h)) {
+                $wm_size = $wm_size->widen($in_w);
+            } else {
+                $wm_size = $wm_size->heighten($in_h);
+            }
+            $wm_image->resize($wm_size);
 
-           $in_image->paste($wm_image, new Point(($in_w-$wm_size->getWidth())>>1, ($in_h-$wm_size->getHeight())>>1))->save($pathOut);
-        }
-        else {
-             $collname = phrasea::bas_names($base_id);
-             $draw = $in_image->draw();
-             $black = new Color("000000");
-             $white = new Color("FFFFFF");
-             $draw->line(new Point(0, 1), new Point($in_w-2, $in_h-1), $black);
-             $draw->line(new Point(1, 0), new Point($in_w-1, $in_h-2), $white);
-             $draw->line(new Point(0, $in_h-2), new Point($in_w-2, 0), $black);
-             $draw->line(new Point(1, $in_h-1), new Point($in_w-1, 1), $white);
+            $in_image->paste($wm_image, new Point(($in_w - $wm_size->getWidth()) >> 1, ($in_h - $wm_size->getHeight()) >> 1))->save($pathOut);
+        } else {
+            $collname = phrasea::bas_names($base_id);
+            $draw = $in_image->draw();
+            $black = new Color("000000");
+            $white = new Color("FFFFFF");
+            $draw->line(new Point(0, 1), new Point($in_w - 2, $in_h - 1), $black);
+            $draw->line(new Point(1, 0), new Point($in_w - 1, $in_h - 2), $white);
+            $draw->line(new Point(0, $in_h - 2), new Point($in_w - 2, 0), $black);
+            $draw->line(new Point(1, $in_h - 1), new Point($in_w - 1, 1), $white);
 
-             $fsize = MAX(8, (int)(MAX($in_w, $in_h)/30));
-             $fonts = array(
-                 $imagine->font(__DIR__ . '/arial.ttf', $fsize, $black),
-                 $imagine->font(__DIR__ . '/arial.ttf', $fsize, $white)
-             );
-             $testbox = $fonts[0]->box($collname, 0);
-             $tx_w = MIN($in_w, $testbox->getWidth());
-             $tx_h = MIN($in_h, $testbox->getHeight());
+            $fsize = max(8, (int) (max($in_w, $in_h) / 30));
+            $fonts = array(
+                $imagine->font(__DIR__ . '/arial.ttf', $fsize, $black),
+                $imagine->font(__DIR__ . '/arial.ttf', $fsize, $white)
+            );
+            $testbox = $fonts[0]->box($collname, 0);
+            $tx_w = min($in_w, $testbox->getWidth());
+            $tx_h = min($in_h, $testbox->getHeight());
 
-             $x0 = MAX(1, ($in_w-$tx_w)>>1);
-             $y0 = MAX(1, ($in_h-$tx_h)>>1);
-             for($i=0; $i<=1; $i++) {
-                 $x = MAX(1, ($in_w>>2) - ($tx_w>>1));
-                 $draw->text($collname, $fonts[$i], new Point($x-$i, $y0-$i), 0);
-                 $x = MAX(1, $in_w-$x-$tx_w);
-                 $draw->text($collname, $fonts[$i], new Point($x-$i, $y0-$i), 0);
+            $x0 = max(1, ($in_w - $tx_w) >> 1);
+            $y0 = max(1, ($in_h - $tx_h) >> 1);
+            for ($i = 0; $i <= 1; $i++) {
+                $x = max(1, ($in_w >> 2) - ($tx_w >> 1));
+                $draw->text($collname, $fonts[$i], new Point($x - $i, $y0 - $i), 0);
+                $x = max(1, $in_w - $x - $tx_w);
+                $draw->text($collname, $fonts[$i], new Point($x - $i, $y0 - $i), 0);
 
-                 $y = MAX(1, ($in_h>>2) - ($tx_h>>1));
-                 $draw->text($collname, $fonts[$i], new Point($x0-$i, $y-$i), 0);
-                 $y = MAX(1, $in_h-$y-$tx_h);
-                 $draw->text($collname, $fonts[$i], new Point($x0-$i, $y-$i), 0);
-             }
+                $y = max(1, ($in_h >> 2) - ($tx_h >> 1));
+                $draw->text($collname, $fonts[$i], new Point($x0 - $i, $y - $i), 0);
+                $y = max(1, $in_h - $y - $tx_h);
+                $draw->text($collname, $fonts[$i], new Point($x0 - $i, $y - $i), 0);
+            }
         }
 
         $in_image->save($pathOut);
