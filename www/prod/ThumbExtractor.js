@@ -6,12 +6,20 @@
    *****************/
   var Canva = function(domCanva){
     this.domCanva = domCanva;
-  }
+  };
 
   Canva.prototype = {
     resize : function(elementDomNode){
-      var h = elementDomNode.getHeight();
       var w = elementDomNode.getWidth();
+      var maxH = elementDomNode.getHeight();
+
+      var h = Math.round(w * (1 / elementDomNode.getAspectRatio()));
+
+      if (h > maxH) {
+          var h = maxH;
+          var w =  Math.round(h * elementDomNode.getAspectRatio());
+      }
+
 
       this.domCanva.setAttribute("width", w);
       this.domCanva.setAttribute("height", h);
@@ -20,7 +28,7 @@
     },
     getContext2d : function(){
 
-      if (this.domCanva.getContext == undefined)
+      if (this.domCanva.getContext === undefined)
       {
         return G_vmlCanvasManager
         .initElement(this.domCanva)
@@ -94,12 +102,16 @@
 
   var Video = function(domElement){
     Image.call(this, domElement);
+    this.aspectRatio = domElement.getAttribute('data-ratio') || 1;
   };
 
   Video.prototype = new Image();
   Video.prototype.constructor = Video;
   Video.prototype.getCurrentTime = function(){
     return Math.floor(this.domElement.currentTime);
+  };
+  Video.prototype.getAspectRatio = function(){
+    return this.aspectRatio;
   };
 
   /******************
@@ -148,7 +160,7 @@
     this.timestamp = date.getTime();
     this.dataURI = canva.extractImage();
     this.videoTime = video.getCurrentTime();
-  }
+  };
 
   ScreenShot.prototype = {
     getId:function(){

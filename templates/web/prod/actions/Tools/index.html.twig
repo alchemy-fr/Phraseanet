@@ -124,7 +124,19 @@
             <div class="PNB frame_video">
 
               {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
-              <video id="thumb_video" controls="" preload="auto">
+              {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
+              {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
+
+              {% set width = record.get_technical_infos(dataW) %}
+              {% set height = record.get_technical_infos(dataH) %}
+
+              {% if width and height %}
+                {% set ratio = (width / height) %}
+              {% else %}
+                 {% set ratio = 1 %}
+              {% endif %}
+
+              <video id="thumb_video" controls="" preload="auto" data-ratio="{{ ratio }}">
                 {% for subdef in previewHtml5 %}
                 <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}" />
                 {% endfor %}
@@ -150,7 +162,7 @@
                 <img src="/skins/prod/ThumbExtractor/delete.png" />
               </div>
               <p id='thumb_info'>{% trans 'To take a screenshot click on camera' %}</p>
-              <canvas id="thumb_canvas" >
+              <canvas id="thumb_canvas">
               </canvas>
             </div>
             <div class="PNB action_bar_right">
