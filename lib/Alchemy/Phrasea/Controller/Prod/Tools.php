@@ -127,30 +127,29 @@ class Tools implements ControllerProviderInterface
 
         $controllers->post('/hddoc/', function(Application $app, Request $request) {
                 $success = false;
-                $errorMessage = "";
-                $fileName = null;
+                $message = _('An error occured');
 
                 if ($file = $request->files->get('newHD')) {
+                    $fileName = $file->getClientOriginalName();
 
-                    if ($file->isValid()) {
-
-                        $fileName = $file->getClientOriginalName();
-                        $size = $file->getClientSize();
-
-                        $tempoFile = tempnam(sys_get_temp_dir(), 'substit');
-                        unlink($tempoFile);
-                        mkdir($tempoFile);
-                        $tempoFile = $tempoFile . DIRECTORY_SEPARATOR . $fileName;
-                        copy($file->getPathname(), $tempoFile);
-
-
+                    if ($file->getClientSize() && $fileName && $file->isValid()) {
                         try {
-                            $record = new \record_adapter(
-                                    $request->get('sbas_id')
-                                    , $request->get('record_id')
+                            $tmpFile = sprintf(
+                                '%stmp/%s',
+                                $app['Core']->getRegistry()->get('GV_RootPath'),
+                                $fileName
                             );
 
-                            $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($tempoFile));
+                            if (false === rename($file->getPathname(), $tmpFile)) {
+                                throw new \Exception();
+                            }
+
+                            $record = new \record_adapter(
+                                $request->get('sbas_id'),
+                                $request->get('record_id')
+                            );
+
+                            $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($tmpFile));
 
                             $record->substitute_subdef('document', $media);
 
@@ -159,72 +158,64 @@ class Tools implements ControllerProviderInterface
                             }
 
                             $success = true;
+                            $message = _('Document has been successfully substitued');
+                            unlink($tmpFile);
                         } catch (\Exception $e) {
-                            $errorMessage = $e->getMessage();
-                        }
 
-                        unlink($tempoFile);
-                        rmdir(dirname($tempoFile));
-                        unlink($file->getPathname());
+                        }
                     } else {
-                        $errorMessage = _('file is not valid');
+                        $message = _('file is not valid');
                     }
                 }
 
-                $template = 'prod/actions/Tools/iframeUpload.html.twig';
-                $var = array(
-                    'success'      => $success
-                    , 'fileName'     => $fileName
-                    , 'errorMessage' => $errorMessage
-                );
-
-                return new Response($app['Core']->getTwig()->render($template, $var));
-
-                /**
-                 *
-                 */
+                return new Response($app['Core']->getTwig()->render('prod/actions/Tools/iframeUpload.html.twig', array(
+                    'success'   => $success,
+                    'message'   => $message,
+                )));
             });
 
         $controllers->post('/chgthumb/', function(Application $app, Request $request) {
                 $success = false;
-                $errorMessage = "";
+                $message = _('An error occured');
 
                 if ($file = $request->files->get('newThumb')) {
-
-                    $size = $file->getClientSize();
                     $fileName = $file->getClientOriginalName();
 
-                    if ($size && $fileName && $file->isValid()) {
+                    if ($file->getClientSize() && $fileName && $file->isValid()) {
                         try {
-                            $rootPath = $app['Core']->getRegistry()->get('GV_RootPath');
-                            $tmpFile = $rootPath . 'tmp/' . $fileName;
-                            rename($file->getPathname(), $tmpFile);
-
-                            $record = new \record_adapter(
-                                    $request->get('sbas_id')
-                                    , $request->get('record_id')
+                            $tmpFile = sprintf(
+                                '%stmp/%s',
+                                $app['Core']->getRegistry()->get('GV_RootPath'),
+                                $fileName
                             );
 
-                            $media = $app['Core']['mediavorus']->guess($file);
+                            if (false === rename($file->getPathname(), $tmpFile)) {
+                                throw new \Exception();
+                            }
+
+                            $record = new \record_adapter(
+                                $request->get('sbas_id'),
+                                $request->get('record_id')
+                            );
+
+                            $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($tmpFile));
 
                             $record->substitute_subdef('thumbnail', $media);
 
                             $success = true;
+                            $message = _('Thumbnail has been successfully substitued');
+                            unlink($tmpFile);
                         } catch (\Exception $e) {
-                            $errorMessage = $e->getMessage();
+
                         }
                     } else {
-                        $errorMessage = _('file is not valid');
+                        $message = _('file is not valid');
                     }
 
-                    $template = 'prod/actions/Tools/iframeUpload.html.twig';
-                    $var = array(
-                        'success'      => $success
-                        , 'fileName'     => $fileName
-                        , 'errorMessage' => $errorMessage
-                    );
-
-                    return new Response($app['Core']->getTwig()->render($template, $var));
+                    return new Response($app['Core']->getTwig()->render('prod/actions/Tools/iframeUpload.html.twig', array(
+                        'success'   => $success,
+                        'message'   => $message,
+                    )));
                 }
             });
 
