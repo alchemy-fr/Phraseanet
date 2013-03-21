@@ -28,7 +28,7 @@
     },
     getContext2d : function(){
 
-      if (this.domCanva.getContext === undefined)
+      if (undefined === this.domCanva.getContext)
       {
         return G_vmlCanvasManager
         .initElement(this.domCanva)
