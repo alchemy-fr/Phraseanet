@@ -205,13 +205,13 @@ class Tools implements ControllerProviderInterface
                                     , $request->get('record_id')
                             );
 
-                            $media = $app['Core']['mediavorus']->guess($file);
+                            $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($tmpFile));
 
                             $record->substitute_subdef('thumbnail', $media);
 
                             $success = true;
                         } catch (\Exception $e) {
-                            $errorMessage = $e->getMessage();
+                            $errorMessage = _('An error occured');
                         }
                     } else {
                         $errorMessage = _('file is not valid');

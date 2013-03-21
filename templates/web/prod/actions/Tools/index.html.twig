@@ -57,7 +57,7 @@
                         </a>
                     </li>
                 {% endif %}
-                {% if selectionLength == 1 and registry.get('GV_seeOngChgDoc') %}
+                {% if selectionLength == 1 and (registry.get('GV_seeOngChgDoc') or registry.get('GV_seeNewThumb')) %}
                     <li>
                         <a href="#substitution">
                             {% trans "substitution" %}
@@ -73,7 +73,7 @@
                 {% endif %}
             </ul>
         </div>
-        {# subef section #}
+        {# subdef section #}
         <div id="subdefs" class="tabBox">
             <form id="new-img-form" action="/prod/tools/image/" method="post">
                 <fieldset style='border:1px solid #999; padding:20px;'>
@@ -257,70 +257,74 @@
     {% endif %}
 
     {# hd sub section #}
-    {% if selectionLength == 1 %}
+    {% if selectionLength == 1 and (registry.get('GV_seeOngChgDoc') or registry.get('GV_seeNewThumb')) %}
       {% for record in selection %}
         <div id="substitution" class="tabBox">
 
-         {% if registry.get('GV_seeOngChgDoc') %}
-            <div id="substitution-hd">
-              <form
-                name ="formchgHD"
-                action="/prod/tools/hddoc/"
-                enctype="multipart/form-data"
-                method="post"
-                target="uploadHdsub">
+         {% if "unknown" == record.get_type() %}
+            <i class="icon-warning-sign icon-white"></i>{% trans "Substitution is not possible for this kind of record" %}
+         {% else %}
+            {% if registry.get('GV_seeOngChgDoc') %}
+                <div id="substitution-hd">
+                  <form
+                    name ="formchgHD"
+                    action="/prod/tools/hddoc/"
+                    enctype="multipart/form-data"
+                    method="post"
+                    target="uploadHdsub">
 
-                <fieldset style='border:1px solid #999;padding:20px;'>
-                  <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution HD" %}</b>&nbsp;</legend>
-                  <div>
-                    <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
-                    <input id='new-hd-file' name="newHD" type="file" />
-                    <br />
-                    <label for="CCFNALP" class="checkbox">
-                        <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
-                        {% trans "mettre a jour le nom original de fichier apres substitution"%}
-                    </label>
-                    <input type="hidden" name="ACT" value="SEND" />
-                    <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}"/>
-                    <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
-                    <div class="load"></div>
-                  </div>
-                </fieldset>
-                <div style='text-align:right;padding-top:10px;'>
-                  <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
-                  <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+                    <fieldset style='border:1px solid #999;padding:20px;'>
+                      <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution HD" %}</b>&nbsp;</legend>
+                      <div>
+                        <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
+                        <input id='new-hd-file' name="newHD" type="file"/>
+                        <br />
+                        <label for="CCFNALP" class="checkbox">
+                            <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
+                            {% trans "mettre a jour le nom original de fichier apres substitution"%}
+                        </label>
+                        <input type="hidden" name="ACT" value="SEND" />
+                        <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}"/>
+                        <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
+                        <div class="load"></div>
+                      </div>
+                    </fieldset>
+                    <div style='text-align:right;padding-top:10px;'>
+                      <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
+                      <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+                    </div>
+                  </form>
+                  <div class='resultAction'></div>
                 </div>
-              </form>
-              <div class='resultAction'></div>
-            </div>
-          {% endif %}
+              {% endif %}
 
-          {% if registry.get('GV_seeNewThumb') %}
-            <div id="substitution-sd">
-              <form
-                name="formchgHD"
-                action="/prod/tools/chgthumb/"
-                enctype="multipart/form-data"
-                method="post"
-                target="uploadHdsub">
-                <fieldset style='border:1px solid #999;padding:20px;'>
-                  <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution SD" %}</b>&nbsp;</legend>
-                  <div>
-                    <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
-                    <input id='new-sd-file' name="newThumb" type="file" />
-                    <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
-                    <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
-                    <div class="load"></div>
-                  </div>
-                </fieldset>
-                <div style='text-align:right;padding-top:10px;'>
-                  <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
-                  <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+              {% if registry.get('GV_seeNewThumb') %}
+                <div id="substitution-sd">
+                  <form
+                    name="formchgHD"
+                    action="/prod/tools/chgthumb/"
+                    enctype="multipart/form-data"
+                    method="post"
+                    target="uploadHdsub">
+                    <fieldset style='border:1px solid #999;padding:20px;'>
+                      <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution SD" %}</b>&nbsp;</legend>
+                      <div>
+                        <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
+                        <input id='new-sd-file' name="newThumb" type="file" />
+                        <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
+                        <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
+                        <div class="load"></div>
+                      </div>
+                    </fieldset>
+                    <div style='text-align:right;padding-top:10px;'>
+                      <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
+                      <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+                    </div>
+                  </form>
+                  <div class='resultAction'></div>
                 </div>
-              </form>
-              <div class='resultAction'></div>
-            </div>
-          {% endif %}
+              {% endif %}
+         {% endif %}
         </div>
       {% endfor %}
     {% endif %}
