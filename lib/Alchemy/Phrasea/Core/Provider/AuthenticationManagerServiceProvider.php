@@ -14,8 +14,8 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Authentication\Manager;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
-use Alchemy\Phrasea\Authentication\Provider\Facebook;
 use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
+use Alchemy\Phrasea\Authentication\Provider\Factory as ProviderFactory;
 use Alchemy\Phrasea\Authentication\PersistentCookie\Manager as CookieManager;
 use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
@@ -42,20 +42,21 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
 
-//        $app['authentication.suggestion-finder'] = $app->share(function (Application $app) {
-//            return new SuggestionFinder($app);
-//        });
+        $app['authentication.suggestion-finder'] = $app->share(function (Application $app) {
+            return new SuggestionFinder($app);
+        });
+
+        $app['authentication.providers.factory'] = $app->share(function (Application $app) {
+           return new ProviderFactory($app['url_generator'], $app['session']);
+        });
 
         $app['authentication.providers'] = $app->share(function (Application $app) {
 
-//            $config = array();
-//            $config['appId'] = '252378391562465';
-//            $config['secret'] = 'd9df4bb1ad34aab4f6728b4076e1f9c4';
-//
-//            $facebook = new \Facebook($config);
-
             $providers = new ProvidersCollection();
-//            $providers->register(new Facebook($facebook, $app['url_generator']));
+
+            foreach ($app['phraseanet.configuration']->get('auth-providers') as $providerId => $data) {
+                $providers->register($app['authentication.providers.factory']->build($providerId, $data['options']));
+            }
 
             return $providers;
         });
