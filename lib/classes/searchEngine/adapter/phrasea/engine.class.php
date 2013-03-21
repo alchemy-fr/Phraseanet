@@ -230,8 +230,6 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         $this->current_page = $page;
         $this->perPage = $perPage;
 
-        $page = $this->get_current_page();
-
         if (trim($query) === '')
             $query = "all";
         if ($this->opt_record_type != '') {
@@ -272,10 +270,10 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
         $perPage = $this->get_per_page();
         $page = $this->get_current_page();
-        $this->offset_start = $courcahnum = (($page - 1) * $perPage);
+        $this->offset_start = $courcahnum = $offset;
 
         $res = phrasea_fetch_results(
-            $session->get_ses_id(), (int) (($page - 1) * $perPage) + 1, $perPage, false
+            $session->get_ses_id(), $offset, $perPage, false
         );
 
         $rs = array();
