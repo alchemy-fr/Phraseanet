@@ -429,8 +429,35 @@
           }
         }
 
-        top -= 10;
-        height += 20;
+        if(resizeImgTips)
+        {
+          var factor = Math.min((width - 45) / width, (height - 75) / height);
+          var imgWidth = Math.round(width * factor);
+          var imgHeight = Math.round(height * factor);
+
+          width = imgWidth + 45;
+          height = imgHeight + 85;
+
+          $imgTips.css({
+            maxWidth: imgWidth,
+            maxHeight: imgHeight
+          });
+        }
+
+        if(resizeVideoTips)
+        {
+          var factor = Math.min((width - 45) / width, (height - 75) / height);
+          var imgWidth = Math.round(width * factor);
+          var imgHeight = Math.round(height * factor);
+
+          width = imgWidth + 45;
+          height = imgHeight + 75;
+
+          $videoTips.css({
+            width: Math.round(imgWidth),
+            height: Math.round(imgHeight)
+          });
+        }
 
         helper.parent.css({
           width: Math.round(width),
@@ -438,22 +465,6 @@
           left: left,
           top: top
         });
-
-        if(resizeImgTips)
-        {
-          $imgTips.css({
-            maxWidth: Math.round(width - 50),
-            maxHeight: Math.round(height-70)
-          });
-        }
-
-        if(resizeVideoTips)
-        {
-          $videoTips.css({
-            width: Math.round(width - 50),
-            height: Math.round(height-70)
-          });
-        }
 
       }
 
