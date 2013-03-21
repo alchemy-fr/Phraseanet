@@ -13,13 +13,16 @@
       var w = elementDomNode.getWidth();
       var maxH = elementDomNode.getHeight();
 
-      var h = Math.round(w * (1 / elementDomNode.getAspectRatio()));
+      if ('' !== elementDomNode.getAspectRatio()) {
+        var h = Math.round(w * (1 / elementDomNode.getAspectRatio()));
 
-      if (h > maxH) {
+        if (h > maxH) {
+            var h = maxH;
+            var w =  Math.round(h * elementDomNode.getAspectRatio());
+        }
+      } else {
           var h = maxH;
-          var w =  Math.round(h * elementDomNode.getAspectRatio());
       }
-
 
       this.domCanva.setAttribute("width", w);
       this.domCanva.setAttribute("height", h);
@@ -102,7 +105,7 @@
 
   var Video = function(domElement){
     Image.call(this, domElement);
-    this.aspectRatio = domElement.getAttribute('data-ratio') || 1;
+    this.aspectRatio = domElement.getAttribute('data-ratio');
   };
 
   Video.prototype = new Image();

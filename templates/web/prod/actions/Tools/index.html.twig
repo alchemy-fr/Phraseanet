@@ -131,9 +131,9 @@
               {% set height = record.get_technical_infos(dataH) %}
 
               {% if width and height %}
-                {% set ratio = (width / height) %}
+                {% set ratio = width / height %}
               {% else %}
-                 {% set ratio = 1 %}
+                 {% set ratio = '' %}
               {% endif %}
 
               <video id="thumb_video" controls="" preload="auto" data-ratio="{{ ratio }}">
