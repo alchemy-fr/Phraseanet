@@ -3732,7 +3732,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #thumbExtractor .main_title {
     height: 15px;
     font-weight: bold;
-    top: 15px
+    top: 15px;
 }
 
 #thumbExtractor .part_title_left {
@@ -3771,11 +3771,18 @@ dans l'onglet thesaurus : arbres, menus contextuels
     border: 1px solid #1A1B1B;
     border-bottom: none;
     height: 210px;
+    line-height:210px;
     width: 320px;
     top: 50px;
     left: 380px;
     z-index: 2;
-    text-align: center
+    text-align: center;
+}
+
+#thumbExtractor #thumb_canvas {
+    vertical-align:middle;
+    display:inline-block;
+    line-height: 20px;
 }
 
 #thumbExtractor .action_bar_left {
@@ -3783,7 +3790,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     width: 320px;
     left: 10px;
     top: 260px;
-    background-color: #3B3D3B;
+    background-color:  #3B3D3B;
     border: 1px solid #3B3D3B;
     padding: 2px;
 }
@@ -3802,7 +3809,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #thumbExtractor .action_bar_right .action_icon {
     padding-right: 10px;
     display: table-cell;
-    vertical-align: middle
+    vertical-align: middle;
 }
 
 #thumbExtractor .action_bar_right .action_icon:hover {
@@ -3816,6 +3823,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     bottom: 10px;
     right: 60px;
     display: none;
+    line-height: 20px;
 }
 
 #thumbExtractor #thumb_delete_button {
@@ -3824,7 +3832,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
     position: absolute;
     bottom: 10px;
     right: 10px;
-    display: none
+    display: none;
+    line-height: 20px;
 }
 
 #thumbExtractor #thumb_delete_button,
