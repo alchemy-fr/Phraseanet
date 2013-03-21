@@ -38,6 +38,10 @@
     "repositories": [
     {
         "type": "git",
+        "url":  "https://github.com/romainneutron/Imagine.git"
+    },
+    {
+        "type": "git",
         "url": "https://github.com/alchemy-fr/oauth2-php"
     },
     {
