@@ -158,7 +158,7 @@ class Tools implements ControllerProviderInterface
                             }
 
                             $success = true;
-                            $message = _('Record document has been successfully substitued');
+                            $message = _('Document has been successfully substitued');
                             unlink($tmpFile);
                         } catch (\Exception $e) {
 
@@ -203,7 +203,7 @@ class Tools implements ControllerProviderInterface
                             $record->substitute_subdef('thumbnail', $media);
 
                             $success = true;
-                            $message = _('Record thumbnail has been successfully substitued');
+                            $message = _('Thumbnail has been successfully substitued');
                             unlink($tmpFile);
                         } catch (\Exception $e) {
 
