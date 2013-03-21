@@ -35,11 +35,30 @@ class ControllerToolsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         return $app;
     }
 
+    public function testRouteChangeDoc()
+    {
+        $record = static::$records['record_1'];
+
+        $crawler = $this->client->request('POST', '/tools/hddoc/', array(
+            'sbas_id' => $record->get_sbas_id(),
+            'record_id' => $record->get_record_id(),
+        ), array(
+            'newHD' => new UploadedFile(
+               $this->tmpFile, 'KIKOO.JPG', 'image/jpg', 2000
+            )
+        ));
+
+        $response = $this->client->getResponse();
+        $message = trim($crawler->filterXPath('//div')->text());
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(_('Record document has been successfully substitued'), $message);
+    }
+
     public function testRouteChangeThumb()
     {
         $record = static::$records['record_1'];
 
-        $this->client->request('POST', '/tools/chgthumb/', array(
+        $crawler = $this->client->request('POST', '/tools/chgthumb/', array(
             'sbas_id' => $record->get_sbas_id(),
             'record_id' => $record->get_record_id(),
         ), array(
@@ -49,11 +68,8 @@ class ControllerToolsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         ));
 
         $response = $this->client->getResponse();
-
-        $content = $response->getContent();
-
+        $message = trim($crawler->filterXPath('//div')->text());
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertFalse(strpos(_('An error occured'), $content));
-        $this->assertFalse(strpos(_('file is not valid'), $content));
+        $this->assertEquals(_('Record thumbnail has been successfully substitued'), $message);
     }
 }

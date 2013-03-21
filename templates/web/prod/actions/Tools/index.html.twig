@@ -288,7 +288,6 @@
                     <fieldset style='border:1px solid #999;padding:20px;'>
                       <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution HD" %}</b>&nbsp;</legend>
                       <div>
-                        <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
                         <input id='new-hd-file' name="newHD" type="file"/>
                         <br />
                         <label for="CCFNALP" class="checkbox">
@@ -321,7 +320,6 @@
                     <fieldset style='border:1px solid #999;padding:20px;'>
                       <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution SD" %}</b>&nbsp;</legend>
                       <div>
-                        <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
                         <input id='new-sd-file' name="newThumb" type="file" />
                         <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
                         <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
