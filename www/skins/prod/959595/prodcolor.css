@@ -3915,11 +3915,18 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     border: 1px solid #1A1B1B;
     border-bottom: none;
     height: 210px;
+    line-height:210px;
     width: 320px;
     top: 50px;
     left: 380px;
     z-index: 2;
     text-align: center;
+}
+
+#thumbExtractor #thumb_canvas {
+    vertical-align:middle;
+    display:inline-block;
+    line-height: 20px;
 }
 
 #thumbExtractor .action_bar_left {
@@ -3960,6 +3967,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     bottom: 10px;
     right: 60px;
     display: none;
+    line-height: 20px;
 }
 
 #thumbExtractor #thumb_delete_button {
@@ -3969,6 +3977,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     bottom: 10px;
     right: 10px;
     display: none;
+    line-height: 20px;
 }
 
 #thumbExtractor #thumb_delete_button,
