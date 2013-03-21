@@ -56,13 +56,21 @@ function load_order(id)
 				alert(data.datas);
 				return;
 			}
+            var manager = $('#order_manager');
 			display_orders();
-			$('#order_manager').empty().append(data.datas);
-			
-			$('#order_manager .order_list .selectable').bind('click',function(event){
-				
+			manager.empty().append(data.datas);
+
+            $('.captionTips, .captionRolloverTips, .infoTips', manager).tooltip({
+                delay:0
+            });
+            $('.previewTips', manager).tooltip({
+                fixable:true
+            });
+
+			$('.order_list .selectable', manager).bind('click',function(event){
+
 				$this = $(this);
-				
+
 				if(is_ctrl_key(event))
 				{
 					if($(this).hasClass('selected'))
@@ -75,7 +83,7 @@ function load_order(id)
 					if(is_shift_key(event))
 					{
 						var first = false, last = false;
-						$('#order_manager .order_list .selectable').each(function(i,n){
+						$('.order_list .selectable', manager).each(function(i,n){
 							if(last)
 								first = last = false;
 							if($(n).attr('id') == $this.attr('id') || $(n).hasClass('last_selected'))
@@ -83,7 +91,7 @@ function load_order(id)
 								if(first)
 									last = true;
 								first = true;
-								
+
 							}
 							if(first || last)
 								$(n).addClass('selected');
@@ -91,22 +99,22 @@ function load_order(id)
 					}
 					else
 					{
-						$('#order_manager .order_list .selectable.selected').removeClass('selected');
+						$('.order_list .selectable.selected', manager).removeClass('selected');
 						$(this).addClass('selected');
 					}
 				}
-				$('#order_manager .order_list .selectable.last_selected').removeClass('last_selected');
-				
+				$('.order_list .selectable.last_selected', manager).removeClass('last_selected');
+
 				$(this).addClass('last_selected');
 			});
 
-			$('#order_manager button.send').bind('click',function(){
+			$('button.send', manager).bind('click',function(){
 				send_documents(id);
 			});
-			$('#order_manager button.deny').bind('click',function(){
+			$('button.deny', manager).bind('click',function(){
 				deny_documents(id);
 			});
-			$('#order_manager .force_sender').bind('click',function(){
+			$('.force_sender', manager).bind('click',function(){
 				if(confirm('Forcer l\'envoie du document ?'))
 				{
 					var element_id = [];
@@ -123,7 +131,7 @@ function do_send_documents(order_id, elements_ids, force)
 	var cont = $('#order_manager');
 	$('button.deny, button.send', cont).attr('disabled','disabled');
 	$('.activity_indicator', cont).show();
-	
+
 	$.ajax({
 		type: "POST",
 		url: "/prod/prodFeedBack.php",
@@ -158,13 +166,13 @@ function do_send_documents(order_id, elements_ids, force)
 function deny_documents(order_id)
 {
 	var elements = $('#order_manager .order_list .selectable.selected');
-	
+
 	var elements_ids = [];
-	
+
 	elements.each(function(i,n){
 		elements_ids.push($(n).find('input[name=order_element_id]').val());
 	});
-	
+
 	if(elements_ids.length == 0)
 	{
 		alert(language.nodocselected);
@@ -173,7 +181,7 @@ function deny_documents(order_id)
 	var cont = $('#order_manager');
 	$('button.deny, button.send', cont).attr('disabled','disabled');
 	$('.activity_indicator', cont).show();
-		
+
 	$.ajax({
 		type: "POST",
 		url: "/prod/prodFeedBack.php",
@@ -208,13 +216,13 @@ function deny_documents(order_id)
 function send_documents(order_id)
 {
 	var elements = $('#order_manager .order_list .selectable.selected');
-	
+
 	var elements_ids = [];
-	
+
 	elements.each(function(i,n){
 		elements_ids.push($(n).find('input[name=order_element_id]').val());
 	});
-	
+
 	if(elements_ids.length == 0)
 	{
 		alert(language.nodocselected);
