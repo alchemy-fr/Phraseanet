@@ -47,13 +47,13 @@
     {{ form_errors(field) }}
 {% endmacro %}
 
-{% macro checkboxInput (field) %}
+{% macro checkboxInput (field, label = '') %}
     <div class="hidden-phone control-group">
         <div class="controls">
             <label for="{{ field.vars.id }}" class="checkbox">
                 {{  form_widget(field) }}
 
-                {{ field.vars.label }}
+                {{ label | default(field.vars.label) }}
             </label>
         </div>
     </div>
@@ -64,25 +64,20 @@
                     {{  form_widget(field) }}
                 </div>
             </li>
-            <li>{{ field.vars.label }}</li>
+            <li>{{ label | default(field.vars.label) }}</li>
         </ul>
     </div>
 {% endmacro %}
 
 {% macro providerList() %}
     <ul class="unstyled inline provider-list">
+        {% for provider in app['authentication.providers'] %}
         <li>
-            <a href="{{ path('login_authentication_provider_authenticate', { 'providerId' : 'facebook' } ) }}"><img src="/skins/login/img/facebook.png" /></a>
+            <a href="{{ path('login_authentication_provider_authenticate', { 'providerId' : provider.getId() } ) }}">
+                <img src="{{ provider.getIconURI() }}" />
+            </a>
         </li>
-        <li>
-            <a href="#"><img src="/skins/login/img/twitter.png" /></a>
-        </li>
-        <li
-            ><a href="#"><img src="/skins/login/img/google.png" /></a>
-        </li>
-        <li>
-            <a href="#"><img src="/skins/login/img/linkedin.png" /></a>
-        </li>
+        {% endfor %}
     </ul>
 {% endmacro %}
 
@@ -128,7 +123,7 @@
                 <td>
                     <ul class="unstyled">
                         <li class="pseudo one-line">
-                            <b>{{ token.getIdentity().getDisplayName() }}</b>
+                            <b>{{ token.getIdentity().getDisplayName() | default(token.getIdentity().getUserName()) }}</b>
                         </li>
                         <li class="email one-line">
                             {{ token.getIdentity().getEmail() }}

@@ -24,27 +24,10 @@
         <div class="row-fluid">
             <div class="span12">
                 <form name="registerForm" class="authentication-sidebar-form">
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ auth_macro.fieldInput(form.firstName, "registerForm", 'icon-user') }}
-                        </div>
-                    </div>
-
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ auth_macro.fieldInput(form.lastName, "registerForm", 'icon-user') }}
-                        </div>
-                    </div>
 
                     <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.email, "registerForm", 'icon-envelope') }}
-                        </div>
-                    </div>
-
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ auth_macro.fieldInput(form.company, "registerForm", 'icon-briefcase') }}
                         </div>
                     </div>
 
@@ -60,7 +43,7 @@
                                 </a>
                             {% endset %}
 
-                            {{ auth_macro.checkboxInput(form['remember-me']) }}
+                            {{ auth_macro.checkboxInput(form['accept-tou'], label) }}
                         </div>
                     </div>
 
@@ -69,7 +52,7 @@
                     <div class="row-fluid">
                         <div class="span12">
                             <button type="submit" class="btn btn-success btn-trigger">
-                                {% trans "Resquest access" %}
+                                {% trans "Request access" %}
                             </button>
                         </div>
                     </div>

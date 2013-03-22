@@ -84,6 +84,7 @@
             </div>
         </div>
     </div><!-- /sidebar block -->
+    {% if app['authentication.providers'] | count > 0 %}
     <div class="well-large sidebar-block {% if not login.register_enabled(app) and not guest_allowed %}last-child{% endif %}">
         <div class="row-fluid">
             <div class="span12 text-center">
@@ -95,7 +96,8 @@
                 {{ auth_macro.providerList() }}
             </div>
         </div>
-    </div><!-- /sidebar block -->
+    </div>
+    {% endif %}
 
     {% include "login/include/register-link-block.html.twig" with {"login" : login, "last_item" : login.register_enabled(app) and not guest_allowed} %}
     {% include "login/include/guest-access-block.html.twig" with {"guest_allowed" : guest_allowed, "last_item" : guest_allowed} %}

@@ -29,6 +29,7 @@
         </div>
     </div>
 
+    {% if app['authentication.providers'] | count > 0 %}
     <div class="well-large sidebar-block last-child">
         <div class="row-fluid">
             <div class="span12 text-center">
@@ -41,4 +42,5 @@
             </div>
         </div>
     </div>
+    {% endif %}
 {% endblock %}
