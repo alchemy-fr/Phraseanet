@@ -200,7 +200,6 @@ class Tools implements ControllerProviderInterface
                         $success = true;
                         $message = _('Thumbnail has been successfully substitued');
                     } catch (\Exception $e) {
-                        var_dump($e->getMessage());
                         $message = _('file is not valid');
                     }
                 } else {

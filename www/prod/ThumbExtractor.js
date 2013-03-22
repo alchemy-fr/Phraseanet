@@ -14,11 +14,13 @@
       var maxH = elementDomNode.getHeight();
 
       if ('' !== elementDomNode.getAspectRatio()) {
-        var h = Math.round(w * (1 / elementDomNode.getAspectRatio()));
+        var ratio = parseFloat(elementDomNode.getAspectRatio());
+
+        var h = Math.round(w * (1 / ratio));
 
         if (h > maxH) {
             var h = maxH;
-            var w =  Math.round(h * elementDomNode.getAspectRatio());
+            var w =  Math.round(h * ratio);
         }
       } else {
           var h = maxH;
