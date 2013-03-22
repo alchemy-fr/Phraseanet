@@ -131,7 +131,7 @@
               {% set height = record.get_technical_infos(dataH) %}
 
               {% if width and height %}
-                {% set ratio = width / height %}
+                {% set ratio = (width / height)|number_format(2, '.') %}
               {% else %}
                  {% set ratio = '' %}
               {% endif %}
