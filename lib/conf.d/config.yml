@@ -31,6 +31,47 @@ dev:
   border-manager: border_manager
   search-engine: phrasea
   task-manager: task_manager
+  auth-providers:
+    facebook:
+      enabled: false
+      options:
+        app-id: ''
+        secret: ''
+    twitter:
+      enabled: false
+      options:
+        consumer-key: ''
+        consumer-secret: ''
+    google-plus:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
+    github:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
+    viadeo:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
+    linkedin:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
+    registration-fields:
+      -
+        name: company
+        required: true
+      -
+        name: first-name
+        required: true
+      -
+        name: geoname-id
+        required: true
 
 ##############
 # PRODUCTION #
@@ -50,6 +91,37 @@ prod:
   border-manager: border_manager
   search-engine: phrasea
   task-manager: task_manager
+  auth-providers:
+    facebook:
+      enabled: false
+      options:
+        app-id: ''
+        secret: ''
+    twitter:
+      enabled: false
+      options:
+        consumer-key: ''
+        consumer-secret: ''
+    google-plus:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
+    github:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
+    viadeo:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
+    linkedin:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
 
 ##############
 #    TEST    #
@@ -69,4 +141,35 @@ test:
   border-manager: border_manager
   search-engine: phrasea
   task-manager: task_manager
+  auth-providers:
+    facebook:
+      enabled: false
+      options:
+        app-id: ''
+        secret: ''
+    twitter:
+      enabled: false
+      options:
+        consumer-key: ''
+        consumer-secret: ''
+    google-plus:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
+    github:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
+    viadeo:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
+    linkedin:
+      enabled: false
+      options:
+        client-id: ''
+        client-secret: ''
 
