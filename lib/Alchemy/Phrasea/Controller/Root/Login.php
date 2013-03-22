@@ -25,8 +25,9 @@ use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
+use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationWithMappingForm;
 use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
-use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
+use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -34,7 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\FormInterface;
 
 /**
  *
@@ -137,6 +138,11 @@ class Login implements ControllerProviderInterface
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_authentication_provider_mapping');
 
+        $controllers->post('/provider/{providerId}/add-mapping/', $this->call('authenticationDoMapToAccount'))
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_authentication_provider_do_mapping');
+
         $controllers->get('/provider/{providerId}/bind-account/', $this->call('authenticationBindToAccount'))
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
@@ -202,6 +208,34 @@ class Login implements ControllerProviderInterface
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('submit_login_register');
+
+        /**
+         * Register classic form
+         */
+        $controllers->get('/register-classic', function(PhraseaApplication $app, Request $request) {
+
+            $form = $app->form(new PhraseaRegisterForm(
+                $app['registration.optional-fields'], $app['registration.fields']
+            ));
+
+            return $app['twig']->render('login/register-classic.html.twig', array(
+                'form' => $form->createView(),
+                'home_title' => $app['phraseanet.registry']->get('GV_homeTitle'),
+                'login' => new \login(),
+            ));
+        })->bind('login_register_classic');
+
+        $controllers->get('/registration-fields', function(PhraseaApplication $app, Request $request) {
+
+            return $app->json($app['registration.fields']);
+        })->bind('login_registration_fields');
+
+        /**
+         * Register throught providers
+         */
+        $controllers->get('/register-provider', function(PhraseaApplication $app, Request $request) {
+            return $app['twig']->render('login/register-provider.html.twig');
+        })->bind('login_register_provider');
 
         /**
          * Register confirm
@@ -270,7 +304,7 @@ class Login implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/forgot-password/', $this->call('renewPassword'))
+        $controllers->post('/forgot-password/', $this->call('forgotPassword'))
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('submit_login_forgot_password');
@@ -286,33 +320,6 @@ class Login implements ControllerProviderInterface
         $controllers->get('/cgus', function(PhraseaApplication $app, Request $request) {
             return $app['twig']->render('login/cgus.html.twig');
         })->bind('login_cgus');
-
-        /**
-         *
-         */
-        $controllers->get('/renew-password', function(PhraseaApplication $app, Request $request) {
-            $form = $app->form(new PhraseaRenewPasswordForm());
-
-            return $app['twig']->render('login/change-password.html.twig', array(
-                'form' => $form->createView(),
-                'login' => new \login(),
-            ));
-
-        })->bind('login_renew_password');
-
-        /**
-         * Register classic form
-         */
-        $controllers->get('/register-classic', function(PhraseaApplication $app, Request $request) {
-            return $app['twig']->render('login/register-classic.html.twig', array('home_title' => 'blabla'));
-        })->bind('login_register_classic');
-
-        /**
-         * Register throught providers
-         */
-        $controllers->get('/register-provider', function(PhraseaApplication $app, Request $request) {
-            return $app['twig']->render('login/register-provider.html.twig');
-        })->bind('login_register_provider');
 
         return $controllers;
     }
@@ -418,7 +425,7 @@ class Login implements ControllerProviderInterface
      * @param  Request          $request The current request
      * @return RedirectResponse
      */
-    public function renewPassword(PhraseaApplication $app, Request $request)
+    public function forgotPassword(PhraseaApplication $app, Request $request)
     {
         if (null !== $mail = $request->request->get('mail')) {
             try {
@@ -557,76 +564,83 @@ class Login implements ControllerProviderInterface
      */
     public function displayRegisterForm(PhraseaApplication $app, Request $request)
     {
-        $captchaSys = '';
-
-        if ($app['phraseanet.registry']->get('GV_captchas')
-            && $app['phraseanet.registry']->get('GV_captcha_private_key')
-            && $app['phraseanet.registry']->get('GV_captcha_public_key')) {
-
-            require_once __DIR__ . '/../../../../../lib/vendor/recaptcha/recaptchalib.php';
-
-            $captchaSys = '<div style="margin:0;width:330px;">
-            <div id="recaptcha_image" style="margin:10px 0px 5px"></div>
-            <div style="text-align:left;margin:0 0px 5px;width:300px;">
-            <a href="javascript:Recaptcha.reload()" class="link">' . _('login::captcha: obtenir une autre captcha') . '</a>
-            </div>
-            <div style="text-align:left;width:300px;">
-                <span class="recaptcha_only_if_image">' . _('login::captcha: recopier les mots ci dessous') . ' : </span>
-                <input name="recaptcha_response_field" id="recaptcha_response_field" value="" type="text" style="width:180px;"/>
-            </div>' . recaptcha_get_html($app['phraseanet.registry']->get('GV_captcha_public_key')) . '</div>';
+        if (0 < count($app['authentication.providers'])) {
+            return $app['twig']->render('login/register.html.twig', array(
+                'login' => new \login(),
+            ));
+        } else {
+            return $app->redirect($app->path('login_register_classic'));
         }
-
-        $login = new \login();
-        if (false === $login->register_enabled($app)) {
-            return $app->redirect('/login/?notice=no-register-available');
-        }
-
-        $needed = $request->query->get('needed', array());
-
-        foreach ($needed as $fields => $error) {
-            switch ($error) {
-                case 'required-field':
-                    $needed[$fields] = _('forms::ce champ est requis');
-                    break;
-                case 'pass-match':
-                    $needed[$fields] = _('forms::les mots de passe ne correspondent pas');
-                    break;
-                case 'pass-short':
-                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
-                    break;
-                case 'pass-invalid':
-                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
-                    break;
-                case 'email-invalid':
-                    $needed[$fields] = _('forms::l\'email semble invalide');
-                    break;
-                case 'login-short':
-                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
-                    break;
-                case 'login-mail-exists':
-                    $needed[$fields] = _('forms::un utilisateur utilisant ce login existe deja');
-                    break;
-                case 'user-mail-exists':
-                    $needed[$fields] = _('forms::un utilisateur utilisant cette adresse email existe deja');
-                    break;
-                case 'no-collections':
-                    $needed[$fields] = _('You have not made any request for collections');
-                    break;
-            }
-        }
-
-        $arrayVerif = $this->getRegisterFieldConfiguration($app);
-
-        return $app['twig']->render('login/register.html.twig', array(
-            'inscriptions' => giveMeBases($app),
-            'parms'        => $request->query->all(),
-            'needed'       => $needed,
-            'arrayVerif'   => $arrayVerif,
-            'demandes'     => $request->query->get('demand', array()),
-            'lng'            => $app['locale'],
-            'captcha_system' => $captchaSys,
-            'login' => new \login()
-        ));
+//        $captchaSys = '';
+//
+//        if ($app['phraseanet.registry']->get('GV_captchas')
+//            && $app['phraseanet.registry']->get('GV_captcha_private_key')
+//            && $app['phraseanet.registry']->get('GV_captcha_public_key')) {
+//
+//            require_once __DIR__ . '/../../../../../lib/vendor/recaptcha/recaptchalib.php';
+//
+//            $captchaSys = '<div style="margin:0;width:330px;">
+//            <div id="recaptcha_image" style="margin:10px 0px 5px"></div>
+//            <div style="text-align:left;margin:0 0px 5px;width:300px;">
+//            <a href="javascript:Recaptcha.reload()" class="link">' . _('login::captcha: obtenir une autre captcha') . '</a>
+//            </div>
+//            <div style="text-align:left;width:300px;">
+//                <span class="recaptcha_only_if_image">' . _('login::captcha: recopier les mots ci dessous') . ' : </span>
+//                <input name="recaptcha_response_field" id="recaptcha_response_field" value="" type="text" style="width:180px;"/>
+//            </div>' . recaptcha_get_html($app['phraseanet.registry']->get('GV_captcha_public_key')) . '</div>';
+//        }
+//
+//        $login = new \login();
+//        if (false === $login->register_enabled($app)) {
+//            return $app->redirect('/login/?notice=no-register-available');
+//        }
+//
+//        $needed = $request->query->get('needed', array());
+//
+//        foreach ($needed as $fields => $error) {
+//            switch ($error) {
+//                case 'required-field':
+//                    $needed[$fields] = _('forms::ce champ est requis');
+//                    break;
+//                case 'pass-match':
+//                    $needed[$fields] = _('forms::les mots de passe ne correspondent pas');
+//                    break;
+//                case 'pass-short':
+//                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
+//                    break;
+//                case 'pass-invalid':
+//                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
+//                    break;
+//                case 'email-invalid':
+//                    $needed[$fields] = _('forms::l\'email semble invalide');
+//                    break;
+//                case 'login-short':
+//                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
+//                    break;
+//                case 'login-mail-exists':
+//                    $needed[$fields] = _('forms::un utilisateur utilisant ce login existe deja');
+//                    break;
+//                case 'user-mail-exists':
+//                    $needed[$fields] = _('forms::un utilisateur utilisant cette adresse email existe deja');
+//                    break;
+//                case 'no-collections':
+//                    $needed[$fields] = _('You have not made any request for collections');
+//                    break;
+//            }
+//        }
+//
+//        $arrayVerif = $this->getRegisterFieldConfiguration($app);
+//
+//        return $app['twig']->render('login/register.html.twig', array(
+//            'inscriptions' => giveMeBases($app),
+//            'parms'        => $request->query->all(),
+//            'needed'       => $needed,
+//            'arrayVerif'   => $arrayVerif,
+//            'demandes'     => $request->query->get('demand', array()),
+//            'lng'            => $app['locale'],
+//            'captcha_system' => $captchaSys,
+//            'login' => new \login()
+//        ));
     }
 
     /**
@@ -652,9 +666,9 @@ class Login implements ControllerProviderInterface
         }
 
         if (!$captchaOK) {
-            return $app->redirect($app['url_generator']->generate('login_register', array(
-                'error' => 'captcha'
-            )));
+            $app->requireCaptcha();
+
+            return $app->redirect($app->path('login_register'));
         }
 
         $arrayVerif = $this->getRegisterFieldConfiguration($app);
@@ -931,17 +945,14 @@ class Login implements ControllerProviderInterface
         ));
 
         return $app['twig']->render('login/index.html.twig', array(
-                'module_name'    => _('Accueil'),
-                'redirect'       => ltrim($request->query->get('redirect'), '/'),
-                'recaptcha_display' => false,
-//                'logged_out'     => $request->query->get('logged_out'),
-//                'captcha_system' => $captchaSys,
-                'login'          => new \login(),
-                'feeds'          => $feeds,
-            'guest_allowed' => \phrasea::guest_allowed($app),
-//                'display_layout' => $app['phraseanet.registry']->get('GV_home_publi'),
-                'form'           => $form->createView(),
-            ));
+            'module_name'       => _('Accueil'),
+            'redirect'          => ltrim($request->query->get('redirect'), '/'),
+            'recaptcha_display' => $app->isCaptchaRequired(),
+            'login'             => new \login(),
+            'feeds'             => $feeds,
+            'guest_allowed'     => \phrasea::guest_allowed($app),
+            'form'              => $form->createView(),
+        ));
     }
 
     /**
@@ -953,87 +964,12 @@ class Login implements ControllerProviderInterface
      */
     public function authenticate(PhraseaApplication $app, Request $request)
     {
-        $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request));
-
         $form = $app->form(new PhraseaAuthenticationForm());
-        $form->bind($request);
-
-        if (!$form->isValid()) {
-            $app->addFlash('error', _('An unexpected error occured during authentication process, please contact an admin'));
-
-            return $app->redirect($app->path('homepage'));
-        }
-
-        $params = array();
-
-        if (null !== $redirect = $request->get('redirect')) {
-            $params['redirect'] = ltrim($redirect, '/');
-        }
-
-        try {
-            $usr_id = $app['auth.native']->isValid($request->request->get('login'), $request->request->get('password'), $request);
-        } catch (RequireCaptchaException $e) {
-            $params = array_merge($params, array('error' => 'captcha'));
-
+        $redirector = function (array $params = array()) use ($app) {
             return $app->redirect($app->path('homepage', $params));
-        } catch (AccountLockedException $e) {
-            $params = array_merge($params, array(
-                'error' => 'account-locked',
-                'usr_id' => $e->getUsrId()
-            ));
+        };
 
-            return $app->redirect($app->path('homepage', $params));
-        }
-
-        if (!$usr_id) {
-            $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
-
-            return $app->redirect($app->path('homepage', $params));
-        }
-
-        $user = \User_Adapter::getInstance($usr_id, $app);
-
-        $session = $this->postAuthProcess($app, $user);
-
-        $response = $this->generateAuthResponse($app['browser'], $request->request->get('redirect'));
-        $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
-
-        $user->ACL()->inject_rights();
-
-        if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
-            if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
-                if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
-
-                    $repo = $app['EM']->getRepository('Entities\Basket');
-                    $baskets = $repo->findBy(array('usr_id' => $inviteUsrId));
-
-                    foreach ($baskets as $basket) {
-                        $basket->setUsrId($user->get_id());
-                        $app['EM']->persist($basket);
-                    }
-                }
-            }
-        }
-
-
-        if ($request->request->get('remember-me') == '1') {
-            $nonce = \random::generatePassword(16);
-            $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
-
-            $token = $app['auth.password-encoder']->encodePassword($string, $nonce);
-
-            $session->setToken($token)
-                ->setNonce($nonce);
-            $cookie = new Cookie('persistent', $token);
-            $response->headers->setCookie($cookie);
-        }
-
-        $event = new PostAuthenticate($request, $response);
-        $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
-
-        $response = $event->getResponse();
-
-        return $response;
+        return $this->doAuthentication($app, $request, $form, $redirector);
     }
 
     public function authenticateAsGuest(PhraseaApplication $app, Request $request)
@@ -1139,18 +1075,14 @@ class Login implements ControllerProviderInterface
 
     public function authenticateWithProvider(PhraseaApplication $app, Request $request, $providerId)
     {
-        $provider = $app['authentication.providers']->get($providerId);
+        $provider = $this->findProvider($app, $providerId);
 
         return $provider->authenticate($request->query->all());
     }
 
     public function authenticationCallback(PhraseaApplication $app, Request $request, $providerId)
     {
-        try {
-            $provider = $app['authentication.providers']->get($providerId);
-        } catch (InvalidArgumentException $e) {
-            throw new NotFoundHttpException('The requested provider does not exist');
-        }
+        $provider = $this->findProvider($app, $providerId);
 
         // triggers what's necessary
         try {
@@ -1172,7 +1104,7 @@ class Login implements ControllerProviderInterface
             ));
 
         if ($userAuthProvider) {
-            $app['authentication']->openAccount($userAuthProvider->getUser());
+            $app['authentication']->openAccount($userAuthProvider->getUser($app));
             $target = $request->query->get('redirect');
 
             if (!$target) {
@@ -1197,47 +1129,192 @@ class Login implements ControllerProviderInterface
 
     public function authenticationMapping(PhraseaApplication $app, Request $request, $providerId)
     {
-        try {
-            $provider = $app['authentication.providers']->get($providerId);
-        } catch (InvalidArgumentException $e) {
-            throw new NotFoundHttpException('The requested provider does not exist');
-        }
+        $provider = $this->findProvider($app, $providerId);
 
         $token = $provider->getToken();
 
+        $suggestion = $app['authentication.suggestion-finder']->find($token);
+
+        $form = $app->form(new PhraseaAuthenticationWithMappingForm(), array(
+            'login' => $suggestion->get_login(),
+        ));
+
         return $app['twig']->render('login/providers/mapping.html.twig', array(
+            'provider'   => $provider,
+            'recaptcha_display' => $app->isCaptchaRequired(),
+            'login'      => new \login(),
+            'form'       => $form->createView(),
             'token'      => $token,
-            'suggestion' => $app['authentication.suggestion-finder']->find($token),
+            'suggestion' => $suggestion,
         ));
     }
 
     public function authenticationBindToAccount(PhraseaApplication $app, Request $request, $providerId)
     {
+        $provider = $this->findProvider($app, $providerId);
+
+        $token = $provider->getToken();
+
+        $form = $app->form(new PhraseaAuthenticationForm(), array(
+        ));
+
+        return $app['twig']->render('login/providers/bind.html.twig', array(
+            'login'      => new \login(),
+            'recaptcha_display' => $app->isCaptchaRequired(),
+            'provider'   => $provider,
+            'form'       => $form->createView(),
+            'token'      => $provider->getToken(),
+        ));
+    }
+
+    private function findProvider(PhraseaApplication $app, $providerId)
+    {
         try {
-            $provider = $app['authentication.providers']->get($providerId);
+            return $app['authentication.providers']->get($providerId);
         } catch (InvalidArgumentException $e) {
             throw new NotFoundHttpException('The requested provider does not exist');
         }
+    }
 
-        return $app['twig']->render('login/providers/bind.html.twig', array(
-            'token'      => $provider->getToken()
-        ));
+    public function authenticationDoMapToAccount(PhraseaApplication $app, Request $request, $providerId)
+    {
+        $provider = $this->findProvider($app, $providerId);
+
+        $form = $app->form(new PhraseaAuthenticationWithMappingForm());
+
+        $redirector = function (array $params = array()) use ($app, $providerId) {
+            $params = array_merge($params, array(
+                'providerId' => $providerId,
+            ));
+
+            return $app->redirect($app->path('login_authentication_provider_mapping', $params));
+        };
+
+        $response = $this->doAuthentication($app, $request, $form, $redirector);
+
+        $usrAuthProvider = new \Entities\UsrAuthProvider();
+        $usrAuthProvider->setDistantId($provider->getToken()->getId());
+        $usrAuthProvider->setProvider($provider->getId());
+        $usrAuthProvider->setUsrId($app['authentication']->getUser()->get_id());
+
+        $app['EM']->persist($usrAuthProvider);
+        $app['EM']->flush();
+
+        return $response;
     }
 
     public function authenticationDoBindToAccount(PhraseaApplication $app, Request $request, $providerId)
     {
-        if (!$app['authentication.phrasea']->verify($request->query->get('username'), $request->query->get('password'))) {
-//            $app
+        $provider = $this->findProvider($app, $providerId);
+
+        $form = $app->form(new PhraseaAuthenticationForm());
+
+        $redirector = function (array $params = array()) use ($app, $providerId) {
+            $params = array_merge($params, array(
+                'providerId' => $providerId,
+            ));
+
+            return $app->redirect($app->path('login_authentication_provider_mapping', $params));
+        };
+
+        $response = $this->doAuthentication($app, $request, $form, $redirector);
+
+        $usrAuthProvider = new \Entities\UsrAuthProvider();
+        $usrAuthProvider->setDistantId($provider->getToken()->getId());
+        $usrAuthProvider->setProvider($provider->getId());
+        $usrAuthProvider->setUsrId($app['authentication']->getUser()->get_id());
+
+        $app['EM']->persist($usrAuthProvider);
+        $app['EM']->flush();
+
+        return $response;
+    }
+
+    private function doAuthentication(PhraseaApplication $app, Request $request, FormInterface $form, $redirector)
+    {
+        if (!is_callable($redirector)) {
+            throw new InvalidArgumentException('Redirector should be callable');
         }
-//        try {
-//            $provider = $app['authentication.providers']->get($providerId);
-//        } catch (InvalidArgumentException $e) {
-//            throw new NotFoundHttpException('The requested provider does not exist');
-//        }
-//
-//        return $app['twig']->render('login/providers/bind.html.twig', array(
-//            'token'      => $provider->getToken()
-//        ));
+
+        $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request));
+
+        $form->bind($request);
+
+        if (!$form->isValid()) {
+            $app->addFlash('error', _('An unexpected error occured during authentication process, please contact an admin'));
+
+            return call_user_func($redirector);
+        }
+
+        $params = array();
+
+        if (null !== $redirect = $request->get('redirect')) {
+            $params['redirect'] = ltrim($redirect, '/');
+        }
+
+        try {
+            $usr_id = $app['auth.native']->isValid($request->request->get('login'), $request->request->get('password'), $request);
+        } catch (RequireCaptchaException $e) {
+            $app->requireCaptcha();
+
+            return call_user_func($redirector, $params);
+        } catch (AccountLockedException $e) {
+            $params = array_merge($params, array(
+                'error' => 'account-locked',
+                'usr_id' => $e->getUsrId()
+            ));
+
+            return call_user_func($redirector, $params);
+        }
+
+        if (!$usr_id) {
+            $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
+
+            return call_user_func($redirector, $params);
+        }
+
+        $user = \User_Adapter::getInstance($usr_id, $app);
+
+        $session = $this->postAuthProcess($app, $user);
+
+        $response = $this->generateAuthResponse($app['browser'], $request->request->get('redirect'));
+        $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
+
+        $user->ACL()->inject_rights();
+
+        if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
+            if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
+                if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
+
+                    $repo = $app['EM']->getRepository('Entities\Basket');
+                    $baskets = $repo->findBy(array('usr_id' => $inviteUsrId));
+
+                    foreach ($baskets as $basket) {
+                        $basket->setUsrId($user->get_id());
+                        $app['EM']->persist($basket);
+                    }
+                }
+            }
+        }
+
+        if ($request->request->get('remember-me') == '1') {
+            $nonce = \random::generatePassword(16);
+            $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
+
+            $token = $app['auth.password-encoder']->encodePassword($string, $nonce);
+
+            $session->setToken($token)
+                ->setNonce($nonce);
+            $cookie = new Cookie('persistent', $token);
+            $response->headers->setCookie($cookie);
+        }
+
+        $event = new PostAuthenticate($request, $response, $user);
+        $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+
+        $response = $event->getResponse();
+
+        return $response;
     }
 
     /**
