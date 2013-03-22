@@ -40,6 +40,7 @@ class LessCompile extends Command
         $output->writeln('Building Assets...');
 
         $failures = 0;
+        $errors = array();
         foreach ($files as $buildFile => $lessFile) {
             $output->writeln(sprintf('Building %s', basename($lessFile)));
             $builder = ProcessBuilder::create(array(
@@ -52,6 +53,7 @@ class LessCompile extends Command
 
             if (!$process->isSuccessful()) {
                 $failures++;
+                $errors[] = $process->getErrorOutput();
             }
             file_put_contents($buildFile, $process->getOutput());
         }
@@ -61,7 +63,7 @@ class LessCompile extends Command
             return 0;
         }
 
-        $output->writeln(sprintf('<error>%d errors occured during the build</error>', $failures));
+        $output->writeln(sprintf('<error>%d errors occured during the build %s</error>', $failures, implode(', ', $errors)));
 
         return 1;
     }
