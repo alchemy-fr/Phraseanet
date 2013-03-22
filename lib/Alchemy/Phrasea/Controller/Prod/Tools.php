@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use DataURI;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -113,27 +114,29 @@ class Tools implements ControllerProviderInterface
 
         $controllers->post('/hddoc/', function(Application $app, Request $request) {
             $success = false;
-            $errorMessage = "";
-            $fileName = null;
+            $message = _('An error occured');
 
             if ($file = $request->files->get('newHD')) {
 
                 if ($file->isValid()) {
 
                     $fileName = $file->getClientOriginalName();
-                    $size = $file->getClientSize();
-
-                    $tempoFile = tempnam(sys_get_temp_dir(), 'substit');
-                    unlink($tempoFile);
-                    mkdir($tempoFile);
-                    $tempoFile = $tempoFile . DIRECTORY_SEPARATOR . $fileName;
-                    copy($file->getPathname(), $tempoFile);
 
                     try {
+
+                        $tempoDir = tempnam(sys_get_temp_dir(), 'substit');
+                        unlink($tempoDir);
+                        mkdir($tempoDir);
+                        $tempoFile = $tempoDir . DIRECTORY_SEPARATOR . $fileName;
+
+                        if (false === rename($file->getPathname(), $tempoFile)) {
+                            throw new RuntimeException('Error while renaming file');
+                        }
+
                         $record = new \record_adapter(
-                                $app,
-                                $request->request->get('sbas_id')
-                                , $request->request->get('record_id')
+                            $app,
+                            $request->get('sbas_id'),
+                            $request->get('record_id')
                         );
 
                         $media = $app['mediavorus']->guess($tempoFile);
@@ -144,72 +147,73 @@ class Tools implements ControllerProviderInterface
                             $record->set_original_name($fileName);
                             $app['phraseanet.SE']->updateRecord($record);
                         }
-
+                        unlink($tempoFile);
+                        rmdir($tempoDir);
                         $success = true;
+                        $message = _('Document has been successfully substitued');
                     } catch (\Exception $e) {
-                        $errorMessage = $e->getMessage();
+                        $message = _('file is not valid');
                     }
-
-                    unlink($tempoFile);
-                    rmdir(dirname($tempoFile));
-                    unlink($file->getPathname());
                 } else {
-                    $errorMessage = _('file is not valid');
+                    $message = _('file is not valid');
                 }
+            } else {
+                $app->abort(400, 'Missing file parameter');
             }
 
-            $template = 'prod/actions/Tools/iframeUpload.html.twig';
-            $var = array(
-                'success'      => $success
-                , 'fileName'     => $fileName
-                , 'errorMessage' => $errorMessage
-            );
-
-            return $app['twig']->render($template, $var);
+            return $app['twig']->render('prod/actions/Tools/iframeUpload.html.twig', array(
+                'success'   => $success,
+                'message'   => $message,
+            ));
         });
 
         $controllers->post('/chgthumb/', function(Application $app, Request $request) {
             $success = false;
-            $errorMessage = "";
+            $message = _('An error occured');
 
             if ($file = $request->files->get('newThumb')) {
 
-                $size = $file->getClientSize();
-                $fileName = $file->getClientOriginalName();
-
-                if ($size && $fileName && $file->isValid()) {
+                if ($file->isValid()) {
                     try {
-                        $rootPath = $app['phraseanet.registry']->get('GV_RootPath');
-                        $tmpFile = $rootPath . 'tmp/' . $fileName;
-                        rename($file->getPathname(), $tmpFile);
+                        $fileName = $file->getClientOriginalName();
+                        $tempoDir = tempnam(sys_get_temp_dir(), 'substit');
+                        unlink($tempoDir);
+                        mkdir($tempoDir);
+                        $tempoFile = $tempoDir . DIRECTORY_SEPARATOR . $fileName;
+
+                        if (false === rename($file->getPathname(), $tempoFile)) {
+                            throw new RuntimeException('Error while renaming file');
+                        }
 
                         $record = new \record_adapter(
-                                $app,
-                                $request->request->get('sbas_id')
-                                , $request->request->get('record_id')
+                            $app,
+                            $request->get('sbas_id'),
+                            $request->get('record_id')
                         );
 
-                        $media = $app['mediavorus']->guess($tmpFile);
+                        $media = $app['mediavorus']->guess($tempoFile);
 
                         $record->substitute_subdef('thumbnail', $media, $app);
 
+                        unlink($tempoFile);
+                        rmdir($tempoDir);
                         $success = true;
+                        $message = _('Thumbnail has been successfully substitued');
                     } catch (\Exception $e) {
-                        $errorMessage = $e->getMessage();
+                        var_dump($e->getMessage());
+                        $message = _('file is not valid');
                     }
                 } else {
-                    $errorMessage = _('file is not valid');
+                    $message = _('file is not valid');
                 }
-
-                $template = 'prod/actions/Tools/iframeUpload.html.twig';
-                $var = array(
-                    'success'      => $success
-                    , 'fileName'     => $fileName
-                    , 'errorMessage' => $errorMessage
-                );
-
-                return $app['twig']->render($template, $var);
+            } else {
+                $app->abort(400, 'Missing file parameter');
             }
+
+            return $app['twig']->render('prod/actions/Tools/iframeUpload.html.twig', array(
+                'success'   => $success,
+                'message'   => $message,
+            ));
         });
 
         $controllers->post('/thumb-extractor/confirm-box/', function(Application $app, Request $request) {

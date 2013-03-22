@@ -57,7 +57,7 @@
                         </a>
                     </li>
                 {% endif %}
-                {% if selectionLength == 1 and app['phraseanet.registry'].get('GV_seeOngChgDoc') %}
+                {% if selectionLength == 1 and (app['phraseanet.registry'].get('GV_seeOngChgDoc') or app['phraseanet.registry'].get('GV_seeNewThumb')) %}
                     <li>
                         <a href="#substitution">
                             {% trans "substitution" %}
@@ -73,7 +73,7 @@
                 {% endif %}
             </ul>
         </div>
-        {# subef section #}
+        {# subdef section #}
         <div id="subdefs" class="tabBox">
             <form id="new-img-form" action="/prod/tools/image/" method="post">
                 <fieldset style='border:1px solid #999; padding:20px;'>
@@ -124,7 +124,19 @@
             <div class="PNB frame_video">
 
               {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
-              <video id="thumb_video" controls="" preload="auto">
+              {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
+              {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
+
+              {% set width = record.get_technical_infos(dataW) %}
+              {% set height = record.get_technical_infos(dataH) %}
+
+              {% if width and height %}
+                {% set ratio = width / height %}
+              {% else %}
+                 {% set ratio = '' %}
+              {% endif %}
+
+              <video id="thumb_video" controls="" preload="auto" data-ratio="{{ ratio }}">
                 {% for subdef in previewHtml5 %}
                 <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}" />
                 {% endfor %}
@@ -150,7 +162,7 @@
                 <img src="/skins/prod/ThumbExtractor/delete.png" />
               </div>
               <p id='thumb_info'>{% trans 'To take a screenshot click on camera' %}</p>
-              <canvas id="thumb_canvas" >
+              <canvas id="thumb_canvas">
               </canvas>
             </div>
             <div class="PNB action_bar_right">
@@ -257,70 +269,72 @@
     {% endif %}
 
     {# hd sub section #}
-    {% if selectionLength == 1 %}
-      {% for record in records %}
+    {% if selectionLength == 1 and (app['phraseanet.registry'].get('GV_seeOngChgDoc') or app['phraseanet.registry'].get('GV_seeNewThumb')) %}
+      {% for record in selection %}
         <div id="substitution" class="tabBox">
 
-         {% if app['phraseanet.registry'].get('GV_seeOngChgDoc') %}
-            <div id="substitution-hd">
-              <form
-                name ="formchgHD"
-                action="/prod/tools/hddoc/"
-                enctype="multipart/form-data"
-                method="post"
-                target="uploadHdsub">
+         {% if "unknown" == record.get_type() %}
+            <i class="icon-warning-sign icon-white"></i>{% trans "Substitution is not possible for this kind of record" %}
+         {% else %}
+            {% if app['phraseanet.registry'].get('GV_seeOngChgDoc') %}
+                <div id="substitution-hd">
+                  <form
+                    name ="formchgHD"
+                    action="/prod/tools/hddoc/"
+                    enctype="multipart/form-data"
+                    method="post"
+                    target="uploadHdsub">
 
-                <fieldset style='border:1px solid #999;padding:20px;'>
-                  <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution HD" %}</b>&nbsp;</legend>
-                  <div>
-                    <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
-                    <input id='new-hd-file' name="newHD" type="file" />
-                    <br />
-                    <label for="CCFNALP" class="checkbox">
-                        <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
-                        {% trans "mettre a jour le nom original de fichier apres substitution"%}
-                    </label>
-                    <input type="hidden" name="ACT" value="SEND" />
-                    <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}"/>
-                    <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
-                    <div class="load"></div>
-                  </div>
-                </fieldset>
-                <div style='text-align:right;padding-top:10px;'>
-                  <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
-                  <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+                    <fieldset style='border:1px solid #999;padding:20px;'>
+                      <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution HD" %}</b>&nbsp;</legend>
+                      <div>
+                        <input id='new-hd-file' name="newHD" type="file"/>
+                        <br />
+                        <label for="CCFNALP" class="checkbox">
+                            <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
+                            {% trans "mettre a jour le nom original de fichier apres substitution"%}
+                        </label>
+                        <input type="hidden" name="ACT" value="SEND" />
+                        <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}"/>
+                        <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
+                        <div class="load"></div>
+                      </div>
+                    </fieldset>
+                    <div style='text-align:right;padding-top:10px;'>
+                      <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
+                      <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+                    </div>
+                  </form>
+                  <div class='resultAction'></div>
                 </div>
-              </form>
-              <div class='resultAction'></div>
-            </div>
-          {% endif %}
+              {% endif %}
 
-          {% if app['phraseanet.registry'].get('GV_seeNewThumb') %}
-            <div id="substitution-sd">
-              <form
-                name="formchgHD"
-                action="/prod/tools/chgthumb/"
-                enctype="multipart/form-data"
-                method="post"
-                target="uploadHdsub">
-                <fieldset style='border:1px solid #999;padding:20px;'>
-                  <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution SD" %}</b>&nbsp;</legend>
-                  <div>
-                    <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
-                    <input id='new-sd-file' name="newThumb" type="file" />
-                    <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
-                    <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
-                    <div class="load"></div>
-                  </div>
-                </fieldset>
-                <div style='text-align:right;padding-top:10px;'>
-                  <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
-                  <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+              {% if app['phraseanet.registry'].get('GV_seeNewThumb') %}
+                <div id="substitution-sd">
+                  <form
+                    name="formchgHD"
+                    action="/prod/tools/chgthumb/"
+                    enctype="multipart/form-data"
+                    method="post"
+                    target="uploadHdsub">
+                    <fieldset style='border:1px solid #999;padding:20px;'>
+                      <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution SD" %}</b>&nbsp;</legend>
+                      <div>
+                        <input id='new-sd-file' name="newThumb" type="file" />
+                        <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
+                        <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
+                        <div class="load"></div>
+                      </div>
+                    </fieldset>
+                    <div style='text-align:right;padding-top:10px;'>
+                      <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
+                      <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+                    </div>
+                  </form>
+                  <div class='resultAction'></div>
                 </div>
-              </form>
-              <div class='resultAction'></div>
-            </div>
-          {% endif %}
+              {% endif %}
+         {% endif %}
         </div>
       {% endfor %}
     {% endif %}

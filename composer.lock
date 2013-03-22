@@ -599,14 +599,17 @@
             "require-dev": {
                 "sami/sami": "dev-master"
             },
-            "time": "2012-12-13 18:31:18",
+            "suggest": {
+                "ext-gd": "to use the GD implementation",
+                "ext-gmagick": "to use the Gmagick implementation",
+                "ext-imagick": "to use the Imagick implementation"
+            },
             "type": "library",
             "autoload": {
                 "psr-0": {
                     "Imagine": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -620,11 +623,12 @@
             "description": "Image processing for PHP 5.3",
             "homepage": "http://imagine.readthedocs.org/",
             "keywords": [
-                "image manipulation",
-                "image processing",
                 "drawing",
-                "graphics"
-            ]
+                "graphics",
+                "image manipulation",
+                "image processing"
+            ],
+            "time": "2013-03-21 10:11:30"
         },
         {
             "name": "knplabs/knp-snappy",
@@ -738,13 +742,14 @@
             ],
             "description": "An Object Oriented wrapper for easy multimedia conversion, based on Imagine, FFMpeg, SwfTools, Unoconv and other libs",
             "keywords": [
-                "image processing",
-                "image",
                 "audio",
-                "video processing",
+                "audio processing",
+                "image",
+                "image processing",
                 "video",
-                "audio processing"
-            ]
+                "video processing"
+            ],
+            "time": "2013-03-21 09:21:45"
         },
         {
             "name": "mediavorus/mediavorus",

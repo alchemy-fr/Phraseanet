@@ -39,6 +39,10 @@
     },
     "repositories": [
     {
+        "type": "git",
+        "url":  "https://github.com/romainneutron/Imagine.git"
+    },
+    {
         "type" : "git",
         "url"  : "https://github.com/winmillwill/BadFaith"
     },

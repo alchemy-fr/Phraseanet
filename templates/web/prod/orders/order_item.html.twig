@@ -77,6 +77,11 @@
                                 <img style="cursor:help;" src="/skins/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
                             {% endif %}
                         {% endif %}
+                        <div style="position:absolute;bottom:4px;right:4px;">
+                            <img class="infoTips" tooltipsrc="/prod/tooltip/tc_datas/{{element.get_sbas_id()}}/{{element.get_record_id()}}/" src="/skins/icons/info.gif"/>
+                            <div tooltipsrc="/prod/tooltip/preview/{{element.get_sbas_id()}}/{{element.get_record_id()}}/" class="previewTips"></div>
+                            <div tooltipsrc="/prod/tooltip/caption/{{element.get_sbas_id()}}/{{element.get_record_id()}}/preview/" class="captionRolloverTips"></div>
+                        </div>
                         <input type="hidden" name="order_element_id" value="{{order_element_id}}"/>
                     </div>
                 </li>
@@ -153,6 +158,13 @@ $(document).ready(function(){
 
         $('.order_list .selectable.last_selected', dialog.getDomElement()).removeClass('last_selected');
         $this.addClass('last_selected');
+    });
+
+    $('.captionTips, .captionRolloverTips, .infoTips', dialog.getDomElement()).tooltip({
+        delay:0
+    });
+    $('.previewTips', dialog.getDomElement()).tooltip({
+        fixable:true
     });
 
     $('button.send', dialog.getDomElement()).bind('click',function(){

@@ -184,6 +184,59 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         }
     }
 
+    public function testSearch_withOffset()
+    {
+        $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $result = $this->object->search_records($request);
+        $this->assertEquals(200, $result->get_http_code());
+        $this->assertEquals('application/json', $result->get_content_type());
+        $this->assertTrue(is_array(json_decode($result->format(), true)));
+
+        $data = json_decode($result->format(), true);
+
+        if ($data['response']['total_results'] < 2) {
+            $this->markTestSkipped('Not enough data to test');
+        }
+
+        $total = $data['response']['total_results'];
+
+        $request = new Request(array(
+            'offset_start' => 0,
+            'per_page' => 1,
+        ), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $resultData1 = $this->object->search_records($request);
+
+        $data = json_decode($resultData1->format(), true);
+
+        $this->assertCount(1, $data['response']['results']);
+        $result1 = array_pop($data['response']['results']);
+
+        $request = new Request(array(
+            'offset_start' => 1,
+            'per_page' => 1,
+        ), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $resultData2 = $this->object->search_records($request);
+
+        $data = json_decode($resultData2->format(), true);
+
+        $this->assertCount(1, $data['response']['results']);
+        $result2 = array_pop($data['response']['results']);
+
+        // item at offset #0 is different than offset at item #1
+        $this->assertNotEquals($result1['record_id'], $result2['record_id']);
+
+        // last item is last item
+        $request = new Request(array(
+            'offset_start' => $total - 1,
+            'per_page' => 10,
+        ), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+        $resultData = $this->object->search_records($request);
+
+        $data = json_decode($resultData->format(), true);
+
+        $this->assertCount(1, $data['response']['results']);
+    }
+
     public function testSearch_recordsWithStories()
     {
         $auth = new \Session_Authentication_None(self::$DI['user']);
