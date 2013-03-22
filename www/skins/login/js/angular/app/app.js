@@ -67,6 +67,7 @@ function passwordChangeFormCtrl($scope) {
     $scope.isSubmitted = false;
 
     $scope.$watch('passwordChangeForm', function() {
+        $scope.passwordChangeForm.oldPassword.errors = {'filled' : true, 'valid' : true};
         $scope.passwordChangeForm.password.errors = {'filled' : true, 'valid' : true};
         $scope.passwordChangeForm.passwordConfirm.errors = {'filled' : true, 'valid' : true};
     });
@@ -75,6 +76,7 @@ function passwordChangeFormCtrl($scope) {
         $scope.$broadcast('event:force-model-update');
 
         if (true === $scope.passwordChangeForm.$valid) {
+            $scope.passwordChangeForm.oldPassword.errors = {'filled' : true, 'valid' : true};
             $scope.passwordChangeForm.password.errors = {'filled' : true, 'valid' : true};
             $scope.passwordChangeForm.passwordConfirm.errors = {'filled' : true, 'valid' : true};
 

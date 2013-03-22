@@ -19,8 +19,16 @@ class PhraseaRenewPasswordForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->add('oldPassword', 'password', array(
+            'label' => _('Current password'),
+            'required' => true,
+            'constraints' => array(
+                new Assert\NotBlank()
+            )
+        ));
+
         $builder->add('password', 'password', array(
-            'label' => _('Password'),
+            'label' => _('New password'),
             'required' => true,
             'constraints' => array(
                 new Assert\NotBlank()
@@ -28,7 +36,7 @@ class PhraseaRenewPasswordForm extends AbstractType
         ));
 
         $builder->add('passwordConfirm', 'password', array(
-            'label' => _('Password'),
+            'label' => _('New password (confirmation)'),
             'required' => true,
             'constraints' => array(
                 new Assert\NotBlank()

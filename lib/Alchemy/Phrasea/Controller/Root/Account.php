@@ -16,6 +16,7 @@ use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
+use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -35,6 +36,7 @@ class Account implements ControllerProviderInterface
 
         $controllers->before(function() use ($app) {
             $app['firewall']->requireAuthentication();
+            $app['twig.form.templates'] = array('login/common/form_div_layout.html.twig');
         });
 
         /**
@@ -155,22 +157,8 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/reset-password/', $this->call('resetPassword'))
+        $controllers->match('/reset-password/', $this->call('resetPassword'))
             ->bind('reset_password');
-
-        /**
-         * Do set a new password
-         *
-         * name         : reset_password
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/reset-password/', $this->call('renewPassword'))
-            ->bind('do_reset_password');
 
         /**
          * Give account open sessions
@@ -233,23 +221,39 @@ class Account implements ControllerProviderInterface
      */
     public function resetPassword(Application $app, Request $request)
     {
-        if (null !== $passwordMsg = $request->query->get('pass-error')) {
-            switch ($passwordMsg) {
-                case 'pass-match':
-                    $passwordMsg = _('forms::les mots de passe ne correspondent pas');
-                    break;
-                case 'pass-short':
-                    $passwordMsg = _('forms::la valeur donnee est trop courte');
-                    break;
-                case 'pass-invalid':
-                    $passwordMsg = _('forms::la valeur donnee contient des caracteres invalides');
-                    break;
+        $form = $app->form(new PhraseaRenewPasswordForm());
+
+        if ('POST' === $request->getMethod()) {
+            $form->bind($request);
+
+            if($form->isValid()) {
+                $password = $request->request->get('password');
+                $passwordConfirm = $request->request->get('passwordConfirm');
+
+                $user = $app['authentication']->getUser();
+
+                if ($password !== $passwordConfirm) {
+                    $app->addFlash('error', _('forms::les mots de passe ne correspondent pas'));
+                } elseif (strlen(trim($password)) < 5) {
+                    $app->addFlash('error', _('forms::la valeur donnee est trop courte'));
+                } elseif (trim($password) != str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
+                    $app->addFlash('error', _('forms::la valeur donnee contient des caracteres invalides'));
+                } elseif ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $request->request->get('oldPassword'), $user->get_nonce())) {
+                    $user->set_password($passwordConfirm);
+                    $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
+                    return $app->redirect($app->path('account'));
+                } else {
+                    $app->addFlash('error', _('Password update failed'));
+                }
+
+                return $app->redirect($app->path('reset_password'));
             }
         }
 
-        return $app['twig']->render('account/reset-password.html.twig', array(
-                    'passwordMsg' => $passwordMsg
-                ));
+        return $app['twig']->render('login/change-password.html.twig', array(
+            'form' => $form->createView(),
+            'login' => new \login(),
+        ));
     }
 
     /**
@@ -358,36 +362,6 @@ class Account implements ControllerProviderInterface
             'noticeMsg' => $noticeMsg,
             'updateMsg' => $updateMsg,
         ));
-    }
-
-    /**
-     * Submit the new password
-     *
-     * @param  Application      $app     A Silex application where the controller is mounted on
-     * @param  Request          $request The current request
-     * @return RedirectResponse
-     */
-    public function renewPassword(Application $app, Request $request)
-    {
-        if ((null !== $password = $request->request->get('form_password')) && (null !== $passwordConfirm = $request->request->get('form_password_confirm'))) {
-            if ($password !== $passwordConfirm) {
-                return $app->redirect('/account/reset-password/?pass-error=pass-match');
-            } elseif (strlen(trim($password)) < 5) {
-                return $app->redirect('/account/reset-password/?pass-error=pass-short');
-            } elseif (trim($password) != str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
-                return $app->redirect('/account/reset-password/?pass-error=pass-invalid');
-            }
-
-            $user = $app['authentication']->getUser();
-
-            if ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $request->request->get('form_old_password'), $user->get_nonce())) {
-                return $app->redirect('/account/?notice=pass-ko');
-            }
-
-            $user->set_password($passwordConfirm);
-
-            return $app->redirect('/account/?notice=pass-ok');
-        }
     }
 
     /**
