@@ -53,7 +53,9 @@ class Authenticator
      */
     public function openAccount(\User_Adapter $user)
     {
-        $this->session->clear();
+        $this->session->remove('usr_id');
+        $this->session->remove('session_id');
+        
         $this->session->set('usr_id', $user->get_id());
 
         $session = new Session();
