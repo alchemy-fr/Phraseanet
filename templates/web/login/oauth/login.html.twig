@@ -82,6 +82,7 @@
             </div>
         </div>
     </div>
+    {% if app['authentication.providers'] | count > 0 %}
     <div class="well-large sidebar-block">
         <div class="row-fluid">
             <div class="span12 text-center">
@@ -93,7 +94,8 @@
                 {{ auth_macro.providerList() }}
             </div>
         </div>
-    </div><!-- /sidebar block -->
+    </div>
+    {% endif %}
     <div class="well-large sidebar-block text-center">
         <div class="row-fluid">
             <div class="span12">
