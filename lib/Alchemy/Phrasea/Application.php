@@ -89,6 +89,7 @@ use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
+use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
@@ -203,6 +204,7 @@ class Application extends SilexApplication
         $this->register(new BrowserServiceProvider());
         $this->register(new ConfigurationServiceProvider());
         $this->register(new ConfigurationTesterServiceProvider);
+        $this->register(new RegistrationServiceProvider());
         $this->register(new CacheServiceProvider());
         $this->register(new ImagineServiceProvider());
         $this->register(new JMSSerializerServiceProvider());
@@ -532,6 +534,7 @@ class Application extends SilexApplication
                 $twig->addFilter('sbas_from_bas', new \Twig_Filter_Function('phrasea::sbasFromBas'));
                 $twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
                 $twig->addFilter('round', new \Twig_Filter_Function('round'));
+                $twig->addFilter('count', new \Twig_Filter_Function('count'));
                 $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
                 $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
                 $twig->addFilter('AppName', new \Twig_Filter_Function('Alchemy\Phrasea\Controller\Admin\ConnectedUsers::appName'));
