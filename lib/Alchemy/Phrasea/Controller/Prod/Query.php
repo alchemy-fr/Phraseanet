@@ -195,7 +195,6 @@ class Query implements ControllerProviderInterface
 
                 $json['results'] = $twig->render($template, array(
                     'results'         => $result,
-                    'GV_social_tools' => $registry->get('GV_social_tools'),
                     'highlight'       => $search_engine->get_query(),
                     'searchEngine'    => $search_engine,
                     'suggestions'     => $prop
