@@ -931,7 +931,7 @@ class API_V1_adapter extends API_V1_Abstract
             'query'        => $request->get('query') ? : '',
             'offset_start' => (int) ($request->get('offset_start') ? : 0),
         );
-        
+
         if (is_array($request->get('bases')) === false) {
             $params['bases'] = array();
             foreach ($this->appbox->get_databoxes() as $databox) {
@@ -984,7 +984,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $search_engine->reset_cache();
 
-        $search_result = $search_engine->query_per_offset($params['query'], $params["offset_start"] + 1, $perPage);
+        $search_result = $search_engine->query_per_offset($params['query'], $params["offset_start"], $perPage);
 
         $ret = array(
             'offset_start'      => $params["offset_start"],
