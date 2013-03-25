@@ -254,7 +254,10 @@ class Configuration
 
     public function setConfigurations($configurations)
     {
-        return $this->specifications->setConfigurations($configurations);
+        $this->specifications->setConfigurations($configurations);
+        $this->configuration = new ParameterBag($configurations[$this->environment]);
+
+        return $this->getConfigurations();
     }
 
     public function setServices($services)
