@@ -15,4 +15,4 @@ composer.phar
 behat.yml
 /datas
 /www/assets
-/www/skins/login/css/style.css
+/www/build
