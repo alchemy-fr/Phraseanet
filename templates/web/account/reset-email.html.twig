@@ -45,14 +45,16 @@ $(document).ready(function() {
 </script>
 {% endblock %}
 
+{% set selected  = "" %}
+
 {% block content %}
 
-{% if updateMsg is not none %}
-    <div class="alert alert-info">
-        <div>{{ updateMsg }}</div>
-        <a href="/account/" target="_self">{% trans 'admin::compte-utilisateur retour a mon compte'%}</a>
-    </div>
-{% else %}
+    {% if updateMsg is not none %}
+        <div class="alert alert-info">
+            <div>{{ updateMsg }}</div>
+            <a href="/account/" target="_self">{% trans 'admin::compte-utilisateur retour a mon compte'%}</a>
+        </div>
+    {% else %}
 
     {% if noticeMsg is not none %}
         <div class="notice" style="text-align:center;margin:20px 0">
@@ -68,7 +70,7 @@ $(document).ready(function() {
         <div class="control-group">
             <label class="form_label control-label" for="form_login">{% trans 'admin::compte-utilisateur identifiant' %}</label>
             <div class="controls">
-                <p>{{ app['authentication'].getUser().get_login() }}</p>
+                <p style="line-height: 30px;">{{ app['authentication'].getUser().get_login() }}</p>
                 <p class="form_alert help-block"></p>
             </div>
         </div>
@@ -94,14 +96,14 @@ $(document).ready(function() {
             </div>
         </div>
         <div class="form-actions" style="background-color: transparent;">
-            <input type="submit" class="btn" value="{% trans 'boutton::valider' %}" style="margin: 20px auto;" />
+            <input type="submit" class="btn btn-success" value="{% trans 'boutton::valider' %}" style="margin: 20px auto;" />
             <input type="button" class="btn" value="{% trans 'boutton::annuler' %}" onclick="self.location.replace('/account/');" />
         </div>
     </form>
-    <p>
+    <div class="well well-small alert-info">
         {% trans 'admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?'%}
         <br />
         {% trans 'admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la perte de votre mot de passe afin de pouvoir le reinitialiser, il est important que vous soyez la seule personne a pouvoir la changer.'%}
-    </p>
+    </div>
 {% endif %}
 {% endblock %}

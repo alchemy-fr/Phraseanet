@@ -26,14 +26,6 @@
             jQuery.ajax(opts);
         });
 
-        var $url_callback_event = function(event) {
-            if ( event.type == "mouseover" ) {
-                $(this).find(".modifier_callback").show();
-            } else {
-                $(this).find(".modifier_callback").hide();
-            }
-        };
-
         var $event = function(event){
             if ( event.type == "mouseover" ) {
                 $(this).find(".delete_app").show();
@@ -41,8 +33,6 @@
                 $(this).find(".delete_app").hide();
             }
         };
-
-        $(".url_callback").live("mouseover mouseout", $url_callback_event);
 
         $(".app-list li").live("mouseover mouseout", $event);
 
@@ -68,8 +58,6 @@
                             $(".url_callback_input").empty().append(callback);
                         else
                             $(".url_callback_input").empty().append(cur_value);
-                        $this.hide();
-                        $(".url_callback").live("mouseover mouseout", $url_callback_event);
                     }
                 }
                 $.ajax(option);
