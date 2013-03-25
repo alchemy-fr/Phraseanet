@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\ApiLoadEndEvent;
+use Alchemy\Phrasea\Core\Event\ApiLoadStartEvent;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -23,15 +26,19 @@ return call_user_func(function() {
 
             $app = new \Silex\Application();
 
+            $app->register(new \API_V1_Timer());
+
+            $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_START, new ApiLoadStartEvent());
+
             $app["Core"] = \bootstrap::getCore();
 
             $app->get(
                 '/', function(Request $request) use ($app) {
                     $registry = $app["Core"]->getRegistry();
 
-                    $apiAdapter = new \API_V1_adapter(false, \appbox::get_instance($app['Core']), $app["Core"]);
+                    $apiAdapter = new \API_V1_adapter($app, false, \appbox::get_instance($app['Core']), $app["Core"]);
 
-                    $result = new \API_V1_result($request, $apiAdapter);
+                    $result = new \API_V1_result($app, $request, $apiAdapter);
 
                     $result->set_datas(
                         array(
@@ -56,6 +63,8 @@ return call_user_func(function() {
 
                     return $result->get_response();
                 });
+
+            $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_END, new ApiLoadEndEvent());
 
             return $app;
         });

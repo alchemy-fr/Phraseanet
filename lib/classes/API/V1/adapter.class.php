@@ -20,6 +20,8 @@ use Silex\Application;
  */
 class API_V1_adapter extends API_V1_Abstract
 {
+    protected $app;
+
     /**
      * API Version
      *
@@ -51,8 +53,9 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  appbox         $appbox     Appbox object
      * @return API_V1_adapter
      */
-    public function __construct($auth_token, appbox &$appbox, Alchemy\Phrasea\Core $core)
+    public function __construct(Application $app, $auth_token, appbox &$appbox, Alchemy\Phrasea\Core $core)
     {
+        $this->app = $app;
         $this->appbox = $appbox;
         $this->core = $core;
 
@@ -67,7 +70,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_error_message(Request $request, $error, $message)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
         $result->set_error_message($error, $message);
 
         return $result;
@@ -81,7 +84,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_error_code(Request $request, $code)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
         $result->set_error_code($code);
 
         return $result;
@@ -105,7 +108,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_scheduler(Application $app)
     {
-        $result = new \API_V1_result($app['request'], $this);
+        $result = new \API_V1_result($app, $app['request'], $this);
 
         $appbox = \appbox::get_instance($app['Core']);
         $taskManager = new \task_manager($appbox);
@@ -132,7 +135,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_task_list(Application $app)
     {
-        $result = new \API_V1_result($app['request'], $this);
+        $result = new \API_V1_result($app, $app['request'], $this);
 
         $appbox = \appbox::get_instance($app['Core']);
         $taskManager = new \task_manager($appbox);
@@ -172,7 +175,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_task(Application $app, $taskId)
     {
-        $result = new \API_V1_result($app['request'], $this);
+        $result = new \API_V1_result($app, $app['request'], $this);
 
         $appbox = \appbox::get_instance($app['Core']);
         $taskManager = new task_manager($appbox);
@@ -195,7 +198,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function start_task(Application $app, $taskId)
     {
-        $result = new \API_V1_result($app['request'], $this);
+        $result = new \API_V1_result($app, $app['request'], $this);
 
         $appbox = \appbox::get_instance($app['Core']);
         $taskManager = new \task_manager($appbox);
@@ -219,7 +222,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function stop_task(Application $app, $taskId)
     {
-        $result = new API_V1_result($app['request'], $this);
+        $result = new API_V1_result($app, $app['request'], $this);
 
         $appbox = \appbox::get_instance($app['Core']);
         $taskManager = new \task_manager($appbox);
@@ -245,7 +248,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function set_task_property(Application $app, $taskId)
     {
-        $result = new API_V1_result($app['request'], $this);
+        $result = new API_V1_result($app, $app['request'], $this);
 
         $title = $app['request']->get('title');
         $autostart = $app['request']->get('autostart');
@@ -511,7 +514,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_phraseanet_monitor(Application $app)
     {
-        $result = new API_V1_result($app['request'], $this);
+        $result = new API_V1_result($app, $app['request'], $this);
 
         $ret = array_merge(
             $this->get_config_info($app), $this->get_cache_info($app), $this->get_gv_info($app)
@@ -531,7 +534,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_databoxes(Request $request)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $result->set_datas(array("databoxes" => $this->list_databoxes()));
 
@@ -548,7 +551,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_databox_collections(Request $request, $databox_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $result->set_datas(
             array(
@@ -571,7 +574,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_databox_status(Request $request, $databox_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $result->set_datas(
             array(
@@ -595,7 +598,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_databox_metadatas(Request $request, $databox_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $result->set_datas(
             array(
@@ -620,7 +623,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_databox_terms(Request $request, $databox_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $result->set_datas(
             array(
@@ -634,7 +637,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     public function caption_records(Request $request, $databox_id, $record_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
         $fields = $record->get_caption()->get_fields();
@@ -739,7 +742,7 @@ class API_V1_adapter extends API_V1_Abstract
             $ret['url'] = '/quarantine/item/' . $output->getId() . '/';
         }
 
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $result->set_datas($ret);
 
@@ -772,7 +775,7 @@ class API_V1_adapter extends API_V1_Abstract
             $ret[] = $this->list_lazaret_file($lazaretFile);
         }
 
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $result->set_datas(array(
             'offset_start'     => $offset_start,
@@ -798,7 +801,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $ret = array('quarantine_item' => $this->list_lazaret_file($lazaretFile));
 
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $result->set_datas($ret);
 
@@ -848,7 +851,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function search(Request $request)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         list($ret, $search_result) = $this->prepare_search_request($request);
 
@@ -882,7 +885,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function search_records(Request $request)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         list($ret, $search_result) = $this->prepare_search_request($request);
 
@@ -1014,7 +1017,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_record_related(Request $request, $databox_id, $record_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $that = $this;
         $baskets = array_map(function ($basket) use ($that) {
@@ -1050,7 +1053,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_record_metadatas(Request $request, $databox_id, $record_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
 
@@ -1074,7 +1077,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_record_status(Request $request, $databox_id, $record_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $record = $this->appbox
             ->get_databox($databox_id)
@@ -1105,7 +1108,7 @@ class API_V1_adapter extends API_V1_Abstract
     public function get_record_embed(Request $request, $databox_id, $record_id)
     {
 
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
 
@@ -1135,7 +1138,7 @@ class API_V1_adapter extends API_V1_Abstract
     public function get_story_embed(Request $request, $databox_id, $record_id)
     {
 
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
 
@@ -1155,7 +1158,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     public function set_record_metadatas(Request $request, $databox_id, $record_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
         $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
 
         try {
@@ -1182,7 +1185,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     public function set_record_status(Request $request, $databox_id, $record_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
         $databox = $this->appbox->get_databox($databox_id);
         $record = $databox->get_record($record_id);
         $status_bits = $databox->get_statusbits();
@@ -1233,7 +1236,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function set_record_collection(Request $request, $databox_id, $record_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
         $databox = $this->appbox->get_databox($databox_id);
         $record = $databox->get_record($record_id);
 
@@ -1259,7 +1262,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_record(Request $request, $databox_id, $record_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
         $databox = $this->appbox->get_databox($databox_id);
         try {
             $record = $databox->get_record($record_id);
@@ -1283,7 +1286,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_story(Request $request, $databox_id, $story_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
         $databox = $this->appbox->get_databox($databox_id);
         try {
             $story = $databox->get_record($story_id);
@@ -1305,7 +1308,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function search_baskets(Request $request)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $usr_id = $session = $this->appbox->get_session()->get_usr_id();
 
@@ -1344,7 +1347,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function create_basket(Request $request)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $name = $request->get('name');
 
@@ -1397,7 +1400,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_basket(Request $request, $basket_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $em = $this->core->getEntityManager();
         $repository = $em->getRepository('\Entities\Basket');
@@ -1495,7 +1498,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function set_basket_title(Request $request, $basket_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $name = $request->get('name');
 
@@ -1524,7 +1527,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function set_basket_description(Request $request, $basket_id)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $desc = $request->get('description');
 
@@ -1553,7 +1556,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function search_publications(Request $request, User_Adapter &$user)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $coll = Feed_Collection::load_all($this->appbox, $user);
 
@@ -1588,7 +1591,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_publication(Request $request, $publication_id, User_Adapter &$user)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $feed = Feed_Adapter::load_with_user($this->appbox, $user, $publication_id);
 
@@ -1611,7 +1614,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     public function get_publications(Request $request, User_Adapter &$user)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $feed = Feed_Aggregate::load_with_user($this->appbox, $user);
 
@@ -1634,7 +1637,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     public function get_feed_entry(Request $request, $entry_id, User_Adapter &$user)
     {
-        $result = new API_V1_result($request, $this);
+        $result = new API_V1_result($this->app, $request, $this);
 
         $entry = Feed_Entry_Adapter::load_from_id($this->appbox, $entry_id);
 

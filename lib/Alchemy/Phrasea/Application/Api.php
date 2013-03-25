@@ -11,6 +11,11 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\ApiLoadEndEvent;
+use Alchemy\Phrasea\Core\Event\ApiLoadStartEvent;
+use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
+use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +29,10 @@ use Symfony\Component\HttpKernel\Exception;
 return call_user_func(function() {
 
             $app = new \Silex\Application();
+
+            $app->register(new \API_V1_Timer());
+
+            $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_START, new ApiLoadStartEvent());
 
             /**
              * @var Alchemy\Phrasea\Core
@@ -45,7 +54,7 @@ return call_user_func(function() {
              * @var Closure
              */
             $app['api'] = function () use ($app) {
-                    return new \API_V1_adapter(false, $app["appbox"], $app["Core"]);
+                    return new \API_V1_adapter($app, false, $app["appbox"], $app["Core"]);
                 };
 
             /**
@@ -59,6 +68,7 @@ return call_user_func(function() {
              * @ throws \API_V1_exception_forbidden
              */
             $app->before(function($request) use ($app) {
+                    $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_START, new ApiOAuth2StartEvent());
                     $session = $app["appbox"]->get_session();
                     $registry = $app['Core']->getRegistry();
                     $oauth2_adapter = new \API_OAuth2_Adapter($app["appbox"]);
@@ -76,12 +86,14 @@ return call_user_func(function() {
                     }
 
                     if ($session->is_authenticated()) {
+                        $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
                         return;
                     }
 
                     if ($oauth2_adapter->has_ses_id()) {
                         try {
                             $session->restore($user, $oauth2_adapter->get_ses_id());
+                            $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
 
                             return;
                         } catch (\Exception $e) {
@@ -91,6 +103,7 @@ return call_user_func(function() {
                     $auth = new \Session_Authentication_None($user);
                     $session->authenticate($auth);
                     $oauth2_adapter->remember_this_ses_id($session->get_ses_id());
+                    $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
 
                     return;
                 });
@@ -890,6 +903,8 @@ return call_user_func(function() {
 
                     return $response;
                 });
+
+            $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_END, new ApiLoadEndEvent());
 
             return $app;
         });
