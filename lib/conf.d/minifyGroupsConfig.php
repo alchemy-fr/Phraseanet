@@ -12,7 +12,7 @@ $groups = array(
     'authentication_css' => array(
         '//assets/normalize-css/normalize.css',
         '//assets/bootstrap-switch/static/stylesheets/bootstrapSwitch.css',
-        '//skins/login/css/style.css',
+        '//skins/build/css/login.css',
         '//assets/font-awesome/css/font-awesome.css',
     ),
     'authentication' => array(
