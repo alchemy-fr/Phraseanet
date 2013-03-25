@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
+use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
@@ -286,28 +287,10 @@ class Login implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/forgot-password/', $this->call('displayForgotPasswordForm'))
+        $controllers->match('/forgot-password/', $this->call('forgotPassword'))
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_forgot_password');
-
-        /**
-         * Renew password
-         *
-         * name         : submit_login_forgot_password
-         *
-         * description  : Register the new user password
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/forgot-password/', $this->call('forgotPassword'))
-            ->before(function(Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
-            })->bind('submit_login_forgot_password');
 
         /********
          *
@@ -427,74 +410,73 @@ class Login implements ControllerProviderInterface
      */
     public function forgotPassword(PhraseaApplication $app, Request $request)
     {
-        if (null !== $mail = $request->request->get('mail')) {
-            try {
-                $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $mail), $app);
-            } catch (\Exception $e) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'noaccount')));
-            }
+        $form = $app->form(new PhraseaForgotPasswordForm());
 
-            try {
-                $receiver = Receiver::fromUser($user);
-            } catch (InvalidArgumentException $e) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'invalidmail')));
-            }
+        if ('POST' === $request->getMethod()) {
 
-            $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
+            $form->bind($request);
 
-            if ($token) {
-                $url = $app['url_generator']->generate('login_forgot_password', array('token' => $token), true);
+            if ($form->isValid()) {
+                if (null !== $mail = $request->request->get('mail')) {
+                    try {
+                        $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $mail), $app);
+                    } catch (\Exception $e) {
+                        return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'noaccount')));
+                    }
 
-                $mail = MailRequestEmailConfirmation::create($app, $receiver);
-                $mail->setButtonUrl($url);
-                $app['notification.deliverer']->deliver($mail);
+                    try {
+                        $receiver = Receiver::fromUser($user);
+                    } catch (InvalidArgumentException $e) {
+                        return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'invalidmail')));
+                    }
 
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('sent' => 'ok')));
+                    $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
+
+                    if ($token) {
+                        $url = $app['url_generator']->generate('login_forgot_password', array('token' => $token), true);
+
+                        $mail = MailRequestEmailConfirmation::create($app, $receiver);
+                        $mail->setButtonUrl($url);
+                        $app['notification.deliverer']->deliver($mail);
+
+                        return $app->redirect($app['url_generator']->generate('login_forgot_password', array('sent' => 'ok')));
+                    }
+                }
+
+                if ((null !== $token = $request->request->get('token'))
+                    && (null !== $password = $request->request->get('form_password'))
+                    && (null !== $passwordConfirm = $request->request->get('form_password_confirm'))) {
+
+                    if ($password !== $passwordConfirm) {
+                        return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-match')));
+                    } elseif (strlen(trim($password)) < 8) {
+                        return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-short')));
+                    } elseif (trim($password) !== str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
+                        return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-invalid')));
+                    }
+
+                    try {
+                        $datas = $app['tokens']->helloToken($token);
+
+                        $user = \User_Adapter::getInstance($datas['usr_id'], $app);
+                        $user->set_password($passwordConfirm);
+
+                        $app['tokens']->removeToken($token);
+
+                        return $app->redirect('/login/?notice=password-update-ok');
+                    } catch (\Exception_NotFound $e) {
+                        return $app->redirect($app->path('login_forgot_password', array('error' => 'token')));
+                    }
+                }
             }
         }
 
-        if ((null !== $token = $request->request->get('token'))
-            && (null !== $password = $request->request->get('form_password'))
-            && (null !== $passwordConfirm = $request->request->get('form_password_confirm'))) {
-
-            if ($password !== $passwordConfirm) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-match')));
-            } elseif (strlen(trim($password)) < 8) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-short')));
-            } elseif (trim($password) !== str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-invalid')));
-            }
-
-            try {
-                $datas = $app['tokens']->helloToken($token);
-
-                $user = \User_Adapter::getInstance($datas['usr_id'], $app);
-                $user->set_password($passwordConfirm);
-
-                $app['tokens']->removeToken($token);
-
-                return $app->redirect('/login/?notice=password-update-ok');
-            } catch (\Exception_NotFound $e) {
-                return $app->redirect($app->path('login_forgot_password', array('error' => 'token')));
-            }
-        }
-    }
-
-    /**
-     * Get the fogot password form
-     *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
-     * @return Response
-     */
-    public function displayForgotPasswordForm(PhraseaApplication $app, Request $request)
-    {
         $tokenize = false;
         $errorMsg = $request->query->get('error');
 
         if (null !== $token = $request->query->get('token')) {
             try {
-                \random::helloToken($app, $token);
+                $app['tokens']->helloToken($token);
                 $tokenize = true;
             } catch (\Exception $e) {
                 $errorMsg = 'token';
@@ -542,8 +524,6 @@ class Login implements ControllerProviderInterface
                     break;
             }
         }
-
-        $form = $app->form(new PhraseaForgotPasswordForm());
 
         return $app['twig']->render('login/forgot-password.html.twig', array(
             'login'       => new \login(),
@@ -969,7 +949,11 @@ class Login implements ControllerProviderInterface
             return $app->redirect($app->path('homepage', $params));
         };
 
-        return $this->doAuthentication($app, $request, $form, $redirector);
+        try {
+            return $this->doAuthentication($app, $request, $form, $redirector);
+        } catch (AuthenticationException $e) {
+            return $e->getResponse();
+        }
     }
 
     public function authenticateAsGuest(PhraseaApplication $app, Request $request)
@@ -1086,7 +1070,7 @@ class Login implements ControllerProviderInterface
 
         // triggers what's necessary
         try {
-            $provider->onCallback($app, $request);
+            $provider->onCallback($request);
         } catch (NotAuthenticatedException $e) {
             $app['session']->getFlashBag()->add('error', sprintf(_('Unable to authenticate with %s'), $provider->getName()));
 
@@ -1190,7 +1174,11 @@ class Login implements ControllerProviderInterface
             return $app->redirect($app->path('login_authentication_provider_mapping', $params));
         };
 
-        $response = $this->doAuthentication($app, $request, $form, $redirector);
+        try {
+            $response = $this->doAuthentication($app, $request, $form, $redirector);
+        } catch (AuthenticationException $e) {
+            return $e->getResponse();
+        }
 
         $usrAuthProvider = new \Entities\UsrAuthProvider();
         $usrAuthProvider->setDistantId($provider->getToken()->getId());
@@ -1217,7 +1205,11 @@ class Login implements ControllerProviderInterface
             return $app->redirect($app->path('login_authentication_provider_mapping', $params));
         };
 
-        $response = $this->doAuthentication($app, $request, $form, $redirector);
+        try {
+            $response = $this->doAuthentication($app, $request, $form, $redirector);
+        } catch (AuthenticationException $e) {
+            return $e->getResponse();
+        }
 
         $usrAuthProvider = new \Entities\UsrAuthProvider();
         $usrAuthProvider->setDistantId($provider->getToken()->getId());
@@ -1243,7 +1235,7 @@ class Login implements ControllerProviderInterface
         if (!$form->isValid()) {
             $app->addFlash('error', _('An unexpected error occured during authentication process, please contact an admin'));
 
-            return call_user_func($redirector);
+            throw new AuthenticationException(call_user_func($redirector));
         }
 
         $params = array();
@@ -1257,20 +1249,21 @@ class Login implements ControllerProviderInterface
         } catch (RequireCaptchaException $e) {
             $app->requireCaptcha();
 
-            return call_user_func($redirector, $params);
+            throw new AuthenticationException(call_user_func($redirector, $params));
         } catch (AccountLockedException $e) {
+            // neutron fix this
             $params = array_merge($params, array(
                 'error' => 'account-locked',
                 'usr_id' => $e->getUsrId()
             ));
 
-            return call_user_func($redirector, $params);
+            throw new AuthenticationException(call_user_func($redirector, $params));
         }
 
         if (!$usr_id) {
             $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
 
-            return call_user_func($redirector, $params);
+            throw new AuthenticationException(call_user_func($redirector, $params));
         }
 
         $user = \User_Adapter::getInstance($usr_id, $app);
