@@ -85,7 +85,7 @@
         </div>
     </div><!-- /sidebar block -->
     {% if app['authentication.providers'] | count > 0 %}
-    <div class="well-large sidebar-block {% if not login.register_enabled(app) and not guest_allowed %}last-child{% endif %}">
+    <div class="well-large sidebar-block">
         <div class="row-fluid">
             <div class="span12 text-center">
                 {% trans "Or login with" %}
