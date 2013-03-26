@@ -220,7 +220,6 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
      */
     public function results($query, $offset, $perPage)
     {
-
         assert(is_int($offset));
         assert($offset >= 0);
         assert(is_int($perPage));
@@ -273,7 +272,8 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         $this->offset_start = $courcahnum = $offset;
 
         $res = phrasea_fetch_results(
-            $session->get_ses_id(), $offset, $perPage, false
+            // phrasea first offset is 1
+            $session->get_ses_id(), $offset + 1, $perPage, false
         );
 
         $rs = array();

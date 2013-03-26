@@ -15,8 +15,9 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
+        $app = require __DIR__ . '/../../../lib/Alchemy/Phrasea/Application/Api.php';
         $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->object = new API_V1_adapter(FALSE, $appbox, self::$core);
+        $this->object = new API_V1_adapter($app, FALSE, $appbox, self::$core);
     }
 
     public function testGet_error_code()
@@ -466,8 +467,9 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSet_record_status()
     {
+        $app =  require __DIR__ . '/../../../lib/Alchemy/Phrasea/Application/Api.php';
         $appbox = appbox::get_instance(\bootstrap::getCore());
-        $stub = $this->getMock("API_V1_adapter", array("list_record_status"), array(false, &$appbox, bootstrap::getCore()));
+        $stub = $this->getMock("API_V1_adapter", array("list_record_status"), array($app, false, &$appbox, bootstrap::getCore()));
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $databox = static::$records['record_1']->get_databox();
 
@@ -504,7 +506,8 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSet_record_collection()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
-        $stub = $this->getMock("API_V1_adapter", array("list_record"), array(false, &$appbox, bootstrap::getCore()));
+        $app =  require __DIR__ . '/../../../lib/Alchemy/Phrasea/Application/Api.php';
+        $stub = $this->getMock("API_V1_adapter", array("list_record"), array($app, false, &$appbox, bootstrap::getCore()));
         $databox = static::$records['record_1']->get_databox();
 
         $request = new Request(array("salut" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));

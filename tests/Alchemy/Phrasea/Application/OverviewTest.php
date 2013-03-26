@@ -96,6 +96,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $this->assertTrue($appbox->get_session()->is_authenticated());
+        $this->get_a_permalinkBCcompatibility();
         $this->get_a_permalink();
     }
 
@@ -104,6 +105,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $appbox->get_session()->logout();
         $this->assertFalse($appbox->get_session()->is_authenticated());
+        $this->get_a_permalinkBCcompatibility();
         $this->get_a_permalink();
     }
 
@@ -129,8 +131,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-
-    protected function get_a_permalink()
+    protected function get_a_permalinkBCcompatibility()
     {
         $token = static::$records['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/whateverIwannt/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/' . $token . '/preview/';
@@ -144,5 +145,22 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = $this->client->request('GET', $url);
         $response = $this->client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    protected function get_a_permalink()
+    {
+        $token = static::$records['record_1']->get_preview()->get_permalink()->get_token();
+        $url = '/permalink/v1/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/preview/whateverIwannt.jpg?token=' . $token . '';
+
+        $crawler = $this->client->request('GET', $url);
+        $response = $this->client->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $url = '/permalink/v1/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/preview/?token=' . $token . '';
+        $crawler = $this->client->request('GET', $url);
+        $response = $this->client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('text/html; charset=UTF-8', $response->headers->get('Content-Type'));
     }
 }
