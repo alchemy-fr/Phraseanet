@@ -1818,6 +1818,7 @@ class API_V1_adapter extends API_V1_Abstract
             'label'        => $permalink->get_label(),
             'updated_on'   => $permalink->get_last_modified()->format(DATE_ATOM),
             'page_url'     => $permalink->get_page($registry),
+            'download_url' => $permalink->get_url($registry) . '&download',
             'url'          => $permalink->get_url($registry)
         );
     }
