@@ -124,6 +124,13 @@ describe('passwordChangeFormController', function(){
                 $error : {
                     required : false
                 }
+            },
+            oldPassword : {
+                errors:{},
+                $valid : true,
+                $error : {
+                    required : false
+                }
             }
         };
     }));
