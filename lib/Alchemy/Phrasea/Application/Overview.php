@@ -155,76 +155,100 @@ return call_user_func(
                     return $deliver_content($app['request'], $session, $record, $subdef, $watermark, $stamp, $app);
                 })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
+            $deliverPermaview = function ($sbas_id, $record_id, $subdef, $key, $app) {
+                $databox = \databox::get_instance((int) $sbas_id);
+
+                $record = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
+
+                if (!($record instanceof \record_adapter))
+                    throw new \Exception('bad luck');
+
+                /* @var $twig \Twig_Environment */
+                $twig = $app['Core']->getTwig();
+
+                $params = array(
+                    'subdef_name' => $subdef
+                    , 'module_name' => 'overview'
+                    , 'module'      => 'overview'
+                    , 'view'        => 'overview'
+                    , 'record'      => $record
+                );
+
+                return $twig->render('overview.twig', $params);
+            };
+
+            $app->get('/permalink/v1/{sbas_id}/{record_id}/{subdef}/', function (Request $request, $sbas_id, $record_id, $subdef) use ($app, $deliverPermaview) {
+                $key = $request->query->get('token');
+
+                return $deliverPermaview($sbas_id, $record_id, $subdef, $key, $app);
+            })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+
             $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/view/'
-                , function($label, $sbas_id, $record_id, $key, $subdef) use($app) {
-
-                    $databox = \databox::get_instance((int) $sbas_id);
-
-                    $record = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
-
-                    if (!($record instanceof \record_adapter))
-                        throw new \Exception('bad luck');
-
-                    /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
-
-                    $params = array(
-                        'subdef_name' => $subdef
-                        , 'module_name' => 'overview'
-                        , 'module'      => 'overview'
-                        , 'view'        => 'overview'
-                        , 'record'      => $record
-                    );
-
-                    return $twig->render('overview.twig', $params);
+                , function($label, $sbas_id, $record_id, $key, $subdef) use ($app, $deliverPermaview) {
+                    return $deliverPermaview($sbas_id, $record_id, $subdef, $key, $app);
                 })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
-            $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/'
-                    , function($label, $sbas_id, $record_id, $key, $subdef) use ($app, $session, $deliver_content) {
-                        $databox = \databox::get_instance((int) $sbas_id);
-                        $record = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
+            $deliverPermalink = function ($label, $sbas_id, $record_id, $key, $subdef, $app, $session, $deliver_content) {
 
-                        if (!($record instanceof \record_adapter))
-                            throw new \Exception('bad luck');
+                $databox = \databox::get_instance((int) $sbas_id);
+                $record = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
 
-                        $watermark = $stamp = false;
+                if (!($record instanceof \record_adapter))
+                    throw new \Exception('bad luck');
 
-                        if ($session->is_authenticated()) {
-                            $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
+                $watermark = $stamp = false;
 
-                            $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
+                if ($session->is_authenticated()) {
+                    $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
 
-                            if ($watermark) {
+                    $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 
-                                $em = $app['Core']->getEntityManager();
+                    if ($watermark) {
 
-                                $repository = $em->getRepository('\Entities\BasketElement');
+                        $em = $app['Core']->getEntityManager();
 
-                                if (count($repository->findReceivedValidationElementsByRecord($record, $user)) > 0) {
-                                    $watermark = false;
-                                } elseif (count($repository->findReceivedElementsByRecord($record, $user)) > 0) {
-                                    $watermark = false;
-                                }
-                            }
+                        $repository = $em->getRepository('\Entities\BasketElement');
 
-                            return $deliver_content($app['request'], $session, $record, $subdef, $watermark, $stamp, $app);
-                        } else {
-                            $collection = \collection::get_from_base_id($record->get_base_id());
-                            switch ($collection->get_pub_wm()) {
-                                default:
-                                case 'none':
-                                    $watermark = false;
-                                    break;
-                                case 'stamp':
-                                    $stamp = true;
-                                    break;
-                                case 'wm':
-                                    $watermark = false;
-                                    break;
-                            }
+                        if (count($repository->findReceivedValidationElementsByRecord($record, $user)) > 0) {
+                            $watermark = false;
+                        } elseif (count($repository->findReceivedElementsByRecord($record, $user)) > 0) {
+                            $watermark = false;
                         }
+                    }
 
-                        return $deliver_content($app['request'], $session, $record, $subdef, $watermark, $stamp, $app);
+                    return $deliver_content($app['request'], $session, $record, $subdef, $watermark, $stamp, $app);
+                } else {
+                    $collection = \collection::get_from_base_id($record->get_base_id());
+                    switch ($collection->get_pub_wm()) {
+                        default:
+                        case 'none':
+                            $watermark = false;
+                            break;
+                        case 'stamp':
+                            $stamp = true;
+                            break;
+                        case 'wm':
+                            $watermark = false;
+                            break;
+                    }
+                }
+
+                return $deliver_content($app['request'], $session, $record, $subdef, $watermark, $stamp, $app);
+            };
+
+            $app->get('/permalink/v1/{sbas_id}/{record_id}/{subdef}/{label}',
+                function (Request $request, $sbas_id, $record_id, $subdef, $label) use ($app, $deliverPermalink, $session, $deliver_content) {
+
+                $key = $request->query->get('token');
+
+                return $deliverPermalink($label, $sbas_id, $record_id, $key, $subdef, $app, $session, $deliver_content);
+            })
+            ->assert('sbas_id', '\d+')
+            ->assert('record_id', '\d+');
+
+            $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/'
+                    , function($label, $sbas_id, $record_id, $key, $subdef) use ($app, $deliverPermalink, $session, $deliver_content) {
+                        return $deliverPermalink($label, $sbas_id, $record_id, $key, $subdef, $app, $session, $deliver_content);
                     }
                 )
                 ->assert('sbas_id', '\d+')->assert('record_id', '\d+');

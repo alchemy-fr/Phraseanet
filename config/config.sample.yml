@@ -21,6 +21,7 @@ dev:
     #Assign your phraseanet application connection
     #Connections are defined in connexions.yml configuration file
     database: main_connexion
+    api-timers: true
 
   #Assign your template engine service & ORM service
   #Services are defined in service.yml configuration file

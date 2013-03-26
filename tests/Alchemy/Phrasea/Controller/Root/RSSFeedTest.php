@@ -174,10 +174,10 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -347,7 +347,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     {
         $this->client->request("GET", "/feeds/feed/0/rss/");
     }
-    
+
     /**
      * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
@@ -550,7 +550,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         $is_thumbnail = false;
         $record = $entry_item->get_record();
 
-        if (substr($current_attributes["url"], 0 - strlen("/preview/")) == "/preview/") {
+        if (false !== strpos($current_attributes["url"], 'preview')) {
             $ressource = $record->get_subdef('preview');
         } else {
             $ressource = $record->get_thumbnail();
@@ -679,7 +679,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         foreach ($fields as $key_field => $field) {
 
             $role = true;
-            
+
             if(isset($field["media_field"]['attributes']['role'])){
                 $role = false;
                 foreach($node->attributes as $attr){
@@ -689,7 +689,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
                     }
                 }
             }
-            
+
             if ($field["media_field"]["name"] == $node->nodeName && $role != false) {
 
                 if ($p4field = $entry_item->get_record()->get_caption()->get_dc_field($field["dc_field"])) {

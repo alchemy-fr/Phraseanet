@@ -16,6 +16,12 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
         static::$object = media_Permalink_Adapter::getPermalink($databox, static::$records['record_1']->get_subdef('document'));
     }
 
+    public function testGet_label()
+    {
+        $this->assertInternalType('string', static::$object->get_label());
+        $this->assertEquals('test001', static::$object->get_label());
+    }
+
     public function testGetPermalink()
     {
         $this->assertTrue((static::$object instanceof media_Permalink_Adapter));
@@ -36,7 +42,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
         static::$object->set_label('coucou les chicos');
         $this->assertEquals('coucou-les-chicos', static::$object->get_label());
         static::$object->set_label('');
-        $this->assertEquals('', static::$object->get_label());
+        $this->assertEquals('untitled', static::$object->get_label());
         static::$object->set_label('JE ANp    ra&é"\/,;:!§/.?%µ*ù$]@^\[{#~234567890°+\'(-è_çà');
         $this->assertEquals('JE-ANp-raeu234567890-e_ca', static::$object->get_label());
     }
@@ -44,98 +50,59 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
     public function testGet_url()
     {
         $registry = registry::get_instance();
-        $url = $registry->get('GV_ServerName') . 'permalink/v1/' . static::$object->get_label() . '/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/' .
-            static::$object->get_token() . '/document/';
+        $url = $registry->get('GV_ServerName') . 'permalink/v1/'
+            . static::$records['record_1']->get_sbas_id() . '/'
+            . static::$records['record_1']->get_record_id()
+            . '/document/' . static::$object->get_label()
+            . '.' . pathinfo(static::$records['record_1']->get_original_name(), PATHINFO_EXTENSION)
+            . '?token='       .     static::$object->get_token();
 
         $this->assertEquals($url, static::$object->get_url($registry));
     }
 
-    /**
-     * @todo Implement testGet_page().
-     */
     public function testGet_page()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $registry = registry::get_instance();
+        $url = $registry->get('GV_ServerName') . 'permalink/v1/'
+            . static::$records['record_1']->get_sbas_id() . '/'
+            . static::$records['record_1']->get_record_id()
+            . '/document/'
+            . '?token='       .     static::$object->get_token();
+
+        $this->assertEquals($url, static::$object->get_page($registry));
     }
 
-    /**
-     * @todo Implement testGet_id().
-     */
     public function testGet_id()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertInternalType('integer', static::$object->get_id());
     }
 
-    /**
-     * @todo Implement testGet_token().
-     */
     public function testGet_token()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertInternalType('string', static::$object->get_token());
     }
 
-    /**
-     * @todo Implement testGet_is_activated().
-     */
     public function testGet_is_activated()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        $this->assertTrue(is_bool(static::$object->get_is_activated));
+        $this->assertInternalType('boolean', static::$object->get_is_activated());
     }
 
-    /**
-     * @todo Implement testGet_created_on().
-     */
     public function testGet_created_on()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertInstanceOf('DateTime', static::$object->get_created_on());
     }
 
-    /**
-     * @todo Implement testGet_last_modified().
-     */
     public function testGet_last_modified()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertInstanceOf('DateTime', static::$object->get_last_modified());
     }
 
     /**
-     * @todo Implement testGet_label().
+     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
      */
-    public function testGet_label()
+    public function testCreateAPermalinkAlreadyCreated()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testCreate().
-     */
-    public function testCreate()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $databox = static::$records['record_1']->get_databox();
+        media_Permalink_Adapter::create($databox, static::$records['record_1']->get_subdef('document'));
     }
 }
