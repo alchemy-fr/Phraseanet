@@ -12,7 +12,7 @@ $groups = array(
     'authentication_css' => array(
         '//assets/normalize-css/normalize.css',
         '//assets/bootstrap-switch/static/stylesheets/bootstrapSwitch.css',
-        '//skins/build/css/login.css',
+        '//skins/build/login.css',
         '//assets/font-awesome/css/font-awesome.css',
     ),
     'authentication' => array(
@@ -36,12 +36,12 @@ $groups = array(
         '//assets/bootstrap-switch/static/js/bootstrapSwitch.js',
         '//assets/underscore/underscore.js',
         '//skins/login/js/main.js',
-        '//skins/login/js/angular/app/app.js',
+        '//skins/login/js/app.js',
     ),
     'client' => array(
         '//include/jslibs/swfobject/swfobject.js'
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
-        , '//include/account/geonames.js'
+        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//include/jslibs/json2.js'
@@ -65,7 +65,7 @@ $groups = array(
         , '//skins/admin/users.js'
         , '//skins/admin/editusers.js'
         , '//include/jquery.common.js'
-        , '//include/account/geonames.js'
+        , '//skins/geonames/geonames.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//assets/blueimp-load-image/load-image.js'
@@ -97,13 +97,13 @@ $groups = array(
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
-        , '//include/vendor/humane-js/humane.js'
-        , '//include/vendor/mustache-js/mustache.js'
+        , '//assets/humane-js/humane.js'
+        , '//assets/mustache/mustache.js'
         , '//assets/blueimp-load-image/load-image.js'
         , '//assets/jquery-file-upload/js/vendor/jquery.ui.widget.js'
         , '//assets/jquery-file-upload/js/jquery.iframe-transport.js'
         , '//assets/jquery-file-upload/js/jquery.fileupload.js'
-        , '//include/account/geonames.js'
+        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery.form.2.49.js'
         , '//include/jslibs/jquery.vertical.buttonset.js'
         , '//include/js/jquery.Selection.js'
@@ -144,7 +144,7 @@ $groups = array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
-        , '//include/account/geonames.js'
+        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
@@ -156,7 +156,7 @@ $groups = array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
-        , '//include/account/geonames.js'
+        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
