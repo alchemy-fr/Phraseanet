@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Alchemy\Phrasea\Utilities\String\Camelizer;
 
 // write tests
 class RegistrationServiceProvider implements ServiceProviderInterface
@@ -21,17 +22,10 @@ class RegistrationServiceProvider implements ServiceProviderInterface
     {
         $app['registration.fields'] = $app->share(function (Application $app){
             if($app['phraseanet.configuration']->has('registration-fields')) {
-                return array_map(function($field) {
-                    $chunks = explode('-', $field['name']);
+                $camelizer = new Camelizer();
 
-                    if(count($chunks) > 1) {
-                        $transformedName = '';
-                        foreach($chunks as $chunk) {
-                            $transformedName .= ucfirst($chunk);
-                        }
-
-                        $field['name'] = lcfirst($transformedName);
-                    }
+                return array_map(function($field) use ($camelizer) {
+                    $field['name'] = $camelizer->camelize($field['name'], '-');
 
                     return $field;
                 }, $app['phraseanet.configuration']->get('registration-fields'));

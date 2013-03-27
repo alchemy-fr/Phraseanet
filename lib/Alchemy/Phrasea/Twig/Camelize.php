@@ -11,8 +11,20 @@
 
 namespace Alchemy\Phrasea\Twig;
 
+use Alchemy\Phrasea\Utilities\String\Camelizer;
+
 class Camelize extends \Twig_Extension
 {
+    /**
+     * @var Camelizer
+     */
+    private $camelizer;
+
+    public function __construct(Camelizer $camelizer = null)
+    {
+        $this->camelizer = $camelizer ?: new Camelizer();
+    }
+
     /**
      *
      * @return string
@@ -33,19 +45,8 @@ class Camelize extends \Twig_Extension
         );
     }
 
-    public function toCamelCase($property, $separator = '-')
+    public function toCamelCase($str, $separator = '-', $pascalCase = false)
     {
-        $properties = explode($separator, $property);
-
-        if(count($properties) > 1) {
-            $transformedProperty = "";
-            foreach($properties as $chunk) {
-                $transformedProperty .= ucfirst($chunk);
-            }
-
-            $property = lcfirst($transformedProperty);
-        }
-
-        return $property;
+        return $this->camelizer->camelize($str, $separator, $pascalCase);
     }
 }
