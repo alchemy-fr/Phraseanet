@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Form\Login;
 
+use Alchemy\Phrasea\Utilities\String\Camelizer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -20,11 +21,13 @@ class PhraseaRegisterForm extends AbstractType
 {
     private $available;
     private $params;
+    private $camelizer;
 
-    public function __construct(array $available, array $params = array())
+    public function __construct(array $available, array $params = array(), Camelizer $camelizer = null)
     {
         $this->available = $available;
         $this->params = $params;
+        $this->camelizer = $camelizer ?: new Camelizer();
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -62,7 +65,7 @@ class PhraseaRegisterForm extends AbstractType
             $name = $param['name'];
             if (isset($this->available[$name])) {
                 $builder->add(
-                    $name,
+                    $this->camelizer->camelize($name, '-'),
                     $this->getType($name),
                     array(
                         'label'       => $this->getLabel($name),

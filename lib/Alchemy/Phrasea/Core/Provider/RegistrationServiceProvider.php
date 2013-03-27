@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Alchemy\Phrasea\Utilities\String\Camelizer;
 
 // write tests
 class RegistrationServiceProvider implements ServiceProviderInterface
@@ -22,16 +21,10 @@ class RegistrationServiceProvider implements ServiceProviderInterface
     {
         $app['registration.fields'] = $app->share(function (Application $app){
             if($app['phraseanet.configuration']->has('registration-fields')) {
-                $camelizer = new Camelizer();
-
-                return array_map(function($field) use ($camelizer) {
-                    $field['name'] = $camelizer->camelize($field['name'], '-');
-
-                    return $field;
-                }, $app['phraseanet.configuration']->get('registration-fields'));
-            } else {
-                return array();
+                return $app['phraseanet.configuration']->get('registration-fields');
             }
+
+            return array();
         });
 
         $app['registration.optional-fields'] = $app->share(function (Application $app) {
@@ -49,11 +42,11 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                         '2' => _('admin::compte-utilisateur:sexe: monsieur'),
                     )
                 ),
-                'firstName' => array(
+                'first-name' => array(
                     'label' => _('admin::compte-utilisateur prenom'),
                     'type' => 'text',
                 ),
-                'lastName' => array(
+                'last-name' => array(
                     'label' => _('admin::compte-utilisateur nom'),
                     'type' => 'text',
                 ),
@@ -61,11 +54,11 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                     'label' => _('admin::compte-utilisateur adresse'),
                     'type' => 'textarea',
                 ),
-                'zipCode' => array(
+                'zip-code' => array(
                     'label' => _('admin::compte-utilisateur code postal'),
                     'type' => 'text',
                 ),
-                'city' => array(
+                'geoname-id' => array(
                     'label' => _('admin::compte-utilisateur ville'),
                     'type' => new \Alchemy\Phrasea\Form\Type\GeonameType(),
                 ),

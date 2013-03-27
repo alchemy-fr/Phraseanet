@@ -59,12 +59,14 @@
                     </div>
 
                     {% for field in app['registration.fields'] %}
-                        {% set fieldName = field['name'] %}
-                        <div class="row-fluid">
-                            <div class="span12">
-                                {{ auth_macro.fieldInput(attribute(form, field['name']), "registerForm") }}
+                        {% set name = field['name'] %}
+                        {% if name in app['registration.optional-fields']|keys %}
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    {{ auth_macro.fieldInput(attribute(form, name|camelize), "registerForm") }}
+                                </div>
                             </div>
-                        </div>
+                        {% endif %}
                     {% endfor %}
 
                     <div class="row-fluid">
