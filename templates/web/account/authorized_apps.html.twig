@@ -10,15 +10,12 @@ $(document).ready(function(){
     $(".app-btn").live("click", function(){
         var $this = $(this);
 
-        if (!$this.hasClass("authorize"))
-        {
+        if (!$this.hasClass("authorize")) {
             var revoke = 1;
             var button_class = "authorize";
             var old_class ="revoke";
             var string  = "{% trans 'Authoriser l\'access' %}";
-        }
-        else ($this.hasClass("authorize"))
-        {
+        } else {
             var revoke = 0;
             var button_class = "revoke";
             var old_class ="authorize";
@@ -27,9 +24,9 @@ $(document).ready(function(){
 
         var app_id = $this.attr("value");
 
-        var opts = {
-            type:"POST",
-            url : '/security/application/' + app_id + '/grant/',
+        $.ajax({
+            type:"GET",
+            url : '/account/security/application/' + app_id + '/grant/',
             dataType: 'json',
             data : {
                 revoke : revoke
@@ -37,14 +34,11 @@ $(document).ready(function(){
             success : function(data){
                 if(data.success)
                 {
-                    div = $this.closest("div");
-                    current.removeClass(old_class).addClass(button_class);
-                    current.attr("value", acc_id);
-                    current.empty().append(string);
+                    $this.removeClass(old_class).addClass(button_class);
+                    $this.empty().append(string);
                 }
             }
-        }
-        $.ajax(opts);
+        });
     });
 });
 </script>
@@ -64,23 +58,23 @@ $(document).ready(function(){
                             <div>
                                 {% set account = application.get_user_account(app['authentication'].getUser()) %}
                                 {% if account.is_revoked() is empty %}
-                                  <button type='button' class='revoke app-btn btn btn-danger btn-small' value='{{application.get_id()}}'>{% trans 'Revoquer l\'access' %}</button>
+                                    <button type='button' class='revoke app-btn btn btn-small' value='{{application.get_id()}}'>{% trans 'Revoquer l\'access' %}</button>
                                 {% else %}
-                                  <button type='button' class='authorize app-btn btn btn-success btn-small' value='{{application.get_id()}}'>{% trans 'Authoriser l\'access' %}</button>
+                                    <button type='button' class='authorize app-btn btn btn-small' value='{{application.get_id()}}'>{% trans 'Authoriser l\'access' %}</button>
                                 {% endif %}
                                 <span class='app-row'>
-                                  <a href="{{application.get_website()}}" target="_blank">
-                                    <strong>{{application.get_name()}}</strong>
-                                  </a>
-                                  {% if application.get_creator() is not none %}
-                                    {% set user_name = application.get_creator().get_display_name() %}
-                                    {% trans %}
-                                    par {{user_name}}
-                                    {% endtrans %}
-                                  {% endif%}
+                                    <a href="{{application.get_website()}}" target="_blank">
+                                        <strong>{{application.get_name()}}</strong>
+                                    </a>
+                                    {% if application.get_creator() is not none %}
+                                        {% set user_name = application.get_creator().get_display_name() %}
+                                        {% trans %}
+                                            par {{user_name}}
+                                        {% endtrans %}
+                                    {% endif%}
                                 </span>
                                 <span class='app-row'>
-                                  <font size="1"><i>{{ app['date-formatter'].getPrettyString(application.get_created_on()) }}</i></font>
+                                    <font size="1"><i>{{ app['date-formatter'].getPrettyString(application.get_created_on()) }}</i></font>
                                 </span>
                                 <span class='app-row'>{{ application.get_description()|truncate(80, true, '...') }}</span>
                             </div>
