@@ -26,16 +26,6 @@
             jQuery.ajax(opts);
         });
 
-        var $event = function(event){
-            if ( event.type == "mouseover" ) {
-                $(this).find(".delete_app").show();
-            } else {
-                $(this).find(".delete_app").hide();
-            }
-        };
-
-        $(".app-list li").live("mouseover mouseout", $event);
-
         $(".modifier_callback").live("click", function(){
             $(this).hide();
             $(".save_callback").show();
@@ -103,7 +93,7 @@
 
         $("#app_dev, #app_dev_new, #app_dev_create, a.dev_back").live("click", function(e){
             e.preventDefault();
-            target = $(this).attr("href");
+            var target = $(this).attr("href");
             var opts = {
                 type:"GET",
                 url : target,
@@ -111,51 +101,24 @@
                 success : function(data){
                     $(".ui-tabs-panel:visible").empty().append(data);
                 }
-            }
+            };
             $.ajax(opts);
         });
 
-        $(".delete_app").die().live("click", function(){
-            var id = $(this).closest("li").attr('id').split("_");;
-            var app_id = id[1];
-            var $this= $(this);
-            $("body").append("<div id='confirm_delete'><p>"+trans.confirm_delete+" ? </p></div>")
-            $("#confirm_delete").dialog({
-                resizable: false,
-                autoOpen :true,
-                title: "",
-                draggable: false,
-                width:340,
-                modal: true,
-                buttons: [{
-                        id: "ybutton",
-                        text: trans.yes,
-                        click: function() {
-                            var opts = {
-                                type:"DELETE",
-                                url : '/developers/application/'+ app_id +'/',
-                                dataType: 'json',
-                                data : {},
-                                success : function(data){
-                                    if(data.success)
-                                    {
-                                        $this.closest("li").remove();
-                                        $("#confirm_delete").dialog("close");
-                                    }
-                                }
-                            }
-                            $.ajax(opts);
-                        }
-                    },
-                    {
-                        id: "nbutton",
-                        text: trans.no,
-                        click: function() {
-                            $( this ).dialog( "close" );
-                        }
-                    }],
-                close : function() {
-                    $( this ).remove();
+        $(".delete-app").bind("click", function(){
+            var li = $(this).closest("li");
+            var app_id = li.attr('id').split("_").pop();
+
+            $.ajax({
+                type:"DELETE",
+                url : '/developers/application/'+ app_id +'/',
+                dataType: 'json',
+                data : {},
+                success : function(data){
+                    if(data.success) {
+                        li.find('.modal').modal('hide');
+                        li.remove();
+                    }
                 }
             });
         });
