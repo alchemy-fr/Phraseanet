@@ -521,6 +521,7 @@ class Application extends SilexApplication
                 // add filters truncate, wordwrap, nl2br
                 $twig->addExtension(new \Twig_Extensions_Extension_Text());
                 $twig->addExtension(new \Alchemy\Phrasea\Twig\JSUniqueID());
+                $twig->addExtension(new \Alchemy\Phrasea\Twig\DashedPropertyToCamelCase());
 
                 $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
                 $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));

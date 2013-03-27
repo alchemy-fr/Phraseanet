@@ -1,5 +1,5 @@
 // controllers
-function LoginFormController($scope) {
+function LoginFormCtrl($scope) {
     $scope.isSubmitted = false;
 
     $scope.$watch('loginForm', function() {
@@ -96,6 +96,66 @@ function passwordChangeFormCtrl($scope) {
             return value === true;
         }) ? '' : 'input-table-error';
     };
+}
+
+function registerFormCtrl($scope, $http) {
+    $scope.isSubmitted = false;
+    $scope.fields = [];
+
+    $scope.$watch('registerForm', function() {
+        $scope.registerForm.email.errors = {'filled' : true, 'valid' : true};
+        $scope.registerForm.password.errors = {'filled' : true, 'valid' : true};
+        $scope.registerForm.passwordConfirm.errors = {'filled' : true, 'valid' : true};
+
+        $http.get('/login/registration-fields').success(function(data, status) {
+            $scope.fields = data;
+            _.each($scope.fields, function(field){
+                $scope.registerForm[camelCase(field.name)].errors = {'filled' : true, 'valid' : true};
+            });
+        });
+    });
+
+    $scope.submit = function() {
+        $scope.$broadcast('event:force-model-update');
+
+        if (true === $scope.registerForm.$valid) {
+            $scope.registerForm.email.errors = {'filled' : true, 'valid' : true};
+            $scope.registerForm.password.errors = {'filled' : true, 'valid' : true};
+            $scope.registerForm.passwordConfirm.errors = {'filled' : true, 'valid' : true};
+
+            _.each($scope.fields, function(field){
+                $scope.registerForm[camelCase(field.name)].errors = {'filled' : true, 'valid' : true};
+            });
+
+            $scope.isSubmitted = true;
+
+            return true;
+        }
+
+        $scope.registerForm.password.errors.filled = !$scope.registerForm.password.$error.required;
+        $scope.registerForm.passwordConfirm.errors.filled = !$scope.registerForm.passwordConfirm.$error.required;
+
+        _.each($scope.fields, function(field){
+            if (field.required) {
+                $scope.registerForm[camelCase(field.name)].errors.filled = !$scope.registerForm[camelCase(field.name)].$error.required;
+            }
+        });
+
+        return false;
+    };
+
+    $scope.getInputClass = function(name) {
+        return _.every($scope.registerForm[name].errors, function(value) {
+            return value === true;
+        }) ? '' : 'input-table-error';
+    };
+
+}
+
+function camelCase(name) {
+  return name.replace(/\-(\w)/g, function(all, letter, offset){
+    return (offset === 0 && letter === 'w') ? 'w' : letter.toUpperCase();
+  });
 }
 
 // bootstrap angular
