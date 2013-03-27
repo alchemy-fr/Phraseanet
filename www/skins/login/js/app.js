@@ -98,6 +98,7 @@ function passwordChangeFormCtrl($scope) {
     };
 }
 
+//@todo add tests
 function registerFormCtrl($scope, $http) {
     $scope.isSubmitted = false;
     $scope.fields = [];
@@ -110,7 +111,7 @@ function registerFormCtrl($scope, $http) {
         $http.get('/login/registration-fields').success(function(data, status) {
             $scope.fields = data;
             _.each($scope.fields, function(field){
-                $scope.registerForm[camelCase(field.name)].errors = {'filled' : true, 'valid' : true};
+                $scope.registerForm[camelize(field.name)].errors = {'filled' : true, 'valid' : true};
             });
         });
     });
@@ -124,7 +125,7 @@ function registerFormCtrl($scope, $http) {
             $scope.registerForm.passwordConfirm.errors = {'filled' : true, 'valid' : true};
 
             _.each($scope.fields, function(field){
-                $scope.registerForm[camelCase(field.name)].errors = {'filled' : true, 'valid' : true};
+                $scope.registerForm[camelize(field.name)].errors = {'filled' : true, 'valid' : true};
             });
 
             $scope.isSubmitted = true;
@@ -137,7 +138,7 @@ function registerFormCtrl($scope, $http) {
 
         _.each($scope.fields, function(field){
             if (field.required) {
-                $scope.registerForm[camelCase(field.name)].errors.filled = !$scope.registerForm[camelCase(field.name)].$error.required;
+                $scope.registerForm[camelize(field.name)].errors.filled = !$scope.registerForm[camelize(field.name)].$error.required;
             }
         });
 
@@ -152,10 +153,10 @@ function registerFormCtrl($scope, $http) {
 
 }
 
-function camelCase(name) {
-  return name.replace(/\-(\w)/g, function(all, letter, offset){
-    return (offset === 0 && letter === 'w') ? 'w' : letter.toUpperCase();
-  });
+function camelize(name) {
+    return name.replace(/\-(\w)/g, function(all, letter, offset){
+        return (offset === 0 && letter === 'w') ? 'w' : letter.toUpperCase();
+    });
 }
 
 // bootstrap angular

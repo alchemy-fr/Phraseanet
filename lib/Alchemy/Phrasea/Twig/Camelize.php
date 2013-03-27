@@ -1,17 +1,25 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Twig;
 
-class DashedPropertyToCamelCase extends \Twig_Extension
+class Camelize extends \Twig_Extension
 {
-
     /**
      *
      * @return string
      */
     public function getName()
     {
-        return 'dashed_property_to_camel_case';
+        return 'camelize';
     }
 
     /**
@@ -21,13 +29,13 @@ class DashedPropertyToCamelCase extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'dashed_property_to_camel_case' => new \Twig_Filter_Method($this, 'toCamelCase'),
+            'camelize' => new \Twig_Filter_Method($this, 'toCamelCase'),
         );
     }
 
-    public function toCamelCase($property)
+    public function toCamelCase($property, $separator = '-')
     {
-        $properties = explode('-', $property);
+        $properties = explode($separator, $property);
 
         if(count($properties) > 1) {
             $transformedProperty = "";

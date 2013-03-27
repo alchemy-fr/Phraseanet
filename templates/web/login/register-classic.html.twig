@@ -23,7 +23,16 @@
 
         <div class="row-fluid">
             <div class="span12">
-                <form name="registerForm" class="authentication-sidebar-form">
+                {{ auth_macro.flashes() }}
+                <form
+                     ng-controller="registerFormCtrl"
+                     novalidate
+                     name="registerForm"
+                     ng-submit="submit();"
+                     method="POST"
+                     action="{{ path("submit_login_register") }}"
+                     check-form-submission
+                >
 
                     <div class="row-fluid">
                         <div class="span12">
@@ -31,9 +40,32 @@
                         </div>
                     </div>
 
-                    <div class="sidebar-hint">
-                        * {% trans "Mandatory fields" %}
+                    <div class="row-fluid">
+                        <div class="span12">
+                            {{ auth_macro.fieldInput(form.password, "registerForm", 'icon-lock') }}
+                        </div>
                     </div>
+
+                    <div class="row-fluid">
+                        <div class="span12">
+                            {{ auth_macro.fieldInput(form.passwordConfirm, "registerForm", 'icon-lock', {
+                                    "ui-validate" : " '$value==" ~ form.password.vars.name ~ "' ",
+                                    "ui-validate-watch" : "'" ~ form.password.vars.name ~ "'"
+                                }, {
+                                    "validate_message" : "Passwords do not match"|trans
+                                })
+                            }}
+                        </div>
+                    </div>
+
+                    {% for field in app['registration.fields'] %}
+                        {% set fieldName = field['name'] %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ auth_macro.fieldInput(attribute(form, field['name']), "registerForm") }}
+                            </div>
+                        </div>
+                    {% endfor %}
 
                     <div class="row-fluid">
                         <div class="span12">

@@ -13,7 +13,7 @@
 {% block form_widget_simple %}
 {% spaceless %}
     {% set type = type|default('text') %}
-    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %} ng-model="{{full_name}}" ng-init="{{full_name}}='{{ value }}'"/>
+    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %} ng-model="{{ full_name|camelize }}" ng-init="{{ full_name|camelize }}='{{ value }}'"/>
 {% endspaceless %}
 {% endblock form_widget_simple %}
 
@@ -325,3 +325,10 @@
 {% block field_errors %}{{ block('form_errors') }}{% endblock %}
 {% block field_rest %}{{ block('form_rest') }}{% endblock %}
 {% block field_rows %}{{ block('form_rows') }}{% endblock %}
+
+
+{% block geoname_widget %}
+    {{ block('form_widget_simple') }}
+
+    {# add custom code here #}
+{% endblock %}

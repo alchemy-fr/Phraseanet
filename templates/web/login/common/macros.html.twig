@@ -10,7 +10,7 @@
 
     {% set attributes = custom_attributes|default({})|merge({
             'class': app['browser'].getBrowser() == constant('Browser::BROWSER_IE') and app['browser'].getVersion() <= 8  ? '' : 'input-block-level',
-            'ng-model' : input_name,
+            'ng-model' : input_name|camelize,
             'force-model-update' : ''
         })
     %}

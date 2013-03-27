@@ -46,9 +46,6 @@ function initialize_geoname_field(box)
     $('<input type="hidden" name="' + form_name + '" value="' + $(box).attr('geonameid') + '"/>').insertAfter($(box));
 
     var city_finder = $(box).parent().find('.geoname_city_finder');
-
-    console.log($(box), city_finder);
-
 }
 
 function checkCity(event, keybox)

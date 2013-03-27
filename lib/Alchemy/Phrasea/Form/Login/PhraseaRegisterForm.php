@@ -37,8 +37,8 @@ class PhraseaRegisterForm extends AbstractType
             ),
         ));
 
-        $builder->add('passwordConfirm', 'password', array(
-            'label' => _('Password (confirmation)'),
+        $builder->add('password', 'password', array(
+            'label' => _('Password'),
             'required' => true,
             'constraints' => array(
                 new Assert\NotBlank()
@@ -47,7 +47,7 @@ class PhraseaRegisterForm extends AbstractType
 
         $builder->add('passwordConfirm', 'password', array(
             'label' => _('Password (confirmation)'),
-            'required' => true,
+            'required' => false,
             'constraints' => array(
                 new Assert\NotBlank()
             )
@@ -59,12 +59,24 @@ class PhraseaRegisterForm extends AbstractType
         ));
 
         foreach ($this->params as $param) {
-            $builder->add($param['name'], $this->getType($param['name']), array(
-                'label'       => $this->getLabel($param['name']),
-                'required'    => $param['required'],
-                'constraints' => $this->getConstraints($param['name']),//, $param['constraints']),
-            ));
+            $name = $param['name'];
+            if (isset($this->available[$name])) {
+                $builder->add(
+                    $name,
+                    $this->getType($name),
+                    array(
+                        'label'       => $this->getLabel($name),
+                        'required'    => $param['required'],
+                        'constraints' => $this->getConstraints($name),//, $param['constraints']),
+                    )
+                );
+            }
         }
+    }
+
+    public function getName()
+    {
+        return null;
     }
 
     private function getType($name)
@@ -80,10 +92,5 @@ class PhraseaRegisterForm extends AbstractType
     private function getConstraints($name, array $constraints = array())
     {
         return isset($this->available[$name]['constraints']) ? $this->available[$name]['constraints'] : array();
-    }
-
-    public function getName()
-    {
-        return null;
     }
 }

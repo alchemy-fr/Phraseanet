@@ -37,7 +37,7 @@ class PhraseaRenewPasswordForm extends AbstractType
 
         $builder->add('passwordConfirm', 'password', array(
             'label' => _('New password (confirmation)'),
-            'required' => true,
+            'required' => false,
             'constraints' => array(
                 new Assert\NotBlank()
             )

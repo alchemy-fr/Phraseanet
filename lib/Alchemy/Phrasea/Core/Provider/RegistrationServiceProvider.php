@@ -21,7 +21,20 @@ class RegistrationServiceProvider implements ServiceProviderInterface
     {
         $app['registration.fields'] = $app->share(function (Application $app){
             if($app['phraseanet.configuration']->has('registration-fields')) {
-                return $app['phraseanet.configuration']->get('registration-fields');
+                return array_map(function($field) {
+                    $chunks = explode('-', $field['name']);
+
+                    if(count($chunks) > 1) {
+                        $transformedName = '';
+                        foreach($chunks as $chunk) {
+                            $transformedName .= ucfirst($chunk);
+                        }
+
+                        $field['name'] = lcfirst($transformedName);
+                    }
+
+                    return $field;
+                }, $app['phraseanet.configuration']->get('registration-fields'));
             } else {
                 return array();
             }
@@ -42,11 +55,11 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                         '2' => _('admin::compte-utilisateur:sexe: monsieur'),
                     )
                 ),
-                'first-name' => array(
+                'firstName' => array(
                     'label' => _('admin::compte-utilisateur prenom'),
                     'type' => 'text',
                 ),
-                'last-name' => array(
+                'lastName' => array(
                     'label' => _('admin::compte-utilisateur nom'),
                     'type' => 'text',
                 ),
@@ -54,11 +67,11 @@ class RegistrationServiceProvider implements ServiceProviderInterface
                     'label' => _('admin::compte-utilisateur adresse'),
                     'type' => 'textarea',
                 ),
-                'zip-code' => array(
+                'zipCode' => array(
                     'label' => _('admin::compte-utilisateur code postal'),
                     'type' => 'text',
                 ),
-                'geoname-id' => array(
+                'city' => array(
                     'label' => _('admin::compte-utilisateur ville'),
                     'type' => new \Alchemy\Phrasea\Form\Type\GeonameType(),
                 ),
