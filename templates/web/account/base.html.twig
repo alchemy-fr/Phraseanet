@@ -1,8 +1,8 @@
- <html lang="{{ app['locale.I18n'] }}">
+ <html lang="{{ app["locale.I18n"] }}">
     <head>
-        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} {% block title %}{% endblock %}</title>
+        <title>{{ app["phraseanet.registry"].get("GV_homeTitle") }} {% block title %}{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="/include/minify/f=/skins/build/account.css"/>
-        <script type="text/javascript" language="javascript" src="/include/minify/f=/assets/jquery/jquery.js,/assets/bootstrap/js/bootstrap-modal.js"></script>
+        <script type="text/javascript" language="javascript" src="/include/minify/f=/assets/jquery/jquery.js,/assets/bootstrap/js/bootstrap-modal.js,/skins/account/account.js"></script>
         {% block head %}{% endblock %}
     </head>
 
@@ -13,13 +13,13 @@
                     {% block menu %}
                         <div id="main-bar" class="navbar">
                             <div class="navbar-inner">
-                                <span class="brand">{{ app['phraseanet.registry'].get('GV_homeTitle') }}<span class="section-title"> {{ block('title') }}</span></span>
+                                <span class="brand">{{ app["phraseanet.registry"].get("GV_homeTitle") }}<span class="section-title"> {{ block("title") }}</span></span>
                                 <ul class="nav">
-                                    <li {% if selected == "informations" %}class="active"{% endif %}><a href="/account/">{% trans 'Informations' %}</a></li>
-                                    <li {% if selected == "access" %}class="active"{% endif %}><a href="/account/access/">{% trans 'Acces' %}</a></li>
-                                    <li {% if selected == "sessions" %}class="active"{% endif %}><a href="/account/security/sessions/">{% trans 'Sessions' %}</a></li>
-                                    <li {% if selected == "applications" %}class="active"{% endif %}><a href="/account/security/applications/">{% trans 'Applications' %}</a></li>
-                                    <li {% if selected == "developer" %}class="active"{% endif %}><a href="/developers/applications/">{% trans 'Developpeur' %}</a></li>
+                                    <li {% if selected == "informations" %}class="active"{% endif %}><a href="{{ path("account") }}">{% trans "Informations" %}</a></li>
+                                    <li {% if selected == "access" %}class="active"{% endif %}><a href="{{ path("account_access") }}">{% trans "Acces" %}</a></li>
+                                    <li {% if selected == "sessions" %}class="active"{% endif %}><a href="{{ path("account_sessions") }}">{% trans "Sessions" %}</a></li>
+                                    <li {% if selected == "applications" %}class="active"{% endif %}><a href="{{ path("account_auth_apps") }}">{% trans "Applications" %}</a></li>
+                                    <li {% if selected == "developer" %}class="active"{% endif %}><a href="{{ path("developers_applications") }}">{% trans "Developpeur" %}</a></li>
                                 </ul>
                             </div>
                         </div>

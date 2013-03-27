@@ -334,16 +334,41 @@ h1, h2, h3, h4 {
     color: @black;
 }
 
+.app-list {
+    border: 1px solid @grayDark;
+    background: lighten(@background, 2%);
+    .border-radius(@baseBorderRadius);
+}
+
 .app-list li {
-    padding: 10px 0;
+    padding: 10px;
+    border-top: 1px solid @grayDark;
+}
+
+.app-list li:first-child {
+    border-top:none;
 }
 
 .app-list li .app-row {
     line-height: @fontSizeLarge * 1.25;
+     padding-bottm: 5px;
 }
 
 .app-list li .app-row a {
     font-size: @fontSizeLarge * 1.25;
+}
+
+.text-success {
+    color: @green;
+}
+
+.text-error {
+    color: @red;
+}
+
+.control-span {
+    padding-top: 5px;
+    line-height: 20px;
 }
 
 /* Landscape phones and down */

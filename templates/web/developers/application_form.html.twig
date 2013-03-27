@@ -1,38 +1,32 @@
-{% extends 'account/base.html.twig' %}
-
-{% use "developers/header.html.twig" with header as parent_header %}
+{% extends "account/base.html.twig" %}
 
 {% block title %}
-    {% trans 'new client application' %}
-{% endblock %}
-
-{% block head %}
-    {{ block('parent_header') }}
+    {% trans "new client application" %}
 {% endblock %}
 
 {% set selected = "" %}
 
 {# form input macro #}
-{% macro input(name, value, violations, property, class='', type, size) %}
+{% macro input(name, value, violations, property, class="", type, size) %}
     {% if violations is none %}
-        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" {% if class is not empty %}class="{{ class }}"{% endif %}/>
+        <input type="{{ type|default("text") }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" {% if class is not empty %}class="{{ class }}"{% endif %}/>
     {% else %}
         {% set hasError = "false" %}
         {% for violation in violations %}
             {% if violation.getPropertyPath == property and hasError == "false" %}
                 {% set hasError = "true" %}
-                <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value  }}" size="{{ size|default(20) }}"   {% if class is not empty %}class="{{ class }}"{% endif %}/>
+                <input type="{{ type|default("text") }}" name="{{ name }}" value="{{ value  }}" size="{{ size|default(20) }}"   {% if class is not empty %}class="{{ class }}"{% endif %}/>
                 <span class="help-block" style="color:red"> {{ violation.getInvalidValue  }} - {{violation.getMessage}} </span>
             {% endif %}
         {% endfor %}
         {% if hasError == "false" %}
-            <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}"  {% if class is not empty %}class="{{ class }}"{% endif %}/>
+            <input type="{{ type|default("text") }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}"  {% if class is not empty %}class="{{ class }}"{% endif %}/>
         {% endif %}
     {% endif %}
 {% endmacro %}
 
 {# form textare macro #}
-{% macro textarea(name, value, violations,property, rows, cols, class='') %}
+{% macro textarea(name, value, violations,property, rows, cols, class="") %}
     {% if violations is none %}
         <textarea name="{{ name }}" rows="{{ rows|default(4)}}" cols="{{cols|default(20)}}"  {% if class is not empty %}class="{{ class }}"{% endif %}>{{ value|e}}</textarea>
     {% else %}
@@ -45,16 +39,16 @@
             {% endif %}
         {% endfor %}
         {% if hasError == "false" %}
-                <textarea name="{{ name }}" rows="{{ rows|default(4)}}" cols="{{cols|default(20)}}"  {% if class is not empty %}class="{{ class }}"{% endif %}>{{ value|default('')|e}}</textarea>
+                <textarea name="{{ name }}" rows="{{ rows|default(4)}}" cols="{{cols|default(20)}}"  {% if class is not empty %}class="{{ class }}"{% endif %}>{{ value|default("")|e}}</textarea>
         {% endif %}
     {% endif %}
 {% endmacro %}
 
 {% block content %}
-<form id="form_create" action="/developers/application/" method="POST" class="form-horizontal">
+<form id="form_create" action="{{ path("developers_application_new") }}" method="POST" class="form-horizontal">
     {% if form is none %}
-      {% set name, description, website, callback = '', '', '', ''%}
-      {% set app_type = 'web'%}
+      {% set name, description, website, callback = "", "", "", ""%}
+      {% set app_type = "web"%}
     {% else %}
       {% set name = form.name %}
       {% set description = form.description %}
@@ -64,65 +58,65 @@
     {% endif %}
 
     <div class="control-group">
-        <label class="control-label" for="name"><b>{% trans 'Nom' %}</b></label>
+        <label class="control-label" for="name"><b>{% trans "Nom" %}</b></label>
         <div class="controls">
-            {{ _self.input("name", name, violations, 'name', 'input-xlarge') }}
+            {{ _self.input("name", name, violations, "name", "input-xlarge") }}
         </div>
     </div>
 
     <div class="control-group">
-        <label class="control-label" for="name"><b>{% trans 'Description' %}</b></label>
+        <label class="control-label" for="name"><b>{% trans "Description" %}</b></label>
         <div class="controls">
-            {{ _self.textarea("description", description, violations, 'description', 5, 30, 'input-xlarge') }}
+            {{ _self.textarea("description", description, violations, "description", 5, 30, "input-xlarge") }}
         </div>
     </div>
 
     <div class="control-group">
-        <label for="website" class="control-label"><b>{% trans 'Site web' %}</b></label>
+        <label for="website" class="control-label"><b>{% trans "Site web" %}</b></label>
         <div class="controls">
             <select name="scheme-website"  class="input-mini">
                 <option value="http://">http://</option>
                 <option value="https://">https://</option>
             </select>
-            {{ _self.input("website", website, violations, 'urlwebsite') }}
+            {{ _self.input("website", website, violations, "urlwebsite") }}
         </div>
     </div>
 
     <div class="control-group">
-        <label class="control-label"><b>{% trans 'Type d\'application' %}</b></label>
+        <label class="control-label"><b>{% trans "Type d\'application" %}</b></label>
         <div class="controls">
             <label class="radio">
                 <input type="radio" name="type" value="web" {{ app_type == "web" ? "checked='checked'" : "" }}/>
-                {% trans 'Application web' %}
+                {% trans "Application web" %}
             </label>
 
             <label class="radio">
                 <input type="radio" name="type" value="desktop" {{ app_type == "desktop" ? "checked='checked'" : "" }}/>
-                {% trans 'Application desktop' %}
+                {% trans "Application desktop" %}
             </label>
         </div>
     </div>
 
     {% if app_type == "web" %}
         <div class="control-group">
-            <label for="callback" class="control-label"><b>{% trans 'URL de callback' %}</b></label>
+            <label for="callback" class="control-label"><b>{% trans "URL de callback" %}</b></label>
             <div class="controls">
                 <select name="scheme-callback" class="input-mini">
                     <option value="http://">http://</option>
                     <option value="https://">https://</option>
                 </select>
-                {{ _self.input("callback", callback, violations, 'urlcallback') }}
+                {{ _self.input("callback", callback, violations, "urlcallback") }}
             </div>
         </div>
     {% endif %}
 
     <div class="form-actions">
-        <button class="app_submit btn btn-info" type="submit">
-            {% trans 'boutton::valider' %}
+        <button class="btn btn-info" type="submit">
+            {% trans "boutton::valider" %}
         </button>
 
-        <a class="btn btn-primary" href="/developers/applications/">
-            {% trans 'boutton::retour' %}
+        <a class="btn" href="{{ path("developers_applications") }}">
+            {% trans "boutton::retour" %}
         </a>
     </div>
   </form>
