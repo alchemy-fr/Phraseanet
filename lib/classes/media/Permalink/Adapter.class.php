@@ -146,14 +146,15 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     {
         $registry = registry::get_instance();
 
-        return sprintf('%spermalink/v1/%d/%d/%s/%s.%s?token=%s',
+        return sprintf('%spermalink/v1/%d/%d/%s/%s.%s?token=%s&etag=%s',
             $registry->get('GV_ServerName'),
             $this->media_subdef->get_sbas_id(),
             $this->media_subdef->get_record_id(),
             $this->media_subdef->get_name(),
             $this->get_label(),
             pathinfo($this->media_subdef->get_file(), PATHINFO_EXTENSION),
-            $this->get_token()
+            $this->get_token(),
+            $this->media_subdef->getEtag()
         );
     }
 
