@@ -583,7 +583,6 @@ class searchEngine_adapter_phrasea_queryParser
 
         $ambigus = 0;
         if ($tree["CLASS"] == "OPK" && $tree["NODETYPE"] == PHRASEA_OP_COLON) {
-//      $ambigus = $this->setTids($tree, $tree["RB"], $bid, $domthe, $searchsynonyms);
             $ambigus = $this->setTids($tree, $bid, $domthe, $searchsynonyms);
         } elseif ($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK") {
             $ambigus += $this->thesaurus2($tree["LB"], $bid, $name, $domthe, $searchsynonyms, $depth + 1);
@@ -720,8 +719,6 @@ class searchEngine_adapter_phrasea_queryParser
         if ($this->debug)
             print("============================ setTids:\n\$tree=" . var_export($tree, true) . "\n");
 
-        // $this->proposals["BASES"]["b$bid"] = array("BID"=>$bid, "TERMS"=>array());
-
         $ambigus = 0;
         if (is_array($w = $tree["RB"]["VALUE"]))
             $t = $w = implode(" ", $w);
@@ -769,9 +766,6 @@ class searchEngine_adapter_phrasea_queryParser
             $prophtml = "";
             $this->propAsHTML($domthe->documentElement, $prophtml, $path);
             $this->proposals["BASES"]["b$bid"]["TERMS"][$path]["HTML"] = $prophtml;
-        } else {
-            // le mot n'est pas dans le thesaurus
-            $tree = null;
         }
 
         return($ambigus);
