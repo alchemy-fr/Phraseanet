@@ -12,6 +12,11 @@
 namespace Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\ApiLoadEndEvent;
+use Alchemy\Phrasea\Core\Event\ApiLoadStartEvent;
+use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
+use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -22,6 +27,10 @@ use Symfony\Component\HttpFoundation\Request;
 return call_user_func(function($environment = 'prod') {
 
     $app = new PhraseaApplication($environment);
+
+    $app->register(new \API_V1_Timer());
+    $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_START, new ApiLoadStartEvent());
+
     $app->disableCookies();
 
     /**
@@ -48,6 +57,7 @@ return call_user_func(function($environment = 'prod') {
      * @ throws \API_V1_exception_forbidden
      */
     $app->before(function($request) use ($app) {
+        $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_START, new ApiOAuth2StartEvent());
         $oauth2_adapter = new \API_OAuth2_Adapter($app);
         $oauth2_adapter->verifyAccessToken();
 
@@ -62,6 +72,7 @@ return call_user_func(function($environment = 'prod') {
         }
 
         if ($app->isAuthenticated()) {
+            $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
             return;
         }
 
@@ -70,6 +81,7 @@ return call_user_func(function($environment = 'prod') {
 
         $app->openAccount($auth, $oauth2_adapter->get_ses_id());
         $oauth2_adapter->remember_this_ses_id($app['session']->get('session_id'));
+        $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
 
         return;
     }, 256);
@@ -751,6 +763,8 @@ return call_user_func(function($environment = 'prod') {
 
         return $response;
     });
+
+    $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_END, new ApiLoadEndEvent());
 
     return $app;
 }, isset($environment) ? $environment : null);

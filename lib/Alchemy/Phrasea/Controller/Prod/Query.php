@@ -224,7 +224,6 @@ class Query implements ControllerProviderInterface
 
         $json['results'] = $app['twig']->render($template, array(
             'results'         => $result,
-            'GV_social_tools' => $app['phraseanet.registry']->get('GV_social_tools'),
             'highlight'       => $result->getQuery(),
             'searchEngine'    => $app['phraseanet.SE'],
             'suggestions'     => $prop

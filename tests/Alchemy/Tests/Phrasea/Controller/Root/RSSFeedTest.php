@@ -559,7 +559,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $is_thumbnail = false;
         $record = $entry_item->get_record();
 
-        if (substr($current_attributes["url"], 0 - strlen("/preview/")) == "/preview/") {
+        if (false !== strpos($current_attributes["url"], 'preview')) {
             $ressource = $record->get_subdef('preview');
         } else {
             $ressource = $record->get_thumbnail();

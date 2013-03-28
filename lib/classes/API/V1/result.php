@@ -9,19 +9,16 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\Core\Event\ApiResultEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- *
- *
- * @package     APIv1
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class API_V1_result
 {
+    protected $app;
+
     /**
      *
      * @var string
@@ -103,10 +100,11 @@ class API_V1_result
      *
      * @return API_V1_result
      */
-    public function __construct(Request $request, API_V1_adapter $api)
+    public function __construct(Application $app, Request $request, API_V1_adapter $api)
     {
         $date = new DateTime();
 
+        $this->app = $app;
         $this->request = $request;
         $this->api_version = $api->get_version();
         $this->response_time = $date->format(DATE_ATOM);
@@ -196,6 +194,14 @@ class API_V1_result
             )
             , 'response'      => $this->response
         );
+
+        $this->app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent());
+
+        $conf = $this->app['phraseanet.configuration']->getPhraseanet();
+
+        if ($conf->has('api-timers') && true === $conf->get('api-timers')) {
+            $ret['timers'] = $this->app['api.timers']->toArray();
+        }
 
         $return_value = false;
 

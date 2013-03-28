@@ -2135,11 +2135,18 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->assertEquals($subdef->get_permalink()->get_page(self::$DI['app']['phraseanet.registry']), $permalink['page_url']);
             $this->checkUrlCode200($permalink['page_url']);
             $this->assertPermalinkHeaders($permalink['page_url'], $subdef);
+
             $this->assertArrayHasKey("url", $permalink);
             $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['url']);
             $this->assertEquals($subdef->get_permalink()->get_url(), $permalink['url']);
             $this->checkUrlCode200($permalink['url']);
             $this->assertPermalinkHeaders($permalink['url'], $subdef, "url");
+
+            $this->assertArrayHasKey("download_url", $permalink);
+            $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['download_url']);
+            $this->assertEquals($subdef->get_permalink()->get_url() . '&download', $permalink['download_url']);
+            $this->checkUrlCode200($permalink['download_url']);
+            $this->assertPermalinkHeaders($permalink['download_url'], $subdef, "download_url");
         }
     }
 
@@ -2154,6 +2161,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $this->assertNotEquals($subdef->get_size(), $headers["download_content_length"]);
                 break;
             case "url" :
+                $this->assertTrue(strpos($headers['content_type'], $subdef->get_mime()) === 0, 'Verify that header ' . $headers['content_type'] . ' contains subdef mime type ' . $subdef->get_mime());
+                $this->assertEquals($subdef->get_size(), $headers["download_content_length"]);
+                break;
+            case "download_url" :
                 $this->assertTrue(strpos($headers['content_type'], $subdef->get_mime()) === 0, 'Verify that header ' . $headers['content_type'] . ' contains subdef mime type ' . $subdef->get_mime());
                 $this->assertEquals($subdef->get_size(), $headers["download_content_length"]);
                 break;

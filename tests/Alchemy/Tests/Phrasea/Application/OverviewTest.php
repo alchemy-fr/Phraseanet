@@ -22,7 +22,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
     function testDatafilesNonExistentSubdef()
     {
         self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/asubdefthatdoesnotexists/');
-        
+
         $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
@@ -72,6 +72,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
     function testPermalinkAuthenticated()
     {
         $this->assertTrue(self::$DI['app']->isAuthenticated());
+        $this->get_a_permalinkBCcompatibility();
         $this->get_a_permalink();
     }
 
@@ -79,6 +80,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
     {
         self::$DI['app']->closeAccount();
         $this->assertFalse(self::$DI['app']->isAuthenticated());
+        $this->get_a_permalinkBCcompatibility();
         $this->get_a_permalink();
     }
 
@@ -114,11 +116,11 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    protected function get_a_permalink()
+    protected function get_a_permalinkBCcompatibility()
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
-
+        
         $crawler = self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
@@ -128,5 +130,24 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $crawler = self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    protected function get_a_permalink()
+    {
+        $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
+        $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/whateverIwannt.jpg?token=' . $token . '';
+
+        $crawler = self::$DI['client']->request('GET', $url);
+        $response = self::$DI['client']->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/?token=' . $token . '';
+
+        $crawler = self::$DI['client']->request('GET', $url);
+        $response = self::$DI['client']->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('text/html; charset=UTF-8', $response->headers->get('Content-Type'));
     }
 }

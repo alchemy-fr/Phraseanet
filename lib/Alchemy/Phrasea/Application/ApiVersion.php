@@ -11,14 +11,20 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Silex\Application as SilexApplication;
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\Event\ApiLoadEndEvent;
+use Alchemy\Phrasea\Core\Event\ApiLoadStartEvent;
+use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;
 
 return call_user_func(function($environment = 'prod') {
 
     $app = new PhraseaApplication($environment);
     $app->disableCookies();
+
+    $app->register(new \API_V1_Timer());
+    $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_START, new ApiLoadStartEvent());
 
     $app->get('/', function(Request $request, SilexApplication $app) {
         $apiAdapter = new \API_V1_adapter($app);
@@ -44,6 +50,8 @@ return call_user_func(function($environment = 'prod') {
             )
         ))->get_response();
     });
+
+    $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_END, new ApiLoadEndEvent());
 
     return $app;
 }, isset($environment) ? $environment : null);

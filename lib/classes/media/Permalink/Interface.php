@@ -22,7 +22,7 @@ interface media_Permalink_Interface
 
     public function get_url();
 
-    public function get_page(registryInterface $registry);
+    public function get_page();
 
     public function get_id();
 

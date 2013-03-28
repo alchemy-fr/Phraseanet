@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -28,8 +29,7 @@ class Permalink extends AbstractDelivery
 
         $that = $this;
 
-        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/view/', function($label, $sbas_id, $record_id, $key, $subdef, PhraseaApplication $app) {
-
+        $deliverPermaview = function($sbas_id, $record_id, $key, $subdef, PhraseaApplication $app) {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
             $record = \media_Permalink_Adapter::challenge_token($app, $databox, $key, $record_id, $subdef);
@@ -47,9 +47,9 @@ class Permalink extends AbstractDelivery
             );
 
             return $app['twig']->render('overview.html.twig', $params);
-        })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+        };
 
-        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/', function(Application $app, $label, $sbas_id, $record_id, $key, $subdef) use ($that) {
+        $deliverPermalink = function(Application $app, $sbas_id, $record_id, $key, $subdef) use ($that) {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
             $record = \media_Permalink_Adapter::challenge_token($app, $databox, $key, $record_id, $subdef);
 
@@ -93,6 +93,26 @@ class Permalink extends AbstractDelivery
             }
 
             return $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
+        };
+
+        $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/', function (PhraseaApplication $app, Request $request, $sbas_id, $record_id, $subdef) use ($deliverPermaview) {
+            $key = $request->query->get('token');
+
+            return $deliverPermaview($sbas_id, $record_id, $key, $subdef, $app);
+        })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+
+        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/view/', function(PhraseaApplication $app, $label, $sbas_id, $record_id, $key, $subdef) use ($deliverPermaview) {
+            return $deliverPermaview($sbas_id, $record_id, $key, $subdef, $app);
+        })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+
+        $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/{label}', function (PhraseaApplication $app, Request $request, $sbas_id, $record_id, $subdef, $label) use ($deliverPermalink) {
+            $key = $request->query->get('token');
+
+            return $deliverPermalink($app, $sbas_id, $record_id, $key, $subdef);
+        })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+
+        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/', function(PhraseaApplication $app, $label, $sbas_id, $record_id, $key, $subdef) use ($deliverPermalink) {
+            return $deliverPermalink($app, $sbas_id, $record_id, $key, $subdef);
         })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
         return $controllers;

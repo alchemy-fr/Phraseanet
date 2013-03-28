@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Exception\RuntimeException;
 
 /**
  *
@@ -145,30 +146,29 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      */
     public function get_url()
     {
-        return sprintf('%spermalink/v1/%s/%d/%d/%s/%s/'
-                , $this->app['phraseanet.registry']->get('GV_ServerName')
-                , $this->get_label()
-                , $this->media_subdef->get_sbas_id()
-                , $this->media_subdef->get_record_id()
-                , $this->get_token()
-                , $this->media_subdef->get_name()
+        return sprintf('%spermalink/v1/%d/%d/%s/%s.%s?token=%s',
+            $this->app['phraseanet.registry']->get('GV_ServerName'),
+            $this->media_subdef->get_sbas_id(),
+            $this->media_subdef->get_record_id(),
+            $this->media_subdef->get_name(),
+            $this->get_label(),
+            pathinfo($this->media_subdef->get_record()->get_original_name(), PATHINFO_EXTENSION),
+            $this->get_token()
         );
     }
 
     /**
      *
-     * @param  registryInterface $registry
      * @return string
      */
-    public function get_page(registryInterface $registry)
+    public function get_page()
     {
-        return sprintf('%spermalink/v1/%s/%d/%d/%s/%s/view/'
-                , $registry->get('GV_ServerName')
-                , $this->get_label()
-                , $this->media_subdef->get_sbas_id()
-                , $this->media_subdef->get_record_id()
-                , $this->get_token()
-                , $this->media_subdef->get_name()
+        return sprintf('%spermalink/v1/%d/%d/%s/?token=%s',
+            $this->app['phraseanet.registry']->get('GV_ServerName'),
+            $this->media_subdef->get_sbas_id(),
+            $this->media_subdef->get_record_id(),
+            $this->media_subdef->get_name(),
+            $this->get_token()
         );
     }
 
@@ -225,7 +225,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      */
     public function set_label($label)
     {
-        $label = trim($label);
+        $label = trim($label) ? trim($label) : 'untitled';
         while (strpos($label, '  ') !== false)
             $label = str_replace('  ', ' ', $label);
 
@@ -334,13 +334,21 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
             , ':activated' => '1'
         );
 
+        $error = null;
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute($params);
+        try {
+            $stmt->execute($params);
+        } catch (\PDOException $e) {
+            $error = $e;
+        }
         $stmt->closeCursor();
-        unset($stmt);
+
+        if ($error) {
+            throw new RuntimeException('Permalink already exists', $e->getCode(), $e);
+        }
 
         $permalink = self::getPermalink($app, $databox, $media_subdef);
-        $permalink->set_label(strip_tags($media_subdef->get_record()->get_title()));
+        $permalink->set_label(strip_tags($media_subdef->get_record()->get_title(false, null, true)));
 
         return $permalink;
     }

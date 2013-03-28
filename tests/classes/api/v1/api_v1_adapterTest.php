@@ -13,6 +13,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
+        self::$DI['app']->register(new \API_V1_Timer());
         $this->object = new API_V1_adapter(self::$DI['app']);
     }
 
