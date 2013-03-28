@@ -11,18 +11,17 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
      */
     protected $api;
 
-    protected $app;
-
     public function setUp()
     {
         parent::setUp();
-        $this->app = require __DIR__ . '/../../../lib/Alchemy/Phrasea/Application/Api.php';
 
-        $conf = $this->app['Core']->getConfiguration();
+        self::$DI['app']->register(new \API_V1_Timer());
+
+        $conf = self::$DI['app']['phraseanet.configuration'];
         $confs = $conf->getConfigurations();
         $confs[$conf->getEnvironnement()]['phraseanet']['api-timers'] = true;
 
-        $this->app['Core']->getConfiguration()->setConfigurations($confs);
+        self::$DI['app']['phraseanet.configuration']->setConfigurations($confs);
 
         $this->api = $this->getMock("API_V1_adapter", array("get_version"), array(), "", false);
         $this->api->expects($this->any())->method("get_version")->will($this->returnValue("my_super_version1.0"));
@@ -46,7 +45,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         );
         $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
 
-        $api_result = new API_V1_result($this->app, $request, $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $return = $api_result->format();
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $return);
         $response = json_decode($return);
@@ -61,7 +60,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->checkResponseFieldMeta($response, "request", "GET my/base/path/my/request/uri", PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
 
         $this->assertObjectHasAttribute("timers", $response);
-        $this->assertCount(2, $response->timers);
+        $this->assertCount(1, $response->timers);
 
         foreach ($response->timers as $timer) {
             $this->assertIsTimer($timer);
@@ -91,7 +90,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertNull($response->meta->error_details);
 
         $this->assertObjectHasAttribute("timers", $response);
-        $this->assertCount(2, $response->timers);
+        $this->assertCount(1, $response->timers);
 
         foreach ($response->timers as $timer) {
             $this->assertIsTimer($timer);
@@ -109,7 +108,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         );
         $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
 
-        $api_result = new API_V1_result($this->app, $request, $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $return = $api_result->format();
         $sfYaml = new Symfony\Component\Yaml\Parser();
         $response = $sfYaml->parse($return);
@@ -146,7 +145,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals("UTF-8", $response["meta"]["charset"]);
 
         $this->assertArrayHasKey("timers", $response);
-        $this->assertCount(2, $response['timers']);
+        $this->assertCount(1, $response['timers']);
     }
 
     public function testFormatJsonP()
@@ -160,14 +159,14 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         );
         $request = new Request(array("callback" => "my_callback_function"), array(), array(), array(), array(), $server);
 
-        $api_result = new API_V1_result($this->app, $request, $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $return = $api_result->format();
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $return);
         $this->assertRegexp("/my_callback_function\(\{.+\}\)/", $return);
         $response = json_decode(substr($return, 21, strlen($return) - 22));
 
         $this->assertObjectHasAttribute("timers", $response);
-        $this->assertCount(2, $response->timers);
+        $this->assertCount(1, $response->timers);
 
         foreach ($response->timers as $timer) {
             $this->assertIsTimer($timer);
@@ -188,7 +187,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         );
         $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
 
-        $api_result = new API_V1_result($this->app, $request, $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $api_result->set_datas(array("pirouette" => "cacahuete", "black"     => true, "bob"       => array("bob")));
         $response = json_decode($api_result->format());
         $this->checkResponseFieldResponse($response, "pirouette", "cacahuete", PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
@@ -208,7 +207,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
 
         $data = array("pirouette" => "cacahuete", "black"     => true, "bob"       => array("bob"));
-        $api_result = new API_V1_result($this->app, $request, $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $api_result->set_datas($data);
 
         $this->assertEquals($data, $api_result->get_datas());
@@ -226,7 +225,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
 
         $data = array();
-        $api_result = new API_V1_result($this->app, $request, $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $api_result->set_datas($data);
 
         $this->assertEquals($data, $api_result->get_datas());
@@ -250,27 +249,27 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $server = array("HTTP_ACCEPT" => "application/json");
         $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
-        $api_result = new API_V1_result($this->app, $request, $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $this->assertEquals("application/json", $api_result->get_content_type());
 
         $server = array("HTTP_ACCEPT" => "application/yaml");
         $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
-        $api_result = new API_V1_result($this->app, $request, $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $this->assertEquals('application/yaml', $api_result->get_content_type());
 
         $server = array("HTTP_ACCEPT" => "text/yaml");
         $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
-        $api_result = new API_V1_result($this->app, $request, $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $this->assertEquals('application/yaml', $api_result->get_content_type());
 
         $server = array("HTTP_ACCEPT" => "");
         $request = new Request(array("callback" => "hello"), array(), array(), array(), array(), $server);
-        $api_result = new API_V1_result($this->app, $request, $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $this->assertEquals('text/javascript', $api_result->get_content_type());
 
         $server = array("HTTP_ACCEPT" => "unknow");
         $request = new Request(array("callback" => ""), array(), array(), array(), array(), $server);
-        $api_result = new API_V1_result($this->app, $request, $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], $request, $this->api);
         $this->assertEquals("application/json", $api_result->get_content_type());
     }
 
@@ -279,31 +278,31 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testSet_error_message()
     {
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, 'detaillage');
         $this->assertErrorMessage($api_result, 400, API_V1_result::ERROR_BAD_REQUEST, API_V1_exception_badrequest::get_details(), 'detaillage');
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_message(API_V1_result::ERROR_UNAUTHORIZED, 'detaillage');
         $this->assertErrorMessage($api_result, 401, API_V1_result::ERROR_UNAUTHORIZED, API_V1_exception_unauthorized::get_details(), 'detaillage');
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_message(API_V1_result::ERROR_FORBIDDEN, 'detaillage');
         $this->assertErrorMessage($api_result, 403, API_V1_result::ERROR_FORBIDDEN, API_V1_exception_forbidden::get_details(), 'detaillage');
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_message(API_V1_result::ERROR_NOTFOUND, 'detaillage');
         $this->assertErrorMessage($api_result, 404, API_V1_result::ERROR_NOTFOUND, API_V1_exception_notfound::get_details(), 'detaillage');
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_message(API_V1_result::ERROR_METHODNOTALLOWED, 'detaillage');
         $this->assertErrorMessage($api_result, 405, API_V1_result::ERROR_METHODNOTALLOWED, API_V1_exception_methodnotallowed::get_details(), 'detaillage');
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_message(API_V1_result::ERROR_INTERNALSERVERERROR, 'detaillage');
         $this->assertErrorMessage($api_result, 500, API_V1_result::ERROR_INTERNALSERVERERROR, API_V1_exception_internalservererror::get_details(), 'detaillage');
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_message(OAUTH2_ERROR_INVALID_REQUEST, 'detaillage');
         $this->assertErrorMessage($api_result, 200, OAUTH2_ERROR_INVALID_REQUEST, NULL, 'detaillage');
     }
@@ -340,69 +339,69 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testSet_error_code()
     {
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(400);
         $this->assertErrorMessage($api_result, 400, API_V1_result::ERROR_BAD_REQUEST, API_V1_exception_badrequest::get_details(), null);
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(401);
         $this->assertErrorMessage($api_result, 401, API_V1_result::ERROR_UNAUTHORIZED, API_V1_exception_unauthorized::get_details(), null);
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(403);
         $this->assertErrorMessage($api_result, 403, API_V1_result::ERROR_FORBIDDEN, API_V1_exception_forbidden::get_details(), null);
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(404);
         $this->assertErrorMessage($api_result, 404, API_V1_result::ERROR_NOTFOUND, API_V1_exception_notfound::get_details(), null);
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(405);
         $this->assertErrorMessage($api_result, 405, API_V1_result::ERROR_METHODNOTALLOWED, API_V1_exception_methodnotallowed::get_details(), null);
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(500);
         $this->assertErrorMessage($api_result, 500, API_V1_result::ERROR_INTERNALSERVERERROR, API_V1_exception_internalservererror::get_details(), null);
     }
 
     public function testGet_http_code()
     {
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(400);
         $this->assertEquals(400, $api_result->get_http_code());
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(401);
         $this->assertEquals(401, $api_result->get_http_code());
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(403);
         $this->assertEquals(403, $api_result->get_http_code());
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(404);
         $this->assertEquals(404, $api_result->get_http_code());
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(405);
         $this->assertEquals(405, $api_result->get_http_code());
 
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_error_code(500);
         $this->assertEquals(500, $api_result->get_http_code());
 
-        $api_result = new API_V1_result($this->app, new Request(array("callback" => "my_callback")), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(array("callback" => "my_callback")), $this->api);
         $api_result->set_error_code(400);
         $this->assertEquals(200, $api_result->get_http_code());
 
-        $api_result = new API_V1_result($this->app, new Request(array("callback" => "my_callback")), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(array("callback" => "my_callback")), $this->api);
         $api_result->set_error_code(500);
         $this->assertEquals(500, $api_result->get_http_code());
     }
 
     public function testSet_http_code()
     {
-        $api_result = new API_V1_result($this->app, new Request(), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(), $this->api);
         $api_result->set_http_code(500);
         $this->assertEquals(500, $api_result->get_http_code());
 
@@ -413,7 +412,7 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $api_result->set_http_code(403);
         $this->assertEquals(403, $api_result->get_http_code());
 
-        $api_result = new API_V1_result($this->app, new Request(array("callback" => "my_callback")), $this->api);
+        $api_result = new API_V1_result(self::$DI['app'], new Request(array("callback" => "my_callback")), $this->api);
         $api_result->set_http_code(500);
         $this->assertEquals(500, $api_result->get_http_code());
 

@@ -1,8 +1,5 @@
 <?php
 
-
-require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
-
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Silex\Application;
 use Symfony\Component\EventDispatcher\Event;
