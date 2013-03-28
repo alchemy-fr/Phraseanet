@@ -152,7 +152,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
             $this->media_subdef->get_record_id(),
             $this->media_subdef->get_name(),
             $this->get_label(),
-            pathinfo($this->media_subdef->get_record()->get_original_name(), PATHINFO_EXTENSION),
+            pathinfo($this->media_subdef->get_file(), PATHINFO_EXTENSION),
             $this->get_token()
         );
     }

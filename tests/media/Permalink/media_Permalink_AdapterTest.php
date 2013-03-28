@@ -54,10 +54,26 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
             . static::$records['record_1']->get_sbas_id() . '/'
             . static::$records['record_1']->get_record_id()
             . '/document/' . static::$object->get_label()
-            . '.' . pathinfo(static::$records['record_1']->get_original_name(), PATHINFO_EXTENSION)
+            . '.' . pathinfo(static::$records['record_1']->get_subdef('document')->get_file(), PATHINFO_EXTENSION)
             . '?token='       .     static::$object->get_token();
 
         $this->assertEquals($url, static::$object->get_url($registry));
+    }
+
+    public function testGet_Previewurl()
+    {
+        $databox = static::$records['record_1']->get_databox();
+        $previewPermalink = media_Permalink_Adapter::getPermalink($databox, static::$records['record_1']->get_subdef('preview'));
+
+        $registry = registry::get_instance();
+        $url = $registry->get('GV_ServerName') . 'permalink/v1/'
+            . static::$records['record_1']->get_sbas_id() . '/'
+            . static::$records['record_1']->get_record_id()
+            . '/preview/' . $previewPermalink->get_label()
+            . '.' . pathinfo(static::$records['record_1']->get_subdef('preview')->get_file(), PATHINFO_EXTENSION)
+            . '?token='       .     $previewPermalink->get_token();
+
+        $this->assertEquals($url, $previewPermalink->get_url($registry));
     }
 
     public function testGet_page()
