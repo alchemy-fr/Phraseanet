@@ -229,7 +229,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             , 'height'             => $this->height
             , 'etag'               => $this->etag
             , 'path'               => $this->path
-            , 'url'                => $this->url
+            , 'url'                => $this->url . ($this->is_physically_present ? '?etag=' . $this->etag : '')
             , 'file'               => $this->file
             , 'physically_present' => $this->is_physically_present
             , 'is_substituted'     => $this->is_substituted
