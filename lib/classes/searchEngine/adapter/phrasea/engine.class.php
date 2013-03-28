@@ -463,16 +463,14 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
      * @param  int                                 $sbas
      * @return searchEngine_adapter_phrasea_engine
      */
-    protected function singleParse($sbas)
+    protected function singleParse($sbas, $query)
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
         $this->qp[$sbas] = new searchEngine_adapter_phrasea_queryParser(Session_Handler::get_locale());
         $this->qp[$sbas]->debug = false;
-        if ($sbas == 'main')
-            $simple_treeq = $this->qp[$sbas]->parsequery($this->query);
-        else
-            $simple_treeq = $this->qp[$sbas]->parsequery($this->queries[$sbas]);
+
+        $simple_treeq = $this->qp[$sbas]->parsequery($query);
 
         $this->qp[$sbas]->priority_opk($simple_treeq);
         $this->qp[$sbas]->distrib_opk($simple_treeq);
@@ -507,6 +505,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             }
         }
         $this->query = $qry;
+        $this->singleParse('main', $qry);
 
         foreach ($this->queries as $sbas => $qs) {
             if ($sbas === 'main')
@@ -546,11 +545,9 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
                 if ($this->opt_max_date)
                     $this->queries[$sbas] .= ' AND ( ' . implode(' <= ' . $this->opt_max_date->format('Y-m-d') . ' OR  ', $this->opt_date_field) . ' <= ' . $this->opt_max_date->format('Y-m-d') . ' ) ';
             }
-        }
 
-        $this->singleParse('main');
-        foreach ($this->queries as $sbas => $qryBas)
-            $this->singleParse($sbas);
+            $this->singleParse($sbas, $this->queries[$sbas]);
+        }
 
         foreach ($appbox->get_databoxes() as $databox) {
             if ( ! isset($this->queries[$databox->get_sbas_id()]))
