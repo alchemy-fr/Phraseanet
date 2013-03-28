@@ -66,6 +66,8 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
      */
     public $sbasid;
 
+    public $nb_days;
+
     /**
      * @desc Construit un dashboard selon les droits du usrid, si sbas vaut null
      * c'est un report sur toutes les bases, sinon sur le sbasid
