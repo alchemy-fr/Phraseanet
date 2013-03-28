@@ -749,7 +749,7 @@ class Login implements ControllerProviderInterface
     {
         require_once($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
         if ($app['phraseanet.registry']->get('GV_captchas') && trim($app['phraseanet.registry']->get('GV_captcha_private_key')) !== '' && trim($app['phraseanet.registry']->get('GV_captcha_public_key')) !== '') {
-            include($app['phraseanet.registry']->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php');
+            require_once $app['phraseanet.registry']->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php';
         }
 
         $warning = $request->query->get('error', '');
@@ -887,7 +887,7 @@ class Login implements ControllerProviderInterface
                         && null !== $challenge = $request->request->get("recaptcha_challenge_field")
                         && null !== $captachResponse = $request->request->get("recaptcha_response_field")) {
 
-                        include($app['phraseanet.registry']->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php');
+                        require_once $app['phraseanet.registry']->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php';
 
                         $checkCaptcha = recaptcha_check_answer($privateKey, $_SERVER["REMOTE_ADDR"], $challenge, $captachResponse);
 
@@ -1039,6 +1039,7 @@ class Login implements ControllerProviderInterface
                     'token' => \random::getUrlToken($app, \random::TYPE_PASSWORD, $usr_id, $date)
                 )));
             } catch (\Exception $e) {
+                var_dump($e->getMessage());exit;
                 return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'), '/') . "&error=unexpected");
             }
         } else {

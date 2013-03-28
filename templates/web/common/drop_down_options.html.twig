@@ -30,7 +30,7 @@
                     {% trans 'action : print' %}
                     </div>
                 </div>
-                {% if registry.get('GV_social_tools') == 'all' or (registry.get('GV_social_tools') == 'publishers' and user.ACL().has_right_on_sbas(record.get_sbas_id(), 'bas_chupub')) %}
+                {% if app['phraseanet.registry'].get('GV_social_tools') == 'all' or (app['phraseanet.registry'].get('GV_social_tools') == 'publishers' and user.ACL().has_right_on_sbas(record.get_sbas_id(), 'bas_chupub')) %}
                     {% if record.is_grouping() is empty %}
                     <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
