@@ -532,16 +532,10 @@ class record_preview extends record_adapter
                 $row['referrer'] = _('report:: visualiseur cooliris');
 
             if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'document/') !== false) {
-                if (strpos($row['referrer'], '/view/') !== false)
-                    $row['referrer'] = _('report::presentation page preview');
-                else
-                    $row['referrer'] = _('report::acces direct');
+                $row['referrer'] = _('report::acces direct');
             }
             if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'permalink/') !== false) {
-                if (strpos($row['referrer'], '/view/') !== false)
-                    $row['referrer'] = _('report::presentation page preview');
-                else
-                    $row['referrer'] = _('report::acces direct');
+                $row['referrer'] = _('report::acces direct');
             }
             if ( ! isset($referrers[$row['referrer']]))
                 $referrers[$row['referrer']] = 0;

@@ -146,14 +146,15 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      */
     public function get_url()
     {
-        return sprintf('%spermalink/v1/%d/%d/%s/%s.%s?token=%s',
-            $this->app['phraseanet.registry']->get('GV_ServerName'),
+        return sprintf('%spermalink/v1/%d/%d/%s/%s.%s?token=%s&etag=%s',
+            $this->app['phraseanet.registry'],
             $this->media_subdef->get_sbas_id(),
             $this->media_subdef->get_record_id(),
             $this->media_subdef->get_name(),
             $this->get_label(),
-            pathinfo($this->media_subdef->get_record()->get_original_name(), PATHINFO_EXTENSION),
-            $this->get_token()
+            pathinfo($this->media_subdef->get_file(), PATHINFO_EXTENSION),
+            $this->get_token(),
+            $this->media_subdef->getEtag()
         );
     }
 

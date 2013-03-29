@@ -679,7 +679,7 @@ class PhraseaEngine implements SearchEngineInterface
         $this->singleParse('main', $query);
 
         foreach ($this->queries as $sbas => $db_query) {
-            $this->singleParse($sbas, $query);
+            $this->singleParse($sbas, $this->queries[$sbas]);
         }
 
         $base_ids = array_map(function(\collection $collection) {
@@ -733,11 +733,7 @@ class PhraseaEngine implements SearchEngineInterface
         $this->qp[$sbas] = new PhraseaEngineQueryParser($this->app, $this->options->getLocale());
         $this->qp[$sbas]->debug = false;
 
-        if ($sbas == 'main') {
-            $simple_treeq = $this->qp[$sbas]->parsequery($query);
-        } else {
-            $simple_treeq = $this->qp[$sbas]->parsequery($this->queries[$sbas]);
-        }
+        $simple_treeq = $this->qp[$sbas]->parsequery($query);
 
         $this->qp[$sbas]->priority_opk($simple_treeq);
         $this->qp[$sbas]->distrib_opk($simple_treeq);

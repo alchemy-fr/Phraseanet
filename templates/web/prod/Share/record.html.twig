@@ -7,6 +7,7 @@
 {% else %}
     {% set type = record.get_type() %}
     {% set url = preview.get_permalink().get_url() %}
+    {% set pageurl = preview.get_permalink().get_page() %}
 
     {% if url is not empty %}
         <div id="tabs">
@@ -17,13 +18,13 @@
             </ul>
             <div id="share">
                 <div id="tweet">
-                    <div style="margin-left:20px;padding:10px 0 5px;"><a href="http://www.twitter.com/home/?status={{ url|url_encode }}view/" target="_blank"><img src="/skins/icons/twitter.ico" title="share this on twitter" style="vertical-align:middle;padding:0 5px;"/> Send to Twitter</a></div>
-                    <div style="margin-left:20px;padding:5px 0 10px;"><a href="http://www.facebook.com/sharer.php?u={{ url|url_encode }}view/" target="_blank"><img src="/skins/icons/facebook.ico" title="share on facebook" style="vertical-align:middle;padding:0 5px;"/> Send to Facebook</a></div>
+                    <div style="margin-left:20px;padding:10px 0 5px;"><a href="http://www.twitter.com/home/?status={{ pageurl }}" target="_blank"><img src="/skins/icons/twitter.ico" title="share this on twitter" style="vertical-align:middle;padding:0 5px;"/> Send to Twitter</a></div>
+                    <div style="margin-left:20px;padding:5px 0 10px;"><a href="http://www.facebook.com/sharer.php?u={{ pageurl }}" target="_blank"><img src="/skins/icons/facebook.ico" title="share on facebook" style="vertical-align:middle;padding:0 5px;"/> Send to Facebook</a></div>
                 </div>
                 <div id="embed" style="text-align:center;padding:10px 0;">
                 <div style="text-align:left;margin-left:20px;padding:10px 0;">URL : </div>
 
-                        <input style="width:90%;" readonly="true" type="text"  value="{{ url|url_encode }}view/" onfocus="this.focus();this.select();" onclick="this.focus();this.select();" />
+                        <input style="width:90%;" readonly="true" type="text"  value="{{ pageurl }}" onfocus="this.focus();this.select();" onclick="this.focus();this.select();" />
                         <div style="text-align:left;margin-left:20px;padding:10px 0;">Embed :</div>
                             <textarea onfocus="this.focus();this.select();" onclick="this.focus();this.select();" style="width:90%;height:50px;" readonly="true" >
                                 {% if type == 'video' %}
@@ -50,7 +51,7 @@
                                         <param value="false" name="menu"/>
                                     </object>
                                 {% else %}
-                                    <a href="{{ url|url_encode }}view/"><img src="{{ url|url_encode }}" title="" /></a>
+                                    <a href="{{ pageurl }}"><img src="{{ url|url_encode }}" title="" /></a>
                                 {% endif %}
                             </textarea>
                         </div>
@@ -73,4 +74,4 @@
         <div><{% trans 'Aucune URL disponible' %}</div>
     {% endif %}
 {% endif %}
-    
+

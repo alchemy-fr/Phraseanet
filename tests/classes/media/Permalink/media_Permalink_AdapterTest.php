@@ -6,12 +6,14 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
      * @var media_Permalink_Adapter
      */
     static $object;
+    static $subdef;
 
     public function setUp()
     {
         parent::setUp();
         $databox = self::$DI['record_1']->get_databox();
-        static::$object = media_Permalink_Adapter::getPermalink(self::$DI['app'], $databox, self::$DI['record_1']->get_subdef('document'));
+        static::$subdef = self::$DI['record_1']->get_subdef('document');
+        static::$object = media_Permalink_Adapter::getPermalink($databox, static::$subdef);
     }
 
     public function testGet_label()
@@ -51,10 +53,29 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/document/' . static::$object->get_label()
-            . '.' . pathinfo(self::$DI['record_1']->get_original_name(), PATHINFO_EXTENSION)
-            . '?token='       .     static::$object->get_token();
+            . '.' . pathinfo(self::$DI['record_1']->get_subdef('document')->get_file(), PATHINFO_EXTENSION)
+            . '?token=' . static::$object->get_token()
+            . '&etag=' . static::$subdef->getEtag();
 
         $this->assertEquals($url, static::$object->get_url(self::$DI['app']['phraseanet.registry']));
+    }
+
+    public function testGet_Previewurl()
+    {
+        $databox = self::$DI['record_1']->get_databox();
+        $subdef = self::$DI['record_1']->get_subdef('preview');
+        $previewPermalink = media_Permalink_Adapter::getPermalink($databox, $subdef);
+
+        $registry = registry::get_instance();
+        $url = $registry->get('GV_ServerName') . 'permalink/v1/'
+            . self::$DI['record_1']->get_sbas_id() . '/'
+            . self::$DI['record_1']->get_record_id()
+            . '/preview/' . $previewPermalink->get_label()
+            . '.' . pathinfo(self::$DI['record_1']->get_subdef('preview')->get_file(), PATHINFO_EXTENSION)
+            . '?token=' . $previewPermalink->get_token()
+            . '&etag=' . $subdef->getEtag();
+
+        $this->assertEquals($url, $previewPermalink->get_url($registry));
     }
 
     public function testGet_page()
@@ -63,7 +84,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/document/'
-            . '?token='       .     static::$object->get_token();
+            . '?token=' . static::$object->get_token();
 
         $this->assertEquals($url, static::$object->get_page());
     }
