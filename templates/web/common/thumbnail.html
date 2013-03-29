@@ -60,7 +60,7 @@
           <script type="text/javascript">
             flowplayer("preview{{random}}",
               {src:"/include/jslibs/flowplayer/flowplayer-3.2.12.swf", wmode: "transparent"},
-              {clip:{url:"{{url}}",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"},
+              {clip:{url:"{{url|urlencode}}",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"},
               onError:function(code,message){getNewVideoToken({{thumbnail.get_sbas_id()}}, {{thumbnail.get_record_id()}}, this);},
               plugins: {h264streaming: {url: "/include/jslibs/flowplayer/flowplayer.pseudostreaming-3.2.9.swf"}}
               });
@@ -91,7 +91,6 @@
             "{{d_width}}", "{{d_height}}", "9.0.0", false, false,
             {menu: "false",flashvars: "playerID=2&autostart=yes&noinfo=yes&animation=no&remaining=yes&soundFile={{url}}", movie: "/include/jslibs/audio-player/player.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
         {% else %}
-          {% set url = url ~ '?tag=' ~ thumbnail.getEtag() %}
           <img class="{% if lazyload %}lazyload{% endif %} record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;"
                src="{% if lazyload %}/skins/grey.gif{% else %}{{ url }}{% endif %}" data-original="{{ url }}" ondragstart="return false;">
