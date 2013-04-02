@@ -57,8 +57,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
             . static::$records['record_1']->get_record_id()
             . '/document/' . static::$object->get_label()
             . '.' . pathinfo(static::$records['record_1']->get_subdef('document')->get_file(), PATHINFO_EXTENSION)
-            . '?token=' . static::$object->get_token()
-            . '&etag=' . static::$subdef->getEtag();
+            . '?token=' . static::$object->get_token();
 
         $this->assertEquals($url, static::$object->get_url($registry));
     }
@@ -75,8 +74,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
             . static::$records['record_1']->get_record_id()
             . '/preview/' . $previewPermalink->get_label()
             . '.' . pathinfo(static::$records['record_1']->get_subdef('preview')->get_file(), PATHINFO_EXTENSION)
-            . '?token=' . $previewPermalink->get_token()
-            . '&etag=' . $subdef->getEtag();
+            . '?token=' . $previewPermalink->get_token();
 
         $this->assertEquals($url, $previewPermalink->get_url($registry));
     }
