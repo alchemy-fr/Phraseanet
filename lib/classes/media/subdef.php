@@ -364,6 +364,14 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         return $this;
     }
 
+    public function get_url()
+    {
+        $url = parent::get_url();
+        $etag = $this->getEtag();
+
+        return $url . ($etag ? '?etag=' . $etag : '');
+    }
+
     /**
      *
      * @return int

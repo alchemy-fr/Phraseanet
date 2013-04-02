@@ -13,7 +13,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
         parent::setUp();
         $databox = self::$DI['record_1']->get_databox();
         static::$subdef = self::$DI['record_1']->get_subdef('document');
-        static::$object = media_Permalink_Adapter::getPermalink($databox, static::$subdef);
+        static::$object = media_Permalink_Adapter::getPermalink(self::$DI['app'], $databox, static::$subdef);
     }
 
     public function testGet_label()
@@ -54,28 +54,25 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
             . self::$DI['record_1']->get_record_id()
             . '/document/' . static::$object->get_label()
             . '.' . pathinfo(self::$DI['record_1']->get_subdef('document')->get_file(), PATHINFO_EXTENSION)
-            . '?token=' . static::$object->get_token()
-            . '&etag=' . static::$subdef->getEtag();
+            . '?token=' . static::$object->get_token();
 
-        $this->assertEquals($url, static::$object->get_url(self::$DI['app']['phraseanet.registry']));
+        $this->assertEquals($url, static::$object->get_url());
     }
 
     public function testGet_Previewurl()
     {
         $databox = self::$DI['record_1']->get_databox();
         $subdef = self::$DI['record_1']->get_subdef('preview');
-        $previewPermalink = media_Permalink_Adapter::getPermalink($databox, $subdef);
+        $previewPermalink = media_Permalink_Adapter::getPermalink(self::$DI['app'], $databox, $subdef);
 
-        $registry = registry::get_instance();
-        $url = $registry->get('GV_ServerName') . 'permalink/v1/'
+        $url = self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'permalink/v1/'
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/preview/' . $previewPermalink->get_label()
             . '.' . pathinfo(self::$DI['record_1']->get_subdef('preview')->get_file(), PATHINFO_EXTENSION)
-            . '?token=' . $previewPermalink->get_token()
-            . '&etag=' . $subdef->getEtag();
+            . '?token=' . $previewPermalink->get_token();
 
-        $this->assertEquals($url, $previewPermalink->get_url($registry));
+        $this->assertEquals($url, $previewPermalink->get_url());
     }
 
     public function testGet_page()

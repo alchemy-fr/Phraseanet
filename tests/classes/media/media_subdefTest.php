@@ -87,6 +87,15 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
+     * @covers media_subdef::get_url
+     */
+    public function testGet_url()
+    {
+        $this->assertEquals('/skins/icons/substitution/image_jpeg.png', self::$objectNotPresent->get_url());
+        $this->assertRegExp('#\/datafiles\/' . self::$objectPresent->get_sbas_id() . '\/' . self::$objectPresent->get_record_id() . '\/preview\/\?etag=[0-9a-f]{32}#', self::$objectPresent->get_url());
+    }
+
+    /**
      * @covers media_subdef::get_permalink
      */
     public function testGet_permalink()
