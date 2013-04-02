@@ -137,6 +137,8 @@ class ApplicationSpecification implements Specification
             , $this->getConfigurationsPathFile()
         );
 
+        touch($this->getBinariesPathFile());
+
         if (function_exists('chmod')) {
             chmod($this->getConnexionsPathFile(), 0700);
             chmod($this->getConfigurationsPathFile(), 0700);
