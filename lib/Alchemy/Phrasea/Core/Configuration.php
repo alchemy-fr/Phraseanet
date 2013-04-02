@@ -11,8 +11,9 @@
 
 namespace Alchemy\Phrasea\Core;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Alchemy\Phrasea\Core\Configuration\ApplicationSpecification;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
  * Handle configuration file mechanism of phraseanet
@@ -160,7 +161,7 @@ class Configuration
             $configurations = $this->specifications->getConfigurations();
 
             if ( ! isset($configurations[$this->environment])) {
-                throw new \Exception('Requested environnment is not available');
+                throw new InvalidArgumentException('Requested environnment is not available');
             }
 
             $this->configuration = new ParameterBag($configurations[$this->environment]);
@@ -252,10 +253,15 @@ class Configuration
         return $this->specifications->initialize();
     }
 
-    public function setConfigurations($configurations)
+    public function setConfigurations($configurations, $environment = null)
     {
         $this->specifications->setConfigurations($configurations);
-        $this->configuration = new ParameterBag($configurations[$this->environment]);
+
+        if (null === $environment) {
+            $environment = $this->environment;
+        }
+
+        $this->setEnvironnement($environment);
 
         return $this->getConfigurations();
     }

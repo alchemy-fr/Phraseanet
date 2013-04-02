@@ -114,11 +114,11 @@ class appbox extends base
                 if (null === $filename) {
                     break;
                 }
-                
+
                 $media = $core['mediavorus']->guess($pathfile);
-                
+
                 $imageSpec = new ImageSpecification();
-                
+
                 if($media->getWidth() > 120 || $media->getHeight() > 24) {
                     $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
                     $imageSpec->setDimensions(120, 24);
@@ -528,7 +528,7 @@ class appbox extends base
                 }
             }
 
-            $Core->getConfiguration()->setConfigurations($arrayConf);
+            $Core->getConfiguration()->setConfigurations($arrayConf, $arrayConf['environment']);
 
             $Core->getConfiguration()->setEnvironnement('prod');
         }
