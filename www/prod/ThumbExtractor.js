@@ -187,7 +187,11 @@
  */
   var ThumbEditor = function(videoId, canvaId){
 
-    var editorVideo = new Video(document.getElementById(videoId));
+    var domElement = document.getElementById(videoId);
+
+    if (null !== domElement) {
+        var editorVideo = new Video(domElement);
+    }
     var store = new Store();
 
     function getCanva(){
@@ -198,7 +202,8 @@
       isSupported : function () {
           var elem = document.createElement('canvas');
 
-          return !! elem.getContext && !! elem.getContext('2d');
+          return !! document.getElementById(videoId) && document.getElementById(canvaId)
+                  && !! elem.getContext && !! elem.getContext('2d');
       },
       screenshot : function(){
         var screenshot = new ScreenShot(
