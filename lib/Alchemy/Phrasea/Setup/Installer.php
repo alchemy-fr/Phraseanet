@@ -266,7 +266,7 @@ class Installer
             }
         }
 
-        $this->app['phraseanet.configuration']->setConfigurations($arrayConf);
+        $this->app['phraseanet.configuration']->setConfigurations($arrayConf, $arrayConf['environment']);
         $this->app['phraseanet.configuration']->setBinaries(array('binaries' => $this->binaryData));
     }
 }

@@ -202,10 +202,15 @@ class Configuration
         return $this->specifications->delete();
     }
 
-    public function setConfigurations($configurations)
+    public function setConfigurations($configurations, $environment = null)
     {
         $this->specifications->setConfigurations($configurations);
-        $this->configuration = new ParameterBag($configurations[$this->environment]);
+
+        if (null === $environment) {
+            $environment = $this->environment;
+        }
+
+        $this->setEnvironnement($environment);
 
         return $this->getConfigurations();
     }
