@@ -98,7 +98,7 @@ if ($parm["act"] == "DELETETASK") {
                         setSchedStatus('tostop');
                         break;
                     case "log":
-                        window.open("/admin/showlogtask.php?fil=scheduler&log=l", "scheduler.log");
+                        window.open("/admin/showlogtask.php?fil=scheduler&log=l", "scheduler_log");
                         break;
                     case "preferences":
                         preferencesScheduler();
@@ -131,7 +131,7 @@ if ($parm["act"] == "DELETETASK") {
                         }
                         break;
                     case "log":
-                        window.open("/admin/showlogtask.php?fil=task&id="+tid+"&log=l", "task_"+tid+".log");
+                        window.open("/admin/showlogtask.php?fil=task&id="+tid+"&log=l", "task_"+tid+"_log");
                         break;
                     }
                 }
@@ -482,7 +482,7 @@ foreach ($tasks as $t) {
                 {
                     $.ajax({
                         url: '/admin/adminFeedback.php',
-                        data:{action:'PINGSCHEDULER_JS', dbps:0},
+                        data:{action:'PINGSCHEDULER_JS', dbps:0, rnd:Math.random()},
                         dataType:'json',
                         success: function(ret)
                         {
