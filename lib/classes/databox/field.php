@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\Metadata\Tag\Nosource;
 use PHPExiftool\Driver\TagInterface;
 use PHPExiftool\Driver\TagFactory;
+use PHPExiftool\Exception\TagUnknown;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -192,12 +193,12 @@ class databox_field implements cache_cacheableInterface
         }
 
         $this->name = $row['name'];
-        $this->indexable = ! ! $row['indexable'];
-        $this->readonly = ! ! $row['readonly'];
-        $this->required = ! ! $row['required'];
-        $this->multi = ! ! $row['multi'];
-        $this->Business = ! ! $row['business'];
-        $this->report = ! ! $row['report'];
+        $this->indexable = (Boolean) $row['indexable'];
+        $this->readonly = (Boolean) $row['readonly'];
+        $this->required = (Boolean) $row['required'];
+        $this->multi = (Boolean) $row['multi'];
+        $this->Business = (Boolean) $row['business'];
+        $this->report = (Boolean) $row['report'];
         $this->type = $row['type'] ? : self::TYPE_STRING;
         $this->tbranch = $row['tbranch'];
 
@@ -215,7 +216,7 @@ class databox_field implements cache_cacheableInterface
 
         $this->separator = self::checkMultiSeparator($row['separator'], $this->multi);
 
-        $this->thumbtitle = $row['thumbtitle'];
+        $this->thumbtitle = (Boolean) $row['thumbtitle'];
 
         return $this;
     }
@@ -474,7 +475,11 @@ class databox_field implements cache_cacheableInterface
 
             $tag = new $classname();
         } else {
-            $tag = TagFactory::getFromRDFTagname($tagName);
+            try {
+                $tag = TagFactory::getFromRDFTagname($tagName);
+            } catch (TagUnknown $e) {
+                throw new NotFoundHttpException(sprintf("Tag %s not found", $tagName), $e);
+            }
         }
 
         return $tag;
@@ -590,7 +595,7 @@ class databox_field implements cache_cacheableInterface
         $this->Business = ! ! $boolean;
 
         if ($this->Business) {
-            $this->thumbtitle = '0';
+            $this->thumbtitle = false;
         }
 
         return $this;
@@ -685,7 +690,7 @@ class databox_field implements cache_cacheableInterface
     {
         $this->thumbtitle = $value;
 
-        if ($this->thumbtitle != '0') {
+        if (!$this->thumbtitle) {
             $this->Business = false;
         }
 
@@ -818,7 +823,7 @@ class databox_field implements cache_cacheableInterface
             'multi'                 => $this->multi,
             'indexable'             => $this->indexable,
             'dces-element'          => $this->dces_element,
-            'vocabulary-name'       => $this->Vocabulary ? $this->Vocabulary->getName() : null,
+            'vocabulary-type'       => $this->Vocabulary ? $this->Vocabulary->getType() : null,
             'vocabulary-restricted' => $this->VocabularyRestriction,
         );
     }
