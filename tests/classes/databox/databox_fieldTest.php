@@ -379,8 +379,8 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
             if (!is_null($data['dces-element'])) {
                 $this->assertInternalType('', $data['dces-element']);
             }
-            if (!is_null($data['vocabulary-name'])) {
-                $this->assertInternalType('string', $data['vocabulary-name']);
+            if (!is_null($data['vocabulary-type'])) {
+                $this->assertInternalType('string', $data['vocabulary-type']);
             }
             $this->assertInternalType('boolean', $data['vocabulary-restricted']);
         }
