@@ -355,4 +355,34 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
         $this->assertEquals($value->getValue(), $AddedValue);
     }
 
+    public function testToArray()
+    {
+        foreach (array($this->object_mono, $this->object_multi) as $object) {
+            $data = $object->toArray();
+
+            $this->assertInternalType('array', $data);
+            $this->assertInternalType('integer', $data['id']);
+            $this->assertInternalType('string', $data['name']);
+            $this->assertInternalType('string', $data['tag']);
+            $this->assertInternalType('boolean', $data['business']);
+            $this->assertInternalType('string', $data['type']);
+            if (!is_null($data['thumbtitle'])) {
+                $this->assertInternalType('string', $data['thumbtitle']);
+            }
+            $this->assertInternalType('string', $data['tbranch']);
+            $this->assertInternalType('string', $data['separator']);
+            $this->assertInternalType('boolean', $data['required']);
+            $this->assertInternalType('boolean', $data['report']);
+            $this->assertInternalType('boolean', $data['readonly']);
+            $this->assertInternalType('boolean', $data['multi']);
+            $this->assertInternalType('boolean', $data['indexable']);
+            if (!is_null($data['dces-element'])) {
+                $this->assertInternalType('', $data['dces-element']);
+            }
+            if (!is_null($data['vocabulary-name'])) {
+                $this->assertInternalType('string', $data['vocabulary-name']);
+            }
+            $this->assertInternalType('boolean', $data['vocabulary-restricted']);
+        }
+    }
 }
