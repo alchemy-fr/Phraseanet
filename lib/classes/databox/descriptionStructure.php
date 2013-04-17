@@ -118,4 +118,11 @@ class databox_descriptionStructure implements IteratorAggregate
     {
         return isset($this->elements[$id]);
     }
+
+    public function toArray()
+    {
+        return array_map(function ($element) {
+            return $element->toArray();
+        }, array_values($this->elements));
+    }
 }
