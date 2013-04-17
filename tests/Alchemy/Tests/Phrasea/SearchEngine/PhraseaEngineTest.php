@@ -6,11 +6,18 @@ use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Alchemy\Tests\Phrasea\SearchEngine\SearchEngineAbstractTest;
 use Symfony\Component\Process\Process;
 
+/**
+ * @covers Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
+ */
 class PhraseaEngineTest extends SearchEngineAbstractTest
 {
-    /**
-     * @covers Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
-     */
+    public function setUp()
+    {
+        if (!extension_loaded('phrasea2')) {
+            $this->markTestSkipped('Phrasea extension is not loaded');
+        }
+    }
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
