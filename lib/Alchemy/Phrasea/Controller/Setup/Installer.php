@@ -38,63 +38,61 @@ class Installer implements ControllerProviderInterface
 
     public function rootInstaller(Application $app, Request $request)
     {
-        $php_constraint = \setup::check_php_version();
-        $writability_constraints = \setup::check_writability(new \Setup_Registry());
-        $extension_constraints = \setup::check_php_extension();
-        $opcode_constraints = \setup::check_cache_opcode();
-        $php_conf_constraints = \setup::check_php_configuration();
-        $locales_constraints = \setup::check_system_locales($app);
-
+//        $php_constraint = \setup::check_php_version();
+//        $writability_constraints = \setup::check_writability(new \Setup_Registry());
+//        $extension_constraints = \setup::check_php_extension();
+//        $opcode_constraints = \setup::check_cache_opcode();
+//        $php_conf_constraints = \setup::check_php_configuration();
+//        $locales_constraints = \setup::check_system_locales($app);
+//
+//        $constraints_coll = array(
+//            'php_constraint'          => $php_constraint
+//            , 'writability_constraints' => $writability_constraints
+//            , 'extension_constraints'   => $extension_constraints
+//            , 'opcode_constraints'      => $opcode_constraints
+//            , 'php_conf_constraints'    => $php_conf_constraints
+//            , 'locales_constraints'     => $locales_constraints
+//        );
         $constraints_coll = array(
-            'php_constraint'          => $php_constraint
-            , 'writability_constraints' => $writability_constraints
-            , 'extension_constraints'   => $extension_constraints
-            , 'opcode_constraints'      => $opcode_constraints
-            , 'php_conf_constraints'    => $php_conf_constraints
-            , 'locales_constraints'     => $locales_constraints
+            new \Alchemy\Phrasea\Setup\Requirements\BinariesRequirements(),
+            new \Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements(),
+            new \Alchemy\Phrasea\Setup\Requirements\LocalesRequirements(),
+            new \Alchemy\Phrasea\Setup\Requirements\PhpRequirements(),
+            new \Alchemy\Phrasea\Setup\Requirements\PhraseaRequirements(),
+            new \Alchemy\Phrasea\Setup\Requirements\SystemRequirements(),
         );
-        $redirect = true;
+//        $redirect = true;
 
-        foreach ($constraints_coll as $key => $constraints) {
-            $unset = true;
-            foreach ($constraints as $constraint) {
-                if (!$constraint->is_ok() && $constraint->is_blocker())
-                    $redirect = $unset = false;
-            }
-            if ($unset === true) {
-                unset($constraints_coll[$key]);
-            }
-        }
+//        foreach ($constraints_coll as $key => $constraints) {
+//            $unset = true;
+//            foreach ($constraints as $constraint) {
+//                if (!$constraint->is_ok() && $constraint->is_blocker())
+//                    $redirect = $unset = false;
+//            }
+//            if ($unset === true) {
+//                unset($constraints_coll[$key]);
+//            }
+//        }
 
-        if ($redirect) {
-            return $app->redirect('/setup/installer/step2/');
-        }
+//        if ($redirect) {
+//            return $app->redirect('/setup/installer/step2/');
+//        }
 
-        $app['twig.loader.filesystem']->setPaths(array(
-            __DIR__ . '/../../../../../templates/web'
+//        $app['twig.loader.filesystem']->setPaths(array(
+//            __DIR__ . '/../../../../../templates/web'
+//        ));
+
+        return $app['twig']->render('/setup/index.html.twig', array(
+            'locale'             => $app['locale'],
+            'available_locales'  => $app->getAvailableLanguages(),
+            'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/',
+            'constraints'        => $constraints_coll,
         ));
-
-        return $app['twig']->render(
-                '/setup/index.html.twig'
-                , array_merge($constraints_coll, array(
-                    'locale'             => $app['locale']
-                    , 'available_locales'  => $app->getAvailableLanguages()
-                    , 'version_number'     => $app['phraseanet.version']->getNumber()
-                    , 'version_name'       => $app['phraseanet.version']->getName()
-                    , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
-                ))
-        );
     }
 
     public function getInstallForm(Application $app, Request $request)
     {
         \phrasea::use_i18n($app['locale']);
-
-        $ld_path = array(__DIR__ . '/../../../../../templates/web');
-        $loader = new \Twig_Loader_Filesystem($ld_path);
-
-        $twig = new \Twig_Environment($loader);
-        $twig->addExtension(new \Twig_Extensions_Extension_I18n());
 
         $warnings = array();
 
@@ -127,20 +125,20 @@ class Installer implements ControllerProviderInterface
             $warnings[] = _('It is not recommended to install Phraseanet without HTTPS support');
         }
 
-        return $twig->render(
-                '/setup/step2.html.twig'
-                , array(
-                'locale'              => $app['locale']
-                , 'available_locales'   => $app->getAvailableLanguages()
-                , 'available_templates' => array('en', 'fr')
-                , 'version_number'      => $app['phraseanet.version']->getNumber()
-                , 'version_name'        => $app['phraseanet.version']->getName()
-                , 'warnings'            => $warnings
-                , 'error'               => $request->query->get('error')
-                , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
-                , 'discovered_binaries' => \setup::discover_binaries()
-                , 'rootpath'            => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
-            ));
+        return $app['twig']->render(
+            '/setup/step2.html.twig'
+            , array(
+            'locale'              => $app['locale']
+            , 'available_locales'   => $app->getAvailableLanguages()
+            , 'available_templates' => array('en', 'fr')
+            , 'version_number'      => $app['phraseanet.version']->getNumber()
+            , 'version_name'        => $app['phraseanet.version']->getName()
+            , 'warnings'            => $warnings
+            , 'error'               => $request->query->get('error')
+            , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
+            , 'discovered_binaries' => \setup::discover_binaries()
+            , 'rootpath'            => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
+        ));
     }
 
     public function doInstall(Application $app, Request $request)

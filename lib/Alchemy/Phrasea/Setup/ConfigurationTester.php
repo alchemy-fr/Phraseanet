@@ -12,16 +12,27 @@
 namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Setup\System\ProbeInterface as SystemProbeInterface;
 use Alchemy\Phrasea\Setup\Version\Probe\Probe31;
 use Alchemy\Phrasea\Setup\Version\Probe\Probe35;
 use Alchemy\Phrasea\Setup\Version\Probe\ProbeInterface as VersionProbeInterface;
+use Alchemy\Phrasea\Setup\Probe\BinariesProbe;
+use Alchemy\Phrasea\Setup\Probe\CacheServerProbe;
+use Alchemy\Phrasea\Setup\Probe\OpcodeCacheProbe;
+use Alchemy\Phrasea\Setup\Probe\FilesystemProbe;
+use Alchemy\Phrasea\Setup\Probe\LocalesProbe;
+use Alchemy\Phrasea\Setup\Probe\PhpProbe;
+use Alchemy\Phrasea\Setup\Probe\PhraseaProbe;
+use Alchemy\Phrasea\Setup\Probe\SearchEngineProbe;
+use Alchemy\Phrasea\Setup\Probe\SystemProbe;
 
 class ConfigurationTester
 {
     private $app;
-    private $probes;
+    private $requirements;
     private $versionProbes;
+
+    const PROD_ENV = 'prod';
+    const DEV_ENV = 'dev';
 
     public function __construct(Application $app)
     {
@@ -33,9 +44,25 @@ class ConfigurationTester
         );
     }
 
-    public function registerProbe(SystemProbeInterface $probe)
+    public function getRequirements()
     {
-        $this->probes[] = $probe;
+        if ($this->requirements) {
+            return $this->requirements;
+        }
+
+        $this->requirements = array(
+            BinariesProbe::create($this->app),
+            CacheServerProbe::create($this->app),
+            OpcodeCacheProbe::create($this->app),
+            FilesystemProbe::create($this->app),
+            LocalesProbe::create($this->app),
+            PhpProbe::create($this->app),
+            PhraseaProbe::create($this->app),
+            SearchEngineProbe::create($this->app),
+            SystemProbe::create($this->app),
+        );
+
+        return $this->requirements;
     }
 
     public function registerVersionProbe(VersionProbeInterface $probe)
@@ -96,6 +123,7 @@ class ConfigurationTester
     }
 
     /**
+     * Returns true if a major migration script can be executed
      *
      * @return type
      */

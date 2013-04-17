@@ -212,42 +212,35 @@ div.switch_right.unchecked {
 .board_section #mail_checker {
   margin: 0 0 20px 15px;
 }
-.board_section div[class^="section_"] {
-  width: 400px;
+.board_section div[class="section"] {
   height: auto;
 }
-.board_section div[class^="section_"] h2 {
+.board_section div[class="section"] h2 {
   line-height: 24px;
 }
-.board_section div[class^="section_"] ul.setup {
-  width: 360px;
+.board_section div[class="section"] ul.setup {
   border: 1px solid #cccccc;
   list-style-type: none;
 }
-.board_section div[class^="section_"] ul.setup li {
+.board_section div[class="section"] ul.setup li {
   padding: 2px 5px 2px 30px;
-  background-image: url(/skins/icons/ok.png);
   background-repeat: no-repeat;
   background-position: 5px center;
 }
-.board_section div[class^="section_"] ul.setup li.non-blocker {
+.board_section div[class="section"] ul.setup li.good-enough {
+  background-image: url(/skins/icons/ok.png);
+}
+.board_section div[class="section"] ul.setup li.non-blocker {
   background-image: url(/skins/icons/alert.png);
 }
-.board_section div[class^="section_"] ul.setup li.blocker {
+.board_section div[class="section"] ul.setup li.blocker {
   background-image: url(/skins/icons/delete.png);
 }
-.board_section div[class^="section_"] ul.setup li:hover {
+.board_section div[class="section"] ul.setup li:hover {
   background-color: #fffbcd;
 }
-.board_section div[class^="section_"] #cache_flusher {
+.board_section div[class="section"] #cache_flusher {
   margin: -10px 0 20px 0;
-}
-.board_section .section_left {
-  float: left;
-}
-.board_section .section_right {
-  margin-left: 430px;
-  padding-top: 1px;
 }
 .board_section #flush_button {
   width: 362px;
