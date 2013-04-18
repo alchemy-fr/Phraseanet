@@ -374,7 +374,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $caption = self::$DI['record_1']->get_caption();
 
         foreach ($meta_structure_el as $meta_el) {
-            $current_fields = $caption->get_fields(array($meta_el->get_name()));
+            $current_fields = $caption->get_fields(array($meta_el->get_name()), true);
 
             $this->assertEquals(1, count($current_fields));
             $field = $current_fields[0];
