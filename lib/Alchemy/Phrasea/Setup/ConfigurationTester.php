@@ -53,7 +53,7 @@ class ConfigurationTester
         $this->requirements = array(
             BinariesProbe::create($this->app),
             CacheServerProbe::create($this->app),
-//            OpcodeCacheProbe::create($this->app),
+            OpcodeCacheProbe::create($this->app),
             FilesystemProbe::create($this->app),
             LocalesProbe::create($this->app),
             PhpProbe::create($this->app),

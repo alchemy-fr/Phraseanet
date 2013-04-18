@@ -12,10 +12,10 @@
 namespace Alchemy\Phrasea\Setup\Probe;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Setup\Requirements\CacheServerRequirement;
+use Alchemy\Phrasea\Setup\Requirements\OpcodeCacheRequirement;
 use Alchemy\Phrasea\Cache\Cache;
 
-class CacheServerProbe extends CacheServerRequirement implements ProbeInterface
+class OpcodeCacheProbe extends OpcodeCacheRequirement implements ProbeInterface
 {
     public function __construct(Cache $cache)
     {
@@ -26,7 +26,7 @@ class CacheServerProbe extends CacheServerRequirement implements ProbeInterface
         $this->addRecommendation(
             'Alchemy\Phrasea\Cache\ArrayCache' !== get_class($cache),
             'ArrayCache should not be used in production',
-            'Configure a Cache Server'
+            'Configure an Opcode Cache'
         );
 
         if (null !== $cache->getStats()) {
@@ -43,6 +43,6 @@ class CacheServerProbe extends CacheServerRequirement implements ProbeInterface
      */
     public static function create(Application $app)
     {
-        return new static($app['cache']);
+        return new static($app['opcode-cache']);
     }
 }

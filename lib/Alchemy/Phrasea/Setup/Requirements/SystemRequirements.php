@@ -268,12 +268,6 @@ class SystemRequirements extends RequirementCollection
         );
 
         $this->addRecommendation(
-            class_exists('Gmagick'),
-            'Gmagick extension is required for video processing (animated thumbnail generation)',
-            'Install and enable the <strong>gmagick</strong> extension.'
-        );
-
-        $this->addRecommendation(
             function_exists('finfo_open'),
             'Fileinfo extension is recommended',
             'Install and enable the <strong>fileinfo</strong> extension to enable file detection.'
