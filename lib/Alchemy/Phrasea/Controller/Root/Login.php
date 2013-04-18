@@ -1039,7 +1039,6 @@ class Login implements ControllerProviderInterface
                     'token' => \random::getUrlToken($app, \random::TYPE_PASSWORD, $usr_id, $date)
                 )));
             } catch (\Exception $e) {
-                var_dump($e->getMessage());exit;
                 return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'), '/') . "&error=unexpected");
             }
         } else {
