@@ -194,18 +194,23 @@ class FileTest extends \PhraseanetPHPUnitAbstract
     {
         $media = self::$DI['app']['mediavorus']->guess($this->filename);
         $file1 = new File(self::$DI['app'], $media, self::$DI['collection']);
-
         $file2 = File::buildFromPathfile($this->filename, self::$DI['collection'], self::$DI['app']);
 
-        $this->assertEquals($file1, $file2);
+        $this->assertBorderFileEquals($file1, $file2);
 
         $media = self::$DI['app']['mediavorus']->guess($this->filename);
         $file3 = new File(self::$DI['app'], $media, self::$DI['collection'], 'coco lapin');
-
         $file4 = File::buildFromPathfile($this->filename, self::$DI['collection'], self::$DI['app'], 'coco lapin');
 
-        $this->assertEquals($file3, $file4);
-        $this->assertNotEquals($file1, $file4);
+        $this->assertBorderFileEquals($file3, $file4);
+    }
+
+    private function assertBorderFileEquals($file1, $file2)
+    {
+        $this->assertEquals($file1->getType(), $file2->getType());
+        $this->assertEquals($file1->getCollection(), $file2->getCollection());
+        $this->assertEquals($file1->getMD5(), $file2->getMD5());
+        $this->assertEquals($file1->getOriginalName(), $file2->getOriginalName());
     }
 
     /**

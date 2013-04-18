@@ -326,6 +326,7 @@ class Application extends SilexApplication
         // symfony locale is set on 16 priority, let's override it
         $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 17);
         $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 15);
+        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'removePhraseanetLocale'), 14);
 
         $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initSession'), 254);
         $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
@@ -424,6 +425,13 @@ class Application extends SilexApplication
         }
 
         $event->setResponse($response);
+    }
+
+    public function removePhraseanetLocale(GetResponseEvent $event)
+    {
+        if (isset($this['phraseanet.locale'])) {
+            unset($this['phraseanet.locale']);
+        }
     }
 
     public function addLocale(GetResponseEvent $event)
