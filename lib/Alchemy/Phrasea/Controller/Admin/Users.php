@@ -705,7 +705,7 @@ class Users implements ControllerProviderInterface
                 $app->abort(400);
             }
 
-            if (null === $model = $request->request->get("modelToAplly")) {
+            if (null === $model = $request->request->get("modelToApply")) {
                 $app->abort(400);
             }
 
