@@ -1,5 +1,5 @@
 {
-    "hash": "a06f7bd8882c002bb1bbaa41c7053a11",
+    "hash": "a46e834df9fcb61c657633424de24604",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -610,58 +610,12 @@
             "time": "2013-03-05 06:32:22"
         },
         {
-            "name": "grom/silex-service-provider",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/GromNaN/SilexServiceProvider.git",
-                "reference": "v1.0.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/GromNaN/SilexServiceProvider/zipball/v1.0.0",
-                "reference": "v1.0.0",
-                "shasum": ""
-            },
-            "require": {
-                "imagine/imagine": "*",
-                "knplabs/knp-snappy": "dev-master",
-                "silex/silex": ">=1.0.0-dev"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Grom\\Silex": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jérôme Tamarelle",
-                    "email": "jerome@tamarelle.net"
-                }
-            ],
-            "description": "Imagine & KnpSnappy integration for Silex.",
-            "homepage": "http://github.com/GromNaN/SilexServiceProvider",
-            "keywords": [
-                "image",
-                "imagine",
-                "pdf",
-                "silex",
-                "snappy"
-            ],
-            "time": "2012-06-03 01:27:23"
-        },
-        {
             "name": "imagine/Imagine",
             "version": "dev-ColorSpaces",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Imagine.git",
-                "reference": "401e5305c8bdec3f9c17545cd0a3d72940b26bfe"
+                "reference": "f844470bdd21b2e4fc55a4caf61fdfc4a86c12c6"
             },
             "require": {
                 "php": ">=5.3.2"
@@ -698,79 +652,25 @@
                 "image manipulation",
                 "image processing"
             ],
-            "time": "2013-04-11 12:19:24"
-        },
-        {
-            "name": "knplabs/knp-snappy",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/KnpLabs/snappy.git",
-                "reference": "524bbd3b1883204ea3a7f11f31fc38b81f6426fe"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/snappy/zipball/524bbd3b1883204ea3a7f11f31fc38b81f6426fe",
-                "reference": "524bbd3b1883204ea3a7f11f31fc38b81f6426fe",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "suggest": {
-                "google/wkhtmltopdf-amd64": "Provide wkhtmltopdf-amd64 binary, use version `0.11.0-RC1` as dependency",
-                "google/wkhtmltopdf-i386": "Provide wkhtmltopdf-i386 binary, use version `0.11.0-RC1` as dependency",
-                "symfony/process": "Process Component of Symfony2."
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Knp\\Snappy": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "KnpLabs Team",
-                    "homepage": "http://knplabs.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://github.com/KnpLabs/snappy/contributors"
-                }
-            ],
-            "description": "PHP5 library allowing thumbnail, snapshot or PDF generation from a url or a html page. Wrapper for wkhtmltopdf/wkhtmltoimage.",
-            "homepage": "http://github.com/KnpLabs/snappy",
-            "keywords": [
-                "knp",
-                "knplabs",
-                "pdf",
-                "snapshot",
-                "thumbnail",
-                "wkhtmltopdf"
-            ],
-            "time": "2013-04-10 07:21:56"
+            "time": "2013-04-17 23:05:55"
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.2.4",
+            "version": "0.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "0.2.4"
+                "reference": "0.2.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0.2.4",
-                "reference": "0.2.4",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0.2.5",
+                "reference": "0.2.5",
                 "shasum": ""
             },
             "require": {
                 "alchemy/ghostscript": ">=0.2,<0.3",
-                "imagine/imagine": "dev-ColorSpaces",
+                "imagine/imagine": "dev-ColorSpaces as 0.4.1",
                 "mediavorus/mediavorus": ">=0.2,<1.0",
                 "monolog/monolog": ">=1.0,<2.0",
                 "php": ">=5.3.3",
@@ -782,10 +682,8 @@
                 "symfony/console": ">=2.0,<3.0"
             },
             "require-dev": {
-                "grom/silex-service-provider": "dev-master",
-                "knplabs/knp-snappy": "dev-master",
-                "phpexiftool/phpexiftool": ">=0.1,<0.2",
-                "silex/silex": "1.0.x-dev@dev"
+                "phpexiftool/phpexiftool": ">=0.1,<1.0",
+                "silex/silex": "1.0.*@dev"
             },
             "type": "library",
             "autoload": {
@@ -818,7 +716,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-04-16 17:22:57"
+            "time": "2013-04-17 23:22:57"
         },
         {
             "name": "mediavorus/mediavorus",
@@ -1031,6 +929,53 @@
                 "temporary-filesystem"
             ],
             "time": "2012-11-08 21:07:08"
+        },
+        {
+            "name": "neutron/silex-imagine-provider",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/romainneutron/Imagine-Silex-Service-Provider.git",
+                "reference": "0.1.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/0.1.1",
+                "reference": "0.1.1",
+                "shasum": ""
+            },
+            "require": {
+                "imagine/imagine": "*",
+                "php": ">=5.3.3",
+                "silex/silex": "1.0.x-dev@dev"
+            },
+            "require-dev": {
+                "symfony/browser-kit": ">=2.0,<3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Neutron": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Neutron",
+                    "email": "imprec@gmail.com",
+                    "homepage": "http://www.lickmychip.com/"
+                }
+            ],
+            "description": "A Silex service provider for Imagine Image Processing Library",
+            "keywords": [
+                "image processing",
+                "imagine",
+                "silex"
+            ],
+            "time": "2013-04-17 23:39:16"
         },
         {
             "name": "neutron/sphinxsearch-api",
@@ -2055,9 +2000,8 @@
         "badfaith/badfaith": 20,
         "dailymotion/sdk": 20,
         "data-uri/data-uri": 20,
-        "grom/silex-service-provider": 20,
         "imagine/imagine": 20,
-        "knplabs/knp-snappy": 20,
+        "neutron/silex-imagine-provider": 20,
         "neutron/silex-badfaith-provider": 20,
         "neutron/silex-filesystem-provider": 20,
         "silex/silex": 20,
