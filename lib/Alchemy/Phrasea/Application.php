@@ -321,7 +321,12 @@ class Application extends SilexApplication
             })
         );
 
+        // make locale available asap
         $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 255);
+        // symfony locale is set on 16 priority, let's override it
+        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 17);
+        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 15);
+
         $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initSession'), 254);
         $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
         $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'disableCookiesIfRequired'), -256);
@@ -423,6 +428,11 @@ class Application extends SilexApplication
 
     public function addLocale(GetResponseEvent $event)
     {
+        if (isset($this['phraseanet.locale'])) {
+            $this['locale'] = $this['phraseanet.locale'];
+            return;
+        }
+
         /**
          * add content negotiation here
          */
@@ -435,7 +445,7 @@ class Application extends SilexApplication
             )
         );
 
-        $this['locale'] = $this->share(function(Application $app) use ($event) {
+        $this['locale'] = $this['phraseanet.locale'] = $this->share(function(Application $app) use ($event) {
             $event->getRequest()->setDefaultLocale(
                 $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
             );
