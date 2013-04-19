@@ -30,7 +30,7 @@ class CacheServerProbe extends CacheServerRequirement implements ProbeInterface
         );
 
         if (null !== $cache->getStats()) {
-            foreach($cache->getStats() as $name => $value) {
+            foreach ($cache->getStats() as $name => $value) {
                 $this->addInformation($name, $value);
             }
         }

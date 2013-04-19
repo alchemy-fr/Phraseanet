@@ -21,8 +21,7 @@ class SearchEngineProbe extends RequirementCollection implements ProbeInterface
     {
         $this->setName('Search Engine');
 
-        foreach ($searchEngine->getStatus() as $infos)
-        {
+        foreach ($searchEngine->getStatus() as $infos) {
             $this->addInformation($infos[0], $infos[1]);
         }
     }

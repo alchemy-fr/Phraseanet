@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Setup\Requirements;
 
 use Alchemy\Phrasea\Setup\System\RequirementCollection;
-use Alchemy\Phrasea\Application as PhraseaApplication;
 
 class SystemRequirements extends RequirementCollection
 {
@@ -278,7 +277,6 @@ class SystemRequirements extends RequirementCollection
             'utf8_decode() should be available',
             'Install and enable the <strong>XML</strong> extension.'
         );
-
 
         if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
             $this->addRecommendation(

@@ -1217,7 +1217,6 @@ class PhraseaEngineQueryParser
                 }
                 break;
 
-
             // lé ca devient la zone pour savoir si on a que l'année ou si c'est une date sans espaces,slash ou tiret
             case 1 :
                 switch (strlen($tmp[0])) {
@@ -1277,8 +1276,6 @@ class PhraseaEngineQueryParser
                             $v_d = "00";
                         break;
                 }
-
-
 
                 break;
         }

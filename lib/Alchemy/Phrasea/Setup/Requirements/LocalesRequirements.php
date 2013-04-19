@@ -27,7 +27,7 @@ class LocalesRequirements extends RequirementCollection
         );
 
         if (function_exists('_')) {
-            foreach (PhraseaApplication::getAvailableLanguages() as $code => $language_name){
+            foreach (PhraseaApplication::getAvailableLanguages() as $code => $language_name) {
                 \phrasea::use_i18n($code, 'test');
 
                 $this->addRecommendation(

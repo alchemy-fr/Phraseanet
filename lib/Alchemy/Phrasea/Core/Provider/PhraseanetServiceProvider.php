@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Security\Firewall;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;

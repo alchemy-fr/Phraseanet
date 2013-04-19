@@ -320,7 +320,6 @@ class Application extends SilexApplication
             throw new \RuntimeException('No Imagine driver available');
         });
 
-
         $app = $this;
         $this['phraseanet.logger'] = $this->protect(function($databox) use ($app) {
             try {

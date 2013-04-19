@@ -47,6 +47,7 @@ class PhraseaLocaleServiceProvider implements ServiceProviderInterface
     {
         if (isset($this->locale)) {
             $this->app['locale'] = $this->locale;
+
             return;
         }
 

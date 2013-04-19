@@ -16,8 +16,7 @@ use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;
 
-
-class Setup  implements ControllerProviderInterface
+class Setup implements ControllerProviderInterface
 {
     public function connect(SilexApplication $app)
     {
@@ -43,10 +42,10 @@ class Setup  implements ControllerProviderInterface
         $requirementsCollection = $this->getRequirementsCollection();
 
         return $app['twig']->render('/setup/index.html.twig', array(
-            'locale'             => $app['locale'],
-            'available_locales'  => \Alchemy\Phrasea\Application::getAvailableLanguages(),
-            'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/',
-            'requirementsCollection'        => $requirementsCollection,
+            'locale'                 => $app['locale'],
+            'available_locales'      => \Alchemy\Phrasea\Application::getAvailableLanguages(),
+            'current_servername'     => $request->getScheme() . '://' . $request->getHttpHost() . '/',
+            'requirementsCollection' => $requirementsCollection,
         ));
     }
 
@@ -70,8 +69,8 @@ class Setup  implements ControllerProviderInterface
 
         $requirementsCollection = $this->getRequirementsCollection();
 
-        foreach($requirementsCollection as $requirements) {
-            foreach($requirements->getRequirements() as $requirement) {
+        foreach ($requirementsCollection as $requirements) {
+            foreach ($requirements->getRequirements() as $requirement) {
                 if (!$requirement->isFulfilled() && !$requirement->isOptional()) {
                     $warnings[] = $requirement->getTestMessage();
                 }
@@ -142,16 +141,16 @@ class Setup  implements ControllerProviderInterface
 
             $binaryData = array();
             foreach (array(
-                'php_binary'           => $request->request->get('binary_php'),
-                'convert_binary'       => $request->request->get('binary_convert'),
-                'composite_binary'     => $request->request->get('binary_composite'),
-                'swf_extract_binary'   => $request->request->get('binary_swfextract'),
-                'pdf2swf_binary'       => $request->request->get('binary_pdf2swf'),
-                'swf_render_binary'    => $request->request->get('binary_swfrender'),
-                'unoconv_binary'       => $request->request->get('binary_unoconv'),
-                'ffmpeg_binary'        => $request->request->get('binary_ffmpeg'),
-                'mp4box_binary'        => $request->request->get('binary_MP4Box'),
-                'pdftotext_binary'     => $request->request->get('binary_xpdf'),
+                'php_binary'         => $request->request->get('binary_php'),
+                'convert_binary'     => $request->request->get('binary_convert'),
+                'composite_binary'   => $request->request->get('binary_composite'),
+                'swf_extract_binary' => $request->request->get('binary_swfextract'),
+                'pdf2swf_binary'     => $request->request->get('binary_pdf2swf'),
+                'swf_render_binary'  => $request->request->get('binary_swfrender'),
+                'unoconv_binary'     => $request->request->get('binary_unoconv'),
+                'ffmpeg_binary'      => $request->request->get('binary_ffmpeg'),
+                'mp4box_binary'      => $request->request->get('binary_MP4Box'),
+                'pdftotext_binary'   => $request->request->get('binary_xpdf'),
             ) as $key => $path) {
                 $binaryData[$key] = $path;
             }
@@ -159,14 +158,14 @@ class Setup  implements ControllerProviderInterface
             $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
 
             $app->openAccount(new \Session_Authentication_None($user));
-//exit;
 
             $redirection = '/admin/?section=taskmanager&notice=install_success';
+
             return $app->redirect($redirection);
         } catch (\Exception $e) {
 
         }
-        var_dump($e->getMessage(), $e->getFile(), $e->getLine());
+
         return $app->redirect('/setup/installer/step2/?error=' . sprintf(_('an error occured : %s'), $e->getMessage()));
     }
 
