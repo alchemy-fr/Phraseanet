@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea;
+namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Security\Firewall;

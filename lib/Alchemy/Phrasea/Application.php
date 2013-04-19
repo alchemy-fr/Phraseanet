@@ -82,6 +82,8 @@ use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PhraseaLocaleServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
@@ -216,6 +218,8 @@ class Application extends SilexApplication
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new ORMServiceProvider());
         $this->register(new PhraseanetServiceProvider());
+        $this->register(new PhraseaVersionServiceProvider());
+        $this->register(new PhraseaLocaleServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
         $this->register(new SearchEngineServiceProvider());
         $this->register(new SessionServiceProvider(), array(
@@ -339,13 +343,6 @@ class Application extends SilexApplication
             })
         );
 
-        // make locale available asap
-        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 255);
-        // symfony locale is set on 16 priority, let's override it
-        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 17);
-        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 15);
-        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'removePhraseanetLocale'), 14);
-
         $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initSession'), 254);
         $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
         $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'disableCookiesIfRequired'), -256);
@@ -443,65 +440,6 @@ class Application extends SilexApplication
         }
 
         $event->setResponse($response);
-    }
-
-    public function removePhraseanetLocale(GetResponseEvent $event)
-    {
-        if (isset($this['phraseanet.locale'])) {
-            unset($this['phraseanet.locale']);
-        }
-    }
-
-    public function addLocale(GetResponseEvent $event)
-    {
-        if (isset($this['phraseanet.locale'])) {
-            $this['locale'] = $this['phraseanet.locale'];
-            return;
-        }
-
-        /**
-         * add content negotiation here
-         */
-        $contentTypes = $event->getRequest()->getAcceptableContentTypes();
-        $event->getRequest()->setRequestFormat(
-            $event->getRequest()->getFormat(
-                array_shift(
-                    $contentTypes
-                )
-            )
-        );
-
-        $this['locale'] = $this['phraseanet.locale'] = $this->share(function(Application $app) use ($event) {
-            $event->getRequest()->setDefaultLocale(
-                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
-            );
-            $event->getRequest()->setLocale(
-                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
-            );
-
-            $languages = $app->getAvailableLanguages();
-            if ($event->getRequest()->cookies->has('locale')
-                && isset($languages[$event->getRequest()->cookies->get('locale')])) {
-                $event->getRequest()->setLocale($event->getRequest()->cookies->get('locale'));
-
-                return $event->getRequest()->getLocale();
-            }
-
-            foreach ($app['bad-faith']->headerLists['accept_language']->items as $language) {
-                $code = $language->lang.'_'.$language->sublang;
-                if (isset($languages[$code])) {
-
-                    $event->getRequest()->setLocale($code);
-
-                    return $event->getRequest()->getLocale();
-                    break;
-                }
-            }
-
-            return $event->getRequest()->getLocale();
-        });
-
-        \phrasea::use_i18n($this['locale']);
     }
 
     public function setupTwig()
