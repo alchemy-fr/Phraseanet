@@ -41,6 +41,8 @@
   RewriteRule ^prod/record/preview/.*$          /index.php [L]
   RewriteRule ^prod/notifications/.*$           /index.php [L]
   RewriteRule ^prod/share/.*$                   /index.php [L]
+  RewriteRule ^setup/.*$                        /index.php [L]
+  RewriteRule ^setup/$                          /index.php [L]
 
   RewriteRule ^user/preferences/.*$             /index.php [L]
   RewriteRule ^user/notifications/.*$           /index.php [L]
