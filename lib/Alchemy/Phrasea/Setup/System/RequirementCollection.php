@@ -56,7 +56,7 @@ class RequirementCollection implements RequirementCollectionInterface
     /**
      * {@inheritdoc}
      */
-    public function add(Requirement $requirement)
+    public function add(RequirementInterface $requirement)
     {
         $this->requirements[] = $requirement;
     }

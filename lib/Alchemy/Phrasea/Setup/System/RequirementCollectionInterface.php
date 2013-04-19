@@ -32,11 +32,11 @@ interface RequirementCollectionInterface extends \IteratorAggregate
     public function getInformations();
 
     /**
-     * Adds a Requirement.
+     * Adds a RequirementInterface.
      *
      * @param Requirement $requirement A Requirement instance
      */
-    public function add(Requirement $requirement);
+    public function add(RequirementInterface $requirement);
 
     /**
      * Adds a mandatory requirement.

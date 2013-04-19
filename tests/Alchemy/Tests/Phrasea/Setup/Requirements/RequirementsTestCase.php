@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Setup\Requirements;
 
+use Alchemy\Phrasea\Setup\System\RequirementCollection;
 use Alchemy\Phrasea\Setup\System\RequirementCollectionInterface;
 
 abstract class RequirementsTestCase extends \PHPUnit_Framework_TestCase
@@ -18,76 +19,108 @@ abstract class RequirementsTestCase extends \PHPUnit_Framework_TestCase
 
     public function testAdd()
     {
-        $this->markTestIncomplete('Incomplete');
+        $collection = $this->provideRequirements();
+        $requirement = $this->getMock('Alchemy\Phrasea\Setup\System\RequirementInterface');
+        $collection->add($requirement);
+
+        $found = false;
+        foreach ($collection->getRequirements() as $req) {
+            if ($req === $requirement) {
+                $found = true;
+                break;
+            }
+        }
+        if (!$found) {
+            $this->fail('Unable to add a requirement');
+        }
     }
 
     public function testAddCollection()
     {
-        $this->markTestIncomplete('Incomplete');
-    }
+        $collection = $this->provideRequirements();
 
-    public function testAddPhpIniRecommendation()
-    {
-        $this->markTestIncomplete('Incomplete');
-    }
+        $requirement = $this->getMock('Alchemy\Phrasea\Setup\System\RequirementInterface');
+        $coll = new RequirementCollection();
+        $coll->add($requirement);
 
-    public function testAddPhpIniRequirement()
-    {
-        $this->markTestIncomplete('Incomplete');
-    }
+        $collection->addCollection($coll);
 
-    public function testAddRecommendation()
-    {
-        $this->markTestIncomplete('Incomplete');
-    }
-
-    public function testAddRequirement()
-    {
-        $this->markTestIncomplete('Incomplete');
+        $found = false;
+        foreach ($collection->getRequirements() as $req) {
+            if ($req === $requirement) {
+                $found = true;
+                break;
+            }
+        }
+        if (!$found) {
+            $this->fail('Unable to add a requirement');
+        }
     }
 
     public function testAll()
     {
-        $this->markTestIncomplete('Incomplete');
+        $collection = $this->provideRequirements();
+
+        $this->assertInternalType('array', $collection->all());
+
+        foreach ($collection->all() as $requirement) {
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\RequirementInterface', $requirement);
+        }
     }
 
     public function testGetFailedRecommendations()
     {
-        $this->markTestIncomplete('Incomplete');
+        $collection = $this->provideRequirements();
+
+        $this->assertInternalType('array', $collection->getFailedRecommendations());
+
+        foreach ($collection->getFailedRecommendations() as $requirement) {
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\RequirementInterface', $requirement);
+        }
     }
 
     public function testGetFailedRequirements()
     {
-        $this->markTestIncomplete('Incomplete');
+        $collection = $this->provideRequirements();
+
+        $this->assertInternalType('array', $collection->getFailedRequirements());
+
+        foreach ($collection->getFailedRequirements() as $requirement) {
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\RequirementInterface', $requirement);
+        }
     }
 
     public function testGetInformations()
     {
-        $this->markTestIncomplete('Incomplete');
+        $collection = $this->provideRequirements();
+
+        $this->assertInternalType('array', $collection->getInformations());
+
+        foreach ($collection->getInformations() as $requirement) {
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\InformationInterface', $requirement);
+        }
     }
 
     public function testGetName()
     {
-        $this->markTestIncomplete('Incomplete');
+        $collection = $this->provideRequirements();
+
+        $this->assertInternalType('string', $collection->getName());
+        $this->assertGreaterThan(0, strlen($collection->getName()));
     }
 
     public function testGetPhpIniConfigPath()
     {
-        $this->markTestIncomplete('Incomplete');
-    }
+        $collection = $this->provideRequirements();
 
-    public function testGetRecommendations()
-    {
-        $this->markTestIncomplete('Incomplete');
-    }
-
-    public function testGetRequirements()
-    {
-        $this->markTestIncomplete('Incomplete');
+        $this->assertInternalType('string', $collection->getPhpIniConfigPath());
+        $this->assertGreaterThan(0, strlen($collection->getPhpIniConfigPath()));
     }
 
     public function testHasPhpIniConfigIssue()
     {
-        $this->markTestIncomplete('Incomplete');
+        $collection = $this->provideRequirements();
+
+        $this->assertInternalType('boolean', $collection->hasPhpIniConfigIssue());
     }
 }
