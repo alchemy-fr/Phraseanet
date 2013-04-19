@@ -334,6 +334,13 @@
                                   </td>
                                 </tr>
                               {% endfor %}
+                                {% if warnings is not empty %}
+                                <tr>
+                                    <td>
+                                      <a href="{{ path('install_root') }}">{% trans 'Review system configuration' %}</a>
+                                    </td>
+                                </tr>
+                                {% endif %}
                             </table>
                           </td>
                         </tr>

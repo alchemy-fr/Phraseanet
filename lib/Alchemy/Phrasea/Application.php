@@ -65,6 +65,7 @@ use Alchemy\Phrasea\Controller\Root\Developers;
 use Alchemy\Phrasea\Controller\Root\Login;
 use Alchemy\Phrasea\Controller\Root\RSSFeeds;
 use Alchemy\Phrasea\Controller\Root\Session;
+use Alchemy\Phrasea\Controller\Setup as SetupController;
 use Alchemy\Phrasea\Controller\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\Controller\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
@@ -79,6 +80,7 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
+use Alchemy\Phrasea\Core\Provider\InstallerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
@@ -217,6 +219,7 @@ class Application extends SilexApplication
         $this->register(new MP4BoxServiceProvider());
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new ORMServiceProvider());
+        $this->register(new InstallerServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
         $this->register(new PhraseaLocaleServiceProvider());
@@ -592,6 +595,10 @@ class Application extends SilexApplication
 
             return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
         })->bind('robots');
+
+        $this->mount('/setup/test', new PathFileTest());
+        $this->mount('/setup/connection_test', new ConnectionTest());
+        $this->mount('/setup', new SetupController());
 
         $this->mount('/feeds/', new RSSFeeds());
         $this->mount('/account/', new Account());

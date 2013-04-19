@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Silex\Application;
@@ -54,14 +63,17 @@ class PhraseaLocaleServiceProvider implements ServiceProviderInterface
         );
 
         $this->app['locale'] = $this->locale = $this->app->share(function(Application $app) use ($event) {
-            $event->getRequest()->setDefaultLocale(
-                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
-            );
-            $event->getRequest()->setLocale(
-                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
-            );
 
-            $languages = $app->getAvailableLanguages();
+            if (isset($app['phraseanet.registry'])) {
+                $event->getRequest()->setDefaultLocale(
+                    $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
+                );
+                $event->getRequest()->setLocale(
+                    $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
+                );
+            }
+
+            $languages = \Alchemy\Phrasea\Application::getAvailableLanguages();
             if ($event->getRequest()->cookies->has('locale')
                 && isset($languages[$event->getRequest()->cookies->get('locale')])) {
                 $event->getRequest()->setLocale($event->getRequest()->cookies->get('locale'));

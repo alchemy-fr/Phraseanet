@@ -60,9 +60,6 @@
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^api/.*$                /api/index.php [L]
 
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteRule ^setup/.*$              /setup/installer.php [L]
-
 
 	RewriteRule ^admin/test-rewrite$ admin/adminFeedback.php?action=APACHE&test=success [L]
 	<IfModule mod_xsendfile.c>
