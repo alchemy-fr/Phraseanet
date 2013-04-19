@@ -12,9 +12,16 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
+use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
+use Alchemy\Phrasea\Setup\Requirements\LocalesRequirements;
+use Alchemy\Phrasea\Setup\Requirements\PhpRequirements;
+use Alchemy\Phrasea\Setup\Requirements\PhraseaRequirements;
+use Alchemy\Phrasea\Setup\Requirements\SystemRequirements;
 use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;
+
 
 class Setup implements ControllerProviderInterface
 {
@@ -52,12 +59,12 @@ class Setup implements ControllerProviderInterface
     private function getRequirementsCollection()
     {
         return array(
-            new \Alchemy\Phrasea\Setup\Requirements\BinariesRequirements(),
-            new \Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements(),
-            new \Alchemy\Phrasea\Setup\Requirements\LocalesRequirements(),
-            new \Alchemy\Phrasea\Setup\Requirements\PhpRequirements(),
-            new \Alchemy\Phrasea\Setup\Requirements\PhraseaRequirements(),
-            new \Alchemy\Phrasea\Setup\Requirements\SystemRequirements(),
+            new BinariesRequirements(),
+            new FilesystemRequirements(),
+            new LocalesRequirements(),
+            new PhpRequirements(),
+            new PhraseaRequirements(),
+            new SystemRequirements(),
         );
     }
 
