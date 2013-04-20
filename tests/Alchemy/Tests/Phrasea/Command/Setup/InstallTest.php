@@ -58,6 +58,9 @@ class InstallTest extends \PhraseanetPHPUnitAbstract
                     case 'yes':
                         return true;
                         break;
+                    case 'db-host':
+                        return '127.0.0.1';
+                        break;
                     case 'db-port':
                         return 3306;
                         break;
