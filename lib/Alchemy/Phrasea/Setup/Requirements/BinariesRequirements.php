@@ -32,6 +32,27 @@ class BinariesRequirements extends RequirementCollection
             'Please reinstall PHP with CLI support'
         );
 
+        $fileCommand = $finder->find('file');
+
+        if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $this->addRequirement(
+                is_executable($fileCommand),
+                'Phraseanet requires the Unix `file` command',
+                'Please install latest file command'
+            );
+
+            $output = null;
+            exec($fileCommand . ' --version 2>&1', $output);
+            $data = sscanf($output[0], 'file-%s');
+            $version = $data[0];
+
+            $this->addRecommendation(
+                version_compare($version, '5.04', '>='),
+                'Phraseanet recommends `file` version 5.04 or higher',
+                'Please install latest file command'
+            );
+        }
+
         $indexer = $finder->find('phraseanet_indexer');
 
         $this->addRecommendation(
