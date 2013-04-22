@@ -595,8 +595,6 @@ class Application extends SilexApplication
             return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
         })->bind('robots');
 
-        $this->mount('/setup/test', new PathFileTest());
-        $this->mount('/setup/connection_test', new ConnectionTest());
         $this->mount('/setup', new SetupController());
 
         $this->mount('/feeds/', new RSSFeeds());

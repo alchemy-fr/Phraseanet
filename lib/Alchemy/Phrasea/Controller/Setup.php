@@ -30,7 +30,7 @@ class Setup implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function(Application $app) {
-            return $app->redirect('/setup/installer/');
+            return $app->redirect($app->path('install_root'));
         });
 
         $controllers->get('/installer/', $this->call('rootInstaller'))
@@ -39,7 +39,8 @@ class Setup implements ControllerProviderInterface
         $controllers->get('/installer/step2/', $this->call('getInstallForm'))
             ->bind('install_step2');
 
-        $controllers->post('/installer/install/', $this->call('doInstall'));
+        $controllers->post('/installer/install/', $this->call('doInstall'))
+            ->bind('install_do_install');
 
         return $controllers;
     }
@@ -120,7 +121,9 @@ class Setup implements ControllerProviderInterface
         try {
             $abConn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $ab_password, $appbox_name, array(), $app['debug']);
         } catch (\Exception $e) {
-            return $app->redirect('/setup/installer/step2/?error=' . _('Appbox is unreachable'));
+            return $app->redirect($app->path('install_step2', array(
+                'error' => _('Appbox is unreachable'),
+            )));
         }
 
         try {
@@ -128,7 +131,9 @@ class Setup implements ControllerProviderInterface
                 $dbConn = new \connection_pdo('databox', $hostname, $port, $user_ab, $ab_password, $databox_name, array(), $app['debug']);
             }
         } catch (\Exception $e) {
-            return $app->redirect('/setup/installer/step2/?error=' . _('Databox is unreachable'));
+            return $app->redirect($app->path('install_step2', array(
+                'error' => _('Databox is unreachable'),
+            )));
         }
 
         $email = $request->request->get('email');
@@ -167,7 +172,9 @@ class Setup implements ControllerProviderInterface
 
         }
 
-        return $app->redirect('/setup/installer/step2/?error=' . sprintf(_('an error occured : %s'), $e->getMessage()));
+        return $app->redirect($app->path('install_step2', array(
+            'error' => sprintf(_('an error occured : %s'), $e->getMessage()),
+        )));
     }
 
     /**
