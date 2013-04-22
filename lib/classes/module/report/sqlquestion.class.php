@@ -56,8 +56,9 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
             $this->total_row = $stmt->rowCount();
             $stmt->closeCursor();
 
-            if ($this->enable_limit)
+            if ($this->enable_limit) {
                 $this->sql .= $this->filter->getLimitFilter() ? : '';
+            }
         } else {
             $this->sql = "
          SELECT

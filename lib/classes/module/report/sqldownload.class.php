@@ -70,8 +70,9 @@ class module_report_sqldownload extends module_report_sql implements module_repo
             $stmt->execute($this->params);
             $this->total_row = $stmt->rowCount();
             $stmt->closeCursor();
-            if ($this->enable_limit)
+            if ($this->enable_limit) {
                 $this->sql .= $this->filter->getLimitFilter() ? : '';
+            }
         } else {
             $name = $this->groupby;
             $field = $this->getTransQuery($this->groupby);
@@ -144,9 +145,9 @@ class module_report_sqldownload extends module_report_sql implements module_repo
             $this->total = $stmt->rowCount();
             $stmt->closeCursor();
 
-            if ($this->enable_limit)
+            if ($this->enable_limit) {
                 $this->sql .= $this->filter->getLimitFilter() ? : '';
-
+            }
         }
 
         return $this;
