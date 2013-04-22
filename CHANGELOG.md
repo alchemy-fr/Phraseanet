@@ -12,4 +12,4 @@
     - Add ability to install Phraseanet command line
   - Lots of cleanup and code refactorisation
   - Add task-manager logging to syslog
-
+  - Add bin/console mail:test command to check email configuration

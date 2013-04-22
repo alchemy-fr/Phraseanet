@@ -16,6 +16,4 @@ Console
 Phraseanet 3.8 comes with a new command-line utility : `bin/setup`. This utility
 brings commands that can be run when Phraseanet is not installed. 
 
-    - It is now recommended to use bin/setup check:system to ensure environment 
-      compatibility.
-    - Use of bin/console check:system is deprecated
+    - `bin/console system:upgrade` is replaced by `bin/setup system:upgrade`
