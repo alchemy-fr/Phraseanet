@@ -764,6 +764,55 @@ class Users implements ControllerProviderInterface
                 if ($loginNotExist) {
                     $NewUser = \User_Adapter::create($app, $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
 
+                    if (isset($curUser['defaultftpdatasent'])) {
+                        $NewUser->set_defaultftpdatas($curUser['defaultftpdatasent']);
+                    }
+                    if (isset($curUser['activeFTP'])) {
+                        $NewUser->set_activeftp((int) ($curUser['activeFTP']));
+                    }
+                    if (isset($curUser['addrFTP'])) {
+                        $NewUser->set_ftp_address($curUser['addrFTP']);
+                    }
+                    if (isset($curUser['passifFTP'])) {
+                        $NewUser->set_ftp_passif((int) ($curUser['passifFTP']));
+                    }
+                    if (isset($curUser['destFTP'])) {
+                        $NewUser->set_ftp_dir($curUser['destFTP']);
+                    }
+                    if (isset($curUser['prefixFTPfolder'])) {
+                        $NewUser->set_ftp_dir_prefix($curUser['prefixFTPfolder']);
+                    }
+                    if (isset($curUser['usr_prenom'])) {
+                        $NewUser->set_firstname($curUser['usr_prenom']);
+                    }
+                    if (isset($curUser['usr_nom'])) {
+                        $NewUser->set_lastname($curUser['usr_nom']);
+                    }
+                    if (isset($curUser['adresse'])) {
+                        $NewUser->set_address($curUser['adresse']);
+                    }
+                    if (isset($curUser['cpostal'])) {
+                        $NewUser->set_zip($curUser['cpostal']);
+                    }
+                    if (isset($curUser['usr_sexe'])) {
+                        $NewUser->set_gender((int) ($curUser['usr_sexe']));
+                    }
+                    if (isset($curUser['tel'])) {
+                        $NewUser->set_tel($curUser['tel']);
+                    }
+                    if (isset($curUser['fax'])) {
+                        $NewUser->set_fax($curUser['fax']);
+                    }
+                    if (isset($curUser['activite'])) {
+                        $NewUser->set_job($curUser['activite']);
+                    }
+                    if (isset($curUser['fonction'])) {
+                        $NewUser->set_position($curUser['fonction']);
+                    }
+                    if (isset($curUser['societe'])) {
+                        $NewUser->set_company($curUser['societe']);
+                    }
+
                     $NewUser->ACL()->apply_model(
                         \User_Adapter::getInstance($model, $app), array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('manage')))
                     );
