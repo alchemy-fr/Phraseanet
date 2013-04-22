@@ -281,12 +281,6 @@ phrasea::headers();
                         if (isset($curUser['adresse'])) {
                             $NewUser->set_address($curUser['adresse']);
                         }
-                        //
-                        // to fix : can't set city ?
-                        // if (isset($curUser['ville'])) {
-                        //     $NewUser->set_city($curUser['ville']);
-                        // }
-                        //
                         if (isset($curUser['cpostal'])) {
                             $NewUser->set_zip($curUser['cpostal']);
                         }
