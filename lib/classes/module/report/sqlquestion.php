@@ -37,7 +37,10 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
             $stmt->closeCursor();
 
             $this->sql .= $this->filter->getOrderFilter() ? : '';
-            $this->sql .= $this->filter->getLimitFilter() ? : '';
+
+            if ($this->enable_limit) {
+                $this->sql .= $this->filter->getLimitFilter() ? : '';
+            }
         } else {
             $this->sql = "
                 SELECT " . $this->groupby . ", SUM(1) AS nb

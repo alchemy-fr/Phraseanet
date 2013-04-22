@@ -106,7 +106,9 @@ class module_report_sqldownload extends module_report_sql implements module_repo
              $this->sql .= $this->filter->getOrderFilter() ? : '';
         }
 
-        $this->sql .= $this->filter->getLimitFilter() ? : '';
+        if ($this->enable_limit) {
+            $this->sql .= $this->filter->getLimitFilter() ? : '';
+        }
 
         return $this;
     }
