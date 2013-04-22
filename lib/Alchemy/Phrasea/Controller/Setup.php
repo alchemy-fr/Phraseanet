@@ -70,8 +70,6 @@ class Setup implements ControllerProviderInterface
 
     public function getInstallForm(Application $app, Request $request)
     {
-        \phrasea::use_i18n($app['locale']);
-
         $warnings = array();
 
         $requirementsCollection = $this->getRequirementsCollection();
@@ -94,8 +92,6 @@ class Setup implements ControllerProviderInterface
             'locale'              => $app['locale']
             , 'available_locales'   => Application::getAvailableLanguages()
             , 'available_templates' => array('en', 'fr')
-            , 'version_number'      => $app['phraseanet.version']->getNumber()
-            , 'version_name'        => $app['phraseanet.version']->getName()
             , 'warnings'            => $warnings
             , 'error'               => $request->query->get('error')
             , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
@@ -107,8 +103,6 @@ class Setup implements ControllerProviderInterface
     public function doInstall(Application $app, Request $request)
     {
         set_time_limit(360);
-
-        \phrasea::use_i18n($app['locale']);
 
         $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
 
