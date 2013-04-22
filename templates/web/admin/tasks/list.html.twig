@@ -112,7 +112,7 @@
             url:'/admin/task-manager/tasks/',
             type:"GET",
             dataType:"json",
-            data:{},
+            data:{rnd:Math.random()},
             contentType:"application/json; charset=utf-8",
             success:function(ret)
             {
@@ -253,7 +253,7 @@
                     break;
 
                 case "schedulerLog":
-                    window.open("/admin/task-manager/scheduler/log", "scheduler.log");
+                    window.open("/admin/task-manager/scheduler/log", "scheduler_log");
                     break;
 
             }
@@ -318,7 +318,7 @@
                     break;
 
                 case "taskLog":
-                    window.open("/admin/task-manager/task/"+action[1]+"/log", "task"+action[1]+".log");
+                    window.open("/admin/task-manager/task/"+action[1]+"/log", "task"+action[1]+"_log");
                     break;
             }
 
