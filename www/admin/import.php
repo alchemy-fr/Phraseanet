@@ -249,10 +249,65 @@ phrasea::headers();
                 # on va cree ici le user et ses droits
                 # on verifie juste le login et le password
                 if (isset($curUser['usr_login']) && trim($curUser['usr_login']) !== '' && isset($curUser['usr_password']) && trim($curUser['usr_password']) !== "") {
-                    $loginNotExist = ! User_Adapter::get_usr_id_from_login($curUser['usr_login']);
+                    $loginNotExist = !User_Adapter::get_usr_id_from_login($curUser['usr_login']);
 
                     if ($loginNotExist) {
                         $NewUser = User_Adapter::create($appbox, $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
+
+                        if (isset($curUser['defaultftpdatasent'])) {
+                            $NewUser->set_defaultftpdatas($curUser['defaultftpdatasent']);
+                        }
+                        if (isset($curUser['activeFTP'])) {
+                            $NewUser->set_activeftp((int) ($curUser['activeFTP']));
+                        }
+                        if (isset($curUser['addrFTP'])) {
+                            $NewUser->set_ftp_address($curUser['addrFTP']);
+                        }
+                        if (isset($curUser['passifFTP'])) {
+                            $NewUser->set_ftp_passif((int) ($curUser['passifFTP']));
+                        }
+                        if (isset($curUser['destFTP'])) {
+                            $NewUser->set_ftp_dir($curUser['destFTP']);
+                        }
+                        if (isset($curUser['prefixFTPfolder'])) {
+                            $NewUser->set_ftp_dir_prefix($curUser['prefixFTPfolder']);
+                        }
+                        if (isset($curUser['usr_prenom'])) {
+                            $NewUser->set_firstname($curUser['usr_prenom']);
+                        }
+                        if (isset($curUser['usr_nom'])) {
+                            $NewUser->set_lastname($curUser['usr_nom']);
+                        }
+                        if (isset($curUser['adresse'])) {
+                            $NewUser->set_address($curUser['adresse']);
+                        }
+                        //
+                        // to fix : can't set city ?
+                        // if (isset($curUser['ville'])) {
+                        //     $NewUser->set_city($curUser['ville']);
+                        // }
+                        //
+                        if (isset($curUser['cpostal'])) {
+                            $NewUser->set_zip($curUser['cpostal']);
+                        }
+                        if (isset($curUser['usr_sexe'])) {
+                            $NewUser->set_gender((int) ($curUser['usr_sexe']));
+                        }
+                        if (isset($curUser['tel'])) {
+                            $NewUser->set_tel($curUser['tel']);
+                        }
+                        if (isset($curUser['fax'])) {
+                            $NewUser->set_fax($curUser['fax']);
+                        }
+                        if (isset($curUser['activite'])) {
+                            $NewUser->set_job($curUser['activite']);
+                        }
+                        if (isset($curUser['fonction'])) {
+                            $NewUser->set_position($curUser['fonction']);
+                        }
+                        if (isset($curUser['societe'])) {
+                            $NewUser->set_company($curUser['societe']);
+                        }
 
                         $newid = $NewUser->get_id();
 
@@ -260,7 +315,7 @@ phrasea::headers();
                         $template_user = User_Adapter::getInstance($parm["modelToAplly"], $appbox);
                         $NewUser->ACL()->apply_model($template_user, $admBasid);
 
-                        $nbcreation ++;
+                        $nbcreation++;
                     }
                 }
             }
