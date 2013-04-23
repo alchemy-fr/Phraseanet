@@ -13,3 +13,9 @@
   - Lots of cleanup and code refactorisation
   - Add task-manager logging to syslog
   - Add bin/console mail:test command to check email configuration
+
+* 3.7.11 (2013-04-23)
+
+  - Enhancement : Animated Gifs (video support) does not requir Gmagick anymore to work properly.
+  - BugFix : When importing users from CSV file, some properties were missing.
+  - BugFix : In Report, CSV export is limited to 30 lines.
