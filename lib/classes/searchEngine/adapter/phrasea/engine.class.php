@@ -404,7 +404,9 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             $BF = array();
 
             foreach ($this->options->get_business_fields() as $base_id) {
-                $BF[] = phrasea::collFromBas($base_id);
+                if(phrasea::sbasFromBas($base_id) === $sbas_id) {
+                    $BF[] = phrasea::collFromBas($base_id);
+                }
             }
 
             $this->results[$sbas_id] = phrasea_query2(
