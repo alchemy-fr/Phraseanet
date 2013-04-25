@@ -516,7 +516,10 @@ class PhraseaEngine implements SearchEngineInterface
             $BF = array();
 
             foreach ($this->options->getBusinessFieldsOn() as $collection) {
-                $BF[] = $collection->get_base_id();
+                // limit business field query to databox local collection
+                if ($sbas_id === $collection->get_sbas_id()) {
+                    $BF[] = $collection->get_base_id();
+                }
             }
 
             $results = phrasea_query2(
