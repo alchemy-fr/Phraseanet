@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\Controller;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -49,7 +51,7 @@ class Permalink extends AbstractDelivery
             return $app['twig']->render('overview.html.twig', $params);
         };
 
-        $deliverPermalink = function(Application $app, $sbas_id, $record_id, $key, $subdef) use ($that) {
+        $deliverPermalink = function(PhraseaApplication $app, $sbas_id, $record_id, $key, $subdef) use ($that) {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
             $record = \media_Permalink_Adapter::challenge_token($app, $databox, $key, $record_id, $subdef);
 
@@ -74,8 +76,12 @@ class Permalink extends AbstractDelivery
                         $watermark = false;
                     }
                 }
-
-                return $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
+                $response = $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
+                
+                $linkToCaption = $app->path("view_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'key' => $key));
+                $response->headers->set('Link', $linkToCaption);
+                
+                return $response;
             } else {
                 $collection = \collection::get_from_base_id($app, $record->get_base_id());
                 switch ($collection->get_pub_wm()) {
@@ -92,9 +98,30 @@ class Permalink extends AbstractDelivery
                 }
             }
 
-            return $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
+            $response = $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
+            
+            $linkToCaption = $app->path("view_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'key' => $key));
+            $response->headers->set('Link', $linkToCaption);
+            
+            return $response;
         };
 
+        $controllers->get('/v1/{sbas_id}/{record_id}/caption/', function(PhraseaApplication $app, Request $request, $sbas_id, $record_id) {
+            $key = $request->query->get('token');
+            
+            $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+            
+            $record = \media_Permalink_Adapter::challenge_token($app, $databox, $key, $record_id, 'thumbnail');
+            if (null === $record) {
+                throw new NotFoundHttpException("Caption not found");
+            }
+            $caption = $record->get_caption();
+            
+            return new Response($caption->serialize(\caption_record::SERIALIZE_JSON), 200, array("Content-Type" => 'application/json'));
+        })
+        ->assert('sbas_id', '\d+')->assert('record_id', '\d+')
+        ->bind('view_caption');
+        
         $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/', function (PhraseaApplication $app, Request $request, $sbas_id, $record_id, $subdef) use ($deliverPermaview) {
             $key = $request->query->get('token');
 

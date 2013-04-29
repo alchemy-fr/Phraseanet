@@ -73,7 +73,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
                 $tagname = $field->get_name();
                 $retrieved = array();
                 foreach ($json["record"]["description"][$tagname] as $value) {
-                    $retrieved[] = (string) $value;
+                    $retrieved[] = $value;
                 }
 
                 $values = $field->get_values();
@@ -85,7 +85,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
                 $tagname = $field->get_name();
                 $data = $field->get_values();
                 $value = array_pop($data);
-                $this->assertEquals($value->getValue(), (string) $json["record"]["description"][$tagname]);
+                $this->assertEquals($value->getValue(), $json["record"]["description"][$tagname]);
             }
         }
     }
