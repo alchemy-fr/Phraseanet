@@ -14,7 +14,7 @@ class TokenValidatorTest extends \PhraseanetPHPUnitAbstract
         $app = self::$DI['app'];
         $usr_id = 42;
 
-        $token = \random::getUrlToken($app, \random::TYPE_VALIDATE, $usr_id);
+        $token = self::$DI['app']->getUrlToken(\random::TYPE_VALIDATE, $usr_id);
 
         $validator = new TokenValidator($app);
         $this->assertEquals($usr_id, $validator->isValid($token));
@@ -27,7 +27,7 @@ class TokenValidatorTest extends \PhraseanetPHPUnitAbstract
         $app = self::$DI['app'];
         $usr_id = 42;
 
-        $token = \random::getUrlToken($app, \random::TYPE_VALIDATE, $usr_id, new \DateTime('-2 hours'));
+        $token = self::$DI['app']->getUrlToken(\random::TYPE_VALIDATE, $usr_id, new \DateTime('-2 hours'));
 
         $validator = new TokenValidator($app);
         $this->assertFalse($validator->isValid($token));

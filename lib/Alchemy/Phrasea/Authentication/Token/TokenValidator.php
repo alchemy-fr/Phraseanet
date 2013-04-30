@@ -16,7 +16,7 @@ class TokenValidator
     public function isValid($token)
     {
         try {
-            $datas = \random::helloToken($this->app, $token);
+            $datas = $this->app['tokens']->helloToken($token);
 
             return $datas['usr_id'];
         } catch (\Exception_NotFound $e) {
