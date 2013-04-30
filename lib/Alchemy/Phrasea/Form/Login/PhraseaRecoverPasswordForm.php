@@ -11,22 +11,30 @@
 
 namespace Alchemy\Phrasea\Form\Login;
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Form\Constraint\PasswordToken;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Form used to renew the password once the user is logged, in its account.
+ * Form used to renew password when password lost
  */
-class PhraseaRenewPasswordForm extends AbstractType
+class PhraseaRecoverPasswordForm extends AbstractType
 {
+    private $app;
+
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('oldPassword', 'password', array(
-            'label' => _('Current password'),
+        $builder->add('token', 'hidden', array(
             'required' => true,
             'constraints' => array(
-                new Assert\NotBlank()
+                new PasswordToken($this->app, $this->app['tokens'])
             )
         ));
 

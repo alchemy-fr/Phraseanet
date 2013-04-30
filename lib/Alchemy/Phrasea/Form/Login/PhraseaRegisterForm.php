@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Form\Login;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Utilities\String\Camelizer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,8 +24,9 @@ class PhraseaRegisterForm extends AbstractType
     private $params;
     private $camelizer;
 
-    public function __construct(array $available, array $params = array(), Camelizer $camelizer = null)
+    public function __construct(Application $app, array $available, array $params = array(), Camelizer $camelizer = null)
     {
+        $this->app = $app;
         $this->available = $available;
         $this->params = $params;
         $this->camelizer = $camelizer ?: new Camelizer();
@@ -37,6 +39,8 @@ class PhraseaRegisterForm extends AbstractType
             'required'    => true,
             'constraints' => array(
                 new Assert\NotBlank(),
+                new Assert\Email(),
+                new \Alchemy\Phrasea\Form\Constraint\NewEmail($this->app),
             ),
         ));
 
@@ -44,7 +48,8 @@ class PhraseaRegisterForm extends AbstractType
             'label' => _('Password'),
             'required' => true,
             'constraints' => array(
-                new Assert\NotBlank()
+                new Assert\NotBlank(),
+                new Assert\Length(array('min' => 5)),
             )
         ));
 
@@ -52,13 +57,40 @@ class PhraseaRegisterForm extends AbstractType
             'label' => _('Password (confirmation)'),
             'required' => false,
             'constraints' => array(
-                new Assert\NotBlank()
+                new Assert\NotBlank(),
+                new Assert\Length(array('min' => 5)),
             )
         ));
 
         $builder->add('accept-tou', 'checkbox', array(
             'mapped'   => false,
-            'required' => false
+            "constraints" => new Assert\True(array(
+                "message" => "Please accept the Terms and conditions in order to register")
+            ),
+        ));
+
+        require_once($this->app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
+        $baseIds = array();
+
+        foreach (\giveMeBases($this->app) as $sbas_id => $baseInsc) {
+            if (($baseInsc['CollsCGU'] || $baseInsc['Colls']) && $baseInsc['inscript']) {
+                if ($baseInsc['Colls']) {
+                    foreach($baseInsc['Colls'] as  $collId => $collName) {
+                        $baseIds[\phrasea::baseFromColl($sbas_id, $collId, $this->app)] = $collName;
+                    }
+                }
+                if ($baseInsc['CollsCGU']) {
+                    foreach($baseInsc['CollsCGU'] as  $collId => $collName) {
+                        $baseIds[\phrasea::baseFromColl($sbas_id, $collId, $this->app)] = $collName;
+                    }
+                }
+            }
+        }
+
+        $builder->add('collections', 'choice', array(
+            'choices'    => $baseIds,
+            'multiple'   => true,
+            'expanded'   => true,
         ));
 
         foreach ($this->params as $param) {

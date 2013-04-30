@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 
-// write tests
 class GeonameType extends AbstractType
 {
     public function getParent()
