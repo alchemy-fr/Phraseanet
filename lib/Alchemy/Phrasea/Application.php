@@ -550,6 +550,8 @@ class Application extends SilexApplication
     /**
      * Adds a flash message for type.
      *
+     * In Phraseanet, valid types are "warning", "info", "success" and "error"
+     *
      * @param string $type
      * @param string $message
      */
