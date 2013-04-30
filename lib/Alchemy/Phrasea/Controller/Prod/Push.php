@@ -218,7 +218,7 @@ class Push implements ControllerProviderInterface
 
                     $url = $app['phraseanet.registry']->get('GV_ServerName')
                         . 'lightbox/index.php?LOG='
-                        . \random::getUrlToken($app, \random::TYPE_VALIDATE, $user_receiver->get_id(), null, $Basket->getId());
+                        . $app['tokens']->getUrlToken(\random::TYPE_VALIDATE, $user_receiver->get_id(), null, $Basket->getId());
 
                     $receipt = $request->get('recept') ? $app['phraseanet.user']->get_email() : '';
 
@@ -415,7 +415,7 @@ class Push implements ControllerProviderInterface
 
                     $url = $app['phraseanet.registry']->get('GV_ServerName')
                         . 'lightbox/index.php?LOG='
-                        . \random::getUrlToken($app, \random::TYPE_VIEW, $participant_user->get_id(), null, $Basket->getId());
+                        . $app['tokens']->getUrlToken(\random::TYPE_VIEW, $participant_user->get_id(), null, $Basket->getId());
 
                     $receipt = $request->get('recept') ? $app['phraseanet.user']->get_email() : '';
 

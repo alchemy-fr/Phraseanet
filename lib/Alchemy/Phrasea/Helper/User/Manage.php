@@ -180,7 +180,7 @@ class Manage extends Helper
 
                 if ($receiver) {
                     $expire = new \DateTime('+3 days');
-                    $token = \random::getUrlToken($this->app, \random::TYPE_PASSWORD, $createdUser->get_id(), $expire, $createdUser->get_email());
+                    $token = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id(), $expire, $createdUser->get_email());
 
                     $mail = MailRequestPasswordSetup::create($this->app, $receiver);
                     $mail->setButtonUrl($this->app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
@@ -191,7 +191,7 @@ class Manage extends Helper
             }
 
             if ($sendCredentials) {
-                $urlToken = \random::getUrlToken($this->app, \random::TYPE_PASSWORD, $createdUser->get_id());
+                $urlToken = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id());
 
                 if ($receiver && false !== $urlToken) {
                     $mail = MailSuccessEmailConfirmationUnregistered::create($this->app, $receiver);

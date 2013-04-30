@@ -41,7 +41,7 @@ class Lightbox implements ControllerProviderInterface
             }
 
             try {
-                $datas = \random::helloToken($app, $request->query->get('LOG'));
+                $datas = $app['tokens']->helloToken($request->query->get('LOG'));
             } catch (\Exception_NotFound $e) {
                 return;
             }
@@ -482,8 +482,8 @@ class Lightbox implements ControllerProviderInterface
 
                 $expires = new \DateTime('+10 days');
                 $url = $app['phraseanet.registry']->get('GV_ServerName')
-                    . 'lightbox/index.php?LOG=' . \random::getUrlToken(
-                        $app, \random::TYPE_VALIDATE
+                    . 'lightbox/index.php?LOG=' . $app['tokens']->getUrlToken(
+                        \random::TYPE_VALIDATE
                         , $basket->getValidation()->getInitiator($app)->get_id()
                         , $expires
                         , $basket->getId()
