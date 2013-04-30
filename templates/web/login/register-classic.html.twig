@@ -30,7 +30,7 @@
                      name="registerForm"
                      ng-submit="submit();"
                      method="POST"
-                     action="{{ path("submit_login_register") }}"
+                     action="{{ path("login_register_classic") }}"
                      check-form-submission
                 >
 
@@ -82,6 +82,14 @@
                     </div>
 
                     {{ form_rest(form) }}
+                    
+                    {% if recaptcha_display %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ macro.captcha() }}
+                            </div>
+                        </div>
+                    {% endif %}
 
                     <div class="row-fluid">
                         <div class="span12">
