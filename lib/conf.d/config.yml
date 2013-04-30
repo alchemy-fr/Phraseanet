@@ -62,16 +62,16 @@ dev:
       options:
         client-id: ''
         client-secret: ''
-    registration-fields:
-      -
-        name: company
-        required: true
-      -
-        name: first-name
-        required: true
-      -
-        name: geoname-id
-        required: true
+  registration-fields:
+    -
+      name: company
+      required: true
+    -
+      name: first-name
+      required: true
+    -
+      name: geoname-id
+      required: true
 
 ##############
 # PRODUCTION #
@@ -122,6 +122,16 @@ prod:
       options:
         client-id: ''
         client-secret: ''
+  registration-fields:
+    -
+      name: company
+      required: true
+    -
+      name: first-name
+      required: true
+    -
+      name: geoname-id
+      required: true
 
 ##############
 #    TEST    #
@@ -172,4 +182,14 @@ test:
       options:
         client-id: ''
         client-secret: ''
+  registration-fields:
+    -
+      name: company
+      required: true
+    -
+      name: first-name
+      required: true
+    -
+      name: geoname-id
+      required: true
 
