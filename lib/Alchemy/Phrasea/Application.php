@@ -84,6 +84,7 @@ use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use FFMpeg\FFMpegServiceProvider;
 use Neutron\Silex\Provider\ImagineServiceProvider;
@@ -207,6 +208,7 @@ class Application extends SilexApplication
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
         $this->register(new TaskManagerServiceProvider());
+        $this->register(new TokensServiceProvider());
         $this->register(new TwigServiceProvider(), array(
             'twig.options' => array(
                 'cache'           => realpath(__DIR__ . '/../../../../../../tmp/cache_twig/'),

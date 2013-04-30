@@ -70,7 +70,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         self::$DI['app']->closeAccount();
 
         $Basket = $this->insertOneBasket();
-        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_VIEW, self::$DI['user_alt2']->get_id(), null, $Basket->getId());
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_VIEW, self::$DI['user_alt2']->get_id(), null, $Basket->getId());
 
         self::$DI['client']->request('GET', '/lightbox/?LOG='.$token);
 

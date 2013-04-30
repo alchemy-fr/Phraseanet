@@ -94,8 +94,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                 if ($this->shouldSendNotificationFor($user_to_notif->get_id())) {
                     $readyToSend = false;
                     try {
-                        $token = \random::getUrlToken(
-                                $this->app,
+                        $token = $this->app['tokens']->getUrlToken(
                                 \random::TYPE_FEED_ENTRY
                                 , $user_to_notif->get_id()
                                 , null

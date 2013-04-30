@@ -263,10 +263,10 @@ class Account implements ControllerProviderInterface
     {
         if (null !== $token = $request->request->get('token')) {
             try {
-                $datas = \random::helloToken($app, $token);
+                $datas = $app['tokens']->helloToken($token);
                 $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
                 $user->set_email($datas['datas']);
-                \random::removeToken($app, $token);
+                $app['tokens']->removeToken($token);
 
                 return $app->redirect('/account/reset-email/?update=ok');
             } catch (\Exception $e) {
@@ -296,7 +296,7 @@ class Account implements ControllerProviderInterface
         }
 
         $date = new \DateTime('1 day');
-        $token = \random::getUrlToken($app, \random::TYPE_EMAIL, $app['phraseanet.user']->get_id(), $date, $app['phraseanet.user']->get_email());
+        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['phraseanet.user']->get_id(), $date, $app['phraseanet.user']->get_email());
         $url = $app['phraseanet.registry']->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
 
         try {

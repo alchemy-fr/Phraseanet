@@ -718,7 +718,7 @@ class set_export extends set_abstract
 
         $list['complete'] = false;
 
-        random::updateToken($app, $token, serialize($list));
+        $app['tokens']->updateToken($token, serialize($list));
 
         $toRemove = array();
 
@@ -751,7 +751,7 @@ class set_export extends set_abstract
 
         $list['complete'] = true;
 
-        random::updateToken($app, $token, serialize($list));
+        $app['tokens']->updateToken($token, serialize($list));
 
         $app['filesystem']->remove($toRemove);
         $app['filesystem']->chmod($zipFile, 0760);

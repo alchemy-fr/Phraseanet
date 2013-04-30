@@ -96,7 +96,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$DI['app']->closeAccount();
         $email = $this->generateEmail();
-        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_EMAIL, 0, null, $email);
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, 0, null, $email);
         self::$DI['client']->request('GET', '/login/register-confirm/', array('code'    => $token));
         $response = self::$DI['client']->getResponse();
 
@@ -111,7 +111,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$DI['app']->closeAccount();
         $email = $this->generateEmail();
-        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_EMAIL, self::$DI['user']->get_id(), null, $email);
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->get_id(), null, $email);
 
         self::$DI['user']->set_mail_locked(false);
 
@@ -132,7 +132,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']->closeAccount();
         $email = $this->generateEmail();
         $appboxRegister = new \appbox_register(self::$DI['app']['phraseanet.appbox']);
-        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_EMAIL, self::$DI['user']->get_id(), null, $email);
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->get_id(), null, $email);
 
         self::$DI['user']->set_mail_locked(true);
         $this->deleteRequest();
@@ -156,7 +156,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['app']->closeAccount();
         $email = $this->generateEmail();
-        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_EMAIL, $user->get_id(), null, $email);
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, $user->get_id(), null, $email);
 
         $user->set_mail_locked(true);
 
@@ -253,7 +253,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRenewPassword()
     {
         self::$DI['app']->closeAccount();
-        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_PASSWORD, self::$DI['user']->get_id());
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->get_id());
 
         self::$DI['client']->request('POST', '/login/forgot-password/', array(
             'token'                 => $token,

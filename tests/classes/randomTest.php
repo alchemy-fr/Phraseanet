@@ -2,16 +2,23 @@
 
 class randomTest extends PhraseanetPHPUnitAbstract
 {
+    protected $random;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->random = new \random(self::$DI['app']);
+    }
 
     public function testCleanTokens()
     {
         $expires_on = new DateTime('-5 minutes');
         $usr_id = self::$DI['user']->get_id();
-        $token = random::getUrlToken(self::$DI['app'], \random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
-        random::cleanTokens(self::$DI['app']);
+        $token = $this->random->getUrlToken(\random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
+        $this->random->cleanTokens(self::$DI['app']);
 
         try {
-            random::helloToken(self::$DI['app'], $token);
+            $this->random->helloToken($token);
             $this->fail();
         } catch (Exception_NotFound $e) {
 
@@ -58,13 +65,13 @@ class randomTest extends PhraseanetPHPUnitAbstract
     public function testGetUrlToken()
     {
         $usr_id = self::$DI['user']->get_id();
-        $token = random::getUrlToken(self::$DI['app'], \random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
-        $datas = random::helloToken(self::$DI['app'], $token);
+        $token = $this->random->getUrlToken(\random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
+        $datas = $this->random->helloToken($token);
         $this->assertEquals('some nice datas', $datas['datas']);
-        random::updateToken(self::$DI['app'], $token, 'some very nice datas');
-        $datas = random::helloToken(self::$DI['app'], $token);
+        $this->random->updateToken($token, 'some very nice datas');
+        $datas = $this->random->helloToken($token);
         $this->assertEquals('some very nice datas', $datas['datas']);
-        random::removeToken(self::$DI['app'], $token);
+        $this->random->removeToken($token);
     }
 
     public function testRemoveToken()
@@ -80,8 +87,8 @@ class randomTest extends PhraseanetPHPUnitAbstract
     public function testHelloToken()
     {
         $usr_id = self::$DI['user']->get_id();
-        $token = random::getUrlToken(self::$DI['app'], \random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
-        $datas = random::helloToken(self::$DI['app'], $token);
+        $token = $this->random->getUrlToken(\random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
+        $datas = $this->random->helloToken($token);
         $this->assertEquals('some nice datas', $datas['datas']);
         $this->assertNull($datas['expire_on']);
         $created_on = new DateTime($datas['created_on']);
@@ -91,9 +98,9 @@ class randomTest extends PhraseanetPHPUnitAbstract
         $this->assertTrue($date >= $created_on);
         $this->assertEquals('password', $datas['type']);
 
-        random::removeToken(self::$DI['app'], $token);
+        $this->random->removeToken($token);
         try {
-            random::helloToken(self::$DI['app'], $token);
+            $this->random->helloToken($token);
             $this->fail();
         } catch (Exception_NotFound $e) {
 
@@ -101,8 +108,8 @@ class randomTest extends PhraseanetPHPUnitAbstract
 
         $expires_on = new DateTime('+5 minutes');
         $usr_id = self::$DI['user']->get_id();
-        $token = random::getUrlToken(self::$DI['app'], \random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
-        $datas = random::helloToken(self::$DI['app'], $token);
+        $token = $this->random->getUrlToken(\random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
+        $datas = $this->random->helloToken($token);
         $this->assertEquals('some nice datas', $datas['datas']);
         $sql_expires = new DateTime($datas['expire_on']);
         $this->assertTrue($sql_expires == $expires_on);
@@ -113,9 +120,9 @@ class randomTest extends PhraseanetPHPUnitAbstract
         $this->assertTrue($date >= $created_on);
         $this->assertEquals('password', $datas['type']);
 
-        random::removeToken(self::$DI['app'], $token);
+        $this->random->removeToken($token);
         try {
-            random::helloToken(self::$DI['app'], $token);
+            $this->random->helloToken($token);
             $this->fail();
         } catch (Exception_NotFound $e) {
 
@@ -124,10 +131,10 @@ class randomTest extends PhraseanetPHPUnitAbstract
 
         $expires_on = new DateTime('-5 minutes');
         $usr_id = self::$DI['user']->get_id();
-        $token = random::getUrlToken(self::$DI['app'], \random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
+        $token = $this->random->getUrlToken(\random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
 
         try {
-            random::helloToken(self::$DI['app'], $token);
+            $this->random->helloToken($token);
             $this->fail();
         } catch (Exception_NotFound $e) {
 

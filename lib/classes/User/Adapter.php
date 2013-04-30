@@ -474,7 +474,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $stmt->closeCursor();
         }
         if ($token === false) {
-            $token = random::getUrlToken($this->app, \random::TYPE_RSS, $this->id);
+            $token = $this->app['tokens']->getUrlToken(\random::TYPE_RSS, $this->id);
         }
 
         return new system_url($this->app['phraseanet.registry']->get('GV_ServerName') . 'atom/' . $token);

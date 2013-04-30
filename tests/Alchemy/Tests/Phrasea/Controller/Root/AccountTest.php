@@ -91,7 +91,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostResetMailWithToken()
     {
-        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_EMAIL, self::$DI['user']->get_id(), null, 'new_email@email.com');
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->get_id(), null, 'new_email@email.com');
         self::$DI['client']->request('POST', '/account/reset-email/', array('token'   => $token));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -100,7 +100,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals('new_email@email.com', self::$DI['user']->get_email());
         self::$DI['user']->set_email('noone@example.com');
         try {
-            \random::helloToken(self::$DI['app'], $token);
+            self::$DI['app']['tokens']->helloToken($token);
             $this->fail('TOken has not been removed');
         } catch (\Exception_NotFound $e) {
 
@@ -186,7 +186,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostResetMailEmail()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate');
-        
+
         $password = \random::generatePassword();
         self::$DI['app']['phraseanet.user']->set_password($password);
         self::$DI['client']->request('POST', '/account/reset-email/', array(

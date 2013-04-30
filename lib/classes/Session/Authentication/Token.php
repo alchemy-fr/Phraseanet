@@ -38,7 +38,7 @@ class Session_Authentication_Token implements Session_Authentication_Interface
         $this->token = $token;
 
         try {
-            $datas = random::helloToken($app, $token);
+            $datas = $app['tokens']->helloToken($token);
             $usr_id = $datas['usr_id'];
             $this->user = User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception_NotFound $e) {
