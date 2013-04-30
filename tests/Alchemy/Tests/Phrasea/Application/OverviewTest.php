@@ -80,7 +80,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     function testPermalinkNotAuthenticated()
     {
-        self::$DI['app']->closeAccount();
+        self::$DI['app']['authentication']->closeAccount();
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
         $this->get_a_permalinkBCcompatibility(array("Content-Type" => "image/jpeg"));
         $this->get_a_permaviewBCcompatibility(array("Content-Type" => "text/html; charset=UTF-8"));
