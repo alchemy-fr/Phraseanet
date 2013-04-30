@@ -124,7 +124,8 @@ return call_user_func(function($environment = null) {
             $code = 404;
             $message = 'Not Found';
         } else {
-            throw $e;
+            $code = 500;
+            $message = 'Server Error';
         }
 
         return new Response($message, $code, array('X-Status-Code' => $code));
