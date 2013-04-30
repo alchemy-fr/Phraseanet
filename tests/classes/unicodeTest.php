@@ -18,8 +18,9 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
      */
     public function testRemove_diacritics()
     {
-        $this->assertEquals('Elephant', $this->object->remove_diacritics('Eléphant'));
-        $this->assertEquals('&e"\'(-e_ca)=$*u:;,?./§%µ£°0987654321œ3~#{[|^`@]}e³²÷×¿', $this->object->remove_diacritics('&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿'));
+        $this->assertEquals('Elephant', $this->object->remove_diacritics('Éléphant'));
+        $this->assertEquals('&e"\'(-eE_ca)=$*u:;,?./§%μ£°0987654321Œ3~#{[|^`@]}e32÷×¿',
+            $this->object->remove_diacritics('&é"\'(-èÉ_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿'));
         $this->assertEquals('PeTARDS', $this->object->remove_diacritics('PéTARDS'));
     }
 
@@ -29,11 +30,16 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
     public function testRemove_nonazAZ09()
     {
         $this->assertEquals('Elephant', $this->object->remove_nonazAZ09('Eléphant'));
-        $this->assertEquals('e-e_cau09876543213e', $this->object->remove_nonazAZ09('&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', true, true));
-        $this->assertEquals('eecau09876543213e', $this->object->remove_nonazAZ09('&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', false, false));
-        $this->assertEquals('ee_cau09876543213e', $this->object->remove_nonazAZ09('&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', true, false));
-        $this->assertEquals('e-ecau09876543213e', $this->object->remove_nonazAZ09('&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', false, true));
-        $this->assertEquals('PeTARDS', $this->object->remove_nonazAZ09('PéTARDS'));
+        $this->assertEquals('Ee-e_cau.09876543213e32',
+            $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', true, true, true));
+        $this->assertEquals('Ee-e_cau09876543213e32',
+            $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', true, true, false));
+        $this->assertEquals('Eee_cau.09876543213e32',
+            $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', true, false, true));
+        $this->assertEquals('Ee-ecau.09876543213e32',
+            $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', false, true, true));
+        $this->assertEquals('Eeecau09876543213e32',
+            $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', false, false, false));
     }
 
     /**
