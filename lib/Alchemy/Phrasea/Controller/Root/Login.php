@@ -251,7 +251,7 @@ class Login implements ControllerProviderInterface
         if ($receiver) {
             $expire = new \DateTime('+3 days');
 
-            $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+            $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
 
             $mail = MailRequestEmailConfirmation::create($app, $receiver);
             $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
@@ -277,7 +277,7 @@ class Login implements ControllerProviderInterface
         }
 
         try {
-            $datas = \random::helloToken($app, $code);
+            $datas = $app['tokens']->helloToken($code);
         } catch (\Exception_NotFound $e) {
             return $app->redirect('/login/?redirect=prod&error=token-not-found');
         }
@@ -292,7 +292,7 @@ class Login implements ControllerProviderInterface
             return $app->redirect('/login/?redirect=prod&notice=already');
         }
 
-        \random::removeToken($app, $code);
+        $app['tokens']->removeToken($code);
 
         try {
             $receiver = Receiver::fromUser($user);
@@ -301,7 +301,7 @@ class Login implements ControllerProviderInterface
         }
 
         $user->set_mail_locked(false);
-        \random::removeToken($app, $code);
+        $app['tokens']->removeToken($code);
 
         if (count($user->ACL()->get_granted_base()) > 0) {
             $mail = MailSuccessEmailConfirmationRegistered::create($app, $receiver);
@@ -338,7 +338,7 @@ class Login implements ControllerProviderInterface
                 return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'invalidmail')));
             }
 
-            $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
+            $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
 
             if ($token) {
                 $url = $app['url_generator']->generate('login_forgot_password', array('token' => $token), true);
@@ -364,12 +364,12 @@ class Login implements ControllerProviderInterface
             }
 
             try {
-                $datas = \random::helloToken($app, $token);
+                $datas = $app['tokens']->helloToken($token);
 
                 $user = \User_Adapter::getInstance($datas['usr_id'], $app);
                 $user->set_password($passwordConfirm);
 
-                \random::removeToken($app, $token);
+                $app['tokens']->removeToken($token);
 
                 return $app->redirect('/login/?notice=password-update-ok');
             } catch (\Exception_NotFound $e) {
@@ -392,7 +392,7 @@ class Login implements ControllerProviderInterface
 
         if (null !== $token = $request->query->get('token')) {
             try {
-                \random::helloToken($app, $token);
+                $app['tokens']->helloToken($token);
                 $tokenize = true;
             } catch (\Exception $e) {
                 $errorMsg = 'token';
@@ -703,7 +703,7 @@ class Login implements ControllerProviderInterface
         $user->set_mail_locked(true);
 
         $expire = new \DateTime('+3 days');
-        $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+        $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
 
         $mail = MailRequestEmailConfirmation::create($app, $receiver);
         $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
@@ -913,7 +913,7 @@ class Login implements ControllerProviderInterface
                     $basketId = $validationSession->getBasket()->getId();
 
                     try {
-                        $token = \random::getValidationToken($this->app, $participantId, $basketId);
+                        $token = $this->app['tokens']->getValidationToken($participantId, $basketId);
                     } catch (\Exception_NotFound $e) {
                         continue;
                     }
@@ -1036,7 +1036,7 @@ class Login implements ControllerProviderInterface
 
                 return $app->redirect($app['url_generator']->generate('login_forgot_password', array(
                     'salt'  => 1,
-                    'token' => \random::getUrlToken($app, \random::TYPE_PASSWORD, $usr_id, $date)
+                    'token' => $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $usr_id, $date)
                 )));
             } catch (\Exception $e) {
                 return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'), '/') . "&error=unexpected");

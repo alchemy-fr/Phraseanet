@@ -166,7 +166,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $token = $this->getToken($list);
         // Get token
-        $datas = \random::helloToken(self::$DI['app'], $token);
+        $datas = self::$DI['app']['tokens']->helloToken($token);
         // Build zip
         \set_export::build_zip(
             self::$DI['app'],
@@ -341,8 +341,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     private function getToken($datas = array())
     {
-        return \random::getUrlToken(
-            self::$DI['app'],
+        return self::$DI['app']['tokens']->getUrlToken(
             \random::TYPE_DOWNLOAD,
             self::$DI['user']->get_id(),
             new \DateTime('+10 seconds'), // Token lifetime

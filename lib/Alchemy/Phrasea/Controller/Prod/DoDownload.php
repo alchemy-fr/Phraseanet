@@ -92,7 +92,7 @@ class DoDownload implements ControllerProviderInterface
     public function prepareDownload(Application $app, Request $request, $token)
     {
         try {
-            $datas = \random::helloToken($app, $token);
+            $datas = $app['tokens']->helloToken($token);
         } catch (\Exception_NotFound $e) {
             $app->abort(404, 'Invalid token');
         }
@@ -141,7 +141,7 @@ class DoDownload implements ControllerProviderInterface
     public function downloadDocuments(Application $app, Request $request, $token)
     {
         try {
-            $datas = \random::helloToken($app, $token);
+            $datas = $app['tokens']->helloToken($token);
         } catch (\Exception_NotFound $e) {
             $app->abort(404, 'Invalid token');
         }
@@ -201,7 +201,7 @@ class DoDownload implements ControllerProviderInterface
     public function downloadExecute(Application $app, Request $request, $token)
     {
         try {
-            $datas = \random::helloToken($app, $token);
+            $datas = $app['tokens']->helloToken($token);
         } catch (\Exception_NotFound $e) {
             return $app->json(array(
                 'success' => false,

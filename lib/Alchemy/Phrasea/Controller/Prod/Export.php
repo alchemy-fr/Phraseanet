@@ -267,7 +267,7 @@ class Export implements ControllerProviderInterface
 
         //generate validation token
         $endDateObject = new \DateTime('+1 day');
-        $token = \random::getUrlToken($app, \random::TYPE_EMAIL, false, $endDateObject, serialize($list));
+        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, false, $endDateObject, serialize($list));
 
         if (count($destMails) > 0 && $token) {
             //zip documents

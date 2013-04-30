@@ -78,8 +78,7 @@ class Download implements ControllerProviderInterface
 
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
 
-        $token = \random::getUrlToken(
-            $app,
+        $token = $app['tokens']->getUrlToken(
             \random::TYPE_DOWNLOAD,
             $app['phraseanet.user']->get_id(),
             new \DateTime('+3 hours'), // Token lifetime
