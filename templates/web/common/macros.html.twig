@@ -59,3 +59,23 @@
        <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
     </noscript>
 {% endmacro %}
+
+{% macro flashes() %}
+    {% for type in ["warning", "info", "success", "error"] %}
+        {% for message in app.getFlash(type) %}
+            <div class="alert alert-{{ type }}">
+                <table>
+                    <tr>
+                        <td class="alert-block-logo">
+                            <i class="icon-2x icon-white icon-exclamation-sign"></i>
+                        </td>
+                        <td class="alert-block-content">{{ message }}</td>
+                        <td class="alert-block-close">
+                            <a href="#"><b>&times;</b></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endmacro %}

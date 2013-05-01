@@ -409,6 +409,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt->execute(array(':password' => $password, ':usr_id'   => $this->get_id()));
         $stmt->closeCursor();
 
+        $this->password = $password;
+
         return $this;
     }
 

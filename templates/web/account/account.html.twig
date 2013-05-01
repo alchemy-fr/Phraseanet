@@ -1,6 +1,6 @@
 {% extends "account/base.html.twig" %}
 
-{% import "login/common/macros.html.twig" as auth_macro %}
+{% import "common/macros.html.twig" as auth_macro %}
 
 {% set selected = "informations" %}
 
@@ -20,10 +20,6 @@
 {% block content %}
     <div class="row-fluid">
         <div class="span12">
-            {% if notice | trim != "" %}
-                <div class="alert alert-error">{{ notice }}</div>
-            {% endif %}
-
             {{ auth_macro.flashes() }}
 
             <form name="account" id="account" class="form-horizontal" action="{{ path("submit_update_account") }}" method="post">
@@ -40,7 +36,7 @@
                         <div class="control-group">
                             <label class="form_label control-label" for="form_gender"><strong>{% trans "admin::compte-utilisateur sexe" %}</strong></label>
                             <div class="controls">
-                                <select class="input-xlarge">
+                                <select name="form_gender" class="input-xlarge">
                                     <option {% if app["authentication"].getUser().get_gender() == "0" %}selected{% endif %} value="0" >
                                         {% trans "admin::compte-utilisateur:sexe: mademoiselle" %}
                                     </option>

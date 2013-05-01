@@ -11,12 +11,13 @@
 
 namespace Alchemy\Phrasea\Controller\Root;
 
-use Silex\Application;
-use Silex\ControllerProviderInterface;
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -226,9 +227,11 @@ class Account implements ControllerProviderInterface
         if ('POST' === $request->getMethod()) {
             $form->bind($request);
 
-            if($form->isValid()) {
-                $password = $request->request->get('password');
-                $passwordConfirm = $request->request->get('passwordConfirm');
+            if ($form->isValid()) {
+                $data = $form->getData();
+
+                $password = $data['password'];
+                $passwordConfirm = $data['passwordConfirm'];
 
                 $user = $app['authentication']->getUser();
 
@@ -238,19 +241,17 @@ class Account implements ControllerProviderInterface
                     $app->addFlash('error', _('forms::la valeur donnee est trop courte'));
                 } elseif (trim($password) != str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
                     $app->addFlash('error', _('forms::la valeur donnee contient des caracteres invalides'));
-                } elseif ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $request->request->get('oldPassword'), $user->get_nonce())) {
+                } elseif ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $data['oldPassword'], $user->get_nonce())) {
                     $user->set_password($passwordConfirm);
                     $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
                     return $app->redirect($app->path('account'));
                 } else {
-                    $app->addFlash('error', _('Password update failed'));
+                    $app->addFlash('error', _('Invalid password provided'));
                 }
-
-                return $app->redirect($app->path('reset_password'));
             }
         }
 
-        return $app['twig']->render('login/change-password.html.twig', array(
+        return $app['twig']->render('account/change-password.html.twig', array(
             'form' => $form->createView(),
             'login' => new \login(),
         ));
@@ -263,21 +264,8 @@ class Account implements ControllerProviderInterface
      * @param  Request          $request
      * @return RedirectResponse
      */
-    public function resetEmail(Application $app, Request $request)
+    public function resetEmail(PhraseaApplication $app, Request $request)
     {
-        if (null !== $token = $request->request->get('token')) {
-            try {
-                $datas = $app['tokens']->helloToken($token);
-                $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
-                $user->set_email($datas['datas']);
-                $app['tokens']->removeToken($token);
-
-                return $app->redirect('/account/reset-email/?update=ok');
-            } catch (\Exception $e) {
-                return $app->redirect('/account/reset-email/?update=ko');
-            }
-        }
-
         if (null === ($password = $request->request->get('form_password'))
             || null === ($email = $request->request->get('form_email'))
             || null === ($emailConfirm = $request->request->get('form_email_confirm'))) {
@@ -287,16 +275,22 @@ class Account implements ControllerProviderInterface
 
         $user = $app['authentication']->getUser();
 
-        if ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $password, $user->get_nonce())) {
-            return $app->redirect('/account/reset-email/?notice=bad-password');
+        if (!$app['auth.password-encoder']->isPasswordValid($user->get_password(), $password, $user->get_nonce())) {
+            $app->addFlash('error', _('admin::compte-utilisateur:ftp: Le mot de passe est errone'));
+
+            return $app->redirect($app->path('account_reset_email'));
         }
 
         if (!\Swift_Validate::email($email)) {
-            return $app->redirect('/account/reset-email/?notice=mail-invalid');
+            $app->addFlash('error', _('forms::l\'email semble invalide'));
+
+            return $app->redirect($app->path('account_reset_email'));
         }
 
         if ($email !== $emailConfirm) {
-            return $app->redirect('/account/reset-email/?notice=mail-match');
+            $app->addFlash('error', _('forms::les emails ne correspondent pas'));
+
+            return $app->redirect($app->path('account_reset_email'));
         }
 
         $date = new \DateTime('1 day');
@@ -306,7 +300,9 @@ class Account implements ControllerProviderInterface
         try {
             $receiver = Receiver::fromUser($app['authentication']->getUser());
         } catch (InvalidArgumentException $e) {
-            return $app->redirect('/account/reset-email/?notice=mail-not-send');
+            $app->addFlash('error', _('phraseanet::erreur: echec du serveur de mail'));
+
+            return $app->redirect($app->path('account_reset_email'));
         }
 
         $mail = MailRequestEmailUpdate::create($app, $receiver, null);
@@ -315,7 +311,9 @@ class Account implements ControllerProviderInterface
 
         $app['notification.deliverer']->deliver($mail);
 
-        return $app->redirect('/account/reset-email/?update=mail-send');
+        $app->addFlash('info', _('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer'));
+
+        return $app->redirect($app->path('account'));
     }
 
     /**
@@ -327,41 +325,24 @@ class Account implements ControllerProviderInterface
      */
     public function displayResetEmailForm(Application $app, Request $request)
     {
-        if (null !== $noticeMsg = $request->query->get('notice')) {
-            switch ($noticeMsg) {
-                case 'mail-server':
-                    $noticeMsg = _('phraseanet::erreur: echec du serveur de mail');
-                    break;
-                case 'mail-match':
-                    $noticeMsg = _('forms::les emails ne correspondent pas');
-                    break;
-                case 'mail-invalid':
-                    $noticeMsg = _('forms::l\'email semble invalide');
-                    break;
-                case 'bad-password':
-                    $noticeMsg = _('admin::compte-utilisateur:ftp: Le mot de passe est errone');
-                    break;
+        if (null !== $token = $request->query->get('token')) {
+            try {
+                $datas = $app['tokens']->helloToken($token);
+                $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
+                $user->set_email($datas['datas']);
+                $app['tokens']->removeToken($token);
+
+                $app->addFlash('success', _('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
+
+                return $app->redirect($app->path('account'));
+            } catch (\Exception $e) {
+                $app->addFlash('error', _('admin::compte-utilisateur: erreur lors de la mise a jour'));
+
+                return $app->redirect($app->path('account'));
             }
         }
 
-        if (null !== $updateMsg = $request->query->get('update')) {
-            switch ($updateMsg) {
-                case 'ok':
-                    $updateMsg = _('admin::compte-utilisateur: L\'email a correctement ete mis a jour');
-                    break;
-                case 'ko':
-                    $updateMsg = _('admin::compte-utilisateur: erreur lors de la mise a jour');
-                    break;
-                case 'mail-send':
-                    $updateMsg = _('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer');
-                    break;
-            }
-        }
-
-        return $app['twig']->render('account/reset-email.html.twig', array(
-            'noticeMsg' => $noticeMsg,
-            'updateMsg' => $updateMsg,
-        ));
+        return $app['twig']->render('account/reset-email.html.twig');
     }
 
     /**
@@ -455,27 +436,8 @@ class Account implements ControllerProviderInterface
      */
     public function displayAccount(Application $app, Request $request)
     {
-        switch ($notice = $request->query->get('notice', '')) {
-            case 'pass-ok':
-                $notice = _('login::notification: Mise a jour du mot de passe avec succes');
-                break;
-            case 'pass-ko':
-                $notice = _('Password update failed');
-                break;
-            case 'account-update-ok':
-                $notice = _('login::notification: Changements enregistres');
-                break;
-            case 'account-update-bad':
-                $notice = _('forms::erreurs lors de l\'enregistrement des modifications');
-                break;
-            case 'demand-ok':
-                $notice = _('login::notification: Vos demandes ont ete prises en compte');
-                break;
-        }
-
         return $app['twig']->render('account/account.html.twig', array(
             'user'          => $app['authentication']->getUser(),
-            'notice'        => $notice,
             'evt_mngr'      => $app['events-manager'],
             'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()),
         ));
@@ -484,14 +446,12 @@ class Account implements ControllerProviderInterface
     /**
      * Update account informations
      *
-     * @param  Application $app     A Silex application where the controller is mounted on
+     * @param  PhraseaApplication $app     A Silex application where the controller is mounted on
      * @param  Request     $request The current request
      * @return Response
      */
-    public function updateAccount(Application $app, Request $request)
+    public function updateAccount(PhraseaApplication $app, Request $request)
     {
-        $notice = 'account-update-bad';
-
         $demands = (array) $request->request->get('demand', array());
 
         if (0 !== count($demands)) {
@@ -500,7 +460,7 @@ class Account implements ControllerProviderInterface
             foreach ($demands as $baseId) {
                 try {
                     $register->add_request($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
-                    $notice = 'demand-ok';
+                    $app->addFlash('success', _('login::notification: Vos demandes ont ete prises en compte'));
                 } catch (\Exception $e) {
 
                 }
@@ -523,7 +483,8 @@ class Account implements ControllerProviderInterface
             'form_loginFTP',
             'form_pwdFTP',
             'form_destFTP',
-            'form_prefixFTPfolder'
+            'form_prefixFTPfolder',
+            'form_retryFTP'
         );
 
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
@@ -567,10 +528,10 @@ class Account implements ControllerProviderInterface
                     ->set_ftp_dir_prefix($request->request->get("form_prefixFTPfolder"))
                     ->set_defaultftpdatas($defaultDatas);
 
+                $app->addFlash('success', _('login::notification: Changements enregistres'));
                 $app['phraseanet.appbox']->get_connection()->commit();
-
-                $notice = 'account-update-ok';
             } catch (Exception $e) {
+                $app->addFlash('error', _('forms::erreurs lors de l\'enregistrement des modifications'));
                 $app['phraseanet.appbox']->get_connection()->rollBack();
             }
         }
@@ -590,7 +551,7 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return $app->redirect(sprintf('/account/?notice=%s', $notice), 201);
+        return $app->redirect($app->path('account'));
     }
 
     /**
