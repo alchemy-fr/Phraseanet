@@ -18,6 +18,7 @@ class PasswordToken extends Constraint
 {
     private $app;
     private $random;
+    private $message;
 
     public function __construct(Application $app, \random $random)
     {

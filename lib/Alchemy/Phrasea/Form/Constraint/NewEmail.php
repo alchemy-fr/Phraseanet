@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraint;
 class NewEmail extends Constraint
 {
     private $app;
+    private $message;
 
     public function __construct(Application $app)
     {
