@@ -318,6 +318,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'form_pwdFTP'          => '',
             'form_destFTP'         => '',
             'form_prefixFTPfolder' => '',
+            'form_retryFTP'        => '',
             'notifications'        => $notifs,
             'form_defaultdataFTP'  => array('document', 'preview', 'caption'),
             'mail_notifications' => '1'
