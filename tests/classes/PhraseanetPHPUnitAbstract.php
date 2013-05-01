@@ -7,6 +7,7 @@ use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
 
 abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 {
@@ -110,6 +111,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::$DI['app'] = self::$DI->share(function($DI) use ($phpunit) {
             $environment = 'test';
             $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Root.php';
+
+            $app['form.csrf_provider'] = $app->share(function () {
+                return new CsrfTestProvider();
+            });
 
             $app['debug'] = true;
 
@@ -888,5 +893,18 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::$DI['app']['notification.deliverer']->expects($this->exactly($qty))
             ->method('deliver')
             ->with($this->isInstanceOf($expectedMail), $this->equalTo($receipt));
+    }
+}
+
+class CsrfTestProvider implements CsrfProviderInterface
+{
+    public function generateCsrfToken($intention)
+    {
+        return mt_rand();
+    }
+
+    public function isCsrfTokenValid($intention, $token)
+    {
+        return true;
     }
 }
