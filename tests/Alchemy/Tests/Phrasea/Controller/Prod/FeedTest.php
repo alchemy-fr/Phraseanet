@@ -166,7 +166,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testEntryEditUnauthorized()
     {
-
         $feed = \Feed_Adapter::create(
                 self::$DI['app'], self::$DI['user_alt1'], $this->feed_title, $this->feed_subtitle
         );
@@ -185,13 +184,8 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 , $this->entry_authormail
         );
 
-
-        try {
-            $crawler = self::$DI['client']->request('GET', '/prod/feeds/entry/' . $entry->get_id() . '/edit/');
-            $this->fail('Should raise an exception');
-        } catch (\Exception_UnauthorizedAction $e) {
-
-        }
+        self::$DI['client']->request('GET', '/prod/feeds/entry/' . $entry->get_id() . '/edit/');
+        $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
 
         $feed->delete();
     }
