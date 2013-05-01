@@ -1,8 +1,8 @@
 <?php
 
-use Silex\WebTestCase;
+use Silex\Application;
 use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DomCrawler\Crawler;
 
 abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPUnitAuthenticatedAbstract
 {
@@ -148,5 +148,27 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
               CHARACTER SET utf8 COLLATE utf8_unicode_ci');
         $stmt->execute();
         $stmt->closeCursor();
+    }
+
+    protected function assertFlashMessage(Crawler $crawler, $flashType, $quantity, $message = null, $offset = 0)
+    {
+        if (!preg_match('/[a-zA-Z]+/', $flashType)) {
+            $this->fail(sprintf('FlashType must be in the form of [a-zA-Z]+, %s given', $flashType));
+        }
+
+        $this->assertEquals($quantity, $crawler->filter('.alert.alert-'.$flashType)->count());
+
+        if (null !== $message) {
+            $this->assertEquals($message, $crawler->filter('.alert.alert-'.$flashType.' .alert-block-content')->eq($offset)->text());
+        }
+    }
+
+    protected function assertFlashMessagePopulated(Application $app, $flashType, $quantity)
+    {
+        if (!preg_match('/[a-zA-Z]+/', $flashType)) {
+            $this->fail(sprintf('FlashType must be in the form of [a-zA-Z]+, %s given', $flashType));
+        }
+
+        $this->assertEquals($quantity, count($app['session']->getFlashBag()->get($flashType)));
     }
 }
