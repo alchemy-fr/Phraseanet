@@ -67,6 +67,7 @@
             <li>{{ label | default(field.vars.label) }}</li>
         </ul>
     </div>
+    {{  form_errors(field) }}
 {% endmacro %}
 
 {% macro providerList() %}

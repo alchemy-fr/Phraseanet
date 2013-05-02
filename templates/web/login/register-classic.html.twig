@@ -33,7 +33,11 @@
                      action="{{ path("login_register_classic") }}"
                      check-form-submission
                 >
-
+                    <div class="row-fluid">
+                        <div class="span12">
+                            {{ form_errors(form) }}
+                        </div>
+                    </div>
                     <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.email, "registerForm", 'icon-envelope') }}
@@ -82,7 +86,6 @@
                     </div>
 
                     {{ form_rest(form) }}
-                    
                     {% if recaptcha_display %}
                         <div class="row-fluid">
                             <div class="span12">
