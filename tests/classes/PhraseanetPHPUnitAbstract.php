@@ -894,6 +894,22 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             ->method('deliver')
             ->with($this->isInstanceOf($expectedMail), $this->equalTo($receipt));
     }
+
+    protected function mockNotificationsDeliverer(array &$expectedMails)
+    {
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $phpunit = $this;
+
+        self::$DI['app']['notification.deliverer']->expects($this->any())
+            ->method('deliver')
+            ->will($this->returnCallback(function ($email, $receipt) use ($phpunit, &$expectedMails) {
+                $phpunit->assertTrue(isset($expectedMails[get_class($email)]));
+                $expectedMails[get_class($email)]++;
+            }));
+    }
 }
 
 class CsrfTestProvider implements CsrfProviderInterface
