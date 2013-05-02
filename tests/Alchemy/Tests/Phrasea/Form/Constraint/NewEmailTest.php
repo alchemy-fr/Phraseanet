@@ -21,7 +21,7 @@ class NewEmailTest extends \PhraseanetPHPUnitAbstract
     public function testNullIsNotAlreadyRegistered()
     {
         $constraint = new NewEmail(self::$DI['app']);
-        $this->assertFalse($constraint->isAlreadyRegistered('null'));
+        $this->assertFalse($constraint->isAlreadyRegistered(null));
     }
 
     public function testBlankIsNotAlreadyRegistered()
