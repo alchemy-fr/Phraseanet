@@ -19,7 +19,7 @@ class PasswordTokenTest extends \PhraseanetPHPUnitAbstract
         $random
             ->expects($this->once())
             ->method('helloToken')
-            ->with(self::$DI['app'], $token)
+            ->with($token)
             ->will($this->throwException(new \Exception_NotFound('Token not found')));
 
         $constraint = new PasswordToken(self::$DI['app'], $random);
@@ -39,7 +39,7 @@ class PasswordTokenTest extends \PhraseanetPHPUnitAbstract
         $random
             ->expects($this->once())
             ->method('helloToken')
-            ->with(self::$DI['app'], $token)
+            ->with($token)
             ->will($this->returnValue(array('usr_id' => mt_rand(), 'type' => \random::TYPE_PASSWORD)));
 
         $constraint = new PasswordToken(self::$DI['app'], $random);

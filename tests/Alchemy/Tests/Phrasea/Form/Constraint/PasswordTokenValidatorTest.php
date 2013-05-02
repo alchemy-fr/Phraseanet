@@ -13,10 +13,10 @@ class PasswordTokenValidatorTest extends \PhraseanetPHPUnitAbstract
     {
         $context = $this->getMock('Symfony\Component\Validator\ExecutionContextInterface');
         $builder = $context
-            ->expects($this->exactly($isValid ? 1 : 0))
+            ->expects($this->exactly($isValid ? 0 : 1))
             ->method('addViolation');
 
-        if ($isValid) {
+        if (!$isValid) {
             $builder->with($this->isType('string'));
         }
 

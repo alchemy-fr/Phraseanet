@@ -21,7 +21,7 @@ class PasswordTokenValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        if ($constraint->isValid($value)) {
+        if (!$constraint->isValid($value)) {
             $this->context->addViolation('The token provided is not valid anymore');
         }
     }

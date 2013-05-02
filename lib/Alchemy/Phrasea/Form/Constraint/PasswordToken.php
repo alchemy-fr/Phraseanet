@@ -31,11 +31,11 @@ class PasswordToken extends Constraint
     public function isValid($token)
     {
         try {
-            $datas = $this->random->helloToken($this->app, $token);
+            $data = $this->random->helloToken($token);
         } catch (\Exception_NotFound $e) {
             return false;
         }
 
-        return \random::TYPE_PASSWORD === $datas['type'];
+        return \random::TYPE_PASSWORD === $data['type'];
     }
 }
