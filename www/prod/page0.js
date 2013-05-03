@@ -1227,6 +1227,7 @@ $(document).ready(function(){
             {
                 if(p4.preview.open)
                 {
+                    if (($('#DIALOG1').length === 0 && $('#DIALOG2').length === 0)) {
                     switch(event.keyCode)
                     {
                         case 39:
@@ -1247,6 +1248,7 @@ $(document).ready(function(){
                                 startSlide();
                             cancelKey = shortCut = true;
                             break;
+                    }
                     }
                 }
                 else
