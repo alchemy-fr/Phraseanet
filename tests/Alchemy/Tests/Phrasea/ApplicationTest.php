@@ -240,6 +240,32 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals(array('BAMBA'), $app->getFlash('notice'));
     }
 
+    public function testAddCaptcha()
+    {
+        $app = new Application('test');
+        $app['phraseanet.registry'] = $this->getMock('registryInterface');
+        $app['phraseanet.registry']
+            ->expects($this->any())
+            ->method('get')
+            ->with('GV_captchas')
+            ->will($this->returnValue(true));
+
+        $this->assertFalse($app->isCaptchaRequired());
+        $app->requireCaptcha();
+        $this->assertTrue($app->isCaptchaRequired());
+        $this->assertFalse($app->isCaptchaRequired());
+    }
+
+    public function testAddUnlockLinkToUsrId()
+    {
+        $app = new Application('test');
+
+        $this->assertNull($app->getUnlockLink());
+        $app->addUnlockLink(42);
+        $this->assertEquals(42, $app->getUnlockLink());
+        $this->assertNull($app->getUnlockLink());
+    }
+
     private function getAppThatReturnLocale()
     {
         $app = new Application('test');

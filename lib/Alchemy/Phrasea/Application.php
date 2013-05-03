@@ -574,6 +574,20 @@ class Application extends SilexApplication
         return $this['session']->getFlashBag()->get($type, $default);
     }
 
+    public function addUnlockLink($usr_id)
+    {
+        $this['session']->set('unlock_user_id', $usr_id);
+    }
+
+    public function getUnlockLink()
+    {
+        if ($this['session']->has('unlock_user_id')) {
+            return $this['session']->remove('unlock_user_id');
+        }
+
+        return null;
+    }
+
     /**
      * Asks for a captcha ar next authentication
      *
@@ -582,7 +596,7 @@ class Application extends SilexApplication
     public function requireCaptcha()
     {
         if ($this['phraseanet.registry']->get('GV_captchas')) {
-            $this['session']->add('require_captcha', true);
+            $this['session']->set('require_captcha', true);
         }
 
         return $this;
