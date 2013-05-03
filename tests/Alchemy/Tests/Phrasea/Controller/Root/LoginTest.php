@@ -458,7 +458,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request('POST', '/login/register-classic');
 
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertFormOrAngularError($crawler, 7);
+        $this->assertFormOrAngularError($crawler, 9);
     }
 
     public function provideInvalidRegistrationData()
@@ -934,7 +934,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertRegexp('/error=account-locked/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertEquals('/login/', self::$DI['client']->getResponse()->headers->get('location'));
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
         self::$DI['user']->set_mail_locked(false);
     }

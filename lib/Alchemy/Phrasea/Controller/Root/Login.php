@@ -254,9 +254,9 @@ class Login implements ControllerProviderInterface
                         'tel'       => 'set_tel',
                         'fax'       => 'set_fax',
                         'job'       => 'set_job',
-                        'company'   => 'company',
-                        'position'  => 'position',
-                        'geonameid' => 'geonameid',
+                        'company'   => 'set_company',
+                        'position'  => 'set_position',
+                        'geonameid' => 'set_geonameid',
                     ) as $property => $method) {
                         if (isset($data[$property])) {
                             call_user_func(array($user, $method), $data[$property]);
