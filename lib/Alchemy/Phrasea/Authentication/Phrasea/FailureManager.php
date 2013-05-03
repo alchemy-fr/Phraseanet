@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
@@ -21,6 +30,14 @@ class FailureManager
         $this->em = $em;
     }
 
+    /**
+     * Saves an authentication failure
+     *
+     * @param string $username
+     * @param Request $request
+     *
+     * @return FailureManager
+     */
     public function saveFailure($username, Request $request)
     {
         $failures = $this->em
@@ -53,6 +70,16 @@ class FailureManager
         return $this;
     }
 
+    /**
+     * Checks a request for previous failures
+     *
+     * @param string $username
+     * @param Request $request
+     *
+     * @return FailureManager
+     *
+     * @throws RequireCaptchaException In case a captcha unlock is required
+     */
     public function checkFailures($username, Request $request)
     {
         $failures = $this->em

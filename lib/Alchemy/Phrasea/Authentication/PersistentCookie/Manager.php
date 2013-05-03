@@ -1,9 +1,19 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Authentication\PersistentCookie;
 
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Doctrine\ORM\EntityManager;
+use Entities\Session;
 
 class Manager
 {
@@ -18,6 +28,13 @@ class Manager
         $this->em = $em;
     }
 
+    /**
+     * Returns a Session give a cookie value
+     *
+     * @param string $cookieValue
+     * 
+     * @return false|Session
+     */
     public function getSession($cookieValue)
     {
         $session = $this->em

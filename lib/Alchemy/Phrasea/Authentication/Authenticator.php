@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Application;
@@ -55,7 +64,7 @@ class Authenticator
     {
         $this->session->remove('usr_id');
         $this->session->remove('session_id');
-        
+
         $this->session->set('usr_id', $user->get_id());
 
         $session = new Session();
