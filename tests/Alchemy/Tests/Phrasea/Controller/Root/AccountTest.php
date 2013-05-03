@@ -48,7 +48,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @dataProvider noticeProvider
+     * @dataProvider provideFlashMessages
      */
     public function testGetAccountNotice($type, $message)
     {
@@ -201,7 +201,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @dataProvider noticeProvider
+     * @dataProvider provideFlashMessages
      */
     public function testGetResetMailNotice($type, $message)
     {
@@ -212,15 +212,6 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
         $this->assertFlashMessage($crawler, $type, 1, $message);
-    }
-
-    public function noticeProvider()
-    {
-        return array(
-            array('error', 'An error occured'),
-            array('info', 'You need to do something more'),
-            array('success', "Success operation !"),
-        );
     }
 
     /**
@@ -260,7 +251,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @dataProvider noticeProvider
+     * @dataProvider provideFlashMessages
      */
     public function testGetResetPasswordPassError($type, $message)
     {
@@ -431,6 +422,24 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
         $this->assertFalse($response->isRedirect());
         $this->assertFlashMessage($crawler, 'error', 1);
+    }
+
+    public function testPostRenewPasswordNoToken()
+    {
+        $password = \random::generatePassword();
+
+        self::$DI['app']['authentication']->getUser()->set_password($password);
+
+        $crawler = self::$DI['client']->request('POST', '/account/reset-password/', array(
+            'password'        => 'password',
+            'passwordConfirm' => 'password',
+            'oldPassword'     => $password,
+        ));
+
+        $response = self::$DI['client']->getResponse();
+
+        $this->assertFalse($response->isRedirect());
+        $this->assertFormError($crawler, 1);
     }
 
     public function testPostRenewPassword()

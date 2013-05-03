@@ -7,11 +7,25 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
+    public static $demands;
+    public static $login;
+    public static $email;
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::login
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::connect
-     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        if (null === self::$demands) {
+            self::$demands = array(self::$DI['collection']->get_coll_id());
+        }
+        if (null === self::$login) {
+            self::$login = self::$DI['user']->get_login();
+        }
+        if (null === self::$email) {
+            self::$email = self::$DI['user']->get_email();
+        }
+    }
+
     public function testLoginAlreadyAthenticated()
     {
         self::$DI['client']->request('GET', '/login/');
@@ -20,9 +34,6 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals('/prod/', $response->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::login
-     */
     public function testLoginRedirectPostLog()
     {
         self::$DI['app']['authentication']->closeAccount();
@@ -34,33 +45,18 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::login
-     * @dataProvider errorAndNoticeMsgProvider
+     * @dataProvider provideFlashMessages
      */
-    public function testLoginError($warning, $notice)
+    public function testLoginError($type, $message)
     {
+        self::$DI['app']->addFlash($type, $message);
         self::$DI['app']['authentication']->closeAccount();
 
-        self::$DI['client']->request('GET', '/login/', array(
-            'error'  => $warning,
-            'notice' => $notice
-        ));
+        $crawler = self::$DI['client']->request('GET', '/login/');
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
-    }
-
-    public function errorAndNoticeMsgProvider()
-    {
-        return array(
-            array('auth', 'ok'),
-            array('maintenance', 'already'),
-            array('no-connection', 'mail-sent'),
-            array('captcha', 'register-ok'),
-            array('account-locked', 'register-ok-wait'),
-            array('no-base', 'password-update-ok'),
-            array('session', 'no-register-available')
-        );
+        $this->assertAngularFlashMessage($crawler, $type, 1, $message);
     }
 
     /**
@@ -73,7 +69,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?redirect=prod&error=code-not-found', $response->headers->get('location'));
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
+        $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
     /**
@@ -82,11 +79,14 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRegisterConfirmMailWrongCode()
     {
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('GET', '/login/register-confirm/', array('code'    => '34dT0k3n'));
+        self::$DI['client']->request('GET', '/login/register-confirm/', array(
+            'code'    => '34dT0k3n'
+        ));
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?redirect=prod&error=token-not-found', $response->headers->get('location'));
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
+        $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
     /**
@@ -97,11 +97,14 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['authentication']->closeAccount();
         $email = $this->generateEmail();
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, 0, null, $email);
-        self::$DI['client']->request('GET', '/login/register-confirm/', array('code'    => $token));
+        self::$DI['client']->request('GET', '/login/register-confirm/', array(
+            'code'    => $token
+        ));
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?redirect=prod&error=user-not-found', $response->headers->get('location'));
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
+        $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
     /**
@@ -119,7 +122,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?redirect=prod&notice=already', $response->headers->get('location'));
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
+        $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
     /**
@@ -141,7 +145,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?redirect=prod&notice=confirm-ok', $response->headers->get('location'));
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'success', 1);
+        $this->assertEquals('/login/', $response->headers->get('location'));
         $this->assertFalse(self::$DI['user']->get_mail_locked());
     }
 
@@ -166,8 +171,9 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-
-        $this->assertEquals('/login/?redirect=prod&notice=confirm-ok-wait', $response->headers->get('location'));
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
+        $this->assertEquals('/login/', $response->headers->get('location'));
+        $this->assertFalse(self::$DI['user']->get_mail_locked());
         $user->delete();
     }
 
@@ -177,11 +183,15 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRenewPasswordInvalidEmail()
     {
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('POST', '/login/forgot-password/', array('mail'    => 'invalid.email.com'));
+        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
+            'email'    => 'invalid.email.com',
+            '_token'   => 'token',
+        ));
         $response = self::$DI['client']->getResponse();
 
-        $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/forgot-password/?error=noaccount', $response->headers->get('location'));
+        $this->assertFalse($response->isRedirect());
+
+        $this->assertFormError($crawler, 1);
     }
 
     /**
@@ -190,11 +200,14 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRenewPasswordUnknowEmail()
     {
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('POST', '/login/forgot-password/', array('mail'    => 'invalid_email@test.com'));
+        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
+            'email'   => 'invalid_email@test.com',
+            '_token'  => 'token',
+        ));
         $response = self::$DI['client']->getResponse();
 
-        $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/forgot-password/?error=noaccount', $response->headers->get('location'));
+        $this->assertFalse($response->isRedirect());
+        $this->assertAngularFlashMessage($crawler, 'error', 1);
     }
 
     /**
@@ -202,409 +215,512 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewPasswordMail()
     {
-        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation');
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate');
 
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('POST', '/login/forgot-password/', array('mail'    => self::$DI['user']->get_email()));
+        self::$DI['client']->request('POST', '/login/forgot-password/', array(
+            'email'    => self::$DI['user']->get_email(),
+            '_token'   => 'token',
+        ));
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/forgot-password/?sent=ok', $response->headers->get('location'));
+        $this->assertEquals('/login/forgot-password/', $response->headers->get('location'));
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
     }
 
     /**
      * @covers \Alchemy\Phrasea\Controller\Root\Login::renewPassword
-     * @dataProvider passwordProvider
      */
-    public function testRenewPasswordBadArguments($password, $passwordConfirm, $redirect)
+    public function testRenewPasswordBadArguments()
     {
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('POST', '/login/forgot-password/', array(
-            'token'                 => '1Cx6Z7',
-            'form_password'         => $password,
-            'form_password_confirm' => $passwordConfirm
-            )
-        );
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->get_id());
+        $crawler = self::$DI['client']->request('POST', '/login/renew-password/', array(
+            'token'           => $token,
+            '_token'          => 'token',
+            'password'        => 'password',
+            'passwordConfirm' => 'not identical'
+        ));
+
         $response = self::$DI['client']->getResponse();
 
-        $this->assertTrue($response->isRedirect());
-        $this->assertEquals($redirect, $response->headers->get('location'));
+        $this->assertFalse($response->isRedirect());
+        $this->assertAngularFlashMessage($crawler, 'error', 1);
     }
 
     public function testRenewPasswordBadToken()
     {
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('POST', '/login/forgot-password/', array(
-            'token'                 => 'badToken',
-            'form_password'         => 'password',
-            'form_password_confirm' => 'password'
-            )
-        );
+        self::$DI['client']->request('POST', '/login/renew-password/', array(
+            'token'           => 'badToken',
+            '_token'          => 'token',
+            'password'        => 'password',
+            'passwordConfirm' => 'password'
+        ));
+
+        $response = self::$DI['client']->getResponse();
+        $this->assertEquals(401, $response->getStatusCode());
+    }
+
+    public function testRenewPasswordBadTokenWheneverItsAuthenticated()
+    {
+        self::$DI['client']->request('POST', '/login/renew-password/', array(
+            'token'           => 'badToken',
+            '_token'          => 'token',
+            'password'        => 'password',
+            'passwordConfirm' => 'password'
+        ));
+
         $response = self::$DI['client']->getResponse();
 
-        $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/forgot-password/?error=token', $response->headers->get('location'));
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('/prod/', $response->headers->get('location'));
+    }
+
+    public function testRenewPasswordNoToken()
+    {
+        self::$DI['app']['authentication']->closeAccount();
+        self::$DI['client']->request('POST', '/login/renew-password/', array(
+            '_token'          => 'token',
+            'password'        => 'password',
+            'passwordConfirm' => 'password'
+        ));
+
+        $response = self::$DI['client']->getResponse();
+
+        $this->assertEquals(401, $response->getStatusCode());
+    }
+
+    public function testRenewPasswordNoTokenWheneverItsAuthenticated()
+    {
+        self::$DI['client']->request('POST', '/login/renew-password/', array(
+            '_token'          => 'token',
+            'password'        => 'password',
+            'passwordConfirm' => 'password'
+        ));
+
+        $response = self::$DI['client']->getResponse();
+
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('/prod/', $response->headers->get('location'));
     }
 
     /**
      * @covers \Alchemy\Phrasea\Controller\Root\Login::renewPassword
-     * @dataProvider passwordProvider
      */
     public function testRenewPassword()
     {
         self::$DI['app']['authentication']->closeAccount();
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->get_id());
 
-        self::$DI['client']->request('POST', '/login/forgot-password/', array(
+        self::$DI['client']->request('POST', '/login/renew-password/', array(
             'token'                 => $token,
-            'form_password'         => 'password',
-            'form_password_confirm' => 'password'
-            )
-        );
+            '_token'                 => 'token',
+            'password'         => 'password',
+            'passwordConfirm' => 'password'
+        ));
+
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?notice=password-update-ok', $response->headers->get('location'));
-    }
+        $this->assertEquals('/login/', $response->headers->get('location'));
 
-    public function passwordProvider()
-    {
-        return array(
-            array('password', 'password_not_identical', '/login/forgot-password/?pass-error=pass-match'),
-            array('min', 'min', '/login/forgot-password/?pass-error=pass-short'),
-            array('in valid password', 'in valid password', '/login/forgot-password/?pass-error=pass-invalid'),
-        );
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'success', 1);
     }
 
     /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::displayForgotPasswordForm
+     * @dataProvider provideFlashMessages
      */
-    public function testGetForgotPasswordSendMsg()
+    public function testRenewPasswordPageShowsFlashMessages($type, $message)
     {
+        self::$DI['app']->addFlash($type, $message);
+
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('GET', '/login/forgot-password/', array(
-            'sent' => 'ok',
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->get_id());
+
+        $crawler = self::$DI['client']->request('GET', '/login/renew-password/', array(
+            'token' => $token
         ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+
+        $this->assertAngularFlashMessage($crawler, $type, 1, $message);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::displayForgotPasswordForm
-     */
-    public function testGetForgotBadToken()
+    public function testForgotPasswordGet()
     {
         self::$DI['app']['authentication']->closeAccount();
-        $crawler = self::$DI['client']->request('GET', '/login/forgot-password/', array(
-            'token' => 'one-token'
-            ));
+        self::$DI['client']->request('GET', '/login/forgot-password/');
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertEquals(1, $crawler->filter('.alert-error')->count());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::displayForgotPasswordForm
-     * @dataProvider errorMessageProvider
-     */
-    public function testGetForgotPasswordErrorMsg($errorMsg)
+    public function testForgotPasswordWhenAuthenticatedMustReturnToProd()
     {
-        self::$DI['app']['authentication']->closeAccount();
-        $crawler = self::$DI['client']->request('GET', '/login/forgot-password/', array(
-            'error' => $errorMsg
-            ));
+        self::$DI['client']->request('GET', '/login/forgot-password/');
 
         $response = self::$DI['client']->getResponse();
+
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('/prod/', $response->headers->get('location'));
+    }
+
+    public function testForgotPasswordInvalidEmail()
+    {
+        self::$DI['app']['authentication']->closeAccount();
+        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
+            '_token' => 'token',
+            'email'  => 'invalid.email',
+        ));
+
+        $response = self::$DI['client']->getResponse();
+        $this->assertFalse($response->isRedirect());
+
+        $this->assertFormError($crawler, 1);
+    }
+
+    public function testForgotPasswordWrongEmail()
+    {
+        self::$DI['app']['authentication']->closeAccount();
+        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
+            '_token' => 'token',
+            'email'  => 'invalid@email.com',
+        ));
+
+        $response = self::$DI['client']->getResponse();
+        $this->assertFalse($response->isRedirect());
+
+        $this->assertAngularFlashMessage($crawler, 'error', 1);
+    }
+
+    public function testForgotPasswordSubmission()
+    {
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate');
+
+        self::$DI['app']['authentication']->closeAccount();
+        $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
+            '_token' => 'token',
+            'email'  => self::$DI['user']->get_email(),
+        ));
+
+        $response = self::$DI['client']->getResponse();
+        $this->assertTrue($response->isRedirect());
+
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
+    }
+
+    /**
+     * @dataProvider provideFlashMessages
+     */
+    public function testGetRegister($type, $message)
+    {
+        self::$DI['app']['authentication']->closeAccount();
+        self::$DI['app']->addFlash($type, $message);
+        $crawler = self::$DI['client']->request('GET', '/login/register-classic');
+
+        $response = self::$DI['client']->getResponse();
+
         $this->assertTrue($response->isOk());
-        $this->assertEquals(1, $crawler->filter('.alert-error')->count());
-    }
-
-    public function errorMessageProvider()
-    {
-        return array(
-            array('invalidmail'),
-            array('mailserver'),
-            array('noaccount'),
-            array('mail'),
-            array('token'),
-        );
+        $this->assertAngularFlashMessage($crawler, $type, 1, $message);
     }
 
     /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::displayForgotPasswordForm
-     * @dataProvider badPasswordMsgProvider
+     * @dataProvider provideInvalidRegistrationData
      */
-    public function testGetForgotPasswordBadPassword($msg)
+    public function testPostRegisterbadArguments($parameters, $extraParameters, $errors)
     {
+        self::$DI['app']['registration.fields'] = $extraParameters;
+
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('GET', '/login/forgot-password/', array(
-            'pass-error' => $msg,
-        ));
 
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-    }
-
-    public function badPasswordMsgProvider()
-    {
-        return array(
-            array('pass-match'),
-            array('pass-short'),
-            array('pass-invalid'),
-        );
-    }
-
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::displayRegisterForm
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::getRegisterFieldConfiguration
-     * @dataProvider fieldErrorProvider
-     */
-    public function testGetRegister($error)
-    {
-        self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('GET', '/login/register/', array(
-            'needed' => array(
-                'field_name' => $error,
-            )
-        ));
-
-        /**
-         * @todo change this
-         */
-        $login = new \login();
-        if ( ! $login->register_enabled(self::$DI['app'])) {
-            $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        } else {
-            $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        $parameters = array_merge(array('_token' => 'token'), $parameters);
+        foreach ($parameters as $key => $parameter) {
+            if ('collections' === $key && null === $parameter) {
+                $parameters[$key] = self::$demands;
+            }
+            if ('login' === $key && null === $parameter) {
+                $parameters[$key] = self::$login;
+            }
+            if ('email' === $key && null === $parameter) {
+                $parameters[$key] = self::$email;
+            }
         }
+        $crawler = self::$DI['client']->request('POST', '/login/register-classic', $parameters);
+
+        $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertFormOrAngularError($crawler, $errors);
     }
 
-    public function fieldErrorProvider()
-    {
-        return array(
-            array('required-field'),
-            array('pass-match'),
-            array('pass-short'),
-            array('pass-invalid'),
-            array('email-invalid'),
-            array('login-short'),
-            array('login-mail-exists'),
-            array('user-mail-exists'),
-            array('no-collections'),
-        );
-    }
-
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::register
-     */
-    public function testPostRegisterBadRequest()
+    public function testPostRegisterWithoutParams()
     {
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('POST', '/login/register/');
+        $crawler = self::$DI['client']->request('POST', '/login/register-classic');
 
-        $this->assertBadResponse(self::$DI['client']->getResponse());
+        $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertFormOrAngularError($crawler, 7);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::register
-     * @dataProvider parametersProvider
-     */
-    public function testPostRegisterbadArguments($parameters)
-    {
-        self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('POST', '/login/register/', $parameters);
-
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-    }
-
-    public function parametersProvider()
+    public function provideInvalidRegistrationData()
     {
         return array(
-            array(array(//required field
-                    "form_login"            => '',
-                    "form_password"         => 'password',
-                    "form_password_confirm" => 'password',
-                    "form_gender"           => 'M',
-                    "form_lastname"         => 'lastname',
-                    "form_firstname"        => 'firstname',
-                    "form_email"            => 'email@email.com',
-                    "form_job"              => 'job',
-                    "form_company"          => 'company',
-                    "form_activity"         => 'activity',
-                    "form_phone"            => 'phone',
-                    "form_fax"              => 'fax',
-                    "form_address"          => 'adress',
-                    "form_zip"              => 'zip',
-                    "form_geonameid"        => 'geoname_id',
-                    "demand"                => array()
-            )),
+            array(array(//required field missing
+                    "password"        => 'password',
+                    "passwordConfirm" => 'password',
+                    "accept-tou"      => '1',
+                    "collections"     => null,
+                ), array(), 1),
+            array(array(//required extra-field missing
+                    "password"        => 'password',
+                    "passwordConfirm" => 'password',
+                    "email"           => $this->generateEmail(),
+                    "accept-tou"      => '1',
+                    "collections"     => null
+                ), array(
+                    array(
+                        'name'     => 'login',
+                        'required' => true,
+                    )
+                ), 1),
             array(array(//password mismatch
-                    "form_login"            => 'login',
-                    "form_password"         => 'password',
-                    "form_password_confirm" => 'passwordmismatch',
-                    "form_gender"           => 'M',
-                    "form_lastname"         => 'lastname',
-                    "form_firstname"        => 'firstname',
-                    "form_email"            => 'email@email.com',
-                    "form_job"              => 'job',
-                    "form_company"          => 'company',
-                    "form_activity"         => 'activity',
-                    "form_phone"            => 'phone',
-                    "form_fax"              => 'fax',
-                    "form_address"          => 'adress',
-                    "form_zip"              => 'zip',
-                    "form_geonameid"        => 'geoname_id',
-                    "demand"                => array()
-            )),
+                    "password"        => 'password',
+                    "passwordConfirm" => 'passwordmismatch',
+                    "email"           => $this->generateEmail(),
+                    "accept-tou"      => '1',
+                    "collections"     => null
+                ), array(), 1),
             array(array(//password tooshort
-                    "form_login"            => 'login',
-                    "form_password"         => 'min',
-                    "form_password_confirm" => 'min',
-                    "form_gender"           => 'M',
-                    "form_lastname"         => 'lastname',
-                    "form_firstname"        => 'firstname',
-                    "form_email"            => 'email@email.com',
-                    "form_job"              => 'job',
-                    "form_company"          => 'company',
-                    "form_activity"         => 'activity',
-                    "form_phone"            => 'phone',
-                    "form_fax"              => 'fax',
-                    "form_address"          => 'adress',
-                    "form_zip"              => 'zip',
-                    "form_geonameid"        => 'geoname_id',
-                    "demand"                => array()
-            )),
-            array(array(//password invalid
-                    "form_login"            => 'login',
-                    "form_password"         => 'invalid pass word',
-                    "form_password_confirm" => 'invalid pass word',
-                    "form_gender"           => 'M',
-                    "form_lastname"         => 'lastname',
-                    "form_firstname"        => 'firstname',
-                    "form_email"            => 'email@email.com',
-                    "form_job"              => 'job',
-                    "form_company"          => 'company',
-                    "form_activity"         => 'activity',
-                    "form_phone"            => 'phone',
-                    "form_fax"              => 'fax',
-                    "form_address"          => 'adress',
-                    "form_zip"              => 'zip',
-                    "form_geonameid"        => 'geoname_id',
-                    "demand"                => array()
-            )),
+                    "password"        => 'min',
+                    "passwordConfirm" => 'min',
+                    "email"           => $this->generateEmail(),
+                    "accept-tou"      => '1',
+                    "collections"     => null
+                ), array(), 2),
             array(array(//email invalid
-                    "form_login"            => 'login',
-                    "form_password"         => 'password',
-                    "form_password_confirm" => 'password',
-                    "form_gender"           => 'M',
-                    "form_lastname"         => 'lastname',
-                    "form_firstname"        => 'firstname',
-                    "form_email"            => 'email@com',
-                    "form_job"              => 'job',
-                    "form_company"          => 'company',
-                    "form_activity"         => 'activity',
-                    "form_phone"            => 'phone',
-                    "form_fax"              => 'fax',
-                    "form_address"          => 'adress',
-                    "form_zip"              => 'zip',
-                    "form_geonameid"        => 'geoname_id',
-                    "demand"                => array()
-            )),
+                    "password"        => 'password',
+                    "passwordConfirm" => 'password',
+                    "email"           => 'invalid.email',
+                    "accept-tou"      => '1',
+                    "collections"     => null
+                ), array(), 1),
             array(array(//login exists
-                    "form_login"            => 'test_phpunit',
-                    "form_password"         => 'invalid pass word',
-                    "form_password_confirm" => 'invalid pass word',
-                    "form_gender"           => 'M',
-                    "form_lastname"         => 'lastname',
-                    "form_firstname"        => 'firstname',
-                    "form_email"            => 'email@email.com',
-                    "form_job"              => 'job',
-                    "form_company"          => 'company',
-                    "form_activity"         => 'activity',
-                    "form_phone"            => 'phone',
-                    "form_fax"              => 'fax',
-                    "form_address"          => 'adress',
-                    "form_zip"              => 'zip',
-                    "form_geonameid"        => 'geoname_id',
-                    "demand"                => array()
-            )),
+                    "login"           => null,
+                    "password"        => 'password',
+                    "passwordConfirm" => 'password',
+                    "email"           => $this->generateEmail(),
+                    "accept-tou"      => '1',
+                    "collections"     => null
+                ), array(
+                    array(
+                        'name'     => 'login',
+                        'required' => true,
+                    )
+                ), 1),
             array(array(//mails exists
-                    "form_login"            => 'login',
-                    "form_password"         => 'invalid pass word',
-                    "form_password_confirm" => 'noone@example.com',
-                    "form_gender"           => 'M',
-                    "form_lastname"         => 'lastname',
-                    "form_firstname"        => 'firstname',
-                    "form_email"            => 'email@email.com',
-                    "form_job"              => 'job',
-                    "form_company"          => 'company',
-                    "form_activity"         => 'activity',
-                    "form_phone"            => 'phone',
-                    "form_fax"              => 'fax',
-                    "form_address"          => 'adress',
-                    "form_zip"              => 'zip',
-                    "form_geonameid"        => 'geoname_id',
-                    "demand"                => array()
-            )),
+                    "password"        => 'password',
+                    "passwordConfirm" => 'password',
+                    "email"           => null,
+                    "accept-tou"      => '1',
+                    "collections"     => null
+                ), array(), 1),
+            array(array(//tou declined
+                    "password"        => 'password',
+                    "passwordConfirm" => 'password',
+                    "email"           => $this->generateEmail(),
+                    "collections"     => null
+                ), array(), 1),
             array(array(//no demands
-                    "form_login"            => 'login',
-                    "form_password"         => 'invalid pass word',
-                    "form_password_confirm" => 'email@email.com',
-                    "form_gender"           => 'M',
-                    "form_lastname"         => 'lastname',
-                    "form_firstname"        => 'firstname',
-                    "form_email"            => 'email@email.com',
-                    "form_job"              => 'job',
-                    "form_company"          => 'company',
-                    "form_activity"         => 'activity',
-                    "form_phone"            => 'phone',
-                    "form_fax"              => 'fax',
-                    "form_address"          => 'adress',
-                    "form_zip"              => 'zip',
-                    "form_geonameid"        => 'geoname_id',
-                    "demand"                => array()
-            ))
+                    "password"        => 'password',
+                    "passwordConfirm" => 'password',
+                    "email"           => $this->generateEmail(),
+                    "accept-tou"      => '1',
+                    "collections"     => array()
+                ), array(), 1)
+        );
+    }
+
+    public function provideRegistrationData()
+    {
+        return array(
+            array(array(//required field missing
+                    "password"        => 'password',
+                    "passwordConfirm" => 'password',
+                    "email"           => $this->generateEmail(),
+                    "accept-tou"      => '1',
+                    "collections"     => null,
+                ), array()),
+            array(array(//extra-field is not required
+                    "password"        => 'password',
+                    "passwordConfirm" => 'password',
+                    "email"           => $this->generateEmail(),
+                    "accept-tou"      => '1',
+                    "collections"     => null
+                ), array(
+                    array(
+                        'name'     => 'login',
+                        'required' => false,
+                    )
+                )),
+            array(array(//extra-fields are not required
+                    "password"        => 'password',
+                    "passwordConfirm" => 'password',
+                    "email"           => $this->generateEmail(),
+                    "accept-tou"      => '1',
+                    "collections"     => null
+                ), array(
+                    array(
+                        'name' => 'login',
+                        'required' => false,
+                    ),
+                    array(
+                        'name' => 'gender',
+                        'required' => false,
+                    ),
+                    array(
+                        'name' => 'firstname',
+                        'required' => false,
+                    ),
+                    array(
+                        'name' => 'lastname',
+                        'required' => false,
+                    ),
+                    array(
+                        'name' => 'address',
+                        'required' => false,
+                    ),
+                    array(
+                        'name' => 'zipcode',
+                        'required' => false,
+                    ),
+                    array(
+                        'name' => 'geonameid',
+                        'required' => false,
+                    ),
+                    array(
+                        'name' => 'position',
+                        'required' => false,
+                    ),
+                    array(
+                        'name' => 'company',
+                        'required' => false,
+                    ),
+                    array(
+                        'name' => 'job',
+                        'required' => false,
+                    ),
+                    array(
+                        'name' => 'tel',
+                        'required' => false,
+                    ),
+                    array(
+                        'name' => 'fax',
+                        'required' => false,
+                    )
+                )),
+            array(array(//extra-fields are required
+                    "password"        => 'password',
+                    "passwordConfirm" => 'password',
+                    "email"           => $this->generateEmail(),
+                    "accept-tou"      => '1',
+                    "collections"     => null,
+                    "login" => 'login-'.\random::generatePassword(),
+                    "gender" => '1',
+                    "firstname" => 'romain',
+                    "lastname" => 'neutron',
+                    "address" => '30 place saint georges',
+                    "zipcode" => 'zip',
+                    "geonameid" => 123456,
+                    "position" => 'position',
+                    "company" => 'company',
+                    "job" => 'job',
+                    "tel" => 'tel',
+                    "fax" => 'fax',
+                ), array(
+                    array(
+                        'name' => 'login',
+                        'required' => true,
+                    ),
+                    array(
+                        'name' => 'gender',
+                        'required' => true,
+                    ),
+                    array(
+                        'name' => 'firstname',
+                        'required' => true,
+                    ),
+                    array(
+                        'name' => 'lastname',
+                        'required' => true,
+                    ),
+                    array(
+                        'name' => 'address',
+                        'required' => true,
+                    ),
+                    array(
+                        'name' => 'zipcode',
+                        'required' => true,
+                    ),
+                    array(
+                        'name' => 'geonameid',
+                        'required' => true,
+                    ),
+                    array(
+                        'name' => 'position',
+                        'required' => true,
+                    ),
+                    array(
+                        'name' => 'company',
+                        'required' => true,
+                    ),
+                    array(
+                        'name' => 'job',
+                        'required' => true,
+                    ),
+                    array(
+                        'name' => 'tel',
+                        'required' => true,
+                    ),
+                    array(
+                        'name' => 'fax',
+                        'required' => true,
+                    )
+                )),
         );
     }
 
     /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::register
+     * @dataProvider provideRegistrationData
      */
-    public function testPostRegister()
+    public function testPostRegister($parameters, $extraParameters)
     {
-        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation');
+        self::$DI['app']['registration.fields'] = $extraParameters;
 
         self::$DI['app']['authentication']->closeAccount();
-        $bases = array();
 
-        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
-            foreach ($databox->get_collections() as $collection) {
-                $bases[] = $collection->get_base_id();
+        $emails = array(
+            'Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation'=>0,
+            'Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered'=>0,
+            'Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered'=>0,
+        );
+
+        $this->mockNotificationsDeliverer($emails);
+
+        $parameters = array_merge(array('_token' => 'token'), $parameters);
+        foreach ($parameters as $key => $parameter) {
+            if ('collections' === $key && null === $parameter) {
+                $parameters[$key] = self::$demands;
+            }
+            if ('login' === $key && null === $parameter) {
+                $parameters[$key] = self::$login;
+            }
+            if ('email' === $key && null === $parameter) {
+                $parameters[$key] = self::$email;
             }
         }
 
-        $login = \random::generatePassword();
-        $email = $login . '@phraseanet.com';
+        self::$DI['client']->request('POST', '/login/register-classic', $parameters);
 
-        self::$DI['client']->request('POST', '/login/register/', array(
-            "form_login"            => $login,
-            "form_password"         => 'password',
-            "form_password_confirm" => 'password',
-            "form_gender"           => 'M',
-            "form_lastname"         => 'lastname',
-            "form_firstname"        => 'firstname',
-            "form_email"            => $email,
-            "form_job"              => 'job',
-            "form_company"          => 'company',
-            "form_activity"         => 'activity',
-            "form_phone"            => 'phone',
-            "form_fax"              => 'fax',
-            "form_address"          => 'adress',
-            "form_zip"              => 'zip',
-            "form_geonameid"        => 'geoname_id',
-            "demand"                => $bases
-        ));
-
-        if ( ! $userId = \User_Adapter::get_usr_id_from_login(self::$DI['app'], $login)) {
+        if (false === $userId = \User_Adapter::get_usr_id_from_email(self::$DI['app'], $parameters['email'])) {
             $this->fail('User not created');
         }
 
@@ -612,8 +728,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $user->delete();
 
+        $this->assertGreaterThan(0, $emails['Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered']);
+        $this->assertEquals(1, $emails['Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation']);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertEquals('/login/?notice=mail-sent', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
+        $this->assertEquals('/login/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     /**
@@ -651,7 +770,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?notice=mail-sent', $response->headers->get('location'));
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'success', 1);
+        $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
     /**
@@ -664,7 +784,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?error=user-not-found', $response->headers->get('location'));
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
+        $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
     /**
@@ -676,6 +797,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $login = self::$DI['app']['authentication']->getUser()->get_login();
         self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['authentication']->getUser()->set_mail_locked(false);
 
         self::$DI['app']['authentication']->closeAccount();
 
@@ -683,7 +805,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('POST', '/login/authenticate/', array(
             'login' => $login,
-            'pwd'   => $password
+            'password'   => $password,
+            '_token' => 'token',
         ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
@@ -706,7 +829,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
         self::$DI['client']->request('POST', '/login/authenticate/', array(
             'login'    => $login,
-            'pwd'      => $password,
+            'password' => $password,
+            '_token'   => 'token',
             'redirect' => '/admin'
         ));
 
@@ -768,7 +892,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['authentication']->closeAccount();
         self::$DI['client']->request('POST', '/login/authenticate/', array(
             'login' => self::$DI['user']->get_login(),
-            'pwd'   => 'test'
+            'password'   => 'test',
+            '_token' => 'token',
         ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
@@ -784,7 +909,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['authentication']->closeAccount();
         self::$DI['client']->request('POST', '/login/authenticate/', array(
             'login'     => self::$DI['user']->get_login(),
-            'pwd'       => 'test',
+            'password'       => 'test',
+            '_token' => 'token',
             'redirect'  => '/prod'
         ));
 
@@ -803,7 +929,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['user']->set_mail_locked(true);
         self::$DI['client']->request('POST', '/login/authenticate/', array(
             'login' => self::$DI['user']->get_login(),
-            'pwd'   => $password
+            'password'   => $password,
+            '_token' => 'token'
         ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
@@ -825,11 +952,12 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['client']->request('POST', '/login/authenticate/', array(
             'login' => self::$DI['user']->get_login(),
-            'pwd'   => $password
+            'password'   => $password,
+            '_token' => 'token'
         ));
         self::$DI['app']['phraseanet.registry']->set('GV_maintenance', false, \registry::TYPE_BOOLEAN);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertRegexp('/error=maintenance/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'warning', 1);
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
 
     }

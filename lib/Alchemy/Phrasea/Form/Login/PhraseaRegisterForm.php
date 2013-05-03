@@ -16,8 +16,9 @@ use Alchemy\Phrasea\Utilities\String\Camelizer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
-// write tests
+// write tests - to much things in this, must be split
 class PhraseaRegisterForm extends AbstractType
 {
     private $available;
@@ -63,10 +64,12 @@ class PhraseaRegisterForm extends AbstractType
         ));
 
         $builder->add('accept-tou', 'checkbox', array(
+            'label' => _('Terms of Use'),
             'mapped'   => false,
-            "constraints" => new Assert\True(array(
-                "message" => "Please accept the Terms and conditions in order to register")
-            ),
+            "constraints" => array(
+                new Assert\True(array(
+                "message" => _("Please accept the Terms and conditions in order to register")
+            ))),
         ));
 
         require_once($this->app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
@@ -75,12 +78,12 @@ class PhraseaRegisterForm extends AbstractType
         foreach (\giveMeBases($this->app) as $sbas_id => $baseInsc) {
             if (($baseInsc['CollsCGU'] || $baseInsc['Colls']) && $baseInsc['inscript']) {
                 if ($baseInsc['Colls']) {
-                    foreach($baseInsc['Colls'] as  $collId => $collName) {
+                    foreach ($baseInsc['Colls'] as  $collId => $collName) {
                         $baseIds[\phrasea::baseFromColl($sbas_id, $collId, $this->app)] = $collName;
                     }
                 }
                 if ($baseInsc['CollsCGU']) {
-                    foreach($baseInsc['CollsCGU'] as  $collId => $collName) {
+                    foreach ($baseInsc['CollsCGU'] as  $collId => $collName) {
                         $baseIds[\phrasea::baseFromColl($sbas_id, $collId, $this->app)] = $collName;
                     }
                 }
@@ -88,22 +91,36 @@ class PhraseaRegisterForm extends AbstractType
         }
 
         $builder->add('collections', 'choice', array(
-            'choices'    => $baseIds,
-            'multiple'   => true,
-            'expanded'   => true,
+            'choices'     => $baseIds,
+            'multiple'    => true,
+            'expanded'    => true,
+            'constraints' => array(
+                new Assert\Choice(array(
+                    'choices'=>array_keys($baseIds),
+                    'minMessage'  => _('You must select at least {{ limit }} collection'),
+                    'multiple' => true,
+                    'min'      => 1,
+                )),
+            ),
         ));
 
         foreach ($this->params as $param) {
             $name = $param['name'];
+            if (!preg_match('/[a-zA-Z]+/', $name)) {
+                throw new InvalidArgumentException(sprintf('%s is not a valid fieldname'));
+            }
             if (isset($this->available[$name])) {
+                $options = array_merge($this->available[$name], array('required' => $param['required']));
+                if (!$param['required']) {
+                    unset($options['constraints']);
+                }
+                unset($options['type']);
+
                 $builder->add(
+                    // angular does not support hyphens
                     $this->camelizer->camelize($name, '-'),
                     $this->getType($name),
-                    array(
-                        'label'       => $this->getLabel($name),
-                        'required'    => $param['required'],
-                        'constraints' => $this->getConstraints($name),//, $param['constraints']),
-                    )
+                    $options
                 );
             }
         }

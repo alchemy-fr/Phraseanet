@@ -23,190 +23,52 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Account implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function() use ($app) {
-            $app['firewall']->requireAuthentication();
-            $app['twig.form.templates'] = array('login/common/form_div_layout.html.twig');
-        });
+        $app['account.controller'] = $this;
 
-        /**
-         * Get a new account
-         *
-         * name         : get_account
-         *
-         * description  : Display form to create a new account
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('displayAccount'))
+        $controllers->before(function() use ($app) {
+                $app['firewall']->requireAuthentication();
+            });
+
+        // Displays current logged in user account
+        $controllers->get('/', 'account.controller:displayAccount')
             ->bind('account');
 
-        /**
-         * Update account route
-         *
-         * description  : update your account informations
-         *
-         * method       : POST
-         *
-         * parameters   :
-         *  'form_gender'
-         *  'form_lastname'
-         *  'form_firstname'
-         *  'form_job'
-         *  'form_lastname'
-         *  'form_company'
-         *  'form_function'
-         *  'form_activity'
-         *  'form_phone'
-         *  'form_fax'
-         *  'form_address'
-         *  'form_zip_code'
-         *  'form_geoname_id'
-         *  'form_dest_ftp'
-         *  'form_default_data_ftp'
-         *  'form_prefix_ftp_folder'
-         *  'form_notice'
-         *  'form_bases'
-         *  'form_mail_notifications'
-         *  'form_request_notifications'
-         *  'form_demand'
-         *  'form_notifications'
-         *  'form_active_ftp'
-         *  'form_address_ftp'
-         *  'form_login_ftp'
-         *  'form_password_ftp'
-         *  'form_pass_if_ftp'
-         *  'form_retry_ftp'
-         *
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/', $this->call('updateAccount'))
+        // Updates current logged in user account
+        $controllers->post('/', 'account.controller:updateAccount')
             ->bind('submit_update_account');
 
-        /**
-         * Get reset email
-         *
-         * name         : account_reset_email
-         *
-         * description  : Display reset email form
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/reset-email/', $this->call('displayResetEmailForm'))
+        // Displays email update form
+        $controllers->get('/reset-email/', 'account.controller:displayResetEmailForm')
             ->bind('account_reset_email');
 
-        /**
-         * Give account access
-         *
-         * name         : account_access
-         *
-         * description  : Display form to create a new account
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/access/', $this->call('accountAccess'))
-            ->bind('account_access');
-
-        /**
-         * Give authorized applications that can access user informations
-         *
-         * name         : reset_email
-         *
-         * description  : Display form to create a new account
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/reset-email/', $this->call('resetEmail'))
+        // Submits a new email for the current logged in account
+        $controllers->post('/reset-email/', 'account.controller:resetEmail')
             ->bind('reset_email');
 
-        /**
-         * Display the form to renew a password
-         *
-         * name         : reset_password
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->match('/reset-password/', $this->call('resetPassword'))
+        // Displays current logged in user access and form
+        $controllers->get('/access/', 'account.controller:accountAccess')
+            ->bind('account_access');
+
+        // Displays and update current logged-in user password
+        $controllers->match('/reset-password/', 'account.controller:resetPassword')
             ->bind('reset_password');
 
-        /**
-         * Give account open sessions
-         *
-         * name         : account_sessions
-         *
-         * description  : Display form to create a new account
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/security/sessions/', $this->call('accountSessionsAccess'))
+        // Displays current logged in user open sessions
+        $controllers->get('/security/sessions/', 'account.controller:accountSessionsAccess')
             ->bind('account_sessions');
 
-        /**
-         * Give authorized applications that can access user informations
-         *
-         * name         : account_auth_apps
-         *
-         * description  : Display form to create a new account
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/security/applications/', $this->call('accountAuthorizedApps'))
+        // Displays all applications that can access user informations
+        $controllers->get('/security/applications/', 'account.controller:accountAuthorizedApps')
             ->bind('account_auth_apps');
 
-        /**
-         * Grant access to an authorized app
-         *
-         * name         : grant_app_access
-         *
-         * description  : Display form to create a new account
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/security/application/{application_id}/grant/', $this->call('grantAccess'))
+        // Displays a an authorized app grant
+        $controllers->get('/security/application/{application_id}/grant/', 'account.controller:grantAccess')
             ->assert('application_id', '\d+')
             ->bind('grant_app_access');
 
@@ -244,6 +106,7 @@ class Account implements ControllerProviderInterface
                 } elseif ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $data['oldPassword'], $user->get_nonce())) {
                     $user->set_password($passwordConfirm);
                     $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
+
                     return $app->redirect($app->path('account'));
                 } else {
                     $app->addFlash('error', _('Invalid password provided'));
@@ -252,7 +115,7 @@ class Account implements ControllerProviderInterface
         }
 
         return $app['twig']->render('account/change-password.html.twig', array(
-            'form' => $form->createView(),
+            'form'  => $form->createView(),
             'login' => new \login(),
         ));
     }
@@ -266,9 +129,7 @@ class Account implements ControllerProviderInterface
      */
     public function resetEmail(PhraseaApplication $app, Request $request)
     {
-        if (null === ($password = $request->request->get('form_password'))
-            || null === ($email = $request->request->get('form_email'))
-            || null === ($emailConfirm = $request->request->get('form_email_confirm'))) {
+        if (null === ($password = $request->request->get('form_password')) || null === ($email = $request->request->get('form_email')) || null === ($emailConfirm = $request->request->get('form_email_confirm'))) {
 
             $app->abort(400, _('Could not perform request, please contact an administrator.'));
         }
@@ -364,9 +225,9 @@ class Account implements ControllerProviderInterface
 
         try {
             $account = \API_OAuth2_Account::load_with_user(
-                    $app
-                    , new \API_OAuth2_Application($app, $application_id)
-                    , $app['authentication']->getUser()
+                $app
+                , new \API_OAuth2_Application($app, $application_id)
+                , $app['authentication']->getUser()
             );
 
             $account->set_revoked((bool) $request->query->get('revoke'), false);
@@ -421,7 +282,7 @@ class Account implements ControllerProviderInterface
             ORDER BY s.created DESC';
 
         $query = $app['EM']->createQuery($dql);
-        $query->setParameters(array('usr_id'  => $app['session']->get('usr_id')));
+        $query->setParameters(array('usr_id' => $app['session']->get('usr_id')));
         $sessions = $query->getResult();
 
         return $app['twig']->render('account/sessions.html.twig', array('sessions' => $sessions));
@@ -447,7 +308,7 @@ class Account implements ControllerProviderInterface
      * Update account informations
      *
      * @param  PhraseaApplication $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
+     * @param  Request            $request The current request
      * @return Response
      */
     public function updateAccount(PhraseaApplication $app, Request $request)
@@ -552,16 +413,5 @@ class Account implements ControllerProviderInterface
         }
 
         return $app->redirect($app->path('account'));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }
