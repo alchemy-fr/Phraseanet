@@ -18,7 +18,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
-// write tests - to much things in this, must be split
 class PhraseaRegisterForm extends AbstractType
 {
     private $available;

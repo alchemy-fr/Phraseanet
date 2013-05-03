@@ -16,7 +16,6 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-// write tests
 class RegistrationServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
