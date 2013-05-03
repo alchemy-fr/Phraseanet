@@ -285,7 +285,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    {% trans 'admin::compte-utilisateur nom' %} *
+                                    {% trans 'admin::compte-utilisateur nom' %}
                                 </td>
                                 <td>
                                     <input style="width:250px;" type="text" name="usr_nom" class="required" value="{{ user.get_lastname() }}">
@@ -293,7 +293,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    {% trans 'admin::compte-utilisateur prenom' %} *
+                                    {% trans 'admin::compte-utilisateur prenom' %}
                                 </td>
                                 <td>
                                     <input style="width:250px;" type="text" name="usr_prenom" class="required" id="prenom" value="{{ user.get_firstname() }}">
@@ -301,7 +301,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    {% trans 'admin::compte-utilisateur email' %} *
+                                    {% trans 'admin::compte-utilisateur email' %}
                                 </td>
                                 <td>
                                     <input style="width:250px;" class="required" type="text" name="usr_mail" id="usr_mail" value="{{ user.get_email() }}">
@@ -333,7 +333,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    {% trans 'admin::compte-utilisateur adresse' %} *
+                                    {% trans 'admin::compte-utilisateur adresse' %}
                                 </td>
                                 <td>
                                     <input style="width:250px;" class="required" type="text" name="adresse" id="adresse" value="{{ user.get_address() }}">
@@ -341,7 +341,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    {% trans 'admin::compte-utilisateur code postal' %} *
+                                    {% trans 'admin::compte-utilisateur code postal' %}
                                 </td>
                                 <td>
                                     <input style="width:250px;" type="text" name="cpostal" name="cpostal" class="required" value="{{ user.get_zipcode() }}">
@@ -349,7 +349,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    {% trans 'admin::compte-utilisateur ville' %} *
+                                    {% trans 'admin::compte-utilisateur ville' %}
                                 </td>
                                 <td>
                                     <input style="width:250px;" class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" geonameid="{{ user.get_geonameid() }}" value="{{ user.get_geonameid()|geoname_display }}">
