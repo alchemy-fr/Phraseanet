@@ -63,7 +63,7 @@ class NativeAuthentication
             throw new AccountLockedException('The account is locked', $row['usr_id']);
         }
 
-        // check failures
+        // check failures and throws a RequireCaptchaExeption is needed
         $this->failure->checkFailures($username, $request);
 
         if ('0' == $row['salted_password']) {
