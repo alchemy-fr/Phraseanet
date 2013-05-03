@@ -67,10 +67,10 @@ dev:
       name: company
       required: true
     -
-      name: first-name
+      name: firstname
       required: true
     -
-      name: geoname-id
+      name: geonameid
       required: true
 
 ##############
@@ -127,10 +127,10 @@ prod:
       name: company
       required: true
     -
-      name: first-name
+      name: firstname
       required: true
     -
-      name: geoname-id
+      name: geonameid
       required: true
 
 ##############
@@ -187,9 +187,9 @@ test:
       name: company
       required: true
     -
-      name: first-name
+      name: firstname
       required: true
     -
-      name: geoname-id
+      name: geonameid
       required: true
 
