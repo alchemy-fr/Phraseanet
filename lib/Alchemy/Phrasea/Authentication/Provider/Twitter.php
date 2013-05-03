@@ -237,6 +237,7 @@ class Twitter extends AbstractProvider
         $twitter = new \tmhOAuth(array(
             'consumer_key'    => $options['consumer-key'],
             'consumer_secret' => $options['consumer-secret'],
+            'timezone'        => date_default_timezone_get(),
         ));
 
         return new Twitter($generator, $session, $twitter);
