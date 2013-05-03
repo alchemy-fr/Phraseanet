@@ -216,7 +216,7 @@ class databox_field implements cache_cacheableInterface
 
         $this->separator = self::checkMultiSeparator($row['separator'], $this->multi);
 
-        $this->thumbtitle = (Boolean) $row['thumbtitle'];
+        $this->thumbtitle = $row['thumbtitle'];
 
         return $this;
     }
@@ -595,7 +595,7 @@ class databox_field implements cache_cacheableInterface
         $this->Business = ! ! $boolean;
 
         if ($this->Business) {
-            $this->thumbtitle = false;
+            $this->thumbtitle = null;
         }
 
         return $this;

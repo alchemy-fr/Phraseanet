@@ -82,7 +82,10 @@ return call_user_func(function($environment = null) {
             return $response;
         }
 
-        if (0 !== strpos($request->getPathInfo(), '/admin') && $request->getRequestFormat() == 'json') {
+        if ((0 !== strpos($request->getPathInfo(), '/admin/')
+            || 0 === strpos($request->getPathInfo(), '/admin/collection/')
+            || 0 === strpos($request->getPathInfo(), '/admin/databox/'))
+            && $request->getRequestFormat() == 'json') {
             $datas = array(
                 'success' => false
                 , 'message' => $e->getMessage()
