@@ -35,6 +35,18 @@
         <div class="row-fluid">
             <div class="span12">
                 {{ auth_macro.flashes() }}
+
+                {% if unlock_usr_id is not empty %}
+                <div class="row-fluid">
+                    <div class="span12">
+                        {% trans 'Your account is locked, please follow the following link to unlock it' %}<br/>
+                        <a href="{{ path('login_send_mail', { 'usr_id' : unlock_usr_id }) }}" target ="_self">
+                            {% trans 'login:: Envoyer a nouveau le mail de confirmation' %}
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
                 <form
                      ng-controller="LoginFormCtrl"
                      novalidate
