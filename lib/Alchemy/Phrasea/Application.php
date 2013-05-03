@@ -114,6 +114,8 @@ use Silex\Provider\WebProfilerServiceProvider;
 use Symfony\Component\HttpFoundation\File\MimeType\FileBinaryMimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Unoconv\UnoconvServiceProvider;
+use TwigJs\Twig\TwigJsExtension;
+use TwigJs\JsCompiler;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
 
@@ -498,6 +500,22 @@ class Application extends SilexApplication
                 return $twig;
             })
         );
+
+        $this['twig.js.compiler'] = $this->share(function(Application $app) {
+            $compiler = new JsCompiler($app['twig']);
+            $compiler->setFilterFunction('trans', 'i18n.t');
+
+            return $compiler;
+        });
+
+        $this['twig.js'] = $this->share(function(Application $app) {
+            $twig = clone $app['twig'];
+            $twig->addExtension(new TwigJsExtension());
+            $twig->getExtension('escaper')->setDefaultStrategy(false);
+            $twig->setCompiler($app['twig.js.compiler']);
+
+            return $twig;
+        });
     }
 
     /**
