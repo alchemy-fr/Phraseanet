@@ -34,7 +34,9 @@ class Lightbox implements ControllerProviderInterface
             }
 
             if (false === $usr_id = $app['authentication.token-validator']->isValid($request->query->get('LOG'))) {
-                return $app->redirect("/login/?error=" . urlencode($e->getMessage()));
+                $app->addFlash('error', _('The URL you used is out of date, please login'));
+
+                return $app->redirect($app->path('homepage'));
             }
 
             $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));

@@ -46,7 +46,6 @@ interface ProviderInterface
      */
     public function authenticate();
 
-
     /**
      * This method is called on provider callback, whenever the auth was
      * successful or failure.

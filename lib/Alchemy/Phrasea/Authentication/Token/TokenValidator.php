@@ -22,6 +22,12 @@ class TokenValidator
         $this->app = $app;
     }
 
+    /**
+     * Returns true if the token is valid
+     *
+     * @param type $token
+     * @return boolean
+     */
     public function isValid($token)
     {
         try {

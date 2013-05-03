@@ -41,7 +41,6 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
             return new CookieManager($app['auth.password-encoder'], $app['EM'], $app['browser']);
         });
 
-
         $app['authentication.suggestion-finder'] = $app->share(function (Application $app) {
             return new SuggestionFinder($app);
         });

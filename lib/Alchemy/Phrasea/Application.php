@@ -574,11 +574,21 @@ class Application extends SilexApplication
         return $this['session']->getFlashBag()->get($type, $default);
     }
 
+    /**
+     * Adds a temporary unlock data for a account-locked user
+     *
+     * @param integer $usr_id
+     */
     public function addUnlockLink($usr_id)
     {
         $this['session']->set('unlock_user_id', $usr_id);
     }
 
+    /**
+     * Returns the temporary unlock data
+     *
+     * @return null|integer
+     */
     public function getUnlockLink()
     {
         if ($this['session']->has('unlock_user_id')) {

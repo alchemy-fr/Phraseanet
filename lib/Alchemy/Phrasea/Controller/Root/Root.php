@@ -27,7 +27,6 @@ class Root implements ControllerProviderInterface
             ->get('/language/{locale}/', $this->call('setLocale'))
             ->bind('set_locale');
 
-
         $controllers
             ->get('/', $this->call('getRoot'))
             ->bind('root');
