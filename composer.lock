@@ -1,5 +1,9 @@
 {
-    "hash": "a46e834df9fcb61c657633424de24604",
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "c6ac4fcc07ff4a6b97fbe949f2f31f23",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -131,12 +135,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dailymotion/dailymotion-sdk-php.git",
-                "reference": "7a9f4b983cf20b5206d268468b18d02eb2bdfd73"
+                "reference": "b0f29a36e1fb52ac0da024af8e8c3594603f6f6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dailymotion/dailymotion-sdk-php/zipball/7a9f4b983cf20b5206d268468b18d02eb2bdfd73",
-                "reference": "7a9f4b983cf20b5206d268468b18d02eb2bdfd73",
+                "url": "https://api.github.com/repos/dailymotion/dailymotion-sdk-php/zipball/b0f29a36e1fb52ac0da024af8e8c3594603f6f6e",
+                "reference": "b0f29a36e1fb52ac0da024af8e8c3594603f6f6e",
                 "shasum": ""
             },
             "type": "library",
@@ -146,6 +150,9 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
             "description": "Dailymotion PHP SDK",
             "homepage": "http://dailymotion.com",
             "keywords": [
@@ -153,7 +160,7 @@
                 "dailymotion",
                 "sdk"
             ],
-            "time": "2013-03-06 12:06:49"
+            "time": "2013-04-29 16:18:34"
         },
         {
             "name": "data-uri/data-uri",
@@ -936,18 +943,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Imagine-Silex-Service-Provider.git",
-                "reference": "0.1.1"
+                "reference": "0.1.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/0.1.1",
-                "reference": "0.1.1",
+                "url": "https://api.github.com/repos/romainneutron/Imagine-Silex-Service-Provider/zipball/0.1.2",
+                "reference": "0.1.2",
                 "shasum": ""
             },
             "require": {
                 "imagine/imagine": "*",
                 "php": ">=5.3.3",
-                "silex/silex": "1.0.x-dev@dev"
+                "silex/silex": ">=1.0,<2.0"
             },
             "require-dev": {
                 "symfony/browser-kit": ">=2.0,<3.0"
@@ -975,7 +982,7 @@
                 "imagine",
                 "silex"
             ],
-            "time": "2013-04-17 23:39:16"
+            "time": "2013-05-03 18:48:51"
         },
         {
             "name": "neutron/sphinxsearch-api",
@@ -1021,16 +1028,16 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.2.2",
+            "version": "0.2.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg",
-                "reference": "0.2.2"
+                "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
+                "reference": "0.2.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0.2.2",
-                "reference": "0.2.2",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0.2.3",
+                "reference": "0.2.3",
                 "shasum": ""
             },
             "require": {
@@ -1078,7 +1085,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-02-11 11:24:37"
+            "time": "2013-04-21 16:03:45"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -1411,52 +1418,52 @@
         },
         {
             "name": "silex/silex",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Silex.git",
-                "reference": "1cd7f3f050b78dae4458d93892355720f56659f9"
+                "reference": "v1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Silex/zipball/1cd7f3f050b78dae4458d93892355720f56659f9",
-                "reference": "1cd7f3f050b78dae4458d93892355720f56659f9",
+                "url": "https://api.github.com/repos/fabpot/Silex/zipball/v1.0.0",
+                "reference": "v1.0.0",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
                 "pimple/pimple": "1.*",
-                "symfony/event-dispatcher": ">=2.1,<2.3-dev",
-                "symfony/http-foundation": ">=2.1,<2.3-dev",
-                "symfony/http-kernel": ">=2.1,<2.3-dev",
-                "symfony/routing": ">=2.1,<2.3-dev"
+                "symfony/event-dispatcher": ">=2.1,<2.4-dev",
+                "symfony/http-foundation": ">=2.1,<2.4-dev",
+                "symfony/http-kernel": ">=2.1,<2.4-dev",
+                "symfony/routing": ">=2.1,<2.4-dev"
             },
             "require-dev": {
                 "doctrine/dbal": ">=2.2.0,<2.4.0-dev",
                 "monolog/monolog": ">=1.4,<2.0,>=1.4.1",
-                "swiftmailer/swiftmailer": "4.2.*",
-                "symfony/browser-kit": ">=2.1,<2.3-dev",
-                "symfony/config": ">=2.1,<2.3-dev",
-                "symfony/css-selector": ">=2.1,<2.3-dev",
-                "symfony/dom-crawler": ">=2.1,<2.3-dev",
-                "symfony/finder": ">=2.1,<2.3-dev",
-                "symfony/form": ">=2.1.4,<2.3-dev",
-                "symfony/locale": ">=2.1,<2.3-dev",
-                "symfony/monolog-bridge": ">=2.1,<2.3-dev",
-                "symfony/options-resolver": ">=2.1,<2.3-dev",
-                "symfony/process": ">=2.1,<2.3-dev",
-                "symfony/security": ">=2.1,<2.3-dev",
-                "symfony/serializer": ">=2.1,<2.3-dev",
-                "symfony/translation": ">=2.1,<2.3-dev",
-                "symfony/twig-bridge": ">=2.1,<2.3-dev",
-                "symfony/validator": ">=2.1,<2.3-dev",
+                "swiftmailer/swiftmailer": "5.*",
+                "symfony/browser-kit": ">=2.1,<2.4-dev",
+                "symfony/config": ">=2.1,<2.4-dev",
+                "symfony/css-selector": ">=2.1,<2.4-dev",
+                "symfony/dom-crawler": ">=2.1,<2.4-dev",
+                "symfony/finder": ">=2.1,<2.4-dev",
+                "symfony/form": ">=2.1.4,<2.4-dev",
+                "symfony/locale": ">=2.1,<2.4-dev",
+                "symfony/monolog-bridge": ">=2.1,<2.4-dev",
+                "symfony/options-resolver": ">=2.1,<2.4-dev",
+                "symfony/process": ">=2.1,<2.4-dev",
+                "symfony/security": ">=2.1,<2.4-dev",
+                "symfony/serializer": ">=2.1,<2.4-dev",
+                "symfony/translation": ">=2.1,<2.4-dev",
+                "symfony/twig-bridge": ">=2.1,<2.4-dev",
+                "symfony/validator": ">=2.1,<2.4-dev",
                 "twig/twig": ">=1.8.0,<2.0-dev"
             },
             "suggest": {
-                "symfony/browser-kit": ">=2.1,<2.3-dev",
-                "symfony/css-selector": ">=2.1,<2.3-dev",
-                "symfony/dom-crawler": ">=2.1,<2.3-dev",
-                "symfony/form": "To make use of the FormServiceProvider, >= 2.1.4 is required"
+                "symfony/browser-kit": ">=2.1,<2.4-dev",
+                "symfony/css-selector": ">=2.1,<2.4-dev",
+                "symfony/dom-crawler": ">=2.1,<2.4-dev",
+                "symfony/form": ">= 2.1.4,<2.4-dev"
             },
             "type": "library",
             "extra": {
@@ -1489,11 +1496,11 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2013-04-11 12:23:56"
+            "time": "2013-05-03 16:49:57"
         },
         {
             "name": "silex/web-profiler",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "target-dir": "Silex/Provider",
             "source": {
                 "type": "git",
@@ -1743,7 +1750,7 @@
             "source": {
                 "type": "git",
                 "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "01ad4b7ec6974419e5f110e78fe43aaf43601b2d"
+                "reference": "c7c8e26f67041b45d3d2b655064c8d8c26e3d7c0"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -1793,11 +1800,11 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2013-04-03 09:43:30"
+            "time": "2013-04-24 16:30:18"
         },
         {
             "name": "twig/extensions",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig-extensions.git",
@@ -2004,10 +2011,7 @@
         "neutron/silex-imagine-provider": 20,
         "neutron/silex-badfaith-provider": 20,
         "neutron/silex-filesystem-provider": 20,
-        "silex/silex": 20,
-        "silex/web-profiler": 20,
         "tecnick.com/tcpdf": 20,
-        "twig/extensions": 20,
         "doctrine/data-fixtures": 20
     },
     "platform": {
