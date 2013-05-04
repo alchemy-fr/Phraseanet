@@ -615,10 +615,6 @@ class Login implements ControllerProviderInterface
             $app->addFlash('error', _('login::erreur: No available connection - Please contact sys-admin'));
         }
 
-        if ($app['phraseanet.registry']->get('GV_maintenance')) {
-            $app->addFlash('warning', _('login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee'));
-        }
-
         $public_feeds = \Feed_Collection::load_public_feeds($app);
 
         $feeds = $public_feeds->get_feeds();
