@@ -94,6 +94,7 @@ use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
 use FFMpeg\FFMpegServiceProvider;
@@ -147,6 +148,7 @@ class Application extends SilexApplication
         'fr_FR' => 'Français',
         'nl_NL' => 'Dutch',
     );
+    private static $flashTypes = array('warning', 'info', 'success', 'error');
     private $environment;
     private $sessionCookieEnabled = true;
 
@@ -555,10 +557,22 @@ class Application extends SilexApplication
      *
      * @param string $type
      * @param string $message
+     *
+     * @return Application
+     *
+     * @throws InvalidArgumentException In case the type is not valid
      */
     public function addFlash($type, $message)
     {
-        return $this['session']->getFlashBag()->add($type, $message);
+        if (!in_array($type, self::$flashTypes)) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid flash message type `%s`, valid type are %s', $type, implode(', ', self::$flashTypes)
+            ));
+        }
+
+        $this['session']->getFlashBag()->add($type, $message);
+
+        return $this;
     }
 
     /**
@@ -724,6 +738,16 @@ class Application extends SilexApplication
     public static function getAvailableLanguages()
     {
         return static::$availableLanguages;
+    }
+
+    /**
+     * Returns available flash message types for Phraseanet
+     *
+     * @return array
+     */
+    public static function getAvailableFlashTypes()
+    {
+        return static::$flashTypes;
     }
 
     public function disableCookies()

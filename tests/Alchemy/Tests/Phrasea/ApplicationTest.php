@@ -229,15 +229,25 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals($form, $app->form($type, $data, $options, $parent));
     }
 
-    public function addSetFlash()
+    public function testAddSetFlash()
     {
         $app = new Application('test');
 
-        $this->assertEquals(array(), $app->getFlash('hello'));
-        $this->assertEquals('BOUM', $app->getFlash('hello', 'BOUM'));
+        $this->assertEquals(array(), $app->getFlash('info'));
+        $this->assertEquals(array('BOUM'), $app->getFlash('info', array('BOUM')));
 
-        $app->setFlash('notice', 'BAMBA');
-        $this->assertEquals(array('BAMBA'), $app->getFlash('notice'));
+        $app->addFlash('success', 'BAMBA');
+        $this->assertEquals(array('BAMBA'), $app->getFlash('success'));
+    }
+
+    /**
+     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     */
+    public function testAddSetFlashWithInvalidArgument()
+    {
+        $app = new Application('test');
+
+        $app->addFlash('caution', 'BAMBA');
     }
 
     public function testAddCaptcha()

@@ -61,7 +61,7 @@
 {% endmacro %}
 
 {% macro flashes() %}
-    {% for type in ["warning", "info", "success", "error"] %}
+    {% for type in app.getAvailableFlashTypes %}
         {% for message in app.getFlash(type) %}
             <div class="alert alert-{{ type }}">
                 <table>

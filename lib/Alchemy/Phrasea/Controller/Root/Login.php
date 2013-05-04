@@ -585,7 +585,7 @@ class Login implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
         $app['authentication']->closeAccount();
 
-        $app->addFlash('notice', 'Vous etes maintenant deconnecte. A bientot.');
+        $app->addFlash('info', 'Vous etes maintenant deconnecte. A bientot.');
 
         $response = new RedirectResponse($app->path('root', array(
             'redirect' => $request->query->get("redirect")
@@ -616,7 +616,7 @@ class Login implements ControllerProviderInterface
         }
 
         if ($app['phraseanet.registry']->get('GV_maintenance')) {
-            $app->addFlash('notice', _('login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee'));
+            $app->addFlash('warning', _('login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee'));
         }
 
         $public_feeds = \Feed_Collection::load_public_feeds($app);
