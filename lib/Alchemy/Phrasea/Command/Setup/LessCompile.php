@@ -68,5 +68,4 @@ class LessCompile extends Command
 
         return 1;
     }
-
 }
