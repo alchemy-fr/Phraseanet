@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "81337bde2c512e28b9d6591f1e00eb2d",
+    "hash": "ee12de2f3b1009e0fdc1551d1fdb0b24",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -167,7 +167,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/PHP-dataURI.git",
+                "url": "git://github.com/alchemy-fr/PHP-dataURI.git",
                 "reference": "0.1.0"
             },
             "dist": {
@@ -1881,12 +1881,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/Silex-WebProfiler.git",
-                "reference": "05ac4390981290cb0a364ecdd4ffd9a9395c0494"
+                "reference": "v1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/Silex-WebProfiler/zipball/05ac4390981290cb0a364ecdd4ffd9a9395c0494",
-                "reference": "05ac4390981290cb0a364ecdd4ffd9a9395c0494",
+                "url": "https://api.github.com/repos/sensiolabs/Silex-WebProfiler/zipball/v1.0.0",
+                "reference": "v1.0.0",
                 "shasum": ""
             },
             "require": {
@@ -1917,7 +1917,7 @@
             ],
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/",
-            "time": "2013-04-25 13:17:57"
+            "time": "2013-03-08 07:16:44"
         },
         {
             "name": "swftools/swftools",
