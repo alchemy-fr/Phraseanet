@@ -40,24 +40,7 @@ class FailureManager
      */
     public function saveFailure($username, Request $request)
     {
-        $failures = $this->em
-            ->getRepository('Entities\AuthFailure')
-            ->findOldFailures();
-
-        if (0 < count($failures)) {
-            $n = 0;
-            foreach ($failures as $failure) {
-                $this->em->remove($failure);
-
-                if (0 === $n++ % 1000) {
-                    $this->em->flush();
-                    $this->em->clear();
-                }
-            }
-
-            $this->em->flush();
-            $this->em->clear();
-        }
+        $this->removeOldFailures();
 
         $failure = new AuthFailure();
         $failure->setIp($request->getClientIp());
@@ -104,5 +87,30 @@ class FailureManager
         }
 
         return $this;
+    }
+
+    /**
+     * Removes failures older than 2 monthes
+     */
+    private function removeOldFailures()
+    {
+        $failures = $this->em
+            ->getRepository('Entities\AuthFailure')
+            ->findOldFailures('-2 months');
+
+        if (0 < count($failures)) {
+            $n = 0;
+            foreach ($failures as $failure) {
+                $this->em->remove($failure);
+
+                if (0 === $n++ % 1000) {
+                    $this->em->flush();
+                    $this->em->clear();
+                }
+            }
+
+            $this->em->flush();
+            $this->em->clear();
+        }
     }
 }
