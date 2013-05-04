@@ -628,7 +628,7 @@ class Login implements ControllerProviderInterface
             'module_name'       => _('Accueil'),
             'redirect'          => ltrim($request->query->get('redirect'), '/'),
             'recaptcha_display' => $app->isCaptchaRequired(),
-            'unlock_usr_id'     => $app->getUnlockLink(),
+            'unlock_usr_id'     => $app->getUnlockAccountData(),
             'login'             => new \login(),
             'feeds'             => $feeds,
             'guest_allowed'     => \phrasea::guest_allowed($app),
@@ -953,7 +953,7 @@ class Login implements ControllerProviderInterface
             throw new AuthenticationException(call_user_func($redirector, $params));
         } catch (AccountLockedException $e) {
             $app->addFlash('warning', _('login::erreur: Vous n\'avez pas confirme votre email'));
-            $app->addUnlockLink($e->getUsrId());
+            $app->addUnlockAccountData($e->getUsrId());
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         }

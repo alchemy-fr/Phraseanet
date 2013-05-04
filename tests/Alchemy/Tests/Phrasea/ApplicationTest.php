@@ -270,10 +270,10 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application('test');
 
-        $this->assertNull($app->getUnlockLink());
-        $app->addUnlockLink(42);
-        $this->assertEquals(42, $app->getUnlockLink());
-        $this->assertNull($app->getUnlockLink());
+        $this->assertNull($app->getUnlockAccountData());
+        $app->addUnlockAccountData(42);
+        $this->assertEquals(42, $app->getUnlockAccountData());
+        $this->assertNull($app->getUnlockAccountData());
     }
 
     private function getAppThatReturnLocale()

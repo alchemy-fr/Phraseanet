@@ -589,24 +589,24 @@ class Application extends SilexApplication
     }
 
     /**
-     * Adds a temporary unlock data for a account-locked user
+     * Adds a temporary unlock data for an account-locked user
      *
-     * @param integer $usr_id
+     * @param integer $data
      */
-    public function addUnlockLink($usr_id)
+    public function addUnlockAccountData($data)
     {
-        $this['session']->set('unlock_user_id', $usr_id);
+        $this['session']->set('unlock_account_data', $data);
     }
 
     /**
-     * Returns the temporary unlock data
+     * Returns the temporary unlock account data
      *
      * @return null|integer
      */
-    public function getUnlockLink()
+    public function getUnlockAccountData()
     {
-        if ($this['session']->has('unlock_user_id')) {
-            return $this['session']->remove('unlock_user_id');
+        if ($this['session']->has('unlock_account_data')) {
+            return $this['session']->remove('unlock_account_data');
         }
 
         return null;
