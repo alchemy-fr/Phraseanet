@@ -151,7 +151,7 @@ class Viadeo extends AbstractProvider
     public function getToken()
     {
         if ('' === trim($this->session->get('viadeo.provider.id'))) {
-            throw new RuntimeException('Guthub has not authenticated');
+            throw new RuntimeException('Viadeo has not authenticated');
         }
 
         return new Token($this, $this->session->get('viadeo.provider.id'));
