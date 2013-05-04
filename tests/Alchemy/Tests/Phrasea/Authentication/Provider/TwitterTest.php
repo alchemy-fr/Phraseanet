@@ -104,31 +104,32 @@ class TwitterTest extends ProviderTestCase
         $request = $this->getRequestMock();
         $this->addQueryParameter($request, array('state' => $state));
 
+        $phpunit = $this;
         $provider->getTwitterClient()->expects($this->any())
             ->method('request')
-            ->will($this->returnCallback(function ($method) use ($provider) {
-                           switch($method) {
-                               case 'POST':
-                                   $provider->getTwitterClient()->response = array(
-                                       'response' => array(
-                                           'oauth_token' => 'twitter-oauth-token',
-                                       )
-                                   );
-                                   break;
-                               case 'GET':
-                                   $provider->getTwitterClient()->response = array(
-                                       'response' => json_encode(array(
-                                           'id' => self::ID,
-                                       ))
-                                   );
-                                   break;
-                               default:
-                                   throw new \InvalidArgumentException(sprintf('Invalid method %s', $method));
-                                   break;
-                           }
+            ->will($this->returnCallback(function ($method) use ($provider, $phpunit) {
+                switch($method) {
+                    case 'POST':
+                        $provider->getTwitterClient()->response = array(
+                            'response' => array(
+                                'oauth_token' => 'twitter-oauth-token',
+                            )
+                        );
+                        break;
+                    case 'GET':
+                        $provider->getTwitterClient()->response = array(
+                            'response' => json_encode(array(
+                                'id' => $phpunit::ID,
+                            ))
+                        );
+                        break;
+                    default:
+                        throw new \InvalidArgumentException(sprintf('Invalid method %s', $method));
+                        break;
+                }
 
-                           return 200;
-                       }));
+                return 200;
+            }));
 
         $provider->getTwitterClient()->expects($this->once())
             ->method('extract_params')
@@ -158,19 +159,20 @@ class TwitterTest extends ProviderTestCase
             'oauth_token_secret' => 'token secret',
         ));
 
+        $phpunit = $this;
         $provider->getTwitterClient()->expects($this->once())
-        ->method('request')
-        ->will($this->returncallback(function () use ($provider) {
-                       $provider->getTwitterClient()->response = array(
-                           'response' => json_encode(array(
-                               'screen_name' => self::USERNAME,
-                               'profile_image_url_https' => self::IMAGEURL,
-                               'id' => self::ID,
-                           ))
-                       );
+            ->method('request')
+            ->will($this->returncallback(function () use ($provider, $phpunit) {
+                $provider->getTwitterClient()->response = array(
+                    'response' => json_encode(array(
+                        'screen_name' => $phpunit::USERNAME,
+                        'profile_image_url_https' => $phpunit::IMAGEURL,
+                        'id' => $phpunit::ID,
+                    ))
+                );
 
-                       return 200;
-                   }));
+                return 200;
+            }));
 
         return $provider;
     }

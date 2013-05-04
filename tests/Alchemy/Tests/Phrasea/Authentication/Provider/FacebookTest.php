@@ -136,10 +136,12 @@ class FacebookTest extends ProviderTestCase
         $facebook->expects($this->any())
             ->method('api')
             ->will($this->returnCallback(function () use ($facebook) {
-                           if (!$facebook->getUser()) {
-                               throw new \FacebookApiException('Not authenticated');
-                           }
-                       }));
+                if (!$facebook->getUser()) {
+                    throw new \FacebookApiException(array(
+                        'error_msg' => 'Not authenticated'
+                    ));
+                }
+            }));
 
         return $facebook;
     }

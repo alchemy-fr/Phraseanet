@@ -87,9 +87,9 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
 
         $username = 'romainneutron';
 
-
-        $oldFailures = $this->ArrayIze(function () {
-            return $this->getMock('Entities\AuthFailure');
+        $phpunit = $this;
+        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
+            return $phpunit->getMock('Entities\AuthFailure');
         }, 8);
 
         $repo->expects($this->once())
@@ -112,8 +112,9 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
 
         $username = 'romainneutron';
 
-        $oldFailures = $this->ArrayIze(function () {
-            return $this->getMock('Entities\AuthFailure');
+        $phpunit = $this;
+        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
+            return $phpunit->getMock('Entities\AuthFailure');
         }, 10);
 
         $repo->expects($this->once())
@@ -135,11 +136,12 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
 
         $username = 'romainneutron';
 
-        $oldFailures = $this->ArrayIze(function () {
-            $failure = $this->getMock('Entities\AuthFailure');
-            $failure->expects($this->once())
+        $phpunit = $this;
+        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
+            $failure = $phpunit->getMock('Entities\AuthFailure');
+            $failure->expects($phpunit->once())
                 ->method('setLocked')
-                ->with($this->equalTo(false));
+                ->with($phpunit->equalTo(false));
             return $failure;
         }, 10);
 
@@ -163,8 +165,9 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
 
         $username = 'romainneutron';
 
-        $oldFailures = $this->ArrayIze(function () {
-            return $this->getMock('Entities\AuthFailure');
+        $phpunit = $this;
+        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
+            return $phpunit->getMock('Entities\AuthFailure');
         }, 10);
 
         $repo->expects($this->once())
