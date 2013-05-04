@@ -76,7 +76,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
-            return new FailureManager($app['EM'], $app['recaptcha']);
+            return new FailureManager($app['EM'], $app['recaptcha'], 9);
         });
 
         $app['auth.native'] = $app->share(function (Application $app) {

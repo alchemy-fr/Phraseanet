@@ -45,7 +45,7 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
                 $catchFailure = $failure;
             }));
 
-        $manager = new FailureManager($em, $recaptcha);
+        $manager = new FailureManager($em, $recaptcha, 9);
         $manager->saveFailure($username, $request);
 
         $this->assertEquals($ip, $catchFailure->getIp());
@@ -71,7 +71,7 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha);
+        $manager = new FailureManager($em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
 
@@ -96,7 +96,7 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha);
+        $manager = new FailureManager($em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
 
@@ -121,9 +121,10 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha);
+        $manager = new FailureManager($em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
+
     /**
      * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
      */
@@ -149,9 +150,10 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha);
+        $manager = new FailureManager($em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
+
     /**
      * @expectedException Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException
      * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
@@ -174,7 +176,55 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $manager = new FailureManager($em, $recaptcha);
+        $manager = new FailureManager($em, $recaptcha, 9);
+        $manager->checkFailures($username, $request);
+    }
+
+    public function testCheckFailuresAttemptsIsConfigurableUnderThreshold()
+    {
+        $repo = $this->getRepo();
+        $em = $this->getEntityManagerMock($repo);
+        $recaptcha = $this->getReCaptchaMock(null);
+        $request = $this->getRequestMock();
+
+        $username = 'romainneutron';
+
+        $phpunit = $this;
+        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
+            return $phpunit->getMock('Entities\AuthFailure');
+        }, 2);
+
+        $repo->expects($this->once())
+            ->method('findLockedFailuresMatching')
+            ->will($this->returnValue($oldFailures));
+
+        $manager = new FailureManager($em, $recaptcha, 2);
+        $manager->checkFailures($username, $request);
+    }
+
+    /**
+     * @expectedException Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException
+     * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
+     */
+    public function testCheckFailuresAttemptsIsConfigurableOverThreshold()
+    {
+        $repo = $this->getRepo();
+        $em = $this->getEntityManagerMock($repo);
+        $request = $this->getRequestMock();
+        $recaptcha = $this->getReCaptchaMock(true, $request, false);
+
+        $username = 'romainneutron';
+
+        $phpunit = $this;
+        $oldFailures = $this->ArrayIze(function () use ($phpunit) {
+            return $phpunit->getMock('Entities\AuthFailure');
+        }, 3);
+
+        $repo->expects($this->once())
+            ->method('findLockedFailuresMatching')
+            ->will($this->returnValue($oldFailures));
+
+        $manager = new FailureManager($em, $recaptcha, 2);
         $manager->checkFailures($username, $request);
     }
 

@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Authentication\Phrasea;
 
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Doctrine\ORM\EntityManager;
 use Entities\AuthFailure;
@@ -23,11 +24,19 @@ class FailureManager
     private $captcha;
     /** @var EntityManager */
     private $em;
+    /** @var integer */
+    private $attempts;
 
-    public function __construct(EntityManager $em, ReCaptcha $captcha)
+    public function __construct(EntityManager $em, ReCaptcha $captcha, $attempts)
     {
         $this->captcha = $captcha;
         $this->em = $em;
+
+        if ($attempts < 0) {
+            throw new InvalidArgumentException('Attempts number must be a positive integer');
+        }
+
+        $this->attempts = $attempts;
     }
 
     /**
@@ -73,7 +82,7 @@ class FailureManager
             return;
         }
 
-        if (9 < count($failures) && $this->captcha->isSetup()) {
+        if ($this->attempts < count($failures) && $this->captcha->isSetup()) {
             $response = $this->captcha->bind($request);
 
             if ($response->isValid()) {
