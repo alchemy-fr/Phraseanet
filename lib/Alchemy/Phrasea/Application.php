@@ -88,6 +88,7 @@ use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use FFMpeg\FFMpegServiceProvider;
 use Neutron\Silex\Provider\ImagineServiceProvider;
+use MediaVorus\MediaVorus;
 use MediaVorus\MediaVorusServiceProvider;
 use MediaAlchemyst\MediaAlchemystServiceProvider;
 use MediaAlchemyst\Driver\Imagine;
@@ -105,6 +106,8 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\WebProfilerServiceProvider;
+use Symfony\Component\HttpFoundation\File\MimeType\FileBinaryMimeTypeGuesser;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -191,6 +194,19 @@ class Application extends SilexApplication
         $this->register(new GeonamesServiceProvider);
         $this->register(new MediaAlchemystServiceProvider());
         $this->register(new MediaVorusServiceProvider());
+
+        $this['mediavorus'] = $this->share(
+            $this->extend('mediavorus', function(MediaVorus $mediavorus, Application $app){
+                $guesser = MimeTypeGuesser::getInstance();
+                /**
+                 * temporary hack to use this guesser before fileinfo
+                 */
+                $guesser->register(new FileBinaryMimeTypeGuesser());
+
+                return $mediavorus;
+            })
+        );
+
         $this->register(new MonologServiceProvider());
         $this['monolog.name'] = 'Phraseanet logger';
         $this['monolog.handler'] = $this->share(function () {
