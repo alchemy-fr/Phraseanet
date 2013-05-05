@@ -18,8 +18,6 @@ use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\File\MimeType\FileBinaryMimeTypeGuesser;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\Serializer\Serializer;
 
 /**
@@ -150,12 +148,6 @@ class Upload implements ControllerProviderInterface
      */
     public function upload(Application $app, Request $request)
     {
-        $guesser = MimeTypeGuesser::getInstance();
-        /**
-         * temporary hack to use this guesser before fileinfo
-         */
-        $guesser->register(new FileBinaryMimeTypeGuesser());
-
         $datas = array(
             'success' => false,
             'code'    => null,
