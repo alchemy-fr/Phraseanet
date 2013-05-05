@@ -39,7 +39,7 @@ if (0 !== $code && ! file_exists($composer)) {
     system('chmod +x ' . $composer);
 
     if (isset($argv[1]) && $argv[1] == '--no-dev') {
-        system($composer . ' install --optimize-autoloader');
+        system($composer . ' install --optimize-autoloader --no-dev');
     } else {
         system($composer . ' install --dev --optimize-autoloader');
     }
@@ -54,7 +54,7 @@ if (0 === $code) {
 system($composer . ' self-update');
 
 if (isset($argv[1]) && $argv[1] == '--no-dev') {
-    system($composer . ' install --optimize-autoloader');
+    system($composer . ' install --optimize-autoloader --no-dev');
 } else {
     system($composer . ' install --dev --optimize-autoloader');
 }
