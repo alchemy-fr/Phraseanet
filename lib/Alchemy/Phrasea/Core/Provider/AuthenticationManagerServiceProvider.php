@@ -53,7 +53,8 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
             $providers = new ProvidersCollection();
 
-            foreach ($app['phraseanet.configuration']->get('auth-providers') as $providerId => $data) {
+            $authConf = $app['phraseanet.configuration']->get('authentication');
+            foreach ($authConf['providers'] as $providerId => $data) {
                 if (isset($data['enabled']) && false === $data['enabled']) {
                     continue;
                 }

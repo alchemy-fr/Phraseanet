@@ -31,37 +31,38 @@ dev:
   border-manager: border_manager
   search-engine: phrasea
   task-manager: task_manager
-  auth-providers:
-    facebook:
-      enabled: false
-      options:
-        app-id: ''
-        secret: ''
-    twitter:
-      enabled: false
-      options:
-        consumer-key: ''
-        consumer-secret: ''
-    google-plus:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
-    github:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
-    viadeo:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
-    linkedin:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
+  authentication:
+    providers:
+      facebook:
+        enabled: false
+        options:
+          app-id: ''
+          secret: ''
+      twitter:
+        enabled: false
+        options:
+          consumer-key: ''
+          consumer-secret: ''
+      google-plus:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      github:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      viadeo:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      linkedin:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
   registration-fields:
     -
       name: company
@@ -91,37 +92,38 @@ prod:
   border-manager: border_manager
   search-engine: phrasea
   task-manager: task_manager
-  auth-providers:
-    facebook:
-      enabled: false
-      options:
-        app-id: ''
-        secret: ''
-    twitter:
-      enabled: false
-      options:
-        consumer-key: ''
-        consumer-secret: ''
-    google-plus:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
-    github:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
-    viadeo:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
-    linkedin:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
+  authentication:
+    providers:
+      facebook:
+        enabled: false
+        options:
+          app-id: ''
+          secret: ''
+      twitter:
+        enabled: false
+        options:
+          consumer-key: ''
+          consumer-secret: ''
+      google-plus:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      github:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      viadeo:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      linkedin:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
   registration-fields:
     -
       name: company
@@ -151,37 +153,38 @@ test:
   border-manager: border_manager
   search-engine: phrasea
   task-manager: task_manager
-  auth-providers:
-    facebook:
-      enabled: false
-      options:
-        app-id: ''
-        secret: ''
-    twitter:
-      enabled: false
-      options:
-        consumer-key: ''
-        consumer-secret: ''
-    google-plus:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
-    github:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
-    viadeo:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
-    linkedin:
-      enabled: false
-      options:
-        client-id: ''
-        client-secret: ''
+  authentication:
+    providers:
+      facebook:
+        enabled: false
+        options:
+          app-id: ''
+          secret: ''
+      twitter:
+        enabled: false
+        options:
+          consumer-key: ''
+          consumer-secret: ''
+      google-plus:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      github:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      viadeo:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      linkedin:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
   registration-fields:
     -
       name: company
