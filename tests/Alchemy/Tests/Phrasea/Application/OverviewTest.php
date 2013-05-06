@@ -185,7 +185,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
             $this->assertEquals($response->headers->get($name), $value);
         }
         
-        $this->assertEquals($response->headers->get("Link"), "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?key=".$token);
+        $this->assertEquals($response->headers->get("Link"), "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token);
         $this->assertEquals(200, $response->getStatusCode());
     }
     
@@ -217,7 +217,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
             $this->assertEquals($response->headers->get($name), $value);
         }
         
-        $this->assertEquals($response->headers->get("Link"), "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?key=".$token);
+        $this->assertEquals($response->headers->get("Link"), "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token);
         $this->assertEquals(200, $response->getStatusCode());
     }
     
