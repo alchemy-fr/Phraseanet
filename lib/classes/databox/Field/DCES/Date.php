@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use JMS\Serializer\Annotation\SerializedName;
+
 /**
  *
  * @package     Databox DCES
@@ -31,6 +33,7 @@ class databox_Field_DCES_Date extends databox_Field_DCESAbstract
                           in the lifecycle of the resource.';
 
     /**
+     * @SerializedName("URI")
      *
      * @var string
      */

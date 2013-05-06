@@ -2,5 +2,10 @@
   "name": "Phraseanet",
   "version": "3.8.0",
   "dependencies": {
+    "requirejs" : "~2.1",
+    "backbone-amd": "~1.0",
+    "underscore-amd": "~1.4",
+    "mocha": "~1.9",
+    "chai" : "~1.6"
   }
 }

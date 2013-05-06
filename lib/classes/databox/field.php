@@ -15,6 +15,8 @@ use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\Metadata\Tag\Nosource;
 use PHPExiftool\Driver\TagInterface;
 use PHPExiftool\Driver\TagFactory;
+use PHPExiftool\Exception\TagUnknown;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -178,6 +180,10 @@ class databox_field implements cache_cacheableInterface
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
+        if (!$row) {
+            throw new NotFoundHttpException(sprintf('Unable to find field in %s', $id));
+        }
+
         $this->id = (int) $id;
 
         $this->tag = self::loadClassFromTagName($row['src']);
@@ -187,12 +193,12 @@ class databox_field implements cache_cacheableInterface
         }
 
         $this->name = $row['name'];
-        $this->indexable = ! ! $row['indexable'];
-        $this->readonly = ! ! $row['readonly'];
-        $this->required = ! ! $row['required'];
-        $this->multi = ! ! $row['multi'];
-        $this->Business = ! ! $row['business'];
-        $this->report = ! ! $row['report'];
+        $this->indexable = (Boolean) $row['indexable'];
+        $this->readonly = (Boolean) $row['readonly'];
+        $this->required = (Boolean) $row['required'];
+        $this->multi = (Boolean) $row['multi'];
+        $this->Business = (Boolean) $row['business'];
+        $this->report = (Boolean) $row['report'];
         $this->type = $row['type'] ? : self::TYPE_STRING;
         $this->tbranch = $row['tbranch'];
 
@@ -469,7 +475,11 @@ class databox_field implements cache_cacheableInterface
 
             $tag = new $classname();
         } else {
-            $tag = TagFactory::getFromRDFTagname($tagName);
+            try {
+                $tag = TagFactory::getFromRDFTagname($tagName);
+            } catch (TagUnknown $e) {
+                throw new NotFoundHttpException(sprintf("Tag %s not found", $tagName), $e);
+            }
         }
 
         return $tag;
@@ -585,7 +595,7 @@ class databox_field implements cache_cacheableInterface
         $this->Business = ! ! $boolean;
 
         if ($this->Business) {
-            $this->thumbtitle = '0';
+            $this->thumbtitle = null;
         }
 
         return $this;
@@ -680,7 +690,7 @@ class databox_field implements cache_cacheableInterface
     {
         $this->thumbtitle = $value;
 
-        if ($this->thumbtitle != '0') {
+        if (!$this->thumbtitle) {
             $this->Business = false;
         }
 
@@ -796,6 +806,39 @@ class databox_field implements cache_cacheableInterface
         return $this->on_error;
     }
 
+    public function toArray()
+    {
+        return array(
+            'id'                    => $this->id,
+            'name'                  => $this->name,
+            'tag'                   => $this->tag->getTagname(),
+            'business'              => $this->Business,
+            'type'                  => $this->type,
+            'thumbtitle'            => $this->thumbtitle,
+            'tbranch'               => $this->tbranch,
+            'separator'             => $this->separator,
+            'required'              => $this->required,
+            'report'                => $this->report,
+            'readonly'              => $this->readonly,
+            'multi'                 => $this->multi,
+            'indexable'             => $this->indexable,
+            'dces-element'          => $this->dces_element,
+            'vocabulary-type'       => $this->Vocabulary ? $this->Vocabulary->getType() : null,
+            'vocabulary-restricted' => $this->VocabularyRestriction,
+        );
+    }
+
+    /**
+     *
+     * @param \Alchemy\Phrasea\Application $app
+     * @param databox $databox
+     * @param type $name
+     * @param type $multi
+     *
+     * @return databox_field
+     *
+     * @throws \Exception_InvalidArgument
+     */
     public static function create(Application $app, databox $databox, $name, $multi)
     {
         $sorter = 0;

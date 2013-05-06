@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use JMS\Serializer\Annotation\SerializedName;
+
 /**
  *
  * @package     Databox DCES
@@ -30,6 +32,7 @@ class databox_Field_DCES_Type extends databox_Field_DCESAbstract
     protected $definition = 'The nature or genre of the resource.';
 
     /**
+     * @SerializedName("URI")
      *
      * @var string
      */

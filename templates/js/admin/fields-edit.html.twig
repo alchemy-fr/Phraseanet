@@ -1,0 +1,24 @@
+{% twig_js name="fieldsEdit" %}
+
+<div>
+    {{ field.name }}
+</div>
+
+<div>
+    {{ field.tag }}
+</div>
+
+<form>
+    <input type="checkbox" {{ field.multi ? "checked='checked'" : "" }} /> multivalué <br />
+    branche thesaurus <input type="text" value="{{ field.tbranch }}"/><br />
+    type de vocabulaire <select><option>utilisateur</option></select><br />
+    type <select><option>{{ field.type }}</option></select><br />
+    champ métier <input type="checkbox" {{ field.business ? "checked='checked'" : "" }} /><br />
+    vocabulaire restreint <input type="checkbox" {{ field["vocavulary-restricted"] ? "checked='checked'" : "" }} /><br />
+    séparateur <input type="text" value="{{ field.separator }}" /> <br />
+    obligatoire <input type="checkbox" {{ field.required ? "checked='checked'" : "" }} /><br />
+    indexable <input type="checkbox" {{ field.indexable ? "checked='checked'" : "" }} /><br />
+    lecture seule <input type="checkbox" {{ field.readonly ? "checked='checked'" : "" }} /><br />
+    report <input type="checkbox" {{ field.report ? "checked='checked'" : "" }} /><br />
+</form>
+

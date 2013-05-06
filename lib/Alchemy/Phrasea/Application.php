@@ -19,7 +19,6 @@ use Alchemy\Phrasea\Controller\Admin\ConnectedUsers;
 use Alchemy\Phrasea\Controller\Admin\Dashboard;
 use Alchemy\Phrasea\Controller\Admin\Databox;
 use Alchemy\Phrasea\Controller\Admin\Databoxes;
-use Alchemy\Phrasea\Controller\Admin\Description;
 use Alchemy\Phrasea\Controller\Admin\Fields;
 use Alchemy\Phrasea\Controller\Admin\Publications;
 use Alchemy\Phrasea\Controller\Admin\Root;
@@ -80,6 +79,7 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
+use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
@@ -106,6 +106,8 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\WebProfilerServiceProvider;
 use Unoconv\UnoconvServiceProvider;
+use TwigJs\Twig\TwigJsExtension;
+use TwigJs\JsCompiler;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
 
@@ -185,6 +187,7 @@ class Application extends SilexApplication
         $this->register(new ConfigurationTesterServiceProvider);
         $this->register(new CacheServiceProvider());
         $this->register(new ImagineServiceProvider());
+        $this->register(new JMSSerializerServiceProvider());
         $this->register(new FFMpegServiceProvider());
         $this->register(new FilesystemServiceProvider());
         $this->register(new FtpServiceProvider());
@@ -538,6 +541,22 @@ class Application extends SilexApplication
                 return $twig;
             })
         );
+
+        $this['twig.js.compiler'] = $this->share(function(Application $app) {
+            $compiler = new JsCompiler($app['twig']);
+            $compiler->setFilterFunction('trans', 'i18n.t');
+
+            return $compiler;
+        });
+
+        $this['twig.js'] = $this->share(function(Application $app) {
+            $twig = clone $app['twig'];
+            $twig->addExtension(new TwigJsExtension());
+            $twig->getExtension('escaper')->setDefaultStrategy(false);
+            $twig->setCompiler($app['twig.js.compiler']);
+
+            return $twig;
+        });
     }
 
     /**
@@ -661,7 +680,6 @@ class Application extends SilexApplication
         $this->mount('/admin/fields', new Fields());
         $this->mount('/admin/task-manager', new TaskManager());
         $this->mount('/admin/subdefs', new Subdefs());
-        $this->mount('/admin/description', new Description());
         $this->mount('/admin/tests/connection', new ConnectionTest());
         $this->mount('/admin/tests/pathurl', new PathFileTest());
 

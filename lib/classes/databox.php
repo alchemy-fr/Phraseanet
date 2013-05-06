@@ -630,7 +630,7 @@ class databox extends base
         return sprintf("%s@%s:%s (MySQL %s)", $this->dbname, $this->host, $this->port, $this->get_connection()->server_info());
     }
 
-    public function get_available_dcfields()
+    public static function get_available_dcfields()
     {
         return array(
             databox_Field_DCESAbstract::Contributor => new databox_Field_DCES_Contributor()

@@ -25,7 +25,7 @@ class unitTestsTest extends PhraseanetPHPUnitAbstract
             if (in_array($file->getFilename(), $reserved))
                 continue;
 
-            $this->assertRegExp('/[a-zA-Z0-9-_\.]+Test.php/', $file->getPathname(), 'Verify that all tests files names');
+            $this->assertRegExp('/[a-zA-Z0-9-_\.]+Test(Case)?.php/', $file->getPathname(), 'Verify that all tests files names');
         }
     }
 }

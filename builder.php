@@ -77,6 +77,8 @@ $finder
     ->name('.svn')
     ->name('.git')
     ->name('flash')
+    ->name('chai')
+    ->name('mocha')
     ->ignoreDotFiles(false)
     ->ignoreVCS(false)
     ->in(__DIR__);

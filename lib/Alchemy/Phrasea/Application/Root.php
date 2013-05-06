@@ -76,7 +76,10 @@ return call_user_func(function($environment = null) {
             return $response;
         }
 
-        if ($request->getRequestFormat() == 'json') {
+        if ((0 !== strpos($request->getPathInfo(), '/admin/')
+            || 0 === strpos($request->getPathInfo(), '/admin/collection/')
+            || 0 === strpos($request->getPathInfo(), '/admin/databox/'))
+            && $request->getRequestFormat() == 'json') {
             $datas = array(
                 'success' => false
                 , 'message' => $e->getMessage()
@@ -93,6 +96,10 @@ return call_user_func(function($environment = null) {
             }
 
             $message = isset(Response::$statusTexts[$e->getStatusCode()]) ? Response::$statusTexts[$e->getStatusCode()] : '';
+
+            if (400 === $e->getStatusCode()) {
+                $message .= ' : ' . $e->getMessage();
+            }
 
             return new Response($message, $e->getStatusCode(), $e->getHeaders());
         }
