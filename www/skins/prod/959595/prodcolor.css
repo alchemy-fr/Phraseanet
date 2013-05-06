@@ -1923,17 +1923,22 @@ H4 {
 }
 
 .clkbas {
-    white-space: nowrap;
+    white-space: normal;
     margin:0 5px;
+    -webkit-column-break-inside:avoid;
+    -moz-column-break-inside:avoid;
+    -o-column-break-inside:avoid;
+    -ms-column-break-inside:avoid;
+    column-break-inside:avoid;
 }
 
-.clkbas label {
+#searchForm .clkbas label {
     color: #999999;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.clkbas label.selected {
+#searchForm .clkbas label.selected {
     color: #555555;
 }
 
