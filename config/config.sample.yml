@@ -85,6 +85,7 @@ prod:
     debug: false
     display_errors: false
     database: main_connexion
+    api-timers: false
 
   template_engine: twig
   orm: doctrine_prod
@@ -125,16 +126,16 @@ prod:
         options:
           client-id: ''
           client-secret: ''
-    registration-fields:
-      -
-        name: company
-        required: true
-      -
-        name: first-name
-        required: true
-      -
-        name: geoname-id
-        required: true
+  registration-fields:
+    -
+      name: company
+      required: true
+    -
+      name: firstname
+      required: true
+    -
+      name: geonameid
+      required: true
 
 ##############
 #    TEST    #
@@ -146,6 +147,7 @@ test:
     debug: true
     display_errors: true
     database: main_connexion
+    api-timers: false
 
   template_engine: twig_debug
   orm: doctrine_test
@@ -186,14 +188,14 @@ test:
         options:
           client-id: ''
           client-secret: ''
-    registration-fields:
-      -
-        name: company
-        required: true
-      -
-        name: first-name
-        required: true
-      -
-        name: geoname-id
-        required: true
+  registration-fields:
+    -
+      name: company
+      required: true
+    -
+      name: firstname
+      required: true
+    -
+      name: geonameid
+      required: true
 

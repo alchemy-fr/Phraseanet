@@ -12,8 +12,8 @@ main_connexion:
   driver: pdo_mysql
   charset: UTF8
 
-#Define a connexion to a SQLite database named test_connexion
+#Defines a connexion to a SQLite database named test_connexion
 test_connexion:
-    driver: pdo_sqlite
-    path: '/tmp/db.sqlite'
-    charset: UTF8
+  driver: pdo_sqlite
+  path: '/tmp/db.sqlite'
+  charset: UTF8
