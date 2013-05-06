@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Symfony\Component\Yaml\Dumper as YamlDumper;
 
 /**
  *
@@ -43,6 +44,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     const SERIALIZE_XML = 'xml';
     const SERIALIZE_YAML = 'yaml';
+    const SERIALIZE_JSON = 'json';
 
     /**
      *
@@ -71,6 +73,9 @@ class caption_record implements caption_interface, cache_cacheableInterface
             case self::SERIALIZE_YAML:
                 return $this->serializeYAML( ! ! $includeBusinessFields);
                 break;
+            case self::SERIALIZE_JSON:
+                return $this->serializeJSON( ! ! $includeBusinessFields);
+                break;
             default:
                 throw new \Exception(sprintf('Unknown format %s', $format));
                 break;
@@ -78,6 +83,18 @@ class caption_record implements caption_interface, cache_cacheableInterface
     }
 
     protected function serializeYAML($includeBusinessFields)
+    {
+        $dumper = new YamlDumper();
+
+        return $dumper->dump($this->toArray($includeBusinessFields), 3);
+    }
+    
+    protected function serializeJSON($includeBusinessFields)
+    {
+        return \p4string::jsonencode($this->toArray($includeBusinessFields));
+    }
+    
+    protected function toArray($includeBusinessFields)
     {
         $buffer = array();
 
@@ -96,12 +113,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
                 $buffer[$field->get_name()] = ctype_digit($val) ? (int) $val : $val;
             }
         }
-
-        $buffer = array('record' => array('description' => $buffer));
-
-        $dumper = new Symfony\Component\Yaml\Dumper();
-
-        return $dumper->dump($buffer, 3);
+        return array('record' => array('description' => $buffer));
     }
 
     protected function serializeXML($includeBusinessFields)
