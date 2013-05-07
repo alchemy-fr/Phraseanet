@@ -11,21 +11,24 @@
 
 namespace Alchemy\Phrasea\Core\Event;
 
+use Alchemy\Phrasea\Authentication\Context;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\Event as SfEvent;
 
 class PostAuthenticate extends SfEvent
 {
+    private $context;
     private $user;
     private $request;
     private $response;
 
-    public function __construct(Request $request, Response $response, \User_Adapter $user)
+    public function __construct(Request $request, Response $response, \User_Adapter $user, Context $context)
     {
         $this->request = $request;
         $this->response = $response;
         $this->user = $user;
+        $this->context = $context;
     }
 
     public function getUser()
@@ -46,5 +49,10 @@ class PostAuthenticate extends SfEvent
     public function setResponse(Response $response)
     {
         $this->response = $response;
+    }
+
+    public function getContext()
+    {
+        return $this->context;
     }
 }

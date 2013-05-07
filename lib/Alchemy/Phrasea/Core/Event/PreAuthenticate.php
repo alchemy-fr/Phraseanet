@@ -11,20 +11,28 @@
 
 namespace Alchemy\Phrasea\Core\Event;
 
+use Alchemy\Phrasea\Authentication\Context;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\Event as SfEvent;
 
 class PreAuthenticate extends SfEvent
 {
     private $request;
+    private $context;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, Context $context)
     {
         $this->request = $request;
+        $this->context = $context;
     }
 
     public function getRequest()
     {
         return $this->request;
+    }
+
+    public function getContext()
+    {
+        return $this->context;
     }
 }
