@@ -63,6 +63,11 @@ class Facebook extends AbstractProvider
         )));
     }
 
+    public function logout()
+    {
+        $this->facebook->destroySession();
+    }
+
     /**
      * @param \Facebook $facebook
      *

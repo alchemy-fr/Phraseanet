@@ -98,6 +98,11 @@ class Twitter extends AbstractProvider
         ));
     }
 
+    public function logout()
+    {
+        // Twitter does no timplement token revocation
+    }
+
     /**
      * {@inheritdoc}
      */

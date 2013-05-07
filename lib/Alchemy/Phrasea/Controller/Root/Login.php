@@ -845,8 +845,6 @@ class Login implements ControllerProviderInterface
     {
         $provider = $this->findProvider($app, $providerId);
 
-        $token = $provider->getToken();
-
         $form = $app->form(new PhraseaAuthenticationForm(), array(
         ));
 
@@ -893,6 +891,8 @@ class Login implements ControllerProviderInterface
         $usrAuthProvider->setProvider($provider->getId());
         $usrAuthProvider->setUsrId($app['authentication']->getUser()->get_id());
 
+        $provider->logout();
+
         $app['EM']->persist($usrAuthProvider);
         $app['EM']->flush();
 
@@ -926,6 +926,8 @@ class Login implements ControllerProviderInterface
 
         $app['EM']->persist($usrAuthProvider);
         $app['EM']->flush();
+
+        $provider->logout();
 
         return $response;
     }

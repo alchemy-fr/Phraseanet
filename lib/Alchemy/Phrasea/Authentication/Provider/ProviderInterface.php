@@ -47,6 +47,11 @@ interface ProviderInterface
     public function authenticate();
 
     /**
+     * Logout from the provider, removes the token if possible
+     */
+    public function logout();
+
+    /**
      * This method is called on provider callback, whenever the auth was
      * successful or failure.
      *

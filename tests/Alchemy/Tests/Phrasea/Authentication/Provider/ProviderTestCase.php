@@ -176,9 +176,16 @@ abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
         return new Session(new MockFileSessionStorage());
     }
 
+    public function testLogout()
+    {
+        $this->getProviderForLogout()->logout();
+    }
+
     abstract protected function authenticate(ProviderInterface $provider);
 
     abstract protected function getProviderForAuthentication();
+
+    abstract protected function getProviderForLogout();
 
     abstract protected function getProviderForSuccessIdentity();
 

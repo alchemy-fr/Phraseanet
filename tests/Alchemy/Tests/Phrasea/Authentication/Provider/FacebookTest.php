@@ -40,6 +40,11 @@ class FacebookTest extends ProviderTestCase
         );
     }
 
+    public function getProviderForLogout()
+    {
+        $this->markTestSkipped('Skipping because \Facebook runs session_start');
+    }
+
     public function provideDataForSuccessCallback()
     {
         $provider = $this->getProvider();

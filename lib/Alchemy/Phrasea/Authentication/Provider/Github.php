@@ -97,6 +97,11 @@ class Github extends AbstractProvider
         ), '', '&'));
     }
 
+    public function logout()
+    {
+        // GitHub does not support tokens revocation
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -147,6 +147,11 @@ class GooglePlus extends AbstractProvider
         return new RedirectResponse($this->client->createAuthUrl());
     }
 
+    public function logout()
+    {
+        $this->client->revokeToken();
+    }
+
     /**
      * {@inheritdoc}
      */

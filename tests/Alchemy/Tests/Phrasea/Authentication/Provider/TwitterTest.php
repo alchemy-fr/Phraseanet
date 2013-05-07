@@ -25,6 +25,11 @@ class TwitterTest extends ProviderTestCase
         $this->assertEquals($client, $provider->getTwitterClient());
     }
 
+    public function getProviderForLogout()
+    {
+        return $this->getProvider();
+    }
+
     /**
      * @expectedException Alchemy\Phrasea\Exception\RuntimeException
      */

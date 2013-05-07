@@ -76,6 +76,11 @@ class LinkedinTest extends ProviderTestCase
         );
     }
 
+    public function getProviderForLogout()
+    {
+        return $this->getProvider();
+    }
+
     public function provideDataForSuccessCallback()
     {
         $provider = $this->getProvider();

@@ -96,6 +96,24 @@ class Viadeo extends AbstractProvider
         )));
     }
 
+    public function logout()
+    {
+        $request = $this->client->get('https://secure.viadeo.com/oauth-provider/revoke_access_token2');
+        $request
+            ->getQuery()
+            ->add('access_token', $this->session->get('viadeo.provider.access_token'))
+            ->add('client_id', $this->key)
+            ->add('client_secret', $this->secret);
+
+        $request->setHeader('Accept', 'application/json');
+
+        $response = $request->send();
+
+        if (302 !== $response->getStatusCode()) {
+            throw new RuntimeException('Error while revoking access token');
+        }
+    }
+
     /**
      * {@inheritdoc}
      */

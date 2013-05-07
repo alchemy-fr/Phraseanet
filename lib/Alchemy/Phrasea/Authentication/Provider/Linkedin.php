@@ -98,6 +98,11 @@ class Linkedin extends AbstractProvider
         ), '', '&'));
     }
 
+    public function logout()
+    {
+        // LinkedIn does not provide Oauth2 token revocation
+    }
+
     /**
      * {@inheritdoc}
      */

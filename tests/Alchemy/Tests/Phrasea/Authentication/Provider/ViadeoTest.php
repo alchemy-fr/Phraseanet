@@ -24,6 +24,46 @@ class ViadeoTest extends ProviderTestCase
         );
     }
 
+    public function getProviderForLogout()
+    {
+        $provider = $this->getProvider();
+
+        $guzzle = $this->getMock('Guzzle\Http\ClientInterface');
+        $requestGet = $this->getMock('Guzzle\Http\Message\RequestInterface');
+
+        $queryString = $this->getMockBuilder('Guzzle\Http\QueryString')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $queryString->expects($this->exactly(3))
+            ->method('add')
+            ->will($this->returnSelf());
+
+        $requestGet->expects($this->any())
+            ->method('getQuery')
+            ->will($this->returnValue($queryString));
+
+        $response = $this->getMockBuilder('Guzzle\Http\Message\Response')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $response->expects($this->any())
+            ->method('getStatusCode')
+            ->will($this->returnValue(302));
+
+        $requestGet->expects($this->once())
+            ->method('send')
+            ->will($this->returnValue($response));
+
+        $guzzle->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($requestGet));
+
+        $provider->setGuzzleClient($guzzle);
+
+        return $provider;
+    }
+
     public function provideDataForSuccessCallback()
     {
         $provider = $this->getProvider();

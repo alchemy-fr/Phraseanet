@@ -36,6 +36,17 @@ class GooglePlusTest extends ProviderTestCase
         );
     }
 
+    public function getProviderForLogout()
+    {
+        $provider = $this->getProvider();
+
+        $provider->getGoogleClient()
+            ->expects($this->once())
+            ->method('revokeToken');
+
+        return $provider;
+    }
+
     public function provideDataForSuccessCallback()
     {
         $provider = $this->getProvider();
