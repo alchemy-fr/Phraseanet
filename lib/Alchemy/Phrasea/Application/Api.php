@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Controller\Api\Oauth2;
 use Alchemy\Phrasea\Controller\Api\V1;

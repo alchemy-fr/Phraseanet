@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -110,6 +111,38 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             self::$adminApplication->delete();
         }
         parent::tearDownAfterClass();
+    }
+
+    /**
+     * @dataProvider provideEventNames
+     */
+    public function testThatEventsAreDispatched($eventName, $className, $route)
+    {
+        $preEvent = 0;
+        $phpunit = $this;
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className) {
+            $preEvent++;
+            $phpunit->assertInstanceOf($className, $event);
+        });
+
+        $this->setToken(self::$token);
+        self::$DI['client']->request('GET', '/databoxes/list/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+
+        $this->assertEquals(1, $preEvent);
+    }
+
+    public function provideEventNames()
+    {
+        return array(
+            array(PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', '/databoxes/list/'),
+            array(PhraseaEvents::API_OAUTH2_START, 'Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent', '/databoxes/list/'),
+            array(PhraseaEvents::API_OAUTH2_END, 'Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent', '/databoxes/list/'),
+            array(PhraseaEvents::API_RESULT, 'Alchemy\Phrasea\Core\Event\ApiResultEvent', '/databoxes/list/'),
+            array(PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', '/no-route'),
+            array(PhraseaEvents::API_OAUTH2_START, 'Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent', '/no-route'),
+            array(PhraseaEvents::API_OAUTH2_END, 'Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent', '/no-route'),
+            array(PhraseaEvents::API_RESULT, 'Alchemy\Phrasea\Core\Event\ApiResultEvent', '/no-route'),
+        );
     }
 
     public function testRouteNotFound()
