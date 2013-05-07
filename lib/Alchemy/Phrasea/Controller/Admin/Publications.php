@@ -36,8 +36,8 @@ class Publications implements ControllerProviderInterface
 
         $controllers->get('/list/', function(PhraseaApplication $app) {
 
-            $feeds = \Feed_Collection::load_all(
-                    $app, $app['authentication']->getUser()
+            $feeds = $app["EM"]->getRepository("Entities\Feed")->getAllForUser(
+                $app['authentication']->getUser()
             );
 
             return $app['twig']

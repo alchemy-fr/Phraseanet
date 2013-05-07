@@ -2,6 +2,7 @@
 
 namespace Repositories;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,4 +13,31 @@ use Doctrine\ORM\EntityRepository;
  */
 class SessionRepository extends EntityRepository
 {
+    
+    /**
+     *
+     * @param  Application     $app
+     * @param  User_Adapter    $user
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAllForUser(\User_Adapter $user)
+    {
+        $base_ids = array_keys($user->ACL()->get_granted_base());
+
+        
+        $dql = 'SELECT f FROM Entities\Feed f
+            WHERE f.base_id IS NULL ';
+
+        if (count($base_ids) > 0) {
+            $dql .= ' OR f.base_id
+                IN (' . implode(', ', $base_ids) . ') ';
+        }
+
+        $dql .= ' OR f.public = true
+            ORDER BY f.created DESC';
+
+        $query = $this->_em->createQuery($dql);
+        $feeds = $query->getResult();
+        return $feeds;
+    }
 }
