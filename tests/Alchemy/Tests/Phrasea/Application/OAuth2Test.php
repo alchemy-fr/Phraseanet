@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Application;
 
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Authentication\Context;
 
 /**
  * Test oauthv2 flow based on ietf authv2 spec
@@ -92,6 +93,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className) {
             $preEvent++;
             $phpunit->assertInstanceOf($className, $event);
+            $phpunit->assertEquals(Context::CONTEXT_OAUTH2_NATIVE, $event->getContext()->getContext());
         });
 
         self::$DI['client']->request($method, '/authorize', $this->queryParameters);

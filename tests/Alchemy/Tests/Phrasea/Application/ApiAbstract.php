@@ -5,6 +5,7 @@ namespace Alchemy\Tests\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Authentication\Context;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -116,17 +117,20 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     /**
      * @dataProvider provideEventNames
      */
-    public function testThatEventsAreDispatched($eventName, $className, $route)
+    public function testThatEventsAreDispatched($eventName, $className, $route, $context)
     {
         $preEvent = 0;
         $phpunit = $this;
-        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className) {
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className, $context) {
             $preEvent++;
             $phpunit->assertInstanceOf($className, $event);
+            if (null !== $context) {
+                $phpunit->assertEquals($context, $event->getContext()->getContext());
+            }
         });
 
         $this->setToken(self::$token);
-        self::$DI['client']->request('GET', '/databoxes/list/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
 
         $this->assertEquals(1, $preEvent);
     }
@@ -134,14 +138,14 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function provideEventNames()
     {
         return array(
-            array(PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', '/databoxes/list/'),
-            array(PhraseaEvents::API_OAUTH2_START, 'Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent', '/databoxes/list/'),
-            array(PhraseaEvents::API_OAUTH2_END, 'Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent', '/databoxes/list/'),
-            array(PhraseaEvents::API_RESULT, 'Alchemy\Phrasea\Core\Event\ApiResultEvent', '/databoxes/list/'),
-            array(PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', '/no-route'),
-            array(PhraseaEvents::API_OAUTH2_START, 'Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent', '/no-route'),
-            array(PhraseaEvents::API_OAUTH2_END, 'Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent', '/no-route'),
-            array(PhraseaEvents::API_RESULT, 'Alchemy\Phrasea\Core\Event\ApiResultEvent', '/no-route'),
+            array(PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', '/databoxes/list/', Context::CONTEXT_OAUTH2_TOKEN),
+            array(PhraseaEvents::API_OAUTH2_START, 'Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent', '/databoxes/list/', null),
+            array(PhraseaEvents::API_OAUTH2_END, 'Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent', '/databoxes/list/', null),
+            array(PhraseaEvents::API_RESULT, 'Alchemy\Phrasea\Core\Event\ApiResultEvent', '/databoxes/list/', null),
+            array(PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', '/no-route', Context::CONTEXT_OAUTH2_TOKEN),
+            array(PhraseaEvents::API_OAUTH2_START, 'Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent', '/no-route', null),
+            array(PhraseaEvents::API_OAUTH2_END, 'Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent', '/no-route', null),
+            array(PhraseaEvents::API_RESULT, 'Alchemy\Phrasea\Core\Event\ApiResultEvent', '/no-route', null),
         );
     }
 
