@@ -16,13 +16,13 @@
  */
 class unicode
 {
-    // second parameter to utf8_convert_to(...)
+    // second argument to convert_to(...)
     const CONVERT_TO_LC   = 'lc';           // lowercase
     const CONVERT_TO_ND   = 'nd';           // no-diacritics
     const CONVERT_TO_LCND = 'lcnd';         // lowercase no-diacritics
 
 	static protected $map = array(
-		'lc' => array(
+		self::CONVERT_TO_LC => array(
 			"\x41"     => "\x61"        ,  /* U+0041: LATIN CAPITAL LETTER A                                   -> U+0061: LATIN SMALL LETTER A                                   */
 			"\x42"     => "\x62"        ,  /* U+0042: LATIN CAPITAL LETTER B                                   -> U+0062: LATIN SMALL LETTER B                                   */
 			"\x43"     => "\x63"        ,  /* U+0043: LATIN CAPITAL LETTER C                                   -> U+0063: LATIN SMALL LETTER C                                   */
@@ -489,7 +489,7 @@ class unicode
 			"\xD5\x96" => "\xD6\x86"       /* U+0556: ARMENIAN CAPITAL LETTER FEH                              -> U+0586: ARMENIAN SMALL LETTER FEH                              */
 		),
 
-		'nd' => array(
+		self::CONVERT_TO_ND => array(
 			"\xC2\xA0" => "\x20"    ,  /* U+00A0: NO-BREAK SPACE                                           -> U+0020: SPACE                                            */
 			"\xC2\xA8" => "\x20"    ,  /* U+00A8: DIAERESIS                                                -> U+0020: SPACE                                            */
 			"\xC2\xAA" => "\x61"    ,  /* U+00AA: FEMININE ORDINAL INDICATOR                               -> U+0061: LATIN SMALL LETTER A                             */
@@ -867,7 +867,7 @@ class unicode
 			"\xD3\xB9" => "\xD1\x8B"   /* U+04F9: CYRILLIC SMALL LETTER YERU WITH DIAERESIS                -> U+044B: CYRILLIC SMALL LETTER YERU                       */
 		),
 
-		'lcnd' => array(
+		self::CONVERT_TO_LCND => array(
 			"\x41"     => "\x61"        ,  /* U+0041: LATIN CAPITAL LETTER A                                   -> U+0061: LATIN SMALL LETTER A                               */
 			"\x42"     => "\x62"        ,  /* U+0042: LATIN CAPITAL LETTER B                                   -> U+0062: LATIN SMALL LETTER B                               */
 			"\x43"     => "\x63"        ,  /* U+0043: LATIN CAPITAL LETTER C                                   -> U+0063: LATIN SMALL LETTER C                               */
@@ -1572,10 +1572,16 @@ class unicode
      * @throws Exception_InvalidArgument
      *
      */
-    public function utf8_convert_to($s, $method)
+    public function convert_to($s, $method)
     {
-        if (!in_array($method, array(self::CONVERT_TO_LC, self::CONVERT_TO_ND, self::CONVERT_TO_LCND))) {
-            throw new Exception_InvalidArgument('Wrong method "' . $method . '" to unicode::utf8_convert_to(...).');
+        $ok_methods = array_keys(self::$map);
+        if (!in_array($method, $ok_methods)) {
+            throw new Exception_InvalidArgument(
+                sprintf('Invalid argument 2 "%s", valid values are [%s].'
+                    , $method
+                    , implode('|', $ok_methods)
+                )
+            );
         }
         if (function_exists('phrasea_utf8_convert_to')) {
             // function exists in phrasea extension
@@ -1594,7 +1600,7 @@ class unicode
     {
         $so = "";
 
-        $string = $this->utf8_convert_to($string, 'lcnd');
+        $string = $this->convert_to($string, 'lcnd');
 
         $l = mb_strlen($string, "UTF-8");
         $lastwasblank = false;
@@ -1615,7 +1621,7 @@ class unicode
 
     public function remove_diacritics($string)
     {
-        return $this->utf8_convert_to($string, 'nd');
+        return $this->convert_to($string, 'nd');
     }
 
     public function remove_nonazAZ09($string, $keep_underscores = true, $keep_minus = true, $keep_dot = false)

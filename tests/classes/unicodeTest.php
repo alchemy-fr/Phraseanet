@@ -14,22 +14,22 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @covers \unicode::testUtf8_convert_to
+     * @covers \unicode::convert_to
      */
-    public function testUtf8_convert_to()
+    public function testConvert_to()
     {
-        $this->assertEquals('éléphant à rôtir', $this->object->utf8_convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_LC));
-        $this->assertEquals('ELEPHANT a rotir', $this->object->utf8_convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_ND));
-        $this->assertEquals('elephant a rotir', $this->object->utf8_convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_LCND));
+        $this->assertEquals('éléphant à rôtir', $this->object->convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_LC));
+        $this->assertEquals('ELEPHANT a rotir', $this->object->convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_ND));
+        $this->assertEquals('elephant a rotir', $this->object->convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_LCND));
     }
 
     /**
-     * @covers \unicode::testUtf8_convert_to
+     * @covers \unicode::convert_to
      * @expectedException        Exception_InvalidArgument
      */
-    public function testUtf8_convert_to_ex()
+    public function testConvert_to_ex()
     {
-        $this->assertEquals('éléphant à rôtir', $this->object->utf8_convert_to('ÉLÉPHANT à rôtir', 'bad-method'));
+        $this->object->Convert_to('ÉLÉPHANT à rôtir', 'unexistant contant');
     }
 
     /**
