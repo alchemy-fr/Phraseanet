@@ -14,6 +14,25 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
     }
 
     /**
+     * @covers \unicode::testUtf8_convert_to
+     */
+    public function testUtf8_convert_to()
+    {
+        $this->assertEquals('éléphant à rôtir', $this->object->utf8_convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_LC));
+        $this->assertEquals('ELEPHANT a rotir', $this->object->utf8_convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_ND));
+        $this->assertEquals('elephant a rotir', $this->object->utf8_convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_LCND));
+    }
+
+    /**
+     * @covers \unicode::testUtf8_convert_to
+     * @expectedException        Exception_InvalidArgument
+     */
+    public function testUtf8_convert_to_ex()
+    {
+        $this->assertEquals('éléphant à rôtir', $this->object->utf8_convert_to('ÉLÉPHANT à rôtir', 'bad-method'));
+    }
+
+    /**
      * @covers \unicode::remove_diacritics
      */
     public function testRemove_diacritics()
@@ -25,6 +44,7 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
     }
 
     /**
+     *
      * @covers \unicode::remove_nonazAZ09
      */
     public function testRemove_nonazAZ09()
