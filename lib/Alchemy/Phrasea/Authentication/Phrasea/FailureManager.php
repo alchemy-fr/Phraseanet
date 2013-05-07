@@ -25,18 +25,23 @@ class FailureManager
     /** @var EntityManager */
     private $em;
     /** @var integer */
-    private $attempts;
+    private $trials;
 
-    public function __construct(EntityManager $em, ReCaptcha $captcha, $attempts)
+    public function __construct(EntityManager $em, ReCaptcha $captcha, $trials)
     {
         $this->captcha = $captcha;
         $this->em = $em;
 
-        if ($attempts < 0) {
-            throw new InvalidArgumentException('Attempts number must be a positive integer');
+        if ($trials < 0) {
+            throw new InvalidArgumentException('Trials number must be a positive integer');
         }
 
-        $this->attempts = $attempts;
+        $this->trials = $trials;
+    }
+
+    public function getTrials()
+    {
+        return $this->trials;
     }
 
     /**
@@ -82,7 +87,7 @@ class FailureManager
             return;
         }
 
-        if ($this->attempts < count($failures) && $this->captcha->isSetup()) {
+        if ($this->trials < count($failures) && $this->captcha->isSetup()) {
             $response = $this->captcha->bind($request);
 
             if ($response->isValid()) {

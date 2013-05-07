@@ -77,7 +77,10 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
-            return new FailureManager($app['EM'], $app['recaptcha'], 9);
+
+            $authConf = $app['phraseanet.configuration']->get('authentication');
+
+            return new FailureManager($app['EM'], $app['recaptcha'], isset($authConf['trials-before-failure']) ? $authConf['trials-before-failure'] : 9);
         });
 
         $app['auth.native'] = $app->share(function (Application $app) {

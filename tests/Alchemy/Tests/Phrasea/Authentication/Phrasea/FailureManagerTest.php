@@ -180,7 +180,7 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
         $manager->checkFailures($username, $request);
     }
 
-    public function testCheckFailuresAttemptsIsConfigurableUnderThreshold()
+    public function testCheckFailuresTrialsIsConfigurableUnderThreshold()
     {
         $repo = $this->getRepo();
         $em = $this->getEntityManagerMock($repo);
@@ -202,11 +202,20 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
         $manager->checkFailures($username, $request);
     }
 
+    public function testTrialsIsConfigurable()
+    {
+        $em = $this->getEntityManagerMock($repo);
+        $recaptcha = $this->getReCaptchaMock(null);
+
+        $manager = new FailureManager($em, $recaptcha, 2);
+        $this->assertEquals(2, $manager->getTrials());
+    }
+
     /**
      * @expectedException Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException
      * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
      */
-    public function testCheckFailuresAttemptsIsConfigurableOverThreshold()
+    public function testCheckFailuresTrialsIsConfigurableOverThreshold()
     {
         $repo = $this->getRepo();
         $em = $this->getEntityManagerMock($repo);

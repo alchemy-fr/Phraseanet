@@ -67,4 +67,19 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
             ),
         );
     }
+
+    public function testFailureManagerAttemptsConfiguration()
+    {
+        self::$DI['app']['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['phraseanet.configuration']->expects($this->once())
+            ->method('get')
+            ->with('authentication')
+            ->will($this->returnValue(array('trials-before-failure' => 42)));
+
+        $manager = self::$DI['app']['auth.native.failure-manager'];
+        $this->assertEquals(42, $manager->getTrials());
+    }
 }
