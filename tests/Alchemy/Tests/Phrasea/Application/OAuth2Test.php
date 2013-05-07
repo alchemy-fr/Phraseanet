@@ -2,6 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
+use Alchemy\Phrasea\Core\PhraseaEvents;
+
 /**
  * Test oauthv2 flow based on ietf authv2 spec
  * @link http://tools.ietf.org/html/draft-ietf-oauth-v2-18
@@ -75,6 +77,36 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $t = array(':id' => $acc->get_id());
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
+    }
+
+    /**
+     * @dataProvider provideEventNames
+     */
+    public function testThatEventsAreTriggered($revoked, $method, $eventName, $className)
+    {
+        $acc = self::getAccount();
+        $acc->set_revoked($revoked); // revoked to show form
+
+        $preEvent = 0;
+        $phpunit = $this;
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className) {
+            $preEvent++;
+            $phpunit->assertInstanceOf($className, $event);
+        });
+
+        self::$DI['client']->request($method, '/authorize', $this->queryParameters);
+
+        $this->assertEquals(1, $preEvent);
+    }
+
+    public function provideEventNames()
+    {
+        return array(
+            array(false, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+            array(true, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+            array(false, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+            array(true, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+        );
     }
 
     public static function getApp($rowId)
