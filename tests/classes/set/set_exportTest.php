@@ -13,7 +13,7 @@ class set_exportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $filename =  array_pop($filenameData);
         $filenameFallback = array_pop($fallbackData);
 
-        $this->assertEquals('"to1acato.jpg"', $filename);
+        $this->assertEquals('"to1acAto.jpg"', $filename);
         $this->assertEquals('to1àçÂto.jpg', rawurldecode($filenameFallback));
     }
 
