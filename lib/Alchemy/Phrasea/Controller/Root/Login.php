@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Root;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
+use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
@@ -663,6 +664,9 @@ class Login implements ControllerProviderInterface
             $app->abort(403, _('Phraseanet guest-access is disabled'));
         }
 
+        $context = new Context(Context::CONTEXT_GUEST);
+        $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+
         $password = \random::generatePassword(24);
         $user = \User_Adapter::create($app, 'invite', $password, null, false, true);
 
@@ -679,6 +683,9 @@ class Login implements ControllerProviderInterface
 
         $response = $this->generateAuthResponse($app['browser'], $request->request->get('redirect'));
         $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
+
+        $event = new PostAuthenticate($request, $response, $user, $context);
+        $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
 
         return $response;
     }
@@ -789,7 +796,7 @@ class Login implements ControllerProviderInterface
             ));
 
         if ($userAuthProvider) {
-            $app['authentication']->openAccount($userAuthProvider->getUser($app));
+            $this->postAuthProcess($app, $userAuthProvider->getUser($app));
             $target = $request->query->get('redirect');
 
             if (!$target) {
@@ -929,7 +936,8 @@ class Login implements ControllerProviderInterface
             throw new InvalidArgumentException('Redirector should be callable');
         }
 
-        $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request));
+        $context = new Context(Context::CONTEXT_NATIVE);
+        $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
         $form->bind($request);
         if (!$form->isValid()) {
@@ -1000,11 +1008,9 @@ class Login implements ControllerProviderInterface
             $response->headers->setCookie($cookie);
         }
 
-        $event = new PostAuthenticate($request, $response, $user);
+        $event = new PostAuthenticate($request, $response, $user, $context);
         $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
 
-        $response = $event->getResponse();
-
-        return $response;
+        return $event->getResponse();
     }
 }

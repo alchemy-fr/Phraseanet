@@ -2,6 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Root;
 
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Authentication\Context;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -814,6 +816,54 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
+     * @dataProvider provideEventNames
+     */
+    public function testAuthenticateTriggersEvents($eventName, $className, $context)
+    {
+        $password = \random::generatePassword();
+
+        $login = self::$DI['app']['authentication']->getUser()->get_login();
+        self::$DI['app']['authentication']->getUser()->set_password($password);
+        self::$DI['app']['authentication']->getUser()->set_mail_locked(false);
+
+        self::$DI['app']['authentication']->closeAccount();
+
+        $preEvent = 0;
+        $phpunit = $this;
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className, $context) {
+            $preEvent++;
+            $phpunit->assertInstanceOf($className, $event);
+            $phpunit->assertEquals($context, $event->getContext()->getContext());
+        });
+
+        self::$DI['client'] = new Client(self::$DI['app'], array());
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
+        self::$DI['client']->request('POST', '/login/authenticate/', array(
+            'login' => $login,
+            'password'   => $password,
+            '_token' => 'token',
+        ));
+
+        $this->assertEquals(1, $preEvent);
+    }
+
+    public function provideEventNames()
+    {
+        return array(
+            array(PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', Context::CONTEXT_NATIVE),
+            array(PhraseaEvents::POST_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PostAuthenticate', Context::CONTEXT_NATIVE),
+        );
+    }
+
+    public function provideGuestEventNames()
+    {
+        return array(
+            array(PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', Context::CONTEXT_GUEST),
+            array(PhraseaEvents::POST_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PostAuthenticate', Context::CONTEXT_GUEST),
+        );
+    }
+
+    /**
      * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
      */
     public function testAuthenticateCheckRedirect()
@@ -862,6 +912,32 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertArrayHasKey('invite-usr-id', $cookies['']['/']);
         $this->assertInternalType('integer', $cookies['']['/']['invite-usr-id']->getValue());
+    }
+
+    /**
+     * @dataProvider provideGuestEventNames
+     */
+    public function testGuestAuthenticateTriggersEvents($eventName, $className, $context)
+    {
+        $preEvent = 0;
+        $phpunit = $this;
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className, $context) {
+            $preEvent++;
+            $phpunit->assertInstanceOf($className, $event);
+            $phpunit->assertEquals($context, $event->getContext()->getContext());
+        });
+
+        $usr_id = \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'invite');
+        $user = \User_Adapter::getInstance($usr_id, self::$DI['app']);
+        $user->ACL()->give_access_to_base(array(self::$DI['collection']->get_base_id()));
+
+        self::$DI['app']['authentication']->closeAccount();
+
+        self::$DI['client'] = new Client(self::$DI['app'], array());
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
+        self::$DI['client']->request('POST', '/login/authenticate/guest/');
+
+        $this->assertEquals(1, $preEvent);
     }
 
     /**
