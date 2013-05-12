@@ -67,6 +67,12 @@ class databox_field implements cache_cacheableInterface
      *
      * @var <type>
      */
+    protected $position;
+
+    /**
+     *
+     * @var <type>
+     */
     protected $required;
 
     /**
@@ -169,11 +175,7 @@ class databox_field implements cache_cacheableInterface
 
         $connbas = $this->get_connection();
 
-        $sql = "SELECT `thumbtitle`, `separator`
-              , `dces_element`, `tbranch`, `type`, `report`, `multi`, `required`
-              , `readonly`, `indexable`, `name`, `src`, `business`
-              , `VocabularyControlType`, `RestrictToVocabularyControl`
-            FROM metadatas_structure WHERE id=:id";
+        $sql = "SELECT * FROM metadatas_structure WHERE id=:id";
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':id' => $id));
@@ -199,6 +201,7 @@ class databox_field implements cache_cacheableInterface
         $this->multi = (Boolean) $row['multi'];
         $this->Business = (Boolean) $row['business'];
         $this->report = (Boolean) $row['report'];
+        $this->position = (Int) $row['sorter'];
         $this->type = $row['type'] ? : self::TYPE_STRING;
         $this->tbranch = $row['tbranch'];
 
@@ -810,10 +813,12 @@ class databox_field implements cache_cacheableInterface
     {
         return array(
             'id'                    => $this->id,
+            'sbas-id'               => $this->sbas_id,
             'name'                  => $this->name,
             'tag'                   => $this->tag->getTagname(),
             'business'              => $this->Business,
             'type'                  => $this->type,
+            'sorter'                => $this->position,
             'thumbtitle'            => $this->thumbtitle,
             'tbranch'               => $this->tbranch,
             'separator'             => $this->separator,
