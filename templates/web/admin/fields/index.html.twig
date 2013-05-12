@@ -1,0 +1,27 @@
+{# empty Twig template #}
+<script type="text/javascript" src="/assets/i18n/i18next-1.6.0.min.js"></script>
+
+{% include 'admin/fields/templates.html.twig' %}
+
+<div id="admin-field-app" class="container-fluid">
+    <input type="hidden" name="current_sbas_id" value="{{ sbas_id }}">
+    <div class="row-fluid" style="min-height:60px; border-bottom: 1px solid #000">
+        <div class="span4">
+            <button type="button" class="btn btn-large btn-success"><i class="icon-hdd icon-white"></i> {% trans %}Save all changes{% endtrans %}</button>
+        </div>
+        <div class="span8">
+            <div class="block-alert well-small"></div>
+        </div>
+    </div>
+    <div class="row-fluid">
+         <div class="left-block span4">
+
+        </div>
+        <div class="right-block span8" style="border-left: 1px dashed #000">
+
+        </div>
+    </div>
+</div>
+
+<script src="/assets/requirejs/require.js"></script>
+<script src="/scripts/apps/admin/fields/main.js"></script>
