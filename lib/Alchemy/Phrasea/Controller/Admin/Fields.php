@@ -17,6 +17,7 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use PHPExiftool\Exception\TagUnknown;
 
 class Fields implements ControllerProviderInterface
 {
@@ -27,9 +28,17 @@ class Fields implements ControllerProviderInterface
         $app['admin.fields.controller'] = $this;
 
         $controllers->before(function(Request $request) use ($app) {
-            $app['firewall']->requireAccessToModule('admin')
+            $app['firewall']
+                ->requireAccessToModule('admin')
                 ->requireRight('bas_modify_struct');
         });
+
+        $controllers->get('/language.json', 'admin.fields.controller:getLanguage')
+            ->bind('admin_fields_language');
+
+        $controllers->get('/{sbas_id}', 'admin.fields.controller:displayApp')
+            ->assert('sbas_id', '\d+')
+            ->bind('admin_fields');
 
         $controllers->get('/{sbas_id}/fields', 'admin.fields.controller:listFields')
             ->assert('sbas_id', '\d+')
@@ -75,9 +84,26 @@ class Fields implements ControllerProviderInterface
         return $controllers;
     }
 
+    public  function getLanguage(Application $app) {
+        return $app->json(array(
+            'something_wrong'       => _('Something wrong happened, please try again or contact an admin if problem persists'),
+            'created_success'       => _('%s field has been created with success'),
+            'deleted_success'       => _('%s field has been deleted with success'),
+            'are_you_sure_delete'   => _('Do you really want to delete the field %s ?'),
+            'validation_blank'      => _('Field can not be blank'),
+        ));
+    }
+
+    public function displayApp(Application $app, $sbas_id) {
+        return  $app['twig']->render('/admin/fields/index.html.twig', array(
+            'sbas_id' => $sbas_id,
+            'js' => ''
+        ));
+    }
+
     public function listDcFields(Application $app, Request $request)
     {
-        $data = $app['serializer']->serialize(\databox::get_available_dcfields(), 'json');
+        $data = $app['serializer']->serialize(array_values(\databox::get_available_dcfields()), 'json');
 
         return new Response($data, 200, array('content-type' => 'application/json'));
     }
@@ -120,7 +146,7 @@ class Fields implements ControllerProviderInterface
                         continue;
                     }
 
-                    $res[] = array(
+                    $res[$tagname] = array(
                         'id'    => $namespace . '/' . $tagname,
                         'label' => $datas['namespace'] . ' / ' . $datas['tagname'],
                         'value' => $datas['namespace'] . ':' . $datas['tagname'],
@@ -128,6 +154,8 @@ class Fields implements ControllerProviderInterface
                 }
             }
         }
+
+        ksort($res);
 
         return $app->json($res);
     }
@@ -141,21 +169,40 @@ class Fields implements ControllerProviderInterface
     }
 
     public function createField(Application $app, Request $request, $sbas_id) {
+        $json = array(
+            'success' => false,
+            'message' => _('Something wrong happened, please try again or contact an admin if problem persists'),
+            'field'   => array()
+        );
+        $headers = array();
 
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-
         $data = $this->getFieldJsonFromRequest($app, $request);
 
-        $field = \databox_field::create($app, $databox, $data['name'], $data['multi']);
-        $this->updateFieldWithData($app, $field, $data);
-        $field->save();
+        try {
+            $field = \databox_field::create($app, $databox, $data['name'], $data['multi']);
 
-        return $app->json($field->toArray(), 201, array(
-                'Location' => $app->path('admin_fields_show_field', array(
-                    'sbas_id' => $sbas_id,
-                    'id'      => $field->get_id(),
-                ))
-        ));
+            $this->updateFieldWithData($app, $field, $data);
+            $field->save();
+
+            $json['success'] = true;
+            $headers['location'] = $app->path('admin_fields_show_field', array(
+                'sbas_id' => $sbas_id,
+                'id'      => $field->get_id(),
+            ));
+            $json['message'] = _(sprintf('Tag name %s has been created successfully', $data['name']));
+            $json['field'] = $field->toArray();
+        } catch (\PDOException $e) {
+            if ($e->errorInfo[1] == 1062) {
+               $json['message'] = _(sprintf('Field name %s already exists', $data['name']));
+            }
+         } catch (\Exception $e) {
+            if ($e instanceof \Exception_Databox_metadataDescriptionNotFound || $e->getPrevious() instanceof TagUnknown) {
+                $json['message'] = _(sprintf('Provided tag %s is unknown', $data['tag']));
+            }
+        }
+
+        return $app->json($json, 201, $headers);
     }
 
     public function listFields(Application $app, $sbas_id) {

@@ -1,15 +1,21 @@
 require.config({
     baseUrl: "/scripts",
     paths: {
-        jquery: '../assets/jquery/jquery',
+        jquery: '../include/minify/f=include/jslibs/jquery-1.7.1',
+        jqueryui: '../include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min',
         underscore: '../assets/underscore-amd/underscore',
         backbone: '../assets/backbone-amd/backbone',
         twig: '../assets/twig/twig',
-        i18n: '../assets/i18n/i18next.amd'
+        i18n: '../assets/i18n/i18next.amd',
+        bootstrap: ['//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min']
     },
     shim: {
         twig: {
             exports: 'Twig'
+        },
+        bootstrap : ['jquery'],
+        jqueryui: {
+            deps: [ 'jquery' ]
         }
     }
 });

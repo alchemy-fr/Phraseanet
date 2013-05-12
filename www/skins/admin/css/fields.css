@@ -1,0 +1,73 @@
+#admin-field-app li {
+    background: #FFF;
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+#admin-field-app li .field-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: #666;
+}
+
+#admin-field-app li .handle, #admin-field-app li .position {
+   color: #ccc;
+   border-right: 1px solid #ccc;
+}
+
+#admin-field-app li.last {
+    border-bottom: 1px solid #ccc;
+}
+
+#admin-field-app li.selected {
+    border-top-color: #0080FF;
+    background: #FFF;
+    color: #000;
+}
+
+#admin-field-app li.selected + li {
+    border-top-color: #0080FF;
+}
+
+#admin-field-app li.selected .field-name {
+    color: #0080FF;
+}
+
+#admin-field-app .add-field-block .control-label {
+    width: 80px;
+    text-align: left;
+}
+
+#admin-field-app .add-field-block .controls {
+    margin-left: 100px;
+}
+
+#admin-field-app .edit-form label {
+    width: 160px;
+}
+
+#admin-field-app .edit-form select {
+    min-width: 220px;
+}
+
+.ui-autocomplete-admin-field {
+    list-style-type: none;
+    overflow-y: scroll;
+    height: 180px;
+    background: #FFF;
+    max-width: 300px;
+    -webkit-box-shadow: 0 10px 6px -6px #777;
+    -moz-box-shadow: 0 10px 6px -6px #777;
+    box-shadow: 0 10px 6px -6px #777;
+}
+
+.ui-autocomplete-admin-field li{
+    padding: 3px;
+}
+
+.ui-autocomplete-admin-field li a {
+    text-decoration: none;
+}
+
+
