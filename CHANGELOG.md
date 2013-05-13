@@ -8,8 +8,10 @@
     - Emails can be sent to SMTP server using TLS encryption (only SSL was supported).
   - Sphinx-Search is now stable (require Sphinx-Search 2.0.6).
   - Add support for stemmatisation in Phrasea-Engine.
-  - Add bin/setup command utility.
-    - Add ability to install Phraseanet through command line.
+  - Add bin/setup command utility, it is now recommanded to use `bin/setup system:install` 
+    command to install Phraseanet.
+  - Removed `bin/console check:config` command.
+  - Removed `bin/console check:system` command, replaced by `bin/setup check:system`. 
   - Lots of cleanup and code refactorisation.
   - Add task-manager logging to syslog.
   - Add bin/console mail:test command to check email configuration.
