@@ -1510,34 +1510,48 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
-     * get array of base_id's on which the user is 'order master'
+     * Returns an array of collections on which the user is 'order master'
      *
      * @return array
      */
-    public function get_order_master_bids()
+    public function get_order_master_collections()
     {
-        $sql = 'SELECT base_id FROM basusr WHERE order_master=\'1\' AND usr_id= :id ';
+        $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id ';
         $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->user->get_id()));
-        $row = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $stmt->execute(array(':usr_id' => $this->user->get_id()));
+        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        foreach($row as $k=>$v) {
-            $row[$k] = (int)$v;
+
+        $collections = array();
+
+        foreach($rs as $row) {
+            $collections[] = \collection::get_from_base_id($row['base_id']);
         }
-        return $row;
+
+        return $collections;
     }
 
     /**
-     * set the user as "order_master" on a collection
+     * Sets the user as "order_master" on a collection
      *
-     * @param int $bid
+     * @param \collection $collection The collection to apply
+     * @param Boolean     $bool       Wheter the user is order master or not
+     *
+     * @return ACL
      */
-    public function set_order_master($bid, $flag)
+    public function set_order_master(\collection $collection, $bool)
     {
-        $sql = 'UPDATE basusr SET order_master= :flag WHERE usr_id= :id AND base_id= :bid';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $r = $stmt->execute(array(':flag' => $flag, ':id' => $this->user->get_id(), 'bid' => $bid));
-        $stmt->closeCursor();
-    }
+        $sql = 'UPDATE basusr SET order_master = :master
+                WHERE usr_id = :usr_id AND base_id = :base_id';
 
+        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt->execute(array(
+            ':master'    => $bool ? 1 : 0,
+            ':usr_id'    => $this->user->get_id(),
+            ':base_id'   => $collection->get_base_id()
+        ));
+        $stmt->closeCursor();
+
+        return $this;
+    }
 }
