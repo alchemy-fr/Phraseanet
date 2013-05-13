@@ -24,7 +24,7 @@ return call_user_func(function($environment = null) {
     $app->before(function (Request $request) use ($app) {
         if (0 === strpos($request->getPathInfo(), '/setup')) {
             if (!$app['phraseanet.configuration-tester']->isBlank()) {
-                return $app->redirect('/login/');
+                return $app->redirect($app->path('homepage'));
             }
         } else {
             $app['firewall']->requireSetup();

@@ -27,8 +27,7 @@ class CheckEnvironment extends Command
     {
         parent::__construct($name);
 
-        $this
-            ->setDescription("Check environment");
+        $this->setDescription("Check environment");
 
         return $this;
     }
@@ -52,7 +51,6 @@ class CheckEnvironment extends Command
             $output->writeln('');
 
             foreach ($collection->getRequirements() as $requirement) {
-
                 $result = $requirement->isFulfilled() ? '<info>OK       </info>' : ($requirement->isOptional() ? '<comment>WARNING</comment>  ' : '<error>ERROR</error>    ');
                 $output->write(' ' . $result);
 
@@ -69,7 +67,6 @@ class CheckEnvironment extends Command
             $output->writeln('');
 
             foreach ($collection->getRecommendations() as $requirement) {
-
                 $result = $requirement->isFulfilled() ? '<info>OK       </info>' : ($requirement->isOptional() ? '<comment>WARNING</comment>  ' : '<error>ERROR</error>    ');
                 $output->write(' ' . $result);
 

@@ -16,8 +16,6 @@ use Symfony\Component\Process\ExecutableFinder;
 
 class BinariesRequirements extends RequirementCollection
 {
-    const REQUIRED_PHP_VERSION = '5.3.3';
-
     public function __construct($binaries = array())
     {
         $this->setName('Binaries');

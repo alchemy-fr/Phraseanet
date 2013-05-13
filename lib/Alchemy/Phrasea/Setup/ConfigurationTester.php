@@ -31,9 +31,6 @@ class ConfigurationTester
     private $requirements;
     private $versionProbes;
 
-    const PROD_ENV = 'prod';
-    const DEV_ENV = 'dev';
-
     public function __construct(Application $app)
     {
         $this->app = $app;

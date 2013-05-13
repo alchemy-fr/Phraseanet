@@ -26,6 +26,11 @@ class SearchEngineProbe extends RequirementCollection implements ProbeInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return SearchEngineProbe
+     */
     public static function create(Application $app)
     {
         return new static($app['phraseanet.SE']);

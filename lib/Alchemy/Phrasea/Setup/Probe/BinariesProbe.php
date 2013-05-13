@@ -16,8 +16,6 @@ use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
 
 class BinariesProbe extends BinariesRequirements implements ProbeInterface
 {
-    const REQUIRED_PHP_VERSION = '5.3.3';
-
     public function __construct(\registryInterface $registry)
     {
         parent::__construct(array_filter(array(

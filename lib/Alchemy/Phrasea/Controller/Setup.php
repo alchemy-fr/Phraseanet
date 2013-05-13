@@ -22,7 +22,6 @@ use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;
 
-
 class Setup implements ControllerProviderInterface
 {
     public function connect(SilexApplication $app)
@@ -51,7 +50,7 @@ class Setup implements ControllerProviderInterface
 
         return $app['twig']->render('/setup/index.html.twig', array(
             'locale'                 => $app['locale'],
-            'available_locales'      => \Alchemy\Phrasea\Application::getAvailableLanguages(),
+            'available_locales'      => Application::getAvailableLanguages(),
             'current_servername'     => $request->getScheme() . '://' . $request->getHttpHost() . '/',
             'requirementsCollection' => $requirementsCollection,
         ));
@@ -87,17 +86,15 @@ class Setup implements ControllerProviderInterface
             $warnings[] = _('It is not recommended to install Phraseanet without HTTPS support');
         }
 
-        return $app['twig']->render(
-            '/setup/step2.html.twig'
-            , array(
-            'locale'              => $app['locale']
-            , 'available_locales'   => Application::getAvailableLanguages()
-            , 'available_templates' => array('en', 'fr')
-            , 'warnings'            => $warnings
-            , 'error'               => $request->query->get('error')
-            , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
-            , 'discovered_binaries' => \setup::discover_binaries()
-            , 'rootpath'            => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
+        return $app['twig']->render('/setup/step2.html.twig', array(
+            'locale'              => $app['locale'],
+            'available_locales'   => Application::getAvailableLanguages(),
+            'available_templates' => array('en', 'fr'),
+            'warnings'            => $warnings,
+            'error'               => $request->query->get('error'),
+            'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/',
+            'discovered_binaries' => \setup::discover_binaries(),
+            'rootpath'            => realpath(__DIR__ . '/../../../../'),
         ));
     }
 
@@ -165,9 +162,10 @@ class Setup implements ControllerProviderInterface
 
             $app->openAccount(new \Session_Authentication_None($user));
 
-            $redirection = '/admin/?section=taskmanager&notice=install_success';
-
-            return $app->redirect($redirection);
+            return $app->redirect($app->path('admin', array(
+                'section' => 'taskmanager',
+                'notice'  => 'install_success',
+            )));
         } catch (\Exception $e) {
 
         }

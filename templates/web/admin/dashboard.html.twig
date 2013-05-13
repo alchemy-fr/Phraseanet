@@ -4,7 +4,6 @@
         {% if requirements.getRequirements() is not empty %}
             <li><strong>{% trans 'Requirements' %}</strong></li>
             {% for requirement in requirements.getRequirements() %}
-
                 <li class="{% if not requirement.isFulfilled() %}{% if not requirement.isOptional() %}blocker{% else %}non-blocker{% endif %}{% else %}good-enough{% endif %}">
                     {{ requirement.getTestMessage }}
 
@@ -19,7 +18,6 @@
         {% if requirements.getRecommendations() is not empty %}
             <li><strong>{% trans 'Recommendations' %}</strong></li>
             {% for requirement in requirements.getRecommendations() %}
-
                 <li class="{% if not requirement.isFulfilled() %}{% if not requirement.isOptional() %}blocker{% else %}non-blocker{% endif %}{% else %}good-enough{% endif %}">
                     {{ requirement.getTestMessage }}
 
