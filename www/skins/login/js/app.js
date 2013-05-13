@@ -108,7 +108,7 @@ function registerFormCtrl($scope, $http) {
         $scope.registerForm.password.errors = {'filled' : true, 'valid' : true};
         $scope.registerForm.passwordConfirm.errors = {'filled' : true, 'valid' : true};
 
-        $http.get('/login/registration-fields').success(function(data, status) {
+        $http.get('/login/registration-fields/').success(function(data, status) {
             $scope.fields = data;
             _.each($scope.fields, function(field){
                 $scope.registerForm[camelize(field.name)].errors = {'filled' : true, 'valid' : true};
