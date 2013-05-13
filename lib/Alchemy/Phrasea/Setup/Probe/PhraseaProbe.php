@@ -16,6 +16,13 @@ use Alchemy\Phrasea\Setup\Requirements\PhraseaRequirements;
 
 class PhraseaProbe extends PhraseaRequirements implements ProbeInterface
 {
+    public function __construct(Application $app)
+    {
+        parent::__construct(array(
+            // here goes the custom setting
+        ));
+    }
+
     /**
      * {@inheritdoc}
      *
@@ -23,6 +30,6 @@ class PhraseaProbe extends PhraseaRequirements implements ProbeInterface
      */
     public static function create(Application $app)
     {
-        return new static();
+        return new static($app);
     }
 }
