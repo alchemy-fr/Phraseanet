@@ -16,6 +16,12 @@ use Symfony\Component\Process\ExecutableFinder;
 
 class BinariesRequirements extends RequirementCollection
 {
+    const FILE_VERSION = '5.04';
+    const IMAGICK_VERSION = '6.2.9';
+    const SWFTOOLS_VERSION = '0.9.0';
+    const UNOCONV_VERSION = '0.5.0';
+    const MP4BOX_VERSION = '0.4.0';
+
     public function __construct($binaries = array())
     {
         $this->setName('Binaries');
@@ -45,19 +51,11 @@ class BinariesRequirements extends RequirementCollection
             $version = $data[0];
 
             $this->addRecommendation(
-                version_compare($version, '5.04', '>='),
-                'Phraseanet recommends `file` version 5.04 or higher',
+                version_compare($version, static::FILE_VERSION, '>='),
+                sprintf('Phraseanet recommends `file` version %s or higher', static::FILE_VERSION),
                 'Please install latest file command'
             );
         }
-
-        $indexer = $finder->find('phraseanet_indexer');
-
-        $this->addRecommendation(
-            null !== $indexer && is_executable($indexer),
-            'Phraseanet Indexer is required to use Phrasea search-engine',
-            'Please install latest Phraseanet Indexer (https://github.com/alchemy-fr/Phraseanet-Indexer)'
-        );
 
         $convert = isset($binaries['convert_binary']) ? $binaries['convert_binary'] : $finder->find('convert');
 
@@ -75,7 +73,7 @@ class BinariesRequirements extends RequirementCollection
 
             $this->addRequirement(
                 version_compare('6.2.9', $version, '<'),
-                'Convert version 6.2.9 or higher is required ('.$version.' provided)',
+                sprintf('Convert version %s or higher is required (%s provided)', static::IMAGICK_VERSION, $version),
                 'Please update to a more recent version'
             );
         }
@@ -95,8 +93,8 @@ class BinariesRequirements extends RequirementCollection
             $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
 
             $this->addRequirement(
-                version_compare('6.2.9', $version, '<'),
-                'Composite version 6.2.9 or higher is required ('.$version.' provided)',
+                version_compare(static::IMAGICK_VERSION, $version, '<'),
+                sprintf('Composite version %s or higher is required (%s provided)', static::IMAGICK_VERSION, $version),
                 'Please update to a more recent version.'
             );
         }
@@ -116,8 +114,8 @@ class BinariesRequirements extends RequirementCollection
             $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
 
             $this->addRecommendation(
-                version_compare('0.9.0', $version, '<='),
-                'SWFTools (pdf2swf) version 0.9.0 or higher is required ('.$version.' provided)',
+                version_compare(static::SWFTOOLS_VERSION, $version, '<='),
+                sprintf('SWFTools (pdf2swf) version %s or higher is required (%s provided)', static::SWFTOOLS_VERSION, $version),
                 'Please update to a more recent version.'
             );
         }
@@ -137,8 +135,8 @@ class BinariesRequirements extends RequirementCollection
             $version = sprintf('%d.%d', $data[0], $data[1]);
 
             $this->addRecommendation(
-                version_compare('0.5', $version, '<='),
-                'Unoconv version 0.5 or higher is required ('.$version.' provided)',
+                version_compare(static::UNOCONV_VERSION, $version, '<='),
+                sprintf('Unoconv version %s or higher is required (%s provided)', static::UNOCONV_VERSION, $version),
                 'Please update to a more recent version.'
             );
         }
@@ -158,8 +156,8 @@ class BinariesRequirements extends RequirementCollection
             $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
 
             $this->addRecommendation(
-                version_compare('0.9.0', $version, '<='),
-                'SWFTools (swfextract) version 0.9.0 or higher is required ('.$version.' provided)',
+                version_compare(static::SWFTOOLS_VERSION, $version, '<='),
+                sprintf('SWFTools (swfextract) version %s or higher is required (%s provided)', static::SWFTOOLS_VERSION, $version),
                 'Please update to a more recent version.'
             );
         }
@@ -179,8 +177,8 @@ class BinariesRequirements extends RequirementCollection
             $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
 
             $this->addRecommendation(
-                version_compare('0.9.0', $version, '<='),
-                'SWFTools (swfrender) version 0.9.0 or higher is required ('.$version.' provided)',
+                version_compare(static::SWFTOOLS_VERSION, $version, '<='),
+                sprintf('SWFTools (swfrender) version %s or higher is required (%s provided)', static::SWFTOOLS_VERSION, $version),
                 'Please update to a more recent version.'
             );
         }
@@ -200,8 +198,8 @@ class BinariesRequirements extends RequirementCollection
             $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
 
             $this->addRecommendation(
-                version_compare('0.4.0', $version, '<='),
-                'MP4Box version 0.4.0 or higher is required ('.$version.' provided)',
+                version_compare(static::MP4BOX_VERSION, $version, '<='),
+                sprintf('MP4Box version %s or higher is required (%s provided)', static::MP4BOX_VERSION, $version),
                 'Please update to a more recent version.'
             );
         }
