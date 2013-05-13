@@ -33,6 +33,8 @@ dev:
   search-engine: phrasea
   task-manager: task_manager
   authentication:
+    captcha:
+      trials-before-failure: 9
     providers:
       facebook:
         enabled: false
@@ -95,6 +97,8 @@ prod:
   search-engine: phrasea
   task-manager: task_manager
   authentication:
+    captcha:
+      trials-before-failure: 9
     providers:
       facebook:
         enabled: false
@@ -157,6 +161,8 @@ test:
   search-engine: phrasea
   task-manager: task_manager
   authentication:
+    captcha:
+      trials-before-failure: 9
     providers:
       facebook:
         enabled: false
