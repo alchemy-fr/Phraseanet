@@ -470,7 +470,7 @@ class Application extends SilexApplication
             return;
         }
 
-        $event->setResponse($event->getResponse()->setCharset('UTF-8'));
+        $event->getResponse()->setCharset('UTF-8');
     }
 
     public function disableCookiesIfRequired(FilterResponseEvent $event)

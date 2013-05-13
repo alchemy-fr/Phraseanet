@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Core\Event\PostAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\FormProcessingException;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
@@ -33,6 +34,7 @@ use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationWithMappingForm;
 use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
+use Entities\UsrAuthProvider;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -147,16 +149,17 @@ class Login implements ControllerProviderInterface
             })->bind('login_register');
 
         // Classic registration end point
-        $controllers->match('/register-classic', 'login.controller:doRegistration')
+        $controllers->match('/register-classic/', 'login.controller:doRegistration')
             ->bind('login_register_classic');
 
         // Provide a JSON serialization of registration fields configuration
-        $controllers->get('/registration-fields', function(PhraseaApplication $app, Request $request) {
+        $controllers->get('/registration-fields/', function(PhraseaApplication $app, Request $request) {
             return $app->json($app['registration.fields']);
         })->bind('login_registration_fields');
 
+// A TESTER
         // Registers with AuthProviders
-        $controllers->get('/register-provider', function(PhraseaApplication $app, Request $request) {
+        $controllers->get('/register-provider/', function(PhraseaApplication $app, Request $request) {
             return $app['twig']->render('login/register-provider.html.twig');
         })->bind('login_register_provider');
 
@@ -714,7 +717,7 @@ class Login implements ControllerProviderInterface
         $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
 
         foreach ($app['EM']
-            ->getRepository('\Entities\ValidationParticipant')
+            ->getRepository('Entities\ValidationParticipant')
             ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
 
             /* @var $participant \Entities\ValidationParticipant */
@@ -779,13 +782,12 @@ class Login implements ControllerProviderInterface
         // triggers what's necessary
         try {
             $provider->onCallback($request);
+            $token = $provider->getToken();
         } catch (NotAuthenticatedException $e) {
             $app['session']->getFlashBag()->add('error', sprintf(_('Unable to authenticate with %s'), $provider->getName()));
 
-            return $app->redirect('homepage');
+            return $app->redirect($app->path('homepage'));
         }
-
-        $token = $provider->getToken();
 
         // Let's find a match
         $userAuthProvider = $app['EM']
@@ -797,25 +799,27 @@ class Login implements ControllerProviderInterface
 
         if ($userAuthProvider) {
             $this->postAuthProcess($app, $userAuthProvider->getUser($app));
-            $target = $request->query->get('redirect');
-
-            if (!$target) {
-                $target = $app->path('prod');
-            }
+            $target = $request->query->get('redirect', $app->path('prod'));
 
             return $app->redirect($target);
         }
 
-        if ($app['authentication.suggestion-finder']->find($token)) {
-            return $app->redirect($app['url_generator']->generate('login_authentication_provider_mapping', array(
-                'providerId' => $providerId,
-                'id'         => $token->getId(),
-            )));
-        } else {
-            return $app->redirect($app['url_generator']->generate('login_authentication_provider_bind', array(
-                'providerId' => $providerId,
-                'id'         => $token->getId(),
-            )));
+        try {
+            if ($app['authentication.suggestion-finder']->find($token)) {
+                return $app->redirect($app['url_generator']->generate('login_authentication_provider_mapping', array(
+                    'providerId' => $providerId,
+                    'id'         => $token->getId(),
+                )));
+            } else {
+                return $app->redirect($app['url_generator']->generate('login_authentication_provider_bind', array(
+                    'providerId' => $providerId,
+                    'id'         => $token->getId(),
+                )));
+            }
+        } catch (NotAuthenticatedException $e) {
+            $app->addFlash('error', _('Unable to retrieve provider identity'));
+
+            return $app->redirect($app->path('homepage'));
         }
     }
 
@@ -823,9 +827,14 @@ class Login implements ControllerProviderInterface
     {
         $provider = $this->findProvider($app, $providerId);
 
-        $token = $provider->getToken();
+        try {
+            $token = $provider->getToken();
+            $suggestion = $app['authentication.suggestion-finder']->find($token);
+        } catch (NotAuthenticatedException $e) {
+            $app->addFlash('error', _('Unable to retrieve provider identity'));
 
-        $suggestion = $app['authentication.suggestion-finder']->find($token);
+            return $app->redirect($app->path('homepage'));
+        }
 
         $form = $app->form(new PhraseaAuthenticationWithMappingForm(), array(
             'login' => $suggestion->get_login(),
@@ -886,12 +895,16 @@ class Login implements ControllerProviderInterface
             return $e->getResponse();
         }
 
-        $usrAuthProvider = new \Entities\UsrAuthProvider();
+        $usrAuthProvider = new UsrAuthProvider();
         $usrAuthProvider->setDistantId($provider->getToken()->getId());
         $usrAuthProvider->setProvider($provider->getId());
         $usrAuthProvider->setUsrId($app['authentication']->getUser()->get_id());
 
-        $provider->logout();
+        try {
+            $provider->logout();
+        } catch (RuntimeException $e) {
+            // log these errors
+        }
 
         $app['EM']->persist($usrAuthProvider);
         $app['EM']->flush();
@@ -919,7 +932,7 @@ class Login implements ControllerProviderInterface
             return $e->getResponse();
         }
 
-        $usrAuthProvider = new \Entities\UsrAuthProvider();
+        $usrAuthProvider = new UsrAuthProvider();
         $usrAuthProvider->setDistantId($provider->getToken()->getId());
         $usrAuthProvider->setProvider($provider->getId());
         $usrAuthProvider->setUsrId($app['authentication']->getUser()->get_id());
@@ -927,7 +940,11 @@ class Login implements ControllerProviderInterface
         $app['EM']->persist($usrAuthProvider);
         $app['EM']->flush();
 
-        $provider->logout();
+        try {
+            $provider->logout();
+        } catch (RuntimeException $e) {
+            // log these errors
+        }
 
         return $response;
     }

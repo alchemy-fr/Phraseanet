@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 
@@ -30,6 +31,8 @@ class SuggestionFinder
      * @param Token $token
      *
      * @return null|\User_Adapter
+     *
+     * @throws NotAuthenticatedException In case the token is not authenticated.
      */
     public function find(Token $token)
     {
