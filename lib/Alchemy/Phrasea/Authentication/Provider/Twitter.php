@@ -84,7 +84,7 @@ class Twitter extends AbstractProvider
         );
 
         if ($code != 200) {
-            throw new RuntimeException('Unable to request twitter token');
+            throw new NotAuthenticatedException('Unable to request twitter token');
         }
 
         $oauth = $this->twitter->extract_params($this->twitter->response['response']);
@@ -98,6 +98,9 @@ class Twitter extends AbstractProvider
         ));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function logout()
     {
         // Twitter does no timplement token revocation
@@ -120,7 +123,7 @@ class Twitter extends AbstractProvider
         );
 
         if ($code != 200) {
-            throw new RuntimeException('Unable to get twitter access token');
+            throw new NotAuthenticatedException('Unable to get twitter access token');
         }
 
         $access_token = $this->twitter->extract_params($this->twitter->response['response']);
@@ -135,10 +138,14 @@ class Twitter extends AbstractProvider
         );
 
         if ($code != 200) {
-            throw new RuntimeException('Unable to get twitter credentials');
+            throw new NotAuthenticatedException('Unable to get twitter credentials');
         }
 
-        $resp = json_decode($this->twitter->response['response'], true);
+        $resp = @json_decode($this->twitter->response['response'], true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Unable to parse Twitter JSON response.');
+        }
 
         $this->session->set('twitter.provider.id', $resp['id']);
     }
@@ -149,7 +156,7 @@ class Twitter extends AbstractProvider
     public function getToken()
     {
         if (0 >= $this->session->get('twitter.provider.id')) {
-            throw new RuntimeException('Provider has not authenticated');
+            throw new NotAuthenticatedException('Provider has not authenticated');
         }
 
         return new Token($this, $this->session->get('twitter.provider.id'));
@@ -170,10 +177,14 @@ class Twitter extends AbstractProvider
         );
 
         if ($code != 200) {
-            throw new RuntimeException('Unable to retrieve twitter identity');
+            throw new NotAuthenticatedException('Unable to retrieve twitter identity');
         }
 
-        $resp = json_decode($this->twitter->response['response'], true);
+        $resp = @json_decode($this->twitter->response['response'], true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Unable to parse Twitter Identity JSON response.');
+        }
 
         $identity = new Identity();
 

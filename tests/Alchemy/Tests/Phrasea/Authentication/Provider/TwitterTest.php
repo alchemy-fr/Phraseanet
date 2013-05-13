@@ -31,7 +31,7 @@ class TwitterTest extends ProviderTestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
+     * @expectedException Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
      */
     public function testAuthenticateWithFailure()
     {

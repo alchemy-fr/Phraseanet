@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Guzzle\Http\Client as Guzzle;
 use Guzzle\Http\ClientInterface;
+use Guzzle\Common\Exception\GuzzleException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGenerator;
@@ -98,6 +99,9 @@ class Linkedin extends AbstractProvider
         ), '', '&'));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function logout()
     {
         // LinkedIn does not provide Oauth2 token revocation
@@ -109,46 +113,63 @@ class Linkedin extends AbstractProvider
     public function onCallback(Request $request)
     {
         if (!$this->session->has('linkedin.provider.state')) {
-            throw new RuntimeException('Invalid state value ; CSRF try ?');
+            throw new NotAuthenticatedException('No state value ; CSRF try ?');
         }
 
         if ($request->query->get('state') !== $this->session->remove('linkedin.provider.state')) {
-            throw new RuntimeException('Invalid state value ; CSRF try ?');
+            throw new NotAuthenticatedException('Invalid state value ; CSRF try ?');
         }
 
-        $guzzleRequest = $this->client->post('https://www.linkedin.com/uas/oauth2/accessToken?' . http_build_query(array(
-            'grant_type'    => 'authorization_code',
-            'code'          => $request->query->get('code'),
-            'redirect_uri'  => $this->generator->generate(
-                'login_authentication_provider_callback',
-                array('providerId' => $this->getId()),
-                UrlGenerator::ABSOLUTE_URL
-            ),
-            'client_id'     => $this->key,
-            'client_secret' => $this->secret,
-        ), '', '&'));
-        $response = $guzzleRequest->send();
+        try {
+            $guzzleRequest = $this->client->post('https://www.linkedin.com/uas/oauth2/accessToken?' . http_build_query(array(
+                'grant_type'    => 'authorization_code',
+                'code'          => $request->query->get('code'),
+                'redirect_uri'  => $this->generator->generate(
+                    'login_authentication_provider_callback',
+                    array('providerId' => $this->getId()),
+                    UrlGenerator::ABSOLUTE_URL
+                ),
+                'client_id'     => $this->key,
+                'client_secret' => $this->secret,
+            ), '', '&'));
+            $response = $guzzleRequest->send();
+        } catch (GuzzleException $e) {
+            throw new NotAuthenticatedException('Unable to query LinkedIn access token', $e->getCode(), $e);
+        }
 
         if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException('Error while getting access_token');
+            throw new NotAuthenticatedException('Error while getting access_token');
         }
 
-        $data = json_decode($response->getBody(true), true);
+        $data = @json_decode($response->getBody(true), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Unable to parse LinkedIn JSON');
+        }
+
         $this->session->remove('linkedin.provider.state');
         $this->session->set('linkedin.provider.access_token', $data['access_token']);
 
-        $request = $this->client->get('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,positions,industry,picture-url,email-address)');
-        $request->getQuery()
-                ->add('oauth2_access_token', $data['access_token'])
-                ->add('format', 'json');
+        try {
+            $request = $this->client->get('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,positions,industry,picture-url,email-address)');
+            $request->getQuery()
+                    ->add('oauth2_access_token', $data['access_token'])
+                    ->add('format', 'json');
 
-        $response = $request->send();
-
-        if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException('Error while retrieving user info');
+            $response = $request->send();
+        } catch (GuzzleException $e) {
+            throw new NotAuthenticatedException('Error while retrieving linkedin user informations.');
         }
 
-        $data = json_decode($response->getBody(true), true);
+        if (200 !== $response->getStatusCode()) {
+            throw new NotAuthenticatedException('Error while retrieving user info');
+        }
+
+        $data = @json_decode($response->getBody(true), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Unable to parse LinkedIn JSON');
+        }
 
         $this->session->set('linkedin.provider.id', $data['id']);
     }
@@ -159,7 +180,7 @@ class Linkedin extends AbstractProvider
     public function getToken()
     {
         if ('' === trim($this->session->get('linkedin.provider.id'))) {
-            throw new RuntimeException('Linkedin has not authenticated');
+            throw new NotAuthenticatedException('Linkedin has not authenticated');
         }
 
         return new Token($this, $this->session->get('linkedin.provider.id'));
@@ -172,18 +193,26 @@ class Linkedin extends AbstractProvider
     {
         $identity = new Identity();
 
-        $request = $this->client->get('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,positions,industry,picture-url;secure=true,email-address)');
-        $request->getQuery()
-                ->add('oauth2_access_token', $this->session->get('linkedin.provider.access_token'))
-                ->add('format', 'json');
+        try {
+            $request = $this->client->get('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,positions,industry,picture-url;secure=true,email-address)');
+            $request->getQuery()
+                    ->add('oauth2_access_token', $this->session->get('linkedin.provider.access_token'))
+                    ->add('format', 'json');
 
-        $response = $request->send();
-
-        if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException('Error while retrieving user info');
+            $response = $request->send();
+        } catch (GuzzleException $e) {
+            throw new NotAuthenticatedException('Unable to fetch LinkedIn identity', $e->getCode(), $e);
         }
 
-        $data = json_decode($response->getBody(true), true);
+        if (200 !== $response->getStatusCode()) {
+            throw new NotAuthenticatedException('Error while retrieving user info');
+        }
+
+        $data = @json_decode($response->getBody(true), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Unable to parse Linkedin JSON identity');
+        }
 
         if (0 < $data['positions']['_total']) {
             $position = array_pop($data['positions']['values']);

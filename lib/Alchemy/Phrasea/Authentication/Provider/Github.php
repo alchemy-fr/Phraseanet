@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Guzzle\Http\Client as Guzzle;
 use Guzzle\Http\ClientInterface;
+use Guzzle\Common\Exception\GuzzleException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGenerator;
@@ -97,6 +98,9 @@ class Github extends AbstractProvider
         ), '', '&'));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function logout()
     {
         // GitHub does not support tokens revocation
@@ -108,48 +112,64 @@ class Github extends AbstractProvider
     public function onCallback(Request $request)
     {
         if (!$this->session->has('github.provider.state')) {
-            throw new RuntimeException('Invalid state value ; CSRF try ?');
+            throw new NotAuthenticatedException('No state value in session ; CSRF try ?');
         }
 
         if ($request->query->get('state') !== $this->session->remove('github.provider.state')) {
-            throw new RuntimeException('Invalid state value ; CSRF try ?');
+            throw new NotAuthenticatedException('Invalid state value ; CSRF try ?');
         }
 
-        $guzzleRequest = $this->client->post('access_token');
+        try {
+            $guzzleRequest = $this->client->post('access_token');
 
-        $guzzleRequest->addPostFields(array(
-            'code' => $request->query->get('code'),
-            'redirect_uri' => $this->generator->generate(
-                'login_authentication_provider_callback',
-                array('providerId' => $this->getId()),
-                UrlGenerator::ABSOLUTE_URL
-            ),
-            'client_id' => $this->key,
-            'client_secret' => $this->secret,
-        ));
-        $guzzleRequest->setHeader('Accept', 'application/json');
-        $response = $guzzleRequest->send();
+            $guzzleRequest->addPostFields(array(
+                'code' => $request->query->get('code'),
+                'redirect_uri' => $this->generator->generate(
+                    'login_authentication_provider_callback',
+                    array('providerId' => $this->getId()),
+                    UrlGenerator::ABSOLUTE_URL
+                ),
+                'client_id' => $this->key,
+                'client_secret' => $this->secret,
+            ));
+            $guzzleRequest->setHeader('Accept', 'application/json');
+            $response = $guzzleRequest->send();
+        } catch (GuzzleException $e) {
+            throw new NotAuthenticatedException('Guzzle error while authentication', $e->getCode(), $e);
+        }
 
         if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException('Error while getting access_token');
+            throw new NotAuthenticatedException('Error while getting access_token');
         }
 
-        $data = json_decode($response->getBody(true), true);
+        $data = @json_decode($response->getBody(true), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Error while retrieving user info, unable to parse JSON.');
+        }
 
         $this->session->remove('github.provider.state');
         $this->session->set('github.provider.access_token', $data['access_token']);
 
-        $request = $this->client->get('https://api.github.com/user');
-        $request->getQuery()->add('access_token', $data['access_token']);
-        $request->setHeader('Accept', 'application/json');
+        try {
+            $request = $this->client->get('https://api.github.com/user');
+            $request->getQuery()->add('access_token', $data['access_token']);
+            $request->setHeader('Accept', 'application/json');
 
-        $response = $request->send();
-
-        if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException('Error while retrieving user info');
+            $response = $request->send();
+        } catch (GuzzleException $e) {
+            throw new NotAuthenticatedException('Guzzle error while authentication', $e->getCode(), $e);
         }
 
-        $data = json_decode($response->getBody(true), true);
+        $data = @json_decode($response->getBody(true), true);
+
+        if (200 !== $response->getStatusCode()) {
+            throw new NotAuthenticatedException('Error while retrieving user info, invalid status code.');
+        }
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Error while retrieving user info, unable to parse JSON.');
+        }
 
         $this->session->set('github.provider.id', $data['id']);
     }
@@ -160,7 +180,7 @@ class Github extends AbstractProvider
     public function getToken()
     {
         if ('' === trim($this->session->get('github.provider.id'))) {
-            throw new RuntimeException('Github has not authenticated');
+            throw new NotAuthenticatedException('Github has not authenticated');
         }
 
         return new Token($this, $this->session->get('github.provider.id'));
@@ -173,17 +193,25 @@ class Github extends AbstractProvider
     {
         $identity = new Identity();
 
-        $request = $this->client->get('https://api.github.com/user');
-        $request->getQuery()->add('access_token', $this->session->get('github.provider.access_token'));
-        $request->setHeader('Accept', 'application/json');
+        try {
+            $request = $this->client->get('https://api.github.com/user');
+            $request->getQuery()->add('access_token', $this->session->get('github.provider.access_token'));
+            $request->setHeader('Accept', 'application/json');
 
-        $response = $request->send();
-
-        if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException('Error while retrieving user info');
+            $response = $request->send();
+        } catch (GuzzleException $e) {
+            throw new NotAuthenticatedException('Error while retrieving user info', $e->getCode(), $e);
         }
 
-        $data = json_decode($response->getBody(true), true);
+        if (200 !== $response->getStatusCode()) {
+            throw new NotAuthenticatedException('Error while retrieving user info');
+        }
+
+        $data = @json_decode($response->getBody(true), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Error while parsing json');
+        }
 
         list($firstname, $lastname) = explode(' ', $data['name'], 2);
 

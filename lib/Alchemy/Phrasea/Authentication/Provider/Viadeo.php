@@ -11,12 +11,13 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Guzzle\Http\Client as Guzzle;
 use Guzzle\Http\ClientInterface;
+use Guzzle\Common\Exception\GuzzleException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGenerator;
@@ -96,18 +97,25 @@ class Viadeo extends AbstractProvider
         )));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function logout()
     {
-        $request = $this->client->get('https://secure.viadeo.com/oauth-provider/revoke_access_token2');
-        $request
-            ->getQuery()
-            ->add('access_token', $this->session->get('viadeo.provider.access_token'))
-            ->add('client_id', $this->key)
-            ->add('client_secret', $this->secret);
+        try {
+            $request = $this->client->get('https://secure.viadeo.com/oauth-provider/revoke_access_token2');
+            $request
+                ->getQuery()
+                ->add('access_token', $this->session->get('viadeo.provider.access_token'))
+                ->add('client_id', $this->key)
+                ->add('client_secret', $this->secret);
 
-        $request->setHeader('Accept', 'application/json');
+            $request->setHeader('Accept', 'application/json');
 
-        $response = $request->send();
+            $response = $request->send();
+        } catch (GuzzleException $e) {
+            throw new RuntimeException('Unable to revoke token from Viadeo', $e->getCode(), $e);
+        }
 
         if (302 !== $response->getStatusCode()) {
             throw new RuntimeException('Error while revoking access token');
@@ -120,45 +128,61 @@ class Viadeo extends AbstractProvider
     public function onCallback(Request $request)
     {
         if (!$this->session->has('viadeo.provider.state')) {
-            throw new RuntimeException('Invalid state value ; CSRF try ?');
+            throw new NotAuthenticatedException('No state value ; CSRF try ?');
         }
 
         if ($request->query->get('state') !== $this->session->remove('viadeo.provider.state')) {
-            throw new RuntimeException('Invalid state value ; CSRF try ?');
+            throw new NotAuthenticatedException('Invalid state value ; CSRF try ?');
         }
 
-        $guzzleRequest = $this->client->post('https://secure.viadeo.com/oauth-provider/access_token2');
+        try {
+            $guzzleRequest = $this->client->post('https://secure.viadeo.com/oauth-provider/access_token2');
 
-        $guzzleRequest->addPostFields(array(
-            'grant_type'    => 'authorization_code',
-            'code'          => $request->query->get('code'),
-            'redirect_uri'  => $this->generator->generate('login_authentication_provider_callback', array('providerId' => $this->getId()), UrlGenerator::ABSOLUTE_URL),
-            'client_id'     => $this->key,
-            'client_secret' => $this->secret,
-        ));
-        $guzzleRequest->setHeader('Accept', 'application/json');
-        $response = $guzzleRequest->send();
+            $guzzleRequest->addPostFields(array(
+                'grant_type'    => 'authorization_code',
+                'code'          => $request->query->get('code'),
+                'redirect_uri'  => $this->generator->generate('login_authentication_provider_callback', array('providerId' => $this->getId()), UrlGenerator::ABSOLUTE_URL),
+                'client_id'     => $this->key,
+                'client_secret' => $this->secret,
+            ));
+            $guzzleRequest->setHeader('Accept', 'application/json');
+            $response = $guzzleRequest->send();
+        } catch (GuzzleException $e) {
+            throw new NotAuthenticatedException('Unable to retrieve viadeo access token', $e->getCode(), $e);
+        }
 
         if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException('Error while getting access_token');
+            throw new NotAuthenticatedException('Error while getting access_token');
         }
 
-        $data = json_decode($response->getBody(true), true);
+        $data = @json_decode($response->getBody(true), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Unable to parse Viadeo access_token response.');
+        }
 
         $this->session->remove('viadeo.provider.state');
         $this->session->set('viadeo.provider.access_token', $data['access_token']);
 
-        $request = $this->client->get('https://api.viadeo.com/me?secure=true');
-        $request->getQuery()->add('access_token', $data['access_token']);
-        $request->setHeader('Accept', 'application/json');
+        try {
+            $request = $this->client->get('https://api.viadeo.com/me?secure=true');
+            $request->getQuery()->add('access_token', $data['access_token']);
+            $request->setHeader('Accept', 'application/json');
 
-        $response = $request->send();
-
-        if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException('Error while retrieving user info');
+            $response = $request->send();
+        } catch (GuzzleException $e) {
+            throw new NotAuthenticatedException('Unable to retrieve viadeo user informations', $e->getCode(), $e);
         }
 
-        $data = json_decode($response->getBody(true), true);
+        if (200 !== $response->getStatusCode()) {
+            throw new NotAuthenticatedException('Error while retrieving user info');
+        }
+
+        $data = @json_decode($response->getBody(true), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Unable to parse Viadeo user informations response.');
+        }
 
         $this->session->set('viadeo.provider.id', $data['id']);
     }
@@ -169,7 +193,7 @@ class Viadeo extends AbstractProvider
     public function getToken()
     {
         if ('' === trim($this->session->get('viadeo.provider.id'))) {
-            throw new RuntimeException('Viadeo has not authenticated');
+            throw new NotAuthenticatedException('Viadeo has not authenticated');
         }
 
         return new Token($this, $this->session->get('viadeo.provider.id'));
@@ -182,18 +206,26 @@ class Viadeo extends AbstractProvider
     {
         $identity = new Identity();
 
-        $request = $this->client->get('https://api.viadeo.com/me?secure=true');
-        $request->getQuery()
-            ->add('access_token', $this->session->get('viadeo.provider.access_token'));
-        $request->setHeader('Accept', 'application/json');
+        try {
+            $request = $this->client->get('https://api.viadeo.com/me?secure=true');
+            $request->getQuery()
+                ->add('access_token', $this->session->get('viadeo.provider.access_token'));
+            $request->setHeader('Accept', 'application/json');
 
-        $response = $request->send();
-
-        if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException('Error while retrieving user info');
+            $response = $request->send();
+        } catch (GuzzleException $e) {
+            throw new NotAuthenticatedException('Unable to retrieve Viadeo identity');
         }
 
-        $data = json_decode($response->getBody(true), true);
+        if (200 !== $response->getStatusCode()) {
+            throw new NotAuthenticatedException('Error while retrieving user info');
+        }
+
+        $data = @json_decode($response->getBody(true), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Unable to parse Viadeo identity.');
+        }
 
         $identity->set(Identity::PROPERTY_FIRSTNAME, $data['first_name']);
         $identity->set(Identity::PROPERTY_ID, $data['id']);
@@ -201,17 +233,25 @@ class Viadeo extends AbstractProvider
         $identity->set(Identity::PROPERTY_LASTNAME, $data['last_name']);
         $identity->set(Identity::PROPERTY_USERNAME, $data['nickname']);
 
-        $request = $this->client->get('https://api.viadeo.com/me/career?secure=true');
-        $request->getQuery()->add('access_token', $this->session->get('viadeo.provider.access_token'));
-        $request->setHeader('Accept', 'application/json');
+        try {
+            $request = $this->client->get('https://api.viadeo.com/me/career?secure=true');
+            $request->getQuery()->add('access_token', $this->session->get('viadeo.provider.access_token'));
+            $request->setHeader('Accept', 'application/json');
 
-        $response = $request->send();
-
-        if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException('Error while retrieving company info');
+            $response = $request->send();
+        } catch (GuzzleException $e) {
+            throw new NotAuthenticatedException('Unable to retrieve Viadeo career information.');
         }
 
-        $data = json_decode($response->getBody(true), true);
+        if (200 !== $response->getStatusCode()) {
+            throw new NotAuthenticatedException('Error while retrieving company info');
+        }
+
+        $data = @json_decode($response->getBody(true), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Unable to parse Viadeo career informations.');
+        }
 
         if (0 < count($data['data'])) {
             $job = array_shift($data['data']);

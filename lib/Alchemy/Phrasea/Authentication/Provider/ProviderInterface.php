@@ -13,11 +13,13 @@ namespace Alchemy\Phrasea\Authentication\Provider;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
+use Alchemy\Phrasea\Authentication\Provider\Token\Token;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 
 interface ProviderInterface
 {
@@ -48,6 +50,8 @@ interface ProviderInterface
 
     /**
      * Logout from the provider, removes the token if possible
+     *
+     * @throws RuntimeException In case logout fails.
      */
     public function logout();
 
@@ -57,6 +61,8 @@ interface ProviderInterface
      *
      * @param Application $app
      * @param Request $request
+     *
+     * @throws NotAuthenticatedException In case the authentication failed.
      */
     public function onCallback(Request $request);
 
@@ -64,6 +70,8 @@ interface ProviderInterface
      * Returns the identity
      *
      * @return Identity
+     *
+     * @throws NotAuthenticatedException In case the provider is not connected
      */
     public function getIdentity();
 
@@ -71,6 +79,8 @@ interface ProviderInterface
      * Returns a Token
      *
      * @return Token
+     *
+     * @throws NotAuthenticatedException In case the provider is not connected
      */
     public function getToken();
 

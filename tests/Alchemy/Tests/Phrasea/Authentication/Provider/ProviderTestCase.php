@@ -90,7 +90,7 @@ abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideDataForFailingCallback
-     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
+     * @expectedException Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
      */
     public function testOnCallbackWithFailure($provider, $request)
     {
@@ -109,7 +109,7 @@ abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
+     * @expectedException Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
      */
     public function testGetTokenWhenNotAuthenticated()
     {
@@ -129,7 +129,7 @@ abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\RuntimeException
+     * @expectedException Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
      */
     public function testGetIdentityWhenNotAuthenticated()
     {

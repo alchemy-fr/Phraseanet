@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Guzzle\Http\Client as Guzzle;
 use Guzzle\Http\ClientInterface;
+use Guzzle\Common\Exception\GuzzleException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGenerator;
@@ -147,9 +148,16 @@ class GooglePlus extends AbstractProvider
         return new RedirectResponse($this->client->createAuthUrl());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function logout()
     {
-        $this->client->revokeToken();
+        try {
+            $this->client->revokeToken();
+        } catch (\Google_Exception $e) {
+            throw new RuntimeException('Unable to logout from Google+', $e->getCode(), $e);
+        }
     }
 
     /**
@@ -158,17 +166,26 @@ class GooglePlus extends AbstractProvider
     public function onCallback(Request $request)
     {
         if (!$this->session->has('google-plus.provider.state')) {
-            throw new RuntimeException('Invalid state value ; CSRF try ?');
+            throw new NotAuthenticatedException('No state value in session ; CSRF try ?');
         }
 
         if ($request->query->get('state') !== $this->session->remove('google-plus.provider.state')) {
-            throw new RuntimeException('Invalid state value ; CSRF try ?');
+            throw new NotAuthenticatedException('Invalid state value ; CSRF try ?');
         }
 
-        $this->client->authenticate($request->query->get('code'));
+        try {
+            $this->client->authenticate($request->query->get('code'));
 
-        $token = json_decode($this->client->getAccessToken(), true);
-        $ticket = $this->client->verifyIdToken($token['id_token']);
+            $token = @json_decode($this->client->getAccessToken(), true);
+
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                throw new NotAuthenticatedException('Unable to parse Google+ JSON', $e->getCode(), $e);
+            }
+
+            $ticket = $this->client->verifyIdToken($token['id_token']);
+        } catch (\Google_Exception $e) {
+            throw new NotAuthenticatedException('Unable to authenticate through Google+', $e->getCode(), $e);
+        }
 
         $this->session->set('google-plus.provider.token', json_encode($token));
         $this->session->set('google-plus.provider.id', $ticket->getUserId());
@@ -180,7 +197,7 @@ class GooglePlus extends AbstractProvider
     public function getToken()
     {
         if (!ctype_digit($this->session->get('google-plus.provider.id'))) {
-            throw new RuntimeException('Google + has not authenticated');
+            throw new NotAuthenticatedException('Google + has not authenticated');
         }
 
         return new Token($this, $this->session->get('google-plus.provider.id'));
@@ -193,24 +210,37 @@ class GooglePlus extends AbstractProvider
     {
         $identity = new Identity();
 
-        $token = json_decode($this->session->get('google-plus.provider.token'), true);
-        $request = $this->guzzle->get(sprintf(
-            'https://www.googleapis.com/oauth2/v1/tokeninfo?%s',
-            http_build_query(array('access_token' => $token['access_token']), '', '&')
-        ));
-        $response = $request->send();
+        $token = @json_decode($this->session->get('google-plus.provider.token'), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Unable to parse Google+ JSON');
+        }
+
+        try {
+            $request = $this->guzzle->get(sprintf(
+                'https://www.googleapis.com/oauth2/v1/tokeninfo?%s',
+                http_build_query(array('access_token' => $token['access_token']), '', '&')
+            ));
+            $response = $request->send();
+        } catch (GuzzleException $e) {
+            throw new NotAuthenticatedException('Unable to retrieve Google+ tokeninfo', $e->getCode(), $e);
+        }
 
         if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException('Error while retrieving user info');
+            throw new NotAuthenticatedException('Error while retrieving user info');
         }
 
         try{
             $plusData = $this->plus->people->get('me');
         } catch (\Google_Exception $e) {
-            throw new RuntimeException('Error while retrieving user info', $e->getCode(), $e);
+            throw new NotAuthenticatedException('Error while retrieving user info', $e->getCode(), $e);
         }
 
-        $data = json_decode($response->getBody(true), true);
+        $data = @json_decode($response->getBody(true), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new NotAuthenticatedException('Unable to parse Google+ JSON');
+        }
 
         $identity->set(Identity::PROPERTY_EMAIL, $data['email']);
 

@@ -63,6 +63,9 @@ class Facebook extends AbstractProvider
         )));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function logout()
     {
         $this->facebook->destroySession();
@@ -108,7 +111,7 @@ class Facebook extends AbstractProvider
             $identity->set(Identity::PROPERTY_USERNAME, $data['username']);
 
         } catch (\FacebookApiException $e) {
-            throw new RuntimeException('Unable to get profile informations', $e->getCode(), $e);
+            throw new NotAuthenticatedException('Unable to get profile informations', $e->getCode(), $e);
         }
 
         return $identity;
@@ -130,7 +133,7 @@ class Facebook extends AbstractProvider
     public function getToken()
     {
         if (0 >= $this->facebook->getUser()) {
-            throw new RuntimeException('Provider has not authenticated');
+            throw new NotAuthenticatedException('Provider has not authenticated');
         }
 
         return new Token($this, $this->facebook->getUser());
