@@ -23,6 +23,10 @@ use Alchemy\Phrasea\Setup\Requirements\SystemRequirements;
 
 class CheckEnvironment extends Command
 {
+    const CHECK_OK = 0;
+    const CHECK_WARNING = 1;
+    const CHECK_ERROR = 2;
+
     public function __construct($name = null)
     {
         parent::__construct($name);
@@ -37,6 +41,8 @@ class CheckEnvironment extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        $ret = static::CHECK_OK;
+
         foreach(array(
                 new BinariesRequirements(),
                 new FilesystemRequirements(),
@@ -57,6 +63,7 @@ class CheckEnvironment extends Command
                 $output->writeln($requirement->getTestMessage());
 
                 if (!$requirement->isFulfilled()) {
+                    $ret = static::CHECK_ERROR;
                     $output->writeln("          " . $requirement->getHelpText());
                     $output->writeln('');
                 }
@@ -73,12 +80,15 @@ class CheckEnvironment extends Command
                 $output->writeln($requirement->getTestMessage());
 
                 if (!$requirement->isFulfilled()) {
+                    if ($ret === static::CHECK_OK) {
+                        $ret = static::CHECK_WARNING;
+                    }
                     $output->writeln("          " . $requirement->getHelpText());
                     $output->writeln('');
                 }
             }
         }
 
-        return;
+        return $ret;
     }
 }
