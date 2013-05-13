@@ -106,6 +106,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $databox = array_shift($databoxes);
 
         $body = json_encode(array(
+            'sbas-id' => $databox->get_sbas_id(),
             'name' => 'testfield' . mt_rand(),
             'multi' => true,
             'thumbtitle' => false,
@@ -130,12 +131,17 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $data = json_decode($response, true);
 
-        $dataWithoutId = $data;
-        unset($dataWithoutId['id']);
+        $this->assertArrayHasKey('success', $data);
+        $this->assertArrayHasKey('message', $data);
+        $this->assertArrayHasKey('field', $data);
 
-        $this->assertEquals(json_decode($body, true), $dataWithoutId);
+        $dataWithoutIds = $data['field'];
+        unset($dataWithoutIds['id']);
+        unset($dataWithoutIds['sorter']);
 
-        $field = \databox_field::get_instance(self::$DI['app'], $databox, $data['id']);
+        $this->assertEquals(json_decode($body, true), $dataWithoutIds);
+
+        $field = \databox_field::get_instance(self::$DI['app'], $databox, $data['field']['id']);
         $field->delete();
     }
 
