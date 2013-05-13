@@ -3,9 +3,9 @@
 * 3.8.0 (2013-xx-xx)
 
   - SwiftMailer integration (replaces PHPMailer).
-    - Emails now include an HTML view.
-    - Emails can now have a customized subject prefix.
-    - Emails can be sent to SMTP server using TLS encryption (only SSL was supported).
+      - Emails now include an HTML view.
+      - Emails can now have a customized subject prefix.
+      - Emails can be sent to SMTP server using TLS encryption (only SSL was supported).
   - Sphinx-Search is now stable (require Sphinx-Search 2.0.6).
   - Add support for stemmatisation in Phrasea-Engine.
   - Add bin/setup command utility, it is now recommanded to use `bin/setup system:install` 
