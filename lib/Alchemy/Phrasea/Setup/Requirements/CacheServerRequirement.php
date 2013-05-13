@@ -11,9 +11,9 @@
 
 namespace Alchemy\Phrasea\Setup\Requirements;
 
-use Alchemy\Phrasea\Setup\System\RequirementCollection;
+use Alchemy\Phrasea\Setup\RequirementCollection;
 
-class CacheServerRequirement extends RequirementCollection
+class CacheServerRequirement extends RequirementCollection implements RequirementInterface
 {
     public function __construct()
     {

@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Setup\Probe;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Setup\System\RequirementCollection;
+use Alchemy\Phrasea\Setup\RequirementCollection;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
 class SearchEngineProbe extends RequirementCollection implements ProbeInterface

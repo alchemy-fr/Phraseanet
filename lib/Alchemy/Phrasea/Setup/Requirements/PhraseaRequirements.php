@@ -11,10 +11,10 @@
 
 namespace Alchemy\Phrasea\Setup\Requirements;
 
-use Alchemy\Phrasea\Setup\System\RequirementCollection;
+use Alchemy\Phrasea\Setup\RequirementCollection;
 use Symfony\Component\Process\ExecutableFinder;
 
-class PhraseaRequirements extends RequirementCollection
+class PhraseaRequirements extends RequirementCollection implements RequirementInterface
 {
     const PHRASEA_EXTENSION_VERSION = '1.21.1.0';
     const PHRASEA_INDEXER_VERSION = '3.10.2.3';

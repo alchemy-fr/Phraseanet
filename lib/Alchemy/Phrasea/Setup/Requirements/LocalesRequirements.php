@@ -11,10 +11,10 @@
 
 namespace Alchemy\Phrasea\Setup\Requirements;
 
-use Alchemy\Phrasea\Setup\System\RequirementCollection;
+use Alchemy\Phrasea\Setup\RequirementCollection;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 
-class LocalesRequirements extends RequirementCollection
+class LocalesRequirements extends RequirementCollection implements RequirementInterface
 {
     public function __construct($locale = 'en_GB')
     {

@@ -23,7 +23,7 @@ abstract class ProbeTestCase extends \PhraseanetPHPUnitAbstract
         $this->assertInternalType('array', $this->getProbe()->getRecommendations());
 
         foreach ($this->getProbe()->getRecommendations() as $recommandation) {
-            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\RequirementInterface', $recommandation);
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementInterface', $recommandation);
         }
     }
 
@@ -32,7 +32,7 @@ abstract class ProbeTestCase extends \PhraseanetPHPUnitAbstract
         $this->assertInternalType('array', $this->getProbe()->getRequirements());
 
         foreach ($this->getProbe()->getRequirements() as $requirement) {
-            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\RequirementInterface', $requirement);
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementInterface', $requirement);
         }
     }
 
@@ -41,7 +41,7 @@ abstract class ProbeTestCase extends \PhraseanetPHPUnitAbstract
         $this->assertInternalType('array', $this->getProbe()->getInformations());
 
         foreach ($this->getProbe()->getInformations() as $information) {
-            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\InformationInterface', $information);
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\InformationInterface', $information);
         }
     }
 }

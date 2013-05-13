@@ -2,8 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Setup\Requirements;
 
-use Alchemy\Phrasea\Setup\System\RequirementCollection;
-use Alchemy\Phrasea\Setup\System\RequirementCollectionInterface;
+use Alchemy\Phrasea\Setup\RequirementCollection;
+use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
 
 abstract class RequirementsTestCase extends \PHPUnit_Framework_TestCase
 {
@@ -14,13 +14,13 @@ abstract class RequirementsTestCase extends \PHPUnit_Framework_TestCase
 
     public function testIsInterface()
     {
-        $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\RequirementCollectionInterface', $this->provideRequirements());
+        $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementCollectionInterface', $this->provideRequirements());
     }
 
     public function testAdd()
     {
         $collection = $this->provideRequirements();
-        $requirement = $this->getMock('Alchemy\Phrasea\Setup\System\RequirementInterface');
+        $requirement = $this->getMock('Alchemy\Phrasea\Setup\RequirementInterface');
         $collection->add($requirement);
 
         $found = false;
@@ -39,7 +39,7 @@ abstract class RequirementsTestCase extends \PHPUnit_Framework_TestCase
     {
         $collection = $this->provideRequirements();
 
-        $requirement = $this->getMock('Alchemy\Phrasea\Setup\System\RequirementInterface');
+        $requirement = $this->getMock('Alchemy\Phrasea\Setup\RequirementInterface');
         $coll = new RequirementCollection();
         $coll->add($requirement);
 
@@ -64,7 +64,7 @@ abstract class RequirementsTestCase extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $collection->all());
 
         foreach ($collection->all() as $requirement) {
-            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\RequirementInterface', $requirement);
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementInterface', $requirement);
         }
     }
 
@@ -75,7 +75,7 @@ abstract class RequirementsTestCase extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $collection->getFailedRecommendations());
 
         foreach ($collection->getFailedRecommendations() as $requirement) {
-            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\RequirementInterface', $requirement);
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementInterface', $requirement);
         }
     }
 
@@ -86,7 +86,7 @@ abstract class RequirementsTestCase extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $collection->getFailedRequirements());
 
         foreach ($collection->getFailedRequirements() as $requirement) {
-            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\RequirementInterface', $requirement);
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementInterface', $requirement);
         }
     }
 
@@ -97,7 +97,7 @@ abstract class RequirementsTestCase extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $collection->getInformations());
 
         foreach ($collection->getInformations() as $requirement) {
-            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\InformationInterface', $requirement);
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\InformationInterface', $requirement);
         }
     }
 

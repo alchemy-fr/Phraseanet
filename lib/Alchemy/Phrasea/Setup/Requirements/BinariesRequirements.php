@@ -11,10 +11,10 @@
 
 namespace Alchemy\Phrasea\Setup\Requirements;
 
-use Alchemy\Phrasea\Setup\System\RequirementCollection;
+use Alchemy\Phrasea\Setup\RequirementCollection;
 use Symfony\Component\Process\ExecutableFinder;
 
-class BinariesRequirements extends RequirementCollection
+class BinariesRequirements extends RequirementCollection implements RequirementInterface
 {
     const FILE_VERSION = '5.04';
     const IMAGICK_VERSION = '6.2.9';

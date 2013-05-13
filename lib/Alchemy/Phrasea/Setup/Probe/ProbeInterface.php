@@ -12,8 +12,11 @@
 namespace Alchemy\Phrasea\Setup\Probe;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Setup\System\RequirementCollectionInterface;
+use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
 
+/**
+ * A probe is used to probe the system when installed and configured.
+ */
 interface ProbeInterface extends RequirementCollectionInterface
 {
     /**

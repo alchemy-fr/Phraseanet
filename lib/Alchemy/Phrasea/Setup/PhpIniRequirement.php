@@ -1,6 +1,6 @@
 <?php
 
-namespace Alchemy\Phrasea\Setup\System;
+namespace Alchemy\Phrasea\Setup;
 
 /**
  * @see https://github.com/sensio/SensioDistributionBundle/blob/master/Resources/skeleton/app/SymfonyRequirements.php

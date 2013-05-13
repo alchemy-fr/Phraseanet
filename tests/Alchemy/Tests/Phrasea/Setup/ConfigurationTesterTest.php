@@ -150,7 +150,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
     public function testGetRequirements()
     {
         foreach ($this->getTester()->getRequirements() as $requirements) {
-            $this->assertInstanceOf('Alchemy\Phrasea\Setup\System\RequirementCollectionInterface', $requirements);
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementCollectionInterface', $requirements);
         }
     }
 

@@ -11,9 +11,9 @@
 
 namespace Alchemy\Phrasea\Setup\Requirements;
 
-use Alchemy\Phrasea\Setup\System\RequirementCollection;
+use Alchemy\Phrasea\Setup\RequirementCollection;
 
-class SystemRequirements extends RequirementCollection
+class SystemRequirements extends RequirementCollection implements RequirementInterface
 {
     const REQUIRED_PHP_VERSION = '5.3.3';
 
