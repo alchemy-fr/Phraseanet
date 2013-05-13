@@ -28,17 +28,19 @@ class Setup implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $app['controller.setup'] = $this;
+
         $controllers->get('/', function(Application $app) {
             return $app->redirect($app->path('install_root'));
         });
 
-        $controllers->get('/installer/', $this->call('rootInstaller'))
+        $controllers->get('/installer/', 'controller.setup:rootInstaller')
             ->bind('install_root');
 
-        $controllers->get('/installer/step2/', $this->call('getInstallForm'))
+        $controllers->get('/installer/step2/', 'controller.setup:getInstallForm')
             ->bind('install_step2');
 
-        $controllers->post('/installer/install/', $this->call('doInstall'))
+        $controllers->post('/installer/install/', 'controller.setup:doInstall')
             ->bind('install_do_install');
 
         return $controllers;
@@ -173,16 +175,5 @@ class Setup implements ControllerProviderInterface
         return $app->redirect($app->path('install_step2', array(
             'error' => sprintf(_('an error occured : %s'), $e->getMessage()),
         )));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }
