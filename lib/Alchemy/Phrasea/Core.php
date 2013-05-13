@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea;
 use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\File\MimeType\FileBinaryMimeTypeGuesser;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\Serializer;
 use XPDF\PdfToText;
 use XPDF\Exception\Exception as XPDFException;
@@ -148,6 +150,11 @@ class Core extends \Pimple
 
 
         $this['mediavorus'] = $this->share(function() {
+                $guesser = MimeTypeGuesser::getInstance();
+                /**
+                 * temporary hack to use this guesser before fileinfo
+                 */
+                $guesser->register(new FileBinaryMimeTypeGuesser());
 
                 return new \MediaVorus\MediaVorus();
             });
