@@ -13,7 +13,7 @@ define([
             "click .btn-submit-field": "createAction",
             "click .btn-add-field": "toggleCreateFormAction",
             "click .btn-cancel-field": "toggleCreateFormAction",
-            "update-sort": "onUpdateSort"
+            "update-sort": "updateSortAction"
         },
         initialize: function() {
             // Store all single rendered views
@@ -73,9 +73,6 @@ define([
 
             this.$listEl.sortable({
                 handle: ".handle",
-                start: function () {
-                    console.log('start', AdminFieldApp.fieldEditView.model.get('id'));
-                },
                 stop: function(event, ui) {
                     ui.item.trigger('drop', ui.item.index());
                 }
@@ -84,7 +81,7 @@ define([
             this.$listEl.disableSelection();
 
             this.$listEl.find('li:last').addClass('last');
-            
+
             return this;
         },
         searchAction: function(event) {
@@ -126,7 +123,7 @@ define([
         toggleCreateFormAction: function(event) {
             $('.add-field-block', this.$el).toggle();
         },
-        onUpdateSort: function(event, model, position) {
+        updateSortAction: function(event, model, position) {
             this.collection.remove(model, {silent: true});
 
             this.collection.each(function(model, index) {
@@ -139,7 +136,9 @@ define([
             this.collection.add(model, {at: position});
 
             // update edit view
-            AdminFieldApp.fieldEditView.model = this.collection.find(function(el) { return el.get('id') === AdminFieldApp.fieldEditView.model.get('id') });
+            AdminFieldApp.fieldEditView.model = this.collection.find(function(el) {
+                return el.get('id') === AdminFieldApp.fieldEditView.model.get('id');
+            });
         }
     });
 
