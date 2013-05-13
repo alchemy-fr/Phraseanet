@@ -245,6 +245,40 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         }
     }
 
+    /**
+     * @covers \ACL::get_order_master_bids
+     * @covers \ACL::set_order_master_bids
+     */
+
+    public function testOrder_master_bids()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $acl = self::$user->ACL();
+
+        foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($databox->get_collections() as $collection) {
+                $base_id = $collection->get_base_id();
+                $acl->set_order_master($base_id, false);
+            }
+        }
+        $this->assertEquals(0, count($acl->get_order_master_bids()));
+
+        $tbas = array();
+        foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($databox->get_collections() as $collection) {
+                $bid = $collection->get_base_id();
+                if(!$acl->has_access_to_base($bid)) {
+                    $acl->give_access_to_base(array($bid));
+                }
+                $acl->set_order_master($bid, true);
+                $tbas[] = $bid;
+            }
+        }
+        $tbas = array_diff($tbas, $acl->get_order_master_bids());
+        $this->assertEquals(0, count($tbas));
+    }
+
+
     public function testIs_restricted_download()
     {
         $this->testSet_quotas_on_base();
