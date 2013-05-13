@@ -18,15 +18,23 @@
                     {% for collection in base["collections"] %}
                         {% set base_id = collection["base_id"] %}
                         <li class="clkbas">
-                            <label style="line-height: 18px;" onclick="infoSbas($('#ck_{{base_id}}_{{unique_id}}'),{{sbas_id}}, false, event); return false;"
-                                for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox">
-                                {{base_id|get_collection_logo|raw}} {{base_id|bas_names}}
-                                <input class="ck_{{collection["base_id"]}} checkbas" style="*margin-top:-18px;"
-                                    onclick="cancelEvent(event);return false;"
-                                    onmousedown="infoSbas(this, {{sbas_id}}, false, event); return false;"
-                                    id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
-                                    name="bas[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
-                            </label>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input class="ck_{{collection["base_id"]}} checkbas" style="*margin-top:-18px;"
+                                            onclick="cancelEvent(event);return false;"
+                                            onmousedown="infoSbas(this, {{sbas_id}}, false, event); return false;"
+                                            id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
+                                            name="bas[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
+                                    </td>
+                                    <td>
+                                        <label style="line-height: 18px;" onclick="infoSbas($('#ck_{{base_id}}_{{unique_id}}'),{{sbas_id}}, false, event); return false;"
+                                            for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox">
+                                            {{base_id|get_collection_logo|raw}} {{base_id|bas_names}}
+                                        </label>
+                                    </td>
+                                </tr>
+                            </table>
                         </li>
                     {% endfor %}
                 </ul>
@@ -393,7 +401,7 @@
                                                                         <img src="{{s['imgoff']}}" title="{{s['labeloff']}}" />
                                                                     {% endif %}
                                                                     <label class="checkbox inline">
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode(' field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|implode(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][off][]" />
                                                                         {{s['labeloff']}}
@@ -404,7 +412,7 @@
                                                                         <img src="{{s['imgon']}}" title="{{s['labelon']}}" />
                                                                     {% endif %}
                                                                     <label class="checkbox inline">
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode(' field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|implode(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][on][]"/>
                                                                         {{s['labelon']}}

@@ -1378,10 +1378,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $sql = 'INSERT INTO record
               (coll_id, record_id, parent_record_id, moddate, credate
-                , jeton, type, sha256, uuid, originalname, mime)
+                , type, sha256, uuid, originalname, mime)
             VALUES
               (:coll_id, null, :parent_record_id, NOW(), NOW()
-              , ' . JETON_MAKE_SUBDEF . ' , :type, :sha256, :uuid
+              , :type, :sha256, :uuid
               , :originalname, :mime)';
 
         $stmt = $databox->get_connection()->prepare($sql);
@@ -1430,6 +1430,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
 
         $record->insertTechnicalDatas();
+        $record->rebuild_subdefs();
 
         return $record;
     }
