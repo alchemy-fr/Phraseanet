@@ -18,7 +18,7 @@
   - Admin databox structure fields editing redesigned.
   - Refactor of the configuration tester.
   - Refactor authentication, add support for external authentication providers
-    - Support for Facebook, Twitter, Viadeo, Github, Linkedin, Google-Plus.
+      - Support for Facebook, Twitter, Viadeo, Github, Linkedin, Google-Plus.
   - Add `Link` header in permalink resources HTTP responses.
   - Global speed improvement on report.
 
