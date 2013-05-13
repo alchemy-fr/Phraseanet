@@ -1024,37 +1024,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
 
     /**
-     * get array of base_id's on which the user is 'order master'
-     *
-     * @return array
-     */
-    public function get_order_master_bids()
-    {
-        $sql = 'SELECT base_id FROM basusr WHERE order_master=\'1\' AND usr_id= :id ';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->id));
-        $row = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        $stmt->closeCursor();
-        foreach($row as $k=>$v)
-            $row[$k] = (int)$v;
-
-        return $row;
-    }
-
-    /**
-     * set the user as "order_master" on a collection
-     *
-     * @param int $bid
-     */
-    public function set_order_master($bid)
-    {
-        $sql = 'UPDATE basusr SET order_master=\'1\' WHERE usr_id= :id AND base_id= :bid';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':id' => $this->id, 'bid' => $bid));
-        $stmt->closeCursor();
-    }
-
-    /**
      *
      * @param  <type> $id
      * @return user
