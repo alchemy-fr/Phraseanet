@@ -7,7 +7,7 @@ require.config({
         backbone: '../assets/backbone-amd/backbone',
         twig: '../assets/twig/twig',
         i18n: '../assets/i18n/i18next.amd',
-        bootstrap: ['//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min']
+        bootstrap: '../skins/html5/bootstrap/js/bootstrap.min'
     },
     shim: {
         twig: {

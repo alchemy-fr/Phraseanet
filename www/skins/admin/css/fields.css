@@ -1,8 +1,17 @@
+#admin-field-app h4 {
+    padding: 10px 0;
+}
+
 #admin-field-app li {
     background: #FFF;
     border-top: 1px solid #ccc;
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
+}
+
+#admin-field-app li table {
+    table-layout:fixed;
+    width:100%;
 }
 
 #admin-field-app li .field-name {
@@ -11,9 +20,30 @@
     color: #666;
 }
 
+#admin-field-app li .handle {
+    width: 10%;
+    vertical-align:middle;
+    text-align:center;
+    cursor: move;
+}
+
+#admin-field-app li .trigger-click {
+    padding:10px;
+}
+
+#admin-field-app li .position {
+    width: 10%;
+    vertical-align:bottom;
+    text-align: center
+}
+
+#admin-field-app li .chip {
+    width:10%;
+}
+
 #admin-field-app li .handle, #admin-field-app li .position {
-   color: #ccc;
-   border-right: 1px solid #ccc;
+    color: #ccc;
+    border-right: 1px solid #ccc;
 }
 
 #admin-field-app li.last {
@@ -51,6 +81,35 @@
     min-width: 220px;
 }
 
+#admin-field-app .sidebar-block {
+    margin: 20px 0;
+}
+
+#admin-field-app #collection-fields {
+    height:450px;
+    overflow: auto;
+}
+
+#admin-field-app .edit-block {
+    padding: 5px 20px
+}
+
+#admin-field-app .edit-block .edit-order {
+    height: 50px;
+}
+
+#admin-field-app .edit-block .edit-name {
+    height: 60px;
+}
+
+#admin-field-app .edit-block input#name {
+    font-size:28px;
+    color:#0080FF;
+    height:42px;
+    line-height:42px;
+    font-weight:bold
+}
+
 .ui-autocomplete-admin-field {
     list-style-type: none;
     overflow-y: scroll;
@@ -69,5 +128,3 @@
 .ui-autocomplete-admin-field li a {
     text-decoration: none;
 }
-
-

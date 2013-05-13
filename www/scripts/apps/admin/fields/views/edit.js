@@ -11,8 +11,8 @@ define([
         className: "field-edit",
         initialize: function() {
             this.model.on('change', this.render, this);
-            this.model.on('change:name', this.onFieldChange, this);
-            this.model.on('change:tag', this.onFieldChange, this);
+            this.model.on('change:name', this.onModelFieldChange, this);
+            this.model.on('change:tag', this.onModelFieldChange, this);
 
             this.dcFieldsSubView = new DcFieldView({
                 collection: window.AdminFieldApp.dcFieldsCollection
@@ -54,19 +54,18 @@ define([
         },
         events: {
             "click .delete-field": "deleteAction",
-            "focusout input[type=text]": "fieldChanged",
-            "change input[type=checkbox]": "fieldChanged",
-            "change select": "selectionChanged"
+            "focusout input[type=text]": "fieldChangedAction",
+            "change input[type=checkbox]": "fieldChangedAction",
+            "change select": "selectionChangedAction"
         },
-        selectionChanged: function(e) {
+        selectionChangedAction: function(e) {
             var field = $(e.currentTarget);
             var value = $("option:selected", field).val();
             var data = {};
             data[field.attr('id')] = value;
             this.model.set(data);
         },
-        fieldChanged: function(e) {
-    console.log('field change');
+        fieldChangedAction: function(e) {
             var field = $(e.currentTarget);
             var data = {};
             data[field.attr('id')] = field.is(":checkbox") ? field.is(":checked") : field.val();
@@ -108,8 +107,7 @@ define([
 
             return this;
         },
-        onFieldChange: function() {
-            console.log('on field changed');
+        onModelFieldChange: function() {
             AdminFieldApp.fieldListView.collection.remove(this.model, {silent: true});
             AdminFieldApp.fieldListView.collection.add(this.model);
             this.render();
@@ -118,13 +116,11 @@ define([
             var selectors;
             if (_.isObject(selector)) {
                 selectors = selector;
-            }
-            else {
+            } else {
                 selectors = {};
                 selectors[selector] = view;
             }
-            if (!selectors)
-                return;
+            if (!selectors) return;
             _.each(selectors, function(view, selector) {
                 view.setElement(this.$(selector)).render();
             }, this);

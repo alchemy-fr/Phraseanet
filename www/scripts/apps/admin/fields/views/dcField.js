@@ -7,7 +7,7 @@ define([
         tagName: "div",
         className: "input-append",
         events: {
-            "change select": "onChange"
+            "change select": "selectChangedAction"
         },
         render: function() {
             var template = _.template($("#dc_fields_template").html(), {
@@ -18,7 +18,7 @@ define([
 
             return this;
         },
-        onChange: function(e) {
+        selectChangedAction: function(e) {
             var index = $(e.target)[0].selectedIndex;
             this.$el.closest('table').find('.dces-help-block').empty().append(this.collection.at(index).get('definition'));
         }
@@ -26,4 +26,3 @@ define([
 
    return DcFieldsView;
 });
-

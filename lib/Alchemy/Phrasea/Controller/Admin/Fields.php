@@ -146,7 +146,7 @@ class Fields implements ControllerProviderInterface
                         continue;
                     }
 
-                    $res[$tagname] = array(
+                    $res[] = array(
                         'id'    => $namespace . '/' . $tagname,
                         'label' => $datas['namespace'] . ' / ' . $datas['tagname'],
                         'value' => $datas['namespace'] . ':' . $datas['tagname'],
@@ -154,8 +154,6 @@ class Fields implements ControllerProviderInterface
                 }
             }
         }
-
-        ksort($res);
 
         return $app->json($res);
     }
