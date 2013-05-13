@@ -72,7 +72,7 @@ class BinariesRequirements extends RequirementCollection
             $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
 
             $this->addRequirement(
-                version_compare('6.2.9', $version, '<'),
+                version_compare(static::IMAGICK_VERSION, $version, '<'),
                 sprintf('Convert version %s or higher is required (%s provided)', static::IMAGICK_VERSION, $version),
                 'Please update to a more recent version'
             );
