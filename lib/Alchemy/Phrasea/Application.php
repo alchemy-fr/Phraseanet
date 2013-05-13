@@ -73,6 +73,7 @@ use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
 use Alchemy\Phrasea\Core\Event\Subscriber\Logout;
+use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
@@ -85,7 +86,6 @@ use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
-use Alchemy\Phrasea\Core\Provider\PhraseaLocaleServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
@@ -222,7 +222,6 @@ class Application extends SilexApplication
         $this->register(new InstallerServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
-        $this->register(new PhraseaLocaleServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
         $this->register(new SearchEngineServiceProvider());
         $this->register(new SessionServiceProvider(), array(
@@ -349,6 +348,7 @@ class Application extends SilexApplication
         $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
         $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'disableCookiesIfRequired'), -256);
         $this['dispatcher']->addSubscriber(new Logout());
+        $this['dispatcher']->addSubscriber(new PhraseaLocaleSubscriber($this));
 
         $this['locale'] = $this->share(function(Application $app){
             return $app['phraseanet.registry']->get('GV_default_lng', 'en_GB');

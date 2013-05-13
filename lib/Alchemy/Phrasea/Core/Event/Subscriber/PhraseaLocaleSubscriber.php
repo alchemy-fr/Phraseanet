@@ -9,31 +9,35 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Provider;
+namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
-class PhraseaLocaleServiceProvider implements ServiceProviderInterface
+class PhraseaLocaleSubscriber implements EventSubscriberInterface
 {
     private $app;
     private $locale;
 
-    public function register(Application $app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
     }
 
-    public function boot(Application $app)
+    public static function getSubscribedEvents()
     {
-        // make locale available asap
-        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 255);
-        // symfony locale is set on 16 priority, let's override it
-        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 17);
-        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 15);
-        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'removePhraseanetLocale'), 14);
+        return array(
+            KernelEvents::REQUEST => array(
+                array('addLocale', 255),
+                // symfony locale is set on 16 priority, let's override it
+                array('addLocale', 17),
+                array('addLocale', 15),
+                array('removePhraseanetLocale', 14),
+            ),
+        );
     }
 
     public function removePhraseanetLocale(GetResponseEvent $event)
@@ -64,7 +68,6 @@ class PhraseaLocaleServiceProvider implements ServiceProviderInterface
         );
 
         $this->app['locale'] = $this->locale = $this->app->share(function(Application $app) use ($event) {
-
             if (isset($app['phraseanet.registry'])) {
                 $event->getRequest()->setDefaultLocale(
                     $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
@@ -74,7 +77,7 @@ class PhraseaLocaleServiceProvider implements ServiceProviderInterface
                 );
             }
 
-            $languages = \Alchemy\Phrasea\Application::getAvailableLanguages();
+            $languages = PhraseaApplication::getAvailableLanguages();
             if ($event->getRequest()->cookies->has('locale')
                 && isset($languages[$event->getRequest()->cookies->get('locale')])) {
                 $event->getRequest()->setLocale($event->getRequest()->cookies->get('locale'));
@@ -82,15 +85,21 @@ class PhraseaLocaleServiceProvider implements ServiceProviderInterface
                 return $event->getRequest()->getLocale();
             }
 
-            foreach ($app['bad-faith']->headerLists['accept_language']->items as $language) {
-                $code = $language->lang.'_'.$language->sublang;
-                if (isset($languages[$code])) {
+            $localeSet = false;
 
+            foreach ($app['bad-faith']->headerLists['accept_language']->items as $language) {
+                $code = $language->lang . ($language->sublang ? '_' . $language->sublang : null);
+                if (isset($languages[$code])) {
                     $event->getRequest()->setLocale($code);
+                    $localeSet = true;
 
                     return $event->getRequest()->getLocale();
                     break;
                 }
+            }
+
+            if (!$localeSet) {
+                $event->getRequest()->setLocale('en_GB');
             }
 
             return $event->getRequest()->getLocale();
