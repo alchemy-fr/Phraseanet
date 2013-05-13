@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Yaml\Yaml;
+
 class caption_recordTest extends PhraseanetPHPUnitAbstract
 {
     /**
@@ -54,15 +56,76 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
         }
     }
 
+    public function testSerializeJSON()
+    {
+        foreach (self::$DI['record_1']->get_databox()->get_meta_structure() as $databox_field) {
+            $n = $databox_field->is_multi() ? 3 : 1;
+
+            for ($i = 0; $i < $n; $i ++ ) {
+                \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], \random::generatePassword());
+            }
+        }
+
+        $json = json_decode($this->object->serialize(\caption_record::SERIALIZE_JSON), true);
+
+        foreach (self::$DI['record_1']->get_caption()->get_fields() as $field) {
+            if ($field->get_databox_field()->is_multi()) {
+                $tagname = $field->get_name();
+                $retrieved = array();
+                foreach ($json["record"]["description"][$tagname] as $value) {
+                    $retrieved[] = $value;
+                }
+
+                $values = $field->get_values();
+                $this->assertEquals(count($values), count($retrieved));
+                foreach ($values as $val) {
+                    $this->assertTrue(in_array($val->getValue(), $retrieved));
+                }
+            } else {
+                $tagname = $field->get_name();
+                $data = $field->get_values();
+                $value = array_pop($data);
+                $this->assertEquals($value->getValue(), $json["record"]["description"][$tagname]);
+            }
+        }
+    }
+    
     /**
      * @covers \caption_record::serializeYAML
      */
     public function testSerializeYAML()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        foreach (self::$DI['record_1']->get_databox()->get_meta_structure() as $databox_field) {
+            $n = $databox_field->is_multi() ? 3 : 1;
+
+            for ($i = 0; $i < $n; $i ++ ) {
+                \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], \random::generatePassword());
+            }
+        }
+
+        $parser = new Yaml();
+        $yaml = $parser->parse($this->object->serialize(\caption_record::SERIALIZE_YAML));
+            
+        foreach (self::$DI['record_1']->get_caption()->get_fields() as $field) {
+            if ($field->get_databox_field()->is_multi()) {
+                $tagname = $field->get_name();
+                $retrieved = array();
+                foreach ($yaml["record"]["description"][$tagname] as $value) {
+                    $retrieved[] = (string) $value;
+                }
+
+                $values = $field->get_values();
+                $this->assertEquals(count($values), count($retrieved));
+                foreach ($values as $val) {
+                    $this->assertTrue(in_array($val->getValue(), $retrieved));
+                }
+            } else {
+                $tagname = $field->get_name();
+                $data = $field->get_values();
+                $value = array_pop($data);
+                $this->assertEquals($value->getValue(), (string) $yaml["record"]["description"][$tagname]);
+            }
+        }
     }
 
     /**
