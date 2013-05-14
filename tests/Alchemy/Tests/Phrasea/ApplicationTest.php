@@ -210,4 +210,9 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         return $app;
     }
+    private function getClientWithCookie(Application $app)
+    {
+        $cookieJar = new CookieJar();
+        return new Client($app, array(), null, $cookieJar);
+    }
 }
