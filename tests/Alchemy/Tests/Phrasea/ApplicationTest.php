@@ -102,63 +102,6 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     /**
      * @covers Alchemy\Phrasea\Application
      */
-    public function testCookieLocale()
-    {
-        $app = $this->getAppThatReturnLocale();
-
-        foreach (array('fr_FR', 'en_GB', 'de_DE') as $locale) {
-            $client = $this->getClientWithCookie($app, $locale);
-            $client->request('GET', '/');
-
-            $this->assertEquals($locale, $client->getResponse()->getContent());
-        }
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
-    public function testNoCookieLocaleReturnsDefaultLocale()
-    {
-        $app = $this->getAppThatReturnLocale();
-        $this->mockRegistryAndReturnLocale($app, 'en_USA');
-
-        $client = $this->getClientWithCookie($app, null);
-        $client->request('GET', '/');
-
-        $this->assertEquals('en_USA', $client->getResponse()->getContent());
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
-    public function testWrongCookieLocaleReturnsDefaultLocale()
-    {
-        $app = $this->getAppThatReturnLocale();
-        $this->mockRegistryAndReturnLocale($app, 'en_USA');
-
-        $client = $this->getClientWithCookie($app, 'de_PL');
-        $client->request('GET', '/');
-
-        $this->assertEquals('en_USA', $client->getResponse()->getContent());
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
-    public function testNoCookieReturnsContentNegotiated()
-    {
-        $app = $this->getAppThatReturnLocale();
-        $this->mockRegistryAndReturnLocale($app, 'en_USA');
-
-        $client = $this->getClientWithCookie($app, null);
-        $client->request('GET', '/', array(), array(), array('accept_language' => 'en-US;q=0.75,en;q=0.8,fr-FR;q=0.9'));
-
-        $this->assertEquals('fr_FR', $client->getResponse()->getContent());
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
     public function testFlashSession()
     {
         $app = new Application('test');
@@ -239,29 +182,6 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals(array('BAMBA'), $app->getFlash('notice'));
     }
 
-    private function getAppThatReturnLocale()
-    {
-        $app = new Application('test');
-
-        $app->get('/', function(Application $app, Request $request) {
-
-            return $app['locale'];
-        });
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
-    private function mockRegistryAndReturnLocale(Application $app, $locale)
-    {
-        $app['phraseanet.registry'] = $this->getMockBuilder('\registry')
-            ->disableOriginalConstructor()
-            ->getmock();
-        $app['phraseanet.registry']->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($locale));
-    }
-
     private function getAuthMock()
     {
         $auth = $this->getMockBuilder('Session_Authentication_Interface')
@@ -289,14 +209,5 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         unset($app['exception_handler']);
 
         return $app;
-    }
-
-    private function getClientWithCookie(Application $app, $locale = 'fr_FR')
-    {
-        $cookieJar = new CookieJar();
-        if ($locale) {
-            $cookieJar->set(new BrowserCookie('locale', $locale));
-        }
-        return new Client($app, array(), null, $cookieJar);
     }
 }

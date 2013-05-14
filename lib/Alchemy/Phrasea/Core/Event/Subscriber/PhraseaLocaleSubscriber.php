@@ -99,7 +99,7 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
             }
 
             if (!$localeSet) {
-                $event->getRequest()->setLocale('en_GB');
+                $event->getRequest()->setLocale($app['phraseanet.registry']->get('GV_default_lng'));
             }
 
             return $event->getRequest()->getLocale();
