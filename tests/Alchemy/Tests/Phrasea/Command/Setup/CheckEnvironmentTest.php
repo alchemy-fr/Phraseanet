@@ -12,6 +12,6 @@ class CheckEnvironmentTest extends \PhraseanetPHPUnitAbstract
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
 
         $command = new CheckEnvironment('system:check');
-        $this->assertEquals(0, $command->execute($input, $output));
+        $this->assertLessThan(2, $command->execute($input, $output));
     }
 }
