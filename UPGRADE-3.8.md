@@ -1,5 +1,4 @@
-UPGRADE FROM 3.7 TO 3.8
------------------------
+# UPGRADE FROM 3.7 TO 3.8
 
 Here are some release notes about upgrading from Phraseanet 3.7 and Phraseanet 3.8.
 
@@ -10,16 +9,22 @@ some new features, robustness and stability.
 These enhancements are described in the CHANGELOG file. The purpose of this document
 is to provide a list a BC breaks / Changes.
 
-Console
-+++++++
+## Console
 
 Phraseanet 3.8 comes with a new command-line utility : `bin/setup`. This utility
 brings commands that can be run when Phraseanet is not installed.
 
-    - `bin/console system:upgrade` is replaced by `bin/setup system:upgrade`
+It introduces 3 BC breaks :
 
-Customization
-+++++++++++++
+    - `bin/console system:upgrade` is replaced by `bin/setup system:upgrade`
+    - `bin/console check:system` is replaced by `bin/setup check:system`
+    - `bin/console check:config` has been dropped
+    
+The idea of `bin/setup` is to provide an commandline tool that is not aware of 
+Phraseanet Installation, whereas `bin/console` requires an up-to-date Phraseanet 
+install.
+
+## Customization
 
 If you were using custom homepage or LDAP connection, they might not work.
 Please disable it before upgrading.
