@@ -22,6 +22,13 @@
   - Add `Link` header in permalink resources HTTP responses.
   - Global speed improvement on report.
 
+* 3.7.12 (2013-05-13)
+
+  - Fix : Removed "required" attribute on non-required fields in order form
+  - Fix : Fix advanced search dialog CSS
+  - Fix : Grouped status bits are not displayed in advanced search dialog
+  - Enhancement : Locales update
+
 * 3.7.11 (2013-04-23)
 
   - Enhancement : Animated Gifs (video support) does not requir Gmagick anymore to work properly.
