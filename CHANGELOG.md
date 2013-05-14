@@ -2,6 +2,10 @@
 
 * 3.8.0 (2013-xx-xx)
 
+  - BC Break : Removed `bin/console check:config` command.
+  - BC Break : Removed `bin/console check:system` command, replaced by `bin/setup check:system`.
+  - BC Break : Removed `bin/console system:upgrade` command, replaced by `bin/setup system:upgrade`.
+
   - SwiftMailer integration (replaces PHPMailer).
       - Emails now include an HTML view.
       - Emails can now have a customized subject prefix.
@@ -10,8 +14,6 @@
   - Add support for stemmatisation in Phrasea-Engine.
   - Add bin/setup command utility, it is now recommanded to use `bin/setup system:install` 
     command to install Phraseanet.
-  - Removed `bin/console check:config` command.
-  - Removed `bin/console check:system` command, replaced by `bin/setup check:system`. 
   - Lots of cleanup and code refactorisation.
   - Add task-manager logging to syslog.
   - Add bin/console mail:test command to check email configuration.
