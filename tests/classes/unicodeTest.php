@@ -14,22 +14,22 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @covers \unicode::convert_to
+     * @covers \unicode::convert
      */
-    public function testConvert_to()
+    public function testConvert()
     {
-        $this->assertEquals('éléphant à rôtir', $this->object->convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_LC));
-        $this->assertEquals('ELEPHANT a rotir', $this->object->convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_ND));
-        $this->assertEquals('elephant a rotir', $this->object->convert_to('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_LCND));
+        $this->assertEquals('éléphant à rôtir', $this->object->convert('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_LC));
+        $this->assertEquals('ELEPHANT a rotir', $this->object->convert('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_ND));
+        $this->assertEquals('elephant a rotir', $this->object->convert('ÉLÉPHANT à rôtir', unicode::CONVERT_TO_LCND));
     }
 
     /**
-     * @covers \unicode::convert_to
+     * @covers \unicode::convert
      * @expectedException        Exception_InvalidArgument
      */
-    public function testConvert_to_ex()
+    public function testConvertError()
     {
-        $this->object->Convert_to('ÉLÉPHANT à rôtir', 'unexistant contant');
+        $this->object->convert('ÉLÉPHANT à rôtir', 'unexistant contant');
     }
 
     /**
@@ -38,28 +38,21 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
     public function testRemove_diacritics()
     {
         $this->assertEquals('Elephant', $this->object->remove_diacritics('Éléphant'));
-        $this->assertEquals('&e"\'(-eE_ca)=$*u:;,?./§%μ£°0987654321Œ3~#{[|^`@]}e32÷×¿',
-            $this->object->remove_diacritics('&é"\'(-èÉ_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿'));
+        $this->assertEquals('&e"\'(-eE_ca)=$*u:;,?./§%μ£°0987654321Œ3~#{[|^`@]}e32÷×¿',$this->object->remove_diacritics('&é"\'(-èÉ_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿'));
         $this->assertEquals('PeTARDS', $this->object->remove_diacritics('PéTARDS'));
     }
 
     /**
-     *
      * @covers \unicode::remove_nonazAZ09
      */
     public function testRemove_nonazAZ09()
     {
         $this->assertEquals('Elephant', $this->object->remove_nonazAZ09('Eléphant'));
-        $this->assertEquals('Ee-e_cau.09876543213e32',
-            $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', true, true, true));
-        $this->assertEquals('Ee-e_cau09876543213e32',
-            $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', true, true, false));
-        $this->assertEquals('Eee_cau.09876543213e32',
-            $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', true, false, true));
-        $this->assertEquals('Ee-ecau.09876543213e32',
-            $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', false, true, true));
-        $this->assertEquals('Eeecau09876543213e32',
-            $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', false, false, false));
+        $this->assertEquals('Ee-e_cau.09876543213e32', $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', true, true, true));
+        $this->assertEquals('Ee-e_cau09876543213e32', $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', true, true, false));
+        $this->assertEquals('Eee_cau.09876543213e32', $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', true, false, true));
+        $this->assertEquals('Ee-ecau.09876543213e32', $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', false, true, true));
+        $this->assertEquals('Eeecau09876543213e32', $this->object->remove_nonazAZ09('É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿', false, false, false));
     }
 
     /**

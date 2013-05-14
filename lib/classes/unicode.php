@@ -16,7 +16,6 @@
  */
 class unicode
 {
-    // second argument to convert_to(...)
     const CONVERT_TO_LC   = 'lc';           // lowercase
     const CONVERT_TO_ND   = 'nd';           // no-diacritics
     const CONVERT_TO_LCND = 'lcnd';         // lowercase no-diacritics
@@ -1561,36 +1560,40 @@ class unicode
 
 
     /**
-     * convert a utf8 string using method:
-     * self::CONVERT_TO_LC   : lowercase
-     * self::CONVERT_TO_ND   : no-diacritics
-     * self::CONVERT_TO_LCND : lowercase no-diacritics
+     * Converts a string
      *
-     * @param string $s
-     * @param string $method
+     * @param string $string
+     * @param string $target One of the unicode::CONVERT_TO_* constants
+     *
      * @return string
-     * @throws Exception_InvalidArgument
      *
+     * @throws Exception_InvalidArgument
      */
-    public function convert_to($s, $method)
+    public function convert($string, $target)
     {
         $ok_methods = array_keys(self::$map);
-        if (!in_array($method, $ok_methods)) {
+
+        if (!in_array($target, $ok_methods)) {
             throw new Exception_InvalidArgument(
                 sprintf('Invalid argument 2 "%s", valid values are [%s].'
-                    , $method
+                    , $target
                     , implode('|', $ok_methods)
                 )
             );
         }
         if (function_exists('phrasea_utf8_convert_to')) {
-            // function exists in phrasea extension
-            return phrasea_utf8_convert_to($s, $method);
+            return phrasea_utf8_convert_to($string, $target);
         }
+
         $out = '';
-        $_map = &self::$map[$method];   // faster in loop
-        for ($i = 0; $i < mb_strlen($s, 'UTF-8'); $i++) {
-            $out .= array_key_exists(($c = mb_substr($s, $i, 1, 'UTF-8')), $_map) ? $_map[$c] : $c;
+        $_map = &self::$map[$target];   // faster in loop
+
+        for ($i = 0; $i < mb_strlen($string, 'UTF-8'); $i++) {
+            if (true === array_key_exists(($c = mb_substr($string, $i, 1, 'UTF-8')), $_map)) {
+                $out .= $_map[$c];
+            } else {
+                $out .= $c;
+            }
         }
 
         return $out;
@@ -1600,7 +1603,7 @@ class unicode
     {
         $so = "";
 
-        $string = $this->convert_to($string, 'lcnd');
+        $string = $this->convert($string, static::CONVERT_TO_LCND);
 
         $l = mb_strlen($string, "UTF-8");
         $lastwasblank = false;
@@ -1621,7 +1624,7 @@ class unicode
 
     public function remove_diacritics($string)
     {
-        return $this->convert_to($string, 'nd');
+        return $this->convert($string, static::CONVERT_TO_ND);
     }
 
     public function remove_nonazAZ09($string, $keep_underscores = true, $keep_minus = true, $keep_dot = false)
