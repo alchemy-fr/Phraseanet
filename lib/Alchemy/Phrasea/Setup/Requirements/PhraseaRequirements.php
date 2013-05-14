@@ -54,7 +54,7 @@ class PhraseaRequirements extends RequirementCollection implements RequirementIn
             $version = sprintf('%d.%d.%d.%d', $data[0], $data[1], $data[2], $data[3]);
 
             $this->addRequirement(
-                version_compare(static::PHRASEA_INDEXER_VERSION, $version, '<'),
+                version_compare(static::PHRASEA_INDEXER_VERSION, $version, '<='),
                 sprintf('Phraseanet Indexer %s or higher is required (%s provided)', static::PHRASEA_INDEXER_VERSION, $version),
                 'Please update to a more recent version'
             );
