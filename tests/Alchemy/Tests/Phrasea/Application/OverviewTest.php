@@ -96,7 +96,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     function testCaptionNotAuthenticated()
     {
-        self::$DI['app']->closeAccount();
+        self::$DI['app']['authentication']->closeAccount();
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
         $this->get_a_caption(array("Content-Type" => "application/json"));
     }

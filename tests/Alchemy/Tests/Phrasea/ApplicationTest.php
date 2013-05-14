@@ -315,9 +315,14 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         return $app;
     }
-    private function getClientWithCookie(Application $app)
+
+    private function getClientWithCookie(Application $app, $locale = null)
     {
         $cookieJar = new CookieJar();
+        if (null !== $locale) {
+            $cookieJar->set(new BrowserCookie('locale', $locale));
+        }
+
         return new Client($app, array(), null, $cookieJar);
     }
 }

@@ -204,6 +204,7 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testTrialsIsConfigurable()
     {
+        $repo = $this->getRepo();
         $em = $this->getEntityManagerMock($repo);
         $recaptcha = $this->getReCaptchaMock(null);
 
