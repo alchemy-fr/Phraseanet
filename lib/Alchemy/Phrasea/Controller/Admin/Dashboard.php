@@ -140,15 +140,6 @@ class Dashboard implements ControllerProviderInterface
             'cache_flushed'                 => $request->query->get('flush_cache') === 'ok',
             'admins'                        => \User_Adapter::get_sys_admins($app),
             'email_status'                  => $emailStatus,
-            'search_engine_status'          => $app['phraseanet.SE']->getStatus(),
-            'php_version_constraints'       => \setup::check_php_version(),
-            'writability_constraints'       => \setup::check_writability($app['phraseanet.registry']),
-            'binaries_constraints'          => \setup::check_binaries($app['phraseanet.registry']),
-            'php_extension_constraints'     => \setup::check_php_extension(),
-            'cache_constraints'             => \setup::check_cache_server(),
-            'phrasea_constraints'           => \setup::check_phrasea(),
-            'cache_opcode_constraints'      => \setup::check_cache_opcode(),
-            'php_configuration_constraints' => \setup::check_php_configuration(),
         );
 
         return $app['twig']->render('admin/dashboard.html.twig', $parameters);

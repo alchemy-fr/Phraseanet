@@ -65,14 +65,15 @@ use Alchemy\Phrasea\Controller\Root\Developers;
 use Alchemy\Phrasea\Controller\Root\Login;
 use Alchemy\Phrasea\Controller\Root\RSSFeeds;
 use Alchemy\Phrasea\Controller\Root\Session;
+use Alchemy\Phrasea\Controller\Setup as SetupController;
 use Alchemy\Phrasea\Controller\Thesaurus\Thesaurus;
 use Alchemy\Phrasea\Controller\Thesaurus\Xmlhttp as ThesaurusXMLHttp;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
-use Alchemy\Phrasea\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Event\Subscriber\Logout;
+use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
@@ -80,8 +81,11 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
+use Alchemy\Phrasea\Core\Provider\InstallerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
@@ -215,7 +219,9 @@ class Application extends SilexApplication
         $this->register(new MP4BoxServiceProvider());
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new ORMServiceProvider());
+        $this->register(new InstallerServiceProvider());
         $this->register(new PhraseanetServiceProvider());
+        $this->register(new PhraseaVersionServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
         $this->register(new SearchEngineServiceProvider());
         $this->register(new SessionServiceProvider(), array(
@@ -313,7 +319,6 @@ class Application extends SilexApplication
             throw new \RuntimeException('No Imagine driver available');
         });
 
-
         $app = $this;
         $this['phraseanet.logger'] = $this->protect(function($databox) use ($app) {
             try {
@@ -339,17 +344,11 @@ class Application extends SilexApplication
             })
         );
 
-        // make locale available asap
-        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 255);
-        // symfony locale is set on 16 priority, let's override it
-        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 17);
-        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 15);
-        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'removePhraseanetLocale'), 14);
-
         $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initSession'), 254);
         $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
         $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'disableCookiesIfRequired'), -256);
         $this['dispatcher']->addSubscriber(new Logout());
+        $this['dispatcher']->addSubscriber(new PhraseaLocaleSubscriber($this));
 
         $this['locale'] = $this->share(function(Application $app){
             return $app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
@@ -443,65 +442,6 @@ class Application extends SilexApplication
         }
 
         $event->setResponse($response);
-    }
-
-    public function removePhraseanetLocale(GetResponseEvent $event)
-    {
-        if (isset($this['phraseanet.locale'])) {
-            unset($this['phraseanet.locale']);
-        }
-    }
-
-    public function addLocale(GetResponseEvent $event)
-    {
-        if (isset($this['phraseanet.locale'])) {
-            $this['locale'] = $this['phraseanet.locale'];
-            return;
-        }
-
-        /**
-         * add content negotiation here
-         */
-        $contentTypes = $event->getRequest()->getAcceptableContentTypes();
-        $event->getRequest()->setRequestFormat(
-            $event->getRequest()->getFormat(
-                array_shift(
-                    $contentTypes
-                )
-            )
-        );
-
-        $this['locale'] = $this['phraseanet.locale'] = $this->share(function(Application $app) use ($event) {
-            $event->getRequest()->setDefaultLocale(
-                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
-            );
-            $event->getRequest()->setLocale(
-                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
-            );
-
-            $languages = $app->getAvailableLanguages();
-            if ($event->getRequest()->cookies->has('locale')
-                && isset($languages[$event->getRequest()->cookies->get('locale')])) {
-                $event->getRequest()->setLocale($event->getRequest()->cookies->get('locale'));
-
-                return $event->getRequest()->getLocale();
-            }
-
-            foreach ($app['bad-faith']->headerLists['accept_language']->items as $language) {
-                $code = $language->lang.'_'.$language->sublang;
-                if (isset($languages[$code])) {
-
-                    $event->getRequest()->setLocale($code);
-
-                    return $event->getRequest()->getLocale();
-                    break;
-                }
-            }
-
-            return $event->getRequest()->getLocale();
-        });
-
-        \phrasea::use_i18n($this['locale']);
     }
 
     public function setupTwig()
@@ -654,6 +594,8 @@ class Application extends SilexApplication
 
             return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
         })->bind('robots');
+
+        $this->mount('/setup', new SetupController());
 
         $this->mount('/feeds/', new RSSFeeds());
         $this->mount('/account/', new Account());

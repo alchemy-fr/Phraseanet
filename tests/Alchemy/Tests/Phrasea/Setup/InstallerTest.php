@@ -52,8 +52,8 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         $template = 'en';
         $dataPath = __DIR__ . '/../../../../../datas/';
 
-        $installer = new Installer($app, 'admin@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, $template);
-        $installer->install();
+        $installer = new Installer($app);
+        $installer->install('admin@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, $template);
 
         \User_Adapter::unsetInstances();
 

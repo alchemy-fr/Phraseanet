@@ -11,9 +11,17 @@
 
 namespace Alchemy\Phrasea\Setup\Version\Probe;
 
+use Alchemy\Phrasea\Setup\Version\Migration\MigrationInterface;
+
 interface ProbeInterface
 {
+    /**
+     * @return Boolean
+     */
     public function isMigrable();
 
+    /**
+     * @return MigrationInterface
+     */
     public function getMigration();
 }

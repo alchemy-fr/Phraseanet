@@ -73,6 +73,7 @@ return call_user_func(function($environment = 'prod') {
 
         if ($app->isAuthenticated()) {
             $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
+
             return;
         }
 
