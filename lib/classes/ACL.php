@@ -1591,4 +1591,50 @@ class ACL implements cache_cacheableInterface
 
         return $this;
     }
+
+    /**
+     * Returns an array of collections on which the user is 'order master'
+     *
+     * @return array
+     */
+    public function get_order_master_collections()
+    {
+        $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id ';
+        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt->execute(array(':usr_id' => $this->user->get_id()));
+        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $collections = array();
+
+        foreach($rs as $row) {
+            $collections[] = \collection::get_from_base_id($row['base_id']);
+        }
+
+        return $collections;
+    }
+
+    /**
+     * Sets the user as "order_master" on a collection
+     *
+     * @param \collection $collection The collection to apply
+     * @param Boolean     $bool       Wheter the user is order master or not
+     *
+     * @return ACL
+     */
+    public function set_order_master(\collection $collection, $bool)
+    {
+        $sql = 'UPDATE basusr SET order_master = :master
+                WHERE usr_id = :usr_id AND base_id = :base_id';
+
+        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt->execute(array(
+            ':master'    => $bool ? 1 : 0,
+            ':usr_id'    => $this->user->get_id(),
+            ':base_id'   => $collection->get_base_id()
+        ));
+        $stmt->closeCursor();
+
+        return $this;
+    }
 }
