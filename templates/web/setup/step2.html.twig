@@ -279,7 +279,7 @@
 {% endblock %}
 
 {% block content %}
-            <form id="create_admin" method="post" action="/setup/installer/install/">
+            <form id="create_admin" method="post" action="{{ path('install_do_install') }}">
 
 
 
@@ -327,13 +327,20 @@
                                   {% endif %}
                                 </td>
                               </tr>
-                             {% for warning in warnings %}
-                                <tr style='border-top:1px dotted grey;{{ loop.last ? " border-bottom:1px dotted grey;" : " " }}'>
-                                  <td class="warning">
-                                    {{ warning }}
-                                  </td>
-                                </tr>
-                              {% endfor %}
+                                {% for warning in warnings %}
+                                    <tr style='border-top:1px dotted grey;{{ loop.last ? " border-bottom:1px dotted grey;" : " " }}'>
+                                        <td class="warning">
+                                            {{ warning }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                {% if warnings is not empty %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ path('install_root') }}">{% trans 'Review system configuration' %}</a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             </table>
                           </td>
                         </tr>

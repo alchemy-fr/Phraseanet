@@ -111,14 +111,8 @@ class Install extends Command
             }
         }
 
-        $installer = new Installer($this->container, $email, $password, $abConn, $serverName, $dataPath, $dbConn, $template);
-
-        foreach ($this->detectBinaries() as $name => $path) {
-            $installer->addBinaryData($name, $path);
-        }
-
-        $installer->setPhraseaIndexerPath($indexer);
-        $installer->install();
+        $this->container['phraseanet.installer']->setPhraseaIndexerPath($indexer);
+        $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $template, $this->detectBinaries());
 
         $output->writeln("<info>Install successful !</info>");
 

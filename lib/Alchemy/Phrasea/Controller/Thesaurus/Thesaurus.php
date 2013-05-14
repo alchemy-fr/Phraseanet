@@ -17,8 +17,6 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-// check ***::***
-
 class Thesaurus implements ControllerProviderInterface
 {
     public function connect(Application $app)
@@ -499,10 +497,10 @@ class Thesaurus implements ControllerProviderInterface
                             }
                         }
                     }
-                    if ( ! $query) {
+                    if (!$query) {
                         $query = $query0;
                     }
-                    if ( ! $label) {
+                    if (!$label) {
                         $label = $label0;
                     }
 
@@ -2798,7 +2796,7 @@ class Thesaurus implements ControllerProviderInterface
             "reindex" => $request->get('reindex'),
             "debug"   => $request->get('debug'),
         ), true)));
-        
+
         $refresh_list = $root->appendChild($ret->createElement("refresh_list"));
 
         if (null === $bid = $request->get("bid")) {

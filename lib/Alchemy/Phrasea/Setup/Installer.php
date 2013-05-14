@@ -16,52 +16,33 @@ use Doctrine\ORM\Tools\SchemaTool;
 
 class Installer
 {
-    private $email;
-    private $password;
-    private $abConn;
-    private $dbConn;
-    private $template;
+    private $app;
     private $phraseaIndexer;
-    private $serverName;
-    private $dataPath;
-    private $binaryData = array();
 
-    public function __construct(Application $app, $email, $password, \connection_interface $abConn, $serverName, $dataPath, \connection_interface $dbConn = null, $template = null)
+    public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->email = $email;
-        $this->password = $password;
-        $this->abConn = $abConn;
-        $this->dbConn = $dbConn;
-        $this->template = $template;
-        $this->serverName = $serverName;
-        $this->dataPath = $dataPath;
     }
 
-    public function addBinaryData($key, $path)
+    public function install($email, $password, \connection_interface $abConn, $serverName, $dataPath, \connection_interface $dbConn = null, $template = null, array $binaryData = array())
     {
-        if ($path) {
-            $this->binaryData[$key] = $path;
-        }
-    }
-
-    public function install()
-    {
-        $this->rollbackInstall();
+        $this->rollbackInstall($abConn, $dbConn);
 
         try {
 
-            $this->createConfigFile();
+            $this->createConfigFile($abConn, $serverName, $binaryData);
             $this->createAB();
-            $this->populateRegistryData();
-            $this->createUser();
-            if ($this->dbConn) {
-                $this->createDB();
+            $this->populateRegistryData($serverName, $dataPath, $binaryData);
+            $user = $this->createUser($email, $password);
+            if (null !== $dbConn) {
+                $this->createDB($dbConn, $template);
             }
         } catch (\Exception $e) {
-            $this->rollbackInstall();
+            $this->rollbackInstall($abConn, $dbConn);
             throw $e;
         }
+
+        return $user;
     }
 
     public function setPhraseaIndexerPath($path)
@@ -69,13 +50,13 @@ class Installer
         $this->phraseaIndexer = $path;
     }
 
-    private function populateRegistryData()
+    private function populateRegistryData($serverName, $dataPath, $binaryData)
     {
 
-        $this->app['phraseanet.registry']->set('GV_base_datapath_noweb', $this->dataPath, \registry::TYPE_STRING);
-        $this->app['phraseanet.registry']->set('GV_ServerName', $this->serverName, \registry::TYPE_STRING);
+        $this->app['phraseanet.registry']->set('GV_base_datapath_noweb', $dataPath, \registry::TYPE_STRING);
+        $this->app['phraseanet.registry']->set('GV_ServerName', $serverName, \registry::TYPE_STRING);
 
-        foreach ($this->binaryData as $key => $value) {
+        foreach ($binaryData as $key => $value) {
             $this->app['phraseanet.registry']->set($key, $value, \registry::TYPE_STRING);
         }
 
@@ -92,10 +73,10 @@ class Installer
         }
     }
 
-    private function createDB()
+    private function createDB(\connection_interface $dbConn = null, $template)
     {
-        $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $this->template . '-simple.xml');
-        $databox = \databox::create($this->app, $this->dbConn, $template, $this->app['phraseanet.registry']);
+        $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $template . '-simple.xml');
+        $databox = \databox::create($this->app, $dbConn, $template, $this->app['phraseanet.registry']);
         $this->app['phraseanet.user']->ACL()
             ->give_access_to_sbas(array($databox->get_sbas_id()))
             ->update_rights_to_sbas(
@@ -145,14 +126,16 @@ class Installer
         }
     }
 
-    private function createUser()
+    private function createUser($email, $password)
     {
-        $user = \User_Adapter::create($this->app, $this->email, $this->password, $this->email, true);
+        $user = \User_Adapter::create($this->app, $email, $password, $email, true);
 
         $this->app['session']->set('usr_id', $user->get_id());
+
+        return $user;
     }
 
-    private function rollbackInstall()
+    private function rollbackInstall(\connection_interface $abConn, \connection_interface $dbConn = null)
     {
         $structure = simplexml_load_file(__DIR__ . "/../../../conf.d/bases_structure.xml");
 
@@ -166,18 +149,18 @@ class Installer
         foreach ($appbox->tables->table as $table) {
             try {
                 $sql = 'DROP TABLE `' . $table['name'] . '`';
-                $stmt = $this->abConn->prepare($sql);
+                $stmt = $abConn->prepare($sql);
                 $stmt->execute();
                 $stmt->closeCursor();
             } catch (\PDOException $e) {
 
             }
         }
-        if ($this->dbConn) {
+        if (null !== $dbConn) {
             foreach ($databox->tables->table as $table) {
                 try {
                     $sql = 'DROP TABLE `' . $table['name'] . '`';
-                    $stmt = $this->dbConn->prepare($sql);
+                    $stmt = $dbConn->prepare($sql);
                     $stmt->execute();
                     $stmt->closeCursor();
                 } catch (\PDOException $e) {
@@ -208,21 +191,19 @@ class Installer
         $this->app['phraseanet.registry'] = new \registry($this->app);
     }
 
-    private function createConfigFile()
+    private function createConfigFile($abConn, $serverName, $binaryData)
     {
         $this->app['phraseanet.configuration']->initialize();
 
         $connexionINI = array();
 
-        foreach ($this->abConn->get_credentials() as $key => $value) {
+        foreach ($abConn->get_credentials() as $key => $value) {
             $key = $key == 'hostname' ? 'host' : $key;
             $connexionINI[$key] = (string) $value;
         }
 
         $connexionINI['driver'] = 'pdo_mysql';
         $connexionINI['charset'] = 'UTF8';
-
-        $serverName = $this->serverName;
 
         $connexion = array(
             'main_connexion' => $connexionINI,
@@ -267,6 +248,6 @@ class Installer
         }
 
         $this->app['phraseanet.configuration']->setConfigurations($arrayConf, $arrayConf['environment']);
-        $this->app['phraseanet.configuration']->setBinaries(array('binaries' => $this->binaryData));
+        $this->app['phraseanet.configuration']->setBinaries(array('binaries' => $binaryData));
     }
 }

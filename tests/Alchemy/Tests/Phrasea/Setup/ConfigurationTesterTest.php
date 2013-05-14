@@ -147,6 +147,13 @@ class ConfigurationTesterTest extends AbstractSetupTester
         $this->assertTrue($tester->isUpgradable());
     }
 
+    public function testGetRequirements()
+    {
+        foreach ($this->getTester()->getRequirements() as $requirements) {
+            $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementCollectionInterface', $requirements);
+        }
+    }
+
     private function getTester(Application $app = null)
     {
         $app = $app? : new Application('test');

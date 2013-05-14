@@ -21,8 +21,14 @@ return call_user_func(function($environment = null) {
 
     $app = new PhraseaApplication($environment);
 
-    $app->before(function () use ($app) {
-        $app['firewall']->requireSetup();
+    $app->before(function (Request $request) use ($app) {
+        if (0 === strpos($request->getPathInfo(), '/setup')) {
+            if (!$app['phraseanet.configuration-tester']->isBlank()) {
+                return $app->redirect($app->path('homepage'));
+            }
+        } else {
+            $app['firewall']->requireSetup();
+        }
     });
 
     $app->before(function(Request $request) use ($app) {

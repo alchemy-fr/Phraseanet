@@ -9,24 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea;
+namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Security\Firewall;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
 
 class PhraseanetServiceProvider implements ServiceProviderInterface
 {
-
     public function register(SilexApplication $app)
     {
         $app['phraseanet.appbox'] = $app->share(function(SilexApplication $app) {
             return new \appbox($app);
-        });
-
-        $app['phraseanet.version'] = $app->share(function(SilexApplication $app) {
-            return new Version();
         });
 
         $app['phraseanet.registry'] = $app->share(function(SilexApplication $app) {

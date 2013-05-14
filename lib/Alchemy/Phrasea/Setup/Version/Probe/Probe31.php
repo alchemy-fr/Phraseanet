@@ -23,6 +23,9 @@ class Probe31 implements ProbeInterface
         $this->app = $app;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isMigrable()
     {
         /**
@@ -33,6 +36,9 @@ class Probe31 implements ProbeInterface
             && is_file(__DIR__ . "/../../../../../../config/_GV.php");
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getMigration()
     {
         return new Migration31($this->app);

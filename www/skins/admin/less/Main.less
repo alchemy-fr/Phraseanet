@@ -254,21 +254,21 @@ div.switch_right {
     ul, #mail_checker {
         margin: 0 0 20px 15px;
     }
-    div[class^="section_"] {
-        width: 400px;
+    div[class="section"] {
         height: auto;
         h2 {
             line-height: 24px;
         }
         ul.setup {
-            width: 360px;
             border: 1px solid @grey;
             list-style-type: none;
             li {
                 padding: 2px 5px 2px 30px;
-                background-image: url(/skins/icons/ok.png);
                 background-repeat: no-repeat;
                 background-position: 5px center;
+                &.good-enough {
+                    background-image: url(/skins/icons/ok.png);
+                }
                 &.non-blocker {
                     background-image: url(/skins/icons/alert.png);
                 }
@@ -283,13 +283,6 @@ div.switch_right {
         #cache_flusher {
             margin: -10px 0 20px 0;
         }
-    }
-    .section_left {
-        float: left;
-    }
-    .section_right {
-        margin-left: 430px;
-        padding-top: 1px;
     }
     #flush_button {
         width: 362px;

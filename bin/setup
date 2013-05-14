@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Setup\Install;
 use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -59,7 +60,7 @@ try {
         $app->command(new UpgradeDBDatas('system:upgrade-datas'));
     }
 
-    $app->command(new \module_console_systemConfigCheck('check:system'));
+    $app->command(new CheckEnvironment('check:system'));
     $app->command(new Install('system:install'));
 
     $result_code = is_int($app->run()) ? : 1;
