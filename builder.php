@@ -7,13 +7,11 @@
 
 use Symfony\Component\Finder\Finder;
 
-require __DIR__ . '/vendor/autoload.php';
-
 printf('Retrieve vendors ...' . PHP_EOL);
 
 system('./vendors.php --no-dev');
 
-system(__DIR__ . '/composer.phar dump-autoload');
+require __DIR__ . '/vendor/autoload.php';
 
 chdir(__DIR__);
 
