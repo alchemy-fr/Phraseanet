@@ -18,12 +18,12 @@ class Feed
     /**
      * @var boolean
      */
-    private $public;
+    private $public = false;
 
     /**
      * @var string
      */
-    private $icon_url;
+    private $icon_url = false;
 
     /**
      * @var integer
@@ -38,17 +38,17 @@ class Feed
     /**
      * @var string
      */
-    private $description;
+    private $subtitle;
 
     /**
      * @var \DateTime
      */
-    private $created;
+    private $created_on;
 
     /**
      * @var \DateTime
      */
-    private $updated;
+    private $updated_on;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -122,7 +122,11 @@ class Feed
      */
     public function getIconUrl()
     {
-        return $this->icon_url;
+        if (!$this->icon_url) {
+            return '/skins/icons/rss32.gif';
+        }
+        
+        return '/www/custom/feed_' . $this->getId() . '.jpg';
     }
 
     /**
@@ -172,75 +176,6 @@ class Feed
     }
 
     /**
-     * Set description
-     *
-     * @param string $description
-     * @return Feed
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string 
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Set created
-     *
-     * @param \DateTime $created
-     * @return Feed
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-    
-        return $this;
-    }
-
-    /**
-     * Get created
-     *
-     * @return \DateTime 
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set updated
-     *
-     * @param \DateTime $updated
-     * @return Feed
-     */
-    public function setUpdated($updated)
-    {
-        $this->updated = $updated;
-    
-        return $this;
-    }
-
-    /**
-     * Get updated
-     *
-     * @return \DateTime 
-     */
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
-    /**
      * Add publishers
      *
      * @param \Entities\FeedPublisher $publishers
@@ -279,7 +214,7 @@ class Feed
      * @param \Entities\FeedEntry $entries
      * @return Feed
      */
-    public function addEntrie(\Entities\FeedEntry $entries)
+    public function addEntry(\Entities\FeedEntry $entries)
     {
         $this->entries[] = $entries;
     
@@ -291,7 +226,7 @@ class Feed
      *
      * @param \Entities\FeedEntry $entries
      */
-    public function removeEntrie(\Entities\FeedEntry $entries)
+    public function removeEntry(\Entities\FeedEntry $entries)
     {
         $this->entries->removeElement($entries);
     }
@@ -309,7 +244,7 @@ class Feed
     public function getOwner()
     {   
         foreach ($this->getPublishers() as $publisher) {
-            if ($publisher->isOwner()) {
+            if ($publisher->getOwner()) {
                 return $publisher;
             }
         }
@@ -318,7 +253,7 @@ class Feed
     public function isOwner(\User_Adapter $user)
     {
         $owner = $this->getOwner();
-        if ($owner !== null && $user->get_id() === $owner->getId()) {
+        if ($owner !== null && $user->get_id() === $owner->getUsrId()) {
             return true;
         }
         
@@ -327,7 +262,116 @@ class Feed
     
     public function getCollection(Application $app)
     {
-        if ($this->getBaseId() !== null)
+        if ($this->getBaseId() !== null) {
           return \collection::get_from_base_id($app, $this->getBaseId());
+        }
+    }
+    
+    public function setCollection(\collection $collection = null)
+    {
+        if ($collection === null) {
+            $this->base_id = null;
+            return;
+        }
+        $this->base_id = $collection->get_base_id();
+    }
+
+    /**
+     * Set created_on
+     *
+     * @param \DateTime $createdOn
+     * @return Feed
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->created_on = $createdOn;
+    
+        return $this;
+    }
+
+    /**
+     * Get created_on
+     *
+     * @return \DateTime 
+     */
+    public function getCreatedOn()
+    {
+        return $this->created_on;
+    }
+
+    /**
+     * Set updated_on
+     *
+     * @param \DateTime $updatedOn
+     * @return Feed
+     */
+    public function setUpdatedOn($updatedOn)
+    {
+        $this->updated_on = $updatedOn;
+    
+        return $this;
+    }
+
+    /**
+     * Get updated_on
+     *
+     * @return \DateTime 
+     */
+    public function getUpdatedOn()
+    {
+        return $this->updated_on;
+    }
+    
+    public function isPublisher(\User_Adapter $user)
+    {
+        foreach ($this->getPublishers() as $publisher) {
+            if ($publisher->getUsrId() == $user->get_id()) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
+     * Set subtitle
+     *
+     * @param string $subtitle
+     * @return Feed
+     */
+    public function setSubtitle($subtitle)
+    {
+        $this->subtitle = $subtitle;
+    
+        return $this;
+    }
+
+    /**
+     * Get subtitle
+     *
+     * @return string 
+     */
+    public function getSubtitle()
+    {
+        return $this->subtitle;
+    }
+
+    public function isAggregated()
+    {
+        return false;
+    }
+    
+    public function getCountTotalEntries()
+    {
+        return (count($this->entries));
+    }
+    
+    public function hasAccess(User_Adapter $user)
+    {
+        if ($this->get_collection() instanceof collection) {
+            return $user->ACL()->has_access_to_base($this->collection->get_base_id());
+        }
+
+        return true;
     }
 }

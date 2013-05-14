@@ -72,7 +72,7 @@
                     <a href="{{ path('admin_feeds_feed', { 'id' : feed.getId() }) }}" style="display:block;">{{ feed.getTitle() }}</a>
                 </td>
                 <td style="text-align: center;">
-                    {{ app['date-formatter'].getDate(feed.getCreated()) }}
+                    {{ app['date-formatter'].getDate(feed.getCreatedOn()) }}
                 </td>
                 <td valign="center" align="center">
                     {% if feed.getCollection() != null %}

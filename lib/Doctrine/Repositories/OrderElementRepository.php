@@ -12,4 +12,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class OrderElementRepository extends EntityRepository
 {
+    public function find($id)
+    {
+        $dql = 'SELECT f FROM Entities\FeedPublisher f
+                WHERE f.id = :id ';
+        
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('id', $id);
+        $feed = $query->getResult();
+        
+        return $feed[0];
+    }
 }
