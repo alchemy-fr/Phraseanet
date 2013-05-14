@@ -1600,7 +1600,7 @@ class ACL implements cache_cacheableInterface
     public function get_order_master_collections()
     {
         $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id ';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $this->user->get_id()));
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -1608,7 +1608,7 @@ class ACL implements cache_cacheableInterface
         $collections = array();
 
         foreach($rs as $row) {
-            $collections[] = \collection::get_from_base_id($row['base_id']);
+            $collections[] = \collection::get_from_base_id($this->app, $row['base_id']);
         }
 
         return $collections;
@@ -1627,7 +1627,7 @@ class ACL implements cache_cacheableInterface
         $sql = 'UPDATE basusr SET order_master = :master
                 WHERE usr_id = :usr_id AND base_id = :base_id';
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(
             ':master'    => $bool ? 1 : 0,
             ':usr_id'    => $this->user->get_id(),

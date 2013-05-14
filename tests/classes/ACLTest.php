@@ -262,8 +262,8 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testGetSetOrder_master()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $acl = self::$user->ACL();
+        $appbox = self::$DI['app']['phraseanet.appbox'];
+        $acl = self::$DI['user']->ACL();
 
         foreach ($appbox->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
