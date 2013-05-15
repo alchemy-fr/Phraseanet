@@ -1,9 +1,10 @@
 define([
-    'underscore',
-    'backbone',
-    'i18n',
-    'bootstrap'
-], function(_, Backbone, i18n, bootstrap) {
+    "jquery",
+    "underscore",
+    "backbone",
+    "i18n",
+    "bootstrap"
+], function($, _, Backbone, i18n, bootstrap) {
     var AlertView = Backbone.View.extend({
         tagName: "div",
         className: "alert",
@@ -15,7 +16,7 @@ define([
                 this.message = options.message || "";
             }
             // remove view when alert is closed
-            this.$el.bind('closed', function () {
+            this.$el.bind("closed", function () {
                 self.remove();
             });
         },
@@ -26,7 +27,7 @@ define([
 
             this.$el.addClass("alert-" + this.alert).html(template).alert();
 
-            $('.block-alert').empty().append(this.$el);
+            $(".block-alert").empty().append(this.$el);
 
             return this;
         }

@@ -1,6 +1,6 @@
 define([
-    'underscore',
-    'backbone'
+    "underscore",
+    "backbone"
 ], function(_, Backbone) {
     var FieldModel = Backbone.Model.extend({
         initialize : function(attributes, options) {
@@ -9,7 +9,7 @@ define([
             }
         },
         urlRoot: function () {
-            return '/admin/fields/'+ this.get('sbas-id') +'/fields';
+            return "/admin/fields/"+ this.get("sbas-id") +"/fields";
         },
         defaults: {
             "business": false,

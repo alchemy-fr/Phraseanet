@@ -1,15 +1,15 @@
 define([
-    'underscore',
-    'backbone',
-    'apps/admin/fields/views/edit',
-    'apps/admin/fields/views/alert'
-], function(_, Backbone, FieldEditView, AlertView) {
+    "jquery",
+    "underscore",
+    "backbone",
+    "apps/admin/fields/views/edit"
+], function($, _, Backbone, FieldEditView) {
     var FieldListRowView = Backbone.View.extend({
         tagName: "li",
         className: "field-row",
         initialize: function() {
             // destroy view is model is deleted
-            this.model.on('destroy', this.remove, this);
+            this.model.on("destroy", this.remove, this);
         },
         events : {
             "click .trigger-click": "clickAction",
@@ -17,51 +17,71 @@ define([
         },
         clickAction: function (e) {
             this.select();
-            // first click create view else update model's view
-            if (typeof AdminFieldApp.fieldEditView === 'undefined') {
+            // first click create edit view else update model"s view
+            if (typeof AdminFieldApp.fieldEditView === "undefined") {
                 AdminFieldApp.fieldEditView = new FieldEditView({
-                    el: $('.right-block')[0],
+                    el: AdminFieldApp.$rightBlock,
                     model: this.model
                 });
             } else  {
-                AdminFieldApp.fieldEditView.model = this.model;
+                AdminFieldApp.fieldEditView.updateModel(this.model).initialize();
             }
 
             AdminFieldApp.fieldEditView.render();
 
             return this;
         },
-        dropAction: function(event, index) {
-            this.$el.trigger('update-sort', [this.model, index]);
+        dropAction: function(event, ui) {
+            this.$el.trigger("update-sort", [this.model, ui]);
+
+            return this;
         },
         render: function() {
             var template = _.template($("#list_row_template").html(), {
-                id: this.model.get('id'),
-                position: this.model.get('sorter'),
-                name: this.model.get('name'),
-                tag: this.model.get('tag')
+                id: this.model.get("id"),
+                position: this.model.get("sorter"),
+                name: this.model.get("name"),
+                tag: this.model.get("tag")
             });
 
             this.$el.empty().html(template);
 
-            if (AdminFieldApp.fieldEditView && AdminFieldApp.fieldEditView.model.get('id') === this.model.get('id')) {
+            // highlight view if edit view model match current view model
+            if (AdminFieldApp.fieldEditView
+                    && AdminFieldApp.fieldEditView.model.get("id") === this.model.get("id")) {
                 this.select();
             }
+
             return this;
         },
-        // set selected class
+        // set selected class to current view
         select: function () {
-            $("li", this.$el.closest('ul')).removeClass('selected');
-            this.$el.addClass('selected');
+            $("li", this.$el.closest("ul")).removeClass("selected");
+            this.$el.addClass("selected");
 
             return this;
         },
-        animate: function () {
-            var offset = this.$el.offset();
+        // scroll to current view in item list
+        animate: function (top) {
+            top = top || null;
+            
+            if (null === top) {
+                top = $(".field-row").index(this.$el) * this.$el.height();
+            }
 
-            this.$el.closest('div').animate({
-                scrollTop: offset.top - 20
-            });
+            this.$el.closest("div").scrollTop(top);
+
+            return this;
+        },
+        // add error class to item
+        error: function (errored) {
+            if (errored) {
+                this.$el.addClass("error");
+            } else  {
+                this.$el.removeClass("error");
+            }
+
+            return this;
         }
     });
 

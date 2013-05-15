@@ -1,8 +1,8 @@
 require.config({
     baseUrl: "../../scripts",
     paths: {
-        specs: 'tests/specs',
-        chai: '../assets/chai/chai'
+        specs: "tests/specs",
+        chai: "../assets/chai/chai"
     },
     shim : {
         shai: {
@@ -12,7 +12,7 @@ require.config({
 });
 
 mocha.setup({
-    ui: 'bdd',
+    ui: "bdd",
     ignoreLeaks: true
 });
 
