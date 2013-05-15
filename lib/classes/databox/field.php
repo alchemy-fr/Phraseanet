@@ -350,6 +350,7 @@ class databox_field implements cache_cacheableInterface
           `report` = :report,
           `type` = :type,
           `tbranch` = :tbranch,
+          `sorter` = :position,
           `thumbtitle` = :thumbtitle,
           `VocabularyControlType` = :VocabularyControlType,
           `RestrictToVocabularyControl` = :RestrictVocab
@@ -367,6 +368,7 @@ class databox_field implements cache_cacheableInterface
             ':report'                => $this->report ? '1' : '0',
             ':type'                  => $this->type,
             ':tbranch'               => $this->tbranch,
+            ':position'              => $this->position,
             ':thumbtitle'            => $this->thumbtitle,
             ':VocabularyControlType' => $this->Vocabulary ? $this->Vocabulary->getType() : null,
             ':RestrictVocab'         => $this->Vocabulary ? ($this->VocabularyRestriction ? '1' : '0') : '0',
@@ -417,6 +419,7 @@ class databox_field implements cache_cacheableInterface
         }
         $meta->setAttribute('thumbtitle', $this->thumbtitle);
         $meta->setAttribute('meta_id', $this->id);
+        $meta->setAttribute('sorter', $this->position);
 
         $this->delete_data_from_cache();
         $this->databox->saveStructure($dom_struct);
@@ -798,6 +801,24 @@ class databox_field implements cache_cacheableInterface
     {
         return $this->name;
     }
+    /**
+     *
+     * @return string
+     */
+    public function get_position()
+    {
+        return $this->position;
+    }
+    /**
+     *
+     * @return string
+     */
+    public function set_position($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
 
     /**
      * Return true is the field is unknown
@@ -827,7 +848,7 @@ class databox_field implements cache_cacheableInterface
             'readonly'              => $this->readonly,
             'multi'                 => $this->multi,
             'indexable'             => $this->indexable,
-            'dces-element'          => $this->dces_element,
+            'dces-element'          => $this->dces_element ? $this->dces_element->get_label(): null,
             'vocabulary-type'       => $this->Vocabulary ? $this->Vocabulary->getType() : null,
             'vocabulary-restricted' => $this->VocabularyRestriction,
         );

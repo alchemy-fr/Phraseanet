@@ -1,7 +1,7 @@
 define([
-    'underscore',
-    'backbone',
-    'models/field'
+    "underscore",
+    "backbone",
+    "models/field"
 ], function(_, Backbone, FieldModel) {
     var FieldCollection = Backbone.Collection.extend({
         initialize: function(models, options) {
@@ -12,7 +12,7 @@ define([
         },
         model: FieldModel,
         url: function() {
-            return '/admin/fields/' + this.sbasId + '/fields';
+            return "/admin/fields/" + this.sbasId + "/fields";
         },
         search: function(letters) {
             if (letters === "")
@@ -52,6 +52,10 @@ define([
             }
 
             return index - 1;
+        },
+        // save all collection
+        save: function(options) {
+            return Backbone.sync("update", this, options || {});
         }
     });
 

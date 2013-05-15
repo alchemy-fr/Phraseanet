@@ -40,6 +40,10 @@ class Fields implements ControllerProviderInterface
             ->assert('sbas_id', '\d+')
             ->bind('admin_fields');
 
+        $controllers->put('/{sbas_id}/fields', 'admin.fields.controller:updateFields')
+            ->assert('sbas_id', '\d+')
+            ->bind('admin_fields_register');
+
         $controllers->get('/{sbas_id}/fields', 'admin.fields.controller:listFields')
             ->assert('sbas_id', '\d+')
             ->bind('admin_fields_list');
@@ -84,20 +88,94 @@ class Fields implements ControllerProviderInterface
         return $controllers;
     }
 
-    public  function getLanguage(Application $app) {
+    public function updateFields(Application $app, Request $request, $sbas_id)
+    {
+        $json = array(
+            'success'   => false,
+            // use to store the updated collection
+            'fields'    => array(),
+            'messages'  => array()
+        );
+
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+        $connection = $databox->get_connection();
+        $data = $this->getFieldsJsonFromRequest($app, $request);
+
+        // calculate max position
+        try {
+            $stmt = $connection->prepare('SELECT MAX(sorter) as max_position FROM metadatas_structure');
+            $stmt->execute();
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            $maxPosition = $row['max_position'] + 1;
+        } catch (\PDOException $e) {
+            $app->abort(500);
+        }
+
+        $connection->beginTransaction();
+        $i = 0;
+        foreach ($data as $jsonField) {
+            try {
+                $jsonField['sorter'] = $jsonField['sorter'] + $maxPosition;
+                $field = \databox_field::get_instance($app, $databox, $jsonField['id']);
+                $this->updateFieldWithData($app, $field, $jsonField);
+                $field->save();
+                $json['fields'][] = $field->toArray();
+                $i++;
+            } catch (\PDOException $e) {
+                if ($e->errorInfo[1] == 1062) {
+                    $json['messages'][] = _(sprintf('Field name %s already exists', $jsonField['name']));
+                } else {
+                    $json['messages'][] = _(sprintf('Field %s could not be saved, please retry or contact an administrator if problem persists', $jsonField['name']));
+                }
+            } catch (\Exception $e) {
+                if ($e instanceof \Exception_Databox_metadataDescriptionNotFound || $e->getPrevious() instanceof TagUnknown) {
+                    $json['messages'][] = _(sprintf('Provided tag %s is unknown', $jsonField['tag']));
+                } else {
+                    $json['messages'][] = _(sprintf('Field %s could not be saved, please retry or contact an administrator if problem persists', $jsonField['name']));
+                }
+            }
+        }
+
+        if ($i === count($data)) {
+            // update field position in database, this query forces to update all fields each time
+            $stmt = $connection->prepare(sprintf('UPDATE metadatas_structure SET sorter = (sorter - %s)', $maxPosition));
+            $row = $stmt->execute();
+            $stmt->closeCursor();
+
+            $connection->commit();
+
+            $json['success'] = true;
+            $json['messages'][] = _('Fields configuration has been saved');
+
+            // update field position in array
+            array_walk($json['fields'], function(&$field) use ($maxPosition) {
+               $field['sorter'] = $field['sorter'] - $maxPosition;
+            });
+        } else {
+            $connection->rollback();
+        }
+
+        return $app->json($json);
+    }
+
+    public  function getLanguage(Application $app, Request $request)
+    {
         return $app->json(array(
-            'something_wrong'       => _('Something wrong happened, please try again or contact an admin if problem persists'),
-            'created_success'       => _('%s field has been created with success'),
-            'deleted_success'       => _('%s field has been deleted with success'),
-            'are_you_sure_delete'   => _('Do you really want to delete the field %s ?'),
-            'validation_blank'      => _('Field can not be blank'),
+            'something_wrong'           => _('Something wrong happened, please try again or contact an admin if problem persists'),
+            'deleted_success'           => _('%s field has been deleted with success'),
+            'are_you_sure_delete'       => _('Do you really want to delete the field %s ?'),
+            'validation_blank'          => _('Field can not be blank'),
+            'validation_name_exists'    => _('Field name already exists'),
+            'validation_tag_invalid'    => _('Field source is not valid'),
+            'field_error'               => _('Field %s contains errors'),
         ));
     }
 
-    public function displayApp(Application $app, $sbas_id) {
+    public function displayApp(Application $app, Request $request, $sbas_id)
+    {
         return  $app['twig']->render('/admin/fields/index.html.twig', array(
-            'sbas_id' => $sbas_id,
-            'js' => ''
+            'sbas_id' => $sbas_id
         ));
     }
 
@@ -192,9 +270,9 @@ class Fields implements ControllerProviderInterface
             $json['field'] = $field->toArray();
         } catch (\PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
-               $json['message'] = _(sprintf('Field name %s already exists', $data['name']));
+                $json['message'] = _(sprintf('Field name %s already exists', $data['name']));
             }
-         } catch (\Exception $e) {
+        } catch (\Exception $e) {
             if ($e instanceof \Exception_Databox_metadataDescriptionNotFound || $e->getPrevious() instanceof TagUnknown) {
                 $json['message'] = _(sprintf('Provided tag %s is unknown', $data['tag']));
             }
@@ -246,11 +324,7 @@ class Fields implements ControllerProviderInterface
             $app->abort(400, 'Body must contain a valid JSON payload');
         }
 
-        $required = array(
-            'name', 'multi', 'thumbtitle', 'tag', 'business', 'indexable',
-            'required', 'separator', 'readonly', 'type', 'tbranch', 'report',
-            'vocabulary-type', 'vocabulary-restricted', 'dces-element'
-        );
+        $required = $this->getMandatoryFieldProperties();
 
         foreach ($required as $key) {
             if (false === array_key_exists($key, $data)) {
@@ -261,9 +335,32 @@ class Fields implements ControllerProviderInterface
         return $data;
     }
 
+    private function getFieldsJsonFromRequest(Application $app, Request $request)
+    {
+        $body = $request->getContent();
+        $data = @json_decode($body, true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            $app->abort(400, 'Body must contain a valid JSON payload');
+        }
+
+        $required = $this->getMandatoryFieldProperties();
+
+        foreach($data as $field) {
+            foreach ($required as $key) {
+                if (false === array_key_exists($key, $field)) {
+                    $app->abort(400, sprintf('The entity must contain a key `%s`', $key));
+                }
+            }
+        }
+
+        return $data;
+    }
+
     private function updateFieldWithData(Application $app, \databox_field $field, array $data)
     {
         $field
+            ->set_name($data['name'])
             ->set_thumbtitle($data['thumbtitle'])
             ->set_tag(\databox_field::loadClassFromTagName($data['tag']))
             ->set_business($data['business'])
@@ -277,6 +374,10 @@ class Fields implements ControllerProviderInterface
             ->setVocabularyControl(null)
             ->setVocabularyRestricted(false);
 
+        if (isset($data['sorter'])) {
+            $field->set_position($data['sorter']);
+        }
+
         try {
             $vocabulary = VocabularyController::get($app, $data['vocabulary-type']);
             $field->setVocabularyControl($vocabulary);
@@ -287,11 +388,20 @@ class Fields implements ControllerProviderInterface
 
         $dces_element = null;
 
-        $class = 'databox_Field_DCES_' . $data['dces-element'];
+        $class = '\databox_Field_DCES_' . $data['dces-element'];
         if (class_exists($class)) {
             $dces_element = new $class();
         }
 
         $field->set_dces_element($dces_element);
+    }
+
+    private function getMandatoryFieldProperties()
+    {
+        return array(
+            'name', 'multi', 'thumbtitle', 'tag', 'business', 'indexable',
+            'required', 'separator', 'readonly', 'type', 'tbranch', 'report',
+            'vocabulary-type', 'vocabulary-restricted', 'dces-element'
+        );
     }
 }
