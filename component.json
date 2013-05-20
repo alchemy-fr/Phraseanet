@@ -2,6 +2,8 @@
   "name": "Phraseanet",
   "version": "3.8.0",
   "dependencies": {
+    "jquery-file-upload": "~7",
+    "blueimp-load-image": "latest",
     "requirejs" : "~2.1",
     "backbone-amd": "~1.0",
     "underscore-amd": "~1.4",
