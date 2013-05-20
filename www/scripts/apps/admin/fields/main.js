@@ -7,7 +7,7 @@ require.config({
         underscore: "../assets/underscore-amd/underscore",
         backbone: "../assets/backbone-amd/backbone",
         twig: "../assets/twig/twig",
-        i18n: "../assets/i18n/i18next.amd",
+        i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
         bootstrap: "../skins/html5/bootstrap/js/bootstrap.min"
     },
     shim: {
