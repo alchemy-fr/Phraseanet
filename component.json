@@ -1,6 +1,8 @@
 {
-  "name": "Phraseanet",
-  "version": "3.8.0",
-  "dependencies": {
-  }
+    "name": "Phraseanet",
+    "version": "3.8.0",
+    "dependencies": {
+        "jquery-file-upload": "~7",
+        "blueimp-load-image": "latest"
+    }
 }
