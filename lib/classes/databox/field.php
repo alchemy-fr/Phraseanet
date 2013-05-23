@@ -522,10 +522,21 @@ class databox_field implements cache_cacheableInterface
 
     public function set_dces_element(databox_Field_DCESAbstract $DCES_element = null)
     {
+        $connbas = $this->get_connection();
+
+        if (null !== $DCES_element) {
+            $sql = 'UPDATE metadatas_structure
+               SET dces_element = null WHERE dces_element = :dces_element';
+
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute(array(
+                ':dces_element' => $DCES_element->get_label()
+            ));
+            $stmt->closeCursor();
+        }
+
         $sql = 'UPDATE metadatas_structure
               SET dces_element = :dces_element WHERE id = :id';
-
-        $connbas = $this->get_connection();
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(
