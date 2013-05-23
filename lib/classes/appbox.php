@@ -10,11 +10,11 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Version;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+use Symfony\Component\Finder\Finder;
 
 /**
  *
@@ -349,11 +349,14 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Purging directories'));
 
-        $finder = new Symfony\Component\Finder\Finder();
+        $finder = new Finder();
         $finder->in(array(
             $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/cache_minify/',
-            $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/cache_minify/',
-        ))->ignoreVCS(true)->ignoreDotFiles(true);
+            $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/cache_twig/',
+        ))
+            ->depth(0)
+            ->ignoreVCS(true)
+            ->ignoreDotFiles(true);
 
         foreach ($finder as $file) {
             $app['filesystem']->remove($file);

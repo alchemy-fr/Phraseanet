@@ -20,6 +20,11 @@ class Setup_Registry implements registryInterface
 {
     protected $datas = array();
 
+    public function __construct()
+    {
+        $this->datas['GV_RootPath'] = realpath(__DIR__ . '/../../..') . '/';
+    }
+
     public function get($key, $defaultvalue = null)
     {
         return isset($this->datas[$key]) ? $this->datas[$key] : $defaultvalue;
