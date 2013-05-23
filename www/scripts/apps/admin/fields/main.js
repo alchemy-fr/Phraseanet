@@ -2,7 +2,7 @@
 require.config({
     baseUrl: "/scripts",
     paths: {
-        jquery: "../include/minify/f=include/jslibs/jquery-1.7.1",
+        jquery: "../include/jslibs/jquery-1.7.1",
         jqueryui: "../include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min",
         underscore: "../assets/underscore-amd/underscore",
         backbone: "../assets/backbone-amd/backbone",

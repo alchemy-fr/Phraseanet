@@ -17,8 +17,8 @@ define([
             });
 
             this.$el.html(template);
-
-            var index = $("#dces-element", AdminFieldApp.$rightBlock)[0].selectedIndex - 1;
+            
+            var index = $("#dces-element", this.$el)[0].selectedIndex - 1;
             if (index > 0 ) {
                 $(".dces-help-block", AdminFieldApp.$rightBlock).html(
                     this.collection.at(index).get("definition")
