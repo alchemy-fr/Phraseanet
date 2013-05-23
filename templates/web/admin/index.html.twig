@@ -123,7 +123,7 @@
                 $.get(dest, function(data) {
                   $('#right-ajax').removeClass('loading').html(data);
                   enableForms($('#right-ajax form:not(.no-ajax)'));
-                    $.each($('#right-ajax a'),function(i, el){
+                    $.each($('#right-ajax a:not(.no-ajax)'),function(i, el){
                         enableLink($(el));
                     });
                 });

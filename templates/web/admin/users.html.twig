@@ -21,7 +21,7 @@
             <a class="user_adder" href="#">{% trans 'admin::user: nouvel utilisateur' %}</a>
             <a class="template_adder" href="#">{% trans 'admin::user: nouveau template' %}</a>
             <a href="/admin/users/import/file/" target='right'>{% trans 'admin::user: import d\'utilisateurs' %}</a> /
-            <a href="javascript:void();return(false);"  onclick="exportlist();return(false);">{% trans 'admin::user: export d\'utilisateurs' %}</a>
+            <a href="#"  onclick="exportlist();return(false);">{% trans 'admin::user: export d\'utilisateurs' %}</a>
             <a class="invite_modifier" href="#">{% trans 'Reglages:: reglages d acces guest' %}</a>
             <input type="hidden" value="{{invite_user.get_id()}}" name="invite_user_id"/>
             <a class="autoregister_modifier" href="#">{% trans 'Reglages:: reglages d inscitpition automatisee' %}</a>
@@ -147,7 +147,7 @@
             </tbody>
         </table>
 
-        <form id="export_form" method="post" target="exportwindow" action="/admin/users/search/export/">
+        <form id="export_form" method="post" target="_blank" class="no-ajax" action="/admin/users/search/export/">
             <input name="srt" value="{{parm['srt']}}" type="hidden" />
             <input name="ord" value="{{parm.ord}}" type="hidden" />
             {% for sbas_id in parm.sbas_id %}

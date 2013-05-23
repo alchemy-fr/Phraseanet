@@ -186,8 +186,8 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request('POST', '/admin/users/search/export/');
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
-        $this->assertEquals("text/plain; charset=UTF-8", $response->headers->get("Content-type"));
-        $this->assertEquals("attachment; filename=export.txt", $response->headers->get("content-disposition"));
+        $this->assertEquals("text/csv; charset=UTF-8", $response->headers->get("Content-type"));
+        $this->assertEquals("attachment; filename=export.csv", $response->headers->get("content-disposition"));
     }
 
     public function testRouteThSearch()
@@ -303,7 +303,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOK());
         $this->assertRegexp("#text/csv#", $response->headers->get("content-type"));
         $this->assertRegexp("#charset=UTF-8#", $response->headers->get("content-type"));
-        $this->assertEquals("attachment; filename=export.txt", $response->headers->get("content-disposition"));
+        $this->assertEquals("attachment; filename=export.csv", $response->headers->get("content-disposition"));
     }
 
     public function testResetRights()
