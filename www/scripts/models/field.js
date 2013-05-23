@@ -4,7 +4,8 @@ define([
 ], function(_, Backbone) {
     var FieldModel = Backbone.Model.extend({
         initialize : function(attributes, options) {
-            if (attributes && ! "sbas-id" in attributes) {
+            attributes = attributes || {};
+            if (typeof attributes === "object" && false === "sbas-id" in attributes) {
                 throw "You must set a sbas id";
             }
         },

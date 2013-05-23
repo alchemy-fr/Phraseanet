@@ -2,18 +2,32 @@ require.config({
     baseUrl: "../../scripts",
     paths: {
         specs: "tests/specs",
-        chai: "../assets/chai/chai"
+        chai: "../assets/chai/chai",
+        fixtures: "../assets/js-fixtures/fixtures",
+        app: "apps/admin/fields/app",
+        jquery: "../include/jslibs/jquery-1.7.1",
+        jqueryui: "../include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min",
+        underscore: "../assets/underscore-amd/underscore",
+        backbone: "../assets/backbone-amd/backbone",
+        twig: "../assets/twig/twig",
+        i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
+        bootstrap: "../skins/html5/bootstrap/js/bootstrap.min"
     },
-    shim : {
-        shai: {
-            exports: "chai"
+    shim: {
+        twig: {
+            exports: "Twig"
+        },
+        bootstrap : ["jquery"],
+        jqueryui: {
+            deps: [ "jquery" ]
         }
     }
 });
 
 mocha.setup({
     ui: "bdd",
-    ignoreLeaks: true
+    ignoreLeaks: true,
+    globals: ['js-fixtures']
 });
 
 console = window.console || function() {};

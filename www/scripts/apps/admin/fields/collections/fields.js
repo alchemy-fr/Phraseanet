@@ -5,8 +5,9 @@ define([
 ], function(_, Backbone, FieldModel) {
     var FieldCollection = Backbone.Collection.extend({
         initialize: function(models, options) {
-            if (!"sbas_id" in options) {
-                throw "You must specify a sbasId option when creating a new field model"
+            options = options || {};
+            if (typeof options === "object" && false === "sbas_id" in options) {
+                throw "You must set a sbas id"
             }
             this.sbasId = options.sbas_id;
         },
@@ -20,9 +21,9 @@ define([
 
             var pattern = new RegExp(letters, "gi");
 
-            return _(this.filter(function(data) {
+            return this.filter(function(data) {
                 return pattern.test(data.get("name"));
-            }));
+            });
         },
         comparator: function(item) {
             return item.get("sorter");

@@ -64,7 +64,7 @@ define([
         // scroll to current view in item list
         animate: function (top) {
             top = top || null;
-            
+
             if (null === top) {
                 top = $(".field-row").index(this.$el) * this.$el.height();
             }

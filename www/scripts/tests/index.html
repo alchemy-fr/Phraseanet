@@ -8,15 +8,13 @@
 <body>
     <div id="mocha"></div>
     <script src="../../assets/mocha/mocha.js"></script>
-    <script src="../../assets/chai/chai.js"></script>
-    <script>
-        window.expect = chai.expect;
-        window.assert = chai.assert;
-    </script>
     <script src="../../assets/requirejs/require.js"></script>
     <script src="../../scripts/tests/main.js"></script>
     <script>
-        require(['tests/baseTest', 'specs/admin/fields'], runMocha);
+        require([
+            'tests/baseTest',
+            'specs/admin/fields',
+            'specs/models'], runMocha);
     </script>
 </body>
 </html>
