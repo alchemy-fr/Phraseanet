@@ -183,8 +183,8 @@ class Users implements ControllerProviderInterface
 
             $CSVDatas = \format::arr_to_csv($userTable);
 
-            $response = new Response($CSVDatas, 200, array('Content-Type' => 'text/plain'));
-            $response->headers->set('Content-Disposition', 'attachment; filename=export.txt');
+            $response = new Response($CSVDatas, 200, array('Content-Type' => 'text/csv'));
+            $response->headers->set('Content-Disposition', 'attachment; filename=export.csv');
 
             return $response;
         });
@@ -325,7 +325,7 @@ class Users implements ControllerProviderInterface
 
             $headers = array(
                 'Content-type'        => 'text/csv'
-                , 'Content-Disposition' => 'attachment; filename=export.txt'
+                , 'Content-Disposition' => 'attachment; filename=export.csv'
             );
             $response = new Response($out, 200, $headers);
             $response->setCharset('UTF-8');
