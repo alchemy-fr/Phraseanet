@@ -155,4 +155,30 @@ class SetupTest extends \Silex\WebTestCase
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertTrue(false === strpos($response->headers->get('location'), '/setup/installer/'));
     }
+
+    public function testSetupProvidesPathTest()
+    {
+        $this->app['phraseanet.configuration-tester']->expects($this->once())
+            ->method('isBlank')
+            ->will($this->returnValue(true));
+
+        $client = $this->createClient();
+        $crawler = $client->request('GET', '/setup/test/path/?path=/usr/bin/php');
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->headers->get('content-type'));
+    }
+
+    public function testSetupProvidesConnectionTest()
+    {
+        $this->app['phraseanet.configuration-tester']->expects($this->once())
+            ->method('isBlank')
+            ->will($this->returnValue(true));
+
+        $client = $this->createClient();
+        $crawler = $client->request('GET', '/setup/connection_test/mysql/?user=admin&password=secret&dbname=phraseanet');
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->headers->get('content-type'));
+    }
 }
