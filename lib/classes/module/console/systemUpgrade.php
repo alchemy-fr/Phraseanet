@@ -68,8 +68,6 @@ class module_console_systemUpgrade extends Command
             try {
                 $output->write('<info>Upgrading...</info>', true);
 
-                $this->container['phraseanet.registry'] = new \Setup_Registry();
-
                 if (count(User_Adapter::get_wrong_email_users($this->container)) > 0) {
                     return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
                 }
@@ -77,8 +75,6 @@ class module_console_systemUpgrade extends Command
                 $upgrader = new Setup_Upgrade($this->container, $input->getOption('force'));
 
                 $this->getService('phraseanet.appbox')->forceUpgrade($upgrader, $this->container);
-
-                $this->container['phraseanet.registry'] = new \registry($this->container);
 
                 foreach ($upgrader->getRecommendations() as $recommendation) {
                     list($message, $command) = $recommendation;

@@ -199,6 +199,11 @@ class registry implements registryInterface
         return $this;
     }
 
+    public function setKey($value)
+    {
+        $this->cache->save('GV_sit', $value);
+    }
+
     /**
      *
      * @param  string $key

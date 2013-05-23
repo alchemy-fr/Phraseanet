@@ -56,9 +56,6 @@ class Install extends Command
     {
         $dialog = $this->getHelperSet()->get('dialog');
 
-        $setupRegistry = new \Setup_Registry();
-        $this->container['phraseanet.registry'] = $setupRegistry;
-
         $output->writeln("<comment>
                                                       ,-._.-._.-._.-._.-.
                                                       `-.             ,-'
