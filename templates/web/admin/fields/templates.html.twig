@@ -22,11 +22,24 @@
 <script type="text/template" id="item_list_view_template">
     <div class="row-fluid">
         <div class="span12">
-            <div class="sidebar-block">
-                <button type="button" class="btn btn-success btn-add-field"><i class="icon-plus icon-white"></i>{% trans %}Add new field{% endtrans %}</button>
-            </div>
-            <div class="sidebar-block">
+            <div class="create-subview"></div>
+            <div class="sidebar-search-block">
                 <input class="input-block-level" type="text" id="live_search"  placeholder="{% trans %}Live search{% endtrans %}"/>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12 list-block">
+            <ul id="collection-fields" class="unstyled"></ul>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="create_template">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="sidebar-add-block">
+                <button type="button" class="btn btn-success btn-add-field"><i class="icon-plus icon-white"></i>{% trans %}Add new field{% endtrans %}</button>
             </div>
             <div class="well well-small add-field-block" style="display:none">
                 <h3>{% trans %}Add a new field{% endtrans %}</h3>
@@ -56,11 +69,6 @@
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
-    <div class="row-fluid">
-        <div class="span12 list-block">
-            <ul id="collection-fields" class="unstyled"></ul>
         </div>
     </div>
 </script>
