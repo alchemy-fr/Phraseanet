@@ -596,6 +596,8 @@ class Application extends SilexApplication
         })->bind('robots');
 
         $this->mount('/setup', new SetupController());
+        $this->mount('/setup/connection_test/', new ConnectionTest());
+        $this->mount('/setup/test/', new PathFileTest());
 
         $this->mount('/feeds/', new RSSFeeds());
         $this->mount('/account/', new Account());
