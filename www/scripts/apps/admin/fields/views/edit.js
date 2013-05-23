@@ -3,21 +3,18 @@ define([
     "underscore",
     "backbone",
     "i18n",
+    "apps/admin/fields/views",
     "apps/admin/fields/views/alert",
     "apps/admin/fields/views/modal",
     "apps/admin/fields/views/dcField",
     "apps/admin/fields/errors/error"
-], function($, _, Backbone, i18n, AlertView, ModalView, DcFieldView, Error) {
-    var FieldEditView = Backbone.View.extend({
+], function($, _, Backbone, i18n, ViewUtils, AlertView, ModalView, DcFieldView, Error) {
+    // Add multiview methods
+    var FieldEditView = Backbone.View.extend(_.extend({}, ViewUtils.MultiViews, {
         tagName: "div",
         className: "field-edit",
         initialize: function() {
             this.model.on("change", this._onModelChange, this);
-
-            this.dcFieldsSubView = new DcFieldView({
-                collection: AdminFieldApp.dcFieldsCollection,
-                field: this.model
-            });
         },
         updateModel: function(model) {
             // unbind event to previous model
@@ -36,8 +33,11 @@ define([
 
             this.$el.empty().html(template);
 
-            this._assign({
-                ".dc-fields-subview" : this.dcFieldsSubView
+            this._assignView({
+                ".dc-fields-subview" : new DcFieldView({
+                    collection: AdminFieldApp.dcFieldsCollection,
+                    field: this.model
+                })
             });
 
             var completer = $("#tag", this.$el).autocomplete({
@@ -220,20 +220,6 @@ define([
 
             this.render();
         },
-        // bind a subview to a DOM element
-        _assign: function(selector, view) {
-            var selectors;
-            if (_.isObject(selector)) {
-                selectors = selector;
-            } else {
-                selectors = {};
-                selectors[selector] = view;
-            }
-            if (!selectors) return;
-            _.each(selectors, function(view, selector) {
-                view.setElement(this.$(selector)).render();
-            }, this);
-        },
         // select temView by index in itemList
         _selectModelView: function(index) {
              // select previous or next itemview
@@ -241,7 +227,7 @@ define([
                 AdminFieldApp.fieldListView.itemViews[index].clickAction().animate();
             }
         }
-    });
+    }));
 
     return FieldEditView;
 });

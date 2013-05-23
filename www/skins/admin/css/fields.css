@@ -114,6 +114,10 @@
     height: 70px;
 }
 
+#admin-field-app .add-field-block {
+    margin-bottom: 0px;
+}
+
 #admin-field-app .add-field-block .control-label {
     width: 80px;
     text-align: left;
@@ -131,7 +135,10 @@
     min-width: 220px;
 }
 
-#admin-field-app .sidebar-block {
+#admin-field-app .sidebar-add-block {
+    margin-top: 20px;
+}
+#admin-field-app .sidebar-search-block {
     margin: 20px 0;
 }
 
