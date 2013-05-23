@@ -52,7 +52,6 @@ class Installer
 
     private function populateRegistryData($serverName, $dataPath, $binaryData)
     {
-
         $this->app['phraseanet.registry']->set('GV_base_datapath_noweb', $dataPath, \registry::TYPE_STRING);
         $this->app['phraseanet.registry']->set('GV_ServerName', $serverName, \registry::TYPE_STRING);
 
@@ -236,6 +235,7 @@ class Installer
         $arrayConf = $this->app['phraseanet.configuration']->getConfigurations();
 
         $arrayConf['key'] = md5(mt_rand(100000000, 999999999));
+        $this->app['phraseanet.registry']->setKey($arrayConf['key']);
 
         foreach ($arrayConf as $key => $value) {
             if (is_array($value) && array_key_exists('phraseanet', $value)) {
