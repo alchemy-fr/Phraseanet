@@ -115,7 +115,6 @@ class Setup implements ControllerProviderInterface
 
         $appbox_name = $request->request->get('ab_name');
         $databox_name = $request->request->get('db_name');
-        $setupRegistry = new \Setup_Registry();
 
         try {
             $abConn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $ab_password, $appbox_name, array(), $app['debug']);
