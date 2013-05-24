@@ -209,7 +209,6 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         foreach($fieldObjects as $field) {
             $field->delete();
         }
-
     }
 
     public function testCreateField()
