@@ -280,7 +280,7 @@ class Application extends SilexApplication
 
         if ('dev' === $this->environment) {
             $this->register($p = new WebProfilerServiceProvider(), array(
-                'profiler.cache_dir' => __DIR__ . '/../../../cache/profiler',
+                'profiler.cache_dir' => __DIR__ . '/../../../tmp/cache/profiler',
             ));
             $this->mount('/_profiler', $p);
         }
