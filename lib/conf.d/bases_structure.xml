@@ -4721,6 +4721,13 @@
             </fields>
           </index>
           <index>
+            <name>dces_element</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>dces_element</field>
+            </fields>
+          </index>
+          <index>
             <name>indexable</name>
             <type>INDEX</type>
             <fields>

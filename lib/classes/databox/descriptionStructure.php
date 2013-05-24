@@ -109,6 +109,19 @@ class databox_descriptionStructure implements IteratorAggregate
         return null;
     }
 
+    public function get_dces_field($label)
+    {
+        foreach ($this->elements as $field) {
+            if (null !== $dces_element = $field->get_dces_element()) {
+                if ($label === $dces_element->get_label()) {
+                    return $field;
+                }
+            }
+        }
+
+        return null;
+    }
+
     /**
      *
      * @param  string  $id

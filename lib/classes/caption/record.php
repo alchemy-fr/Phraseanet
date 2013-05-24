@@ -37,7 +37,6 @@ class caption_record implements caption_interface, cache_cacheableInterface
      * @var record
      */
     protected $record;
-    protected $dces_elements = array();
     protected $databox;
     protected $app;
 
@@ -167,10 +166,6 @@ class caption_record implements caption_interface, cache_cacheableInterface
             $metadata = new caption_field($this->app, $databox_meta_struct, $this->record);
 
             $rec_fields[$databox_meta_struct->get_id()] = $metadata;
-            $dces_element = $metadata->get_databox_field()->get_dces_element();
-            if ($dces_element instanceof databox_Field_DCESAbstract) {
-                $this->dces_elements[$dces_element->get_label()] = $databox_meta_struct->get_id();
-            }
         }
         $this->fields = $rec_fields;
 
@@ -228,8 +223,11 @@ class caption_record implements caption_interface, cache_cacheableInterface
     public function get_dc_field($label)
     {
         $fields = $this->retrieve_fields();
-        if (isset($this->dces_elements[$label])) {
-            return $fields[$this->dces_elements[$label]];
+
+        if (null !== $field = $this->databox->get_meta_structure()->get_dces_field($label)) {
+            if (isset($fields[$field->get_id()])) {
+                return $fields[$field->get_id()];
+            }
         }
 
         return null;
@@ -259,7 +257,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     protected function highlight_fields($highlight, Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false)
     {
         $fields = array();
-        
+
         foreach ($this->get_fields($grep_fields, $includeBusiness) as $meta_struct_id => $field) {
 
             $value = preg_replace(
