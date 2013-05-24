@@ -32,7 +32,7 @@ class ApiRootTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRoot()
     {
-        self::$DI['client']->request('GET', '/');
+        self::$DI['client']->request('GET', '/api/');
 
         $response = self::$DI['client']->getResponse();
 

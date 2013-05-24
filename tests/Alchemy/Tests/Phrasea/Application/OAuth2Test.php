@@ -130,7 +130,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $acc = self::getAccount();
         $acc->set_revoked(true); // revoked to show form
 
-        $crawler = self::$DI['client']->request('GET', '/oauthv2/authorize', $this->queryParameters);
+        $crawler = self::$DI['client']->request('GET', '/api/oauthv2/authorize', $this->queryParameters);
         $this->assertTrue(self::$DI['client']->getResponse()->isSuccessful());
         $this->assertRegExp("/" . self::$appli->get_client_id() . "/", self::$DI['client']->getResponse()->getContent());
         $this->assertRegExp("/" . str_replace("/", '\/', self::$appli->get_redirect_uri()) . "/", self::$DI['client']->getResponse()->getContent());
@@ -143,8 +143,8 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     {
         $this->setQueryParameters('grant_type', 'authorization_code');
         $this->setQueryParameters('code', '12345678918');
-        self::$DI['client']->request('POST', '/oauthv2/token', $this->queryParameters);
-
+        self::$DI['client']->request('POST', '/api/oauthv2/token', $this->queryParameters);
+      
         $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
     }
 }

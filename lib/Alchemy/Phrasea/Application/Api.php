@@ -33,7 +33,7 @@ return call_user_func(function($environment = 'prod') {
     $app->register(new \API_V1_Timer());
     $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_START, new ApiLoadStartEvent());
 
-    $app->get('/', function(Request $request, SilexApplication $app) {
+    $app->get('/api/', function(Request $request, SilexApplication $app) {
         $apiAdapter = new \API_V1_adapter($app);
 
         $result = new \API_V1_result($app, $request, $apiAdapter);
@@ -58,8 +58,8 @@ return call_user_func(function($environment = 'prod') {
         ))->get_response();
     });
 
-    $app->mount('/oauthv2', new Oauth2());
-    $app->mount('/v1', new V1());
+    $app->mount('/api/oauthv2', new Oauth2());
+    $app->mount('/api/v1', new V1());
 
 
     /**
@@ -69,7 +69,7 @@ return call_user_func(function($environment = 'prod') {
 
         $request = $app['request'];
 
-        if (0 === strpos($request->getPathInfo(), '/oauthv2')) {
+        if (0 === strpos($request->getPathInfo(), '/api/oauthv2')) {
             if ($e instanceof NotFoundHttpException || $e instanceof \Exception_NotFound) {
                 return new Response('The requested page could not be found.', 404, array('X-Status-Code' => 404));
             }
