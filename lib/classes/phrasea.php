@@ -301,43 +301,6 @@ class phrasea
         exit;
     }
 
-    public static function headers($code = 200, $nocache = false, $content = 'text/html', $charset = 'UTF-8', $doctype = true)
-    {
-        switch ((int) $code) {
-            case 204:
-            case 403:
-            case 404:
-            case 400:
-            case 500:
-                $request = http_request::getInstance();
-                if ($request->is_ajax()) {
-                    $Response = new \Symfony\Component\HttpFoundation\Response(sprintf('error %d : Content unavailable', (int) $code), $code);
-                    $Response->send();
-                    exit();
-                } else {
-                    $request->set_code($code);
-                    include(__DIR__ . '/../../www/include/error.php');
-                }
-                die();
-                break;
-
-            case 200:
-                header("Content-Type: " . $content . "; charset=" . $charset);
-                if ($nocache) {
-                    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
-                    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");  // always modified
-                    header("Cache-Control: no-store, no-cache, must-revalidate");  // HTTP/1.1
-                    header("Cache-Control: post-check=0, pre-check=0", false);
-                    header("Pragma: no-cache");                          // HTTP/1.0
-                }
-                if ($doctype)
-                    echo '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">';
-                break;
-        }
-
-        return;
-    }
-
     public static function scheduler_key(Application $app, $renew = false)
     {
         $conn = connection::getPDOConnection($app);

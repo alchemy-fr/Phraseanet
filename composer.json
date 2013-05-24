@@ -5,6 +5,10 @@
     "config": {
         "bin-dir" : "bin/"
     },
+    "scripts"     : {
+        "post-install-cmd" : "Alchemy\\Phrasea\\ComposerScripts::postInstall",
+        "post-update-cmd"  : "Alchemy\\Phrasea\\ComposerScripts::postUpdate"
+    },
     "require": {
         "php"                              : ">=5.3.3",
         "alchemy/oauth2php"                : "dev-master",
@@ -18,6 +22,7 @@
         "mediavorus/mediavorus"            : "~0.3",
         "media-alchemyst/media-alchemyst"  : "~0.2, >=0.2.3",
         "monolog/monolog"                  : "~1.3.0",
+        "mrclay/minify"                    : "dev-master",
         "neutron/silex-imagine-provider"   : "dev-master",
         "neutron/silex-badfaith-provider"  : "dev-master",
         "neutron/silex-filesystem-provider": "dev-master",

@@ -114,7 +114,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteNotFound()
     {
-        $route = '/nothinghere';
+        $route = '/api/v1/nothinghere';
         $this->setToken(self::$token);
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -131,7 +131,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testDataboxListRoute()
     {
         $this->setToken(self::$token);
-        self::$DI['client']->request('GET', '/databoxes/list/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -162,7 +162,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $account = \API_OAuth2_Account::create(self::$DI['app'], self::$DI['user'], $nativeApp);
             $token = $account->get_token()->get_value();
             $this->setToken($token);
-            self::$DI['client']->request('GET', '/databoxes/list/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+            self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
             $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
             if (403 != $content['meta']['http_code']) {
@@ -186,31 +186,31 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        self::$DI['client']->request('GET', '/monitor/tasks/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', '/api/v1/monitor/tasks/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('GET', '/monitor/scheduler/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', '/api/v1/monitor/scheduler/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('GET', '/monitor/task/1/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', '/api/v1/monitor/task/1/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('POST', '/monitor/task/1/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('POST', '/api/v1/monitor/task/1/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('POST', '/monitor/task/1/start/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('POST', '/api/v1/monitor/task/1/start/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('POST', '/monitor/task/1/stop/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('POST', '/api/v1/monitor/task/1/stop/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        self::$DI['client']->request('GET', '/monitor/phraseanet/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', '/api/v1/monitor/phraseanet/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
     }
@@ -227,7 +227,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
         $this->setToken(self::$adminToken);
 
-        $route = '/monitor/tasks/';
+        $route = '/api/v1/monitor/tasks/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -256,7 +256,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
         $this->setToken(self::$adminToken);
 
-        $route = '/monitor/scheduler/';
+        $route = '/api/v1/monitor/scheduler/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -339,7 +339,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         reset($tasks);
         $idTask = key($tasks);
 
-        $route = '/monitor/task/' . $idTask . '/';
+        $route = '/api/v1/monitor/task/' . $idTask . '/';
         $this->evaluateMethodNotAllowedRoute($route, array('PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -371,7 +371,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         reset($tasks);
         $idTask = key($tasks);
 
-        $route = '/monitor/task/' . $idTask . '/';
+        $route = '/api/v1/monitor/task/' . $idTask . '/';
         $this->evaluateMethodNotAllowedRoute($route, array('PUT', 'DELETE'));
 
         $title = 'newTitle' . mt_rand();
@@ -397,7 +397,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
         $this->setToken(self::$adminToken);
         self::$DI['client']->followRedirects();
-        self::$DI['client']->request('GET', '/monitor/task/0/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', '/api/v1/monitor/task/0/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->evaluateMetaNotFound($content);
     }
@@ -422,7 +422,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         reset($tasks);
         $idTask = key($tasks);
 
-        $route = '/monitor/task/' . $idTask . '/start/';
+        $route = '/api/v1/monitor/task/' . $idTask . '/start/';
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('POST', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -457,7 +457,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         reset($tasks);
         $idTask = key($tasks);
 
-        $route = '/monitor/task/' . $idTask . '/stop/';
+        $route = '/api/v1/monitor/task/' . $idTask . '/stop/';
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('POST', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -487,7 +487,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->setToken(self::$adminToken);
 
-        self::$DI['client']->request('GET', '/monitor/phraseanet/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', '/api/v1/monitor/phraseanet/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -509,7 +509,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -519,10 +519,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateGoodRecord($content['response']['record']);
 
-        $route = '/records/1234567890/1/';
+        $route = '/api/v1/records/1234567890/1/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/kjslkz84spm/sfsd5qfsd5/';
+        $route = '/api/v1/records/kjslkz84spm/sfsd5qfsd5/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -543,7 +543,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         self::$DI['app']['session']->remove('usr_id');
 
-        $route = '/stories/' . self::$DI['record_story_1']->get_sbas_id() . '/' . self::$DI['record_story_1']->get_record_id() . '/';
+        $route = '/api/v1/stories/' . self::$DI['record_story_1']->get_sbas_id() . '/' . self::$DI['record_story_1']->get_record_id() . '/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -554,10 +554,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateGoodStory($content['response']['story']);
         $this->assertGreaterThan(0, $content['response']['story']['records']);
 
-        $route = '/stories/1234567890/1/';
+        $route = '/api/v1/stories/1234567890/1/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/stories/kjslkz84spm/sfsd5qfsd5/';
+        $route = '/api/v1/stories/kjslkz84spm/sfsd5qfsd5/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -571,7 +571,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
-            $route = '/databoxes/' . $databox_id . '/collections/';
+            $route = '/api/v1/databoxes/' . $databox_id . '/collections/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -594,10 +594,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $this->assertTrue(is_int($collection['record_amount']));
             }
         }
-        $route = '/databoxes/24892534/collections/';
+        $route = '/api/v1/databoxes/24892534/collections/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/collections/';
+        $route = '/api/v1/databoxes/any_bad_id/collections/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -612,7 +612,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databox_id);
             $ref_status = $databox->get_statusbits();
-            $route = '/databoxes/' . $databox_id . '/status/';
+            $route = '/api/v1/databoxes/' . $databox_id . '/status/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -642,10 +642,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $this->assertTrue($status['img_on'] === $ref_status[$status['bit']]['img_on']);
             }
         }
-        $route = '/databoxes/24892534/status/';
+        $route = '/api/v1/databoxes/24892534/status/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/status/';
+        $route = '/api/v1/databoxes/any_bad_id/status/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -669,7 +669,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
             }
 
-            $route = '/databoxes/' . $databox_id . '/metadatas/';
+            $route = '/api/v1/databoxes/' . $databox_id . '/metadatas/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -726,10 +726,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $this->assertTrue($element->get_tag()->getGroupName() === $metadatas['namespace']);
             }
         }
-        $route = '/databoxes/24892534/metadatas/';
+        $route = '/api/v1/databoxes/24892534/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/metadatas/';
+        $route = '/api/v1/databoxes/any_bad_id/metadatas/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -743,7 +743,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
-            $route = '/databoxes/' . $databox_id . '/termsOfUse/';
+            $route = '/api/v1/databoxes/' . $databox_id . '/termsOfUse/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -759,10 +759,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $this->assertArrayHasKey('terms', $terms);
             }
         }
-        $route = '/databoxes/24892534/termsOfUse/';
+        $route = '/api/v1/databoxes/24892534/termsOfUse/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/termsOfUse/';
+        $route = '/api/v1/databoxes/any_bad_id/termsOfUse/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -775,7 +775,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testSearchRoute()
     {
         $this->setToken(self::$token);
-        $crawler = self::$DI['client']->request('POST', '/search/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -811,7 +811,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         self::$DI['record_story_1'];
 
-        $crawler = self::$DI['client']->request('POST', '/search/', $this->getParameters(array('search_type' => 1)), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(array('search_type' => 1)), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -843,7 +843,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testRecordsSearchRoute()
     {
         $this->setToken(self::$token);
-        $crawler = self::$DI['client']->request('POST', '/records/search/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = self::$DI['client']->request('POST', '/api/v1/records/search/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -867,7 +867,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->injectMetadatas(self::$DI['record_1']);
 
-        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/caption/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/caption/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -878,10 +878,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateRecordsCaptionResponse($content);
 
-        $route = '/records/24892534/51654651553/caption/';
+        $route = '/api/v1/records/24892534/51654651553/caption/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/caption/';
+        $route = '/api/v1/records/any_bad_id/sfsd5qfsd5/caption/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -894,7 +894,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/metadatas/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/metadatas/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -905,10 +905,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateRecordsMetadataResponse($content);
 
-        $route = '/records/24892534/51654651553/metadatas/';
+        $route = '/api/v1/records/24892534/51654651553/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/metadatas/';
+        $route = '/api/v1/records/any_bad_id/sfsd5qfsd5/metadatas/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -920,7 +920,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/status/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/status/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -931,10 +931,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateRecordsStatusResponse(self::$DI['record_1'], $content);
 
-        $route = '/records/24892534/51654651553/status/';
+        $route = '/api/v1/records/24892534/51654651553/status/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/status/';
+        $route = '/api/v1/records/any_bad_id/sfsd5qfsd5/status/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -950,7 +950,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $keys = array_keys(self::$DI['record_1']->get_subdefs());
 
-        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -964,10 +964,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         foreach ($content['response']['embed'] as $embed) {
             $this->checkEmbed($embed, self::$DI['record_1']);
         }
-        $route = '/records/24892534/51654651553/embed/';
+        $route = '/api/v1/records/24892534/51654651553/embed/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/embed/';
+        $route = '/api/v1/records/any_bad_id/sfsd5qfsd5/embed/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -987,7 +987,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $keys = array_keys(self::$DI['record_story_1']->get_subdefs());
 
-        $route = '/stories/' . self::$DI['record_story_1']->get_sbas_id() . '/' . self::$DI['record_story_1']->get_record_id() . '/embed/';
+        $route = '/api/v1/stories/' . self::$DI['record_story_1']->get_sbas_id() . '/' . self::$DI['record_story_1']->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -1001,10 +1001,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         foreach ($content['response']['embed'] as $embed) {
             $this->checkEmbed($embed, self::$DI['record_story_1']);
         }
-        $route = '/stories/24892534/51654651553/embed/';
+        $route = '/api/v1/stories/24892534/51654651553/embed/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/stories/any_bad_id/sfsd5qfsd5/embed/';
+        $route = '/api/v1/stories/any_bad_id/sfsd5qfsd5/embed/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -1016,7 +1016,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
         self::$DI['client']->request('GET', $route, $this->getParameters(array('mimes' => array('image/jpg', 'image/jpeg'))), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -1035,7 +1035,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
         self::$DI['client']->request('GET', $route, $this->getParameters(array('devices' => array('nodevice'))), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -1050,7 +1050,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/related/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/related/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -1064,10 +1064,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->evaluateGoodBasket($basket);
         }
 
-        $route = '/records/24892534/51654651553/related/';
+        $route = '/api/v1/records/24892534/51654651553/related/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/related/';
+        $route = '/api/v1/records/any_bad_id/sfsd5qfsd5/related/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -1084,7 +1084,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test001.CR2'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
 
-        $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
+        $route = '/api/v1/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
         $caption = $record->get_caption();
 
         $toupdate = array();
@@ -1143,7 +1143,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/setstatus/';
+        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/setstatus/';
 
         $record_status = strrev(self::$DI['record_1']->get_status());
         $status_bits = self::$DI['record_1']->get_databox()->get_statusbits();
@@ -1206,7 +1206,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->setToken(self::$token);
 
-        $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setcollection/';
+        $route = '/api/v1/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setcollection/';
 
         $base_id = false;
         foreach ($record->get_databox()->get_collections() as $collection) {
@@ -1242,7 +1242,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         self::$DI['client'] = new Client(self::$DI['app'], array());
 
         $this->setToken(self::$adminToken);
-        $route = '/baskets/list/';
+        $route = '/api/v1/baskets/list/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -1265,7 +1265,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/baskets/add/';
+        $route = '/api/v1/baskets/add/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -1293,7 +1293,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $basketElement = $this->insertOneBasketElement();
         $basket = $basketElement->getBasket();
 
-        $route = '/baskets/' . $basket->getId() . '/content/';
+        $route = '/api/v1/baskets/' . $basket->getId() . '/content/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -1332,7 +1332,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $basket = $this->insertOneBasket();
 
-        $route = '/baskets/' . $basket->getId() . '/setname/';
+        $route = '/api/v1/baskets/' . $basket->getId() . '/setname/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -1385,7 +1385,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $basket = $this->insertOneBasket();
 
-        $route = '/baskets/' . $basket->getId() . '/setdescription/';
+        $route = '/api/v1/baskets/' . $basket->getId() . '/setdescription/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -1411,7 +1411,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $baskets = $this->insertFiveBasket();
 
-        $route = '/baskets/' . $baskets[0]->getId() . '/delete/';
+        $route = '/api/v1/baskets/' . $baskets[0]->getId() . '/delete/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -1440,7 +1440,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testAddRecord()
     {
         $this->setToken(self::$token);
-        $route = '/records/add/';
+        $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
         $params['status'] = '0b10000';
@@ -1463,7 +1463,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testAddRecordForceRecord()
     {
         $this->setToken(self::$token);
-        $route = '/records/add/';
+        $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
         $params['forceBehavior'] = '0';
@@ -1492,7 +1492,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testAddRecordForceLazaret()
     {
         $this->setToken(self::$token);
-        $route = '/records/add/';
+        $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
         $params['forceBehavior'] = '1';
@@ -1519,7 +1519,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testAddRecordWrongBehavior()
     {
         $this->setToken(self::$token);
-        $route = '/records/add/';
+        $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
         $params['forceBehavior'] = '2';
@@ -1537,7 +1537,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testAddRecordWrongBaseId()
     {
         $this->setToken(self::$adminToken);
-        $route = '/records/add/';
+        $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
         $params['base_id'] = self::$DI['collection_no_access']->get_base_id();
@@ -1555,7 +1555,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testAddRecordNoBaseId()
     {
         $this->setToken(self::$token);
-        $route = '/records/add/';
+        $route = '/api/v1/records/add/';
 
         $params = $this->getAddRecordParameters();
         unset($params['base_id']);
@@ -1573,7 +1573,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testAddRecordMultipleFiles()
     {
         $this->setToken(self::$token);
-        $route = '/records/add/';
+        $route = '/api/v1/records/add/';
 
         $file = array(
             new \Symfony\Component\HttpFoundation\File\UploadedFile(__FILE__, 'upload.txt'),
@@ -1590,7 +1590,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testAddRecordNofile()
     {
         $this->setToken(self::$token);
-        $route = '/records/add/';
+        $route = '/api/v1/records/add/';
 
         self::$DI['client']->request('POST', $route, $this->getParameters($this->getAddRecordParameters()), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -1611,7 +1611,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $created_feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], $title, $subtitle);
 
         $this->setToken(self::$token);
-        $route = '/feeds/list/';
+        $route = '/api/v1/feeds/list/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -1674,7 +1674,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
 
         $this->setToken(self::$token);
-        $route = '/feeds/content/';
+        $route = '/api/v1/feeds/content/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -1739,7 +1739,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $created_item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $created_entry, self::$DI['record_1']);
 
         $this->setToken(self::$token);
-        $route = '/feeds/entry/' . $created_entry->get_id() . '/';
+        $route = '/api/v1/feeds/entry/' . $created_entry->get_id() . '/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -1787,7 +1787,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $created_feed->set_collection(self::$DI['collection_no_access']);
 
         $this->setToken(self::$adminToken);
-        $route = '/feeds/entry/' . $created_entry->get_id() . '/';
+        $route = '/api/v1/feeds/entry/' . $created_entry->get_id() . '/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -1829,7 +1829,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $created_item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $created_entry, self::$DI['record_1']);
 
         $this->setToken(self::$token);
-        $route = '/feeds/' . $created_feed->get_id() . '/content/';
+        $route = '/api/v1/feeds/' . $created_feed->get_id() . '/content/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -1870,7 +1870,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testQuarantineList()
     {
         $this->setToken(self::$token);
-        $route = '/quarantine/list/';
+        $route = '/api/v1/quarantine/list/';
 
         $quarantineItemId = $this->getQuarantineItem()->getId();
 
@@ -1905,7 +1905,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->setToken(self::$token);
 
         $quarantineItemId = $this->getQuarantineItem()->getId();
-        $route = '/quarantine/item/' . $quarantineItemId . '/';
+        $route = '/api/v1/quarantine/item/' . $quarantineItemId . '/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
