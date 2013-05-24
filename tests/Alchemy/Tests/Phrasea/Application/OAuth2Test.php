@@ -96,7 +96,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
             $phpunit->assertEquals(Context::CONTEXT_OAUTH2_NATIVE, $event->getContext()->getContext());
         });
 
-        self::$DI['client']->request($method, '/authorize', $this->queryParameters);
+        self::$DI['client']->request($method, '/api/oauthv2/authorize', $this->queryParameters);
 
         $this->assertEquals(1, $preEvent);
     }
@@ -178,7 +178,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $this->setQueryParameters('grant_type', 'authorization_code');
         $this->setQueryParameters('code', '12345678918');
         self::$DI['client']->request('POST', '/api/oauthv2/token', $this->queryParameters);
-      
+
         $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
     }
 }
