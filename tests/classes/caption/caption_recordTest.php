@@ -107,7 +107,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
             break;
         }
 
-        if (!$meta) {
+        if (!$field) {
             $this->markTestSkipped('Unable to set a DC field');
         }
 
@@ -117,7 +117,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
             self::$DI['record_1']->set_metadatas(array(
                 array(
                     'meta_id'        => null,
-                    'meta_struct_id' => $meta->get_id(),
+                    'meta_struct_id' => $field->get_id(),
                     'value'          => array('HELLO MO !'),
                 )
             ));
