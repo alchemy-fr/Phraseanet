@@ -24,7 +24,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         parent::setUpBeforeClass();
 
         $environment = 'test';
-        $application = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
+        $application = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
 
         self::$appli = \API_OAuth2_Application::create($application, self::$DI['user'], 'test');
         self::$appli->set_description('une description')
@@ -46,7 +46,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         parent::setUp();
 
         $environment = 'test';
-        self::$DI['app'] = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
+        self::$DI['app'] = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
 
         $this->queryParameters = array(
             "response_type" => "code",
@@ -130,7 +130,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $acc = self::getAccount();
         $acc->set_revoked(true); // revoked to show form
 
-        $crawler = self::$DI['client']->request('GET', '/authorize', $this->queryParameters);
+        $crawler = self::$DI['client']->request('GET', '/api/oauthv2/authorize', $this->queryParameters);
         $this->assertTrue(self::$DI['client']->getResponse()->isSuccessful());
         $this->assertRegExp("/" . self::$appli->get_client_id() . "/", self::$DI['client']->getResponse()->getContent());
         $this->assertRegExp("/" . str_replace("/", '\/', self::$appli->get_redirect_uri()) . "/", self::$DI['client']->getResponse()->getContent());
@@ -143,8 +143,8 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     {
         $this->setQueryParameters('grant_type', 'authorization_code');
         $this->setQueryParameters('code', '12345678918');
-        self::$DI['client']->request('POST', '/token', $this->queryParameters);
-
+        self::$DI['client']->request('POST', '/api/oauthv2/token', $this->queryParameters);
+      
         $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
     }
 }

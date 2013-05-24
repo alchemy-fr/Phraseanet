@@ -608,6 +608,10 @@ class Application extends SilexApplication
         $this->mount('/datafiles/', new Datafiles());
         $this->mount('/permalink/', new Permalink());
 
+        $this->get('/include/minify/', function () {
+           require __DIR__ . '/../../../vendor/mrclay/minify/min/index.php';
+        });
+
         $this->mount('/admin/', new Root());
         $this->mount('/admin/dashboard', new Dashboard());
         $this->mount('/admin/collection', new Collection());

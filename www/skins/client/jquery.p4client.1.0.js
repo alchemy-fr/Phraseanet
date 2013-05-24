@@ -844,7 +844,7 @@ function profil(value)
 
 function setCss(color)
 {
-	$('#skinCss').attr('href','/include/minify/f=skins/common/main.css,skins/client/'+color+'/clientcolor.css,'+
+	$('#skinCss').attr('href','/include/minify/?f=skins/common/main.css,skins/client/'+color+'/clientcolor.css,'+
 			'skins/client/'+color+'/ui.core.css,'+
 			'skins/client/'+color+'/ui.datepicker.css,'+
 			'skins/client/'+color+'/ui.theme.css');
