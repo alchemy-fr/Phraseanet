@@ -175,7 +175,7 @@ define([
 
             describe("DcField Views", function() {
                 beforeEach(function() {
-                    this.collection = new DcFieldCollection([ {
+                    this.collection = new DcFieldCollection([{
                             "label": "Contributor",
                             "definition": "An entity responsible for making contributions to the resource.",
                             "URI": "http://dublincore.org/documents/dces/#contributor"
@@ -207,7 +207,7 @@ define([
                 beforeEach(function() {
                     var model = new FieldModel({"id": 1, "sbas-id": sbasId, "name": "Categorie", "tag": "XMP:Categorie"});
 
-                    this.view = new EditView({"model": model}).render();
+                    this.view = new EditView({"model": model});
                 });
 
                 it("render() should return the view object", function() {
@@ -264,6 +264,47 @@ define([
                 it("should render as a DIV element", function() {
                     this.view.render().el.nodeName.should.equal("DIV");
                 });
+            });
+        });
+
+        describe("Edge cases", function() {
+            beforeEach(function() {
+                AdminFieldApp.fieldsCollection.add({"sbas-id": sbasId, "name": "Categorie", "tag": "XMP:Categorie"});
+                AdminFieldApp.dcFieldsCollection.add({
+                    "label": "Contributor",
+                    "definition": "An entity responsible for making contributions to the resource.",
+                    "URI": "http://dublincore.org/documents/dces/#contributor"
+                });
+
+                AdminFieldApp.saveView = new SaveView();
+                AdminFieldApp.fieldErrorView = new FieldErrorView();
+                AdminFieldApp.fieldListView = new ListItemView({
+                    collection: AdminFieldApp.fieldsCollection,
+                    el: AdminFieldApp.$leftBlock
+                });
+                // render views
+                AdminFieldApp.saveView.render();
+                AdminFieldApp.fieldListView.render();
+            });
+
+            it("should update edit view when clicking on single element", function() {
+                AdminFieldApp.fieldListView.itemViews[0].clickAction();
+                should.exist(AdminFieldApp.fieldEditView);
+                assert.equal(AdminFieldApp.fieldEditView.model, AdminFieldApp.fieldListView.collection.first(), 'model is updated');
+            });
+
+            it("should reorder collection on drop action", function() {
+                var ui = {item: {index: function() {return 2;}}};
+                AdminFieldApp.fieldListView.itemViews[0].dropAction({},ui);
+                assert.equal(AdminFieldApp.fieldListView.collection.last().get('sorter'), 2, 'model is updated');
+            });
+
+            it("should update collection when model change", function() {
+                AdminFieldApp.fieldListView.itemViews[0].clickAction();
+                AdminFieldApp.fieldEditView.model.set({
+                    "name": "new name"
+                });
+                assert.equal(AdminFieldApp.fieldListView.collection.first().get('name'), "new name", 'model is updated');
             });
         });
     });
