@@ -65,7 +65,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         self::$DI['app'] = self::$DI->share(function() {
 
             $environment = 'test';
-            $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/ApiVersion.php';
+            $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
 
             $app['debug'] = true;
 
@@ -86,7 +86,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         parent::setUpBeforeClass();
 
         $environment = 'test';
-        $application = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/ApiVersion.php';
+        $application = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
 
         self::$oauthApplication = \API_OAuth2_Application::create($application, self::$DI['user_notAdmin'], 'test API v1');
         self::$account = \API_OAuth2_Account::load_with_user($application, self::$oauthApplication, self::$DI['user_notAdmin']);

@@ -21,7 +21,7 @@ class ApiRootTest extends \PhraseanetWebTestCaseAbstract
 
         self::$DI['app'] = self::$DI->share(function() {
             $environment = 'test';
-            $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/ApiVersion.php';
+            $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
 
             $app['debug'] = true;
 

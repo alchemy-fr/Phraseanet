@@ -16,6 +16,6 @@
  */
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-$app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/ApiVersion.php';
+$app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Api.php';
 
 $app->run();
