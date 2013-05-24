@@ -29,7 +29,7 @@ return call_user_func(function($environment = 'prod') {
     $app->get('/', function(Request $request, SilexApplication $app) {
         $apiAdapter = new \API_V1_adapter($app);
 
-        $result = new \API_V1_result($request, $apiAdapter);
+        $result = new \API_V1_result($app, $request, $apiAdapter);
 
         return $result->set_datas(array(
             'name'          => $app['phraseanet.registry']->get('GV_homeTitle'),

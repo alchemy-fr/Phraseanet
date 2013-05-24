@@ -16,7 +16,7 @@
  */
 require_once __DIR__ . "/../vendor/autoload.php";
 
-$environment = 'prod';
+$environment = 'dev';
 $app = require __DIR__ . '/../lib/Alchemy/Phrasea/Application/Root.php';
 
 $app->run();
