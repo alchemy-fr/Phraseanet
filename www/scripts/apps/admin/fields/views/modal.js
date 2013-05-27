@@ -49,5 +49,5 @@ define([
         }
     });
 
-   return ModalView;
+    return ModalView;
 });

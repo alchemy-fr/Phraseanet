@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Metadata\TagProvider;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Silex\Application;
@@ -140,8 +141,16 @@ class Fields implements ControllerProviderInterface
 
     public function displayApp(Application $app, Request $request, $sbas_id)
     {
+        $languages = array();
+
+        foreach (PhraseaApplication::getAvailableLanguages() as $code => $language) {
+            $data = explode('_', $code);
+            $languages[$data[0]] = $language;
+        }
+
         return  $app['twig']->render('/admin/fields/index.html.twig', array(
-            'sbas_id' => $sbas_id
+            'sbas_id'   => $sbas_id,
+            'languages' => $languages,
         ));
     }
 
@@ -230,7 +239,8 @@ class Fields implements ControllerProviderInterface
             'location' => $app->path('admin_fields_show_field', array(
                 'sbas_id' => $sbas_id,
                 'id' => $field->get_id()
-        ))));
+            ))
+        ));
     }
 
     public function listFields(Application $app, $sbas_id) {

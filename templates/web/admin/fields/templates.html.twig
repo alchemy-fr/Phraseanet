@@ -115,7 +115,7 @@
                         <i class='icon-ok'></i>
                     <% } else { %>
                         <i class='icon-remove'></i>
-                    <% } %>  {% trans %}Multivalued{% endtrans %}
+                    <% } %> {% trans %}Multivalued{% endtrans %}
                 </td>
             </tr>
         </table>
@@ -168,7 +168,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label for="separator">{%  trans %}Separator{% endtrans %}</label></td>
+                    <td><label for="separator">{% trans %}Separator{% endtrans %}</label></td>
                     <td><input id="separator" type="text" value="<%= field.separator %>" /></td>
                 </tr>
             </table>
@@ -212,11 +212,9 @@
                         <select id="thumbtitle">
                             <option value="1" <%= field.thumbtitle == "1" ? "selected" : "" %> >{% trans 'Tous' %}</option>
                             <option value="0" <%= field.thumbtitle == "0" ? "selected" : "" %> >{% trans 'Aucun' %}</option>
-                            <option value="fr" <%= field.thumbtitle == "fr" ? "selected" : "" %> >{% trans 'Francais' %}</option>
-                            <option value="nl" <%= field.thumbtitle == "nl" ? "selected" : "" %> >{% trans 'Dutch' %}</option>
-                            <option value="de" <%= field.thumbtitle == "de" ? "selected" : "" %> >{% trans 'Allemand' %}</option>
-                            <option value="en" <%= field.thumbtitle == "en" ? "selected" : "" %> >{% trans 'Anglais' %}</option>
-                            <option value="ar" <%= field.thumbtitle == "ar" ? "selected" : "" %> >{% trans 'Arabe' %}</option>
+                            {% for code, language in languages %}
+                                <option value="{{ code }}" <%= field.thumbtitle == "{{ code }}" ? "selected" : "" %> >{{ language}}</option>
+                            {% endfor %}
                         </select>
                     </td>
                 </tr>
