@@ -30,6 +30,7 @@ use Alchemy\Phrasea\Controller\Admin\TaskManager;
 use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Client\Baskets as ClientBasket;
 use Alchemy\Phrasea\Controller\Client\Root as ClientRoot;
+use Alchemy\Phrasea\Controller\Minifier;
 use Alchemy\Phrasea\Controller\Prod\Basket;
 use Alchemy\Phrasea\Controller\Prod\Bridge;
 use Alchemy\Phrasea\Controller\Prod\Download;
@@ -121,8 +122,10 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Application extends SilexApplication
 {
@@ -608,9 +611,7 @@ class Application extends SilexApplication
         $this->mount('/datafiles/', new Datafiles());
         $this->mount('/permalink/', new Permalink());
 
-        $this->get('/include/minify/', function () {
-           require __DIR__ . '/../../../vendor/mrclay/minify/min/index.php';
-        });
+        $this->mount('/include/minify/', new Minifier());
 
         $this->mount('/admin/', new Root());
         $this->mount('/admin/dashboard', new Dashboard());
