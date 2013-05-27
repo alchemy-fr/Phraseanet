@@ -1,0 +1,265 @@
+<script type="text/template" id="alert_template">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <%= msg %>
+</script>
+
+<script type="text/template" id="save_template">
+    <button type="button" class="btn btn-large btn-success save-all">
+        <i class="icon-hdd icon-white"></i> {% trans %}Save all changes{% endtrans %}
+    </button>
+</script>
+
+<script type="text/template" id="modal_template">
+    <div class="modal-body">
+        <p><%= msg %></p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn cancel">{% trans %}Close{% endtrans %}</button>
+        <button type="button" class="btn btn-primary confirm">{% trans %}Ok{% endtrans %}</button>
+    </div>
+</script>
+
+<script type="text/template" id="item_list_view_template">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="create-subview"></div>
+            <div class="sidebar-search-block">
+                <input class="input-block-level" type="text" id="live_search"  placeholder="{% trans %}Live search{% endtrans %}"/>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12 list-block">
+            <ul id="collection-fields" class="unstyled"></ul>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="create_template">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="sidebar-add-block">
+                <button type="button" class="btn btn-success btn-add-field"><i class="icon-plus icon-white"></i>{% trans %}Add new field{% endtrans %}</button>
+            </div>
+            <div class="well well-small add-field-block" style="display:none">
+                <h3>{% trans %}Add a new field{% endtrans %}</h3>
+                <form class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label" for="new-name"">{% trans %}Label{% endtrans %}</label>
+                        <div class="controls">
+                            <input type="text" id="new-name" class="input-block-level" placeholder="">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="new-source">{% trans %}Source{% endtrans %}</label>
+                        <div class="controls">
+                            <input type="text" id="new-source" class="input-block-level" placeholder="">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <label class="checkbox">
+                                <input id="new-multivalued" type="checkbox">{% trans %}Multivalued{% endtrans %}
+                            </label>
+                            <button type="button" class="btn btn-success btn-submit-field"><i class="icon-ok icon-white"></i>{% trans %}Add{% endtrans %}</button>
+                            <button type="button" class="btn btn-cancel-field">{% trans %}Cancel{% endtrans %}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="edit_template">
+    <div class="edit-block">
+        <table>
+            <tr class="edit-order">
+                <td>{% trans %}Order{% endtrans %}</td>
+                <td><%= field.sorter %></td>
+                <td><button type="button" class="btn btn-danger delete-field pull-right"><i class="icon-trash icon-white"></i>delete</button></td>
+            </tr>
+            <tr class="edit-name ">
+                <td colspan="2" class="control-group <%= modelErrors && modelErrors.has('name') ? 'error' : '' %>">
+                    <input id="name" type="text" value="<%= field.name %>" class="input-block-level">
+                    <span class="help-block">
+                        <% if(modelErrors && modelErrors.get('name')) { %>
+                            <%= modelErrors.get('name').message %>
+                        <% } %>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>{% trans %}Source{% endtrans %}</td>
+                <td class="control-group <%= modelErrors && modelErrors.has('tag') ? 'error' : '' %>">
+                    <input id="tag" val="<%= field.tag %>" class="input-block-level"/>
+                    <span class="help-block">
+                        <% if(modelErrors && modelErrors.get('tag')) { %>
+                            <%= modelErrors.get('tag').message %>
+                        <% } %>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>{% trans %}DCES{% endtrans %}</td>
+                <td class="dc-fields-subview"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="dces-help-block info"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <% if(field.multi == true) { %>
+                        <i class='icon-ok'></i>
+                    <% } else { %>
+                        <i class='icon-remove'></i>
+                    <% } %>  {% trans %}Multivalued{% endtrans %}
+                </td>
+            </tr>
+        </table>
+        <div class="edit-form">
+            <h4>{% trans %}Advanced field parameters{% endtrans %}</h4>
+            <table>
+                <tr>
+                    <td><label for="tbranch">{% trans %}Thesaurus branch{% endtrans %}</label></td>
+                    <td><input id="tbranch" type="text" value="<%= field.tbranch %>"/></td>
+                </tr>
+                <tr>
+                    <td><label for="type">{% trans %}Type{% endtrans %}</label></td>
+                    <td>
+                        <select id="type">
+                            <option <%= field.type == '' ? 'selected' : '' %> value=""></option>
+                            <option <%= field.type == 'string' ? 'selected' : '' %> value="string">string</option>
+                            <option <%= field.type == 'text' ? 'selected' : '' %> value="text">text</option>
+                            <option <%= field.type == 'number' ? 'selected' : '' %> value="number">number</option>
+                            <option <%= field.type == 'date' ? 'selected' : '' %> value="date">date</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="vocabulary-type">{% trans %}Vocabulary type{% endtrans %}</label></td>
+                    <td>
+                        <select id="vocabulary-type">
+                            <option <%= field['vocabulary-type'] == null ? 'selected' : '' %> value=''></option>
+                            <% _.each(vocabularyTypes, function(vocab) { %>
+                                <option <%= field['vocabulary-type'] == vocab.type ? 'selected' : '' %> value="<%= vocab.type %>"><%= vocab.name %></option>
+                            <% }); %>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <% if(field['vocabulary-type'] != null && field['vocabulary-type'] != '') { %>
+                            <label for="vocabulary-restricted" class="checkbox">
+                                <input id="vocabulary-restricted" type="checkbox" <%= field["vocabulary-restricted"] ? "checked='checked'" : "" %> />
+                                {% trans %}Limited vocabulary{% endtrans %}
+                            </label>
+                        <% } %>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="business" class="checkbox">
+                            <input id="business" type="checkbox" <%= field.business ? "checked='checked'" : "" %> />
+                            {% trans %}Business Fields{% endtrans %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="separator">{% trans %}Separator{% endtrans %}</label></td>
+                    <td><input id="separator" type="text" value="<%= field.separator %>" /></td>
+                </tr>
+            </table>
+            <h4>{% trans %}Display & action settings{% endtrans %}</h4>
+            <table>
+                <tr>
+                    <td>
+                        <label for="required" class="checkbox">
+                            <input id="required" type="checkbox" <%= field.required ? "checked='checked'" : "" %> />
+                            {% trans %}Mandatory{% endtrans %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="indexable" class="checkbox">
+                            <input id="indexable" type="checkbox" <%= field.indexable ? "checked='checked'" : "" %> />
+                            {% trans %}Indexable{% endtrans %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="readonly" class="checkbox">
+                            <input id="readonly" type="checkbox" <%= field.readonly ? "checked='checked'" : "" %> />
+                            {% trans %}Read-only{% endtrans %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="report" class="checkbox">
+                            <input id="report" type="checkbox" <%= field.report ? "checked='checked'" : "" %> />
+                            {% trans %}Report{% endtrans %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="thumbtitle">{% trans %}Display thumbnails{% endtrans %}</label></td>
+                    <td>
+                        <select id="thumbtitle">
+                            <option value="1" <%= field.thumbtitle == "1" ? "selected" : "" %> >{% trans 'Tous' %}</option>
+                            <option value="0" <%= field.thumbtitle == "0" ? "selected" : "" %> >{% trans 'Aucun' %}</option>
+                            <option value="fr" <%= field.thumbtitle == "fr" ? "selected" : "" %> >{% trans 'Francais' %}</option>
+                            <option value="nl" <%= field.thumbtitle == "nl" ? "selected" : "" %> >{% trans 'Dutch' %}</option>
+                            <option value="de" <%= field.thumbtitle == "de" ? "selected" : "" %> >{% trans 'Allemand' %}</option>
+                            <option value="en" <%= field.thumbtitle == "en" ? "selected" : "" %> >{% trans 'Anglais' %}</option>
+                            <option value="ar" <%= field.thumbtitle == "ar" ? "selected" : "" %> >{% trans 'Arabe' %}</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="list_row_template">
+    <table>
+        <tr>
+            <td class="handle">
+                <i class="icon-move"></i>
+            </td>
+            <td rowspan="2" class="trigger-click">
+                <div class="field-name"><%= name %></div>
+                <div class="field-tag"><%= tag %></div>
+            </td>
+            <td rowspan="2" class="chip trigger-click">
+                <i class="icon-chevron-right"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="position">
+                <%= position %>
+            </td>
+        </tr>
+    </table>
+</script>
+
+<script type="text/template" id="dc_fields_template">
+    <select id="dces-element" class="input-block-level">
+        <option <%= field['dces-element'] == null ? 'selected' : '' %> value=''></option>
+        <% _.each(dces_elements, function(el) { %>
+            <option <%= field['dces-element'] == el.label ? 'selected' : '' %> value="<%= el.label %>">DC:<%= el.label %></option>
+        <% }); %>
+    </select>
+</script>
+
+<script type="text/template" id="field_error_template">
+    <% if(messages.length > 0) { %>
+        <div class="well well-small">
+            <i class="icon-exclamation-sign"></i> {% trans %}Current configuration contains some errors{% endtrans %}
+        </div>
+    <% } %>
+</script>
