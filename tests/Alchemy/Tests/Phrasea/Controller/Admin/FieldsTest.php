@@ -7,6 +7,25 @@ use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 
 class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
+    public function testRoot()
+    {
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databox = array_shift($databoxes);
+
+        self::$DI['client']->request("GET", "/admin/fields/" . $databox->get_sbas_id());
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+    }
+
+    public function testLanguage()
+    {
+        self::$DI['client']->request("GET", "/admin/fields/language.json");
+        $response = self::$DI['client']->getResponse();
+
+        $this->assertTrue($response->isOk());
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
+    }
+
     public function testGetTag()
     {
         $tag = new ObjectName();
@@ -100,12 +119,103 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         }
     }
 
+    public function testUpdateFields()
+    {
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databox = array_shift($databoxes);
+        $fieldObjects = array();
+        // create two fields
+        $fields = array(
+            array(
+                'sbas-id' => $databox->get_sbas_id(),
+                'name' => 'testfield' . mt_rand(),
+                'multi' => true,
+                'thumbtitle' => false,
+                'tag' => 'XMP:XMP',
+                'business' => false,
+                'indexable' => true,
+                'required' => true,
+                'separator' => '=;',
+                'readonly' => false,
+                'type' => 'string',
+                'tbranch' => '',
+                'report' => true,
+                'dces-element' => null,
+                'vocabulary-type' => null,
+                'vocabulary-restricted' => false,
+            ), array(
+                'sbas-id' => $databox->get_sbas_id(),
+                'name' => 'testfield' . mt_rand(),
+                'multi' => true,
+                'thumbtitle' => false,
+                'tag' => 'XMP:XMP',
+                'business' => false,
+                'indexable' => true,
+                'required' => true,
+                'separator' => '=;',
+                'readonly' => false,
+                'type' => 'string',
+                'tbranch' => '',
+                'report' => true,
+                'dces-element' => null,
+                'vocabulary-type' => null,
+                'vocabulary-restricted' => false,
+        ));
+
+        foreach($fields as $fieldData) {
+            $field = \databox_field::create(self::$DI['app'], $databox, $fieldData['name'], $fieldData['multi']);
+            $field
+                ->set_thumbtitle($fieldData['thumbtitle'])
+                ->set_tag(\databox_field::loadClassFromTagName($fieldData['tag']))
+                ->set_business($fieldData['business'])
+                ->set_indexable($fieldData['indexable'])
+                ->set_required($fieldData['required'])
+                ->set_separator($fieldData['separator'])
+                ->set_readonly($fieldData['readonly'])
+                ->set_type($fieldData['type'])
+                ->set_tbranch($fieldData['tbranch'])
+                ->set_report($fieldData['report'])
+                ->setVocabularyControl(null)
+                ->setVocabularyRestricted(false);
+            $field->save();
+            $fieldObjects[] = $field;
+        }
+
+        // get body
+        $body = $databox->get_meta_structure()->toArray();
+
+        // change some body data
+        $body[count($body) - 2]['business'] = true;
+        $body[count($body) - 2]['indexable'] = false;
+        $body[count($body) - 1]['readonly'] = true;
+        $body[count($body) - 1]['required'] = false;
+
+        self::$DI['client']->request("PUT", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), array(), array(), array(), json_encode($body));
+
+        $response = self::$DI['client']->getResponse()->getContent();
+
+        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
+
+        $data = json_decode($response, true);
+
+        $this->assertTrue(is_array($data));
+
+        // expect last 2 fields from body equals last 2 fields from response
+        $this->assertEquals(array_splice($body, -2), array_splice($data, -2));
+
+        // delete created fields
+        foreach($fieldObjects as $field) {
+            $field->delete();
+        }
+    }
+
     public function testCreateField()
     {
         $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
 
         $body = json_encode(array(
+            'sbas-id' => $databox->get_sbas_id(),
             'name' => 'testfield' . mt_rand(),
             'multi' => true,
             'thumbtitle' => false,
@@ -130,10 +240,13 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $data = json_decode($response, true);
 
-        $dataWithoutId = $data;
-        unset($dataWithoutId['id']);
+        $this->assertTrue(is_array($data));
 
-        $this->assertEquals(json_decode($body, true), $dataWithoutId);
+        $dataWithoutIds = $data;
+        unset($dataWithoutIds['id']);
+        unset($dataWithoutIds['sorter']);
+
+        $this->assertEquals(json_decode($body, true), $dataWithoutIds);
 
         $field = \databox_field::get_instance(self::$DI['app'], $databox, $data['id']);
         $field->delete();

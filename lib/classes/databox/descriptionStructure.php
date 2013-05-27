@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class databox_descriptionStructure implements IteratorAggregate
+class databox_descriptionStructure implements IteratorAggregate, Countable
 {
     /**
      *
@@ -109,6 +109,19 @@ class databox_descriptionStructure implements IteratorAggregate
         return null;
     }
 
+    public function get_dces_field($label)
+    {
+        foreach ($this->elements as $field) {
+            if (null !== $dces_element = $field->get_dces_element()) {
+                if ($label === $dces_element->get_label()) {
+                    return $field;
+                }
+            }
+        }
+
+        return null;
+    }
+
     /**
      *
      * @param  string  $id
@@ -125,4 +138,13 @@ class databox_descriptionStructure implements IteratorAggregate
             return $element->toArray();
         }, array_values($this->elements));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function count()
+    {
+        return count($this->elements);
+    }
 }
+

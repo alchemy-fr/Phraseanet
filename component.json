@@ -6,6 +6,10 @@
     "backbone-amd": "~1.0",
     "underscore-amd": "~1.4",
     "mocha": "~1.9",
-    "chai" : "~1.6"
+    "chai" : "~1.6",
+    "i18next": "~1.6",
+    "sinon": "~1.7",
+    "sinon-chai": "~2.4",
+    "js-fixtures": "https://github.com/badunk/js-fixtures/archive/master.zip"
   }
 }

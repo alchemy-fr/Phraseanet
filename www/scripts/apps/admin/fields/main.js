@@ -1,19 +1,36 @@
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+// configure AMD loading
 require.config({
     baseUrl: "/scripts",
     paths: {
-        jquery: '../assets/jquery/jquery',
-        underscore: '../assets/underscore-amd/underscore',
-        backbone: '../assets/backbone-amd/backbone',
-        twig: '../assets/twig/twig',
-        i18n: '../assets/i18n/i18next.amd'
+        jquery: "../include/jslibs/jquery-1.7.1",
+        jqueryui: "../include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min",
+        underscore: "../assets/underscore-amd/underscore",
+        backbone: "../assets/backbone-amd/backbone",
+        twig: "../assets/twig/twig",
+        i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
+        bootstrap: "../skins/html5/bootstrap/js/bootstrap.min"
     },
     shim: {
         twig: {
-            exports: 'Twig'
+            exports: "Twig"
+        },
+        bootstrap : ["jquery"],
+        jqueryui: {
+            deps: [ "jquery" ]
         }
     }
 });
 
-require(['apps/admin/fields/app'], function(App) {
+// launch application
+require(["apps/admin/fields/app"], function(App) {
     App.initialize();
 });
