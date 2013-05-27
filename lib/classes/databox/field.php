@@ -175,7 +175,11 @@ class databox_field implements cache_cacheableInterface
 
         $connbas = $this->get_connection();
 
-        $sql = "SELECT * FROM metadatas_structure WHERE id=:id";
+        $sql = "SELECT `thumbtitle`, `separator`, `dces_element`, `tbranch`,
+                `type`, `report`, `multi`, `required`, `readonly`, `indexable`,
+                `name`, `src`, `business`, `VocabularyControlType`,
+                `RestrictToVocabularyControl`, `sorter`
+              FROM metadatas_structure WHERE id=:id";
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':id' => $id));
@@ -805,21 +809,21 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return string
      */
     public function get_name()
     {
         return $this->name;
     }
+
     /**
-     *
      * @return string
      */
     public function get_position()
     {
         return $this->position;
     }
+
     /**
      *
      * @return string
@@ -859,7 +863,7 @@ class databox_field implements cache_cacheableInterface
             'readonly'              => $this->readonly,
             'multi'                 => $this->multi,
             'indexable'             => $this->indexable,
-            'dces-element'          => $this->dces_element ? $this->dces_element->get_label(): null,
+            'dces-element'          => $this->dces_element ? $this->dces_element->get_label() : null,
             'vocabulary-type'       => $this->Vocabulary ? $this->Vocabulary->getType() : null,
             'vocabulary-restricted' => $this->VocabularyRestriction,
         );

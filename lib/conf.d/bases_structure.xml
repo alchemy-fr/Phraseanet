@@ -4748,13 +4748,6 @@
               <field>required</field>
             </fields>
           </index>
-          <index>
-            <name>sorter</name>
-            <type>UNIQUE</type>
-            <fields>
-              <field>sorter</field>
-            </fields>
-          </index>
         </indexes>
         <engine>InnoDB</engine>
       </table>

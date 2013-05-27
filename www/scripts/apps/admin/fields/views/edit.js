@@ -1,3 +1,12 @@
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 define([
     "jquery",
     "underscore",
@@ -64,31 +73,6 @@ define([
                     var fieldTagId = fieldTag.attr("id");
                     var fieldTagValue = fieldTag.val();
 
-                    // check for format tag
-                    if ("" !== fieldTagValue && false === /[a-z]+:[a-z0-9]+/i.test(fieldTagValue)) {
-                        fieldTag
-                            .closest(".control-group")
-                            .addClass("error")
-                            .find(".help-block")
-                            .empty()
-                            .append(i18n.t("validation_tag_invalid"));
-                        // add error
-                        AdminFieldApp.errorManager.addModelFieldError(new Error(
-                            self.model, fieldTagId, i18n.t("validation_tag_invalid")
-                        ));
-                    } else if (fieldTag.closest(".control-group").hasClass("error")) {
-                        // remove error
-                        AdminFieldApp.errorManager.removeModelFieldError(
-                            self.model, fieldTagId
-                        );
-
-                        fieldTag
-                            .closest(".control-group")
-                            .removeClass("error")
-                            .find(".help-block")
-                            .empty();
-                    }
-
                     var data = {};
                     data[fieldTagId] = fieldTagValue;
                     self.model.set(data);
@@ -109,6 +93,7 @@ define([
             "click .delete-field": "deleteAction",
             "keyup #name": "changeNameAction",
             "focusout input[type=text]": "fieldChangedAction",
+            "focusout input#tag": "tagFieldChangedAction",
             "change input[type=checkbox]": "fieldChangedAction",
             "change select": "selectionChangedAction"
         },
@@ -170,6 +155,38 @@ define([
 
             return this;
         },
+        tagFieldChangedAction: function(e) {
+            var fieldTag = $(e.target);
+            var fieldTagId = fieldTag.attr("id");
+            var fieldTagValue = fieldTag.val();
+
+            // check for format tag
+            if ("" !== fieldTagValue && false === /[a-z]+:[a-z0-9]+/i.test(fieldTagValue)) {
+                fieldTag
+                    .closest(".control-group")
+                    .addClass("error")
+                    .find(".help-block")
+                    .empty()
+                    .append(i18n.t("validation_tag_invalid"));
+                // add error
+                AdminFieldApp.errorManager.addModelFieldError(new Error(
+                    this.model, fieldTagId, i18n.t("validation_tag_invalid")
+                ));
+            } else if (fieldTag.closest(".control-group").hasClass("error")) {
+                // remove error
+                AdminFieldApp.errorManager.removeModelFieldError(
+                    this.model, fieldTagId
+                );
+
+                fieldTag
+                    .closest(".control-group")
+                    .removeClass("error")
+                    .find(".help-block")
+                    .empty();
+            }
+
+            this.fieldChangedAction(e);
+        },
         deleteAction: function() {
             var self = this;
             var modalView = new ModalView({
@@ -200,9 +217,9 @@ define([
                             })
                         }).render();
                     },
-                    error: function(model, xhr) {
+                    error: function(xhr, textStatus, errorThrown) {
                         new AlertView({
-                            alert: "error", message: i18n.t("something_wrong")
+                            alert: "error", message: '' !== xhr.responseText ? xhr.responseText : i18n.t("something_wrong")
                         }).render();
                     }
                 });
@@ -213,12 +230,13 @@ define([
         _onModelChange: function() {
             AdminFieldApp.fieldListView.collection.remove(this.model, {silent: true});
             AdminFieldApp.fieldListView.collection.add(this.model);
-
             var index = AdminFieldApp.fieldListView.collection.indexOf(this.model);
 
             this._selectModelView(index);
 
             this.render();
+
+            AdminFieldApp.saveView.updateStateButton();
         },
         // select temView by index in itemList
         _selectModelView: function(index) {

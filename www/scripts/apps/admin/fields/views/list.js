@@ -1,3 +1,12 @@
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 define([
     "jquery",
     "jqueryui",
@@ -85,7 +94,6 @@ define([
                 placeholder: "item-list-placeholder",
                 start: function(event, ui) {
                     ui.item.addClass("border-bottom");
-
                 },
                 stop: function(event, ui) {
                     ui.firstItemPosition = $("li:first", $(this).sortable('widget')).position().top;
@@ -105,18 +113,18 @@ define([
             return this;
         },
         updateSortAction: function(event, model, ui) {
-            var position = ui.item.index();
-            this.collection.remove(model, {silent: true});
+            var newPosition = ui.item.index();
+            var curPosition = this.collection.indexOf(model);
 
             // reorder all collection model
-            this.collection.each(function(model, index) {
-                var ordinal = index;
-                if (index >= position) ordinal += 1;
-                model.set("sorter", ordinal);
+            this.collection.each(function(el, index) {
+                if (newPosition > curPosition && (index > curPosition && index <= curPosition)) index -= 1;
+                else if (newPosition < curPosition && (index >= curPosition && index < curPosition)) index += 1;
+
+                el.set("sorter", index);
             });
 
-            model.set("sorter", position);
-            this.collection.add(model, {at: position});
+            this.render();
 
             this.itemViews[0].animate(Math.abs(ui.firstItemPosition));
 
@@ -124,6 +132,8 @@ define([
             AdminFieldApp.fieldEditView.model = this.collection.find(function(el) {
                 return el.get("id") === AdminFieldApp.fieldEditView.model.get("id");
             });
+
+            AdminFieldApp.saveView.updateStateButton();
 
             return this;
         }

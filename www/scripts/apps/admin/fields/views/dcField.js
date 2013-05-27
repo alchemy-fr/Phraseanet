@@ -1,3 +1,12 @@
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 define([
     "jquery",
     "underscore",
@@ -17,7 +26,7 @@ define([
             });
 
             this.$el.html(template);
-            
+
             var index = $("#dces-element", this.$el)[0].selectedIndex - 1;
             if (index > 0 ) {
                 $(".dces-help-block", AdminFieldApp.$rightBlock).html(
