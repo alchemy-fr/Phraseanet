@@ -21,26 +21,26 @@ class TagProvider extends ExiftoolTagProvider
 
         $this['Phraseanet'] = $this->share(function(){
             return array(
-                'PdfText' => new \Alchemy\Phrasea\Metadata\Tag\PdfText(),
+                'PdfText'       => new \Alchemy\Phrasea\Metadata\Tag\PdfText(),
                 'TfArchivedate' => new \Alchemy\Phrasea\Metadata\Tag\TfArchivedate(),
-                'TfAtime'   => new \Alchemy\Phrasea\Metadata\Tag\TfAtime(),
-                'TfBasename' =>new \Alchemy\Phrasea\Metadata\Tag\TfBasename(),
-                'TfBits'    => new \Alchemy\Phrasea\Metadata\Tag\TfBits(),
-                'TfChannels' => new \Alchemy\Phrasea\Metadata\Tag\TfChannels(),
-                'TfCtime'  => new \Alchemy\Phrasea\Metadata\Tag\TfCtime(),
-                'TfDirname' => new \Alchemy\Phrasea\Metadata\Tag\TfDirname(),
-                'TfDuration' => new \Alchemy\Phrasea\Metadata\Tag\TfDuration(),
-                'TfEditdate' => new \Alchemy\Phrasea\Metadata\Tag\TfEditdate(),
-                'TfExtension' => new \Alchemy\Phrasea\Metadata\Tag\TfExtension(),
-                'TfFilename' => new \Alchemy\Phrasea\Metadata\Tag\TfFilename(),
-                'TfFilepath' => new \Alchemy\Phrasea\Metadata\Tag\TfFilepath(),
-                'TfHeight'  => new \Alchemy\Phrasea\Metadata\Tag\TfHeight(),
-                'TfMimetype' => new \Alchemy\Phrasea\Metadata\Tag\TfMimetype(),
-                'TfMtime'   => new \Alchemy\Phrasea\Metadata\Tag\TfMtime(),
-                'TfQuarantine' => new \Alchemy\Phrasea\Metadata\Tag\TfQuarantine(),
-                'TfRecordid' => new \Alchemy\Phrasea\Metadata\Tag\TfRecordid(),
-                'TfSize'    => new \Alchemy\Phrasea\Metadata\Tag\TfSize(),
-                'TfWidth'   => new \Alchemy\Phrasea\Metadata\Tag\TfWidth(),
+                'TfAtime'       => new \Alchemy\Phrasea\Metadata\Tag\TfAtime(),
+                'TfBasename'    => new \Alchemy\Phrasea\Metadata\Tag\TfBasename(),
+                'TfBits'        => new \Alchemy\Phrasea\Metadata\Tag\TfBits(),
+                'TfChannels'    => new \Alchemy\Phrasea\Metadata\Tag\TfChannels(),
+                'TfCtime'       => new \Alchemy\Phrasea\Metadata\Tag\TfCtime(),
+                'TfDirname'     => new \Alchemy\Phrasea\Metadata\Tag\TfDirname(),
+                'TfDuration'    => new \Alchemy\Phrasea\Metadata\Tag\TfDuration(),
+                'TfEditdate'    => new \Alchemy\Phrasea\Metadata\Tag\TfEditdate(),
+                'TfExtension'   => new \Alchemy\Phrasea\Metadata\Tag\TfExtension(),
+                'TfFilename'    => new \Alchemy\Phrasea\Metadata\Tag\TfFilename(),
+                'TfFilepath'    => new \Alchemy\Phrasea\Metadata\Tag\TfFilepath(),
+                'TfHeight'      => new \Alchemy\Phrasea\Metadata\Tag\TfHeight(),
+                'TfMimetype'    => new \Alchemy\Phrasea\Metadata\Tag\TfMimetype(),
+                'TfMtime'       => new \Alchemy\Phrasea\Metadata\Tag\TfMtime(),
+                'TfQuarantine'  => new \Alchemy\Phrasea\Metadata\Tag\TfQuarantine(),
+                'TfRecordid'    => new \Alchemy\Phrasea\Metadata\Tag\TfRecordid(),
+                'TfSize'        => new \Alchemy\Phrasea\Metadata\Tag\TfSize(),
+                'TfWidth'       => new \Alchemy\Phrasea\Metadata\Tag\TfWidth(),
             );
         });
     }
@@ -58,101 +58,101 @@ class TagProvider extends ExiftoolTagProvider
         $table = parent::getLookupTable();
 
         $table['phraseanet'] = array(
-            'pdftext' => array(
-                'tagname'       => 'PdfText',
-                'classname'     => '\\Alchemy\\Phrasea\\Metadata\\Tag\\PdfText',
-                'namespace'     => 'Phraseanet'),
+            'pdftext'       => array(
+                'tagname'   => 'PdfText',
+                'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\PdfText',
+                'namespace' => 'Phraseanet'),
             'tfarchivedate' => array(
                 'tagname'   => 'TfArchivedate',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfArchivedate',
                 'namespace' => 'Phraseanet'
             ),
-            'tfatime'   => array(
+            'tfatime'       => array(
                 'tagname'   => 'TfAtime',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfAtime',
                 'namespace' => 'Phraseanet'
             ),
-            'tfbasename' => array(
-                'tagname'    => 'TfBasename',
-                'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfBasename',
-                'namespace'  => 'Phraseanet'
+            'tfbasename'    => array(
+                'tagname'   => 'TfBasename',
+                'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfBasename',
+                'namespace' => 'Phraseanet'
             ),
-            'tfbits'    => array(
-                'tagname'    => 'TfBits',
-                'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfBits',
-                'namespace'  => 'Phraseanet'
+            'tfbits'        => array(
+                'tagname'   => 'TfBits',
+                'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfBits',
+                'namespace' => 'Phraseanet'
             ),
-            'tfchannels' => array(
+            'tfchannels'    => array(
                 'tagname'   => 'TfChannels',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfChannels',
                 'namespace' => 'Phraseanet'
             ),
-            'tTfCtime'  => array(
-                'tagname'    => 'TfCtime',
-                'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfCtime',
-                'namespace'  => 'Phraseanet'
+            'tTfCtime'      => array(
+                'tagname'   => 'TfCtime',
+                'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfCtime',
+                'namespace' => 'Phraseanet'
             ),
-            'tfdirname' => array(
-                'tagname'    => 'TfDirname',
-                'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfDirname',
-                'namespace'  => 'Phraseanet'
+            'tfdirname'     => array(
+                'tagname'   => 'TfDirname',
+                'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfDirname',
+                'namespace' => 'Phraseanet'
             ),
-            'tfduration' => array(
-                'tagname'    => 'TfDuration',
-                'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfDuration',
-                'namespace'  => 'Phraseanet'
+            'tfduration'    => array(
+                'tagname'   => 'TfDuration',
+                'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfDuration',
+                'namespace' => 'Phraseanet'
             ),
-            'tfeditdate' => array(
-                'tagname'     => 'TfEditdate',
-                'classname'   => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfEditdate',
-                'namespace'   => 'Phraseanet'
+            'tfeditdate'    => array(
+                'tagname'   => 'TfEditdate',
+                'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfEditdate',
+                'namespace' => 'Phraseanet'
             ),
-            'tfextension' => array(
-                'tagname'    => 'TfExtension',
-                'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfExtension',
-                'namespace'  => 'Phraseanet'
+            'tfextension'   => array(
+                'tagname'   => 'TfExtension',
+                'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfExtension',
+                'namespace' => 'Phraseanet'
             ),
-            'tffilename' => array(
-                'tagname'    => 'TfFilename',
-                'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfFilename',
-                'namespace'  => 'Phraseanet'
+            'tffilename'    => array(
+                'tagname'   => 'TfFilename',
+                'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfFilename',
+                'namespace' => 'Phraseanet'
             ),
-            'tffilepath' => array(
+            'tffilepath'    => array(
                 'tagname'   => 'TfFilepath',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfFilepath',
                 'namespace' => 'Phraseanet'
             ),
-            'tfheight'  => array(
-                'tagname'    => 'TfHeight',
-                'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfHeight',
-                'namespace'  => 'Phraseanet'
+            'tfheight'      => array(
+                'tagname'   => 'TfHeight',
+                'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfHeight',
+                'namespace' => 'Phraseanet'
             ),
-            'tfmimetype' => array(
+            'tfmimetype'    => array(
                 'tagname'   => 'TfMimetype',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfMimetype',
                 'namespace' => 'Phraseanet'
             ),
-            'tfmtime'   => array(
+            'tfmtime'       => array(
                 'tagname'   => 'TfMtime',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfMtime',
                 'namespace' => 'Phraseanet'
             ),
-            'tfquarantine' => array(
+            'tfquarantine'  => array(
                 'tagname'   => 'TfQuarantine',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfQuarantine',
                 'namespace' => 'Phraseanet'
             ),
-            'tfrecordid' => array(
+            'tfrecordid'    => array(
                 'tagname'   => 'TfRecordid',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfRecordid',
                 'namespace' => 'Phraseanet'
             ),
-            'tfsize'    => array(
+            'tfsize'        => array(
                 'tagname'   => 'TfSize',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfSize',
                 'namespace' => 'Phraseanet'
             ),
-            'tfwidth'   => array(
+            'tfwidth'       => array(
                 'tagname'   => 'TfWidth',
                 'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfWidth',
                 'namespace' => 'Phraseanet'

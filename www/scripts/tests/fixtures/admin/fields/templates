@@ -120,7 +120,7 @@
             </tr>
         </table>
         <div class="edit-form">
-            <h4>{% trans  %}Advanced field parameters{% endtrans %}</h4>
+            <h4>{% trans %}Advanced field parameters{% endtrans %}</h4>
             <table>
                 <tr>
                     <td><label for="tbranch">{% trans %}Thesaurus branch{% endtrans %}</label></td>
@@ -168,11 +168,11 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label for="separator">{%  trans %}Separator{% endtrans %}</label></td>
+                    <td><label for="separator">{% trans %}Separator{% endtrans %}</label></td>
                     <td><input id="separator" type="text" value="<%= field.separator %>" /></td>
                 </tr>
             </table>
-            <h4>{% trans  %}Display & action settings{% endtrans %}</h4>
+            <h4>{% trans %}Display & action settings{% endtrans %}</h4>
             <table>
                 <tr>
                     <td>
@@ -194,7 +194,7 @@
                     <td>
                         <label for="readonly" class="checkbox">
                             <input id="readonly" type="checkbox" <%= field.readonly ? "checked='checked'" : "" %> />
-                            {% trans  %}Read only{% endtrans %}
+                            {% trans %}Read-only{% endtrans %}
                         </label>
                     </td>
                 </tr>
@@ -259,7 +259,7 @@
 <script type="text/template" id="field_error_template">
     <% if(messages.length > 0) { %>
         <div class="well well-small">
-            <i class="icon-exclamation-sign"></i> {% trans %} Current configuration contains some errors {% endtrans %}
+            <i class="icon-exclamation-sign"></i> {% trans %}Current configuration contains some errors{% endtrans %}
         </div>
     <% } %>
 </script>

@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Metadata\TagProvider;
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Silex\Application;
@@ -114,7 +113,7 @@ class Fields implements ControllerProviderInterface
                 $fields[] = $field->toArray();
             } catch (\Exception $e) {
                 $connection->rollback();
-                $app->abort(500, _(sprintf('Field %s could not be saved, please try again or contact an admin', $jsonField['name'])));
+                $app->abort(500, _(sprintf('Field %s could not be saved, please try again or contact an admin.', $jsonField['name'])));
                 break;
             }
         }
@@ -127,30 +126,22 @@ class Fields implements ControllerProviderInterface
     public  function getLanguage(Application $app, Request $request)
     {
         return $app->json(array(
-            'something_wrong'           => _('Something wrong happened, please try again or contact an admin'),
-            'created_success'           => _('%s field has been created with success'),
-            'deleted_success'           => _('%s field has been deleted with success'),
+            'something_wrong'           => _('Something wrong happened, please try again or contact an admin.'),
+            'created_success'           => _('%s field has been created with success.'),
+            'deleted_success'           => _('%s field has been deleted with success.'),
             'are_you_sure_delete'       => _('Do you really want to delete the field %s ?'),
-            'validation_blank'          => _('Field can not be blank'),
-            'validation_name_exists'    => _('Field name already exists'),
-            'validation_tag_invalid'    => _('Field source is not valid'),
-            'field_error'               => _('Field %s contains errors'),
-            'fields_save'               => _('Your configuration has been successfuly saved'),
+            'validation_blank'          => _('Field can not be blank.'),
+            'validation_name_exists'    => _('Field name already exists.'),
+            'validation_tag_invalid'    => _('Field source is not valid.'),
+            'field_error'               => _('Field %s contains errors.'),
+            'fields_save'               => _('Your configuration has been successfuly saved.'),
         ));
     }
 
     public function displayApp(Application $app, Request $request, $sbas_id)
     {
-        $languages = array();
-
-        foreach (PhraseaApplication::getAvailableLanguages() as $code => $language) {
-            $data = explode('_', $code);
-            $languages[$data[0]] = $language;
-        }
-
         return  $app['twig']->render('/admin/fields/index.html.twig', array(
-            'sbas_id'   => $sbas_id,
-            'languages' => $languages,
+            'sbas_id' => $sbas_id
         ));
     }
 
@@ -178,8 +169,8 @@ class Fields implements ControllerProviderInterface
         $vocabulary = VocabularyController::get($app, $type);
 
         return $app->json(array(
-                'type' => $vocabulary->getType(),
-                'name' => $vocabulary->getName(),
+            'type' => $vocabulary->getType(),
+            'name' => $vocabulary->getName(),
         ));
     }
 
@@ -232,15 +223,14 @@ class Fields implements ControllerProviderInterface
             $this->updateFieldWithData($app, $field, $data);
             $field->save();
         } catch (\Exception $e) {
-            $app->abort(500, _(sprintf('Field %s could not be created, please try again or contact an admin', $data['name'])));
+            $app->abort(500, _(sprintf('Field %s could not be created, please try again or contact an admin.', $data['name'])));
         }
 
         return $app->json($field->toArray(), 201, array(
             'location' => $app->path('admin_fields_show_field', array(
                 'sbas_id' => $sbas_id,
                 'id' => $field->get_id()
-            ))
-        ));
+        ))));
     }
 
     public function listFields(Application $app, $sbas_id) {
@@ -347,7 +337,7 @@ class Fields implements ControllerProviderInterface
             $class = sprintf('\databox_Field_DCES_%s', $dcesElement);
 
             if (!class_exists($class)) {
-                throw new BadRequestHttpException(sprintf('DCES element %s does not exist', $dcesElement));
+                throw new BadRequestHttpException(sprintf('DCES element %s does not exist.', $dcesElement));
             }
 
             $field->set_dces_element(new $class());
@@ -366,7 +356,7 @@ class Fields implements ControllerProviderInterface
     private function validateNameField(\databox_descriptionStructure $metaStructure, array $field)
     {
         if (null !== $metaStructure->get_element_by_name($field['name'])) {
-            throw new BadRequestHttpException(_(sprintf('Field %s already exists', $field['name'])));
+            throw new BadRequestHttpException(_(sprintf('Field %s already exists.', $field['name'])));
         }
     }
 
@@ -375,7 +365,7 @@ class Fields implements ControllerProviderInterface
         try {
             \databox_field::loadClassFromTagName($field['tag']);
         } catch(\Exception_Databox_metadataDescriptionNotFound $e) {
-            throw new BadRequestHttpException(_(sprintf('Provided tag %s is unknown', $field['tag'])));
+            throw new BadRequestHttpException(_(sprintf('Provided tag %s is unknown.', $field['tag'])));
         }
     }
 
@@ -385,7 +375,7 @@ class Fields implements ControllerProviderInterface
         $data = @json_decode($body, true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new BadRequestHttpException('Body must contain a valid JSON payload');
+            throw new BadRequestHttpException('Body must contain a valid JSON payload.');
         }
 
         return $data;

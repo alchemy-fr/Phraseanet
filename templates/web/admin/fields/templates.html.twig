@@ -39,7 +39,7 @@
     <div class="row-fluid">
         <div class="span12">
             <div class="sidebar-add-block">
-                <button type="button" class="btn btn-success btn-add-field"><i class="icon-plus icon-white"></i>{% trans %}Add new field{% endtrans %}</button>
+                <button type="button" class="btn btn-success btn-add-field"><i class="icon-plus icon-white"></i>{% trans %}Add a new field{% endtrans %}</button>
             </div>
             <div class="well well-small add-field-block" style="display:none">
                 <h3>{% trans %}Add a new field{% endtrans %}</h3>
@@ -194,7 +194,7 @@
                     <td>
                         <label for="readonly" class="checkbox">
                             <input id="readonly" type="checkbox" <%= field.readonly ? "checked='checked'" : "" %> />
-                            {% trans %}Read only{% endtrans %}
+                            {% trans %}Read-only{% endtrans %}
                         </label>
                     </td>
                 </tr>
@@ -257,7 +257,7 @@
 <script type="text/template" id="field_error_template">
     <% if(messages.length > 0) { %>
         <div class="well well-small">
-            <i class="icon-exclamation-sign"></i> {% trans %} Current configuration contains some errors {% endtrans %}
+            <i class="icon-exclamation-sign"></i> {% trans %}Current configuration contains some errors{% endtrans %}
         </div>
     <% } %>
 </script>
