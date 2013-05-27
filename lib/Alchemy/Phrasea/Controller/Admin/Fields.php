@@ -17,7 +17,7 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use PHPExiftool\Exception\TagUnknown;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class Fields implements ControllerProviderInterface
 {
@@ -90,85 +90,51 @@ class Fields implements ControllerProviderInterface
 
     public function updateFields(Application $app, Request $request, $sbas_id)
     {
-        $json = array(
-            'success'   => false,
-            // use to store the updated collection
-            'fields'    => array(),
-            'messages'  => array()
-        );
-
+        $fields = array();
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+        $metaStructure = $databox->get_meta_structure();
         $connection = $databox->get_connection();
         $data = $this->getFieldsJsonFromRequest($app, $request);
 
-        // calculate max position
-        try {
-            $stmt = $connection->prepare('SELECT MAX(sorter) as max_position FROM metadatas_structure');
-            $stmt->execute();
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            $maxPosition = $row['max_position'] + 1;
-        } catch (\PDOException $e) {
-            $app->abort(500);
-        }
-
         $connection->beginTransaction();
-        $i = 0;
+
         foreach ($data as $jsonField) {
             try {
-                $jsonField['sorter'] = $jsonField['sorter'] + $maxPosition;
                 $field = \databox_field::get_instance($app, $databox, $jsonField['id']);
+
+                if ($field->get_name() !== $jsonField['name']) {
+                    $this->validateNameField($metaStructure, $jsonField);
+                }
+
+                $this->validateTagField($jsonField);
+
                 $this->updateFieldWithData($app, $field, $jsonField);
                 $field->save();
-                $json['fields'][] = $field->toArray();
-                $i++;
-            } catch (\PDOException $e) {
-                if ($e->errorInfo[1] == 1062) {
-                    $json['messages'][] = _(sprintf('Field name %s already exists', $jsonField['name']));
-                } else {
-                    $json['messages'][] = _(sprintf('Field %s could not be saved, please retry or contact an administrator if problem persists', $jsonField['name']));
-                }
+                $fields[] = $field->toArray();
             } catch (\Exception $e) {
-                if ($e instanceof \Exception_Databox_metadataDescriptionNotFound || $e->getPrevious() instanceof TagUnknown) {
-                    $json['messages'][] = _(sprintf('Provided tag %s is unknown', $jsonField['tag']));
-                } else {
-                    $json['messages'][] = _(sprintf('Field %s could not be saved, please retry or contact an administrator if problem persists', $jsonField['name']));
-                }
+                $connection->rollback();
+                $app->abort(500, _(sprintf('Field %s could not be saved, please try again or contact an admin', $jsonField['name'])));
+                break;
             }
         }
 
-        if ($i === count($data)) {
-            // update field position in database, this query forces to update all fields each time
-            $stmt = $connection->prepare(sprintf('UPDATE metadatas_structure SET sorter = (sorter - %s)', $maxPosition));
-            $row = $stmt->execute();
-            $stmt->closeCursor();
+        $connection->commit();
 
-            $connection->commit();
-
-            $json['success'] = true;
-            $json['messages'][] = _('Fields configuration has been saved');
-
-            // update field position in array
-            array_walk($json['fields'], function(&$field) use ($maxPosition) {
-               $field['sorter'] = $field['sorter'] - $maxPosition;
-            });
-        } else {
-            $connection->rollback();
-        }
-
-        return $app->json($json);
+        return $app->json($fields);
     }
 
     public  function getLanguage(Application $app, Request $request)
     {
         return $app->json(array(
-            'something_wrong'           => _('Something wrong happened, please try again or contact an admin if problem persists'),
+            'something_wrong'           => _('Something wrong happened, please try again or contact an admin'),
+            'created_success'           => _('%s field has been created with success'),
             'deleted_success'           => _('%s field has been deleted with success'),
             'are_you_sure_delete'       => _('Do you really want to delete the field %s ?'),
             'validation_blank'          => _('Field can not be blank'),
             'validation_name_exists'    => _('Field name already exists'),
             'validation_tag_invalid'    => _('Field source is not valid'),
             'field_error'               => _('Field %s contains errors'),
+            'fields_save'               => _('Your configuration has been successfuly saved'),
         ));
     }
 
@@ -245,40 +211,26 @@ class Fields implements ControllerProviderInterface
     }
 
     public function createField(Application $app, Request $request, $sbas_id) {
-        $json = array(
-            'success' => false,
-            'message' => _('Something wrong happened, please try again or contact an admin if problem persists'),
-            'field'   => array()
-        );
-        $headers = array();
-
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $data = $this->getFieldJsonFromRequest($app, $request);
 
+        $metaStructure = $databox->get_meta_structure();
+        $this->validateNameField($metaStructure, $data);
+        $this->validateTagField($data);
+
         try {
             $field = \databox_field::create($app, $databox, $data['name'], $data['multi']);
-
             $this->updateFieldWithData($app, $field, $data);
             $field->save();
-
-            $json['success'] = true;
-            $headers['location'] = $app->path('admin_fields_show_field', array(
-                'sbas_id' => $sbas_id,
-                'id'      => $field->get_id(),
-            ));
-            $json['message'] = _(sprintf('Tag name %s has been created successfully', $data['name']));
-            $json['field'] = $field->toArray();
-        } catch (\PDOException $e) {
-            if ($e->errorInfo[1] == 1062) {
-                $json['message'] = _(sprintf('Field name %s already exists', $data['name']));
-            }
         } catch (\Exception $e) {
-            if ($e instanceof \Exception_Databox_metadataDescriptionNotFound || $e->getPrevious() instanceof TagUnknown) {
-                $json['message'] = _(sprintf('Provided tag %s is unknown', $data['tag']));
-            }
+            $app->abort(500, _(sprintf('Field %s could not be created, please try again or contact an admin', $data['name'])));
         }
 
-        return $app->json($json, 201, $headers);
+        return $app->json($field->toArray(), 201, array(
+            'location' => $app->path('admin_fields_show_field', array(
+                'sbas_id' => $sbas_id,
+                'id' => $field->get_id()
+        ))));
     }
 
     public function listFields(Application $app, $sbas_id) {
@@ -301,6 +253,13 @@ class Fields implements ControllerProviderInterface
         $field = \databox_field::get_instance($app, $databox, $id);
         $data = $this->getFieldJsonFromRequest($app, $request);
 
+        $this->validateTagField($data);
+
+        if ($field->get_name() !== $data['name']) {
+            $metaStructure = $databox->get_meta_structure();
+            $this->validateNameField($metaStructure, $data);
+        }
+
         $this->updateFieldWithData($app, $field, $data);
         $field->save();
 
@@ -317,13 +276,7 @@ class Fields implements ControllerProviderInterface
 
     private function getFieldJsonFromRequest(Application $app, Request $request)
     {
-        $body = $request->getContent();
-        $data = @json_decode($body, true);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            $app->abort(400, 'Body must contain a valid JSON payload');
-        }
-
+        $data = $this->requestBodyToJson($request);
         $required = $this->getMandatoryFieldProperties();
 
         foreach ($required as $key) {
@@ -337,13 +290,7 @@ class Fields implements ControllerProviderInterface
 
     private function getFieldsJsonFromRequest(Application $app, Request $request)
     {
-        $body = $request->getContent();
-        $data = @json_decode($body, true);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            $app->abort(400, 'Body must contain a valid JSON payload');
-        }
-
+        $data = $this->requestBodyToJson($request);
         $required = $this->getMandatoryFieldProperties();
 
         foreach($data as $field) {
@@ -386,14 +333,15 @@ class Fields implements ControllerProviderInterface
 
         }
 
-        $dces_element = null;
+        if ('' !== $dcesElement = (string) $data['dces-element']) {
+            $class = sprintf('\databox_Field_DCES_%s', $dcesElement);
 
-        $class = '\databox_Field_DCES_' . $data['dces-element'];
-        if (class_exists($class)) {
-            $dces_element = new $class();
+            if (!class_exists($class)) {
+                throw new BadRequestHttpException(sprintf('DCES element %s does not exist', $dcesElement));
+            }
+
+            $field->set_dces_element(new $class());
         }
-
-        $field->set_dces_element($dces_element);
     }
 
     private function getMandatoryFieldProperties()
@@ -403,5 +351,33 @@ class Fields implements ControllerProviderInterface
             'required', 'separator', 'readonly', 'type', 'tbranch', 'report',
             'vocabulary-type', 'vocabulary-restricted', 'dces-element'
         );
+    }
+
+    private function validateNameField(\databox_descriptionStructure $metaStructure, array $field)
+    {
+        if (null !== $metaStructure->get_element_by_name($field['name'])) {
+            throw new BadRequestHttpException(_(sprintf('Field %s already exists', $field['name'])));
+        }
+    }
+
+    private function validateTagField(array $field)
+    {
+        try {
+            \databox_field::loadClassFromTagName($field['tag']);
+        } catch(\Exception_Databox_metadataDescriptionNotFound $e) {
+            throw new BadRequestHttpException(_(sprintf('Provided tag %s is unknown', $field['tag'])));
+        }
+    }
+
+    private function requestBodyToJson(Request $request)
+    {
+        $body = $request->getContent();
+        $data = @json_decode($body, true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new BadRequestHttpException('Body must contain a valid JSON payload');
+        }
+
+        return $data;
     }
 }

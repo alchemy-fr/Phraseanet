@@ -8,7 +8,7 @@
         <div class="span4 save-block">
             {# set loading state, this will be removed once backbone application is fully loaded #}
             <img src="/skins/icons/loaderFFF.gif"/>
-            {% trans %}Loading database documentary fields ...{% endtrans %}
+            {% trans %}Loading database documentary structure ...{% endtrans %}
         </div>
         <div class="span8">
             <div class="block-alert"></div>
@@ -21,5 +21,4 @@
 </div>
 
 {# bootstrap admin field backbone application #}
-<script src="/assets/requirejs/require.js"></script>
-<script src="/scripts/apps/admin/fields/main.js"></script>
+<script type="text/javascript" src="/include/minify/f=/assets/requirejs/require.js,/scripts/apps/admin/fields/main.js"></script>

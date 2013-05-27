@@ -1,3 +1,12 @@
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 define([
     "jquery",
     "underscore",
@@ -29,20 +38,18 @@ define([
             if (this._isModelDesync()) {
                 this._loadingState(true);
                 AdminFieldApp.fieldsCollection.save({
-                    success: function(response) {
+                    success: function(fields) {
                         // reset collection with new one
-                        if (response.success) {
-                            AdminFieldApp.fieldsCollection.reset(response.fields);
-                        }
+                        AdminFieldApp.fieldsCollection.reset(fields);
 
                         new AlertView({
-                            alert: response.success ? "success" : "error",
-                            message: response.messages.join("<br />")
+                            alert: "success",
+                            message: i18n.t("fields_save")
                         }).render();
                     },
-                    error: function(model, xhr, options) {
+                    error: function(xhr, textStatus, errorThrown) {
                         new AlertView({
-                            alert: "error", message: i18n.t("something_wrong")
+                            alert: "error", message: '' !== xhr.responseText ? xhr.responseText : i18n.t("something_wrong")
                         }).render();
                     }
                 }).done(function() {
@@ -55,8 +62,12 @@ define([
         render: function () {
             var template = _.template($("#save_template").html());
             this.$el.html(template);
+            this.updateStateButton();
 
             return this;
+        },
+        updateStateButton: function() {
+            this._disableSaveButton(!this._isModelDesync());
         },
         // check whether model has changed or not
         _isModelDesync: function () {
@@ -86,7 +97,7 @@ define([
                 $(".save-block", AdminFieldApp.$top).removeClass("loading");
             }
 
-            this._disableSaveButton(active);
+            this.updateStateButton();
             this._overlay(active);
         }
     });

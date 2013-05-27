@@ -1,10 +1,19 @@
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 define([
     "jquery",
     "underscore",
     "backbone",
     "i18n",
     "bootstrap",
-    "apps/admin/fields/views/create",
+    "apps/admin/fields/views/alert",
     "models/field"
 ], function($, _, Backbone, i18n, bootstrap, AlertView, FieldModel) {
     var CreateView = Backbone.View.extend({
@@ -105,18 +114,18 @@ define([
 
             field.save(null, {
                 success: function(field, response, options) {
-                    if (response.success) {
-                        AdminFieldApp.fieldsCollection.add(field);
-                        _.last(self.itemViews).clickAction().animate();
-                    }
+                    AdminFieldApp.fieldsCollection.add(field);
+                    _.last(AdminFieldApp.fieldListView.itemViews).clickAction().animate();
 
-                    new AlertView({
-                        alert: response.success ? "success" : "error", message: response.message
+                   new AlertView({alert: "info", message: i18n.t("created_success", {
+                            postProcess: "sprintf",
+                            sprintf: [field.get("name")]
+                        })
                     }).render();
                 },
-                error: function(model, xhr, options) {
+                error: function(xhr, textStatus, errorThrown) {
                     new AlertView({
-                        alert: "error", message: i18n.t("something_wrong")}
+                        alert: "error", message: '' !== xhr.responseText ? xhr.responseText : i18n.t("something_wrong")}
                     ).render();
 
                     self.toggleCreateFormAction();

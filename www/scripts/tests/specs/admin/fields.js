@@ -287,6 +287,14 @@ define([
                 AdminFieldApp.fieldListView.render();
             });
 
+            it("should update collection when model change", function() {
+                AdminFieldApp.fieldListView.itemViews[0].clickAction();
+                AdminFieldApp.fieldEditView.model.set({
+                    "name": "new name"
+                });
+                assert.equal(AdminFieldApp.fieldListView.itemViews[0].model.get('name'), "new name", 'model is updated');
+            });
+
             it("should update edit view when clicking on single element", function() {
                 AdminFieldApp.fieldListView.itemViews[0].clickAction();
                 should.exist(AdminFieldApp.fieldEditView);
@@ -296,15 +304,7 @@ define([
             it("should reorder collection on drop action", function() {
                 var ui = {item: {index: function() {return 2;}}};
                 AdminFieldApp.fieldListView.itemViews[0].dropAction({},ui);
-                assert.equal(AdminFieldApp.fieldListView.collection.last().get('sorter'), 2, 'model is updated');
-            });
-
-            it("should update collection when model change", function() {
-                AdminFieldApp.fieldListView.itemViews[0].clickAction();
-                AdminFieldApp.fieldEditView.model.set({
-                    "name": "new name"
-                });
-                assert.equal(AdminFieldApp.fieldListView.collection.first().get('name'), "new name", 'model is updated');
+                assert.equal(AdminFieldApp.fieldListView.collection.last().get('sorter'), 3, 'model is updated');
             });
         });
     });

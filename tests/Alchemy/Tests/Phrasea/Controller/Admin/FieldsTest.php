@@ -198,12 +198,10 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $data = json_decode($response, true);
 
-        $this->assertArrayHasKey('success', $data);
-        $this->assertArrayHasKey('messages', $data);
-        $this->assertArrayHasKey('fields', $data);
+        $this->assertTrue(is_array($data));
 
         // expect last 2 fields from body equals last 2 fields from response
-        $this->assertEquals(array_splice($body, -2), array_splice($data['fields'], -2));
+        $this->assertEquals(array_splice($body, -2), array_splice($data, -2));
 
         // delete created fields
         foreach($fieldObjects as $field) {
@@ -242,17 +240,15 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $data = json_decode($response, true);
 
-        $this->assertArrayHasKey('success', $data);
-        $this->assertArrayHasKey('message', $data);
-        $this->assertArrayHasKey('field', $data);
+        $this->assertTrue(is_array($data));
 
-        $dataWithoutIds = $data['field'];
+        $dataWithoutIds = $data;
         unset($dataWithoutIds['id']);
         unset($dataWithoutIds['sorter']);
 
         $this->assertEquals(json_decode($body, true), $dataWithoutIds);
 
-        $field = \databox_field::get_instance(self::$DI['app'], $databox, $data['field']['id']);
+        $field = \databox_field::get_instance(self::$DI['app'], $databox, $data['id']);
         $field->delete();
     }
 

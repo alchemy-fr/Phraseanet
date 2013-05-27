@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class databox_descriptionStructure implements IteratorAggregate
+class databox_descriptionStructure implements IteratorAggregate, Countable
 {
     /**
      *
@@ -138,4 +138,13 @@ class databox_descriptionStructure implements IteratorAggregate
             return $element->toArray();
         }, array_values($this->elements));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function count()
+    {
+        return count($this->elements);
+    }
 }
+
