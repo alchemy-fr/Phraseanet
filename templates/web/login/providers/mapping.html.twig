@@ -116,5 +116,5 @@
             </div>
         </div>
     </div>
-    {% include "login/include/register-link-block.html.twig" with {"login" : login, "last_item" : login.register_enabled(app)} %}
+    {% include "login/include/register-link-block.html.twig" with {"login" : login, "last_item" : app['registration.enabled']} %}
 {% endblock %}

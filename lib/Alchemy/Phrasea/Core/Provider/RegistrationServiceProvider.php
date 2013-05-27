@@ -28,6 +28,12 @@ class RegistrationServiceProvider implements ServiceProviderInterface
             return array();
         });
 
+        $app['registration.enabled'] = $app->share(function (Application $app){
+            $login = new \login();
+
+            return $login->register_enabled($app);
+        });
+
         $app['registration.optional-fields'] = $app->share(function (Application $app) {
             return array(
                 'login'=> array(
