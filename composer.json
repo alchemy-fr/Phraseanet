@@ -5,10 +5,6 @@
     "config": {
         "bin-dir" : "bin/"
     },
-    "scripts"     : {
-        "post-install-cmd" : "Alchemy\\Phrasea\\ComposerScripts::postInstall",
-        "post-update-cmd"  : "Alchemy\\Phrasea\\ComposerScripts::postUpdate"
-    },
     "require": {
         "php"                              : ">=5.3.3",
         "alchemy/oauth2php"                : "dev-master",
