@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ab7edbf0a921471d05d7a9a08a02dfd7",
+    "hash": "b996280dc670585a8647ca983149a73e",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -2471,6 +2471,7 @@
         "dailymotion/sdk": 20,
         "data-uri/data-uri": 20,
         "imagine/imagine": 20,
+        "jms/twig-js": 20,
         "mrclay/minify": 20,
         "neutron/silex-imagine-provider": 20,
         "neutron/silex-badfaith-provider": 20,
