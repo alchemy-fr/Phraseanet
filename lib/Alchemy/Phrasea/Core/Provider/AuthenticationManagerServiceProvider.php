@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Authentication\AccountCreator;
 use Alchemy\Phrasea\Authentication\Manager;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
@@ -47,6 +48,26 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
         $app['authentication.providers.factory'] = $app->share(function (Application $app) {
            return new ProviderFactory($app['url_generator'], $app['session']);
+        });
+
+        $app['authentication.providers.account-creator'] = $app->share(function (Application $app) {
+            $authConf = $app['phraseanet.configuration']->get('authentication');
+            $templates = array_filter(array_map(function ($templateId) use ($app) {
+                try {
+                    if (is_int($templateId) || ctype_digit($templateId)) {
+                        return \User_Adapter::getInstance($templateId, $app);
+                    } else {
+                        $template = \User_Adapter::get_usr_id_from_login($app, $templateId);
+                        if (false !== $template) {
+                            return \User_Adapter::getInstance($template, $app);
+                        }
+                    }
+                } catch (\Exception $e) {
+
+                }
+            }, $authConf['auto-create']['templates']));
+
+            return new AccountCreator($app['tokens'], $app['phraseanet.appbox'], $authConf['auto-create']['enabled'], $templates);
         });
 
         $app['authentication.providers'] = $app->share(function (Application $app) {

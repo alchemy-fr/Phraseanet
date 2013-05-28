@@ -2,8 +2,11 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Silex\Application;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
  * @covers Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider
@@ -68,12 +71,18 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
                 'auth.native',
                 'Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication'
             ),
+            array(
+                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                'authentication.providers.account-creator',
+                'Alchemy\Phrasea\Authentication\AccountCreator'
+            ),
         );
     }
 
     public function testFailureManagerAttemptsConfiguration()
     {
         $app = new Application();
+        $app->register(new TokensServiceProvider());
         $app->register(new AuthenticationManagerServiceProvider());
 
         $app['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
@@ -94,5 +103,92 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
 
         $manager = $app['auth.native.failure-manager'];
         $this->assertEquals(42, $manager->getTrials());
+    }
+
+    public function testFailureAccountCreator()
+    {
+        $app = new PhraseaApplication();
+
+        $conf = $app['phraseanet.configuration'];
+
+        $app['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $app['phraseanet.configuration']->expects($this->any())
+            ->method('get')
+            ->will($this->returnCallback(function ($key) use ($conf) {
+                if ($key === 'authentication') {
+                    return array(
+                        'auto-create' => array(
+                            'enabled'   => true,
+                            'templates' => array()
+                        )
+                    );
+                } else {
+                    return $conf->get($key);
+                }
+            }));
+        $app['phraseanet.configuration']->expects($this->any())
+            ->method('getPhraseanet')
+            ->will($this->returnValue(new ParameterBag($conf->get('phraseanet'))));
+
+        $conn = $conf->getSpecifications()->getConnexions();
+
+        $app['phraseanet.configuration']->expects($this->any())
+            ->method('getConnexion')
+            ->will($this->returnValue(new ParameterBag($conn['main_connexion'])));
+
+        $app['authentication.providers.account-creator'];
+    }
+
+    public function testAccountCreator()
+    {
+        $app = new PhraseaApplication();
+
+        $random = $app['tokens'];
+        $template1 = \User_Adapter::create(self::$DI['app'], 'template' . $random->generatePassword(), $random->generatePassword(), null, false);
+        $template1->set_template(self::$DI['user']);
+        $template2 = \User_Adapter::create(self::$DI['app'], 'template' . $random->generatePassword(), $random->generatePassword(), null, false);
+        $template2->set_template(self::$DI['user']);
+
+        $conf = $app['phraseanet.configuration'];
+
+        $app['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $app['phraseanet.configuration']->expects($this->any())
+            ->method('get')
+            ->will($this->returnCallback(function ($key) use ($template1, $template2, $conf) {
+                if ($key === 'authentication') {
+                    return array(
+                        'auto-create' => array(
+                            'enabled'   => true,
+                            'templates' => array(
+                                $template1->get_id(),
+                                $template2->get_login()
+                            )
+                        )
+                    );
+                } else {
+                    return $conf->get($key);
+                }
+            }));
+
+        $app['phraseanet.configuration']->expects($this->any())
+            ->method('getPhraseanet')
+            ->will($this->returnValue(new ParameterBag($conf->get('phraseanet'))));
+
+        $conn = $conf->getSpecifications()->getConnexions();
+
+        $app['phraseanet.configuration']->expects($this->any())
+            ->method('getConnexion')
+            ->will($this->returnValue(new ParameterBag($conn['main_connexion'])));
+
+        $this->assertEquals(array($template1, $template2), $app['authentication.providers.account-creator']->getTemplates());
+
+        $template1->delete();
+        $template2->delete();
     }
 }
