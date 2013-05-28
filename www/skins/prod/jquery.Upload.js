@@ -109,8 +109,11 @@ var p4 = p4 || {};
         },
         hasData : function(){
             return !this.Queue.isEmpty();
+        },
+        countData: function (){
+            return this.Queue.getLength();
         }
-    }
+    };
 
 
     /**
@@ -132,7 +135,7 @@ var p4 = p4 || {};
             fileType: /^image\/(gif|jpeg|png|jpg)$/,
             maxSize : 5242880 // 5MB
         };
-    }
+    };
 
     Preview.prototype = {
         setOptions: function(options){
@@ -142,7 +145,7 @@ var p4 = p4 || {};
             return this.options;
         },
         render: function(file, callback){
-            if(typeof loadImage == 'function' && this.options.fileType.test(file.type)){
+            if(typeof loadImage === 'function' && this.options.fileType.test(file.type)){
                 if($.type(this.options.maxSize) !== 'number' || file.size < this.options.maxSize){
                     var options = {
                         maxWidth: this.options.maxWidth || 150,
@@ -155,7 +158,7 @@ var p4 = p4 || {};
                 }
             }
         }
-    }
+    };
 
 
     /**
@@ -164,7 +167,7 @@ var p4 = p4 || {};
 
     var Formater = function(){
 
-    }
+    };
 
     Formater.prototype = {
         size: function (bytes) {
@@ -185,7 +188,7 @@ var p4 = p4 || {};
             }
             // 1 byte = 8 bits
             var bytes = (bits >> 3);
-            
+
             if (bytes >= (1 << 30)) {
                 return (bytes / (1 << 30)).toFixed(2) + ' Go/s';
             }
@@ -198,9 +201,9 @@ var p4 = p4 || {};
             return bytes + ' o/s';
         },
         pourcent: function(current, total){
-            return (current/ total * 100).toFixed(2)
+            return (current/ total * 100).toFixed(2);
         }
-    }
+    };
 
     /**
      * QUEUE
@@ -244,7 +247,7 @@ var p4 = p4 || {};
                 $this.remove(k);
             });
         }
-    }
+    };
 
     p4.UploaderManager = UploaderManager;
 
