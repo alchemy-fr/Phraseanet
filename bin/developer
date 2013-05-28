@@ -9,9 +9,12 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
+
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
-use Alchemy\Phrasea\CLI;
 // DBAL Commands
 use Doctrine\DBAL\Tools\Console\Command\RunSqlCommand;
 use Doctrine\DBAL\Tools\Console\Command\ImportCommand;
@@ -34,7 +37,17 @@ use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
-    $cli = new CLI("Phraseanet Doctrine Console");
+    $cli = new CLI("
+ ___  ___  _  _  ___  __    __  ___  ___  ___     ____  __    __  __    ___
+(   \(  _)( )( )(  _)(  )  /  \(  ,\(  _)(  ,)   (_  _)/  \  /  \(  )  / __)
+ ) ) )) _) \\//  ) _) )(__( () )) _/ ) _) )  \     )( ( () )( () ))(__ \__ \
+(___/(___) (__) (___)(____)\__/(_)  (___)(_)\_)   (__) \__/  \__/(____)(___/
+
+ Phraseanet Copyright (C) 2004 Alchemy
+ This program comes with ABSOLUTELY NO WARRANTY.
+ This is free software, and you are welcome to redistribute it
+ under certain conditions; type `about:license' for details.\n\n"
+            . ' Phraseanet Developer Tools ', Version::getName() . ' ' . Version::getNumber());
 
     $helpers = array(
         'db' => new ConnectionHelper($cli['EM']->getConnection()),
@@ -45,6 +58,8 @@ try {
     foreach ($helpers as $name => $helper) {
         $helperSet->set($helper, $name);
     }
+
+    $cli->command(new RegenerateSqliteDb('phrasea:regenerate-sqlite'));
 
     $cli['console']->addCommands(array(
         // DBAL Commands
