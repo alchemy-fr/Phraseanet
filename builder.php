@@ -75,6 +75,11 @@ $finder
     ->name('.svn')
     ->name('.git')
     ->name('flash')
+    ->name('chai')
+    ->name('mocha')
+    ->name('sinon')
+    ->name('sinon-chai')
+    ->name('js-fixtures')
     ->ignoreDotFiles(false)
     ->ignoreVCS(false)
     ->in(__DIR__);

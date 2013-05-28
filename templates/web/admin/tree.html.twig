@@ -111,7 +111,7 @@
             </a>
           </li>
           <li>
-            <a target="right" href="/admin/description/{{ sbas_id }}/" class="ajax">
+            <a target="right" href="{{ path('admin_fields', {'sbas_id': sbas_id}) }}" class="ajax">
               <img src="/skins/icons/miniadjust01.gif"/>
               <span>{% trans 'CHAMPS' %}</span>
             </a>
