@@ -3,10 +3,11 @@
 namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Filesystem\Filesystem;
 
 class RegenerateSqliteDb extends Command
@@ -38,7 +39,7 @@ class RegenerateSqliteDb extends Command
 
             $metadatas = $em->getMetadataFactory()->getAllMetadata();
 
-            $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
+            $schemaTool = new SchemaTool($em);
 
             $schemaTool->createSchema($metadatas);
         } catch (\Exception $e) {
