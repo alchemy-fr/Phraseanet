@@ -24,6 +24,7 @@
   - Add `Link` header in permalink resources HTTP responses.
   - Global speed improvement on report.
   - Upload now monitors number of files transmitted.
+  - Add bin/developer console for developement purpose.
 
 * 3.7.12 (2013-05-13)
 
