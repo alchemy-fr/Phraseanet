@@ -103,7 +103,7 @@
 
                         {# upload box #}
                         <div class='upload-box' style="display: none;">
-                            <h5>{% trans 'Selected files' %} :</h5>
+                            <h5>{% trans 'Selected files' %} : <span class="pull-right number-files">0</span></h5>
                             <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Clear list' %}</button>
                             <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Send' %}</button>
                             <div class="clear"></div>
@@ -116,6 +116,11 @@
                         <div>
                             <h5 style="margin-top: 10px;">{% trans 'Transmited files' %} :
                                 <span class='bitrate-box'></span>
+                                <span class="transmit-box pull-right" style="display: none;">
+                                    <span class="number-files-transmited">0</span>
+                                    <span>/</span>
+                                    <span class="number-files-to-transmit"></span>
+                                </span>
                             </h5>
                             <button id="cancel-all" class="btn" type="button" disabled="disabled">
                                 {% trans "Cancel all" %}
@@ -148,7 +153,6 @@ $(document).ready(function () {
     });
 
     var totalElement;
-
     var maxFileSize = {{ maxFileSize }};
 
     UploaderManager.Preview.setOptions({
@@ -183,10 +187,29 @@ $(document).ready(function () {
         $('#uploadBox #status-' + selectedCollId).show();
     });
 
+    UploaderManager.getContainer().on("file-added", function(){
+        $(".number-files").html(UploaderManager.countData());
+    });
+
+    UploaderManager.getContainer().on("file-removed", function(){
+        $(".number-files").html(UploaderManager.countData());
+    });
+
+    UploaderManager.getContainer().on("file-transmited", function(){
+        var domEl = $(".number-files-transmited");
+        domEl.html(parseInt(domEl.html()) + 1);
+    });
+
+    UploaderManager.getContainer().on("uploaded-file-removed", function(){
+        var domEl = $(".number-files-to-transmit");
+        domEl.html(parseInt(domEl.html()) - 1);
+    });
+
     //Remove all element from upload box
     $("button.clear-queue", UploaderManager.getContainer()).bind("click", function(){
         UploaderManager.clearUploadBox();
         $('ul', $(this).closest('.upload-box')).empty();
+        UploaderManager.getContainer().trigger("file-removed");
     });
 
     //Cancel all upload
@@ -205,6 +228,7 @@ $(document).ready(function () {
         var uploadIndex = container.find("input[name=uploadIndex]").val();
         UploaderManager.removeData(uploadIndex);
         container.remove();
+        UploaderManager.getContainer().trigger("file-removed");
     });
 
     //Get all elements in the upload box & trigger the submit event
@@ -215,6 +239,10 @@ $(document).ready(function () {
         totalElement = documents.length;
 
         if(totalElement > 0) {
+            $(".number-files").html("");
+            $(".number-files-to-transmit").html(totalElement);
+            $(".transmit-box").show();
+
             var dialog = p4.Dialog.get(1);
 
             //reset progressbar for iframe uploads
@@ -256,7 +284,7 @@ $(document).ready(function () {
         },
         // override "on error" local ajax event to prevent global ajax event from being triggered
         // as all fileupload options are passed as argument to the $.ajax jquery function
-        error: function(){return false},
+        error: function(){return false;},
         // Set singleFileUploads, sequentialUploads to true so the files
         // are upload one by one
         singleFileUploads : true,
@@ -286,12 +314,12 @@ $(document).ready(function () {
                     // Check support of file.size && file.type property
                     var formatedFile = {
                         id: 'file-' + index,
-                        size: file.size != undefined ? UploaderManager.Formater.size(file.size) : '',
+                        size: typeof file.size !== "undefined" ? UploaderManager.Formater.size(file.size) : '',
                         name: file.name,
-                        type: file.type != undefined ? file.type : '',
+                        type: typeof file.type !== "undefined" ? file.type : '',
                         uploadIndex: UploaderManager.getUploadIndex(),
                         language: language
-                    }
+                    };
 
                     //Set context in upload-box
                     p4.Mustache.Render('Upload-Items', formatedFile, function(html){
@@ -299,7 +327,7 @@ $(document).ready(function () {
 
                         var context = $("li", UploaderManager.getUploadBox()).last();
 
-                        var uploadIndex = context.find("input[name=uploadIndex]").val()
+                        var uploadIndex = context.find("input[name=uploadIndex]").val();
 
                         UploaderManager.addAttributeToData(uploadIndex, 'context', context);
 
@@ -310,6 +338,8 @@ $(document).ready(function () {
                     });
                 }
             });
+
+            UploaderManager.getContainer().trigger("file-added");
         },
         //on success upload
         done: function (e, data) {
@@ -317,7 +347,10 @@ $(document).ready(function () {
             data.context.find('.progress-bar').width('100%');
             data.context.find('div.progress').removeClass('progress-striped active');
             data.context.find('button.remove-element').removeClass('btn-inverse').addClass('disabled');
+
             UploaderManager.removeData(data.uploadIndex);
+            UploaderManager.getContainer().trigger("file-transmited");
+
             data.context.find("button.remove-element").remove();
 
             if( ! $.support.xhrFileUpload && ! $.support.xhrFormDataFileUpload) {
@@ -407,6 +440,8 @@ $(document).ready(function () {
                 $('button.remove-element', data.context).bind('click', function (e) {
                     jqXHR.abort();
                     data.context.remove();
+
+                    UploaderManager.getContainer().trigger("uploaded-file-removed");
                 });
             });
         });
@@ -442,6 +477,5 @@ $(document).ready(function () {
             data.context.find('.progress-bar').width('25%');
         }
     });
-
 });
 </script>
