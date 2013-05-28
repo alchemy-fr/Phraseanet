@@ -39,6 +39,16 @@ class Identity
     }
 
     /**
+     * Returns an associated array of the current identity properies.
+     *
+     * @return array
+     */
+    public function all()
+    {
+        return array_filter($this->data);
+    }
+
+    /**
      * Returns the display name (first and last name)
      *
      * @return string

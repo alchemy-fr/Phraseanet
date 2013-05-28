@@ -92,6 +92,15 @@ interface ProviderInterface
     public function getIconURI();
 
     /**
+     * Returns an array of templates related to the provided Identity
+     *
+     * @param Identity $identity
+     *
+     * @return array
+     */
+    public function getTemplates(Identity $identity);
+
+    /**
      * Creates a provider
      *
      * @param UrlGenerator $generator

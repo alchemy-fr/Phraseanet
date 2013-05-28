@@ -80,6 +80,18 @@ class IdentityTest extends \PHPUnit_Framework_TestCase
         return $identity;
     }
 
+    public function testAll()
+    {
+        $identity = new Identity();
+
+        $this->assertEquals(array(), $identity->all());
+
+        $identity->set(Identity::PROPERTY_IMAGEURL, 'image-uri');
+        $this->assertEquals(array('image_url' => 'image-uri'), $identity->all());
+
+        return $identity;
+    }
+
     /**
      * @depends testSet
      */

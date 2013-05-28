@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
+use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -49,6 +50,14 @@ abstract class AbstractProvider implements ProviderInterface
         $this->session = $session;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTemplates(Identity $identity)
+    {
+        return array();
     }
 
     /**

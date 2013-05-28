@@ -53,4 +53,14 @@ class Token
     {
         return $this->provider->getIdentity();
     }
+
+    /**
+     * Returns an array of templates related to the Identity
+     *
+     * @return array
+     */
+    public function getTemplates()
+    {
+        return $this->provider->getTemplates($this->provider->getIdentity());
+    }
 }

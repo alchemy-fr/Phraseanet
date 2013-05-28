@@ -58,6 +58,17 @@ abstract class ProviderTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals($guzzle, $provider->getGuzzleClient());
     }
 
+    public function testGetTemplates()
+    {
+        $provider = $this->getProvider();
+
+        $identity = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Provider\Token\Identity')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->assertEquals(array(), $provider->getTemplates($identity));
+    }
+
     public function testGetName()
     {
         $this->assertInternalType('string', $this->getProvider()->getName());
