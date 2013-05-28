@@ -23,6 +23,7 @@
       - Support for Facebook, Twitter, Viadeo, Github, Linkedin, Google-Plus.
   - Add `Link` header in permalink resources HTTP responses.
   - Global speed improvement on report.
+  - Upload now monitors number of files transmitted.
 
 * 3.7.12 (2013-05-13)
 
