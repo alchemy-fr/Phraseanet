@@ -33,6 +33,9 @@ dev:
   search-engine: phrasea
   task-manager: task_manager
   authentication:
+    auto-create:
+      enabled: false
+      templates: []
     captcha:
       trials-before-failure: 9
     providers:
@@ -97,6 +100,9 @@ prod:
   search-engine: phrasea
   task-manager: task_manager
   authentication:
+    auto-create:
+      enabled: false
+      templates: []
     captcha:
       trials-before-failure: 9
     providers:
@@ -161,6 +167,9 @@ test:
   search-engine: phrasea
   task-manager: task_manager
   authentication:
+    auto-create:
+      enabled: false
+      templates: []
     captcha:
       trials-before-failure: 9
     providers:

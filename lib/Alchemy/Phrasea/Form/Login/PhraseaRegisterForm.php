@@ -71,6 +71,8 @@ class PhraseaRegisterForm extends AbstractType
             ))),
         ));
 
+        $builder->add('provider-id', 'hidden');
+
         require_once($this->app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
         $baseIds = array();
 

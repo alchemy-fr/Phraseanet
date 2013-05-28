@@ -433,6 +433,59 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertAngularFlashMessage($crawler, $type, 1, $message);
     }
 
+    public function testGetRegisterWithRegisterIdBindDataToForm()
+    {
+        self::$DI['app']['authentication']->closeAccount();
+
+        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+
+        self::$DI['app']['authentication.providers'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ProvidersCollection')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['authentication.providers']->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('provider-test'))
+            ->will($this->returnValue($provider));
+
+        $identity = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Provider\Token\Identity')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $provider->expects($this->once())
+            ->method('getIdentity')
+            ->will($this->returnValue($identity));
+
+        $identity->expects($this->once())
+            ->method('getEmail')
+            ->will($this->returnValue('supermail@superprovider.com'));
+
+        $crawler = self::$DI['client']->request('GET', '/login/register-classic/?providerId=provider-test');
+
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals(1, $crawler->filterXPath("//input[@value='supermail@superprovider.com' and @name='email']")->count());
+    }
+
+    public function provideRegistrationRouteAndMethods()
+    {
+        return array(
+            array('GET', '/login/register/'),
+            array('GET', '/login/register-classic/'),
+            array('POST', '/login/register-classic/'),
+        );
+    }
+
+    /**
+     * @dataProvider provideRegistrationRouteAndMethods
+     */
+    public function testGetPostRegisterWhenRegistrationDisabled($method, $route)
+    {
+        self::$DI['app']['registration.enabled'] = false;
+        self::$DI['app']['authentication']->closeAccount();
+        self::$DI['client']->request($method, $route);
+        $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
+    }
+
     /**
      * @dataProvider provideInvalidRegistrationData
      */
@@ -550,14 +603,14 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function provideRegistrationData()
     {
         return array(
-            array(array(//required field missing
+            array(array(
                     "password"        => 'password',
                     "passwordConfirm" => 'password',
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null,
                 ), array()),
-            array(array(//extra-field is not required
+            array(array(
                     "password"        => 'password',
                     "passwordConfirm" => 'password',
                     "email"           => $this->generateEmail(),
@@ -694,6 +747,191 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     )
                 )),
         );
+    }
+
+    public function testPostRegisterWithProviderIdAndAlreadyBoundProvider()
+    {
+        self::$DI['app']['registration.fields'] = array();
+        self::$DI['app']['authentication']->closeAccount();
+
+        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $this->addProvider('provider-test', $provider);
+
+        $entity = $this->getMock('Entities\UsrAuthProvider');
+        $entity->expects($this->any())
+            ->method('getUser')
+            ->with(self::$DI['app'])
+            ->will($this->returnValue(self::$DI['user']));
+
+        $token = new Token($provider, 42);
+        $this->addUsrAuthDoctrineEntitySupport(42, $entity, true);
+
+        $provider->expects($this->once())
+            ->method('getToken')
+            ->will($this->returnValue($token));
+
+        $parameters = array_merge(array('_token' => 'token'), array(
+            "password"        => 'password',
+            "passwordConfirm" => 'password',
+            "email"           => $this->generateEmail(),
+            "accept-tou"      => '1',
+            "collections"     => null,
+            "provider-id"     => 'provider-test',
+        ));
+
+        foreach ($parameters as $key => $parameter) {
+            if ('collections' === $key && null === $parameter) {
+                $parameters[$key] = self::$demands;
+            }
+            if ('login' === $key && null === $parameter) {
+                $parameters[$key] = self::$login;
+            }
+            if ('email' === $key && null === $parameter) {
+                $parameters[$key] = self::$email;
+            }
+        }
+
+        self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertEquals('/prod/', self::$DI['client']->getResponse()->headers->get('location'));
+    }
+
+    public function testPostRegisterWithUnknownProvider()
+    {
+        self::$DI['app']['registration.fields'] = array();
+        self::$DI['app']['authentication']->closeAccount();
+
+        $parameters = array_merge(array('_token' => 'token'), array(
+            "password"        => 'password',
+            "passwordConfirm" => 'password',
+            "email"           => $this->generateEmail(),
+            "accept-tou"      => '1',
+            "collections"     => null,
+            "provider-id"     => 'provider-test',
+        ));
+
+        foreach ($parameters as $key => $parameter) {
+            if ('collections' === $key && null === $parameter) {
+                $parameters[$key] = self::$demands;
+            }
+            if ('login' === $key && null === $parameter) {
+                $parameters[$key] = self::$login;
+            }
+            if ('email' === $key && null === $parameter) {
+                $parameters[$key] = self::$email;
+            }
+        }
+
+        self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
+        $this->assertEquals('/login/register/', self::$DI['client']->getResponse()->headers->get('location'));
+    }
+
+    public function testPostRegisterWithProviderNotAuthenticated()
+    {
+        self::$DI['app']['registration.fields'] = array();
+        self::$DI['app']['authentication']->closeAccount();
+
+        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $this->addProvider('provider-test', $provider);
+
+        $provider->expects($this->any())
+            ->method('getToken')
+            ->will($this->throwException(new NotAuthenticatedException('Not authenticated')));
+
+        $parameters = array_merge(array('_token' => 'token'), array(
+            "password"        => 'password',
+            "passwordConfirm" => 'password',
+            "email"           => $this->generateEmail(),
+            "accept-tou"      => '1',
+            "collections"     => null,
+            "provider-id"     => 'provider-test',
+        ));
+
+        foreach ($parameters as $key => $parameter) {
+            if ('collections' === $key && null === $parameter) {
+                $parameters[$key] = self::$demands;
+            }
+            if ('login' === $key && null === $parameter) {
+                $parameters[$key] = self::$login;
+            }
+            if ('email' === $key && null === $parameter) {
+                $parameters[$key] = self::$email;
+            }
+        }
+
+        self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
+        $this->assertEquals('/login/register/', self::$DI['client']->getResponse()->headers->get('location'));
+    }
+
+    public function testPostRegisterWithProviderId()
+    {
+        self::$DI['app']['registration.fields'] = array();
+        self::$DI['app']['authentication']->closeAccount();
+
+        $emails = array(
+            'Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation'=>0,
+            'Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered'=>0,
+            'Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered'=>0,
+        );
+
+        $this->mockNotificationsDeliverer($emails);
+
+        $parameters = array_merge(array('_token' => 'token'), array(
+            "password"        => 'password',
+            "passwordConfirm" => 'password',
+            "email"           => $this->generateEmail(),
+            "accept-tou"      => '1',
+            "collections"     => null,
+            "provider-id"     => 'provider-test',
+        ));
+
+        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $this->addProvider('provider-test', $provider);
+
+        $token = new Token($provider, 42);
+
+        $provider->expects($this->any())
+            ->method('getToken')
+            ->will($this->returnValue($token));
+
+        foreach ($parameters as $key => $parameter) {
+            if ('collections' === $key && null === $parameter) {
+                $parameters[$key] = self::$demands;
+            }
+            if ('login' === $key && null === $parameter) {
+                $parameters[$key] = self::$login;
+            }
+            if ('email' === $key && null === $parameter) {
+                $parameters[$key] = self::$email;
+            }
+        }
+
+        self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
+
+        if (false === $userId = \User_Adapter::get_usr_id_from_email(self::$DI['app'], $parameters['email'])) {
+            $this->fail('User not created');
+        }
+
+        $user = new \User_Adapter((int) $userId, self::$DI['app']);
+
+        $ret = self::$DI['app']['EM']->getRepository('\Entities\UsrAuthProvider')
+            ->findBy(array('usr_id' => $userId, 'provider' => 'provider-test'));
+        $this->assertCount(1, $ret);
+
+        $user->delete();
+
+        $this->assertGreaterThan(0, $emails['Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered']);
+        $this->assertEquals(1, $emails['Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation']);
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertFlashMessagePopulated(self::$DI['app'], 'info', 1);
+        $this->assertEquals('/login/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     /**
@@ -1103,10 +1341,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         return array(
             array('GET', '/login/provider/provider-test/authenticate/'),
             array('GET', '/login/provider/provider-test/callback/'),
-            array('GET', '/login/provider/provider-test/add-mapping/'),
-            array('POST', '/login/provider/provider-test/add-mapping/'),
-            array('GET', '/login/provider/provider-test/bind-account/'),
-            array('POST', '/login/provider/provider-test/bind-account/'),
+            array('GET', '/login/register-classic/?providerId=provider-test'),
         );
     }
 
@@ -1173,7 +1408,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('onCallback');
 
         $entity = $this->getMock('Entities\UsrAuthProvider');
-        $entity->expects($this->once())
+        $entity->expects($this->any())
             ->method('getUser')
             ->with(self::$DI['app'])
             ->will($this->returnValue(self::$DI['user']));
@@ -1194,7 +1429,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
     }
 
-    public function testAuthenticateProviderCallbackWithSuggestion()
+    public function testAuthenticateProviderCallbackWithSuggestionBindProviderToUser()
     {
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
@@ -1203,17 +1438,17 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('onCallback');
 
         $token = new Token($provider, 42);
-        $this->addUsrAuthDoctrineEntitySupport(42, null);
 
-        $provider->expects($this->once())
+        $provider->expects($this->any())
             ->method('getToken')
             ->will($this->returnValue($token));
 
-        $user = $this->getMockBuilder('\User_Adapter')
+        self::$DI['app']['authentication.suggestion-finder'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\SuggestionFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->mockSuggestionFinder();
+        $user = self::$DI['user'];
+
         self::$DI['app']['authentication.suggestion-finder']->expects($this->once())
             ->method('find')
             ->with($token)
@@ -1223,10 +1458,19 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request('GET', '/login/provider/provider-test/callback/');
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
-        $this->assertSame('/login/provider/provider-test/add-mapping/?id=42', self::$DI['client']->getResponse()->headers->get('location'));
+
+        $ret = self::$DI['app']['EM']->getRepository('\Entities\UsrAuthProvider')
+            ->findBy(array('usr_id' => self::$DI['user']->get_id(), 'provider' => 'provider-test'));
+
+        $this->assertCount(1, $ret);
+
+        $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertSame('/prod/', self::$DI['client']->getResponse()->headers->get('location'));
+
+        $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
     }
 
-    public function testAuthenticateProviderCallbackWithoutSuggestion()
+    public function testAuthenticateProviderCallbackWithAccountCreatorEnabled()
     {
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
@@ -1235,221 +1479,158 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('onCallback');
 
         $token = new Token($provider, 42);
-        $this->addUsrAuthDoctrineEntitySupport(42, null);
 
-        $provider->expects($this->once())
+        $provider->expects($this->any())
             ->method('getToken')
             ->will($this->returnValue($token));
 
-        $this->mockSuggestionFinder();
+        self::$DI['app']['authentication.suggestion-finder'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\SuggestionFinder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         self::$DI['app']['authentication.suggestion-finder']->expects($this->once())
             ->method('find')
             ->with($token)
             ->will($this->returnValue(null));
 
+        $identity = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Provider\Token\Identity')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $provider->expects($this->any())
+            ->method('getIdentity')
+            ->will($this->returnValue($identity));
+
+        $provider->expects($this->once())
+            ->method('getTemplates')
+            ->will($this->returnValue(array()));
+
+        $identity->expects($this->once())
+            ->method('getEmail')
+            ->will($this->returnValue('supermail@superprovider.com'));
+
+        $createdUserId = \User_Adapter::get_usr_id_from_email(self::$DI['app'], 'supermail@superprovider.com');
+
+        if (false === $createdUserId) {
+            $random = self::$DI['app']['tokens']->generatePassword();
+            $createdUser = \User_Adapter::create(self::$DI['app'], 'temporary-'.$random, $random, 'supermail@superprovider.com', false);
+        } else {
+            $createdUser = \User_Adapter::getInstance($createdUserId, self::$DI['app']);
+        }
+
+        self::$DI['app']['authentication.providers.account-creator'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\AccountCreator')
+            ->disableOriginalConstructor()
+            ->getMock();
+        self::$DI['app']['authentication.providers.account-creator']->expects($this->once())
+            ->method('create')
+            ->with(self::$DI['app'], 42, 'supermail@superprovider.com', array())
+            ->will($this->returnValue($createdUser));
+        self::$DI['app']['authentication.providers.account-creator']->expects($this->once())
+            ->method('isEnabled')
+            ->will($this->returnValue(true));
+
         self::$DI['app']['authentication']->closeAccount();
         self::$DI['client']->request('GET', '/login/provider/provider-test/callback/');
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
-        $this->assertSame('/login/provider/provider-test/bind-account/?id=42', self::$DI['client']->getResponse()->headers->get('location'));
-    }
 
-    public function testGetBindAccountWithSuccess()
-    {
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
-        $this->addProvider('provider-test', $provider);
+        $ret = self::$DI['app']['EM']->getRepository('\Entities\UsrAuthProvider')
+            ->findBy(array('usr_id' => $createdUser->get_id(), 'provider' => 'provider-test'));
 
-        $token = new Token($provider, 42);
-
-        $provider->expects($this->once())
-            ->method('getToken')
-            ->will($this->returnValue($token));
-
-        $provider->expects($this->any())
-            ->method('getIdentity')
-            ->will($this->returnValue(new Identity()));
-
-        self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('GET', '/login/provider/provider-test/bind-account/');
-
-        $this->assertSame(200, self::$DI['client']->getResponse()->getStatusCode());
-    }
-
-    public function testPostBindAccountWithSuccess()
-    {
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
-        $this->addProvider('provider-test', $provider);
-
-        $token = new Token($provider, 42);
-
-        $provider->expects($this->once())
-            ->method('getToken')
-            ->will($this->returnValue($token));
-
-        $password = \random::generatePassword();
-
-        $login = self::$DI['app']['authentication']->getUser()->get_login();
-        self::$DI['app']['authentication']->getUser()->set_password($password);
-        self::$DI['app']['authentication']->getUser()->set_mail_locked(false);
-
-        self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('POST', '/login/provider/provider-test/bind-account/', array(
-            '_token'      => 'token',
-            'login'       => $login,
-            'password'    => $password,
-            'remember-me' => '1',
-            'redirect'    => '/prod/',
-        ));
+        $this->assertCount(1, $ret);
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertSame('/prod/', self::$DI['client']->getResponse()->headers->get('location'));
 
-        $entity = self::$DI['app']['EM']->getRepository('Entities\UsrAuthProvider')
-            ->findOneBy(array('distant_id' => 42));
+        $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
 
-        $this->assertNotNull($entity);
+        $createdUser->delete();
     }
 
-    public function testPostBindAccountWithFailure()
+    public function testAuthenticateProviderCallbackWithRegistrationEnabled()
     {
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
-
-        $provider->expects($this->never())
-            ->method('getToken');
-
-        $login = self::$DI['app']['authentication']->getUser()->get_login();
-
-        self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('POST', '/login/provider/provider-test/bind-account/', array(
-            '_token'      => 'token',
-            'login'       => $login,
-            'password'    => '',
-            'remember-me' => '1',
-            'redirect'    => '/prod/',
-        ));
-
-        $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
-        $this->assertSame('/login/provider/provider-test/add-mapping/', self::$DI['client']->getResponse()->headers->get('location'));
-
-        $entity = self::$DI['app']['EM']->getRepository('Entities\UsrAuthProvider')
-            ->findOneBy(array('distant_id' => 42));
-
-        $this->assertNull($entity);
-    }
-
-    public function testPostAddMapWithSuccess()
-    {
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
-        $this->addProvider('provider-test', $provider);
-
-        $token = new Token($provider, 42);
 
         $provider->expects($this->once())
-            ->method('getToken')
-            ->will($this->returnValue($token));
-
-        $password = \random::generatePassword();
-
-        $login = self::$DI['app']['authentication']->getUser()->get_login();
-        self::$DI['app']['authentication']->getUser()->set_password($password);
-        self::$DI['app']['authentication']->getUser()->set_mail_locked(false);
-
-        self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('POST', '/login/provider/provider-test/add-mapping/', array(
-            '_token'      => 'token',
-            'login'       => $login,
-            'password'    => $password,
-            'remember-me' => '1',
-            'redirect'    => '/prod/',
-        ));
-
-        $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
-        $this->assertSame('/prod/', self::$DI['client']->getResponse()->headers->get('location'));
-
-        $entity = self::$DI['app']['EM']->getRepository('Entities\UsrAuthProvider')
-            ->findOneBy(array('distant_id' => 42));
-
-        $this->assertNotNull($entity);
-    }
-
-    public function testPostAddMapWithFailure()
-    {
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
-        $this->addProvider('provider-test', $provider);
-
-        $provider->expects($this->never())
-            ->method('getToken');
-
-        $login = self::$DI['app']['authentication']->getUser()->get_login();
-
-        self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('POST', '/login/provider/provider-test/add-mapping/', array(
-            '_token'      => 'token',
-            'login'       => $login,
-            'password'    => '',
-            'remember-me' => '1',
-            'redirect'    => '/prod/',
-        ));
-
-        $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
-        $this->assertSame('/login/provider/provider-test/add-mapping/', self::$DI['client']->getResponse()->headers->get('location'));
-
-        $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
-
-        $entity = self::$DI['app']['EM']->getRepository('Entities\UsrAuthProvider')
-            ->findOneBy(array('distant_id' => 42));
-
-        $this->assertNull($entity);
-    }
-
-    public function testGetAddMappingWithSuccess()
-    {
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
-        $this->addProvider('provider-test', $provider);
+            ->method('onCallback');
 
         $token = new Token($provider, 42);
-
-        $provider->expects($this->once())
-            ->method('getToken')
-            ->will($this->returnValue($token));
 
         $provider->expects($this->any())
-            ->method('getIdentity')
-            ->will($this->returnValue(new Identity()));
+            ->method('getToken')
+            ->will($this->returnValue($token));
 
-        $this->mockSuggestionFinder();
-
-        $user = $this->getMockBuilder('\User_Adapter')
+        self::$DI['app']['authentication.suggestion-finder'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\SuggestionFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
         self::$DI['app']['authentication.suggestion-finder']->expects($this->once())
             ->method('find')
             ->with($token)
-            ->will($this->returnValue($user));
+            ->will($this->returnValue(null));
+
+        self::$DI['app']['authentication.providers.account-creator'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\AccountCreator')
+            ->disableOriginalConstructor()
+            ->getMock();
+        self::$DI['app']['authentication.providers.account-creator']->expects($this->never())
+            ->method('create');
+        self::$DI['app']['authentication.providers.account-creator']->expects($this->once())
+            ->method('isEnabled')
+            ->will($this->returnValue(false));
+
+        self::$DI['app']['registration.enabled'] = true;
 
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('GET', '/login/provider/provider-test/add-mapping/');
+        self::$DI['client']->request('GET', '/login/provider/provider-test/callback/');
 
-        $this->assertSame(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertSame('/login/register-classic/?providerId=provider-test', self::$DI['client']->getResponse()->headers->get('location'));
+
+        $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
     }
 
-    public function testGetAddMappingFailingAuthentication()
+    public function testAuthenticateProviderCallbackWithoutRegistrationEnabled()
     {
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
 
         $provider->expects($this->once())
+            ->method('onCallback');
+
+        $token = new Token($provider, 42);
+
+        $provider->expects($this->any())
             ->method('getToken')
-            ->will($this->throwException(new NotAuthenticatedException('Not authenticated !')));
+            ->will($this->returnValue($token));
+
+        self::$DI['app']['authentication.suggestion-finder'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\SuggestionFinder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['authentication.suggestion-finder']->expects($this->once())
+            ->method('find')
+            ->with($token)
+            ->will($this->returnValue(null));
+
+        self::$DI['app']['authentication.providers.account-creator'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\AccountCreator')
+            ->disableOriginalConstructor()
+            ->getMock();
+        self::$DI['app']['authentication.providers.account-creator']->expects($this->never())
+            ->method('create');
+        self::$DI['app']['authentication.providers.account-creator']->expects($this->once())
+            ->method('isEnabled')
+            ->will($this->returnValue(false));
+
+        self::$DI['app']['registration.enabled'] = false;
 
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('GET', '/login/provider/provider-test/add-mapping/');
+        self::$DI['client']->request('GET', '/login/provider/provider-test/callback/');
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertSame('/login/', self::$DI['client']->getResponse()->headers->get('location'));
 
+        $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
         $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
     }
 
@@ -1502,16 +1683,14 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     private function addUsrAuthDoctrineEntitySupport($id, $out, $participants = false)
     {
-        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
+        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')
+            ->setMethods(array('findWithProviderAndId'))
             ->disableOriginalConstructor()
             ->getMock();
 
-        $repo->expects($this->once())
-            ->method('findOneBy')
-            ->with($this->equalTo(array(
-                'provider'   => 'provider-test',
-                'distant_id' => $id
-            )))
+        $repo->expects($this->any())
+            ->method('findWithProviderAndId')
+            ->with('provider-test', $id)
             ->will($this->returnValue($out));
 
         self::$DI['app']['EM'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')

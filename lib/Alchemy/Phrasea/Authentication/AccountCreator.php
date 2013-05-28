@@ -31,6 +31,16 @@ class AccountCreator
     }
 
     /**
+     * Returns the default templates
+     *
+     * @return array
+     */
+    public function getTemplates()
+    {
+        return $this->templates;
+    }
+
+    /**
      * @return Boolean
      */
     public function isEnabled()

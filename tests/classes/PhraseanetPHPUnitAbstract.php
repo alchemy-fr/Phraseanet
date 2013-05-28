@@ -910,6 +910,21 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 $expectedMails[get_class($email)]++;
             }));
     }
+
+    public function createRandomMock()
+    {
+        return $this->getMockBuilder('\random')
+            ->setMethods(array('generatePassword'))
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    public function createAppboxMock()
+    {
+        return $this->getMockBuilder('appbox')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
 }
 
 class CsrfTestProvider implements CsrfProviderInterface

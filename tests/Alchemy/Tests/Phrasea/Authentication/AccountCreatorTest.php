@@ -78,6 +78,9 @@ class AccountCreatorTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertInstanceOf('User_Adapter', $user);
         $user->delete();
+        $template1->delete();
+        $template2->delete();
+        $template3->delete();
     }
 
     public function testCreateWithAlreadyExistingLogin()

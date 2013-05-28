@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
@@ -30,10 +31,10 @@ use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
-use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationWithMappingForm;
 use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
+use Doctrine\ORM\EntityManager;
 use Entities\UsrAuthProvider;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -112,30 +113,6 @@ class Login implements ControllerProviderInterface
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_authentication_provider_callback');
 
-        // Displays a form to add a mapping from an AuthProvider identity to a Phraseanet user that has been found
-        $controllers->get('/provider/{providerId}/add-mapping/', 'login.controller:authenticationMapping')
-            ->before(function(Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
-            })->bind('login_authentication_provider_mapping');
-
-        // Submit the mapping from an AuthProvider identity to a Phraseanet user that has been found
-        $controllers->post('/provider/{providerId}/add-mapping/', 'login.controller:authenticationDoMapToAccount')
-            ->before(function(Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
-            })->bind('login_authentication_provider_do_mapping');
-
-        // Displays a form to bind an AuthProvider identity to an account or create one
-        $controllers->get('/provider/{providerId}/bind-account/', 'login.controller:authenticationBindToAccount')
-            ->before(function(Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
-            })->bind('login_authentication_provider_bind');
-
-        // Submits the form to bind an AuthProvider identity to an account or create one
-        $controllers->post('/provider/{providerId}/bind-account/', 'login.controller:authenticationDoBindToAccount')
-            ->before(function(Request $request) use ($app) {
-                $app['firewall']->requireNotAuthenticated();
-            })->bind('login_authentication_provider_do_bind');
-
         // Logout end point
         $controllers->get('/logout/', 'login.controller:logout')
             ->before(function(Request $request) use ($app) {
@@ -150,18 +127,15 @@ class Login implements ControllerProviderInterface
 
         // Classic registration end point
         $controllers->match('/register-classic/', 'login.controller:doRegistration')
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })
             ->bind('login_register_classic');
 
         // Provide a JSON serialization of registration fields configuration
         $controllers->get('/registration-fields/', function(PhraseaApplication $app, Request $request) {
             return $app->json($app['registration.fields']);
         })->bind('login_registration_fields');
-
-// A TESTER
-        // Registers with AuthProviders
-        $controllers->get('/register-provider/', function(PhraseaApplication $app, Request $request) {
-            return $app['twig']->render('login/register-provider.html.twig');
-        })->bind('login_register_provider');
 
         // Unlocks an email address that is currently locked
         $controllers->get('/register-confirm/', 'login.controller:registerConfirm')
@@ -197,6 +171,10 @@ class Login implements ControllerProviderInterface
 
     public function doRegistration(PhraseaApplication $app, Request $request)
     {
+        if (!$app['registration.enabled']) {
+            $app->abort(404, 'Registration is disabled');
+        }
+
         $form = $app->form(new PhraseaRegisterForm(
             $app, $app['registration.optional-fields'], $app['registration.fields']
         ));
@@ -204,6 +182,35 @@ class Login implements ControllerProviderInterface
         if ('POST' === $request->getMethod()) {
             $form->bind($request);
             $data = $form->getData();
+
+            $provider = null;
+            if ($data['provider-id']) {
+                try {
+                    $provider = $this->findProvider($app, $data['provider-id']);
+                } catch (NotFoundHttpException $e) {
+                    $app->addFlash('error', _('You tried to register with an unknown provider'));
+
+                    return $app->redirect($app->path('login_register'));
+                }
+
+                try {
+                    $token = $provider->getToken();
+                } catch (NotAuthenticatedException $e) {
+                    $app->addFlash('error', _('You tried to register with an unknown provider'));
+
+                    return $app->redirect($app->path('login_register'));
+                }
+
+                $userAuthProvider = $app['EM']
+                    ->getRepository('Entities\UsrAuthProvider')
+                    ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
+
+                if (null !== $userAuthProvider) {
+                    $this->postAuthProcess($app, $userAuthProvider->getUser($app));
+
+                    return $app->redirect($request->query->get('redirect', $app->path('prod')));
+                }
+            }
 
             try {
                 if ($form->isValid()) {
@@ -267,6 +274,11 @@ class Login implements ControllerProviderInterface
                         }
                     }
 
+                    if (null !== $provider) {
+                        $this->attachProviderToUser($app['EM'], $provider, $user);
+                        $app['EM']->flush();
+                    }
+
                     $demandOK = array();
 
                     if ($app['phraseanet.registry']->get('GV_autoregister')) {
@@ -321,6 +333,17 @@ class Login implements ControllerProviderInterface
             } catch (FormProcessingException $e) {
                 $app->addFlash('error', $e->getMessage());
             }
+        } elseif (null !== $request->query->get('providerId')) {
+            $provider = $this->findProvider($app, $request->query->get('providerId'));
+            $identity = $provider->getIdentity();
+
+            $form->bind(array_filter(array(
+                'email'       => $identity->getEmail(),
+                'firstname'   => $identity->getFirstname(),
+                'lastname'    => $identity->getLastname(),
+                'company'     => $identity->getCompany(),
+                'provider-id' => $provider->getId(),
+            )));
         }
 
         return $app['twig']->render('login/register-classic.html.twig', array(
@@ -329,6 +352,22 @@ class Login implements ControllerProviderInterface
             'login' => new \login(),
             'recaptcha_display' => $app['phraseanet.registry']->get('GV_captchas'),
         ));
+    }
+
+    private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, \User_Adapter $user)
+    {
+        $usrAuthProvider = new UsrAuthProvider();
+        $usrAuthProvider->setDistantId($provider->getToken()->getId());
+        $usrAuthProvider->setProvider($provider->getId());
+        $usrAuthProvider->setUsrId($user->get_id());
+
+        try {
+            $provider->logout();
+        } catch (RuntimeException $e) {
+            // log these errors
+        }
+
+        $em->persist($usrAuthProvider);
     }
 
     /**
@@ -553,8 +592,8 @@ class Login implements ControllerProviderInterface
         }
 
         return $app['twig']->render('login/forgot-password.html.twig', array(
-            'login'       => new \login(),
-            'form'        => $form->createView(),
+            'login' => new \login(),
+            'form'  => $form->createView(),
         ));
     }
 
@@ -567,8 +606,11 @@ class Login implements ControllerProviderInterface
      */
     public function displayRegisterForm(PhraseaApplication $app, Request $request)
     {
+        if (!$app['registration.enabled']) {
+            $app->abort(404, 'Registration is disabled');
+        }
+
         if (0 < count($app['authentication.providers'])) {
-            //neutron a verifier
             return $app['twig']->render('login/register.html.twig', array(
                 'login' => new \login(),
             ));
@@ -777,6 +819,7 @@ class Login implements ControllerProviderInterface
 
     public function authenticationCallback(PhraseaApplication $app, Request $request, $providerId)
     {
+        $login = new \login();
         $provider = $this->findProvider($app, $providerId);
 
         // triggers what's necessary
@@ -789,83 +832,58 @@ class Login implements ControllerProviderInterface
             return $app->redirect($app->path('homepage'));
         }
 
-        // Let's find a match
         $userAuthProvider = $app['EM']
             ->getRepository('Entities\UsrAuthProvider')
-            ->findOneBy(array(
-                'provider'   => $token->getProvider()->getId(),
-                'distant_id' => $token->getId(),
-            ));
+            ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
-        if ($userAuthProvider) {
+        if (null !== $userAuthProvider) {
             $this->postAuthProcess($app, $userAuthProvider->getUser($app));
-            $target = $request->query->get('redirect', $app->path('prod'));
 
-            return $app->redirect($target);
+            return $app->redirect($request->query->get('redirect', $app->path('prod')));
         }
 
         try {
-            if ($app['authentication.suggestion-finder']->find($token)) {
-                return $app->redirect($app['url_generator']->generate('login_authentication_provider_mapping', array(
-                    'providerId' => $providerId,
-                    'id'         => $token->getId(),
-                )));
-            } else {
-                return $app->redirect($app['url_generator']->generate('login_authentication_provider_bind', array(
-                    'providerId' => $providerId,
-                    'id'         => $token->getId(),
-                )));
-            }
-        } catch (NotAuthenticatedException $e) {
-            $app->addFlash('error', _('Unable to retrieve provider identity'));
-
-            return $app->redirect($app->path('homepage'));
-        }
-    }
-
-    public function authenticationMapping(PhraseaApplication $app, Request $request, $providerId)
-    {
-        $provider = $this->findProvider($app, $providerId);
-
-        try {
-            $token = $provider->getToken();
-            $suggestion = $app['authentication.suggestion-finder']->find($token);
+            $user = $app['authentication.suggestion-finder']->find($token);
         } catch (NotAuthenticatedException $e) {
             $app->addFlash('error', _('Unable to retrieve provider identity'));
 
             return $app->redirect($app->path('homepage'));
         }
 
-        $form = $app->form(new PhraseaAuthenticationWithMappingForm(), array(
-            'login' => $suggestion->get_login(),
-        ));
+        if (null !== $user) {
+            $this->attachProviderToUser($app['EM'], $provider, $user);
+            $app['EM']->flush();
 
-        return $app['twig']->render('login/providers/mapping.html.twig', array(
-            'provider'   => $provider,
-            'recaptcha_display' => $app->isCaptchaRequired(),
-            'login'      => new \login(),
-            'form'       => $form->createView(),
-            'token'      => $token,
-            'suggestion' => $suggestion,
-        ));
+            $this->postAuthProcess($app, $user);
+
+            return $app->redirect($request->query->get('redirect', $app->path('prod')));
+        }
+
+        if ($app['authentication.providers.account-creator']->isEnabled()) {
+            $user = $app['authentication.providers.account-creator']->create($app, $token->getId(), $token->getIdentity()->getEmail(), $token->getTemplates());
+
+            $this->attachProviderToUser($app['EM'], $provider, $user);
+            $app['EM']->flush();
+
+            $this->postAuthProcess($app, $user);
+
+            return $app->redirect($request->query->get('redirect', $app->path('prod')));
+        } elseif ($app['registration.enabled']) {
+            return $app->redirect($app->path('login_register_classic', array('providerId' => $providerId)));
+        }
+
+        $app->addFlash('error', _('Your identity is not recognized.'));
+
+        return $app->redirect($app->path('homepage'));
     }
 
-    public function authenticationBindToAccount(PhraseaApplication $app, Request $request, $providerId)
-    {
-        $provider = $this->findProvider($app, $providerId);
-
-        $form = $app->form(new PhraseaAuthenticationForm(), array(
-        ));
-
-        return $app['twig']->render('login/providers/bind.html.twig', array(
-            'login'      => new \login(),
-            'recaptcha_display' => $app->isCaptchaRequired(),
-            'provider'   => $provider,
-            'form'       => $form->createView(),
-            'token'      => $provider->getToken(),
-        ));
-    }
-
+    /**
+     *
+     * @param PhraseaApplication $app
+     * @param string $providerId
+     * @return ProviderInterface
+     * @throws NotFoundHttpException
+     */
     private function findProvider(PhraseaApplication $app, $providerId)
     {
         try {
@@ -873,80 +891,6 @@ class Login implements ControllerProviderInterface
         } catch (InvalidArgumentException $e) {
             throw new NotFoundHttpException('The requested provider does not exist');
         }
-    }
-
-    public function authenticationDoMapToAccount(PhraseaApplication $app, Request $request, $providerId)
-    {
-        $provider = $this->findProvider($app, $providerId);
-
-        $form = $app->form(new PhraseaAuthenticationWithMappingForm());
-
-        $redirector = function (array $params = array()) use ($app, $providerId) {
-            $params = array_merge($params, array(
-                'providerId' => $providerId,
-            ));
-
-            return $app->redirect($app->path('login_authentication_provider_mapping', $params));
-        };
-
-        try {
-            $response = $this->doAuthentication($app, $request, $form, $redirector);
-        } catch (AuthenticationException $e) {
-            return $e->getResponse();
-        }
-
-        $usrAuthProvider = new UsrAuthProvider();
-        $usrAuthProvider->setDistantId($provider->getToken()->getId());
-        $usrAuthProvider->setProvider($provider->getId());
-        $usrAuthProvider->setUsrId($app['authentication']->getUser()->get_id());
-
-        try {
-            $provider->logout();
-        } catch (RuntimeException $e) {
-            // log these errors
-        }
-
-        $app['EM']->persist($usrAuthProvider);
-        $app['EM']->flush();
-
-        return $response;
-    }
-
-    public function authenticationDoBindToAccount(PhraseaApplication $app, Request $request, $providerId)
-    {
-        $provider = $this->findProvider($app, $providerId);
-
-        $form = $app->form(new PhraseaAuthenticationForm());
-
-        $redirector = function (array $params = array()) use ($app, $providerId) {
-            $params = array_merge($params, array(
-                'providerId' => $providerId,
-            ));
-
-            return $app->redirect($app->path('login_authentication_provider_mapping', $params));
-        };
-
-        try {
-            $response = $this->doAuthentication($app, $request, $form, $redirector);
-        } catch (AuthenticationException $e) {
-            return $e->getResponse();
-        }
-
-        $usrAuthProvider = new UsrAuthProvider();
-        $usrAuthProvider->setDistantId($provider->getToken()->getId());
-        $usrAuthProvider->setProvider($provider->getId());
-        $usrAuthProvider->setUsrId($app['authentication']->getUser()->get_id());
-
-        $app['EM']->persist($usrAuthProvider);
-        $app['EM']->flush();
-
-        try {
-            $provider->logout();
-        } catch (RuntimeException $e) {
-            // log these errors
-        }
-
-        return $response;
     }
 
     private function doAuthentication(PhraseaApplication $app, Request $request, FormInterface $form, $redirector)
