@@ -59,7 +59,7 @@ try {
         $helperSet->set($helper, $name);
     }
 
-    $cli->command(new RegenerateSqliteDb('phrasea:regenerate-sqlite'));
+    $cli->command(new RegenerateSqliteDb());
 
     $cli['console']->addCommands(array(
         // DBAL Commands

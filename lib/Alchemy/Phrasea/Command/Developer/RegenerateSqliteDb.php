@@ -11,6 +11,13 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class RegenerateSqliteDb extends Command
 {
+    public function __construct()
+    {
+        parent::__construct('phraseanet:regenerate-sqlite');
+
+        $this->setDescription("Update the sqlite 'tests/db-ref.sqlite' database with current database definition.");
+    }
+
     public function doExecute(InputInterface $input, OutputInterface $output)
     {
         $fs = new Filesystem();
