@@ -1,6 +1,6 @@
 Entities\UsrAuthProvider:
   type: entity
-  repositoryClass: Repositories\UsrAuthProvider
+  repositoryClass: Repositories\UsrAuthProviderRepository
   table: UsrAuthProviders
   uniqueConstraints:
     unique_provider_per_user:
