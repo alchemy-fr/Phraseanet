@@ -10,13 +10,12 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\AuthFailure;
 use Symfony\Component\Yaml\Yaml;
 
 class patch_3806 implements patchInterface
 {
     /** @var string */
-    private $release = '3.8.0.a5';
+    private $release = '3.8.0.a6';
 
     /** @var array */
     private $concern = array(base::APPLICATION_BOX);
