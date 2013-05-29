@@ -117,7 +117,7 @@ class Authenticator
      */
     public function closeAccount()
     {
-        $this->session->clear();
+        $this->session->invalidate();
         $this->reinitUser();
 
         return $this;
