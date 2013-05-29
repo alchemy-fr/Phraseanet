@@ -60,7 +60,7 @@
 
         <form id="users_reset_rights" method="post" action="/admin/users/rights/reset/" target="_self" style="float:right">
             <input type="hidden" value="" name="users">
-            <button type='button' class="btn btn-warning">{% trans 'reset users rights' %}</button>
+            <button type='button' class="btn btn-warning">{% trans 'Delete all users rights' %}</button>
         </form>
 
         <table id="users" cellspacing="0"  cellpadding="0" border="0" class="admintable">
@@ -264,7 +264,7 @@
           users += $(n).attr("id").split("_").pop() + ';';
         });
 
-        if(confirm("{% trans 'are you sure you want reset rights ?' %}"))
+        if(confirm("{% trans 'Are you sure you want delete users rights ?' %}"))
         {
           $("#users_reset_rights input[name='users']").val(users);
 
