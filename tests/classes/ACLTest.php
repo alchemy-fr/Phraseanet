@@ -40,7 +40,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         self::$DI['user']->ACL()->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
         self::$DI['user']->ACL()->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
 
-
         parent::tearDownAfterClass();
     }
 
@@ -232,7 +231,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
             , 'canaddrecord' => true
         );
 
-
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
@@ -276,7 +274,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         foreach ($appbox->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $bid = $collection->get_base_id();
-                if(!$acl->has_access_to_base($bid)) {
+                if (!$acl->has_access_to_base($bid)) {
                     $acl->give_access_to_base(array($bid));
                 }
                 $acl->set_order_master($collection, true);
@@ -344,11 +342,9 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testHas_right()
     {
 
-
         $rights = array(
             'bas_modify_struct' => true
         );
-
 
         $this->assertFalse(self::$DI['user']->ACL()->has_right('bas_modify_struct'));
         $this->assertFalse(self::$DI['user']->ACL()->has_right('bas_modif_th'));
@@ -379,7 +375,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
             , 'bas_chupub'        => true
             , 'bas_modif_th'      => true
         );
-
 
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             self::$DI['user']->ACL()->give_access_to_sbas(array($databox->get_sbas_id()));
@@ -459,7 +454,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $bases = array_keys(self::$DI['user']->ACL()->get_granted_base());
 
         $this->assertEquals(count($base_ids), count($bases));
-
 
         $sql = 'SELECT actif FROM basusr WHERE usr_id = :usr_id AND base_id = :base_id';
         $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -598,7 +592,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertTrue(self::$DI['user']->ACL()->has_access_to_module('report'));
         $this->assertTrue(self::$DI['user']->ACL()->has_access_to_module('thesaurus'));
         $this->assertFalse(self::$DI['user']->ACL()->has_access_to_module('upload'));
-
 
         $found = false;
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {

@@ -125,10 +125,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 return $em;
             }));
 
-
             $app['browser'] = $app->share($app->extend('browser', function($browser) {
 
                 $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
+
                 return $browser;
             }));
 
@@ -137,13 +137,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 ->getMock();
             $app['notification.deliverer']->expects($phpunit->any())
                 ->method('deliver')
-                ->will($phpunit->returnCallback(function() use ($phpunit){
+                ->will($phpunit->returnCallback(function() use ($phpunit) {
                     $phpunit->fail('Notification deliverer must be mocked');
                 }));
 
             return $app;
         });
-
 
         self::$DI['client'] = self::$DI->share(function($DI) {
             return new Client($DI['app'], array());
@@ -198,7 +197,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $this->assertTrue(false !== stripos($response->getContent(), 'not found'));
     }
 
-
     /**
      * Insert fixture contained in the specified fixtureLoader
      * into sqlLite test temporary database
@@ -236,7 +234,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $app['browser']->setUserAgent($user_agent);
         $app->register(new \Silex\Provider\TwigServiceProvider());
         $app->setupTwig();
-        self::$DI['client'] = self::$DI->share(function($DI) use($app) {
+        self::$DI['client'] = self::$DI->share(function($DI) use ($app) {
             return new Client($app, array());
         });
     }
@@ -302,7 +300,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $loader->addFixture($UsrList);
 
-
             $this->insertFixtureInDatabase($loader);
 
             return $UsrList->list;
@@ -313,7 +310,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     /**
      *
-     * @param \Entities\UsrList $UsrList
+     * @param  \Entities\UsrList      $UsrList
      * @return \Entities\UsrListEntry
      */
     protected function insertOneUsrListEntry(\User_adapter $owner, \User_adapter $user)
@@ -335,7 +332,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $UsrEntry->setUser($user);
 
             $loader->addFixture($UsrEntry);
-
 
             $this->insertFixtureInDatabase($loader);
 
@@ -515,10 +511,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     /**
      * Calls a URI as XMLHTTP request.
      *
-     * @param string  $method        The request method
-     * @param string  $uri           The URI to fetch
-     * @param array   $parameters    The Request parameters
-     * @param array   $httpAccept    Contents of the Accept header
+     * @param string $method     The request method
+     * @param string $uri        The URI to fetch
+     * @param array  $parameters The Request parameters
+     * @param array  $httpAccept Contents of the Accept header
      *
      * @return Crawler
      */
@@ -716,6 +712,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces) {
                     $user->ACL()->revoke_access_from_bases(array($collection_no_acces->get_base_id()));
                     $DI['client'] = new Client($DI['app'], array());
+
                     return $user;
                 })
             );
@@ -734,6 +731,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces_by_status) {
                     $user->ACL()->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
                     $DI['client'] = new Client($DI['app'], array());
+
                     return $user;
                 })
             );
@@ -817,6 +815,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 self::$DI->extend('user', function ($user, $DI) use ($app) {
                     PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
                     $user->ACL()->set_admin(true);
+
                     return $user;
                 })
             );
@@ -825,6 +824,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 self::$DI->extend('user_notAdmin', function ($user, $DI) use ($app) {
                     PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
                     $user->ACL()->set_admin(false);
+
                     return $user;
                 })
             );

@@ -15,7 +15,6 @@ class dashboardTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertGreaterThanOrEqual(1, count($this->dashboard->authorizedCollection));
         $this->assertEquals($this->dashboard->authorizedCollection, $this->dashboard->authorizedCollection());
 
-
         foreach ($this->dashboard->authorizedCollection as $coll) {
             $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $coll);
             $this->assertArrayHasKey('sbas_id', $coll);
@@ -66,8 +65,7 @@ class dashboardTest extends PhraseanetPHPUnitAuthenticatedAbstract
                     $this->assertLessThanOrEqual($lastvalue, $value['nb']);
                     $lastvalue = $value['nb'];
                 }
-            }
-            elseif (in_array($key, $activity)) {
+            } elseif (in_array($key, $activity)) {
                 if ($key == 'activity') {
                     $this->assertEquals(24, count($dash));
                 } else {

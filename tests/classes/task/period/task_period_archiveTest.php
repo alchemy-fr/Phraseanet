@@ -496,7 +496,6 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
         $sxcaption = simplexml_load_string($xml);
         $this->assertEquals('10000', self::$object->parseStatusBitTester($sxcaption));
 
-
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <record record_id="2">
                     <status/>

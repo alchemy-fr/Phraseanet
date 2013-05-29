@@ -42,11 +42,11 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
                 continue;
             }
 
-            if ( ! self::$objectPresent) {
+            if (! self::$objectPresent) {
                 self::$objectPresent = $subdef;
                 continue;
             }
-            if ( ! self::$objectNotPresent) {
+            if (! self::$objectNotPresent) {
                 self::$objectNotPresent = $subdef;
                 continue;
             }

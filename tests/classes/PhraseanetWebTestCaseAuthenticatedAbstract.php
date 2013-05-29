@@ -110,7 +110,6 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
         self::$createdDataboxes[] = $databox;
 
-
         $rights = array(
             'bas_manage'        => '1'
             , 'bas_modify_struct' => '1'
@@ -119,7 +118,6 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
         );
 
         self::$DI['app']['authentication']->getUser()->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
-
 
         $databox->registerAdmin(self::$DI['app']['authentication']->getUser());
 

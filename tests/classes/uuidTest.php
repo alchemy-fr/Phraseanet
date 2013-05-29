@@ -16,7 +16,7 @@ class uuidTest extends PhraseanetPHPUnitAbstract
     public function testGenerate_v3()
     {
         $datas = array();
-        for ($i = 0; $i < 1000; $i ++ ) {
+        for ($i = 0; $i < 1000; $i ++) {
             $uuid = uuid::generate_v4();
 
             if ( ! uuid::is_valid($uuid))
@@ -40,7 +40,7 @@ class uuidTest extends PhraseanetPHPUnitAbstract
     public function testGenerate_v4()
     {
         $datas = array();
-        for ($i = 0; $i < 1000; $i ++ ) {
+        for ($i = 0; $i < 1000; $i ++) {
             $uuid = uuid::generate_v4();
 
             if ( ! uuid::is_valid($uuid))
@@ -60,7 +60,7 @@ class uuidTest extends PhraseanetPHPUnitAbstract
     public function testGenerate_v5()
     {
         $datas = array();
-        for ($i = 0; $i < 1000; $i ++ ) {
+        for ($i = 0; $i < 1000; $i ++) {
             $uuid = uuid::generate_v4();
 
             if ( ! uuid::is_valid($uuid))
@@ -83,7 +83,7 @@ class uuidTest extends PhraseanetPHPUnitAbstract
 
     public function testIs_valid()
     {
-        for ($i = 0; $i < 1000; $i ++ ) {
+        for ($i = 0; $i < 1000; $i ++) {
             $uuid = uuid::generate_v4();
             if ( ! uuid::is_valid($uuid))
                 $this->fail('Generation d\'un uuid v4 invalide');
@@ -102,7 +102,7 @@ class uuidTest extends PhraseanetPHPUnitAbstract
 
     public function testCompare()
     {
-        for ($i = 0; $i < 1000; $i ++ ) {
+        for ($i = 0; $i < 1000; $i ++) {
             $uuid1 = uuid::generate_v4();
             $uuid2 = uuid::generate_v4();
             $this->assertFalse(uuid::compare($uuid1, $uuid2));

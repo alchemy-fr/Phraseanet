@@ -67,7 +67,6 @@ class addReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->ColFilter();
         }
 
-
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_add(
                     self::$DI['app'],
@@ -104,7 +103,6 @@ class addReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         else
             $this->assertEquals($report['page'] - 1, $report['previous_page']);
 
-
         if (intval(ceil($nbPage)) == $report['page'] || intval(ceil($nbPage)) == 0)
             $this->assertFalse($report['next_page']);
         else
@@ -118,7 +116,7 @@ class addReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         else
             $this->assertEquals(count($this->report->getDisplay()), count($conf));
 
-        if ( ! $groupby) {
+        if (! $groupby) {
             foreach ($this->report->getDisplay() as $col => $colconf) {
                 $this->assertArrayHaskey($col, $conf);
                 $this->assertTrue(is_array($colconf));
@@ -140,8 +138,7 @@ class addReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
                     $i ++;
                 }
             }
-        }
-        else {
+        } else {
             $this->assertArrayHasKey($groupby, $this->report->getDisplay());
             $this->assertArrayHasKey('nombre', $this->report->getDisplay());
         }
@@ -149,7 +146,7 @@ class addReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function reporttestResult($report, $conf, $groupby = false)
     {
-        if ( ! $groupby) {
+        if (! $groupby) {
             foreach ($report['result'] as $row) {
                 foreach ($conf as $key => $value) {
 

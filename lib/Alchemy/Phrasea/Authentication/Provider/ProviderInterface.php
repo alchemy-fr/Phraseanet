@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
@@ -59,8 +58,7 @@ interface ProviderInterface
      * This method is called on provider callback, whenever the auth was
      * successful or failure.
      *
-     * @param Application $app
-     * @param Request     $request
+     * @param Request $request
      *
      * @throws NotAuthenticatedException In case the authentication failed.
      */

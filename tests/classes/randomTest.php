@@ -128,7 +128,6 @@ class randomTest extends PhraseanetPHPUnitAbstract
 
         }
 
-
         $expires_on = new DateTime('-5 minutes');
         $usr_id = self::$DI['user']->get_id();
         $token = $this->random->getUrlToken(\random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');

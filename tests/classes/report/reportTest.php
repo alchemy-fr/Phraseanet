@@ -97,8 +97,6 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGetterSetter()
     {
-
-
         $report = new module_report(self::$DI['app'], $this->dmin, $this->dmax, 1, '');
         $bool = true;
         $report->setPrettyString($bool);

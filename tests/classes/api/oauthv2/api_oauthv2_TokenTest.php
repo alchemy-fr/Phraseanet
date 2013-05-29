@@ -111,7 +111,7 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
 
     public function testGenerate_token()
     {
-        for ($i = 0; $i < 100; $i ++ ) {
+        for ($i = 0; $i < 100; $i ++) {
             $this->assertMd5(API_OAuth2_Token::generate_token());
         }
     }

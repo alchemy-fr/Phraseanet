@@ -34,7 +34,7 @@ class sqlFilterTest extends PhraseanetPHPUnitAuthenticatedAbstract
                     $sbasid,
                     $collections
             );
-            if ( ! $this->report instanceof module_report) {
+            if (! $this->report instanceof module_report) {
                 $this->report = $report;
             } elseif ($report->getTotal() > $this->report->getTotal()) {
                 $this->report = $report;

@@ -24,7 +24,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
         foreach (self::$DI['record_1']->get_databox()->get_meta_structure() as $databox_field) {
             $n = $databox_field->is_multi() ? 3 : 1;
 
-            for ($i = 0; $i < $n; $i ++ ) {
+            for ($i = 0; $i < $n; $i ++) {
                 \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], \random::generatePassword());
             }
         }
@@ -61,7 +61,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
         foreach (self::$DI['record_1']->get_databox()->get_meta_structure() as $databox_field) {
             $n = $databox_field->is_multi() ? 3 : 1;
 
-            for ($i = 0; $i < $n; $i ++ ) {
+            for ($i = 0; $i < $n; $i ++) {
                 \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], \random::generatePassword());
             }
         }
@@ -89,7 +89,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
             }
         }
     }
-    
+
     /**
      * @covers \caption_record::serializeYAML
      */
@@ -98,14 +98,14 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
         foreach (self::$DI['record_1']->get_databox()->get_meta_structure() as $databox_field) {
             $n = $databox_field->is_multi() ? 3 : 1;
 
-            for ($i = 0; $i < $n; $i ++ ) {
+            for ($i = 0; $i < $n; $i ++) {
                 \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], \random::generatePassword());
             }
         }
 
         $parser = new Yaml();
         $yaml = $parser->parse($this->object->serialize(\caption_record::SERIALIZE_YAML));
-            
+
         foreach (self::$DI['record_1']->get_caption()->get_fields() as $field) {
             if ($field->get_databox_field()->is_multi()) {
                 $tagname = $field->get_name();

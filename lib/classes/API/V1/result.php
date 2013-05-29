@@ -95,6 +95,7 @@ class API_V1_result
     /**
      * API v1 Result constructor
      *
+     * @param Application    $app
      * @param Request        $request
      * @param API_V1_adapter $api
      *

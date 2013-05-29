@@ -52,7 +52,7 @@ class patch_3803Test extends PhraseanetPHPUnitAbstract
         $panel = $this->getMock('Alchemy\Phrasea\SearchEngine\ConfigurationPanelInterface');
         $panel->expects($this->once())
             ->method('saveConfiguration')
-            ->will($this->returnCallback(function($json) use (&$catchSEConf){
+            ->will($this->returnCallback(function($json) use (&$catchSEConf) {
                 $catchSEConf = $json;
             }));
         $panel->expects($this->once())
@@ -130,7 +130,7 @@ class patch_3803Test extends PhraseanetPHPUnitAbstract
         $panel = $this->getMock('Alchemy\Phrasea\SearchEngine\ConfigurationPanelInterface');
         $panel->expects($this->once())
             ->method('saveConfiguration')
-            ->will($this->returnCallback(function($json) use (&$catchSEConf){
+            ->will($this->returnCallback(function($json) use (&$catchSEConf) {
                 $catchSEConf = $json;
             }));
         $panel->expects($this->once())

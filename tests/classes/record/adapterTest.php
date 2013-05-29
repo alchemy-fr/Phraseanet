@@ -397,9 +397,9 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
                 $this->assertEquals($multi_imploded, implode(' ' . $meta_el->get_separator() . ' ', $initial_values));
                 $this->assertEquals($multi_imploded, $field->get_serialized_values());
-            }
-            else
+            } else {
                 $this->assertEquals('un second jeu de test', $field->get_serialized_values());
+            }
         }
     }
 
@@ -447,7 +447,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $status = '';
 
-        while(strlen($status) < 32) {
+        while (strlen($status) < 32) {
             $status .= '1';
         }
 
@@ -524,7 +524,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
                 }
             }
         }
-
 
         if ( ! $found)
             $this->fail();

@@ -165,11 +165,10 @@ class downloadReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         if ($groupby) {
             if ($groupby != 'record_id')
                 $this->assertEquals(count($this->report->getDisplay()), 2);
-        }
-        else
+        } else
             $this->assertEquals(count($this->report->getDisplay()), count($conf));
 
-        if ( ! $groupby) {
+        if (! $groupby) {
             foreach ($this->report->getDisplay() as $col => $colconf) {
                 $this->assertArrayHaskey($col, $conf);
                 $this->assertTrue(is_array($colconf));
@@ -191,8 +190,7 @@ class downloadReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
                     $i ++;
                 }
             }
-        }
-        else {
+        } else {
 
             $this->assertArrayHasKey($groupby, $this->report->getDisplay());
         }
@@ -200,7 +198,7 @@ class downloadReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function reporttestResult($report, $conf, $groupby = false)
     {
-        if ( ! $groupby) {
+        if (! $groupby) {
             foreach ($report['result'] as $row) {
                 foreach ($conf as $key => $value) {
 

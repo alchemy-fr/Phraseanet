@@ -127,7 +127,7 @@ class editTest extends PhraseanetPHPUnitAuthenticatedAbstract
         else
             $this->assertEquals(count($this->report->getDisplay()), count($conf));
 
-        if ( ! $groupby) {
+        if (! $groupby) {
             foreach ($this->report->getDisplay() as $col => $colconf) {
                 $this->assertArrayHaskey($col, $conf);
                 $this->assertTrue(is_array($colconf));
@@ -149,8 +149,7 @@ class editTest extends PhraseanetPHPUnitAuthenticatedAbstract
                     $i ++;
                 }
             }
-        }
-        else {
+        } else {
             $this->assertArrayHasKey($groupby, $this->report->getDisplay());
             $this->assertArrayHasKey('nombre', $this->report->getDisplay());
         }
@@ -158,7 +157,7 @@ class editTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function reporttestResult($report, $conf, $groupby = false)
     {
-        if ( ! $groupby) {
+        if (! $groupby) {
             foreach ($report['result'] as $row) {
                 foreach ($conf as $key => $value) {
 

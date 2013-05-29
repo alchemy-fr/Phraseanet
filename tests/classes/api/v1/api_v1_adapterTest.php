@@ -173,7 +173,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $found = false;
         foreach ($data['response']['results'] as $retRecord) {
-            if($retRecord['record_id'] == $record->get_record_id() && $retRecord['databox_id'] == $record->get_sbas_id()) {
+            if ($retRecord['record_id'] == $record->get_record_id() && $retRecord['databox_id'] == $record->get_sbas_id()) {
                 $found = true;
                 break;
             }
@@ -258,7 +258,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $found = false;
 
         foreach ($data['response']['results'] as $retStory) {
-            if($retStory['record_id'] == $story->get_record_id() && $retStory['databox_id'] == $story->get_sbas_id()) {
+            if ($retStory['record_id'] == $story->get_record_id() && $retStory['databox_id'] == $story->get_sbas_id()) {
                 $found = true;
                 break;
             }
@@ -293,7 +293,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $found = false;
 
         foreach ($data['response']['results']['stories'] as $retStory) {
-            if($retStory['story_id'] == $story->get_record_id() && $retStory['databox_id'] == $story->get_sbas_id()) {
+            if ($retStory['story_id'] == $story->get_record_id() && $retStory['databox_id'] == $story->get_sbas_id()) {
                 $found = true;
                 break;
             }
@@ -324,7 +324,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $found = false;
 
         foreach ($data['response']['results']['records'] as $retRecord) {
-            if($retRecord['record_id'] == $record->get_record_id() && $retRecord['databox_id'] == $record->get_sbas_id()) {
+            if ($retRecord['record_id'] == $record->get_record_id() && $retRecord['databox_id'] == $record->get_sbas_id()) {
                 $found = true;
                 break;
             }
@@ -472,7 +472,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             break;
         }
 
-        if(null === $statusbit) {
+        if (null === $statusbit) {
             $this->markTestSkipped('No status bit defined in databox');
         }
 
@@ -700,4 +700,3 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertInternalType($type, $response['response'][$field]);
     }
 }
-
