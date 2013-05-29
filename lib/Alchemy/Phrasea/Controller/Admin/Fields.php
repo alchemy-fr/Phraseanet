@@ -133,6 +133,7 @@ class Fields implements ControllerProviderInterface
             'are_you_sure_delete'       => _('Do you really want to delete the field %s ?'),
             'validation_blank'          => _('Field can not be blank.'),
             'validation_name_exists'    => _('Field name already exists.'),
+            'validation_name_invalid'   => _('Field name is not valid.'),
             'validation_tag_invalid'    => _('Field source is not valid.'),
             'field_error'               => _('Field %s contains errors.'),
             'fields_save'               => _('Your configuration has been successfuly saved.'),

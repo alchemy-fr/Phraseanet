@@ -106,10 +106,14 @@ define([
             var fieldNameId = fieldName.attr("id");
             var fieldNameValue = fieldName.val();
 
-            // check for empty or duplicate field name
-            var notValid = "" === fieldNameValue || "undefined" !== typeof AdminFieldApp.fieldListView.collection.find(function(model) {
+            var nameExists = ("undefined" !== typeof AdminFieldApp.fieldListView.collection.find(function(model) {
                 return model.get("name").toLowerCase() === fieldNameValue.toLowerCase() && self.model.get("id") !== model.get("id");
-            });
+            }));
+
+            var nameValid = /^[a-zA-Z]([a-zA-Z0-9]+)$/i.test(fieldNameValue);
+
+            // check for empty or duplicate field name
+            var notValid = "" === fieldNameValue || nameExists || !nameValid;
 
             if (notValid) {
                 fieldName
@@ -117,10 +121,10 @@ define([
                     .addClass("error")
                     .find(".help-block")
                     .empty()
-                    .append(i18n.t("validation_name_exists"));
+                    .append(i18n.t("" === fieldNameValue ? "validation_blank" : (nameExists ? "validation_name_exists" : "validation_name_invalid")));
                 // add error
                 AdminFieldApp.errorManager.addModelFieldError(new Error(
-                    self.model, fieldNameId, i18n.t("" === fieldNameValue ? "validation_blank" : "validation_name_exists")
+                    self.model, fieldNameId, i18n.t("" === fieldNameValue ? "validation_blank" : (nameExists ? "validation_name_exists" : "validation_name_invalid"))
                 ));
             } else if (fieldName.closest(".control-group").hasClass("error")) {
                 fieldName
