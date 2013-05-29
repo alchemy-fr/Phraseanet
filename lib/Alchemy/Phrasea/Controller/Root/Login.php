@@ -631,7 +631,7 @@ class Login implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
         $app['authentication']->closeAccount();
 
-        $app->addFlash('info', 'Vous etes maintenant deconnecte. A bientot.');
+        $app->addFlash('info', _('Vous etes maintenant deconnecte. A bientot.'));
 
         $response = new RedirectResponse($app->path('root', array(
             'redirect' => $request->query->get("redirect")

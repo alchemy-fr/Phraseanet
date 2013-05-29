@@ -57,8 +57,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testLoginError($type, $message)
     {
-        self::$DI['app']->addFlash($type, $message);
         self::$DI['app']['authentication']->closeAccount();
+        self::$DI['app']->addFlash($type, $message);
 
         $crawler = self::$DI['client']->request('GET', '/login/');
 
@@ -342,9 +342,9 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewPasswordPageShowsFlashMessages($type, $message)
     {
+        self::$DI['app']['authentication']->closeAccount();
         self::$DI['app']->addFlash($type, $message);
 
-        self::$DI['app']['authentication']->closeAccount();
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->get_id());
 
         $crawler = self::$DI['client']->request('GET', '/login/renew-password/', array(
