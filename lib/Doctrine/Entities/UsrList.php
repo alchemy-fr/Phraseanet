@@ -207,4 +207,50 @@ class UsrList
                 }
         );
     }
+
+    /**
+     * Add owners
+     *
+     * @param \Entities\UsrListOwner $owners
+     * @return UsrList
+     */
+    public function addOwner(\Entities\UsrListOwner $owners)
+    {
+        $this->owners[] = $owners;
+    
+        return $this;
+    }
+
+    /**
+     * Remove owners
+     *
+     * @param \Entities\UsrListOwner $owners
+     */
+    public function removeOwner(\Entities\UsrListOwner $owners)
+    {
+        $this->owners->removeElement($owners);
+    }
+
+    /**
+     * Add entries
+     *
+     * @param \Entities\UsrListEntry $entries
+     * @return UsrList
+     */
+    public function addEntrie(\Entities\UsrListEntry $entries)
+    {
+        $this->entries[] = $entries;
+    
+        return $this;
+    }
+
+    /**
+     * Remove entries
+     *
+     * @param \Entities\UsrListEntry $entries
+     */
+    public function removeEntrie(\Entities\UsrListEntry $entries)
+    {
+        $this->entries->removeElement($entries);
+    }
 }

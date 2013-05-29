@@ -18,18 +18,59 @@ chdir(__DIR__);
 set_time_limit(0);
 
 $bower = 'bower';
-exec($bower, $output, $code);
+$node = 'node';
+$recess = 'recess';
+$npm = 'npm';
+
+// Test if node exists
+exec(sprintf('%s -v', $node), $output, $code);
 
 if (0 !== $code) {
-    exit('bower required to install vendors');
+    echo sprintf('%s is required to install vendors', $node);
+    exit(1);
 }
 
-system(sprintf('%s install', $bower));
+// Test if npm exists
+exec(sprintf('%s -v', $npm), $output, $code);
 
 if (0 !== $code) {
-    exit('Failed to install bower dependencies');
+    echo sprintf('%s is required to install vendors', $npm),
+    exit(1);
 }
 
+// Test if bower exists else install it
+exec(sprintf('%s -v', $bower), $output, $code);
+
+if (0 !== $code) {
+    exec(sprintf('sudo %s install %s -g', $npm, $bower), $output, $code);
+
+    if (0 !== $code) {
+        echo sprintf('Failed to install %s', $bower);
+        exit(1);
+    }
+}
+
+// Tests if recess exists else install it
+exec(sprintf('%s -v', $recess), $output, $code);
+
+if (0 !== $code) {
+    exec(sprintf('sudo %s install %s -g', $npm, $recess), $output, $code);
+
+    if (0 !== $code) {
+        echo sprintf('Failed to install %s', $recess);
+        exit(1);
+    }
+}
+
+// Install asset dependencies with bower
+system(sprintf('%s install', $bower), $code);
+
+if (0 !== $code) {
+    echo sprintf('Failed to install %s dependencies', $bower);
+    exit(1);
+}
+
+// Test if composer exists else install it
 $composer = __DIR__ . '/composer.phar';
 
 exec('composer', $output, $code);
@@ -59,15 +100,5 @@ if (isset($argv[1]) && $argv[1] == '--no-dev') {
     system($composer . ' install --dev --optimize-autoloader');
 }
 
-system('git submodule init');
-system('git submodule update');
+system('bin/setup less:compile');
 
-$iterator = new RecursiveDirectoryIterator(__DIR__ . '/lib/vendor/');
-
-foreach ($iterator as $file) {
-    /* @var $file SplFileInfo */
-    if ($file->isDir()) {
-        $cmd = sprintf('cd %s && git submodule init && git submodule update', escapeshellarg($file->getPathname()));
-        system($cmd);
-    }
-}

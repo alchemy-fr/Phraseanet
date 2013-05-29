@@ -222,11 +222,11 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         $bool = false;
         $login = new \login();
 
-        if ( ! $this->app->isAuthenticated() || ! $login->register_enabled($this->app)) {
+        if ( ! $this->app['authentication']->isAuthenticated() || ! $login->register_enabled($this->app)) {
             return false;
         }
 
-        if ($this->app['phraseanet.user']->ACL()->has_right('manageusers') === true) {
+        if ($this->app['authentication']->getUser()->ACL()->has_right('manageusers') === true) {
             $bool = true;
         }
 

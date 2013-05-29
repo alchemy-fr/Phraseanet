@@ -32,6 +32,54 @@ dev:
   border-manager: border_manager
   search-engine: phrasea
   task-manager: task_manager
+  authentication:
+    auto-create:
+      enabled: false
+      templates: []
+    captcha:
+      enabled: true
+      trials-before-failure: 9
+    providers:
+      facebook:
+        enabled: false
+        options:
+          app-id: ''
+          secret: ''
+      twitter:
+        enabled: false
+        options:
+          consumer-key: ''
+          consumer-secret: ''
+      google-plus:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      github:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      viadeo:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      linkedin:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+  registration-fields:
+    -
+      name: company
+      required: true
+    -
+      name: firstname
+      required: true
+    -
+      name: geonameid
+      required: true
 
 ##############
 # PRODUCTION #
@@ -43,6 +91,7 @@ prod:
     debug: false
     display_errors: false
     database: main_connexion
+    api-timers: false
 
   template_engine: twig
   orm: doctrine_prod
@@ -51,6 +100,54 @@ prod:
   border-manager: border_manager
   search-engine: phrasea
   task-manager: task_manager
+  authentication:
+    auto-create:
+      enabled: false
+      templates: []
+    captcha:
+      enabled: true
+      trials-before-failure: 9
+    providers:
+      facebook:
+        enabled: false
+        options:
+          app-id: ''
+          secret: ''
+      twitter:
+        enabled: false
+        options:
+          consumer-key: ''
+          consumer-secret: ''
+      google-plus:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      github:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      viadeo:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      linkedin:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+  registration-fields:
+    -
+      name: company
+      required: true
+    -
+      name: firstname
+      required: true
+    -
+      name: geonameid
+      required: true
 
 ##############
 #    TEST    #
@@ -62,6 +159,7 @@ test:
     debug: true
     display_errors: true
     database: main_connexion
+    api-timers: false
 
   template_engine: twig_debug
   orm: doctrine_test
@@ -70,4 +168,52 @@ test:
   border-manager: border_manager
   search-engine: phrasea
   task-manager: task_manager
+  authentication:
+    auto-create:
+      enabled: false
+      templates: []
+    captcha:
+      enabled: true
+      trials-before-failure: 9
+    providers:
+      facebook:
+        enabled: false
+        options:
+          app-id: ''
+          secret: ''
+      twitter:
+        enabled: false
+        options:
+          consumer-key: ''
+          consumer-secret: ''
+      google-plus:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      github:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      viadeo:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+      linkedin:
+        enabled: false
+        options:
+          client-id: ''
+          client-secret: ''
+  registration-fields:
+    -
+      name: company
+      required: true
+    -
+      name: firstname
+      required: true
+    -
+      name: geonameid
+      required: true
 

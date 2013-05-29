@@ -76,27 +76,58 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     /**
      * @covers Alchemy\Phrasea\Application
      */
-    public function testOpenAccount()
+    public function testCookieLocale()
     {
-        $app = new Application('test');
+        $app = $this->getAppThatReturnLocale();
 
-        $this->assertFalse($app->isAuthenticated());
-        $app->openAccount($this->getAuthMock());
-        $this->assertTrue($app->isAuthenticated());
+        foreach (array('fr_FR', 'en_GB', 'de_DE') as $locale) {
+            $client = $this->getClientWithCookie($app, $locale);
+            $client->request('GET', '/');
+
+            $this->assertEquals($locale, $client->getResponse()->getContent());
+        }
     }
 
     /**
      * @covers Alchemy\Phrasea\Application
      */
-    public function testCloseAccount()
+    public function testNoCookieLocaleReturnsDefaultLocale()
     {
-        $app = new Application('test');
+        $app = $this->getAppThatReturnLocale();
+        $this->mockRegistryAndReturnLocale($app, 'en_USA');
 
-        $this->assertFalse($app->isAuthenticated());
-        $app->openAccount($this->getAuthMock());
-        $this->assertTrue($app->isAuthenticated());
-        $app->closeAccount();
-        $this->assertFalse($app->isAuthenticated());
+        $client = $this->getClientWithCookie($app, null);
+        $client->request('GET', '/');
+
+        $this->assertEquals('en_USA', $client->getResponse()->getContent());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
+    public function testWrongCookieLocaleReturnsDefaultLocale()
+    {
+        $app = $this->getAppThatReturnLocale();
+        $this->mockRegistryAndReturnLocale($app, 'en_USA');
+
+        $client = $this->getClientWithCookie($app, 'de_PL');
+        $client->request('GET', '/');
+
+        $this->assertEquals('en_USA', $client->getResponse()->getContent());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
+    public function testNoCookieReturnsContentNegotiated()
+    {
+        $app = $this->getAppThatReturnLocale();
+        $this->mockRegistryAndReturnLocale($app, 'en_USA');
+
+        $client = $this->getClientWithCookie($app, null);
+        $client->request('GET', '/', array(), array(), array('accept_language' => 'en-US;q=0.75,en;q=0.8,fr-FR;q=0.9'));
+
+        $this->assertEquals('fr_FR', $client->getResponse()->getContent());
     }
 
     /**
@@ -171,27 +202,101 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals($ret, $app->url($route));
     }
 
-    public function addSetFlash()
+    public function testCreateForm()
+    {
+        $factory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
+
+        $app = new Application();
+        $app['form.factory'] = $factory;
+
+        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $type = $this->getMock('Symfony\Component\Form\FormTypeInterface');
+        $data = array('some' => 'data');
+        $options = array();
+
+        $parent = $this->getMockBuilder('Symfony\Component\Form\FormBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $factory->expects($this->once())
+            ->method('create')
+            ->with($this->equalTo($type), $this->equalTo($data), $this->equalTo($options), $this->equalTo($parent))
+            ->will($this->returnValue($form));
+
+        $this->assertEquals($form, $app->form($type, $data, $options, $parent));
+    }
+
+    public function testAddSetFlash()
     {
         $app = new Application('test');
 
-        $this->assertEquals(array(), $app->getFlash('hello'));
-        $this->assertEquals('BOUM', $app->getFlash('hello', 'BOUM'));
+        $this->assertEquals(array(), $app->getFlash('info'));
+        $this->assertEquals(array('BOUM'), $app->getFlash('info', array('BOUM')));
 
-        $app->setFlash('notice', 'BAMBA');
-        $this->assertEquals(array('BAMBA'), $app->getFlash('notice'));
+        $app->addFlash('success', 'BAMBA');
+        $this->assertEquals(array('BAMBA'), $app->getFlash('success'));
     }
 
-    private function getAuthMock()
+    /**
+     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     */
+    public function testAddSetFlashWithInvalidArgument()
     {
-        $auth = $this->getMockBuilder('Session_Authentication_Interface')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $auth->expects($this->any())
-            ->method('get_user')
-            ->will($this->returnValue(self::$DI['user']));
+        $app = new Application('test');
 
-        return $auth;
+        $app->addFlash('caution', 'BAMBA');
+    }
+
+    public function testAddCaptcha()
+    {
+        $app = new Application('test');
+        $app['phraseanet.registry'] = $this->getMock('registryInterface');
+        $app['phraseanet.registry']
+            ->expects($this->any())
+            ->method('get')
+            ->with('GV_captchas')
+            ->will($this->returnValue(true));
+
+        $this->assertFalse($app->isCaptchaRequired());
+        $app->requireCaptcha();
+        $this->assertTrue($app->isCaptchaRequired());
+        $this->assertFalse($app->isCaptchaRequired());
+    }
+
+    public function testAddUnlockLinkToUsrId()
+    {
+        $app = new Application('test');
+
+        $this->assertNull($app->getUnlockAccountData());
+        $app->addUnlockAccountData(42);
+        $this->assertEquals(42, $app->getUnlockAccountData());
+        $this->assertNull($app->getUnlockAccountData());
+    }
+
+    private function getAppThatReturnLocale()
+    {
+        $app = new Application('test');
+
+        $app->get('/', function(Application $app, Request $request) {
+
+            return $app['locale'];
+        });
+        unset($app['exception_handler']);
+
+        return $app;
+    }
+
+    private function mockRegistryAndReturnLocale(Application $app, $locale)
+    {
+        $app['phraseanet.registry'] = $this->getMockBuilder('\registry')
+            ->disableOriginalConstructor()
+            ->getmock();
+        $app['phraseanet.registry']->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($locale));
     }
 
     private function getApp()
@@ -210,9 +315,14 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         return $app;
     }
-    private function getClientWithCookie(Application $app)
+
+    private function getClientWithCookie(Application $app, $locale = null)
     {
         $cookieJar = new CookieJar();
+        if (null !== $locale) {
+            $cookieJar->set(new BrowserCookie('locale', $locale));
+        }
+
         return new Client($app, array(), null, $cookieJar);
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Silex\WebTestCase;
+use Silex\Application;
 use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DomCrawler\Crawler;
 
 abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPUnitAuthenticatedAbstract
 {
@@ -20,7 +20,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
     public function setAdmin($bool)
     {
-        $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')//, array('is_admin', 'ACL'), array(self::$DI['app']['phraseanet.user']->get_id(), self::$DI['app']))
+        $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')//, array('is_admin', 'ACL'), array(self::$DI['app']['authentication']->getUser()->get_id(), self::$DI['app']))
             ->setMethods(array('ACL', 'get_id'))
             ->disableOriginalConstructor()
             ->getMock();
@@ -81,7 +81,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             ->method('get_id')
             ->will($this->returnValue(self::$DI['user']->get_id()));
 
-        self::$DI['app']['phraseanet.user'] = $stubAuthenticatedUser;
+        self::$DI['app']['authentication']->setUser($stubAuthenticatedUser);
 
         self::$DI['client'] = self::$DI->share(function($DI) {
                 return new Client($DI['app'], array());
@@ -118,10 +118,10 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             , 'bas_chupub'        => '1'
         );
 
-        self::$DI['app']['phraseanet.user']->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+        self::$DI['app']['authentication']->getUser()->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
 
-        $databox->registerAdmin(self::$DI['app']['phraseanet.user']);
+        $databox->registerAdmin(self::$DI['app']['authentication']->getUser());
 
         return $databox;
     }
@@ -148,5 +148,63 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
               CHARACTER SET utf8 COLLATE utf8_unicode_ci');
         $stmt->execute();
         $stmt->closeCursor();
+    }
+
+    public function provideFlashMessages()
+    {
+        return array(
+            array('warning', 'Be careful !'),
+            array('error', 'An error occured'),
+            array('info', 'You need to do something more'),
+            array('success', "Success operation !"),
+        );
+    }
+
+    protected function assertFormOrAngularError(Crawler $crawler, $quantity)
+    {
+        $total = $crawler->filter('form div:not(div[ng-show]) > div.popover.field-error')->count();
+        $total += $crawler->filter('phraseanet-flash[type="error"]')->count();
+
+        $this->assertEquals($quantity, $total);
+    }
+
+    protected function assertFormError(Crawler $crawler, $quantity)
+    {
+        $this->assertEquals($quantity, $crawler->filter('form div:not(div[ng-show]) > div.popover.field-error')->count());
+    }
+
+    protected function assertFlashMessage(Crawler $crawler, $flashType, $quantity, $message = null, $offset = 0)
+    {
+        if (!preg_match('/[a-zA-Z]+/', $flashType)) {
+            $this->fail(sprintf('FlashType must be in the form of [a-zA-Z]+, %s given', $flashType));
+        }
+
+        $this->assertEquals($quantity, $crawler->filter('.alert.alert-'.$flashType)->count());
+
+        if (null !== $message) {
+            $this->assertEquals($message, $crawler->filter('.alert.alert-'.$flashType.' .alert-block-content')->eq($offset)->text());
+        }
+    }
+
+    protected function assertAngularFlashMessage(Crawler $crawler, $flashType, $quantity, $message = null, $offset = 0)
+    {
+        if (!preg_match('/[a-zA-Z]+/', $flashType)) {
+            $this->fail(sprintf('FlashType must be in the form of [a-zA-Z]+, %s given', $flashType));
+        }
+
+        $this->assertEquals($quantity, $crawler->filter('phraseanet-flash[type="'.$flashType.'"]')->count());
+
+        if (null !== $message) {
+            $this->assertEquals($message, $crawler->filter('phraseanet-flash[type="'.$flashType.'"]')->eq($offset)->text());
+        }
+    }
+
+    protected function assertFlashMessagePopulated(Application $app, $flashType, $quantity)
+    {
+        if (!preg_match('/[a-zA-Z]+/', $flashType)) {
+            $this->fail(sprintf('FlashType must be in the form of [a-zA-Z]+, %s given', $flashType));
+        }
+
+        $this->assertEquals($quantity, count($app['session']->getFlashBag()->get($flashType)));
     }
 }

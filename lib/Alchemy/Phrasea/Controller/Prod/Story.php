@@ -42,7 +42,7 @@ class Story implements ControllerProviderInterface
             /* @var $request \Symfony\Component\HttpFoundation\Request */
             $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
 
-            if (!$app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
+            if (!$app['authentication']->getUser()->ACL()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
                 throw new \Exception_Forbidden('You can not create a story on this collection');
             }
 
@@ -79,7 +79,7 @@ class Story implements ControllerProviderInterface
             $Story->set_metadatas($metadatas)->rebuild_subdefs();
 
             $StoryWZ = new \Entities\StoryWZ();
-            $StoryWZ->setUser($app['phraseanet.user']);
+            $StoryWZ->setUser($app['authentication']->getUser());
             $StoryWZ->setRecord($Story);
 
             $app['EM']->persist($StoryWZ);
@@ -114,7 +114,7 @@ class Story implements ControllerProviderInterface
         $controllers->post('/{sbas_id}/{record_id}/addElements/', function(Application $app, Request $request, $sbas_id, $record_id) {
             $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-            if (!$app['phraseanet.user']->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
+            if (!$app['authentication']->getUser()->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
                 throw new \Exception_Forbidden('You can not add document to this Story');
 
             $n = 0;
@@ -147,7 +147,7 @@ class Story implements ControllerProviderInterface
 
             $record = new \record_adapter($app, $child_sbas_id, $child_record_id);
 
-            if (!$app['phraseanet.user']->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
+            if (!$app['authentication']->getUser()->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
                 throw new \Exception_Forbidden('You can not add document to this Story');
 
             $Story->removeChild($record);
@@ -198,7 +198,7 @@ class Story implements ControllerProviderInterface
                     throw new \Exception('This is not a story');
                 }
 
-                if (!$app['phraseanet.user']->ACL()->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
+                if (!$app['authentication']->getUser()->ACL()->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
                     throw new ControllerException(_('You can not edit this story'));
                 }
 

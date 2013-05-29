@@ -1,0 +1,462 @@
+/*
+ * HTML5 Boilerplate
+ *
+ * What follows is the result of much research on cross-browser styling.
+ * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
+ * Kroc Camen, and the H5BP dev community and team.
+ */
+
+/* ==========================================================================
+   Base styles: opinionated defaults
+   ========================================================================== */
+
+/*
+ * Remove text-shadow in selection highlight: h5bp.com/i
+ * These selection declarations have to be separate.
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+/*
+ * A better looking default horizontal rule
+ */
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+/*
+ * Remove the gap between images and the bottom of their containers: h5bp.com/i/440
+ */
+
+img {
+    vertical-align: middle;
+}
+
+/*
+ * Remove default fieldset styles.
+ */
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/*
+ * Allow only vertical resizing of textareas.
+ */
+
+textarea {
+    resize: vertical;
+}
+
+/* ==========================================================================
+   Chrome Frame prompt
+   ========================================================================== */
+
+.chromeframe {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+html,
+body {
+    background: @background;
+    color: @textColor;
+    -webkit-font-smoothing: antialiased;
+    text-shadow: 0 0 1px rgba(0,0,0,0.3);
+    cursor: default;
+    height: 100%;
+}
+
+/** Reset style */
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+/** Button style */
+
+.btn {
+    @glow: inset 0 1px 0 rgba(255, 255, 255, 0.2),  0 1px 7px rgba(0, 0, 0, 1);
+    .glow(@glow);
+    .border-radius(@borderRadiusSmall);
+    text-shadow : 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.btn-success {
+    .gradient (@btnSuccessBackground, 0.7);
+}
+
+.btn-info {
+    .gradient (@btnInfoBackground, 0.7);
+}
+
+.btn-success:hover {
+    .gradient (@btnSuccessBackgroundHighlight, 0.7);
+}
+
+.btn-info:hover {
+    .gradient (@btnInfoBackgroundHighlight, 0.7);
+}
+
+.btn-flat {
+    filter:progid:DXImageTransform.Microsoft.Gradient(enabled='false');
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-image:none;
+    border:0;
+    text-shadow: none;
+}
+
+/** Helpers style */
+
+.full-height {
+    height: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.text-error {
+    color: @colorError;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.one-line {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.no-overflow {
+    overflow: hidden;
+}
+
+.fixed-table {
+    table-layout: fixed;
+    width:100%;
+}
+
+.rounded {
+    .border-radius(@borderRadiusSmall);
+}
+
+/** Recaptcha style */
+
+#recaptcha_widget .btn-toolbar {
+    width: 300px;
+}
+
+#recaptcha_widget .btn-toolbar .btn {
+    min-width: 20%;
+}
+
+#recaptcha_widget table tr td {
+    text-align: center;
+}
+
+#recaptcha_image {
+    width: 100% !important;
+}
+
+#recaptcha_image img {
+    width: 100% !important;
+}
+
+/** Alert style */
+
+.alert {
+    padding: 0px;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+    line-height: 16px;
+    @glow: 0 1px 7px rgba(0, 0, 0, 1);
+    .glow(@glow);
+}
+
+.alert .alert-block-close {
+    width:45px;
+    text-align: center;
+    font-size:36px
+}
+
+.alert table {
+    border-collapse: separate;
+}
+
+.alert .alert-block-logo {
+    width: 45px;
+    vertical-align: top;
+    text-align: center;
+}
+
+.alert .alert-block-close a:hover {
+    text-decoration: none;
+}
+
+.alert.alert-success .alert-block-content {
+    border-right: 1px solid lighten(@successBackground, 10%);
+}
+
+.alert.alert-success .alert-block-close {
+    border-left: 1px solid darken(@successBackground, 20%);
+}
+
+.alert.alert-error .alert-block-content {
+    border-right: 1px solid lighten(@errorBackground, 10%);
+}
+
+.alert.alert-error .alert-block-close {
+    border-left: 1px solid darken(@errorBackground, 20%);
+}
+
+.alert.alert-info .alert-block-content {
+    border-right: 1px solid lighten(@infoBackground, 10%);
+}
+
+.alert.alert-info .alert-block-close {
+    border-left: 1px solid darken(@infoBackground, 20%);
+}
+
+.alert.alert-warning .alert-block-content {
+    border-right: 1px solid lighten(@warningBackground, 10%);
+}
+
+.alert.alert-warning .alert-block-close {
+    border-left: 1px solid darken(@warningBackground, 20%);
+}
+
+.alert .close {
+    position: static;
+}
+
+.alert table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.alert table td {
+   padding: 9px 5px;
+}
+
+/** app css */
+
+.help-block-error {
+    border: 1px solid @colorError;
+}
+
+.well-large {
+    padding: 20px;
+}
+
+.close {
+    color: @white;
+    opacity: 1;
+}
+
+#main-bar {
+    margin-top: 40px;
+}
+
+.brand .section-title {
+    color: @grayLight;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"] {
+    min-height: 30px;
+}
+
+legend {
+    color: @grayLighter;
+}
+
+.footer {
+    padding: 20px 0px;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 100;
+}
+
+.content{
+    min-height: 500px;
+}
+
+.url_callback_input input {
+    margin: 0;
+}
+
+.modal {
+    color: @black;
+}
+
+.app-list {
+    border: 1px solid @grayDark;
+    background: lighten(@background, 2%);
+    .border-radius(@baseBorderRadius);
+}
+
+.app-list li {
+    padding: 10px;
+    border-top: 1px solid @grayDark;
+}
+
+.app-list li:first-child {
+    border-top:none;
+}
+
+.app-list li .app-row {
+    line-height: @fontSizeLarge * 1.25;
+     padding-bottm: 5px;
+}
+
+.app-list li .app-row a {
+    font-size: @fontSizeLarge * 1.25;
+}
+
+.text-success {
+    color: @green;
+}
+
+.text-error {
+    color: @red;
+}
+
+.control-span {
+    padding-top: 5px;
+    line-height: 20px;
+}
+
+/* Landscape phones and down */
+@media (max-width: 480px) {
+
+}
+
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   Theses examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}

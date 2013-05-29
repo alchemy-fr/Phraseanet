@@ -121,8 +121,8 @@ class Databoxes implements ControllerProviderInterface
         $createBase = $mountBase = false;
 
         $sbasIds = array_merge(
-            array_keys($app['phraseanet.user']->ACL()->get_granted_sbas(array('bas_manage')))
-            , array_keys($app['phraseanet.user']->ACL()->get_granted_sbas(array('bas_modify_struct')))
+            array_keys($app['authentication']->getUser()->ACL()->get_granted_sbas(array('bas_manage')))
+            , array_keys($app['authentication']->getUser()->ACL()->get_granted_sbas(array('bas_modify_struct')))
         );
 
         $sbas = array();
@@ -228,8 +228,8 @@ class Databoxes implements ControllerProviderInterface
 
             try {
                 $base = \databox::create($app, $connbas, $dataTemplate, $app['phraseanet.registry']);
-                $base->registerAdmin($app['phraseanet.user']);
-                $app['phraseanet.user']->ACL()->delete_data_from_cache();
+                $base->registerAdmin($app['authentication']->getUser());
+                $app['authentication']->getUser()->ACL()->delete_data_from_cache();
 
                 return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
             } catch (\Exception $e) {
@@ -250,7 +250,7 @@ class Databoxes implements ControllerProviderInterface
                 $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, array(), $app['debug']);
                 try {
                     $base = \databox::create($app, $connbas, $data_template, $app['phraseanet.registry']);
-                    $base->registerAdmin($app['phraseanet.user']);
+                    $base->registerAdmin($app['authentication']->getUser());
 
                     return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
                 } catch (\Exception $e) {
@@ -291,7 +291,7 @@ class Databoxes implements ControllerProviderInterface
 
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
                 $base = \databox::mount($app, $hostname, $port, $user, $password, $dbName, $app['phraseanet.registry']);
-                $base->registerAdmin($app['phraseanet.user']);
+                $base->registerAdmin($app['authentication']->getUser());
                 $app['phraseanet.appbox']->get_connection()->commit();
 
                 return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
@@ -312,7 +312,7 @@ class Databoxes implements ControllerProviderInterface
             try {
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
                 $base = \databox::mount($app, $hostname, $port, $userDb, $passwordDb, $dbName, $app['phraseanet.registry']);
-                $base->registerAdmin($app['phraseanet.user']);
+                $base->registerAdmin($app['authentication']->getUser());
                 $app['phraseanet.appbox']->get_connection()->commit();
 
                 return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');

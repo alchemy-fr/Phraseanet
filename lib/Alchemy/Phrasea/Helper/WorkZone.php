@@ -45,13 +45,13 @@ class WorkZone extends Helper
 
         $ret = new \Doctrine\Common\Collections\ArrayCollection();
 
-        $baskets = $repo_baskets->findActiveByUser($this->app['phraseanet.user'], $sort);
-        $validations = $repo_baskets->findActiveValidationByUser($this->app['phraseanet.user'], $sort);
+        $baskets = $repo_baskets->findActiveByUser($this->app['authentication']->getUser(), $sort);
+        $validations = $repo_baskets->findActiveValidationByUser($this->app['authentication']->getUser(), $sort);
 
         /* @var $repo_stories \Doctrine\Repositories\StoryWZRepository */
         $repo_stories = $this->app['EM']->getRepository('Entities\StoryWZ');
 
-        $stories = $repo_stories->findByUser($this->app, $this->app['phraseanet.user'], $sort);
+        $stories = $repo_stories->findByUser($this->app, $this->app['authentication']->getUser(), $sort);
 
         $ret->set(self::BASKETS, $baskets);
         $ret->set(self::VALIDATIONS, $validations);

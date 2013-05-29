@@ -9,10 +9,39 @@
  * changes. http://yourdomain/min/builder/
  * */
 $groups = array(
+    'authentication_css' => array(
+        '//assets/normalize-css/normalize.css',
+        '//assets/bootstrap-switch/static/stylesheets/bootstrapSwitch.css',
+        '//skins/build/login.css',
+        '//assets/font-awesome/css/font-awesome.css',
+    ),
+    'authentication' => array(
+        '//assets/modernizr/modernizr.js',
+        '//assets/jquery/jquery.js',
+        '//assets/bootstrap/js/bootstrap-transition.js',
+        '//assets/bootstrap/js/bootstrap-alert.js',
+        '//assets/bootstrap/js/bootstrap-modal.js',
+        '//assets/bootstrap/js/bootstrap-dropdown.js',
+        '//assets/bootstrap/js/bootstrap-scrollspy.js',
+        '//assets/bootstrap/js/bootstrap-tab.js',
+        '//assets/bootstrap/js/bootstrap-tooltip.js',
+        '//assets/bootstrap/js/bootstrap-popover.js',
+        '//assets/bootstrap/js/bootstrap-button.js',
+        '//assets/bootstrap/js/bootstrap-collapse.js',
+        '//assets/bootstrap/js/bootstrap-carousel.js',
+        '//assets/bootstrap/js/bootstrap-typeahead.js',
+        '//assets/bootstrap/js/bootstrap-affix.js',
+        '//assets/angular/angular.js',
+        '//assets/angular-ui/build/angular-ui.js',
+        '//assets/bootstrap-switch/static/js/bootstrapSwitch.js',
+        '//assets/underscore/underscore.js',
+        '//skins/login/js/main.js',
+        '//skins/login/js/app.js',
+    ),
     'client' => array(
         '//include/jslibs/swfobject/swfobject.js'
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
-        , '//include/account/geonames.js'
+        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//include/jslibs/json2.js'
@@ -25,19 +54,24 @@ $groups = array(
         , '//include/jquery.image_enhancer.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'),
     'admin' => array(
-         '//include/jslibs/jquery.cookie.js'
+        '//include/jslibs/jquery-1.7.1.js'
+        , '//include/jslibs/jquery.validate.js'
+        , '//include/jslibs/jquery.validate.password.js'
+        , '//include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js'
+        , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery-treeview/jquery.treeview.js'
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jquery.kb-event.js'
         , '//skins/admin/users.js'
         , '//skins/admin/editusers.js'
         , '//include/jquery.common.js'
-        , '//include/account/geonames.js'
+        , '//skins/geonames/geonames.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
-        , '//include/vendor/javascript-load-image/load-image.js'
-        , '//include/vendor/jquery-file-upload/js/jquery.iframe-transport.js'
-        , '//include/vendor/jquery-file-upload/js/jquery.fileupload.js'
+        , '//assets/blueimp-load-image/load-image.js'
+        , '//assets/jquery-file-upload/js/vendor/jquery.ui.widget.js'
+        , '//assets/jquery-file-upload/js/jquery.iframe-transport.js'
+        , '//assets/jquery-file-upload/js/jquery.fileupload.js'
     ),
     'report' => array(
          '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
@@ -63,13 +97,13 @@ $groups = array(
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
-        , '//include/vendor/humane-js/humane.js'
-        , '//include/vendor/mustache-js/mustache.js'
-        , '//include/vendor/javascript-load-image/load-image.js'
-        , '//include/vendor/jquery-file-upload/js/vendor/jquery.ui.widget.js'
-        , '//include/vendor/jquery-file-upload/js/jquery.iframe-transport.js'
-        , '//include/vendor/jquery-file-upload/js/jquery.fileupload.js'
-        , '//include/account/geonames.js'
+        , '//assets/humane-js/humane.js'
+        , '//assets/mustache/mustache.js'
+        , '//assets/blueimp-load-image/load-image.js'
+        , '//assets/jquery-file-upload/js/vendor/jquery.ui.widget.js'
+        , '//assets/jquery-file-upload/js/jquery.iframe-transport.js'
+        , '//assets/jquery-file-upload/js/jquery.fileupload.js'
+        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery.form.2.49.js'
         , '//include/jslibs/jquery.vertical.buttonset.js'
         , '//include/js/jquery.Selection.js'
@@ -80,7 +114,7 @@ $groups = array(
         , '//skins/prod/jquery.Dialog.js'
         , '//skins/prod/jquery.Feedback.js'
         , '//skins/prod/jquery.Results.js'
-        , '//skins/prod/page0.js'
+        , '//skins/prod/jquery.main-prod.js'
         , '//skins/prod/jquery.WorkZone.js'
         , '//skins/prod/jquery.Alerts.js'
         , '//skins/prod/jquery.Upload.js'
@@ -110,7 +144,7 @@ $groups = array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
-        , '//include/account/geonames.js'
+        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
@@ -122,7 +156,7 @@ $groups = array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
-        , '//include/account/geonames.js'
+        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'

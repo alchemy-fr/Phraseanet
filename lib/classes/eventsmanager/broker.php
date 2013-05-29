@@ -120,7 +120,7 @@ class eventsmanager_broker
             FROM notifications WHERE usr_id = :usr_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->app['phraseanet.user']->get_id()));
+        $stmt->execute(array(':usr_id' => $this->app['authentication']->getUser()->get_id()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -139,7 +139,7 @@ class eventsmanager_broker
         $data = array('notifications' => array(), 'next' => '');
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->app['phraseanet.user']->get_id()));
+        $stmt->execute(array(':usr_id' => $this->app['authentication']->getUser()->get_id()));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -189,7 +189,7 @@ class eventsmanager_broker
             FROM notifications
             WHERE usr_id = :usr_id AND unread="1"';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->app['phraseanet.user']->get_id()));
+        $stmt->execute(array(':usr_id' => $this->app['authentication']->getUser()->get_id()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -209,7 +209,7 @@ class eventsmanager_broker
             FROM notifications WHERE usr_id = :usr_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->app['phraseanet.user']->get_id()));
+        $stmt->execute(array(':usr_id' => $this->app['authentication']->getUser()->get_id()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -228,7 +228,7 @@ class eventsmanager_broker
 
         $ret = $bloc = array();
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->app['phraseanet.user']->get_id()));
+        $stmt->execute(array(':usr_id' => $this->app['authentication']->getUser()->get_id()));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 

@@ -4,6 +4,8 @@ namespace Alchemy\Tests\Phrasea\Application;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Authentication\Context;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -110,6 +112,38 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             self::$adminApplication->delete();
         }
         parent::tearDownAfterClass();
+    }
+
+    /**
+     * @dataProvider provideEventNames
+     */
+    public function testThatEventsAreDispatched($eventName, $className, $route, $context)
+    {
+        $preEvent = 0;
+        $phpunit = $this;
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className, $context) {
+            $preEvent++;
+            $phpunit->assertInstanceOf($className, $event);
+            if (null !== $context) {
+                $phpunit->assertEquals($context, $event->getContext()->getContext());
+            }
+        });
+
+        $this->setToken(self::$token);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+
+        $this->assertEquals(1, $preEvent);
+    }
+
+    public function provideEventNames()
+    {
+        return array(
+            array(PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', '/api/v1/databoxes/list/', Context::CONTEXT_OAUTH2_TOKEN),
+            array(PhraseaEvents::API_OAUTH2_START, 'Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent', '/api/v1/databoxes/list/', null),
+            array(PhraseaEvents::API_OAUTH2_END, 'Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent', '/api/v1/databoxes/list/', null),
+            array(PhraseaEvents::API_RESULT, 'Alchemy\Phrasea\Core\Event\ApiResultEvent', '/api/v1/databoxes/list/', null),
+            array(PhraseaEvents::API_RESULT, 'Alchemy\Phrasea\Core\Event\ApiResultEvent', '/api/v1/no-route', null),
+        );
     }
 
     public function testRouteNotFound()

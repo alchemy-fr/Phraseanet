@@ -276,10 +276,10 @@
 
 {% macro element(wz_scope, container, contained, record, ord) %}
   {% set box_height = 110 %}
-  {% if app['phraseanet.user'].getPrefs('basket_title_display') == '1' %}
+  {% if app['authentication'].getUser().getPrefs('basket_title_display') == '1' %}
       {% set box_height = (box_height + 20) %}
   {% endif %}
-  {% if app['phraseanet.user'].getPrefs('basket_status_display') == '1' %}
+  {% if app['authentication'].getUser().getPrefs('basket_status_display') == '1' %}
       {% set box_height = (box_height + 20) %}
   {% endif %}
 
@@ -289,12 +289,12 @@
        class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;"
        id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
        <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
-      {% if app['phraseanet.user'].getPrefs('basket_title_display') == '1' %}
+      {% if app['authentication'].getUser().getPrefs('basket_title_display') == '1' %}
           <div class="title">
               {{record.get_title()}}
           </div>
       {% endif %}
-      {% if app['phraseanet.user'].getPrefs('basket_status_display') == '1' %}
+      {% if app['authentication'].getUser().getPrefs('basket_status_display') == '1' %}
           <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
               {{record.get_status_icons|raw}}
           </div>
@@ -317,7 +317,7 @@
             class="WorkZoneElementRemover {{ wz_scope }}" title="{% trans 'delete'%}" >
             X
           </a>
-          {% if app['phraseanet.user'].getPrefs('basket_caption_display') == '1' %}
+          {% if app['authentication'].getUser().getPrefs('basket_caption_display') == '1' %}
               <div class="captionRolloverTips" tooltipsrc="/prod/tooltip/caption/{{record.get_sbas_id()}}/{{record.get_record_id()}}/basket/?number={{record.get_number()}}"></div>
           {% endif %}
       </div>
@@ -353,7 +353,7 @@
                   <td style="width:100%;">
                       <table style=width:100%>
                           {% for choice in basket_element.getValidationDatas() %}
-                              {% if basket.getValidation().getParticipant(app['phraseanet.user'], app).getCanSeeOthers() or choice.getParticipant().getUser(app) == app['phraseanet.user'] %}
+                              {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanSeeOthers() or choice.getParticipant().getUser(app) == app['authentication'].getUser() %}
                               <tr>
                                   <td> {{ choice.getParticipant().getUser(app).get_display_name() }} </td>
                                   <td>

@@ -96,7 +96,7 @@ class Query implements ControllerProviderInterface
     {
         $query = (string) $request->request->get('qry');
 
-        $mod = $app['phraseanet.user']->getPrefs('view');
+        $mod = $app['authentication']->getUser()->getPrefs('view');
 
         $json = array();
 
@@ -104,7 +104,7 @@ class Query implements ControllerProviderInterface
 
         $form = $options->serialize();
 
-        $perPage = (int) $app['phraseanet.user']->getPrefs('images_per_page');
+        $perPage = (int) $app['authentication']->getUser()->getPrefs('images_per_page');
 
         $app['phraseanet.SE']->setOptions($options);
 

@@ -11,6 +11,10 @@
 
 use Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  *
  *
@@ -373,10 +377,10 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param  Symfony\Component\HttpFoundation\Request $request
+     * @param  Request $request
      * @return array
      */
-    public function getAuthorizationRequestParameters(Symfony\Component\HttpFoundation\Request $request)
+    public function getAuthorizationRequestParameters(Request $request)
     {
 
         $datas = array(
@@ -715,9 +719,9 @@ class API_OAuth2_Adapter extends OAuth2
 
                 $stored = $this->checkUserCredentials($client[0], $input["username"], $input["password"]);
 
-                if ($stored === FALSE)
-                    $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_INVALID_GRANT, 'Unknow user');
-
+                if ($stored === false) {
+                    $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_INVALID_GRANT, 'Username/password mismatch or account locked, please try to log in via Web Application');
+                }
                 break;
             case OAUTH2_GRANT_TYPE_ASSERTION:
                 if ( ! $input["assertion_type"] || ! $input["assertion"])
@@ -796,17 +800,25 @@ class API_OAuth2_Adapter extends OAuth2
         try {
             $application = API_OAuth2_Application::load_from_client_id($this->app, $client_id);
 
-            $auth = new \Session_Authentication_Native($this->app, $username, $password);
+            $usr_id = $this->app['auth']->isValid($username, $password, Request::createFromGlobals());
 
-            $auth->challenge_password();
+            if (!$usr_id) {
+                return false;
+            }
 
-            $account = API_OAuth2_Account::load_with_user($this->app, $application, $auth->get_user());
+            $user = \User_Adapter::getInstance($usr_id, $this->app);
+
+            $account = API_OAuth2_Account::load_with_user($this->app, $application, $user);
 
             return array(
                 'redirect_uri' => $application->get_redirect_uri()
                 , 'client_id'    => $application->get_client_id()
                 , 'account_id'   => $account->get_id()
             );
+        } catch (AccountLockedException $e) {
+            return false;
+        } catch (RequireCaptchaException $e) {
+            return false;
         } catch (\Exception $e) {
             return false;
         }

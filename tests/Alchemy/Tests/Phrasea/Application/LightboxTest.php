@@ -39,8 +39,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     public function testRouteSlash()
     {
-        $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
 
         $baskets = $this->insertFiveBasket();
 
@@ -67,7 +66,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     public function testAuthenticationWithToken()
     {
-        self::$DI['app']->closeAccount();
+        self::$DI['app']['authentication']->closeAccount();
 
         $Basket = $this->insertOneBasket();
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_VIEW, self::$DI['user_alt2']->get_id(), null, $Basket->getId());
@@ -188,8 +187,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     public function testValidate()
     {
-        $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
 
         $basket = $this->insertOneValidationBasket();
 
@@ -214,8 +212,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     public function testCompare()
     {
-        $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
 
         $basket = $this->insertOneBasket();
 
@@ -240,8 +237,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     public function testFeedEntry()
     {
-        $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
@@ -337,7 +333,7 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $validationBasket = $this->insertOneValidationBasket();
 
         foreach ($validationBasket->getElements() as $element) {
-            $element->getUserValidationDatas(self::$DI['app']['phraseanet.user'], self::$DI['app'])->setAgreement(true);
+            $element->getUserValidationDatas(self::$DI['app']['authentication']->getUser(), self::$DI['app'])->setAgreement(true);
             break;
         }
 

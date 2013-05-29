@@ -73,7 +73,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     protected function delete_user(\User_Adapter $user)
     {
-        $list = array_keys($this->app['phraseanet.user']->ACL()->get_granted_base(array('canadmin')));
+        $list = array_keys($this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
 
         $user->ACL()->revoke_access_from_bases($list);
 
@@ -86,7 +86,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function get_users_rights()
     {
-        $list = array_keys($this->app['phraseanet.user']->ACL()->get_granted_base(array('canadmin')));
+        $list = array_keys($this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
 
         $sql = "SELECT
             b.sbas_id,
@@ -366,7 +366,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     public function apply_rights()
     {
         $request = \http_request::getInstance();
-        $ACL = $this->app['phraseanet.user']->ACL();
+        $ACL = $this->app['authentication']->getUser()->ACL();
         $base_ids = array_keys($ACL->get_granted_base(array('canadmin')));
 
         $update = $create = $delete = $create_sbas = $update_sbas = array();
@@ -570,11 +570,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $template = \User_adapter::getInstance($this->request->get('template'), $this->app);
 
-        if ($template->get_template_owner()->get_id() != $this->app['phraseanet.user']->get_id()) {
+        if ($template->get_template_owner()->get_id() != $this->app['authentication']->getUser()->get_id()) {
             throw new \Exception_Forbidden('You are not the owner of the template');
         }
 
-        $base_ids = array_keys($this->app['phraseanet.user']->ACL()->get_granted_base(array('canadmin')));
+        $base_ids = array_keys($this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
 
         foreach ($this->users as $usr_id) {
             $user = \User_adapter::getInstance($usr_id, $this->app);
@@ -642,7 +642,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function resetRights()
     {
-        $base_ids = array_keys($this->app['phraseanet.user']->ACL()->get_granted_base(array('canadmin')));
+        $base_ids = array_keys($this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
 
         foreach ($this->users as $usr_id) {
             $user = \User_Adapter::getInstance($usr_id, $this->app);
@@ -651,7 +651,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             if ($user->is_template()) {
                 $template = $user;
 
-                if ($template->get_template_owner()->get_id() !== $this->app['phraseanet.user']->get_id()) {
+                if ($template->get_template_owner()->get_id() !== $this->app['authentication']->getUser()->get_id()) {
                     continue;
                 }
             }

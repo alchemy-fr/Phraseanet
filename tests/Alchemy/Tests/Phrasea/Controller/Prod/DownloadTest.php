@@ -52,10 +52,10 @@ class DownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['app']['events-manager'] = $eventManagerStub;
 
-        self::$DI['app']['phraseanet.user'] = $this->getMockBuilder('\User_Adapter')
+        self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
             ->setMethods(array('ACL'))
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock());
 
         $stubbedACL = $this->getMockBuilder('\ACL')
             ->disableOriginalConstructor()
@@ -76,7 +76,7 @@ class DownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('remaining_download')
             ->will($this->returnValue(0));
 
-        self::$DI['app']['phraseanet.user']->expects($this->any())
+        self::$DI['app']['authentication']->getUser()->expects($this->any())
             ->method('ACL')
             ->will($this->returnValue($stubbedACL));
 

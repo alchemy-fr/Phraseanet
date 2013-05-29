@@ -12,52 +12,62 @@
 namespace Alchemy\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
+use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
+use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
+use Alchemy\Phrasea\Core\Event\PreAuthenticate;
+use Alchemy\Phrasea\Core\Event\PostAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Exception\FormProcessingException;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
+use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
+use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
+use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
+use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
+use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
+use Doctrine\ORM\EntityManager;
+use Entities\UsrAuthProvider;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Form\FormInterface;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Login implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
 
+        $app['login.controller'] = $this;
+
         $controllers->before(function(Request $request) use ($app) {
+            if ($request->getPathInfo() == $app->path('homepage')) {
+                return;
+            }
             if ($app['phraseanet.registry']->get('GV_maintenance')) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'), '/') . "&error=maintenance");
+                $app->addFlash('warning', _('login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee'));
+
+                return $app->redirect($app->path('homepage', array(
+                    'redirect' => ltrim($request->get('redirect'), '/'),
+                )));
             }
         });
 
-        /**
-         * Login
-         *
-         * name         : homepage
-         *
-         * description  : Login from phraseanet
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('login'))
+        // Displays the homepage
+        $controllers->get('/', 'login.controller:login')
             ->before(function(Request $request) use ($app) {
                     $app['firewall']->requireNotAuthenticated();
 
@@ -75,151 +85,289 @@ class Login implements ControllerProviderInterface
                 })
             ->bind('homepage');
 
-        /**
-         * Authenticate
-         *
-         * name         : login_authenticate
-         *
-         * description  : authenticate to phraseanet
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/authenticate/', $this->call('authenticate'))
+        // Authentication end point
+        $controllers->post('/authenticate/', 'login.controller:authenticate')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
-            })->bind('login_authenticate');
+            })
+            ->bind('login_authenticate');
 
-        /**
-         * Logout
-         *
-         * name         : logout
-         *
-         * description  : Logout from phraseanet
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/logout/', $this->call('logout'))
+        // Guest access end point
+        $controllers->match('/authenticate/guest/', 'login.controller:authenticateAsGuest')
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })
+            ->bind('login_authenticate_as_guest')
+            ->method('GET|POST');
+
+        // Authenticate with an AuthProvider
+        $controllers->get('/provider/{providerId}/authenticate/', 'login.controller:authenticateWithProvider')
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })
+            ->bind('login_authentication_provider_authenticate');
+
+        // AuthProviders callbacks
+        $controllers->get('/provider/{providerId}/callback/', 'login.controller:authenticationCallback')
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_authentication_provider_callback');
+
+        // Logout end point
+        $controllers->get('/logout/', 'login.controller:logout')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireAuthentication();
             })->bind('logout');
 
-        /**
-         * Register a new user
-         *
-         * name         : login_register
-         *
-         * description  : Display form to create a new user
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/register/', $this->call('displayRegisterForm'))
+        // Registration end point ; redirects to classic registration or AuthProvider registration
+        $controllers->get('/register/', 'login.controller:displayRegisterForm')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_register');
 
-        /**
-         * Register a new user
-         *
-         * name         : submit_login_register
-         *
-         * description  : Register a new user
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/register/', $this->call('register'))
+        // Classic registration end point
+        $controllers->match('/register-classic/', 'login.controller:doRegistration')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
-            })->bind('submit_login_register');
+            })
+            ->bind('login_register_classic');
 
-        /**
-         * Register confirm
-         *
-         * name         : login_register_confirm
-         *
-         * description  : Confirm a user registration by validating his email adress
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/register-confirm/', $this->call('registerConfirm'))
+        // Provide a JSON serialization of registration fields configuration
+        $controllers->get('/registration-fields/', function(PhraseaApplication $app, Request $request) {
+            return $app->json($app['registration.fields']);
+        })->bind('login_registration_fields');
+
+        // Unlocks an email address that is currently locked
+        $controllers->get('/register-confirm/', 'login.controller:registerConfirm')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_register_confirm');
 
-        /**
-         * Send confirmation mail
-         *
-         * name         : login_send_mail
-         *
-         * description  : Send confirmation mail, to verify user email
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/send-mail-confirm/', $this->call('sendConfirmMail'))
+        // Displays a form to send an account unlock email again
+        $controllers->get('/send-mail-confirm/', 'login.controller:sendConfirmMail')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_send_mail');
 
-        /**
-         * Forgot password
-         *
-         * name         : login_forgot_password
-         *
-         * description  : Display form to renew password
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/forgot-password/', $this->call('displayForgotPasswordForm'))
+        // Forgot password end point
+        $controllers->match('/forgot-password/', 'login.controller:forgotPassword')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_forgot_password');
 
-        /**
-         * Renew password
-         *
-         * name         : submit_login_forgot_password
-         *
-         * description  : Register the new user password
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/forgot-password/', $this->call('renewPassword'))
+        // Renew password end point
+        $controllers->match('/renew-password/', 'login.controller:renewPassword')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
-            })->bind('submit_login_forgot_password');
+            })->bind('login_renew_password');
+
+        // Displays Terms of use
+        $controllers->get('/cgus', function(PhraseaApplication $app, Request $request) {
+            return $app['twig']->render('login/cgus.html.twig');
+        })->bind('login_cgus');
 
         return $controllers;
+    }
+
+    public function doRegistration(PhraseaApplication $app, Request $request)
+    {
+        if (!$app['registration.enabled']) {
+            $app->abort(404, 'Registration is disabled');
+        }
+
+        $form = $app->form(new PhraseaRegisterForm(
+            $app, $app['registration.optional-fields'], $app['registration.fields']
+        ));
+
+        if ('POST' === $request->getMethod()) {
+            $form->bind($request);
+            $data = $form->getData();
+
+            $provider = null;
+            if ($data['provider-id']) {
+                try {
+                    $provider = $this->findProvider($app, $data['provider-id']);
+                } catch (NotFoundHttpException $e) {
+                    $app->addFlash('error', _('You tried to register with an unknown provider'));
+
+                    return $app->redirect($app->path('login_register'));
+                }
+
+                try {
+                    $token = $provider->getToken();
+                } catch (NotAuthenticatedException $e) {
+                    $app->addFlash('error', _('You tried to register with an unknown provider'));
+
+                    return $app->redirect($app->path('login_register'));
+                }
+
+                $userAuthProvider = $app['EM']
+                    ->getRepository('Entities\UsrAuthProvider')
+                    ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
+
+                if (null !== $userAuthProvider) {
+                    $this->postAuthProcess($app, $userAuthProvider->getUser($app));
+
+                    return $app->redirect($request->query->get('redirect', $app->path('prod')));
+                }
+            }
+
+            try {
+                if ($form->isValid()) {
+                    if ($data['password'] !== $data['passwordConfirm']) {
+                        throw new FormProcessingException(_('Password mismatch.'));
+                    }
+
+                    $captcha = $app['recaptcha']->bind($request);
+
+                    if ($app['phraseanet.registry']->get('GV_captchas') && !$captcha->isValid()) {
+                        throw new FormProcessingException(_('Invalid captcha answer.'));
+                    }
+
+                    require_once($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
+
+                    $selected = isset($data['collections']) ? $data['collections'] : null;
+                    $inscriptions = giveMeBases($app);
+                    $inscOK = array();
+
+                    foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+
+                        foreach ($databox->get_collections() as $collection) {
+                            if (null !== $selected && !in_array($collection->get_base_id(), $selected)) {
+                                continue;
+                            }
+
+                            $sbas_id = $databox->get_sbas_id();
+
+                            if (isset($inscriptions[$sbas_id])
+                                && $inscriptions[$sbas_id]['inscript'] === true
+                                && (isset($inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()])
+                                || isset($inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]))) {
+                                $inscOK[$collection->get_base_id()] = true;
+                            } else {
+                                $inscOK[$collection->get_base_id()] = false;
+                            }
+                        }
+                    }
+
+                    if (!isset($data['login'])) {
+                        $data['login'] = $data['email'];
+                    }
+
+                    $user = \User_Adapter::create($app, $data['login'], $data['password'], $data['email'], false);
+
+                    foreach (array(
+                        'gender'    => 'set_gender',
+                        'firstname' => 'set_firstname',
+                        'lastname'  => 'set_lastname',
+                        'address'   => 'set_address',
+                        'zipcode'   => 'set_zip',
+                        'tel'       => 'set_tel',
+                        'fax'       => 'set_fax',
+                        'job'       => 'set_job',
+                        'company'   => 'set_company',
+                        'position'  => 'set_position',
+                        'geonameid' => 'set_geonameid',
+                    ) as $property => $method) {
+                        if (isset($data[$property])) {
+                            call_user_func(array($user, $method), $data[$property]);
+                        }
+                    }
+
+                    if (null !== $provider) {
+                        $this->attachProviderToUser($app['EM'], $provider, $user);
+                        $app['EM']->flush();
+                    }
+
+                    $demandOK = array();
+
+                    if ($app['phraseanet.registry']->get('GV_autoregister')) {
+
+                        $template_user_id = \User_Adapter::get_usr_id_from_login($app, 'autoregister');
+
+                        $template_user = \User_Adapter::getInstance($template_user_id, $app);
+
+                        $base_ids = array();
+
+                        foreach (array_keys($inscOK) as $base_id) {
+                            $base_ids[] = $base_id;
+                        }
+                        $user->ACL()->apply_model($template_user, $base_ids);
+                    }
+
+                    $autoReg = $user->ACL()->get_granted_base();
+
+                    $appbox_register = new \appbox_register($app['phraseanet.appbox']);
+
+                    foreach ($selected as $base_id) {
+                        if (false === $inscOK[$base_id] || $user->ACL()->has_access_to_base($base_id)) {
+                            continue;
+                        }
+
+                        $collection = \collection::get_from_base_id($app, $base_id);
+                        $appbox_register->add_request($user, $collection);
+                        $demandOK[$base_id] = true;
+                    }
+
+                    $params = array(
+                        'demand'       => $demandOK,
+                        'autoregister' => $autoReg,
+                        'usr_id'       => $user->get_id()
+                    );
+
+                    $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
+                    $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
+
+                    $user->set_mail_locked(true);
+
+                    try {
+                        $this->sendAccountUnlockEmail($app, $user);
+                        $app->addFlash('info', _('login::notification: demande de confirmation par mail envoyee'));
+                    } catch (InvalidArgumentException $e) {
+                        // todo, log this failure
+                        $app->addFlash('error', _('Unable to send your account unlock email.'));
+                    }
+
+                    return $app->redirect($app->path('homepage'));
+                }
+            } catch (FormProcessingException $e) {
+                $app->addFlash('error', $e->getMessage());
+            }
+        } elseif (null !== $request->query->get('providerId')) {
+            $provider = $this->findProvider($app, $request->query->get('providerId'));
+            $identity = $provider->getIdentity();
+
+            $form->bind(array_filter(array(
+                'email'       => $identity->getEmail(),
+                'firstname'   => $identity->getFirstname(),
+                'lastname'    => $identity->getLastname(),
+                'company'     => $identity->getCompany(),
+                'provider-id' => $provider->getId(),
+            )));
+        }
+
+        return $app['twig']->render('login/register-classic.html.twig', array(
+            'form' => $form->createView(),
+            'home_title' => $app['phraseanet.registry']->get('GV_homeTitle'),
+            'login' => new \login(),
+            'recaptcha_display' => $app['phraseanet.registry']->get('GV_captchas'),
+        ));
+    }
+
+    private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, \User_Adapter $user)
+    {
+        $usrAuthProvider = new UsrAuthProvider();
+        $usrAuthProvider->setDistantId($provider->getToken()->getId());
+        $usrAuthProvider->setProvider($provider->getId());
+        $usrAuthProvider->setUsrId($user->get_id());
+
+        try {
+            $provider->logout();
+        } catch (RuntimeException $e) {
+            // log these errors
+        }
+
+        $em->persist($usrAuthProvider);
     }
 
     /**
@@ -229,38 +377,52 @@ class Login implements ControllerProviderInterface
      * @param  Request          $request The current request
      * @return RedirectResponse
      */
-    public function sendConfirmMail(Application $app, Request $request)
+    public function sendConfirmMail(PhraseaApplication $app, Request $request)
     {
         if (null === $usrId = $request->query->get('usr_id')) {
-            $app->abort(400, sprintf(_('Request to send you the confirmation mail failed, please retry')));
+            $app->abort(400, 'Missing usr_id parameter.');
         }
 
         try {
             $user = \User_Adapter::getInstance((int) $usrId, $app);
         } catch (\Exception $e) {
-            return $app->redirect('/login/?error=user-not-found');
+            $app->addFlash('error', _('Invalid link.'));
+
+            return $app->redirect($app->path('homepage'));
         }
 
-        $receiver = null;
         try {
-            $receiver = Receiver::fromUser($user);
+            $this->sendAccountUnlockEmail($app, $user);
+            $app->addFlash('success', _('login::notification: demande de confirmation par mail envoyee'));
         } catch (InvalidArgumentException $e) {
-
+            // todo, log this failure
+            $app->addFlash('error', _('Unable to send your account unlock email.'));
         }
 
-        if ($receiver) {
-            $expire = new \DateTime('+3 days');
+        return $app->redirect($app->path('homepage'));
+    }
 
-            $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+    /**
+     * Sends an account unlock email.
+     *
+     * @param PhraseaApplication $app
+     * @param \User_Adapter      $user
+     *
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     */
+    private function sendAccountUnlockEmail(PhraseaApplication $app, \User_Adapter $user)
+    {
+        $receiver = Receiver::fromUser($user);
 
-            $mail = MailRequestEmailConfirmation::create($app, $receiver);
-            $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
-            $mail->setExpiration($expire);
+        $expire = new \DateTime('+3 days');
+        $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
 
-            $app['notification.deliverer']->deliver($mail);
-        }
+        $mail = MailRequestEmailConfirmation::create($app, $receiver);
+        $mail->setButtonUrl($app->url('login_register_confirm', array('code' => $token)));
+        $mail->setExpiration($expire);
 
-        return $app->redirect('/login/?notice=mail-sent');
+        $app['notification.deliverer']->deliver($mail);
     }
 
     /**
@@ -270,50 +432,112 @@ class Login implements ControllerProviderInterface
      * @param  Request          $request The current request
      * @return RedirectResponse
      */
-    public function registerConfirm(Application $app, Request $request)
+    public function registerConfirm(PhraseaApplication $app, Request $request)
     {
         if (null === $code = $request->query->get('code')) {
-            return $app->redirect('/login/?redirect=prod&error=code-not-found');
+            $app->addFlash('error', _('Invalid unlock link.'));
+
+            return $app->redirect($app->path('homepage'));
         }
 
         try {
             $datas = $app['tokens']->helloToken($code);
         } catch (\Exception_NotFound $e) {
-            return $app->redirect('/login/?redirect=prod&error=token-not-found');
+            $app->addFlash('error', _('Invalid unlock link.'));
+
+            return $app->redirect($app->path('homepage'));
         }
 
         try {
             $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
         } catch (\Exception $e) {
-            return $app->redirect('/login/?redirect=prod&error=user-not-found');
+            $app->addFlash('error', _('Invalid unlock link.'));
+
+            return $app->redirect($app->path('homepage'));
         }
 
         if (!$user->get_mail_locked()) {
-            return $app->redirect('/login/?redirect=prod&notice=already');
+            $app->addFlash('info', _('Account is already unlocked, you can login.'));
+
+            return $app->redirect($app->path('homepage'));
         }
 
         $app['tokens']->removeToken($code);
+        $user->set_mail_locked(false);
 
         try {
             $receiver = Receiver::fromUser($user);
         } catch (InvalidArgumentException $e) {
-            return $app->redirect('/login/?redirect=prod&notice=invalid-email');
+            $app->addFlash('success', _('Account has been unlocked, you can now login.'));
+
+            return $app->redirect($app->path('homepage'));
         }
 
-        $user->set_mail_locked(false);
         $app['tokens']->removeToken($code);
 
         if (count($user->ACL()->get_granted_base()) > 0) {
             $mail = MailSuccessEmailConfirmationRegistered::create($app, $receiver);
             $app['notification.deliverer']->deliver($mail);
 
-            return $app->redirect('/login/?redirect=prod&notice=confirm-ok');
+            $app->addFlash('success', _('Account has been unlocked, you can now login.'));
         } else {
             $mail = MailSuccessEmailConfirmationUnregistered::create($app, $receiver);
             $app['notification.deliverer']->deliver($mail);
 
-            return $app->redirect('/login/?redirect=prod&notice=confirm-ok-wait');
+            $app->addFlash('info', _('Account has been unlocked, you still have to wait for admin approval.'));
         }
+
+        return $app->redirect($app->path('homepage'));
+    }
+
+    public function renewPassword(PhraseaApplication $app, Request $request)
+    {
+        if (null === $token = $request->get('token')) {
+            $app->abort(401, 'A token is required');
+        }
+
+        try {
+            $app['tokens']->helloToken($token);
+        } catch (\Exception $e) {
+            $app->abort(401, 'A token is required');
+        }
+
+        $form = $app->form(new PhraseaRecoverPasswordForm($app));
+        $form->setData(array('token' => $token));
+
+        if ('POST' === $request->getMethod()) {
+            $form->bind($request);
+            try {
+                if ($form->isValid()) {
+                    $data = $form->getData();
+
+                    $password = $data['password'];
+                    $passwordConfirm = $data['passwordConfirm'];
+
+                    if ($password !== $passwordConfirm) {
+                        throw new FormProcessingException(_('forms::les mots de passe ne correspondent pas'));
+                    }
+
+                    $datas = $app['tokens']->helloToken($token);
+
+                    $user = \User_Adapter::getInstance($datas['usr_id'], $app);
+                    $user->set_password($passwordConfirm);
+
+                    $app['tokens']->removeToken($token);
+
+                    $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
+
+                    return $app->redirect($app->path('homepage'));
+                }
+            } catch (FormProcessingException $e) {
+                $app->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $app['twig']->render('login/renew-password.html.twig', array(
+            'login'       => new \login(),
+            'form'        => $form->createView(),
+        ));
     }
 
     /**
@@ -323,129 +547,53 @@ class Login implements ControllerProviderInterface
      * @param  Request          $request The current request
      * @return RedirectResponse
      */
-    public function renewPassword(Application $app, Request $request)
+    public function forgotPassword(PhraseaApplication $app, Request $request)
     {
-        if (null !== $mail = $request->request->get('mail')) {
-            try {
-                $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $mail), $app);
-            } catch (\Exception $e) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'noaccount')));
+        $form = $app->form(new PhraseaForgotPasswordForm());
+
+        try {
+            if ('POST' === $request->getMethod()) {
+                $form->bind($request);
+
+                if ($form->isValid()) {
+                    $data = $form->getData();
+
+                    try {
+                        $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $data['email']), $app);
+                    } catch (\Exception $e) {
+                        throw new FormProcessingException(_('phraseanet::erreur: Le compte n\'a pas ete trouve'));
+                    }
+
+                    try {
+                        $receiver = Receiver::fromUser($user);
+                    } catch (InvalidArgumentException $e) {
+                        throw new FormProcessingException(_('Invalid email address'));
+                    }
+
+                    $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
+
+                    if (!$token) {
+                        return $app->abort(500, 'Unable to generate a token');
+                    }
+
+                    $url = $app->url('login_renew_password', array('token' => $token), true);
+
+                    $mail = MailRequestPasswordUpdate::create($app, $receiver);
+                    $mail->setButtonUrl($url);
+
+                    $app['notification.deliverer']->deliver($mail);
+                    $app->addFlash('info', _('phraseanet:: Un email vient de vous etre envoye'));
+
+                    return $app->redirect($app->path('login_forgot_password'));
+                }
             }
-
-            try {
-                $receiver = Receiver::fromUser($user);
-            } catch (InvalidArgumentException $e) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'invalidmail')));
-            }
-
-            $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
-
-            if ($token) {
-                $url = $app['url_generator']->generate('login_forgot_password', array('token' => $token), true);
-
-                $mail = MailRequestEmailConfirmation::create($app, $receiver);
-                $mail->setButtonUrl($url);
-                $app['notification.deliverer']->deliver($mail);
-
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('sent' => 'ok')));
-            }
-        }
-
-        if ((null !== $token = $request->request->get('token'))
-            && (null !== $password = $request->request->get('form_password'))
-            && (null !== $passwordConfirm = $request->request->get('form_password_confirm'))) {
-
-            if ($password !== $passwordConfirm) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-match')));
-            } elseif (strlen(trim($password)) < 8) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-short')));
-            } elseif (trim($password) !== str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-invalid')));
-            }
-
-            try {
-                $datas = $app['tokens']->helloToken($token);
-
-                $user = \User_Adapter::getInstance($datas['usr_id'], $app);
-                $user->set_password($passwordConfirm);
-
-                $app['tokens']->removeToken($token);
-
-                return $app->redirect('/login/?notice=password-update-ok');
-            } catch (\Exception_NotFound $e) {
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'token')));
-            }
-        }
-    }
-
-    /**
-     * Get the fogot password form
-     *
-     * @param  Application $app     A Silex application where the controller is mounted on
-     * @param  Request     $request The current request
-     * @return Response
-     */
-    public function displayForgotPasswordForm(Application $app, Request $request)
-    {
-        $tokenize = false;
-        $errorMsg = $request->query->get('error');
-
-        if (null !== $token = $request->query->get('token')) {
-            try {
-                $app['tokens']->helloToken($token);
-                $tokenize = true;
-            } catch (\Exception $e) {
-                $errorMsg = 'token';
-            }
-        }
-
-        if (null !== $errorMsg) {
-            switch ($errorMsg) {
-                case 'invalidmail':
-                    $errorMsg = _('Invalid email address');
-                    break;
-                case 'mailserver':
-                    $errorMsg = _('phraseanet::erreur: Echec du serveur mail');
-                    break;
-                case 'noaccount':
-                    $errorMsg = _('phraseanet::erreur: Le compte n\'a pas ete trouve');
-                    break;
-                case 'mail':
-                    $errorMsg = _('phraseanet::erreur: Echec du serveur mail');
-                    break;
-                case 'token':
-                    $errorMsg = _('phraseanet::erreur: l\'url n\'est plus valide');
-                    break;
-            }
-        }
-
-        if (null !== $sentMsg = $request->query->get('sent')) {
-            switch ($sentMsg) {
-                case 'ok':
-                    $sentMsg = _('phraseanet:: Un email vient de vous etre envoye');
-                    break;
-            }
-        }
-
-        if (null !== $passwordMsg = $request->query->get('pass-error')) {
-            switch ($passwordMsg) {
-                case 'pass-match':
-                    $passwordMsg = _('forms::les mots de passe ne correspondent pas');
-                    break;
-                case 'pass-short':
-                    $passwordMsg = _('forms::la valeur donnee est trop courte');
-                    break;
-                case 'pass-invalid':
-                    $passwordMsg = _('forms::la valeur donnee contient des caracteres invalides');
-                    break;
-            }
+        } catch (FormProcessingException $e) {
+            $app->addFlash('error', $e->getMessage());
         }
 
         return $app['twig']->render('login/forgot-password.html.twig', array(
-            'tokenize'    => $tokenize,
-            'passwordMsg' => $passwordMsg,
-            'errorMsg'    => $errorMsg,
-            'sentMsg'     => $sentMsg
+            'login' => new \login(),
+            'form'  => $form->createView(),
         ));
     }
 
@@ -456,262 +604,19 @@ class Login implements ControllerProviderInterface
      * @param  Request     $request The current request
      * @return Response
      */
-    public function displayRegisterForm(Application $app, Request $request)
+    public function displayRegisterForm(PhraseaApplication $app, Request $request)
     {
-        $captchaSys = '';
-
-        if ($app['phraseanet.registry']->get('GV_captchas')
-            && $app['phraseanet.registry']->get('GV_captcha_private_key')
-            && $app['phraseanet.registry']->get('GV_captcha_public_key')) {
-
-            require_once __DIR__ . '/../../../../../lib/vendor/recaptcha/recaptchalib.php';
-
-            $captchaSys = '<div style="margin:0;width:330px;">
-            <div id="recaptcha_image" style="margin:10px 0px 5px"></div>
-            <div style="text-align:left;margin:0 0px 5px;width:300px;">
-            <a href="javascript:Recaptcha.reload()" class="link">' . _('login::captcha: obtenir une autre captcha') . '</a>
-            </div>
-            <div style="text-align:left;width:300px;">
-                <span class="recaptcha_only_if_image">' . _('login::captcha: recopier les mots ci dessous') . ' : </span>
-                <input name="recaptcha_response_field" id="recaptcha_response_field" value="" type="text" style="width:180px;"/>
-            </div>' . recaptcha_get_html($app['phraseanet.registry']->get('GV_captcha_public_key')) . '</div>';
+        if (!$app['registration.enabled']) {
+            $app->abort(404, 'Registration is disabled');
         }
 
-        $login = new \login();
-        if (false === $login->register_enabled($app)) {
-            return $app->redirect('/login/?notice=no-register-available');
+        if (0 < count($app['authentication.providers'])) {
+            return $app['twig']->render('login/register.html.twig', array(
+                'login' => new \login(),
+            ));
+        } else {
+            return $app->redirect($app->path('login_register_classic'));
         }
-
-        $needed = $request->query->get('needed', array());
-
-        foreach ($needed as $fields => $error) {
-            switch ($error) {
-                case 'required-field':
-                    $needed[$fields] = _('forms::ce champ est requis');
-                    break;
-                case 'pass-match':
-                    $needed[$fields] = _('forms::les mots de passe ne correspondent pas');
-                    break;
-                case 'pass-short':
-                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
-                    break;
-                case 'pass-invalid':
-                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
-                    break;
-                case 'email-invalid':
-                    $needed[$fields] = _('forms::l\'email semble invalide');
-                    break;
-                case 'login-short':
-                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
-                    break;
-                case 'login-mail-exists':
-                    $needed[$fields] = _('forms::un utilisateur utilisant ce login existe deja');
-                    break;
-                case 'user-mail-exists':
-                    $needed[$fields] = _('forms::un utilisateur utilisant cette adresse email existe deja');
-                    break;
-                case 'no-collections':
-                    $needed[$fields] = _('You have not made any request for collections');
-                    break;
-            }
-        }
-
-        $arrayVerif = $this->getRegisterFieldConfiguration($app);
-
-        return $app['twig']->render('login/register.html.twig', array(
-            'inscriptions' => giveMeBases($app),
-            'parms'        => $request->query->all(),
-            'needed'       => $needed,
-            'arrayVerif'   => $arrayVerif,
-            'demandes'     => $request->query->get('demand', array()),
-            'lng'            => $app['locale'],
-            'captcha_system' => $captchaSys,
-        ));
-    }
-
-    /**
-     * Do the registration
-     *
-     * @param  Application      $app     A Silex application where the controller is mounted on
-     * @param  Request          $request The current request
-     * @return RedirectResponse
-     */
-    public function register(Application $app, Request $request)
-    {
-        $captchaOK = true;
-
-        if ($app['phraseanet.registry']->get('GV_captchas')
-            && $request->request->get('GV_captcha_private_key')
-            && $request->request->get('GV_captcha_public_key')
-            && $request->request->get("recaptcha_challenge_field")
-            && $request->request->get("recaptcha_response_field")) {
-            $checkCaptcha = recaptcha_check_answer(
-                $app['phraseanet.registry']->get('GV_captcha_private_key'), $request->server->get('REMOTE_ADDR'), $request->request->get["recaptcha_challenge_field"], $request->request->get["recaptcha_response_field"]
-            );
-            $captchaOK = $checkCaptcha->is_valid;
-        }
-
-        if (!$captchaOK) {
-            return $app->redirect($app['url_generator']->generate('login_register', array(
-                'error' => 'captcha'
-            )));
-        }
-
-        $arrayVerif = $this->getRegisterFieldConfiguration($app);
-
-        $parameters = $request->request->all();
-
-        $needed = array_diff_key($arrayVerif, $parameters);
-
-        if (sizeof($needed) > 0 && !(sizeof($parameters) === 1 && isset($parameters['form_login']) && $parameters['form_login'] === true)) {
-            $app->abort(400, sprintf(_('Bad request missing %s parameters'), implode(',', array_keys($needed))));
-        }
-
-        foreach ($parameters as $field => $value) {
-            if (is_string($value) && isset($arrayVerif[$field]) && $arrayVerif[$field] === true) {
-                if ('' === trim($value)) {
-                    $needed[$field] = 'required-field';
-                }
-            }
-        }
-
-        if (($password = $request->request->get('form_password')) !== $request->request->get('form_password_confirm')) {
-            $needed['form_password'] = $needed['form_password_confirm'] = 'pass-match';
-        } elseif (strlen(trim($password)) < 5) {
-            $needed['form_password'] = 'pass-short';
-        } elseif (trim($password) !== str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
-            $needed['form_password'] = 'pass-invalid';
-        }
-
-        if (false === \Swift_Validate::email($email = $request->request->get('form_email'))) {
-            $needed['form_email'] = 'mail-invalid';
-        }
-
-        if (strlen($login = $request->request->get('form_login')) < 5) {
-            $needed['form_login'] = 'login-short';
-        }
-
-        if ((sizeof($parameters) === 1 && isset($parameters['form_login']) && $parameters['form_login'] === true) && !isset($needed['form_email'])) {
-            $login = $email;
-            unset($needed['form_login']);
-        }
-
-        if (\User_Adapter::get_usr_id_from_email($app, $email)) {
-            $needed['form_email'] = 'user-email-exists';
-        }
-
-        if (\User_Adapter::get_usr_id_from_login($app, $login)) {
-            $needed['form_login'] = 'usr-login-exists';
-        }
-
-        if (sizeof($demands = $request->request->get('demand', array())) === 0) {
-            $needed['demandes'] = 'no-collections';
-        }
-
-        if (sizeof($needed) > 0) {
-            return $app->redirect($app['url_generator']->generate('login_register', array(
-                'needed' => $needed
-            )));
-        }
-
-        require_once($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
-
-        $demands = array_unique($demands);
-        $inscriptions = giveMeBases($app);
-        $inscOK = array();
-
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-
-            foreach ($databox->get_collections() as $collection) {
-                if (!in_array($collection->get_base_id(), $demands)) {
-                    continue;
-                }
-
-                $sbas_id = $databox->get_sbas_id();
-
-                if (isset($inscriptions[$sbas_id])
-                    && $inscriptions[$sbas_id]['inscript'] === true
-                    && (isset($inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()])
-                    || isset($inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]))) {
-                    $inscOK[$collection->get_base_id()] = true;
-                } else {
-                    $inscOK[$collection->get_base_id()] = false;
-                }
-            }
-        }
-
-        $user = \User_Adapter::create($app, $request->request->get('form_login'), $request->request->get("form_password"), $request->request->get("form_email"), false);
-
-        $user->set_gender($request->request->get('form_gender'))
-            ->set_firstname($request->request->get('form_firstname'))
-            ->set_lastname($request->request->get('form_lastname'))
-            ->set_address($request->request->get('form_address'))
-            ->set_zip($request->request->get('form_zip'))
-            ->set_tel($request->request->get('form_phone'))
-            ->set_fax($request->request->get('form_fax'))
-            ->set_job($request->request->get('form_job'))
-            ->set_company($request->request->get('form_company'))
-            ->set_position($request->request->get('form_activity'))
-            ->set_geonameid($request->request->get('form_geonameid'));
-
-        $demandOK = array();
-
-        if (!!$app['phraseanet.registry']->get('GV_autoregister')) {
-
-            $template_user_id = \User_Adapter::get_usr_id_from_login($app, 'autoregister');
-
-            $template_user = \User_Adapter::getInstance($template_user_id, $app);
-
-            $base_ids = array();
-
-            foreach (array_keys($inscOK) as $base_id) {
-                $base_ids[] = $base_id;
-            }
-            $user->ACL()->apply_model($template_user, $base_ids);
-        }
-
-        $autoReg = $user->ACL()->get_granted_base();
-
-        $appbox_register = new \appbox_register($app['phraseanet.appbox']);
-
-        foreach ($demands as $base_id) {
-            if (false === $inscOK[$base_id] || $user->ACL()->has_access_to_base($base_id)) {
-                continue;
-            }
-
-            $collection = \collection::get_from_base_id($app, $base_id);
-            $appbox_register->add_request($user, $collection);
-            unset($collection);
-            $demandOK[$base_id] = true;
-        }
-
-        $params = array(
-            'demand'       => $demandOK,
-            'autoregister' => $autoReg,
-            'usr_id'       => $user->get_id()
-        );
-
-        $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
-        $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
-
-        try {
-            $receiver = Receiver::fromUser($user);
-        } catch (InvalidArgumentException $e) {
-            return $app->redirect('/login/?notice=mail-not-sent');
-        }
-
-        $user->set_mail_locked(true);
-
-        $expire = new \DateTime('+3 days');
-        $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
-
-        $mail = MailRequestEmailConfirmation::create($app, $receiver);
-        $mail->setButtonUrl($app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
-        $mail->setExpiration($expire);
-
-        $app['notification.deliverer']->deliver($mail);
-
-        return $app->redirect('/login/?notice=mail-sent');
     }
 
     /**
@@ -724,12 +629,13 @@ class Login implements ControllerProviderInterface
     public function logout(PhraseaApplication $app, Request $request)
     {
         $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
+        $app['authentication']->closeAccount();
 
-        $app->closeAccount();
+        $app->addFlash('info', 'Vous etes maintenant deconnecte. A bientot.');
 
-        $appRedirect = $request->query->get("app");
-
-        $response = new RedirectResponse("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=%s", ltrim($appRedirect, '/')) : ""));
+        $response = new RedirectResponse($app->path('root', array(
+            'redirect' => $request->query->get("redirect")
+        )));
 
         $response->headers->removeCookie('persistent');
         $response->headers->removeCookie('last_act');
@@ -745,111 +651,35 @@ class Login implements ControllerProviderInterface
      * @param  Request     $request The current request
      * @return Response
      */
-    public function login(Application $app, Request $request)
+    public function login(PhraseaApplication $app, Request $request)
     {
         require_once($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
-        if ($app['phraseanet.registry']->get('GV_captchas') && trim($app['phraseanet.registry']->get('GV_captcha_private_key')) !== '' && trim($app['phraseanet.registry']->get('GV_captcha_public_key')) !== '') {
-            require_once $app['phraseanet.registry']->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php';
-        }
-
-        $warning = $request->query->get('error', '');
 
         try {
             $app['phraseanet.appbox']->get_connection();
         } catch (\Exception $e) {
-            $warning = 'no-connection';
-        }
-
-        if (!!$app['phraseanet.registry']->get('GV_maintenance')) {
-            $warning = 'maintenance';
-        }
-
-        switch ($warning) {
-
-            case 'maintenance':
-                $warning = _('login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee');
-                break;
-            case 'no-connection':
-                $warning = _('login::erreur: No available connection - Please contact sys-admin');
-                break;
-            case 'auth':
-                $warning = _('login::erreur: Erreur d\'authentification');
-                break;
-            case 'captcha':
-                $warning = _('login::erreur: Erreur de captcha');
-                break;
-            case 'mail-not-confirmed' :
-                $warning = _('login::erreur: Vous n\'avez pas confirme votre email');
-                break;
-            case 'no-base' :
-                $warning = _('login::erreur: Aucune base n\'est actuellment accessible');
-                break;
-            case 'session' :
-                $warning = _('Error while authentication, please retry or contact an admin if problem persists');
-                break;
-            case 'unexpected' :
-                $warning = _('An unexpected error occured during authentication process, please contact an admin');
-                break;
-        }
-
-        if (ctype_digit($request->query->get('usr'))) {
-            $warning .= '<div class="notice"><a href="/login/send-mail-confirm/?usr_id=' . $request->query->get('usr') . '" target ="_self" style="color:black;text-decoration:none;">' . _('login:: Envoyer a nouveau le mail de confirmation') . '</a></div>';
-        }
-
-        switch ($notice = $request->query->get('notice', '')) {
-            case 'ok':
-                $notice = _('login::register: sujet email : confirmation de votre adresse email');
-                break;
-            case 'already':
-                $notice = _('login::notification: cette email est deja confirmee');
-                break;
-            case 'mail-sent':
-                $notice = _('login::notification: demande de confirmation par mail envoyee');
-                break;
-            case 'register-ok':
-                $notice = _('login::notification: votre email est desormais confirme');
-                break;
-            case 'register-ok-wait':
-                $notice = _('Your email is now confirmed. You will be informed as soon as your pending request will be managed');
-                break;
-            case 'password-update-ok':
-                $notice = _('login::notification: Mise a jour du mot de passe avec succes');
-                break;
-            case 'no-register-available':
-                $notice = _('User inscriptions are disabled');
-                break;
-        }
-
-        $captchaSys = '';
-        if (!$app['phraseanet.registry']->get('GV_maintenance')
-            && $app['phraseanet.registry']->get('GV_captchas')
-            && trim($app['phraseanet.registry']->get('GV_captcha_private_key')) !== ''
-            && trim($app['phraseanet.registry']->get('GV_captcha_public_key')) !== ''
-            && $request->query->get('error') == 'captcha') {
-            $captchaSys = '<div style="margin:0;float: left;width:330px;"><div id="recaptcha_image" style="float: left;margin:10px 15px 5px"></div>
-                                                                <div style="text-align:center;float: left;margin:0 15px 5px;width:300px;">
-                                                                <a href="javascript:Recaptcha.reload()" class="link">' . _('login::captcha: obtenir une autre captcha') . '</a>
-                                                                </div>
-                                                                <div style="text-align:center;float: left;width:300px;margin:0 15px 0px;">
-                                                                    <span class="recaptcha_only_if_image">' . _('login::captcha: recopier les mots ci dessous') . ' : </span>
-                                                                    <input name="recaptcha_response_field" id="recaptcha_response_field" value="" type="text" style="width:180px;"/>
-                                                                </div>' . recaptcha_get_html($app['phraseanet.registry']->get('GV_captcha_public_key')) . '</div>';
+            $app->addFlash('error', _('login::erreur: No available connection - Please contact sys-admin'));
         }
 
         $public_feeds = \Feed_Collection::load_public_feeds($app);
-        $feeds = array_merge(array($public_feeds->get_aggregate()), $public_feeds->get_feeds());
+
+        $feeds = $public_feeds->get_feeds();
+        array_unshift($feeds, $public_feeds->get_aggregate());
+
+        $form = $app->form(new PhraseaAuthenticationForm(), null, array(
+            'disabled' => $app['phraseanet.registry']->get('GV_maintenance')
+        ));
 
         return $app['twig']->render('login/index.html.twig', array(
-                'module_name'    => _('Accueil'),
-                'notice'         => $notice,
-                'warning'        => $warning,
-                'redirect'       => ltrim($request->query->get('redirect'), '/'),
-                'logged_out'     => $request->query->get('logged_out'),
-                'captcha_system' => $captchaSys,
-                'login'          => new \login(),
-                'feeds'          => $feeds,
-                'display_layout' => $app['phraseanet.registry']->get('GV_home_publi')
-            ));
+            'module_name'       => _('Accueil'),
+            'redirect'          => ltrim($request->query->get('redirect'), '/'),
+            'recaptcha_display' => $app->isCaptchaRequired(),
+            'unlock_usr_id'     => $app->getUnlockAccountData(),
+            'login'             => new \login(),
+            'feeds'             => $feeds,
+            'guest_allowed'     => \phrasea::guest_allowed($app),
+            'form'              => $form->createView(),
+        ));
     }
 
     /**
@@ -859,247 +689,291 @@ class Login implements ControllerProviderInterface
      * @param  Request          $request The current request
      * @return RedirectResponse
      */
-    public function authenticate(Application $app, Request $request)
+    public function authenticate(PhraseaApplication $app, Request $request)
     {
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $form = $app->form(new PhraseaAuthenticationForm());
+        $redirector = function (array $params = array()) use ($app) {
+            return $app->redirect($app->path('homepage', $params));
+        };
 
-        $is_guest = false;
+        try {
+            return $this->doAuthentication($app, $request, $form, $redirector);
+        } catch (AuthenticationException $e) {
+            return $e->getResponse();
+        }
+    }
 
-        if (null !== $request->get('nolog') && \phrasea::guest_allowed($app)) {
-            $is_guest = true;
+    public function authenticateAsGuest(PhraseaApplication $app, Request $request)
+    {
+        if (!\phrasea::guest_allowed($app)) {
+            $app->abort(403, _('Phraseanet guest-access is disabled'));
         }
 
-        if (((null !== $login = $request->request->get('login')) && (null !== $pwd = $request->request->get('pwd'))) || $is_guest) {
+        $context = new Context(Context::CONTEXT_GUEST);
+        $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
-            /**
-             * @todo dispatch an event that can be used to tweak the authentication
-             * (LDAP....)
-             */
-            try {
-                if ($is_guest) {
-                    $auth = new \Session_Authentication_Guest($app);
-                } else {
-                    $captcha = false;
+        $password = \random::generatePassword(24);
+        $user = \User_Adapter::create($app, 'invite', $password, null, false, true);
 
-                    if ($app['phraseanet.registry']->get('GV_captchas')
-                        && '' !== $privateKey = trim($app['phraseanet.registry']->get('GV_captcha_private_key'))
-                        && trim($app['phraseanet.registry']->get('GV_captcha_public_key')) !== ''
-                        && null !== $challenge = $request->request->get("recaptcha_challenge_field")
-                        && null !== $captachResponse = $request->request->get("recaptcha_response_field")) {
+        $inviteUsrid = \User_Adapter::get_usr_id_from_login($app, 'invite');
+        $invite_user = \User_Adapter::getInstance($inviteUsrid, $app);
 
-                        require_once $app['phraseanet.registry']->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php';
+        $usr_base_ids = array_keys($user->ACL()->get_granted_base());
+        $user->ACL()->revoke_access_from_bases($usr_base_ids);
 
-                        $checkCaptcha = recaptcha_check_answer($privateKey, $_SERVER["REMOTE_ADDR"], $challenge, $captachResponse);
+        $invite_base_ids = array_keys($invite_user->ACL()->get_granted_base());
+        $user->ACL()->apply_model($invite_user, $invite_base_ids);
 
-                        if ($checkCaptcha->is_valid) {
-                            $captcha = true;
-                        }
-                    }
+        $this->postAuthProcess($app, $user);
 
-                    $auth = new \Session_Authentication_Native($app, $login, $pwd);
-                    $auth->set_captcha_challenge($captcha);
-                }
+        $response = $this->generateAuthResponse($app['browser'], $request->request->get('redirect'));
+        $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
 
-                $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
+        $event = new PostAuthenticate($request, $response, $user, $context);
+        $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
 
-                foreach ($app['EM']
-                    ->getRepository('\Entities\ValidationParticipant')
-                    ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
+        return $response;
+    }
 
-                    /* @var $participant \Entities\ValidationParticipant */
-
-                    $validationSession = $participant->getSession();
-                    $participantId = $participant->getUsrId();
-                    $basketId = $validationSession->getBasket()->getId();
-
-                    try {
-                        $token = $this->app['tokens']->getValidationToken($participantId, $basketId);
-                    } catch (\Exception_NotFound $e) {
-                        continue;
-                    }
-
-                    $app['events-manager']->trigger('__VALIDATION_REMINDER__', array(
-                        'to'          => $participantId,
-                        'ssel_id'     => $basketId,
-                        'from'        => $validationSession->getInitiatorId(),
-                        'validate_id' => $validationSession->getId(),
-                        'url'         => $app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/validate/' . $basketId . '/?LOG=' . $token
-                    ));
-
-                    $participant->setReminded(new \DateTime('now'));
-                    $app['EM']->persist($participant);
-                }
-
-                $app['EM']->flush();
-
-                /**
-                 * IMPORTANT
-                 */
-                $auth->prelog();
-
-                if ($app->isAuthenticated() && $app['session']->get('usr_id') == $auth->get_user()->get_id()) {
-                    return $app->redirect('/' . ltrim($request->request->get('redirect', 'prod'), '/'));
-                }
-
-                $user = $auth->signOn();
-
-                /**
-                 * @todo move this to phrasea engine
-                 */
-                $user->ACL()->inject_rights();
-
-                if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
-                    if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
-                        if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
-
-                            $repo = $app['EM']->getRepository('Entities\Basket');
-                            $baskets = $repo->findBy(array('usr_id' => $inviteUsrId));
-
-                            foreach ($baskets as $basket) {
-                                $basket->setUsrId($user->get_id());
-                                $app['EM']->persist($basket);
-                            }
-                        }
-                    }
-                }
-
-                $app->openAccount($auth);
-
-                if ($auth->get_user()->get_locale() != $app['locale']) {
-                    $auth->get_user()->set_locale($app['locale']);
-                }
-
-                /**
-                 * IMPORTANT
-                 */
-                $auth->postlog();
-
-                if ($app['browser']->isMobile()) {
-                    $response = new RedirectResponse("/lightbox/");
-                } elseif ($request->request->get('redirect')) {
-                    $response = new RedirectResponse('/' . ltrim($request->request->get('redirect'),'/'));
-                } elseif (true !== $app['browser']->isNewGeneration()) {
-                    $response = new RedirectResponse('/client/');
-                } else {
-                    $response = new RedirectResponse('/prod/');
-                }
-
-                $response->headers->removeCookie('postlog');
-
-                $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
-
-                if ($request->request->get('remember-me') == '1') {
-                    $nonce = \random::generatePassword(16);
-                    $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
-
-                    $token = \User_Adapter::salt_password($app, $string, $nonce);
-
-                    $session->setToken($token)
-                        ->setNonce($nonce);
-                    $cookie = new Cookie('persistent', $token);
-                    $response->headers->setCookie($cookie);
-                }
-
-                $width = $height = null;
-                if ($app['request']->cookies->has('screen')) {
-                    $data = explode('x', $app['request']->cookies->get('screen'));
-                    $width = $data[0];
-                    $height = $data[1];
-                }
-                $session->setIpAddress($request->getClientIp())
-                    ->setScreenHeight($height)
-                    ->setScreenWidth($width);
-
-                $app['EM']->persist($session);
-                $app['EM']->flush();
-
-                $response->headers->removeCookie('last_act');
-
-                return $response;
-            } catch (\Exception_Session_StorageClosed $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=session");
-            } catch (\Exception_Session_RequireCaptcha $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=captcha");
-            } catch (\Exception_Unauthorized $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=auth");
-            } catch (\Exception_Session_MailLocked $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=mail-not-confirmed&usr=" . $e->get_usr_id());
-            } catch (\Exception_Session_WrongToken $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=token");
-            } catch (\Exception_InternalServerError $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=session");
-            } catch (\Exception_ServiceUnavailable $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'),'/') . "&error=maintenance");
-            } catch (\Exception_Session_BadSalinity $e) {
-                $date = new \DateTime('5 minutes');
-                $usr_id = \User_Adapter::get_usr_id_from_login($app, $request->request->get('login'));
-
-                return $app->redirect($app['url_generator']->generate('login_forgot_password', array(
-                    'salt'  => 1,
-                    'token' => $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $usr_id, $date)
-                )));
-            } catch (\Exception $e) {
-                return $app->redirect("/login/?redirect=" . ltrim($request->request->get('redirect'), '/') . "&error=unexpected");
-            }
+    private function generateAuthResponse(\Browser $browser, $redirect)
+    {
+        if ($browser->isMobile()) {
+            $response = new RedirectResponse("/lightbox/");
+        } elseif ($redirect) {
+            $response = new RedirectResponse('/' . ltrim($redirect,'/'));
+        } elseif (true !== $browser->isNewGeneration()) {
+            $response = new RedirectResponse('/client/');
         } else {
-            return $app->redirect("/login/");
+            $response = new RedirectResponse('/prod/');
         }
+
+        $response->headers->removeCookie('postlog');
+        $response->headers->removeCookie('last_act');
+
+        return $response;
+    }
+
+    // move this in an event
+    private function postAuthProcess(PhraseaApplication $app, \User_Adapter $user)
+    {
+        $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
+
+        foreach ($app['EM']
+            ->getRepository('Entities\ValidationParticipant')
+            ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
+
+            /* @var $participant \Entities\ValidationParticipant */
+
+            $validationSession = $participant->getSession();
+            $participantId = $participant->getUsrId();
+            $basketId = $validationSession->getBasket()->getId();
+
+            try {
+                $token = $this->app['tokens']->getValidationToken($participantId, $basketId);
+            } catch (\Exception_NotFound $e) {
+                continue;
+            }
+
+            $app['events-manager']->trigger('__VALIDATION_REMINDER__', array(
+                'to'          => $participantId,
+                'ssel_id'     => $basketId,
+                'from'        => $validationSession->getInitiatorId(),
+                'validate_id' => $validationSession->getId(),
+                'url'         => $app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/validate/' . $basketId . '/?LOG=' . $token
+            ));
+
+            $participant->setReminded(new \DateTime('now'));
+            $app['EM']->persist($participant);
+        }
+
+        $app['EM']->flush();
+
+        $session = $app['authentication']->openAccount($user);
+
+        if ($user->get_locale() != $app['locale']) {
+            $user->set_locale($app['locale']);
+        }
+
+        $width = $height = null;
+        if ($app['request']->cookies->has('screen')) {
+            $data = explode('x', $app['request']->cookies->get('screen'));
+            $width = $data[0];
+            $height = $data[1];
+        }
+        $session->setIpAddress($app['request']->getClientIp())
+            ->setScreenHeight($height)
+            ->setScreenWidth($width);
+
+        $app['EM']->persist($session);
+        $app['EM']->flush();
+
+        return $session;
+    }
+
+    public function authenticateWithProvider(PhraseaApplication $app, Request $request, $providerId)
+    {
+        $provider = $this->findProvider($app, $providerId);
+
+        return $provider->authenticate($request->query->all());
+    }
+
+    public function authenticationCallback(PhraseaApplication $app, Request $request, $providerId)
+    {
+        $login = new \login();
+        $provider = $this->findProvider($app, $providerId);
+
+        // triggers what's necessary
+        try {
+            $provider->onCallback($request);
+            $token = $provider->getToken();
+        } catch (NotAuthenticatedException $e) {
+            $app['session']->getFlashBag()->add('error', sprintf(_('Unable to authenticate with %s'), $provider->getName()));
+
+            return $app->redirect($app->path('homepage'));
+        }
+
+        $userAuthProvider = $app['EM']
+            ->getRepository('Entities\UsrAuthProvider')
+            ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
+
+        if (null !== $userAuthProvider) {
+            $this->postAuthProcess($app, $userAuthProvider->getUser($app));
+
+            return $app->redirect($request->query->get('redirect', $app->path('prod')));
+        }
+
+        try {
+            $user = $app['authentication.suggestion-finder']->find($token);
+        } catch (NotAuthenticatedException $e) {
+            $app->addFlash('error', _('Unable to retrieve provider identity'));
+
+            return $app->redirect($app->path('homepage'));
+        }
+
+        if (null !== $user) {
+            $this->attachProviderToUser($app['EM'], $provider, $user);
+            $app['EM']->flush();
+
+            $this->postAuthProcess($app, $user);
+
+            return $app->redirect($request->query->get('redirect', $app->path('prod')));
+        }
+
+        if ($app['authentication.providers.account-creator']->isEnabled()) {
+            $user = $app['authentication.providers.account-creator']->create($app, $token->getId(), $token->getIdentity()->getEmail(), $token->getTemplates());
+
+            $this->attachProviderToUser($app['EM'], $provider, $user);
+            $app['EM']->flush();
+
+            $this->postAuthProcess($app, $user);
+
+            return $app->redirect($request->query->get('redirect', $app->path('prod')));
+        } elseif ($app['registration.enabled']) {
+            return $app->redirect($app->path('login_register_classic', array('providerId' => $providerId)));
+        }
+
+        $app->addFlash('error', _('Your identity is not recognized.'));
+
+        return $app->redirect($app->path('homepage'));
     }
 
     /**
-     * Prefix the method to call with the controller class name
      *
-     * @param  string $method The method to call
-     * @return string
+     * @param PhraseaApplication $app
+     * @param string $providerId
+     * @return ProviderInterface
+     * @throws NotFoundHttpException
      */
-    private function call($method)
+    private function findProvider(PhraseaApplication $app, $providerId)
     {
-        return sprintf('%s::%s', __CLASS__, $method);
+        try {
+            return $app['authentication.providers']->get($providerId);
+        } catch (InvalidArgumentException $e) {
+            throw new NotFoundHttpException('The requested provider does not exist');
+        }
     }
 
-    /**
-     * Get required fields configuration
-     *
-     * @param  Application $app
-     * @return boolean
-     */
-    private function getRegisterFieldConfiguration(Application $app)
+    private function doAuthentication(PhraseaApplication $app, Request $request, FormInterface $form, $redirector)
     {
-        /**
-         * @todo enhance this shit
-         */
-        $arrayVerif = array(
-            "form_login"            => true,
-            "form_password"         => true,
-            "form_password_confirm" => true,
-            "form_gender"           => true,
-            "form_lastname"         => true,
-            "form_firstname"        => true,
-            "form_email"            => true,
-            "form_job"              => true,
-            "form_company"          => true,
-            "form_activity"         => true,
-            "form_phone"            => true,
-            "form_fax"              => true,
-            "form_address"          => true,
-            "form_zip"              => true,
-            "form_geonameid"        => true,
-            "demand"                => true
-        );
-
-        $registerFieldConfigurationFile = $app['phraseanet.registry']->get('GV_RootPath') . 'config/register-fields.php';
-
-        if (is_file($registerFieldConfigurationFile)) {
-            include $registerFieldConfigurationFile;
+        if (!is_callable($redirector)) {
+            throw new InvalidArgumentException('Redirector should be callable');
         }
 
-        //Override mandatory fields
-        $arrayVerif['form_login'] = true;
-        $arrayVerif['form_password'] = true;
-        $arrayVerif['form_password_confirm'] = true;
-        $arrayVerif['demand'] = true;
-        $arrayVerif['form_email'] = true;
+        $context = new Context(Context::CONTEXT_NATIVE);
+        $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
-        return $arrayVerif;
+        $form->bind($request);
+        if (!$form->isValid()) {
+            $app->addFlash('error', _('An unexpected error occured during authentication process, please contact an admin'));
+
+            throw new AuthenticationException(call_user_func($redirector));
+        }
+
+        $params = array();
+
+        if (null !== $redirect = $request->get('redirect')) {
+            $params['redirect'] = ltrim($redirect, '/');
+        }
+
+        try {
+            $usr_id = $app['auth.native']->getUsrId($request->request->get('login'), $request->request->get('password'), $request);
+        } catch (RequireCaptchaException $e) {
+            $app->requireCaptcha();
+            $app->addFlash('warning', _('Please fill the captcha'));
+
+            throw new AuthenticationException(call_user_func($redirector, $params));
+        } catch (AccountLockedException $e) {
+            $app->addFlash('warning', _('login::erreur: Vous n\'avez pas confirme votre email'));
+            $app->addUnlockAccountData($e->getUsrId());
+
+            throw new AuthenticationException(call_user_func($redirector, $params));
+        }
+
+        if (null === $usr_id) {
+            $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
+
+            throw new AuthenticationException(call_user_func($redirector, $params));
+        }
+
+        $user = \User_Adapter::getInstance($usr_id, $app);
+
+        $session = $this->postAuthProcess($app, $user);
+
+        $response = $this->generateAuthResponse($app['browser'], $request->request->get('redirect'));
+        $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
+
+        $user->ACL()->inject_rights();
+
+        if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
+            if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
+                if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
+
+                    $repo = $app['EM']->getRepository('Entities\Basket');
+                    $baskets = $repo->findBy(array('usr_id' => $inviteUsrId));
+
+                    foreach ($baskets as $basket) {
+                        $basket->setUsrId($user->get_id());
+                        $app['EM']->persist($basket);
+                    }
+                }
+            }
+        }
+
+        if ($request->request->get('remember-me') == '1') {
+            $nonce = \random::generatePassword(16);
+            $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
+
+            $token = $app['auth.password-encoder']->encodePassword($string, $nonce);
+
+            $session->setToken($token)
+                ->setNonce($nonce);
+            $cookie = new Cookie('persistent', $token);
+            $response->headers->setCookie($cookie);
+        }
+
+        $event = new PostAuthenticate($request, $response, $user, $context);
+        $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+
+        return $event->getResponse();
     }
 }

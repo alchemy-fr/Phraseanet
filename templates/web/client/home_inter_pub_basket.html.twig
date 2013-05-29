@@ -67,7 +67,7 @@
                     {% endset %}
                 {% else %}
                     {% set ch = [(image_size - 30), (thumbnail.get_height())]|min %}
-                    {% set cw = cw * ratio %}
+                    {% set cw = ch * ratio %}
                     {% set pv = ((image_size - ch) / 2)|floor %}
                     {% set ph = ((image_size - cw) / 2)|floor %}
 

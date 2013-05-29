@@ -90,7 +90,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf("/prod/WorkZone/attachStories/");
 
         $StoryWZ = new \Entities\StoryWZ();
-        $StoryWZ->setUser(self::$DI['app']['phraseanet.user']);
+        $StoryWZ->setUser(self::$DI['app']['authentication']->getUser());
         $StoryWZ->setRecord($story);
 
         self::$DI['app']['EM']->persist($StoryWZ);

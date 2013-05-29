@@ -580,7 +580,7 @@ class Databox implements ControllerProviderInterface
     {
         $app['phraseanet.appbox']->get_connection()->beginTransaction();
         try {
-            $baseId = \collection::mount_collection($app, $app['phraseanet.appbox']->get_databox($databox_id), $collection_id, $app['phraseanet.user']);
+            $baseId = \collection::mount_collection($app, $app['phraseanet.appbox']->get_databox($databox_id), $collection_id, $app['authentication']->getUser());
 
             if (null == $othCollSel = $request->request->get("othcollsel")) {
                 $app->abort(400);
@@ -939,7 +939,7 @@ class Databox implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-            $collection = \collection::create($app, $databox, $app['phraseanet.appbox'], $name, $app['phraseanet.user']);
+            $collection = \collection::create($app, $databox, $app['phraseanet.appbox'], $name, $app['authentication']->getUser());
 
             if (($request->request->get('ccusrothercoll') === "on")
                 && ($othcollsel = $request->request->get('othcollsel') !== null)) {

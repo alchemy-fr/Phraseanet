@@ -140,7 +140,7 @@ class Baskets implements ControllerProviderInterface
     {
         try {
             $repository = $app['EM']->getRepository('\Entities\BasketElement');
-            $basketElement = $repository->findUserElement($request->request->get('p0'), $app['phraseanet.user']);
+            $basketElement = $repository->findUserElement($request->request->get('p0'), $app['authentication']->getUser());
             $app['EM']->remove($basketElement);
             $app['EM']->flush();
         } catch (\Exception $e) {
@@ -164,7 +164,7 @@ class Baskets implements ControllerProviderInterface
         try {
             $repository = $app['EM']->getRepository('\Entities\Basket');
             /* @var $repository \Repositories\BasketRepository */
-            $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['phraseanet.user'], true);
+            $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['authentication']->getUser(), true);
 
             $app['EM']->remove($basket);
             $app['EM']->flush();
@@ -190,7 +190,7 @@ class Baskets implements ControllerProviderInterface
         try {
             $basket = new Basket();
             $basket->setName($request->request->get('p0'));
-            $basket->setOwner($app['phraseanet.user']);
+            $basket->setOwner($app['authentication']->getUser());
 
             $app['EM']->persist($basket);
             $app['EM']->flush();
@@ -215,7 +215,7 @@ class Baskets implements ControllerProviderInterface
     {
         $repository = $app['EM']->getRepository('\Entities\Basket');
         /* @var $repository \Repositories\BasketRepository */
-        $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['phraseanet.user'], true);
+        $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['authentication']->getUser(), true);
 
         if ($basket) {
             try {
@@ -249,7 +249,7 @@ class Baskets implements ControllerProviderInterface
     public function getBaskets(Application $app, Request $request)
     {
         $selectedBasketId = trim($request->get('courChuId', ''));
-        $baskets = new ArrayCollection($app['EM']->getRepository('\Entities\Basket')->findActiveByUser($app['phraseanet.user']));
+        $baskets = new ArrayCollection($app['EM']->getRepository('\Entities\Basket')->findActiveByUser($app['authentication']->getUser()));
         $selectedBasket = null;
 
         if ('' === $selectedBasketId && $baskets->count() > 0) {
@@ -257,7 +257,7 @@ class Baskets implements ControllerProviderInterface
         }
 
         if ('' !== $selectedBasketId) {
-            $selectedBasket = $app['EM']->getRepository('\Entities\Basket')->findUserBasket($app, $selectedBasketId, $app['phraseanet.user'], true);
+            $selectedBasket = $app['EM']->getRepository('\Entities\Basket')->findUserBasket($app, $selectedBasketId, $app['authentication']->getUser(), true);
         }
 
         $basketCollections = $baskets->partition(function($key, $basket) {
@@ -286,7 +286,7 @@ class Baskets implements ControllerProviderInterface
         $repository = $app['EM']->getRepository('\Entities\Basket');
 
         /* @var $repository \Repositories\BasketRepository */
-        $baskets = $repository->findActiveByUser($app['phraseanet.user']);
+        $baskets = $repository->findActiveByUser($app['authentication']->getUser());
 
         foreach ($baskets as $basket) {
             if (!$basket->getIsRead()) {

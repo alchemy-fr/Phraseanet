@@ -44,9 +44,9 @@
                 <label for="feed_add_subtitle">{% trans 'publication : sous titre' %}</label>
                 <textarea id="feed_add_subtitle" name="subtitle">{{desc}}</textarea>
                 <label for="feed_add_author_name">{% trans 'publication : autheur' %}</label>
-                <input class="required_text" type="text" name="author_name" id="feed_add_author_name" value="{{ app['phraseanet.user'].get_display_name() }}" />
+                <input class="required_text" type="text" name="author_name" id="feed_add_author_name" value="{{ app['authentication'].getUser().get_display_name() }}" />
                 <label for="feed_add_author_mail">{% trans 'publication : email autheur' %}</label>
-                <input class="required_text" type="text" name="author_mail" id="feed_add_author_mail" value="{{ app['phraseanet.user'].get_email() }}" />
+                <input class="required_text" type="text" name="author_mail" id="feed_add_author_mail" value="{{ app['authentication'].getUser().get_email() }}" />
             </div>
         </div>
         <div class="PNB" style="width:50%;left:auto;">
@@ -54,7 +54,7 @@
                 <h1>{% trans 'Fils disponibles' %}</h1>
                 <div class="list">
                     {% for feed in feeds.get_feeds() %}
-                        {% if feed.is_publisher(app['phraseanet.user']) %}
+                        {% if feed.is_publisher(app['authentication'].getUser()) %}
                             <div class="feed {% if loop.index is odd%}odd{% endif %}">
                                 <span>{{ feed.get_title() }}</span>
                                 {% if feed.is_public() %}

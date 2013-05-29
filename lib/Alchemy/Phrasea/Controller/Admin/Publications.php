@@ -36,7 +36,7 @@ class Publications implements ControllerProviderInterface
         $controllers->get('/list/', function(PhraseaApplication $app) {
 
             $feeds = \Feed_Collection::load_all(
-                    $app, $app['phraseanet.user']
+                    $app, $app['authentication']->getUser()
             );
 
             return $app['twig']
@@ -46,7 +46,7 @@ class Publications implements ControllerProviderInterface
         $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
 
             $feed = \Feed_Adapter::create(
-                    $app, $app['phraseanet.user'], $request->request->get('title'), $request->request->get('subtitle')
+                    $app, $app['authentication']->getUser(), $request->request->get('title'), $request->request->get('subtitle')
             );
 
             if ($request->request->get('public') == '1') {
@@ -84,7 +84,7 @@ class Publications implements ControllerProviderInterface
         })->before(function(Request $request) use ($app) {
             $feed = new \Feed_Adapter($app, $request->attributes->get('id'));
 
-            if (!$feed->is_owner($app['phraseanet.user'])) {
+            if (!$feed->is_owner($app['authentication']->getUser())) {
                 return $app->redirect('/admin/publications/feed/' . $request->attributes->get('id') . '/?error=' . _('You are not the owner of this feed, you can not edit it'));
             }
         })->assert('id', '\d+');
@@ -99,7 +99,7 @@ class Publications implements ControllerProviderInterface
 
             $request = $app["request"];
 
-            if (!$feed->is_owner($app['phraseanet.user'])) {
+            if (!$feed->is_owner($app['authentication']->getUser())) {
                 $datas['message'] = 'You are not allowed to do that';
 
                 return $app->json($datas);

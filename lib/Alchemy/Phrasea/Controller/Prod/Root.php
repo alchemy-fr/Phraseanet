@@ -33,11 +33,10 @@ class Root implements ControllerProviderInterface
 
         $controllers->before(function(Request $request) use ($app) {
 
-            if (!$app->isAuthenticated() && null !== $request->query->get('nolog') && \phrasea::guest_allowed($app)) {
-                $auth = new Session_Authentication_Guest($app);
-                $app->openAccount($auth);
-
-                return $app->redirect('/prod/');
+            if (!$app['authentication']->isAuthenticated() && null !== $request->query->get('nolog')) {
+                return $app->redirect(
+                    $app->path('login_authenticate_as_guest', array('redirect' => '/prod/'))
+                );
             }
 
             $app['firewall']->requireAuthentication();
@@ -70,13 +69,13 @@ class Root implements ControllerProviderInterface
                 $css[$baseName] = $baseName;
             }
 
-            $cssfile = $app['phraseanet.user']->getPrefs('css');
+            $cssfile = $app['authentication']->getUser()->getPrefs('css');
 
             if (!$cssfile && isset($css['000000'])) {
                 $cssfile = '000000';
             }
 
-            $user_feeds = \Feed_Collection::load_all($app, $app['phraseanet.user']);
+            $user_feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
             $feeds = array_merge(array($user_feeds->get_aggregate()), $user_feeds->get_feeds());
 
             $thjslist = "";
@@ -123,7 +122,7 @@ class Root implements ControllerProviderInterface
                 'GV_google_api'        => $app['phraseanet.registry']->get('GV_google_api'),
                 'queries_topics'       => $queries_topics,
                 'search_status'        => \databox_status::getSearchStatus($app),
-                'queries_history'      => \queries::history($app['phraseanet.appbox'], $app['phraseanet.user']->get_id()),
+                'queries_history'      => \queries::history($app['phraseanet.appbox'], $app['authentication']->getUser()->get_id()),
                 'thesau_js_list'       => $thjslist,
                 'thesau_json_sbas'     => json_encode($sbas),
                 'thesau_json_bas2sbas' => json_encode($bas2sbas),

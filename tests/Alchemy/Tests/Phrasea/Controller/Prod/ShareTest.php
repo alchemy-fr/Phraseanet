@@ -26,10 +26,10 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
-        self::$DI['app']['phraseanet.user'] = $this->getMockBuilder('\User_Adapter')
+        self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
             ->setMethods(array('ACL'))
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock());
 
         $stubbedACL = $this->getMockBuilder('\ACL')
             ->disableOriginalConstructor()
@@ -45,7 +45,7 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('has_access_to_subdef')
             ->will($this->returnValue(true));
 
-        self::$DI['app']['phraseanet.user']->expects($this->any())
+        self::$DI['app']['authentication']->getUser()->expects($this->any())
             ->method('ACL')
             ->will($this->returnValue($stubbedACL));
 
@@ -72,10 +72,10 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $share = new Share();
 
-        self::$DI['app']['phraseanet.user'] = $this->getMockBuilder('\User_Adapter')
+        self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
             ->setMethods(array('ACL'))
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock());
 
         $stubbedACL = $this->getMockBuilder('\ACL')
             ->disableOriginalConstructor()
@@ -86,7 +86,7 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('has_access_to_subdef')
             ->will($this->returnValue(false));
 
-        self::$DI['app']['phraseanet.user']->expects($this->once())
+        self::$DI['app']['authentication']->getUser()->expects($this->once())
             ->method('ACL')
             ->will($this->returnValue($stubbedACL));
 

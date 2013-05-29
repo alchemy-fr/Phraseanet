@@ -779,7 +779,7 @@ class Thesaurus implements ControllerProviderInterface
         $bases = $languages = array();
 
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $app['phraseanet.user']->get_id()));
+        $stmt->execute(array(':usr_id' => $app['authentication']->getUser()->get_id()));
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 

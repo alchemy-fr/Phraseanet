@@ -37,8 +37,8 @@
                     <h1 id="namePhr">{{ app['phraseanet.registry'].get('GV_homeTitle') }}</h1>
                 </div>
 
-                {% if app['phraseanet.user'] is not none %}
-                    {% set username = '<b>' ~ app['phraseanet.user'].get_display_name() ~ '</b>' %}
+                {% if app['authentication'].getUser() is not none %}
+                    {% set username = '<b>' ~ app['authentication'].getUser().get_display_name() ~ '</b>' %}
                     <div id="hello-box" class="span6 offset3">
                         <p class="login_hello">
                             {% trans %}

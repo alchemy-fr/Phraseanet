@@ -26,7 +26,7 @@ class Firewall
     {
         $this->requireNotGuest();
 
-        if (!$this->app['phraseanet.user']->ACL()->is_admin()) {
+        if (!$this->app['authentication']->getUser()->ACL()->is_admin()) {
             $this->app->abort(403, 'Admin role is required');
         }
 
@@ -37,7 +37,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['phraseanet.user']->ACL()->has_access_to_module($module)) {
+        if (!$this->app['authentication']->getUser()->ACL()->has_access_to_module($module)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -48,7 +48,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['phraseanet.user']->ACL()->has_access_to_sbas($sbas_id)) {
+        if (!$this->app['authentication']->getUser()->ACL()->has_access_to_sbas($sbas_id)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -59,7 +59,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['phraseanet.user']->ACL()->has_access_to_base($base_id)) {
+        if (!$this->app['authentication']->getUser()->ACL()->has_access_to_base($base_id)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -70,7 +70,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['phraseanet.user']->ACL()->has_right($right)) {
+        if (!$this->app['authentication']->getUser()->ACL()->has_right($right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -81,7 +81,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['phraseanet.user']->ACL()->has_right_on_base($base_id, $right)) {
+        if (!$this->app['authentication']->getUser()->ACL()->has_right_on_base($base_id, $right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -92,7 +92,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['phraseanet.user']->ACL()->has_right_on_sbas($sbas_id, $right)) {
+        if (!$this->app['authentication']->getUser()->ACL()->has_right_on_sbas($sbas_id, $right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -103,7 +103,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if ($this->app['phraseanet.user']->is_guest()) {
+        if ($this->app['authentication']->getUser()->is_guest()) {
             $this->app->abort(403, 'Guests do not have admin role');
         }
 
@@ -112,7 +112,7 @@ class Firewall
 
     public function requireAuthentication()
     {
-        if (!$this->app->isAuthenticated()) {
+        if (!$this->app['authentication']->isAuthenticated()) {
             $this->app->abort(302, 'You are not authenticated', array('X-Phraseanet-Redirect' => '/login/'));
         }
 
@@ -121,7 +121,7 @@ class Firewall
 
     public function requireNotAuthenticated()
     {
-        if ($this->app->isAuthenticated()) {
+        if ($this->app['authentication']->isAuthenticated()) {
             $this->app->abort(302, 'You are authenticated', array('X-Phraseanet-Redirect' => '/prod/'));
         }
 
@@ -130,7 +130,7 @@ class Firewall
 
     public function requireOrdersAdmin()
     {
-        if (false === !!count($this->app['phraseanet.user']->ACL()->get_granted_base(array('order_master')))) {
+        if (false === !!count($this->app['authentication']->getUser()->ACL()->get_granted_base(array('order_master')))) {
             $this->app->abort(403, 'You are not an order admin');
         }
 

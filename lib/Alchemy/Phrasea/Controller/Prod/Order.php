@@ -190,7 +190,7 @@ class Order implements ControllerProviderInterface
 
             if (count($records) > 0) {
                 \set_order::create(
-                    $app, $records, $app['phraseanet.user'], $request->request->get('use', ''), ( (null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine)
+                    $app, $records, $app['authentication']->getUser(), $request->request->get('use', ''), ( (null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine)
                 );
 
                 $success = true;
@@ -230,7 +230,7 @@ class Order implements ControllerProviderInterface
         $perPage = (int) $request->query->get('per-page', 10);
         $sort = $request->query->get('sort');
 
-        $baseIds = array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('order_master')));
+        $baseIds = array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('order_master')));
 
         $ordersList = \set_order::listOrders($app, $baseIds, $offsetStart, $perPage, $sort);
         $total = \set_order::countTotalOrder($app['phraseanet.appbox'], $baseIds);

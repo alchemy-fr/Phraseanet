@@ -192,7 +192,7 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
             ':usr_id'   => $user->get_id()
             , ':feed_id'  => $feed->get_id()
             , ':owner'    => $owner ? '1' : null
-            , ':added_by' => $owner ? $user->get_id() : $app['phraseanet.user']->get_id()
+            , ':added_by' => $owner ? $user->get_id() : $app['authentication']->getUser()->get_id()
         );
         $stmt->execute($params);
         $id = $app['phraseanet.appbox']->get_connection()->lastInsertId();

@@ -2,6 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Authentication\Context;
+
 /**
  * Test oauthv2 flow based on ietf authv2 spec
  * @link http://tools.ietf.org/html/draft-ietf-oauth-v2-18
@@ -77,6 +80,37 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $stmt->execute($t);
     }
 
+    /**
+     * @dataProvider provideEventNames
+     */
+    public function testThatEventsAreTriggered($revoked, $method, $eventName, $className)
+    {
+        $acc = self::getAccount();
+        $acc->set_revoked($revoked); // revoked to show form
+
+        $preEvent = 0;
+        $phpunit = $this;
+        self::$DI['app']['dispatcher']->addListener($eventName, function ($event) use ($phpunit, &$preEvent, $className) {
+            $preEvent++;
+            $phpunit->assertInstanceOf($className, $event);
+            $phpunit->assertEquals(Context::CONTEXT_OAUTH2_NATIVE, $event->getContext()->getContext());
+        });
+
+        self::$DI['client']->request($method, '/api/oauthv2/authorize', $this->queryParameters);
+
+        $this->assertEquals(1, $preEvent);
+    }
+
+    public function provideEventNames()
+    {
+        return array(
+            array(false, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+            array(true, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+            array(false, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+            array(true, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+        );
+    }
+
     public static function getApp($rowId)
     {
         $sql = "SELECT * FROM api_applications WHERE application_id = :app_id";
@@ -144,7 +178,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $this->setQueryParameters('grant_type', 'authorization_code');
         $this->setQueryParameters('code', '12345678918');
         self::$DI['client']->request('POST', '/api/oauthv2/token', $this->queryParameters);
-      
+
         $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
     }
 }

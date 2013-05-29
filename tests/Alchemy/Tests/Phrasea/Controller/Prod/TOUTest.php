@@ -46,7 +46,7 @@ class TOUTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
-        self::$DI['app']['phraseanet.user'] = self::$DI['user_alt2'];
+        self::$DI['app']['authentication']->setUser(self::$DI['user_alt2']);
         $this->XMLHTTPRequest('POST', '/prod/TOU/deny/'.$databox->get_sbas_id() .'/');
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());

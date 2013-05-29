@@ -419,4 +419,27 @@ class Session
 
         return false;
     }
+
+    /**
+     * Add modules
+     *
+     * @param \Entities\SessionModule $modules
+     * @return Session
+     */
+    public function addModule(\Entities\SessionModule $modules)
+    {
+        $this->modules[] = $modules;
+    
+        return $this;
+    }
+
+    /**
+     * Remove modules
+     *
+     * @param \Entities\SessionModule $modules
+     */
+    public function removeModule(\Entities\SessionModule $modules)
+    {
+        $this->modules->removeElement($modules);
+    }
 }

@@ -29,16 +29,17 @@ class Lightbox implements ControllerProviderInterface
                 return;
             }
 
-            if ($app->isAuthenticated()) {
-                $app->closeAccount();
+            if ($app['authentication']->isAuthenticated()) {
+                $app['authentication']->closeAccount();
             }
 
-            try {
-                $auth = new \Session_Authentication_Token($app, $request->query->get('LOG'));
-                $app->openAccount($auth);
-            } catch (Exception $e) {
-                return $app->redirect("/login/?error=" . urlencode($e->getMessage()));
+            if (false === $usr_id = $app['authentication.token-validator']->isValid($request->query->get('LOG'))) {
+                $app->addFlash('error', _('The URL you used is out of date, please login'));
+
+                return $app->redirect($app->path('homepage'));
             }
+
+            $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
 
             try {
                 $datas = $app['tokens']->helloToken($request->query->get('LOG'));
@@ -72,8 +73,8 @@ class Lightbox implements ControllerProviderInterface
             /* @var $repository \Repositories\BasketRepository */
 
             $basket_collection = array_merge(
-                $repository->findActiveByUser($app['phraseanet.user'])
-                , $repository->findActiveValidationByUser($app['phraseanet.user'])
+                $repository->findActiveByUser($app['authentication']->getUser())
+                , $repository->findActiveValidationByUser($app['authentication']->getUser())
             );
 
             $template = 'lightbox/index.html.twig';
@@ -97,7 +98,7 @@ class Lightbox implements ControllerProviderInterface
 
             $basketElement = $app['EM']
                 ->getRepository('\Entities\BasketElement')
-                ->findUserElement($sselcont_id, $app['phraseanet.user']);
+                ->findUserElement($sselcont_id, $app['authentication']->getUser());
 
             $parameters = array(
                 'basket_element' => $basketElement,
@@ -111,7 +112,7 @@ class Lightbox implements ControllerProviderInterface
             /* @var $repository \Repositories\BasketElementRepository */
             $repository = $app['EM']->getRepository('\Entities\BasketElement');
 
-            $BasketElement = $repository->findUserElement($sselcont_id, $app['phraseanet.user']);
+            $BasketElement = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
             if ($app['browser']->isMobile()) {
                 $output = $app['twig']->render('lightbox/basket_element.html.twig', array(
@@ -199,12 +200,12 @@ class Lightbox implements ControllerProviderInterface
 
             /* @var $repository \Repositories\BasketRepository */
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
-                $app['phraseanet.user']
+                $app['authentication']->getUser()
             );
 
             $basket = $repository->findUserBasket(
                 $app, $ssel_id
-                , $app['phraseanet.user']
+                , $app['authentication']->getUser()
                 , false
             );
 
@@ -214,9 +215,9 @@ class Lightbox implements ControllerProviderInterface
                 $app['EM']->flush();
             }
 
-            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['phraseanet.user'], $app)->getIsAware() === false) {
+            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->getIsAware() === false) {
                 $basket = $app['EM']->merge($basket);
-                $basket->getValidation()->getParticipant($app['phraseanet.user'], $app)->setIsAware(true);
+                $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setIsAware(true);
                 $app['EM']->flush();
             }
 
@@ -251,12 +252,12 @@ class Lightbox implements ControllerProviderInterface
 
             /* @var $repository \Repositories\BasketRepository */
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
-                $app['phraseanet.user']
+                $app['authentication']->getUser()
             );
 
             $basket = $repository->findUserBasket(
                 $app, $ssel_id
-                , $app['phraseanet.user']
+                , $app['authentication']->getUser()
                 , false
             );
 
@@ -266,9 +267,9 @@ class Lightbox implements ControllerProviderInterface
                 $app['EM']->flush();
             }
 
-            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['phraseanet.user'])->getIsAware() === false) {
+            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsAware() === false) {
                 $basket = $app['EM']->merge($basket);
-                $basket->getValidation()->getParticipant($app['phraseanet.user'], $app)->setIsAware(true);
+                $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setIsAware(true);
                 $app['EM']->flush();
             }
 
@@ -334,7 +335,7 @@ class Lightbox implements ControllerProviderInterface
             /* @var $repository \Repositories\BasketRepository */
             $basket = $repository->findUserBasket(
                 $app, $ssel_id
-                , $app['phraseanet.user']
+                , $app['authentication']->getUser()
                 , false
             );
 
@@ -357,9 +358,9 @@ class Lightbox implements ControllerProviderInterface
             /* @var $repository \Repositories\BasketElementRepository */
             $repository = $app['EM']->getRepository('\Entities\BasketElement');
 
-            $basket_element = $repository->findUserElement($sselcont_id, $app['phraseanet.user']);
+            $basket_element = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
-            $validationDatas = $basket_element->getUserValidationDatas($app['phraseanet.user'], $app);
+            $validationDatas = $basket_element->getUserValidationDatas($app['authentication']->getUser(), $app);
 
             $validationDatas->setNote($note);
 
@@ -405,14 +406,14 @@ class Lightbox implements ControllerProviderInterface
                 /* @var $repository \Repositories\BasketElementRepository */
                 $basket_element = $repository->findUserElement(
                     $sselcont_id
-                    , $app['phraseanet.user']
+                    , $app['authentication']->getUser()
                 );
                 /* @var $basket_element \Entities\BasketElement */
-                $validationDatas = $basket_element->getUserValidationDatas($app['phraseanet.user'], $app);
+                $validationDatas = $basket_element->getUserValidationDatas($app['authentication']->getUser(), $app);
 
                 if (!$basket_element->getBasket()
                         ->getValidation()
-                        ->getParticipant($app['phraseanet.user'], $app)->getCanAgree()) {
+                        ->getParticipant($app['authentication']->getUser(), $app)->getCanAgree()) {
                     throw new ControllerException('You can not agree on this');
                 }
 
@@ -420,7 +421,7 @@ class Lightbox implements ControllerProviderInterface
 
                 $participant = $basket_element->getBasket()
                     ->getValidation()
-                    ->getParticipant($app['phraseanet.user'], $app);
+                    ->getParticipant($app['authentication']->getUser(), $app);
 
                 $app['EM']->merge($basket_element);
 
@@ -453,7 +454,7 @@ class Lightbox implements ControllerProviderInterface
                 /* @var $repository \Repositories\BasketRepository */
                 $basket = $repository->findUserBasket(
                     $app, $ssel_id
-                    , $app['phraseanet.user']
+                    , $app['authentication']->getUser()
                     , false
                 );
 
@@ -461,14 +462,14 @@ class Lightbox implements ControllerProviderInterface
                     throw new ControllerException('There is no validation session attached to this basket');
                 }
 
-                if (!$basket->getValidation()->getParticipant($app['phraseanet.user'], $app)->getCanAgree()) {
+                if (!$basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->getCanAgree()) {
                     throw new ControllerException('You have not right to agree');
                 }
 
                 $agreed = false;
                 /* @var $basket \Entities\Basket */
                 foreach ($basket->getElements() as $element) {
-                    if (null !== $element->getUserValidationDatas($app['phraseanet.user'], $app)->getAgreement()) {
+                    if (null !== $element->getUserValidationDatas($app['authentication']->getUser(), $app)->getAgreement()) {
                         $agreed = true;
                     }
                 }
@@ -478,7 +479,7 @@ class Lightbox implements ControllerProviderInterface
                 }
 
                 /* @var $basket \Entities\Basket */
-                $participant = $basket->getValidation()->getParticipant($app['phraseanet.user'], $app);
+                $participant = $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app);
 
                 $expires = new \DateTime('+10 days');
                 $url = $app['phraseanet.registry']->get('GV_ServerName')
@@ -492,7 +493,7 @@ class Lightbox implements ControllerProviderInterface
                 $to = $basket->getValidation()->getInitiator($app)->get_id();
                 $params = array(
                     'ssel_id' => $basket->getId(),
-                    'from'    => $app['phraseanet.user']->get_id(),
+                    'from'    => $app['authentication']->getUser()->get_id(),
                     'url'     => $url,
                     'to'      => $to
                 );

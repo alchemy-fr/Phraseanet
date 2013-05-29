@@ -32,12 +32,9 @@ return call_user_func(function($environment = null) {
     });
 
     $app->before(function(Request $request) use ($app) {
-        if ($request->cookies->has('persistent') && !$app->isAuthenticated()) {
-            try {
-                $auth = new \Session_Authentication_PersistentCookie($app, $request->cookies->get('persistent'));
-                $app->openAccount($auth, $auth->getSessionId());
-            } catch (\Exception $e) {
-
+        if ($request->cookies->has('persistent') && !$app['authentication']->isAuthenticated()) {
+            if (false !== $session = $app['authentication.persistent-manager']->getSession($request->cookies->get('persistent'))) {
+                $app['authentication']->refreshAccount($session);
             }
         }
     });
@@ -126,8 +123,12 @@ return call_user_func(function($environment = null) {
         } elseif ($e instanceof \Exception_NotFound) {
             $code = 404;
             $message = 'Not Found';
+        } elseif($e instanceof \Exception_UnauthorizedAction) {
+            $code = 403;
+            $message = 'Forbidden';
         } else {
-            throw $e;
+            $code = 500;
+            $message = 'Server Error' . ($app['debug'] ? ' : ' . $e->getMessage() : '');
         }
 
         return new Response($message, $code, array('X-Status-Code' => $code));

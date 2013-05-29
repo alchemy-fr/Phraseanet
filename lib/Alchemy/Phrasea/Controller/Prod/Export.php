@@ -185,7 +185,7 @@ class Export implements ControllerProviderInterface
 
         try {
             $download->prepare_export(
-                $app['phraseanet.user'],
+                $app['authentication']->getUser(),
                 $app['filesystem'],
                 $request->request->get('obj'),
                 false,
@@ -236,7 +236,7 @@ class Export implements ControllerProviderInterface
         //prepare export
         $download = new \set_export($app, $lst, $ssttid);
         $list = $download->prepare_export(
-            $app['phraseanet.user'],
+            $app['authentication']->getUser(),
             $app['filesystem'],
             (array) $request->request->get('obj'),
             $request->request->get("type") == "title" ? : false,
@@ -256,7 +256,7 @@ class Export implements ControllerProviderInterface
                 $destMails[] = $mail;
             } else {
                 $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
-                    'usr_id' => $app['phraseanet.user']->get_id(),
+                    'usr_id' => $app['authentication']->getUser()->get_id(),
                     'lst'    => $lst,
                     'ssttid' => $ssttid,
                     'dest'   => $mail,
@@ -282,7 +282,7 @@ class Export implements ControllerProviderInterface
 
             $url = $app['phraseanet.registry']->get('GV_ServerName') . 'download/' . $token . '/prepare/?anonymous';
 
-            $emitter = new Emitter($app['phraseanet.user']->get_display_name(), $app['phraseanet.user']->get_email());
+            $emitter = new Emitter($app['authentication']->getUser()->get_display_name(), $app['authentication']->getUser()->get_email());
 
             foreach ($destMails as $key => $mail) {
                 try {
@@ -303,7 +303,7 @@ class Export implements ControllerProviderInterface
             if (count($remaingEmails) > 0) {
                 foreach ($remaingEmails as $mail) {
                     $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
-                        'usr_id' => $app['phraseanet.user']->get_id(),
+                        'usr_id' => $app['authentication']->getUser()->get_id(),
                         'lst'    => $lst,
                         'ssttid' => $ssttid,
                         'dest'   => $mail,
@@ -314,7 +314,7 @@ class Export implements ControllerProviderInterface
         } elseif (!$token && count($destMails) > 0) { //couldn't generate token
             foreach ($destMails as $mail) {
                 $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
-                    'usr_id' => $app['phraseanet.user']->get_id(),
+                    'usr_id' => $app['authentication']->getUser()->get_id(),
                     'lst'    => $lst,
                     'ssttid' => $ssttid,
                     'dest'   => $mail,

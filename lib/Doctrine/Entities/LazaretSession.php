@@ -171,4 +171,27 @@ class LazaretSession
     {
         return $this->usr_id;
     }
+
+    /**
+     * Add files
+     *
+     * @param \Entities\LazaretFile $files
+     * @return LazaretSession
+     */
+    public function addFile(\Entities\LazaretFile $files)
+    {
+        $this->files[] = $files;
+    
+        return $this;
+    }
+
+    /**
+     * Remove files
+     *
+     * @param \Entities\LazaretFile $files
+     */
+    public function removeFile(\Entities\LazaretFile $files)
+    {
+        $this->files->removeElement($files);
+    }
 }

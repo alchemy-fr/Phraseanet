@@ -161,7 +161,7 @@ class Setup implements ControllerProviderInterface
 
             $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
 
-            $app->openAccount(new \Session_Authentication_None($user));
+            $app['authentication']->openAccount($user);
 
             return $app->redirect($app->path('admin', array(
                 'section' => 'taskmanager',

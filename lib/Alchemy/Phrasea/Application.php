@@ -21,7 +21,7 @@ use Alchemy\Phrasea\Controller\Admin\Databox;
 use Alchemy\Phrasea\Controller\Admin\Databoxes;
 use Alchemy\Phrasea\Controller\Admin\Fields;
 use Alchemy\Phrasea\Controller\Admin\Publications;
-use Alchemy\Phrasea\Controller\Admin\Root;
+use Alchemy\Phrasea\Controller\Admin\Root as AdminRoot;
 use Alchemy\Phrasea\Controller\Admin\Setup;
 use Alchemy\Phrasea\Controller\Admin\SearchEngine;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
@@ -63,6 +63,7 @@ use Alchemy\Phrasea\Controller\Report\Root as ReportRoot;
 use Alchemy\Phrasea\Controller\Root\Account;
 use Alchemy\Phrasea\Controller\Root\Developers;
 use Alchemy\Phrasea\Controller\Root\Login;
+use Alchemy\Phrasea\Controller\Root\Root;
 use Alchemy\Phrasea\Controller\Root\RSSFeeds;
 use Alchemy\Phrasea\Controller\Root\Session;
 use Alchemy\Phrasea\Controller\Setup as SetupController;
@@ -74,6 +75,7 @@ use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
 use Alchemy\Phrasea\Core\Event\Subscriber\Logout;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
+use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
@@ -87,10 +89,14 @@ use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
+use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Twig\JSUniqueID;
+use Alchemy\Phrasea\Twig\Camelize;
 use FFMpeg\FFMpegServiceProvider;
 use Neutron\Silex\Provider\ImagineServiceProvider;
 use MediaVorus\MediaVorus;
@@ -101,8 +107,10 @@ use Monolog\Handler\NullHandler;
 use MP4Box\MP4BoxServiceProvider;
 use Neutron\Silex\Provider\BadFaithServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
+use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
+use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TwigServiceProvider;
@@ -126,6 +134,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\Exception\FormException;
 
 class Application extends SilexApplication
 {
@@ -135,6 +148,7 @@ class Application extends SilexApplication
         'fr_FR' => 'Français',
         'nl_NL' => 'Dutch',
     );
+    private static $flashTypes = array('warning', 'info', 'success', 'error');
     private $environment;
     private $sessionCookieEnabled = true;
 
@@ -188,11 +202,13 @@ class Application extends SilexApplication
             ini_set('display_errors', 'off');
         }
 
+        $this->register(new AuthenticationManagerServiceProvider());
         $this->register(new BadFaithServiceProvider());
         $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
         $this->register(new ConfigurationServiceProvider());
         $this->register(new ConfigurationTesterServiceProvider);
+        $this->register(new RegistrationServiceProvider());
         $this->register(new CacheServiceProvider());
         $this->register(new ImagineServiceProvider());
         $this->register(new JMSSerializerServiceProvider());
@@ -227,6 +243,19 @@ class Application extends SilexApplication
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
+        $this->register(new ReCaptchaServiceProvider());
+
+        $this['recaptcha.public-key'] = $this->share(function (Application $app) {
+            if($app['phraseanet.registry']->get('GV_captchas')) {
+                return $app['phraseanet.registry']->get('GV_captcha_public_key');
+            }
+        });
+        $this['recaptcha.private-key'] = $this->share(function (Application $app) {
+            if($app['phraseanet.registry']->get('GV_captchas')) {
+                return $app['phraseanet.registry']->get('GV_captcha_private_key');
+            }
+        });
+
         $this->register(new SearchEngineServiceProvider());
         $this->register(new SessionServiceProvider(), array(
             'session.test' => $this->getEnvironment() == 'test'
@@ -238,8 +267,10 @@ class Application extends SilexApplication
         $this->register(new TwigServiceProvider(), array(
             'twig.options' => array(
                 'cache'           => realpath(__DIR__ . '/../../../../../../tmp/cache_twig/'),
-            )
+            ),
+            'twig.form.templates' => array('login/common/form_div_layout.html.twig')
         ));
+        $this->register(new FormServiceProvider());
 
         $this->setupTwig();
         $this->register(new UnoconvServiceProvider());
@@ -249,7 +280,7 @@ class Application extends SilexApplication
 
         if ('dev' === $this->environment) {
             $this->register($p = new WebProfilerServiceProvider(), array(
-                'profiler.cache_dir' => __DIR__ . '/../../../cache/profiler',
+                'profiler.cache_dir' => __DIR__ . '/../../../tmp/cache/profiler',
             ));
             $this->mount('/_profiler', $p);
         }
@@ -332,8 +363,6 @@ class Application extends SilexApplication
             }
         });
 
-        $this->reinitUser();
-
         $this['date-formatter'] = $this->share(function(Application $app) {
             return new \phraseadate($app);
         });
@@ -369,6 +398,25 @@ class Application extends SilexApplication
 
             return $data[1];
         };
+    }
+
+    /**
+     * Returns a form.
+     *
+     * @see FormFactory::create()
+     *
+     * @param string|FormTypeInterface $type    The type of the form
+     * @param mixed                    $data    The initial data
+     * @param array                    $options The options
+     * @param FormBuilderInterface     $parent  The parent builder
+     *
+     * @return FormInterface The form named after the type
+     *
+     * @throws FormException if any given option is not applicable to the given type
+     */
+    public function form($type = 'form', $data = null, array $options = array(), FormBuilderInterface $parent = null)
+    {
+        return $this['form.factory']->create($type, $data, $options, $parent);
     }
 
     /**
@@ -422,7 +470,7 @@ class Application extends SilexApplication
             return;
         }
 
-        $event->setResponse($event->getResponse()->setCharset('UTF-8'));
+        $event->getResponse()->setCharset('UTF-8');
     }
 
     public function disableCookiesIfRequired(FilterResponseEvent $event)
@@ -477,7 +525,8 @@ class Application extends SilexApplication
                 $twig->addExtension(new \Twig_Extensions_Extension_Intl());
                 // add filters truncate, wordwrap, nl2br
                 $twig->addExtension(new \Twig_Extensions_Extension_Text());
-                $twig->addExtension(new \Alchemy\Phrasea\Twig\JSUniqueID());
+                $twig->addExtension(new JSUniqueID());
+                $twig->addExtension(new Camelize());
 
                 $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
                 $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
@@ -491,6 +540,7 @@ class Application extends SilexApplication
                 $twig->addFilter('sbas_from_bas', new \Twig_Filter_Function('phrasea::sbasFromBas'));
                 $twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
                 $twig->addFilter('round', new \Twig_Filter_Function('round'));
+                $twig->addFilter('count', new \Twig_Filter_Function('count'));
                 $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
                 $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
                 $twig->addFilter('AppName', new \Twig_Filter_Function('Alchemy\Phrasea\Controller\Admin\ConnectedUsers::appName'));
@@ -503,12 +553,26 @@ class Application extends SilexApplication
     /**
      * Adds a flash message for type.
      *
+     * In Phraseanet, valid types are "warning", "info", "success" and "error"
+     *
      * @param string $type
      * @param string $message
+     *
+     * @return Application
+     *
+     * @throws InvalidArgumentException In case the type is not valid
      */
     public function addFlash($type, $message)
     {
-        return $this['session']->getFlashBag()->add($type, $message);
+        if (!in_array($type, self::$flashTypes)) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid flash message type `%s`, valid type are %s', $type, implode(', ', self::$flashTypes)
+            ));
+        }
+
+        $this['session']->getFlashBag()->add($type, $message);
+
+        return $this;
     }
 
     /**
@@ -525,13 +589,57 @@ class Application extends SilexApplication
     }
 
     /**
-     * Tell if current a session is open
+     * Adds a temporary unlock data for an account-locked user
+     *
+     * @param integer $data
+     */
+    public function addUnlockAccountData($data)
+    {
+        $this['session']->set('unlock_account_data', $data);
+    }
+
+    /**
+     * Returns the temporary unlock account data
+     *
+     * @return null|integer
+     */
+    public function getUnlockAccountData()
+    {
+        if ($this['session']->has('unlock_account_data')) {
+            return $this['session']->remove('unlock_account_data');
+        }
+
+        return null;
+    }
+
+    /**
+     * Asks for a captcha ar next authentication
+     *
+     * @return Application
+     */
+    public function requireCaptcha()
+    {
+        if ($this['phraseanet.registry']->get('GV_captchas')) {
+            $this['session']->set('require_captcha', true);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Tells if a captcha is required for next authentication
      *
      * @return boolean
      */
-    public function isAuthenticated()
+    public function isCaptchaRequired()
     {
-        return $this['session']->has('usr_id');
+        if ($this['session']->has('require_captcha')) {
+            $this['session']->remove('require_captcha');
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -544,65 +652,9 @@ class Application extends SilexApplication
         return array();
     }
 
-    /**
-     * Open user session
-     *
-     * @param  \Session_Authentication_Interface $auth
-     * @param  integer                           $ses_id use previous phrasea session id
-     * @throws \Exception_InternalServerError
-     */
-    public function openAccount(\Session_Authentication_Interface $auth, $ses_id = null)
-    {
-        $user = $auth->get_user();
-
-        $this['session']->clear();
-        $this['session']->set('usr_id', $user->get_id());
-
-        $session = new \Entities\Session();
-        $session->setBrowserName($this['browser']->getBrowser())
-            ->setBrowserVersion($this['browser']->getVersion())
-            ->setPlatform($this['browser']->getPlatform())
-            ->setUserAgent($this['browser']->getUserAgent())
-            ->setUsrId($user->get_id());
-
-        $this['EM']->persist($session);
-        $this['EM']->flush();
-
-        $this['session']->set('session_id', $session->getId());
-
-        foreach ($user->ACL()->get_granted_sbas() as $databox) {
-            \cache_databox::insertClient($this, $databox);
-        }
-        $this->reinitUser();
-    }
-
     public function bindRoutes()
     {
-        $this->get('/', function(Application $app) {
-            if ($app['browser']->isMobile()) {
-                return $app->redirect("/login/?redirect=lightbox");
-            } elseif ($app['browser']->isNewGeneration()) {
-                return $app->redirect("/login/?redirect=prod");
-            } else {
-                return $app->redirect("/login/?redirect=client");
-            }
-        })->bind('root');
-
-        $this->get('/robots.txt', function(Application $app) {
-
-            if ($app['phraseanet.registry']->get('GV_allow_search_engine') === true) {
-                $buffer = "User-Agent: *\n" . "Allow: /\n";
-            } else {
-                $buffer = "User-Agent: *\n" . "Disallow: /\n";
-            }
-
-            return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
-        })->bind('robots');
-
-        $this->mount('/setup', new SetupController());
-        $this->mount('/setup/connection_test/', new ConnectionTest());
-        $this->mount('/setup/test/', new PathFileTest());
-
+        $this->mount('/', new Root());
         $this->mount('/feeds/', new RSSFeeds());
         $this->mount('/account/', new Account());
         $this->mount('/login/', new Login());
@@ -614,7 +666,7 @@ class Application extends SilexApplication
 
         $this->mount('/include/minify/', new Minifier());
 
-        $this->mount('/admin/', new Root());
+        $this->mount('/admin/', new AdminRoot());
         $this->mount('/admin/dashboard', new Dashboard());
         $this->mount('/admin/collection', new Collection());
         $this->mount('/admin/databox', new Databox());
@@ -665,6 +717,10 @@ class Application extends SilexApplication
         $this->mount('/download/', new DoDownload());
         $this->mount('/session/', new Session());
 
+        $this->mount('/setup', new SetupController());
+        $this->mount('/setup/connection_test/', new ConnectionTest());
+        $this->mount('/setup/test/', new PathFileTest());
+
         $this->mount('/report/', new ReportRoot());
         $this->mount('/report/activity', new ReportActivity());
         $this->mount('/report/informations', new ReportInformations());
@@ -672,28 +728,6 @@ class Application extends SilexApplication
 
         $this->mount('/thesaurus', new Thesaurus());
         $this->mount('/xmlhttp', new ThesaurusXMLHttp());
-    }
-
-    private function reinitUser()
-    {
-        $this['phraseanet.user'] = $this->share(function(Application $app) {
-            if ($app->isAuthenticated()) {
-                return \User_Adapter::getInstance($app['session']->get('usr_id'), $app);
-            }
-
-            return null;
-        });
-    }
-
-    /**
-     * Closes user session
-     */
-    public function closeAccount()
-    {
-        $this['session']->clear();
-        $this->reinitUser();
-
-        return $this;
     }
 
     /**
@@ -704,6 +738,16 @@ class Application extends SilexApplication
     public static function getAvailableLanguages()
     {
         return static::$availableLanguages;
+    }
+
+    /**
+     * Returns available flash message types for Phraseanet
+     *
+     * @return array
+     */
+    public static function getAvailableFlashTypes()
+    {
+        return static::$flashTypes;
     }
 
     public function disableCookies()
