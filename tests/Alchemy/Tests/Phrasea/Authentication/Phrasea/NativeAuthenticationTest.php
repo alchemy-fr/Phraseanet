@@ -9,7 +9,6 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider provideReservedUsernames
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication::isValid
      */
     public function testReservedAreValid($username)
     {
@@ -17,15 +16,11 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $failureManager = $this->getFailureManagerMock();
         $conn = $this->getMock('connection_interface');
         $request = $this->getRequestMock();
 
-        $failureManager->expects($this->never())
-            ->method('checkFailures');
-
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $failureManager, $conn);
-        $this->assertFalse($auth->isValid($username, $password, $request));
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
+        $this->assertNull($auth->getUsrId($username, $password, $request));
     }
 
     public function provideReservedUsernames()
@@ -43,15 +38,11 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $failureManager = $this->getFailureManagerMock();
         $conn = $this->getConnectionMock($username, null);
         $request = $this->getRequestMock();
 
-        $failureManager->expects($this->never())
-            ->method('checkFailures');
-
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $failureManager, $conn);
-        $this->assertFalse($auth->isValid($username, $password, $request));
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
+        $this->assertNull($auth->getUsrId($username, $password, $request));
     }
 
     public function testLockAccountThrowsAnException()
@@ -61,7 +52,6 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $failureManager = $this->getFailureManagerMock();
         $conn = $this->getConnectionMock($username, array(
             'nonce' => 'dfqsdgqsd',
             'salted_password' => '1',
@@ -71,20 +61,17 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
         ));
         $request = $this->getRequestMock();
 
-        $failureManager->expects($this->never())
-            ->method('checkFailures');
-
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $failureManager, $conn);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
 
         try {
-            $auth->isValid($username, $password, $request);
+            $auth->getUsrId($username, $password, $request);
             $this->fail('Should have raised an exception');
         } catch (AccountLockedException $e) {
 
         }
     }
 
-    public function testIsValidWithCorrectCredentials()
+    public function testGetUsrIdWithCorrectCredentials()
     {
         $username = 'romainneutron';
         $password = 'popo42';
@@ -94,7 +81,6 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $failureManager = $this->getFailureManagerMock();
         $conn = $this->getConnectionMock($username, array(
             'nonce' => $nonce,
             'salted_password' => '1',
@@ -104,10 +90,6 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
         ));
         $request = $this->getRequestMock();
 
-        $failureManager->expects($this->once())
-            ->method('checkFailures')
-            ->with($this->equalTo($username), $this->equalTo($request));
-
         $oldEncoder->expects($this->never())
             ->method('isPasswordValid');
 
@@ -116,9 +98,9 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(true));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $failureManager, $conn);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
 
-        $this->assertEquals($usr_id, $auth->isValid($username, $password, $request));
+        $this->assertEquals($usr_id, $auth->getUsrId($username, $password, $request));
     }
 
     public function testIsNotValidWithIncorrectCredentials()
@@ -131,7 +113,6 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $failureManager = $this->getFailureManagerMock();
         $conn = $this->getConnectionMock($username, array(
             'nonce' => $nonce,
             'salted_password' => '1',
@@ -141,16 +122,6 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
         ));
         $request = $this->getRequestMock();
 
-        $failureManager->expects($this->at(0))
-            ->method('checkFailures')
-            ->with($this->equalTo($username), $this->equalTo($request));
-        $failureManager->expects($this->at(1))
-            ->method('saveFailure')
-            ->with($this->equalTo($username), $this->equalTo($request));
-        $failureManager->expects($this->at(2))
-            ->method('checkFailures')
-            ->with($this->equalTo($username), $this->equalTo($request));
-
         $oldEncoder->expects($this->never())
             ->method('isPasswordValid');
 
@@ -159,9 +130,9 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $failureManager, $conn);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
 
-        $this->assertEquals(false, $auth->isValid($username, $password, $request));
+        $this->assertEquals(false, $auth->getUsrId($username, $password, $request));
     }
 
     public function testIsNotValidWithIncorrectOldCredentials()
@@ -174,7 +145,6 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $failureManager = $this->getFailureManagerMock();
         $conn = $this->getConnectionMock($username, array(
             'nonce' => $nonce,
             'salted_password' => '0',
@@ -183,16 +153,6 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
             'usr_password' => $encoded,
         ));
         $request = $this->getRequestMock();
-
-        $failureManager->expects($this->at(0))
-            ->method('checkFailures')
-            ->with($this->equalTo($username), $this->equalTo($request));
-        $failureManager->expects($this->at(1))
-            ->method('saveFailure')
-            ->with($this->equalTo($username), $this->equalTo($request));
-        $failureManager->expects($this->at(2))
-            ->method('checkFailures')
-            ->with($this->equalTo($username), $this->equalTo($request));
 
         $oldEncoder->expects($this->once())
             ->method('isPasswordValid')
@@ -204,12 +164,12 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $failureManager, $conn);
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
 
-        $this->assertEquals(false, $auth->isValid($username, $password, $request));
+        $this->assertEquals(false, $auth->getUsrId($username, $password, $request));
     }
 
-    public function testIsValidWithCorrectOldCredentials()
+    public function testGetUsrIdWithCorrectOldCredentials()
     {
         $username = 'romainneutron';
         $password = 'popo42';
@@ -219,8 +179,6 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $encoder = $this->getEncoderMock();
         $oldEncoder = $this->getOldEncoderMock();
-        $failureManager = $this->getFailureManagerMock();
-
 
         $conn = $this->getMock('connection_interface');
 
@@ -262,10 +220,6 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
 
         $request = $this->getRequestMock();
 
-        $failureManager->expects($this->once())
-            ->method('checkFailures')
-            ->with($this->equalTo($username), $this->equalTo($request));
-
         $oldEncoder->expects($this->once())
             ->method('isPasswordValid')
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
@@ -283,8 +237,8 @@ class NativeAuthenticationTest extends \PHPUnit_Framework_TestCase
                 return true;
             }));
 
-        $auth = new NativeAuthentication($encoder, $oldEncoder, $failureManager, $conn);
-        $this->assertEquals($usr_id, $auth->isValid($username, $password, $request));
+        $auth = new NativeAuthentication($encoder, $oldEncoder, $conn);
+        $this->assertEquals($usr_id, $auth->getUsrId($username, $password, $request));
 
         $this->assertEquals($catchParameters[':password'], $catchTestPassword['encoded']);
         $this->assertEquals($password, $catchTestPassword['pass']);

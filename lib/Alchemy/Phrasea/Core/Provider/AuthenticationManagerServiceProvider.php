@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
 use Alchemy\Phrasea\Authentication\Provider\Factory as ProviderFactory;
 use Alchemy\Phrasea\Authentication\PersistentCookie\Manager as CookieManager;
+use Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication;
 use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
@@ -98,14 +99,23 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
-
             $authConf = $app['phraseanet.configuration']->get('authentication');
 
             return new FailureManager($app['EM'], $app['recaptcha'], isset($authConf['trials-before-failure']) ? $authConf['trials-before-failure'] : 9);
         });
 
+        $app['auth.password-checker'] = $app->share(function (Application $app) {
+            return new NativeAuthentication($app['auth.password-encoder'], $app['auth.old-password-encoder'], $app['phraseanet.appbox']->get_connection());
+        });
+
         $app['auth.native'] = $app->share(function (Application $app) {
-            return new NativeAuthentication($app['auth.password-encoder'], $app['auth.old-password-encoder'], $app['auth.native.failure-manager'], $app['phraseanet.appbox']->get_connection());
+            $authConf = $app['phraseanet.configuration']->get('authentication');
+            
+            if ($authConf['captcha']['enabled']) {
+                return new FailureHandledNativeAuthentication($app['auth.password-checker'], $app['auth.native.failure-manager']);
+            } else {
+                return $app['auth.password-checker'];
+            }
         });
     }
 

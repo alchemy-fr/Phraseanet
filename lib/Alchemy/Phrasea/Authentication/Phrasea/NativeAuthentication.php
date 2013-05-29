@@ -11,10 +11,11 @@
 
 namespace Alchemy\Phrasea\Authentication\Phrasea;
 
-use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Symfony\Component\HttpFoundation\Request;
 
-class NativeAuthentication
+class NativeAuthentication implements PasswordAuthenticationInterface
 {
     /** @var \connection_interface */
     private $conn;
@@ -22,33 +23,21 @@ class NativeAuthentication
     private $encoder;
     /** @var OldPasswordEncoder */
     private $oldEncoder;
-    /** @var FailureManager */
-    private $failure;
 
-    public function __construct(PasswordEncoder $encoder, OldPasswordEncoder $oldEncoder, FailureManager $failure, \connection_interface $conn)
+    public function __construct(PasswordEncoder $encoder, OldPasswordEncoder $oldEncoder, \connection_interface $conn)
     {
         $this->conn = $conn;
         $this->encoder = $encoder;
         $this->oldEncoder = $oldEncoder;
-        $this->failure = $failure;
     }
 
     /**
-     * Validates credentials for a web based authentication
-     *
-     * @param type $username
-     * @param type $password
-     * @param Request $request
-     *
-     * @return boolean
-     *
-     * @throws AccountLockedException
-     * @throws RequireCaptchaException
+     * {@inheritdoc}
      */
-    public function isValid($username, $password, Request $request)
+    public function getUsrId($username, $password, Request $request)
     {
         if (in_array($username, array('invite', 'autoregister'))) {
-            return false;
+            return null;
         }
 
         $sql = 'SELECT nonce, salted_password, mail_locked, usr_id, usr_login, usr_password
@@ -64,16 +53,13 @@ class NativeAuthentication
         $stmt->closeCursor();
 
         if (!$row) {
-            return false;
+            return null;
         }
 
         // check locked account
         if ('1' == $row['mail_locked']) {
             throw new AccountLockedException('The account is locked', $row['usr_id']);
         }
-
-        // check failures and throws a RequireCaptchaExeption is needed
-        $this->failure->checkFailures($username, $request);
 
         if ('0' == $row['salted_password']) {
             // we need a quick update and continue
@@ -95,14 +81,19 @@ class NativeAuthentication
         }
 
         if (!$this->encoder->isPasswordValid($row['usr_password'], $password, $row['nonce'])) {
-            // save failures
-            $this->failure->saveFailure($username, $request);
-            // check failures
-            $this->failure->checkFailures($username, $request);
-
-            return false;
+            return null;
         }
 
         return $row['usr_id'];
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return NativeAuthentication
+     */
+    public static function create(Application $app)
+    {
+        return new static($app['auth.password-encoder'], $app['auth.old-password-encoder'], $app['phraseanet.appbox']->get_connection());
     }
 }

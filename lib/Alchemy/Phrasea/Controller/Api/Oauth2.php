@@ -77,9 +77,9 @@ class Oauth2 implements ControllerProviderInterface
             if (!$app['authentication']->isAuthenticated()) {
                 if ($action_login !== null) {
                     try {
-                        $usr_id = $app['auth.native']->isValid($request->get("login"), $request->get("password"), $request);
+                        $usr_id = $app['auth.native']->getUsrId($request->get("login"), $request->get("password"), $request);
 
-                        if (!$usr_id) {
+                        if (null === $usr_id) {
                             $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
 
                             return $app->redirect($app->path('oauth2_authorize'));

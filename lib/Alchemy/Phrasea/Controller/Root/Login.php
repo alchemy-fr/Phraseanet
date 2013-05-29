@@ -916,7 +916,7 @@ class Login implements ControllerProviderInterface
         }
 
         try {
-            $usr_id = $app['auth.native']->isValid($request->request->get('login'), $request->request->get('password'), $request);
+            $usr_id = $app['auth.native']->getUsrId($request->request->get('login'), $request->request->get('password'), $request);
         } catch (RequireCaptchaException $e) {
             $app->requireCaptcha();
             $app->addFlash('warning', _('Please fill the captcha'));
@@ -929,7 +929,7 @@ class Login implements ControllerProviderInterface
             throw new AuthenticationException(call_user_func($redirector, $params));
         }
 
-        if (!$usr_id) {
+        if (null === $usr_id) {
             $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
 
             throw new AuthenticationException(call_user_func($redirector, $params));

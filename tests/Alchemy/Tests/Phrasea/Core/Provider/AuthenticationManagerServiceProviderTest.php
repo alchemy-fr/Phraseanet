@@ -69,7 +69,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
             array(
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'auth.native',
-                'Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication'
+                'Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication'
             ),
             array(
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
@@ -140,6 +140,84 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
             ->will($this->returnValue(new ParameterBag($conn['main_connexion'])));
 
         $app['authentication.providers.account-creator'];
+    }
+
+    public function testAuthNativeWithCaptchaEnabled()
+    {
+        $app = new Application();
+        $app->register(new AuthenticationManagerServiceProvider());
+        $app['phraseanet.registry'] = $this->getMockBuilder('registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $phpunit = $this;
+        $app['phraseanet.registry']->expects($this->any())
+            ->method('get')
+            ->will($this->returnCallback(function ($key) use ($phpunit) {
+                switch ($key) {
+                    case 'GV_sit':
+                        return mt_rand();
+                    default:
+                        $phpunit->fail(sprintf('Unknown key %s', $key));
+                }
+            }));
+        $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
+
+        $app['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $app['phraseanet.configuration']->expects($this->any())
+            ->method('get')
+            ->with('authentication')
+            ->will($this->returnValue(array('captcha' => array('enabled' => true))));
+
+        $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->assertInstanceOf('Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication', $app['auth.native']);
+    }
+
+    public function testAuthNativeWithCaptchaDisabled()
+    {
+        $app = new Application();
+        $app->register(new AuthenticationManagerServiceProvider());
+        $app['phraseanet.registry'] = $this->getMockBuilder('registry')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $phpunit = $this;
+        $app['phraseanet.registry']->expects($this->any())
+            ->method('get')
+            ->will($this->returnCallback(function ($key) use ($phpunit) {
+                switch ($key) {
+                    case 'GV_sit':
+                        return mt_rand();
+                    default:
+                        $phpunit->fail(sprintf('Unknown key %s', $key));
+                }
+            }));
+        $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
+
+        $app['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $app['phraseanet.configuration']->expects($this->any())
+            ->method('get')
+            ->with('authentication')
+            ->will($this->returnValue(array('captcha' => array('enabled' => false))));
+
+        $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->assertInstanceOf('Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication', $app['auth.native']);
     }
 
     public function testAccountCreator()
