@@ -69,13 +69,7 @@ define([
                     });
                 },
                 close: function(e) {
-                    var fieldTag = $(e.target);
-                    var fieldTagId = fieldTag.attr("id");
-                    var fieldTagValue = fieldTag.val();
-
-                    var data = {};
-                    data[fieldTagId] = fieldTagValue;
-                    self.model.set(data);
+                    self.tagFieldChangedAction(e);
                 }
             });
 
@@ -91,9 +85,9 @@ define([
         events: {
             "click": "focusAction",
             "click .delete-field": "deleteAction",
-            "keyup #name": "changeNameAction",
-            "focusout input[type=text]": "fieldChangedAction",
-            "focusout input#tag": "tagFieldChangedAction",
+            "keyup input#name": "nameFieldChangedAction",
+            "keyup input#tbranch": "fieldChangedAction",
+            "keyup input#tag": "tagFieldChangedAction",
             "change input[type=checkbox]": "fieldChangedAction",
             "change select": "selectionChangedAction"
         },
@@ -106,25 +100,31 @@ define([
             return this;
         },
         // on input name keyup check for errors
-        changeNameAction: function(event) {
+        nameFieldChangedAction: function(event) {
             var self = this;
             var fieldName = $(event.target);
             var fieldNameId = fieldName.attr("id");
             var fieldNameValue = fieldName.val();
 
-            // check for duplicate field name
-            if ("" === fieldNameValue || "undefined" !== typeof AdminFieldApp.fieldListView.collection.find(function(model) {
+            var nameExists = ("undefined" !== typeof AdminFieldApp.fieldListView.collection.find(function(model) {
                 return model.get("name").toLowerCase() === fieldNameValue.toLowerCase() && self.model.get("id") !== model.get("id");
-            })) {
+            }));
+
+            var nameValid = /^[a-zA-Z]([a-zA-Z0-9]+)$/i.test(fieldNameValue);
+
+            // check for empty or duplicate field name
+            var notValid = "" === fieldNameValue || nameExists || !nameValid;
+
+            if (notValid) {
                 fieldName
                     .closest(".control-group")
                     .addClass("error")
                     .find(".help-block")
                     .empty()
-                    .append(i18n.t("validation_name_exists"));
+                    .append(i18n.t("" === fieldNameValue ? "validation_blank" : (nameExists ? "validation_name_exists" : "validation_name_invalid")));
                 // add error
                 AdminFieldApp.errorManager.addModelFieldError(new Error(
-                    self.model, fieldNameId, i18n.t("" === fieldNameValue ? "validation_blank" : "validation_name_exists")
+                    self.model, fieldNameId, i18n.t("" === fieldNameValue ? "validation_blank" : (nameExists ? "validation_name_exists" : "validation_name_invalid"))
                 ));
             } else if (fieldName.closest(".control-group").hasClass("error")) {
                 fieldName
@@ -137,9 +137,15 @@ define([
                     self.model, fieldNameId
                 );
             }
+
+            if (!notValid) {
+                this.fieldChangedAction(event);
+            }
+
+            return this;
         },
         selectionChangedAction: function(e) {
-            var field = $(e.currentTarget);
+            var field = $(e.target);
             var data = {};
             data[field.attr("id")] = $("option:selected", field).val();
             this.model.set(data);
@@ -147,7 +153,7 @@ define([
             return this;
         },
         fieldChangedAction: function(e) {
-            var field = $(e.currentTarget);
+            var field = $(e.target);
             var fieldId = field.attr("id");
             var data = {};
             data[fieldId] = field.is(":checkbox") ? field.is(":checked") : field.val();
@@ -160,8 +166,9 @@ define([
             var fieldTagId = fieldTag.attr("id");
             var fieldTagValue = fieldTag.val();
 
+            var notValid = "" !== fieldTagValue && false === /[a-z]+:[a-z0-9]+/i.test(fieldTagValue);
             // check for format tag
-            if ("" !== fieldTagValue && false === /[a-z]+:[a-z0-9]+/i.test(fieldTagValue)) {
+            if (notValid) {
                 fieldTag
                     .closest(".control-group")
                     .addClass("error")
@@ -185,7 +192,9 @@ define([
                     .empty();
             }
 
-            this.fieldChangedAction(e);
+            if (!notValid) {
+                this.fieldChangedAction(e);
+            }
         },
         deleteAction: function() {
             var self = this;
@@ -234,15 +243,13 @@ define([
 
             this._selectModelView(index);
 
-            this.render();
-
             AdminFieldApp.saveView.updateStateButton();
         },
         // select temView by index in itemList
         _selectModelView: function(index) {
              // select previous or next itemview
             if (index >= 0) {
-                AdminFieldApp.fieldListView.itemViews[index].clickAction().animate();
+                AdminFieldApp.fieldListView.itemViews[index].select().animate();
             }
         }
     }));
