@@ -21,6 +21,7 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
     const SWFTOOLS_VERSION = '0.9.0';
     const UNOCONV_VERSION = '0.5.0';
     const MP4BOX_VERSION = '0.4.0';
+    const EXIFTOOL_VERSION = '9.15';
 
     public function __construct($binaries = array())
     {
@@ -95,6 +96,25 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
             $this->addRequirement(
                 version_compare(static::IMAGICK_VERSION, $version, '<'),
                 sprintf('Composite version %s or higher is required (%s provided)', static::IMAGICK_VERSION, $version),
+                'Please update to a more recent version.'
+            );
+        }
+
+        $exiftool = __DIR__ . '/../../../../../vendor/phpexiftool/exiftool/exiftool' . (defined('PHP_WINDOWS_VERSION_BUILD') ? '.exe' : '');
+
+        $this->addRequirement(
+            is_file($exiftool) && is_executable($exiftool),
+            'Exiftool is required for reading, writing and editing meta information',
+            'Please install Exiftool'
+        );
+
+        if (is_file($exiftool) && is_executable($exiftool)) {
+            $output = null;
+            exec($exiftool . ' -ver', $output);
+            $version = $output[0];
+            $this->addRequirement(
+                version_compare(static::EXIFTOOL_VERSION, $version, '<='),
+                sprintf('Exiftool version %s or higher is required (%s provided)', static::EXIFTOOL_VERSION, $version),
                 'Please update to a more recent version.'
             );
         }
