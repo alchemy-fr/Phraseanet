@@ -16,7 +16,7 @@ class RedisTest extends \PhraseanetPHPUnitAbstract
             } catch (\Exception $e) {
                 $ok = false;
             }
-            if ( ! $ok) {
+            if (! $ok) {
                 $this->markTestSkipped('The ' . __CLASS__ . ' requires the use of redis');
             }
         } else {

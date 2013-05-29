@@ -130,8 +130,7 @@ class DoctrineTest extends \PhraseanetPHPUnitAbstract
                 elseif ($key === "result")
                     $this->assertEquals("xcache", $service->getType());
             }
-        }
-        else {
+        } else {
             try {
                 $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
                         self::$DI['app'], $this->options

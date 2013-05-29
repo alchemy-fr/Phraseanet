@@ -157,6 +157,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
     private function getTester(Application $app = null)
     {
         $app = $app? : new Application('test');
+
         return new ConfigurationTester($app);
     }
 }

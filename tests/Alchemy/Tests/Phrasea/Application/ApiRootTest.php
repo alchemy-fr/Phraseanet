@@ -2,8 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
-use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Border\Manager;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 

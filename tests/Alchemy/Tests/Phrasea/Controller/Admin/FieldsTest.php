@@ -111,7 +111,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertGreaterThan(90, count($data));
 
-        foreach($data as $tag) {
+        foreach ($data as $tag) {
             $this->assertArrayHasKey('id', $tag);
             $this->assertArrayHasKey('label', $tag);
             $this->assertArrayHasKey('value', $tag);
@@ -162,7 +162,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 'vocabulary-restricted' => false,
         ));
 
-        foreach($fields as $fieldData) {
+        foreach ($fields as $fieldData) {
             $field = \databox_field::create(self::$DI['app'], $databox, $fieldData['name'], $fieldData['multi']);
             $field
                 ->set_thumbtitle($fieldData['thumbtitle'])
@@ -204,7 +204,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(array_splice($body, -2), array_splice($data, -2));
 
         // delete created fields
-        foreach($fieldObjects as $field) {
+        foreach ($fieldObjects as $field) {
             $field->delete();
         }
     }

@@ -2,9 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
-
-    public function testRouteTaskManager() {
+class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+{
+    public function testRouteTaskManager()
+    {
         /**
          * get /admin/task-manager/ should redirect to /admin/task-manager/tasks
          */
@@ -14,7 +15,8 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect('/admin/task-manager/tasks/'));
     }
 
-    public function testRouteTaskManager_tasks() {
+    public function testRouteTaskManager_tasks()
+    {
         $task_manager = self::$DI['app']['task-manager'];
 
         $crawler = self::$DI['client']->request(
@@ -35,7 +37,8 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
         $this->assertEquals(count($task_manager->getTasks()), count(get_object_vars($json->tasks)));
     }
 
-    public function testRouteTaskManager_task_create() {
+    public function testRouteTaskManager_task_create()
+    {
         $task_manager = self::$DI['app']['task-manager'];
 
         $nTasks0 = count($task_manager->getTasks());
@@ -67,7 +70,8 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
         $this->assertEquals($nTasks2, $nTasks0);
     }
 
-    public function testRouteTaskManager_scheduler_log() {
+    public function testRouteTaskManager_scheduler_log()
+    {
         self::$DI['client']->request('GET', '/admin/task-manager/scheduler/log');
 
         $response = self::$DI['client']->getResponse();

@@ -61,7 +61,6 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-
     /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::databaseMount
      */
@@ -80,7 +79,6 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($response->isRedirect());
         $uriRedirect = $response->headers->get('location');
-
 
         $this->assertTrue(!!strrpos($uriRedirect, 'success=1'));
         $explode = explode('/', $uriRedirect);

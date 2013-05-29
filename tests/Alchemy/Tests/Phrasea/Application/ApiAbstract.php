@@ -171,7 +171,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
 
-
         $this->assertArrayHasKey('databoxes', $content['response']);
         foreach ($content['response']['databoxes'] as $databox) {
             $this->assertTrue(is_array($databox), 'Une databox est un objet');
@@ -1188,7 +1187,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-
         $crawler = self::$DI['client']->request('POST', $route, $this->getParameters(array('status' => $tochange)), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
@@ -1706,7 +1704,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $created_entry = \Feed_Entry_Adapter::create(self::$DI['app'], $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
         $created_item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $created_entry, self::$DI['record_1']);
 
-
         $this->setToken(self::$token);
         $route = '/api/v1/feeds/content/';
 
@@ -1717,7 +1714,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
-
 
         $this->assertArrayHasKey('total_entries', $content['response']);
         $this->assertArrayHasKey('offset_start', $content['response']);
@@ -2566,7 +2562,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('suggestions', $response);
         $this->assertArrayHasKey('results', $response);
         $this->assertArrayHasKey('query', $response);
-
 
         $this->assertTrue(is_int($response['available_results']), 'Le nombre de results dispo est un int');
         $this->assertTrue(is_int($response['total_results']), 'Le nombre de results est un int');

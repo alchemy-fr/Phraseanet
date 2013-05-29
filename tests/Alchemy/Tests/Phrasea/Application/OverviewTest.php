@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
-    function testDatafilesRouteAuthenticated()
+    public function testDatafilesRouteAuthenticated()
     {
         $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
         $response = self::$DI['client']->getResponse();
@@ -19,14 +19,14 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->assertEquals(self::$DI['record_1']->get_preview()->get_size(), $response->headers->get('content-length'));
     }
 
-    function testDatafilesNonExistentSubdef()
+    public function testDatafilesNonExistentSubdef()
     {
         self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/asubdefthatdoesnotexists/');
 
         $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
-    function testEtag()
+    public function testEtag()
     {
         $tmp = tempnam(sys_get_temp_dir(), 'testEtag');
         copy(__DIR__ . '/../../../../files/cestlafete.jpg', $tmp);
@@ -53,7 +53,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         unlink($tmp);
     }
 
-    function testDatafilesRouteNotAuthenticated()
+    public function testDatafilesRouteNotAuthenticated()
     {
         self::$DI['app']['authentication']->closeAccount();
         self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
@@ -61,7 +61,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    function testDatafilesRouteNotAuthenticatedUnknownSubdef()
+    public function testDatafilesRouteNotAuthenticatedUnknownSubdef()
     {
         self::$DI['app']['authentication']->closeAccount();
         self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/notfoundreview/');
@@ -69,7 +69,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    function testPermalinkAuthenticated()
+    public function testPermalinkAuthenticated()
     {
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
         $this->get_a_permalinkBCcompatibility(array("Content-Type" => "image/jpeg"));
@@ -78,7 +78,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->get_a_permaview(array("Content-Type" => "text/html; charset=UTF-8"));
     }
 
-    function testPermalinkNotAuthenticated()
+    public function testPermalinkNotAuthenticated()
     {
         self::$DI['app']['authentication']->closeAccount();
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
@@ -88,20 +88,20 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->get_a_permaview(array("Content-Type" => "text/html; charset=UTF-8"));
     }
 
-    function testCaptionAuthenticated()
+    public function testCaptionAuthenticated()
     {
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
         $this->get_a_caption(array("Content-Type" => "application/json"));
     }
 
-    function testCaptionNotAuthenticated()
+    public function testCaptionNotAuthenticated()
     {
         self::$DI['app']['authentication']->closeAccount();
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
         $this->get_a_caption(array("Content-Type" => "application/json"));
     }
 
-    function testCaptionWithaWrongToken()
+    public function testCaptionWithaWrongToken()
     {
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
         $token = "unexisting_token";
@@ -113,7 +113,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->assertEquals(404, $response->getStatusCode());
     }
 
-    function testCaptionWithaWrongRecord()
+    public function testCaptionWithaWrongRecord()
     {
         $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
         $url = '/permalink/v1/unexisting_record/unexisting_id/caption/?token=unexisting_token';

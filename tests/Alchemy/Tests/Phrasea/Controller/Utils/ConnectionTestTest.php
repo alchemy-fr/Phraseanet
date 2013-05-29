@@ -90,4 +90,3 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
         $this->assertFalse($content->database);
     }
 }
-

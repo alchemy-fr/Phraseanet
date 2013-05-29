@@ -131,6 +131,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         if ($locale) {
             $cookieJar->set(new BrowserCookie('locale', $locale));
         }
+
         return new Client($app, array(), null, $cookieJar);
     }
 }

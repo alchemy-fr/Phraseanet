@@ -27,7 +27,7 @@ class MailSuccessFTPSenderTest extends MailTestCase
         try {
             $mail->getSubject();
             $this->fail('Should have raised an exception');
-        }catch(LogicException $e) {
+        } catch (LogicException $e) {
 
         }
     }

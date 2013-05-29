@@ -15,7 +15,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public static function tearDownAfterClass()
     {
-        if(self::$feed instanceof \Feed_Adapter){
+        if (self::$feed instanceof \Feed_Adapter) {
             self::$feed->delete();
         }
 

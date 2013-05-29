@@ -166,7 +166,6 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $databox = self::$DI['record_story_1']->get_databox();
 
-
         $route = '/prod/tooltip/Story/' . $databox->get_sbas_id()
             . '/' . self::$DI['record_story_1']->get_record_id() . '/';
 

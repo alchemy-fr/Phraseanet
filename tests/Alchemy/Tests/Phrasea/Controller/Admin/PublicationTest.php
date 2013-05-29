@@ -112,7 +112,6 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
                 , '/admin/publications/list/'
             ) === 0);
 
-
         $feed = new \Feed_Adapter(self::$DI['app'], $feed->get_id());
 
         $collection = $feed->get_collection();

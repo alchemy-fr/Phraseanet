@@ -312,7 +312,6 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request('GET', $url);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-
         \Bridge_Api_Apitest::$hasException = true;
         $url = sprintf("/prod/bridge/action/%s/createcontainer/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         self::$DI['client']->request('POST', $url);
@@ -403,7 +402,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         try {
             \Bridge_Account::load_account(self::$DI['app'], $account->get_id());
             $this->fail('Account is not deleted');
-        } catch(\Bridge_Exception_AccountNotFound $e) {
+        } catch (\Bridge_Exception_AccountNotFound $e) {
 
         }
         unset($account, $response);

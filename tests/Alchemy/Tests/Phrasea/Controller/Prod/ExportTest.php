@@ -12,7 +12,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function tearDown()
     {
-        if(self::$GV_activeFTP) {
+        if (self::$GV_activeFTP) {
             self::$DI['app']['phraseanet.registry']->set('GV_activeFTP', true, \registry::TYPE_BOOLEAN);
         }
 
@@ -143,7 +143,6 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             array(array('addr'       => '', 'login'      => '', 'destfolder' => '', 'NAMMKDFOLD' => '')),
         );
     }
-
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Export::exportFtp

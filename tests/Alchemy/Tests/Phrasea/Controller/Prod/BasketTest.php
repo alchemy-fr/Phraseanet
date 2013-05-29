@@ -8,7 +8,6 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();

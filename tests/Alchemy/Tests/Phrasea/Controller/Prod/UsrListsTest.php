@@ -130,7 +130,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertFalse($datas['success']);
 
-
         self::$DI['client']->request('POST', $route, array('name' => 'New NAME'));
 
         $response = self::$DI['client']->getResponse();
@@ -244,7 +243,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertBadResponse($response);
         $this->assertEquals('UTF-8', $response->getCharset());
 
-
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
         self::$DI['client']->request('POST', $route, array('role' => 'general'));
@@ -262,7 +260,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
-
 
         $datas = (array) json_decode($response->getContent());
 
@@ -294,7 +291,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
 
-
         $datas = (array) json_decode($response->getContent());
 
         $this->assertArrayHasKey('success', $datas);
@@ -307,8 +303,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $list = $repository->find($list->getId());
 
         $this->assertEquals(2, $list->getOwners()->count());
-
-
 
         $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$DI['user_alt1']->get_id() . '/';
 
@@ -348,15 +342,12 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
 
-
         $datas = (array) json_decode($response->getContent());
 
         $this->assertArrayHasKey('success', $datas);
         $this->assertArrayHasKey('message', $datas);
 
         $this->assertTrue($datas['success']);
-
-
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user']->get_id() . '/';
 
@@ -367,15 +358,12 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
 
-
         $datas = (array) json_decode($response->getContent());
 
         $this->assertArrayHasKey('success', $datas);
         $this->assertArrayHasKey('message', $datas);
 
         $this->assertFalse($datas['success']);
-
-
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
@@ -386,7 +374,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
 
-
         $datas = (array) json_decode($response->getContent());
 
         $this->assertArrayHasKey('success', $datas);
@@ -394,15 +381,11 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-
-
         $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
         $this->assertEquals(2, $list->getOwners()->count());
-
-
 
         $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$DI['user_alt1']->get_id() . '/';
 

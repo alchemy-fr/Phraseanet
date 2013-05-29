@@ -463,8 +463,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
               , :type, :sha256, :uuid
               , :originalname, :mime)';
 
-
-
         $stmt = $databox->get_connection()->prepare($sql);
         $i = 0;
         while ($i < 502) {
@@ -502,7 +500,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
         }
 
-        if ( ! $found) {
+        if (! $found) {
             $this->fail('Task for empty collection has not been created');
         }
     }

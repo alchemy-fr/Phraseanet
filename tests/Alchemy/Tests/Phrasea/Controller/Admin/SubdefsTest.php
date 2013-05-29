@@ -31,7 +31,6 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-
     public function testPostRouteAddSubdef()
     {
         $name = $this->getSubdefName();

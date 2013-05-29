@@ -42,4 +42,3 @@ class ArrayCacheTest extends \PHPUnit_Framework_TestCase
         );
     }
 }
-

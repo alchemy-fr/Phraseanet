@@ -255,7 +255,6 @@ class GooglePlusTest extends ProviderTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-
         $google =  new GooglePlus($this->getUrlGeneratorMock(), $this->getMockSession(), $googleMock, $this->getGuzzleMock());
         $google->setGooglePlusService($plus);
 

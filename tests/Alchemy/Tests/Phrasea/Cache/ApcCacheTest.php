@@ -45,4 +45,3 @@ class ApcCacheTest extends \PHPUnit_Framework_TestCase
         );
     }
 }
-

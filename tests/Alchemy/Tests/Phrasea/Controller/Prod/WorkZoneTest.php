@@ -159,7 +159,6 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(1, $count);
 
-
         //detach
         self::$DI['client']->request('POST', $route);
         $response = self::$DI['client']->getResponse();

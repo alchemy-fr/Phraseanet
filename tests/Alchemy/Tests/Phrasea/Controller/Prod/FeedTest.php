@@ -86,7 +86,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         if ($this->feed instanceof \Feed_Adapter) {
             $this->feed->delete();
-        } else if ($this->entry instanceof \Feed_Entry_Adapter) {
+        } elseif ($this->entry instanceof \Feed_Entry_Adapter) {
             $this->entry->delete();
             if ($this->publisher instanceof \Feed_Publisher_Adapter) {
                 $this->publisher->delete();
@@ -249,7 +249,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 self::$DI['app'], self::$DI['user'], $this->feed_title, $this->feed_subtitle
         );
         $newfeed->set_collection(self::$DI['collection_no_access']);
-
 
         $params = array(
             "feed_id"      => $newfeed->get_id(),

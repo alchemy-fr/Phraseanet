@@ -63,11 +63,9 @@ class LinkedinTest extends ProviderTestCase
             ->method('post')
             ->will($this->returnValue($requestPost));
 
-
         $provider2 = $this->getProvider();
         $provider2->setGuzzleClient($mock);
         $provider2->getSession()->set('linkedin.provider.state', $state);
-
 
         return array(
             array($this->getProvider(), $this->getRequestMock()),

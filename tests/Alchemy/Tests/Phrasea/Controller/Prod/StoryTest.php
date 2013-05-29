@@ -148,7 +148,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             self::$DI['record_2']
         );
 
-        foreach($records as $record) {
+        foreach ($records as $record) {
             $story->appendChild($record);
         }
 

@@ -338,7 +338,6 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         unset($response);
     }
 
-
     private function getToken($datas = array())
     {
         return self::$DI['app']['tokens']->getUrlToken(
@@ -356,6 +355,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $row = $stmt->fetch();
         $stmt->closeCursor();
         unset($stmt);
+
         return $row['nb_log'];
     }
 }

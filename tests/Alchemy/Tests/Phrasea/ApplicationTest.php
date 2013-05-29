@@ -281,7 +281,6 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $app = new Application('test');
 
         $app->get('/', function(Application $app, Request $request) {
-
             return $app['locale'];
         });
         unset($app['exception_handler']);

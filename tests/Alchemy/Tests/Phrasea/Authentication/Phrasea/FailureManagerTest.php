@@ -143,6 +143,7 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
             $failure->expects($phpunit->once())
                 ->method('setLocked')
                 ->with($phpunit->equalTo(false));
+
             return $failure;
         }, 10);
 
@@ -207,7 +208,7 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
-        
+
         $recaptcha = $this->getReCaptchaMock(null);
 
         $manager = new FailureManager($em, $recaptcha, 2);

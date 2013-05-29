@@ -40,7 +40,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         $configuration = self::$searchEngine->getConfigurationPanel()->getConfiguration();
         $configuration['date_fields'] = array();
 
-        foreach($appbox->get_databoxes() as $databox) {
+        foreach ($appbox->get_databoxes() as $databox) {
             foreach ($databox->get_meta_structure() as $databox_field) {
                 if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
                     continue;
@@ -66,7 +66,8 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 19306, '127.0.0.1', 19308);
     }
 
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
         if (self::$skipped) {
             $this->markTestSkipped('SphinxSearch is not present on system');
@@ -157,4 +158,3 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         return $this;
     }
 }
-

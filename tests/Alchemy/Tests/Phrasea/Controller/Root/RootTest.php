@@ -5,7 +5,6 @@ namespace Alchemy\Tests\Phrasea\Controller\Root;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
 use Symfony\Component\BrowserKit\CookieJar;
 
@@ -19,7 +18,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $found = false;
 
-        foreach($response->headers->getCookies() as $cookie) {
+        foreach ($response->headers->getCookies() as $cookie) {
             if ('locale' === $cookie->getName()) {
                 if ('fr_CA' === $cookie->getValue()) {
                     $found = true;

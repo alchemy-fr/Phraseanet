@@ -2,7 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Core\ServiceBuilder;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Service\Builder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 

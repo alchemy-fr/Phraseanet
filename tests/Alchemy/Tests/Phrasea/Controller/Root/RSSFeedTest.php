@@ -142,7 +142,6 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
                 self::$feed_4_entries[] = $entry;
             }
 
-
             self::$public_feeds = \Feed_Collection::load_public_feeds(self::$DI['app']);
             self::$private_feeds = \Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
             self::$DI['app']['session']->clear();
@@ -398,6 +397,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         /**
          * XML is not verified due to Validator Service bug
          */
+
         return;
 
         try {
@@ -410,7 +410,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         }
     }
 
-    function verifyRSS(\Feed_Adapter $feed, $xml_string)
+    public function verifyRSS(\Feed_Adapter $feed, $xml_string)
     {
         $dom_doc = new \DOMDocument();
         $dom_doc->loadXML($xml_string);
@@ -423,7 +423,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->checkRSSEntryNode($xpath, $feed);
     }
 
-    function checkRSSRootNode(\DOMXPath $xpath, \Feed_Adapter $feed)
+    public function checkRSSRootNode(\DOMXPath $xpath, \Feed_Adapter $feed)
     {
         $channel = $xpath->query("/rss/channel");
         foreach ($channel->item(0)->childNodes as $child) {
@@ -463,7 +463,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         }
     }
 
-    function checkRSSEntryNode(\DOMXPath $xpath, \Feed_Adapter $feed)
+    public function checkRSSEntryNode(\DOMXPath $xpath, \Feed_Adapter $feed)
     {
         $list_entries = $xpath->query("/rss/channel/item");
         $count = 0;
@@ -512,7 +512,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->assertEquals($feed->get_count_total_entries(), $count);
     }
 
-    function checkRSSEntryItemsNode(\DOMXPath $xpath, \Feed_Entry_Adapter $entry, $count)
+    public function checkRSSEntryItemsNode(\DOMXPath $xpath, \Feed_Entry_Adapter $entry, $count)
     {
         $content = $entry->get_content();
         $available_medium = array('image', 'audio', 'video');
@@ -684,7 +684,6 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
             )
         );
 
-
         foreach ($fields as $key_field => $field) {
 
             $role = true;
@@ -830,11 +829,9 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
         $content = $entry->get_content();
 
-
         $available_medium = array('image', 'audio', 'video');
 
         array_walk($content, $this->removeBadItems($content, $available_medium));
-
 
         $media_group = $xpath->query("/Atom:feed/Atom:entry[0]/media:group");
 

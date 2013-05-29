@@ -8,7 +8,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
 abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 {
-    protected  $options;
+    protected $options;
     protected static $searchEngine;
     protected static $initialized = false;
 
@@ -161,7 +161,6 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
             $record->set_metadatas($toupdate);
         }
-
 
         return $date_field;
     }

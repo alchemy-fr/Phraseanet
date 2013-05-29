@@ -89,6 +89,7 @@ class TwitterTest extends ProviderTestCase
                     );
 
                     $first = false;
+
                     return 200;
                 }
             }));
@@ -113,7 +114,7 @@ class TwitterTest extends ProviderTestCase
         $provider->getTwitterClient()->expects($this->any())
             ->method('request')
             ->will($this->returnCallback(function ($method) use ($provider, $phpunit) {
-                switch($method) {
+                switch ($method) {
                     case 'POST':
                         $provider->getTwitterClient()->response = array(
                             'response' => array(
