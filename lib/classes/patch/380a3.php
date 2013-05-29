@@ -114,7 +114,6 @@ class patch_380a3 implements patchInterface
             $stmt->closeCursor();
             unset($stmt);
 
-
             $sql = "CALL explode_log_table(',')";
             $stmt = $conn->prepare($sql);
             $stmt->execute();

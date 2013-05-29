@@ -25,7 +25,7 @@ class TokenValidator
     /**
      * Returns true if the token is valid
      *
-     * @param type $token
+     * @param  type    $token
      * @return boolean
      */
     public function isValid($token)

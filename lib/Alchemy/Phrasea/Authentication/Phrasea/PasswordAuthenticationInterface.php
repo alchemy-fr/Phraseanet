@@ -12,8 +12,8 @@ interface PasswordAuthenticationInterface
     /**
      * Validates credentials for a web based authentication
      *
-     * @param string $username
-     * @param string $password
+     * @param string  $username
+     * @param string  $password
      * @param Request $request
      *
      * @return integer|null

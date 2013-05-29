@@ -25,7 +25,7 @@ class API_V1_Timer implements ServiceProviderInterface
         $callback = function (Event $event) use ($app) {
             $name = $event->getName();
             $n = 1;
-            while(isset($app['api.timers']->{$name})) {
+            while (isset($app['api.timers']->{$name})) {
                 $n++;
                 $name = $event->getName() . '#' . $n;
             }

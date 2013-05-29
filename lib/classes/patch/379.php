@@ -61,4 +61,3 @@ class patch_379 implements patchInterface
         return true;
     }
 }
-

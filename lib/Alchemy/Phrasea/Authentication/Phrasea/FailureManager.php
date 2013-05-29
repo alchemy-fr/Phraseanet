@@ -47,7 +47,7 @@ class FailureManager
     /**
      * Saves an authentication failure
      *
-     * @param string $username
+     * @param string  $username
      * @param Request $request
      *
      * @return FailureManager
@@ -70,7 +70,7 @@ class FailureManager
     /**
      * Checks a request for previous failures
      *
-     * @param string $username
+     * @param string  $username
      * @param Request $request
      *
      * @return FailureManager

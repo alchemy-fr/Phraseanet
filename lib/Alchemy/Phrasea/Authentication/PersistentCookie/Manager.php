@@ -32,7 +32,7 @@ class Manager
      * Returns a Session give a cookie value
      *
      * @param string $cookieValue
-     * 
+     *
      * @return false|Session
      */
     public function getSession($cookieValue)

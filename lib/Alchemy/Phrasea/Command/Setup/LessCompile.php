@@ -61,6 +61,7 @@ class LessCompile extends Command
 
         if (0 === $failures) {
             $output->writeln('<info>Build done !</info>');
+
             return 0;
         }
 

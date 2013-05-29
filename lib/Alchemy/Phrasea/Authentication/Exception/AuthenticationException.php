@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Authentication\Exception;;
+namespace Alchemy\Phrasea\Authentication\Exception;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\HttpFoundation\Response;

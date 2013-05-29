@@ -10,8 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
-use Alchemy\Phrasea\Exception\RuntimeException;
 
 class phrasea
 {

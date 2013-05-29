@@ -233,8 +233,8 @@ class random
     /**
      * Get the validation token for one user and one validation basket
      *
-     * @param integer     $userId
-     * @param integer     $basketId
+     * @param integer $userId
+     * @param integer $basketId
      *
      * @return string The token
      *

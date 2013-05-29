@@ -54,7 +54,7 @@ class Authenticator
     /**
      * Open user session
      *
-     * @param  \User_Adapter $user
+     * @param \User_Adapter $user
      *
      * @return Session
      *

@@ -87,12 +87,12 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
         return $dumper->dump($this->toArray($includeBusinessFields), 3);
     }
-    
+
     protected function serializeJSON($includeBusinessFields)
     {
         return \p4string::jsonencode($this->toArray($includeBusinessFields));
     }
-    
+
     protected function toArray($includeBusinessFields)
     {
         $buffer = array();
@@ -112,6 +112,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
                 $buffer[$field->get_name()] = ctype_digit($val) ? (int) $val : $val;
             }
         }
+
         return array('record' => array('description' => $buffer));
     }
 

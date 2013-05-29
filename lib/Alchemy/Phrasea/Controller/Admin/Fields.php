@@ -124,7 +124,7 @@ class Fields implements ControllerProviderInterface
         return $app->json($fields);
     }
 
-    public  function getLanguage(Application $app, Request $request)
+    public function getLanguage(Application $app, Request $request)
     {
         return $app->json(array(
             'something_wrong'           => _('Something wrong happened, please try again or contact an admin.'),
@@ -220,7 +220,8 @@ class Fields implements ControllerProviderInterface
         return new Response($json, 200, array('Content-Type' => 'application/json'));
     }
 
-    public function createField(Application $app, Request $request, $sbas_id) {
+    public function createField(Application $app, Request $request, $sbas_id)
+    {
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $data = $this->getFieldJsonFromRequest($app, $request);
 
@@ -243,7 +244,8 @@ class Fields implements ControllerProviderInterface
         ))));
     }
 
-    public function listFields(Application $app, $sbas_id) {
+    public function listFields(Application $app, $sbas_id)
+    {
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
         return $app->json($databox->get_meta_structure()->toArray());
@@ -303,7 +305,7 @@ class Fields implements ControllerProviderInterface
         $data = $this->requestBodyToJson($request);
         $required = $this->getMandatoryFieldProperties();
 
-        foreach($data as $field) {
+        foreach ($data as $field) {
             foreach ($required as $key) {
                 if (false === array_key_exists($key, $field)) {
                     $app->abort(400, sprintf('The entity must contain a key `%s`', $key));
@@ -374,7 +376,7 @@ class Fields implements ControllerProviderInterface
     {
         try {
             \databox_field::loadClassFromTagName($field['tag']);
-        } catch(\Exception_Databox_metadataDescriptionNotFound $e) {
+        } catch (\Exception_Databox_metadataDescriptionNotFound $e) {
             throw new BadRequestHttpException(_(sprintf('Provided tag %s is unknown.', $field['tag'])));
         }
     }

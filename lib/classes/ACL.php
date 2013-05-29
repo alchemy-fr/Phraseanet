@@ -1607,7 +1607,7 @@ class ACL implements cache_cacheableInterface
 
         $collections = array();
 
-        foreach($rs as $row) {
+        foreach ($rs as $row) {
             $collections[] = \collection::get_from_base_id($this->app, $row['base_id']);
         }
 

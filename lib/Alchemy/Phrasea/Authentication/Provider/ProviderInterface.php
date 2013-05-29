@@ -60,7 +60,7 @@ interface ProviderInterface
      * successful or failure.
      *
      * @param Application $app
-     * @param Request $request
+     * @param Request     $request
      *
      * @throws NotAuthenticatedException In case the authentication failed.
      */
@@ -103,9 +103,9 @@ interface ProviderInterface
     /**
      * Creates a provider
      *
-     * @param UrlGenerator $generator
+     * @param UrlGenerator     $generator
      * @param SessionInterface $session
-     * @param array $options
+     * @param array            $options
      */
     public static function create(UrlGenerator $generator, SessionInterface $session, array $options);
 }

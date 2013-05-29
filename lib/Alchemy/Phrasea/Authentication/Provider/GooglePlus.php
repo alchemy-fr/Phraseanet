@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
@@ -230,7 +229,7 @@ class GooglePlus extends AbstractProvider
             throw new NotAuthenticatedException('Error while retrieving user info');
         }
 
-        try{
+        try {
             $plusData = $this->plus->people->get('me');
         } catch (\Google_Exception $e) {
             throw new NotAuthenticatedException('Error while retrieving user info', $e->getCode(), $e);

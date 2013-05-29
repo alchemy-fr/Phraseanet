@@ -51,14 +51,14 @@ class AccountCreator
     /**
      * Creates an account
      *
-     * @param Application $app The application
-     * @param string $id    The base for user login
-     * @param string $email The email
-     * @param array $templates Some extra templates to apply with the ones of this creator
+     * @param Application $app       The application
+     * @param string      $id        The base for user login
+     * @param string      $email     The email
+     * @param array       $templates Some extra templates to apply with the ones of this creator
      *
      * @return \User_Adapter
      *
-     * @throws RuntimeException In case the AccountCreator is disabled
+     * @throws RuntimeException         In case the AccountCreator is disabled
      * @throws InvalidArgumentException In case a user with the same email already exists
      */
     public function create(Application $app, $id, $email = null, array $templates = array())

@@ -147,4 +147,3 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
         return count($this->elements);
     }
 }
-

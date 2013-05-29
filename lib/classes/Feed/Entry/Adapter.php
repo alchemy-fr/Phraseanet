@@ -373,7 +373,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
      */
     public function get_publisher()
     {
-        if ( ! $this->publisher instanceof Feed_Publisher_Adapter) {
+        if (! $this->publisher instanceof Feed_Publisher_Adapter) {
             try {
                 $this->publisher = new Feed_Publisher_Adapter($this->app, $this->publisher_id);
             } catch (\Exception_Feed_PublisherNotFound $e) {

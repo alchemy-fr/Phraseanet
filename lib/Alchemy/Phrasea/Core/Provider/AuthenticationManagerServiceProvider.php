@@ -110,7 +110,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
         $app['auth.native'] = $app->share(function (Application $app) {
             $authConf = $app['phraseanet.configuration']->get('authentication');
-            
+
             if ($authConf['captcha']['enabled']) {
                 return new FailureHandledNativeAuthentication($app['auth.password-checker'], $app['auth.native.failure-manager']);
             } else {

@@ -872,9 +872,9 @@ class databox_field implements cache_cacheableInterface
     /**
      *
      * @param \Alchemy\Phrasea\Application $app
-     * @param databox $databox
-     * @param type $name
-     * @param type $multi
+     * @param databox                      $databox
+     * @param type                         $name
+     * @param type                         $multi
      *
      * @return databox_field
      *

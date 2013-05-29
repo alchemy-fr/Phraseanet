@@ -123,7 +123,7 @@ return call_user_func(function($environment = null) {
         } elseif ($e instanceof \Exception_NotFound) {
             $code = 404;
             $message = 'Not Found';
-        } elseif($e instanceof \Exception_UnauthorizedAction) {
+        } elseif ($e instanceof \Exception_UnauthorizedAction) {
             $code = 403;
             $message = 'Forbidden';
         } else {

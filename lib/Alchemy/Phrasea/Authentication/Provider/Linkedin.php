@@ -11,11 +11,9 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
-use Alchemy\Phrasea\Exception\RuntimeException;
 use Guzzle\Http\Client as Guzzle;
 use Guzzle\Http\ClientInterface;
 use Guzzle\Common\Exception\GuzzleException;

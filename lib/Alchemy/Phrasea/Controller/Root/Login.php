@@ -879,8 +879,8 @@ class Login implements ControllerProviderInterface
 
     /**
      *
-     * @param PhraseaApplication $app
-     * @param string $providerId
+     * @param  PhraseaApplication    $app
+     * @param  string                $providerId
      * @return ProviderInterface
      * @throws NotFoundHttpException
      */

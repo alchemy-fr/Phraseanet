@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Authentication\Context;
-use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;

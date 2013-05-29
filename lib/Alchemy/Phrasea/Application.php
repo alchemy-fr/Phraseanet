@@ -133,7 +133,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -246,12 +245,12 @@ class Application extends SilexApplication
         $this->register(new ReCaptchaServiceProvider());
 
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
-            if($app['phraseanet.registry']->get('GV_captchas')) {
+            if ($app['phraseanet.registry']->get('GV_captchas')) {
                 return $app['phraseanet.registry']->get('GV_captcha_public_key');
             }
         });
         $this['recaptcha.private-key'] = $this->share(function (Application $app) {
-            if($app['phraseanet.registry']->get('GV_captchas')) {
+            if ($app['phraseanet.registry']->get('GV_captchas')) {
                 return $app['phraseanet.registry']->get('GV_captcha_private_key');
             }
         });

@@ -77,10 +77,10 @@ class Permalink extends AbstractDelivery
                     }
                 }
                 $response = $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
-                
+
                 $linkToCaption = $app->path("view_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
                 $response->headers->set('Link', $linkToCaption);
-                
+
                 return $response;
             } else {
                 $collection = \collection::get_from_base_id($app, $record->get_base_id());
@@ -99,29 +99,29 @@ class Permalink extends AbstractDelivery
             }
 
             $response = $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
-            
+
             $linkToCaption = $app->path("view_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
             $response->headers->set('Link', $linkToCaption);
-            
+
             return $response;
         };
 
         $controllers->get('/v1/{sbas_id}/{record_id}/caption/', function(PhraseaApplication $app, Request $request, $sbas_id, $record_id) {
             $token = $request->query->get('token');
-            
+
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-            
+
             $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, 'thumbnail');
             if (null === $record) {
                 throw new NotFoundHttpException("Caption not found");
             }
             $caption = $record->get_caption();
-            
+
             return new Response($caption->serialize(\caption_record::SERIALIZE_JSON), 200, array("Content-Type" => 'application/json'));
         })
         ->assert('sbas_id', '\d+')->assert('record_id', '\d+')
         ->bind('view_caption');
-        
+
         $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/', function (PhraseaApplication $app, Request $request, $sbas_id, $record_id, $subdef) use ($deliverPermaview) {
             $token = $request->query->get('token');
 
