@@ -6,7 +6,7 @@
         <input name="Query" class="Query search" placeholder="{% trans 'Search baskets' %}" type="text"/>
 
         <h1>{% trans 'See' %}</h1>
-        <ul>
+        <ul class="unstyled">
           <li class="first">
             <input id="basket_browse_all" type="radio" name="Type" value="" checked="checked" />
             <label class="selected" for="basket_browse_all">
@@ -39,7 +39,7 @@
           </li>
         </ul>
         <h1>{% trans 'When' %}</h1>
-        <ul>
+        <ul class="unstyled">
           <li class="first">
             <input id="basket_browse_all_time" type="radio" name="Year" value="" checked="checked" />
             <label for="basket_browse_all_time">
@@ -159,8 +159,6 @@
 
     function activateLinks($scope)
     {
-
-
       $('a.result', $scope).bind('click', function(){
         var $this = $(this);
 
@@ -177,6 +175,57 @@
         return false;
       });
 
+      $('a.delete-basket', $scope).bind('click', function(event) {
+        event.preventDefault();
+        var $this = $(this);
+        var buttons = {};
+
+        buttons[language.valider] = function() {
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: $this.attr('href'),
+                data: {},
+                success: function(datas){
+                    if(datas.success) {
+                        confirmBox.Close();
+                        $('form[name="BasketBrowser"]', $container).trigger('submit');
+                        p4.WorkZone.refresh();
+                    } else {
+                        confirmBox.Close();
+                        var alertBox = p4.Dialog.Create({
+                            size : 'Alert',
+                            closeOnEscape : true,
+                            closeButton:true
+                        }, 2);
+
+                        alertBox.setContent(datas.message);
+                    }
+                },
+                error: function() {
+                    confirmBox.Close();
+                    var alertBox = p4.Dialog.Create({
+                            size : 'Alert',
+                            closeOnEscape : true,
+                            closeButton:true
+                        }, 2);
+
+                    alertBox.setContent("{{'Something wrong happened, please retry or contact an admin.'|trans|e('js') }}");
+                }
+            });
+        };
+
+        var confirmBox = p4.Dialog.Create({
+            size : 'Alert',
+            closeOnEscape : true,
+            cancelButton: true,
+            buttons: buttons
+        }, 2);
+
+        confirmBox.setContent("{{'You are about to delete this basket. Would you like to continue ?'|trans|e('js') }}");
+
+        return false;
+      });
     }
 
     function active_archiver($scope)

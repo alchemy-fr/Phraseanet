@@ -12,7 +12,7 @@
       - Emails can be sent to SMTP server using TLS encryption (only SSL was supported).
   - Sphinx-Search is now stable (require Sphinx-Search 2.0.6).
   - Add support for stemmatisation in Phrasea-Engine.
-  - Add bin/setup command utility, it is now recommanded to use `bin/setup system:install` 
+  - Add bin/setup command utility, it is now recommanded to use `bin/setup system:install`
     command to install Phraseanet.
   - Lots of cleanup and code refactorisation.
   - Add task-manager logging to syslog.
@@ -25,6 +25,7 @@
   - Global speed improvement on report.
   - Upload now monitors number of files transmitted.
   - Add bin/developer console for developement purpose.
+  - Add possibility to delete a basket from the workzone basket browser.
 
 * 3.7.12 (2013-05-13)
 

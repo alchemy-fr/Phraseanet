@@ -34,7 +34,8 @@
   <div class="PNB" style="right:10px">
   {% for Basket in Baskets %}
     <div class="result {% if loop.index is odd %}odd{% endif %}">
-      <div class="PNB10">
+      <a href="{{ path('basket_delete', {basket_id: Basket.getId()}) }}" class="delete-basket close" title="{% trans %}Delete basket{% endtrans %}" style="color:#fff;padding:2px">×</a>
+      <div class="PNB10" style="right:15px;">
         <table>
           <tr>
             <td class="thumbnail">

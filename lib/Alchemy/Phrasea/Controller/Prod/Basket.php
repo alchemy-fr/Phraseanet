@@ -60,7 +60,8 @@ class Basket implements ControllerProviderInterface
          *
          */
         $controllers->post('/{basket_id}/delete/', $this->call('deleteBasket'))
-            ->assert('basket_id', '\d+');
+            ->assert('basket_id', '\d+')
+            ->bind('basket_delete');
 
         /**
          * Removes a BasketElement
