@@ -2,13 +2,13 @@
 
     {% if lazaretFiles is not none %}
         {% if lazaretFiles|length > 0 %}
-            <div class="btn-group" style="text-align:center; padding:5px;">
+            <div class="btn-group" style="text-align:center; padding:5px 0;">
                 <button class="btn empty-lazaret" title="{% trans "Empty quarantine"%}">
                     <img src="/skins/icons/delete.png">{% trans "Empty quarantine"%}
                 </button>
             </div>
 
-            <ul>
+            <ul class="unstyled">
                 {% for file in lazaretFiles %}
                     <li class="row-fluid wrapper-item well">
                        {{ _self.lazaretElement(app, file) }}
