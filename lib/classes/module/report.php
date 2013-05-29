@@ -251,7 +251,7 @@ class module_report
         $this->dmax = $d2;
         $this->sbas_id = $sbas_id;
         $this->list_coll_id = $collist;
-        $this->user_id = $this->app['phraseanet.user']->get_id();
+        $this->user_id = $this->app['authentication']->getUser()->get_id();
         $this->periode = sprintf(
             '%s - %s ',
             $this->app['date-formatter']->getPrettyString(new \DateTime($d1)),

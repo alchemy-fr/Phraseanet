@@ -15,8 +15,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteDashboard()
     {
-        $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
 
         self::$DI['client']->request('GET', '/report/dashboard');
 
@@ -27,8 +26,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteDashboardJson()
     {
-        $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
 
         $this->XMLHTTPRequest('GET', '/report/dashboard', array(
             'dmin' => $this->dmin->format('Y-m-d H:i:s'),

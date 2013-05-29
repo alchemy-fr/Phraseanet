@@ -81,7 +81,7 @@ class Notifications implements ControllerProviderInterface
         try {
             $app['events-manager']->read(
                 explode('_', (string) $request->request->get('notifications')),
-                $app['phraseanet.user']->get_id()
+                $app['authentication']->getUser()->get_id()
             );
 
             return $app->json(array('success' => true, 'message' => ''));

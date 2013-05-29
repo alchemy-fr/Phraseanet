@@ -12,7 +12,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function tearDown()
     {
-        self::$DI['app']['phraseanet.user'] = self::$DI['user'];
+        self::$DI['app']['authentication']->setUser(self::$DI['user']);
         foreach (self::$createdCollections as $collection) {
             try {
                 $collection->unmount_collection(self::$DI['app']);

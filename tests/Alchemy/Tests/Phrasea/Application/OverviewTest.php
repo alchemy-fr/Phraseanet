@@ -55,7 +55,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     function testDatafilesRouteNotAuthenticated()
     {
-        self::$DI['app']->closeAccount();
+        self::$DI['app']['authentication']->closeAccount();
         self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
 
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
@@ -63,7 +63,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     function testDatafilesRouteNotAuthenticatedUnknownSubdef()
     {
-        self::$DI['app']->closeAccount();
+        self::$DI['app']['authentication']->closeAccount();
         self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/notfoundreview/');
 
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
@@ -71,7 +71,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     function testPermalinkAuthenticated()
     {
-        $this->assertTrue(self::$DI['app']->isAuthenticated());
+        $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
         $this->get_a_permalinkBCcompatibility(array("Content-Type" => "image/jpeg"));
         $this->get_a_permaviewBCcompatibility(array("Content-Type" => "text/html; charset=UTF-8"));
         $this->get_a_permalink(array("Content-Type" => "image/jpeg"));
@@ -80,30 +80,30 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     function testPermalinkNotAuthenticated()
     {
-        self::$DI['app']->closeAccount();
-        $this->assertFalse(self::$DI['app']->isAuthenticated());
+        self::$DI['app']['authentication']->closeAccount();
+        $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
         $this->get_a_permalinkBCcompatibility(array("Content-Type" => "image/jpeg"));
         $this->get_a_permaviewBCcompatibility(array("Content-Type" => "text/html; charset=UTF-8"));
         $this->get_a_permalink(array("Content-Type" => "image/jpeg"));
         $this->get_a_permaview(array("Content-Type" => "text/html; charset=UTF-8"));
     }
-    
+
     function testCaptionAuthenticated()
     {
-        $this->assertTrue(self::$DI['app']->isAuthenticated());
+        $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
         $this->get_a_caption(array("Content-Type" => "application/json"));
     }
 
     function testCaptionNotAuthenticated()
     {
-        self::$DI['app']->closeAccount();
-        $this->assertFalse(self::$DI['app']->isAuthenticated());
+        self::$DI['app']['authentication']->closeAccount();
+        $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
         $this->get_a_caption(array("Content-Type" => "application/json"));
     }
-    
+
     function testCaptionWithaWrongToken()
     {
-        $this->assertTrue(self::$DI['app']->isAuthenticated());
+        $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
         $token = "unexisting_token";
         $url = '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . "/" . self::$DI['record_1']->get_record_id() . '/caption/?token='.$token;
 
@@ -112,10 +112,10 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
         $this->assertEquals(404, $response->getStatusCode());
     }
-    
+
     function testCaptionWithaWrongRecord()
     {
-        $this->assertTrue(self::$DI['app']->isAuthenticated());
+        $this->assertTrue(self::$DI['app']['authentication']->isAuthenticated());
         $url = '/permalink/v1/unexisting_record/unexisting_id/caption/?token=unexisting_token';
 
         $crawler = self::$DI['client']->request('GET', $url);
@@ -123,7 +123,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
         $this->assertEquals(404, $response->getStatusCode());
     }
-    
+
     public function testGetAStorythumbnail()
     {
         $this->substituteAndCheck('thumbnail');
@@ -164,44 +164,44 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $crawler = self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
-        foreach ($headers as $name => $value) {            
+        foreach ($headers as $name => $value) {
             $this->assertEquals($response->headers->get($name), $value);
         }
-        
+
         $caption = self::$DI['record_1']->get_caption()->serialize(\caption_record::SERIALIZE_JSON);
         $this->assertEquals($caption, $response->getContent());
         $this->assertEquals(200, $response->getStatusCode());
     }
-    
+
     protected function get_a_permalinkBCcompatibility(array $headers = array())
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
-        
+
         $crawler = self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
 
-        foreach ($headers as $name => $value) {            
+        foreach ($headers as $name => $value) {
             $this->assertEquals($response->headers->get($name), $value);
         }
-        
+
         $this->assertEquals($response->headers->get("Link"), "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token);
         $this->assertEquals(200, $response->getStatusCode());
     }
-    
+
     protected function get_a_permaviewBCcompatibility(array $headers = array())
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
-        
+
         $url = $url . 'view/';
         $crawler = self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
-        
+
         foreach ($headers as $name => $value) {
             $this->assertEquals($response->headers->get($name), $value);
         }
-        
+
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -216,11 +216,11 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         foreach ($headers as $name => $value) {
             $this->assertEquals($response->headers->get($name), $value);
         }
-        
+
         $this->assertEquals($response->headers->get("Link"), "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token);
         $this->assertEquals(200, $response->getStatusCode());
     }
-    
+
     protected function get_a_permaview(array $headers = array())
     {
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
@@ -232,7 +232,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         foreach ($headers as $name => $value) {
             $this->assertEquals($response->headers->get($name), $value);
         }
-        
+
         $this->assertEquals(200, $response->getStatusCode());
     }
 }

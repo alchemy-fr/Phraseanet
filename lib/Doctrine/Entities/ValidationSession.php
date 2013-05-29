@@ -370,4 +370,27 @@ class ValidationSession
             }
         }
     }
+
+    /**
+     * Add participants
+     *
+     * @param \Entities\ValidationParticipant $participants
+     * @return ValidationSession
+     */
+    public function addParticipant(\Entities\ValidationParticipant $participants)
+    {
+        $this->participants[] = $participants;
+    
+        return $this;
+    }
+
+    /**
+     * Remove participants
+     *
+     * @param \Entities\ValidationParticipant $participants
+     */
+    public function removeParticipant(\Entities\ValidationParticipant $participants)
+    {
+        $this->participants->removeElement($participants);
+    }
 }

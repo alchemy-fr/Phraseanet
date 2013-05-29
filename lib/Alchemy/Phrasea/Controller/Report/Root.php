@@ -65,7 +65,7 @@ class Root implements ControllerProviderInterface
      */
     public function getDashboard(Application $app, Request $request)
     {
-        $dashboard = new \module_report_dashboard($app, $app['phraseanet.user']);
+        $dashboard = new \module_report_dashboard($app, $app['authentication']->getUser());
 
         if ('json' !== $request->getRequestFormat()) {
             \User_Adapter::updateClientInfos($app, 4);

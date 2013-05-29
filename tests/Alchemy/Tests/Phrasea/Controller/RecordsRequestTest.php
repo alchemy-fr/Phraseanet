@@ -86,7 +86,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSimpleWithoutSbasRights()
     {
-        self::$DI['app']['phraseanet.user']->ACL()
+        self::$DI['app']['authentication']->getUser()->ACL()
             ->update_rights_to_sbas(self::$DI['record_2']->get_sbas_id(), array('bas_chupub' => 0));
 
         $request = new Request(array(
@@ -112,7 +112,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSimpleWithoutBasRights()
     {
-        self::$DI['app']['phraseanet.user']->ACL()
+        self::$DI['app']['authentication']->getUser()->ACL()
             ->update_rights_to_base(self::$DI['record_2']->get_base_id(), array('chgstatus' => 0));
 
         $request = new Request(array(
@@ -201,7 +201,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
         $basket = new \Entities\Basket();
         $basket->setName('test');
-        $basket->setOwner(self::$DI['app']['phraseanet.user']);
+        $basket->setOwner(self::$DI['app']['authentication']->getUser());
 
         self::$DI['app']['EM']->persist($basket);
         self::$DI['app']['EM']->flush();
@@ -264,7 +264,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     {
         $story = new \Entities\StoryWZ();
         $story->setRecord(self::$DI['record_story_2']);
-        $story->setUser(self::$DI['app']['phraseanet.user']);
+        $story->setUser(self::$DI['app']['authentication']->getUser());
 
         self::$DI['app']['EM']->persist($story);
         self::$DI['app']['EM']->flush();

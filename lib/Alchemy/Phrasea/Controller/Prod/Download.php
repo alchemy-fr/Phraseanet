@@ -69,7 +69,7 @@ class Download implements ControllerProviderInterface
         }
 
         $list = $download->prepare_export(
-            $app['phraseanet.user'],
+            $app['authentication']->getUser(),
             $app['filesystem'],
             $subdefs,
             $request->request->get('title') === 'title' ? true : false,
@@ -80,7 +80,7 @@ class Download implements ControllerProviderInterface
 
         $token = $app['tokens']->getUrlToken(
             \random::TYPE_DOWNLOAD,
-            $app['phraseanet.user']->get_id(),
+            $app['authentication']->getUser()->get_id(),
             new \DateTime('+3 hours'), // Token lifetime
             serialize($list)
         );
@@ -91,7 +91,7 @@ class Download implements ControllerProviderInterface
 
         $app['events-manager']->trigger('__DOWNLOAD__', array(
             'lst'         => $lst,
-            'downloader'  => $app['phraseanet.user']->get_id(),
+            'downloader'  => $app['authentication']->getUser()->get_id(),
             'subdefs'     => $subdefs,
             'from_basket' => $ssttid,
             'export_file' => $download->getExportName()

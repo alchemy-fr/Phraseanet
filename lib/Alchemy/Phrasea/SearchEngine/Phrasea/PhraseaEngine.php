@@ -184,12 +184,12 @@ class PhraseaEngine implements SearchEngineInterface
      */
     private function checkSession()
     {
-        if (!$this->app['phraseanet.user']) {
+        if (!$this->app['authentication']->getUser()) {
             throw new \RuntimeException('Phrasea currently support only authenticated queries');
         }
 
-        if (!phrasea_open_session($this->app['session']->get('phrasea_session_id'), $this->app['phraseanet.user']->get_id())) {
-            if (!$ses_id = phrasea_create_session((string) $this->app['phraseanet.user']->get_id())) {
+        if (!phrasea_open_session($this->app['session']->get('phrasea_session_id'), $this->app['authentication']->getUser()->get_id())) {
+            if (!$ses_id = phrasea_create_session((string) $this->app['authentication']->getUser()->get_id())) {
                 throw new \Exception_InternalServerError('Unable to create phrasea session');
             }
             $this->app['session']->set('phrasea_session_id', $ses_id);
@@ -557,7 +557,7 @@ class PhraseaEngine implements SearchEngineInterface
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        if ($this->app['phraseanet.user']) {
+        if ($this->app['authentication']->getUser()) {
             \User_Adapter::saveQuery($this->app, $query);
         }
 

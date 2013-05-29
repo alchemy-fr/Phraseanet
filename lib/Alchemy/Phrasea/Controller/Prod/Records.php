@@ -174,7 +174,7 @@ class Records implements ControllerProviderInterface
             )),
             "others"        => $app['twig']->render('prod/preview/appears_in.html.twig', array(
                 'parents'       => $record->get_grouping_parents(),
-                'baskets'       => $record->get_container_baskets($app['EM'], $app['phraseanet.user'])
+                'baskets'       => $record->get_container_baskets($app['EM'], $app['authentication']->getUser())
             )),
             "current"       => $train,
             "history"       => $app['twig']->render('prod/preview/short_history.html.twig', array(

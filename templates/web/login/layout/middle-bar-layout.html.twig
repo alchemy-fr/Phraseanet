@@ -1,0 +1,14 @@
+{% extends "login/layout/base-layout.html.twig" %}
+
+{% block content_scaffholding %}
+     <div class="row-fluid full-height">
+        <div class="span4 offset4 full-height">
+            <div class="authentication-sidebar">
+                {% include "login/include/language-block.html.twig" %}
+                {% block  content %}
+
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

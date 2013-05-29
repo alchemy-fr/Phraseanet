@@ -273,4 +273,27 @@ class ValidationParticipant
 
         return true;
     }
+
+    /**
+     * Add datas
+     *
+     * @param \Entities\ValidationData $datas
+     * @return ValidationParticipant
+     */
+    public function addData(\Entities\ValidationData $datas)
+    {
+        $this->datas[] = $datas;
+    
+        return $this;
+    }
+
+    /**
+     * Remove datas
+     *
+     * @param \Entities\ValidationData $datas
+     */
+    public function removeData(\Entities\ValidationData $datas)
+    {
+        $this->datas->removeElement($datas);
+    }
 }

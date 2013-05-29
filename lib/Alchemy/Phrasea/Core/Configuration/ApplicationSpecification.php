@@ -48,7 +48,7 @@ class ApplicationSpecification implements SpecificationInterface
             $newServices = $services;
 
             $legacyServices = $this->parser->parse(
-                file_get_contents($this->getRealRootPath() . "/conf.d/services.yml")
+                file_get_contents($this->getRealRootPath() . "/lib/conf.d/services.yml")
             );
 
             if (!isset($legacyServices[$name])) {

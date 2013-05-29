@@ -71,7 +71,7 @@ class Manage extends Helper
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
-            ->on_bases_where_i_am($this->app['phraseanet.user']->ACL(), array('canadmin'))
+            ->on_bases_where_i_am($this->app['authentication']->getUser()->ACL(), array('canadmin'))
             ->execute();
 
         return $this->results->get_results();
@@ -109,7 +109,7 @@ class Manage extends Helper
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
-            ->on_bases_where_i_am($this->app['phraseanet.user']->ACL(), array('canadmin'))
+            ->on_bases_where_i_am($this->app['authentication']->getUser()->ACL(), array('canadmin'))
             ->limit($offset_start, $results_quantity)
             ->execute();
 
@@ -218,8 +218,8 @@ class Manage extends Helper
         }
 
         $created_user = \User_Adapter::create($this->app, $name, \random::generatePassword(16), null, false, false);
-        $created_user->set_template($this->app['phraseanet.user']);
-        $this->usr_id = $this->app['phraseanet.user']->get_id();
+        $created_user->set_template($this->app['authentication']->getUser());
+        $this->usr_id = $this->app['authentication']->getUser()->get_id();
 
         return $created_user;
     }

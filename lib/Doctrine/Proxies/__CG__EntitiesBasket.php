@@ -213,6 +213,18 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return parent::getSize($app);
     }
 
+    public function addElement(\Entities\BasketElement $elements)
+    {
+        $this->__load();
+        return parent::addElement($elements);
+    }
+
+    public function removeElement(\Entities\BasketElement $elements)
+    {
+        $this->__load();
+        return parent::removeElement($elements);
+    }
+
 
     public function __sleep()
     {

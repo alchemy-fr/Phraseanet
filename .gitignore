@@ -12,5 +12,7 @@
 .DS_Store
 /vendor
 composer.phar
+behat.yml
 /datas
 /www/assets
+/www/skins/build

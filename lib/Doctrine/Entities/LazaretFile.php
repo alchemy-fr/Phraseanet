@@ -401,4 +401,50 @@ class LazaretFile
     {
         return $this->thumbFilename;
     }
+
+    /**
+     * Add attributes
+     *
+     * @param \Entities\LazaretAttribute $attributes
+     * @return LazaretFile
+     */
+    public function addAttribute(\Entities\LazaretAttribute $attributes)
+    {
+        $this->attributes[] = $attributes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove attributes
+     *
+     * @param \Entities\LazaretAttribute $attributes
+     */
+    public function removeAttribute(\Entities\LazaretAttribute $attributes)
+    {
+        $this->attributes->removeElement($attributes);
+    }
+
+    /**
+     * Add checks
+     *
+     * @param \Entities\LazaretCheck $checks
+     * @return LazaretFile
+     */
+    public function addCheck(\Entities\LazaretCheck $checks)
+    {
+        $this->checks[] = $checks;
+    
+        return $this;
+    }
+
+    /**
+     * Remove checks
+     *
+     * @param \Entities\LazaretCheck $checks
+     */
+    public function removeCheck(\Entities\LazaretCheck $checks)
+    {
+        $this->checks->removeElement($checks);
+    }
 }

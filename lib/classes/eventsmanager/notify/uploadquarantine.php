@@ -185,8 +185,8 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function is_available()
     {
-        if (null !== $this->app['phraseanet.user']) {
-            return $this->app['phraseanet.user']->ACL()->has_right('addrecord');
+        if (null !== $this->app['authentication']->getUser()) {
+            return $this->app['authentication']->getUser()->ACL()->has_right('addrecord');
         }
 
         return false;

@@ -623,15 +623,15 @@ class SearchEngineOptions
             $bas = array_map(function($base_id) use ($app) {
                 return \collection::get_from_base_id($app, $base_id);
             }, $request->get('bases'));
-        } elseif (!$app->isAuthenticated()) {
+        } elseif (!$app['authentication']->isAuthenticated()) {
             $bas = $app->getOpenCollections();
         } else {
-            $bas = $app['phraseanet.user']->ACL()->get_granted_base();
+            $bas = $app['authentication']->getUser()->ACL()->get_granted_base();
         }
 
         $bas = array_filter($bas, function($collection) use ($app) {
-            if ($app->isAuthenticated()) {
-                return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+            if ($app['authentication']->isAuthenticated()) {
+                return $app['authentication']->getUser()->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
             } else {
                 return in_array($collection, $app->getOpenCollections());
             }
@@ -645,9 +645,9 @@ class SearchEngineOptions
             }
         }
 
-        if ($app->isAuthenticated() && $app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
+        if ($app['authentication']->isAuthenticated() && $app['authentication']->getUser()->ACL()->has_right('modifyrecord')) {
             $BF = array_filter($bas, function($collection) use ($app) {
-                return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+                return $app['authentication']->getUser()->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
             });
 
             $options->allowBusinessFieldsOn($BF);

@@ -63,26 +63,26 @@ class set_selection extends set_abstract
             $sbas_id = $record->get_sbas_id();
             $record_id = $record->get_record_id();
             if (! $rights) {
-                if ($this->app['phraseanet.user']->ACL()->has_hd_grant($record)) {
+                if ($this->app['authentication']->getUser()->ACL()->has_hd_grant($record)) {
                     continue;
                 }
 
-                if ($this->app['phraseanet.user']->ACL()->has_preview_grant($record)) {
+                if ($this->app['authentication']->getUser()->ACL()->has_preview_grant($record)) {
                     continue;
                 }
-                if ( ! $this->app['phraseanet.user']->ACL()->has_access_to_base($base_id)) {
+                if ( ! $this->app['authentication']->getUser()->ACL()->has_access_to_base($base_id)) {
                     $to_remove[] = $id;
                     continue;
                 }
             } else {
                 foreach ($rights as $right) {
-                    if ( ! $this->app['phraseanet.user']->ACL()->has_right_on_base($base_id, $right)) {
+                    if ( ! $this->app['authentication']->getUser()->ACL()->has_right_on_base($base_id, $right)) {
                         $to_remove[] = $id;
                         continue;
                     }
                 }
                 foreach ($sbas_rights as $right) {
-                    if ( ! $this->app['phraseanet.user']->ACL()->has_right_on_sbas($sbas_id, $right)) {
+                    if ( ! $this->app['authentication']->getUser()->ACL()->has_right_on_sbas($sbas_id, $right)) {
                         $to_remove[] = $id;
                         continue;
                     }
@@ -94,8 +94,8 @@ class set_selection extends set_abstract
 
                 $sql = 'SELECT record_id
                 FROM record
-                WHERE ((status ^ ' . $this->app['phraseanet.user']->ACL()->get_mask_xor($base_id) . ')
-                        & ' . $this->app['phraseanet.user']->ACL()->get_mask_and($base_id) . ')=0
+                WHERE ((status ^ ' . $this->app['authentication']->getUser()->ACL()->get_mask_xor($base_id) . ')
+                        & ' . $this->app['authentication']->getUser()->ACL()->get_mask_and($base_id) . ')=0
                 AND record_id = :record_id';
 
                 $stmt = $connsbas->prepare($sql);

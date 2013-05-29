@@ -37,7 +37,7 @@ class Feed implements ControllerProviderInterface
          * I got a selection of docs, which publications are available forthese docs ?
          */
         $controllers->post('/requestavailable/', function(Application $app, Request $request) {
-            $feeds = \Feed_Collection::load_all($app, $app['phraseanet.user']);
+            $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
             $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
 
             return $app['twig']->render('prod/actions/publish/publish.html.twig', array('publishing' => $publishing, 'feeds'      => $feeds));
@@ -49,7 +49,7 @@ class Feed implements ControllerProviderInterface
         $controllers->post('/entry/create/', function(Application $app, Request $request) {
             try {
                 $feed = new \Feed_Adapter($app, $request->request->get('feed_id'));
-                $publisher = \Feed_Publisher_Adapter::getPublisher($app['phraseanet.appbox'], $feed, $app['phraseanet.user']);
+                $publisher = \Feed_Publisher_Adapter::getPublisher($app['phraseanet.appbox'], $feed, $app['authentication']->getUser());
 
                 $title = $request->request->get('title');
                 $subtitle = $request->request->get('subtitle');
@@ -76,11 +76,11 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/entry/{id}/edit/', function(Application $app, Request $request, $id) {
             $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
 
-            if (!$entry->is_publisher($app['phraseanet.user'])) {
+            if (!$entry->is_publisher($app['authentication']->getUser())) {
                 throw new \Exception_UnauthorizedAction();
             }
 
-            $feeds = \Feed_Collection::load_all($app, $app['phraseanet.user']);
+            $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
 
             $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', array('entry' => $entry, 'feeds' => $feeds));
 
@@ -97,7 +97,7 @@ class Feed implements ControllerProviderInterface
 
                 $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
 
-                if (!$entry->is_publisher($app['phraseanet.user'])) {
+                if (!$entry->is_publisher($app['authentication']->getUser())) {
                     throw new \Exception_UnauthorizedAction();
                 }
 
@@ -115,12 +115,12 @@ class Feed implements ControllerProviderInterface
                 $new_feed_id = $request->request->get('feed_id', $current_feed_id);
                 if ($current_feed_id != $new_feed_id) {
                     try {
-                        $new_feed = \Feed_Adapter::load_with_user($app, $app['phraseanet.user'], $new_feed_id);
+                        $new_feed = \Feed_Adapter::load_with_user($app, $app['authentication']->getUser(), $new_feed_id);
                     } catch (\Exception_NotFound $e) {
                         throw new \Exception_Forbidden('You have no access to this feed');
                     }
 
-                    if (!$new_feed->is_publisher($app['phraseanet.user'])) {
+                    if (!$new_feed->is_publisher($app['authentication']->getUser())) {
                         throw new \Exception_Forbidden('You are not publisher of this feed');
                     }
 
@@ -170,8 +170,8 @@ class Feed implements ControllerProviderInterface
 
                 $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
 
-                if (!$entry->is_publisher($app['phraseanet.user'])
-                    && $entry->get_feed()->is_owner($app['phraseanet.user']) === false) {
+                if (!$entry->is_publisher($app['authentication']->getUser())
+                    && $entry->get_feed()->is_owner($app['authentication']->getUser()) === false) {
                     throw new \Exception_UnauthorizedAction(_('Action Forbidden : You are not the publisher'));
                 }
 
@@ -197,7 +197,7 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feeds = \Feed_Collection::load_all($app, $app['phraseanet.user']);
+            $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig'
                 , array(
@@ -214,8 +214,8 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feed = \Feed_Adapter::load_with_user($app, $app['phraseanet.user'], $id);
-            $feeds = \Feed_Collection::load_all($app, $app['phraseanet.user']);
+            $feed = \Feed_Adapter::load_with_user($app, $app['authentication']->getUser(), $id);
+            $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array('feed'  => $feed, 'feeds' => $feeds, 'page'  => $page));
 
@@ -225,12 +225,12 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/subscribe/aggregated/', function(Application $app, Request $request) {
             $renew = ($request->query->get('renew') === 'true');
 
-            $feeds = \Feed_Collection::load_all($app, $app['phraseanet.user']);
+            $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
 
             $output = array(
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
                 . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-            <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $feeds->get_aggregate()->get_user_link($app['phraseanet.registry'], $app['phraseanet.user'], \Feed_Adapter::FORMAT_RSS, null, $renew)->get_href() . '"/></div>',
+            <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $feeds->get_aggregate()->get_user_link($app['phraseanet.registry'], $app['authentication']->getUser(), \Feed_Adapter::FORMAT_RSS, null, $renew)->get_href() . '"/></div>',
                 'titre' => _('publications::votre rss personnel')
             );
 
@@ -239,12 +239,12 @@ class Feed implements ControllerProviderInterface
 
         $controllers->get('/subscribe/{id}/', function(Application $app, Request $request, $id) {
             $renew = ($request->query->get('renew') === 'true');
-            $feed = \Feed_Adapter::load_with_user($app, $app['phraseanet.user'], $id);
+            $feed = \Feed_Adapter::load_with_user($app, $app['authentication']->getUser(), $id);
 
             $output = array(
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
                 . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-            <div><input type="text" style="width:100%" value="' . $feed->get_user_link($app['phraseanet.registry'], $app['phraseanet.user'], \Feed_Adapter::FORMAT_RSS, null, $renew)->get_href() . '"/></div>',
+            <div><input type="text" style="width:100%" value="' . $feed->get_user_link($app['phraseanet.registry'], $app['authentication']->getUser(), \Feed_Adapter::FORMAT_RSS, null, $renew)->get_href() . '"/></div>',
                 'titre' => _('publications::votre rss personnel')
             );
 

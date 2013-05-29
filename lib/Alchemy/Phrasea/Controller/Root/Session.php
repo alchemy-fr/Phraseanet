@@ -62,8 +62,8 @@ class Session implements ControllerProviderInterface
             'changed' => array()
         );
 
-        if ($app->isAuthenticated()) {
-            $usr_id = $app['phraseanet.user']->get_id();
+        if ($app['authentication']->isAuthenticated()) {
+            $usr_id = $app['authentication']->getUser()->get_id();
             if ($usr_id != $request->request->get('usr')) { // I logged with another user
                 $ret['status'] = 'disconnected';
 
@@ -105,7 +105,7 @@ class Session implements ControllerProviderInterface
             'notifications' => $app['events-manager']->get_notifications()
         ));
 
-        $baskets = $app['EM']->getRepository('\Entities\Basket')->findUnreadActiveByUser($app['phraseanet.user']);
+        $baskets = $app['EM']->getRepository('\Entities\Basket')->findUnreadActiveByUser($app['authentication']->getUser());
 
         foreach ($baskets as $basket) {
             $ret['changed'][] = $basket->getId();

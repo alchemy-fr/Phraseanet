@@ -125,7 +125,7 @@ class databox_status
             return self::$_statuses;
         }
 
-        $sbas_ids = $app['phraseanet.user']->ACL()->get_granted_sbas();
+        $sbas_ids = $app['authentication']->getUser()->ACL()->get_granted_sbas();
 
         $statuses = array();
 
@@ -146,7 +146,7 @@ class databox_status
     {
         $statuses = array();
 
-        $sbas_ids = $app['phraseanet.user']->ACL()->get_granted_sbas();
+        $sbas_ids = $app['authentication']->getUser()->ACL()->get_granted_sbas();
 
         $see_all = array();
 
@@ -154,7 +154,7 @@ class databox_status
             $see_all[$databox->get_sbas_id()] = false;
 
             foreach ($databox->get_collections() as $collection) {
-                if ($app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
+                if ($app['authentication']->getUser()->ACL()->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
                     $see_all[$databox->get_sbas_id()] = true;
                     break;
                 }
@@ -172,7 +172,7 @@ class databox_status
 
             $see_this = isset($see_all[$sbas_id]) ? $see_all[$sbas_id] : false;
 
-            if ($app['phraseanet.user']->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
+            if ($app['authentication']->getUser()->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
                 $see_this = true;
             }
 

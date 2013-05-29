@@ -141,7 +141,7 @@ class record_preview extends record_adapter
                 $repository = $app['EM']->getRepository('\Entities\Basket');
 
                 /* @var $repository \Repositories\BasketRepository */
-                $Basket = $repository->findUserBasket($app, $contId, $app['phraseanet.user'], false);
+                $Basket = $repository->findUserBasket($app, $contId, $app['authentication']->getUser(), false);
 
                 /* @var $Basket \Entities\Basket */
                 $this->container = $Basket;
@@ -323,7 +323,7 @@ class record_preview extends record_adapter
 
         $tab = array();
 
-        $report = $this->app['phraseanet.user']->ACL()->has_right_on_base($this->get_base_id(), 'canreport');
+        $report = $this->app['authentication']->getUser()->ACL()->has_right_on_base($this->get_base_id(), 'canreport');
 
         $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
 
@@ -335,7 +335,7 @@ class record_preview extends record_adapter
 
         if (! $report) {
             $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
-            $params[':usr_id'] = $this->app['phraseanet.user']->get_id();
+            $params[':usr_id'] = $this->app['authentication']->getUser()->get_id();
             $params[':site'] = $this->app['phraseanet.registry']->get('GV_sit');
         }
 
@@ -406,7 +406,7 @@ class record_preview extends record_adapter
             return $this->view_popularity;
         }
 
-        $report = $this->app['phraseanet.user']->ACL()->has_right_on_base(
+        $report = $this->app['authentication']->getUser()->ACL()->has_right_on_base(
             $this->get_base_id(), 'canreport');
 
         if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {
@@ -495,7 +495,7 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $report = $this->app['phraseanet.user']->ACL()->has_right_on_base(
+        $report = $this->app['authentication']->getUser()->ACL()->has_right_on_base(
             $this->get_base_id(), 'canreport');
 
         if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {
@@ -567,7 +567,7 @@ class record_preview extends record_adapter
             return $this->download_popularity;
         }
 
-        $report = $this->app['phraseanet.user']->ACL()->has_right_on_base($this->get_base_id(), 'canreport');
+        $report = $this->app['authentication']->getUser()->ACL()->has_right_on_base($this->get_base_id(), 'canreport');
 
         $ret = false;
         if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {

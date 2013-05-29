@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Controller\Api;
 
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
 use Silex\Application as SilexApplication;
@@ -49,6 +51,9 @@ class V1 implements ControllerProviderInterface
          * @ throws \API_V1_exception_forbidden
          */
         $controllers->before(function($request) use ($app) {
+            $context = new Context(Context::CONTEXT_OAUTH2_TOKEN);
+            $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+
             $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_START, new ApiOAuth2StartEvent());
             $oauth2_adapter = new \API_OAuth2_Adapter($app);
             $oauth2_adapter->verifyAccessToken();
@@ -63,16 +68,15 @@ class V1 implements ControllerProviderInterface
                 throw new \API_V1_exception_forbidden(_('The use of phraseanet Navigator is not allowed'));
             }
 
-            if ($app->isAuthenticated()) {
+            if ($app['authentication']->isAuthenticated()) {
                 $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
 
                 return;
             }
 
             $user = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app);
-            $auth = new \Session_Authentication_None($user);
 
-            $app->openAccount($auth, $oauth2_adapter->get_ses_id());
+            $app['authentication']->openAccount($user);
             $oauth2_adapter->remember_this_ses_id($app['session']->get('session_id'));
             $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
 
@@ -646,19 +650,19 @@ class V1 implements ControllerProviderInterface
          */
         $controllers->get('/feeds/list/', function(SilexApplication $app) {
             return $app['api']
-                    ->search_publications($app['request'], $app['phraseanet.user'])
+                    ->search_publications($app['request'], $app['authentication']->getUser())
                     ->get_response();
         });
 
         $controllers->get('/feeds/content/', function(SilexApplication $app) {
             return $app['api']
-                    ->get_publications($app['request'], $app['phraseanet.user'])
+                    ->get_publications($app['request'], $app['authentication']->getUser())
                     ->get_response();
         });
 
         $controllers->get('/feeds/entry/{entry_id}/', function(SilexApplication $app, $entry_id) {
             return $app['api']
-                    ->get_feed_entry($app['request'], $entry_id, $app['phraseanet.user'])
+                    ->get_feed_entry($app['request'], $entry_id, $app['authentication']->getUser())
                     ->get_response();
         })->assert('entry_id', '\d+');
 
@@ -675,7 +679,7 @@ class V1 implements ControllerProviderInterface
          */
         $controllers->get('/feeds/{feed_id}/content/', function(SilexApplication $app, $feed_id) {
             return $app['api']
-                    ->get_publication($app['request'], $feed_id, $app['phraseanet.user'])
+                    ->get_publication($app['request'], $feed_id, $app['authentication']->getUser())
                     ->get_response();
         })->assert('feed_id', '\d+');
 

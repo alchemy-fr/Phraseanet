@@ -129,6 +129,30 @@ class UsrList extends \Entities\UsrList implements \Doctrine\ORM\Proxy\Proxy
         return parent::has($user, $app);
     }
 
+    public function addOwner(\Entities\UsrListOwner $owners)
+    {
+        $this->__load();
+        return parent::addOwner($owners);
+    }
+
+    public function removeOwner(\Entities\UsrListOwner $owners)
+    {
+        $this->__load();
+        return parent::removeOwner($owners);
+    }
+
+    public function addEntrie(\Entities\UsrListEntry $entries)
+    {
+        $this->__load();
+        return parent::addEntrie($entries);
+    }
+
+    public function removeEntrie(\Entities\UsrListEntry $entries)
+    {
+        $this->__load();
+        return parent::removeEntrie($entries);
+    }
+
 
     public function __sleep()
     {

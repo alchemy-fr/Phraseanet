@@ -244,7 +244,7 @@ class set_order extends set_abstract
         $this->total = (int) $row['total'];
         $this->ssel_id = (int) $row['ssel_id'];
 
-        $base_ids = array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('order_master')));
+        $base_ids = array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('order_master')));
 
         $sql = 'SELECT e.base_id, e.record_id, e.order_master_id, e.id, e.deny
               FROM order_elements e
@@ -379,7 +379,7 @@ class set_order extends set_abstract
             $Basket = new \Entities\Basket();
             $Basket->setName(sprintf(_('Commande du %s'), $this->created_on->format('Y-m-d')));
             $Basket->setOwner($this->user);
-            $Basket->setPusher($app['phraseanet.user']);
+            $Basket->setPusher($app['authentication']->getUser());
 
             $app['EM']->persist($Basket);
             $app['EM']->flush();
@@ -419,7 +419,7 @@ class set_order extends set_abstract
                 $app['EM']->persist($BasketElement);
 
                 $params = array(
-                    ':usr_id'           => $app['phraseanet.user']->get_id()
+                    ':usr_id'           => $app['authentication']->getUser()->get_id()
                     , ':order_id'         => $this->id
                     , ':order_element_id' => $order_element_id
                 );
@@ -427,7 +427,7 @@ class set_order extends set_abstract
                 $stmt->execute($params);
 
                 $n ++;
-                $this->user->ACL()->grant_hd_on($record, $app['phraseanet.user'], 'order');
+                $this->user->ACL()->grant_hd_on($record, $app['authentication']->getUser(), 'order');
 
                 unset($record);
             } catch (Exception $e) {
@@ -441,7 +441,7 @@ class set_order extends set_abstract
         if ($n > 0) {
             $params = array(
                 'ssel_id' => $this->ssel_id,
-                'from'    => $app['phraseanet.user']->get_id(),
+                'from'    => $app['authentication']->getUser()->get_id(),
                 'to'      => $this->user->get_id(),
                 'n'       => $n
             );
@@ -470,7 +470,7 @@ class set_order extends set_abstract
                 AND ISNULL(order_master_id)';
 
             $params = array(
-                ':order_master_id'  => $this->app['phraseanet.user']->get_id()
+                ':order_master_id'  => $this->app['authentication']->getUser()->get_id()
                 , ':order_id'         => $this->id
                 , ':order_element_id' => $order_element_id
             );
@@ -482,7 +482,7 @@ class set_order extends set_abstract
 
         if ($n > 0) {
             $params = array(
-                'from' => $this->app['phraseanet.user']->get_id(),
+                'from' => $this->app['authentication']->getUser()->get_id(),
                 'to'   => $this->user->get_id(),
                 'n'    => $n
             );

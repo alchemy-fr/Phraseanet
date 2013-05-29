@@ -48,31 +48,6 @@ class phrasea
         return $retval;
     }
 
-    public static function start(Configuration $configuration)
-    {
-        $choosenConnexion = $configuration->getPhraseanet()->get('database');
-
-        $connexion = $configuration->getConnexion($choosenConnexion);
-
-        $hostname = $connexion->get('host');
-        $port = (int) $connexion->get('port');
-        $user = $connexion->get('user');
-        $password = $connexion->get('password');
-        $dbname = $connexion->get('dbname');
-
-        if (!extension_loaded('phrasea2')) {
-            throw new RuntimeException('Phrasea extension is required');
-        }
-
-        if (!function_exists('phrasea_conn')) {
-            throw new RuntimeException('Phrasea extension requires upgrade');
-        }
-
-        if (phrasea_conn($hostname, $port, $user, $password, $dbname) !== true) {
-            throw new RuntimeException('Unable to initialize Phrasea connection');
-        }
-    }
-
     public static function clear_sbas_params(Application $app)
     {
         self::$_sbas_params = null;
@@ -293,12 +268,6 @@ class phrasea
         }
 
         return isset(self::$_bas_names[$base_id]) ? self::$_bas_names[$base_id] : 'Unknown collection';
-    }
-
-    public static function redirect($url)
-    {
-        header("Location: $url");
-        exit;
     }
 
     public static function scheduler_key(Application $app, $renew = false)

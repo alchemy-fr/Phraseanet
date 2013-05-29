@@ -111,6 +111,18 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
         return parent::getUsrId();
     }
 
+    public function addFile(\Entities\LazaretFile $files)
+    {
+        $this->__load();
+        return parent::addFile($files);
+    }
+
+    public function removeFile(\Entities\LazaretFile $files)
+    {
+        $this->__load();
+        return parent::removeFile($files);
+    }
+
 
     public function __sleep()
     {

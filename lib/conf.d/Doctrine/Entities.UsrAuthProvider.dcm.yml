@@ -1,0 +1,33 @@
+Entities\UsrAuthProvider:
+  type: entity
+  repositoryClass: Repositories\UsrAuthProviderRepository
+  table: UsrAuthProviders
+  uniqueConstraints:
+    unique_provider_per_user:
+      columns: [ usr_id, provider ]
+    provider_ids:
+      columns: [ provider, distant_id ]
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    usr_id:
+      type: integer
+    provider:
+      type: string
+      length: 32
+    distant_id:
+      type: string
+      length: 192
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create

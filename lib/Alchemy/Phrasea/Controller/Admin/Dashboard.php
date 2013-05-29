@@ -217,8 +217,8 @@ class Dashboard implements ControllerProviderInterface
     {
         if (count($admins = $request->request->get('admins', array())) > 0) {
 
-            if (!in_array($app['phraseanet.user']->get_id(), $admins)) {
-                $admins[] = $app['phraseanet.user']->get_id();
+            if (!in_array($app['authentication']->getUser()->get_id(), $admins)) {
+                $admins[] = $app['authentication']->getUser()->get_id();
             }
 
             if ($admins > 0) {

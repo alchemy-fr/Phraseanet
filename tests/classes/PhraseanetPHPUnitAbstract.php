@@ -7,6 +7,7 @@ use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
 
 abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 {
@@ -110,6 +111,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::$DI['app'] = self::$DI->share(function($DI) use ($phpunit) {
             $environment = 'test';
             $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Root.php';
+
+            $app['form.csrf_provider'] = $app->share(function () {
+                return new CsrfTestProvider();
+            });
 
             $app['debug'] = true;
 
@@ -862,11 +867,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
         $app['session']->clear();
         $app['session']->set('usr_id', self::$DI['user']->get_id());
+        self::$DI['app']['authentication']->reinitUser();
     }
 
     protected function logout(Application $app)
     {
         $app['session']->clear();
+        self::$DI['app']['authentication']->reinitUser();
     }
 
     protected function assertXMLHTTPBadJsonResponse(Response $response)
@@ -886,5 +893,49 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::$DI['app']['notification.deliverer']->expects($this->exactly($qty))
             ->method('deliver')
             ->with($this->isInstanceOf($expectedMail), $this->equalTo($receipt));
+    }
+
+    protected function mockNotificationsDeliverer(array &$expectedMails)
+    {
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $phpunit = $this;
+
+        self::$DI['app']['notification.deliverer']->expects($this->any())
+            ->method('deliver')
+            ->will($this->returnCallback(function ($email, $receipt) use ($phpunit, &$expectedMails) {
+                $phpunit->assertTrue(isset($expectedMails[get_class($email)]));
+                $expectedMails[get_class($email)]++;
+            }));
+    }
+
+    public function createRandomMock()
+    {
+        return $this->getMockBuilder('\random')
+            ->setMethods(array('generatePassword'))
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    public function createAppboxMock()
+    {
+        return $this->getMockBuilder('appbox')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+}
+
+class CsrfTestProvider implements CsrfProviderInterface
+{
+    public function generateCsrfToken($intention)
+    {
+        return mt_rand();
+    }
+
+    public function isCsrfTokenValid($intention, $token)
+    {
+        return true;
     }
 }

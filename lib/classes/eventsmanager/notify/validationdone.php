@@ -141,7 +141,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         try {
             $repository = $this->app['EM']->getRepository('\Entities\Basket');
 
-            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['phraseanet.user'], false);
+            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
         } catch (Exception $e) {
             return array();
         }
@@ -184,11 +184,11 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
     {
         $bool = false;
 
-        if ( ! $this->app->isAuthenticated()) {
+        if ( ! $this->app['authentication']->isAuthenticated()) {
             return false;
         }
 
-        if ($this->app['phraseanet.user']->ACL()->has_right('push')) {
+        if ($this->app['authentication']->getUser()->ACL()->has_right('push')) {
             $bool = true;
         }
 

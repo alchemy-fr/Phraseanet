@@ -4,8 +4,8 @@
         {% set cont_width = 130 %}
         {% set cont_height = 140 %}
     {% else %}
-        {% set cont_width = app['phraseanet.user'].getPrefs('editing_images_size') %}
-        {% set cont_height = app['phraseanet.user'].getPrefs('editing_images_size') %}
+        {% set cont_width = app['authentication'].getUser().getPrefs('editing_images_size') %}
+        {% set cont_height = app['authentication'].getUser().getPrefs('editing_images_size') %}
     {% endif %}
 
     {% set i = record.get_number() %}
@@ -27,7 +27,7 @@
     {% endif %}
 
     {% set class_status = 'nostatus' %}
-    {% if app['phraseanet.user'].ACL().has_right_on_base(record.get_base_id(), 'chgstatus') %}
+    {% if app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), 'chgstatus') %}
         {% set class_status = '' %}
     {% endif %}
 
@@ -71,8 +71,8 @@
         {%trans 'prod::editing::fields: status ' %}
     </div>
     {% set cssfile = '000000' %}
-    {% if app['phraseanet.user'].getPrefs('css') %}
-        {% set cssfile = app['phraseanet.user'].getPrefs('css') %}
+    {% if app['authentication'].getUser().getPrefs('css') %}
+        {% set cssfile = app['authentication'].getUser().getPrefs('css') %}
     {% endif %}
     {% for field in fields %}
         {% set i = field.get_id() %}
@@ -127,7 +127,7 @@
             <input style="font-size:2px; width:5px;" type="text" id="editFakefocus" />
         </form>
     </div>
-    <div id="EDIT_TOP" style="height:{{app['phraseanet.user'].getPrefs('editing_top_box')}};">
+    <div id="EDIT_TOP" style="height:{{app['authentication'].getUser().getPrefs('editing_top_box')}};">
         <div id="EDIT_MENU">
             <div id="EDIT_ZOOMSLIDER" >
             </div>
@@ -150,7 +150,7 @@
 
     <div id='EDIT_MID'>
         <div id='EDIT_MID_L' class='ui-corner-all'>
-            <div id="divS_wrapper" style="width:{{app['phraseanet.user'].getPrefs('editing_right_box')}}">
+            <div id="divS_wrapper" style="width:{{app['authentication'].getUser().getPrefs('editing_right_box')}}">
                 <div id="divS">
                     {{_self.HTML_fieldlist(recordsRequest, fields)}}
                 </div>
@@ -230,7 +230,7 @@
                 <div id="idExplain" class="PNB"></div>
             </div>
         </div>
-        <div id="EDIT_MID_R" style="width:{{app['phraseanet.user'].getPrefs('editing_left_box')}}">
+        <div id="EDIT_MID_R" style="width:{{app['authentication'].getUser().getPrefs('editing_left_box')}}">
             <div style='position:absolute; top:0; left:0; right:0; bottom:0;' class='tabs'>
                 <ul>
                     {% if thesaurus %}

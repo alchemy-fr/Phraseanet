@@ -15,6 +15,13 @@ require __DIR__ . '/vendor/autoload.php';
 
 chdir(__DIR__);
 
+system('bin/setup less:compile', $code);
+
+if (0 !== $code) {
+    echo "Failed to build less files\n";
+    exit(1);
+}
+
 set_time_limit(0);
 
 printf('Remove files ...' . PHP_EOL);
@@ -43,6 +50,8 @@ $finder
     ->name('.travis.yml')
     ->name('vendors.win.php')
     ->name('builder.php')
+    ->name('behat.yml')
+    ->name('behat.yml.sample')
     ->ignoreDotFiles(false)
     ->ignoreVCS(false)
     ->in(__DIR__);
@@ -80,6 +89,10 @@ $finder
     ->name('.svn')
     ->name('.git')
     ->name('flash')
+    ->name('angular-mocks')
+    ->name('angular-scenario')
+    ->name('qunit')
+    ->name('features')
     ->name('chai')
     ->name('mocha')
     ->name('sinon')

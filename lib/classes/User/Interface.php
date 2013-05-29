@@ -162,8 +162,6 @@ interface User_Interface
 
     public static function create(Application $app, $login, $password, $email, $admin, $invite = false);
 
-    public static function salt_password(Application $app, $password, $nonce);
-
     public static function getInstance($id, Application $app);
 
     public static function saveQuery(Application $app, $query);

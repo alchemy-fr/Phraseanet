@@ -1,0 +1,23 @@
+{% set languages = app.getAvailableLanguages() %}
+
+{% set qs = app['request'].getQueryString() %}
+{% if qs is not none %}
+    {% set qs = '?' ~ qs %}
+{% endif %}
+
+{% set currentUrl = app['request'].getBaseUrl() ~ app['request'].getPathInfo() ~ qs %}
+
+<div id="authentication-sidebar-language" class="text-right well-small">
+    <span class="language"><b>{% trans "language" %}</b></span>
+    <div class="btn-group">
+        <button id="language-button" class="btn btn-mini btn-flat dropdown-toggle" data-toggle="dropdown">
+            {{ attribute(languages, app['locale']) }}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu  pull-right">
+            {% for code, language in languages if code != app['locale'] %}
+                 <li><a href="{{ path('set_locale', {'locale' : code, 'redirect' : currentUrl }) }}" data-country-code="{{ code }}">{{ language }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

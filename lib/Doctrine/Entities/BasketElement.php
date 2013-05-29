@@ -246,4 +246,14 @@ class BasketElement
 
         throw new \Exception('There is no such participant ' . $user->get_email());
     }
+
+    /**
+     * Remove validation_datas
+     *
+     * @param \Entities\ValidationData $validationDatas
+     */
+    public function removeValidationData(\Entities\ValidationData $validationDatas)
+    {
+        $this->validation_datas->removeElement($validationDatas);
+    }
 }
