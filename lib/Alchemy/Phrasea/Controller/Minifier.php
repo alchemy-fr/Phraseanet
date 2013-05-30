@@ -44,6 +44,14 @@ class Minifier implements ControllerProviderInterface
              */
             $min_serveOptions['bubbleCssImports'] = false;
 
+            if ($app['debug']) {
+                $min_serveOptions['debug'] = true;
+                $min_serveOptions['maxAge'] = 0;
+            } else {
+                $min_serveOptions['debug'] = false;
+                $min_serveOptions['maxAge'] = 1800;
+            }
+
             /**
              * Set to true to disable the "f" GET parameter for specifying files.
              * Only the "g" parameter will be considered.
@@ -122,7 +130,7 @@ class Minifier implements ControllerProviderInterface
             }
 
             $response = new Response($ret['content'], $ret['statusCode']);
-            $response->setMaxAge(1800);
+            $response->setMaxAge($min_serveOptions['maxAge']);
 
             foreach ($ret['headers'] as $key => $value) {
                 $response->headers->set($key, $value);
