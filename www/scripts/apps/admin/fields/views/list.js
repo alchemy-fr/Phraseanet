@@ -114,25 +114,22 @@ define([
         },
         updateSortAction: function(event, model, ui) {
             var newPosition = ui.item.index();
-            var curPosition = this.collection.indexOf(model);
-
-            // reorder all collection model
-            this.collection.each(function(el, index) {
-                if (newPosition > curPosition && (index > curPosition && index <= curPosition)) index -= 1;
-                else if (newPosition < curPosition && (index >= curPosition && index < curPosition)) index += 1;
-
-                el.set("sorter", index);
+            this.collection.remove(model, {silent: true});
+            this.collection.each(function (model, index) {
+                var ordinal = index;
+                if (index >= newPosition) ordinal += 1;
+                model.set({'sorter': ordinal}, {silent: true});
             });
-
-            this.render();
+            model.set({'sorter': newPosition}, {silent: true});
+            this.collection.add(model, {at: newPosition});
 
             this.itemViews[0].animate(Math.abs(ui.firstItemPosition));
-
             // update edit view model
-            AdminFieldApp.fieldEditView.model = this.collection.find(function(el) {
+            AdminFieldApp.fieldEditView.updateModel(this.collection.find(function(el) {
                 return el.get("id") === AdminFieldApp.fieldEditView.model.get("id");
-            });
+            }));
 
+            AdminFieldApp.fieldEditView.render();
             AdminFieldApp.saveView.updateStateButton();
 
             return this;
