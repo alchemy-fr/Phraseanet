@@ -87,7 +87,7 @@
                     <img src="/skins/icons/titre16.png" title="{% trans 'This field represents the title of the document' %}" />
                 {% endif %}
                 <span id="spanidEditFieldBox_{{i}}">
-                    {{field.get_name()}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
+                    {{field.get_label(app['locale.I18n'])}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
                 </span>
                 <span class="fieldvalue" id="idEditField_{{i}}" >???</span>
             </div>
@@ -268,7 +268,7 @@
                                 <select id="EditSRField" class="input-xlarge">
                                     <option value="">{% trans 'prod::editing::replace: remplacer dans tous les champs' %}</option>
                                     {% for field in fields %}
-                                        <option value="{{ field.get_id() }}">{{ field.get_name() }}</option>
+                                        <option value="{{ field.get_id() }}">{{ field.get_label(app['locale.I18n']) }}</option>
                                     {% endfor %}
                                 </select>
                             </td>

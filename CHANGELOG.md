@@ -26,6 +26,7 @@
   - Upload now monitors number of files transmitted.
   - Add bin/developer console for developement purpose.
   - Add possibility to delete a basket from the workzone basket browser.
+  - Add localized labels for databox documentary fields.
 
 * 3.7.12 (2013-05-13)
 

@@ -67,6 +67,7 @@ class Edit implements ControllerProviderInterface
                         , '_value'         => ''
                         , '_sgval'         => array()
                         , 'required'             => $meta->is_required()
+                        , 'label'                => $meta->get_label($app['locale.I18n'])
                         , 'readonly'             => $meta->is_readonly()
                         , 'type'                 => $meta->get_type()
                         , 'format'               => ''

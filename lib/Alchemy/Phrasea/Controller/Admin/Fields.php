@@ -333,6 +333,10 @@ class Fields implements ControllerProviderInterface
             ->setVocabularyControl(null)
             ->setVocabularyRestricted(false);
 
+        foreach ($data['labels'] as $code => $label) {
+            $field->set_label($code, $label);
+        }
+
         if (isset($data['sorter'])) {
             $field->set_position($data['sorter']);
         }
@@ -361,7 +365,7 @@ class Fields implements ControllerProviderInterface
         return array(
             'name', 'multi', 'thumbtitle', 'tag', 'business', 'indexable',
             'required', 'separator', 'readonly', 'type', 'tbranch', 'report',
-            'vocabulary-type', 'vocabulary-restricted', 'dces-element'
+            'vocabulary-type', 'vocabulary-restricted', 'dces-element', 'labels'
         );
     }
 

@@ -4620,6 +4620,38 @@
             <default>0</default>
             <comment></comment>
           </field>
+          <field>
+            <name>label_en</name>
+            <type>char(128)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_fr</name>
+            <type>char(128)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_de</name>
+            <type>char(128)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_nl</name>
+            <type>char(128)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
