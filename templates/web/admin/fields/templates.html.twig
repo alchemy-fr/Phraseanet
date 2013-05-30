@@ -45,9 +45,25 @@
                 <h3>{% trans %}Add a new field{% endtrans %}</h3>
                 <form class="form-horizontal">
                     <div class="control-group">
-                        <label class="control-label" for="new-name"">{% trans %}Label{% endtrans %}</label>
+                        <label class="control-label" for="new-name"">{% trans %}Name{% endtrans %}</label>
                         <div class="controls">
                             <input type="text" id="new-name" class="input-block-level" placeholder="">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="new-name"">{% trans %}Labels{% endtrans %}</label>
+                        <div class="controls">
+                            <ul class="unstyled inline">
+                                <li class="select lng-label"><a href="#new-label_fr">FR</a></li>
+                                <li class="lng-label"><a href="#new-label_en">EN</a></li>
+                                <li class="lng-label"><a href="#new-label_de">DE</a></li>
+                                <li class="lng-label"><a href="#new-label_nl">NL</a></li>
+                            </ul>
+                            <input type="text" id="new-label_en" class="input-block-level input-label" style="display:none" placeholder="{% trans %}English label{% endtrans %}">
+                            <input type="text" id="new-label_fr" class="input-block-level input-label" placeholder="{% trans %}French label{% endtrans %}">
+                            <input type="text" id="new-label_de" class="input-block-level input-label" style="display:none" placeholder="{% trans %}German label{% endtrans %}">
+                            <input type="text" id="new-label_nl" class="input-block-level input-label" style="display:none" placeholder="{% trans %}Dutch label{% endtrans %}">
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -81,14 +97,23 @@
                 <td><%= field.sorter %></td>
                 <td><button type="button" class="btn btn-danger delete-field pull-right"><i class="icon-trash icon-white"></i>delete</button></td>
             </tr>
-            <tr class="edit-name ">
-                <td colspan="2" class="control-group <%= modelErrors && modelErrors.has('name') ? 'error' : '' %>">
-                    <input id="name" type="text" value="<%= field.name %>" class="input-block-level">
-                    <span class="help-block">
-                        <% if(modelErrors && modelErrors.get('name')) { %>
-                            <%= modelErrors.get('name').message %>
-                        <% } %>
-                    </span>
+            <tr class="edit-name">
+                <td colspan="2">
+                    <%= field.name %>
+                </td>
+            </tr>
+            <tr class="edit-label ">
+                <td colspan="2" class="control-group">
+                    <ul class="unstyled inline">
+                        <li class="select lng-label"><a href="#label_fr">FR</a></li>
+                        <li class="lng-label"><a href="#label_en">EN</a></li>
+                        <li class="lng-label"><a href="#label_de">DE</a></li>
+                        <li class="lng-label"><a href="#label_nl">NL</a></li>
+                    </ul>
+                    <input type="text" value="<%= field.label_en %>" id="label_en" class="input-block-level input-label" style="display:none" placeholder="{% trans %}English label{% endtrans %}">
+                    <input type="text" value="<%= field.label_fr %>" id="label_fr" class="input-block-level input-label" placeholder="{% trans %}French label{% endtrans %}">
+                    <input type="text" value="<%= field.label_de %>" id="label_de" class="input-block-level input-label" style="display:none" placeholder="{% trans %}German label{% endtrans %}">
+                    <input type="text" value="<%= field.label_nl %>" id="label_nl" class="input-block-level input-label" style="display:none" placeholder="{% trans %}Dutch label{% endtrans %}">
                 </td>
             </tr>
             <tr>

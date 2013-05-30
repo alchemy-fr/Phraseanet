@@ -21,7 +21,8 @@ define([
         events: {
             "click .btn-submit-field": "createAction",
             "click .btn-add-field": "toggleCreateFormAction",
-            "click .btn-cancel-field": "toggleCreateFormAction"
+            "click .btn-cancel-field": "toggleCreateFormAction",
+            "click .lng-label a": "_toggleLabels"
         },
         render: function() {
             var template = _.template($("#create_template").html());
@@ -86,6 +87,18 @@ define([
                 formErrors++;
             }
 
+
+            if (false === /^[a-zA-Z]([a-zA-Z0-9]+)$/i.test(fieldNameValue)) {
+                fieldName
+                    .closest(".control-group")
+                    .addClass("error")
+                    .find(".help-block")
+                    .empty()
+                    .append(i18n.t("validation_name_invalid"));
+
+                formErrors++;
+            }
+
             // check for format tag
             if ("" !== fieldTagValue && false === /[a-z]+:[a-z0-9]+/i.test(fieldTagValue)) {
                 fieldTag
@@ -106,6 +119,10 @@ define([
                 "sbas-id": AdminFieldApp.sbas_id,
                 "name": fieldNameValue,
                 "tag": fieldTagValue,
+                "label_en" : $("#new-label_en", this.$el).val(),
+                "label_fr" : $("#new-label_fr", this.$el).val(),
+                "label_de" : $("#new-label_de", this.$el).val(),
+                "label_nl" : $("#new-label_nl", this.$el).val(),
                 "multi": $("#new-multivalued", this.$el).is(":checked"),
                 "sorter": AdminFieldApp.fieldsCollection.max(function(model) {
                     return model.get("sorter");
@@ -145,6 +162,14 @@ define([
             AdminFieldApp.resizeListBlock();
 
             return this;
+        },
+        _toggleLabels: function(event) {
+            event.preventDefault();
+            var curLabel = $(event.target);
+            $('.lng-label', this.$el).removeClass("select");
+            curLabel.closest(".lng-label").addClass("select");
+            $('.input-label', this.$el).hide();
+            $(curLabel.attr('href'), this.$el).show();
         }
     });
 

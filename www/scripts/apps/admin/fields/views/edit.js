@@ -85,61 +85,17 @@ define([
         events: {
             "click": "focusAction",
             "click .delete-field": "deleteAction",
-            "keyup input#name": "nameFieldChangedAction",
             "keyup input#tbranch": "fieldChangedAction",
             "keyup input#tag": "tagFieldChangedAction",
+            "keyup input.input-label": "labelChangedAction",
             "change input[type=checkbox]": "fieldChangedAction",
-            "change select": "selectionChangedAction"
+            "change select": "selectionChangedAction",
+            "click .lng-label a": "_toggleLabels"
         },
         focusAction: function() {
             var index = AdminFieldApp.fieldListView.collection.indexOf(this.model);
             if (index >= 0) {
                 AdminFieldApp.fieldListView.itemViews[index].animate();
-            }
-
-            return this;
-        },
-        // on input name keyup check for errors
-        nameFieldChangedAction: function(event) {
-            var self = this;
-            var fieldName = $(event.target);
-            var fieldNameId = fieldName.attr("id");
-            var fieldNameValue = fieldName.val();
-
-            var nameExists = ("undefined" !== typeof AdminFieldApp.fieldListView.collection.find(function(model) {
-                return model.get("name").toLowerCase() === fieldNameValue.toLowerCase() && self.model.get("id") !== model.get("id");
-            }));
-
-            var nameValid = /^[a-zA-Z]([a-zA-Z0-9]+)$/i.test(fieldNameValue);
-
-            // check for empty or duplicate field name
-            var notValid = "" === fieldNameValue || nameExists || !nameValid;
-
-            if (notValid) {
-                fieldName
-                    .closest(".control-group")
-                    .addClass("error")
-                    .find(".help-block")
-                    .empty()
-                    .append(i18n.t("" === fieldNameValue ? "validation_blank" : (nameExists ? "validation_name_exists" : "validation_name_invalid")));
-                // add error
-                AdminFieldApp.errorManager.addModelFieldError(new Error(
-                    self.model, fieldNameId, i18n.t("" === fieldNameValue ? "validation_blank" : (nameExists ? "validation_name_exists" : "validation_name_invalid"))
-                ));
-            } else if (fieldName.closest(".control-group").hasClass("error")) {
-                fieldName
-                    .closest(".control-group")
-                    .removeClass("error")
-                    .find(".help-block")
-                    .empty();
-                // remove error
-                AdminFieldApp.errorManager.removeModelFieldError(
-                    self.model, fieldNameId
-                );
-            }
-
-            if (!notValid) {
-                this.fieldChangedAction(event);
             }
 
             return this;
@@ -157,6 +113,17 @@ define([
             var fieldId = field.attr("id");
             var data = {};
             data[fieldId] = field.is(":checkbox") ? field.is(":checked") : field.val();
+            this.model.set(data);
+
+            return this;
+        },
+        labelChangedAction: function(e) {
+            var field = $(e.target);
+            var fieldId = field.attr("id");
+            var data = this.model.get("labels");
+
+            data[fieldId.split("_").pop()] = field.val();
+
             this.model.set(data);
 
             return this;
@@ -251,6 +218,14 @@ define([
             if (index >= 0) {
                 AdminFieldApp.fieldListView.itemViews[index].select().animate();
             }
+        },
+        _toggleLabels: function(event) {
+            event.preventDefault();
+            var curLabel = $(event.target);
+            $('.lng-label', this.$el).removeClass("select");
+            curLabel.closest(".lng-label").addClass("select");
+            $('.input-label', this.$el).hide();
+            $(curLabel.attr('href'), this.$el).show();
         }
     }));
 
