@@ -38,8 +38,6 @@ class module_console_systemUpgrade extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        require_once dirname(__FILE__) . '/../../../../vendor/autoload.php';
-
         $interactive = !$input->getOption('yes');
 
         while ($migrations = $this->container['phraseanet.configuration-tester']->getMigrations()) {
