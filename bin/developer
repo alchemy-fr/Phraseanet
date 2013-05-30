@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
+use Alchemy\Phrasea\Command\Developer\RoutesDumper;
 
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
@@ -60,6 +61,7 @@ try {
     }
 
     $cli->command(new RegenerateSqliteDb());
+    $cli->command(new RoutesDumper());
 
     $cli['console']->addCommands(array(
         // DBAL Commands
