@@ -1,0 +1,68 @@
+<?php
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Alchemy\Phrasea\Plugin\Schema;
+
+use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
+use Alchemy\Phrasea\Plugin\Schema\Manifest;
+use Alchemy\Phrasea\Plugin\Exception\PluginValidationException;
+use Alchemy\Phrasea\Plugin\Exception\JsonValidationException;
+
+class PluginValidator
+{
+    private $manifestValidator;
+
+    public function __construct(ManifestValidator $manifestValidator)
+    {
+        $this->manifestValidator = $manifestValidator;
+    }
+
+    public function validatePlugin($directory)
+    {
+        $this->ensureComposer($directory);
+        $this->ensureManifest($directory);
+
+        $manifest = $directory . DIRECTORY_SEPARATOR . 'manifest.json';
+        $data = @json_decode(@file_get_contents($manifest));
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new PluginValidationException(sprintf('Unable to parse file %s', $manifest));
+        }
+
+        try {
+            $this->manifestValidator->validate($data);
+        } catch (JsonValidationException $e) {
+            throw new PluginValidationException('Manifest file is invalid', $e->getCode(), $e);
+        }
+
+        // a ameliorer
+        return new Manifest(@json_decode(@file_get_contents($manifest), true));
+    }
+
+    private function ensureManifest($directory)
+    {
+        $manifest = $directory . DIRECTORY_SEPARATOR . 'manifest.json';
+        $this->ensureFile($manifest);
+    }
+
+    private function ensureComposer($directory)
+    {
+        $composer = $directory . DIRECTORY_SEPARATOR . 'composer.json';
+        $this->ensureFile($composer);
+    }
+
+    private function ensureFile($file)
+    {
+        if (!file_exists($file) || !is_file($file) || !is_readable($file)) {
+            throw new PluginValidationException(sprintf('Required file %s is not present.', $file));
+        }
+    }
+}
