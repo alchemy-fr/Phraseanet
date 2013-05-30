@@ -8,6 +8,8 @@ before_script:
   - cp -f hudson/connexion.inc config/
   - cp -f hudson/_GV.php config/
   - npm install bower mocha-phantomjs testacular -g
+  - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
+  - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
   - bower install
   - composer self-update
   - composer install --dev --prefer-source
