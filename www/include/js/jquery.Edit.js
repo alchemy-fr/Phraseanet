@@ -49,7 +49,7 @@
     }
   };
 
-  var databoxField = function(name, meta_struct_id, options) {
+  var databoxField = function(name, label, meta_struct_id, options) {
 
     var defaults = {
       multi : false,
@@ -70,6 +70,7 @@
     }
 
     this.name = name;
+    this.label = label;
     this.meta_struct_id = meta_struct_id;
     this.options = jQuery.extend(defaults, options);
 
@@ -86,6 +87,9 @@
     },
     getName : function() {
       return this.name;
+    },
+    getLabel : function() {
+      return this.label;
     },
     isMulti : function() {
       return this.options.multi;
