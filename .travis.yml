@@ -63,6 +63,9 @@ matrix:
     - php: 5.5
 
 script:
+  - phantomjs www/assets/qunit/addons/phantomjs/runner.js www/include/js/tests/jquery.Upload.js.html
+  - phantomjs www/assets/qunit/addons/phantomjs/runner.js www/include/js/tests/jquery.Edit.js.html
+  - phantomjs www/assets/qunit/addons/phantomjs/runner.js www/include/js/tests/jquery.Selection.js.html
   - sh tests/js/scripts/run.sh --single-run
   - mocha-phantomjs www/scripts/tests/index.html
   - phpunit
