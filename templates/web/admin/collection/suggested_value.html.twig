@@ -77,9 +77,9 @@
                         <td valign="top" style="text-align:center;">
                             {% trans'admin::sugval: champs' %}
                             <select  name=usrbases id="nomchamPH" onKeyUp="javascript:write_valsug();" onChange="javascript:savenomaff();makeRestrict();maketextaffich();makeEmpty();write_valsug();"   onclick="javascript: makeRestrict();desactivall4VS(); write_valsug();" >
-                                {% for meta in databox.get_meta_structure() %}
-                                    {% if not meta.is_readonly %}
-                                        <option value='{{ meta.get_name() }}'> {{ meta.get_name() }} </option>
+                                {% for field in databox.get_meta_structure() %}
+                                    {% if not field.is_readonly %}
+                                        <option value='{{ field.get_name() }}'> {{ field.get_label(app['locale.I18n']) }} </option>
                                     {% endif %}
                                 {% endfor %}
                             </select>

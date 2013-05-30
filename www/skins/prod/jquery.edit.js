@@ -213,7 +213,7 @@ function editField(evt, meta_struct_id)
   p4.edit.curField = meta_struct_id;
   if(meta_struct_id >= 0)
   {
-    var name = p4.edit.T_fields[meta_struct_id].name + (p4.edit.T_fields[meta_struct_id].required ? '<span style="font-weight:bold;font-size:16px;"> * </span>' : '');
+    var name = p4.edit.T_fields[meta_struct_id].label + (p4.edit.T_fields[meta_struct_id].required ? '<span style="font-weight:bold;font-size:16px;"> * </span>' : '');
     $("#idFieldNameEdit", p4.edit.editBox).html(name) ;
 
     var vocabType = p4.edit.T_fields[meta_struct_id].vocabularyControl;
@@ -1513,7 +1513,7 @@ function preset_copy()
     {
       var c = p4.edit.T_fields[i]._value == "" ? "" : "checked=\"1\"";
       var v = p4.edit.T_fields[i]._value;
-      html += "<div><label class=\"checkbox\" for=\"new_preset_" + p4.edit.T_fields[i].name + "\"><input type=\"checkbox\" class=\"checkbox\" id=\"new_preset_" + p4.edit.T_fields[i].name + "\" value=\"" + i + "\" " + c + "/>" + "<b>" + p4.edit.T_fields[i].name + " : </b></label> ";
+      html += "<div><label class=\"checkbox\" for=\"new_preset_" + p4.edit.T_fields[i].name + "\"><input type=\"checkbox\" class=\"checkbox\" id=\"new_preset_" + p4.edit.T_fields[i].name + "\" value=\"" + i + "\" " + c + "/>" + "<b>" + p4.edit.T_fields[i].label + " : </b></label> ";
       html += cleanTags(p4.edit.T_fields[i]._value) + "</div>";
     }
   }
@@ -1819,6 +1819,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       var meta_struct_id = p4.edit.T_records[r].fields[f].meta_struct_id;
 
       var name = p4.edit.T_fields[meta_struct_id].name;
+      var label = p4.edit.T_fields[meta_struct_id].label;
 
       var multi = p4.edit.T_fields[meta_struct_id].multi;
       var required = p4.edit.T_fields[meta_struct_id].required;
@@ -1842,7 +1843,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
         vocabularyRestricted:vocabularyRestricted
       };
 
-      var databoxField = new p4.databoxField(name, meta_struct_id, fieldOptions);
+      var databoxField = new p4.databoxField(name, label, meta_struct_id, fieldOptions);
 
       var values = [];
 

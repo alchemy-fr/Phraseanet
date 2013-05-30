@@ -1,7 +1,7 @@
 {% extends 'prod/Tooltip/Tooltip.html.twig'%}
 
 {% set title %}
-    {{ field.get_name() }}
+    {{ field.get_label(app['locale.I18n']) }}
 
     {% if field.get_type() == 'text' %}
         ({% trans 'Type texte' %})

@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Metadata\Tag\Nosource;
 use PHPExiftool\Driver\TagInterface;
 use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Exception\TagUnknown;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -113,6 +114,12 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
+     * @var array
+     */
+    protected $labels = array();
+
+    /**
+     *
      * @var boolean
      */
     protected $Business;
@@ -178,7 +185,8 @@ class databox_field implements cache_cacheableInterface
         $sql = "SELECT `thumbtitle`, `separator`, `dces_element`, `tbranch`,
                 `type`, `report`, `multi`, `required`, `readonly`, `indexable`,
                 `name`, `src`, `business`, `VocabularyControlType`,
-                `RestrictToVocabularyControl`, `sorter`
+                `RestrictToVocabularyControl`, `sorter`,
+                `label_en`, `label_fr`, `label_de`, `label_nl`
               FROM metadatas_structure WHERE id=:id";
 
         $stmt = $connbas->prepare($sql);
@@ -196,6 +204,10 @@ class databox_field implements cache_cacheableInterface
 
         if ($row['src'] != $this->tag->getTagname()) {
             $this->on_error = true;
+        }
+
+        foreach (array('en', 'fr', 'de', 'nl') as $code) {
+            $this->labels[$code] = $row['label_' . $code];
         }
 
         $this->name = $row['name'];
@@ -357,7 +369,11 @@ class databox_field implements cache_cacheableInterface
           `sorter` = :position,
           `thumbtitle` = :thumbtitle,
           `VocabularyControlType` = :VocabularyControlType,
-          `RestrictToVocabularyControl` = :RestrictVocab
+          `RestrictToVocabularyControl` = :RestrictVocab,
+          `label_en` = :label_en,
+          `label_fr` = :label_fr,
+          `label_de` = :label_de,
+          `label_nl` = :label_nl
           WHERE id = :id';
 
         $params = array(
@@ -376,7 +392,11 @@ class databox_field implements cache_cacheableInterface
             ':thumbtitle'            => $this->thumbtitle,
             ':VocabularyControlType' => $this->Vocabulary ? $this->Vocabulary->getType() : null,
             ':RestrictVocab'         => $this->Vocabulary ? ($this->VocabularyRestriction ? '1' : '0') : '0',
-            ':id'                    => $this->id
+            ':id'                    => $this->id,
+            ':label_en'              => isset($this->labels['en']) ? $this->labels['en'] : null,
+            ':label_fr'              => isset($this->labels['fr']) ? $this->labels['fr'] : null,
+            ':label_de'              => isset($this->labels['de']) ? $this->labels['de'] : null,
+            ':label_nl'              => isset($this->labels['nl']) ? $this->labels['nl'] : null
         );
 
         $stmt = $connbas->prepare($sql);
@@ -429,6 +449,45 @@ class databox_field implements cache_cacheableInterface
         $this->databox->saveStructure($dom_struct);
 
         return $this;
+    }
+
+    /**
+     * Sets a localized label for the field.
+     *
+     * @param string $code
+     * @param null|string $value
+     *
+     * @return \databox_field
+     *
+     * @throws InvalidArgumentException
+     */
+    public function set_label($code, $value)
+    {
+        if (!array_key_exists($code, $this->labels)) {
+            throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
+        }
+
+        $this->labels[$code] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Gets a localized label for the field.
+     *
+     * @param string $code
+     *
+     * @return string
+     *
+     * @throws InvalidArgumentException
+     */
+    public function get_label($code)
+    {
+        if (!array_key_exists($code, $this->labels)) {
+            throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
+        }
+
+        return isset($this->labels[$code]) ? $this->labels[$code] : $this->name;
     }
 
     /**
@@ -850,6 +909,7 @@ class databox_field implements cache_cacheableInterface
         return array(
             'id'                    => $this->id,
             'sbas-id'               => $this->sbas_id,
+            'labels'                => $this->labels,
             'name'                  => $this->name,
             'tag'                   => $this->tag->getTagname(),
             'business'              => $this->Business,
