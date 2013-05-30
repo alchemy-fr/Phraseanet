@@ -223,6 +223,12 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'business' => false,
             'indexable' => true,
             'required' => true,
+            'labels' => array(
+                'en' => 'Label',
+                'fr' => 'Libellé',
+                'de' => null,
+                'nl' => null,
+            ),
             'separator' => '=;',
             'readonly' => false,
             'type' => 'string',

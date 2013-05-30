@@ -721,6 +721,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $this->assertArrayHasKey('separator', $metadatas);
                 $this->assertArrayHasKey('thesaurus_branch', $metadatas);
                 $this->assertArrayHasKey('type', $metadatas);
+                $this->assertArrayHasKey('labels', $metadatas);
                 $this->assertArrayHasKey('indexable', $metadatas);
                 $this->assertArrayHasKey('multivalue', $metadatas);
                 $this->assertArrayHasKey('readonly', $metadatas);
@@ -729,10 +730,13 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $this->assertTrue(is_int($metadatas['id']));
                 $this->assertTrue(is_string($metadatas['namespace']));
                 $this->assertTrue(is_string($metadatas['name']));
+                $this->assertTrue(is_array($metadatas['labels']));
                 $this->assertTrue(is_null($metadatas['source']) || is_string($metadatas['source']));
                 $this->assertTrue(is_string($metadatas['tagname']));
                 $this->assertTrue((strlen($metadatas['name']) > 0));
                 $this->assertTrue(is_string($metadatas['separator']));
+
+                $this->assertEquals(array('fr', 'en', 'de', 'nl'), array_keys($metadatas['labels']));
 
                 if ($metadatas['multivalue']) {
                     $this->assertTrue((strlen($metadatas['separator']) > 0));
@@ -2489,6 +2493,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->assertArrayHasKey('name', $meta);
             $this->assertTrue(is_string($meta['name']));
             $this->assertArrayHasKey('value', $meta);
+            $this->assertArrayHasKey('labels', $meta);
+            $this->assertTrue(is_array($meta['labels']));
+
+            $this->assertEquals(array('fr', 'en', 'de', 'nl'), array_keys($meta['labels']));
 
             if (is_array($meta['value'])) {
                 foreach ($meta['value'] as $val) {

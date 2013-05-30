@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+
 class databox_fieldTest extends PhraseanetPHPUnitAbstract
 {
     /**
@@ -334,6 +336,54 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     {
         $this->assertFalse($this->object_mono->is_on_error());
         $this->assertFalse($this->object_multi->is_on_error());
+    }
+
+    /**
+     * @dataProvider provideLanguageCodes
+     */
+    public function testGetSetLabel($code)
+    {
+        $this->object_mono->set_label($code, 'value')->save();
+        $this->assertSame('value', $this->object_mono->get_label($code));
+
+        $this->object_mono->set_label($code, null)->save();
+        $this->assertEquals($this->object_mono->get_name(), $this->object_mono->get_label($code));
+    }
+
+    public function provideLanguageCodes()
+    {
+        $codes = array();
+
+        foreach (Application::getAvailableLanguages() as $code => $language) {
+            $data = explode('_', $code);
+            $codes[] = array($data[0]);
+        }
+
+        return $codes;
+    }
+
+    /**
+     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     */
+    public function testGetInvalidCodeLabel()
+    {
+        $this->object_mono->get_label('gloubi');
+    }
+
+    /**
+     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     */
+    public function testSetNullInvalidCodeLabel()
+    {
+        $this->object_mono->set_label('gloubi', null);
+    }
+
+    /**
+     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     */
+    public function testSetInvalidCodeLabel()
+    {
+        $this->object_mono->set_label('gloubi', 'value');
     }
 
     public function testRenameField()

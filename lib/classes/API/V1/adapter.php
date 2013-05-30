@@ -1783,6 +1783,12 @@ class API_V1_adapter extends API_V1_Abstract
             'meta_id'           => $value->getId(),
             'meta_structure_id' => $field->get_meta_struct_id(),
             'name'              => $field->get_name(),
+            'labels'           => array(
+                'fr' => $field->get_databox_field()->get_label('fr'),
+                'en' => $field->get_databox_field()->get_label('en'),
+                'de' => $field->get_databox_field()->get_label('de'),
+                'nl' => $field->get_databox_field()->get_label('nl'),
+            ),
             'value'             => $value->getValue(),
         );
     }
@@ -2074,6 +2080,12 @@ class API_V1_adapter extends API_V1_Abstract
             'source'           => $databox_field->get_tag()->getTagname(),
             'tagname'          => $databox_field->get_tag()->getName(),
             'name'             => $databox_field->get_name(),
+            'labels'           => array(
+                'fr' => $databox_field->get_label('fr'),
+                'en' => $databox_field->get_label('en'),
+                'de' => $databox_field->get_label('de'),
+                'nl' => $databox_field->get_label('nl'),
+            ),
             'separator'        => $databox_field->get_separator(),
             'thesaurus_branch' => $databox_field->get_tbranch(),
             'type'             => $databox_field->get_type(),
