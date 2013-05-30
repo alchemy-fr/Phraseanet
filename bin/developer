@@ -34,7 +34,7 @@ use Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand;
 use Doctrine\ORM\Tools\Console\Command\RunDqlCommand;
 use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
 
-require_once __DIR__ . '/../plugins/autoload.php';
+require_once __DIR__ . '/../lib/autoload.php';
 
 try {
     $cli = new CLI("
