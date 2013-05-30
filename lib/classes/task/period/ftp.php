@@ -616,12 +616,12 @@ class task_period_ftp extends task_appboxAbstract
                     '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
                         , $row["record_id"], $row["filename"]
                         , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $this->dependencyContainer)
-                        , phrasea::bas_names($row['base_id'], $this->dependencyContainer), $row['subdef']) . ' : ' . _('Transfert OK') . '</li>';
+                        , phrasea::bas_labels($row['base_id'], $this->dependencyContainer), $row['subdef']) . ' : ' . _('Transfert OK') . '</li>';
             } else {
                 $transferts[] =
                     '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
                         , $row["record_id"], $row["filename"]
-                        , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $this->dependencyContainer), phrasea::bas_names($row['base_id'], $this->dependencyContainer)
+                        , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $this->dependencyContainer), phrasea::bas_labels($row['base_id'], $this->dependencyContainer)
                         , $row['subdef']) . ' : ' . _('Transfert Annule') . '</li>';
                 $transfert_status = _('task::ftp:Certains documents n\'ont pas pu etre tranferes');
             }

@@ -538,9 +538,9 @@ class Users implements ControllerProviderInterface
                         if (\Swift_Validate::email($row['usr_mail'])) {
                             foreach ($bases as $bas => $isok) {
                                 if ($isok) {
-                                    $accept .= '<li>' . \phrasea::bas_names($bas, $app) . "</li>\n";
+                                    $accept .= '<li>' . \phrasea::bas_labels($bas, $app) . "</li>\n";
                                 } else {
-                                    $deny .= '<li>' . \phrasea::bas_names($bas, $app) . "</li>\n";
+                                    $deny .= '<li>' . \phrasea::bas_labels($bas, $app) . "</li>\n";
                                 }
                             }
                             if (($accept != '' || $deny != '')) {

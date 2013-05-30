@@ -353,7 +353,7 @@
               {% endif %}
               <tr>
                 <td style="overflow:hidden;white-space:nowrap;">
-                  {{rights['base_id']|bas_names(app)}}
+                  {{rights['base_id']|bas_labels(app)}}
                 </td>
                 <td class="users_col case_right_access" title="{% trans 'Access' %}">
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'access', users, 'base')}}

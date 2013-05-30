@@ -11,6 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -25,6 +27,7 @@ class collection implements cache_cacheableInterface
     protected $name;
     protected $prefs;
     protected $pub_wm;
+    protected $labels = array();
     private static $_logos = array();
     private static $_stamps = array();
     private static $_watermarks = array();
@@ -61,6 +64,7 @@ class collection implements cache_cacheableInterface
             $this->pub_wm = $datas['pub_wm'];
             $this->name = $datas['name'];
             $this->prefs = $datas['prefs'];
+            $this->labels = $datas['labels'];
 
             return $this;
         } catch (Exception $e) {
@@ -68,8 +72,10 @@ class collection implements cache_cacheableInterface
         }
 
         $connbas = $this->databox->get_connection();
-        $sql = 'SELECT asciiname, prefs, pub_wm, coll_id
-            FROM coll WHERE coll_id = :coll_id';
+        $sql = 'SELECT
+                    asciiname, prefs, pub_wm, coll_id,
+                    label_en, label_fr, label_de, label_nl
+                FROM coll WHERE coll_id = :coll_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':coll_id' => $this->coll_id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -81,6 +87,12 @@ class collection implements cache_cacheableInterface
         $this->pub_wm = $row['pub_wm'];
         $this->name = $row['asciiname'];
         $this->prefs = $row['prefs'];
+        $this->labels = array(
+            'fr' => $row['label_fr'],
+            'en' => $row['label_en'],
+            'de' => $row['label_de'],
+            'nl' => $row['label_nl'],
+        );
 
         $conn = connection::getPDOConnection($this->app);
 
@@ -108,6 +120,7 @@ class collection implements cache_cacheableInterface
             , 'pub_wm'    => $this->pub_wm
             , 'name'      => $this->name
             , 'prefs'     => $this->prefs
+            , 'labels'    => $this->labels
         );
 
         $this->set_data_to_cache($datas);
@@ -223,6 +236,40 @@ class collection implements cache_cacheableInterface
         phrasea::reset_baseDatas($this->databox->get_appbox());
 
         return $this;
+    }
+
+    public function set_label($code, $label)
+    {
+        if (!array_key_exists($code, $this->labels)) {
+            throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
+        }
+
+        $sql = "UPDATE coll SET label_$code = :label
+            WHERE coll_id = :coll_id";
+        $stmt = $this->get_connection()->prepare($sql);
+        $stmt->execute(array(':label' => $label, ':coll_id'   => $this->get_coll_id()));
+        $stmt->closeCursor();
+
+        $this->labels[$code] = $label;
+
+        $this->delete_data_from_cache();
+
+        phrasea::reset_baseDatas($this->databox->get_appbox());
+
+        return $this;
+    }
+
+    public function get_label($code, $substitute = true)
+    {
+        if (!array_key_exists($code, $this->labels)) {
+            throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
+        }
+
+        if ($substitute) {
+            return isset($this->labels[$code]) ? $this->labels[$code] : $this->name;
+        } else {
+            return $this->labels[$code];
+        }
     }
 
     public function get_record_amount()
@@ -602,12 +649,12 @@ class collection implements cache_cacheableInterface
         if ( ! isset(self::$_logos[$base_id_key])) {
 
             if (is_file($app['phraseanet.registry']->get('GV_RootPath') . 'config/minilogos/' . $base_id)) {
-                $name = phrasea::bas_names($base_id, $app);
+                $name = phrasea::bas_labels($base_id, $app);
                 self::$_logos[$base_id_key] = '<img title="' . $name
                     . '" src="' . $app['phraseanet.registry']->get('GV_STATIC_URL')
                     . '/custom/minilogos/' . $base_id . '" />';
             } elseif ($printname) {
-                self::$_logos[$base_id_key] = phrasea::bas_names($base_id, $app);
+                self::$_logos[$base_id_key] = phrasea::bas_labels($base_id, $app);
             }
         }
 

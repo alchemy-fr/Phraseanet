@@ -4334,6 +4334,38 @@
             <comment></comment>
           </field>
           <field>
+            <name>label_en</name>
+            <type>char(50)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_fr</name>
+            <type>char(50)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_de</name>
+            <type>char(50)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_nl</name>
+            <type>char(50)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
             <name>prefs</name>
             <type>text</type>
             <null></null>

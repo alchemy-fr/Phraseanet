@@ -529,7 +529,7 @@ class Application extends SilexApplication
                 $twig->addFilter('get_collection_logo', new \Twig_Filter_Function('collection::getLogo'));
                 $twig->addFilter('floor', new \Twig_Filter_Function('floor'));
                 $twig->addFilter('min', new \Twig_Filter_Function('min'));
-                $twig->addFilter('bas_names', new \Twig_Filter_Function('phrasea::bas_names'));
+                $twig->addFilter('bas_labels', new \Twig_Filter_Function('phrasea::bas_labels'));
                 $twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
                 $twig->addFilter('sbas_from_bas', new \Twig_Filter_Function('phrasea::sbasFromBas'));
                 $twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));

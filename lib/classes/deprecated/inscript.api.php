@@ -86,7 +86,7 @@ function giveMeBases(Application $app, $usr = null)
         $inscriptions[$sbas_id]['CollsNonactif'] = null;
 
         foreach ($databox->get_collections() as $key => $coll) {
-            $collname[$key] = $coll->get_name();
+            $collname[$key] = $coll->get_label($app['locale.I18n']);
             $basname[$key] = $coll->get_coll_id();
         }
         $sbpcgu = '';
@@ -138,7 +138,7 @@ function giveMeBases(Application $app, $usr = null)
                         $cguSpec = true;
                     } else {
                         if ( ! isset($usrerRegis[$databox->get_dbname()][$collection->get_coll_id()]))
-                            $inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()] = $collection->get_name();
+                            $inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()] = $collection->get_label($app['locale.I18n']);
                     }
                 }
             }
@@ -158,9 +158,9 @@ function giveMeBases(Application $app, $usr = null)
                 elseif ($usrerRegis[$databox->get_dbname()][$collection->get_coll_id()] === true)
                     $inscriptions[$sbas_id]['CollsRegistered'][$collection->get_coll_id()] = $lacgu;
             } elseif (! $cguSpec && $collInscript) {//ne va pas.. si l'inscriptio na la coll est explicitement non autorise, je refuse'
-                $inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()] = $collection->get_name();
+                $inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()] = $collection->get_label($app['locale.I18n']);
             } elseif ($cguSpec) {
-                $inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]['name'] = $collection->get_name();
+                $inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]['name'] = $collection->get_label($app['locale.I18n']);
                 $inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]['CGU'] = $cguColl;
                 $inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]['CGUrelease'] = $cguCollRelease;
             }
@@ -190,7 +190,7 @@ function giveMeBaseUsr(Application $app, $usr, $lng)
         if ($baseInsc['CollsRegistered']) {
             foreach ($baseInsc['CollsRegistered'] as $collId => $isTrue) {
                 $base_id = phrasea::baseFromColl($sbasId, $collId, $app);
-                $out .= '<tr><td colspan="3" style="text-align:center;">' . _('login::register: acces authorise sur la collection ') . phrasea::bas_names($base_id, $app);
+                $out .= '<tr><td colspan="3" style="text-align:center;">' . _('login::register: acces authorise sur la collection ') . phrasea::bas_labels($base_id, $app);
                 if (trim($isTrue) != '')
                     $out .= ' <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '&col=' . $collId . '">' . _('login::register::CGU: lire les CGU') . '</a>';
                 $out .= '</td></tr>';
@@ -200,7 +200,7 @@ function giveMeBaseUsr(Application $app, $usr, $lng)
         if ($baseInsc['CollsRefuse']) {
             foreach ($baseInsc['CollsRefuse'] as $collId => $isTrue) {
                 $base_id = phrasea::baseFromColl($sbasId, $collId, $app);
-                $out .= '<tr><td colspan="3" style="text-align:center;"><span style="color:red;">' . _('login::register: acces refuse sur la collection ') . phrasea::bas_names($base_id, $app) . '</span>';
+                $out .= '<tr><td colspan="3" style="text-align:center;"><span style="color:red;">' . _('login::register: acces refuse sur la collection ') . phrasea::bas_labels($base_id, $app) . '</span>';
                 if (trim($isTrue) != '')
                     $out .= ' <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '&col=' . $collId . '">' . _('login::register::CGU: lire les CGU') . '</a>';
                 $out .= '</td></tr>';
@@ -210,7 +210,7 @@ function giveMeBaseUsr(Application $app, $usr, $lng)
         if ($baseInsc['CollsWait']) {
             foreach ($baseInsc['CollsWait'] as $collId => $isTrue) {
                 $base_id = phrasea::baseFromColl($sbasId, $collId, $app);
-                $out .= '<tr><td colspan="3" style="text-align:center;"><span style="color:orange;">' . _('login::register: en attente d\'acces sur') . ' ' . phrasea::bas_names($base_id, $app) . '</span>';
+                $out .= '<tr><td colspan="3" style="text-align:center;"><span style="color:orange;">' . _('login::register: en attente d\'acces sur') . ' ' . phrasea::bas_labels($base_id, $app) . '</span>';
                 if (trim($isTrue) != '')
                     $out .= ' <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '&col=' . $collId . '">' . _('login::register::CGU: lire les CGU') . '</a>';
                 $out .= '</td></tr>';
@@ -220,7 +220,7 @@ function giveMeBaseUsr(Application $app, $usr, $lng)
         if ($baseInsc['CollsIntime']) {
             foreach ($baseInsc['CollsIntime'] as $collId => $isTrue) {
                 $base_id = phrasea::baseFromColl($sbasId, $collId, $app);
-                $out .= '<tr><td colspan="3" style="text-align:center;">' . _('login::register: acces temporaire sur') . phrasea::bas_names($base_id, $app) . '</span>';
+                $out .= '<tr><td colspan="3" style="text-align:center;">' . _('login::register: acces temporaire sur') . phrasea::bas_labels($base_id, $app) . '</span>';
                 if (trim($isTrue) != '')
                     $out .= ' <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '&col=' . $collId . '">' . _('login::register::CGU: lire les CGU') . '</a>';
                 $out .= '</td></tr>';
@@ -230,7 +230,7 @@ function giveMeBaseUsr(Application $app, $usr, $lng)
         if ($baseInsc['CollsOuttime']) {
             foreach ($baseInsc['CollsOuttime'] as $collId => $isTrue) {
                 $base_id = phrasea::baseFromColl($sbasId, $collId, $app);
-                $out .= '<tr><td colspan="3" style="text-align:center;"><span style="color:red;">' . _('login::register: acces temporaire termine sur ') . phrasea::bas_names($base_id, $app) . '</span>';
+                $out .= '<tr><td colspan="3" style="text-align:center;"><span style="color:red;">' . _('login::register: acces temporaire termine sur ') . phrasea::bas_labels($base_id, $app) . '</span>';
                 if (trim($isTrue) != '')
                     $out .= ' <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '&col=' . $collId . '">' . _('login::register::CGU: lire les CGU') . '</a>';
                 $out .= '</td></tr>';
@@ -240,7 +240,7 @@ function giveMeBaseUsr(Application $app, $usr, $lng)
         if ($baseInsc['CollsNonactif']) {
             foreach ($baseInsc['CollsNonactif'] as $collId => $isTrue) {
                 $base_id = phrasea::baseFromColl($sbasId, $collId, $app);
-                $out .= '<tr><td colspan="3" style="text-align:center;"><span style="color:red;">' . _('login::register: acces supendu sur') . phrasea::bas_names($base_id, $app) . '</span>';
+                $out .= '<tr><td colspan="3" style="text-align:center;"><span style="color:red;">' . _('login::register: acces supendu sur') . phrasea::bas_labels($base_id, $app) . '</span>';
                 if (trim($isTrue) != '')
                     $out .= ' <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '&col=' . $collId . '">' . _('login::register::CGU: lire les CGU') . '</a>';
                 $out .= '</td></tr>';

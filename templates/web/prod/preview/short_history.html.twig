@@ -23,7 +23,7 @@
           {% trans 'report::Edition des meta-donnees' %}
         {% elseif action == 'collection' %}
           {% set dest = done['final']|join(', ') %}
-          {% set coll_name = dest|bas_names(app) %}
+          {% set coll_name = dest|bas_labels(app) %}
           {% trans %}report::Changement de collection vers : {{coll_name}}{% endtrans %}
         {% elseif action == 'status' %}
           {% trans 'report::Edition des status' %}

@@ -66,7 +66,7 @@ class RecordAdd extends Command
         $dialog = $this->getHelperSet()->get('dialog');
 
         do {
-            $continue = strtolower($dialog->ask($output, sprintf("Will add record <info>%s</info> (%s) on collection <info>%s</info>\n<question>Continue ? (y/N)</question>", $file, $media->getType(), $collection->get_name()), 'N'));
+            $continue = strtolower($dialog->ask($output, sprintf("Will add record <info>%s</info> (%s) on collection <info>%s</info>\n<question>Continue ? (y/N)</question>", $file, $media->getType(), $collection->get_label($this->container['locale.I18n'])), 'N'));
         } while ( ! in_array($continue, array('y', 'n')));
 
         if (strtolower($continue) !== 'y') {
@@ -116,7 +116,7 @@ class RecordAdd extends Command
         if ($elementCreated instanceof \record_adapter) {
             $output->writeln(
                 sprintf(
-                    "Record id <info>%d</info> on collection `%s` (databox `%s`) has been created", $elementCreated->get_record_id(), $elementCreated->get_collection()->get_name(), $elementCreated->get_databox()->get_viewname()
+                    "Record id <info>%d</info> on collection `%s` (databox `%s`) has been created", $elementCreated->get_record_id(), $elementCreated->get_collection()->get_label($this->container['locale.I18n']), $elementCreated->get_databox()->get_viewname()
                 )
             );
             $this->container['phraseanet.SE']->addRecord($elementCreated);
