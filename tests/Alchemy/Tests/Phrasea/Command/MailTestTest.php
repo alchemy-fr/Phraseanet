@@ -31,8 +31,9 @@ class MailTestTest extends \PhraseanetPHPUnitAbstract
 
         $command = new MailTest('mail:test');
         $command->setContainer(self::$DI['app']);
-        $command->execute($input, $output);
+        $result = $command->execute($input, $output);
 
+        $this->assertSame(0, $result);
         $this->assertEquals('test-mail@phraseanet.com', $capturedEmail->getReceiver()->getEmail());
     }
 }
