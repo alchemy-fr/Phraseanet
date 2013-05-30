@@ -304,7 +304,7 @@ define([
             it("should reorder collection on drop action", function() {
                 var ui = {item: {index: function() {return 2;}}};
                 AdminFieldApp.fieldListView.itemViews[0].dropAction({},ui);
-                assert.equal(AdminFieldApp.fieldListView.collection.last().get('sorter'), 3, 'model is updated');
+                assert.equal(AdminFieldApp.fieldListView.collection.last().get('sorter'), 2, 'model is updated');
             });
         });
     });
