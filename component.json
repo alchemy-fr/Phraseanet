@@ -17,7 +17,7 @@
     "humane-js": "~3.0.6",
     "qunit": "~1.11.0",
     "mustache": "~0.7.2",
-    "jquery-file-upload": "~7",
+    "jquery-file-upload": "https://github.com/blueimp/jQuery-File-Upload/archive/75d11179fd9c248c061c8eb428782bb556c8db0a.zip",
     "blueimp-load-image": "latest",
     "requirejs" : "~2.1",
     "backbone-amd": "~1.0",
