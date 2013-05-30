@@ -11,6 +11,7 @@
 /config/connexions.yml
 .DS_Store
 /vendor
+/plugins
 composer.phar
 behat.yml
 /datas
