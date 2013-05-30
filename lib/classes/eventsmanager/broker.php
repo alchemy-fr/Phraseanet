@@ -111,7 +111,7 @@ class eventsmanager_broker
         return true;
     }
 
-    public function get_json_notifications($page = 0)
+    public function get_notifications_as_array($page = 0)
     {
         $unread = 0;
         $total = 0;
@@ -178,7 +178,7 @@ class eventsmanager_broker
             $data['next'] = '<a href="#" onclick="print_notifications(' . ((int) $page + 1) . ');return false;">' . _('charger d\'avantages de notifications') . '</a>';
         }
 
-        return p4string::jsonencode($data);
+        return $data;
     }
 
     public function get_unread_notifications_number()

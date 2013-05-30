@@ -103,9 +103,9 @@ class Notifications implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        $page = (int) $request->query->get('page', 1);
+        $page = (int) $request->query->get('page', 0);
 
-        return $app->json($app['events-manager']->get_json_notifications(($page < 1 ? 1 : $page)));
+        return $app->json($app['events-manager']->get_notifications_as_array(($page < 0 ? 0 : $page)));
     }
 
     /**

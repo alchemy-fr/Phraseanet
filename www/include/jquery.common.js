@@ -129,7 +129,7 @@ function set_notif_position()
 	if(trigger.length === 0)
 		return;
 	$('#notification_box').css({
-		'left':Math.round(trigger.offset().left)
+		'left':Math.round(trigger.offset().left - 1)
 	});
 }
 $(window).bind('resize', function(){
@@ -173,7 +173,7 @@ function print_notifications(page)
 
 
 	$.ajax({
-		type: "POST",
+		type: "GET",
 		url: "/user/notifications/",
 		dataType : 'json',
 		data: {
