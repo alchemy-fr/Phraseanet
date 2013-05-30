@@ -22,7 +22,7 @@ class AddPlugin extends AbstractPluginCommand
         parent::__construct('plugins:add');
 
         $this
-            ->setDescription('Install a plugin to Phraseanet')
+            ->setDescription('Installs a plugin to Phraseanet')
             ->addArgument('source', InputArgument::REQUIRED, 'The source is a folder');
     }
 
