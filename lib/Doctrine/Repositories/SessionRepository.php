@@ -2,6 +2,7 @@
 
 namespace Repositories;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,7 +13,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class SessionRepository extends EntityRepository
 {
-    
+
     /**
      *
      * @param  User_Adapter    $user
@@ -35,19 +36,46 @@ class SessionRepository extends EntityRepository
 
         $query = $this->_em->createQuery($dql);
         $feeds = $query->getResult();
-        
+
         return $feeds;
     }
-    
-    public function find($id)
+
+    public function findAllPublic()
     {
         $dql = 'SELECT f FROM Entities\Feed f
-                WHERE f.id = :id ';
-        
+            WHERE f.public = true
+            ORDER BY f.created_on DESC';
+
         $query = $this->_em->createQuery($dql);
-        $query->setParameter('id', $id);
-        $feed = $query->getResult();
-        
-        return $feed[0];
+        $feeds = $query->getResult();
+
+        return $feeds;
+    }
+
+    public function loadWithUser(Application $app, \User_Adapter $user, $id)
+    {
+        $feed = $this->find($id);
+        if ($feed) {
+            $coll = $feed->getCollection($app);
+            if ($feed->getPublic()
+                || $coll === null
+                || in_array($coll->get_base_id(), array_keys($user->ACL()->get_granted_base()))) {
+                return $feed;
+            }
+        }
+
+        return null;
+    }
+
+    public function findByIdArray(array $feed_id)
+    {
+        $dql = 'SELECT f FROM Entities\Feed f
+            ORDER BY f.created_on DESC
+            WHERE f.id IN (' . implode(",", $feed_id) . ')';
+
+        $query = $this->_em->createQuery($dql);
+        $feeds = $query->getResult();
+
+        return $feeds;
     }
 }

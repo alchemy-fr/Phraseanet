@@ -16,11 +16,22 @@ class OrderElementRepository extends EntityRepository
     {
         $dql = 'SELECT f FROM Entities\FeedPublisher f
                 WHERE f.id = :id ';
-        
+
         $query = $this->_em->createQuery($dql);
         $query->setParameter('id', $id);
-        $feed = $query->getResult();
-        
-        return $feed[0];
+
+        return $query->getOneOrNullResult();
+    }
+
+    public function findByUser(\Entities\Feed $feed, \User_Adapter $user)
+    {
+        $dql = 'SELECT f FROM Entities\FeedPublisher f
+                WHERE f.usr_id = :usrId AND f.feed = :feed';
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('usrId', $user->get_id());
+        $query->setParameter('feed', $feed);
+
+        return $query->getOneOrNullResult();
     }
 }
