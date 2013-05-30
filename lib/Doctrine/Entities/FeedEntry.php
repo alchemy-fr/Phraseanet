@@ -172,7 +172,7 @@ class FeedEntry
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param \DateTime $createdOn
      * @return FeedEntry
      */
     public function setCreatedOn($createdOn)
@@ -189,7 +189,7 @@ class FeedEntry
      */
     public function getCreatedOn()
     {
-        return $this->createdOn;
+        return $this->created_on;
     }
 
     /**
@@ -212,7 +212,7 @@ class FeedEntry
      */
     public function getUpdatedOn()
     {
-        return $this->updatedOn;
+        return $this->updated_on;
     }
 
     /**

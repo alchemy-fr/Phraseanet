@@ -3,12 +3,13 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Feed\FeedInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Feed
  */
-class Feed
+class Feed implements FeedInterface
 {
     /**
      * @var integer
@@ -61,6 +62,11 @@ class Feed
     private $entries;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tokens;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -68,11 +74,11 @@ class Feed
         $this->publishers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->entries = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -88,14 +94,14 @@ class Feed
     public function setPublic($public)
     {
         $this->public = $public;
-    
+
         return $this;
     }
 
     /**
      * Get public
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getPublic()
     {
@@ -111,21 +117,21 @@ class Feed
     public function setIconUrl($iconUrl)
     {
         $this->icon_url = $iconUrl;
-    
+
         return $this;
     }
 
     /**
      * Get icon_url
      *
-     * @return string 
+     * @return string
      */
     public function getIconUrl()
     {
         if (!$this->icon_url) {
             return '/skins/icons/rss32.gif';
         }
-        
+
         return '/www/custom/feed_' . $this->getId() . '.jpg';
     }
 
@@ -138,14 +144,14 @@ class Feed
     public function setBaseId($baseId)
     {
         $this->base_id = $baseId;
-    
+
         return $this;
     }
 
     /**
      * Get base_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getBaseId()
     {
@@ -161,14 +167,14 @@ class Feed
     public function setTitle($title)
     {
         $this->title = $title;
-    
+
         return $this;
     }
 
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -184,7 +190,7 @@ class Feed
     public function addPublisher(\Entities\FeedPublisher $publishers)
     {
         $this->publishers[] = $publishers;
-    
+
         return $this;
     }
 
@@ -201,7 +207,7 @@ class Feed
     /**
      * Get publishers
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getPublishers()
     {
@@ -217,7 +223,7 @@ class Feed
     public function addEntry(\Entities\FeedEntry $entries)
     {
         $this->entries[] = $entries;
-    
+
         return $this;
     }
 
@@ -234,39 +240,39 @@ class Feed
     /**
      * Get entries
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function getEntries()
+    public function getEntries($offset_start, $how_many)
     {
-        return $this->entries;
+        return $this->entries->slice($offset_start, $how_many);
     }
-    
+
     public function getOwner()
-    {   
+    {
         foreach ($this->getPublishers() as $publisher) {
             if ($publisher->getOwner()) {
                 return $publisher;
             }
         }
     }
-    
+
     public function isOwner(\User_Adapter $user)
     {
         $owner = $this->getOwner();
         if ($owner !== null && $user->get_id() === $owner->getUsrId()) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     public function getCollection(Application $app)
     {
         if ($this->getBaseId() !== null) {
           return \collection::get_from_base_id($app, $this->getBaseId());
         }
     }
-    
+
     public function setCollection(\collection $collection = null)
     {
         if ($collection === null) {
@@ -285,14 +291,14 @@ class Feed
     public function setCreatedOn($createdOn)
     {
         $this->created_on = $createdOn;
-    
+
         return $this;
     }
 
     /**
      * Get created_on
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedOn()
     {
@@ -308,20 +314,20 @@ class Feed
     public function setUpdatedOn($updatedOn)
     {
         $this->updated_on = $updatedOn;
-    
+
         return $this;
     }
 
     /**
      * Get updated_on
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedOn()
     {
         return $this->updated_on;
     }
-    
+
     public function isPublisher(\User_Adapter $user)
     {
         foreach ($this->getPublishers() as $publisher) {
@@ -329,8 +335,19 @@ class Feed
                 return true;
             }
         }
-        
+
         return false;
+    }
+
+    public function getPublisher(\User_Adapter $user)
+    {
+        foreach ($this->getPublishers() as $publisher) {
+            if ($publisher->getUsrId() == $user->get_id()) {
+                return $publisher;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -342,14 +359,14 @@ class Feed
     public function setSubtitle($subtitle)
     {
         $this->subtitle = $subtitle;
-    
+
         return $this;
     }
 
     /**
      * Get subtitle
      *
-     * @return string 
+     * @return string
      */
     public function getSubtitle()
     {
@@ -360,18 +377,51 @@ class Feed
     {
         return false;
     }
-    
+
     public function getCountTotalEntries()
     {
         return (count($this->entries));
     }
-    
-    public function hasAccess(User_Adapter $user)
+
+    public function hasAccess(\User_Adapter $user, Application $app)
     {
-        if ($this->get_collection() instanceof collection) {
+        if ($this->getCollection($app) instanceof collection) {
             return $user->ACL()->has_access_to_base($this->collection->get_base_id());
         }
 
         return true;
+    }
+
+    /**
+     * Add tokens
+     *
+     * @param \Entities\FeedToken $tokens
+     * @return Feed
+     */
+    public function addToken(\Entities\FeedToken $tokens)
+    {
+        $this->tokens[] = $tokens;
+
+        return $this;
+    }
+
+    /**
+     * Remove tokens
+     *
+     * @param \Entities\FeedToken $tokens
+     */
+    public function removeToken(\Entities\FeedToken $tokens)
+    {
+        $this->tokens->removeElement($tokens);
+    }
+
+    /**
+     * Get tokens
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTokens()
+    {
+        return $this->tokens;
     }
 }

@@ -39,10 +39,6 @@ class FeedItem
      */
     private $entry;
 
-    public function __construct(\Entities\FeedEntry $entry, \record_adapter $record)
-    {
-    }
-
     /**
      * Get id
      *
