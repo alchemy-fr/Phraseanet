@@ -210,10 +210,10 @@ class collection implements cache_cacheableInterface
         if ($name === '')
             throw new Exception_InvalidArgument ();
 
-        $sql = "UPDATE coll SET htmlname = :htmlname, asciiname = :asciiname
+        $sql = "UPDATE coll SET asciiname = :asciiname
             WHERE coll_id = :coll_id";
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':asciiname' => $name, ':htmlname'  => $name, ':coll_id'   => $this->get_coll_id()));
+        $stmt->execute(array(':asciiname' => $name, ':coll_id'   => $this->get_coll_id()));
         $stmt->closeCursor();
 
         $this->name = $name;
@@ -505,13 +505,12 @@ class collection implements cache_cacheableInterface
                 </sugestedValues>
             </baseprefs>';
 
-        $sql = "INSERT INTO coll (coll_id, htmlname, asciiname, prefs, logo)
-                VALUES (null, :name1, :name2, :prefs, '')";
+        $sql = "INSERT INTO coll (coll_id, asciiname, prefs, logo)
+                VALUES (null, :name, :prefs, '')";
 
         $params = array(
-            ':name1' => $name
-            , ':name2' => $name
-            , 'prefs'  => $prefs
+            ':name' => $name,
+            'prefs'  => $prefs,
         );
 
         $stmt = $connbas->prepare($sql);

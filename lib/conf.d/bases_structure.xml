@@ -4326,14 +4326,6 @@
             <comment></comment>
           </field>
           <field>
-            <name>htmlname</name>
-            <type>varchar(50)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
             <name>asciiname</name>
             <type>varchar(50)</type>
             <null></null>
