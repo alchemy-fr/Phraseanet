@@ -31,5 +31,7 @@ class MailTest extends Command
         $this->container['notification.deliverer']->deliver(
             Mail::create($this->container, new Receiver(null, $input->getArgument('email')))
         );
+
+        return 0;
     }
 }
