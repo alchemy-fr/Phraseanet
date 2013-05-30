@@ -2,6 +2,7 @@ language: php
 
 services:
   - mysql
+  - redis
 
 before_script:
   - rm -f config/services.yml config/connexions.yml config/config.yml config/config.inc config/connexion.inc config/_GV.php config/_GV.php.old
