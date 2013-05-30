@@ -265,7 +265,7 @@ class Application extends SilexApplication
         $this->register(new TokensServiceProvider());
         $this->register(new TwigServiceProvider(), array(
             'twig.options' => array(
-                'cache'           => realpath(__DIR__ . '/../../../../../../tmp/cache_twig/'),
+                'cache'           => realpath(__DIR__ . '/../../../tmp/cache_twig/'),
             ),
             'twig.form.templates' => array('login/common/form_div_layout.html.twig')
         ));
