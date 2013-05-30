@@ -14,15 +14,17 @@ namespace Alchemy\Phrasea\Command\Developer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RoutesDumper extends AbstractRoutesDumper
+class APIRoutesDumper extends AbstractRoutesDumper
 {
     public function __construct()
     {
-        parent::__construct('routes:dump');
+        parent::__construct('routes:dump-api');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        return $this->dumpRoutes($this->container['routes'], $input, $output);
+        $app = require __DIR__ . '/../../Application/Api.php';
+
+        return $this->dumpRoutes($app['routes'], $input, $output);
     }
 }
