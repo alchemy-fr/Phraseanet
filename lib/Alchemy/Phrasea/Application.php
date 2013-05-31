@@ -89,9 +89,11 @@ use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -241,6 +243,7 @@ class Application extends SilexApplication
         $this->register(new InstallerServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
+        $this->register(new PluginServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
         $this->register(new ReCaptchaServiceProvider());
 
@@ -262,6 +265,7 @@ class Application extends SilexApplication
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
         $this->register(new TaskManagerServiceProvider());
+        $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new TokensServiceProvider());
         $this->register(new TwigServiceProvider(), array(
             'twig.options' => array(
@@ -397,6 +401,10 @@ class Application extends SilexApplication
 
             return $data[1];
         };
+
+        call_user_func(function ($app) {
+            require $app['plugins.directory'] . '/services.php';
+        }, $this);
     }
 
     /**

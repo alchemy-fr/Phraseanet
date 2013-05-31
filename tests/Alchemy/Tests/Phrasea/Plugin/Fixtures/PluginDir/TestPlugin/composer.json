@@ -1,0 +1,10 @@
+{
+    "name" : "test/test",
+    "description" : "test file",
+    "license" : "MIT",
+    "autoload": {
+        "psr-0": {
+            "Vendor" : "src"
+        }
+    }
+}
