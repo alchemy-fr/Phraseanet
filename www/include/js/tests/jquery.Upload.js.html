@@ -20,7 +20,7 @@
                 });
 
                 return UM;
-            }
+            };
 
             module("upload Manager");
 
@@ -64,7 +64,7 @@
 
             test("getDownloadBox", function() {
                 var UM = getUploadManager();
-                deepEqual($(".download-box"), UM.getDownloadBox());
+                equal("thumbnails", UM.getDownloadBox().attr("class"));
             });
 
             test("clearUploadBox", function() {
@@ -205,11 +205,11 @@
                 var UM = getUploadManager();
 
                 var convert = UM.Formater.bitrate(125456589754);
-                equal('116.84 Gbit/s', convert);
+                equal('107.59 Mo/s', convert);
                 convert = UM.Formater.bitrate(12545);
-                equal('12.25 Kbit/s', convert);
+                equal('1.53 Ko/s', convert);
                 convert = UM.Formater.bitrate(565487585);
-                equal('539.29 Mbit/s', convert);
+                equal('67.41 Mo/s', convert);
             });
 
             module("upload Manager Preview");
