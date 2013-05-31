@@ -32,12 +32,12 @@ class PluginServiceProvider implements ServiceProviderInterface
         $app['plugins.directory'] = realpath(__DIR__ . '/../../../../../plugins');
         $app['plugins.schema'] = realpath(__DIR__ . '/../../../../conf.d/plugin-schema.json');
 
-        $app['json-validator'] = $app->share(function (Application $app) {
+        $app['plugins.json-validator'] = $app->share(function (Application $app) {
             return new JsonValidator();
         });
 
         $app['plugins.manifest-validator'] = $app->share(function (Application $app) {
-            return ManifestValidator::create($app['json-validator'], $app['plugins.schema']);
+            return ManifestValidator::create($app);
         });
 
         $app['plugins.plugins-validator'] = $app->share(function (Application $app) {

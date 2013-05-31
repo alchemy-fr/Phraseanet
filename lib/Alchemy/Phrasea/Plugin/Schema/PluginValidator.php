@@ -43,8 +43,7 @@ class PluginValidator
             throw new PluginValidationException('Manifest file is invalid', $e->getCode(), $e);
         }
 
-        // a ameliorer
-        return new Manifest(@json_decode(@file_get_contents($manifest), true));
+        return new Manifest($this->objectToArray($data));
     }
 
     private function ensureManifest($directory)
@@ -64,5 +63,18 @@ class PluginValidator
         if (!file_exists($file) || !is_file($file) || !is_readable($file)) {
             throw new PluginValidationException(sprintf('Required file %s is not present.', $file));
         }
+    }
+
+    private function objectToArray($data)
+    {
+        if (is_object($data)) {
+            $data = get_object_vars($data);
+        }
+
+        if (is_array($data)) {
+            return array_map(array($this, 'objectToArray'), $data);
+        }
+
+        return $data;
     }
 }

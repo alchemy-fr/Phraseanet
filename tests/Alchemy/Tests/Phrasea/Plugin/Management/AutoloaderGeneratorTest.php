@@ -33,7 +33,7 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
             $this->assertFileExists($file);
             $process = ProcessBuilder::create(array($php, '-l', $file))->getProcess();
             $process->run();
-            $this->assertTrue($process->isSuccessful());
+            $this->assertTrue($process->isSuccessful(), basename($file) . ' is valid');
         }
 
         // test autoload

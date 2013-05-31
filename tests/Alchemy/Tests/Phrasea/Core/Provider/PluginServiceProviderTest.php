@@ -16,7 +16,7 @@ class PluginServiceProvidertest extends ServiceProviderTestCase
         return array(
             array(
                 'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
-                'json-validator',
+                'plugins.json-validator',
                 'JsonSchema\Validator'
             ),
             array(

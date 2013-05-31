@@ -15,9 +15,7 @@ class PluginValidatorTest extends PluginTestCase
      */
     public function testValidateInvalidPlugin($directory)
     {
-        $schema = json_decode($this->getSchema());
-
-        $validator = new PluginValidator(new ManifestValidator(new JsonValidator(), $schema));
+        $validator = new PluginValidator($this->createManifestValidator());
         $validator->validatePlugin($directory);
     }
 
@@ -26,9 +24,7 @@ class PluginValidatorTest extends PluginTestCase
      */
     public function testValidatePlugin($directory)
     {
-        $schema = json_decode($this->getSchema());
-
-        $validator = new PluginValidator(new ManifestValidator(new JsonValidator(), $schema));
+        $validator = new PluginValidator($this->createManifestValidator());
         $validator->validatePlugin($directory);
     }
 

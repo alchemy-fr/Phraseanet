@@ -2,8 +2,15 @@
 
 namespace Alchemy\Tests\Phrasea\Plugin;
 
-class PluginTestCase extends \PHPUnit_Framework_TestCase
+use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
+
+class PluginTestCase extends \PhraseanetPHPUnitAbstract
 {
+    protected function createManifestValidator()
+    {
+        return ManifestValidator::create(self::$DI['app']);
+    }
+
     protected function getPluginDirectory()
     {
         return __DIR__ . DIRECTORY_SEPARATOR . 'PluginFolder';
