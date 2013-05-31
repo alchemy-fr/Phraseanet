@@ -55,15 +55,13 @@
                         <label class="control-label" for="new-name"">{% trans %}Labels{% endtrans %}</label>
                         <div class="controls">
                             <ul class="unstyled inline">
-                                <li class="select lng-label"><a href="#new-label_fr">FR</a></li>
-                                <li class="lng-label"><a href="#new-label_en">EN</a></li>
-                                <li class="lng-label"><a href="#new-label_de">DE</a></li>
-                                <li class="lng-label"><a href="#new-label_nl">NL</a></li>
+                                <% _.each(languages, function(placeholder, code) { %>
+                                    <li class="lng-label <%= code === 'fr' ? 'select' : ''%>"><a href="#new-label_<%= code %>"><%= code %></a></li>
+                                <% }); %>
                             </ul>
-                            <input type="text" id="new-label_en" class="input-block-level input-label" style="display:none" placeholder="{% trans %}English label{% endtrans %}">
-                            <input type="text" id="new-label_fr" class="input-block-level input-label" placeholder="{% trans %}French label{% endtrans %}">
-                            <input type="text" id="new-label_de" class="input-block-level input-label" style="display:none" placeholder="{% trans %}German label{% endtrans %}">
-                            <input type="text" id="new-label_nl" class="input-block-level input-label" style="display:none" placeholder="{% trans %}Dutch label{% endtrans %}">
+                            <% _.each(languages, function(placeholder, code) { %>
+                                <input type="text" id="new-label_<%= code %>" class="input-block-level input-label" <%= code === 'fr' ? '' : 'style="display:none"'%> placeholder="<%= placeholder %>">
+                            <% }); %>
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -105,15 +103,15 @@
             <tr class="edit-label ">
                 <td colspan="2" class="control-group">
                     <ul class="unstyled inline">
-                        <li class="select lng-label"><a href="#label_fr">FR</a></li>
-                        <li class="lng-label"><a href="#label_en">EN</a></li>
-                        <li class="lng-label"><a href="#label_de">DE</a></li>
-                        <li class="lng-label"><a href="#label_nl">NL</a></li>
+                        <ul class="unstyled inline">
+                            <% _.each(field.labels, function(value, code) { %>
+                                <li class="lng-label <%= code === 'fr' ? 'select' : ''%>"><a href="#label_<%= code %>"><%= code %></a></li>
+                            <% }); %>
+                        </ul>
                     </ul>
-                    <input type="text" value="<%= field.label_en %>" id="label_en" class="input-block-level input-label" style="display:none" placeholder="{% trans %}English label{% endtrans %}">
-                    <input type="text" value="<%= field.label_fr %>" id="label_fr" class="input-block-level input-label" placeholder="{% trans %}French label{% endtrans %}">
-                    <input type="text" value="<%= field.label_de %>" id="label_de" class="input-block-level input-label" style="display:none" placeholder="{% trans %}German label{% endtrans %}">
-                    <input type="text" value="<%= field.label_nl %>" id="label_nl" class="input-block-level input-label" style="display:none" placeholder="{% trans %}Dutch label{% endtrans %}">
+                    <% _.each(field.labels, function(value, code) { %>
+                        <input type="text" value="<%= value %>" id="label_<%= code %>" class="input-block-level input-label" <%= code === 'fr' ? '' : 'style="display:none"'%> >
+                    <% }); %>
                 </td>
             </tr>
             <tr>

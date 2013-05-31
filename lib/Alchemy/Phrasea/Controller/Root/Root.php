@@ -32,6 +32,10 @@ class Root implements ControllerProviderInterface
             ->bind('root');
 
         $controllers
+            ->get('/available-languages', $this->call('getAvailableLanguages'))
+            ->bind('available_languages');
+
+        $controllers
             ->get('/robots.txt', $this->call('getRobots'))
             ->bind('robots');
 
@@ -68,6 +72,11 @@ class Root implements ControllerProviderInterface
         $response->headers->setCookie(new Cookie('locale', $locale));
 
         return $response;
+    }
+
+    public function getAvailableLanguages(Application $app, Request $request)
+    {
+        return $app->json($app['locales.I18n.available']);
     }
 
     /**

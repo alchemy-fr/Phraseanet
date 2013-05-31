@@ -40,6 +40,14 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertRegExp('/^\/login\/\?redirect=[\/a-zA-Z]+/', $response->headers->get('location'));
     }
 
+    public function testRouteAvailableLanguages()
+    {
+        $crawler = self::$DI['client']->request('GET', '/available-languages');
+        $response = self::$DI['client']->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals((array) json_decode($response->getContent()), self::$DI['app']['locales.I18n.available']);
+    }
+
     public function testRouteRobots()
     {
         $original_value = self::$DI['app']['phraseanet.registry']->get('GV_allow_search_engine');

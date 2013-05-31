@@ -25,7 +25,9 @@ define([
             "click .lng-label a": "_toggleLabels"
         },
         render: function() {
-            var template = _.template($("#create_template").html());
+            var template = _.template($("#create_template").html(), {
+                languages: AdminFieldApp.languages
+            });
 
             this.$el.html(template);
 

@@ -58,13 +58,19 @@ define([
         AdminFieldApp.dcFieldsCollection = new DcFieldsCollection();
 
         // load strings
-        i18n.init({ resGetPath: "/admin/fields/language.json"});
+        i18n.init({resGetPath: "/admin/fields/language.json"});
 
         // load all collections
         $.when.apply($, [
             AdminFieldApp.fieldsCollection.fetch(),
             AdminFieldApp.vocabularyCollection.fetch(),
-            AdminFieldApp.dcFieldsCollection.fetch()
+            AdminFieldApp.dcFieldsCollection.fetch(),
+            $.ajax({
+                url: '/available-languages',
+                success: function(languages) {
+                   AdminFieldApp.languages = languages;
+                }
+            })
         ]).done(
             function() {
                 // register views
