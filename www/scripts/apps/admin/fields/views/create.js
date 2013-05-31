@@ -21,8 +21,7 @@ define([
         events: {
             "click .btn-submit-field": "createAction",
             "click .btn-add-field": "toggleCreateFormAction",
-            "click .btn-cancel-field": "toggleCreateFormAction",
-            "click .lng-label a": "_toggleLabels"
+            "click .btn-cancel-field": "toggleCreateFormAction"
         },
         render: function() {
             var template = _.template($("#create_template").html(), {
@@ -164,14 +163,6 @@ define([
             AdminFieldApp.resizeListBlock();
 
             return this;
-        },
-        _toggleLabels: function(event) {
-            event.preventDefault();
-            var curLabel = $(event.target);
-            $('.lng-label', this.$el).removeClass("select");
-            curLabel.closest(".lng-label").addClass("select");
-            $('.input-label', this.$el).hide();
-            $(curLabel.attr('href'), this.$el).show();
         }
     });
 

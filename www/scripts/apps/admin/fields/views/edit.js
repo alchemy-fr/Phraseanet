@@ -37,7 +37,8 @@ define([
             var template = _.template($("#edit_template").html(), {
                 field: this.model.toJSON(),
                 vocabularyTypes: AdminFieldApp.vocabularyCollection.toJSON(),
-                modelErrors: AdminFieldApp.errorManager.getModelError(this.model)
+                modelErrors: AdminFieldApp.errorManager.getModelError(this.model),
+                languages: AdminFieldApp.languages
             });
 
             this.$el.empty().html(template);
