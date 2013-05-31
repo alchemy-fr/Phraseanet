@@ -24,9 +24,7 @@ define([
             "click .btn-cancel-field": "toggleCreateFormAction"
         },
         render: function() {
-            var template = _.template($("#create_template").html(), {
-                languages: AdminFieldApp.languages
-            });
+            var template = _.template($("#create_template").html());
 
             this.$el.html(template);
 
