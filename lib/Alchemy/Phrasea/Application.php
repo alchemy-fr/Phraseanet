@@ -85,6 +85,7 @@ use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\InstallerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
@@ -216,7 +217,7 @@ class Application extends SilexApplication
         $this->register(new FFMpegServiceProvider());
         $this->register(new FilesystemServiceProvider());
         $this->register(new FtpServiceProvider());
-        $this->register(new GeonamesServiceProvider);
+        $this->register(new GeonamesServiceProvider());
         $this->register(new MediaAlchemystServiceProvider());
         $this->register(new MediaVorusServiceProvider());
 
@@ -386,21 +387,7 @@ class Application extends SilexApplication
         $this['dispatcher']->addSubscriber(new Logout());
         $this['dispatcher']->addSubscriber(new PhraseaLocaleSubscriber($this));
 
-        $this['locale'] = $this->share(function(Application $app){
-            return $app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
-        });
-
-        $this['locale.I18n'] = function(Application $app){
-            $data = explode('_', $app['locale']);
-
-            return $data[0];
-        };
-
-        $this['locale.l10n'] = function(Application $app){
-            $data = explode('_', $app['locale']);
-
-            return $data[1];
-        };
+        $this->register(new LocaleServiceProvider());
 
         call_user_func(function ($app) {
             require $app['plugins.directory'] . '/services.php';
