@@ -1,0 +1,5 @@
+{
+    "name": "TestPlugin",
+    "description" : "A custom class connector",
+    "minimum-phraseanet-version": "14"
+}

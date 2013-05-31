@@ -1,0 +1,12 @@
+{
+    "name": "TestPlugin",
+    "description" : "A custom class connector",
+    "authors" : {
+        "name"     : "Author name",
+        "homepage" : "http://example.com",
+        "email"    : "email@example.com"
+    },
+    "services" : {
+        "class": "Vendor\\PluginService"
+    }
+}

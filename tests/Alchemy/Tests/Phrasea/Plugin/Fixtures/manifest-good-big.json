@@ -1,0 +1,33 @@
+{
+    "name": "TestPlugin",
+    "description" : "A custom class connector",
+    "keywords"    : ["connector", "test"],
+    "authors" : [
+        {
+            "name"     : "Author name",
+            "homepage" : "http://example.com",
+            "email"    : "email@example.com"
+        },
+        {
+            "name"     : "Author name2",
+            "homepage" : "http://example.com",
+            "email"    : "email@example.com"
+        }
+    ],
+    "homepage" : "http://example.com/project/example",
+    "license"     : "MIT",
+    "version"     : "0.1",
+    "minimum-phraseanet-version": "3.8",
+    "maximum-phraseanet-version": "3.9",
+    "services" : [
+        {
+            "class": "Vendor\\PluginService"
+        },
+        {
+            "class": "Vendor\\PluginService2"
+        }
+    ],
+    "extra" : {
+        "property" : "value"
+    }
+}

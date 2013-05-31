@@ -24,8 +24,10 @@ use Alchemy\Phrasea\Command\RecordAdd;
 use Alchemy\Phrasea\Command\RescanTechnicalDatas;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Command\Plugin\AddPlugin;
+use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../lib/autoload.php';
 
 try {
     $app = new CLI("
@@ -89,6 +91,9 @@ try {
     $app->command(new RecordAdd('records:add'));
     $app->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
     $app->command(new BuildMissingSubdefs('records:build-missing-subdefs'));
+
+    $app->command(new AddPlugin());
+    $app->command(new RemovePlugin());
 
     $result_code = is_int($app->run()) ? : 1;
 } catch (\Exception $e) {
