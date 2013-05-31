@@ -97,7 +97,6 @@ EOF;
 
         $buffer .= <<<EOF
 
-
     return \$app;
 }, \$app);
 

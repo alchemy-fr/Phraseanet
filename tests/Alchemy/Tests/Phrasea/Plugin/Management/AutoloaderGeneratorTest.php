@@ -29,7 +29,7 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Php executable not found.');
         }
 
-        foreach ($files as $file ) {
+        foreach ($files as $file) {
             $this->assertFileExists($file);
             $process = ProcessBuilder::create(array($php, '-l', $file))->getProcess();
             $process->run();

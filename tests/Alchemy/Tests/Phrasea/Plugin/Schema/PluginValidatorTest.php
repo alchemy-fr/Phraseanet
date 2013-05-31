@@ -3,8 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Plugin\Schema;
 
 use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
-use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
-use JsonSchema\Validator as JsonValidator;
 use Alchemy\Tests\Phrasea\Plugin\PluginTestCase;
 
 class PluginValidatorTest extends PluginTestCase

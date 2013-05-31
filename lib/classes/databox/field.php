@@ -454,7 +454,7 @@ class databox_field implements cache_cacheableInterface
     /**
      * Sets a localized label for the field.
      *
-     * @param string $code
+     * @param string      $code
      * @param null|string $value
      *
      * @return \databox_field
