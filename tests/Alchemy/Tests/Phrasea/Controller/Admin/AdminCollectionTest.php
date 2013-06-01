@@ -354,6 +354,26 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
+     * @covers Alchemy\Phrasea\Controller\Admin\Bas::labels
+     */
+    public function testPostLabelsNotJson()
+    {
+        $this->setAdmin(true);
+
+        $collection = $this->createOneCollection();
+
+        self::$DI['client']->request('POST', '/admin/collection/' . $collection->get_base_id() . '/labels/', array(
+            'labels' => array(
+                'en' => 'english label',
+                'fr' => 'french label',
+                'ru' => 'russian label',
+            )
+        ));
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+    }
+
+    /**
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::rename
      */
     public function testPostNameUnauthorizedException()
@@ -366,6 +386,18 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
+     * @covers Alchemy\Phrasea\Controller\Admin\Bas::labels
+     */
+    public function testPostLabelsUnauthorizedException()
+    {
+        $this->setAdmin(false);
+
+        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/labels/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
+    }
+
+    /**
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::rename
      */
     public function testPostNameBadRequestMissingArguments()
@@ -373,6 +405,17 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/rename/');
+        $this->assertXMLHTTPBadJsonResponse(self::$DI['client']->getResponse());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Admin\Bas::labels
+     */
+    public function testPostLabelsBadRequestMissingArguments()
+    {
+        $this->setAdmin(true);
+
+        $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/labels/');
         $this->assertXMLHTTPBadJsonResponse(self::$DI['client']->getResponse());
     }
 
@@ -392,6 +435,35 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
         $this->assertEquals($collection->get_name(), 'test_rename_coll');
+        $collection->unmount_collection(self::$DI['app']);
+        $collection->delete();
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Admin\Bas::labels
+     */
+    public function testPostLabels()
+    {
+        $this->setAdmin(true);
+
+        $collection = $this->createOneCollection();
+
+        $this->XMLHTTPRequest('POST', '/admin/collection/' . $collection->get_base_id() . '/labels/', array(
+            'labels' => array(
+                'nl' => 'netherlands label',
+                'de' => 'german label',
+                'fr' => 'label français',
+                'en' => 'label à l\'anglaise',
+                'ru' => 'label à la russe',
+            )
+        ));
+
+        $json = $this->getJson(self::$DI['client']->getResponse());
+        $this->assertTrue($json->success);
+        $this->assertEquals($collection->get_label('de'), 'german label');
+        $this->assertEquals($collection->get_label('nl'), 'netherlands label');
+        $this->assertEquals($collection->get_label('fr'), 'label français');
+        $this->assertEquals($collection->get_label('en'), 'label à l\'anglaise');
         $collection->unmount_collection(self::$DI['app']);
         $collection->delete();
     }

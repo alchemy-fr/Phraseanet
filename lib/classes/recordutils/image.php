@@ -354,7 +354,7 @@ class recordutils_image extends recordutils
 
             $builder->getProcess()->run();
         } elseif ($app['phraseanet.registry']->get('convert_binary')) {
-            $collname = phrasea::bas_names($base_id, $app);
+            $collname = phrasea::bas_labels($base_id, $app);
             $tailleimg = @getimagesize($pathIn);
             $max = ($tailleimg[0] > $tailleimg[1] ? $tailleimg[0] : $tailleimg[1]);
 

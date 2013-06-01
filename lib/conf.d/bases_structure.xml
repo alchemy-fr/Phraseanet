@@ -4326,7 +4326,7 @@
             <comment></comment>
           </field>
           <field>
-            <name>htmlname</name>
+            <name>asciiname</name>
             <type>varchar(50)</type>
             <null></null>
             <extra></extra>
@@ -4334,9 +4334,33 @@
             <comment></comment>
           </field>
           <field>
-            <name>asciiname</name>
-            <type>varchar(50)</type>
-            <null></null>
+            <name>label_en</name>
+            <type>char(50)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_fr</name>
+            <type>char(50)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_de</name>
+            <type>char(50)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_nl</name>
+            <type>char(50)</type>
+            <null>YES</null>
             <extra></extra>
             <default></default>
             <comment></comment>

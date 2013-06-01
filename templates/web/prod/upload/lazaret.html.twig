@@ -264,7 +264,7 @@
                                 {% endtrans %}
                             </p>
                         {% endif %}
-                        <p>{% trans "Collection" %} : <span class="info">{{ file.getCollection(app).get_name() }}</span></p>
+                        <p>{% trans "Collection" %} : <span class="info">{{ file.getCollection(app).get_label(app['locale.I18n']) }}</span></p>
                     </div>
                     <div class="caption">
                         {% for check in file.getChecks() %}

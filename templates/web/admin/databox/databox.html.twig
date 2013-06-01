@@ -185,7 +185,7 @@
                 {% for baseId in databox.get_activable_colls() %}
                     <li>
                         <form class='form-inline' method="post" action="{{ path('admin_collection_enable', {'bas_id': baseId}) }}">
-                            {{ baseId|bas_names(app) }}
+                            {{ baseId|bas_labels(app) }}
                             <a href="#" class="btn btn-mini submiter">{% trans "Activer" %}></a>
                         </form>
                     </li>

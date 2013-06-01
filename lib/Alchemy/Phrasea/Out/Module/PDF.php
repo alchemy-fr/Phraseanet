@@ -249,7 +249,7 @@ class PDF
 
             $y = $this->pdf->GetY();
 
-            $t = \phrasea::bas_names($rec->get_base_id(), $this->app);
+            $t = \phrasea::bas_labels($rec->get_base_id(), $this->app);
             $this->pdf->SetFont(PhraseaPDF::FONT, '', 10);
             $this->pdf->SetFillColor(220, 220, 220);
             $this->pdf->SetLeftMargin($lmargin);
@@ -354,7 +354,7 @@ class PDF
             }
 
             if ($vn == "" || $vn == "1") {
-                $RIGHT_TEXT = \phrasea::bas_names($rec->get_base_id(), $this->app);
+                $RIGHT_TEXT = \phrasea::bas_labels($rec->get_base_id(), $this->app);
             } elseif ($vn == "2") {
                 $RIGHT_IMG = $this->app['phraseanet.registry']->get('GV_RootPath') . "config/minilogos/" . $rec->get_base_id();
             }
