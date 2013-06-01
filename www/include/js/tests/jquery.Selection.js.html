@@ -3,13 +3,13 @@
   <head>
     <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="/include/vendor/qunit/qunit/qunit.js"></script>
+    <script src="../../../assets/jquery/jquery.js"></script>
+    <script src="../../../assets/qunit/qunit/qunit.js"></script>
     <script src="../jquery.Selection.js"></script>
-    <link type="text/css" rel="stylesheet" href="/assets/qunit/qunit.css"/>
+    <link type="text/css" rel="stylesheet" href="../../../assets/qunit/qunit.css"/>
     <script>  $(document).ready(function(){
-    
-      
+
+
       test("Selection instanciation", function() {
         var sel = new Selectable($('#test_box2'));
         var array = new Array();
@@ -18,26 +18,26 @@
       });
 
       module("Add datas");
-      
+
       test("first test within module", function() {
         var sel = new Selectable($('#test_box3'));
         sel.push('a');
         equal( 1, sel.get().length, "We expect the selection to be empty" );
         equal( 'a', sel.get().pop(), "We expect the selection to be empty" );
       });
-      
+
       module("Multiple selections");
-      
+
       test("first test within module", function() {
         var sel1 = new Selectable($('#test_box4'));
         var sel2 = new Selectable($('#test_box5'));
-        
+
         sel1.push('a');
         sel2.push('b');
-        
+
         equal( 1, sel1.get().length, "We expect the selection to be empty" );
         equal( 'a', sel1.get().pop(), "We expect the selection to be empty" );
-        
+
         equal( 1, sel2.get().length, "We expect the selection to be empty" );
         equal( 'b', sel2.get().pop(), "We expect the selection to be empty" );
       });
@@ -52,16 +52,16 @@
             , callbackSelection : function(elem){
               var lst = jQuery('li', $('#test_box1'));
               var index = jQuery.inArray( elem[0], lst );
-              
+
               return 'item' + index;
             }
           }
         );
-        
+
         equal(true, $('#test_box1').hasClass('selectionnable'));
         equal(0, sel1.length(), 'Nothing is selected');
         equal(0, sel1.size(), 'Nothing is selected');
-        
+
         sel1.selectAll();
 
         equal(0, $('#test_box li:not(.selected)').length);
@@ -76,57 +76,57 @@
         $('#test_box1 li:not(.selected):first').trigger('click');
 
         equal(1, sel1.size(), 'First element selection');
-        
+
         var SKevent = jQuery.Event('click', { shiftKey : true });
-        
+
         $('#test_box1 li:not(.selected)').filter(':last').trigger(SKevent);
-        
+
         equal(sel1.length(), 10, 'Shift click selection');
         equal(sel1.size(), 10);
 
-        
+
         sel1.empty();
-        
+
         equal(0, $('#test_box li:not(.selected)').length);
-        
+
         $('#test_box1 li:not(.selected):last').trigger('click');
 
         equal(1, sel1.size(), 'Last element selection');
-        
+
         var SKevent = jQuery.Event('click', { shiftKey : true });
-        
+
         $('#test_box1 li:not(.selected)').filter(':first').trigger(SKevent);
-        
+
         equal(sel1.length(), 10, 'Shift click selection reversed');
         equal(sel1.size(), 10);
-        
+
         $('#test_box1 li:first').trigger('click');
-        
+
         equal(sel1.length(), 1, 'Start new selection');
-        
+
         equal($('#test_box1 li:last').hasClass('selected'), false, 'last item does not have selected class');
-        
+
         var CKevent = jQuery.Event('click', { ctrlKey : true });
         $('#test_box1 li:last').trigger(CKevent);
-        
+
         equal(sel1.length(), 2, 'Ctrl click');
-        
+
         var CKevent = jQuery.Event('click', { ctrlKey : true });
         $('#test_box1 li:last').trigger(CKevent);
-        
+
         equal(sel1.length(), 1, 'Ctrl click');
-        
+
         var CKevent = jQuery.Event('click', { ctrlKey : true });
         $('#test_box1 li:last').trigger(CKevent);
-        
+
         equal(sel1.length(), 2, 'Ctrl click');
-        
-        
+
+
         equal(sel1.serialize(), 'item0;item9');
         equal(sel1.serialize('!u'), 'item0!uitem9');
-        
+
       });
-      
+
     });
     </script>
   </head>
