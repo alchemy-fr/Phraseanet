@@ -21,30 +21,46 @@ class MinifierTest extends \PhraseanetPHPUnitAbstract
         $_GET = array();
     }
 
-    public function testGenerationOfGroups()
+    /**
+     * @dataProvider provideGroupsToMinify
+     */
+    public function testGenerationOfGroups($name)
+    {
+        $_GET['g'] = $name;
+        self::$DI['client']->request('GET', '/include/minify/?g=' . $name);
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk(), "Group $name is ok");
+    }
+
+    public function provideGroupsToMinify()
     {
         $groups = require __DIR__ . '/../../../../../lib/conf.d/minifyGroupsConfig.php';
 
-        foreach ($groups as $name => $data) {
-            $_GET['g'] = $name;
-            self::$DI['client']->request('GET', '/include/minify/?g=' . $name);
-            $this->assertTrue(self::$DI['client']->getResponse()->isOk(), "Group $name is ok");
-        }
+        return array_map(function($group){return array($group);}, array_keys($groups));
     }
 
-    public function testFileMinification()
+    /**
+     * @dataProvider provideFilesToMinify
+     */
+    public function testFileMinification($file)
     {
+        $_GET['f'] = $file;
+        self::$DI['client']->request('GET', '/include/minify/?f=' . $file);
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk(), "Group $file is ok");
+    }
+
+    public function provideFilesToMinify()
+    {
+        $files = array();
+
         $groups = require __DIR__ . '/../../../../../lib/conf.d/minifyGroupsConfig.php';
 
         foreach ($groups as $name => $data) {
             foreach ($data as $file) {
-                $file = substr($file, 2);
-                $_GET['f'] = $file;
-                self::$DI['client']->request('GET', '/include/minify/?f=' . $file);
-                $this->assertTrue(self::$DI['client']->getResponse()->isOk(), "Group $file is ok");
-                break 2;
+                $files[] = substr($file, 2);
             }
         }
+
+        return array_map(function ($file) {return array($file);}, array_unique($files));
     }
 
     public function testFileMinificationWithoutParamsShouldReturnA400()
