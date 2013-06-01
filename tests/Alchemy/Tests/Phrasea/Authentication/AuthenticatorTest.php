@@ -18,9 +18,8 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
-        $app['phraseanet.registry'] = $registry = $this->getRegistryMock();
 
-        $authenticator = new Authenticator($app, $browser, $session, $em, $registry);
+        $authenticator = new Authenticator($app, $browser, $session, $em);
         $this->assertNull($authenticator->getUser());
     }
     /**
@@ -35,11 +34,10 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
-        $app['phraseanet.registry'] = $registry = $this->getRegistryMock();
 
         $session->set('usr_id', $user->get_id());
 
-        $authenticator = new Authenticator($app, $browser, $session, $em, $registry);
+        $authenticator = new Authenticator($app, $browser, $session, $em);
         $this->assertEquals($user, $authenticator->getUser());
     }
 
@@ -53,13 +51,12 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
-        $app['phraseanet.registry'] = $registry = $this->getRegistryMock();
 
         $user = $this->getMockBuilder('\User_Adapter')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $authenticator = new Authenticator($app, $browser, $session, $em, $registry);
+        $authenticator = new Authenticator($app, $browser, $session, $em);
         $authenticator->setUser($user);
         $this->assertEquals($user, $authenticator->getUser());
         $authenticator->setUser(null);
@@ -78,7 +75,6 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
-        $app['phraseanet.registry'] = $registry = $this->getRegistryMock();
 
         $user = $this->getMockBuilder('\User_Adapter')
             ->disableOriginalConstructor()
@@ -110,7 +106,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $em->expects($this->at(1))
             ->method('flush');
 
-        $authenticator = new Authenticator($app, $browser, $session, $em, $registry);
+        $authenticator = new Authenticator($app, $browser, $session, $em);
         $phsession = $authenticator->openAccount($user);
 
         $this->assertInstanceOf('Entities\Session', $phsession);
@@ -129,11 +125,6 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $SFsession = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
-        $app['phraseanet.registry'] = $registry = $this->getRegistryMock();
-
-        $app['phraseanet.registry']->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue('random-data' . mt_rand()));
 
         $usrId = $user->get_id();
         $sessionId = 4224242;
@@ -160,7 +151,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
             ->with($this->equalTo('Entities\Session'))
             ->will($this->returnValue($repo));
 
-        $authenticator = new Authenticator($app, $browser, $SFsession, $em, $registry);
+        $authenticator = new Authenticator($app, $browser, $SFsession, $em);
         $this->assertEquals($session, $authenticator->refreshAccount($session));
     }
 
@@ -176,11 +167,6 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $SFsession = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
-        $app['phraseanet.registry'] = $registry = $this->getRegistryMock();
-
-        $app['phraseanet.registry']->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue('random-data' . mt_rand()));
 
         $usrId = $user->get_id();
         $sessionId = 4224242;
@@ -207,7 +193,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
             ->with($this->equalTo('Entities\Session'))
             ->will($this->returnValue($repo));
 
-        $authenticator = new Authenticator($app, $browser, $SFsession, $em, $registry);
+        $authenticator = new Authenticator($app, $browser, $SFsession, $em);
         try {
             $authenticator->refreshAccount($session);
             $this->fail('Should have raised an exception');
@@ -228,11 +214,10 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
-        $app['phraseanet.registry'] = $registry = $this->getRegistryMock();
 
         $session->set('usr_id', $user->get_id());
 
-        $authenticator = new Authenticator($app, $browser, $session, $em, $registry);
+        $authenticator = new Authenticator($app, $browser, $session, $em);
         $authenticator->closeAccount();
         $this->assertNull($authenticator->getUser());
     }
@@ -249,11 +234,10 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
-        $app['phraseanet.registry'] = $registry = $this->getRegistryMock();
 
         $session->set('usr_id', $user->get_id());
 
-        $authenticator = new Authenticator($app, $browser, $session, $em, $registry);
+        $authenticator = new Authenticator($app, $browser, $session, $em);
         $this->assertTrue($authenticator->isAuthenticated());
     }
 
@@ -267,9 +251,8 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
         $app['EM'] = $em = $this->getEntityManagerMock();
-        $app['phraseanet.registry'] = $registry = $this->getRegistryMock();
 
-        $authenticator = new Authenticator($app, $browser, $session, $em, $registry);
+        $authenticator = new Authenticator($app, $browser, $session, $em);
         $this->assertFalse($authenticator->isAuthenticated());
     }
 

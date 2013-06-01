@@ -24,14 +24,12 @@ class Authenticator
     private $browser;
     private $session;
     private $em;
-    private $registry;
     private $user;
 
-    public function __construct(Application $app, Browser $browser, SessionInterface $session, EntityManager $em, \registryInterface $registry)
+    public function __construct(Application $app, Browser $browser, SessionInterface $session, EntityManager $em)
     {
         // design error, circular reference
         $this->app = $app;
-        $this->registry = $registry;
         $this->browser = $browser;
         $this->session = $session;
         $this->em = $em;

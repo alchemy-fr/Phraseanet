@@ -32,7 +32,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['authentication'] = $app->share(function (Application $app){
-            return new Authenticator($app, $app['browser'], $app['session'], $app['EM'], $app['phraseanet.registry']);
+            return new Authenticator($app, $app['browser'], $app['session'], $app['EM']);
         });
 
         $app['authentication.token-validator'] = $app->share(function (Application $app){
