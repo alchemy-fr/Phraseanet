@@ -45,7 +45,7 @@
                 <h3>{% trans %}Add a new field{% endtrans %}</h3>
                 <form class="form-horizontal">
                     <div class="control-group">
-                        <label class="control-label" for="new-name"">{% trans %}Label{% endtrans %}</label>
+                        <label class="control-label" for="new-name"">{% trans %}Name{% endtrans %}</label>
                         <div class="controls">
                             <input type="text" id="new-name" class="input-block-level" placeholder="">
                             <span class="help-block"></span>
@@ -81,14 +81,23 @@
                 <td><%= field.sorter %></td>
                 <td><button type="button" class="btn btn-danger delete-field pull-right"><i class="icon-trash icon-white"></i>delete</button></td>
             </tr>
-            <tr class="edit-name ">
-                <td colspan="2" class="control-group <%= modelErrors && modelErrors.has('name') ? 'error' : '' %>">
-                    <input id="name" type="text" value="<%= field.name %>" class="input-block-level">
-                    <span class="help-block">
-                        <% if(modelErrors && modelErrors.get('name')) { %>
-                            <%= modelErrors.get('name').message %>
-                        <% } %>
-                    </span>
+            <tr class="edit-name">
+                <td colspan="2">
+                    <%= field.name %>
+                </td>
+            </tr>
+            <tr class="edit-label ">
+                <td colspan="2" class="control-group">
+                    <ul class="unstyled inline">
+                        <ul class="unstyled inline">
+                            <% _.each(field.labels, function(value, code) { %>
+                                <li class="lng-label <%= code === 'fr' ? 'select' : ''%>"><a href="#label_<%= code %>"><%= languages[code] %></a></li>
+                            <% }); %>
+                        </ul>
+                    </ul>
+                    <% _.each(field.labels, function(value, code) { %>
+                        <input type="text" value="<%= value %>" id="label_<%= code %>" class="input-block-level input-label" <%= code === 'fr' ? '' : 'style="display:none"'%> >
+                    <% }); %>
                 </td>
             </tr>
             <tr>
@@ -239,7 +248,7 @@
         </tr>
         <tr>
             <td class="position">
-                <%= position %>
+                <%= position + 1 %>
             </td>
         </tr>
     </table>
