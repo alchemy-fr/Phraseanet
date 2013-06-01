@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "06eddf18808e8091de82ec3b5d6b699e",
+    "hash": "834ca8b05e77eb9ddf9b2831d34c3bc5",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -2454,11 +2454,11 @@
         },
         {
             "name": "tecnick.com/tcpdf",
-            "version": "dev-master",
+            "version": "6.0.018",
             "source": {
                 "type": "git",
-                "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "9a03e8743c50d6d8f1a641e80d4296c91cd314bb"
+                "url": "http://git.code.sf.net/p/tcpdf/code",
+                "reference": "6.0.018"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -3621,7 +3621,6 @@
         "neutron/silex-imagine-provider": 20,
         "neutron/silex-badfaith-provider": 20,
         "neutron/silex-filesystem-provider": 20,
-        "tecnick.com/tcpdf": 20,
         "doctrine/data-fixtures": 20
     },
     "platform": {

@@ -36,7 +36,7 @@
         "silex/web-profiler"               : "~1.0.0",
         "swiftmailer/swiftmailer"          : "~4.3.0",
         "symfony/symfony"                  : "~2.2",
-        "tecnick.com/tcpdf"                : "dev-master",
+        "tecnick.com/tcpdf"                : "~6.0",
         "themattharris/tmhoauth"           : "~0.7",
         "twig/twig"                        : "~1.12",
         "twig/extensions"                  : "~1.0",
