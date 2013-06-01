@@ -254,7 +254,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
                 'base_id' => $base_id,
                 'sbas_id' => $sbas_id,
                 'coll_id' => $collection->get_base_id(),
-                'name'    => $collection->get_name()
+                'name'    => $collection->get_label($this->app['locale.I18n'])
             );
         }
 

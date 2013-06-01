@@ -219,7 +219,7 @@ class task_period_archive extends task_abstract
                 <?php
                 foreach ($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $databox) {
                     foreach ($databox->get_collections() as $collection) {
-                        print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
+                        print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_label($this->dependencyContainer['locale.I18n']) . "</option>");
                     }
                 }
                 ?>

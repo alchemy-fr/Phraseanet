@@ -130,6 +130,21 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals('babababe bi bo bu', self::$object->get_name());
     }
 
+    public function testSet_label()
+    {
+        self::$object->set_name('pretty name');
+        self::$object->set_label('fr', 'french label');
+        self::$object->set_label('en', 'english label');
+        self::$object->set_label('nl', null);
+        self::$object->set_label('de', null);
+        $this->assertEquals('french label', self::$object->get_label('fr'));
+        $this->assertEquals('english label', self::$object->get_label('en'));
+        $this->assertEquals('pretty name', self::$object->get_label('nl'));
+        $this->assertEquals('pretty name', self::$object->get_label('de'));
+        $this->assertNull(self::$object->get_label('nl', false));
+        $this->assertNull(self::$object->get_label('de', false));
+    }
+
     public function testGet_record_details()
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../files/cestlafete.jpg'), self::$object);

@@ -183,6 +183,10 @@ class Collection implements ControllerProviderInterface
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_rename');
 
+        $controllers->post('/{bas_id}/labels/', $this->call('labels'))
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_labels');
+
         /**
          * Empty a collection
          *
@@ -876,6 +880,40 @@ class Collection implements ControllerProviderInterface
             $success = true;
         } catch (\Exception $e) {
 
+        }
+
+        if ('json' === $app['request']->getRequestFormat()) {
+            return $app->json(array(
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured')
+            ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success . '&reload-tree=1');
+    }
+
+    public function labels(Application $app, Request $request, $bas_id)
+    {
+        if (null === $labels = $request->request->get('labels')) {
+            $app->abort(400, _('Missing labels parameter'));
+        }
+        if (false === is_array($labels)) {
+            $app->abort(400, _('Invalid labels parameter'));
+        }
+
+        $collection = \collection::get_from_base_id($app, $bas_id);
+        $success = true;
+
+        try {
+            foreach ($app['locales.I18n.available'] as $code => $language) {
+                if (!isset($labels[$code])) {
+                    continue;
+                }
+                $value = $labels[$code] ?: null;
+                $collection->set_label($code, $value);
+            }
+        } catch (\Exception $e) {
+            $success = false;
         }
 
         if ('json' === $app['request']->getRequestFormat()) {

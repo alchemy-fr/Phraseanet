@@ -8,7 +8,7 @@
 
 <div class="page-header">
     <h1>
-        {% trans 'phraseanet:: collection' %} {{ collection.get_name() }}
+        {% trans 'phraseanet:: collection' %} {{ collection.get_label(app['locale.I18n']) }}
     </h1>
 </div>
 
@@ -87,6 +87,33 @@
                 <img src="/skins/icons/edit_0.gif" />
                 {% trans 'admin::base:collection: renommer la collection' %}
             </button>
+        </div>
+    </form>
+</div>
+
+<div class="well well-small action-block">
+    <form class="form-inline" method="post" action="{{ path('admin_collection_labels', { 'bas_id' : bas_id }) }}" style="margin:0;">
+        <div class="input-append">
+            <div class="row">
+                {% for code, language in app['locales.I18n.available'] %}
+                <div class="span2">
+                    <h6>{{ language }}</h6>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                {% for code, language in app['locales.I18n.available'] %}
+                <div class="span2">
+                    <input name="labels[{{ code }}]" value="{{ collection.get_label(code, false) }}" class="span2" type="text">
+                </div>
+                {% endfor %}
+                <div class="span2">
+                    <button class="btn" type="submit">
+                        <img src="/skins/icons/edit_0.gif" />
+                        {% trans 'Set labels' %}
+                    </button>
+                </div>
+            </div>
         </div>
     </form>
 </div>

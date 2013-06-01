@@ -79,7 +79,7 @@ class module_report_download extends module_report
         foreach ($rs as $row) {
             $value = $row['val'];
             if ($field == 'coll_id') {
-                $caption = phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $value, $this->app), $this->app);
+                $caption = phrasea::bas_labels(phrasea::baseFromColl($this->sbas_id, $value, $this->app), $this->app);
             } elseif ($field == 'ddate')
                 $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));
             elseif ($field == 'size')
@@ -167,7 +167,7 @@ class module_report_download extends module_report
 
     private function formatCollId($value)
     {
-        return phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $value, $this->app), $this->app);
+        return phrasea::bas_labels(phrasea::baseFromColl($this->sbas_id, $value, $this->app), $this->app);
     }
 
     public static function getNbDl(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)

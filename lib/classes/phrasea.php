@@ -17,13 +17,13 @@ class phrasea
     private static $_sbas_names = false;
     private static $_coll2bas = false;
     private static $_bas2coll = false;
-    private static $_bas_names = false;
+    private static $_bas_labels = false;
     private static $_sbas_params = false;
 
     const CACHE_BAS_2_SBAS = 'bas_2_sbas';
     const CACHE_COLL_2_BAS = 'coll_2_bas';
     const CACHE_BAS_2_COLL = 'bas_2_coll';
-    const CACHE_BAS_NAMES = 'bas_names';
+    const CACHE_BAS_LABELS = 'bas_labels';
     const CACHE_SBAS_NAMES = 'sbas_names';
     const CACHE_SBAS_FROM_BAS = 'sbas_from_bas';
     const CACHE_SBAS_PARAMS = 'sbas_params';
@@ -181,12 +181,12 @@ class phrasea
 
     public static function reset_baseDatas(appbox $appbox)
     {
-        self::$_coll2bas = self::$_bas2coll = self::$_bas_names = self::$_bas2sbas = null;
+        self::$_coll2bas = self::$_bas2coll = self::$_bas_labels = self::$_bas2sbas = null;
         $appbox->delete_data_from_cache(
             array(
                 self::CACHE_BAS_2_COLL
                 , self::CACHE_BAS_2_COLL
-                , self::CACHE_BAS_NAMES
+                , self::CACHE_BAS_LABELS
                 , self::CACHE_SBAS_FROM_BAS
             )
         );
@@ -249,23 +249,32 @@ class phrasea
         return isset(self::$_sbas_names[$sbas_id]) ? self::$_sbas_names[$sbas_id] : 'Unknown base';
     }
 
-    public static function bas_names($base_id, Application $app)
+    public static function bas_labels($base_id, Application $app)
     {
-        if (!self::$_bas_names) {
+        if (!self::$_bas_labels) {
             try {
-                self::$_bas_names = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_BAS_NAMES);
+                self::$_bas_labels = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_BAS_LABELS);
             } catch (Exception $e) {
                 foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                     foreach ($databox->get_collections() as $collection) {
-                        self::$_bas_names[$collection->get_base_id()] = $collection->get_name();
+                        self::$_bas_labels[$collection->get_base_id()] = array(
+                            'fr' => $collection->get_label('fr'),
+                            'en' => $collection->get_label('en'),
+                            'de' => $collection->get_label('de'),
+                            'nl' => $collection->get_label('nl'),
+                        );
                     }
                 }
 
-                $app['phraseanet.appbox']->set_data_to_cache(self::$_bas_names, self::CACHE_BAS_NAMES);
+                $app['phraseanet.appbox']->set_data_to_cache(self::$_bas_labels, self::CACHE_BAS_LABELS);
             }
         }
 
-        return isset(self::$_bas_names[$base_id]) ? self::$_bas_names[$base_id] : 'Unknown collection';
+        if (isset(self::$_bas_labels[$base_id]) && isset(self::$_bas_labels[$base_id][$app['locale.I18n']])) {
+            return self::$_bas_labels[$base_id][$app['locale.I18n']];
+        }
+
+        return 'Unknown collection';
     }
 
     public static function scheduler_key(Application $app, $renew = false)

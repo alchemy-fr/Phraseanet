@@ -34,7 +34,7 @@
             <br/>
             <select name="base_id">
                 {% for collection in collections %}
-                    <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
+                    <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale.I18n']) }}</option>
                 {% endfor %}
             </select>
             <br/>
