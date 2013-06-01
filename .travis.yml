@@ -8,7 +8,7 @@ before_script:
   - rm -f config/services.yml config/connexions.yml config/config.yml config/config.inc config/connexion.inc config/_GV.php config/_GV.php.old
   - cp -f hudson/connexion.inc config/
   - cp -f hudson/_GV.php config/
-  - npm install bower mocha-phantomjs testacular -g
+  - npm install bower mocha-phantomjs karma -g
   - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then pecl install redis; fi;'
@@ -63,6 +63,5 @@ matrix:
     - php: 5.5
 
 script:
-  - sh tests/js/scripts/run.sh --single-run
-  - mocha-phantomjs www/scripts/tests/index.html
+  - sh tests/js/run.sh
   - phpunit
