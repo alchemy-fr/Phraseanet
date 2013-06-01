@@ -54,7 +54,7 @@ define([
             });
         },
         render: function() {
-            var template = _.template($("#item_list_view_template").html(), {});
+            var template = _.template($("#item_list_view_template").html());
 
             this.$el.empty().html(template);
 

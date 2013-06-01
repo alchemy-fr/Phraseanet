@@ -86,6 +86,18 @@ define([
                 formErrors++;
             }
 
+
+            if (false === /^[a-zA-Z]([a-zA-Z0-9]+)$/i.test(fieldNameValue)) {
+                fieldName
+                    .closest(".control-group")
+                    .addClass("error")
+                    .find(".help-block")
+                    .empty()
+                    .append(i18n.t("validation_name_invalid"));
+
+                formErrors++;
+            }
+
             // check for format tag
             if ("" !== fieldTagValue && false === /[a-z]+:[a-z0-9]+/i.test(fieldTagValue)) {
                 fieldTag
@@ -106,6 +118,10 @@ define([
                 "sbas-id": AdminFieldApp.sbas_id,
                 "name": fieldNameValue,
                 "tag": fieldTagValue,
+                "label_en" : $("#new-label_en", this.$el).val(),
+                "label_fr" : $("#new-label_fr", this.$el).val(),
+                "label_de" : $("#new-label_de", this.$el).val(),
+                "label_nl" : $("#new-label_nl", this.$el).val(),
                 "multi": $("#new-multivalued", this.$el).is(":checked"),
                 "sorter": AdminFieldApp.fieldsCollection.max(function(model) {
                     return model.get("sorter");

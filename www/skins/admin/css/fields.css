@@ -17,7 +17,18 @@
     padding: 10px 0;
 }
 
-#admin-field-app .left-block li {
+#admin-field-app .lng-label a {
+    color: #aaa;
+    text-transform: capitalize;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#admin-field-app .lng-label.select a {
+    color: #0080FF;
+}
+
+#admin-field-app #collection-fields li {
     background: #FFF;
     border-top: 1px solid #ccc;
     border-left: 1px solid #ccc;
@@ -25,86 +36,92 @@
     height:  55px;
 }
 
-#admin-field-app .left-block li .trigger-click {
+#admin-field-app ul.inline li {
+    display: inline-block;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+#admin-field-app #collection-fields li .trigger-click {
     cursor: pointer;
 }
 
-#admin-field-app .left-block li.border-bottom{
+#admin-field-app #collection-fields li.border-bottom{
     border-bottom: 1px solid #ccc;
 }
 
-#admin-field-app .left-block li table {
+#admin-field-app #collection-fields li table {
     table-layout: fixed;
     width: 100%;
 }
 
-#admin-field-app .left-block li .field-name {
+#admin-field-app #collection-fields li .field-name {
     font-weight: bold;
     font-size: 16px;
     color: #666;
 }
 
-#admin-field-app .left-block li .handle {
+#admin-field-app #collection-fields li .handle {
     width: 10%;
     vertical-align: middle;
     text-align: center;
     cursor: move;
 }
 
-#admin-field-app .left-block li .trigger-click {
+#admin-field-app #collection-fields li .trigger-click {
     padding: 10px;
 }
 
-#admin-field-app .left-block li .position {
+#admin-field-app #collection-fields li .position {
     width: 10%;
     vertical-align: bottom;
     text-align: center;
 }
 
-#admin-field-app .left-block li .chip {
+#admin-field-app #collection-fields li .chip {
     width: 10%;
 }
 
-#admin-field-app .left-block li .handle, #admin-field-app li .position {
+#admin-field-app #collection-fields li .handle, #admin-field-app #collection-fields li .position {
     color: #ccc;
     border-right: 1px solid #ccc;
 }
 
-#admin-field-app .left-block li.last {
+#admin-field-app #collection-fields li.last {
     border-bottom: 1px solid #ccc;
 }
 
-#admin-field-app .left-block li.selected {
+#admin-field-app #collection-fields li.selected {
     border-top-color: #0080FF;
     background: #FFF;
     color: #000;
 }
 
-#admin-field-app .left-block li.last.selected {
+#admin-field-app #collection-fields li.last.selected {
     border-bottom-color: #0080FF;
 }
 
-#admin-field-app .left-block li.last.selected.error {
+#admin-field-app #collection-fields li.last.selected.error {
     border-bottom-color: #9d261d;
 }
 
-#admin-field-app .left-block li.selected + li {
+#admin-field-app #collection-fields li.selected + li {
     border-top-color: #0080FF;
 }
 
-#admin-field-app .left-block li.selected.error {
+#admin-field-app #collection-fields li.selected.error {
     border-top-color: #9d261d;
 }
 
-#admin-field-app .left-block li.selected.error + li {
+#admin-field-app #collection-fields li.selected.error + li {
     border-top-color: #9d261d;
 }
 
-#admin-field-app .left-block li.selected .field-name {
+#admin-field-app #collection-fields li.selected .field-name {
     color: #0080FF;
 }
 
-#admin-field-app .left-block li.error .field-name {
+#admin-field-app #collection-fields li.error .field-name {
     color: #9d261d;
 }
 
@@ -184,11 +201,19 @@
     height: 50px;
 }
 
-#admin-field-app .edit-block .edit-name {
-    height: 60px;
+#admin-field-app .edit-block .edit-order td {
+    height: 50px;
 }
 
-#admin-field-app .edit-block input#name {
+#admin-field-app .edit-block .edit-label {
+    height: 75px;
+}
+
+#admin-field-app .edit-block .edit-label ul {
+    margin: 0;
+}
+
+#admin-field-app .edit-block .edit-name td {
     font-size: 28px;
     color: #0080FF;
     height: 42px;

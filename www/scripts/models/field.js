@@ -34,7 +34,13 @@ define([
             "indexable": true,
             "dces-element": null,
             "vocabulary-type": null,
-            "vocabulary-restricted": false
+            "vocabulary-restricted": false,
+            "labels": {
+                "fr" : "",
+                "en" : "",
+                "de" : "",
+                "nl" : ""
+            }
         }
     });
 
