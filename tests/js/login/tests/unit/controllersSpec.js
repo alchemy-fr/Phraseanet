@@ -24,7 +24,7 @@ describe('LoginFormController', function(){
     }));
 
     it('should create model errors with 2 validation for each input', inject(function($controller) {
-        $controller(LoginFormController, {
+        $controller(LoginFormCtrl, {
             $scope: scope
         });
 
@@ -38,7 +38,7 @@ describe('LoginFormController', function(){
         scope.loginForm.login.errors.valid = false;
         scope.loginForm.password.errors.valid = true;
 
-        $controller(LoginFormController, {
+        $controller(LoginFormCtrl, {
             $scope: scope
         });
 
@@ -49,7 +49,7 @@ describe('LoginFormController', function(){
     it('The valid login input validation should be equal to input form validation if form is submited and not valid', inject(function($controller) {
         scope.loginForm.$valid = false;
 
-        $controller(LoginFormController, {
+        $controller(LoginFormCtrl, {
             $scope: scope
         });
 
@@ -61,7 +61,7 @@ describe('LoginFormController', function(){
     it('The filled password and login input validation should be true if input is not required and form is submited and not valid', inject(function($controller) {
         scope.loginForm.$valid = false;
 
-        $controller(LoginFormController, {
+        $controller(LoginFormCtrl, {
             $scope: scope
         });
 
@@ -72,7 +72,7 @@ describe('LoginFormController', function(){
     }));
 
     it('Should reset input validation errors when form is submited and valid', inject(function($controller) {
-        $controller(LoginFormController, {
+        $controller(LoginFormCtrl, {
             $scope: scope
         });
 
@@ -95,7 +95,7 @@ describe('LoginFormController', function(){
     it('should not submit form if it is not valid', inject(function($controller) {
         scope.loginForm.$valid = false;
 
-        $controller(LoginFormController, {
+        $controller(LoginFormCtrl, {
             $scope: scope
         });
 

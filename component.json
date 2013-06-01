@@ -15,7 +15,7 @@
     "json3" : "3.2.4",
     "bootstrap-switch": "https://github.com/nostalgiaz/bootstrap-switch.git",
     "humane-js": "~3.0.6",
-    "qunit": "~1.11.0",
+    "qunit": "https://github.com/jquery/qunit.git#1.11.0",
     "mustache": "~0.7.2",
     "jquery-file-upload": "https://github.com/blueimp/jQuery-File-Upload/archive/75d11179fd9c248c061c8eb428782bb556c8db0a.zip",
     "blueimp-load-image": "latest",
