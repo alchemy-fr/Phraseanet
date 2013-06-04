@@ -42,7 +42,7 @@ class FeedItem
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -58,14 +58,14 @@ class FeedItem
     public function setRecordId($recordId)
     {
         $this->record_id = $recordId;
-    
+
         return $this;
     }
 
     /**
      * Get record_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getRecordId()
     {
@@ -81,14 +81,14 @@ class FeedItem
     public function setSbasId($sbasId)
     {
         $this->sbas_id = $sbasId;
-    
+
         return $this;
     }
 
     /**
      * Get sbas_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getSbasId()
     {
@@ -104,21 +104,21 @@ class FeedItem
     public function setEntry(\Entities\FeedEntry $entry = null)
     {
         $this->entry = $entry;
-    
+
         return $this;
     }
 
     /**
      * Get entry
      *
-     * @return \Entities\FeedEntry 
+     * @return \Entities\FeedEntry
      */
     public function getEntry()
     {
         return $this->entry;
     }
     /**
-     * @var int
+     * @var integer
      */
     private $ord;
 
@@ -126,20 +126,20 @@ class FeedItem
     /**
      * Set ord
      *
-     * @param \int $ord
+     * @param integer $ord
      * @return FeedItem
      */
-    public function setOrd(\int $ord)
+    public function setOrd($ord)
     {
         $this->ord = $ord;
-    
+
         return $this;
     }
 
     /**
      * Get ord
      *
-     * @return \int 
+     * @return integer
      */
     public function getOrd()
     {
@@ -155,14 +155,14 @@ class FeedItem
     public function setCreatedOn($createdOn)
     {
         $this->created_on = $createdOn;
-    
+
         return $this;
     }
 
     /**
      * Get created_on
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedOn()
     {
@@ -178,17 +178,22 @@ class FeedItem
     public function setUpdatedOn($updatedOn)
     {
         $this->updated_on = $updatedOn;
-    
+
         return $this;
     }
 
     /**
      * Get updated_on
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedOn()
     {
         return $this->updated_on;
+    }
+
+    public function setLastInFeedItem()
+    {
+        $this->setOrd($this->getEntry()->getItems()->count() + 1);
     }
 }

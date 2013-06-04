@@ -12,7 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Repositories;
+use Entities\Feed;
+use Entities\FeedPublisher;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,9 +48,9 @@ class Publications implements ControllerProviderInterface
 
         $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
 
-            $publisher = new \Entities\FeedPublisher($app['authentication']->getUser(), true);
+            $publisher = new FeedPublisher($app['authentication']->getUser(), true);
 
-            $feed = new \Entities\Feed($publisher, $request->request->get('title'), $request->request->get('subtitle'));
+            $feed = new Feed($publisher, $request->request->get('title'), $request->request->get('subtitle'));
 
             if ($request->request->get('public') == '1') {
                 $feed->setPublic(true);
@@ -178,7 +179,7 @@ class Publications implements ControllerProviderInterface
                 $user = \User_Adapter::getInstance($request->request->get('usr_id'), $app);
                 $feed = $app["EM"]->getRepository("Entities\Feed")->find($id);
 
-                $publisher = new \Entities\FeedPublisher($user, false);
+                $publisher = new FeedPublisher($user, false);
                 $publisher->setFeed($feed);
 
                 $feed->addPublisher($publisher);

@@ -49,7 +49,6 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
 
         $link = $linkGenerator->generate($aggregate, $user, $format, $page, $renew);
 
-        $this->assertSame($expected, $link->getUri());
         if ($format == "atom") {
             $this->assertSame("application/atom+xml", $link->getMimetype());
             $this->assertSame("AGGREGATE - Atom", $link->getTitle());
@@ -61,8 +60,10 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
 
         if ($alreadyCreated) {
             if ($renew) {
-                $this->assertCount(2, $capture);
                 $this->assertEquals($format, $capture['format']);
+                if (null !== $page) {
+                    $this->assertEquals($page, $capture['page']);
+                }
                 $this->assertNotEquals($tokenValue, $capture['token']);
 
                 $this->assertCount(0, self::$DI['app']['EM']
@@ -72,17 +73,25 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
                     ->getRepository("Entities\AggregateToken")
                     ->findBy(array('value' => $capture['token'])));
             } else {
-                $this->assertEquals(array(
+                $expectedParams = array(
                     'token'  => $tokenValue,
                     'format' => $format,
-                ), $capture);
+                );
+
+                if ($page !== null) {
+                    $expectedParams['page'] = $page;
+                }
+
+                $this->assertEquals($expectedParams, $capture);
 
                 $this->assertCount(1, self::$DI['app']['EM']
                     ->getRepository("Entities\AggregateToken")
                     ->findBy(array('value' => $tokenValue)));
             }
         } else {
-            $this->assertCount(2, $capture);
+            if (null !== $page) {
+                    $this->assertEquals($page, $capture['page']);
+            }
             $this->assertEquals($format, $capture['format']);
             $this->assertEquals(12, strlen($capture['token']));
 
@@ -124,6 +133,16 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
             array('doliprane', 'rss', $user, 1, false, true),
             array('doliprane', 'rss', $user, 1, true, false),
             array('doliprane', 'rss', $user, 1, true, true),
+        );
+    }
+
+    public function provideGenerationDataPublic()
+    {
+        return array(
+            array('doliprane', 'atom', null),
+            array('doliprane', 'atom', 1),
+            array('doliprane', 'rss', null),
+            array('doliprane', 'rss', 1)
         );
     }
 }

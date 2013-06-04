@@ -23,7 +23,7 @@ class FeedServiceProvider implements ServiceProviderInterface
         $app['feed.user-link-generator'] = $app->share(function($app) {
             return new LinkGenerator($app['url_generator'], $app['EM'], $app['tokens']);
         });
-        $app['feed.aggreagate-link-generator'] = $app->share(function($app) {
+        $app['feed.aggregate-link-generator'] = $app->share(function($app) {
             return new AggregateLinkGenerator($app['url_generator'], $app['EM'], $app['tokens']);
         });
     }

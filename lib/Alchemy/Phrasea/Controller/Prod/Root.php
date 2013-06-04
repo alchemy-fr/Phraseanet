@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use \Alchemy\Phrasea\Feed\Aggregate;
+use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Silex\Application as SilexApplication;
@@ -75,8 +75,8 @@ class Root implements ControllerProviderInterface
 
 //            $user_feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
 //            $feeds = array_merge(array($user_feeds->get_aggregate()), $user_feeds->get_feeds());
-            $user_feeds = $app["EM"]->getRepository("Entities\Feed")->getAllForUser($app['authentication']->getUser());
-            $aggregate = new Aggregate($app, $user_feeds);
+            $feeds = $app["EM"]->getRepository("Entities\Feed")->getAllForUser($app['authentication']->getUser());
+//            $aggregate = new Aggregate($app, $user_feeds);
 
             $thjslist = "";
 
@@ -118,7 +118,7 @@ class Root implements ControllerProviderInterface
                 'GV_thesaurus'         => $app['phraseanet.registry']->get('GV_thesaurus'),
                 'cgus_agreement'       => \databox_cgu::askAgreement($app),
                 'css'                  => $css,
-                'aggregate'            => $aggregate,
+                'feeds'                => $feeds,
                 'GV_google_api'        => $app['phraseanet.registry']->get('GV_google_api'),
                 'queries_topics'       => $queries_topics,
                 'search_status'        => \databox_status::getSearchStatus($app),

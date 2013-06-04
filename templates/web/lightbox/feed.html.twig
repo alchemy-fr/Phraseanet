@@ -27,8 +27,8 @@
                                     <div class="display_id">{% if first_item %}{{first_item.get_ord()}}{% endif %}</div>
                                 </td>
                                 <td style="text-align:left;width:auto;">
-                                    <div class="title title15" title="{% if first_item %}{{first_item.get_record().get_title|e}}{% endif %}">
-                                        {% if first_item %}{{first_item.get_record().get_title|raw}}{% endif %}
+                                    <div class="title title15" title="{% if first_item %}{{first_item.getRecord().getTitle|e}}{% endif %}">
+                                        {% if first_item %}{{first_item.get_record().getTitle|raw}}{% endif %}
                                     </div>
                                 </td>
                                 <td style="text-align:right;width:230px;">
@@ -43,9 +43,9 @@
                     <div class="lightbox_container PNB record_display_box">
                     {% if first_item %}
                         {% if app['authentication'].getUser().ACL().has_access_to_subdef(first_item.get_record(), 'preview') %}
-                            {% set bask_prev = first_item.get_record().get_preview() %}
+                            {% set bask_prev = first_item.getRecord().get_preview() %}
                         {% else %}
-                            {% set bask_prev = first_item.get_record().get_thumbnail() %}
+                            {% set bask_prev = first_item.getRecord().get_thumbnail() %}
                         {% endif %}
                         {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'', false, false)}}
                     {% endif %}
@@ -60,8 +60,8 @@
                                     <div class="display_id"></div>
                                 </td>
                                 <td style="text-align:left;width:auto;">
-                                    <div class="title title15" title="{% if first_item %}{{first_item.get_record().get_title|e}}{% endif %}">
-                                        {% if first_item %}{{first_item.get_record().get_title}}{% endif %}
+                                    <div class="title title15" title="{% if first_item %}{{first_item.getRecord().get_title|e}}{% endif %}">
+                                        {% if first_item %}{{first_item.getRecord().get_title}}{% endif %}
                                     </div>
                                 </td>
                                 <td style="text-align:right;width:230px;">
@@ -83,7 +83,7 @@
                         <div class="lightbox_container PNB">
               {% set business = app['authentication'].getUser().ACL().has_right_on_base(first_item.get_record().get_base_id(), 'canmodifrecord') %}
               {% if first_item %}
-                {{caption.format_caption(first_item.get_record(), '', null, business)}}
+                {{caption.format_caption(first_item.getRecord(), '', null, business)}}
               {% endif %}
             </div>
                     </div>

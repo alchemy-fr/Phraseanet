@@ -28,23 +28,59 @@ class LinkGenerator
     {
         switch ($format) {
             case self::FORMAT_ATOM:
+                $params = array('token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
+                                'id'     => $feed->getId(),
+                                'format' => 'atom');
+                if (null !== $page) {
+                    $params['page'] = $page;
+                }
                 return new FeedLink(
-                    $this->generator->generate('feed_user', array(
-                        'token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
-                        'id'     => $feed->getId(),
-                        'format' => 'atom',
-                    ), UrlGenerator::ABSOLUTE_URL),
+                    $this->generator->generate('feed_user', $params, UrlGenerator::ABSOLUTE_URL),
                     sprintf('%s - %s', $feed->getTitle(), 'Atom'),
                     'application/atom+xml'
                 );
                 break;
             case self::FORMAT_RSS:
+                $params = array('token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
+                                'id'     => $feed->getId(),
+                                'format' => 'rss');
+                if (null !== $page) {
+                    $params['page'] = $page;
+                }
                 return new FeedLink(
-                    $this->generator->generate('feed_user', array(
-                        'token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
-                        'id'     => $feed->getId(),
-                        'format' => 'rss',
-                    ), UrlGenerator::ABSOLUTE_URL),
+                    $this->generator->generate('feed_user', $params, UrlGenerator::ABSOLUTE_URL),
+                    sprintf('%s - %s', $feed->getTitle(), 'RSS'),
+                    'application/rss+xml'
+                );
+                break;
+            default:
+                throw new InvalidArgumentException(sprintf('Format %s is not recognized.', $format));
+        }
+    }
+
+    public function generatePublic(Feed $feed, $format, $page = null)
+    {
+        switch ($format) {
+            case self::FORMAT_ATOM:
+                $params = array('id'     => $feed->getId(),
+                                'format' => 'atom');
+                if (null !== $page) {
+                    $params['page'] = $page;
+                }
+                return new FeedLink(
+                    $this->generator->generate('feed_public', $params, UrlGenerator::ABSOLUTE_URL),
+                    sprintf('%s - %s', $feed->getTitle(), 'Atom'),
+                    'application/atom+xml'
+                );
+                break;
+            case self::FORMAT_RSS:
+                $params = array('id'     => $feed->getId(),
+                                'format' => 'rss');
+                if (null !== $page) {
+                    $params['page'] = $page;
+                }
+                return new FeedLink(
+                    $this->generator->generate('feed_public', $params, UrlGenerator::ABSOLUTE_URL),
                     sprintf('%s - %s', $feed->getTitle(), 'RSS'),
                     'application/rss+xml'
                 );

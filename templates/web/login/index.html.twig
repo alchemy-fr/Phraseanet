@@ -8,10 +8,10 @@
 {% endblock %}
 
 {% block header_rss %}
-    {% for feed in feeds %}
-        {% set link = feed.get_homepage_link(app['phraseanet.registry'], 'rss') %}
+ {% for feed in feeds %}
+        {% set link = app['feed.user-link-generator'].generatePublic(feed, 'rss') %}
         <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
-        {% set link = feed.get_homepage_link(app['phraseanet.registry'], 'atom') %}
+        {% set link = app['feed.user-link-generator'].generatePublic(feed, 'atom') %}
         <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
     {% endfor %}
 {% endblock %}

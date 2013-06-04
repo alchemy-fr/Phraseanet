@@ -28,21 +28,55 @@ class AggregateLinkGenerator
     {
         switch ($format) {
             case self::FORMAT_ATOM:
+                $params = array('token'  => $this->getAggregateToken($user, $renew)->getValue(),
+                                'format' => 'atom');
+                if (null !== $page) {
+                    $params['page'] = $page;
+                }
                 return new FeedLink(
-                    $this->generator->generate('feed_user_aggregated', array(
-                        'token'  => $this->getAggregateToken($user, $renew)->getValue(),
-                        'format' => 'atom',
-                    ), UrlGenerator::ABSOLUTE_URL),
+                    $this->generator->generate('feed_user_aggregated', $params, UrlGenerator::ABSOLUTE_URL),
                     sprintf('%s - %s', $aggregate->getTitle(), 'Atom'),
                     'application/atom+xml'
                 );
                 break;
             case self::FORMAT_RSS:
+                $params = array('token'  => $this->getAggregateToken($user, $renew)->getValue(),
+                                'format' => 'rss');
+                if (null !== $page) {
+                    $params['page'] = $page;
+                }
                 return new FeedLink(
-                    $this->generator->generate('feed_user_aggregated', array(
-                        'token'  => $this->getAggregateToken($user, $renew)->getValue(),
-                        'format' => 'rss',
-                    ), UrlGenerator::ABSOLUTE_URL),
+                    $this->generator->generate('feed_user_aggregated', $params, UrlGenerator::ABSOLUTE_URL),
+                    sprintf('%s - %s', $aggregate->getTitle(), 'RSS'),
+                    'application/rss+xml'
+                );
+                break;
+            default:
+                throw new InvalidArgumentException(sprintf('Format %s is not recognized.', $format));
+        }
+    }
+
+    public function generatePublic(Aggregate $aggregate, $format, $page = null)
+    {
+        switch ($format) {
+            case self::FORMAT_ATOM:
+                $params = array('format' => 'atom');
+                if (null !== $page) {
+                    $params['page'] = $page;
+                }
+                return new FeedLink(
+                    $this->generator->generate('feed_user_aggregated', $params, UrlGenerator::ABSOLUTE_URL),
+                    sprintf('%s - %s', $aggregate->getTitle(), 'Atom'),
+                    'application/atom+xml'
+                );
+                break;
+            case self::FORMAT_RSS:
+                $params = array('format' => 'rss');
+                if (null !== $page) {
+                    $params['page'] = $page;
+                }
+                return new FeedLink(
+                    $this->generator->generate('feed_user_aggregated', $params, UrlGenerator::ABSOLUTE_URL),
                     sprintf('%s - %s', $aggregate->getTitle(), 'RSS'),
                     'application/rss+xml'
                 );

@@ -52,7 +52,7 @@
 {% endblock %}
 
 {% block rss %}
-    {% for feed in aggregate.getFeeds() %}
+    {% for feed in feeds %}
         {% set link = app['feed.user-link-generator'].generate(feed, app['authentication'].getUser(), 'rss') %}
         <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
         {% set link = app['feed.user-link-generator'].generate(feed, app['authentication'].getUser(), 'rss') %}

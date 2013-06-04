@@ -160,13 +160,15 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(SilexApplication $app, $entry_id, $item_id) {
 
-            $entry = \Feed_Entry_Adapter::load_from_id($app, $entry_id);
-            $item = new \Feed_Entry_Item($app['phraseanet.appbox'], $entry, $item_id);
+//            $entry = \Feed_Entry_Adapter::load_from_id($app, $entry_id);
+            $entry = $app['EM']->getRepository("Entities\FeedEntry")->find($entry_id);
+//            $item = new \Feed_Entry_Item($app['phraseanet.appbox'], $entry, $item_id);
+            $item = $entry->getItems()->getItem($item_id);
 
             if ($app['browser']->isMobile()) {
                 $output = $app['twig']->render('lightbox/feed_element.html.twig', array(
                     'feed_element' => $item,
-                    'module_name'  => $item->get_record()->get_title()
+                    'module_name'  => $item->getRecord()->get_title()
                     )
                 );
 
@@ -313,7 +315,8 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $feed_entry = \Feed_Entry_Adapter::load_from_id($app, $entry_id);
+//            $feed_entry = \Feed_Entry_Adapter::load_from_id($app, $entry_id);
+            $feed_entry = $app['EM']->getEntity("Entities\FeedEntry")->find($entry_id);
 
             $template = 'lightbox/feed.html.twig';
 
@@ -321,12 +324,12 @@ class Lightbox implements ControllerProviderInterface
                 $template = 'lightbox/IE6/feed.html.twig';
             }
 
-            $content = $feed_entry->get_content();
+            $content = $feed_entry->getItems();
 
             $output = $app['twig']->render($template, array(
                 'feed_entry'  => $feed_entry,
                 'first_item'  => array_shift($content),
-                'local_title' => $feed_entry->get_title(),
+                'local_title' => $feed_entry->getTitle(),
                 'module'      => 'lightbox',
                 'module_name' => _('admin::monitor: module validation')
                 )

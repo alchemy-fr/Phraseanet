@@ -15,6 +15,8 @@ use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\AggregateLinkGenerator;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Feed\LinkGenerator;
+use Entities\FeedEntry;
+use Entities\FeedItem;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,7 +62,7 @@ class Feed implements ControllerProviderInterface
                 $author_name = $request->request->get('author_name');
                 $author_email = $request->request->get('author_email');
 
-                $entry = new \Entities\FeedEntry();
+                $entry = new FeedEntry();
                 $entry->setFeed($feed);
                 $entry->setPublisher($publisher);
                 $entry->setTitle($title);
@@ -72,7 +74,7 @@ class Feed implements ControllerProviderInterface
 
                 $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
                 foreach ($publishing as $record) {
-                    $item = new \Entities\FeedItem();
+                    $item = new FeedItem();
                     $item->setEntry($entry);
                     $item->setRecordId($record->get_record_id());
                     $item->setSbasId($record->get_sbas_id());
@@ -166,7 +168,7 @@ class Feed implements ControllerProviderInterface
                         continue;
                     }
 
-                    $item = new \entities\FeedItem($entry, $item_sort_datas[0]);
+                    $item = new FeedItem($entry, $item_sort_datas[0]);
                     $item->setEntry($entry);
                     $entry->addItem($item);
                     $item->setOrd($item_sort_datas[1]);
@@ -262,11 +264,9 @@ class Feed implements ControllerProviderInterface
 
             $feeds = $app["EM"]->getRepository("Entities\Feed")->findAll();
 
-            $aggregateGenerator = new AggregateLinkGenerator($app['url_generator'], $app['EM'], $app['tokens']);
-
             $aggregate = new Aggregate($app, $feeds);
 
-            $link = $aggregateGenerator->generate($aggregate, $app['authentication']->getUser(), AggregateLinkGenerator::FORMAT_RSS, null, $renew);
+            $link = $app['feed.aggregate-link-generator']->generate($aggregate, $app['authentication']->getUser(), AggregateLinkGenerator::FORMAT_RSS, null, $renew);
 
             $output = array(
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
@@ -283,9 +283,7 @@ class Feed implements ControllerProviderInterface
 
             $feed = $app["EM"]->getRepository("Entities\Feed")->loadWithUser($app, $app['authentication']->getUser(), $id);
 
-            $linkGenerator = new LinkGenerator($app['url_generator'], $app['EM'], $app['tokens']);
-
-            $link = $linkGenerator->generate($feed, $app['authentication']->getUser(), LinkGenerator::FORMAT_RSS, null, $renew);
+            $link = $app['feed.user-link-generator']->generate($feed, $app['authentication']->getUser(), LinkGenerator::FORMAT_RSS, null, $renew);
 
             $output = array(
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')

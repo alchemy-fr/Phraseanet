@@ -725,10 +725,7 @@ class Login implements ControllerProviderInterface
             $app->addFlash('error', _('login::erreur: No available connection - Please contact sys-admin'));
         }
 
-        $public_feeds = \Feed_Collection::load_public_feeds($app);
-
-        $feeds = $public_feeds->get_feeds();
-        array_unshift($feeds, $public_feeds->get_aggregate());
+        $feeds = $app['EM']->getRepository('Entities\Feed')->findAllPublic();
 
         $form = $app->form(new PhraseaAuthenticationForm());
         $form->setData(array(

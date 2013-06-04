@@ -424,4 +424,27 @@ class Feed implements FeedInterface
     {
         return $this->tokens;
     }
+
+    /**
+     * Add entries
+     *
+     * @param \Entities\FeedEntry $entries
+     * @return Feed
+     */
+    public function addEntrie(\Entities\FeedEntry $entries)
+    {
+        $this->entries[] = $entries;
+    
+        return $this;
+    }
+
+    /**
+     * Remove entries
+     *
+     * @param \Entities\FeedEntry $entries
+     */
+    public function removeEntrie(\Entities\FeedEntry $entries)
+    {
+        $this->entries->removeElement($entries);
+    }
 }

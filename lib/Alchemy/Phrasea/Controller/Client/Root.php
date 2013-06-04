@@ -539,7 +539,8 @@ class Root implements ControllerProviderInterface
     private function getPublicationStartPage(Application $app)
     {
         return $app['twig']->render('client/home_inter_pub_basket.html.twig', array(
-            'feeds'         => \Feed_Collection::load_all($app, $app['authentication']->getUser()),
+//            'feeds'         => \Feed_Collection::load_all($app, $app['authentication']->getUser()),
+            'feeds'         => $app['EM']->getRepository('Entities\Feed')->getAllforUser($app['authentication']->getUser()),
             'image_size'    => (int) $app['authentication']->getUser()->getPrefs('images_size')
         ));
     }

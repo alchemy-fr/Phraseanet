@@ -32,15 +32,15 @@ class RSSFeeds implements ControllerProviderInterface
             $perPage = 5;
             $entries = $feed->getEntries((($page - 1) * $perPage), $perPage);
 
-            if ($format == \Entities\Feed::FORMAT_RSS) {
+            if ($format == 'rss') {
                 $content = new \Feed_XML_RSS();
             }
 
-            if ($format == \Entities\Feed::FORMAT_ATOM) {
+            if ($format == 'atom') {
                 $content = new \Feed_XML_Atom();
             }
 
-            if ($format == \Entities\Feed::FORMAT_COOLIRIS) {
+            if ($format == 'cooliris') {
                 $content = new \Feed_XML_Cooliris();
             }
 
@@ -77,7 +77,6 @@ class RSSFeeds implements ControllerProviderInterface
         };
 
         $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) use ($display_feed) {
-           // $feed = new \Feed_Adapter($app, $id);
             $feed = $app["EM"]->getRepository("Entities\Feed")->find($id);
 
             if (!$feed->isPublic()) {
@@ -112,7 +111,6 @@ class RSSFeeds implements ControllerProviderInterface
 
         $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) use ($display_feed) {
             $token = $app["EM"]->getRepository("Entities\AggregateToken")->findBy(array("id" => $id));
-            //$feed = $token->getFeed();
 
             $request = $app['request'];
 
@@ -125,8 +123,6 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('format', '(rss|atom)');
 
         $controllers->get('/aggregated/{format}/', function(Application $app, $format) use ($display_feed) {
-            //$feeds = \Feed_Collection::load_public_feeds($app);
-            //$feed = $feeds->get_aggregate();
             $feeds = $app["EM"]->getRepository("Entities\Feed")->findAllPublic();
             $feed = new Aggregate($app, $feeds);
 
@@ -140,8 +136,6 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('format', '(rss|atom)');
 
         $controllers->get('/cooliris/', function(Application $app) use ($display_feed) {
-//            $feeds = \Feed_Collection::load_public_feeds($app);
-//            $feed = $feeds->get_aggregate();
             $feeds = $app["EM"]->getRepository("Entities\Feed")->findAllPublic();
             $feed = new Aggregate($app, $feeds);
 
@@ -149,7 +143,7 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $display_feed($app, $feed, \Feed_Adapter::FORMAT_COOLIRIS, $page);
+            return $display_feed($app, $feed, 'cooliris', $page);
         })
             ->bind('feed_public_cooliris');
 

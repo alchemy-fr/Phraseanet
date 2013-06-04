@@ -3,9 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Feed\Aggregate;
-use Alchemy\Phrasea\Feed\AggregateLinkGenerator;
-use Alchemy\Phrasea\Feed\LinkGenerator;
 use Symfony\Component\CssSelector\CssSelector;
 
 class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -41,34 +38,6 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     protected $entry_authorname = 'author name';
     protected $entry_authormail = 'author.mail@example.com';
 
-    public function setUp()
-    {
-        parent::setUp();
-
-//        $this->publisher = new \Entities\FeedPublisher(self::$DI['user']);
-//
-//        $this->feed = new \Entities\Feed($this->publisher, $this->feed_title, $this->feed_subtitle);
-//
-//        $this->entry = new \Entities\FeedEntry(
-//                $this->feed
-//                , $this->publisher
-//                , $this->entry_title
-//                , $this->entry_subtitle
-//                , $this->entry_authorname
-//                , $this->entry_authormail
-//            );
-//
-//        $this->item = new \Entities\FeedItem($this->entry, self::$DI['record_1']);
-//
-//        $this->publisher->setFeed($this->feed);
-//
-//        self::$DI['app']["EM"]->persist($this->feed);
-//        self::$DI['app']["EM"]->persist($this->publisher);
-//        self::$DI['app']["EM"]->persist($this->entry);
-//        self::$DI['app']["EM"]->persist($this->item);
-//        self::$DI['app']["EM"]->flush();
-    }
-
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -78,21 +47,6 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::giveRightsToUser(self::$DI['app'], self::$DI['user']);
         self::$DI['user']->ACL()->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
         self::$DI['user']->ACL()->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
-    }
-
-    public function tearDown()
-    {
-//        if ($this->feed instanceof \Entities\Feed) {
-//            self::$DI['app']["EM"]->remove($this->feed);
-//        } else if ($this->entry instanceof \Entities\FeedEntry) {
-//            self::$DI['app']["EM"]->remove($this->entry);
-//            if ($this->publisher instanceof \Entities\FeedPublisher) {
-//                self::$DI['app']["EM"]->remove($this->publisher);
-//            }
-//        }
-//        self::$DI['app']["EM"]->flush();
-
-        parent::tearDown();
     }
 
     public function testRequestAvailable()
@@ -178,12 +132,9 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $entry = $this->insertOneFeedEntry(self::$DI['user_alt1']);
 
-        try {
-            $crawler = self::$DI['client']->request('GET', '/prod/feeds/entry/' . $entry->getId() . '/edit/');
-            $this->fail('Should raise an exception');
-        } catch (\Exception_UnauthorizedAction $e) {
-
-        }
+        $crawler = self::$DI['client']->request('GET', '/prod/feeds/entry/' . $entry->getId() . '/edit/');
+        $pageContent = self::$DI['client']->getResponse();
+        $this->assertEquals(403, $pageContent->getStatusCode());
     }
 
     public function testEntryUpdate()
@@ -474,46 +425,67 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $feed = $this->insertOneFeed(self::$DI['user']);
 
-        $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
+        self::$DI['app']['feed.aggregate-link-generator'] = $this->getMockBuilder('Alchemy\Phrasea\Feed\AggregateLinkGenerator')
             ->disableOriginalConstructor()
             ->getMock();
+        $link = $this->getMockBuilder('Alchemy\Phrasea\Feed\FeedLink')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $link->expects($this->once())
+            ->method('getURI')
+            ->will($this->returnValue('http://aggregated-link/'));
+        self::$DI['app']['feed.aggregate-link-generator']->expects($this->once())
+            ->method('generate')
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Feed\Aggregate'), $this->isInstanceOf('\User_Adapter'), 'rss', null, false)
+            ->will($this->returnValue($link));
 
-        $random = self::$DI['app']['tokens'];
+        self::$DI['client']->request('GET', '/prod/feeds/subscribe/aggregated/');
 
-        $aggregateGenerator = new AggregateLinkGenerator($generator, self::$DI['app']['EM'], $random);
-
-        $feeds = self::$DI['app']["EM"]->getRepository("\Entities\Feed")->getAllForUser(self::$DI['user']);
-        $crawler = self::$DI['client']->request('GET', '/prod/feeds/subscribe/aggregated/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
-        $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
-        $this->assertTrue(is_object($pageContent));
-        $this->assertTrue(is_string($pageContent->texte));
-        $aggregate = new Aggregate(self::$DI['app'], $feeds);
-        $suscribe_link = $aggregateGenerator->generate($aggregate, self::$DI['user'], AggregateLinkGenerator::FORMAT_RSS);
-        $this->assertContains($suscribe_link->getURI(), $pageContent->texte);
+
+        $pageContent = json_decode(self::$DI['client']->getResponse()->getContent(), true);
+
+        $this->assertArrayHasKey('texte', $pageContent);
+        $this->assertArrayHasKey('titre', $pageContent);
+
+        $this->assertInternalType('string', $pageContent['texte']);
+        $this->assertInternalType('string', $pageContent['titre']);
+
+        $this->assertContains('http://aggregated-link/', $pageContent['texte']);
     }
 
     public function testSuscribe()
     {
         $feed = $this->insertOneFeed(self::$DI['user']);
 
-        $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
+        self::$DI['app']['feed.user-link-generator'] = $this->getMockBuilder('Alchemy\Phrasea\Feed\LinkGenerator')
             ->disableOriginalConstructor()
             ->getMock();
-
-        $random = self::$DI['app']['tokens'];
-
-        $linkGenerator = new LinkGenerator($generator, self::$DI['app']['EM'], $random);
+        $link = $this->getMockBuilder('Alchemy\Phrasea\Feed\FeedLink')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $link->expects($this->once())
+            ->method('getURI')
+            ->will($this->returnValue('http://user-link/'));
+        self::$DI['app']['feed.user-link-generator']->expects($this->once())
+            ->method('generate')
+            ->with($this->isInstanceOf('\Entities\Feed'), $this->isInstanceOf('\User_Adapter'), 'rss', null, false)
+            ->will($this->returnValue($link));
 
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/subscribe/' . $feed->getId() . '/');
+
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
-        $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
-        $this->assertTrue(is_object($pageContent));
-        $this->assertTrue(is_string($pageContent->texte));
-        $suscribe_link = $linkGenerator->generate($feed, self::$DI['user'], LinkGenerator::FORMAT_RSS);
-        var_dump($suscribe_link);
-        $this->assertContains($suscribe_link->getURI(), $pageContent->texte);
+
+        $pageContent = json_decode(self::$DI['client']->getResponse()->getContent(), true);
+
+        $this->assertArrayHasKey('texte', $pageContent);
+        $this->assertArrayHasKey('titre', $pageContent);
+
+        $this->assertInternalType('string', $pageContent['texte']);
+        $this->assertInternalType('string', $pageContent['titre']);
+
+        $this->assertContains('http://user-link/', $pageContent['texte']);
     }
 }
