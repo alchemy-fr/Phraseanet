@@ -21,9 +21,7 @@ $groups = array(
         '//assets/angular/angular.js',
         '//assets/angular-ui/build/angular-ui.js',
         '//assets/bootstrap-switch/static/js/bootstrapSwitch.js',
-        '//assets/underscore/underscore.js',
-        '//skins/login/js/main.js',
-        '//skins/login/js/app.js',
+        '//assets/underscore/underscore.js'
     ),
     'client' => array(
         '//include/jslibs/swfobject/swfobject.js'

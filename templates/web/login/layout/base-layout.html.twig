@@ -1,11 +1,10 @@
-{# variable "login" a login object for all template as i is inherited #}
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" xmlns:phraseanet="http://phraseanet.com"> <![endif]-->
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]>
 <!-->
-<html class="no-js" xmlns:phraseanet="http://phraseanet.com">
+<html class="no-js">
 <!--<![endif]-->
     <head>
         {% block header %}
@@ -34,23 +33,7 @@
             {% endblock header_stylesheet %}
 
             {% block header_javascript %}
-                <!--[if lte IE 8]>
-                    <script src="/assets/json3/lib/json3.min.js"></script>
-
-                    <script>
-                        // The ieshiv takes care of our ui.directives, bootstrap module directives and
-                        // AngularJS's ng-view, ng-include, ng-pluralize and ng-switch directives.
-                        // However, IF you have custom directives (yours or someone else's) then
-                        // enumerate the list of tags in window.myCustomTags
-
-                        window.myCustomTags = ['phraseanetAlert']; // optional
-                    </script>
-
-                    <script src="/assets/angular-ui/build/angular-ui-ieshiv.min.js"></script>
-                <![endif]-->
-
-                <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/build/bootstrap/js/bootstrap.js' }) }}"></script>
-                <script type="text/javascript" src="{{ path('minifier', { 'g' : 'authentication' }) }}"></script>
+                <script type="text/javascript" src="{{ path('minifier', {'g' : 'authentication'}) }}"></script>
             {% endblock header_javascript %}
         {% endblock header %}
     </head>
@@ -107,5 +90,9 @@
             {% endblock footer_scaffholding %}
         </div><!--/.fluid-container-->
         {% include 'common/analytics.html.twig' %}
+
+        {% block scripts %}
+            <script type="text/javascript" src="/include/minify/?f=/assets/requirejs/require.js,/scripts/apps/login/home/main.js"></script>
+        {% endblock %}
     </body>
 </html>
