@@ -15,14 +15,10 @@ require.config({
         jqueryui: "../include/jslibs/jquery-ui-1.8.24",
         underscore: "../assets/underscore-amd/underscore",
         backbone: "../assets/backbone-amd/backbone",
-        twig: "../assets/twig/twig",
         i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
         bootstrap: "../skins/build/bootstrap/js/bootstrap.min"
     },
     shim: {
-        twig: {
-            exports: "Twig"
-        },
         bootstrap : ["jquery"],
         jqueryui: {
             deps: [ "jquery" ]

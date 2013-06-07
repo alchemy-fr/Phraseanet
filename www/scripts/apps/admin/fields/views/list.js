@@ -13,11 +13,11 @@ define([
     "underscore",
     "backbone",
     "i18n",
-    "apps/admin/fields/views",
+    "common/multiviews",
     "apps/admin/fields/views/listRow",
     "apps/admin/fields/views/create"
-], function($, jqueryui, _, Backbone, i18n, ViewUtils, FieldListRowView, CreateView) {
-    var FieldListView = Backbone.View.extend(_.extend({}, ViewUtils.MultiViews, {
+], function($, jqueryui, _, Backbone, i18n, MultiViews, FieldListRowView, CreateView) {
+    var FieldListView = Backbone.View.extend(_.extend({}, MultiViews, {
         events: {
             "keyup #live_search": "searchAction",
             "update-sort": "updateSortAction"
