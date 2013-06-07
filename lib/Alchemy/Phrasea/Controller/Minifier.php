@@ -48,6 +48,8 @@ class Minifier implements ControllerProviderInterface
                 // may cause js errors
                 $min_serveOptions['debug'] = false;
                 $min_serveOptions['maxAge'] = 0;
+                $min_serveOptions['lastModifiedTime'] = $request->server->get('REQUEST_TIME');
+                $min_cachePath = null;
             } else {
                 $min_serveOptions['debug'] = false;
                 $min_serveOptions['maxAge'] = 1800;
