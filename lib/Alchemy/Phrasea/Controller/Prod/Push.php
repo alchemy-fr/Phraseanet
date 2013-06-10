@@ -220,7 +220,7 @@ class Push implements ControllerProviderInterface
                         . 'lightbox/index.php?LOG='
                         . $app['tokens']->getUrlToken(\random::TYPE_VALIDATE, $user_receiver->get_id(), null, $Basket->getId());
 
-                    $receipt = $request->get('recept') ? $app['phraseanet.user']->get_email() : '';
+                    $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
 
                     $params = array(
                         'from'       => $app['authentication']->getUser()->get_id()
@@ -417,7 +417,7 @@ class Push implements ControllerProviderInterface
                         . 'lightbox/index.php?LOG='
                         . $app['tokens']->getUrlToken(\random::TYPE_VIEW, $participant_user->get_id(), null, $Basket->getId());
 
-                    $receipt = $request->get('recept') ? $app['phraseanet.user']->get_email() : '';
+                    $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
 
                     $params = array(
                         'from'       => $app['authentication']->getUser()->get_id()
