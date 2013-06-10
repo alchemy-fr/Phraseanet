@@ -21,6 +21,7 @@ $groups = array(
         '//assets/angular/angular.js',
         '//assets/angular-ui/build/angular-ui.js',
         '//assets/bootstrap-switch/static/js/bootstrapSwitch.js',
+        '//assets/bootstrap-multiselect/js/bootstrap-multiselect.js',
         '//assets/underscore/underscore.js'
     ),
     'client' => array(

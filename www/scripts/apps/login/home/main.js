@@ -29,3 +29,17 @@ require.config({
 require(["apps/login/home/app"], function(App) {
     App.initialize();
 });
+
+// close alerts
+$(document).ready(function() {
+    $(document).on("click", ".alert .alert-block-close a", function(e){
+        e.preventDefault();
+        $(this).closest('.alert').alert('close');
+        return false;
+    });
+
+    $("select[multiple='multiple']").multiselect({
+        buttonWidth : "100%",
+        buttonClass: 'btn btn-inverse'
+    });
+});
