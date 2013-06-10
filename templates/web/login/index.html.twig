@@ -52,11 +52,7 @@
                     method="POST"
                     action="{{ path("login_authenticate") }}"
                 >
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ form_errors(form) }}
-                        </div>
-                    </div>
+                    {{ form_errors(form) }}
                     <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.login, "loginForm", 'icon-envelope') }}
