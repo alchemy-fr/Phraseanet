@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\CreateCollection;
 use Alchemy\Phrasea\Command\MailTest;
+use Alchemy\Phrasea\Command\Compile\Configuration;
 use Alchemy\Phrasea\Command\RecordAdd;
 use Alchemy\Phrasea\Command\RescanTechnicalDatas;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
@@ -92,6 +93,7 @@ try {
 
     $app->command(new AddPlugin());
     $app->command(new RemovePlugin());
+    $app->command(new Configuration());
 
     $result_code = is_int($app->run()) ? : 1;
 } catch (\Exception $e) {
