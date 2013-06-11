@@ -189,6 +189,9 @@ class Login implements ControllerProviderInterface
             'validation_length_min'     => _('This value is too short. It should have %s character or more'),
             'password_match'            => _('The passwords do not match.'),
             'accept_tou'                => _('You must accept the terms of use.'),
+            'none_selected'             => _('None selected'),
+            'collections'               => _('Collections'),
+            'collection'                => _('Collection'),
         ));
 
         $date = new \DateTime();
