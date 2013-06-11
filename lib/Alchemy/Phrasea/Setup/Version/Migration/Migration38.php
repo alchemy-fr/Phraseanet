@@ -3,22 +3,20 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2013 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Setup\Version\Migration;
+
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Yaml\Yaml;
 
-class patch_3807 implements patchInterface
+class Migration38 implements MigrationInterface
 {
-    /** @var string */
-    private $release = '3.8.0.a7';
-
-    /** @var array */
-    private $concern = array(base::APPLICATION_BOX);
+    private $app;
     private $yaml;
 
     private $connexionsYaml;
@@ -26,48 +24,30 @@ class patch_3807 implements patchInterface
     private $servicesYaml;
     private $configYaml;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get_release()
+    public function __construct(Application $app)
     {
-        return $this->release;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function require_all_upgrades()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $appbox, Application $app)
-    {
-        $this->yaml = new Yaml();
+        $this->app = $app;
 
         $this->connexionsYaml = $app['root.path'] . '/config/connexions.yml';
         $this->binariesYaml = $app['root.path'] . '/config/binaries.yml';
         $this->servicesYaml = $app['root.path'] . '/config/services.yml';
         $this->configYaml = $app['root.path'] . '/config/config.yml';
-
-        $this->migrate($app);
-
-        return true;
     }
 
-    private function migrate($app)
+    public function migrate()
+    {
+        if (!file_exists($this->configYaml)
+            || !file_exists($this->servicesYaml)
+            || !file_exists($this->connexionsYaml)) {
+            throw new \LogicException('Required config files not found');
+        }
+
+        $this->yaml = new Yaml();
+
+        $this->doMigrate($this->app);
+    }
+
+    private function doMigrate($app)
     {
         $conf = $app['phraseanet.configuration']->getConfig();
 
