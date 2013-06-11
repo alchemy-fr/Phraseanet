@@ -64,7 +64,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
-        $this->assertAngularFlashMessage($crawler, $type, 1, $message);
+        $this->assertFlashMessage($crawler, $type, 1, $message);
     }
 
     /**
@@ -215,7 +215,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertFalse($response->isRedirect());
-        $this->assertAngularFlashMessage($crawler, 'error', 1);
+        $this->assertFlashMessage($crawler, 'error', 1);
     }
 
     /**
@@ -254,7 +254,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertFalse($response->isRedirect());
-        $this->assertAngularFlashMessage($crawler, 'error', 1);
+        $this->assertFlashMessage($crawler, 'error', 1);
     }
 
     public function testRenewPasswordBadToken()
@@ -353,7 +353,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        $this->assertAngularFlashMessage($crawler, $type, 1, $message);
+        $this->assertFlashMessage($crawler, $type, 1, $message);
     }
 
     public function testForgotPasswordGet()
@@ -399,7 +399,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
         $this->assertFalse($response->isRedirect());
 
-        $this->assertAngularFlashMessage($crawler, 'error', 1);
+        $this->assertFlashMessage($crawler, 'error', 1);
     }
 
     public function testForgotPasswordSubmission()
@@ -430,7 +430,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
-        $this->assertAngularFlashMessage($crawler, $type, 1, $message);
+        $this->assertFlashMessage($crawler, $type, 1, $message);
     }
 
     public function testGetRegisterWithRegisterIdBindDataToForm()
@@ -510,7 +510,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
 
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertFormOrAngularError($crawler, $errors);
+        $this->assertFormOrFlashError($crawler, $errors);
     }
 
     public function testPostRegisterWithoutParams()
@@ -519,7 +519,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request('POST', '/login/register-classic/');
 
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertFormOrAngularError($crawler, 9);
+        $this->assertFormOrFlashError($crawler, 9);
     }
 
     public function provideInvalidRegistrationData()
