@@ -23,26 +23,19 @@
     {{ form_errors(field) }}
 {% endmacro %}
 
-{% macro checkboxInput (field, label = '') %}
-    <div class="hidden-phone control-group">
-        <div class="controls">
-            <label for="{{ field.vars.id }}" class="checkbox">
-                {{  form_widget(field) }}
+{% macro checkboxInput(field, label = '') %}
+    <label for="{{ field.vars.id }}" class="checkbox">
+        {{ form_widget(field) }}
+        {{ label | default(field.vars.label) }}
+    </label>
+    <div class="error-view"></div>
+    {{  form_errors(field) }}
+{% endmacro %}
 
-                {{ label | default(field.vars.label) }}
-            </label>
-        </div>
-    </div>
-    <div class="visible-phone switch-control">
-        <ul class="unstyle inline">
-            <li>
-                <div class="switch switch-small">
-                    {{  form_widget(field) }}
-                </div>
-            </li>
-            <li>{{ label | default(field.vars.label) }}</li>
-        </ul>
-    </div>
+{% macro selectInput(field, label = '') %}
+    {{ form_label(field) }}
+    {{ form_widget(field) }}
+    <div class="error-view"></div>
     {{  form_errors(field) }}
 {% endmacro %}
 
