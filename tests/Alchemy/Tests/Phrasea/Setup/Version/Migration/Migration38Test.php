@@ -1,8 +1,12 @@
 <?php
 
-use Alchemy\Phrasea\Application;
+namespace Alchemy\Tests\Phrasea\Setup\Version\Migration;
 
-class patch_3807Test extends PHPUnit_Framework_TestCase
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Setup\Version\Migration\Migration38;
+use Alchemy\Tests\Phrasea\Setup\AbstractSetupTester;
+
+class Migration38Test extends AbstractSetupTester
 {
     public function setUp()
     {
@@ -17,17 +21,17 @@ class patch_3807Test extends PHPUnit_Framework_TestCase
     private function revert()
     {
         foreach (array('binaries.yml.bkp', 'config.yml.bkp', 'connexions.yml.bkp', 'services.yml.bkp') as $backupFile) {
-            if (is_file(__DIR__ . '/fixtures-3807/config/' . $backupFile)) {
-                rename(__DIR__ . '/fixtures-3807/config/' . $backupFile, __DIR__ . '/fixtures-3807/config/' . substr($backupFile, 0, -4));
+            if (is_file(__DIR__ . '/../Probe/fixtures-3807/config/' . $backupFile)) {
+                rename(__DIR__ . '/../Probe/fixtures-3807/config/' . $backupFile, __DIR__ . '/../Probe/fixtures-3807/config/' . substr($backupFile, 0, -4));
             }
         }
     }
 
-    public function testApply()
+    public function testMigrate()
     {
         $app = new Application();
         $app['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['root.path'] = __DIR__ . '/fixtures-3807';
+        $app['root.path'] = __DIR__ . '/../Probe/fixtures-3807';
 
         $app['phraseanet.configuration']->expects($this->once())
             ->method('getConfig')
@@ -37,13 +41,8 @@ class patch_3807Test extends PHPUnit_Framework_TestCase
             ->method('setConfig')
             ->with($this->getModified());
 
-        $appbox = $this->getMockBuilder('appbox')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $patch = new patch_3807();
-        $patch->apply($appbox, $app);
-
+        $migration = new Migration38($app);
+        $migration->migrate();
     }
 
     private function getModified()
