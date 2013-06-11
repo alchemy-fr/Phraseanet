@@ -93,7 +93,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $yaml = new Yaml();
 
         $conf = new Configuration($yaml, $compiler, $config, $compiled, false);
-        $this->assertEquals('127.0.0.1', $conf['main']['database']['host']);
+        $this->assertEquals('sql-host', $conf['main']['database']['host']);
 
         $conf['extra-key'] = 'extra-value';
         $this->assertEquals('extra-value', $conf['extra-key']);
