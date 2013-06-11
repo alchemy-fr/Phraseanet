@@ -16,11 +16,6 @@
     {% endfor %}
 {% endblock %}
 
-{% block header_javascript %}
-    {{ parent() }}
-    {% include "login/common/templates.html.twig" %}
-{% endblock header_javascript %}
-
 {% block sidebar %}
     <div class="well-large sidebar-block">
         <div class="row-fluid">
@@ -52,7 +47,14 @@
                     method="POST"
                     action="{{ path("login_authenticate") }}"
                 >
-                    {{ form_errors(form) }}
+                    {% if form.vars.errors|length > 0 %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ form_errors(form) }}
+                            </div>
+                        </div>
+                    {% endif %}
+
                     <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.login, "loginForm", 'icon-envelope') }}
@@ -114,4 +116,9 @@
 
 {% block left_content %}
     {{ parent() }}
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="/scripts/apps/login/home/login.js"></script>
 {% endblock %}

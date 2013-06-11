@@ -33,6 +33,9 @@
             {% endblock header_stylesheet %}
 
             {% block header_javascript %}
+                {# include backbone templates #}
+                {% include "login/common/templates.html.twig" %}
+
                 <script type="text/javascript" src="{{ path('minifier', {'g' : 'authentication'}) }}"></script>
             {% endblock header_javascript %}
         {% endblock header %}
@@ -91,8 +94,6 @@
         </div><!--/.fluid-container-->
         {% include 'common/analytics.html.twig' %}
 
-        {% block scripts %}
-            <script type="text/javascript" src="/include/minify/?f=/assets/requirejs/require.js,/scripts/apps/login/home/main.js"></script>
-        {% endblock %}
+        {% block scripts %}{% endblock %}
     </body>
 </html>

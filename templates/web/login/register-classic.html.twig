@@ -31,11 +31,14 @@
                      method="POST"
                      action="{{ path("login_register_classic") }}"
                 >
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ form_errors(form) }}
+                    {% if form.vars.errors|length > 0 %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ form_errors(form) }}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
+
                     <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.email, "registerForm", 'icon-envelope') }}
@@ -50,13 +53,7 @@
 
                     <div class="row-fluid">
                         <div class="span12">
-                            {{ auth_macro.fieldInput(form.passwordConfirm, "registerForm", 'icon-lock', {
-                                    "ui-validate" : " '$value==" ~ form.password.vars.name ~ "' ",
-                                    "ui-validate-watch" : "'" ~ form.password.vars.name ~ "'"
-                                }, {
-                                    "validate_message" : "Passwords do not match"|trans
-                                })
-                            }}
+                            {{ auth_macro.fieldInput(form.passwordConfirm, "registerForm", 'icon-lock') }}
                         </div>
                     </div>
 
@@ -85,7 +82,7 @@
 
                     <div class="row-fluid">
                         <div class="span12">
-                            {{ form_row(form.collections) }}
+                            {{ auth_macro.selectInput(form.collections) }}
                         </div>
                     </div>
 
@@ -110,4 +107,9 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="/scripts/apps/login/home/register.js"></script>
 {% endblock %}
