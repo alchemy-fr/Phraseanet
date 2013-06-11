@@ -242,8 +242,11 @@ class Feed implements FeedInterface
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getEntries($offset_start, $how_many)
+    public function getEntries($offset_start = 0, $how_many = null)
     {
+        if (null === $how_many) {
+            return $this->entries;
+        }
         return $this->entries->slice($offset_start, $how_many);
     }
 
@@ -434,7 +437,7 @@ class Feed implements FeedInterface
     public function addEntrie(\Entities\FeedEntry $entries)
     {
         $this->entries[] = $entries;
-    
+
         return $this;
     }
 
@@ -446,5 +449,13 @@ class Feed implements FeedInterface
     public function removeEntrie(\Entities\FeedEntry $entries)
     {
         $this->entries->removeElement($entries);
+    }
+
+    public function hasPage($page, $pageSize)
+    {
+        $count = $this->getCountTotalEntries();
+        if ($page >= $count / $pageSize + $pageSize)
+            return true;
+        return false;
     }
 }

@@ -331,7 +331,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return \Entities\Feed
      */
-    protected function insertOneFeed(\User_Adapter $user, $title = null)
+    protected function insertOneFeed(\User_Adapter $user, $title = null, $public = null)
     {
         try {
             $feedFixture = new PhraseaFixture\Feed\LoadOneFeed();
@@ -339,6 +339,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             if ($title !== null) {
                 $feedFixture->setTitle($title);
+            }
+
+            if ($public !== null) {
+                $feedFixture->setPublic($public);
             }
 
             $loader = new Loader();
@@ -397,7 +401,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $token->setFeed($feed);
             $token->setUsrId($user->get_id());
 
+            $feed->addToken($token);
+
             self::$DI['app']['EM']->persist($token);
+            self::$DI['app']['EM']->persist($feed);
             self::$DI['app']['EM']->flush();
         } catch (\Exception $e) {
             $this->fail('Fail to load one FeedToken : ' . $e->getMessage());

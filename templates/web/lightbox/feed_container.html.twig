@@ -1,7 +1,7 @@
 
 {% block basket %}
 <div id="sc_container">
-    {% for element in feed_entry.get_content() %}
+    {% for element in feed_entry.getItems() %}
         <div class="basket_element_wrapper">
       <a href="{{ path('lightbox_ajax_load_feeditem', { 'entry_id' : feed_entry.getId(), 'item_id' : element.getId()}) }}">
         <div id="scid_{{element.getId()}}" class="basket_element ui-corner-all {% if first_item and first_item.getId() == element.getId() %}selected{% endif %}">

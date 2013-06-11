@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Feed;
 
 use Alchemy\Phrasea\Feed\Aggregate;
-use Alchemy\Phrasea\Feed\AggregateLinkGenerator;
+use Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator;
 use Entities\Feed;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
@@ -22,7 +22,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
 
         $feeds = array($feed, $another_feed);
 
-        $aggregate = new Aggregate(self::$DI['app'], $feeds);
+        $aggregate = new Aggregate(self::$DI['app']['EM'], $feeds);
 
         $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
             ->disableOriginalConstructor()

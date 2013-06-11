@@ -75,11 +75,11 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $feed = $this->insertOneFeed(self::$DI['user']);
         $params = array(
-            "feed_id"      => $feed->getId()
+            "feed_id"        => $feed->getId()
             , "title"        => "salut"
             , "subtitle"     => "coucou"
             , "author_name"  => "robert"
-            , "author_email" => "robert@kikoo.mail"
+            , "author_mail"  => "robert@kikoo.mail"
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
         );
 
@@ -95,11 +95,11 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testEntryCreateError()
     {
         $params = array(
-            "feed_id"      => 'unknow'
+            "feed_id"        => 'unknow'
             , "title"        => "salut"
             , "subtitle"     => "coucou"
             , "author_name"  => "robert"
-            , "author_email" => "robert@kikoo.mail"
+            , "author_mail"  => "robert@kikoo.mail"
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
         );
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
@@ -145,7 +145,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             "title"        => "dog",
             "subtitle"     => "cat",
             "author_name"  => "bird",
-            "author_email" => "mouse",
+            "author_mail"  => "mouse",
             'lst'          => self::$DI['record_1']->get_serialize_key(),
         );
 
@@ -170,7 +170,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             "title"        => "dog",
             "subtitle"     => "cat",
             "author_name"  => "bird",
-            "author_email" => "mouse",
+            "author_mail"  => "mouse",
             'lst'          => self::$DI['record_1']->get_serialize_key(),
         );
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
@@ -200,7 +200,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             "title"        => "dog",
             "subtitle"     => "cat",
             "author_name"  => "bird",
-            "author_email" => "mouse",
+            "author_mail"  => "mouse",
             'lst'          => self::$DI['record_1']->get_serialize_key(),
         );
 
@@ -222,7 +222,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             "title"        => "dog",
             "subtitle"     => "cat",
             "author_name"  => "bird",
-            "author_email" => "mouse",
+            "author_mail"  => "mouse",
             'lst'          => self::$DI['record_1']->get_serialize_key(),
         );
 
@@ -239,11 +239,11 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
 
         $params = array(
-            "feed_id"      => 9999999
+            "feed_id"        => 9999999
             , "title"        => "dog"
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
-            , "author_email" => "mouse"
+            , "author_mail"  => "mouse"
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
         );
 
@@ -265,11 +265,11 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $entry = $this->insertOneFeedEntry(self::$DI['user']);
 
         $params = array(
-            "feed_id"      => 9999999
+            "feed_id"        => 9999999
             , "title"        => "dog"
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
-            , "author_email" => "mouse"
+            , "author_mail"  => "mouse"
             , 'sorted_lst'   => self::$DI['record_1']->get_serialize_key() . ";" . self::$DI['record_2']->get_serialize_key() . ";12345;" . "unknow_unknow"
         );
 
@@ -299,7 +299,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "title"        => "dog"
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
-            , "author_email" => "mouse"
+            , "author_mail"  => "mouse"
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
         );
 
@@ -425,10 +425,10 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['app']['feed.aggregate-link-generator'] = $this->getMockBuilder('Alchemy\Phrasea\Feed\AggregateLinkGenerator')
+        self::$DI['app']['feed.aggregate-link-generator'] = $this->getMockBuilder('Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator')
             ->disableOriginalConstructor()
             ->getMock();
-        $link = $this->getMockBuilder('Alchemy\Phrasea\Feed\FeedLink')
+        $link = $this->getMockBuilder('Alchemy\Phrasea\Feed\Link\FeedLink')
             ->disableOriginalConstructor()
             ->getMock();
         $link->expects($this->once())
@@ -459,10 +459,10 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $feed = $this->insertOneFeed(self::$DI['user']);
 
-        self::$DI['app']['feed.user-link-generator'] = $this->getMockBuilder('Alchemy\Phrasea\Feed\LinkGenerator')
+        self::$DI['app']['feed.user-link-generator'] = $this->getMockBuilder('Alchemy\Phrasea\Feed\Link\FeedLinkGenerator')
             ->disableOriginalConstructor()
             ->getMock();
-        $link = $this->getMockBuilder('Alchemy\Phrasea\Feed\FeedLink')
+        $link = $this->getMockBuilder('Alchemy\Phrasea\Feed\Link\FeedLink')
             ->disableOriginalConstructor()
             ->getMock();
         $link->expects($this->once())

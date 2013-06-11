@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Root;
 
+use Entities\Feed;
+use Alchemy\Phrasea\Feed\Aggregate;
 use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -27,59 +29,14 @@ class RSSFeeds implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $display_feed = function(Application $app, $feed, $format, $page, $user = null) {
-            $total = $feed->getCountTotalEntries();
-            $perPage = 5;
-            $entries = $feed->getEntries((($page - 1) * $perPage), $perPage);
-
-            if ($format == 'rss') {
-                $content = new \Feed_XML_RSS();
-            }
-
-            if ($format == 'atom') {
-                $content = new \Feed_XML_Atom();
-            }
-
-            if ($format == 'cooliris') {
-                $content = new \Feed_XML_Cooliris();
-            }
-
-            if ($user instanceof \User_Adapter)
-                $link = $feed->getUserLink($app['phraseanet.registry'], $user, $format, $page);
-            else
-                $link = $feed->get_homepage_link($app['phraseanet.registry'], $format, $page);
-
-            $content->set_updated_on(new \DateTime());
-            $content->set_title($feed->getTitle());
-            $content->set_subtitle($feed->getSubtitle());
-            $content->set_generator('Phraseanet');
-            $content->set_link($link);
-
-            if ($user instanceof \User_Adapter) {
-                if ($page > 1)
-                    $content->set_previous_page($feed->getUserLink($app['phraseanet.registry'], $user, $format, ($page - 1)));
-                if ($total > ($page * $perPage))
-                    $content->set_next_page($feed->getUserLink($app['phraseanet.registry'], $user, $format, ($page + 1)));
-            } else {
-                if ($page > 1)
-                    $content->set_previous_page($feed->get_homepage_link($app['phraseanet.registry'], $format, ($page - 1)));
-                if ($total > ($page * $perPage))
-                    $content->set_next_page($feed->get_homepage_link($app['phraseanet.registry'], $format, ($page + 1)));
-            }
-            foreach ($entries->getEntries() as $entry)
-                $content->set_item($entry);
-
-            $render = $content->render();
-            $response = new Response($render, 200, array('Content-Type' => $content->get_mimetype()));
-            $response->setCharset('UTF-8');
-
-            return $response;
-        };
-
-        $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) use ($display_feed) {
+        $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) {
             $feed = $app["EM"]->getRepository("Entities\Feed")->find($id);
 
-            if (!$feed->isPublic()) {
+            if (!$feed) {
+                return new Response('Not Found', 404);
+            }
+
+            if (!$feed->getPublic()) {
                 return new Response('Forbidden', 403);
             }
 
@@ -88,65 +45,92 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $display_feed($app, $feed, $format, $page);
+            return $app[$this->getFormater($format)]->createResponse($feed, $page);
         })
             ->bind('feed_public')
             ->assert('id', '\d+')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) use ($display_feed) {
-            $token = $app["EM"]->getRepository("Entities\FeedToken")->findBy(array("id" => $id));
+        $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) {
+            $token = $app["EM"]->getRepository("Entities\FeedToken")->findOneBy(array("id" => $id));
             $feed = $token->getFeed();
+            $usrId = $token->getUsrId();
+
+            $user = \User_Adapter::getInstance($usrId, $app);
 
             $request = $app['request'];
 
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $display_feed($app, $feed, $format, $page, $token->get_user());
+            return $app[$this->getFormater($format)]->createResponse($feed, $page, $user);
         })
             ->bind('feed_user')
             ->assert('id', '\d+')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) use ($display_feed) {
-            $token = $app["EM"]->getRepository("Entities\AggregateToken")->findBy(array("id" => $id));
+        $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) {
+            $token = $app["EM"]->getRepository("Entities\AggregateToken")->findOneBy(array("value" => $token));
+            $usrId = $token->getUsrId();
+
+            $user = \User_Adapter::getInstance($usrId, $app);
+
+            $feeds = $app["EM"]->getRepository('Entities\Feed')->getAllForUser($user);
+
+            $aggregate = new Aggregate($app["EM"], $feeds, $token);
 
             $request = $app['request'];
 
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $display_feed($app, $feed, $format, $page, $token->get_user());
+            return $app[$this->getFormater($format)]->createResponse($aggregate, $page, $user);
         })
             ->bind('feed_user_aggregated')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/aggregated/{format}/', function(Application $app, $format) use ($display_feed) {
+        $controllers->get('/aggregated/{format}/', function(Application $app, $format) {
             $feeds = $app["EM"]->getRepository("Entities\Feed")->findAllPublic();
-            $feed = new Aggregate($app, $feeds);
+            $feed = new Aggregate($app["EM"], $feeds);
 
             $request = $app['request'];
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $display_feed($app, $feed, $format, $page);
+            return $app[$this->getFormater($format)]->createResponse($feed, $page);
         })
             ->bind('feed_public_aggregated')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/cooliris/', function(Application $app) use ($display_feed) {
+        $controllers->get('/cooliris/', function(Application $app) {
             $feeds = $app["EM"]->getRepository("Entities\Feed")->findAllPublic();
-            $feed = new Aggregate($app, $feeds);
+            $feed = new Aggregate($app["EM"], $feeds);
 
             $request = $app['request'];
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $display_feed($app, $feed, 'cooliris', $page);
+            return $app[$this->getFormater('cooliris')]->createResponse($feed, $page);
         })
             ->bind('feed_public_cooliris');
 
         return $controllers;
+    }
+
+    private function getFormater($type)
+    {
+        switch ($type) {
+            case 'rss':
+                return 'feed.rss-formatter';
+                break;
+            case 'atom':
+                return 'feed.atom-formatter';
+                break;
+            case 'cooliris':
+                return 'feed.cooliris-formatter';
+                break;
+            default:
+                throw new InvalidArgumentException(sprintf('Format %s is not recognized.', $format));
+        }
     }
 }

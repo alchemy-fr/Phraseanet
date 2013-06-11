@@ -48,9 +48,17 @@ class Publications implements ControllerProviderInterface
 
         $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
 
-            $publisher = new FeedPublisher($app['authentication']->getUser(), true);
+            $publisher = new FeedPublisher();
 
-            $feed = new Feed($publisher, $request->request->get('title'), $request->request->get('subtitle'));
+            $feed = new Feed();
+
+            $publisher->setFeed($feed);
+            $publisher->setUsrId($app['authentication']->getUser()->get_id());
+            $publisher->setOwner(true);
+
+            $feed->addPublisher($publisher);
+            $feed->setTitle($request->request->get('title'));
+            $feed->setSubtitle($request->request->get('subtitle'));
 
             if ($request->request->get('public') == '1') {
                 $feed->setPublic(true);
@@ -69,7 +77,7 @@ class Publications implements ControllerProviderInterface
         })->bind('admin_feeds_create');
 
         $controllers->get('/feed/{id}/', function(PhraseaApplication $app, Request $request, $id) {
-            $feed = $app["EM"]->getRepository("Entities\Feed")->find($id);
+            $feed = $app["EM"]->getRepository("Entities\Feed")->findOneBy(array("id" => $id));
 
             return $app['twig']
                     ->render('admin/publications/fiche.html.twig', array('feed'  => $feed, 'error' => $app['request']->query->get('error')));
@@ -79,24 +87,27 @@ class Publications implements ControllerProviderInterface
 
         $controllers->post('/feed/{id}/update/', function(PhraseaApplication $app, Request $request, $id) {
 
-            $feed = $app["EM"]->getRepository("Entities\Feed")->find($id);
+            $feed = $app["EM"]->getRepository("Entities\Feed")->findOneBy(array("id" => $id));
 
             try {
                 $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
             } catch (\Exception $e) {
                 $collection = null;
             }
-            $feed->setTitle($request->request->get('title'));
-            $feed->setDescription($request->request->get('subtitle'));
+            if (null !== $request->request->get('title')) {
+                $feed->setTitle($request->request->get('title'));
+            }
+            if (null !== $request->request->get('subtitle')) {
+                $feed->setSubtitle($request->request->get('subtitle'));
+            }
             $feed->setCollection($collection);
-            $feed->setPublic($request->request->get('public'));
-
+            $feed->setPublic($request->request->get('public') === '1' ? true : false);
             $app["EM"]->persist($feed);
             $app["EM"]->flush();
 
             return $app->redirectPath('admin_feeds_list');
         })->before(function(Request $request) use ($app) {
-             $feed = $app["EM"]->getRepository("Entities\Feed")->find($request->attributes->get('id'));
+             $feed = $app["EM"]->getRepository("Entities\Feed")->findOneBy(array("id" => $request->attributes->get('id')));
 
             if (!$feed->getOwner($app['authentication']->getUser())) {
                 return $app->redirectPath('admin_feeds_feed', array('id' => $request->attributes->get('id'), 'error' =>  _('You are not the owner of this feed, you can not edit it')));
@@ -110,7 +121,7 @@ class Publications implements ControllerProviderInterface
                 'success' => false,
                 'message' => '',
             );
-            $feed = $app["EM"]->getRepository("Entities\Feed")->find($id);
+            $feed = $app["EM"]->getRepository("Entities\Feed")->findOneBy(array("id" => $id));
 
             $request = $app["request"];
 
@@ -156,8 +167,6 @@ class Publications implements ControllerProviderInterface
                     throw new \Exception_InternalServerError('Error while resizing');
                 }
 
-                //$feed->set_icon($tmpname);
-
                 unset($media);
 
                 $app['filesystem']->remove($tmpname);
@@ -177,9 +186,11 @@ class Publications implements ControllerProviderInterface
             try {
                 $request = $app['request'];
                 $user = \User_Adapter::getInstance($request->request->get('usr_id'), $app);
-                $feed = $app["EM"]->getRepository("Entities\Feed")->find($id);
+                $feed = $app["EM"]->getRepository("Entities\Feed")->findOneBy(array("id" => $id));
 
-                $publisher = new FeedPublisher($user, false);
+                $publisher = new FeedPublisher();
+                $publisher->setUsrId($user->get_id());
+                $publisher->setOwner(false);
                 $publisher->setFeed($feed);
 
                 $feed->addPublisher($publisher);
@@ -201,9 +212,13 @@ class Publications implements ControllerProviderInterface
             try {
                 $request = $app['request'];
 
-                $feed = $app["EM"]->getRepository("Entities\Feed")->find($id);
+                $feed = $app["EM"]->getRepository("Entities\Feed")->findOneBy(array("id" => $id));
 
-                $publisher = $app["EM"]->getRepository("Entities\FeedPublisher")->find($request->request->get('publisher_id'));
+                $publisher = $app["EM"]->getRepository("Entities\FeedPublisher")->findOneBy(array("id" => $request->request->get('publisher_id')));
+                if (null === $publisher) {
+                    throw new \Exception_Feed_PublisherNotFound();
+                }
+
                 $user = $publisher->getUser($app);
                 if ($feed->isPublisher($user) === true && $feed->isOwner($user) === false) {
                     $feed->removePublisher($publisher);
@@ -221,7 +236,7 @@ class Publications implements ControllerProviderInterface
             ->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/delete/', function(PhraseaApplication $app, $id) {
-            $feed = $app["EM"]->getRepository("Entities\Feed")->find($id);
+            $feed = $app["EM"]->getRepository("Entities\Feed")->findOneBy(array("id" => $id));
             $publishers = $feed->getPublishers();
             foreach ($publishers as $publisher) {
                 $app["EM"]->remove($publisher);

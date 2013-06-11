@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\Feed;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityManager;
+use Entities\AggregateToken;
 
 class Aggregate implements FeedInterface
 {
@@ -35,15 +36,15 @@ class Aggregate implements FeedInterface
 
     protected $token;
 
-    protected $app;
+    protected $em;
 
-    public function __construct(Application $app, array $feeds)
+    public function __construct(EntityManager $em, array $feeds, AggregateToken $token = null)
     {
         $this->title = 'AGGREGATE';
         $this->subtitle = 'AGGREGATE SUBTITLE';
         $this->created_on = new \DateTime();
         $this->updated_on = new \DateTime();
-        $this->app = $app;
+        $this->em = $em;
 
         $tmp_feeds = array();
 
@@ -52,20 +53,22 @@ class Aggregate implements FeedInterface
         }
 
         $this->feeds = $tmp_feeds;
+        $this->token = $token;
 
         return $this;
     }
 
-    public static function createFromUser(Application $app, \User_Adapter $user)
+    public static function createFromUser(EntityManager $em, \User_Adapter $user)
     {
-        $feeds = $app["EM"]->getRepository('Entities\Feed')->findByUser($user);
+        $feeds = $em->getRepository('Entities\Feed')->getAllForUser($user);
+        $token = $em->getRepository('Entities\AggregateToken')->findByUser($user);
 
-        return new static($app, $feeds);
+        return new static($em, $feeds, $token);
     }
 
     public static function create(Application $app, array $feed_ids)
     {
-        $feeds = $app["EM"]->getRepository('Entities\Feed')->findByIdArray($feed_ids);
+        $feeds = $this->em->getRepository('Entities\Feed')->findByIdArray($feed_ids);
 
         return new static($app, $feeds);
     }
@@ -75,26 +78,26 @@ class Aggregate implements FeedInterface
         return true;
     }
 
-    public function getEntries($offset_start, $how_many)
+    public function getEntries($offset_start = 0, $how_many = null)
     {
-        $result = new \Feed_Entry_Collection();
+        $count = 0;
+        $added = 0;
 
-        if (count($this->feeds) === 0) {
-            return $result;
-        }
-
-        $offset_start = (int) $offset_start;
-        $how_many = $how_many > 20 ? 20 : (int) $how_many;
-
-        $rs = $this->app["EM"]->getRepository("Entities\FeedEntry")->findByFeeds($this->feeds, $offset_start, $how_many);
-
-        foreach ($rs as $entry) {
-            if ($entry) {
-                $result->add_entry($entry);
+        $collection = array();
+        foreach ($this->feeds as $feed) {
+            foreach ($feed->getEntries() as $entry) {
+                if ($count >= $offset_start) {
+                    $collection[] = $entry;
+                    $added++;
+                }
+                $count++;
+                if (null !== $how_many && $added == $how_many) {
+                    return $collection;
+                }
             }
         }
 
-        return $result;
+        return $collection;
     }
 
     public function getSubtitle()
@@ -142,8 +145,16 @@ class Aggregate implements FeedInterface
     public function getCountTotalEntries()
     {
         if (count($this->feeds) > 0) {
-            return count($this->app["EM"]->getRepository("Entities\FeedEntry")->findByFeeds($this->feeds));
+            return count($this->em->getRepository("Entities\FeedEntry")->findByFeeds($this->feeds));
         }
         return 0;
+    }
+
+    public function hasPage($page, $pageSize)
+    {
+        $count = $this->getCountTotalEntries();
+        if ($page >= $count / $pageSize)
+            return true;
+        return false;
     }
 }
