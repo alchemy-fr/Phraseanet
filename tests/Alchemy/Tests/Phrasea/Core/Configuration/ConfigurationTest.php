@@ -15,7 +15,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
         $this->compiled = __DIR__ . '/Fixtures/configuration-compiled.php';
         $this->clean();
-        copy(__DIR__ . '/..' . Configuration::CONFIG_REF, __DIR__ . '/Fixtures/configuration.yml');
     }
 
     public function tearDown()
@@ -26,6 +25,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     private function clean()
     {
+        copy(__DIR__ . '/..' . Configuration::CONFIG_REF, __DIR__ . '/Fixtures/configuration.yml');
         if (is_file($this->compiled)) {
             unlink($this->compiled);
         }
@@ -312,5 +312,25 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('driver', $data);
         $this->assertArrayHasKey('path', $data);
         $this->assertArrayHasKey('charset', $data);
+    }
+
+    public function testCompileAndWrite()
+    {
+        $configFile = __DIR__ . '/Fixtures/configuration.yml';
+        $compiled = $this->compiled;
+
+        $yaml = new Yaml();
+        $compiler = new Compiler();
+
+        $conf = new Configuration($yaml, $compiler, $configFile, $compiled, false);
+        // triggers initialization
+        $this->assertFalse(isset($conf['bim']));
+
+        file_put_contents($configFile, "\nbim: bam\n", FILE_APPEND);
+        $this->assertFalse(isset($conf['bim']));
+
+        $conf->compileAndWrite();
+        $this->assertTrue(isset($conf['bim']));
+        $this->assertEquals('bam', $conf['bim']);
     }
 }

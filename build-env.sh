@@ -1,4 +1,4 @@
-rm -f config/services.yml config/connexions.yml config/config.yml config/config.inc config/connexion.inc config/_GV.php config/_GV.php.old
+rm -f config/configuration.yml config/services.yml config/connexions.yml config/config.yml config/config.inc config/connexion.inc config/_GV.php config/_GV.php.old
 cp -f hudson/connexion.inc config/
 cp -f hudson/_GV.php config/
 php vendors.php

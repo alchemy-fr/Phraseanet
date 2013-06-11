@@ -336,7 +336,7 @@ class record_preview extends record_adapter
         if (! $report) {
             $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
             $params[':usr_id'] = $this->app['authentication']->getUser()->get_id();
-            $params[':site'] = $this->app['phraseanet.registry']->get('GV_sit');
+            $params[':site'] = $this->app['phraseanet.configuration']['main']['key'];
         }
 
         $sql .= 'ORDER BY d.date, usrid DESC';
@@ -441,7 +441,7 @@ class record_preview extends record_adapter
         $stmt->execute(
             array(
                 ':record_id' => $this->get_record_id(),
-                ':site'      => $this->app['phraseanet.registry']->get('GV_sit')
+                ':site'      => $this->app['phraseanet.configuration']['main']['key']
             )
         );
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -604,7 +604,7 @@ class record_preview extends record_adapter
         $stmt->execute(
             array(
                 ':record_id' => $this->get_record_id(),
-                ':site'      => $this->app['phraseanet.registry']->get('GV_sit')
+                ':site'      => $this->app['phraseanet.configuration']['main']['key']
             )
         );
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -82,6 +82,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
     public function testFailureManagerAttemptsConfiguration()
     {
         $app = new Application();
+        $app['root.path'] = __DIR__ . '/../../../../../../';
         $app->register(new TokensServiceProvider());
         $app->register(new AuthenticationManagerServiceProvider());
         $app->register(new ConfigurationServiceProvider());
@@ -119,6 +120,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
     public function testAuthNativeWithCaptchaEnabled()
     {
         $app = new Application();
+        $app['root.path'] = __DIR__ . '/../../../../../../';
         $app->register(new AuthenticationManagerServiceProvider());
         $app->register(new ConfigurationServiceProvider());
         $app['phraseanet.registry'] = $this->getMockBuilder('registry')
@@ -156,6 +158,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
     public function testAuthNativeWithCaptchaDisabled()
     {
         $app = new Application();
+        $app['root.path'] = __DIR__ . '/../../../../../../';
         $app->register(new AuthenticationManagerServiceProvider());
         $app->register(new ConfigurationServiceProvider());
         $app['phraseanet.registry'] = $this->getMockBuilder('registry')

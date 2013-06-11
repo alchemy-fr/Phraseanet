@@ -1945,7 +1945,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
               ORDER BY g.ord ASC, dateadd ASC, record_id ASC';
 
             $params = array(
-                ':GV_site'   => $this->app['phraseanet.registry']->get('GV_sit'),
+                ':GV_site'   => $this->app['phraseanet.configuration']['main']['key'],
                 ':usr_id'    => $this->app['authentication']->getUser()->get_id(),
                 ':record_id' => $this->get_record_id(),
             );
@@ -1996,7 +1996,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             WHERE rid_child = :record_id';
 
         $params = array(
-            ':GV_site'   => $this->app['phraseanet.registry']->get('GV_sit')
+            ':GV_site'   => $this->app['phraseanet.configuration']['main']['key']
             , ':usr_id'    => $this->app['authentication']->getUser()->get_id()
             , ':record_id' => $this->get_record_id()
         );

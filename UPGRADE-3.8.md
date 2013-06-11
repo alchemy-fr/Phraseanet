@@ -9,7 +9,16 @@ some new features, robustness and stability.
 These enhancements are described in the CHANGELOG file. The purpose of this document
 is to provide a list a BC breaks / Changes.
 
-## Nginx
+## Configuration :
+
+Configuration has been drastically simplified. There is now one file to
+configure Phraseanet : `config/configuration.yml`.
+
+This file is now compiled to plain PHP for best performances. If you ever edit
+this file manually, please run the `bin/console compile:configuration` command
+to re-compile the configuration.
+
+## Nginx :
 
 If you are using Nginx as Phraseanet web-server, you must update you virtual-host
 configuration as follow :

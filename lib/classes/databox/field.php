@@ -291,6 +291,12 @@ class databox_field implements cache_cacheableInterface
         return self::$_instance[$instance_id];
     }
 
+    public function hydrate(Application $app)
+    {
+        $this->app = $app;
+        $this->set_databox($this->app['phraseanet.appbox']->get_databox($this->sbas_id));
+    }
+
     /**
      *
      * @param databox $databox
@@ -483,7 +489,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function get_label($code)
     {
-        if (!array_key_exists($code, $this->labels)) {
+        if (null !== $code && !array_key_exists($code, $this->labels)) {
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
 
@@ -996,23 +1002,12 @@ class databox_field implements cache_cacheableInterface
     {
         $vars = array();
         foreach ($this as $key => $value) {
-            if (in_array($key, array('databox')))
+            if (in_array($key, array('databox', 'app')))
                 continue;
             $vars[] = $key;
         }
 
         return $vars;
-    }
-
-    /**
-     *
-     * @return void
-     */
-    public function __wakeup()
-    {
-        $this->set_databox($this->app['phraseanet.appbox']->get_databox($this->sbas_id));
-
-        return;
     }
 
     /**

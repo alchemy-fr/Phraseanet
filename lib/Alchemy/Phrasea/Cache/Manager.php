@@ -11,102 +11,110 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Service\Builder;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Symfony\Component\Yaml\Yaml;
+use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Core\Configuration\Compiler;
+use Alchemy\Phrasea\Cache\Cache;
+use Alchemy\Phrasea\Cache\Factory;
+use Monolog\Logger;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Manager
 {
-    /**
-     *
-     * @var \SplFileInfo
-     */
-    protected $cacheFile;
-    protected $app;
+    private $file;
+    /** @var Compiler */
+    private $compiler;
+    private $registry = array();
+    private $drivers = array();
+    /** @var Logger */
+    private $logger;
+    /** @var Factory */
+    private $factory;
 
-    /**
-     *
-     */
-    protected $parser;
-
-    /**
-     *
-     * @var array
-     */
-    protected $registry = array();
-
-    public function __construct(Application $app, \SplFileInfo $file)
+    public function __construct(Compiler $compiler, $file, Logger $logger, Factory $factory)
     {
-        $this->cacheFile = $file;
-        $this->parser = new Yaml();
-        $this->app = $app;
+        $this->file = $file;
+        $this->compiler = $compiler;
+        $this->logger = $logger;
+        $this->factory = $factory;
 
-        $this->registry = $this->parser->parse($file) ? : array();
+        if (!is_file($file)) {
+            $this->registry = array();
+            $this->save();
+        } else {
+            $this->registry = require $file;
+        }
     }
 
-    protected function exists($name)
-    {
-        return isset($this->registry[$name]);
-    }
-
+    /**
+     * Flushes all registered cache
+     *
+     * @return Manager
+     */
     public function flushAll()
     {
-        foreach ($this->registry as $cacheKey => $service_name) {
-            $this->get($cacheKey, $service_name)->getDriver()->flushAll();
+        foreach ($this->drivers as $driver) {
+            $driver->flushAll();
         }
 
-        file_put_contents($this->cacheFile->getPathname(), '');
+        $this->registry = array();
+        $this->save();
 
         return $this;
     }
 
-    public function get($cacheKey, $service_name)
+    /**
+     * @param string $label
+     * @param string $name
+     * @param array  $options
+     *
+     * @return Cache
+     */
+    public function factory($label, $name, $options)
     {
+        if ($this->isAlreadyRegistered($name, $label) && $this->isAlreadyLoaded($label)) {
+            return $this->drivers[$label];
+        }
+
         try {
-            $configuration = $this->app['phraseanet.configuration']->getService($service_name);
-            $service = Builder::create($this->app, $configuration);
-            $driver = $service->getDriver();
-            $write = true;
-        } catch (\Exception $e) {
-            $configuration = new ParameterBag(
-                    array('type'   => 'Cache\\ArrayCache')
-            );
-            $service = Builder::create($this->app, $configuration);
-            $driver = $service->getDriver();
-            $write = false;
+            $cache = $this->factory->create($name, $options);
+        } catch (RuntimeException $e) {
+            $this->logger->error($e->getMessage());
+            $cache = $this->factory->create('array', array());
         }
 
-        if ($this->hasChange($cacheKey, $service_name)) {
-            $service->getDriver()->flushAll();
-            if ($write) {
-                $this->registry[$cacheKey] = $service_name;
-                $this->save($cacheKey, $service_name);
-            }
+        $cache->setNamespace(md5(__DIR__));
+
+        $this->drivers[$label] = $cache;
+
+        if (!$this->isAlreadyRegistered($name, $label)) {
+            $this->register($name, $label);
+            $cache->flushAll();
         }
 
-        return $service;
+        return $cache;
     }
 
-    protected function hasChange($name, $driver)
+    private function register($name, $label)
     {
-        return $this->exists($name) ? $this->registry[$name] !== $driver : true;
+        $this->registry[$label] = $name;
+        $this->save();
     }
 
-    protected function save($name, $driver)
+    private function isAlreadyRegistered($name, $label)
+    {
+        return isset($this->registry[$label]) && $name === $this->registry[$label];
+    }
+
+    private function isAlreadyLoaded($label)
+    {
+        return isset($this->drivers[$label]);
+    }
+
+    private function save()
     {
         $date = new \DateTime();
+        $data = $this->compiler->compile($this->registry)
+            . "\n// Last Update on ".$date->format(DATE_ISO8601)." \n";
 
-        $this->registry[$name] = $driver;
-
-        $datas = sprintf("#LastUpdate: %s\n", $date->format(DATE_ISO8601))
-            . $this->parser->dump($this->registry, 6);
-
-        file_put_contents($this->cacheFile->getPathname(), $datas);
+        file_put_contents($this->file, $data);
     }
 }

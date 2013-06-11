@@ -141,7 +141,7 @@ class module_report_connexion extends module_report
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = array_merge(array(
-                ':site_id' => $app['phraseanet.registry']->get('GV_sit')
+                ':site_id' => $app['phraseanet.configuration']['main']['key']
             ),
             $datefilter['params'],
             $collfilter['params']

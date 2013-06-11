@@ -198,9 +198,9 @@ class API_V1_result
 
         $this->app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent());
 
-        $conf = $this->app['phraseanet.configuration']->getPhraseanet();
+        $conf = $this->app['phraseanet.configuration'];
 
-        if ($conf->has('api-timers') && true === $conf->get('api-timers')) {
+        if (isset($conf['main']['api-timers']) && true === $conf['main']['api-timers']) {
             $ret['timers'] = $this->app['api.timers']->toArray();
         }
 

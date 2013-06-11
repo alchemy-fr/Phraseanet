@@ -148,15 +148,13 @@ class PhraseaEngine implements SearchEngineInterface
             return $this;
         }
 
-        $choosenConnexion = $this->app['phraseanet.configuration']->getPhraseanet()->get('database');
+        $connexion = $this->app['phraseanet.configuration']['main']['database'];
 
-        $connexion = $this->app['phraseanet.configuration']->getConnexion($choosenConnexion);
-
-        $hostname = $connexion->get('host');
-        $port = (int) $connexion->get('port');
-        $user = $connexion->get('user');
-        $password = $connexion->get('password');
-        $dbname = $connexion->get('dbname');
+        $hostname = $connexion['host'];
+        $port = (int) $connexion['port'];
+        $user = $connexion['user'];
+        $password = $connexion['password'];
+        $dbname = $connexion['dbname'];
 
         if (!extension_loaded('phrasea2')) {
             throw new RuntimeException('Phrasea extension is required');
@@ -478,12 +476,11 @@ class PhraseaEngine implements SearchEngineInterface
     }
 
     /**
-     * Factory
+     * {@inheritdoc}
      *
-     * @param  Application   $app
      * @return PhraseaEngine
      */
-    public static function create(Application $app)
+    public static function create(Application $app, array $options = array())
     {
         return new static($app);
     }
@@ -527,7 +524,7 @@ class PhraseaEngine implements SearchEngineInterface
                     , $sbas_id
                     , $this->colls[$sbas_id]
                     , $this->arrayq[$sbas_id]
-                    , $this->app['phraseanet.registry']->get('GV_sit')
+                    , $this->app['phraseanet.configuration']['main']['key']
                     , $this->app['session']->get('usr_id')
                     , false
                     , $this->options->getSearchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY

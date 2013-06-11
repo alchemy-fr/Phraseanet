@@ -54,31 +54,8 @@ class patch_3804 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        try {
-            $confs = $app['phraseanet.configuration']->getConfigurations();
+        $app['phraseanet.configuration']->setDefault('main', 'task-manager');
 
-            foreach ($confs as $env => $conf) {
-                if (in_array($env, array('environment', 'key'))) {
-                    continue;
-                }
-                if (!isset($conf['task-manager'])) {
-                    $confs[$env]['task-manager'] = 'task_manager';
-                }
-            }
-
-            $app['phraseanet.configuration']->setConfigurations($confs);
-
-            $services = $app['phraseanet.configuration']->getServices();
-
-            if (!isset($services['TaskManager'])) {
-                $app['phraseanet.configuration']->resetServices('TaskManager');
-            }
-
-            return true;
-        } catch (\Exception $e) {
-            throw $e;
-        }
-
-        return false;
+        return true;
     }
 }
