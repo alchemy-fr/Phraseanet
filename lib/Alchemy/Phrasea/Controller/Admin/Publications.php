@@ -107,7 +107,7 @@ class Publications implements ControllerProviderInterface
 
             return $app->redirectPath('admin_feeds_list');
         })->before(function(Request $request) use ($app) {
-             $feed = $app["EM"]->getRepository("Entities\Feed")->findOneBy(array("id" => $request->attributes->get('id')));
+            $feed = $app["EM"]->getRepository("Entities\Feed")->findOneBy(array("id" => $request->attributes->get('id')));
 
             if (!$feed->getOwner($app['authentication']->getUser())) {
                 return $app->redirectPath('admin_feeds_feed', array('id' => $request->attributes->get('id'), 'error' =>  _('You are not the owner of this feed, you can not edit it')));

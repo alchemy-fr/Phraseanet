@@ -39,7 +39,7 @@ class FeedPublisher
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -55,14 +55,14 @@ class FeedPublisher
     public function setUsrId($usrId)
     {
         $this->usr_id = $usrId;
-    
+
         return $this;
     }
 
     /**
      * Get usr_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getUsrId()
     {
@@ -78,14 +78,14 @@ class FeedPublisher
     public function setOwner($owner)
     {
         $this->owner = $owner;
-    
+
         return $this;
     }
 
     /**
      * Get owner
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getOwner()
     {
@@ -101,24 +101,24 @@ class FeedPublisher
     public function setFeed(\Entities\Feed $feed = null)
     {
         $this->feed = $feed;
-    
+
         return $this;
     }
 
     /**
      * Get feed
      *
-     * @return \Entities\Feed 
+     * @return \Entities\Feed
      */
     public function getFeed()
     {
         return $this->feed;
     }
-    
+
     public function getUser(Application $app)
     {
         $user = \User_Adapter::getInstance($this->getUsrId(), $app);
-        
+
         return $user;
     }
 
@@ -131,14 +131,14 @@ class FeedPublisher
     public function setCreatedOn($createdOn)
     {
         $this->created_on = $createdOn;
-    
+
         return $this;
     }
 
     /**
      * Get created_on
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedOn()
     {

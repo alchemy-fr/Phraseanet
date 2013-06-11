@@ -73,10 +73,7 @@ class Root implements ControllerProviderInterface
                 $cssfile = '000000';
             }
 
-//            $user_feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
-//            $feeds = array_merge(array($user_feeds->get_aggregate()), $user_feeds->get_feeds());
             $feeds = $app["EM"]->getRepository("Entities\Feed")->getAllForUser($app['authentication']->getUser());
-//            $aggregate = new Aggregate($app, $user_feeds);
 
             $thjslist = "";
 

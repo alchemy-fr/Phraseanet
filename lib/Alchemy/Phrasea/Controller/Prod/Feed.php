@@ -271,7 +271,7 @@ class Feed implements ControllerProviderInterface
             $output = array(
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
                 . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-        <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $link->getURI() . '"/></div>',
+            <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $link->getURI() . '"/></div>',
                 'titre' => _('publications::votre rss personnel')
             );
 
@@ -288,7 +288,7 @@ class Feed implements ControllerProviderInterface
             $output = array(
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
                 . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-        <div><input type="text" style="width:100%" value="' . $link->getURI() . '"/></div>',
+            <div><input type="text" style="width:100%" value="' . $link->getURI() . '"/></div>',
                 'titre' => _('publications::votre rss personnel')
             );
 
