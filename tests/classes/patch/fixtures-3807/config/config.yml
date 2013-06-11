@@ -1,0 +1,16 @@
+environment : prod
+key : 1234567890
+
+prod:
+  phraseanet:
+    servername: 'http://sub.domain.tld/'
+    maintenance: true
+    debug: false
+    display_errors: false
+    database: main_connexion
+    api-timers: false
+  template_engine: twig
+  orm: doctrine_prod
+  cache: memcache_cache
+  opcodecache: apc_cache
+  border-manager: border_manager

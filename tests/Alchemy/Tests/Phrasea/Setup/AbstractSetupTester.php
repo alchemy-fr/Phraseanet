@@ -19,15 +19,11 @@ abstract class AbstractSetupTester extends \PHPUnit_Framework_TestCase
 
     protected function uninstall()
     {
-        rename(__DIR__ . '/../../../../../config/config.yml', __DIR__ . '/../../../../../config/config.yml.test');
-        rename(__DIR__ . '/../../../../../config/connexions.yml', __DIR__ . '/../../../../../config/connexions.yml.test');
-        rename(__DIR__ . '/../../../../../config/services.yml', __DIR__ . '/../../../../../config/services.yml.test');
+        rename(__DIR__ . '/../../../../../config/configuration.yml', __DIR__ . '/../../../../../config/configuration.yml.test');
 
         $this->tearDownHandlers[] = function() {
-                rename(__DIR__ . '/../../../../../config/config.yml.test', __DIR__ . '/../../../../../config/config.yml');
-                rename(__DIR__ . '/../../../../../config/connexions.yml.test', __DIR__ . '/../../../../../config/connexions.yml');
-                rename(__DIR__ . '/../../../../../config/services.yml.test', __DIR__ . '/../../../../../config/services.yml');
-            };
+            rename(__DIR__ . '/../../../../../config/configuration.yml.test', __DIR__ . '/../../../../../config/configuration.yml');
+        };
     }
 
     protected function goBackTo31()

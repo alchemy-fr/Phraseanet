@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
@@ -224,4 +225,12 @@ interface SearchEngineInterface
      * @return SearchEngineInterface
      */
     public function clearAllCache(\DateTime $date = null);
+
+    /**
+     * Creates the adapter.
+     *
+     * @param Application $app
+     * @param array       $options
+     */
+    public static function create(Application $app, array $options = array());
 }

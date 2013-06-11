@@ -52,7 +52,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['authentication.providers.account-creator'] = $app->share(function (Application $app) {
-            $authConf = $app['phraseanet.configuration']->get('authentication');
+            $authConf = $app['phraseanet.configuration']['authentication'];
             $templates = array_filter(array_map(function ($templateId) use ($app) {
                 try {
                     if (is_int($templateId) || ctype_digit($templateId)) {
@@ -75,7 +75,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
             $providers = new ProvidersCollection();
 
-            $authConf = $app['phraseanet.configuration']->get('authentication');
+            $authConf = $app['phraseanet.configuration']['authentication'];
             foreach ($authConf['providers'] as $providerId => $data) {
                 if (isset($data['enabled']) && false === $data['enabled']) {
                     continue;
@@ -91,7 +91,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.password-encoder'] = $app->share(function (Application $app) {
-            return new PasswordEncoder($app['phraseanet.registry']->get('GV_sit'));
+            return new PasswordEncoder($app['phraseanet.configuration']['main']['key']);
         });
 
         $app['auth.old-password-encoder'] = $app->share(function (Application $app) {
@@ -99,7 +99,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
-            $authConf = $app['phraseanet.configuration']->get('authentication');
+            $authConf = $app['phraseanet.configuration']['authentication']['captcha'];
 
             return new FailureManager($app['EM'], $app['recaptcha'], isset($authConf['trials-before-failure']) ? $authConf['trials-before-failure'] : 9);
         });
@@ -109,10 +109,13 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.native'] = $app->share(function (Application $app) {
-            $authConf = $app['phraseanet.configuration']->get('authentication');
+            $authConf = $app['phraseanet.configuration']['authentication'];
 
             if ($authConf['captcha']['enabled']) {
-                return new FailureHandledNativeAuthentication($app['auth.password-checker'], $app['auth.native.failure-manager']);
+                return new FailureHandledNativeAuthentication(
+                    $app['auth.password-checker'],
+                    $app['auth.native.failure-manager']
+                );
             } else {
                 return $app['auth.password-checker'];
             }

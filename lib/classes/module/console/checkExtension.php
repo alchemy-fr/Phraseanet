@@ -71,13 +71,12 @@ class module_console_checkExtension extends Command
         }
 
         $configuration = $this->getService('phraseanet.configuration');
-        $choosenConnection = $configuration->getPhraseanet()->get('database');
-        $connexion = $configuration->getConnexion($choosenConnection);
-        $hostname = $connexion->get('host');
-        $port = $connexion->get('port');
-        $user = $connexion->get('user');
-        $password = $connexion->get('password');
-        $dbname = $connexion->get('dbname');
+        $connexion = $configuration['main']['database'];
+        $hostname = $connexion['host'];
+        $port = $connexion['port'];
+        $user = $connexion['user'];
+        $password = $connexion['password'];
+        $dbname = $connexion['dbname'];
 
         $output->writeln("\n-- phrasea_conn --");
 
@@ -168,7 +167,7 @@ class module_console_checkExtension extends Command
                 , $base["sbas_id"]
                 , $base["searchcoll"]
                 , $base["arrayq"]
-                , $this->container['phraseanet.registry']->get('GV_sit')
+                , $this->container['phraseanet.configuration']['main']['key']
                 , $usrId
                 , false
                 , PHRASEA_MULTIDOC_DOCONLY

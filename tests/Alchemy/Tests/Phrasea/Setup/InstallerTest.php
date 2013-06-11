@@ -4,9 +4,10 @@ namespace Alchemy\Tests\Phrasea\Setup;
 
 use Alchemy\Phrasea\Setup\Installer;
 use Alchemy\Phrasea\Application;
-use Alchemy\Tests\Phrasea\Setup\TestSpecifications;
-use Alchemy\Phrasea\Core\Configuration;
+use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Symfony\Component\Yaml\Parser;
+use Symfony\Component\Yaml\Yaml;
+use Alchemy\Phrasea\Core\Configuration\Compiler;
 
 class InstallerTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,11 +41,16 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         $app = new Application('test');
 
         $parser = new Parser();
-        $connDatas = $parser->parse(file_get_contents(__DIR__ . '/../../../../../config/connexions.yml'));
-        $credentials = $connDatas['main_connexion'];
+        $connDatas = $parser->parse(file_get_contents(__DIR__ . '/../../../../../config/configuration.yml'));
+        $credentials = $connDatas['main']['database'];
 
-        $specifications = new TestSpecifications();
-        $app['phraseanet.configuration'] = new Configuration($specifications);
+        $config = __DIR__ . '/configuration.yml';
+        $compiled = __DIR__ . '/configuration.yml.php';
+
+        @unlink($config);
+        @unlink($compiled);
+
+        $app['phraseanet.configuration'] = new Configuration(new Yaml(), new Compiler(), $config, $compiled, true);
 
         $abConn = new \connection_pdo('abConn', 'localhost', 3306, $credentials['user'], $credentials['password'], 'ab_unitTests');
         $dbConn = new \connection_pdo('dbConn', 'localhost', 3306, $credentials['user'], $credentials['password'], 'db_unitTests');
@@ -57,10 +63,14 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         \User_Adapter::unsetInstances();
 
-        $this->assertTrue($specifications->isSetup());
+        $this->assertTrue($app['phraseanet.configuration']->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
-        $confs = $app['phraseanet.configuration']->getConfigurations();
-        $this->assertArrayHasKey('key', $confs);
-        $this->assertGreaterThan(10, strlen($confs['key']));
+        $conf = $app['phraseanet.configuration']->getConfig();
+        $this->assertArrayHasKey('main', $conf);
+        $this->assertArrayHasKey('key', $conf['main']);
+        $this->assertGreaterThan(10, strlen($conf['main']['key']));
+
+        @unlink($config);
+        @unlink($compiled);
     }
 }

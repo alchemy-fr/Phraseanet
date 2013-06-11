@@ -76,8 +76,6 @@ try {
     $app->command(new \module_console_schedulerState('scheduler:state'));
     $app->command(new \module_console_schedulerStop('scheduler:stop'));
     $app->command(new \module_console_schedulerStart('scheduler:start'));
-    $app->command(new \module_console_fileEnsureProductionSetting('check:ensure-production-settings'));
-    $app->command(new \module_console_fileEnsureDevSetting('check:ensure-dev-settings'));
 
     $app->command(new Mailtest('mail:test'));
 

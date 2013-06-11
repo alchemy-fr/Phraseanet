@@ -2,8 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Utils;
 
-use Alchemy\Phrasea\Core\Configuration;
-
 class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
 {
     /**
@@ -11,18 +9,14 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testRouteMysql()
     {
-        $configuration = Configuration::build();
-
-        $chooseConnexion = $configuration->getPhraseanet()->get('database');
-
-        $connexion = $configuration->getConnexion($chooseConnexion);
+        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
 
         $params = array(
-            "hostname" => $connexion->get('host'),
-            "port"     => $connexion->get('port'),
-            "user"     => $connexion->get('user'),
-            "password" => $connexion->get('password'),
-            "dbname"   => $connexion->get('dbname')
+            "hostname" => $connexion['host'],
+            "port"     => $connexion['port'],
+            "user"     => $connexion['user'],
+            "password" => $connexion['password'],
+            "dbname"   => $connexion['dbname'],
         );
 
         self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
@@ -32,18 +26,14 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteMysqlFailed()
     {
-        $configuration = Configuration::build();
-
-        $chooseConnexion = $configuration->getPhraseanet()->get('database');
-
-        $connexion = $configuration->getConnexion($chooseConnexion);
+        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
 
         $params = array(
-            "hostname" => $connexion->get('host'),
-            "port"     => $connexion->get('port'),
-            "user"     => $connexion->get('user'),
+            "hostname" => $connexion['host'],
+            "port"     => $connexion['port'],
+            "user"     => $connexion['user'],
             "password" => "fakepassword",
-            "dbname"   => $connexion->get('dbname')
+            "dbname"   => $connexion['dbname'],
         );
 
         self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
@@ -62,17 +52,13 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteMysqlDbFailed()
     {
-        $configuration = Configuration::build();
-
-        $chooseConnexion = $configuration->getPhraseanet()->get('database');
-
-        $connexion = $configuration->getConnexion($chooseConnexion);
+        $connexion = self::$DI['app']['phraseanet.configuration']['main']['database'];
 
         $params = array(
-            "hostname" => $connexion->get('host'),
-            "port"     => $connexion->get('port'),
-            "user"     => $connexion->get('user'),
-            "password" => $connexion->get('password'),
+            "hostname" => $connexion['host'],
+            "port"     => $connexion['port'],
+            "user"     => $connexion['user'],
+            "password" => $connexion['password'],
             "dbname"   => "fake-DTABASE-name"
         );
 

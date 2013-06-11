@@ -10,7 +10,11 @@ class BorderManagerServiceProvidertest extends ServiceProviderTestCase
     public function provideServiceDescription()
     {
         return array(
-            array('Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider', 'border-manager', 'Alchemy\\Phrasea\\Border\\Manager'),
+            array(
+                'Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider',
+                'border-manager',
+                'Alchemy\\Phrasea\\Border\\Manager'
+            ),
         );
     }
 }

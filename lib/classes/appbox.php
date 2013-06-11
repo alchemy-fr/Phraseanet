@@ -63,15 +63,13 @@ class appbox extends base
     {
         $this->app = $app;
         $this->connection = connection::getPDOConnection($app);
-        $choosenConnexion = $app['phraseanet.configuration']->getPhraseanet()->get('database');
+        $connexion = $app['phraseanet.configuration']['main']['database'];
 
-        $connexion = $app['phraseanet.configuration']->getConnexion($choosenConnexion);
-
-        $this->host = $connexion->get('host');
-        $this->port = $connexion->get('port');
-        $this->user = $connexion->get('user');
-        $this->passwd = $connexion->get('password');
-        $this->dbname = $connexion->get('dbname');
+        $this->host = $connexion['host'];
+        $this->port = $connexion['port'];
+        $this->user = $connexion['user'];
+        $this->passwd = $connexion['password'];
+        $this->dbname = $connexion['dbname'];
 
         return $this;
     }

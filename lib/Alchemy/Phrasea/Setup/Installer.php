@@ -192,62 +192,22 @@ class Installer
 
     private function createConfigFile($abConn, $serverName, $binaryData)
     {
-        $this->app['phraseanet.configuration']->initialize();
-
-        $connexionINI = array();
+        $config = $this->app['phraseanet.configuration']->initialize();
 
         foreach ($abConn->get_credentials() as $key => $value) {
             $key = $key == 'hostname' ? 'host' : $key;
-            $connexionINI[$key] = (string) $value;
+            $config['main']['database'][$key] = (string) $value;
         }
 
-        $connexionINI['driver'] = 'pdo_mysql';
-        $connexionINI['charset'] = 'UTF8';
+        $config['main']['database']['driver'] = 'pdo_mysql';
+        $config['main']['database']['charset'] = 'UTF8';
 
-        $connexion = array(
-            'main_connexion' => $connexionINI,
-            'test_connexion' => array(
-                'driver'  => 'pdo_sqlite',
-                'path'    => '/tmp/db.sqlite',
-                'charset' => 'UTF8'
-            ));
+        $config['binaries'] = $binaryData;
 
-        $cacheService = "array_cache";
+        $config['main']['servername'] = $serverName;
+        $config['main']['key'] = md5(mt_rand(100000000, 999999999));
 
-        $this->app['phraseanet.configuration']->setConnexions($connexion);
-
-        $services = $this->app['phraseanet.configuration']->getServices();
-
-        foreach ($services as $serviceName => $service) {
-            foreach ($service as $name => $desc) {
-                if ($name === "doctrine_prod") {
-
-                    $services[$serviceName]["doctrine_prod"]["options"]["cache"] = array(
-                        "query"    => $cacheService,
-                        "result"   => $cacheService,
-                        "metadata" => $cacheService
-                    );
-                }
-            }
-        }
-        $this->app['phraseanet.configuration']->setServices($services);
-
-        $arrayConf = $this->app['phraseanet.configuration']->getConfigurations();
-
-        $arrayConf['key'] = md5(mt_rand(100000000, 999999999));
-        $this->app['phraseanet.registry']->setKey($arrayConf['key']);
-
-        foreach ($arrayConf as $key => $value) {
-            if (is_array($value) && array_key_exists('phraseanet', $value)) {
-                $arrayConf[$key]["phraseanet"]["servername"] = $serverName;
-            }
-
-            if (is_array($value) && $key === 'prod') {
-                $arrayConf[$key]["cache"] = $cacheService;
-            }
-        }
-
-        $this->app['phraseanet.configuration']->setConfigurations($arrayConf, $arrayConf['environment']);
-        $this->app['phraseanet.configuration']->setBinaries(array('binaries' => $binaryData));
+        $this->app['phraseanet.registry']->setKey($config['main']['key']);
+        $this->app['phraseanet.configuration']->setConfig($config);
     }
 }

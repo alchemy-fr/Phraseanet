@@ -356,7 +356,7 @@ class databox extends base
 
         $this->app['EM']->flush();
 
-        $params = array(':site_id' => $this->app['phraseanet.registry']->get('GV_sit'));
+        $params = array(':site_id' => $this->app['phraseanet.configuration']['main']['key']);
 
         $sql = 'DELETE FROM clients WHERE site_id = :site_id';
         $stmt = $this->get_connection()->prepare($sql);
@@ -541,26 +541,23 @@ class databox extends base
         }
 
         try {
-            $this->meta_struct = $this->get_data_from_cache(self::CACHE_META_STRUCT);
-
-            return $this->meta_struct;
+            $metaStructData = $this->get_data_from_cache(self::CACHE_META_STRUCT);
         } catch (Exception $e) {
-            unset($e);
+            $sql = 'SELECT id, name FROM metadatas_structure ORDER BY sorter ASC';
+            $stmt = $this->get_connection()->prepare($sql);
+            $stmt->execute();
+            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            $metaStructData = $rs;
+            $this->set_data_to_cache($metaStructData, self::CACHE_META_STRUCT);
         }
 
-        $meta_struct = new databox_descriptionStructure();
+        $this->meta_struct = new databox_descriptionStructure();
 
-        $sql = 'SELECT id, name FROM metadatas_structure ORDER BY sorter ASC';
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $row) {
-            $meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
+        foreach ($metaStructData as $row) {
+            $this->meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
         }
-        $this->meta_struct = $meta_struct;
-        $this->set_data_to_cache($this->meta_struct, self::CACHE_META_STRUCT);
 
         return $this->meta_struct;
     }
@@ -1320,6 +1317,28 @@ class databox extends base
         $this->delete_data_from_cache(self::CACHE_CGUS);
 
         return $this;
+    }
+
+    public function __sleep()
+    {
+        $this->_sxml_structure = $this->_dom_structure = $this->_xpath_structure = null;
+
+        $vars = array();
+
+        foreach ($this as $key => $value) {
+            if (in_array($key, array('app', 'meta_struct'))) {
+                continue;
+            }
+
+            $vars[] = $key;
+        }
+
+        return $vars;
+    }
+
+    public function hydrate(Application $app)
+    {
+        $this->app = $app;
     }
 
     public function delete_data_from_cache($option = null)

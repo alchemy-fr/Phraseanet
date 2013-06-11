@@ -5,8 +5,8 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Silex\Application;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
  * @covers Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider
@@ -19,7 +19,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
             array(
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'authentication',
-                'Alchemy\\Phrasea\\Authentication\\Authenticator'
+                'Alchemy\\Phrasea\\Authentication\\Authenticator',
             ),
             array(
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
@@ -69,7 +69,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
             array(
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
                 'auth.native',
-                'Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication'
+                'Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface'
             ),
             array(
                 'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
@@ -82,17 +82,14 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
     public function testFailureManagerAttemptsConfiguration()
     {
         $app = new Application();
+        $app['root.path'] = __DIR__ . '/../../../../../../';
         $app->register(new TokensServiceProvider());
         $app->register(new AuthenticationManagerServiceProvider());
+        $app->register(new ConfigurationServiceProvider());
 
-        $app['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $app['phraseanet.configuration']->expects($this->once())
-            ->method('get')
-            ->with('authentication')
-            ->will($this->returnValue(array('trials-before-failure' => 42)));
+        $app['phraseanet.configuration'] = $conf = $app['phraseanet.configuration']->getConfig();
+        $conf['authentication']['captcha']['trials-before-failure'] = 42;
+        $app['phraseanet.configuration'] = $conf;
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
             ->disableOriginalConstructor()
@@ -108,36 +105,14 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
     public function testFailureAccountCreator()
     {
         $app = new PhraseaApplication();
+        $app->register(new ConfigurationServiceProvider());
 
-        $conf = $app['phraseanet.configuration'];
-
-        $app['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('get')
-            ->will($this->returnCallback(function ($key) use ($conf) {
-                if ($key === 'authentication') {
-                    return array(
-                        'auto-create' => array(
-                            'enabled'   => true,
-                            'templates' => array()
-                        )
-                    );
-                } else {
-                    return $conf->get($key);
-                }
-            }));
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('getPhraseanet')
-            ->will($this->returnValue(new ParameterBag($conf->get('phraseanet'))));
-
-        $conn = $conf->getSpecifications()->getConnexions();
-
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('getConnexion')
-            ->will($this->returnValue(new ParameterBag($conn['main_connexion'])));
+        $app['phraseanet.configuration'] = $conf = $app['phraseanet.configuration']->getConfig();
+        $conf['authentication']['auto-create'] = array(
+            'enabled' => true,
+            'templates' => array(),
+        );
+        $app['phraseanet.configuration'] = $conf;
 
         $app['authentication.providers.account-creator'];
     }
@@ -145,7 +120,9 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
     public function testAuthNativeWithCaptchaEnabled()
     {
         $app = new Application();
+        $app['root.path'] = __DIR__ . '/../../../../../../';
         $app->register(new AuthenticationManagerServiceProvider());
+        $app->register(new ConfigurationServiceProvider());
         $app['phraseanet.registry'] = $this->getMockBuilder('registry')
             ->disableOriginalConstructor()
             ->getMock();
@@ -162,14 +139,11 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
             }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $app['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('get')
-            ->with('authentication')
-            ->will($this->returnValue(array('captcha' => array('enabled' => true))));
+        $app['phraseanet.configuration'] = $conf = $app['phraseanet.configuration']->getConfig();
+        $conf['authentication']['captcha'] = array(
+            'enabled' => true,
+        );
+        $app['phraseanet.configuration'] = $conf;
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
             ->disableOriginalConstructor()
@@ -184,7 +158,9 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
     public function testAuthNativeWithCaptchaDisabled()
     {
         $app = new Application();
+        $app['root.path'] = __DIR__ . '/../../../../../../';
         $app->register(new AuthenticationManagerServiceProvider());
+        $app->register(new ConfigurationServiceProvider());
         $app['phraseanet.registry'] = $this->getMockBuilder('registry')
             ->disableOriginalConstructor()
             ->getMock();
@@ -201,14 +177,11 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
             }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $app['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('get')
-            ->with('authentication')
-            ->will($this->returnValue(array('captcha' => array('enabled' => false))));
+        $app['phraseanet.configuration'] = $conf = $app['phraseanet.configuration']->getConfig();
+        $conf['authentication']['captcha'] = array(
+            'enabled' => false,
+        );
+        $app['phraseanet.configuration'] = $conf;
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
             ->disableOriginalConstructor()
@@ -230,39 +203,15 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $template2 = \User_Adapter::create(self::$DI['app'], 'template' . $random->generatePassword(), $random->generatePassword(), null, false);
         $template2->set_template(self::$DI['user']);
 
-        $conf = $app['phraseanet.configuration'];
-
-        $app['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('get')
-            ->will($this->returnCallback(function ($key) use ($template1, $template2, $conf) {
-                if ($key === 'authentication') {
-                    return array(
-                        'auto-create' => array(
-                            'enabled'   => true,
-                            'templates' => array(
-                                $template1->get_id(),
-                                $template2->get_login()
-                            )
-                        )
-                    );
-                } else {
-                    return $conf->get($key);
-                }
-            }));
-
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('getPhraseanet')
-            ->will($this->returnValue(new ParameterBag($conf->get('phraseanet'))));
-
-        $conn = $conf->getSpecifications()->getConnexions();
-
-        $app['phraseanet.configuration']->expects($this->any())
-            ->method('getConnexion')
-            ->will($this->returnValue(new ParameterBag($conn['main_connexion'])));
+        $app['phraseanet.configuration'] = $conf = $app['phraseanet.configuration']->getConfig();
+        $conf['authentication']['auto-create'] = array(
+            'enabled' => true,
+            'templates' => array(
+                $template1->get_id(),
+                $template2->get_login()
+            )
+        );
+        $app['phraseanet.configuration'] = $conf;
 
         $this->assertEquals(array($template1, $template2), $app['authentication.providers.account-creator']->getTemplates());
 

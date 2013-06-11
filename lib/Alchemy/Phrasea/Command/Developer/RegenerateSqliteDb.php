@@ -29,9 +29,7 @@ class RegenerateSqliteDb extends Command
         $fs->rename($source, $target);
 
         try {
-            $dbsParams = $this->container['phraseanet.configuration']->getConnexions();
-            $dbParams = $dbsParams['test_connexion'];
-
+            $dbParams = $this->container['phraseanet.configuration']->getTestConnectionParameters();
             $dbParams['path'] = $source;
 
             $config = Setup::createYAMLMetadataConfiguration(array(__DIR__ . '/../../../../conf.d/Doctrine'), true);

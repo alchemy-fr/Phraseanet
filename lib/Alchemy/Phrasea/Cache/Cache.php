@@ -21,6 +21,18 @@ use Doctrine\Common\Cache\Cache as DoctrineCache;
 interface Cache extends DoctrineCache
 {
     /**
+     * Sets the namespace
+     *
+     * @param type $namespace
+     */
+    public function setNamespace($namespace);
+
+    /**
+     * Flushes all data contained in the adapter
+     */
+    public function flushAll();
+
+    /**
      * Name of the cache driver
      * @return string
      */

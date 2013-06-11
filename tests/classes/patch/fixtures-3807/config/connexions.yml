@@ -1,0 +1,13 @@
+main_connexion:
+  host: 'sql-host'
+  port: 13306
+  user: username
+  password: s3cr3t
+  dbname: phrasea_db
+  driver: pdo_mysql
+  charset: UTF8
+
+test_connexion:
+  driver: pdo_sqlite
+  path: '/tmp/db.sqlite'
+  charset: UTF8

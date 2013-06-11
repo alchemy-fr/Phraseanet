@@ -14,30 +14,43 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Cache\Manager as CacheManager;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Alchemy\Phrasea\Core\Configuration\Compiler;
+use Alchemy\Phrasea\Cache\Factory;
 
 class CacheServiceProvider implements ServiceProviderInterface
 {
 
     public function register(Application $app)
     {
-        $app['phraseanet.cache-service'] = $app->share(function(Application $app) {
-            if ( ! file_exists(__DIR__ . '/../../../../../tmp/cache_registry.yml')) {
-                touch(__DIR__ . '/../../../../../tmp/cache_registry.yml');
-            }
+        $app['phraseanet.cache-registry'] = __DIR__ . '/../../../../../tmp/cache_registry.php';
 
-            return new CacheManager($app, new \SplFileInfo(__DIR__ . '/../../../../../tmp/cache_registry.yml'));
+        $app['phraseanet.cache-compiler'] = $app->share(function () {
+            return new Compiler();
+        });
+
+        $app['phraseanet.cache-factory'] = $app->share(function () {
+            return new Factory();
+        });
+
+        $app['phraseanet.cache-service'] = $app->share(function(Application $app) {
+            return new CacheManager(
+                $app['phraseanet.cache-compiler'],
+                $app['phraseanet.cache-registry'],
+                $app['monolog'],
+                $app['phraseanet.cache-factory']
+            );
         });
 
         $app['cache'] = $app->share(function(Application $app) {
-            return $app['phraseanet.cache-service']
-                    ->get('MainCache', $app['phraseanet.configuration']->getCache())
-                    ->getDriver();
+            $conf = $app['phraseanet.configuration']['main']['cache'];
+
+            return $app['phraseanet.cache-service']->factory('cache', $conf['type'], $conf['options']);
         });
 
         $app['opcode-cache'] = $app->share(function(Application $app) {
-            return $app['phraseanet.cache-service']
-                    ->get('OpcodeCache', $app['phraseanet.configuration']->getOpcodeCache())
-                    ->getDriver();
+            $conf = $app['phraseanet.configuration']['main']['opcodecache'];
+
+            return $app['phraseanet.cache-service']->factory('cache', $conf['type'], $conf['options']);
         });
     }
 

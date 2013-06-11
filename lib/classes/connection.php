@@ -129,15 +129,13 @@ class connection
             if (trim($name) !== 'appbox') {
                 $connection_params = phrasea::sbas_params($app);
             } else {
-                $choosenConnexion = $app['phraseanet.configuration']->getPhraseanet()->get('database');
+                $connexion = $app['phraseanet.configuration']['main']['database'];
 
-                $connexion = $app['phraseanet.configuration']->getConnexion($choosenConnexion);
-
-                $hostname = $connexion->get('host');
-                $port = $connexion->get('port');
-                $user = $connexion->get('user');
-                $password = $connexion->get('password');
-                $dbname = $connexion->get('dbname');
+                $hostname = $connexion['host'];
+                $port = $connexion['port'];
+                $user = $connexion['user'];
+                $password = $connexion['password'];
+                $dbname = $connexion['dbname'];
             }
 
             if (isset($connection_params[$name])) {
