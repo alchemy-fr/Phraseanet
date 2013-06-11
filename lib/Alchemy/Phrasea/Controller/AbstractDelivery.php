@@ -46,7 +46,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
                 $referrer = $_SERVER['HTTP_REFERER'];
             }
 
-            $record->log_view($log_id, $referrer, $app['phraseanet.registry']->get('GV_sit'));
+            $record->log_view($log_id, $referrer, $app['phraseanet.configuration']['main']['key']);
         } catch (\Exception $e) {
 
         }

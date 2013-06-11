@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Symfony\Component\Yaml\Yaml;
 
 class patch_3806 implements patchInterface
 {
@@ -49,29 +48,7 @@ class patch_3806 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $parser = new Yaml();
-        $data = $parser->parse(file_get_contents(__DIR__ . '/../../conf.d/config.yml'));
-
-        $fields = $data['prod']['registration-fields'];
-        $authentication = $data['prod']['authentication'];
-
-        $confs = $app['phraseanet.configuration']->getConfigurations();
-
-        foreach ($confs as $env => $conf) {
-
-            if (in_array($env, array('environment', 'key'))) {
-                continue;
-            }
-
-            if (!isset($conf['registration-fields'])) {
-                $confs[$env]['registration-fields'] = $fields;
-            }
-
-            if (!isset($conf['authentication'])) {
-                $confs[$env]['authentication'] = $authentication;
-            }
-        }
-
-        $app['phraseanet.configuration']->setConfigurations($confs);
+        $app['phraseanet.configuration']->setDefault('registration-fields');
+        $app['phraseanet.configuration']->setDefault('authentication');
     }
 }

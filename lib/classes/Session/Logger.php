@@ -125,7 +125,7 @@ class Session_Logger
         $params = array(
             ':ses_id'          => $app['session']->get('session_id'),
             ':usr_login'       => $app['authentication']->getUser() ? $app['authentication']->getUser()->get_login() : null,
-            ':site_id'         => $app['phraseanet.registry']->get('GV_sit'),
+            ':site_id'         => $app['phraseanet.configuration']['main']['key'],
             ':usr_id'          => $app['authentication']->isAuthenticated() ? $app['authentication']->getUser()->get_id() : null,
             ':browser'         => $browser->getBrowser(),
             ':browser_version' => $browser->getExtendedVersion(),
@@ -171,7 +171,7 @@ class Session_Logger
             WHERE site = :site AND sit_session = :ses_id';
 
         $params = array(
-            ':site'   => $app['phraseanet.registry']->get('GV_sit')
+            ':site'   => $app['phraseanet.configuration']['main']['key']
             , ':ses_id' => $app['session']->get('session_id')
         );
 

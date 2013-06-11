@@ -171,7 +171,13 @@ abstract class base implements cache_cacheableInterface
             \cache_databox::refresh($this->app, $this->id);
         }
 
-        return $this->get_cache()->get($this->get_cache_key($option));
+        $data = $this->get_cache()->get($this->get_cache_key($option));
+
+        if (is_object($data) && method_exists($data, 'hydrate')) {
+            $data->hydrate($this->app);
+        }
+
+        return $data;
     }
 
     public function set_data_to_cache($value, $option = null, $duration = 0)

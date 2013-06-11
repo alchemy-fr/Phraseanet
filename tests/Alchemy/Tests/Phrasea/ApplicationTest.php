@@ -276,6 +276,16 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertNull($app->getUnlockAccountData());
     }
 
+    public function testRootPath()
+    {
+        $app = new Application('test');
+
+        $this->assertFileExists($app['root.path'].'/LICENSE');
+        $this->assertFileExists($app['root.path'].'/README.md');
+        $this->assertFileExists($app['root.path'].'/lib');
+        $this->assertFileExists($app['root.path'].'/www');
+    }
+
     private function getAppThatReturnLocale()
     {
         $app = new Application('test');

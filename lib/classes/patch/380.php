@@ -59,12 +59,12 @@ class patch_380 implements patchInterface
      */
     public function apply(base $databox, Application $app)
     {
-        $connexions = $app['phraseanet.configuration']->getConnexions();
+        $config = $app['phraseanet.configuration']->getConfig();
 
-        if (isset($connexions['test_connexion'])) {
-            $connexions['test_connexion']['path'] = '/tmp/db.sqlite';
+        if (isset($config['main']['database-test'])) {
+            $config['main']['database-test']['path'] = '/tmp/db.sqlite';
         }
 
-        $app['phraseanet.configuration']->setConnexions($connexions);
+        $app['phraseanet.configuration']->setConfig($config);
     }
 }

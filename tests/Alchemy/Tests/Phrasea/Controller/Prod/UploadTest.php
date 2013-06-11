@@ -100,7 +100,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         if ($datas['element'] == 'record') {
             $id = explode('_', $datas['id']);
 
-            $record = new \record_adapter($id[0], $id[1]);
+            $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
         }
     }
 

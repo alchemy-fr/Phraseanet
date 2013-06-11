@@ -210,13 +210,12 @@ class Databoxes implements ControllerProviderInterface
         if ((null === $request->request->get('new_settings')) && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
 
             $configuration = $app['phraseanet.configuration'];
-            $choosenConnexion = $configuration->getPhraseanet()->get('database');
-            $connexion = $configuration->getConnexion($choosenConnexion);
+            $connexion = $configuration['main']['database'];
 
-            $hostname = $connexion->get('host');
-            $port = $connexion->get('port');
-            $user = $connexion->get('user');
-            $password = $connexion->get('password');
+            $hostname = $connexion['host'];
+            $port = $connexion['port'];
+            $user = $connexion['user'];
+            $password = $connexion['password'];
 
             $dataTemplate = new \SplFileInfo($app['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
 
@@ -282,12 +281,12 @@ class Databoxes implements ControllerProviderInterface
         if ((null === $request->request->get('new_settings'))) {
             try {
                 $configuration = $app['phraseanet.configuration'];
-                $connexion = $configuration->getConnexion();
+                $connexion = $configuration['main']['database'];
 
-                $hostname = $connexion->get('host');
-                $port = $connexion->get('port');
-                $user = $connexion->get('user');
-                $password = $connexion->get('password');
+                $hostname = $connexion['host'];
+                $port = $connexion['port'];
+                $user = $connexion['user'];
+                $password = $connexion['password'];
 
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
                 $base = \databox::mount($app, $hostname, $port, $user, $password, $dbName, $app['phraseanet.registry']);

@@ -3,10 +3,11 @@
 namespace Alchemy\Tests\Phrasea\Setup\Version\Migration;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
+use Alchemy\Phrasea\Core\Configuration\Configuration;
+use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Alchemy\Phrasea\Setup\Version\Migration\Migration35;
-use Alchemy\Tests\Phrasea\Setup\TestSpecifications;
 use Alchemy\Tests\Phrasea\Setup\AbstractSetupTester;
+use Symfony\Component\Yaml\Yaml;
 
 class Migration35Test extends AbstractSetupTester
 {
@@ -33,7 +34,13 @@ class Migration35Test extends AbstractSetupTester
 
     public function testMigrate()
     {
-        $this->specifications = new TestSpecifications();
+        $config = __DIR__ . '/configuration.yml';
+        $compiled = __DIR__ . '/configuration.yml.php';
+
+        @unlink($config);
+        @unlink($compiled);
+
+        $this->specifications = new Configuration(new Yaml(), new Compiler(), $config, $compiled, true);
         $this->assertFalse($this->specifications->isSetup());
 
         $this->goBackTo35();
@@ -45,6 +52,9 @@ class Migration35Test extends AbstractSetupTester
         @unlink(__DIR__ . '/../../../../../../config/connexion.inc.old');
 
         $this->assertTrue($this->specifications->isSetup());
+
+        @unlink($config);
+        @unlink($compiled);
     }
 
     private function getMigration(Application $app = null)
@@ -52,7 +62,7 @@ class Migration35Test extends AbstractSetupTester
         $app = $app ? : new Application('test');
 
         if ($this->specifications) {
-            $app['phraseanet.configuration'] = new Configuration($this->specifications);
+            $app['phraseanet.configuration'] = $this->specifications;
         }
 
         return new Migration35($app);

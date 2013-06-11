@@ -11,18 +11,35 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\Configuration;
+use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class ConfigurationServiceProvider implements ServiceProviderInterface
 {
 
     public function register(SilexApplication $app)
     {
-        $app['phraseanet.configuration'] = $app->share(function(Application $app) {
-            return Configuration::build(null, $app->getEnvironment());
+        $app['phraseanet.configuration.yaml-parser'] = $app->share(function (SilexApplication $app) {
+            return new Yaml();
+        });
+        $app['phraseanet.configuration.compiler'] = $app->share(function (SilexApplication $app) {
+            return new Compiler();
+        });
+        $app['phraseanet.configuration.config-path'] = $app['root.path'] . '/config/configuration.yml';
+        $app['phraseanet.configuration.config-compiled-path'] = $app['root.path'] . '/tmp/configuration-compiled.php';
+
+        $app['phraseanet.configuration'] = $app->share(function(SilexApplication $app) {
+            return new Configuration(
+                $app['phraseanet.configuration.yaml-parser'],
+                $app['phraseanet.configuration.compiler'],
+                $app['phraseanet.configuration.config-path'],
+                $app['phraseanet.configuration.config-compiled-path'],
+                $app['debug']
+            );
         });
     }
 

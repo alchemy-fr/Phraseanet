@@ -565,6 +565,16 @@ class SphinxSearchEngine implements SearchEngineInterface
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * @return SphinxSearchEngine
+     */
+    public static function create(Application $app, array $options = array())
+    {
+        return new static($app, $options['host'], $options['port'], $options['rt_host'], $options['rt_port']);
+    }
+
+    /**
      * Return unique integer key for a databox
      *
      * @param  \databox $databox

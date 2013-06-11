@@ -74,9 +74,7 @@ class ConfigurationTester
      */
     public function isInstalled()
     {
-        return file_exists(__DIR__ . '/../../../../config/config.yml')
-            && file_exists(__DIR__ . '/../../../../config/connexions.yml')
-            && file_exists(__DIR__ . '/../../../../config/services.yml');
+        return $this->app['phraseanet.configuration']->isSetup();
     }
 
     /**

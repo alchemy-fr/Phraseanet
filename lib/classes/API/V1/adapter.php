@@ -313,10 +313,10 @@ class API_V1_adapter extends API_V1_Abstract
         );
 
         $ret['phraseanet']['environment'] = $app->getEnvironment();
-        $ret['phraseanet']['debug'] = $app['phraseanet.configuration']->isDebug();
-        $ret['phraseanet']['maintenance'] = $app['phraseanet.configuration']->isMaintained();
-        $ret['phraseanet']['errorsLog'] = $app['phraseanet.configuration']->isDisplayingErrors();
-        $ret['phraseanet']['serverName'] = $app['phraseanet.configuration']->getPhraseanet()->get('servername');
+        $ret['phraseanet']['debug'] = $app['debug'];
+        $ret['phraseanet']['maintenance'] = $app['phraseanet.configuration']['main']['maintenance'];
+        $ret['phraseanet']['errorsLog'] = $app['debug'];
+        $ret['phraseanet']['serverName'] = $app['phraseanet.configuration']['main']['servername'];
 
         return $ret;
     }
@@ -343,7 +343,7 @@ class API_V1_adapter extends API_V1_Abstract
                 'httpServer'  => array(
                     'logErrors'       => $app['phraseanet.registry']->get('GV_log_errors'),
                     'phpTimezone'     => ini_get('date.timezone'),
-                    'siteId'          => $app['phraseanet.registry']->get('GV_sit'),
+                    'siteId'          => $app['phraseanet.configuration']['main']['key'],
                     'staticUrl'       => $app['phraseanet.registry']->get('GV_STATIC_URL'),
                     'defaultLanguage' => $app['phraseanet.registry']->get('id_GV_default_lng'),
                     'allowIndexing'   => $app['phraseanet.registry']->get('GV_allow_search_engine'),

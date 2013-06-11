@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -103,7 +102,8 @@ class patch_373 implements patchInterface
 
         $stmt->closeCursor();
 
-        $app['phraseanet.configuration']->setBinaries(array('binaries' => $binaries));
+        $config = $app['phraseanet.configuration']->getConfig();
+        $config['binaries'] = $binaries;
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -120,9 +120,9 @@ class patch_373 implements patchInterface
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $configs = $app['phraseanet.configuration']->getConfigurations();
-        $configs['key'] = $row['value'];
-        $app['phraseanet.configuration']->setConfigurations($configs);
+        $config['main']['key'] = $row['value'];
+
+        $app['phraseanet.configuration']->setConfig($config);
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);

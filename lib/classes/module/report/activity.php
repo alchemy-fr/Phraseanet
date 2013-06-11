@@ -625,7 +625,7 @@ class module_report_activity extends module_report
         $result['top_ten_poiddoc'] = array();
         $result['top_ten_poidprev'] = array();
 
-        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
+        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
 
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $params = array_merge($params, $datefilter['params']);
@@ -707,7 +707,7 @@ class module_report_activity extends module_report
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
+        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -754,7 +754,7 @@ class module_report_activity extends module_report
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
+        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -795,7 +795,7 @@ class module_report_activity extends module_report
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
+        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -835,7 +835,7 @@ class module_report_activity extends module_report
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
+        $params = array(':site_id' => $app['phraseanet.configuration']['main']['key']);
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "

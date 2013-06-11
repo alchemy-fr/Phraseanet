@@ -48,19 +48,18 @@ class registry implements registryInterface
 
         $this->cache->save('GV_RootPath', dirname(dirname(__DIR__)) . '/');
         if ($app['phraseanet.configuration-tester']->isInstalled()) {
-            $this->cache->save('GV_ServerName', $app['phraseanet.configuration']->getPhraseanet()->get('servername'));
-            $this->cache->save('GV_debug', $app['phraseanet.configuration']->isDebug());
-            $this->cache->save('GV_maintenance', $app['phraseanet.configuration']->isMaintained());
+            $this->cache->save('GV_ServerName', $app['phraseanet.configuration']['main']['servername']);
+            $this->cache->save('GV_debug', $app['debug']);
+            $this->cache->save('GV_maintenance', $app['phraseanet.configuration']['main']['maintenance']);
 
-            $config = $app['phraseanet.configuration']->getConfigurations();
+            $config = $app['phraseanet.configuration']->getConfig();
 
-            if (isset($config['key'])) {
-                $this->cache->save('GV_sit', $config['key']);
+            if (isset($config['main']['key'])) {
+                $this->cache->save('GV_sit', $config['main']['key']);
             }
 
-            $binaries = $app['phraseanet.configuration']->getBinaries();
-            if (isset($binaries['binaries'])) {
-                foreach ($binaries['binaries'] as $name => $path) {
+            if (isset($config['binaries'])) {
+                foreach ($config['binaries'] as $name => $path) {
                     if ($path) {
                         $this->cache->save($name, $path);
                     }

@@ -163,6 +163,7 @@ class Application extends SilexApplication
     {
         parent::__construct();
 
+        $this['root.path'] = realpath(__DIR__ . '/../../..');
         $this->environment = $environment;
 
         if ((int) ini_get('memory_limit') < 2048) {

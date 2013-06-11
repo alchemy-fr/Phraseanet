@@ -15,7 +15,7 @@ class MustacheLoaderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteSlashWrongUrl()
     {
-        self::$DI['client']->request('GET', '/prod/MustacheLoader/', array('template' => '/../../../../config/config.yml'));
+        self::$DI['client']->request('GET', '/prod/MustacheLoader/', array('template' => '/../../../../config/configuration.yml'));
 
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }

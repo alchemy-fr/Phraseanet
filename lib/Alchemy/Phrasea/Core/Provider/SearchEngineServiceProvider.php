@@ -12,7 +12,8 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
-use Alchemy\Phrasea\Core\Service\Builder;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -22,12 +23,15 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['phraseanet.SE'] = $app->share(function($app) {
-            $configuration = $app['phraseanet.configuration']
-                    ->getService($app['phraseanet.configuration']->getSearchEngine());
 
-            $service = Builder::create($app, $configuration);
+            $engineClass = $app['phraseanet.configuration']['main']['search-engine']['type'];
+            $engineOptions = $app['phraseanet.configuration']['main']['search-engine']['options'];
 
-            return $service->getDriver();
+            if (!class_exists($engineClass) || $engineClass instanceof SearchEngineInterface) {
+                throw new InvalidArgumentException(sprintf('%s is not valid SearchEngineInterface', $engineClass));
+            }
+
+            return $engineClass::create($app, $engineOptions);
         });
 
         $app['phraseanet.SE.logger'] = $app->share(function(Application $app) {
