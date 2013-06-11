@@ -165,7 +165,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $response = self::$DI['client']->getResponse();
 
         foreach ($headers as $name => $value) {
-            $this->assertEquals($response->headers->get($name), $value);
+            $this->assertEquals($value, $response->headers->get($name));
         }
 
         $caption = self::$DI['record_1']->get_caption()->serialize(\caption_record::SERIALIZE_JSON);
@@ -182,7 +182,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $response = self::$DI['client']->getResponse();
 
         foreach ($headers as $name => $value) {
-            $this->assertEquals($response->headers->get($name), $value);
+            $this->assertEquals($value, $response->headers->get($name));
         }
 
         $this->assertEquals($response->headers->get("Link"), "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token);
@@ -199,7 +199,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $response = self::$DI['client']->getResponse();
 
         foreach ($headers as $name => $value) {
-            $this->assertEquals($response->headers->get($name), $value);
+            $this->assertEquals($value, $response->headers->get($name));
         }
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -214,7 +214,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $response = self::$DI['client']->getResponse();
 
         foreach ($headers as $name => $value) {
-            $this->assertEquals($response->headers->get($name), $value);
+            $this->assertEquals($value, $response->headers->get($name));
         }
 
         $this->assertEquals($response->headers->get("Link"), "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token);
@@ -230,7 +230,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $response = self::$DI['client']->getResponse();
 
         foreach ($headers as $name => $value) {
-            $this->assertEquals($response->headers->get($name), $value);
+            $this->assertEquals($value, $response->headers->get($name));
         }
 
         $this->assertEquals(200, $response->getStatusCode());
