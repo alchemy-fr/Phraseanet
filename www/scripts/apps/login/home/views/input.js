@@ -11,7 +11,7 @@ define([
     "jquery",
     "underscore",
     "backbone",
-    "apps/login/home/views/errorView",
+    "apps/login/home/views/error",
     "common/multiviews"
 ], function($, _, Backbone, ErrorView, MultiViews) {
     var InputView = Backbone.View.extend(_.extend({}, MultiViews, {

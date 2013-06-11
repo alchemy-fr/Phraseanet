@@ -13,11 +13,11 @@ define([
     "backbone",
     "bootstrap",
     "common/validator",
-    "apps/login/home/views/inputView"
+    "apps/login/home/views/input"
 ], function($, _, Backbone, bootstrap, Validator, InputView) {
     var RegisterForm = Backbone.View.extend({
         events: {
-            "submit": "onSubmit"
+            "submit": "_onSubmit"
         },
         initialize: function(options) {
             var self = this;
@@ -36,7 +36,7 @@ define([
                 self._addInputView(input);
             });
         },
-        onSubmit: function (event) {
+        _onSubmit: function (event) {
             var self = this;
 
             // reset previous errors in the view

@@ -44,7 +44,7 @@ define([
 
     App.initialize();
 
-    describe("Application", function() {
+    describe("Admin field", function() {
         describe("Initialization", function() {
             it("should create a global variable", function() {
                 should.exist(AdminFieldApp);

@@ -58,6 +58,10 @@ define([
         return this.errors.length > 0;
     };
 
+    FormValidator.prototype.getRules = function() {
+        return this.rules;
+    };
+
     FormValidator.prototype._addField = function(field) {
         this.fields.push({
             name: field.name,
