@@ -172,7 +172,31 @@ class Login implements ControllerProviderInterface
             return $app['twig']->render('login/cgus.html.twig');
         })->bind('login_cgus');
 
+        $controllers->get('/language.json', 'login.controller:getLanguage')
+            ->bind('login_language');
+
+
         return $controllers;
+    }
+
+    public function getLanguage(Application $app, Request $request)
+    {
+        $response =  $app->json(array(
+            'validation_blank'          => _('This value should not be blank.'),
+            'validation_choice_min'     => _('You must select at least %s choice.'),
+            'validation_email'          => _('This value is not a valid email address.'),
+            'validation_ip'             => _('This value is not a valid IP address.'),
+            'validation_length_min'     => _('This value is too short. It should have %s character or more'),
+            'password_match'            => _('The passwords do not match.'),
+            'accept_tou'                => _('You must accept the terms of use.'),
+        ));
+
+        $date = new \DateTime();
+        $date->modify('+1 day');
+
+        $response->setExpires($date);
+
+        return $response;
     }
 
     public function doRegistration(PhraseaApplication $app, Request $request)
@@ -349,7 +373,7 @@ class Login implements ControllerProviderInterface
             $provider = $this->findProvider($app, $request->query->get('providerId'));
             $identity = $provider->getIdentity();
 
-            $form->bind(array_filter(array(
+            $form->setData(array_filter(array(
                 'email'       => $identity->getEmail(),
                 'firstname'   => $identity->getFirstname(),
                 'lastname'    => $identity->getLastname(),
