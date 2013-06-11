@@ -39,7 +39,7 @@ class CacheServerProbe extends CacheServerRequirement implements ProbeInterface
     /**
      * {@inheritdoc}
      *
-     * @return BinariesProbe
+     * @return CacheServerProbe
      */
     public static function create(Application $app)
     {

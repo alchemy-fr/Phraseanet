@@ -39,7 +39,7 @@ class OpcodeCacheProbe extends OpcodeCacheRequirement implements ProbeInterface
     /**
      * {@inheritdoc}
      *
-     * @return BinariesProbe
+     * @return OpcodeCacheProbe
      */
     public static function create(Application $app)
     {
