@@ -37,8 +37,10 @@ define([
         // inputs present in form
         this.inputs = {};
 
-        _.each(inputs, function(field) {
-            self.inputs[field.name] = field;
+        _.each(_.groupBy(inputs, function(input){
+            return input.name;
+        }), function(fields, name) {
+            self.inputs[name] = fields;
         });
 
         this._validateForm();
@@ -59,7 +61,8 @@ define([
             name: field.name,
             rules: field.rules,
             message: field.message || "An error ocurred on input[name=" + field.name + "], you can edit this message by setting a 'message' property in your rule definition object",
-            value: null
+            value: null,
+            type: field.type || "text"
         });
     };
 
@@ -68,7 +71,18 @@ define([
         this.errors = [];
         _.each(this.fields, function(field){
             if (_.has(self.inputs, field.name)) {
-                field.value = $.trim(self.inputs[field.name].value);
+                // values can be multiple
+                var values = [];
+
+                _.each(self.inputs[field.name], function(field){
+                    return values.push(field.value);
+                });
+
+                field.value = values.join(',');
+
+                self._validateField(field);
+            } else if (field.type === "checkbox" || field.type === "radio" || field.type === "select" || field.type === "multiple") {
+                field.value = '';
                 self._validateField(field);
             }
         });
@@ -78,11 +92,6 @@ define([
         var self = this;
         var ruleRegex = /^(.+?)\[(.+)\]$/;
         var rules = field.rules.split('|');
-
-        // If the value is null and not required, we don't need to run through validation, unless the rule is a callback, but then only if the value is not null
-        if ((field.rules.indexOf('required') === -1 && (!field.value || field.value === '' || typeof field.value === "undefined")) && (field.rules.indexOf('callback_') === -1 || field.value === null)) {
-            return;
-        }
 
         // Run through the rules and execute the validation methods as needed
         _.every(rules, function(method) {
@@ -115,9 +124,7 @@ define([
             // If the hook failed, add a message to the errors array
             if (failed) {
                 self.errors.push({
-                    id: field.id,
                     name: field.name,
-                    type: field.type,
                     value: field.value,
                     message: field.message,
                     rule: method
@@ -149,10 +156,6 @@ define([
         "required": function(field) {
             var value = field.value;
 
-            if ((field.type === 'checkbox') || (field.type === 'radio')) {
-                return (field.checked === true);
-            }
-
             return (value !== null && value !== '');
         },
         "equal": function(field, defaultName) {
@@ -182,6 +185,10 @@ define([
             return true;
         },
         "min_length": function(field, length) {
+            if (field.type === "multiple") {
+                return _.filter(field.value.split(","), function(value){ return value !== ""; }).length >= parseInt(length, 10)
+            }
+
             if (!this.Regexp.numericRegex.test(length)) {
                 return false;
             }
@@ -189,6 +196,10 @@ define([
             return (field.value.length >= parseInt(length, 10));
         },
         "max_length": function(field, length) {
+            if (field.type === "multiple") {
+                return _.filter(field.value.split(","), function(value){ return value !== ""; }).length <= parseInt(length, 10)
+            }
+
             if (!this.Regexp.numericRegex.test(length)) {
                 return false;
             }
@@ -196,6 +207,10 @@ define([
             return (field.value.length <= parseInt(length, 10));
         },
         "exact_length": function(field, length) {
+            if (field.type === "multiple") {
+                return _.filter(field.value.split(","), function(value){ return value !== ""; }).length === parseInt(length, 10)
+            }
+
             if (!this.Regexp.numericRegex.test(length)) {
                 return false;
             }
