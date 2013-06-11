@@ -175,7 +175,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->insertOneFeed(self::$DI['user'], "test1", true);
         $this->insertOneFeed(self::$DI['user'], "test2", true);
 
-        $all_feeds = self::$DI['app']['EM']->getRepository("Entities\Feed")->findAllPublic();
+        $all_feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->findAllPublic();
 
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->getPublic());
@@ -192,7 +192,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->insertOneFeed(self::$DI['user'], "test1", true);
         $this->insertOneFeed(self::$DI['user'], "test2", true);
 
-        $all_feeds = self::$DI['app']['EM']->getRepository("Entities\Feed")->findAllPublic();
+        $all_feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->findAllPublic();
 
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->getPublic());

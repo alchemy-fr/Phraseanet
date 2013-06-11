@@ -22,7 +22,7 @@ class Feed implements FeedInterface
     private $public = false;
 
     /**
-     * @var string
+     * @var boolean
      */
     private $icon_url = false;
 
@@ -111,7 +111,7 @@ class Feed implements FeedInterface
     /**
      * Set icon_url
      *
-     * @param string $iconUrl
+     * @param boolean $iconUrl
      * @return Feed
      */
     public function setIconUrl($iconUrl)
@@ -124,15 +124,11 @@ class Feed implements FeedInterface
     /**
      * Get icon_url
      *
-     * @return string
+     * @return boolean
      */
     public function getIconUrl()
     {
-        if (!$this->icon_url) {
-            return '/skins/icons/rss32.gif';
-        }
-
-        return '/www/custom/feed_' . $this->getId() . '.jpg';
+        return $this->icon_url;
     }
 
     /**
@@ -253,7 +249,7 @@ class Feed implements FeedInterface
     public function getOwner()
     {
         foreach ($this->getPublishers() as $publisher) {
-            if ($publisher->getOwner()) {
+            if ($publisher->isOwner()) {
                 return $publisher;
             }
         }

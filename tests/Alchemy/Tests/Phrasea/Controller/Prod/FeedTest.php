@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\CssSelector\CssSelector;
 
-class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     /**
      *
@@ -55,7 +55,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/requestavailable/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $feeds = self::$DI['app']["EM"]->getRepository("\Entities\Feed")->getAllForUser(self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
         foreach ($feeds as $one_feed) {
             if ($one_feed->isPublisher(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath("//input[@value='" . $one_feed->getId() . "']")->count());
@@ -183,17 +183,17 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(is_string($pageContent->datas));
         $this->assertRegExp("/entry_" . $entry->getId() . "/", $pageContent->datas);
 
-        $retrievedentry = self::$DI['app']["EM"]->getRepository("\Entities\FeedEntry")->find($entry->getId());
+        $retrievedentry = self::$DI['app']['EM']->getRepository('Entities\FeedEntry')->find($entry->getId());
         $this->assertEquals($newfeed->getId(), $retrievedentry->getFeed()->getId());
     }
 
     public function testEntryUpdateChangeFeedNoAccess()
     {
         $entry = $this->insertOneFeedEntry(self::$DI['user']);
-        $newfeed = $this->insertOneFeed(self::$DI['user'], "test2");
+        $newfeed = $this->insertOneFeed(self::$DI['user_alt1'], "test2");
         $newfeed->setCollection(self::$DI['collection_no_access']);
-        self::$DI['app']["EM"]->persist($newfeed);
-        self::$DI['app']["EM"]->flush();
+        self::$DI['app']['EM']->persist($newfeed);
+        self::$DI['app']['EM']->flush();
 
         $params = array(
             "feed_id"      => $newfeed->getId(),
@@ -205,12 +205,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
-        $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
-        $this->assertTrue(is_object($pageContent));
-        $this->assertTrue($pageContent->error);
-        $this->assertTrue(is_string($pageContent->message));
+        $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testEntryUpdateChangeFeedInvalidFeed()
@@ -227,12 +222,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
-        $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
-        $this->assertTrue(is_object($pageContent));
-        $this->assertTrue($pageContent->error);
-        $this->assertTrue(is_string($pageContent->message));
+        $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testEntryUpdateNotFound()
@@ -253,11 +243,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $pageContent = json_decode($response->getContent());
 
-        $this->assertTrue($response->isOk());
-        $this->assertEquals("application/json", $response->headers->get("content-type"));
-        $this->assertTrue(is_object($pageContent));
-        $this->assertTrue($pageContent->error);
-        $this->assertTrue(is_string($pageContent->message));
+        $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testEntryUpdateFailed()
@@ -277,13 +263,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = self::$DI['client']->getResponse();
 
-        $this->assertTrue($response->isOk());
-        $pageContent = json_decode($response->getContent());
-
-        $this->assertEquals("application/json", $response->headers->get("content-type"));
-        $this->assertTrue(is_object($pageContent));
-        $this->assertTrue($pageContent->error);
-        $this->assertTrue(is_string($pageContent->message));
+        $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testEntryUpdateUnauthorized()
@@ -307,13 +287,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = self::$DI['client']->getResponse();
 
-        $this->assertTrue($response->isOk());
-        $pageContent = json_decode($response->getContent());
-
-        $this->assertEquals("application/json", $response->headers->get("content-type"));
-        $this->assertTrue(is_object($pageContent));
-        $this->assertTrue($pageContent->error);
-        $this->assertTrue(is_string($pageContent->message));
+        $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());;
     }
 
     public function testDelete()
@@ -332,7 +306,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(is_string($pageContent->message));
 
         try {
-            self::$DI["app"]["EM"]->getRepository("\Entities\FeedEntry")->find($entry->getId());
+            self::$DI["app"]['EM']->getRepository('Entities\FeedEntry')->find($entry->getId());
             $this->fail("Failed to delete entry");
         } catch (\Exception $e) {
 
@@ -348,11 +322,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
 
-        $this->assertTrue($response->isOk());
-        $this->assertEquals("application/json", $response->headers->get("content-type"));
-        $this->assertTrue(is_object($pageContent));
-        $this->assertTrue($pageContent->error);
-        $this->assertTrue(is_string($pageContent->message));
+        $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testDeleteUnauthorized()
@@ -368,11 +338,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
 
-        $this->assertTrue($response->isOk());
-        $this->assertEquals("application/json", $response->headers->get("content-type"));
-        $this->assertTrue(is_object($pageContent));
-        $this->assertTrue($pageContent->error);
-        $this->assertTrue(is_string($pageContent->message));
+        $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testRoot()
@@ -384,7 +350,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        $feeds = self::$DI['app']["EM"]->getRepository("\Entities\Feed")->getAllForUser(self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
 
         foreach ($feeds as $one_feed) {
 
@@ -404,7 +370,7 @@ class ControllerFeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $feed = $this->insertOneFeed(self::$DI['user']);
 
-        $feeds = self::$DI['app']["EM"]->getRepository("\Entities\Feed")->getAllForUser(self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
 
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/feed/' . $feed->getId() . "/");
         $pageContent = self::$DI['client']->getResponse()->getContent();

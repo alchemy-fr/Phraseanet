@@ -44,7 +44,7 @@ class Feed implements ControllerProviderInterface
          * I got a selection of docs, which publications are available forthese docs ?
          */
         $controllers->post('/requestavailable/', function(Application $app, Request $request) {
-            $feeds = $app["EM"]->getRepository("Entities\Feed")->getAllForUser($app['authentication']->getUser());
+            $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser($app['authentication']->getUser());
             $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
 
             return $app['twig']->render('prod/actions/publish/publish.html.twig', array('publishing' => $publishing, 'feeds' => $feeds));
@@ -55,8 +55,8 @@ class Feed implements ControllerProviderInterface
          */
         $controllers->post('/entry/create/', function(Application $app, Request $request) {
             try {
-                $feed = $app["EM"]->getRepository("Entities\Feed")->find($request->request->get('feed_id'));
-                $publisher = $app["EM"]->getRepository("Entities\FeedPublisher")->findByUser($feed, $app['authentication']->getUser());
+                $feed = $app['EM']->getRepository('Entities\Feed')->find($request->request->get('feed_id'));
+                $publisher = $app['EM']->getRepository('Entities\FeedPublisher')->findByUser($feed, $app['authentication']->getUser());
                 $title = $request->request->get('title');
                 $subtitle = $request->request->get('subtitle');
                 $author_name = $request->request->get('author_name');
@@ -79,12 +79,12 @@ class Feed implements ControllerProviderInterface
                     $item->setRecordId($record->get_record_id());
                     $item->setSbasId($record->get_sbas_id());
                     $entry->addItem($item);
-                    $app["EM"]->persist($item);
+                    $app['EM']->persist($item);
                 }
 
-                $app["EM"]->persist($entry);
-                $app["EM"]->persist($feed);
-                $app["EM"]->flush();
+                $app['EM']->persist($entry);
+                $app['EM']->persist($feed);
+                $app['EM']->flush();
 
                 $app['events-manager']->trigger('__FEED_ENTRY_CREATE__', array('entry_id' => $entry->getId()), $entry);
 
@@ -101,13 +101,13 @@ class Feed implements ControllerProviderInterface
             });
 
         $controllers->get('/entry/{id}/edit/', function(Application $app, Request $request, $id) {
-            $entry = $app["EM"]->getRepository("Entities\FeedEntry")->find($id);
+            $entry = $app['EM']->getRepository('Entities\FeedEntry')->find($id);
 
             if (!$entry->isPublisher($app['authentication']->getUser())) {
                 throw new AccessDeniedHttpException();
             }
 
-            $feeds = $app["EM"]->getRepository("Entities\Feed")->findAll();
+            $feeds = $app['EM']->getRepository('Entities\Feed')->findAll();
 
             $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', array('entry' => $entry, 'feeds' => $feeds));
 
@@ -121,75 +121,62 @@ class Feed implements ControllerProviderInterface
 
         $controllers->post('/entry/{id}/update/', function(Application $app, Request $request, $id) {
             $datas = array('error' => true, 'message' => '', 'datas' => '');
-            try {
-                $entry = $app["EM"]->getRepository("Entities\FeedEntry")->find($id);
+            $entry = $app['EM']->getRepository('Entities\FeedEntry')->find($id);
 
-                if (null === $entry) {
-                    throw new NotFoundHttpException();
-                }
-                if (!$entry->isPublisher($app['authentication']->getUser())) {
-                    throw new AccessDeniedHttpException();
-                }
-
-                $title = $request->request->get('title');
-                $subtitle = $request->request->get('subtitle');
-                $author_name = $request->request->get('author_name');
-                $author_mail = $request->request->get('author_mail');
-
-                $entry->setAuthorEmail($author_mail)
-                    ->setAuthorName($author_name)
-                    ->setTitle($title)
-                    ->setSubtitle($subtitle);
-
-                $current_feed_id = $entry->getFeed()->getId();
-                $new_feed_id = $request->request->get('feed_id', $current_feed_id);
-                if ($current_feed_id != $new_feed_id) {
-                    try {
-                        $new_feed = $app["EM"]->getRepository("Entities\Feed")->loadWithUser($app, $app['authentication']->getUser(), $new_feed_id);
-                    } catch (NotFoundHttpException $e) {
-                        throw new AccessDeniedHttpException('You have no access to this feed');
-                    }
-
-                    if ($new_feed === null) {
-                        throw new NotFoundHttpException();
-                    }
-
-                    if (!$new_feed->isPublisher($app['authentication']->getUser())) {
-                        throw new \Exception_Forbidden('You are not publisher of this feed');
-                    }
-                    $entry->setFeed($new_feed);
-                }
-
-                $items = explode(';', $request->request->get('sorted_lst'));
-
-                foreach ($items as $item_sort) {
-                    $item_sort_datas = explode('_', $item_sort);
-                    if (count($item_sort_datas) != 2) {
-                        continue;
-                    }
-
-                    $item = new FeedItem($entry, $item_sort_datas[0]);
-                    $item->setEntry($entry);
-                    $entry->addItem($item);
-                    $item->setOrd($item_sort_datas[1]);
-                    $app["EM"]->persist($item);
-                }
-
-                $app["EM"]->persist($entry);
-                $app["EM"]->flush();
-
-                $entry = $app['twig']->render('prod/feeds/entry.html.twig', array('entry' => $entry));
-
-                $datas = array('error' => false, 'message' => 'succes', 'datas' => $entry);
-            } catch (\Exception_Feed_EntryNotFound $e) {
-                $datas['message'] = _('Feed entry not found');
-            } catch (NotFoundHttpException $e) {
-                $datas['message'] = _('Feed not found');
-            } catch (AccessDeniedHttpException $e) {
-                $datas['message'] = _('You are not authorized to access this feed');
-            } catch (\Exception $e) {
-                $datas['message'] = $e->getMessage();
+            if (null === $entry) {
+                $app->abort(404, 'Entry not found');
             }
+            if (!$entry->isPublisher($app['authentication']->getUser())) {
+                $app->abort(403, 'Unathorized action');
+            }
+
+            $title = $request->request->get('title');
+            $subtitle = $request->request->get('subtitle');
+            $author_name = $request->request->get('author_name');
+            $author_mail = $request->request->get('author_mail');
+
+            $entry->setAuthorEmail($author_mail)
+                ->setAuthorName($author_name)
+                ->setTitle($title)
+                ->setSubtitle($subtitle);
+
+            $current_feed_id = $entry->getFeed()->getId();
+            $new_feed_id = $request->request->get('feed_id', $current_feed_id);
+            if ($current_feed_id != $new_feed_id) {
+
+                $new_feed = $app['EM']->getRepository('Entities\Feed')->find($new_feed_id);
+
+                if ($new_feed === null) {
+                    $app->abort(404, 'Feed not found');
+                }
+
+                if (!$new_feed->isPublisher($app['authentication']->getUser())) {
+                    $app->abort(403, 'You are not publisher of this feed');
+                }
+                $entry->setFeed($new_feed);
+            }
+
+            $items = explode(';', $request->request->get('sorted_lst'));
+
+            foreach ($items as $item_sort) {
+                $item_sort_datas = explode('_', $item_sort);
+                if (count($item_sort_datas) != 2) {
+                    continue;
+                }
+
+                $item = new FeedItem($entry, $item_sort_datas[0]);
+                $item->setEntry($entry);
+                $entry->addItem($item);
+                $item->setOrd($item_sort_datas[1]);
+                $app['EM']->persist($item);
+            }
+
+            $app['EM']->persist($entry);
+            $app['EM']->flush();
+
+            $entry = $app['twig']->render('prod/feeds/entry.html.twig', array('entry' => $entry));
+
+            $datas = array('error' => false, 'message' => 'succes', 'datas' => $entry);
 
             return $app->json($datas);
         })
@@ -200,25 +187,20 @@ class Feed implements ControllerProviderInterface
 
         $controllers->post('/entry/{id}/delete/', function(Application $app, Request $request, $id) {
             $datas = array('error' => true, 'message' => '');
-            try {
-                $entry = $app["EM"]->getRepository("Entities\FeedEntry")->find($id);
+            
+            $entry = $app['EM']->getRepository('Entities\FeedEntry')->find($id);
 
-                if (null === $entry) {
-                    throw new NotFoundHttpException();
-                }
-                if (!$entry->isPublisher($app['authentication']->getUser()) && $entry->getFeed()->isOwner($app['authentication']->getUser()) === false) {
-                    throw new AccessDeniedHttpException(_('Action Forbidden : You are not the publisher'));
-                }
-
-                $app["EM"]->remove($entry);
-                $app["EM"]->flush();
-
-                $datas = array('error' => false, 'message' => 'succes');
-            } catch (NotFoundHttpException $e) {
-                $datas['message'] = _('Feed entry not found');
-            } catch (\Exception $e) {
-                $datas['message'] = $e->getMessage();
+            if (null === $entry) {
+                $app->abort(404, 'Entry not found');
             }
+            if (!$entry->isPublisher($app['authentication']->getUser()) && $entry->getFeed()->isOwner($app['authentication']->getUser()) === false) {
+                $app->abort(403, _('Action Forbidden : You are not the publisher'));
+            }
+
+            $app['EM']->remove($entry);
+            $app['EM']->flush();
+
+            $datas = array('error' => false, 'message' => 'succes');
 
             return $app->json($datas);
         })
@@ -232,12 +214,12 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feeds = $app["EM"]->getRepository("Entities\Feed")->findAll();
+            $feeds = $app['EM']->getRepository('Entities\Feed')->findAll();
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig'
                 , array(
                 'feeds' => $feeds
-                , 'feed' => new Aggregate($app["EM"], $feeds)
+                , 'feed' => new Aggregate($app['EM'], $feeds)
                 , 'page' => $page
                 )
             );
@@ -249,8 +231,8 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feed = $app["EM"]->getRepository("Entities\Feed")->loadWithUser($app, $app['authentication']->getUser(), $id);
-            $feeds = $app["EM"]->getRepository("Entities\Feed")->findAll();
+            $feed = $app['EM']->getRepository('Entities\Feed')->loadWithUser($app, $app['authentication']->getUser(), $id);
+            $feeds = $app['EM']->getRepository('Entities\Feed')->findAll();
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array('feed' => $feed, 'feeds' => $feeds, 'page' => $page));
 
@@ -262,9 +244,9 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/subscribe/aggregated/', function(Application $app, Request $request) {
             $renew = ($request->query->get('renew') === 'true');
 
-            $feeds = $app["EM"]->getRepository("Entities\Feed")->findAll();
+            $feeds = $app['EM']->getRepository('Entities\Feed')->findAll();
 
-            $aggregate = new Aggregate($app["EM"], $feeds);
+            $aggregate = new Aggregate($app['EM'], $feeds);
 
             $link = $app['feed.aggregate-link-generator']->generate($aggregate, $app['authentication']->getUser(), AggregateLinkGenerator::FORMAT_RSS, null, $renew);
 
@@ -281,7 +263,7 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/subscribe/{id}/', function(Application $app, Request $request, $id) {
             $renew = ($request->query->get('renew') === 'true');
 
-            $feed = $app["EM"]->getRepository("Entities\Feed")->loadWithUser($app, $app['authentication']->getUser(), $id);
+            $feed = $app['EM']->getRepository('Entities\Feed')->loadWithUser($app, $app['authentication']->getUser(), $id);
 
             $link = $app['feed.user-link-generator']->generate($feed, $app['authentication']->getUser(), FeedLinkGenerator::FORMAT_RSS, null, $renew);
 

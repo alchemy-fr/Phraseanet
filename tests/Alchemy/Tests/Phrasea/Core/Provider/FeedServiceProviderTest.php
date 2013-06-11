@@ -3,9 +3,9 @@
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 /**
- * @covers Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider
+ * @covers Alchemy\Phrasea\Core\Provider\FeedServiceProvider
  */
-class GeonamesServiceProvidertest extends ServiceProviderTestCase
+class FeedServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {

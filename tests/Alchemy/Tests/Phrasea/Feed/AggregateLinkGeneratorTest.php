@@ -67,10 +67,10 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
                 $this->assertNotEquals($tokenValue, $capture['token']);
 
                 $this->assertCount(0, self::$DI['app']['EM']
-                    ->getRepository("Entities\AggregateToken")
+                    ->getRepository('Entities\AggregateToken')
                     ->findBy(array('value' => $tokenValue)));
                 $this->assertCount(1, self::$DI['app']['EM']
-                    ->getRepository("Entities\AggregateToken")
+                    ->getRepository('Entities\AggregateToken')
                     ->findBy(array('value' => $capture['token'])));
             } else {
                 $expectedParams = array(
@@ -85,7 +85,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
                 $this->assertEquals($expectedParams, $capture);
 
                 $this->assertCount(1, self::$DI['app']['EM']
-                    ->getRepository("Entities\AggregateToken")
+                    ->getRepository('Entities\AggregateToken')
                     ->findBy(array('value' => $tokenValue)));
             }
         } else {
@@ -96,7 +96,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
             $this->assertEquals(12, strlen($capture['token']));
 
             $this->assertCount(1, self::$DI['app']['EM']
-                ->getRepository("Entities\AggregateToken")
+                ->getRepository('Entities\AggregateToken')
                 ->findBy(array('value' => $capture['token'])));
         }
         $token = self::$DI['app']['EM']

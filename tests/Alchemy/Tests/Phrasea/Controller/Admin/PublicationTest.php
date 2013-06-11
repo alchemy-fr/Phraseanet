@@ -13,7 +13,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $crawler = self::$DI['client']->request('GET', '/admin/publications/list/');
         $pageContent = self::$DI['client']->getResponse()->getContent();
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $feeds = self::$DI['app']['EM']->getRepository("Entities\Feed")->getAllForUser(self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
 
         foreach ($feeds as $feed) {
             $this->assertRegExp('/\/admin\/publications\/feed\/' . $feed->getId() . '/', $pageContent);
@@ -26,14 +26,14 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
 
     public function testCreate()
     {
-        $feeds = self::$DI['app']['EM']->getRepository("Entities\Feed")->getAllForUser(self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
         $count = sizeof($feeds);
 
         $crawler = self::$DI['client']->request('POST', '/admin/publications/create/', array("title"    => "hello", "subtitle" => "coucou", "base_id"  => self::$DI['collection']->get_base_id()));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect('/admin/publications/list/'));
 
-        $feeds = self::$DI['app']['EM']->getRepository("Entities\Feed")->getAllForUser(self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
         $count_after = sizeof($feeds);
         $this->assertGreaterThan($count, $count_after);
     }
@@ -58,7 +58,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
             , 'public'   => '1'
         ));
 
-        $feed = self::$DI['app']['EM']->getRepository("Entities\Feed")->findOneBy(array('id' => $feed->getId()));
+        $feed = self::$DI['app']['EM']->find('Entities\Feed', $feed->getId());
 
         $this->assertTrue(
             strpos(
@@ -89,7 +89,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
                 , '/admin/publications/list/'
             ) === 0);
 
-        $feed = self::$DI['app']['EM']->getRepository("Entities\Feed")->findOneBy(array('id' => $feed->getId()));
+        $feed = self::$DI['app']['EM']->find('Entities\Feed', $feed->getId());
 
         $collection = $feed->getCollection(self::$DI['app']);
 
@@ -213,7 +213,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
 
-        $feed = self::$DI['app']['EM']->getRepository("Entities\Feed")->findOneBy(array('id' => $feed->getId()));
+        $feed = self::$DI['app']['EM']->find('Entities\Feed', $feed->getId());
         $publishers = $feed->getPublishers();
 
         $this->assertTrue($feed->isPublisher(self::$DI['user_alt1']));
@@ -230,7 +230,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/addpublisher/");
 
-        $feed = self::$DI['app']['EM']->getRepository("Entities\Feed")->findOneBy(array('id' => $feed->getId()));
+        $feed = self::$DI['app']['EM']->find('Entities\Feed', $feed->getId());
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertTrue(
@@ -251,7 +251,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
 
-        $feed = self::$DI['app']['EM']->getRepository("Entities\Feed")->findOneBy(array('id' => $feed->getId()));
+        $feed = self::$DI['app']['EM']->find('Entities\Feed', $feed->getId());
         $publishers = $feed->getPublishers();
 
         $this->assertFalse(isset($publishers[self::$DI['user_alt1']->get_id()]));
@@ -271,7 +271,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
 
-        $feed = self::$DI['app']['EM']->getRepository("Entities\Feed")->findOneBy(array('id' => $feed->getId()));
+        $feed = self::$DI['app']['EM']->find('Entities\Feed', $feed->getId());
 
         $this->assertTrue(
             strpos(
@@ -289,7 +289,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
 
-        $feed = self::$DI['app']['EM']->getRepository("Entities\Feed")->findOneBy(array('id' => $feed->getId()));
+        $feed = self::$DI['app']['EM']->find('Entities\Feed', $feed->getId());
         if (null !== $feed) {
             $this->fail("fail deleting feed");
         }

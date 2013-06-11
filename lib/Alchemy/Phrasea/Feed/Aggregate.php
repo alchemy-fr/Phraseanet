@@ -145,7 +145,7 @@ class Aggregate implements FeedInterface
     public function getCountTotalEntries()
     {
         if (count($this->feeds) > 0) {
-            return count($this->em->getRepository("Entities\FeedEntry")->findByFeeds($this->feeds));
+            return count($this->em->getRepository('Entities\FeedEntry')->findByFeeds($this->feeds));
         }
         return 0;
     }

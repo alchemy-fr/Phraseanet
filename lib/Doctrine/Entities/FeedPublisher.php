@@ -75,7 +75,7 @@ class FeedPublisher
      * @param boolean $owner
      * @return FeedPublisher
      */
-    public function setOwner($owner)
+    public function setIsOwner($owner)
     {
         $this->owner = $owner;
 
@@ -87,7 +87,7 @@ class FeedPublisher
      *
      * @return boolean
      */
-    public function getOwner()
+    public function isOwner()
     {
         return $this->owner;
     }
@@ -115,6 +115,12 @@ class FeedPublisher
         return $this->feed;
     }
 
+
+    /**
+     * Get user
+     *
+     * @return \User_Adapter
+     */
     public function getUser(Application $app)
     {
         $user = \User_Adapter::getInstance($this->getUsrId(), $app);

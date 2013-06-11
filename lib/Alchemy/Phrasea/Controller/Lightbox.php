@@ -160,7 +160,7 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(SilexApplication $app, $entry_id, $item_id) {
 
-            $entry = $app['EM']->getRepository("Entities\FeedEntry")->find($entry_id);
+            $entry = $app['EM']->getRepository('Entities\FeedEntry')->find($entry_id);
             $item = $entry->getItems()->getItem($item_id);
 
             if ($app['browser']->isMobile()) {
@@ -313,7 +313,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $feed_entry = $app['EM']->getEntity("Entities\FeedEntry")->find($entry_id);
+            $feed_entry = $app['EM']->getEntity('Entities\FeedEntry')->find($entry_id);
 
             $template = 'lightbox/feed.html.twig';
 
