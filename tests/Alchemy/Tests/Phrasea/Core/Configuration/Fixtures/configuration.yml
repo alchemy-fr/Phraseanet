@@ -2,11 +2,11 @@ main:
     servername: 'http://local.phrasea/'
     maintenance: false
     database:
-        host: 127.0.0.1
+        host: 'sql-host'
         port: '3306'
-        user: root
-        password: ''
-        dbname: ab_test
+        user: 'sql-user'
+        password: 'sql-password'
+        dbname: ab_phraseanet
         driver: pdo_mysql
         charset: UTF8
     database-test:
