@@ -139,9 +139,11 @@ class patch_3807 implements patchInterface
 
     private function migrateConnexions(array &$conf)
     {
-        $data = $this->yaml->parse($this->connexionsYaml);
+        if (is_file($this->connexionsYaml)) {
+            $data = $this->yaml->parse($this->connexionsYaml);
 
-        $conf['main']['database'] = $data['main_connexion'];
-        $conf['main']['database-test'] = $data['test_connexion'];
+            $conf['main']['database'] = $data['main_connexion'];
+            $conf['main']['database-test'] = $data['test_connexion'];
+        }
     }
 }
