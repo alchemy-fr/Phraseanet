@@ -194,10 +194,7 @@ class Login implements ControllerProviderInterface
             'collection'                => _('Collection'),
         ));
 
-        $date = new \DateTime();
-        $date->modify('+1 day');
-
-        $response->setExpires($date);
+        $response->setExpires(new \DateTime('+1 day'));
 
         return $response;
     }

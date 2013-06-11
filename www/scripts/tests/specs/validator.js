@@ -399,13 +399,6 @@ define([
 
                 this.validator.validate([{
                     name :"valid_ip",
-                    value: "coucou"
-                }]);
-
-                this.validator.getErrors().length.should.equal(1);
-
-                this.validator.validate([{
-                    name :"valid_ip",
                     value: "1234.12.12"
                 }]);
 
@@ -423,6 +416,13 @@ define([
                 this.validator.validate([{
                     name :"valid_ip",
                     value: "127.0.0.1"
+                }]);
+
+                this.validator.getErrors().length.should.equal(0);
+
+                this.validator.validate([{
+                    name :"valid_ip",
+                    value: "my.domain"
                 }]);
 
                 this.validator.getErrors().length.should.equal(0);
