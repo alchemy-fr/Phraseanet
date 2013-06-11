@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Setup;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\Version\Probe\Probe31;
 use Alchemy\Phrasea\Setup\Version\Probe\Probe35;
+use Alchemy\Phrasea\Setup\Version\Probe\Probe38;
 use Alchemy\Phrasea\Setup\Version\Probe\ProbeInterface as VersionProbeInterface;
 use Alchemy\Phrasea\Setup\Probe\BinariesProbe;
 use Alchemy\Phrasea\Setup\Probe\CacheServerProbe;
@@ -38,6 +39,7 @@ class ConfigurationTester
         $this->versionProbes = array(
             new Probe31($this->app),
             new Probe35($this->app),
+            new Probe38($this->app),
         );
     }
 
