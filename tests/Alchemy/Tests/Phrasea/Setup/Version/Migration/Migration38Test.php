@@ -34,6 +34,9 @@ class Migration38Test extends AbstractSetupTester
         $app['root.path'] = __DIR__ . '/../Probe/fixtures-3807';
 
         $app['phraseanet.configuration']->expects($this->once())
+            ->method('initialize');
+
+        $app['phraseanet.configuration']->expects($this->once())
             ->method('getConfig')
             ->will($this->returnValue($this->getCurrent()));
 

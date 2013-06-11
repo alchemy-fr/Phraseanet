@@ -49,6 +49,7 @@ class Migration38 implements MigrationInterface
 
     private function doMigrate($app)
     {
+        $app['phraseanet.configuration']->initialize();
         $conf = $app['phraseanet.configuration']->getConfig();
 
         $this->migrateConnexions($conf);
