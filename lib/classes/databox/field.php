@@ -489,7 +489,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function get_label($code)
     {
-        if (null !== $code && !array_key_exists($code, $this->labels)) {
+        if (!array_key_exists($code, $this->labels)) {
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
 
