@@ -15,46 +15,11 @@ class patch_3804Test extends PhraseanetPHPUnitAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        $catchConfiguration = null;
-
-        $app['phraseanet.configuration'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration')
-            ->disableOriginalConstructor()
-            ->getMock();
-
+        $app['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
         $app['phraseanet.configuration']->expects($this->once())
-            ->method('getConfigurations')
-            ->will($this->returnValue(array(
-                'environment' => 'prod',
-                'prod'        => array(),
-                'dev'         => array()
-            )));
-        $app['phraseanet.configuration']->expects($this->once())
-            ->method('setConfigurations')
-            ->will($this->returnCallback(function($configuration) use (&$catchConfiguration) {
-                $catchConfiguration = $configuration;
-            }));
-
-        $app['phraseanet.configuration']->expects($this->once())
-            ->method('getServices')
-            ->will($this->returnValue(array(
-                'SearchEngine' => array(),
-            )));
-
-        $app['phraseanet.configuration']->expects($this->once())
-            ->method('resetServices')
-            ->with($this->equalTo('TaskManager'));
+            ->method('setDefault')
+            ->with('main', 'task-manager');
 
         $this->assertTrue($patch->apply($appbox, $app));
-
-        $upgrade = 0;
-        foreach ($catchConfiguration as $env => $conf) {
-            if (in_array($env, array('environment', 'key'))) {
-                continue;
-            }
-            $this->assertArrayHasKey('task-manager', $conf);
-            $upgrade++;
-        }
-
-        $this->assertEquals(2, $upgrade);
     }
 }
