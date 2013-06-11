@@ -31,19 +31,18 @@
             <div class="span12">
                 {{ auth_macro.flashes() }}
                 <form
-                     ng-controller="LoginFormController"
                      novalidate
                      name="loginForm"
-                     ng-submit="submit();"
                      method="POST"
                      action="{{ path("login_authenticate") }}"
-                     check-form-submission
                 >
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ form_errors(form) }}
+                    {% if form.vars.errors|length > 0 %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ form_errors(form) }}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                     <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.email, "loginForm", 'icon-envelope') }}
@@ -122,3 +121,8 @@
 {% block footer_scaffholding %}
     {# empty footer #}
 {% endblock footer_scaffholding %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="/scripts/apps/login/home/oauthLogin.js"></script>
+{% endblock %}
