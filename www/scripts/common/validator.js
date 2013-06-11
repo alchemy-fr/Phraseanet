@@ -14,9 +14,11 @@ define([
 ], function($, _, Backbone) {
 
 
-    var FormValidator = function(rules) {
+    var FormValidator = function(rules, handlers) {
         // rules setted by user
         this.rules = rules || [];
+        // custom callbacks
+        this.handlers = handlers || [];
         // final fields to validate
         this.fields = [];
 
@@ -162,7 +164,11 @@ define([
             return field.value === defaultName;
         },
         "matches": function(field, matchName) {
-            var el = this.inputs[matchName];
+            if (typeof this.inputs[matchName] === "undefined") {
+                return false;
+            }
+
+            var el = this.inputs[matchName].shift();
 
             if (el) {
                 return field.value === el.value;

@@ -9,7 +9,6 @@
     "modernizr": "~2.6.2",
     "normalize-css" : "~2.1.0",
     "json3" : "3.2.4",
-    "bootstrap-switch": "https://github.com/nostalgiaz/bootstrap-switch.git",
     "humane-js": "~3.0.6",
     "qunit": "https://github.com/jquery/qunit.git#1.11.0",
     "mustache": "~0.7.2",
