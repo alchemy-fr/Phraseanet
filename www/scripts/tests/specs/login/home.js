@@ -22,7 +22,7 @@ define([
 
     describe("Login Home", function() {
         describe("Form View", function() {
-            it("should be initialize validator with proper rules", function() {
+            it("should initialize validator with proper rules", function() {
                 var rules = [{name: "hello",rules: "simple_rules"}];
                 var form = new FormView({
                     el: $('form[name=loginForm]'),
@@ -31,7 +31,7 @@ define([
                 form.validator.getRules().should.equal(rules);
             });
 
-            it("should be initialize input views", function() {
+            it("should initialize input views", function() {
                 var form = new FormView({
                     el: $('form[name=loginForm]')
                 });
@@ -39,12 +39,26 @@ define([
                 Object.keys(form.inputViews).length.should.equal(5);
             });
 
-            it("should be initialize errors", function() {
+            it("should initialize errors", function() {
                 var form = new FormView({
                     el: $('form[name=loginForm]')
                 });
 
                 assert.isTrue(_.isEmpty(form.validator.getErrors()));
+            });
+
+            it("should render errors on submit", function() {
+                var form = new FormView({
+                    el: $('form[name=loginForm]'),
+                    rules: [{
+                        "name": "login",
+                        "rules": "required",
+                        "message" : "something is wrong"
+                    }]
+                });
+
+                form._onSubmit(document.createEvent("Event"));
+                assert.isTrue(form.inputViews["login"].errorView.$el.html().indexOf("something is wrong") !== -1);
             });
         });
 

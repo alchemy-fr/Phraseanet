@@ -13,7 +13,7 @@ require([
     "i18n",
     "apps/login/home/common",
     "apps/login/home/views/form"
-], function(Common, RegisterForm) {
+], function($, i18n, Common, RegisterForm) {
     Common.initialize();
 
     var fieldsConfiguration = [];
@@ -26,7 +26,7 @@ require([
             }
         })
     ]).done(function(){
-        $.i18n.init({
+        i18n.init({
             resGetPath: Common.languagePath
         }, function() {
             var rules =  [{

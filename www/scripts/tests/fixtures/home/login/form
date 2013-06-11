@@ -1,4 +1,4 @@
-<form novalidate="" name="loginForm" method="POST" action="/login/authenticate/">
+<form novalidate="" name="loginForm" method="POST" action="#">
     <div class="row-fluid">
         <div class="span12">
             <label for="login" class="required">Login</label>
