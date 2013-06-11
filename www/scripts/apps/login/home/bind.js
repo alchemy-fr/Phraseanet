@@ -16,7 +16,8 @@ require([
     Common.initialize();
 
     i18n.init({
-        resGetPath: Common.languagePath
+        resGetPath: Common.languagePath,
+        useLocalStorage: true
     }, function() {
           new LoginForm({
             el : $("form[name=loginForm]"),

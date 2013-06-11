@@ -14,8 +14,6 @@ require([
     "apps/login/home/common",
     "apps/login/home/views/form"
 ], function($, i18n, Common, RegisterForm) {
-    Common.initialize();
-
     var fieldsConfiguration = [];
 
     $.when.apply($, [
@@ -27,8 +25,11 @@ require([
         })
     ]).done(function(){
         i18n.init({
-            resGetPath: Common.languagePath
+            resGetPath: Common.languagePath,
+            useLocalStorage: true
         }, function() {
+            Common.initialize();
+
             var rules =  [{
                 name: "email",
                 rules: "required",

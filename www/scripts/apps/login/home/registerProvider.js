@@ -27,7 +27,8 @@ require([
         })
     ]).done(function(){
         i18n.init({
-            resGetPath: Common.languagePath
+            resGetPath: Common.languagePath,
+            useLocalStorage: true
         }, function() {
             var rules =  [{
                 name: "email",

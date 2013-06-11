@@ -13,11 +13,12 @@ require([
     "apps/login/home/common",
     "apps/login/home/views/form"
 ], function($, i18n, Common, RenewPassword) {
-    Common.initialize();
-
     i18n.init({
-            resGetPath: Common.languagePath
-        }, function() {
+            resGetPath: Common.languagePath,
+            useLocalStorage: true
+    }, function() {
+        Common.initialize();
+
         new RenewPassword({
             el : $("form[name=passwordRenewForm]"),
             rules: [{
