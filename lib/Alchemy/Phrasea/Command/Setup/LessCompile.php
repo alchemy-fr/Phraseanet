@@ -34,8 +34,10 @@ class LessCompile extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $files = array(
-            __DIR__ . '/../../../../../www/skins/build/login.css' => realpath(__DIR__ . '/../../../../../www/skins/login/less/login.less'),
-            __DIR__ . '/../../../../../www/skins/build/account.css' => realpath(__DIR__ . '/../../../../../www/skins/account/account.less'),
+            $this->container['root.path'] . '/www/skins/build/login.css' => realpath($this->container['root.path'] . '/www/skins/login/less/login.less'),
+            $this->container['root.path'] . '/www/skins/build/account.css' => realpath($this->container['root.path'] . '/www/skins/account/account.less'),
+            $this->container['root.path'] . '/www/skins/build/bootstrap.css' => realpath($this->container['root.path'] . '/www/assets/bootstrap/less/bootstrap.less'),
+            $this->container['root.path'] . '/www/skins/build/bootstrap-responsive.css' => realpath($this->container['root.path'] . '/www/assets/bootstrap/less/responsive.less'),
         );
 
         $output->writeln('Building Assets...');

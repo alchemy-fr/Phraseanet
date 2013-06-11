@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Routing\Generator\UrlGenerator;
+
 /**
  *
  * @package     Bridge
@@ -28,6 +30,7 @@ abstract class Bridge_Api_Abstract
      * @var string
      */
     protected $locale = 'en_US';
+    protected $generator;
 
     /**
      *
@@ -35,8 +38,9 @@ abstract class Bridge_Api_Abstract
      * @param  Bridge_Api_Auth_Interface $auth
      * @return Bridge_Api_Abstract
      */
-    public function __construct(registryInterface $registry, Bridge_Api_Auth_Interface $auth)
+    public function __construct(UrlGenerator $generator, registryInterface $registry, Bridge_Api_Auth_Interface $auth)
     {
+        $this->generator = $generator;
         $this->registry = $registry;
         $this->_auth = $auth;
         $this->initialize_transport();

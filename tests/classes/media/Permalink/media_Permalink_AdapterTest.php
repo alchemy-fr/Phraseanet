@@ -49,7 +49,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_url()
     {
-        $url = self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'permalink/v1/'
+        $url = rtrim(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'), '/') . '/permalink/v1/'
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/document/' . static::$object->get_label()
@@ -65,7 +65,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
         $subdef = self::$DI['record_1']->get_subdef('preview');
         $previewPermalink = media_Permalink_Adapter::getPermalink(self::$DI['app'], $databox, $subdef);
 
-        $url = self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'permalink/v1/'
+        $url = rtrim(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'), '/') . '/permalink/v1/'
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/preview/' . $previewPermalink->get_label()
@@ -77,7 +77,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_page()
     {
-        $url = self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'permalink/v1/'
+        $url = rtrim(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'), '/') . '/permalink/v1/'
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/document/'

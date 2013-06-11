@@ -1,11 +1,11 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-  <script type="text/javascript" src="/include/minify/?f=skins/lightbox/jquery.validator.mobile.js"></script>
+  <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.js' }) }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
-  <link rel="stylesheet" href="/include/minify/?f=skins/lightbox/jquery.validator.mobile.css" />
+  <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.css' }) }}" />
 {% endblock %}
 
 {% block icon %}
@@ -50,7 +50,7 @@
       </li>
     </ul>
     <div style="margin:2em 0 0 0">
-      <a href="/login/logout/" data-role="button" rel="external">{% trans 'Deconnexion' %}</a>
+      <a href="{{ path ('logout') }}" data-role="button" rel="external">{% trans 'Deconnexion' %}</a>
     </div>
   </div>
     <div data-role="footer">
@@ -94,7 +94,7 @@
                   {% if basket.getElements().first() %}
                   <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
                   {% endif %}
-                  <h3><a href="/lightbox/validate/{{basket.getId()}}/">{{basket.getName()}}</a></h3>
+                  <h3><a href="{{ path('lightbox_validation', { 'ssel_id' : basket.getId() }) }}">{{basket.getName()}}</a></h3>
                   <p>{{ basket.getDescription() }}</p>
                   <span class="ui-li-count">{{ basket_length }}</span>
                 </li>
@@ -123,7 +123,7 @@
                   {% if basket.getElements().first() %}
                   <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
                   {% endif %}
-                  <h3><a href="/lightbox/validate/{{ basket.getId() }}/">{{ basket.getName() }}</a></h3>
+                  <h3><a href="{{ path('lightbox_validation', { 'ssel_id' : basket.getId() }) }}">{{ basket.getName() }}</a></h3>
                   <p>{{ basket.getDescription() }}</p>
                   <span class="ui-li-count">{{basket_length}}</span>
                 </li>

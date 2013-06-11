@@ -31,8 +31,8 @@ class Setup implements ControllerProviderInterface
         $app['controller.setup'] = $this;
 
         $controllers->get('/', function(Application $app) {
-            return $app->redirect($app->path('install_root'));
-        });
+            return $app->redirectPath('install_root');
+        })->bind('setup');
 
         $controllers->get('/installer/', 'controller.setup:rootInstaller')
             ->bind('install_root');
@@ -119,9 +119,9 @@ class Setup implements ControllerProviderInterface
         try {
             $abConn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $ab_password, $appbox_name, array(), $app['debug']);
         } catch (\Exception $e) {
-            return $app->redirect($app->path('install_step2', array(
+            return $app->redirectPath('install_step2', array(
                 'error' => _('Appbox is unreachable'),
-            )));
+            ));
         }
 
         try {
@@ -129,9 +129,9 @@ class Setup implements ControllerProviderInterface
                 $dbConn = new \connection_pdo('databox', $hostname, $port, $user_ab, $ab_password, $databox_name, array(), $app['debug']);
             }
         } catch (\Exception $e) {
-            return $app->redirect($app->path('install_step2', array(
+            return $app->redirectPath('install_step2', array(
                 'error' => _('Databox is unreachable'),
-            )));
+            ));
         }
 
         $email = $request->request->get('email');
@@ -164,16 +164,16 @@ class Setup implements ControllerProviderInterface
 
             $app['authentication']->openAccount($user);
 
-            return $app->redirect($app->path('admin', array(
+            return $app->redirectPath('admin', array(
                 'section' => 'taskmanager',
                 'notice'  => 'install_success',
-            )));
+            ));
         } catch (\Exception $e) {
 
         }
 
-        return $app->redirect($app->path('install_step2', array(
+        return $app->redirectPath('install_step2', array(
             'error' => sprintf(_('an error occured : %s'), $e->getMessage()),
-        )));
+        ));
     }
 }

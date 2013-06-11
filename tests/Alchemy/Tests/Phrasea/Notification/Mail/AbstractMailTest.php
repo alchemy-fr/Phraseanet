@@ -86,16 +86,11 @@ class AbstractMailTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPhraseanetURL()
     {
-        $routes = new RouteCollection();
-        $routes->add('root', new Route('/BIDULE'));
-
-        $urlGenerator = new UrlGenerator($routes, new RequestContext('', 'GET', 'www.phraseanet.com'));
-
         $app = $this->getApplicationMock();
         $app->expects($this->once())
-            ->method('offsetGet')
-            ->with($this->equalTo('url_generator'))
-            ->will($this->returnValue($urlGenerator));
+            ->method('url')
+            ->with('root')
+            ->will($this->returnValue('http://www.phraseanet.com/BIDULE'));
 
         $mail = new AbstractTester($app, $this->getReceiverMock());
         $this->assertEquals('http://www.phraseanet.com/BIDULE', $mail->getPhraseanetURL());

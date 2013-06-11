@@ -87,7 +87,7 @@ class Tools implements ControllerProviderInterface
             }
 
             return $app->json($return);
-        });
+        })->bind('prod_tools_rotate');
 
         $controllers->post('/image/', function(Application $app, Request $request) {
             $return = array('success' => true);
@@ -110,7 +110,7 @@ class Tools implements ControllerProviderInterface
             }
 
             return $app->json($return);
-        });
+        })->bind('prod_tools_image');
 
         $controllers->post('/hddoc/', function(Application $app, Request $request) {
             $success = false;
@@ -165,7 +165,7 @@ class Tools implements ControllerProviderInterface
                 'success'   => $success,
                 'message'   => $message,
             ));
-        });
+        })->bind('prod_tools_hd_substitution');
 
         $controllers->post('/chgthumb/', function(Application $app, Request $request) {
             $success = false;
@@ -213,7 +213,7 @@ class Tools implements ControllerProviderInterface
                 'success'   => $success,
                 'message'   => $message,
             ));
-        });
+        })->bind('prod_tools_thumbnail_substitution');
 
         $controllers->post('/thumb-extractor/confirm-box/', function(Application $app, Request $request) {
             $return = array('error'   => false, 'datas'   => '');

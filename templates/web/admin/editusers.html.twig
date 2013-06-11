@@ -118,7 +118,7 @@
       {% endif %}
     </ul>
     <div id="rights_tab" class="PNB" style="top:40px;">
-      <form id="users_rights_form" method="post" action="/admin/users/rights/apply/">
+      <form id="users_rights_form" method="post" action="{{ path('admin_users_rights_apply') }}">
         <input type="hidden" name="users" value="{{users_serial}}"/>
         <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
           <tr>
@@ -570,7 +570,7 @@
   </div>
   <div class="PNB10" style="top:auto;height:20px;">
     <button class="users_rights_valid">{% trans 'boutton::valider' %}</button>
-    <a href="/admin/users/search/" class="users_rights_cancel">{% trans 'boutton::retour' %}</a>
+    <a href="{{ path('admin_users_search') }}" class="users_rights_cancel">{% trans 'boutton::retour' %}</a>
   </div>
 </div>
 

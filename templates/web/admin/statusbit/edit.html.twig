@@ -7,7 +7,7 @@
 
 <h1 style='padding-left:30px;'>{% trans 'status:: numero de bit' %} {{ app['request'].get('bit') }}</h1>
 
-        <form id="fileupload" class="form-horizontal" enctype="multipart/form-data" method="post" action="/admin/statusbit/{{ app['request'].get('databox_id') }}/status/{{ app['request'].get('bit') }}/">
+        <form id="fileupload" class="form-horizontal" enctype="multipart/form-data" method="post" action="{{ path('database_submit_statusbit', { 'databox_id' : app['request'].get('databox_id'), 'bit' : app['request'].get('bit') }) }}">
             <fieldset>
                 <div class="span5 well-small">
                     <label for="name">
@@ -98,7 +98,7 @@
                                                         <button id="form_submitter" class="btn btn-primary" type="button">
 {% trans 'boutton::valider' %}
                                                             </button>
-                                                            <a style='text-decoration:none;' class="btn" href="/admin/statusbit/{{ app['request'].get('databox_id') }}/">{% trans 'boutton::retour' %}
+                                                            <a style='text-decoration:none;' class="btn" href="{{ path('database_display_statusbit', { 'databox_id' : app['request'].get('databox_id') }) }}">{% trans 'boutton::retour' %}
                                                             </a>
                                                         </div>
                             </div>

@@ -286,6 +286,19 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertFileExists($app['root.path'].'/www');
     }
 
+    public function testUrlGeneratorContext()
+    {
+        $app = new Application('test');
+        $app['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        $app['phraseanet.configuration']->expects($this->once())
+            ->method('offsetGet')
+            ->with('main')
+            ->will($this->returnValue(array('servername' => 'https://cat.turbocat.com/')));
+
+        $this->assertEquals('https', $app['url_generator']->getContext()->getScheme());
+        $this->assertEquals('cat.turbocat.com', $app['url_generator']->getContext()->getHost());
+    }
+
     private function getAppThatReturnLocale()
     {
         $app = new Application('test');

@@ -110,14 +110,14 @@ class Setup implements ControllerProviderInterface
     public function postGlobals(Application $app, Request $request)
     {
         if (\setup::create_global_values($app, $request->request->all())) {
-            return $app->redirect($app['url_generator']->generate('setup_display_globals', array(
+            return $app->redirectPath('setup_display_globals', array(
                 'success' => 1
-            )));
+            ));
         }
 
-        return $app->redirect($app['url_generator']->generate('setup_display_globals', array(
+        return $app->redirectPath('setup_display_globals', array(
             'success' => 0
-        )));
+        ));
     }
 
     /**

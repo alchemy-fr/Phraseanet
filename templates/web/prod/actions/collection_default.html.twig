@@ -1,5 +1,5 @@
     <div style="text-align:center;margin:30px 0px;">
-        <form onsubmit="return false" action="/prod/records/movecollection/apply/" method="post">
+        <form onsubmit="return false" action="{{ path('prod_move_collection_apply') }}" method="post">
         {% if records.databoxes() | length > 1 %}1
             {% trans 'prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble' %}
             <div style="text-align:center;">

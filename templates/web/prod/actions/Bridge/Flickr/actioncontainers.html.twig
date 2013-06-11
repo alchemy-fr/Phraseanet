@@ -1,5 +1,5 @@
 <td>
-    <form class="action_works_standalone action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/createcontainer/{{action_type}}/">
+    <form class="action_works_standalone action_works_single_element action_works_many_element" method="GET" action="{{ path('bridge_account_action', { 'account_id' : account.get_id(), 'action' : 'createcontainer', 'element_type' : action_type }) }}">
         <button  class="form_multiple_submitter single_menu btn btn-inverse">
               {% trans 'Creer' %}
         </button>
@@ -14,7 +14,7 @@
             </button>
             <ul class="dropdown-menu">
                 <li>
-                    <form class="action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/deleteelement/{{action_type}}/">
+                    <form class="action_works_single_element action_works_many_element" method="GET" action="{{ path('bridge_account_action', { 'account_id' : account.get_id(), 'action' : 'deleteelement', 'element_type' : action_type }) }}">
                         <input type="hidden" name="elements_list" value="" />
                         <input type="hidden" name="destination" value="" />
                         <a class="form_multiple_submitter">

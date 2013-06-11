@@ -2,7 +2,7 @@
 
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet"
-        href="/include/minify/?f=skins/lightbox/lightbox.css" media="screen"/>
+        href="{{ path('minifier', { 'f' : 'skins/lightbox/lightbox.css' }) }}" media="screen"/>
 {% endblock %}
 
 {% block content %}
@@ -10,7 +10,7 @@
         <h2 style="font-weight:bold;font-size:20px;margin:40px 0;">{% trans 'Erreur !' %}</h2>
         <p>{{ message }}</p>
         <p>{{error}}</p>
-        <p><a style="color:black;" target="_self" href="/lightbox/">{% trans 'Retour a laccueil' %}</a></p>
+        <p><a style="color:black;" target="_self" href="{{ path('lightbox') }}">{% trans 'Retour a laccueil' %}</a></p>
     </div>
 {% endblock %}
 

@@ -34,9 +34,7 @@ class Root implements ControllerProviderInterface
         $controllers->before(function(Request $request) use ($app) {
 
             if (!$app['authentication']->isAuthenticated() && null !== $request->query->get('nolog')) {
-                return $app->redirect(
-                    $app->path('login_authenticate_as_guest', array('redirect' => '/prod/'))
-                );
+                return $app->redirectPath('login_authenticate_as_guest');
             }
 
             $app['firewall']->requireAuthentication();
@@ -46,7 +44,7 @@ class Root implements ControllerProviderInterface
             try {
                 \User_Adapter::updateClientInfos($app, 1);
             } catch (SessionNotFound $e) {
-                return $app->redirect($app['url_generator']->generate('logout'));
+                return $app->redirectPath('logout');
             }
 
             $cssPath = $app['phraseanet.registry']->get('GV_RootPath') . 'www/skins/prod/';

@@ -2,19 +2,19 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-  <script type="text/javascript" src="/include/minify/?f=skins/lightbox/jquery.validator.mobile.js"></script>
+  <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.js' }) }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
-  <link rel="stylesheet" href="/include/minify/?f=skins/lightbox/jquery.validator.mobile.css" />
+  <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.css' }) }}" />
 {% endblock %}
 
 {% block content %}
 <div id="home" data-role="page">
     <div data-role="header">
-    <a href="/lightbox/{% if basket.getValidation() %}#validation{% else %}#baskets{% endif %}" data-rel="back" data-icon="arrow-l">{% trans 'Back' %}</a>
+    <a href="{{ path('lightbox') }}{% if basket.getValidation() %}#validation{% else %}#baskets{% endif %}" data-rel="back" data-icon="arrow-l">{% trans 'Back' %}</a>
     <h1>{{basket.getName()}}</h1>
-    <a rel="external" href="/lightbox/" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{% trans 'Home' %}</a>
+    <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{% trans 'Home' %}</a>
   </div>
     <div data-role="content">
     <p>
@@ -28,7 +28,7 @@
           <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() == false and basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() is not null %}disagree{% endif %}">
           </div>
         {% endif %}
-        <a href="/lightbox/ajax/LOAD_BASKET_ELEMENT/{{basket_element.getId()}}/">
+        <a href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : basket_element.getId() }) }}">
           {{thumbnail.format(basket_element.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
         </a>
         <input type="hidden" class="display_id" name="display_id" value="{{basket_element.getOrd()}}" />

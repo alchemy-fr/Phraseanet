@@ -20,7 +20,7 @@
         <p class="admin_head_opts">
             <a class="user_adder" href="#">{% trans 'admin::user: nouvel utilisateur' %}</a>
             <a class="template_adder" href="#">{% trans 'admin::user: nouveau template' %}</a>
-            <a href="/admin/users/import/file/" target='right'>{% trans 'admin::user: import d\'utilisateurs' %}</a> /
+            <a href="{{ path('users_display_import_file') }}" target='right'>{% trans 'admin::user: import d\'utilisateurs' %}</a> /
             <a href="#"  onclick="exportlist();return(false);">{% trans 'admin::user: export d\'utilisateurs' %}</a>
             <a class="invite_modifier" href="#">{% trans 'Reglages:: reglages d acces guest' %}</a>
             <input type="hidden" value="{{invite_user.get_id()}}" name="invite_user_id"/>
@@ -28,7 +28,7 @@
             <input type="hidden" value="{{autoregister_user.get_id()}}" name="autoregister_user_id"/>
         </p>
 
-        <form id="users_page_search" method="post" action="/admin/users/search/" target="_self">
+        <form id="users_page_search" method="post" action="{{ path('admin_users_search') }}" target="_self">
             <p class="admin_head_opts">
             <span>{% trans 'Filter' %}</span>
                 <select name="like_field" class="input-medium">
@@ -45,7 +45,7 @@
             </p>
         </form>
 
-        <form id="users_apply_template" method="post" action="/admin/users/apply_template/" target="_self" style="float:left">
+        <form id="users_apply_template" method="post" action="{{ path('admin_users_apply_template') }}" target="_self" style="float:left">
             <p class="admin_head_opts">
                 <span>{% trans 'Apply a template' %}</span>
                 <select name="template_chooser" class="input-medium">
@@ -58,7 +58,7 @@
             </p>
         </form>
 
-        <form id="users_reset_rights" method="post" action="/admin/users/rights/reset/" target="_self" style="float:right">
+        <form id="users_reset_rights" method="post" action="{{ path('admin_users_rights_reset') }}" target="_self" style="float:right">
             <input type="hidden" value="" name="users">
             <button type='button' class="btn btn-warning">{% trans 'Delete all users rights' %}</button>
         </form>
@@ -147,7 +147,7 @@
             </tbody>
         </table>
 
-        <form id="export_form" method="post" target="_blank" class="no-ajax" action="/admin/users/search/export/">
+        <form id="export_form" method="post" target="_blank" class="no-ajax" action="{{ path('admin_users_search_export') }}">
             <input name="srt" value="{{parm['srt']}}" type="hidden" />
             <input name="ord" value="{{parm.ord}}" type="hidden" />
             {% for sbas_id in parm.sbas_id %}
@@ -164,7 +164,7 @@
             <input name="inactives" value="{{parm.inactives}}" type="hidden" />
         </form>
 
-        <form id="users_page_form" method="post" target="_self" action="/admin/users/search/">
+        <form id="users_page_form" method="post" target="_self" action="{{ path('admin_users_search') }}">
             <p>
                 <span>{{users.get_total}} resultats,</span>
 
@@ -221,7 +221,7 @@
             </p>
         </form>
 
-        <form target="_blank" method="post" action="/admin/users/export/csv/">
+        <form target="_blank" method="post" action="{{ path('admin_users_export_csv') }}">
             {% if parm.base_id is not empty %}
                 {% for base_id in parm.base_id %}
                     <input name="base_id[]" value="{{base_id}}" type="hidden" />

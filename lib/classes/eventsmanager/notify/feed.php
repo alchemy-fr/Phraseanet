@@ -101,7 +101,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                                 , $entry->get_id()
                         );
 
-                        $url = $this->app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/index.php?LOG=' . $token;
+                        $url = $this->app->url('lightbox', array('LOG' => $token));
 
                         $receiver = Receiver::fromUser($user_to_notif);
                         $readyToSend = true;

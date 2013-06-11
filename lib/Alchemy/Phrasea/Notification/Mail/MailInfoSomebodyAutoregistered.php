@@ -45,6 +45,6 @@ class MailInfoSomebodyAutoregistered extends AbstractMailWithLink
      */
     public function getButtonURL()
     {
-        return $this->app['url_generator']->generate('admin', array('section' => 'users'), true);
+        return $this->app->url('admin', array('section' => 'users'));
     }
 }

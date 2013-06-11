@@ -25,7 +25,7 @@
     {% endtrans %}
   {% endif %}
 
-  <form class='bridge_form' name="upload_form" action="/prod/bridge/upload/" method="post">
+  <form class='bridge_form' name="upload_form" action="{{ path('prod_bridge_do_upload') }}" method="post">
     {% trans %}
       Upload sur Flickr de {{ elements_length }} elements
     {% endtrans %}

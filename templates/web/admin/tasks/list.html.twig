@@ -5,10 +5,10 @@
     </span>
 </h1>
 
-<form id="taskManagerForm" method="get" name="taskManager" action="/admin/task-manager/tasks/" >
+<form id="taskManagerForm" method="get" name="taskManager" action="{{ path('admin_tasks_list') }}" >
 </form>
 
-<form id="createTask" method="post"  name="createTask" action="/admin/task-manager/tasks/create/" >
+<form id="createTask" method="post"  name="createTask" action="{{ path('admin_tasks_task_create') }}" >
     <input type="hidden" name="tcl" value="" />
     <input type="hidden" name="view" value="GRAPHIC" />
 </form>

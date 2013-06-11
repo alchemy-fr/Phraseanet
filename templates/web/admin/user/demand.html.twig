@@ -121,7 +121,7 @@
 {% endif %}
 
 {% if table['user'] | length > 0 %}
-    <form action="/admin/users/demands/" method="post">
+    <form action="{{ path('users_submit_demands') }}" method="post">
         <div class="btn-group">
             <button class="btn" type="button" onclick="checkAll('deny')" style="height:30px;">
                 <img class="tipInfoUsr" title="{% trans 'admin:: refuser l\'acces' %}" src="/skins/icons/delete.gif"/>

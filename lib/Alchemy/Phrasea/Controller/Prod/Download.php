@@ -97,9 +97,7 @@ class Download implements ControllerProviderInterface
             'export_file' => $download->getExportName()
         ));
 
-        return $app->redirect($app['url_generator']->generate(
-            'prepare_download', array('token' => $token)
-        ));
+        return $app->redirectPath('prepare_download', array('token' => $token));
     }
 
     /**

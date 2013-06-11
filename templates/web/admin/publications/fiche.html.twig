@@ -79,7 +79,7 @@
         });
         </script>
 
-        <form class="no-ajax form_publication form-vertical" name="form_publication" enctype="multipart/form-data" method="post" action="/admin/publications/feed/{{ feed.get_id() }}/update/">
+        <form class="no-ajax form_publication form-vertical" name="form_publication" enctype="multipart/form-data" method="post" action="{{ path('admin_feeds_feed_update', { 'id' : feed.get_id() }) }}">
             <div class="control-group">
                 <label class="control-label" for="edit_pub_titre">{% trans 'Titre' %} :</label>
                 <div class="controls">
@@ -117,7 +117,7 @@
             </div>
             <div>
                 <button class="btn btn-warning" type="submit">{% trans 'boutton::valider' %}</button>
-                <a href="/admin/publications/list/" class="btn" style="text-decoration:none;">{% trans 'boutton::annuler' %}</a>
+                <a href="{{ path('admin_feeds_list') }}" class="btn" style="text-decoration:none;">{% trans 'boutton::annuler' %}</a>
             </div>
         </form>
         <br />
@@ -148,7 +148,7 @@
                             {% if publisher.is_owner() == true %}
                                 X
                             {% else %}
-                                <form class="no-ajax form_publication" method="post" action="/admin/publications/feed/{{ feed.get_id() }}/removepublisher/" style="margin:0;">
+                                <form class="no-ajax form_publication" method="post" action="{{ path('admin_feeds_feed_remove_publisher', { 'id' : feed.get_id() }) }}" style="margin:0;">
                                     <input type="hidden" value="{{ publisher.get_id() }}" name="publisher_id"/>
                                     <button class="btn btn-mini">{% trans 'boutton::supprimer' %}</button>
                                 </form>
@@ -159,7 +159,7 @@
                 </tbody>
             </table>
             <div>
-                <form class="no-ajax form_publication" id="publisher_adder" method="post" action="/admin/publications/feed/{{ feed.get_id() }}/addpublisher/">
+                <form class="no-ajax form_publication" id="publisher_adder" method="post" action="{{ path('admin_feeds_feed_add_publisher', { 'id' : feed.get_id() }) }}">
                     <div class="control-group">
                         <label class="control-label">{% trans 'Ajouter un publisher' %} :</label>
                         <div class="controls">
@@ -211,7 +211,7 @@
 
     {% else %}
         {% trans 'You are not the feed owner' %}
-        <a href="/admin/publications/list/">{% trans 'boutton::retour' %}</a>
+        <a href="{{ path('admin_feeds_list') }}">{% trans 'boutton::retour' %}</a>
     {% endif %}
 </div>
 

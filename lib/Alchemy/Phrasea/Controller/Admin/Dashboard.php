@@ -155,10 +155,10 @@ class Dashboard implements ControllerProviderInterface
     public function flush(Application $app, Request $request)
     {
         if ($app['phraseanet.cache-service']->flushAll()) {
-            return $app->redirect('/admin/dashboard/?flush_cache=ok');
+            return $app->redirectPath('admin_dashbord', array('flush_cache' => 'ok'));
         }
 
-        return $app->redirect('/admin/dashboard/?flush_cache=ko');
+        return $app->redirectPath('admin_dashbord', array('flush_cache' => 'ko'));
     }
 
     /**
@@ -181,7 +181,7 @@ class Dashboard implements ControllerProviderInterface
         try {
             $receiver = new Receiver(null, $mail);
         } catch (InvalidArgumentException $e) {
-            return $app->redirect('/admin/dashboard/?email=not-sent');
+            return $app->redirectPath('admin_dashbord', array('email' => 'not-sent'));
         }
 
         $mail = MailTest::create($app, $receiver);
@@ -189,7 +189,7 @@ class Dashboard implements ControllerProviderInterface
         $app['notification.deliverer']->deliver($mail);
         $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
 
-        return $app->redirect('/admin/dashboard/?email=sent');
+        return $app->redirectPath('admin_dashbord', array('email' => 'sent'));
     }
 
     /**
@@ -203,7 +203,7 @@ class Dashboard implements ControllerProviderInterface
     {
         \User_Adapter::reset_sys_admins_rights($app);
 
-        return $app->redirect('/admin/dashboard/');
+        return $app->redirectPath('admin_dashbord');
     }
 
     /**
@@ -227,7 +227,7 @@ class Dashboard implements ControllerProviderInterface
             }
         }
 
-        return $app->redirect('/admin/dashboard/');
+        return $app->redirectPath('admin_dashbord');
     }
 
     /**

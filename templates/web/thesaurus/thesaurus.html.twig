@@ -8,15 +8,15 @@
                 display: none;
             }
         </style>
-        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
         <script type="text/javascript">
             var p4 = {};
         </script>
 
         <link rel="shortcut icon" type="image/x-icon" href="/skins/thesaurus/favicon.ico">
-        <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
-        <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
-        <script type="text/javascript" src="/include/minify/?g=thesaurus"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'g' : 'thesaurus' }) }}"></script>
         <script type="text/javascript">
 
             var currentBaseName = "";
@@ -163,17 +163,20 @@
             <a href="javascript:void(0)" class="" id="kterm_link">{% trans 'thesaurus::menu: lier au champ' %}</a>
         </div>
 
-        <form name="fBase" action="/thesaurus/loadth.php" method="post" target="?">
+        <form name="fBase" action="{{ path('thesaurus_loadth') }}" method="post" target="?">
             <input type="hidden" name="bid" value="{{ bid }}" />
             <input type="hidden" name="piv" value="{{ piv }}" />
             <input type="hidden" name="repair" value="" />
         </form>
 
+        <!--
+        Seems obsolete
         <form name="fSave" action="/thesaurus/savethesaurus1.php" method="post">
             <input type="hidden" name="bid" value="?" />
             <input type="hidden" name="th" value="?" />
             <input type="hidden" name="ch" value="?" />
         </form>
+        -->
 
         <form name="fTh" style="position:absolute; top:0px; left:0px; right:0px; bottom:0px;">
 

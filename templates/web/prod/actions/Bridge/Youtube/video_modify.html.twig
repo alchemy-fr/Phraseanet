@@ -19,7 +19,7 @@
 {% endblock %}
 
 {% block response %}
-<form class="form_add_container bridge_form form-horizontal" action="/prod/bridge/action/{{ account.get_id() }}/{{action}}/{{element_type}}/" method="post">
+<form class="form_add_container bridge_form form-horizontal" action="{{ path('bridge_account_do_action', { 'account_id' : account.get_id(), 'action' : action, 'element_type' : element_type }) }}" method="post">
     <div class="control-group">
         <label class="control-label" for="modif_title">{% trans 'Titre' %}</label>
         <div class="controls">

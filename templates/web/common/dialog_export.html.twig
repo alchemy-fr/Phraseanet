@@ -149,7 +149,7 @@
                             <div class="well-small">
                                 <label for="TOU_acceptDL" class="checkbox">
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
-                                    {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
+                                    {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
                                     {% trans %}
                                         By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
@@ -232,7 +232,7 @@
                             <div class="well-small">
                                 <label for="TOU_acceptMail" class="checkbox">
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptMail" value="1"  />
-                                    {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
+                                    {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
                                     {% trans %}
                                         By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
@@ -380,7 +380,7 @@
                         <div class="well-small">
                             <label for="TOU_acceptOrder" class="checkbox">
                                 <input type="checkbox" name="TOU_accept" id="TOU_acceptOrder" value="1"  />
-                                {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
+                                {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                 {% set end_link = '</a>' %}
                                 {% trans %}
                                     By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
@@ -401,7 +401,7 @@
             <div id="ftp">
                 <div style="padding:10px; text-align: center;">
                     <h4>{% trans 'export:: FTP' %}</h4>
-                    <form action="/include/exportsFTP.php" method="post" target="_blank" class="form-horizontal" style="text-align: left;">
+                    <form action="{{ path('export_ftp') }}" method="post" target="_blank" class="form-horizontal" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         <div class="control-group">
@@ -463,7 +463,7 @@
                             <div class="well-small">
                                 <label for="TOU_acceptFTP" class="checkbox">
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptFTP" value="1"  />
-                                    {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
+                                    {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
                                     {% trans %}
                                         By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}

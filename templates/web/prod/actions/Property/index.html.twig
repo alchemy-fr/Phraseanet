@@ -10,7 +10,7 @@
     <ul>
         <li><a href="#property-statut">{% trans 'Records Statut' %}</a></li>
         {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
-        <li><a href="/prod/records/property/type/">{% trans 'Records type' %}&nbsp;<span>&nbsp;</span></a></li>
+        <li><a href="{{ path('display_type_property') }}">{% trans 'Records type' %}&nbsp;<span>&nbsp;</span></a></li>
     </ul>
 
     <div id='property-statut'>
@@ -32,7 +32,7 @@
             </h4>
         </p>
 
-        <form style='padding:15px;' name="change-records-status" action="/prod/records/property/status/" method="POST">
+        <form style='padding:15px;' name="change-records-status" action="{{ path('change_status') }}" method="POST">
             <input name="lst" type="hidden" value="{{ records.serializedList() }}"/>
             {% for databox in records.databoxes() %}
                 {% set sbasId = databox.get_sbas_id() %}

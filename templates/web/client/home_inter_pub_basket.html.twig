@@ -99,7 +99,7 @@
                             <tr>
                                 <td></td>
                                 <td style='text-align:right;' valign='bottom' nowrap>
-                                    <div tooltipsrc="/prod/tooltip/preview/{{ record.get_sbas_id() }}/{{ record.get_record_id() }}/" class="previewTips"></div>&nbsp;
+                                    <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}" class="previewTips"></div>&nbsp;
                                 </td>
                             </tr>
                         </table>

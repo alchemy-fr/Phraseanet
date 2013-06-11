@@ -162,7 +162,8 @@ class Databox implements ControllerProviderInterface
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
-            })->bind('admin_database_submit_collection');
+            })
+            ->bind('admin_database_submit_collection');
 
         /**
          * Get database CGU
@@ -481,7 +482,16 @@ class Databox implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/databox/' . $databox->get_sbas_id() . '/?success=' . (int) $success . ($databox->get_record_amount() > 0 ? '&error=databox-not-empty' : ''));
+        $params = array(
+            'databox_id' => $databox->get_sbas_id(),
+            'success'    => (int) $success,
+        );
+
+        if ($databox->get_record_amount() > 0) {
+            $params['error'] = 'databox-not-empty';
+        }
+
+        return $app->redirectPath('admin_database', $params);
     }
 
     /**
@@ -511,7 +521,10 @@ class Databox implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_database', array(
+            'databox_id' => $databox_id,
+            'success'    => (int) $success,
+        ));
     }
 
     /**
@@ -541,7 +554,10 @@ class Databox implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_database', array(
+            'databox_id' => $databox_id,
+            'success'    => (int) $success,
+        ));
     }
 
     /**
@@ -561,10 +577,16 @@ class Databox implements ControllerProviderInterface
                 $databox->update_cgus($loc, $terms, !!$request->request->get('valid', false));
             }
         } catch (\Exception $e) {
-            return $app->redirect('/admin/databox/' . $databox_id . '/cgus/?success=0');
+            return $app->redirectPath('admin_database_display_cgus', array(
+                'databox_id' => $databox_id,
+                'success'    => 0,
+            ));
         }
 
-        return $app->redirect('/admin/databox/' . $databox_id . '/cgus/?success=1');
+        return $app->redirectPath('admin_database_display_cgus', array(
+            'databox_id' => $databox_id,
+            'success'    => 1,
+        ));
     }
 
     /**
@@ -601,11 +623,17 @@ class Databox implements ControllerProviderInterface
 
             $app['phraseanet.appbox']->get_connection()->commit();
 
-            return $app->redirect('/admin/databox/' . $databox_id . '/?mount=ok');
+            return $app->redirectPath('admin_database', array(
+                'databox_id' => $databox_id,
+                'mount'      => 'ok',
+            ));
         } catch (\Exception $e) {
             $app['phraseanet.appbox']->get_connection()->rollBack();
 
-            return $app->redirect('/admin/databox/' . $databox_id . '/?mount=ko');
+            return $app->redirectPath('admin_database', array(
+                'databox_id' => $databox_id,
+                'mount'      => 'ko',
+            ));
         }
     }
 
@@ -627,15 +655,30 @@ class Databox implements ControllerProviderInterface
                     $app['phraseanet.appbox']->write_databox_pic($app['media-alchemyst'], $app['filesystem'], $databox, $file, \databox::PIC_PDF);
                     unlink($file->getPathname());
 
-                    return $app->redirect('/admin/databox/' . $databox_id . '/?success=1');
+                    return $app->redirectPath('admin_database', array(
+                        'databox_id' => $databox_id,
+                        'success'    => '1',
+                    ));
                 } else {
-                    return $app->redirect('/admin/databox/' . $databox_id . '/?success=0&error=file-too-big');
+                    return $app->redirectPath('admin_database', array(
+                        'databox_id' => $databox_id,
+                        'success'    => '0',
+                        'error'      => 'file-too-big',
+                    ));
                 }
             } else {
-                return $app->redirect('/admin/databox/' . $databox_id . '/?success=0&error=file-invalid');
+                return $app->redirectPath('admin_database', array(
+                    'databox_id' => $databox_id,
+                    'success'    => '0',
+                    'error'      => 'file-invalid',
+                ));
             }
         } catch (\Exception $e) {
-            return $app->redirect('/admin/databox/' . $databox_id . '/??success=0&error=file-error');
+            return $app->redirectPath('admin_database', array(
+                'databox_id' => $databox_id,
+                'success'    => '0',
+                'error'      => 'file-error',
+            ));
         }
     }
 
@@ -666,7 +709,10 @@ class Databox implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_database', array(
+            'databox_id' => $databox_id,
+            'error'      => 'file-too-big',
+        ));
     }
 
     /**
@@ -696,7 +742,10 @@ class Databox implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_database', array(
+            'databox_id' => $databox_id,
+            'error'      => 'file-too-big',
+        ));
     }
 
     /**
@@ -730,7 +779,10 @@ class Databox implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_database', array(
+            'databox_id' => $databox_id,
+            'error'      => 'file-too-big',
+        ));
     }
 
     /**
@@ -762,7 +814,11 @@ class Databox implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success . '&reload-tree=1');
+        return $app->redirectPath('admin_database', array(
+            'databox_id'  => $databox_id,
+            'error'       => 'file-too-big',
+            'reload-tree' => 1,
+        ));
     }
 
     /**
@@ -805,7 +861,10 @@ class Databox implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_database', array(
+            'databox_id' => $databox_id,
+            'error'      => 'file-too-big',
+        ));
     }
 
     /**
@@ -907,7 +966,10 @@ class Databox implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/databox/' . $databox_id . '/collections/order?success=' . (int) $success);
+        return $app->redirectPath('admin_database_display_collections_order', array(
+            'databox_id' => $databox_id,
+            'success'    => (int) $success,
+        ));
     }
 
     /**
@@ -934,7 +996,10 @@ class Databox implements ControllerProviderInterface
     public function createCollection(Application $app, Request $request, $databox_id)
     {
         if (($name = trim($request->request->get('name', ''))) === '') {
-            return $app->redirect('/admin/databox/' . $databox_id . '/collection/error=name');
+            return $app->redirectPath('admin_database_display_new_collection_form', array(
+                'databox_id' => $databox_id,
+                'error'      => 'name',
+            ));
         }
 
         try {
@@ -955,9 +1020,9 @@ class Databox implements ControllerProviderInterface
                 }
             }
 
-            return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=1&reload-tree=1');
+            return $app->redirectPath('admin_display_collection', array('bas_id' => $collection->get_base_id(), 'success' => 1, 'reload-tree' => 1));
         } catch (\Exception $e) {
-            return $app->redirect('/admin/databox/' . $databox_id . '/collection/error=error');
+            return $app->redirectPath('admin_database_submit_collection', array('databox_id' => $databox_id, 'error' => 'error'));
         }
     }
 

@@ -14,7 +14,7 @@
       </td>
       <td class="paginator">
         {% if Page - 1  > 0 %}
-        <a href="/prod/WorkZone/Browse/Search/?Query={{ Query }}&Year={{ Year }}&Type={{ Type }}&Page={{ Page - 1 }}" class="result">
+        <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result">
           <img src="/skins/prod/Basket/Browser/left.png" />
         </a>
         {% endif %}
@@ -22,7 +22,7 @@
           Page {{ Page }} / {{ MaxPage }}
         </span>
         {% if Page + 1  <= MaxPage %}
-        <a href="/prod/WorkZone/Browse/Search/?Query={{ Query }}&Year={{ Year }}&Type={{ Type }}&Page={{ Page + 1 }}" class="result">
+        <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result">
           <img src="/skins/prod/Basket/Browser/right.png" />
         </a>
         {% endif %}
@@ -51,25 +51,25 @@
               <h1 class="title">
                 <img class="loader" src="/skins/prod/Basket/Browser/loader.gif" />
                 {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app['authentication'].getUser()) %}
-                <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=1" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
+                <a href="{{ path('prod_baskets_basket_archive', { 'basket_id' : Basket.getId(), 'archive' : 1 }) }}" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
                   <span>
                     <img src="/skins/prod/Basket/Browser/archive.png"/>
                   </span>
                 </a>
-                <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=0" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
+                <a href="{{ path('prod_baskets_basket_archive', { 'basket_id' : Basket.getId(), 'archive' : 0 }) }}" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
                   <span>
                     <img src="/skins/prod/Basket/Browser/archived.png"/>
                   </span>
                 </a>
                 {% endif %}
-                <a class="basket_link" href="/prod/WorkZone/Browse/Basket/{{ Basket.getId() }}/">
+                <a class="basket_link" href="{{ path('prod_workzone_basket', { basket_id : Basket.getId() }) }}">
                   {{ Basket.getName() }}
                 </a>
               </h1>
 
               {% if Basket.getPusher(app) %}
               <p>
-                {% set user_name = '<a href="/user/' ~ Basket.getPusher(app).get_id() ~ '/" tooltipsrc="/prod/tooltip/user/' ~ Basket.getPusher(app).get_id() ~ '/" class="UserTips">' ~ Basket.getPusher(app).get_display_name() ~ '</a>' %}
+                {% set user_name = '<a href="/user/' ~ Basket.getPusher(app).get_id() ~ '/" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Basket.getPusher(app).get_id() }) ~ '" class="UserTips">' ~ Basket.getPusher(app).get_display_name() ~ '</a>' %}
                 {% trans %}
                   Received from {{ user_name }}
                 {% endtrans %}
@@ -86,9 +86,7 @@
                     {% set list_participants = list_participants ~ ', ' %}
                   {% endif %}
 
-                  {% set list_participants = list_participants ~ '<a class="UserTips" tooltipsrc="/prod/tooltip/user/'
-                                        ~ Participant.getUser(app).get_id()
-                                        ~ '/"  href="/user/' ~ Participant.getUser(app).get_id() ~ '/">' %}
+                  {% set list_participants = list_participants ~ '<a class="UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Participant.getUser(app).get_id() }) ~ '"  href="/user/' ~ Participant.getUser(app).get_id() ~ '/">' %}
                   {% set list_participants = list_participants ~ Participant.getUser(app).get_display_name %}
                   {% set list_participants = list_participants ~ '</a>' %}
                 {% endfor %}
@@ -123,7 +121,7 @@
         </td>
         <td class="paginator">
           {% if Page - 1  > 0 %}
-          <a href="/prod/WorkZone/Browse/Search/?Query={{ Query }}&Year={{ Year }}&Type={{ Type }}&Page={{ Page - 1 }}" class="result">
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result">
             <img src="/skins/prod/Basket/Browser/left.png" />
           </a>
           {% endif %}
@@ -131,7 +129,7 @@
             Page {{ Page }} / {{ MaxPage }}
           </span>
           {% if Page + 1  <= MaxPage %}
-          <a href="/prod/WorkZone/Browse/Search/?Query={{ Query }}&Year={{ Year }}&Type={{ Type }}&Page={{ Page + 1 }}" class="result">
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result">
             <img src="/skins/prod/Basket/Browser/right.png" />
           </a>
           {% endif %}

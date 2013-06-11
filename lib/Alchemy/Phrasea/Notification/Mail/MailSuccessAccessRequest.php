@@ -44,6 +44,6 @@ class MailSuccessAccessRequest extends AbstractMailWithLink
      */
     public function getButtonURL()
     {
-        return $this->app['url_generator']->generate('account_access', array(), true);
+        return $this->app->url('account_access');
     }
 }

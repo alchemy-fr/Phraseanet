@@ -41,7 +41,7 @@ class Publications implements ControllerProviderInterface
 
             return $app['twig']
                     ->render('admin/publications/list.html.twig', array('feeds' => $feeds));
-        });
+        })->bind('admin_feeds_list');
 
         $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
 
@@ -55,15 +55,17 @@ class Publications implements ControllerProviderInterface
                 $feed->set_collection(\collection::get_from_base_id($app, $request->request->get('base_id')));
             }
 
-            return $app->redirect('/admin/publications/list/');
-        });
+            return $app->redirectPath('admin_feeds_list');
+        })->bind('admin_feeds_create');
 
         $controllers->get('/feed/{id}/', function(PhraseaApplication $app, Request $request, $id) {
             $feed = new \Feed_Adapter($app, $id);
 
             return $app['twig']
                     ->render('admin/publications/fiche.html.twig', array('feed'  => $feed, 'error' => $app['request']->query->get('error')));
-        })->assert('id', '\d+');
+        })
+            ->bind('admin_feeds_feed')
+            ->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/update/', function(PhraseaApplication $app, Request $request, $id) {
 
@@ -80,14 +82,16 @@ class Publications implements ControllerProviderInterface
             $feed->set_collection($collection);
             $feed->set_public($request->request->get('public'));
 
-            return $app->redirect('/admin/publications/list/');
+            return $app->redirectPath('admin_feeds_list');
         })->before(function(Request $request) use ($app) {
             $feed = new \Feed_Adapter($app, $request->attributes->get('id'));
 
             if (!$feed->is_owner($app['authentication']->getUser())) {
-                return $app->redirect('/admin/publications/feed/' . $request->attributes->get('id') . '/?error=' . _('You are not the owner of this feed, you can not edit it'));
+                return $app->redirectPath('admin_feeds_feed', array('id' => $request->attributes->get('id'), 'error' =>  _('You are not the owner of this feed, you can not edit it')));
             }
-        })->assert('id', '\d+');
+        })
+            ->bind('admin_feeds_feed_update')
+            ->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/iconupload/', function(PhraseaApplication $app, Request $request, $id) {
             $datas = array(
@@ -156,7 +160,9 @@ class Publications implements ControllerProviderInterface
             }
 
             return $app->json($datas);
-        })->assert('id', '\d+');
+        })
+            ->bind('admin_feeds_feed_icon')
+            ->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/addpublisher/', function(PhraseaApplication $app, $id) {
             $error = '';
@@ -169,8 +175,10 @@ class Publications implements ControllerProviderInterface
                 $error = $e->getMessage();
             }
 
-            return $app->redirect('/admin/publications/feed/' . $id . '/?err=' . $error);
-        })->assert('id', '\d+');
+            return $app->redirectPath('admin_feeds_feed', array('id' => $id, 'error' => $error));
+        })
+            ->bind('admin_feeds_feed_add_publisher')
+            ->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/removepublisher/', function(PhraseaApplication $app, $id) {
             try {
@@ -185,15 +193,19 @@ class Publications implements ControllerProviderInterface
                 $error = $e->getMessage();
             }
 
-            return $app->redirect('/admin/publications/feed/' . $id . '/?err=' . $error);
-        })->assert('id', '\d+');
+            return $app->redirectPath('admin_feeds_feed', array('id' => $id, 'error' => $error));
+        })
+            ->bind('admin_feeds_feed_remove_publisher')
+            ->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/delete/', function(PhraseaApplication $app, $id) {
             $feed = new \Feed_Adapter($app, $id);
             $feed->delete();
 
-            return $app->redirect('/admin/publications/list/');
-        })->assert('id', '\d+');
+            return $app->redirectPath('admin_feeds_list');
+        })
+            ->bind('admin_feeds_feed_delete')
+            ->assert('id', '\d+');
 
         return $controllers;
     }

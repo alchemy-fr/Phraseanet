@@ -15,7 +15,7 @@
         <h2 style="font-weight:bold;font-size:20px;margin:40px 0;">{% trans 'Erreur !' %}</h2>
         <p>{% trans 'Le panier demande nexiste plus' %}</p>
         <p>{{error}}</p>
-        <p><a style="color:black;" target="_self" href="/lightbox/">{% trans 'Retour a l\'accueil' %}</a></p>
+        <p><a style="color:black;" target="_self" href="{{ path('lightbox') }}">{% trans 'Retour a l\'accueil' %}</a></p>
   </div>
     <div data-role="footer">
 

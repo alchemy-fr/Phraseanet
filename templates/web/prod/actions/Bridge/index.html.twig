@@ -11,7 +11,7 @@
                 </div>
             {% endfor %}
         </div>
-        <form name="upload_form" method="GET" action="/prod/bridge/upload/">
+        <form name="upload_form" method="GET" action="{{ path('prod_bridge_upload') }}">
             <div class="PNB10 record_actions" style="top:auto; height:30px; text-align:right;">
                 <button class="single_menu act_upload btn btn-inverse">{% trans 'Upload' %}</button>
             </div>
@@ -31,7 +31,7 @@
             <ul id="ul_main_pub_tabs" class="PNB">
                 {% for account in user_accounts %}
                     <li class="li_{{ account.get_id() }} {% if not account.get_api().get_connector().is_configured() %}not_configured{% endif %} bridge_{{ account.get_api().get_connector().get_name() }} {% if account.get_id() == current_account_id %} ui-tabs-selected {% endif %}">
-                        <a href="/prod/bridge/adapter/{{ account.get_id() }}/load-elements/{{ account.get_api().get_connector().get_default_element_type() }}/" class='account'>
+                        <a href="{{ path('bridge_load_elements', { 'account_id' : account.get_id(), 'type' : account.get_api().get_connector().get_default_element_type() }) }}" class='account'>
                             <span style='display:block;float:left;'>{{ account.get_name() }}</span>
                             <input type="hidden" name="account_id" value="{{ account.get_id() }}" />
                         </a>
@@ -64,7 +64,7 @@
                                                     </tr>
                                                 </table>
                                             </button>
-                                            <input type="hidden" name="url" value="{{api.generate_login_url(app['phraseanet.registry'], api.get_connector().get_name()) }}" />
+                                            <input type="hidden" name="url" value="{{api.generate_login_url(app['url_generator'], api.get_connector().get_name()) }}" />
                                         </form>
                                     {% endif %}
                                 {% endfor %}
@@ -369,7 +369,7 @@ $(function() {
     $('input[name="account_id"]', $form).val(account_id);
 
     var $panel = $('#pub_tabs .ui-tabs-panel:visible');
-    
+
     $.ajax({
       type : 'GET',
       url : '/prod/bridge/upload/',

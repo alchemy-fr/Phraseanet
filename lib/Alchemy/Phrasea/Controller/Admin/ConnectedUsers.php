@@ -26,7 +26,8 @@ class ConnectedUsers implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('Admin');
         });
 
-        $controllers->get('/', $this->call('listConnectedUsers'));
+        $controllers->get('/', $this->call('listConnectedUsers'))
+            ->bind('admin_connected_users');
 
         return $controllers;
     }

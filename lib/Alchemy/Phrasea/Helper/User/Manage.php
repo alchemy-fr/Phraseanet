@@ -183,7 +183,7 @@ class Manage extends Helper
                     $token = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id(), $expire, $createdUser->get_email());
 
                     $mail = MailRequestPasswordSetup::create($this->app, $receiver);
-                    $mail->setButtonUrl($this->app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token);
+                    $mail->setButtonUrl($this->app->url('login_register_confirm', array('code' => $token)));
                     $mail->setExpiration($expire);
 
                     $this->app['notification.deliverer']->deliver($mail);
@@ -195,7 +195,7 @@ class Manage extends Helper
 
                 if ($receiver && false !== $urlToken) {
                     $mail = MailSuccessEmailConfirmationUnregistered::create($this->app, $receiver);
-                    $mail->setButtonUrl($this->app['url_generator']->generate('login_forgot_password', array('token' => $urlToken), true));
+                    $mail->setButtonUrl($this->app->url('login_forgot_password', array('token' => $urlToken)));
                     $this->app['notification.deliverer']->deliver($mail);
                 }
             }

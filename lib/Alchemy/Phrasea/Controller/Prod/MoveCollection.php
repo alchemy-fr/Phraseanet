@@ -34,8 +34,8 @@ class MoveCollection implements ControllerProviderInterface
                 ->requireRight('deleterecord');
         });
 
-        $controllers->post('/', $this->call('displayForm'));
-        $controllers->post('/apply/', $this->call('apply'));
+        $controllers->post('/', $this->call('displayForm'))->bind('prod_move_collection');
+        $controllers->post('/apply/', $this->call('apply'))->bind('prod_move_collection_apply');
 
         return $controllers;
     }

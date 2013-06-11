@@ -81,12 +81,12 @@ class Oauth2 implements ControllerProviderInterface
                         if (null === $usr_id) {
                             $app['session']->getFlashBag()->set('error', _('login::erreur: Erreur d\'authentification'));
 
-                            return $app->redirect($app->path('oauth2_authorize'));
+                            return $app->redirectPath('oauth2_authorize');
                         }
                     } catch (RequireCaptchaException $e) {
-                        return $app->redirect($app->path('oauth2_authorize'), array('error' => 'captcha'));
+                        return $app->redirectPath('oauth2_authorize', array('error' => 'captcha'));
                     } catch (AccountLockedException $e) {
-                        return $app->redirect($app->path('oauth2_authorize'), array('error' => 'account-locked'));
+                        return $app->redirectPath('oauth2_authorize', array('error' => 'account-locked'));
                     }
 
                     $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));

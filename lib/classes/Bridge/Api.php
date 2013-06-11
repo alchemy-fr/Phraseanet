@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 /**
  *
@@ -77,7 +78,7 @@ class Bridge_Api
         if ( ! $row)
             throw new Bridge_Exception_ApiNotFound('Api Not Found');
 
-        $this->connector = self::get_connector_by_name($this->app['phraseanet.registry'], $row['name']);
+        $this->connector = self::get_connector_by_name($this->app, $row['name']);
         $this->disable_time = $row['disable_time'] ? new DateTime($row['disable_time']) : null;
         $this->updated_on = new DateTime($row['updated_on']);
         $this->created_on = new DateTime($row['created_on']);
@@ -460,13 +461,9 @@ class Bridge_Api
      * @param  string            $api_name
      * @return string
      */
-    public static function generate_callback_url(registryInterface $registry, $api_name)
+    public static function generate_callback_url(UrlGenerator $generator, $api_name)
     {
-        return sprintf(
-                '%sprod/bridge/callback/%s/'
-                , $registry->get('GV_ServerName')
-                , mb_strtolower($api_name)
-        );
+        return $generator->generate('prod_bridge_callback', array('api_name' => strtolower($api_name)), UrlGenerator::ABSOLUTE_URL);
     }
 
     /**
@@ -475,22 +472,18 @@ class Bridge_Api
      * @param  string            $api_name
      * @return string
      */
-    public static function generate_login_url(registryInterface $registry, $api_name)
+    public static function generate_login_url(UrlGenerator $generator, $api_name)
     {
-        return sprintf(
-                '%sprod/bridge/login/%s/'
-                , $registry->get('GV_ServerName')
-                , mb_strtolower($api_name)
-        );
+        return $generator->generate('prod_bridge_login', array('api_name' => strtolower($api_name)), UrlGenerator::ABSOLUTE_URL);
     }
 
     /**
      *
-     * @param  registryInterface    $registry
+     * @param  Application          $app
      * @param  string               $name
      * @return Bridge_Api_Interface
      */
-    public static function get_connector_by_name(registryInterface $registry, $name)
+    public static function get_connector_by_name(Application $app, $name)
     {
         $name = ucfirst(strtolower($name));
         $classname = 'Bridge_Api_' . $name;
@@ -502,7 +495,7 @@ class Bridge_Api
         $auth_classname = 'Bridge_Api_Auth_' . $classname::AUTH_TYPE;
         $auth = new $auth_classname;
 
-        return new $classname($registry, $auth);
+        return new $classname($app['url_generator'], $app['phraseanet.registry'], $auth);
     }
 
     public static function get_by_api_name(Application $app, $name)

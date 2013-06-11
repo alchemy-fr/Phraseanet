@@ -7,7 +7,7 @@
 <html lang="{{ app['locale.I18n'] }}">
     <head>
         <title>{% trans 'thesaurus:: accepter...' %}</title>
-        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
         <style type="text/css">
             .path_separator
             {
@@ -18,7 +18,7 @@
                 font-weight:900;
             }
         </style>
-        <script type="text/javascript" src="/skins/thesaurus/xmlhttp.js"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>
         <script type="text/javascript">
             function loaded()
             {

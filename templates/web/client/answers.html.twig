@@ -193,9 +193,9 @@
                             {% endif %}
 
                             {% if mod_col != 1 %}
-                                <div style="margin-right:3px;" class="infoTips" id="INFO{{ record.get_serialize_key() }}" tooltipsrc="/prod/tooltip/tc_datas/{{ record.get_sbas_id() }}/{{ record.get_record_id() }}/"></div>
+                                <div style="margin-right:3px;" class="infoTips" id="INFO{{ record.get_serialize_key() }}" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}"></div>
                                 {% if data['preview_exists'] %}
-                                    <div class="previewTips" tooltipsrc="/prod/tooltip/preview/{{ record.get_sbas_id() }}/{{ record.get_record_id() }}/" id="ZOOM{{ record.get_serialize_key() }}">&nbsp;</div>
+                                    <div class="previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}" id="ZOOM{{ record.get_serialize_key() }}">&nbsp;</div>
                                 {% endif %}
                             {% endif %}
                         </div>

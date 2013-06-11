@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Routing\Generator\UrlGenerator;
+
 class Bridge_Api_Apitest_Containers implements Bridge_Api_ContainerInterface
 {
     public $id;
@@ -68,8 +70,8 @@ class Bridge_Api_Apitest_Containers implements Bridge_Api_ContainerInterface
 
 class Bridge_Api_Apitest_Element implements Bridge_Api_ElementInterface
 {
-    public $id;
-    public $type;
+    public $id = 42;
+    public $type = 'type';
 
     public function __construct()
     {
@@ -149,9 +151,9 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
     public static $hasError = false;
     public static $hasException = false;
 
-    public function __construct(registryInterface $registry, Bridge_Api_Auth_Interface $auth)
+    public function __construct(UrlGenerator $generator, registryInterface $registry, Bridge_Api_Auth_Interface $auth)
     {
-        parent::__construct($registry, $auth);
+        parent::__construct($generator, $registry, $auth);
     }
 
     protected function initialize_transport()

@@ -77,7 +77,13 @@ class Login implements ControllerProviderInterface
                         // then post login operation like getting baskets from an invit session
                         // could be done by Session_handler authentication process
 
-                        $response = new RedirectResponse("/login/logout/?redirect=" . ltrim($request->query->get('redirect', 'prod'), '/'));
+                        $params = array();
+
+                        if (null !== $redirect = $request->query->get('redirect')) {
+                            $params = array('redirect' => ltrim($redirect, '/'));
+                        }
+
+                        $response = $app->redirectPath('logout', $params);
                         $response->headers->setCookie(new Cookie('postlog', 1));
 
                         return $response;
@@ -190,7 +196,7 @@ class Login implements ControllerProviderInterface
                 } catch (NotFoundHttpException $e) {
                     $app->addFlash('error', _('You tried to register with an unknown provider'));
 
-                    return $app->redirect($app->path('login_register'));
+                    return $app->redirectPath('login_register');
                 }
 
                 try {
@@ -198,7 +204,7 @@ class Login implements ControllerProviderInterface
                 } catch (NotAuthenticatedException $e) {
                     $app->addFlash('error', _('You tried to register with an unknown provider'));
 
-                    return $app->redirect($app->path('login_register'));
+                    return $app->redirectPath('login_register');
                 }
 
                 $userAuthProvider = $app['EM']
@@ -208,7 +214,13 @@ class Login implements ControllerProviderInterface
                 if (null !== $userAuthProvider) {
                     $this->postAuthProcess($app, $userAuthProvider->getUser($app));
 
-                    return $app->redirect($request->query->get('redirect', $app->path('prod')));
+                    if (null !== $redirect = $request->query->get('redirect')) {
+                        $redirection = '../' . $redirect;
+                    } else {
+                        $redirection = $app->path('prod');
+                    }
+
+                    return $app->redirect($redirection);
                 }
             }
 
@@ -328,7 +340,7 @@ class Login implements ControllerProviderInterface
                         $app->addFlash('error', _('Unable to send your account unlock email.'));
                     }
 
-                    return $app->redirect($app->path('homepage'));
+                    return $app->redirectPath('homepage');
                 }
             } catch (FormProcessingException $e) {
                 $app->addFlash('error', $e->getMessage());
@@ -388,7 +400,7 @@ class Login implements ControllerProviderInterface
         } catch (\Exception $e) {
             $app->addFlash('error', _('Invalid link.'));
 
-            return $app->redirect($app->path('homepage'));
+            return $app->redirectPath('homepage');
         }
 
         try {
@@ -399,7 +411,7 @@ class Login implements ControllerProviderInterface
             $app->addFlash('error', _('Unable to send your account unlock email.'));
         }
 
-        return $app->redirect($app->path('homepage'));
+        return $app->redirectPath('homepage');
     }
 
     /**
@@ -437,7 +449,7 @@ class Login implements ControllerProviderInterface
         if (null === $code = $request->query->get('code')) {
             $app->addFlash('error', _('Invalid unlock link.'));
 
-            return $app->redirect($app->path('homepage'));
+            return $app->redirectPath('homepage');
         }
 
         try {
@@ -445,7 +457,7 @@ class Login implements ControllerProviderInterface
         } catch (\Exception_NotFound $e) {
             $app->addFlash('error', _('Invalid unlock link.'));
 
-            return $app->redirect($app->path('homepage'));
+            return $app->redirectPath('homepage');
         }
 
         try {
@@ -453,13 +465,13 @@ class Login implements ControllerProviderInterface
         } catch (\Exception $e) {
             $app->addFlash('error', _('Invalid unlock link.'));
 
-            return $app->redirect($app->path('homepage'));
+            return $app->redirectPath('homepage');
         }
 
         if (!$user->get_mail_locked()) {
             $app->addFlash('info', _('Account is already unlocked, you can login.'));
 
-            return $app->redirect($app->path('homepage'));
+            return $app->redirectPath('homepage');
         }
 
         $app['tokens']->removeToken($code);
@@ -470,7 +482,7 @@ class Login implements ControllerProviderInterface
         } catch (InvalidArgumentException $e) {
             $app->addFlash('success', _('Account has been unlocked, you can now login.'));
 
-            return $app->redirect($app->path('homepage'));
+            return $app->redirectPath('homepage');
         }
 
         $app['tokens']->removeToken($code);
@@ -487,7 +499,7 @@ class Login implements ControllerProviderInterface
             $app->addFlash('info', _('Account has been unlocked, you still have to wait for admin approval.'));
         }
 
-        return $app->redirect($app->path('homepage'));
+        return $app->redirectPath('homepage');
     }
 
     public function renewPassword(PhraseaApplication $app, Request $request)
@@ -527,7 +539,7 @@ class Login implements ControllerProviderInterface
 
                     $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
 
-                    return $app->redirect($app->path('homepage'));
+                    return $app->redirectPath('homepage');
                 }
             } catch (FormProcessingException $e) {
                 $app->addFlash('error', $e->getMessage());
@@ -584,7 +596,7 @@ class Login implements ControllerProviderInterface
                     $app['notification.deliverer']->deliver($mail);
                     $app->addFlash('info', _('phraseanet:: Un email vient de vous etre envoye'));
 
-                    return $app->redirect($app->path('login_forgot_password'));
+                    return $app->redirectPath('login_forgot_password');
                 }
             }
         } catch (FormProcessingException $e) {
@@ -615,7 +627,7 @@ class Login implements ControllerProviderInterface
                 'login' => new \login(),
             ));
         } else {
-            return $app->redirect($app->path('login_register_classic'));
+            return $app->redirectPath('login_register_classic');
         }
     }
 
@@ -633,9 +645,9 @@ class Login implements ControllerProviderInterface
 
         $app->addFlash('info', _('Vous etes maintenant deconnecte. A bientot.'));
 
-        $response = new RedirectResponse($app->path('root', array(
+        $response = $app->redirectPath('homepage', array(
             'redirect' => $request->query->get("redirect")
-        )));
+        ));
 
         $response->headers->removeCookie('persistent');
         $response->headers->removeCookie('last_act');
@@ -693,7 +705,7 @@ class Login implements ControllerProviderInterface
     {
         $form = $app->form(new PhraseaAuthenticationForm());
         $redirector = function (array $params = array()) use ($app) {
-            return $app->redirect($app->path('homepage', $params));
+            return $app->redirectPath('homepage', $params);
         };
 
         try {
@@ -726,7 +738,7 @@ class Login implements ControllerProviderInterface
 
         $this->postAuthProcess($app, $user);
 
-        $response = $this->generateAuthResponse($app['browser'], $request->request->get('redirect'));
+        $response = $this->generateAuthResponse($app, $app['browser'], $request->request->get('redirect'));
         $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
 
         $event = new PostAuthenticate($request, $response, $user, $context);
@@ -735,16 +747,16 @@ class Login implements ControllerProviderInterface
         return $response;
     }
 
-    private function generateAuthResponse(\Browser $browser, $redirect)
+    private function generateAuthResponse(Application $app, \Browser $browser, $redirect)
     {
         if ($browser->isMobile()) {
-            $response = new RedirectResponse("/lightbox/");
+            $response = $app->redirectPath('lightbox');
         } elseif ($redirect) {
-            $response = new RedirectResponse('/' . ltrim($redirect,'/'));
+            $response = new RedirectResponse('../' . ltrim($redirect,'/'));
         } elseif (true !== $browser->isNewGeneration()) {
-            $response = new RedirectResponse('/client/');
+            $response = $app->redirectPath('get_client');
         } else {
-            $response = new RedirectResponse('/prod/');
+            $response = $app->redirectPath('prod');
         }
 
         $response->headers->removeCookie('postlog');
@@ -779,7 +791,7 @@ class Login implements ControllerProviderInterface
                 'ssel_id'     => $basketId,
                 'from'        => $validationSession->getInitiatorId(),
                 'validate_id' => $validationSession->getId(),
-                'url'         => $app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/validate/' . $basketId . '/?LOG=' . $token
+                'url'         => $app->url('lightbox_validation', array('ssel_id' => $basketId, 'LOG' => $token)),
             ));
 
             $participant->setReminded(new \DateTime('now'));
@@ -829,7 +841,7 @@ class Login implements ControllerProviderInterface
         } catch (NotAuthenticatedException $e) {
             $app['session']->getFlashBag()->add('error', sprintf(_('Unable to authenticate with %s'), $provider->getName()));
 
-            return $app->redirect($app->path('homepage'));
+            return $app->redirectPath('homepage');
         }
 
         $userAuthProvider = $app['EM']
@@ -839,7 +851,13 @@ class Login implements ControllerProviderInterface
         if (null !== $userAuthProvider) {
             $this->postAuthProcess($app, $userAuthProvider->getUser($app));
 
-            return $app->redirect($request->query->get('redirect', $app->path('prod')));
+            if (null !== $redirect = $request->query->get('redirect')) {
+                $redirection = '../' . $redirect;
+            } else {
+                $redirection = $app->path('prod');
+            }
+
+            return $app->redirect($redirection);
         }
 
         try {
@@ -847,7 +865,7 @@ class Login implements ControllerProviderInterface
         } catch (NotAuthenticatedException $e) {
             $app->addFlash('error', _('Unable to retrieve provider identity'));
 
-            return $app->redirect($app->path('homepage'));
+            return $app->redirectPath('homepage');
         }
 
         if (null !== $user) {
@@ -856,7 +874,13 @@ class Login implements ControllerProviderInterface
 
             $this->postAuthProcess($app, $user);
 
-            return $app->redirect($request->query->get('redirect', $app->path('prod')));
+            if (null !== $redirect = $request->query->get('redirect')) {
+                $redirection = '../' . $redirect;
+            } else {
+                $redirection = $app->path('prod');
+            }
+
+            return $app->redirect($redirection);
         }
 
         if ($app['authentication.providers.account-creator']->isEnabled()) {
@@ -867,14 +891,20 @@ class Login implements ControllerProviderInterface
 
             $this->postAuthProcess($app, $user);
 
-            return $app->redirect($request->query->get('redirect', $app->path('prod')));
+            if (null !== $redirect = $request->query->get('redirect')) {
+                $redirection = '../' . $redirect;
+            } else {
+                $redirection = $app->path('prod');
+            }
+
+            return $app->redirect($redirection);
         } elseif ($app['registration.enabled']) {
-            return $app->redirect($app->path('login_register_classic', array('providerId' => $providerId)));
+            return $app->redirectPath('login_register_classic', array('providerId' => $providerId));
         }
 
         $app->addFlash('error', _('Your identity is not recognized.'));
 
-        return $app->redirect($app->path('homepage'));
+        return $app->redirectPath('homepage');
     }
 
     /**
@@ -939,7 +969,7 @@ class Login implements ControllerProviderInterface
 
         $session = $this->postAuthProcess($app, $user);
 
-        $response = $this->generateAuthResponse($app['browser'], $request->request->get('redirect'));
+        $response = $this->generateAuthResponse($app, $app['browser'], $request->request->get('redirect'));
         $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
 
         $user->ACL()->inject_rights();

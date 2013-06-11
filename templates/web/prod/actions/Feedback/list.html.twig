@@ -6,7 +6,7 @@
             <tr>
                 <td style="white-space:nowrap;">
                     {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-                        <form class="form-inline" method="POST" name="SaveName" action="/prod/lists/list/{{ list.getId() }}/update/">
+                        <form class="form-inline" method="POST" name="SaveName" action="{{ path('prod_lists_list_update', { 'list_id' : list.get_id() }) }}">
                             <label>{% trans 'List Name' %}</label>
                             <input type="text" name="name" style="margin: 0 5px;" value="{{ list.getName() }}"/>
                             <button class="btn btn-inverse">{% trans 'Save' %}</button>
@@ -17,7 +17,7 @@
                 </td>
                 <td style="text-align:right;white-space:nowrap;">
                     {% if list.getOwner(app['authentication'].getUser(), app).getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
-                        <a href="/prod/lists/list/{{ list.getId() }}/share/" title="{% trans 'Share the list' %}" class="list_sharer">
+                        <a href="{{ path('prod_lists_list_share', { 'list_id' : list.getId() }) }}" title="{% trans 'Share the list' %}" class="list_sharer">
                             <img src="/skins/prod/Push/list-icon.png" />
                             {% trans "Set sharing permission" %}
                         </a>
@@ -55,7 +55,7 @@
     </div>
     {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
         <div class="PNB content readwrite grey-bg" style="display:none;top:40px;">
-            <form name="list-editor-search" method="POST" action="/prod/push/edit-list/{{ list.getId() }}/">
+            <form name="list-editor-search" method="POST" action="{{ path('prod_push_list_edit', { 'list_id' : list.get_id() }) }}">
                 <div class="PNB10" style="height:160px;">
                     <div class="PNB" style="height:40px;bottom:auto;">
                         <button class="Refresher btn btn-inverse" type="button">&lt;{% trans 'View' %}</button>

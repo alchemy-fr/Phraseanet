@@ -33,38 +33,47 @@ class Tooltip implements ControllerProviderInterface
         });
 
         $controllers->post('/basket/{basket_id}/', $this->call('displayBasket'))
-            ->assert('basket_id', '\d+');
+            ->assert('basket_id', '\d+')
+            ->bind('prod_tooltip_basket');
 
         $controllers->post('/Story/{sbas_id}/{record_id}/', $this->call('displayStory'))
             ->assert('sbas_id', '\d+')
-            ->assert('record_id', '\d+');
+            ->assert('record_id', '\d+')
+            ->bind('prod_tooltip_story');
 
         $controllers->post('/user/{usr_id}/', $this->call('displayUserBadge'))
-            ->assert('usr_id', '\d+');
+            ->assert('usr_id', '\d+')
+            ->bind('prod_tooltip_user');
 
         $controllers->post('/preview/{sbas_id}/{record_id}/', $this->call('displayPreview'))
             ->assert('sbas_id', '\d+')
-            ->assert('record_id', '\d+');
+            ->assert('record_id', '\d+')
+            ->bind('prod_tooltip_preview');
 
         $controllers->post('/caption/{sbas_id}/{record_id}/{context}/', $this->call('displayCaption'))
             ->assert('sbas_id', '\d+')
-            ->assert('record_id', '\d+');
+            ->assert('record_id', '\d+')
+            ->bind('prod_tooltip_caption');
 
         $controllers->post('/tc_datas/{sbas_id}/{record_id}/', $this->call('displayTechnicalDatas'))
             ->assert('sbas_id', '\d+')
-            ->assert('record_id', '\d+');
+            ->assert('record_id', '\d+')
+            ->bind('prod_tooltip_technical_data');
 
         $controllers->post('/metas/FieldInfos/{sbas_id}/{field_id}/', $this->call('displayFieldInfos'))
             ->assert('sbas_id', '\d+')
-            ->assert('field_id', '\d+');
+            ->assert('field_id', '\d+')
+            ->bind('prod_tooltip_metadata');
 
         $controllers->post('/DCESInfos/{sbas_id}/{field_id}/', $this->call('displayDCESInfos'))
             ->assert('sbas_id', '\d+')
-            ->assert('field_id', '\d+');
+            ->assert('field_id', '\d+')
+            ->bind('prod_tooltip_dces');
 
         $controllers->post('/metas/restrictionsInfos/{sbas_id}/{field_id}/', $this->call('displayMetaRestrictions'))
             ->assert('sbas_id', '\d+')
-            ->assert('field_id', '\d+');
+            ->assert('field_id', '\d+')
+            ->bind('prod_tooltip_metadata_restrictions');
 
         return $controllers;
     }

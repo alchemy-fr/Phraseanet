@@ -3,20 +3,20 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-<script type="text/javascript" src="/include/minify/?f=skins/lightbox/jquery.validator.mobile.js"></script>
+<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.js' }) }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
-  <link rel="stylesheet" href="/include/minify/?f=skins/lightbox/jquery.validator.mobile.css" />
+  <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.css' }) }}" />
 {% endblock %}
 
 {% block content %}
   {% set record = basket_element.getRecord(app) %}
 <div data-role="page">
   <div data-role="header">
-    <a href="/lightbox/validate/{{basket_element.getId()}}/" data-rel="back" data-icon="arrow-l">Back</a>
+    <a href="{{ path('lightbox_validation', { 'ssel_id' : basket_element.getBasket().getId() }) }}" data-rel="back" data-icon="arrow-l">Back</a>
     <h1>{{basket_element.getOrd()}} - {{record.get_title()}}</h1>
-    <a rel="external" href="/lightbox/" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+    <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
   </div>
   <div data-role="content">
     {{ thumbnail.format100percent(record.get_preview(),'', record.get_thumbnail()) }}
@@ -31,7 +31,7 @@
         </fieldset>
       {% endif %}
       <div style="text-align:center;margin:0 0 1em 0">
-        <a href="/lightbox/ajax/NOTE_FORM/{{basket_element.getId()}}/" data-role="button" data-inline="true" data-rel="dialog" data-transition="slidedown">
+        <a href="{{ path('lightbox_ajax_note_form', { 'sselcont_id' : basket_element.getId() }) }}" data-role="button" data-inline="true" data-rel="dialog" data-transition="slidedown">
           {% trans 'validation:: editer ma note' %}
         </a>
       </div>

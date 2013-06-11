@@ -3,11 +3,11 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-  <script type="text/javascript" src="/skins/lightbox/jquery.validator.mobile.js"></script>
+  <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.js' }) }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
-  <link rel="stylesheet" href="/skins/lightbox/jquery.validator.mobile.css" />
+  <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.css' }) }}" />
 {% endblock %}
 
 {% block content %}

@@ -25,7 +25,7 @@
       </div>
     {% endfor %}
     </div>
-    <form name="reorder" method="POST" action="/prod/story/{{story.get_sbas_id() }}/{{story.get_record_id() }}/reorder/">
+    <form name="reorder" method="POST" action="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.get_sbas_id(), 'record_id' : story.get_record_id() }) }}">
       {% for element in story.get_children() %}
         <input type="hidden" name="element[{{ element.get_record_id() }}]" value="{{ element.get_number() }}"/>
       {% endfor %}

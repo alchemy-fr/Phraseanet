@@ -75,7 +75,7 @@ abstract class AbstractMail implements MailInterface
      */
     public function getPhraseanetURL()
     {
-        return $this->app['url_generator']->generate('root', array(), true);
+        return $this->app->url('root');
     }
 
     /**
