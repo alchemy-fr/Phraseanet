@@ -33,11 +33,11 @@ class RSSFeeds implements ControllerProviderInterface
             $feed = $app['EM']->getRepository('Entities\Feed')->find($id);
 
             if (!$feed) {
-                return new Response('Not Found', 404);
+                $app->abort(404, 'Feed not found');
             }
 
             if (!$feed->getPublic()) {
-                return new Response('Forbidden', 403);
+                $app->abort(403, 'Forbidden');
             }
 
             $request = $app['request'];
