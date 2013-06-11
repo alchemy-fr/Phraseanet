@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Process\ExecutableFinder;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -105,12 +107,6 @@ class task_period_cindexer extends task_abstract
 
     /**
      *
-     * @var string
-     */
-    protected $binpath;
-
-    /**
-     *
      * @return string
      */
     public function getName()
@@ -137,13 +133,13 @@ class task_period_cindexer extends task_abstract
         $request = http_request::getInstance();
 
         $parm2 = $request->get_parms(
-            'binpath', 'host', 'port', 'base', 'user', 'password', 'socket', 'use_sbas', 'nolog', 'clng', 'winsvc_run', 'charset', 'debugmask', 'stem', 'sortempty'
+            'host', 'port', 'base', 'user', 'password', 'socket', 'use_sbas', 'nolog', 'clng', 'winsvc_run', 'charset', 'debugmask', 'stem', 'sortempty'
         );
         $dom = new DOMDocument();
         $dom->formatOutput = true;
         if ($dom->loadXML($oldxml)) {
             $xmlchanged = false;
-            foreach (array("str:binpath", "str:host", "str:port", "str:base", "str:user", "str:password", "str:socket", "boo:use_sbas", "boo:nolog", "str:clng", "boo:winsvc_run", "str:charset", 'str:debugmask', 'str:stem', 'str:sortempty') as $pname) {
+            foreach (array("str:host", "str:port", "str:base", "str:user", "str:password", "str:socket", "boo:use_sbas", "boo:nolog", "str:clng", "boo:winsvc_run", "str:charset", 'str:debugmask', 'str:stem', 'str:sortempty') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -179,10 +175,6 @@ class task_period_cindexer extends task_abstract
      */
     public function printInterfaceJS()
     {
-        $appname = 'phraseanet_indexer';
-        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $appname .= '.exe';
-        }
         ?>
         <script type="text/javascript">
 
@@ -200,7 +192,6 @@ class task_period_cindexer extends task_abstract
 
                     with(document.forms['graphicForm'])
                     {
-                        binpath.value      = xml.find("binpath").text();
                         host.value         = xml.find("host").text();
                         port.value         = xml.find("port").text();
                         base.value         = xml.find("base").text();
@@ -223,7 +214,7 @@ class task_period_cindexer extends task_abstract
                 {
                     use_sbas.checked = true;
 
-                    cmd += binpath.value + "/<?php echo $appname ?>";
+                    cmd += "<?php echo $this->getIndexer() ?>";
                     if(host.value)
                         cmd += " -h=" + host.value;
                     if(port.value)
@@ -275,17 +266,9 @@ class task_period_cindexer extends task_abstract
      */
     public function getInterfaceHTML()
     {
-        $appname = 'phraseanet_indexer';
-        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $appname .= '.exe';
-        }
         ob_start();
         ?>
         <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
-            <?php echo _('task::cindexer:executable') ?>&nbsp;:&nbsp;
-            <input type="text" name="binpath" style="width:300px;text-align: right" value="">&nbsp;/&nbsp;<?php echo $appname ?>
-            <br/>
-
             <?php echo _('task::cindexer:host') ?>&nbsp;:&nbsp;<input type="text" name="host" style="width:100px;" value="">
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <?php echo _('task::cindexer:port') ?>&nbsp;:&nbsp;<input type="text" name="port" style="width:50px;" value="">
@@ -363,9 +346,22 @@ class task_period_cindexer extends task_abstract
         $this->debugmask = (int) (trim($sx_task_settings->debugmask));
         $this->nolog = p4field::isyes(trim($sx_task_settings->nolog));
         $this->winsvc_run = p4field::isyes(trim($sx_task_settings->winsvc_run));
-        $this->binpath = p4string::addEndSlash(trim($sx_task_settings->binpath));
 
         parent::loadSettings($sx_task_settings);
+    }
+
+    private function getIndexer()
+    {
+        $binaries = $this->dependencyContainer['phraseanet.configuration']['binaries'];
+
+        if (isset($binaries['phraseanet_indexer'])) {
+            $cmd = $binaries['phraseanet_indexer'];
+        } else {
+            $finder = new ExecutableFinder();
+            $cmd = $finder->find('phraseanet_indexer');
+        }
+
+        return $cmd;
     }
 
     /**
@@ -374,14 +370,13 @@ class task_period_cindexer extends task_abstract
      */
     protected function run2()
     {
-        $cmd = $this->binpath . 'phraseanet_indexer';
+        $cmd = $this->getIndexer();
 
         $nullfile = '/dev/null';
         $this->method = self::METHOD_PROC_OPEN;
 
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
             $nullfile = '/dev/null';
-            $cmd .= '.exe';
         }
 
         if ( ! file_exists($cmd) || ! is_executable($cmd)) {
@@ -489,7 +484,7 @@ class task_period_cindexer extends task_abstract
 
         $this->log(sprintf('cmd=\'%s\'', $logcmd));
 
-        $process = proc_open($execmd, $descriptors, $pipes, $this->binpath, null, array('bypass_shell' => true));
+        $process = proc_open($execmd, $descriptors, $pipes, dirname($cmd), null, array('bypass_shell' => true));
 
         $pid = NULL;
         if (is_resource($process)) {
