@@ -30,6 +30,7 @@
   - Add localized labels for databox documentary fields.
   - Add localized labels for databox collections.
   - Add plugin architecture for third party modules and customization.
+  - Add records sent-by-mail report.
 
 * 3.7.12 (2013-05-13)
 
