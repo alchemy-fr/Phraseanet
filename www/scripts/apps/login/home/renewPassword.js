@@ -22,19 +22,23 @@ require([
         new RenewPassword({
             el : $("form[name=passwordRenewForm]"),
             rules: [{
-                name: "password",
+                name: "oldPassword",
                 rules: "required",
                 message: i18n.t("validation_blank")
             },{
-                name: "password",
+                name: "password[password]",
+                rules: "required",
+                message: i18n.t("validation_blank")
+            },{
+                name: "password[password]",
                 rules: "min_length[5]",
                 message: i18n.t("validation_length_min", {
                     postProcess: "sprintf",
                     sprintf: ["5"]
                 })
             },{
-                name: "passwordConfirm",
-                rules: "matches[password]",
+                name: "password[confirm]",
+                rules: "matches[password[password]]",
                 message: i18n.t("password_match")
             }]
         });

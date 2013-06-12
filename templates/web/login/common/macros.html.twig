@@ -1,4 +1,4 @@
-{% macro fieldInput(field, form_name, icon_name, custom_attributes, validation_messages) %}
+{% macro fieldInput(field, form_name, icon_name, custom_attributes) %}
     {% set input_name = field.vars.name %}
 
     {% set attributes = custom_attributes|default({})|merge({
@@ -21,6 +21,16 @@
     <div class="error-view"></div>
 
     {{ form_errors(field) }}
+{% endmacro %}
+
+{% macro repeatedInput(fields, form_name, icon_name, custom_attributes) %}
+    {% for passField in fields %}
+        <div class="row-fluid">
+            <div class="span12">
+                {{ _self.fieldInput(passField, form_name, icon_name, custom_attributes) }}
+            </div>
+        </div>
+    {% endfor %}
 {% endmacro %}
 
 {% macro checkboxInput(field, label = '') %}

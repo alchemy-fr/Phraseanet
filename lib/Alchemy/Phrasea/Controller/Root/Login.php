@@ -250,10 +250,6 @@ class Login implements ControllerProviderInterface
 
             try {
                 if ($form->isValid()) {
-                    if ($data['password'] !== $data['passwordConfirm']) {
-                        throw new FormProcessingException(_('Password mismatch.'));
-                    }
-
                     $captcha = $app['recaptcha']->bind($request);
 
                     if ($app['phraseanet.registry']->get('GV_captchas') && !$captcha->isValid()) {
@@ -547,17 +543,10 @@ class Login implements ControllerProviderInterface
                 if ($form->isValid()) {
                     $data = $form->getData();
 
-                    $password = $data['password'];
-                    $passwordConfirm = $data['passwordConfirm'];
-
-                    if ($password !== $passwordConfirm) {
-                        throw new FormProcessingException(_('forms::les mots de passe ne correspondent pas'));
-                    }
-
                     $datas = $app['tokens']->helloToken($token);
 
                     $user = \User_Adapter::getInstance($datas['usr_id'], $app);
-                    $user->set_password($passwordConfirm);
+                    $user->set_password($data['password']);
 
                     $app['tokens']->removeToken($token);
 
