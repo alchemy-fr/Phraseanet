@@ -124,12 +124,14 @@ class Publications implements ControllerProviderInterface
             );
             $feed = $app["EM"]->find('Entities\Feed', $id);
 
+            if (null === $feed) {
+                $app->abort(404, "Feed not found");
+            }
+
             $request = $app["request"];
 
-            if (!$feed->getOwner($app['authentication']->getUser())) {
-                $datas['message'] = 'You are not allowed to do that';
-
-                return $app->json($datas);
+            if (!$feed->isOwner($app['authentication']->getUser())) {
+                $app->abort(403, "Access Forbidden");
             }
 
             try {
@@ -169,6 +171,15 @@ class Publications implements ControllerProviderInterface
                 }
 
                 unset($media);
+
+                $feed->setIconUrl(true);
+                $app['EM']->persist($feed);
+                $app['EM']->flush();
+
+                $baseDir = realpath(__DIR__ . '/../../../../../');
+
+                $app['filesystem']->copy($tmpname, $baseDir . '/config/feed_' . $feed->getId() . '.jpg');
+                $app['filesystem']->copy($tmpname, 'custom/feed_' . $feed->getId() . '.jpg');
 
                 $app['filesystem']->remove($tmpname);
 
@@ -217,7 +228,7 @@ class Publications implements ControllerProviderInterface
 
                 $publisher = $app["EM"]->find('Entities\FeedPublisher', $request->request->get('publisher_id'));
                 if (null === $publisher) {
-                    throw new \Exception_Feed_PublisherNotFound();
+                    $app->abort(404, "Feed Publisher not found");
                 }
 
                 $user = $publisher->getUser($app);

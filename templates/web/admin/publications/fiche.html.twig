@@ -11,7 +11,11 @@
         <div class="control-group">
             <div id="pub_icon">
                 <div class="thumb_wrapper">
-                    <img id="img_before" src="{{ feed.getIconUrl() }}" />
+                    <img id="img_before" src="{% if feed.getIconUrl() == false %}
+                                 /skins/icons/rss32.gif
+                                 {% else %}
+                                 /custom/feed_{{ feed.getId() }}.jpg
+                                 {% endif %}" />
                 </div>
             </div>
             <div id="pub_fileupload">
@@ -145,7 +149,7 @@
                             {{ publisher.getUser(app).get_email() }}
                         </td>
                         <td valign="center" align="center">
-                            {% if publisher.getOwner() == true %}
+                            {% if publisher.isOwner() == true %}
                                 X
                             {% else %}
                                 <form class="no-ajax form_publication" method="post" action="{{ path('admin_feeds_feed_remove_publisher', { 'id' : feed.getId() }) }}" style="margin:0;">

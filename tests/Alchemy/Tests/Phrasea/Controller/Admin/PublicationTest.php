@@ -107,32 +107,22 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
 
     public function testIconUploadErrorOwner()
     {
-        $this->markTestSkipped(); // icon upload being changed
+        $feed = $this->insertOneFeed(self::$DI['user_alt1']);
 
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user_alt1'], "salut", 'coucou');
-
-        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/iconupload/", array(), array(), array('HTTP_ACCEPT' => 'application/json'));
+        self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->getId() . "/iconupload/", array(), array(), array('HTTP_ACCEPT' => 'application/json'));
 
         $response = self::$DI['client']->getResponse();
 
-        $this->assertTrue($response->isOk());
-
-        $content = json_decode($response->getContent());
-
-        $this->assertFalse($content->success);
-
-        $feed->delete();
+        $this->assertEquals(403, $response->getStatusCode());
     }
 
     public function testIconUploadErrorFileData()
     {
-        $this->markTestSkipped(); // icon upload being changed
-
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
         self::$DI['client']->request(
             "POST"
-            , "/admin/publications/feed/" . $feed->get_id() . "/iconupload/"
+            , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
             , array()
             , array('Filedata' => array('error'   => 1))
         );
@@ -142,19 +132,15 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $content = json_decode($response->getContent());
 
         $this->assertFalse($content->success);
-
-        $feed->delete();
     }
 
     public function testIconUploadErrorFileType()
     {
-        $this->markTestSkipped(); // icon upload being changed
-
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
         self::$DI['client']->request(
             "POST"
-            , "/admin/publications/feed/" . $feed->get_id() . "/iconupload/"
+            , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
             , array()
             , array('Filedata' => array('error'    => 0, 'tmp_name' => __DIR__ . '/../../../../../files/test007.ppt'))
         );
@@ -164,15 +150,11 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $content = json_decode($response->getContent());
 
         $this->assertFalse($content->success);
-
-        $feed->delete();
     }
 
     public function testIconUpload()
     {
-        $this->markTestSkipped(); // icon upload being changed
-
-        $feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $feed = $this->insertOneFeed(self::$DI['user']);
 
         $files = array(
             'files' => array(
@@ -184,7 +166,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
 
         self::$DI['client']->request(
             "POST"
-            , "/admin/publications/feed/" . $feed->get_id() . "/iconupload/"
+            , "/admin/publications/feed/" . $feed->getId() . "/iconupload/"
             , array()
             , $files
         );
@@ -196,10 +178,6 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
         $content = json_decode($response->getContent());
 
         $this->assertTrue($content->success);
-
-        $feed = new \Feed_Adapter(self::$DI['app'], $feed->get_id());
-
-        $feed->delete();
     }
 
     public function testAddPublisher()
