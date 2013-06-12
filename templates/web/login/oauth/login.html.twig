@@ -124,5 +124,5 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script type="text/javascript" src="/scripts/apps/login/home/oauthLogin.js"></script>
+    <script type="text/javascript" src="{{ path('minifier', {'f': 'scripts/apps/login/home/oauthLogin.js'}) }}"></script>
 {% endblock %}

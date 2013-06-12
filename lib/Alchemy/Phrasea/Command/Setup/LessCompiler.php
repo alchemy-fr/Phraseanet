@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ProcessBuilder;
@@ -49,13 +50,12 @@ class LessCompiler extends Command
             $output->writeln(sprintf('Building %s', basename($lessFile)));
 
             if (!is_file($lessFile)) {
-                throw new \Exception(realpath($lessFile) . ' does not exists');
+                throw new RuntimeException(realpath($lessFile) . ' does not exists.');
             }
 
             if (!is_writable(dirname($buildFile))) {
-                throw new \Exception(realpath(dirname($buildFile)) . ' is not writable');
+                throw new RuntimeException(realpath(dirname($buildFile)) . ' is not writable.');
             }
-
 
             $builder = ProcessBuilder::create(array(
                 'recess',

@@ -475,7 +475,6 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         return array(
             array(\random::generatePassword(), 'password', 'not_identical_password'),
-            array(\random::generatePassword(), "invalid\n", "invalid\n"),
         );
     }
 }

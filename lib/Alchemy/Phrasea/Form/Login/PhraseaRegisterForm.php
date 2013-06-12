@@ -46,25 +46,25 @@ class PhraseaRegisterForm extends AbstractType
 
 
         $builder->add('password', 'repeated', array(
-            'type' => 'password',
-            'required' => true,
-            'constraints' => array(
+            'type'              => 'password',
+            'required'          => true,
+            'invalid_message'   => _('Please provide the same passwords.'),
+            'first_name'        => 'password',
+            'second_name'       => 'confirm',
+            'first_options'     => array('label' => _('Password')),
+            'second_options'    => array('label' => _('Password (confirmation)')),
+            'constraints'       => array(
                 new Assert\NotBlank(),
                 new Assert\Length(array('min' => 5)),
             ),
-            'invalid_message' => _('Please provide the same passwords'),
-            'first_name' => 'password',
-            'second_name'   => 'confirm',
-            'first_options'  => array('label' => _('Password')),
-            'second_options' => array('label' => _('Password (confirmation)')),
         ));
 
         $builder->add('accept-tou', 'checkbox', array(
-            'label' => _('Terms of Use'),
-            'mapped'   => false,
-            "constraints" => array(
+            'label'         => _('Terms of Use'),
+            'mapped'        => false,
+            "constraints"   => array(
                 new Assert\True(array(
-                "message" => _("Please accept the Terms and conditions in order to register")
+                "message" => _("Please accept the Terms and conditions in order to register.")
             ))),
         ));
 

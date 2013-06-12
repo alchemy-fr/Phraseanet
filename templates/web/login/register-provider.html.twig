@@ -86,3 +86,8 @@
         </div>
     </div>
 {% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ path('minifier', {'f': 'scripts/apps/login/home/registerProvider.js'}) }}"></script>
+{% endblock %}
