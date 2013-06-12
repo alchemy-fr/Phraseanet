@@ -36,7 +36,7 @@ class RSSFeeds implements ControllerProviderInterface
                 $app->abort(404, 'Feed not found');
             }
 
-            if (!$feed->getPublic()) {
+            if (!$feed->isPublic()) {
                 $app->abort(403, 'Forbidden');
             }
 
@@ -110,7 +110,7 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app[$this->getFormater('cooliris')]->createResponse($feed, $page);
+            return $app[$this->getFormater('cooliris')]->createResponse($feed, $page, null, 'Phraseanet', $app);
         })
             ->bind('feed_public_cooliris');
 

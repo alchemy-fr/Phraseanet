@@ -140,7 +140,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
         $sx = simplexml_load_string($datas);
 
         try {
-            $entry = $this->app['EM']->getRepository("Entities\FeedEntry")->find((int) $sx->entry_id);
+            $entry = $this->app['EM']->getRepository('Entities\FeedEntry')->find((int) $sx->entry_id);
         } catch (\Exception $e) {
             return array();
         }

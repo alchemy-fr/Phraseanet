@@ -57,7 +57,7 @@ class SessionRepository extends EntityRepository
         $feed = $this->find($id);
         if ($feed) {
             $coll = $feed->getCollection($app);
-            if ($feed->getPublic()
+            if ($feed->isPublic()
                 || $coll === null
                 || in_array($coll->get_base_id(), array_keys($user->ACL()->get_granted_base()))) {
                 return $feed;

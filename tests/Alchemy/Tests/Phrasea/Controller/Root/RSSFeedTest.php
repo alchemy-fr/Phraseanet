@@ -178,7 +178,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $all_feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->findAllPublic();
 
         foreach ($all_feeds as $feed) {
-            $this->assertTrue($feed->getPublic());
+            $this->assertTrue($feed->isPublic());
         }
         $crawler = self::$DI['client']->request("GET", "/feeds/aggregated/rss/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -195,7 +195,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $all_feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->findAllPublic();
 
         foreach ($all_feeds as $feed) {
-            $this->assertTrue($feed->getPublic());
+            $this->assertTrue($feed->isPublic());
         }
         $crawler = self::$DI['client']->request("GET", "/feeds/aggregated/atom/");
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -633,48 +633,48 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->assertEquals($feed->getCountTotalEntries(), $count);
     }
 
-    public function checkATOMEntryNode(\DOMNode $node, \DOMXPath $xpath, \Feed_Adapter $feed, \Feed_Entry_Adapter $entry)
+    public function checkATOMEntryNode(\DOMNode $node, \DOMXPath $xpath, Feed $feed, FeedEntry $entry)
     {
         foreach ($node->childNodes as $child) {
             if ($child->nodeType !== XML_TEXT_NODE) {
                 switch ($child->nodeName) {
                     case 'id':
 
-                        $this->assertEquals(sprintf('%sentry/%d/', self::$DI['app']['feed.user-link-generator']->generatePublic($feed, 'atom', 1)->getURI(), $entry->get_id()), $child->nodeValue);
+                        $this->assertEquals(sprintf('%sentry/%d/', self::$DI['app']['feed.user-link-generator']->generatePublic($feed, 'atom', 1)->getURI(), $entry->getId()), $child->nodeValue);
                         break;
                     case 'link':
                         foreach ($child->attributes as $attribute) {
                             if ($attribute->name == "href") {
-                                $this->assertEquals(sprintf('%sentry/%d/', self::$DI['app']['feed.user-link-generator']->generatePublic($feed, 'atom', 1)->getURI(), $entry->get_id()), $attribute->value);
+                                $this->assertEquals(sprintf('%sentry/%d/', self::$DI['app']['feed.user-link-generator']->generatePublic($feed, 'atom', 1)->getURI(), $entry->getId()), $attribute->value);
                                 break;
                             }
                         }
                         break;
                     case 'updated':
-                        $this->assertEquals($entry->get_updated_on()->format(DATE_ATOM), $child->nodeValue);
+                        $this->assertEquals($entry->getUpdatedOn()->format(DATE_ATOM), $child->nodeValue);
                         break;
                     case 'published':
-                        $this->assertEquals($entry->get_created_on()->format(DATE_ATOM), $child->nodeValue);
+                        $this->assertEquals($entry->getCreatedOn()->format(DATE_ATOM), $child->nodeValue);
                         break;
                     case 'title':
-                        $this->assertEquals($entry->get_title(), $child->nodeValue);
+                        $this->assertEquals($entry->getTitle(), $child->nodeValue);
                         break;
                     case 'content':
-                        $this->assertEquals($entry->get_subtitle(), $child->nodeValue);
+                        $this->assertEquals($entry->getSubtitle(), $child->nodeValue);
                         break;
                     case 'author':
                         foreach ($node->childNodes as $child) {
                             if ($child->nodeType !== XML_TEXT_NODE && $child->nodeName == "email")
-                                $this->assertEquals($entry->get_author_email(), $child->nodeValue);
+                                $this->assertEquals($entry->getAuthorEmail(), $child->nodeValue);
                             if ($child->nodeType !== XML_TEXT_NODE && $child->nodeName == "name")
-                                $this->assertEquals($entry->get_author_name(), $child->nodeValue);
+                                $this->assertEquals($entry->getAuthorName(), $child->nodeValue);
                         }
                         break;
                 }
             }
         }
 
-        $content = $entry->get_content();
+        $content = $entry->getItems()->toArray();
 
         $available_medium = array('image', 'audio', 'video');
 
@@ -686,7 +686,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
             foreach ($media_group as $media) {
 
                 $entry_item = array_shift($content);
-                if ($entry_item instanceof \Feed_Entry_Item) {
+                if ($entry_item instanceof FeedEntry) {
                     $this->verifyMediaItem($entry_item, $media);
                 }
             }

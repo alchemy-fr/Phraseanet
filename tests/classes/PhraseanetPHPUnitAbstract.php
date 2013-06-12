@@ -431,7 +431,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     /**
      *
-     * @return \Entities\FeedEntry
+     * @return \Entities\FeedItem
      */
     protected function insertOneFeedItem(\User_Adapter $user)
     {
@@ -440,6 +440,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $item = new \Entities\FeedItem();
             $item->setEntry($entry);
+            $item->setRecordId(self::$DI['record_1']->get_record_id());
+            $item->setSbasId(self::$DI['record_1']->get_sbas_id());
 
             $entry->addItem($item);
 
@@ -449,11 +451,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $em->persist($item);
 
             $em->flush();
-
-            return $entry;
         } catch (\Exception $e) {
             $this->fail('Fail to load one FeedEntry : ' . $e->getMessage());
         }
+
+        return $item;
     }
 
     /**

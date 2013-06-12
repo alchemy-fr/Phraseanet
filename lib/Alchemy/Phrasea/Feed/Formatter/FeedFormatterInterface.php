@@ -16,5 +16,5 @@ interface FeedFormatterInterface
      *
      * @return string
      */
-    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet');
+    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', $app = null);
 }

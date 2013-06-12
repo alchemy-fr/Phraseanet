@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Feed\Formatter;
 
+use Alchemy\Phrasea\Application;
+
 abstract class FeedFormatterAbstract
 {
     const PAGE_SIZE = 20;
@@ -41,14 +43,14 @@ abstract class FeedFormatterAbstract
      * @param  FeedItem    $content
      * @return FeedFormaterInterface
      */
-    protected function addContent(\DOMDocument $document, \DOMNode $item, FeedItem $content)
+    protected function addContent(Application $app, \DOMDocument $document, \DOMNode $item, FeedItem $content)
     {
-        $preview_sd = $content->getRecord()->get_subdef('preview');
+        $preview_sd = $content->getRecord($app)->get_subdef('preview');
         $preview_permalink = $preview_sd->get_permalink();
-        $thumbnail_sd = $content->getRecord()->get_thumbnail();
+        $thumbnail_sd = $content->getRecord($app)->get_thumbnail();
         $thumbnail_permalink = $thumbnail_sd->get_permalink();
 
-        $medium = strtolower($content->getRecord()->get_type());
+        $medium = strtolower($content->getRecord($app)->get_type());
 
         if ( ! in_array($medium, array('image', 'audio', 'video'))) {
             return $this;
@@ -60,7 +62,7 @@ abstract class FeedFormatterAbstract
 
         $group = $this->addTag($document, $item, 'media:group');
 
-        $caption = $content->getRecord()->get_caption();
+        $caption = $content->getRecord($app)->get_caption();
 
         $title_field = $caption->get_dc_field(databox_Field_DCESAbstract::Title);
         if ($title_field) {

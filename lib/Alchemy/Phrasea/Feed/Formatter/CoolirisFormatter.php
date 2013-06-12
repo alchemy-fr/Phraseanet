@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Feed\Formatter;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,15 +27,15 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         $this->linkGenerator = $generator;
     }
 
-    public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet')
+    public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', $app = null)
     {
-        $content = $this->format($feed, $page, $user, $generator);
+        $content = $this->format($feed, $page, $user, $generator, $app);
         $response = new Response($content, 200, array('Content-Type' => 'application/rss+xml'));
         $response->setCharset('UTF-8');
         return $response;
     }
 
-    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet')
+    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', $app = null)
     {
         $title = $feed->getTitle();
         $subtitle = $feed->getSubtitle();
@@ -158,28 +159,28 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         }
 
         foreach ($feed->getEntries() as $item) {
-            $this->addItem($doc, $channel, $item);
+            $this->addItem($app, $doc, $channel, $item);
         }
 
         return $doc->saveXML();
     }
 
-    protected function addItem(\DOMDocument $document, \DOMNode $feed, FeedEntry $entry)
+    protected function addItem(Application $app, \DOMDocument $document, \DOMNode $feed, FeedEntry $entry)
     {
         foreach ($entry->get_content() as $content) {
-            $this->addContent($document, $feed, $entry, $content);
+            $this->addContent($app, $document, $feed, $entry, $content);
         }
     }
 
-    protected function addContent(\DOMDocument $document, \DOMNode $node, FeedItem $content)
+    protected function addContent(Application $app, \DOMDocument $document, \DOMNode $node, FeedItem $content)
     {
 
-        $preview_sd = $content->getRecord()->get_subdef('preview');
+        $preview_sd = $content->getRecord($app)->get_subdef('preview');
         $preview_permalink = $preview_sd->get_permalink();
-        $thumbnail_sd = $content->getRecord()->get_thumbnail();
+        $thumbnail_sd = $content->getRecord($app)->get_thumbnail();
         $thumbnail_permalink = $thumbnail_sd->get_permalink();
 
-        $medium = strtolower($content->getRecord()->get_type());
+        $medium = strtolower($content->getRecord($app)->get_type());
 
         if ( ! in_array($medium, array('image', 'audio', 'video'))) {
             return $this;
@@ -192,13 +193,13 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         //add item node to channel node
         $item = $this->addTag($document, $node, 'item');
 
-        $caption =  $content->getRecord()->get_caption();
+        $caption =  $content->getRecord($app)->get_caption();
 
         $title_field = $caption->get_dc_field(databox_Field_DCESAbstract::Title);
         if ($title_field) {
             $str_title = $title_field->get_serialized_values(' ');
         } else {
-            $str_title = $content->getRecord()->get_title();
+            $str_title = $content->getRecord($app)->get_title();
         }
 
         //attach tile node to item node
@@ -214,7 +215,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         //attach desc node to item node
         $desc = $this->addTag($document, $item, 'description', $str_desc);
 
-        $duration = $content->getRecord()->get_duration();
+        $duration = $content->getRecord($app)->get_duration();
 
         if ($preview_permalink) {
             $preview = $this->addTag($document, $item, 'media:content');

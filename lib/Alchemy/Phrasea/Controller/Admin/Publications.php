@@ -62,7 +62,7 @@ class Publications implements ControllerProviderInterface
             $feed->setIconUrl(false);
 
             if ($request->request->get('public') == '1') {
-                $feed->setPublic(true);
+                $feed->setIsPublic(true);
             } elseif ($request->request->get('base_id')) {
                 $feed->setCollection(\collection::get_from_base_id($app, $request->request->get('base_id')));
             }
@@ -102,7 +102,7 @@ class Publications implements ControllerProviderInterface
                 $feed->setSubtitle($subtitle);
             }
             $feed->setCollection($collection);
-            $feed->setPublic($request->request->get('public') === '1' ? true : false);
+            $feed->setIsPublic($request->request->get('public') === '1' ? true : false);
             $app['EM']->persist($feed);
             $app['EM']->flush();
 

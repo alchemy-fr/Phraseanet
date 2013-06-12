@@ -1673,9 +1673,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testFeedList()
     {
         $title = 'Yellow title';
-        $subtitle = 'Trololololo !';
 
-        $created_feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], $title, $subtitle);
+        $created_feed = $this->insertOneFeed(self::$DI['user'], $title);
 
         $this->setToken(self::$token);
         $route = '/api/v1/feeds/list/';
@@ -1695,14 +1694,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
             $this->evaluateGoodFeed($feed);
 
-            if ($feed['id'] == $created_feed->get_id()) {
+            if ($feed['id'] == $created_feed->getId()) {
                 $found = true;
                 $this->assertEquals($title, $feed['title']);
-                $this->assertEquals($subtitle, $feed['subtitle']);
             }
         }
-
-        $created_feed->delete();
 
         if (!$found) {
             $this->fail('feed not found !');
@@ -1722,10 +1718,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
-            ->method('deliver')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
-
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
         $entry_title = 'Superman';
@@ -1733,11 +1725,14 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $created_feed, self::$DI['user']);
-
-        $created_entry = \Feed_Entry_Adapter::create(self::$DI['app'], $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $created_entry, self::$DI['record_1']);
+        $created_item = $this->insertOneFeedItem(self::$DI['user']);
+        $created_entry = $created_item->getEntry();
+        $created_entry->setAuthorEmail($author_email);
+        $created_entry->setAuthorName($author);
+        $created_entry->setTitle($entry_title);
+        $created_entry->setSubtitle($entry_subtitle);
+        self::$DI['app']['EM']->persist($created_entry);
+        self::$DI['app']['EM']->flush();
 
         $this->setToken(self::$token);
         $route = '/api/v1/feeds/content/';
@@ -1760,7 +1755,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         foreach ($content['response']['entries'] as $entry) {
             $this->assertGoodEntry($entry);
 
-            if ($entry['id'] == $created_entry->get_id()) {
+            if ($entry['id'] == $created_entry->getId()) {
                 $found = true;
                 $this->assertEquals($author_email, $entry['author_email']);
                 $this->assertEquals($author, $entry['author_name']);
@@ -1768,8 +1763,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $this->assertEquals($entry_subtitle, $entry['subtitle']);
             }
         }
-
-        $created_feed->delete();
 
         if (!$found) {
             $this->fail('entry not found !');
@@ -1786,10 +1779,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
-            ->method('deliver')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
-
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
         $entry_title = 'Superman';
@@ -1797,14 +1786,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $created_feed, self::$DI['user']);
-
-        $created_entry = \Feed_Entry_Adapter::create(self::$DI['app'], $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $created_entry, self::$DI['record_1']);
+        $created_item = $this->insertOneFeedItem(self::$DI['user']);
+        $created_entry = $created_item->getEntry();
 
         $this->setToken(self::$token);
-        $route = '/api/v1/feeds/entry/' . $created_entry->get_id() . '/';
+        $route = '/api/v1/feeds/entry/' . $created_entry->getId() . '/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -1817,9 +1803,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('entry', $content['response']);
         $this->assertGoodEntry($content['response']['entry']);
 
-        $this->assertEquals($created_entry->get_id(), $content['response']['entry']['id']);
+        $this->assertEquals($created_entry->getId(), $content['response']['entry']['id']);
 
-        $created_feed->delete();
     }
 
     /**
@@ -1832,10 +1817,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
-            ->method('deliver')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
-
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
         $entry_title = 'Superman';
@@ -1843,16 +1824,14 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $created_feed, self::$DI['user']);
+        $created_item = $this->insertOneFeedItem(self::$DI['user']);
+        $created_entry = $created_item->getEntry();
+        $created_feed = $created_entry->getFeed();
 
-        $created_entry = \Feed_Entry_Adapter::create(self::$DI['app'], $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $created_entry, self::$DI['record_1']);
-
-        $created_feed->set_collection(self::$DI['collection_no_access']);
+        $created_feed->setCollection(self::$DI['collection_no_access']);
 
         $this->setToken(self::$adminToken);
-        $route = '/api/v1/feeds/entry/' . $created_entry->get_id() . '/';
+        $route = '/api/v1/feeds/entry/' . $created_entry->getId() . '/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -1876,25 +1855,19 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
-            ->method('deliver')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
-
-        $title = 'Yellow title';
-        $subtitle = 'Trololololo !';
         $entry_title = 'Superman';
         $entry_subtitle = 'Wonder Woman';
-        $author = "W. Shakespeare";
-        $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $created_feed, self::$DI['user']);
-
-        $created_entry = \Feed_Entry_Adapter::create(self::$DI['app'], $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $created_entry, self::$DI['record_1']);
+        $created_item = $this->insertOneFeedItem(self::$DI['user']);
+        $created_entry = $created_item->getEntry();
+        $created_feed = $created_entry->getFeed();
+        $created_entry->setTitle($entry_title);
+        $created_entry->setSubtitle($entry_subtitle);
+        self::$DI['app']['EM']->persist($created_entry);
+        self::$DI['app']['EM']->flush();
 
         $this->setToken(self::$token);
-        $route = '/api/v1/feeds/' . $created_feed->get_id() . '/content/';
+        $route = '/api/v1/feeds/' . $created_feed->getId() . '/content/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -1912,16 +1885,14 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         foreach ($content['response']['entries'] as $entry) {
             $this->assertGoodEntry($entry);
 
-            if ($entry['id'] == $created_entry->get_id()) {
+            if ($entry['id'] == $created_entry->getId()) {
                 $this->assertEquals($entry_title, $entry['title']);
                 $this->assertEquals($entry_subtitle, $entry['subtitle']);
                 $found = true;
             }
         }
 
-        $this->assertEquals($created_feed->get_id(), $content['response']['feed']['id']);
-
-        $created_feed->delete();
+        $this->assertEquals($created_feed->getId(), $content['response']['feed']['id']);
 
         if (!$found) {
             $this->fail('Entry not found');
@@ -2037,7 +2008,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertInternalType('string', $feed['title']);
         $this->assertInternalType('string', $feed['subtitle']);
         $this->assertInternalType('integer', $feed['total_entries']);
-        $this->assertInternalType('string', $feed['icon']);
+        $this->assertInternalType('boolean', $feed['icon']);
         $this->assertInternalType('boolean', $feed['public']);
         $this->assertInternalType('boolean', $feed['readonly']);
         $this->assertInternalType('boolean', $feed['deletable']);

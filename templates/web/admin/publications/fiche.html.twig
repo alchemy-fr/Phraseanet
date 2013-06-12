@@ -99,7 +99,7 @@
             <div class="control-group">
                 <label class="control-label" for="edit_pub_base_id">{% trans 'Etendue de la publication' %} :</label>
                 <div class="controls">
-                    <select id="edit_pub_base_id" class="input-large" name="base_id" {% if feed.getPublic() %}disabled="disabled"{% endif %}>
+                    <select id="edit_pub_base_id" class="input-large" name="base_id" {% if feed.isPublic() %}disabled="disabled"{% endif %}>
                         <option value="">{% trans 'Non-Restreinte (publique)' %}</option>
                         {% for databox in app['authentication'].getUser().ACL().get_granted_sbas('bas_chupub') %}
                             <optgroup label="{{ databox.get_label(app['locale.I18n']) }}">
@@ -114,7 +114,7 @@
             <div class="control-group">
                 <div class="controls">
                 <label class="checkbox" for="edit_pub_public">
-                    <input type="checkbox" id="edit_pub_public" class="input-large" name="public" value="1" {% if feed.getPublic() %}checked="checked"{% endif %} />
+                    <input type="checkbox" id="edit_pub_public" class="input-large" name="public" value="1" {% if feed.isPublic() %}checked="checked"{% endif %} />
                     {% trans 'Publique' %}
                 </label>
                 </div>

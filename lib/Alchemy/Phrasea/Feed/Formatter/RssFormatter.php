@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Feed\Formatter;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Feed\Link\FeedLink;
 use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
@@ -35,7 +36,7 @@ class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterfa
         return $response;
     }
 
-    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet')
+    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', $app = null)
     {
         $title = $feed->getTitle();
         $subtitle = $feed->getSubtitle();

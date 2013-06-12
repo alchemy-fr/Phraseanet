@@ -7,37 +7,6 @@ use Symfony\Component\CssSelector\CssSelector;
 
 class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
-    /**
-     *
-     * @var \Feed_Adapter
-     */
-    protected $feed;
-
-    /**
-     *
-     * @var \Feed_Entry_Adapter
-     */
-    protected $entry;
-
-    /**
-     *
-     * @var \Feed_Entry_Item
-     */
-    protected $item;
-
-    /**
-     *
-     * @var \Feed_Publisher_Adapter
-     */
-    protected $publisher;
-    protected $client;
-    protected $feed_title = 'feed title';
-    protected $feed_subtitle = 'feed subtitle';
-    protected $entry_title = 'entry title';
-    protected $entry_subtitle = 'entry subtitle';
-    protected $entry_authorname = 'author name';
-    protected $entry_authormail = 'author.mail@example.com';
-
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -360,7 +329,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             if ($one_feed->has_access(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath($path)->count(), $msg);
             } else {
-                $this->fail('Feed_collection::load_all should return feed where I got access');
+                $this->fail('FeedRepository::getAllForUser should return feeds I am allowed to access');
             }
         }
     }
@@ -382,7 +351,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             if ($one_feed->hasAccess(self::$DI['user'], self::$DI['app'])) {
                 $this->assertEquals(1, $crawler->filterXPath($path)->count(), $msg);
             } else {
-                $this->fail('Feed_collection::load_all should return feed where I got access');
+                $this->fail('FeedRepository::getAllForUser should return feeds I am allowed to access');
             }
         }
     }

@@ -2,7 +2,7 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Alchemy\Phrasea\Application;
 
 /**
  * FeedItem
@@ -195,5 +195,10 @@ class FeedItem
     public function setLastInFeedItem()
     {
         $this->setOrd($this->getEntry()->getItems()->count() + 1);
+    }
+
+    public function getRecord(Application $app)
+    {
+        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
     }
 }

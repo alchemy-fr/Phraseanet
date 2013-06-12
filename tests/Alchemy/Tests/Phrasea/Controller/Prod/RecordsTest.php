@@ -11,14 +11,9 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $feed;
 
     public static function tearDownAfterClass()
     {
-        if (self::$feed instanceof \Feed_Adapter) {
-            self::$feed->delete();
-        }
-
         parent::tearDownAfterClass();
     }
 
@@ -193,46 +188,18 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$DI['app']['authentication']->openAccount(self::$DI['user']);
 
-        self::$feed = \Feed_Adapter::create(
-            self::$DI['app'],
-            self::$DI['user'],
-            'titi',
-            'toto'
-        );
-
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
-            ->method('deliver')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
-
-        $feedEntry = \Feed_Entry_Adapter::create(
-            self::$DI['app'],
-            self::$feed,
-            \Feed_Publisher_Adapter::getPublisher(
-                self::$DI['app']['phraseanet.appbox'],
-                self::$feed,
-                self::$DI['user']
-            ),
-            'titi',
-            'toto',
-            'tata',
-            'tutu@test.fr'
-        );
-
-        \Feed_Entry_Item::create(
-            self::$DI['app']['phraseanet.appbox'],
-            $feedEntry,
-            self::$DI['record_1']
-        );
+        $item = $this->insertOneFeedItem(self::$DI['user']);
+        $feedEntry = $item->getEntry();
 
         $this->XMLHTTPRequest('POST', '/prod/records/', array(
             'env'   => 'FEED',
             'pos'   => 0,
             'query' => '',
-            'cont'  => $feedEntry->get_id()
+            'cont'  => $feedEntry->getId()
         ));
 
         $response = self::$DI['client']->getResponse();

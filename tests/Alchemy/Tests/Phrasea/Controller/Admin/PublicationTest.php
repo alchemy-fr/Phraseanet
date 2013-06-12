@@ -68,7 +68,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
 
         $this->assertEquals('test', $feed->getTitle());
         $this->assertEquals('test', $feed->getSubtitle());
-        $this->assertTrue($feed->getPublic());
+        $this->assertTrue($feed->isPublic());
         $this->assertNull($feed->getCollection(self::$DI['app']));
     }
 
@@ -95,7 +95,7 @@ class Module_Admin_Route_PublicationTest extends \PhraseanetWebTestCaseAuthentic
 
         $this->assertEquals('test', $feed->getTitle());
         $this->assertEquals('test', $feed->getSubtitle());
-        $this->assertTrue($feed->getPublic());
+        $this->assertTrue($feed->isPublic());
         $this->assertEquals(self::$DI['collection']->get_base_id(), $collection->get_base_id());
 
         $this->assertTrue(

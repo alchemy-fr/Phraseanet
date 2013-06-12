@@ -91,7 +91,7 @@ class Feed implements FeedInterface
      * @param boolean $public
      * @return Feed
      */
-    public function setPublic($public)
+    public function setIsPublic($public)
     {
         $this->public = $public;
 
@@ -103,7 +103,7 @@ class Feed implements FeedInterface
      *
      * @return boolean
      */
-    public function getPublic()
+    public function isPublic()
     {
         return $this->public;
     }
