@@ -47,6 +47,16 @@ class LessCompiler extends Command
         foreach ($files as $lessFile => $buildFile) {
             $this->container['filesystem']->mkdir(dirname($buildFile));
             $output->writeln(sprintf('Building %s', basename($lessFile)));
+
+            if (!is_file($lessFile)) {
+                throw new \Exception(realpath($lessFile) . ' does not exists');
+            }
+
+            if (!is_writable(dirname($buildFile))) {
+                throw new \Exception(realpath(dirname($buildFile)) . ' is not writable');
+            }
+
+
             $builder = ProcessBuilder::create(array(
                 'recess',
                 '--compile',
