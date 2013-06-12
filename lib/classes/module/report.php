@@ -780,26 +780,24 @@ class module_report
 
         foreach ($tab as $column => $row) {
             foreach ($row as $ind => $value) {
-                $def = false;
+                $title_text = "";
                 if (array_key_exists($column, $this->cor)) {
                     $title_text = $this->cor[$column];
-                    $def = true;
                 }
-                empty($row[0]) ? $title = $column : $title = $row[0];
+
+                $title = empty($row[0]) ? "" : $row[0];
 
                 $sort = $row[1];
-                array_key_exists($column, $this->bound) ?
-                        $bound = $this->bound[$column] : $bound = $row[2];
+                $bound = array_key_exists($column, $this->bound) ? $this->bound[$column] : $row[2];
                 $filter = (isset($row[3]) ? $row[3] : 0);
                 $groupby = $row[4];
                 $config = array(
-                    'title'          => $title,
+                    'title'          => empty($title) ? (empty($title_text) ? $column : $title_text) : $title,
                     'sort'           => $sort,
                     'bound'          => $bound,
                     'filter'         => $filter,
                     'groupby'        => $groupby
                 );
-                $def ? $config['title'] = $title_text : "";
 
                 $this->display[$column] = $config;
             }

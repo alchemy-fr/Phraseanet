@@ -22,7 +22,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
 
     public function setAction($action)
     {
-        $a = array('edit', 'add', 'push', 'validate');
+        $a = array('edit', 'add', 'push', 'validate', 'mail');
 
         if (in_array($action, $a)) {
             $this->action = $action;
@@ -45,9 +45,9 @@ class module_report_sqlaction extends module_report_sql implements module_report
 
         if ($this->groupby == false) {
             $this->sql = "
-                SELECT tt.usrid, tt.user, tt.final AS getter, tt.record_id, tt.date, tt.mime, tt.file
+                SELECT tt.usrid, tt.user, tt.final AS getter, tt.record_id, tt.date, tt.mime, tt.file, tt.comment
                 FROM (
-                    SELECT DISTINCT(log.id), log.usrid, log.user, d.final,  d.record_id, d.date, record.mime, record.originalname as file
+                    SELECT DISTINCT(log.id), log.usrid, log.user, d.final, d.comment, d.record_id, d.date, record.mime, record.originalname as file
                     FROM (log_docs AS d)
                     INNER JOIN log FORCE INDEX (date_site) ON (log.id = d.log_id)
                     INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
@@ -63,6 +63,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
                 'd.date'        => 'tt.date',
                 'record.mime'   => 'tt.mime',
                 'file'          => 'tt.file',
+                'd.comment'     => 'tt.comment'
             );
 
             $stmt = $this->getConnBas()->prepare($this->sql);
