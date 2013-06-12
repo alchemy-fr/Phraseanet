@@ -58,6 +58,9 @@ class Activity implements ControllerProviderInterface
         $controllers->post('/documents/validated', $this->call('doReportValidatedDocuments'))
             ->bind('report_activity_documents_validated');
 
+        $controllers->post('/documents/sent', $this->call('doReportSentDocuments'))
+            ->bind('report_activity_documents_sent');
+
         return $controllers;
     }
 
@@ -633,6 +636,72 @@ class Activity implements ControllerProviderInterface
         );
 
         $activity = new \module_report_validate(
+            $app,
+            $request->request->get('dmin'),
+            $request->request->get('dmax'),
+            $request->request->get('sbasid'),
+            $request->request->get('collection')
+        );
+
+        $activity->setConfig(false);
+
+        if ($request->request->get('printcsv') == 'on') {
+            $activity->setHasLimit(false);
+            $activity->setPrettyString(false);
+
+            try {
+                $csv = \format::arr_to_csv($activity->getResult(), $activity->getDisplay());
+            } catch (\Exception $e) {
+                $csv = '';
+            }
+
+            return $app->json(array('rs' => $csv));
+        }
+
+        $report = $this->doReport($app, $request, $activity, $conf);
+
+        if ($report instanceof Response) {
+            return $report;
+        }
+
+        return $app->json(array(
+                'rs'          =>  $app['twig']->render('report/ajax_data_content.html.twig', array(
+                'result'      => isset($report['report']) ? $report['report'] : $report,
+                'is_infouser' => false,
+                'is_nav'      => false,
+                'is_groupby'  => false,
+                'is_plot'     => false,
+                'is_doc'      => false
+            )),
+            'display_nav' => $report['display_nav'], // do we display the prev and next button ?
+            'next'        => $report['next_page'], //Number of the next page
+            'prev'        => $report['previous_page'], //Number of the previoous page
+            'page'        => $report['page'], //The current page
+            'filter'      => ((sizeof($report['filter']) > 0) ? serialize($report['filter']) : ''), //the serialized filters
+            'col'         => $report['active_column'], //all the columns where a filter is applied
+            'limit'       => $report['nb_record']
+        ));
+    }
+
+    /**
+     * Display report about documents sent by mail
+     *
+     * @param  Application  $app
+     * @param  Request      $request
+     * @return JsonResponse
+     */
+    public function doReportSentDocuments(Application $app, Request $request)
+    {
+        $conf = array(
+            'user'      => array('', 1, 0, 1, 1),
+            'date'      => array('', 1, 0, 1, 1),
+            'record_id' => array('', 1, 1, 1, 1),
+            'file'      => array('', 1, 0, 1, 1),
+            'mime'      => array('', 1, 0, 1, 1),
+            'comment'   => array(_('Receiver'), 1, 0, 1, 1),
+        );
+
+        $activity = new \module_report_sent(
             $app,
             $request->request->get('dmin'),
             $request->request->get('dmax'),

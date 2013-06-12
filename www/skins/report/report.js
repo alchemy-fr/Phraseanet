@@ -169,9 +169,9 @@ function submiterAction(domSubmiter)
   var form = domSubmiter.closest('form');
   var container = domSubmiter.closest('.inside-container');
 
-  data = form.serializeArray();
-
-  data[data.length] = {name: "action", value: domSubmiter.data('action')};
+  var data = form.serializeArray();
+  var action = form.find('select.options option:selected');
+  data.push({name: "action", value: action.data('action')});
 
   //check if a base is selected, pop an alert message if not
   if(!isOneBaseSelected(form))
