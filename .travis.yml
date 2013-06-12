@@ -8,7 +8,9 @@ before_script:
   - rm -f config/services.yml config/connexions.yml config/config.yml config/config.inc config/connexion.inc config/_GV.php config/_GV.php.old
   - cp -f hudson/connexion.inc config/
   - cp -f hudson/_GV.php config/
-  - npm install bower mocha-phantomjs karma recess -g
+  - node --version
+  - npm --version
+  - npm install bower mocha-phantomjs karma recess@">=1.1.0 <1.1.7" -g
   - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then pecl install redis; fi;'
