@@ -182,12 +182,12 @@ class Login implements ControllerProviderInterface
     public function getLanguage(Application $app, Request $request)
     {
         $response =  $app->json(array(
-            'validation_blank'          => _('This value should not be blank.'),
-            'validation_choice_min'     => _('You must select at least %s choice.'),
-            'validation_email'          => _('This value is not a valid email address.'),
-            'validation_ip'             => _('This value is not a valid IP address.'),
-            'validation_length_min'     => _('This value is too short. It should have %s character or more'),
-            'password_match'            => _('The passwords do not match.'),
+            'validation_blank'          => _('Please provide a value.'),
+            'validation_choice_min'     => _('please select at least %s choice.'),
+            'validation_email'          => _('Please provide a valid email address.'),
+            'validation_ip'             => _('Please provide a valid IP address.'),
+            'validation_length_min'     => _('Please provide a longer value. It should have %s character or more'),
+            'password_match'            => _('Please provide the same passwords'),
             'accept_tou'                => _('You must accept the terms of use.'),
             'none_selected'             => _('None selected'),
             'collections'               => _('Collections'),
