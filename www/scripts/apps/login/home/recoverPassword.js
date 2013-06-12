@@ -20,12 +20,8 @@ require([
         Common.initialize();
 
         new RenewPassword({
-            el : $("form[name=passwordChangeForm]"),
+            el : $("form[name=passwordRenewForm]"),
             rules: [{
-                name: "oldPassword",
-                rules: "required",
-                message: i18n.t("validation_blank")
-            },{
                 name: "password[password]",
                 rules: "required",
                 message: i18n.t("validation_blank")
