@@ -1985,8 +1985,15 @@ class API_V1_adapter extends API_V1_Abstract
         $ret = array();
 
         $ret['databox_id'] = $databox->get_sbas_id();
-        $ret['name'] = $databox->get_viewname();
-        $ret['version'] = $databox->get_version();
+        $ret['name']       = $databox->get_dbname();
+        $ret['viewname']   = $databox->get_viewname();
+        $ret['labels']     = array(
+            'en' => $databox->get_label('en'),
+            'de' => $databox->get_label('de'),
+            'fr' => $databox->get_label('fr'),
+            'nl' => $databox->get_label('nl'),
+        );
+        $ret['version']    = $databox->get_version();
 
         return $ret;
     }

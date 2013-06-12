@@ -20,7 +20,7 @@
     </div>
     <input name="lst" type="hidden" value="{{ records.serializedList() }}"/>
     {% for sbasId,databoxTypes in recordsType %}
-        <h2 style="text-align:center;" clas="header">{{ sbasId|sbas_names(app) }}</h2>
+        <h2 style="text-align:center;" clas="header">{{ sbasId|sbas_labels(app) }}</h2>
         {% for currentType, recordsByType in databoxTypes %}
             <ul class="thumbnails" style="margin:20px auto;">
                 {% for record in recordsByType %}

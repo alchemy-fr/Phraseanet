@@ -46,7 +46,7 @@
             {% for file in list["files"] %}
                 {% set size = 0 %}
                 <tr valign="middle">
-                    <td>{{ app|sbas_from_bas(file['base_id'])|sbas_names(app) }} {{ file['base_id']|bas_labels(app) }}</td>
+                    <td>{{ app|sbas_from_bas(file['base_id'])|sbas_labels(app) }} {{ file['base_id']|bas_labels(app) }}</td>
                     <td>{{ file['original_name'] }}</td>
                     <td>
                         {% if file['subdefs'] is iterable and file['subdefs']|length > 0 %}

@@ -15,6 +15,7 @@ class phrasea
 {
     private static $_bas2sbas = false;
     private static $_sbas_names = false;
+    private static $_sbas_labels = false;
     private static $_coll2bas = false;
     private static $_bas2coll = false;
     private static $_bas_labels = false;
@@ -25,6 +26,7 @@ class phrasea
     const CACHE_BAS_2_COLL = 'bas_2_coll';
     const CACHE_BAS_LABELS = 'bas_labels';
     const CACHE_SBAS_NAMES = 'sbas_names';
+    const CACHE_SBAS_LABELS = 'sbas_labels';
     const CACHE_SBAS_FROM_BAS = 'sbas_from_bas';
     const CACHE_SBAS_PARAMS = 'sbas_params';
 
@@ -196,12 +198,13 @@ class phrasea
 
     public static function reset_sbasDatas(appbox $appbox)
     {
-        self::$_sbas_names = self::$_sbas_params = self::$_bas2sbas = null;
+        self::$_sbas_names = self::$_sbas_labels = self::$_sbas_params = self::$_bas2sbas = null;
         $appbox->delete_data_from_cache(
             array(
-                self::CACHE_SBAS_NAMES
-                , self::CACHE_SBAS_FROM_BAS
-                , self::CACHE_SBAS_PARAMS
+                self::CACHE_SBAS_NAMES,
+                self::CACHE_SBAS_LABELS,
+                self::CACHE_SBAS_FROM_BAS,
+                self::CACHE_SBAS_PARAMS,
             )
         );
 
@@ -232,21 +235,39 @@ class phrasea
             try {
                 self::$_sbas_names = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_NAMES);
             } catch (Exception $e) {
-                $sql = 'SELECT sbas_id, viewname, dbname FROM sbas';
-                $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                $stmt->execute();
-                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                foreach ($rs as $row) {
-                    $row['viewname'] = trim($row['viewname']);
-                    self::$_sbas_names[$row['sbas_id']] = $row['viewname'] ? $row['viewname'] : $row['dbname'];
+                foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+                    self::$_sbas_names[$databox->get_sbas_id()] = $databox->get_viewname();
                 }
                 $app['phraseanet.appbox']->set_data_to_cache(self::$_sbas_names, self::CACHE_SBAS_NAMES);
             }
         }
 
         return isset(self::$_sbas_names[$sbas_id]) ? self::$_sbas_names[$sbas_id] : 'Unknown base';
+    }
+
+    public static function sbas_labels($sbas_id, Application $app)
+    {
+        if (!self::$_sbas_labels) {
+            try {
+                self::$_sbas_labels = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_LABELS);
+            } catch (Exception $e) {
+                foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+                    self::$_sbas_labels[$databox->get_sbas_id()] = array(
+                        'fr' => $databox->get_label('fr'),
+                        'en' => $databox->get_label('en'),
+                        'de' => $databox->get_label('de'),
+                        'nl' => $databox->get_label('nl'),
+                    );
+                }
+                $app['phraseanet.appbox']->set_data_to_cache(self::$_sbas_labels, self::CACHE_SBAS_LABELS);
+            }
+        }
+
+        if (isset(self::$_sbas_labels[$sbas_id]) && isset(self::$_sbas_labels[$sbas_id][$app['locale.I18n']])) {
+            return self::$_sbas_labels[$sbas_id][$app['locale.I18n']];
+        }
+
+        return 'Unknown database';
     }
 
     public static function bas_labels($base_id, Application $app)

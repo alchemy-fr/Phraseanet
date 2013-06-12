@@ -141,7 +141,7 @@ class Databoxes implements ControllerProviderInterface
                     'version'     => $databox->get_version(),
                     'image'       => '/skins/icons/foldph20close_0.gif',
                     'server_info' => $databox->get_connection()->server_info(),
-                    'name'        => \phrasea::sbas_names($sbasId, $app)
+                    'name'        => \phrasea::sbas_labels($sbasId, $app)
                 );
             } catch (\Exception $e) {
 

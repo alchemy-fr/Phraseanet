@@ -176,6 +176,12 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->assertTrue(is_array($databox), 'Une databox est un objet');
             $this->assertArrayHasKey('databox_id', $databox);
             $this->assertArrayHasKey('name', $databox);
+            $this->assertArrayHasKey('viewname', $databox);
+            $this->assertArrayHasKey('labels', $databox);
+            $this->assertArrayHasKey('fr', $databox['labels']);
+            $this->assertArrayHasKey('en', $databox['labels']);
+            $this->assertArrayHasKey('de', $databox['labels']);
+            $this->assertArrayHasKey('nl', $databox['labels']);
             $this->assertArrayHasKey('version', $databox);
             static::$databoxe_ids[] = $databox['databox_id'];
         }

@@ -532,6 +532,7 @@ class Application extends SilexApplication
                 $twig->addFilter('min', new \Twig_Filter_Function('min'));
                 $twig->addFilter('bas_labels', new \Twig_Filter_Function('phrasea::bas_labels'));
                 $twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
+                $twig->addFilter('sbas_labels', new \Twig_Filter_Function('phrasea::sbas_labels'));
                 $twig->addFilter('sbas_from_bas', new \Twig_Filter_Function('phrasea::sbasFromBas'));
                 $twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
                 $twig->addFilter('round', new \Twig_Filter_Function('round'));

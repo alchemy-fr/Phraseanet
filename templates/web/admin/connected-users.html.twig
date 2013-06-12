@@ -26,7 +26,7 @@
         </tr>
         {% for databox in user.ACL().get_granted_sbas() %}
             <tr>
-                <td colspan="2" style="overflow:hidden;" >{{ databox.get_viewname() }}</td>
+                <td colspan="2" style="overflow:hidden;" >{{ databox.get_label(app['locale.I18n']) }}</td>
             </tr>
         {% endfor %}
         <tr>

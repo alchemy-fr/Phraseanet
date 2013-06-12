@@ -494,7 +494,7 @@ class task_period_RecordMover extends task_appboxAbstract
         try {
             $dbox = $this->dependencyContainer['phraseanet.appbox']->get_databox($sbas_id);
 
-            $ret['basename'] = $dbox->get_viewname();
+            $ret['basename'] = $dbox->get_label($this->dependencyContainer['locale.I18n']);
             $ret['basename_htmlencoded'] = htmlentities($ret['basename']);
             switch ($ret['action']) {
                 case 'UPDATE':

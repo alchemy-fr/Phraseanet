@@ -29,7 +29,7 @@
     </li>
 
     <li>
-    {% trans 'admin::base: Alias' %} : <span id="viewname">{{ databox.get_viewname() }}</span>
+    {% trans 'admin::base: Alias' %} : <span id="viewname">{{ databox.get_label(app['locale.I18n']) }}</span>
     {% if app['authentication'].getUser().ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
         <img src="/skins/icons/edit_0.gif" id="show-view-name" />
         <div class="well well-small" id="change-view-name" style="display:none;">
@@ -94,6 +94,33 @@
                 <input type="checkbox" id="is_indexable" name="indexable" {{ app['phraseanet.appbox'].is_databox_indexable(databox) ? 'checked' : ''}} />
                 {% trans "admin::base: Cette base est indexable" %}
             </label>
+        </form>
+    </div>
+
+    <div class="well well-small action-block">
+        <form class="form-inline" method="post" action="{{ path('admin_databox_labels', { 'databox_id' : databox.get_sbas_id() }) }}" style="margin:0;">
+            <div class="input-append">
+                <div class="row">
+                    {% for code, language in app['locales.I18n.available'] %}
+                    <div class="span2">
+                        <h6>{{ language }}</h6>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    {% for code, language in app['locales.I18n.available'] %}
+                    <div class="span2">
+                        <input name="labels[{{ code }}]" value="{{ databox.get_label(code, false) }}" class="span2" type="text">
+                    </div>
+                    {% endfor %}
+                    <div class="span2">
+                        <button class="btn" type="submit">
+                            <img src="/skins/icons/edit_0.gif" />
+                            {% trans 'Set labels' %}
+                        </button>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 

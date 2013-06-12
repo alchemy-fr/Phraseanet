@@ -185,7 +185,7 @@ function giveMeBaseUsr(Application $app, $usr, $lng)
     foreach ($inscriptions as $sbasId => $baseInsc) {
         //je presente la base
         if (($baseInsc['CollsRegistered'] || $baseInsc['CollsRefuse'] || $baseInsc['CollsWait'] || $baseInsc['CollsIntime'] || $baseInsc['CollsOuttime'] || $baseInsc['CollsNonactif'] || $baseInsc['CollsCGU'] || $baseInsc['Colls']))//&& $baseInsc['inscript'])
-            $out .= '<tr><td colspan="3" style="text-align:center;"><h3>' . phrasea::sbas_names($sbasId, $app) . '</h3></td></tr>';
+            $out .= '<tr><td colspan="3" style="text-align:center;"><h3>' . phrasea::sbas_labels($sbasId, $app) . '</h3></td></tr>';
 
         if ($baseInsc['CollsRegistered']) {
             foreach ($baseInsc['CollsRegistered'] as $collId => $isTrue) {
@@ -347,7 +347,7 @@ function giveInscript(Application $app, $lng, $demandes = null)
 
         if (($baseInsc['CollsCGU'] || $baseInsc['Colls']) && $baseInsc['inscript']) {// il y a des coll ou s'inscrire !
             //je pr�sente la base
-            $out .= '<tr><td colspan="3" style="text-align:center;"><h3 style="margin: 15px 0pt 2px;" class="inscriptbase">' . phrasea::sbas_names($sbasId, $app) . '</h3></td></tr>';
+            $out .= '<tr><td colspan="3" style="text-align:center;"><h3 style="margin: 15px 0pt 2px;" class="inscriptbase">' . phrasea::sbas_labels($sbasId, $app) . '</h3></td></tr>';
 
             if ($baseInsc['Colls']) {//des coll ou on peut s'inscrire sans cgu specifiques
                 //je check si ya des cgu pour la base

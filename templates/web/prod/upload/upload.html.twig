@@ -57,7 +57,7 @@
                             {# collections list #}
                             <select name="base_id" class="span3" style="margin-left: 10px;">
                             {% for  sbasId, availableCollections in collections %}
-                                <optgroup label="{{ availableCollections['databox'].get_viewname() }}" class="select-label">
+                                <optgroup label="{{ availableCollections['databox'].get_label(app['locale.I18n']) }}" class="select-label">
                                 {% for collection in availableCollections['databox_collections'] %}
                                     <option value="{{ collection.get_base_id() }}" class="select-row">{{ collection.get_label(app['locale.I18n']) }}</option>
                                 {% endfor %}
