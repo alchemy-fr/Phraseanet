@@ -164,10 +164,10 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
         );
     }
 
-    protected function assertFormOrAngularError(Crawler $crawler, $quantity)
+    protected function assertFormOrFlashError(Crawler $crawler, $quantity)
     {
         $total = $crawler->filter('form div:not(div[ng-show]) > div.popover.field-error')->count();
-        $total += $crawler->filter('phraseanet-flash[type="error"]')->count();
+        $total += $crawler->filter('.alert')->count();
 
         $this->assertEquals($quantity, $total);
     }
@@ -187,19 +187,6 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
         if (null !== $message) {
             $this->assertEquals($message, $crawler->filter('.alert.alert-'.$flashType.' .alert-block-content')->eq($offset)->text());
-        }
-    }
-
-    protected function assertAngularFlashMessage(Crawler $crawler, $flashType, $quantity, $message = null, $offset = 0)
-    {
-        if (!preg_match('/[a-zA-Z]+/', $flashType)) {
-            $this->fail(sprintf('FlashType must be in the form of [a-zA-Z]+, %s given', $flashType));
-        }
-
-        $this->assertEquals($quantity, $crawler->filter('phraseanet-flash[type="'.$flashType.'"]')->count());
-
-        if (null !== $message) {
-            $this->assertEquals($message, $crawler->filter('phraseanet-flash[type="'.$flashType.'"]')->eq($offset)->text());
         }
     }
 

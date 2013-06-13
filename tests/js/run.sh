@@ -10,6 +10,4 @@ phantomjs "$ROOTDIR/www/assets/qunit/addons/phantomjs/runner.js" "$ROOTDIR/www/i
 # run backbone tests
 mocha-phantomjs "$ROOTDIR/www/scripts/tests/index.html"
 
-# run angular tests
-sh "$BASEDIR/scripts/run.sh"
 

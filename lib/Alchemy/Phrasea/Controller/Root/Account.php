@@ -91,20 +91,10 @@ class Account implements ControllerProviderInterface
 
             if ($form->isValid()) {
                 $data = $form->getData();
-
-                $password = $data['password'];
-                $passwordConfirm = $data['passwordConfirm'];
-
                 $user = $app['authentication']->getUser();
 
-                if ($password !== $passwordConfirm) {
-                    $app->addFlash('error', _('forms::les mots de passe ne correspondent pas'));
-                } elseif (strlen(trim($password)) < 5) {
-                    $app->addFlash('error', _('forms::la valeur donnee est trop courte'));
-                } elseif (trim($password) != str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
-                    $app->addFlash('error', _('forms::la valeur donnee contient des caracteres invalides'));
-                } elseif ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $data['oldPassword'], $user->get_nonce())) {
-                    $user->set_password($passwordConfirm);
+                if ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $data['oldPassword'], $user->get_nonce())) {
+                    $user->set_password($data['password']);
                     $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
 
                     return $app->redirectPath('account');

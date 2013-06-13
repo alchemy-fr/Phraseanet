@@ -11,19 +11,13 @@
 $groups = array(
     'authentication_css' => array(
         '//assets/normalize-css/normalize.css',
-        '//assets/bootstrap-switch/static/stylesheets/bootstrapSwitch.css',
         '//skins/build/login.css',
         '//assets/font-awesome/css/font-awesome.css',
     ),
     'authentication' => array(
         '//assets/modernizr/modernizr.js',
-        '//assets/jquery/jquery.js',
-        '//assets/angular/angular.js',
-        '//assets/angular-ui/build/angular-ui.js',
-        '//assets/bootstrap-switch/static/js/bootstrapSwitch.js',
-        '//assets/underscore/underscore.js',
-        '//skins/login/js/main.js',
-        '//skins/login/js/app.js',
+        '//assets/requirejs/require.js',
+        '//scripts/apps/login/home/config.js'
     ),
     'client' => array(
         '//include/jslibs/swfobject/swfobject.js'

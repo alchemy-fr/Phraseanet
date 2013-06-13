@@ -172,7 +172,31 @@ class Login implements ControllerProviderInterface
             return $app['twig']->render('login/cgus.html.twig');
         })->bind('login_cgus');
 
+        $controllers->get('/language.json', 'login.controller:getLanguage')
+            ->bind('login_language');
+
         return $controllers;
+    }
+
+    public function getLanguage(Application $app, Request $request)
+    {
+        $response =  $app->json(array(
+            'validation_blank'          => _('Please provide a value.'),
+            'validation_choice_min'     => _('Please select at least %s choice.'),
+            'validation_email'          => _('Please provide a valid email address.'),
+            'validation_ip'             => _('Please provide a valid IP address.'),
+            'validation_length_min'     => _('Please provide a longer value. It should have %s character or more.'),
+            'password_match'            => _('Please provide the same passwords.'),
+            'accept_tou'                => _('Please accept the terms of use to register.'),
+            'no_collection_selected'    => _('No collection selected'),
+            'one_collection_selected'   => _('%d collection selected'),
+            'collections_selected'      => _('%d collections selected'),
+            'all_collections'           => _('Select all collections')
+        ));
+
+        $response->setExpires(new \DateTime('+1 day'));
+
+        return $response;
     }
 
     public function doRegistration(PhraseaApplication $app, Request $request)
@@ -226,10 +250,6 @@ class Login implements ControllerProviderInterface
 
             try {
                 if ($form->isValid()) {
-                    if ($data['password'] !== $data['passwordConfirm']) {
-                        throw new FormProcessingException(_('Password mismatch.'));
-                    }
-
                     $captcha = $app['recaptcha']->bind($request);
 
                     if ($app['phraseanet.registry']->get('GV_captchas') && !$captcha->isValid()) {
@@ -349,7 +369,7 @@ class Login implements ControllerProviderInterface
             $provider = $this->findProvider($app, $request->query->get('providerId'));
             $identity = $provider->getIdentity();
 
-            $form->bind(array_filter(array(
+            $form->setData(array_filter(array(
                 'email'       => $identity->getEmail(),
                 'firstname'   => $identity->getFirstname(),
                 'lastname'    => $identity->getLastname(),
@@ -523,17 +543,10 @@ class Login implements ControllerProviderInterface
                 if ($form->isValid()) {
                     $data = $form->getData();
 
-                    $password = $data['password'];
-                    $passwordConfirm = $data['passwordConfirm'];
-
-                    if ($password !== $passwordConfirm) {
-                        throw new FormProcessingException(_('forms::les mots de passe ne correspondent pas'));
-                    }
-
                     $datas = $app['tokens']->helloToken($token);
 
                     $user = \User_Adapter::getInstance($datas['usr_id'], $app);
-                    $user->set_password($passwordConfirm);
+                    $user->set_password($data['password']);
 
                     $app['tokens']->removeToken($token);
 

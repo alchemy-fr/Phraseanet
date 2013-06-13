@@ -37,19 +37,18 @@
             <div class="span12">
                 {{ auth_macro.flashes() }}
                 <form
-                    ng-controller="LoginFormController"
                     novalidate
                     name="loginForm"
-                    ng-submit="submit();"
                     action="{{ path('login_authentication_provider_do_bind', { 'providerId' : provider.getId() }) }}"
                     method="POST"
-                    check-form-submission
                 >
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ form_errors(form) }}
+                    {% if form.vars.errors|length > 0 %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ form_errors(form) }}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                     <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.login, "loginForm", 'icon-envelope') }}
@@ -85,4 +84,9 @@
         </div>
     </div>
     {% include "login/include/register-link-block.html.twig" with {"login" : login, "last_item" : app['registration.enabled']} %}
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ path('minifier', {'f': 'scripts/apps/login/home/bind.js'}) }}"></script>
 {% endblock %}

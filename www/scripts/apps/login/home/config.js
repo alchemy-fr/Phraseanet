@@ -12,21 +12,20 @@ require.config({
     baseUrl: "/scripts",
     paths: {
         jquery: "../assets/jquery/jquery",
-        jqueryui: "../include/jslibs/jquery-ui-1.8.24",
+        jqueryui: "../include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min",
         underscore: "../assets/underscore-amd/underscore",
         backbone: "../assets/backbone-amd/backbone",
         i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
-        bootstrap: "../skins/build/bootstrap/js/bootstrap.min"
+        bootstrap: "../skins/build/bootstrap/js/bootstrap.min",
+        multiselect: "../assets/bootstrap-multiselect/js/bootstrap-multiselect"
     },
     shim: {
         bootstrap : ["jquery"],
         jqueryui: {
-            deps: [ "jquery" ]
+            deps: ["jquery"]
+        },
+        multiselect: {
+            deps: ["jquery", "bootstrap"]
         }
     }
-});
-
-// launch application
-require(["apps/admin/fields/app"], function(App) {
-    App.initialize();
 });
