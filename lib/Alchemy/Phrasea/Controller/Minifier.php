@@ -46,7 +46,7 @@ class Minifier implements ControllerProviderInterface
 
             if ($app['debug']) {
                 // may cause js errors
-                $min_serveOptions['debug'] = true;
+                $min_serveOptions['debug'] = false;
                 $min_serveOptions['maxAge'] = 0;
             } else {
                 $min_serveOptions['debug'] = false;
