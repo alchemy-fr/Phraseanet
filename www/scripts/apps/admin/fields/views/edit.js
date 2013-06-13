@@ -12,14 +12,14 @@ define([
     "underscore",
     "backbone",
     "i18n",
-    "apps/admin/fields/views",
+    "common/multiviews",
     "apps/admin/fields/views/alert",
     "apps/admin/fields/views/modal",
     "apps/admin/fields/views/dcField",
     "apps/admin/fields/errors/error"
-], function($, _, Backbone, i18n, ViewUtils, AlertView, ModalView, DcFieldView, Error) {
+], function($, _, Backbone, i18n, MultiViews, AlertView, ModalView, DcFieldView, Error) {
     // Add multiview methods
-    var FieldEditView = Backbone.View.extend(_.extend({}, ViewUtils.MultiViews, {
+    var FieldEditView = Backbone.View.extend(_.extend({}, MultiViews, {
         tagName: "div",
         className: "field-edit",
         initialize: function() {

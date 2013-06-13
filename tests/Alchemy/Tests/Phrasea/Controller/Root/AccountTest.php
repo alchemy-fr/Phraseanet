@@ -398,8 +398,10 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['authentication']->getUser()->set_password($oldPassword);
 
         $crawler = self::$DI['client']->request('POST', '/account/reset-password/', array(
-            'password'        => $password,
-            'passwordConfirm' => $passwordConfirm,
+            'password' => array(
+                'password' => $password,
+                'confirm'  => $passwordConfirm
+            ),
             'oldPassword'     => $oldPassword,
             '_token'          => 'token',
         ));
@@ -407,14 +409,16 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertFalse($response->isRedirect());
-        $this->assertFlashMessage($crawler, 'error', 1);
+        $this->assertFormOrFlashError($crawler, 1);
     }
 
     public function testPostRenewPasswordBadOldPassword()
     {
         $crawler = self::$DI['client']->request('POST', '/account/reset-password/', array(
-            'password'        => 'password',
-            'passwordConfirm' => 'password',
+            'password' => array(
+                'password' => 'password',
+                'confirm'  => 'password'
+            ),
             'oldPassword'     => 'oulala',
             '_token'          => 'token',
         ));
@@ -431,8 +435,10 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['authentication']->getUser()->set_password($password);
 
         $crawler = self::$DI['client']->request('POST', '/account/reset-password/', array(
-            'password'        => 'password',
-            'passwordConfirm' => 'password',
+            'password' => array(
+                'password' => 'password',
+                'confirm'  => 'password'
+            ),
             'oldPassword'     => $password,
         ));
 
@@ -449,8 +455,10 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['authentication']->getUser()->set_password($password);
 
         self::$DI['client']->request('POST', '/account/reset-password/', array(
-            'password'        => 'password',
-            'passwordConfirm' => 'password',
+            'password' => array(
+                'password' => 'password',
+                'confirm'  => 'password'
+            ),
             'oldPassword'     => $password,
             '_token'          => 'token',
         ));
@@ -467,7 +475,6 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         return array(
             array(\random::generatePassword(), 'password', 'not_identical_password'),
-            array(\random::generatePassword(), "invalid\n", "invalid\n"),
         );
     }
 }

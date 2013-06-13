@@ -1,6 +1,7 @@
 {% extends "login/layout/sidebar-layout.html.twig" %}
 
 {% import "login/common/macros.html.twig" as auth_macro %}
+{% import "common/macros.html.twig" as macro %}
 
 {% block title %}
     {% trans "Register" %}
@@ -25,42 +26,26 @@
             <div class="span12">
                 {{ auth_macro.flashes() }}
                 <form
-                     ng-controller="registerFormCtrl"
                      novalidate
                      name="registerForm"
-                     ng-submit="submit();"
                      method="POST"
                      action="{{ path("login_register_classic") }}"
-                     check-form-submission
                 >
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ form_errors(form) }}
+                    {% if form.vars.errors|length > 0 %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ form_errors(form) }}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
+
                     <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.email, "registerForm", 'icon-envelope') }}
                         </div>
                     </div>
 
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ auth_macro.fieldInput(form.password, "registerForm", 'icon-lock') }}
-                        </div>
-                    </div>
-
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ auth_macro.fieldInput(form.passwordConfirm, "registerForm", 'icon-lock', {
-                                    "ui-validate" : " '$value==" ~ form.password.vars.name ~ "' ",
-                                    "ui-validate-watch" : "'" ~ form.password.vars.name ~ "'"
-                                }, {
-                                    "validate_message" : "Passwords do not match"|trans
-                                })
-                            }}
-                        </div>
-                    </div>
+                    {{ auth_macro.repeatedInput(form.password, "registerForm", 'icon-lock') }}
 
                     {% for field in app['registration.fields'] %}
                         {% set name = field['name'] %}
@@ -85,7 +70,14 @@
                         </div>
                     </div>
 
+                    <div class="row-fluid">
+                        <div class="span12">
+                            {{ auth_macro.selectInput(form.collections) }}
+                        </div>
+                    </div>
+
                     {{ form_rest(form) }}
+
                     {% if recaptcha_display %}
                         <div class="row-fluid">
                             <div class="span12">
@@ -105,4 +97,9 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ path('minifier', {'f': 'scripts/apps/login/home/register.js'}) }}"></script>
 {% endblock %}

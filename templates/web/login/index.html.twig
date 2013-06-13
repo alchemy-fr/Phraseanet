@@ -1,9 +1,3 @@
-{#
-    variable "feed" to get public feeds
-    variable "recaptcha_display" should be setted Tell whether the recaptch should be displayed
-    variable "guest_allowed" phrasea::guest_allowed($app)
- #}
-
 {% extends "login/layout/sidebar-layout.html.twig" %}
 
 {% import "common/macros.html.twig" as macro %}
@@ -48,19 +42,19 @@
                 {% endif %}
 
                 <form
-                     ng-controller="LoginFormCtrl"
-                     novalidate
-                     name="loginForm"
-                     ng-submit="submit();"
-                     method="POST"
-                     action="{{ path("login_authenticate") }}"
-                     check-form-submission
+                    novalidate
+                    name="loginForm"
+                    method="POST"
+                    action="{{ path("login_authenticate") }}"
                 >
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ form_errors(form) }}
+                    {% if form.vars.errors|length > 0 %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ form_errors(form) }}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
+
                     <div class="row-fluid">
                         <div class="span12">
                             {{ auth_macro.fieldInput(form.login, "loginForm", 'icon-envelope') }}
@@ -132,4 +126,9 @@
     {% elseif display_layout == "SCROLL" %}
         {% include 'login/include/scroll-content.html.twig' %}
     {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ path('minifier', {'f': 'scripts/apps/login/home/login.js'}) }}"></script>
 {% endblock %}

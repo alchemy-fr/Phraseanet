@@ -44,7 +44,7 @@ define([
 
     App.initialize();
 
-    describe("Application", function() {
+    describe("Admin field", function() {
         describe("Initialization", function() {
             it("should create a global variable", function() {
                 should.exist(AdminFieldApp);
@@ -245,10 +245,12 @@ define([
 
                 it("render() should return the view object", function() {
                     this.view.render().should.equal(this.view);
+                    this.view.remove();
                 });
 
                 it("should render as a DIV element", function() {
                     this.view.render().el.nodeName.should.equal("DIV");
+                    this.view.remove();
                 });
             });
 

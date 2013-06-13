@@ -44,61 +44,76 @@ class PhraseaRegisterForm extends AbstractType
             ),
         ));
 
-        $builder->add('password', 'password', array(
-            'label' => _('Password'),
-            'required' => true,
-            'constraints' => array(
-                new Assert\NotBlank(),
-                new Assert\Length(array('min' => 5)),
-            )
-        ));
 
-        $builder->add('passwordConfirm', 'password', array(
-            'label' => _('Password (confirmation)'),
-            'required' => false,
-            'constraints' => array(
+        $builder->add('password', 'repeated', array(
+            'type'              => 'password',
+            'required'          => true,
+            'invalid_message'   => _('Please provide the same passwords.'),
+            'first_name'        => 'password',
+            'second_name'       => 'confirm',
+            'first_options'     => array('label' => _('Password')),
+            'second_options'    => array('label' => _('Password (confirmation)')),
+            'constraints'       => array(
                 new Assert\NotBlank(),
                 new Assert\Length(array('min' => 5)),
-            )
+            ),
         ));
 
         $builder->add('accept-tou', 'checkbox', array(
-            'label' => _('Terms of Use'),
-            'mapped'   => false,
-            "constraints" => array(
+            'label'         => _('Terms of Use'),
+            'mapped'        => false,
+            "constraints"   => array(
                 new Assert\True(array(
-                "message" => _("Please accept the Terms and conditions in order to register")
+                "message" => _("Please accept the Terms and conditions in order to register.")
             ))),
         ));
 
         $builder->add('provider-id', 'hidden');
 
         require_once($this->app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
+        $choices = array();
         $baseIds = array();
 
         foreach (\giveMeBases($this->app) as $sbas_id => $baseInsc) {
             if (($baseInsc['CollsCGU'] || $baseInsc['Colls']) && $baseInsc['inscript']) {
                 if ($baseInsc['Colls']) {
                     foreach ($baseInsc['Colls'] as  $collId => $collName) {
-                        $baseIds[\phrasea::baseFromColl($sbas_id, $collId, $this->app)] = $collName;
+                        $baseId = \phrasea::baseFromColl($sbas_id, $collId, $this->app);
+                        $sbasName= \phrasea::sbas_names($sbas_id, $this->app);
+
+                        if (!isset($choices[$sbasName])) {
+                            $choices[$sbasName] = array();
+                        }
+
+                        $choices[$sbasName][$baseId] = \phrasea::bas_labels($baseId, $this->app);
+                        $baseIds[] = $baseId;
                     }
                 }
+
                 if ($baseInsc['CollsCGU']) {
                     foreach ($baseInsc['CollsCGU'] as  $collId => $collName) {
-                        $baseIds[\phrasea::baseFromColl($sbas_id, $collId, $this->app)] = $collName;
+                        $baseId = \phrasea::baseFromColl($sbas_id, $collId, $this->app);
+                        $sbasName= \phrasea::sbas_names($sbas_id, $this->app);
+
+                        if (!isset($choices[$sbasName])) {
+                            $choices[$sbasName] = array();
+                        }
+
+                        $choices[$sbasName][$baseId] = \phrasea::bas_labels($baseId, $this->app);
+                        $baseIds[] = $baseId;
                     }
                 }
             }
         }
 
         $builder->add('collections', 'choice', array(
-            'choices'     => $baseIds,
+            'choices'     => $choices,
             'multiple'    => true,
-            'expanded'    => true,
+            'expanded'    => false,
             'constraints' => array(
                 new Assert\Choice(array(
-                    'choices'=>array_keys($baseIds),
-                    'minMessage'  => _('You must select at least {{ limit }} collection'),
+                    'choices' => array_flip($baseIds),
+                    'minMessage' => _('You must select at least {{ limit }} collection.'),
                     'multiple' => true,
                     'min'      => 1,
                 )),

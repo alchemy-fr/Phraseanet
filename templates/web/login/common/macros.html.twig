@@ -1,23 +1,14 @@
-{% macro fieldInput(field, form_name, icon_name, custom_attributes, validation_messages) %}
+{% macro fieldInput(field, form_name, icon_name, custom_attributes) %}
     {% set input_name = field.vars.name %}
-
-    {% set validation_messages = {
-            "required_message" : "This field is required" |trans,
-            "is_valid_message" : "This field is not valid"|trans,
-            "validate_message" : "This field is not valid"|trans
-        }|merge(validation_messages|default({}))
-    %}
 
     {% set attributes = custom_attributes|default({})|merge({
             'class': app['browser'].getBrowser() == constant('Browser::BROWSER_IE') and app['browser'].getVersion() <= 8  ? '' : 'input-block-level',
-            'ng-model' : input_name|camelize,
-            'force-model-update' : ''
         })
     %}
 
     {{ form_label(field) }}
 
-    <table class="input-table" ng-class="getInputClass('{{ input_name }}')">
+    <table class="input-table">
         <tr>
             <td class="icon">
                 <i class="{{ icon_name|default('icon-angle-right') }} icon-white"></i>
@@ -27,46 +18,34 @@
             </td>
         </tr>
     </table>
-
-    {% if field.vars.required %}
-        <div ng-show="!{{ form_name }}.{{ input_name }}.errors.filled">
-            {{ _self.fieldError(validation_messages.required_message) }}
-        </div>
-    {% endif %}
-
-    <div ng-show="{{ form_name }}.{{ input_name }}.errors.filled && !{{ form_name }}.{{ input_name }}.errors.valid">
-        {{ _self.fieldError(validation_messages.is_valid_message) }}
-    </div>
-
-    {% if attributes['ui-validate'] is defined %}
-        <div ng-show="{{ form_name }}.{{ input_name }}.$error.validator">
-            {{ _self.fieldError(validation_messages.validate_message) }}
-        </div>
-    {% endif %}
+    <div class="error-view"></div>
 
     {{ form_errors(field) }}
 {% endmacro %}
 
-{% macro checkboxInput (field, label = '') %}
-    <div class="hidden-phone control-group">
-        <div class="controls">
-            <label for="{{ field.vars.id }}" class="checkbox">
-                {{  form_widget(field) }}
-
-                {{ label | default(field.vars.label) }}
-            </label>
+{% macro repeatedInput(fields, form_name, icon_name, custom_attributes) %}
+    {% for passField in fields %}
+        <div class="row-fluid">
+            <div class="span12">
+                {{ _self.fieldInput(passField, form_name, icon_name, custom_attributes) }}
+            </div>
         </div>
-    </div>
-    <div class="visible-phone switch-control">
-        <ul class="unstyle inline">
-            <li>
-                <div class="switch switch-small">
-                    {{  form_widget(field) }}
-                </div>
-            </li>
-            <li>{{ label | default(field.vars.label) }}</li>
-        </ul>
-    </div>
+    {% endfor %}
+{% endmacro %}
+
+{% macro checkboxInput(field, label = '') %}
+    <label for="{{ field.vars.id }}" class="checkbox">
+        {{ form_widget(field) }}
+        {{ label | default(field.vars.label) }}
+    </label>
+    <div class="error-view"></div>
+    {{  form_errors(field) }}
+{% endmacro %}
+
+{% macro selectInput(field, label = '') %}
+    {{ form_label(field) }}
+    {{ form_widget(field) }}
+    <div class="error-view"></div>
     {{  form_errors(field) }}
 {% endmacro %}
 
@@ -159,7 +138,25 @@
 {% macro flashes() %}
     {% for type in app.getAvailableFlashTypes %}
         {% for message in app.getFlash(type) %}
-            <phraseanet-flash type="{{ type }}">{{ message }}</phraseanet-flash>
+            <div class="alert alert-{{ type }}">
+                {% set sign = "icon-exclamation-sign" %}
+
+                {% if type == "error" %}
+                     {% set sign = "icon-warning-sign" %}
+                {% elseif type == "success" %}
+                     {% set sign = "icon-ok-sign" %}
+                {% elseif type == "info" %}
+                     {% set sign = "icon-info-sign" %}
+                {% endif %}
+
+                <table>
+                    <tr>
+                        <td class="alert-block-logo"><i class="icon-2x icon-white {{ sign }}"></i></td>
+                        <td class="alert-block-content">{{ message }}</td>
+                        <td class="alert-block-close"><a href="#"><b>&times;</b></a></td>
+                    </tr>
+                </table>
+            </div>
         {% endfor %}
     {% endfor %}
 {% endmacro %}

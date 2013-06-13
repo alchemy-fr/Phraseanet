@@ -96,8 +96,6 @@ $finder
     ->name('.svn')
     ->name('.git')
     ->name('flash')
-    ->name('angular-mocks')
-    ->name('angular-scenario')
     ->name('qunit')
     ->name('features')
     ->name('chai')
