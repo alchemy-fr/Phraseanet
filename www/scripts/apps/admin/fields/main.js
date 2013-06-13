@@ -17,7 +17,7 @@ require.config({
         backbone: "../assets/backbone-amd/backbone",
         twig: "../assets/twig/twig",
         i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
-        bootstrap: "../skins/html5/bootstrap/js/bootstrap.min"
+        bootstrap: "../skins/build/bootstrap/js/bootstrap.min"
     },
     shim: {
         twig: {
