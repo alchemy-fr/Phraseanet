@@ -721,25 +721,36 @@ form[name=registerForm] .multiselect {
 }
 
 form[name=registerForm] .multiselect-container {
-    width: 99%;
+    width: 100%;
     z-index: 1020;
 }
 
-form[name=registerForm] .multiselect-container li.active label{
-    color: @black;
+form[name=registerForm] .multiselect-container input[type=checkbox] {
+    float: left;
+    margin-left: -20px;
+}
+
+form[name=registerForm] .multiselect-container li label {
+    margin: 0;
+    min-height: 20px;
+    padding-left: 20px;
+}
+
+form[name=registerForm] .multiselect-container li.active label {
+    margin: 0;
 }
 
 form[name=registerForm] .multiselect b.caret {
     float: right;
+
 }
 
 form[name=registerForm] .multiselect-group {
     font-weight: bold;
-    text-decoration: underline;
-}
-
-form[name=registerForm] .multiselect-all label {
-    font-weight: bold;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    font-size: @fontSizeLarge;
 }
 
 /** IE Fixes */

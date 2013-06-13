@@ -26,19 +26,18 @@ define([
         $("select[multiple='multiple']").multiselect({
             buttonWidth : "100%",
             buttonClass: 'btn btn-inverse',
+            maxHeight: 185,
+            includeSelectAllOption: true,
+            selectAllText: i18n.t("all_collections"),
             buttonText: function(options, select) {
                 if (options.length === 0) {
-                    return i18n.t("none_selected") + '<b class="caret"></b>';
-                }
-                else if (options.length > 4) {
-                    return options.length + (options.length > 1 ? i18n.t("collections") : i18n.t("collection")) + ' <b class="caret"></b>';
-                }
-                else {
-                    var selected = '';
-                    options.each(function() {
-                        selected += $(this).text() + ', ';
-                    });
-                    return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+                    return i18n.t("no_collection_selected") + '<b class="caret"></b>';
+                } else {
+                    return i18n.t(
+                        options.length === 1 ? "one_collection_selected": "collections_selected", {
+                        postProcess: "sprintf",
+                        sprintf: [options.length]
+                    }) + ' <b class="caret"></b>';
                 }
             }
         });

@@ -113,7 +113,7 @@ class PhraseaRegisterForm extends AbstractType
             'constraints' => array(
                 new Assert\Choice(array(
                     'choices' => array_flip($baseIds),
-                    'minMessage' => _('You must select at least {{ limit }} collection'),
+                    'minMessage' => _('You must select at least {{ limit }} collection.'),
                     'multiple' => true,
                     'min'      => 1,
                 )),
