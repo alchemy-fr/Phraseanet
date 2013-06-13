@@ -245,10 +245,12 @@ define([
 
                 it("render() should return the view object", function() {
                     this.view.render().should.equal(this.view);
+                    this.view.remove();
                 });
 
                 it("should render as a DIV element", function() {
                     this.view.render().el.nodeName.should.equal("DIV");
+                    this.view.remove();
                 });
             });
 
