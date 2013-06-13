@@ -1,7 +1,7 @@
 function ini_edit_usrs(){
 
   initialize_geoname_field($('#user_infos_tab input.geoname_field'));
-        
+
   $('.users_col.options').bind('click', function(event){
     $('#users_check_uncheck').remove();
     event.stopPropagation();
@@ -83,7 +83,7 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
     };
     $.ajax({
       type: 'POST',
-      url: '/admin/users/rights/apply/',
+      url: '../admin/users/rights/apply/',
       dataType:'json',
       data: datas,
       success: function(data){
@@ -95,7 +95,7 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
     });
     return false;
   });
-  
+
   $('#right-ajax .users_rights_cancel').bind('click', function(){
     var $this = $(this);
     $('#right-ajax').empty().addClass('loading').parent().show();
@@ -103,7 +103,7 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
     $.get($this.attr('href'), function(data) {
       $('#right-ajax').removeClass('loading').html(data);
     });
-    
+
     return false;
   });
 
@@ -157,53 +157,91 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
   });
   $('#users_rights_form .time_trigger').bind('click', function(){
     var base_id = $(this).find('input[name="time_base_id"]').val();
-    $.ajax({
-      type: 'POST',
-      url: '/admin/users/rights/time/',
-      data: {
-        users:$('#users_rights_form input[name="users"]').val(),
-        base_id:base_id
-      },
-      success: function(data){   
-        var dialog = $('#time_dialog');   
-        
-        dialog.html(data).dialog('open');   
-        
-        $('div.switch_time', dialog).bind('click', function(event){
-          var newclass, boxes;
+    if ('undefined' !== typeof base_id) {
+        $.ajax({
+          type: 'POST',
+          url: '../admin/users/rights/time/',
+          data: {
+            users:$('#users_rights_form input[name="users"]').val(),
+            base_id:base_id
+          },
+          success: function(data){
+            var dialog = $('#time_dialog');
 
-          boxes = $(this).closest('form').find('input.datepicker');
+            dialog.html(data).dialog('open');
 
-          if(($(this).hasClass('mixed') === true) || ($(this).hasClass('unchecked') === true))
-          {
-            newclass = 'checked';
-            boxes.removeAttr('readonly');
+            $('div.switch_time', dialog).bind('click', function(event){
+              var newclass, boxes;
+
+              boxes = $(this).closest('form').find('input.datepicker');
+
+              if(($(this).hasClass('mixed') === true) || ($(this).hasClass('unchecked') === true))
+              {
+                newclass = 'checked';
+                boxes.removeAttr('readonly');
+              }
+              else
+              {
+                newclass = 'unchecked';
+                boxes.attr('readonly','readonly');
+              }
+
+              $(this).removeClass('mixed checked unchecked').addClass(newclass);
+            });
           }
-          else
-          {
-            newclass = 'unchecked';
-            boxes.attr('readonly','readonly');
-          }
+        });
+    } else {
+        var sbas_id = $(this).find('input[name="time_sbas_id"]').val();
 
-          $(this).removeClass('mixed checked unchecked').addClass(newclass);
-        });   
-      }
-    });
+        $.ajax({
+          type: 'POST',
+          url: '../admin/users/rights/time/sbas/',
+          data: {
+            users:$('#users_rights_form input[name="users"]').val(),
+            sbas_id:sbas_id
+          },
+          success: function(data){
+            var dialog = $('#time_dialog');
+
+            dialog.html(data);
+            dialog.dialog('open');
+
+            $('div.switch_time', dialog).bind('click', function(event){
+              var newclass, boxes;
+
+              boxes = $(this).closest('form').find('input.datepicker');
+
+              if(($(this).hasClass('mixed') === true) || ($(this).hasClass('unchecked') === true))
+              {
+                newclass = 'checked';
+                boxes.removeAttr('readonly');
+              }
+              else
+              {
+                newclass = 'unchecked';
+                boxes.attr('readonly','readonly');
+              }
+
+              $(this).removeClass('mixed checked unchecked').addClass(newclass);
+            });
+          }
+        });
+    }
   });
   $('#users_rights_form .quota_trigger').bind('click', function(){
     var base_id = $(this).find('input[name="quota_base_id"]').val();
     $.ajax({
       type: 'POST',
-      url: '/admin/users/rights/quotas/',
+      url: '../admin/users/rights/quotas/',
       data: {
         users:$('#users_rights_form input[name="users"]').val(),
         base_id:base_id
       },
       success: function(data){
-        
+
         var dialog = $('#quotas_dialog');
         dialog.html(data).dialog('open');
-        
+
         $('div.switch_quota', dialog).bind('click', function(event){
           var newclass, boxes;
 
@@ -230,7 +268,7 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
     var base_id = $(this).find('input[name="masks_base_id"]').val();
     $.ajax({
       type: 'POST',
-      url: '/admin/users/rights/masks/',
+      url: '../admin/users/rights/masks/',
       data: {
         users:$('#users_rights_form input[name="users"]').val(),
         base_id:base_id
@@ -324,7 +362,7 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
 
     $.ajax({
       type: 'POST',
-      url: '/admin/users/rights/masks/apply/',
+      url: '../admin/users/rights/masks/apply/',
       data: {
         users:users,
         base_id:base_id,
@@ -360,7 +398,7 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
 
     $.ajax({
       type: 'POST',
-      url: '/admin/users/rights/quotas/apply/',
+      url: '../admin/users/rights/quotas/apply/',
       data: {
         act:"APPLYQUOTAS",
         users:users,
@@ -382,6 +420,7 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
     var dmax = $('input[name="dmax"]', cont).val();
     var users = $('input[name="users"]', cont).val();
     var base_id = $('input[name="base_id"]', cont).val();
+    var sbas_id = $('input[name="sbas_id"]', cont).val();
 
     var switch_time = $('.switch_time', cont);
 
@@ -392,13 +431,14 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
 
     if(switch_time.hasClass('checked'))
       limit = 1;
-      
+
     $.ajax({
       type: 'POST',
-      url: '/admin/users/rights/time/apply/',
+      url: '../admin/users/rights/time/apply/',
       data: {
         users:users,
         base_id:base_id,
+        sbas_id:sbas_id,
         limit:limit,
         dmin:dmin,
         dmax:dmax

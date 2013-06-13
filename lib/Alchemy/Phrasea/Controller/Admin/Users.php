@@ -107,6 +107,12 @@ class Users implements ControllerProviderInterface
             return $app['twig']->render('admin/editusers_timelimit.html.twig', $rights->get_time());
         });
 
+        $controllers->post('/rights/time/sbas/', function(Application $app) {
+            $rights = new UserHelper\Edit($app, $app['request']);
+
+            return $app['twig']->render('admin/editusers_timelimit_sbas.html.twig', $rights->get_time_sbas());
+        });
+
         $controllers->post('/rights/time/apply/', function(Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
             $rights->apply_time();
