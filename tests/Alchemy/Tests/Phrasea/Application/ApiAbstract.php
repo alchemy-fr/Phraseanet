@@ -631,6 +631,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $this->assertArrayHasKey('base_id', $collection);
                 $this->assertArrayHasKey('collection_id', $collection);
                 $this->assertArrayHasKey('name', $collection);
+                $this->assertArrayHasKey('labels', $collection);
+                $this->assertArrayHasKey('fr', $collection['labels']);
+                $this->assertArrayHasKey('en', $collection['labels']);
+                $this->assertArrayHasKey('de', $collection['labels']);
+                $this->assertArrayHasKey('nl', $collection['labels']);
                 $this->assertArrayHasKey('record_amount', $collection);
                 $this->assertTrue(is_int($collection['base_id']));
                 $this->assertGreaterThan(0, $collection['base_id']);

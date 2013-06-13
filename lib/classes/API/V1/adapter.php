@@ -2019,7 +2019,13 @@ class API_V1_adapter extends API_V1_Abstract
         $ret = array(
             'base_id'       => $collection->get_base_id(),
             'collection_id' => $collection->get_coll_id(),
-            'name'          => $collection->get_label($this->app['locale.I18n']),
+            'name'          => $collection->get_name(),
+            'labels'        => array(
+                'fr' => $collection->get_label('fr'),
+                'en' => $collection->get_label('en'),
+                'de' => $collection->get_label('de'),
+                'nl' => $collection->get_label('nl'),
+            ),
             'record_amount' => $collection->get_record_amount(),
         );
 
