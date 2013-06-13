@@ -288,27 +288,6 @@ class appbox extends base
 
     /**
      *
-     * @param  databox $databox
-     * @param  <type>  $viewname
-     * @return appbox
-     */
-    public function set_databox_viewname(databox $databox, $viewname)
-    {
-        $viewname = strip_tags($viewname);
-        $sql = 'UPDATE sbas SET viewname = :viewname WHERE sbas_id = :sbas_id';
-
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':viewname' => $viewname, ':sbas_id'  => $databox->get_sbas_id()));
-        $stmt->closeCursor();
-
-        $this->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-        cache_databox::update($databox->get_sbas_id(), 'structure');
-
-        return $this;
-    }
-
-    /**
-     *
      * @return const
      */
     public function get_base_type()
@@ -392,7 +371,7 @@ class appbox extends base
          * Step 7
          */
         foreach ($this->get_databoxes() as $s) {
-            $upgrader->set_current_message(sprintf(_('Upgrading %s'), $s->get_viewname()));
+            $upgrader->set_current_message(sprintf(_('Upgrading %s'), $s->get_label($this->app['locale.I18n'])));
             $advices = array_merge($advices, $s->upgradeDB(true, $upgrader, $app));
             $upgrader->add_steps_complete(1);
         }

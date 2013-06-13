@@ -257,7 +257,7 @@ class module_report
             $this->app['date-formatter']->getPrettyString(new \DateTime($d1)),
             $this->app['date-formatter']->getPrettyString(new \DateTime($d2))
         );
-        $this->dbname = phrasea::sbas_names($sbas_id, $app);
+        $this->dbname = phrasea::sbas_labels($sbas_id, $app);
         $this->cor = $this->setCor();
         $this->jour = $this->setDay();
         $this->month = $this->setMonth();

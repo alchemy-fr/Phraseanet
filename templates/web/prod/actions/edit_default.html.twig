@@ -245,7 +245,7 @@
                     <div id='TH_Ofull'>
                         <div class='thesaurus' ondblclick='return(edit_dblclickThesaurus(event));' onclick='return(edit_clickThesaurus(event));'>
                             <p id='TH_T.{{ databox.get_sbas_id() }}.T'>
-                                <u id='TH_P.{{ databox.get_sbas_id() }}.T'>+</u><a id='GL_W.{{ databox.get_sbas_id() }}.T' style='FONT-WEIGHT: bold;'>{{ databox.get_viewname() }}</a>
+                                <u id='TH_P.{{ databox.get_sbas_id() }}.T'>+</u><a id='GL_W.{{ databox.get_sbas_id() }}.T' style='FONT-WEIGHT: bold;'>{{ databox.get_label(app['locale.I18n']) }}</a>
                             </p>
                             <div id='TH_K.{{ databox.get_sbas_id() }}.T' class='c'>{% trans 'phraseanet::chargement' %}</div>
                         </div>

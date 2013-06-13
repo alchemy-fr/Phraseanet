@@ -597,8 +597,42 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $base->delete();
     }
 
+    public function testSetLabelsDoesNotWorkIfNotAdmin()
+    {
+        $this->setAdmin(false);
+        $base = self::$DI['record_1']->get_databox();
+        self::$DI['client']->request('POST', '/admin/databox/' . $base->get_sbas_id() . '/labels/');
+
+        $this->assertForbiddenResponse(self::$DI['client']->getResponse());
+    }
+
+    public function testSetLabels()
+    {
+        $this->setAdmin(true);
+        $base = self::$DI['record_1']->get_databox();
+        $this->XMLHTTPRequest('POST', '/admin/databox/' . $base->get_sbas_id() . '/labels/', array(
+            'labels' => array(
+                'fr' => 'frenchy label',
+                'en' => '',
+                'de' => 'Jaja label',
+                'nl' => 'dutch label',
+            )
+        ));
+
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('content-type'));
+
+        $data = json_decode(self::$DI['client']->getResponse()->getContent(), true);
+        $this->assertTrue($data['success']);
+
+        $this->assertEquals('frenchy label', $base->get_label('fr', false));
+        $this->assertEquals('', $base->get_label('en', false));
+        $this->assertEquals('Jaja label', $base->get_label('de', false));
+        $this->assertEquals('dutch label', $base->get_label('nl', false));
+    }
+
     /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::emptyDatabase
+     * @covers Alchemy\Phrasea\Controller\Admin\Database::emptyDatabase
      */
     public function testPostEmptyBaseWithHighRecordAmount()
     {

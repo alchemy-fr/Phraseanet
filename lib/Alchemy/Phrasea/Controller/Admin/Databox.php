@@ -184,6 +184,12 @@ class Databox implements ControllerProviderInterface
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_modify_struct');
             })->bind('admin_database_display_cgus');
 
+        $controllers->post('/{databox_id}/labels/', $this->call('setLabels'))
+            ->assert('databox_id', '\d+')
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+            })->bind('admin_databox_labels');
+
         /**
          * Update database CGU
          *
@@ -494,6 +500,40 @@ class Databox implements ControllerProviderInterface
         return $app->redirectPath('admin_database', $params);
     }
 
+    public function setLabels(Application $app, Request $request, $databox_id)
+    {
+        if (null === $labels = $request->request->get('labels')) {
+            $app->abort(400, _('Missing labels parameter'));
+        }
+        if (false === is_array($labels)) {
+            $app->abort(400, _('Invalid labels parameter'));
+        }
+
+        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+        $success = true;
+
+        try {
+            foreach ($app['locales.I18n.available'] as $code => $language) {
+                if (!isset($labels[$code])) {
+                    continue;
+                }
+                $value = $labels[$code] ?: null;
+                $databox->set_label($code, $value);
+            }
+        } catch (\Exception $e) {
+            $success = false;
+        }
+
+        if ('json' === $app['request']->getRequestFormat()) {
+            return $app->json(array(
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured')
+            ));
+        }
+
+        return $app->redirect('/admin/databox/' . $databox->get_sbas_id() . '/?success=' . (int) $success . '&reload-tree=1');
+    }
+
     /**
      * Reindex databox content
      *
@@ -765,7 +805,7 @@ class Databox implements ControllerProviderInterface
         $success = false;
 
         try {
-            $app['phraseanet.appbox']->set_databox_viewname($app['phraseanet.appbox']->get_databox($databox_id), $viewName);
+            $app['phraseanet.appbox']->get_databox($databox_id)->set_viewname($viewName);
             $success = true;
         } catch (\Exception $e) {
 

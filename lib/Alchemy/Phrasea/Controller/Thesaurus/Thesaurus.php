@@ -789,7 +789,7 @@ class Thesaurus implements ControllerProviderInterface
             } catch (\Exception $e) {
                 continue;
             }
-            $bases[$row['sbas_id']] = \phrasea::sbas_names($row['sbas_id'], $app);
+            $bases[$row['sbas_id']] = \phrasea::sbas_labels($row['sbas_id'], $app);
         }
 
         foreach (PhraseaApplication::getAvailableLanguages() as $lng_code => $lng) {
@@ -1065,7 +1065,7 @@ class Thesaurus implements ControllerProviderInterface
         $updated = false;
         $validThesaurus = true;
         $ctlist = array();
-        $name = \phrasea::sbas_names($request->get('bid'), $app);
+        $name = \phrasea::sbas_labels($request->get('bid'), $app);
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $request->get('bid'));

@@ -116,7 +116,7 @@ class RecordAdd extends Command
         if ($elementCreated instanceof \record_adapter) {
             $output->writeln(
                 sprintf(
-                    "Record id <info>%d</info> on collection `%s` (databox `%s`) has been created", $elementCreated->get_record_id(), $elementCreated->get_collection()->get_label($this->container['locale.I18n']), $elementCreated->get_databox()->get_viewname()
+                    "Record id <info>%d</info> on collection `%s` (databox `%s`) has been created", $elementCreated->get_record_id(), $elementCreated->get_collection()->get_label($this->container['locale.I18n']), $elementCreated->get_databox()->get_label($this->container['locale.I18n'])
                 )
             );
             $this->container['phraseanet.SE']->addRecord($elementCreated);

@@ -1,6 +1,6 @@
 <h1>{% trans 'Limite temporelle' %}</h1>
 <div>
-{% set base = collection.get_databox().get_viewname() %}
+{% set base = collection.get_databox().get_label(app['locale.I18n']) %}
 {% trans %}Base {{base}}{% endtrans %}
 </div>
 <div>

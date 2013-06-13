@@ -2523,18 +2523,7 @@
             <comment></comment>
           </field>
           <field>
-            <name>thesaurus_id</name>
-            <type>int(11) unsigned</type>
-
-            <null></null>
-            <extra></extra>
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
             <name>viewname</name>
-
             <type>char(128)</type>
             <null></null>
             <extra></extra>
@@ -2543,7 +2532,6 @@
             <comment></comment>
           </field>
           <field>
-
             <name>indexable</name>
             <type>tinyint(1) unsigned</type>
             <null></null>
@@ -2551,7 +2539,38 @@
 
             <default>1</default>
             <comment></comment>
-
+          </field>
+          <field>
+            <name>label_en</name>
+            <type>char(50)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_fr</name>
+            <type>char(50)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_de</name>
+            <type>char(50)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>label_nl</name>
+            <type>char(50)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
           </field>
         </fields>
         <indexes>

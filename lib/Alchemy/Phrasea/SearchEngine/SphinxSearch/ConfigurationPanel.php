@@ -254,7 +254,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
 
 #------------------------------------------------------------------------------
-# *****************  ' . $databox->get_viewname() . '
+# *****************  ' . $databox->get_dbname() . '
 #------------------------------------------------------------------------------
 
 
@@ -615,7 +615,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
   }
 
 #------------------------------------------------------------------------------
-# *****************  End configuration for ' . $databox->get_viewname() . '
+# *****************  End configuration for ' . $databox->get_dbname() . '
 #------------------------------------------------------------------------------
 
 ';

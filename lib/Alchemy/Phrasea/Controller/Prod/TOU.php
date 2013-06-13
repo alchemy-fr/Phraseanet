@@ -120,7 +120,7 @@ class TOU implements ControllerProviderInterface
                 continue;
             }
 
-            $data[$databox->get_viewname()] = $cgus[$app['locale']]['value'];
+            $data[$databox->get_label($app['locale.I18n'])] = $cgus[$app['locale']]['value'];
         }
 
         return new Response($app['twig']->render('/prod/TOU.html.twig', array(

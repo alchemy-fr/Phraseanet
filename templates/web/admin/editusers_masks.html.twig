@@ -1,6 +1,6 @@
 <h1>Masks</h1>
 <div>
-Base {{ collection.get_databox().get_viewname() }}
+Base {{ collection.get_databox().get_label(app['locale.I18n']) }}
 </div>
 <div>
 Collection {{base_id|bas_labels(app)}}

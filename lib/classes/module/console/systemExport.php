@@ -126,7 +126,7 @@ class module_console_systemExport extends Command
         $total = $errors = 0;
 
         foreach ($this->getService('phraseanet.appbox')->get_databoxes() as $databox) {
-            $output->writeln(sprintf("Processing <info>%s</info>", $databox->get_viewname()));
+            $output->writeln(sprintf("Processing <info>%s</info>", $databox->get_label($this->container['locale.I18n'])));
 
             if (count($restrictSbasIds) > 0 && ! in_array($databox->get_sbas_id(), $restrictSbasIds)) {
                 $output->writeln(sprintf("Databox not selected, bypassing ..."));

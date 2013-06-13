@@ -98,7 +98,7 @@
         <div style="padding:0 0 2px 0;" class="{% if this_is_selected %}selected{% endif %}">
             <a target="right" href="{{ path('admin_database', { 'databox_id' : sbas_id }) }}" class="ajax">
                 <img src="/skins/admin/Database.png"/>
-                <span>{{ databox.get_viewname() }}</span>
+                <span>{{ databox.get_label(app['locale.I18n']) }}</span>
             </a>
         </div>
         <ul>

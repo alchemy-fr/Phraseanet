@@ -22,7 +22,7 @@
             <select id="add_pub_base_id" class="input-large" name="base_id">
                 <option value="">{% trans 'Non-Restreinte (publique)' %}</option>
                 {% for databox in app['authentication'].getUser().ACL().get_granted_sbas('bas_chupub') %}
-                    <optgroup label="{{ databox.get_viewname() }}">
+                    <optgroup label="{{ databox.get_label(app['locale.I18n']) }}">
                         {% for collection in databox.get_collections() %}
                             <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
                         {% endfor %}
@@ -71,7 +71,7 @@
                 </td>
                 <td valign="center" align="center">
                     {% if feed.get_collection() != null %}
-                        {{ feed.get_collection().get_databox().get_viewname() }} /
+                        {{ feed.get_collection().get_databox().get_label(app['locale.I18n']) }} /
                         {{ feed.get_collection().get_name() }}
                     {% endif %}
                 </td>
