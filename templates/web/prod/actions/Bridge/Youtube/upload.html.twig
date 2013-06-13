@@ -21,7 +21,7 @@
 {% else %}
   {% for record in route.get_elements() %}
     {% set caption = record.get_caption() %}
-    <form class='bridge_form' name="upload_form" action="/prod/bridge/upload/" method="post">
+    <form class='bridge_form' name="upload_form" action="{{ path('prod_bridge_do_upload') }}" method="post">
       <input type="hidden" name="lst" value="{{ route.get_serialize_list() }}" />
       <input type="hidden" name="account_id" value="{{ account.get_id() }}" />
       <table>

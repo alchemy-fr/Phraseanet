@@ -3,7 +3,7 @@
 <div id="sc_container">
     {% for element in basket.getElements() %}
         <div class="basket_element_wrapper">
-      <a href="/lightbox/ajax/LOAD_BASKET_ELEMENT/{{element.getId()}}/">
+      <a href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : element.getId() }) }}">
             <div id="scid_{{element.getId()}}" class="basket_element ui-corner-all {% if basket_element and basket_element.getId() == element.getId() %}selected{% endif %}">
                 <div class="display_id">{{element.getRecord(app).get_number()}}</div>
                 {% if basket.getValidation() %}
@@ -18,7 +18,7 @@
                 <form name="download_form" class="download_form" style="display:none;">
                     <input type="hidden" name="basrec" value="{{element.getRecord(app).get_serialize_key()}}"/>
                 </form>
-        <div tooltipsrc="/prod/tooltip/preview/{{element.getRecord(app).get_sbas_id()}}/{{element.getRecord(app).get_record_id()}}/" class="previewTips"></div>
+        <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getRecord(app).get_sbas_id(), 'record_id' : element.getRecord(app).get_record_id() }) }}" class="previewTips"></div>
             </div>
       </a>
         </div>

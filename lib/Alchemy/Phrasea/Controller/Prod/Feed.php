@@ -69,9 +69,11 @@ class Feed implements ControllerProviderInterface
             }
 
             return $app->json($datas);
-        })->before(function(Request $request) use ($app) {
-            $app['firewall']->requireRight('bas_chupub');
-        });
+        })
+            ->bind('prod_feeds_entry_create')
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireRight('bas_chupub');
+            });
 
         $controllers->get('/entry/{id}/edit/', function(Application $app, Request $request, $id) {
             $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
@@ -85,10 +87,12 @@ class Feed implements ControllerProviderInterface
             $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', array('entry' => $entry, 'feeds' => $feeds));
 
             return new Response($datas);
-        })->assert('id', '\d+')
-          ->before(function(Request $request) use ($app) {
-            $app['firewall']->requireRight('bas_chupub');
-        });
+        })
+            ->bind('prod_feeds_feed_edit')
+            ->assert('id', '\d+')
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireRight('bas_chupub');
+            });
 
         $controllers->post('/entry/{id}/update/', function(Application $app, Request $request, $id) {
             $datas = array('error'   => true, 'message' => '', 'datas'   => '');
@@ -159,9 +163,11 @@ class Feed implements ControllerProviderInterface
             }
 
             return $app->json($datas);
-        })->assert('id', '\d+')->before(function(Request $request) use ($app) {
-            $app['firewall']->requireRight('bas_chupub');
-        });
+        })
+            ->bind('prod_feeds_entry_update')
+            ->assert('id', '\d+')->before(function(Request $request) use ($app) {
+                $app['firewall']->requireRight('bas_chupub');
+            });
 
         $controllers->post('/entry/{id}/delete/', function(Application $app, Request $request, $id) {
             $datas = array('error'   => true, 'message' => '');
@@ -188,9 +194,11 @@ class Feed implements ControllerProviderInterface
             }
 
             return $app->json($datas);
-        })->assert('id', '\d+')->before(function(Request $request) use ($app) {
-            $app['firewall']->requireRight('bas_chupub');
-        });
+        })
+            ->bind('prod_feeds_feed_delete')
+            ->assert('id', '\d+')->before(function(Request $request) use ($app) {
+                $app['firewall']->requireRight('bas_chupub');
+            });
 
         $controllers->get('/', function(Application $app, Request $request) {
             $request = $app['request'];
@@ -208,7 +216,7 @@ class Feed implements ControllerProviderInterface
             );
 
             return new Response($datas);
-        });
+        })->bind('prod_feeds');
 
         $controllers->get('/feed/{id}/', function(Application $app, Request $request, $id) {
             $page = (int) $request->query->get('page');
@@ -220,7 +228,9 @@ class Feed implements ControllerProviderInterface
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array('feed'  => $feed, 'feeds' => $feeds, 'page'  => $page));
 
             return new Response($datas);
-        })->assert('id', '\d+');
+        })
+            ->bind('prod_feeds_feed')
+            ->assert('id', '\d+');
 
         $controllers->get('/subscribe/aggregated/', function(Application $app, Request $request) {
             $renew = ($request->query->get('renew') === 'true');
@@ -235,7 +245,7 @@ class Feed implements ControllerProviderInterface
             );
 
             return $app->json($output);
-        });
+        })->bind('prod_feeds_subscribe_aggregated');
 
         $controllers->get('/subscribe/{id}/', function(Application $app, Request $request, $id) {
             $renew = ($request->query->get('renew') === 'true');
@@ -249,7 +259,9 @@ class Feed implements ControllerProviderInterface
             );
 
             return $app->json($output);
-        })->assert('id', '\d+');
+        })
+            ->bind('prod_feeds_subscribe_feed')
+            ->assert('id', '\d+');
 
         return $controllers;
     }

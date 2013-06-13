@@ -209,10 +209,10 @@ class Order implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect($app['url_generator']->generate('prod_orders', array(
+        return $app->redirectPath('prod_orders', array(
             'success' => (int) $success,
             'action'  => 'send'
-        )));
+        ));
     }
 
     /**
@@ -299,10 +299,10 @@ class Order implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect($app['url_generator']->generate('prod_orders', array(
+        return $app->redirectPath('prod_orders', array(
             'success' => (int) $success,
             'action'  => 'send'
-        )));
+        ));
     }
 
     /**
@@ -338,10 +338,10 @@ class Order implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect($app['url_generator']->generate('prod_orders', array(
+        return $app->redirectPath('prod_orders', array(
             'success' => (int) $success,
             'action'  => 'send'
-        )));
+        ));
     }
 
     /**

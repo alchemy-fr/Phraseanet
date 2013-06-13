@@ -3,7 +3,7 @@
 </div>
 
 {% if nb_user_to_add > 0 and models|length > 0 %}
-    <form method="post" name="importform2" action="/admin/users/import/" ENCTYPE="multipart/form-data" >
+    <form method="post" name="importform2" action="{{ path('users_submit_import') }}" ENCTYPE="multipart/form-data" >
         <textarea style="display:none;" name="sr">{{ array_serialized }}</textarea>
         <select name="modelToApply">
         {% for model in models %}

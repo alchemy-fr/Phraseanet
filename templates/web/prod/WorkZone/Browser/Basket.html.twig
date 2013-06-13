@@ -12,12 +12,12 @@
           <h1 class="title">
             <img class="loader" src="/skins/prod/Basket/Browser/loader.gif" />
             {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app['authentication'].getUser()) %}
-            <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=1" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
+            <a href="{{ path('prod_baskets_basket_archive', { 'basket_id' : Basket.getId(), 'archive' : 1 }) }}" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
               <span>
                 <img src="/skins/prod/Basket/Browser/archive.png"/>
               </span>
             </a>
-            <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=0" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
+            <a href="{{ path('prod_baskets_basket_archive', { 'basket_id' : Basket.getId(), 'archive' : 0 }) }}" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
               <span>
                 <img src="/skins/prod/Basket/Browser/archived.png"/>
               </span>
@@ -39,7 +39,7 @@
     <div class="PNB" style="top:40px;bottom:auto;height:40px;background-color:#404040;">
       <div class="PNB10">
         <p>
-          {% set user_name = '<a tooltipsrc="/prod/tooltip/user/' ~ Basket.getPusher(app).get_id() ~ '/" href="/user/' ~ Basket.getPusher(app).get_id() ~ '/" class="UserTips">' ~ Basket.getPusher(app).get_display_name() ~ '</a>' %}
+          {% set user_name = '<a tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Basket.getPusher(app).get_id() }) ~ '" href="/user/' ~ Basket.getPusher(app).get_id() ~ '/" class="UserTips">' ~ Basket.getPusher(app).get_display_name() ~ '</a>' %}
           {% trans %}
             Received from {{ user_name }}
           {% endtrans %}
@@ -60,9 +60,7 @@
               {% set list_participants = list_participants ~ ', ' %}
             {% endif %}
 
-            {% set list_participants = list_participants ~ '<a class="UserTips" tooltipsrc="/prod/tooltip/user/'
-                                        ~ Participant.getUser(app).get_id()
-                                        ~ '/" href="/user/'
+            {% set list_participants = list_participants ~ '<a class="UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Participant.getUser(app).get_id() }) ~ '" href="/user/'
                                         ~ Participant.getUser(app).get_id() ~ '/">'
                                         ~ Participant.getUser(app).get_display_name
                                         ~ '</a>' %}
@@ -109,8 +107,8 @@
           {{thumbnail.format(record.get_thumbnail,140,140, '', true, false)}}
         </div>
         <div style='position:absolute; bottom:0px; left:0px; height:20px'>
-          <div class="previewTips" tooltipsrc="/prod/tooltip/preview/{{record.get_sbas_id()}}/{{record.get_record_id()}}/"></div>
-          <img class="infoTips" tooltipsrc="/prod/tooltip/tc_datas/{{record.get_sbas_id()}}/{{record.get_record_id()}}/" src="/skins/icons/info.gif"/>
+          <div class="previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}"></div>
+          <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}" src="/skins/icons/info.gif"/>
         </div>
       </div>
     {% endfor %}

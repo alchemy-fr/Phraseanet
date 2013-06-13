@@ -33,18 +33,23 @@ class WorkZone implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-        $controllers->get('/', $this->call('displayWorkzone'));
+        $controllers->get('/', $this->call('displayWorkzone'))
+            ->bind('prod_workzone_show');
 
-        $controllers->get('/Browse/', $this->call('browse'));
+        $controllers->get('/Browse/', $this->call('browse'))
+            ->bind('prod_workzone_browse');
 
-        $controllers->get('/Browse/Search/', $this->call('browserSearch'));
+        $controllers->get('/Browse/Search/', $this->call('browserSearch'))
+            ->bind('prod_workzone_search');
 
         $controllers->get('/Browse/Basket/{basket_id}/', $this->call('browseBasket'))
+            ->bind('prod_workzone_basket')
             ->assert('basket_id', '\d+');
 
         $controllers->post('/attachStories/', $this->call('attachStories'));
 
         $controllers->post('/detachStory/{sbas_id}/{record_id}/', $this->call('detachStory'))
+            ->bind('prod_workzone_detach_story')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
 
@@ -187,7 +192,7 @@ class WorkZone implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/{sbas_id}/{record_id}/');
+        return $app->redirectPath('prod_workzone_show');
     }
 
     public function detachStory(Application $app, Request $request, $sbas_id, $record_id)
@@ -213,7 +218,7 @@ class WorkZone implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/');
+        return $app->redirectPath('prod_workzone_show');
     }
 
     /**

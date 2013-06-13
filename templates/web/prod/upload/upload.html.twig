@@ -10,7 +10,7 @@
             </li>
             <li>
                 {# template prod/upload/lazaret.html.twig loaded via ajax #}
-                <a href="/prod/lazaret/">
+                <a href="{{ path('lazaret_elements') }}">
                     {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
                     {% trans 'Quarantine' %}<span>&nbsp;</span>
                 </a>
@@ -19,7 +19,7 @@
         {# upload tab content #}
         <div id="tab-upload">
             {% if collections|length > 0 %}
-                <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
+                <form id="fileupload" enctype="multipart/form-data" method="POST" action="{{ path('upload_form') }}">
 
                     <div id="uploadBoxLeft" class="well">
 
@@ -46,7 +46,7 @@
                                             {% trans 'Your browser does not support all HTML5 features properly.' %}
                                         {% endif %}
                                     </p>
-                                    <a href="/prod/upload/flash-version/" class="dialog full-dialog">{% trans 'Use the Flash uploader' %}</a>
+                                    <a href="{{ path('upload_flash_form') }}" class="dialog full-dialog">{% trans 'Use the Flash uploader' %}</a>
                                 </td>
                             </tr>
                         </table>

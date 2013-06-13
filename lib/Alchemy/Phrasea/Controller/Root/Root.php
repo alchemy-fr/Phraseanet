@@ -55,20 +55,12 @@ class Root implements ControllerProviderInterface
 
     public function getRoot(Application $app, Request $request)
     {
-        if ($app['browser']->isMobile()) {
-            return $app->redirect("/login/?redirect=lightbox");
-        } elseif ($app['browser']->isNewGeneration()) {
-            return $app->redirect("/login/?redirect=prod");
-        }
-
-        return $app->redirect("/login/?redirect=client");
+        return $app->redirectPath('homepage');
     }
 
     public function setLocale(Application $app, Request $request, $locale)
     {
-        $redirect = $request->query->get('redirect') ? : $app->path('root');
-
-        $response = $app->redirect($redirect);
+        $response = $app->redirectPath('root');
         $response->headers->setCookie(new Cookie('locale', $locale));
 
         return $response;

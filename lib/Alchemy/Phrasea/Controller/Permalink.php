@@ -78,7 +78,7 @@ class Permalink extends AbstractDelivery
                 }
                 $response = $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
 
-                $linkToCaption = $app->path("view_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
+                $linkToCaption = $app->path("permalinks_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
                 $response->headers->set('Link', $linkToCaption);
 
                 return $response;
@@ -100,7 +100,7 @@ class Permalink extends AbstractDelivery
 
             $response = $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
 
-            $linkToCaption = $app->path("view_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
+            $linkToCaption = $app->path("permalinks_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
             $response->headers->set('Link', $linkToCaption);
 
             return $response;
@@ -119,28 +119,40 @@ class Permalink extends AbstractDelivery
 
             return new Response($caption->serialize(\caption_record::SERIALIZE_JSON), 200, array("Content-Type" => 'application/json'));
         })
-        ->assert('sbas_id', '\d+')->assert('record_id', '\d+')
-        ->bind('view_caption');
+            ->assert('sbas_id', '\d+')->assert('record_id', '\d+')
+            ->bind('permalinks_caption');
 
         $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/', function (PhraseaApplication $app, Request $request, $sbas_id, $record_id, $subdef) use ($deliverPermaview) {
             $token = $request->query->get('token');
 
             return $deliverPermaview($sbas_id, $record_id, $token, $subdef, $app);
-        })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+        })
+            ->bind('permalinks_permaview')
+            ->assert('sbas_id', '\d+')
+            ->assert('record_id', '\d+');
 
         $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{token}/{subdef}/view/', function(PhraseaApplication $app, $label, $sbas_id, $record_id, $token, $subdef) use ($deliverPermaview) {
             return $deliverPermaview($sbas_id, $record_id, $token, $subdef, $app);
-        })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+        })
+            ->bind('permalinks_permaview_old')
+            ->assert('sbas_id', '\d+')
+            ->assert('record_id', '\d+');
 
         $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/{label}', function (PhraseaApplication $app, Request $request, $sbas_id, $record_id, $subdef, $label) use ($deliverPermalink) {
             $token = $request->query->get('token');
 
             return $deliverPermalink($app, $sbas_id, $record_id, $token, $subdef);
-        })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+        })
+            ->bind('permalinks_permalink')
+            ->assert('sbas_id', '\d+')
+            ->assert('record_id', '\d+');
 
         $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{token}/{subdef}/', function(PhraseaApplication $app, $label, $sbas_id, $record_id, $token, $subdef) use ($deliverPermalink) {
             return $deliverPermalink($app, $sbas_id, $record_id, $token, $subdef);
-        })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+        })
+            ->bind('permalinks_permalink_old')
+            ->assert('sbas_id', '\d+')
+            ->assert('record_id', '\d+');
 
         return $controllers;
     }

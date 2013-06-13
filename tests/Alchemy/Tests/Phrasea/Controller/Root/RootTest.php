@@ -37,7 +37,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request('GET', '/');
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertRegExp('/^\/login\/\?redirect=[\/a-zA-Z]+/', $response->headers->get('location'));
+        $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
     public function testRouteAvailableLanguages()

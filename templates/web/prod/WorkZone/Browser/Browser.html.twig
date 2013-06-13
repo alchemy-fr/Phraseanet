@@ -2,7 +2,7 @@
 <div class="PNB" id="BasketBrowser">
   <div class="PNB10 Browser">
     <div class="PNB10" style="width:190px;right:auto;">
-      <form name="BasketBrowser" method="GET" action="/prod/WorkZone/Browse/Search/">
+      <form name="BasketBrowser" method="GET" action="{{ path('prod_workzone_search') }}">
         <input name="Query" class="Query search" placeholder="{% trans 'Search baskets' %}" type="text"/>
 
         <h1>{% trans 'See' %}</h1>

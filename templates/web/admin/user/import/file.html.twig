@@ -31,17 +31,17 @@
 
 <div>
     <div class="well well-small">
-        <a target="_blank" href="/admin/users/import/example/csv/" class="no-ajax"> <i class="icon-share"></i> {% trans  'You can  download an example by clicking here' %}</a>
+        <a target="_blank" href="{{ path('users_import_csv') }}" class="no-ajax"> <i class="icon-share"></i> {% trans  'You can  download an example by clicking here' %}</a>
     </div>
     <div class="well well-small">
-        <a target="_blank" href="/admin/users/import/example/rtf/" class="no-ajax"> <i class="icon-share"></i> {% trans 'You can download the documentation here' %}</a>
+        <a target="_blank" href="{{ path('users_import_rtf') }}" class="no-ajax"> <i class="icon-share"></i> {% trans 'You can download the documentation here' %}</a>
     </div>
     <span class="label" style="display:inline-block;" >
         <i class="icon-plus icon-white"></i>
         <span>{% trans 'Select a file' %}</span>
         <input id="fileupload" type="file" name="files" data-url="/admin/users/import/file/" accept="text/csv, text/rtf">
     </span>
-    <a href="/admin/users/search/" class="btn ajax">{% trans 'boutton::retour' %}</a>
+    <a href="{{ path('admin_users_search') }}" class="btn ajax">{% trans 'boutton::retour' %}</a>
 </div>
 
 <script>

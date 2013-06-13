@@ -75,7 +75,7 @@
         </div>
         {# subdef section #}
         <div id="subdefs" class="tabBox">
-            <form id="new-img-form" action="/prod/tools/image/" method="post">
+            <form id="new-img-form" action="{{ path('prod_tools_image') }}" method="post">
                 <fieldset style='border:1px solid #999; padding:20px;'>
                     <legend style='color:#EEE'>&nbsp;<b>{% trans "Reconstruire les sous definitions" %}</b>&nbsp;</legend>
                     {% if nbThumbSubstitute > 0 %}
@@ -244,7 +244,7 @@
 
     {% if allowRotate == 1 %}
         <div id="image" class="tabBox">
-          <form name="formpushdoc" action="/prod/tools/rotate/" method="post">
+          <form name="formpushdoc" action="{{ path('prod_tools_rotate') }}" method="post">
             <fieldset style='border:1px solid #999;padding:20px;'>
               <legend style='color:#EEE'>&nbsp;<b>{% trans "image rotation" %}</b>&nbsp;</legend>
                 <label for="ROTA_90" class="radio">
@@ -280,7 +280,7 @@
                 <div id="substitution-hd">
                   <form
                     name ="formchgHD"
-                    action="/prod/tools/hddoc/"
+                    action="{{ path('prod_tools_hd_substitution') }}"
                     enctype="multipart/form-data"
                     method="post"
                     target="uploadHdsub">
@@ -313,7 +313,7 @@
                 <div id="substitution-sd">
                   <form
                     name="formchgHD"
-                    action="/prod/tools/chgthumb/"
+                    action="{{ path('prod_tools_thumbnail_substitution') }}"
                     enctype="multipart/form-data"
                     method="post"
                     target="uploadHdsub">

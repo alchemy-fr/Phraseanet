@@ -258,7 +258,7 @@
                         <p>{% trans "Date" %} : <span class="info">{{ app['date-formatter'].getPrettyString(file.getCreated()) }}</span></p>
                         {% if file.getSession().getUser(app) is not none %}
                             <p>
-                                {% set username = '<a href="#" class="username userTips" tooltipsrc="/prod/tooltip/user/' ~ file.getSession().getUser(app).get_id() ~ '/">' ~ file.getSession().getUser(app).get_display_name() ~ '</a>' %}
+                                {% set username = '<a href="#" class="username userTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : file.getSession().getUser(app).get_id() }) ~ '/">' ~ file.getSession().getUser(app).get_display_name() ~ '</a>' %}
                                 {% trans %}
                                     Uploaded by : {{ username }}
                                 {% endtrans %}

@@ -87,6 +87,6 @@ class MailInfoOrderDelivered extends AbstractMail
             throw new LogicException('You must set a basket before calling getSubject');
         }
 
-        return $this->app['url_generator']->generate('lightbox_compare', array('ssel_id' => $this->basket->getId()), true);
+        return $this->app->url('lightbox_compare', array('ssel_id' => $this->basket->getId()));
     }
 }

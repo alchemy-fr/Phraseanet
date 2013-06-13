@@ -28,7 +28,7 @@ class Thesaurus implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('thesaurus');
         });
 
-        $controllers->match('/', $this->call('indexThesaurus'));
+        $controllers->match('/', $this->call('indexThesaurus'))->bind('thesaurus');
         $controllers->match('accept.php', $this->call('accept'));
         $controllers->match('export_text.php', $this->call('exportText'));
         $controllers->match('export_text_dlg.php', $this->call('exportTextDialog'));
@@ -39,12 +39,12 @@ class Thesaurus implements ControllerProviderInterface
         $controllers->match('linkfield.php', $this->call('linkFieldStep1'));
         $controllers->match('linkfield2.php', $this->call('linkFieldStep2'));
         $controllers->match('linkfield3.php', $this->call('linkFieldStep3'));
-        $controllers->match('loadth.php', $this->call('loadThesaurus'));
+        $controllers->match('loadth.php', $this->call('loadThesaurus'))->bind('thesaurus_loadth');
         $controllers->match('newsy_dlg.php', $this->call('newSynonymDialog'));
         $controllers->match('newterm.php', $this->call('newTerm'));
         $controllers->match('properties.php', $this->call('properties'));
         $controllers->match('search.php', $this->call('search'));
-        $controllers->match('thesaurus.php', $this->call('thesaurus'));
+        $controllers->match('thesaurus.php', $this->call('thesaurus'))->bind('thesaurus_thesaurus');
 
         $controllers->match('xmlhttp/accept.x.php', $this->call('acceptXml'));
         $controllers->match('xmlhttp/acceptcandidates.x.php', $this->call('acceptCandidatesXml'));

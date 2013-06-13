@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea;
 
-use Alchemy\Phrasea\Application\Lightbox;
+use Alchemy\Phrasea\Controller\Lightbox;
 use Alchemy\Phrasea\Controller\Datafiles;
 use Alchemy\Phrasea\Controller\Permalink;
 use Alchemy\Phrasea\Controller\Admin\Collection;
@@ -135,6 +135,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormTypeInterface;
@@ -280,6 +281,7 @@ class Application extends SilexApplication
         $this->setupTwig();
         $this->register(new UnoconvServiceProvider());
         $this->register(new UrlGeneratorServiceProvider());
+        $this->setupUrlGenerator();
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
 
@@ -390,6 +392,10 @@ class Application extends SilexApplication
 
         $this->register(new LocaleServiceProvider());
 
+        $this->mount('/include/minify/', new Minifier());
+        $this->mount('/permalink/', new Permalink());
+        $this->mount('/lightbox/', new Lightbox());
+
         call_user_func(function ($app) {
             require $app['plugins.directory'] . '/services.php';
         }, $this);
@@ -428,7 +434,20 @@ class Application extends SilexApplication
     }
 
     /**
-     * Generates an absolute URL from the given parameters.
+     * Returns a redirect response with a relative path related to a route name.
+     *
+     * @param string $route      The name of the route
+     * @param mixed  $parameters An array of parameters
+     *
+     * @return RedirectResponse
+     */
+    public function redirectPath($route, $parameters = array())
+    {
+        return $this->redirect($this->path($route, $parameters));
+    }
+
+    /**
+     * Returns an absolute URL from the given parameters.
      *
      * @param string $route      The name of the route
      * @param mixed  $parameters An array of parameters
@@ -438,6 +457,19 @@ class Application extends SilexApplication
     public function url($route, $parameters = array())
     {
         return $this['url_generator']->generate($route, $parameters, UrlGenerator::ABSOLUTE_URL);
+    }
+
+    /**
+     * Returns a redirect response with a fully qualified URI related to a route name.
+     *
+     * @param string $route      The name of the route
+     * @param mixed  $parameters An array of parameters
+     *
+     * @return RedirectResponse
+     */
+    public function redirectUrl($route, $parameters = array())
+    {
+        return $this->redirect($this->url($route, $parameters));
     }
 
     public function initSession(GetResponseEvent $event)
@@ -489,6 +521,22 @@ class Application extends SilexApplication
         }
 
         $event->setResponse($response);
+    }
+
+    private function setupUrlGenerator()
+    {
+        $this['url_generator'] = $this->share($this->extend('url_generator', function($urlGenerator, $app) {
+            $data = parse_url($app['phraseanet.configuration']['main']['servername']);
+
+            if (isset($data['scheme'])) {
+                $urlGenerator->getContext()->setScheme($data['scheme']);
+            }
+            if (isset($data['host'])) {
+                $urlGenerator->getContext()->setHost($data['host']);
+            }
+
+            return $urlGenerator;
+        }));
     }
 
     public function setupTwig()
@@ -654,12 +702,8 @@ class Application extends SilexApplication
         $this->mount('/account/', new Account());
         $this->mount('/login/', new Login());
         $this->mount('/developers/', new Developers());
-        $this->mount('/lightbox/', new Lightbox());
 
         $this->mount('/datafiles/', new Datafiles());
-        $this->mount('/permalink/', new Permalink());
-
-        $this->mount('/include/minify/', new Minifier());
 
         $this->mount('/admin/', new AdminRoot());
         $this->mount('/admin/dashboard', new Dashboard());

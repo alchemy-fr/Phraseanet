@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Routing\Generator\UrlGenerator;
+
 /**
  *
  * @package     Bridge
@@ -20,7 +22,7 @@ interface Bridge_Api_Interface
     const OBJECT_CLASS_ELEMENT = 'element';
     const OBJECT_CLASS_CONTAINER = 'container';
 
-    public function __construct(registryInterface $registry, Bridge_Api_Auth_Interface $auth);
+    public function __construct(UrlGenerator $generator, registryInterface $registry, Bridge_Api_Auth_Interface $auth);
 
     /**
      *

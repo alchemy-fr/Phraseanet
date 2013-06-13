@@ -146,15 +146,15 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      */
     public function get_url()
     {
-        return sprintf('%spermalink/v1/%d/%d/%s/%s.%s?token=%s',
-            $this->app['phraseanet.registry']->get('GV_ServerName'),
-            $this->media_subdef->get_sbas_id(),
-            $this->media_subdef->get_record_id(),
-            $this->media_subdef->get_name(),
-            $this->get_label(),
-            pathinfo($this->media_subdef->get_file(), PATHINFO_EXTENSION),
-            $this->get_token()
-        );
+        $label = $this->get_label() . '.' . pathinfo($this->media_subdef->get_file(), PATHINFO_EXTENSION);
+
+        return $this->app->url('permalinks_permalink', array(
+            'sbas_id'   => $this->media_subdef->get_sbas_id(),
+            'record_id' => $this->media_subdef->get_record_id(),
+            'subdef'    => $this->media_subdef->get_name(),
+            'label'     => $label,
+            'token'     => $this->get_token(),
+        ));
     }
 
     /**
@@ -163,13 +163,12 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      */
     public function get_page()
     {
-        return sprintf('%spermalink/v1/%d/%d/%s/?token=%s',
-            $this->app['phraseanet.registry']->get('GV_ServerName'),
-            $this->media_subdef->get_sbas_id(),
-            $this->media_subdef->get_record_id(),
-            $this->media_subdef->get_name(),
-            $this->get_token()
-        );
+        return $this->app->url('permalinks_permaview', array(
+            'sbas_id'   => $this->media_subdef->get_sbas_id(),
+            'record_id' => $this->media_subdef->get_record_id(),
+            'subdef'    => $this->media_subdef->get_name(),
+            'token'     => $this->get_token(),
+        ));
     }
 
     /**

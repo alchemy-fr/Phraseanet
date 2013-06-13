@@ -4,7 +4,7 @@
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
         <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {% trans 'phraseanet:: thesaurus' %}</title>
         <link rel="shortcut icon" type="image/x-icon" href="/skins/thesaurus/favicon.ico">
-        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
     </head>
     <body>
         <br/>
@@ -14,7 +14,7 @@
     {% set count_bases = bases | length %}
     {% if count_bases > 0 %}
 
-        <form name="fBase" action="/thesaurus/thesaurus.php" method="post">
+        <form name="fBase" action="{{ path('thesaurus_thesaurus') }}" method="post">
             {% trans 'thesaurus:: Editer le thesaurus' %}
             <select name="bid" onchange="ckok();return(true);">
                 <option value="">{% trans 'phraseanet:: choisir' %}</option>

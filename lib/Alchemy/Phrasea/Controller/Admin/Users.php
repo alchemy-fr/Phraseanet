@@ -58,13 +58,13 @@ class Users implements ControllerProviderInterface
             }
 
             return $app->json($datas);
-        });
+        })->bind('admin_users_rights_reset');
 
         $controllers->post('/delete/', function(Application $app) {
             $module = new UserHelper\Edit($app, $app['request']);
             $module->delete_users();
 
-            return $app->redirect('/admin/users/search/');
+            return $app->redirectPath('admin_users_search');
         });
 
         $controllers->post('/rights/apply/', function(Application $app) {
@@ -86,7 +86,7 @@ class Users implements ControllerProviderInterface
             }
 
             return $app->json($datas);
-        });
+        })->bind('admin_users_rights_apply');
 
         $controllers->post('/rights/quotas/', function(Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
@@ -131,7 +131,7 @@ class Users implements ControllerProviderInterface
             $users = new UserHelper\Manage($app, $app['request']);
 
             return $app['twig']->render('admin/users.html.twig', $users->search());
-        });
+        })->bind('admin_users_search');
 
         $controllers->post('/search/export/', function() use ($app) {
             $request = $app['request'];
@@ -187,15 +187,15 @@ class Users implements ControllerProviderInterface
             $response->headers->set('Content-Disposition', 'attachment; filename=export.csv');
 
             return $response;
-        });
+        })->bind('admin_users_search_export');
 
         $controllers->post('/apply_template/', function() use ($app) {
             $users = new UserHelper\Edit($app, $app['request']);
 
             $users->apply_template();
 
-            return $app->redirect('/admin/users/search/');
-        });
+            return $app->redirectPath('admin_users_search');
+        })->bind('admin_users_apply_template');
 
         $controllers->get('/typeahead/search/', function(Application $app) {
             $request = $app['request'];
@@ -331,7 +331,7 @@ class Users implements ControllerProviderInterface
             $response->setCharset('UTF-8');
 
             return $response;
-        });
+        })->bind('admin_users_export_csv');
 
         $controllers->get('/demands/', function(Application $app, Request $request) {
 
@@ -562,7 +562,7 @@ class Users implements ControllerProviderInterface
                 }
             }
 
-            return $app->redirect('/admin/users/demands/?success=1');
+            return $app->redirectPath('users_display_demands', array('success' => 1));
         })->bind('users_submit_demands');
 
         $controllers->get('/import/file/', function(Application $app, Request $request) {
@@ -572,7 +572,7 @@ class Users implements ControllerProviderInterface
         $controllers->post('/import/file/', function(Application $app, Request $request) {
 
             if ((null === $file = $request->files->get('files')) || !$file->isValid()) {
-                return $app->redirect('/admin/users/import/file/?error=file-invalid');
+                return $app->redirectPath('users_display_import_file', array('error' => 'file-invalid'));
             }
 
             $array = \format::csv_to_arr($file->getPathname());
@@ -600,11 +600,11 @@ class Users implements ControllerProviderInterface
             }
 
             if (!$loginDefined) {
-                return $app->redirect('/admin/users/import/file/?error=row-login');
+                return $app->redirectPath('users_display_import_file', array('error' => 'row-login'));
             }
 
             if (!$pwdDefined) {
-                return $app->redirect('/admin/users/import/file/?error=row-pwd');
+                return $app->redirectPath('users_display_import_file', array('error' => 'row-pwd'));
             }
 
             $nbLines = sizeof($array);
@@ -665,7 +665,7 @@ class Users implements ControllerProviderInterface
                         'errors' => $out['errors']
                     ));
             } elseif ($nbUsrToAdd === 0) {
-                return $app->redirect('/admin/users/import/file/?error=no-user');
+                return $app->redirectPath('users_display_import_file', array('error' => 'no-user'));
             } else {
                 for ($i = 1; $i < sizeof($array); $i++) {
                     for ($j = 0; $j < sizeof($array[0]); $j++) { {
@@ -821,7 +821,7 @@ class Users implements ControllerProviderInterface
                 }
             }
 
-            return $app->redirect('/admin/users/search/?user-updated=' . $nbCreation);
+            return $app->redirectPath('admin_users_search', array('user-updated' => $nbCreation));
         })->bind('users_submit_import');
 
         $controllers->get('/import/example/csv/', function(Application $app, Request $request) {

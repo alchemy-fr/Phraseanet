@@ -216,9 +216,12 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $url = $app['phraseanet.registry']->get('GV_ServerName')
-                        . 'lightbox/index.php?LOG='
-                        . $app['tokens']->getUrlToken(\random::TYPE_VALIDATE, $user_receiver->get_id(), null, $Basket->getId());
+                    $url = $app->url('lightbox', array('LOG' => $app['tokens']->getUrlToken(
+                        \random::TYPE_VALIDATE,
+                        $user_receiver->get_id(),
+                        null,
+                        $Basket->getId()
+                    )));
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
 
@@ -257,7 +260,7 @@ class Push implements ControllerProviderInterface
             }
 
             return $app->json($ret);
-        });
+        })->bind('prod_push_send');
 
         $controllers->post('/validate/', function(Application $app) {
             $request = $app['request'];
@@ -413,9 +416,12 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $url = $app['phraseanet.registry']->get('GV_ServerName')
-                        . 'lightbox/index.php?LOG='
-                        . $app['tokens']->getUrlToken(\random::TYPE_VIEW, $participant_user->get_id(), null, $Basket->getId());
+                    $url = $app->url('lightbox', array('LOG' => $app['tokens']->getUrlToken(
+                        \random::TYPE_VIEW,
+                        $participant_user->get_id(),
+                        null,
+                        $Basket->getId()
+                    )));
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
 
@@ -457,7 +463,7 @@ class Push implements ControllerProviderInterface
             }
 
             return $app->json($ret);
-        });
+        })->bind('prod_push_validate');
 
         $controllers->get('/user/{usr_id}/', function(Application $app, $usr_id) use ($userFormatter) {
             $datas = null;
@@ -495,7 +501,9 @@ class Push implements ControllerProviderInterface
             }
 
             return $app->json($datas);
-        })->assert('list_id', '\d+');
+        })
+            ->bind('prod_push_lists_list')
+            ->assert('list_id', '\d+');
 
         $controllers->post('/add-user/', function(Application $app, Request $request) use ($userFormatter) {
             $result = array('success' => false, 'message' => '', 'user'    => null);
@@ -560,13 +568,13 @@ class Push implements ControllerProviderInterface
             }
 
             return $app->json($result);
-        });
+        })->bind('prod_push_do_add_user');
 
         $controllers->get('/add-user/', function(Application $app, Request $request) {
             $params = array('callback' => $request->query->get('callback'));
 
             return $app['twig']->render('prod/User/Add.html.twig', $params);
-        });
+        })->bind('prod_push_add_user');
 
         $controllers->get('/search-user/', function(Application $app) use ($userFormatter, $listFormatter) {
             $request = $app['request'];
@@ -664,7 +672,9 @@ class Push implements ControllerProviderInterface
                         $app['twig']->render('prod/actions/Feedback/list.html.twig', $params)
                 );
             }
-        })->assert('list_id', '\d+');
+        })
+            ->bind('prod_push_list_edit')
+            ->assert('list_id', '\d+');
 
         return $controllers;
     }

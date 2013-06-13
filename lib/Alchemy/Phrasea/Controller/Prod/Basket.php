@@ -39,6 +39,7 @@ class Basket implements ControllerProviderInterface
          * Get a basket
          */
         $controllers->get('/{basket_id}/', $this->call('displayBasket'))
+            ->bind('prod_baskets_basket')
             ->assert('basket_id', '\d+');
 
         /**
@@ -51,7 +52,8 @@ class Basket implements ControllerProviderInterface
          * @accept JSON / YAML
          *
          */
-        $controllers->post('/', $this->call('createBasket'));
+        $controllers->post('/', $this->call('createBasket'))
+            ->bind('prod_baskets');
 
         /**
          * This route is used to delete a basket
@@ -67,6 +69,7 @@ class Basket implements ControllerProviderInterface
          * Removes a BasketElement
          */
         $controllers->post('/{basket_id}/delete/{basket_element_id}/', $this->call('removeBasketElement'))
+            ->bind('prod_baskets_basket_element_remove')
             ->assert('basket_id', '\d+')
             ->assert('basket_element_id', '\d+');
 
@@ -78,6 +81,7 @@ class Basket implements ControllerProviderInterface
          *
          */
         $controllers->post('/{basket_id}/update/', $this->call('updateBasket'))
+            ->bind('prod_baskets_basket_update')
             ->assert('basket_id', '\d+');
 
         /**
@@ -90,7 +94,8 @@ class Basket implements ControllerProviderInterface
          * Get the Basket reorder form
          */
         $controllers->get('/{basket_id}/reorder/', $this->call('displayReorderForm'))
-            ->assert('basket_id', '\d+');
+            ->assert('basket_id', '\d+')
+            ->bind('prod_baskets_basket_reorder');
 
         $controllers->post('/{basket_id}/reorder/', $this->call('reorder'))
             ->assert('basket_id', '\d+');
@@ -103,6 +108,7 @@ class Basket implements ControllerProviderInterface
          * @returns JSON / HTML
          */
         $controllers->post('/{basket_id}/archive/', $this->call('archiveBasket'))
+            ->bind('prod_baskets_basket_archive')
             ->assert('basket_id', '\d+');
 
         /**
@@ -124,7 +130,7 @@ class Basket implements ControllerProviderInterface
         /**
          * Get basket creation form
          */
-        $controllers->get('/create/', $this->call('displayCreateForm'));
+        $controllers->get('/create/', $this->call('displayCreateForm'))->bind('prod_baskets_create');
 
         return $controllers;
     }
@@ -200,7 +206,7 @@ class Basket implements ControllerProviderInterface
 
             return $app->json($data);
         } else {
-            return $app->redirect(sprintf('/%d/', $Basket->getId()));
+            return $app->redirectPath('prod_baskets_basket', array('basket_id' => $Basket->getId()));
         }
     }
 
@@ -220,7 +226,7 @@ class Basket implements ControllerProviderInterface
         if ($request->getRequestFormat() == 'json') {
             return $app->json($data);
         } else {
-            return $app->redirect('/');
+            return $app->redirectPath('prod_workzone_show');
         }
     }
 
@@ -246,7 +252,7 @@ class Basket implements ControllerProviderInterface
         if ($request->getRequestFormat() == 'json') {
             return $app->json($data);
         } else {
-            return $app->redirect('/');
+            return $app->redirectPath('prod_workzone_show');
         }
     }
 
@@ -283,7 +289,7 @@ class Basket implements ControllerProviderInterface
         if ($request->getRequestFormat() == 'json') {
             return $app->json($data);
         } else {
-            return $app->redirect('/');
+            return $app->redirectPath('prod_workzone_show');
         }
     }
 
@@ -359,7 +365,7 @@ class Basket implements ControllerProviderInterface
         if ($request->getRequestFormat() == 'json') {
             return $app->json($data);
         } else {
-            return $app->redirect('/');
+            return $app->redirectPath('prod_workzone_show');
         }
     }
 
@@ -410,7 +416,7 @@ class Basket implements ControllerProviderInterface
         if ($request->getRequestFormat() == 'json') {
             return $app->json($data);
         } else {
-            return $app->redirect('/');
+            return $app->redirectPath('prod_workzone_show');
         }
     }
 
@@ -444,7 +450,7 @@ class Basket implements ControllerProviderInterface
         if ($request->getRequestFormat() == 'json') {
             return $app->json($data);
         } else {
-            return $app->redirect('/');
+            return $app->redirectPath('prod_workzone_show');
         }
     }
 

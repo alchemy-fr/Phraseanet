@@ -47,7 +47,7 @@
                     <ul class="list">
                         {% for list in lists %}
                             <li class="list" style="padding:2px;">
-                                <a class="list_loader" href="/prod/push/list/{{ list.getId() }}/">
+                                <a class="list_loader" href="{{ path('prod_push_lists_list', { 'list_id' : list.getId() }) }}">
                                     {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                                         <img src="/skins/prod/Push/list-icon.png" />
                                     {% else %}
@@ -75,7 +75,7 @@
                                 {% trans 'Select a user in the list'%} <br/>
                                 {% if app['authentication'].getUser().ACL().has_right('manageusers') %}
                                     {% trans 'or' %}
-                                    <a href="/prod/push/add-user/" class="user_adder link">{% trans 'Add user' %}</a>
+                                    <a href="{{ path('prod_push_add_user') }}" class="user_adder link">{% trans 'Add user' %}</a>
                                 {% endif %}
                             </div>
                             <p id="recommanded-users">
@@ -90,8 +90,7 @@
                                             {% set recommendation = recommendation %}
                                         {% endif %}
                                         {% set recommendation = recommendation
-                                        ~ ' <a href="#" class="recommended_users UserTips" tooltipsrc="/prod/tooltip/user/'
-                                        ~ user.get_id() ~ '/" >'
+                                        ~ ' <a href="#" class="recommended_users UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : user.get_id() }) ~ '">'
                                         ~ '<input type="hidden" name="usr_id" value="' ~ user.get_id() ~ '" />'
                                         ~ user.get_display_name()
                                         ~ '</a>' %}
@@ -173,9 +172,9 @@
                 </div>
                 <form name="FeedBackForm" method="post"
                     {% if context == 'Push' %}
-                        action="/prod/push/send/"
+                        action="{{ path('prod_push_send') }}"
                     {% else %}
-                        action="/prod/push/validate/"
+                        action="{{ path('prod_push_validate') }}"
                     {% endif %}
                 >
                     <input name="lst" type="hidden" value="{{ push.get_serialize_list() }}" />

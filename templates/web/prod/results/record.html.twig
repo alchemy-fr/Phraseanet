@@ -37,13 +37,13 @@
             {% set extraclass = '' %}
             {% if user_rollover_thumbnail == 'caption' and searchEngine is not null %}
                 {% set extraclass = extraclass ~ ' captionTips' %}
-                {% set tooltipsrc = '/prod/tooltip/caption/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/answer/?number=' ~record.get_number() %}
+                {% set tooltipsrc = path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'caption', 'number' : record.get_number() }) %}
             {% elseif user_rollover_thumbnail == 'caption' and searchEngine is null %}
                 {% set extraclass = extraclass ~ ' captionTips' %}
-                {% set tooltipsrc = '/prod/tooltip/caption/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/publi/' %}
+                {% set tooltipsrc = path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'publi' }) %}
             {% elseif user_rollover_thumbnail == 'preview' %}
                 {% set extraclass = extraclass ~ ' captionTips' %}
-                {% set tooltipsrc = '/prod/tooltip/preview/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/' %}
+                {% set tooltipsrc = path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) %}
             {% endif %}
             <div class="thumb {{extraclass}} " tooltipsrc="{{tooltipsrc}}" style="height:{{th_size}}px; z-index:90;">
                 <div class="doc_infos">
@@ -81,13 +81,13 @@
                     <td style='text-align:right;width:{{l_width}}px;' valign='bottom'>
                     {{drop_down.prod(record, entry_id)}}
                     {% if record.has_preview() and app['authentication'].getUser().ACL().has_access_to_subdef(record, 'preview') %}
-                    <div tooltipsrc="/prod/tooltip/preview/{{record.get_sbas_id()}}/{{record.get_record_id()}}/" class="previewTips"></div>
+                    <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}" class="previewTips"></div>
                     {% endif %}
                     {% if user_rollover_thumbnail == 'preview' %}
-                    <div tooltipsrc="/prod/tooltip/caption/{{record.get_sbas_id()}}/{{record.get_record_id()}}/answer/?number={{record.get_number()}}" class="captionRolloverTips"></div>
+                    <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'answer', 'number' : record.get_number() }) }}" class="captionRolloverTips"></div>
                     {% endif %}
                     {% if user_technical_display == '1' %}
-                    <img class="infoTips" tooltipsrc="/prod/tooltip/tc_datas/{{record.get_sbas_id()}}/{{record.get_record_id()}}/" src="/skins/icons/info.gif"/>
+                    <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}" src="/skins/icons/info.gif"/>
                     {% endif %}
                     </td>
                 </tr>

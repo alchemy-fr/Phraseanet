@@ -2,7 +2,7 @@
 {% extends "admin/common/iframe_wrap.html.twig" %}
 
 {% block stylesheet %}
-<link type="text/css" rel="stylesheet" href="/include/minify/?f=include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css" >
+<link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css' }) }}" >
 <style>
     body{
       overflow:auto;
@@ -11,8 +11,8 @@
 {% endblock %}
 
 {% block javascript %}
-  <script type="text/javascript" src="/include/minify/?f=include/jslibs/jquery-1.7.1.js,include/path_files_tests.jquery.js"></script>
-  <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+  <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js,include/path_files_tests.jquery.js' }) }}"></script>
+  <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js' }) }}"></script>
   <script type="text/javascript">
     $(document).ready(function(){
       $('.path_testable').path_file_test();
@@ -190,7 +190,7 @@
     </form>
 </div>
 
-<form method="post" action="/admin/subdefs/{{ databox.get_sbas_id }}/" target="_self" class="subdefs">
+<form method="post" action="{{ path('admin_subdefs_subdef_update', { 'sbas_id' : databox.get_sbas_id }) }}" target="_self" class="subdefs">
     <div class="tabs">
         <ul>
             {% for subdefgroup, subdeflist in subdefs %}

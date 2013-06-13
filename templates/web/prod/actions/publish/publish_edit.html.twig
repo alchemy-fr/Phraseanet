@@ -26,7 +26,7 @@
   {% endfor %}
   </div>
 </div>
-<form method="post" action="/prod/feeds/entry/{{ entry.get_id() }}/update/" class="entry_update main_form">
+<form method="post" action="{{ path('prod_feeds_entry_update', { 'id' : entry.get_id() }) }}" class="entry_update main_form">
   <input type="hidden" name="sorted_lst" value="" />
   <div class="PNB" style="top:200px;bottom:50px;">
     <div class="PNB" style="width:50%;right:auto;">

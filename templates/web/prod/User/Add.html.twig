@@ -1,6 +1,6 @@
 {# designed to be printed in a small box #}
 <div id="QuickAddUser" class="PNB10" callback="{{ callback }}">
-  <form method="POST" action="/prod/push/add-user/">
+  <form method="POST" action="{{ path('prod_push_do_add_user') }}">
     <table>
       <tr>
         <td>

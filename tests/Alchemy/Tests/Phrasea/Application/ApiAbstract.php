@@ -21,6 +21,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      * @var \API_OAuth2_Token
      */
     protected static $token;
+    protected static $APIrecord;
+    protected $record;
 
     /**
      * @var \API_OAuth2_Account
@@ -81,6 +83,13 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             return $app;
         });
 
+        if (!static::$APIrecord) {
+            $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test024.jpg'), self::$DI['collection']);
+            static::$APIrecord = \record_adapter::createFromFile($file, self::$DI['app']);
+            static::$APIrecord->generate_subdefs(static::$APIrecord->get_databox(), self::$DI['app']);
+        }
+
+        $this->record = static::$APIrecord;
     }
 
     public static function setUpBeforeClass()
@@ -111,6 +120,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             self::$adminAccount->delete();
             self::$adminApplication->delete();
         }
+
+        static::$APIrecord->delete();
+        static::$APIrecord = null;
+
         parent::tearDownAfterClass();
     }
 
@@ -985,9 +998,9 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $keys = array_keys(self::$DI['record_1']->get_subdefs());
+        $keys = array_keys($this->record->get_subdefs());
 
-        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
+        $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -999,7 +1012,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('embed', $content['response']);
 
         foreach ($content['response']['embed'] as $embed) {
-            $this->checkEmbed($embed, self::$DI['record_1']);
+            $this->checkEmbed($embed, $this->record);
         }
         $route = '/api/v1/records/24892534/51654651553/embed/';
         $this->evaluateNotFoundRoute($route, array('GET'));
@@ -1018,13 +1031,14 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
+        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
         $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/cestlafete.jpg');
-        self::$DI['record_story_1']->substitute_subdef('preview', $media, self::$DI['app']);
-        self::$DI['record_story_1']->substitute_subdef('thumbnail', $media, self::$DI['app']);
+        $story->substitute_subdef('preview', $media, self::$DI['app']);
+        $story->substitute_subdef('thumbnail', $media, self::$DI['app']);
 
-        $keys = array_keys(self::$DI['record_story_1']->get_subdefs());
+        $keys = array_keys($story->get_subdefs());
 
-        $route = '/api/v1/stories/' . self::$DI['record_story_1']->get_sbas_id() . '/' . self::$DI['record_story_1']->get_record_id() . '/embed/';
+        $route = '/api/v1/stories/' . $story->get_sbas_id() . '/' . $story->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -1036,7 +1050,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('embed', $content['response']);
 
         foreach ($content['response']['embed'] as $embed) {
-            $this->checkEmbed($embed, self::$DI['record_story_1']);
+            $this->checkEmbed($embed, $story);
         }
         $route = '/api/v1/stories/24892534/51654651553/embed/';
         $this->evaluateNotFoundRoute($route, array('GET'));
@@ -1044,6 +1058,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/api/v1/stories/any_bad_id/sfsd5qfsd5/embed/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $story->delete();
     }
 
     /**
@@ -1053,7 +1068,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
+        $route = '/api/v1/records/' . $this->record->get_sbas_id() . '/' . $this->record->get_record_id() . '/embed/';
 
         self::$DI['client']->request('GET', $route, $this->getParameters(array('mimes' => array('image/jpg', 'image/jpeg'))), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
@@ -1061,7 +1076,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('embed', $content['response']);
 
         foreach ($content['response']['embed'] as $embed) {
-            $this->checkEmbed($embed, self::$DI['record_1']);
+            $this->checkEmbed($embed, $this->record);
         }
     }
 

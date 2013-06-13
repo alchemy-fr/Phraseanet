@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block response %}
-<form class="bridge_form" method="POST" action="/prod/bridge/action/{{account.get_id()}}/{{action}}/{{element_type}}/">
+<form class="bridge_form" method="POST" action="{{ path('bridge_account_do_action', { 'account_id' : account.get_id(), 'action' : action, 'element_type' : element_type }) }}">
   <input type="hidden" name='f_container_type' value="playlist">
   <table>
     <tr>

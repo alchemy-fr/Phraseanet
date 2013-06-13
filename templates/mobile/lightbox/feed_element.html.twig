@@ -3,20 +3,20 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-<script type="text/javascript" src="/include/minify/?f=skins/lightbox/jquery.validator.mobile.js"></script>
+<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.js' }) }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
-  <link rel="stylesheet" href="/include/minify/?f=skins/lightbox/jquery.validator.mobile.css" />
+  <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.css' }) }}" />
 {% endblock %}
 
 {% block content %}
   {% set record = feed_element.get_record() %}
 <div data-role="page">
   <div data-role="header">
-    <a href="/lightbox/feeds/entry/{{feed_element.get_entry().get_id()}}/" data-rel="back" data-icon="arrow-l">Back</a>
+    <a href="{{ path('lightbox_feed_entry', { 'entry_id' : feed_element.get_entry().get_id() }) }}" data-rel="back" data-icon="arrow-l">Back</a>
     <h1>{{feed_element.get_ord()}} - {{record.get_title()}}</h1>
-    <a rel="external" href="/lightbox/" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+    <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
   </div>
   <div data-role="content">
     {{ thumbnail.format100percent(record.get_preview(),'', record.get_thumbnail()) }}

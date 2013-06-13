@@ -166,7 +166,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         $ret = array(
             'text'  => sprintf(
-                _('%1$s demande votre approbation sur une ou plusieurs %2$scollections%3$s'), $sender, '<a href="' . $this->app['phraseanet.registry']->get('GV_ServerName') . 'admin/?section=registrations" target="_blank">', '</a>'
+                _('%1$s demande votre approbation sur une ou plusieurs %2$scollections%3$s'), $sender, '<a href="' . $this->app->url('admin', array('section' => 'registrations')) . '" target="_blank">', '</a>'
             )
             , 'class' => ''
         );

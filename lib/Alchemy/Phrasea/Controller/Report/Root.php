@@ -29,7 +29,7 @@ class Root implements ControllerProviderInterface
         });
 
         $controllers->get('/', function(Application $app) {
-            return $app->redirect($app->path('report_dashboard'));
+            return $app->redirectPath('report_dashboard');
         })->bind('report');
 
         $controllers->get('/dashboard', $this->call('getDashboard'))

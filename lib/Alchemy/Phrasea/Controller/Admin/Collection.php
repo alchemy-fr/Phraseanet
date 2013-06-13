@@ -469,7 +469,10 @@ class Collection implements ControllerProviderInterface
             }
         }
 
-        return $app->redirect('/admin/collection/' . $bas_id . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $bas_id,
+            'success' => (int) $success,
+        ));
     }
 
     /**
@@ -510,7 +513,10 @@ class Collection implements ControllerProviderInterface
                 ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $collection->get_base_id(),
+            'success' => (int) $success,
+        ));
     }
 
     /**
@@ -542,7 +548,10 @@ class Collection implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $collection->get_base_id(),
+            'success' => (int) $success,
+        ));
     }
 
     /**
@@ -574,7 +583,10 @@ class Collection implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $collection->get_base_id(),
+            'success' => (int) $success,
+        ));
     }
 
     /**
@@ -606,7 +618,10 @@ class Collection implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $collection->get_base_id(),
+            'success' => (int) $success,
+        ));
     }
 
     /**
@@ -639,7 +654,10 @@ class Collection implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $collection->get_base_id(),
+            'success' => (int) $success,
+        ));
     }
 
     /**
@@ -657,11 +675,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 1024 * 1024) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-too-big',
+            ));
         }
 
         if (!$file->isValid()) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-invalid',
+            ));
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -671,10 +697,17 @@ class Collection implements ControllerProviderInterface
 
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-error',
+            ));
         }
 
-        return $app->redirect('/admin/collection/' . $bas_id . '/?success=1');
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $bas_id,
+            'success' => 1,
+        ));
     }
 
     /**
@@ -692,11 +725,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 1024 * 1024) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-too-big',
+            ));
         }
 
         if (!$file->isValid()) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-invalid',
+            ));
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -706,10 +747,17 @@ class Collection implements ControllerProviderInterface
 
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-error',
+            ));
         }
 
-        return $app->redirect('/admin/collection/' . $bas_id . '/?success=1');
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $bas_id,
+            'success' => 1,
+        ));
     }
 
     /**
@@ -727,11 +775,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 65535) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-too-big',
+            ));
         }
 
         if (!$file->isValid()) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-invalid',
+            ));
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -740,10 +796,17 @@ class Collection implements ControllerProviderInterface
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_WM);
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-error',
+            ));
         }
 
-        return $app->redirect('/admin/collection/' . $bas_id . '/?success=1');
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $bas_id,
+            'success' => 1,
+        ));
     }
 
     /**
@@ -761,11 +824,19 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 65535) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-too-big',
+            ));
         }
 
         if (!$file->isValid()) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-invalid',
+            ));
         }
 
         $collection = \collection::get_from_base_id($app, $bas_id);
@@ -774,10 +845,17 @@ class Collection implements ControllerProviderInterface
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_LOGO);
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $bas_id,
+                'success' => 0,
+                'error'   => 'file-error',
+            ));
         }
 
-        return $app->redirect('/admin/collection/' . $bas_id . '/?success=1');
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $bas_id,
+            'success' => 1,
+        ));
     }
 
     /**
@@ -816,14 +894,25 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($collection->get_record_amount() > 0) {
-            return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=0&error=collection-not-empty');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'  => $collection->get_sbas_id(),
+                'success' => 0,
+                'error'   => 'collection-not-empty',
+            ));
         }
 
         if ($success) {
-            return $app->redirect('/admin/databox/' . $collection->get_sbas_id() . '/?success=1&reload-tree=1');
+            return $app->redirectPath('admin_display_collection', array(
+                'bas_id'      => $collection->get_sbas_id(),
+                'success'     => 1,
+                'reload-tree' => 1,
+            ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=0');
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $collection->get_sbas_id(),
+            'success' => 0,
+        ));
     }
 
     /**
@@ -854,7 +943,10 @@ class Collection implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'  => $collection->get_sbas_id(),
+            'success' => (int) $success,
+        ));
     }
 
     /**
@@ -889,7 +981,11 @@ class Collection implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success . '&reload-tree=1');
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'      => $collection->get_sbas_id(),
+            'success'     => (int) $success,
+            'reload-tree' => 1,
+        ));
     }
 
     public function labels(Application $app, Request $request, $bas_id)
@@ -923,7 +1019,11 @@ class Collection implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success . '&reload-tree=1');
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'      => $collection->get_sbas_id(),
+            'success'     => (int) $success,
+            'reload-tree' => 1,
+        ));
     }
 
     /**
@@ -958,7 +1058,10 @@ class Collection implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'      => $collection->get_sbas_id(),
+            'success'     => (int) $success,
+        ));
     }
 
     /**
@@ -989,7 +1092,10 @@ class Collection implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'      => $collection->get_sbas_id(),
+            'success'     => (int) $success,
+        ));
     }
 
     /**
@@ -1020,7 +1126,10 @@ class Collection implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
+        return $app->redirectPath('admin_display_collection', array(
+            'bas_id'      => $collection->get_sbas_id(),
+            'success'     => (int) $success,
+        ));
     }
 
     /**
@@ -1117,7 +1226,10 @@ class Collection implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/suggested-values/?success=' . (int) $success);
+        return $app->redirectPath('admin_collection_display_suggested_values', array(
+            'bas_id'      => $collection->get_sbas_id(),
+            'success'     => (int) $success,
+        ));
     }
 
     /**

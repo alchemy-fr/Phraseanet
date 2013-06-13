@@ -10,7 +10,7 @@
             </li>
             <li>
                 {# template prod/upload/lazaret.html.twig loaded via ajax #}
-                <a href="/prod/lazaret/" title="tab-lazaret">
+                <a href="{{ path('lazaret_elements') }}">
                     {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
                     {% trans 'Quarantine' %}<span>&nbsp;</span>
                 </a>
@@ -18,7 +18,7 @@
         </ul>
         {# upload tab content #}
         <div id="tab-upload">
-            <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
+            <form id="fileupload" enctype="multipart/form-data" method="POST" action="{{ path('upload_form') }}">
 
                 <div id="uploadBoxLeft" class="well">
 
@@ -41,7 +41,7 @@
                                     {% trans 'You are using the Flash uploader.'%}
                                     {% trans 'This version does not allow you to access all the features offered by the HTML5 uploader' %}
                                 </p>
-                                <a href="/prod/upload/" class="dialog full-dialog">{% trans 'Use the HTML5 uploader' %}</a>
+                                <a href="{{ path('upload_form') }}" class="dialog full-dialog">{% trans 'Use the HTML5 uploader' %}</a>
                             </td>
                         </tr>
                      </table>
@@ -126,7 +126,7 @@
     </div>
 </div>
 
-<script type="text/javascript" src="/include/minify/?g=uploadflash"></script>
+<script type="text/javascript" src="{{ path('minifier', { 'g' : 'uploadflash' }) }}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
 

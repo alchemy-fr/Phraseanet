@@ -2,7 +2,7 @@
 <html lang="{{ app['locale.I18n'] }}">
     <head>
         <title>{% trans 'thesaurus:: export en topics' %}</title>
-        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
         <script type="text/javascript">
             var format = '???';
             function clkBut(button)

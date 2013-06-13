@@ -2,8 +2,8 @@
 <html lang="{{ app['locale.I18n'] }}">
     <head>
         <title>{% if typ == "TS" %}{% trans 'thesaurus:: Nouveau terme specifique' %}{% else %}{% trans 'thesaurus:: Nouveau synonyme' %}{% endif %}</title>
-        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
-        <script type="text/javascript" src="/skins//thesaurus/xmlhttp.js"></script>
+        <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>
     </head>
     <body onload="loaded();" class="dialog" style="text-align:center">
         {% if dlg is not none %}
@@ -41,7 +41,7 @@
             <br/>
         <center>
             <form onsubmit="return(false);">
-                <input type="hidden" name="bid" value="{{ bid }} ">
+                <input type="hidden" name="bid" value="{{ bid }} ">
                 <input type="hidden" name="pid" value="{{ pid }}">
                 <div class='x3Dbox' style='margin:15px; height:100px; overflow:auto;'>
                     {% for candidate in candidates %}
