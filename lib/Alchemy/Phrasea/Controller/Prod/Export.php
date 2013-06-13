@@ -280,7 +280,7 @@ class Export implements ControllerProviderInterface
 
             $remaingEmails = $destMails;
 
-            $url = $app['phraseanet.registry']->get('GV_ServerName') . 'download/' . $token . '/prepare/?anonymous';
+            $url = $app->url('prepare_download', array('token' => $token, 'anonymous'));
 
             $emitter = new Emitter($app['authentication']->getUser()->get_display_name(), $app['authentication']->getUser()->get_email());
 

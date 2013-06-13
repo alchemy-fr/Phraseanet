@@ -16,10 +16,10 @@
         </td>
         <td style="width:60px;text-align:right;">
           {% if entry.get_feed().is_owner(app['authentication'].getUser()) or entry.is_publisher(app['authentication'].getUser()) %}
-          <a class="tools options feed_edit" href="/prod/feeds/entry/{{ entry.get_id() }}/edit/">
+          <a class="tools options feed_edit" href="{{ path('prod_feeds_feed_edit', { 'id' : entry.get_feed().get_id() }) }}">
             <img src="/skins/icons/file-edit.png" title="{% trans 'boutton::editer' %}"/>
           </a>
-          <a class="tools feed_delete" href="/prod/feeds/entry/{{ entry.get_id() }}/delete/">
+          <a class="tools feed_delete" href="{{ path('prod_feeds_feed_delete', { 'id' : entry.get_feed().get_id() }) }}">
             <img src="/skins/icons/delete.png" title="{% trans 'boutton::supprimer' %}"/>
           </a>
           {% endif %}
@@ -42,7 +42,7 @@
       </span>
       {% endif %}
       {% if feed.is_aggregated() %}
-        <a class="ajax_answers" href="/prod/feeds/feed/{{ entry.get_feed().get_id() }}/">
+        <a class="ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : entry.get_feed().get_id() }) }}">
         {% set feed_name = entry.get_feed().get_title() %}
         {% trans %}
           dans {{feed_name}}

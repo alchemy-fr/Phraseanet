@@ -5,25 +5,25 @@
                 <tr>
                     <td>
                     {% for type, display_name in account.get_api().get_connector().get_element_types() %}
-                        <a class="{% if adapter_action == 'load-elements' and action_type == type %} selected {% endif %} action_type_{{type}} bridge_action bridge_title" href="/prod/bridge/adapter/{{ account.get_id() }}/load-elements/{{ type }}/">
+                        <a class="{% if adapter_action == 'load-elements' and action_type == type %} selected {% endif %} action_type_{{type}} bridge_action bridge_title" href="{{ path('bridge_load_elements', { 'account_id' : account.get_id(), 'type' : type }) }}">
                             {{ display_name }}
                         </a>
                         {% if not loop.last %} - {% endif %}
                     {% endfor %}
                         |
                     {% for type, display_name in account.get_api().get_connector().get_container_types() %}
-                        <a class="{% if adapter_action == 'load-containers' and action_type == type %} selected {% endif %} action_type_{{type}} bridge_action bridge_title" href="/prod/bridge/adapter/{{ account.get_id() }}/load-containers/{{ type }}/">
+                        <a class="{% if adapter_action == 'load-containers' and action_type == type %} selected {% endif %} action_type_{{type}} bridge_action bridge_title" href="{{ path('prod_bridge_account_loadcontainers', { 'account_id' : account.get_id(), 'type' : type }) }}">
                             {{ display_name }}
                         </a>
                         {% if not loop.last %} - {% endif %}
                     {% endfor %}
-                        <a class="{% if adapter_action == 'load-records' %} selected {% endif %} bridge_action bridge_title" href="/prod/bridge/adapter/{{ account.get_id() }}/load-records/">
+                        <a class="{% if adapter_action == 'load-records' %} selected {% endif %} bridge_action bridge_title" href="{{ path('prod_bridge_account_loadrecords', { 'account_id' : account.get_id() }) }}">
                             {% trans 'Fichiers envoyes' %}
                         </a>
                     </td>
                     <td style="text-align:right;">
                     {% if account %}
-                        <a class="bridge_action bridge_logout" href="/prod/bridge/adapter/{{ account.get_id() }}/logout/">
+                        <a class="bridge_action bridge_logout" href="{{ path('prod_bridge_account_logout', { 'account_id' : account.get_id() }) }}">
                             {% trans 'phraseanet:: deconnection' %}
                         </a>
                     {% endif %}

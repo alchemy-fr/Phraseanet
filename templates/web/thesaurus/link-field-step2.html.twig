@@ -3,7 +3,7 @@
     <head>
         <title>{% trans 'thesaurus:: Lier la branche de thesaurus' %}</title>
 
-        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
 
         <script type="text/javascript">
             function clkBut(button)
@@ -37,7 +37,7 @@
             {% for fieldname, branches in oldlinks %}
                 {% if branches['old_branch'] %}
                     {% set old_branch = branches['old_branch'] %}
-                    <b>{{ fieldname }}</b>
+                    <b>{{ fieldname }}</b>
                     {% trans %}
                         thesaurus:: Ce champ a ete modifie ; ancienne branche : {{ old_branch }}
                     {% endtrans %}

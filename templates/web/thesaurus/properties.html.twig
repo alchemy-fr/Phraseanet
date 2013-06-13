@@ -7,7 +7,7 @@
 <html lang="{{ app['locale.I18n'] }}">
     <head>
         <title>{% trans 'thesaurus:: Proprietes' %}</title>
-        <link REL="stylesheet" TYPE="text/css" HREF="/skins/thesaurus/thesaurus.css" />
+        <link REL="stylesheet" TYPE="text/css" href="{{ path('minifier', { 'f' : 'skins/thesaurus/thesaurus.css' }) }}" />
         <style type="text/css">
             a
             {
@@ -24,10 +24,10 @@
             }
         </style>
 
-        <script type="text/javascript" src="/skins/thesaurus/win.js"></script>
-        <script type="text/javascript" src="/skins/thesaurus/xmlhttp.js"></script>
-        <script type="text/javascript" src="/include/minify/?f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.sprintf.1.0.3.js"></script>
-        <script type="text/javascript" src="/skins/thesaurus/sprintf.js"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/win.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js,include/jslibs/jquery.sprintf.1.0.3.js' }) }}"></script>
+        <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/sprintf.js' }) }}"></script>
 
         <script type="text/javascript">
             function loaded()

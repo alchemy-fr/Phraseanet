@@ -36,7 +36,7 @@ class Story implements ControllerProviderInterface
 
         $controllers->get('/create/', function(Application $app) {
             return $app['twig']->render('prod/Story/Create.html.twig', array());
-        });
+        })->bind('prod_stories_create');
 
         $controllers->post('/', function(Application $app, Request $request) {
             /* @var $request \Symfony\Component\HttpFoundation\Request */
@@ -99,9 +99,12 @@ class Story implements ControllerProviderInterface
 
                 return $app->json($data);
             } else {
-                return $app->redirect(sprintf('/%d/', $StoryWZ->getId()));
+                return $app->redirectPath('prod_stories_story', array(
+                    'sbas_id' => $StoryWZ->getSbasId(),
+                    'record_id' => $StoryWZ->getRecordId(),
+                ));
             }
-        });
+        })->bind('prod_stories_do_create');
 
         $controllers->get('/{sbas_id}/{record_id}/', function(Application $app, $sbas_id, $record_id) {
             $Story = new \record_adapter($app, $sbas_id, $record_id);
@@ -109,7 +112,10 @@ class Story implements ControllerProviderInterface
             $html = $app['twig']->render('prod/WorkZone/Story.html.twig', array('Story' => $Story));
 
             return new Response($html);
-        })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+        })
+            ->bind('prod_stories_story')
+            ->assert('sbas_id', '\d+')
+            ->assert('record_id', '\d+');
 
         $controllers->post('/{sbas_id}/{record_id}/addElements/', function(Application $app, Request $request, $sbas_id, $record_id) {
             $Story = new \record_adapter($app, $sbas_id, $record_id);
@@ -138,7 +144,7 @@ class Story implements ControllerProviderInterface
             if ($request->getRequestFormat() == 'json') {
                 return $app->json($data);
             } else {
-                return $app->redirect('/');
+                return $app->redirectPath('prod_stories_story', array('sbas_id' => $sbas_id,'record_id' => $record_id));
             }
         })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
@@ -160,9 +166,10 @@ class Story implements ControllerProviderInterface
             if ($request->getRequestFormat() == 'json') {
                 return $app->json($data);
             } else {
-                return $app->redirect('/');
+                return $app->redirectPath('prod_stories_story', array('sbas_id' => $sbas_id,'record_id' => $record_id));
             }
         })
+            ->bind('prod_stories_story_remove_element')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+')
             ->assert('child_sbas_id', '\d+')
@@ -185,6 +192,7 @@ class Story implements ControllerProviderInterface
                     )
             );
         })
+            ->bind('prod_stories_story_reorder')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
 

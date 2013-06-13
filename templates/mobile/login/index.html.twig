@@ -17,7 +17,7 @@
       <h1>{{ app['phraseanet.registry'].get('GV_homeTitle') }}</h1>
     </div>
     <div data-role="content">
-      <form name="send" action="/login/authenticate/" method="post" id="authentication">
+      <form name="send" action="{{ path('login_authenticate') }}" method="post" id="authentication">
         <script type="text/javascript">
           {% if errorWarning|striptags != '' %}
           alert("{{errorWarning|striptags}}");
@@ -36,7 +36,6 @@
                       placeholder="{% trans 'admin::compte-utilisateur identifiant' %}"  />
               <input autocapitalize="off" autocorrect="off" {% if app['phraseanet.registry'].get('GV_maintenance') == true %}disabled{% endif %} tabindex="2"
                 placeholder="{% trans 'admin::compte-utilisateur mot de passe' %}" name="pwd" id="pwd" value="" type="password" />
-              <input type="hidden" name="redirect" value="{{redirect}}">
               <fieldset data-role="controlgroup">
                 <input type="checkbox" name="remember" id="remember" value="1" checked="checked" class="custom" />
                 <label for="remember">{% trans 'Garder ma session active' %}</label>
@@ -48,7 +47,7 @@
       </form>
       <ul data-role="listview">
         <li>
-          <a href="/login/forgot-password/" rel="external">
+          <a href="{{ path ('login_forgot_password') }}" rel="external">
             {% trans 'login:: Forgot your password' %}
           </a>
         </li>

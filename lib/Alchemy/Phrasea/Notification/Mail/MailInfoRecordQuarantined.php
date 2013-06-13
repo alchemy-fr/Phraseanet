@@ -42,6 +42,6 @@ class MailInfoRecordQuarantined extends AbstractMail
      */
     public function getButtonURL()
     {
-        return $this->app['url_generator']->generate('root', array(), true);
+        return $this->app->url('root');
     }
 }

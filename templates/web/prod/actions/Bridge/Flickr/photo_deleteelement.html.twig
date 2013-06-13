@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block response %}
-    <form method="POST" action="/prod/bridge/action/{{account.get_id()}}/{{action}}/{{element_type}}/">
+    <form method="POST" action="{{ path('bridge_account_do_action', { 'account_id' : account.get_id(), 'action' : action, 'element_type' : element_type }) }}">
       <p>
         {% set number = elements|length %}
         {% trans %}

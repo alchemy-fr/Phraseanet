@@ -315,7 +315,7 @@ class Developers implements ControllerProviderInterface
                 ->set_type($form->getType())
                 ->set_website($form->getSchemeWebsite() . $form->getWebsite());
 
-            return $app->redirect(sprintf('/developers/application/%d/', $application->get_id()));
+            return $app->redirectPath('developers_application', array('id' => $application->get_id()));
         }
 
         $var = array(

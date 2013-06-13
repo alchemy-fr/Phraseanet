@@ -26,10 +26,10 @@
             {% endblock favicon %}
 
             {% block header_stylesheet %}
-                <link rel="stylesheet" href="/include/minify/?g=authentication_css">
+                <link rel="stylesheet" href="{{ path('minifier', { 'g' : 'authentication_css' }) }}">
 
                 <!--[if IE 7]>
-                    <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome-ie7.min.css">
+                    <link rel="stylesheet" href="{ path('minifier', { 'f' : 'assets/font-awesome/css/font-awesome-ie7.min.css' }) }}">
                 <![endif]-->
             {% endblock header_stylesheet %}
 
@@ -49,7 +49,8 @@
                     <script src="/assets/angular-ui/build/angular-ui-ieshiv.min.js"></script>
                 <![endif]-->
 
-                <script type="text/javascript" src="/include/minify/?g=authentication"></script>
+                <script type="text/javascript" src="{{ path('minifier', { 'g' : 'bootstrap_js' }) }}"></script>
+                <script type="text/javascript" src="{{ path('minifier', { 'g' : 'authentication' }) }}"></script>
             {% endblock header_javascript %}
         {% endblock header %}
     </head>

@@ -42,6 +42,6 @@ class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
      */
     public function getButtonURL()
     {
-        return $this->app['url_generator']->generate('root', array(), true);
+        return $this->app->url('root');
     }
 }

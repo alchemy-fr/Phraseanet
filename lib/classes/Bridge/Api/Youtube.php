@@ -819,7 +819,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
             array(
                 'client_id'      => $this->registry->get('GV_youtube_client_id')
                 , 'client_secret'  => $this->registry->get('GV_youtube_client_secret')
-                , 'redirect_uri'   => Bridge_Api::generate_callback_url($this->registry, $this->get_name())
+                , 'redirect_uri'   => Bridge_Api::generate_callback_url($this->generator, $this->get_name())
                 , 'scope'          => 'http://gdata.youtube.com'
                 , 'response_type'  => 'code'
                 , 'token_endpoint' => self::OAUTH2_TOKEN_ENDPOINT

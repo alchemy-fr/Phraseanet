@@ -9,7 +9,7 @@
     ]
 %}
 
-<form style="padding:15px;" name="change-records-type" action="/prod/records/property/type/" method="POST">
+<form style="padding:15px;" name="change-records-type" action="{{ path('change_type') }}" method="POST">
     <div class="well-small" style="text-align:center;">
         <select name="force_types" style="width:250px">
             <option value="">{% trans "Apply to all selected documents" %}</option>

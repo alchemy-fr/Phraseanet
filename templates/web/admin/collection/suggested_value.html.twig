@@ -1,4 +1,4 @@
-<form method="post" action="/admin/users/search/" target="_self" style="visibility:hidden; display:none" >
+<form method="post" action="{{ path('admin_users_search') }}" target="_self" style="visibility:hidden; display:none" >
     <input type="text" name="ord" value="" />
     <input type="text" name="srt" value="" />
     <input type="text" name="act" value="?" />
@@ -134,7 +134,7 @@
     </tr>
 </table>
 
-<form method="post" name="chgStructure" action="/admin/collection/{{ app['request'].attributes.get('bas_id') }}/suggested-values/" onsubmit="return(false);" target="right" style="visibility:hidden;">
+<form method="post" name="chgStructure" action="{{ path('admin_collection_display_suggested_values', { 'bas_id' : app['request'].attributes.get('bas_id') }) }}" onsubmit="return(false);" target="right" style="visibility:hidden;">
     <textarea nowrap style="visibility:hidden;white-space:pre" name="str" id="idstr">{{ collection.get_prefs() }}</textarea>
 </form>
 

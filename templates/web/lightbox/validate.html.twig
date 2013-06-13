@@ -4,14 +4,14 @@
 {% import 'common/caption_templates/preview.html.twig' as caption %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
-        <script type="text/javascript" src="/include/minify/?g=lightbox"></script>
+    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js' }) }}"></script>
+    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js' }) }}"></script>
+    <script type="text/javascript" src="{{ path('minifier', { 'g' : 'lightbox' }) }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet"
-        href="/include/minify/?f=include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/lightbox/lightbox.css" media="screen"/>
+        href="{{ path('minifier', { 'f' : 'include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/lightbox/lightbox.css' }) }}" media="screen"/>
 {% endblock %}
 
 

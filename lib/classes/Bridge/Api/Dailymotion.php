@@ -689,7 +689,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
             array(
                 'client_id'      => $this->registry->get('GV_dailymotion_client_id')
                 , 'client_secret'  => $this->registry->get('GV_dailymotion_client_secret')
-                , 'redirect_uri'   => Bridge_Api::generate_callback_url($this->registry, $this->get_name())
+                , 'redirect_uri'   => Bridge_Api::generate_callback_url($this->generator, $this->get_name())
                 , 'scope'          => ''
                 , 'response_type'  => 'code'
                 , 'token_endpoint' => self::OAUTH2_TOKEN_ENDPOINT

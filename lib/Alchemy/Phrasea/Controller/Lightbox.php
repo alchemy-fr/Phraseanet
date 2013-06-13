@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Application;
+namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
@@ -36,7 +36,7 @@ class Lightbox implements ControllerProviderInterface
             if (false === $usr_id = $app['authentication.token-validator']->isValid($request->query->get('LOG'))) {
                 $app->addFlash('error', _('The URL you used is out of date, please login'));
 
-                return $app->redirect($app->path('homepage'));
+                return $app->redirectPath('homepage');
             }
 
             $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
@@ -48,11 +48,11 @@ class Lightbox implements ControllerProviderInterface
             }
             switch ($datas['type']) {
                 case \random::TYPE_FEED_ENTRY:
-                    return $app->redirect("/lightbox/feeds/entry/" . $datas['datas'] . "/");
+                    return $app->redirectPath('lightbox_feed_entry', array('entry_id' => $datas['datas']));
                     break;
                 case \random::TYPE_VALIDATE:
                 case \random::TYPE_VIEW:
-                    return $app->redirect("/lightbox/validate/" . $datas['datas'] . "/");
+                    return $app->redirectPath('lightbox_validation', array('ssel_id' => $datas['datas']));
                     break;
             }
         });
@@ -65,7 +65,7 @@ class Lightbox implements ControllerProviderInterface
             try {
                 \User_Adapter::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
-                return $app->redirect($app['url_generator']->generate('logout'));
+                return $app->redirectPath('logout');
             }
 
             $repository = $app['EM']->getRepository('\Entities\Basket');
@@ -88,7 +88,8 @@ class Lightbox implements ControllerProviderInterface
                     'module'             => 'lightbox'
                     )
             ));
-        });
+        })
+            ->bind('lightbox');
 
         $controllers->get('/ajax/NOTE_FORM/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
 
@@ -106,7 +107,9 @@ class Lightbox implements ControllerProviderInterface
             );
 
             return $app['twig']->render('lightbox/note_form.html.twig', $parameters);
-        })->assert('sselcont_id', '\d+');
+        })
+            ->bind('lightbox_ajax_note_form')
+            ->assert('sselcont_id', '\d+');
 
         $controllers->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
             /* @var $repository \Repositories\BasketElementRepository */
@@ -150,7 +153,9 @@ class Lightbox implements ControllerProviderInterface
 
                 return $app->json($ret);
             }
-        })->assert('sselcont_id', '\d+');
+        })
+            ->bind('lightbox_ajax_load_basketelement')
+            ->assert('sselcont_id', '\d+');
 
         $controllers->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(SilexApplication $app, $entry_id, $item_id) {
 
@@ -186,14 +191,17 @@ class Lightbox implements ControllerProviderInterface
 
                 return $app->json($ret);
             }
-        })->assert('entry_id', '\d+')->assert('item_id', '\d+');
+        })
+            ->bind('lightbox_ajax_load_feeditem')
+            ->assert('entry_id', '\d+')
+            ->assert('item_id', '\d+');
 
         $controllers->get('/validate/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
 
             try {
                 \User_Adapter::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
-                return $app->redirect($app['url_generator']->generate('logout'));
+                return $app->redirectPath('logout');
             }
 
             $repository = $app['EM']->getRepository('\Entities\Basket');
@@ -238,14 +246,16 @@ class Lightbox implements ControllerProviderInterface
             $response->setCharset('UTF-8');
 
             return $response;
-        })->assert('ssel_id', '\d+');
+        })
+            ->bind('lightbox_validation')
+            ->assert('ssel_id', '\d+');
 
         $controllers->get('/compare/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
 
             try {
                 \User_Adapter::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
-                return $app->redirect($app['url_generator']->generate('logout'));
+                return $app->redirectPath('logout');
             }
 
             $repository = $app['EM']->getRepository('\Entities\Basket');
@@ -291,15 +301,15 @@ class Lightbox implements ControllerProviderInterface
 
             return $response;
         })
-        ->assert('ssel_id', '\d+')
-        ->bind('lightbox_compare')    ;
+            ->bind('lightbox_compare')
+            ->assert('ssel_id', '\d+');
 
         $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
 
             try {
                 \User_Adapter::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
-                return $app->redirect($app['url_generator']->generate('logout'));
+                return $app->redirectPath('logout');
             }
 
             $feed_entry = \Feed_Entry_Adapter::load_from_id($app, $entry_id);
@@ -324,7 +334,9 @@ class Lightbox implements ControllerProviderInterface
             $response->setCharset('UTF-8');
 
             return $response;
-        })->assert('entry_id', '\d+');
+        })
+            ->bind('lightbox_feed_entry')
+            ->assert('entry_id', '\d+');
 
         $controllers->get('/ajax/LOAD_REPORT/{ssel_id}/', function(SilexApplication $app, $ssel_id) {
 
@@ -343,7 +355,9 @@ class Lightbox implements ControllerProviderInterface
             $response->setCharset('UTF-8');
 
             return $response;
-        })->assert('ssel_id', '\d+');
+        })
+            ->bind('lightbox_ajax_report')
+            ->assert('ssel_id', '\d+');
 
         $controllers->post('/ajax/SET_NOTE/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
             $output = array('error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees'));
@@ -381,7 +395,9 @@ class Lightbox implements ControllerProviderInterface
             }
 
             return $app->json($output);
-        })->assert('sselcont_id', '\d+');
+        })
+            ->bind('lightbox_ajax_set_note')
+            ->assert('sselcont_id', '\d+');
 
         $controllers->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
             $request = $app['request'];
@@ -442,7 +458,9 @@ class Lightbox implements ControllerProviderInterface
             }
 
             return $app->json($ret);
-        })->assert('sselcont_id', '\d+');
+        })
+            ->bind('lightbox_ajax_set_element_agreement')
+            ->assert('sselcont_id', '\d+');
 
         $controllers->post('/ajax/SET_RELEASE/{ssel_id}/', function(SilexApplication $app, $ssel_id) {
 
@@ -482,13 +500,12 @@ class Lightbox implements ControllerProviderInterface
                 $participant = $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app);
 
                 $expires = new \DateTime('+10 days');
-                $url = $app['phraseanet.registry']->get('GV_ServerName')
-                    . 'lightbox/index.php?LOG=' . $app['tokens']->getUrlToken(
+                $url = $app->url('lightbox', array('LOG' => $app['tokens']->getUrlToken(
                         \random::TYPE_VALIDATE
                         , $basket->getValidation()->getInitiator($app)->get_id()
                         , $expires
                         , $basket->getId()
-                );
+                )));
 
                 $to = $basket->getValidation()->getInitiator($app)->get_id();
                 $params = array(
@@ -511,7 +528,9 @@ class Lightbox implements ControllerProviderInterface
             }
 
             return $app->json($datas);
-        })->assert('ssel_id', '\d+');
+        })
+            ->bind('lightbox_ajax_set_release')
+            ->assert('ssel_id', '\d+');
 
         return $controllers;
     }

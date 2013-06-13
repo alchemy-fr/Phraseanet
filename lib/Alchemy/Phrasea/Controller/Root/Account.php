@@ -107,7 +107,7 @@ class Account implements ControllerProviderInterface
                     $user->set_password($passwordConfirm);
                     $app->addFlash('success', _('login::notification: Mise a jour du mot de passe avec succes'));
 
-                    return $app->redirect($app->path('account'));
+                    return $app->redirectPath('account');
                 } else {
                     $app->addFlash('error', _('Invalid password provided'));
                 }
@@ -139,31 +139,31 @@ class Account implements ControllerProviderInterface
         if (!$app['auth.password-encoder']->isPasswordValid($user->get_password(), $password, $user->get_nonce())) {
             $app->addFlash('error', _('admin::compte-utilisateur:ftp: Le mot de passe est errone'));
 
-            return $app->redirect($app->path('account_reset_email'));
+            return $app->redirectPath('account_reset_email');
         }
 
         if (!\Swift_Validate::email($email)) {
             $app->addFlash('error', _('forms::l\'email semble invalide'));
 
-            return $app->redirect($app->path('account_reset_email'));
+            return $app->redirectPath('account_reset_email');
         }
 
         if ($email !== $emailConfirm) {
             $app->addFlash('error', _('forms::les emails ne correspondent pas'));
 
-            return $app->redirect($app->path('account_reset_email'));
+            return $app->redirectPath('account_reset_email');
         }
 
         $date = new \DateTime('1 day');
         $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->get_id(), $date, $app['authentication']->getUser()->get_email());
-        $url = $app['phraseanet.registry']->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
+        $url = $app->url('account_reset_email', array('token' => $token));
 
         try {
             $receiver = Receiver::fromUser($app['authentication']->getUser());
         } catch (InvalidArgumentException $e) {
             $app->addFlash('error', _('phraseanet::erreur: echec du serveur de mail'));
 
-            return $app->redirect($app->path('account_reset_email'));
+            return $app->redirectPath('account_reset_email');
         }
 
         $mail = MailRequestEmailUpdate::create($app, $receiver, null);
@@ -174,7 +174,7 @@ class Account implements ControllerProviderInterface
 
         $app->addFlash('info', _('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer'));
 
-        return $app->redirect($app->path('account'));
+        return $app->redirectPath('account');
     }
 
     /**
@@ -195,11 +195,11 @@ class Account implements ControllerProviderInterface
 
                 $app->addFlash('success', _('admin::compte-utilisateur: L\'email a correctement ete mis a jour'));
 
-                return $app->redirect($app->path('account'));
+                return $app->redirectPath('account');
             } catch (\Exception $e) {
                 $app->addFlash('error', _('admin::compte-utilisateur: erreur lors de la mise a jour'));
 
-                return $app->redirect($app->path('account'));
+                return $app->redirectPath('account');
             }
         }
 
@@ -412,6 +412,6 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return $app->redirect($app->path('account'));
+        return $app->redirectPath('account');
     }
 }

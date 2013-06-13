@@ -1,5 +1,5 @@
 
-<form target="_blank" name="formprintpage" method="POST" action="/prod/printer/print.pdf">
+<form target="_blank" name="formprintpage" method="POST" action="{{ path('prod_printer_print') }}">
     <div id="printBox">
         <div style="padding:10px;">
             {% if printer.get_count_actionable() > 0 %}

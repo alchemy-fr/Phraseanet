@@ -64,6 +64,6 @@ class MailInfoNewOrder extends AbstractMail
      */
     public function getButtonURL()
     {
-        return $this->app['url_generator']->generate('prod', array(), true);
+        return $this->app->url('prod');
     }
 }

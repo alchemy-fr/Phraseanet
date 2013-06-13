@@ -46,15 +46,6 @@ class CLI extends Application
         });
 
         $this->bindRoutes();
-
-        $data = parse_url($this['phraseanet.registry']->get('GV_ServerName'));
-
-        if (isset($data['scheme'])) {
-            $this['url_generator']->getContext()->setScheme($data['scheme']);
-        }
-        if (isset($data['host'])) {
-            $this['url_generator']->getContext()->setHost($data['host']);
-        }
     }
 
     /**

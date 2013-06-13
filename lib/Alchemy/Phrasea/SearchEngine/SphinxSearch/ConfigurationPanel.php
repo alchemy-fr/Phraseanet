@@ -76,7 +76,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
         $this->saveConfiguration($configuration);
 
-        return $app->redirect($app['url_generator']->generate('admin_searchengine_get'));
+        return $app->redirectPath('admin_searchengine_get');
     }
 
     /**

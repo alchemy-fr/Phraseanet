@@ -147,9 +147,9 @@ class Baskets implements ControllerProviderInterface
 
         }
 
-        return $app->redirect($app['url_generator']->generate('get_client_baskets', array(
+        return $app->redirectPath('get_client_baskets', array(
             'courChuId' => $request->request->get('courChuId', '')
-        )));
+        ));
     }
 
     /**
@@ -173,7 +173,7 @@ class Baskets implements ControllerProviderInterface
 
         }
 
-        return $app->redirect($app['url_generator']->generate('get_client_baskets'));
+        return $app->redirectPath('get_client_baskets');
     }
 
     /**
@@ -199,9 +199,9 @@ class Baskets implements ControllerProviderInterface
 
         }
 
-        return $app->redirect($app['url_generator']->generate('get_client_baskets', array(
+        return $app->redirectPath('get_client_baskets', array(
             'courChuId' => null !== $basket ? $basket->getId() : ''
-        )));
+        ));
     }
 
     /**
@@ -234,9 +234,9 @@ class Baskets implements ControllerProviderInterface
             }
         }
 
-        return $app->redirect($app['url_generator']->generate('get_client_baskets', array(
+        return $app->redirectPath('get_client_baskets', array(
             'courChuId' => $basket ? $basket->getId() : ''
-        )));
+        ));
     }
 
     /**

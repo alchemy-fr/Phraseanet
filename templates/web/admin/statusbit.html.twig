@@ -23,18 +23,18 @@
                 </td>
                 {% if attribute(status, bit) is defined %}
                     <td>
-                        <a target="right" href="/admin/statusbit/{{ databox_id }}/status/{{ bit }}/" class="ajax">
+                        <a target="right" href="{{ path('database_display_statusbit_form', { 'databox_id' : databox_id, 'bit' : bit }) }}" class="ajax">
                             <img class="editer" src="/skins/icons/edit_0.gif" />
                         </a>
                     </td>
                     <td>
-                        <form method="post" action="/admin/statusbit/{{ databox_id }}/status/{{ bit }}/delete/">
+                        <form method="post" action="{{ path('admin_statusbit_delete', { 'databox_id' : databox_id, 'bit' : bit }) }}">
                             <img class="deleter submiter" src="/skins/icons/delete_0.gif" />
                         </form>
                     </td>
                 {% else %}
                     <td colspan="2">
-                        <a target="right" href="/admin/statusbit/{{ databox_id }}/status/{{ bit }}/" class="ajax">
+                        <a target="right" href="{{ path('database_display_statusbit_form', { 'databox_id' : databox_id, 'bit' : bit }) }}" class="ajax">
                             <img class="adder" src="/skins/icons/light_new.gif" />
                         </a>
                     </td>

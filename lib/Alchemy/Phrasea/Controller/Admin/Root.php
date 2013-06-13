@@ -36,7 +36,7 @@ class Root implements ControllerProviderInterface
             try {
                 \User_Adapter::updateClientInfos($app, 3);
             } catch (SessionNotFound $e) {
-                return $app->redirect($app['url_generator']->generate('logout'));
+                return $app->redirectPath('logout');
             }
 
             $section = $request->query->get('section', false);
@@ -104,7 +104,7 @@ class Root implements ControllerProviderInterface
             try {
                 \User_Adapter::updateClientInfos($app, 3);
             } catch (SessionNotFound $e) {
-                return $app->redirect($app['url_generator']->generate('logout'));
+                return $app->redirectPath('logout');
             }
 
             $section = $request->query->get('section', false);
@@ -191,7 +191,8 @@ class Root implements ControllerProviderInterface
             }
 
             return $app->json(array('results' => $result));
-        });
+        })
+            ->bind('admin_test_paths');
 
         $controllers->get('/structure/{databox_id}/', function(Application $app, Request $request, $databox_id) {
             if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
@@ -239,9 +240,9 @@ class Root implements ControllerProviderInterface
                 $databox = $app['phraseanet.appbox']->get_databox($databox_id);
                 $databox->saveStructure($domst);
 
-                return $app->redirect('/admin/structure/' . $databox_id . '/?success=1');
+                return $app->redirectPath('database_display_stucture', array('sbas_id' => $databox_id, 'success' => 1));
             } else {
-                return $app->redirect('/admin/structure/' . $databox_id . '/?success=0&error=struct');
+                return $app->redirectPath('database_display_stucture', array('sbas_id' => $databox_id, 'success' => 0, 'error' => 'struct'));
             }
         })->assert('databox_id', '\d+')
           ->bind('database_submit_stucture');
@@ -310,7 +311,10 @@ class Root implements ControllerProviderInterface
             }
 
             return $app->json(array('success' => !$error));
-        })->assert('databox_id', '\d+')->assert('bit', '\d+');
+        })
+            ->bind('admin_statusbit_delete')
+            ->assert('databox_id', '\d+')
+            ->assert('bit', '\d+');
 
         $controllers->post('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {
             if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
@@ -335,17 +339,41 @@ class Root implements ControllerProviderInterface
                 try {
                     \databox_status::updateIcon($app, $databox_id, $bit, 'off', $file);
                 } catch (\Exception_Forbidden $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=rights');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'rights',
+                    ));
                 } catch (\Exception_InvalidArgument $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'unknow-error',
+                    ));
                 } catch (\Exception_Upload_FileTooBig $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=too-big');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'too-big',
+                    ));
                 } catch (\Exception_Upload_Error $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=upload-error');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'upload-error',
+                    ));
                 } catch (\Exception_Upload_CannotWriteFile $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=wright-error');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'wright-error',
+                    ));
                 } catch (\Exception $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'unknow-error',
+                    ));
                 }
             }
 
@@ -357,21 +385,45 @@ class Root implements ControllerProviderInterface
                 try {
                     \databox_status::updateIcon($app, $databox_id, $bit, 'on', $file);
                 } catch (\Exception_Forbidden $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=rights');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'rights',
+                    ));
                 } catch (\Exception_InvalidArgument $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'unknow-error',
+                    ));
                 } catch (\Exception_Upload_FileTooBig $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=too-big');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'too-big',
+                    ));
                 } catch (\Exception_Upload_Error $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=upload-error');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'upload-error',
+                    ));
                 } catch (\Exception_Upload_CannotWriteFile $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=wright-error');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'wright-error',
+                    ));
                 } catch (\Exception $e) {
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
+                    return $app->redirectPath('database_display_statusbit_form', array(
+                        'databox_id' => $databox_id,
+                        'bit'        => $bit,
+                        'error'      => 'unknow-error',
+                    ));
                 }
             }
 
-            return $app->redirect('/admin/statusbit/' . $databox_id . '/?success=1');
+            return $app->redirectPath('database_display_stucture', array('sbas_id' => $databox_id, 'success' => 1));
         })->assert('databox_id', '\d+')
           ->assert('bit', '\d+')
           ->bind('database_submit_statusbit');

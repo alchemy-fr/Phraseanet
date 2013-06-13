@@ -40,7 +40,9 @@ class Subdefs implements ControllerProviderInterface
                 'databox' => $databox,
                 'subdefs' => $databox->get_subdef_structure()
             ));
-        })->assert('sbas_id', '\d+');
+        })
+            ->bind('admin_subdefs_subdef')
+            ->assert('sbas_id', '\d+');
 
         $controllers->post('/{sbas_id}/', function(Application $app, Request $request, $sbas_id) {
             $delete_subdef = $request->request->get('delete_subdef');
@@ -117,8 +119,10 @@ class Subdefs implements ControllerProviderInterface
                 }
             }
 
-            return $app->redirect('/admin/subdefs/' . $databox->get_sbas_id() . '/');
-        })->assert('sbas_id', '\d+');
+            return $app->redirectPath('admin_subdefs_subdef', array('sbas_id' => $databox->get_sbas_id()));
+        })
+            ->bind('admin_subdefs_subdef_update')
+            ->assert('sbas_id', '\d+');
 
         return $controllers;
     }

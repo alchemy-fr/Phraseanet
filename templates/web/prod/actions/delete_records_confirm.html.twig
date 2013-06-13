@@ -8,7 +8,7 @@
         </div>
     {% endif %}
 
-    <form method="POST" action="/prod/records/delete/">
+    <form method="POST" action="{{ path('record_delete') }}">
         <input type="hidden" value="{{ records.serializedList() }}" name="lst" />
         <div class="well-small label-important" style="background-color: red;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;">
             <span class="ui-icon ui-icon-alert" ></span>

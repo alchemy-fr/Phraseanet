@@ -39,12 +39,12 @@ class UsrLists implements ControllerProviderInterface
         /**
          * Get all lists
          */
-        $controllers->get('/all/', $this->call('getAll'));
+        $controllers->get('/all/', $this->call('getAll'))->bind('prod_lists_all');
 
         /**
          * Creates a list
          */
-        $controllers->post('/list/', $this->call('createList'));
+        $controllers->post('/list/', $this->call('createList'))->bind('prod_lists_list');
 
         /**
          * Gets a list
@@ -56,6 +56,7 @@ class UsrLists implements ControllerProviderInterface
          * Update a list
          */
         $controllers->post('/list/{list_id}/update/', $this->call('updateList'))
+            ->bind('prod_lists_list_update')
             ->assert('list_id', '\d+');
 
         /**
@@ -78,7 +79,8 @@ class UsrLists implements ControllerProviderInterface
             ->assert('list_id', '\d+');
 
         $controllers->get('/list/{list_id}/share/', $this->call('displayShares'))
-            ->assert('list_id', '\d+');
+            ->assert('list_id', '\d+')
+            ->bind('prod_lists_list_share');
 
         /**
          * Share a list to a user with an optionnal role

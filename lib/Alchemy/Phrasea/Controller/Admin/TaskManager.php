@@ -29,15 +29,9 @@ class TaskManager implements ControllerProviderInterface
         });
 
         $controllers->get('/', function(Application $app, Request $request) {
-            return $app->redirect('/admin/task-manager/tasks/');
-        });
+            return $app->redirectPath('admin_tasks_list');
+        })->bind('admin_tasks');
 
-        /*
-         * route /admin/task-manager/tasks/
-         *  tasks status in json
-         * or
-         *  task manager page in html
-         */
         $controllers->get('/tasks/', function(Application $app, Request $request) {
 
             if ($request->getContentType() == 'json') {
@@ -51,23 +45,20 @@ class TaskManager implements ControllerProviderInterface
                         'scheduler_key' => \phrasea::scheduler_key($app)
                     ));
             }
-        });
+        })->bind('admin_tasks_list');
 
-        /**
-         * route /admin/task-manager/tasks/create
-         */
         $controllers->post('/tasks/create/', function(Application $app, Request $request) {
-
             $task = \task_abstract::create($app, $request->request->get('tcl'));
             $tid = $task->getId();
 
-            return $app->redirect('/admin/task-manager/task/' . $tid);
-        });
+            return $app->redirectPath('admin_tasks_task_show', array('id' => $tid));
+        })->bind('admin_tasks_task_create');
 
         /*
          * route /admin/taskmanager/scheduler/start
          */
-        $controllers->get('/scheduler/start', $this->call('startScheduler'));
+        $controllers->get('/scheduler/start', $this->call('startScheduler'))
+            ->bind('admin_tasks_scheduler_start');
 
         /*
          * route /admin/scheduler/stop
@@ -82,7 +73,7 @@ class TaskManager implements ControllerProviderInterface
             }
 
             return $app->json(false);
-        });
+        })->bind('admin_tasks_scheduler_stop');
 
         $controllers->get('/scheduler/log', function(Application $app, Request $request) {
             $logdir = \p4string::addEndSlash($app['phraseanet.registry']->get('GV_RootPath') . 'logs');
@@ -103,14 +94,13 @@ class TaskManager implements ControllerProviderInterface
                 }
             }
             if ($found) {
-                return $app->redirect("/admin/task-manager/scheduler/log");
+                return $app->redirectPath('admin_tasks_scheduler_log');
             }
 
             return $app->stream(function() use ($finder) {
                 foreach ($finder->getIterator() as $file) {
                     printf("<h4>%s\n", $file->getRealPath());
-                    printf("&nbsp;<a href=\"/admin/task-manager/scheduler/log?clr=%s\">%s</a>"
-                        , urlencode($file->getFilename())
+                    printf("&nbsp;<a href=\"".$app->path('admin_tasks_scheduler_log', array('clr' => $file->getFilename()))."\">%s</a>"
                         , _('Clear')
                     );
                     print("</h4>\n<pre>\n");
@@ -121,7 +111,7 @@ class TaskManager implements ControllerProviderInterface
                     flush();
                 }
             }, 200, array('Content-Type' => 'text/html'));
-        });
+        })->bind('admin_tasks_scheduler_log');
 
         $controllers->get('/task/{id}/log', function(Application $app, Request $request, $id) {
             $logdir = \p4string::addEndSlash($app['phraseanet.registry']->get('GV_RootPath') . 'logs');
@@ -142,7 +132,7 @@ class TaskManager implements ControllerProviderInterface
                 }
             }
             if ($found) {
-                return $app->redirect(sprintf("/admin/task-manager/task/%s/log", urlencode($id)));
+                return $app->redirectPath('admin_tasks_task_log', array('id' => $id));
             }
 
             return $app->stream(function() use ($finder, $id) {
@@ -161,33 +151,24 @@ class TaskManager implements ControllerProviderInterface
                     flush();
                 }
             });
-        });
+        })->bind('admin_tasks_task_log');
 
-        /*
-         * route /admin/task-manager/task/{id}/delete
-         *  delete a task
-         */
         $controllers->get('/task/{id}/delete', function(Application $app, Request $request, $id) {
 
             try {
                 $task = $app['task-manager']->getTask($id);
                 $task->delete();
 
-                return $app->redirect('/admin/task-manager/tasks/');
+                return $app->redirectPath('admin_tasks_list');
             } catch (\Exception $e) {
 
-                /*
+                /**
                  * todo : add a message back
                  */
-
-                return $app->redirect('/admin/task-manager/tasks/');
+                return $app->redirectPath('admin_tasks_list');
             }
-        });
+        })->bind('admin_tasks_task_delete');
 
-        /*
-         * route /admin/task-manager/task/{id}/start
-         *  set a task to 'tostart'
-         */
         $controllers->get('/task/{id}/tostart', function(Application $app, Request $request, $id) {
 
             $ret = false;
@@ -203,12 +184,8 @@ class TaskManager implements ControllerProviderInterface
             }
 
             return $app->json($ret);
-        });
+        })->bind('admin_tasks_task_start');
 
-        /*
-         * route /admin/task-manager/task/{id}/stop
-         *  set a task to 'tostop'
-         */
         $controllers->get('/task/{id}/tostop', function(Application $app, Request $request, $id) {
 
             $ret = false;
@@ -228,12 +205,8 @@ class TaskManager implements ControllerProviderInterface
             }
 
             return $app->json($ret);
-        });
+        })->bind('admin_tasks_task_stop');
 
-        /*
-         * route /admin/task-manager/task/{id}/resetcrashcounter
-         * return json
-         */
         $controllers->get('/task/{id}/resetcrashcounter/', function(Application $app, Request $request, $id) {
 
             try {
@@ -245,7 +218,7 @@ class TaskManager implements ControllerProviderInterface
             } catch (\Exception $e) {
                 return $app->json(false);
             }
-        });
+        })->bind('admin_tasks_task_reset');
 
         /*
          * route /admin/task-manager/task/{id}/save
@@ -280,7 +253,7 @@ class TaskManager implements ControllerProviderInterface
                         404    // Not Found
                 );
             }
-        });
+        })->bind('admin_tasks_task_save');
 
         /*
          * route /admin/task-manager/task/{id}/facility/
@@ -324,12 +297,8 @@ class TaskManager implements ControllerProviderInterface
             }
 
             return $ret;
-        });
+        })->bind('admin_tasks_task_facility');
 
-        /*
-         * route /admin/task-manager/task/{id}
-         *  render a task editing interface
-         */
         $controllers->get('/task/{id}', function(Application $app, Request $request, $id) {
 
             $task = $app['task-manager']->getTask($id);
@@ -340,7 +309,7 @@ class TaskManager implements ControllerProviderInterface
                     'task' => $task,
                     'view' => 'XML'
                 ));
-        });
+        })->bind('admin_tasks_task_show');
 
         /*
          * route /admin/task/checkxml/

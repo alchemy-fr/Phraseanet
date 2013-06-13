@@ -28,7 +28,7 @@
     </div>
 </div>
 
-<form class="main_form" method="post" action="/prod/feeds/entry/create/">
+<form class="main_form" method="post" action="{{ path('prod_feeds_entry_create') }}">
     <input type="hidden" name="lst" value="{{ publishing.serializedList() }}" />
     <div class="PNB" style="top:200px; bottom:50px;">
         <div class="PNB" style="width:50%; right:auto;">

@@ -89,7 +89,10 @@ class RSSFeeds implements ControllerProviderInterface
             $page = $page < 1 ? 1 : $page;
 
             return $display_feed($app, $feed, $format, $page);
-        })->assert('id', '\d+')->assert('format', '(rss|atom)');
+        })
+            ->bind('feed_public')
+            ->assert('id', '\d+')
+            ->assert('format', '(rss|atom)');
 
         $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) use ($display_feed) {
             $token = new \Feed_Token($app, $token, $id);
@@ -101,7 +104,10 @@ class RSSFeeds implements ControllerProviderInterface
             $page = $page < 1 ? 1 : $page;
 
             return $display_feed($app, $feed, $format, $page, $token->get_user());
-        })->assert('id', '\d+')->assert('format', '(rss|atom)');
+        })
+            ->bind('feed_user')
+            ->assert('id', '\d+')
+            ->assert('format', '(rss|atom)');
 
         $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) use ($display_feed) {
             $token = new \Feed_TokenAggregate($app, $token);
@@ -113,7 +119,9 @@ class RSSFeeds implements ControllerProviderInterface
             $page = $page < 1 ? 1 : $page;
 
             return $display_feed($app, $feed, $format, $page, $token->get_user());
-        })->assert('format', '(rss|atom)');
+        })
+            ->bind('feed_user_aggregated')
+            ->assert('format', '(rss|atom)');
 
         $controllers->get('/aggregated/{format}/', function(Application $app, $format) use ($display_feed) {
             $feeds = \Feed_Collection::load_public_feeds($app);
@@ -124,7 +132,9 @@ class RSSFeeds implements ControllerProviderInterface
             $page = $page < 1 ? 1 : $page;
 
             return $display_feed($app, $feed, $format, $page);
-        })->assert('format', '(rss|atom)');
+        })
+            ->bind('feed_public_aggregated')
+            ->assert('format', '(rss|atom)');
 
         $controllers->get('/cooliris/', function(Application $app) use ($display_feed) {
             $feeds = \Feed_Collection::load_public_feeds($app);
@@ -135,7 +145,8 @@ class RSSFeeds implements ControllerProviderInterface
             $page = $page < 1 ? 1 : $page;
 
             return $display_feed($app, $feed, \Feed_Adapter::FORMAT_COOLIRIS, $page);
-        });
+        })
+            ->bind('feed_public_cooliris');
 
         return $controllers;
     }

@@ -9,7 +9,7 @@
         {% if module != "lightbox" and app['authentication'].isAuthenticated() %}
           <li>
             {% if module == "prod" %}
-              <a target="_self" href="/client/">
+              <a target="_self" href="{{ path('get_client') }}">
                 <span class="">
                   {% trans 'admin::monitor: Ancienne version (client)' %}
                 </span>
@@ -17,13 +17,13 @@
             {% else %}
               {% if app['browser'].isNewGeneration %}
                 {% if module == "client" %}
-                  <a target="_self" href="/prod/">
+                  <a target="_self" href="{{ path('prod') }}">
                     <span class="">
                       {% trans 'admin::monitor: Nouvelle version (prod)' %}
                     </span>
                   </a>
                 {% else %}
-                  <a target="_blank" href="/prod/">
+                  <a target="_blank" href="{{ path('prod') }}">
                     <span class="">
                       {% trans 'admin::monitor: production' %}
                     </span>
@@ -35,7 +35,7 @@
 
           {% if app['browser'].isNewGeneration and app['phraseanet.registry'].get('GV_thesaurus') == true and app['authentication'].getUser().ACL.has_access_to_module('thesaurus') %}
           <li>
-            <a target="_blank" href="/thesaurus/">
+            <a target="_blank" href="{{ path('thesaurus') }}">
               <span class="{% if module == "thesaurus" %}selected{% endif %}">
               {% trans 'admin::monitor: module thesaurus' %}
               </span>
@@ -47,7 +47,7 @@
           {# MODULE #}
           {% if app['authentication'].getUser().ACL.has_access_to_module('admin') %}
           <li>
-            <a target="_blank" href="/admin/">
+            <a target="_blank" href="{{ path('admin') }}">
               <span class="{% if module == "admin" %}selected{% endif %}">
                 {% trans 'admin::monitor: module admin' %}
               </span>
@@ -68,7 +68,7 @@
 
           {# MODULE #}
           <li>
-            <a id="validation_link" target="_blank" href="/lightbox/">
+            <a id="validation_link" target="_blank" href="{{ path('lightbox') }}">
               <span>
               {% trans 'admin::monitor: module validation' %}
               </span>
@@ -143,7 +143,7 @@
                 {% trans 'Guest' %}
               </span>
             {% else %}
-              <a target="_blank" href="/account/" title="{% trans 'login:: Mon compte' %}">
+              <a target="_blank" href="{{ path('account') }}" title="{% trans 'login:: Mon compte' %}">
                 <span>
                   {{app['authentication'].getUser().get_login()}}
                 </span>
@@ -181,7 +181,7 @@
         </li>
         <li>
         {% if app['authentication'].isAuthenticated() %}
-          <a href="{{ path('logout', { 'redirect' : module }) }}" target="_self">
+          <a href="{{ path('logout') }}" target="_self">
             <span>
               {% trans 'phraseanet:: deconnection' %}
             </span>

@@ -54,7 +54,7 @@ class Printer implements ControllerProviderInterface
             $response->setMaxAge(0);
 
             return $response;
-        });
+        })->bind('prod_printer_print');
 
         return $controllers;
     }
