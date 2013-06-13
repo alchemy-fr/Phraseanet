@@ -19,11 +19,11 @@ use Symfony\Component\Process\ProcessBuilder;
 /**
  * This command builds less file
  */
-class LessCompile extends Command
+class LessCompiler extends Command
 {
-    public function __construct($name = null)
+    public function __construct()
     {
-        parent::__construct($name);
+        parent::__construct('assets:compile-less');
 
         $this->setDescription('Compile less files');
     }
@@ -34,17 +34,17 @@ class LessCompile extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $files = array(
-            $this->container['root.path'] . '/www/skins/build/login.css' => realpath($this->container['root.path'] . '/www/skins/login/less/login.less'),
-            $this->container['root.path'] . '/www/skins/build/account.css' => realpath($this->container['root.path'] . '/www/skins/account/account.less'),
-            $this->container['root.path'] . '/www/skins/build/bootstrap/css/bootstrap.css' => realpath($this->container['root.path'] . '/www/assets/bootstrap/less/bootstrap.less'),
-            $this->container['root.path'] . '/www/skins/build/bootstrap/css/bootstrap-responsive.css' => realpath($this->container['root.path'] . '/www/assets/bootstrap/less/responsive.less'),
+            $this->container['root.path'] . '/www/skins/login/less/login.less' => $this->container['root.path'] . '/www/skins/build/login.css',
+            $this->container['root.path'] . '/www/skins/account/account.less' => $this->container['root.path'] . '/www/skins/build/account.css',
+            $this->container['root.path'] . '/www/assets/bootstrap/less/bootstrap.less' => $this->container['root.path'] . '/www/skins/build/bootstrap/css/bootstrap.css',
+            $this->container['root.path'] . '/www/assets/bootstrap/less/responsive.less' => $this->container['root.path'] . '/www/skins/build/bootstrap/css/bootstrap-responsive.css',
         );
 
         $output->writeln('Building Assets...');
 
         $failures = 0;
         $errors = array();
-        foreach ($files as $buildFile => $lessFile) {
+        foreach ($files as $lessFile => $buildFile) {
             $this->container['filesystem']->mkdir(dirname($buildFile));
             $output->writeln(sprintf('Building %s', basename($lessFile)));
             $builder = ProcessBuilder::create(array(
