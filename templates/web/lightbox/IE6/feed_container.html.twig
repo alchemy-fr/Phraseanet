@@ -10,7 +10,7 @@
           <form name="download_form" class="download_form" style="display:none;">
             <input type="hidden" name="basrec" value="{{element.getRecord(app).get_serialize_key()}}"/>
           </form>
-          <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getRecord().get_sbas_id(), 'record_id' : element.getRecord().get_record_id() }) }}" class="previewTips"></div>
+          <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getRecord(app).get_sbas_id(), 'record_id' : element.getRecord(app).get_record_id() }) }}" class="previewTips"></div>
         </div>
       </a>
         </div>

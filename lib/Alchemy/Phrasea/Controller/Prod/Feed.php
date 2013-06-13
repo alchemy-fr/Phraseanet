@@ -187,7 +187,7 @@ class Feed implements ControllerProviderInterface
 
         $controllers->post('/entry/{id}/delete/', function(Application $app, Request $request, $id) {
             $datas = array('error' => true, 'message' => '');
-            
+
             $entry = $app['EM']->getRepository('Entities\FeedEntry')->find($id);
 
             if (null === $entry) {

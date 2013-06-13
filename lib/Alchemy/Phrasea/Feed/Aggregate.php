@@ -80,24 +80,7 @@ class Aggregate implements FeedInterface
 
     public function getEntries($offset_start = 0, $how_many = null)
     {
-        $count = 0;
-        $added = 0;
-
-        $collection = array();
-        foreach ($this->feeds as $feed) {
-            foreach ($feed->getEntries() as $entry) {
-                if ($count >= $offset_start) {
-                    $collection[] = $entry;
-                    $added++;
-                }
-                $count++;
-                if (null !== $how_many && $added == $how_many) {
-                    return $collection;
-                }
-            }
-        }
-
-        return $collection;
+        return $this->em->getRepository('Entities\FeedEntry')->findByFeeds($this->feeds, $offset_start, $how_many);
     }
 
     public function getSubtitle()
@@ -112,9 +95,7 @@ class Aggregate implements FeedInterface
 
     public function getIconUrl()
     {
-        $url = '/skins/icons/rss32.gif';
-
-        return $url;
+        return false;
     }
 
     public function getCreatedOn()

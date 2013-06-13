@@ -32,7 +32,7 @@ class SessionRepository extends EntityRepository
         }
 
         $dql .= ' OR f.public = true
-            ORDER BY f.created_on DESC';
+            ORDER BY f.updated_on DESC';
 
         $query = $this->_em->createQuery($dql);
         $feeds = $query->getResult();
@@ -44,7 +44,7 @@ class SessionRepository extends EntityRepository
     {
         $dql = 'SELECT f FROM Entities\Feed f
             WHERE f.public = true
-            ORDER BY f.created_on DESC';
+            ORDER BY f.updated_on DESC';
 
         $query = $this->_em->createQuery($dql);
         $feeds = $query->getResult();

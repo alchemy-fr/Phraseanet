@@ -7,7 +7,11 @@
         <td>
           <h1 class="title">
             {% if feed.isAggregated() %}
-              <img style="height:16px;" src="{{ entry.getFeed().getIconUrl() }}" />
+              <img style="height:16px;" src="{% if entry.getFeed().getIconUrl() == false %}
+                                 /skins/icons/rss32.gif
+                                 {% else %}
+                                 /custom/feed_{{ entry.getFeed().getId() }}.jpg
+                                 {% endif %}"/>
             {% endif %}
             {{ entry.getTitle() }}
             {% set author = entry.getAuthorName() %}
@@ -47,14 +51,18 @@
         {% trans %}
           dans {{feed_name}}
         {% endtrans %}
-        <img style="height:16px;" src="{{ entry.getFeed().getIconUrl() }}" />
+        <img style="height:16px;" src="{% if entry.getFeed().getIconUrl() == false %}
+                                 /skins/icons/rss32.gif
+                                 {% else %}
+                                 /custom/feed_{{ entry.getFeed().getId() }}.jpg
+                                 {% endif %}"/>
         </a>
       {% endif %}
     </div>
     <p>{{ entry.getSubtitle()|nl2br|raw }}</p>
     <div class="contents selectable">
     {% for item in entry.getItems() %}
-      {% set record = item.getRecord() %}
+      {% set record = item.getRecord(app) %}
       {% set prefix = 'PUBLI_' ~ item.getId() %}
       {{record_format.block(record, false, null, prefix, entry.getId())}}
     {% endfor %}

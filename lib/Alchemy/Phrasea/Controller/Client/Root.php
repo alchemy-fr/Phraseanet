@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Client;
 
+use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Entities\UserQuery;
@@ -538,8 +539,10 @@ class Root implements ControllerProviderInterface
      */
     private function getPublicationStartPage(Application $app)
     {
+        $aggregate = Aggregate::createFromUser($app['EM'], $app['authentication']->getUser());
+
         return $app['twig']->render('client/home_inter_pub_basket.html.twig', array(
-            'feeds'         => $app['EM']->getRepository('Entities\Feed')->getAllforUser($app['authentication']->getUser()),
+            'feeds'         => $aggregate,
             'image_size'    => (int) $app['authentication']->getUser()->getPrefs('images_size')
         ));
     }

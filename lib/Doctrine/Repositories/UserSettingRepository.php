@@ -38,7 +38,7 @@ class UserSettingRepository extends EntityRepository
     public function findByFeeds($feeds, $offset_start = null, $how_many = null)
     {
         $dql = 'SELECT f FROM Entities\FeedEntry f
-                WHERE f.feed IN (:feeds)';
+                WHERE f.feed IN (:feeds) order by f.updated_on DESC';
 
         $query = $this->_em->createQuery($dql);
         $query->setParameter('feeds', $feeds);

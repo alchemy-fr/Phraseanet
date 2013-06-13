@@ -13,12 +13,12 @@ class FeedServiceProviderTest extends ServiceProviderTestCase
             array(
                 'Alchemy\Phrasea\Core\Provider\FeedServiceProvider',
                 'feed.user-link-generator',
-                'Alchemy\Phrasea\Feed\LinkGenerator'
+                'Alchemy\Phrasea\Feed\Link\FeedLinkGenerator'
             ),
             array(
                 'Alchemy\Phrasea\Core\Provider\FeedServiceProvider',
                 'feed.aggregate-link-generator',
-                'Alchemy\Phrasea\Feed\AggregateLinkGenerator'
+                'Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator'
             ),
         );
     }

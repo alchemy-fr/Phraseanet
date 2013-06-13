@@ -39,7 +39,7 @@
         </div>
         <div style="width:100%;position:relative;float:left;" id="PUBLICONT{{ entry.getId() }}">
             {% for item in entry.getItems() %}
-                {% set record = item.getRecord() %}
+                {% set record = item.getRecord(app) %}
                 {% set thumbnail = record.get_thumbnail() %}
                 {% set docType = record.get_type() %}
                 {% set duration = "" %}

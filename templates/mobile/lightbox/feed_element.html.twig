@@ -15,7 +15,7 @@
 <div data-role="page">
   <div data-role="header">
     <a href="{{ path('lightbox_feed_entry', { 'entry_id' : feed_element.getEntry().getId() }) }}" data-rel="back" data-icon="arrow-l">Back</a>
-    <h1>{{feed_element.getOrd()}} - {{record.getTitle()}}</h1>
+    <h1>{{feed_element.getOrd()}} - {{record.get_title()}}</h1>
     <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
   </div>
   <div data-role="content">

@@ -185,19 +185,19 @@ class record_preview extends record_adapter
                 foreach ($entry->getItems() as $element) {
                     $i ++;
                     if ($first) {
-                        $sbas_id = $element->getRecord()->get_sbas_id();
-                        $record_id = $element->getRecord()->get_record_id();
-                        $this->original_item = $element;
+                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
+                        $record_id = $element->getRecord($this->app)->get_record_id();
                         $this->name = $entry->getTitle();
+                        $this->original_item = $element;
                         $number = $element->getOrd();
                     }
                     $first = false;
 
                     if ($element->getOrd() == $pos) {
-                        $sbas_id = $element->getRecord()->get_sbas_id();
-                        $record_id = $element->getRecord()->get_record_id();
-                        $this->original_item = $element;
+                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
+                        $record_id = $element->getRecord($this->app)->get_record_id();
                         $this->name = $entry->getTitle();
+                        $this->original_item = $element;
                         $number = $element->getOrd();
                     }
                 }

@@ -18,7 +18,7 @@
   <div class="PNB10 record_list" style="overflow:auto;">
   {% for content in entry.getItems() %}
     <div class="sortable" style="position:relative;float:left;">
-      {{ _self.format_diapo(content.getRecord()) }}
+      {{ _self.format_diapo(content.getRecord(app)) }}
       <form>
         <input type="hidden" name="item_id" value="{{content.getId()}}" />
       </form>
