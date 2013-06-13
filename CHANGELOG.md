@@ -31,6 +31,7 @@
   - Add localized labels for databox collections.
   - Add plugin architecture for third party modules and customization.
   - Add records sent-by-mail report.
+  - User time limit restrictions can now be set per databox.
 
 * 3.7.12 (2013-05-13)
 
