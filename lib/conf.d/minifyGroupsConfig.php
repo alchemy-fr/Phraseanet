@@ -15,21 +15,6 @@ $groups = array(
         '//skins/build/login.css',
         '//assets/font-awesome/css/font-awesome.css',
     ),
-    'bootstrap_js' => array(
-        '//assets/bootstrap/js/bootstrap-affix.js',
-        '//assets/bootstrap/js/bootstrap-alert.js',
-        '//assets/bootstrap/js/bootstrap-button.js',
-        '//assets/bootstrap/js/bootstrap-carousel.js',
-        '//assets/bootstrap/js/bootstrap-collapse.js',
-        '//assets/bootstrap/js/bootstrap-dropdown.js',
-        '//assets/bootstrap/js/bootstrap-modal.js',
-        '//assets/bootstrap/js/bootstrap-popover.js',
-        '//assets/bootstrap/js/bootstrap-scrollspy.js',
-        '//assets/bootstrap/js/bootstrap-tab.js',
-        '//assets/bootstrap/js/bootstrap-tooltip.js',
-        '//assets/bootstrap/js/bootstrap-transition.js',
-        '//assets/bootstrap/js/bootstrap-typeahead.js',
-    ),
     'authentication' => array(
         '//assets/modernizr/modernizr.js',
         '//assets/jquery/jquery.js',
@@ -56,10 +41,9 @@ $groups = array(
         , '//include/jquery.image_enhancer.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'),
     'admin' => array(
-        '//assets/jquery/jquery.js'
-        , '//include/jslibs/jquery.validate.js'
+        '//include/jslibs/jquery.validate.js'
         , '//include/jslibs/jquery.validate.password.js'
-        , '//include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js'
+        , '//include/jslibs/jquery-ui-1.8.24.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery-treeview/jquery.treeview.js'
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'

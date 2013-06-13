@@ -15,10 +15,17 @@ require __DIR__ . '/vendor/autoload.php';
 
 chdir(__DIR__);
 
-system('bin/setup less:compile', $code);
+system('bin/setup assets:compile-less', $code);
 
 if (0 !== $code) {
     echo "Failed to build less files\n";
+    exit(1);
+}
+
+system('bin/setup assets:build-javascript', $code);
+
+if (0 !== $code) {
+    echo "Failed to build javascript files\n";
     exit(1);
 }
 

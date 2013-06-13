@@ -1016,7 +1016,7 @@
         {% include "prod/thesaurus.js" %}
     </script>
     <script type="text/javascript" src="{{ path('minifier', { 'g' : 'prod' }) }}"></script>
-    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js' }) }}"></script>
+    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.24.js' }) }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             p4.reg_delete="{% if app['authentication'].getUser().getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";

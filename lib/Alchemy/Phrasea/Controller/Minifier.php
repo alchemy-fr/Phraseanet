@@ -45,6 +45,7 @@ class Minifier implements ControllerProviderInterface
             $min_serveOptions['bubbleCssImports'] = false;
 
             if ($app['debug']) {
+                // may cause js errors
                 $min_serveOptions['debug'] = true;
                 $min_serveOptions['maxAge'] = 0;
             } else {
@@ -137,8 +138,7 @@ class Minifier implements ControllerProviderInterface
             }
 
             return $response;
-        })
-            ->bind('minifier');
+        })->bind('minifier');
 
         return $controllers;
     }
