@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Filesystem\Filesystem;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
 class databox extends base
 {
@@ -87,6 +88,7 @@ class databox extends base
     protected static $_sxml_thesaurus = array();
 
     const BASE_TYPE = self::DATA_BOX;
+    const CACHE_BASE_DATABOX = 'base_infos';
     const CACHE_META_STRUCT = 'meta_struct';
     const CACHE_THESAURUS = 'thesaurus';
     const CACHE_COLLECTIONS = 'collections';
@@ -96,6 +98,10 @@ class databox extends base
     protected $cache;
     protected $connection;
     protected $app;
+    private $labels = array();
+    private $ord;
+    private $viewname;
+    private $loaded = false;
 
     public function __construct(Application $app, $sbas_id)
     {
@@ -119,6 +125,69 @@ class databox extends base
         $this->dbname = $connection_params[$sbas_id]['dbname'];
 
         return $this;
+    }
+
+    private function load()
+    {
+        if ($this->loaded) {
+            return;
+        }
+
+        try {
+            $row = $this->get_data_from_cache(static::CACHE_BASE_DATABOX);
+        } catch (\Exception $e) {
+            $sql = 'SELECT ord, viewname, label_en, label_fr, label_de, label_nl
+                FROM sbas WHERE sbas_id = :sbas_id';
+            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt->execute(array('sbas_id' => $this->id));
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            $this->set_data_to_cache($row, static::CACHE_BASE_DATABOX);
+        }
+
+        if (!$row) {
+            throw new Exception_DataboxNotFound(sprintf('databox %d not found', $sbas_id));
+        }
+
+        $this->ord = $row['ord'];
+        $this->viewname = $row['viewname'];
+        $this->labels['fr'] = $row['label_fr'];
+        $this->labels['en'] = $row['label_en'];
+        $this->labels['de'] = $row['label_de'];
+        $this->labels['nl'] = $row['label_nl'];
+
+        $this->loaded = true;
+    }
+
+    public function get_viewname()
+    {
+        $this->load();
+
+        return $this->viewname ? : $this->dbname;
+    }
+
+    public function set_viewname($viewname)
+    {
+        $sql = 'UPDATE sbas SET viewname = :viewname WHERE sbas_id = :sbas_id';
+
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':viewname' => $viewname, ':sbas_id' => $this->id));
+        $stmt->closeCursor();
+
+        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        cache_databox::update($this->app, $this->id, 'structure');
+
+        $this->viewname = $viewname;
+
+        return $this;
+    }
+
+    public function get_ord()
+    {
+        $this->load();
+
+        return $this->ord;
     }
 
     public function get_appbox()
@@ -156,7 +225,7 @@ class databox extends base
               AND b.active = '1'
             ORDER BY s.ord ASC, b.ord,b.base_id ASC";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
+        $stmt->execute(array(':sbas_id' => $this->id));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -178,12 +247,45 @@ class databox extends base
      */
     public function get_record($record_id, $number = null)
     {
-        return new record_adapter($this->app, $this->get_sbas_id(), $record_id, $number);
+        return new record_adapter($this->app, $this->id, $record_id, $number);
     }
 
-    public function get_viewname()
+    public function get_label($code, $substitute = true)
     {
-        return phrasea::sbas_names($this->get_sbas_id(), $this->app);
+        $this->load();
+
+        if (!array_key_exists($code, $this->labels)) {
+            throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
+        }
+
+        if ($substitute) {
+            return isset($this->labels[$code]) ? $this->labels[$code] : $this->get_viewname();
+        } else {
+            return $this->labels[$code];
+        }
+    }
+
+    public function set_label($code, $label)
+    {
+        $this->load();
+
+        if (!array_key_exists($code, $this->labels)) {
+            throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
+        }
+
+        $sql = "UPDATE sbas SET label_$code = :label
+            WHERE sbas_id = :sbas_id";
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':label' => $label, ':sbas_id'   => $this->id));
+        $stmt->closeCursor();
+
+        $this->labels[$code] = $label;
+
+        $this->delete_data_from_cache(static::CACHE_BASE_DATABOX);
+
+        phrasea::reset_sbasDatas($this->app['phraseanet.appbox']);
+
+        return $this;
     }
 
     /**
@@ -192,7 +294,7 @@ class databox extends base
      */
     public function get_statusbits()
     {
-        return databox_status::getStatus($this->app, $this->get_sbas_id());
+        return databox_status::getStatus($this->app, $this->id);
     }
 
     /**
@@ -329,7 +431,7 @@ class databox extends base
         }
 
         $query = new User_Query($this->app);
-        $total = $query->on_sbas_ids(array($this->get_sbas_id()))
+        $total = $query->on_sbas_ids(array($this->id))
             ->include_phantoms(false)
             ->include_special_users(true)
             ->include_invite(true)
@@ -370,12 +472,12 @@ class databox extends base
 
         $sql = "DELETE FROM sbas WHERE sbas_id = :sbas_id";
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
+        $stmt->execute(array(':sbas_id' => $this->id));
         $stmt->closeCursor();
 
         $sql = "DELETE FROM sbasusr WHERE sbas_id = :sbas_id";
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
+        $stmt->execute(array(':sbas_id' => $this->id));
         $stmt->closeCursor();
 
         $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
@@ -527,7 +629,7 @@ class databox extends base
 
     public function get_cache_key($option = null)
     {
-        return 'databox_' . $this->get_sbas_id() . '_' . ($option ? $option . '_' : '');
+        return 'databox_' . $this->id . '_' . ($option ? $option . '_' : '');
     }
 
     /**
@@ -659,7 +761,7 @@ class databox extends base
 
         $sql = 'SELECT server_coll_id FROM bas WHERE sbas_id = :sbas_id';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
+        $stmt->execute(array(':sbas_id' => $this->id));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -694,7 +796,7 @@ class databox extends base
 
         $sql = 'SELECT base_id FROM bas WHERE sbas_id = :sbas_id AND active = "0"';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
+        $stmt->execute(array(':sbas_id' => $this->id));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -741,7 +843,7 @@ class databox extends base
         $this->delete_data_from_cache(self::CACHE_STRUCTURE);
         $this->delete_data_from_cache(self::CACHE_META_STRUCT);
 
-        cache_databox::update($this->app, $this->get_sbas_id(), 'structure');
+        cache_databox::update($this->app, $this->id, 'structure');
 
         return $this;
     }
@@ -870,9 +972,9 @@ class databox extends base
         $conn = connection::getPDOConnection($this->app);
 
         $user->ACL()
-            ->give_access_to_sbas(array($this->get_sbas_id()))
+            ->give_access_to_sbas(array($this->id))
             ->update_rights_to_sbas(
-                $this->get_sbas_id(), array(
+                $this->id, array(
                 'bas_manage'        => 1, 'bas_modify_struct' => 1,
                 'bas_modif_th'      => 1, 'bas_chupub'        => 1
                 )
@@ -892,7 +994,7 @@ class databox extends base
         $base_ids = array();
         foreach ($rs as $row) {
             try {
-                $stmt->execute(array(':coll_id'  => $row['coll_id'], ':sbas_id'  => $this->get_sbas_id()));
+                $stmt->execute(array(':coll_id'  => $row['coll_id'], ':sbas_id'  => $this->id));
                 $base_ids[] = $base_id = $conn->lastInsertId();
 
                 if ( ! empty($row['logo'])) {
@@ -961,7 +1063,7 @@ class databox extends base
      */
     public function get_dom_thesaurus()
     {
-        $sbas_id = $this->get_sbas_id();
+        $sbas_id = $this->id;
         if (isset(self::$_dom_thesaurus[$sbas_id])) {
             return self::$_dom_thesaurus[$sbas_id];
         }
@@ -985,7 +1087,7 @@ class databox extends base
      */
     public function get_xpath_thesaurus()
     {
-        $sbas_id = $this->get_sbas_id();
+        $sbas_id = $this->id;
         if (isset(self::$_xpath_thesaurus[$sbas_id])) {
             return self::$_xpath_thesaurus[$sbas_id];
         }
@@ -1005,7 +1107,7 @@ class databox extends base
      */
     public function get_sxml_thesaurus()
     {
-        $sbas_id = $this->get_sbas_id();
+        $sbas_id = $this->id;
         if (isset(self::$_sxml_thesaurus[$sbas_id])) {
             return self::$_sxml_thesaurus[$sbas_id];
         }

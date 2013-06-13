@@ -53,7 +53,7 @@ class module_console_sphinxGenerateSuggestion extends Command
 
             $databox = $this->getService('phraseanet.appbox')->get_databox($sbas_id);
 
-            $output->writeln("process Databox " . $databox->get_viewname() . " / $index\n");
+            $output->writeln("process Databox " . $databox->get_label($this->container['locale.I18n']) . " / $index\n");
 
             if ( ! is_executable("/usr/local/bin/indexer")) {
                 $output->writeln("<error>'/usr/local/bin/indexer' is not executable</error>");

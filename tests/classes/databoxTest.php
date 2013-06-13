@@ -71,4 +71,45 @@ class databoxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $databox->unmount_databox();
         $databox->delete();
     }
+
+    public function testViewname()
+    {
+        $databox = self::$DI['record_1']->get_databox();
+        $databox->set_viewname(null);
+
+        $this->assertEquals($databox->get_dbname(), $databox->get_viewname());
+        $databox->set_viewname('cool view name');
+        $this->assertEquals('cool view name', $databox->get_viewname());
+        $databox->set_viewname(null);
+        $this->assertEquals($databox->get_dbname(), $databox->get_viewname());
+    }
+
+    public function testSet_label()
+    {
+        $databox = self::$DI['record_1']->get_databox();
+
+        $databox->set_viewname('pretty name');
+        $databox->set_label('fr', 'french label');
+        $databox->set_label('en', 'english label');
+        $databox->set_label('nl', null);
+        $databox->set_label('de', null);
+        $this->assertEquals('french label', $databox->get_label('fr'));
+        $this->assertEquals('english label', $databox->get_label('en'));
+        $this->assertEquals('pretty name', $databox->get_label('nl'));
+        $this->assertEquals('pretty name', $databox->get_label('de'));
+        $this->assertNull($databox->get_label('nl', false));
+        $this->assertNull($databox->get_label('de', false));
+
+        $databox->set_viewname(null);
+        $databox->set_label('fr', null);
+        $databox->set_label('en', null);
+        $databox->set_label('nl', 'dutch label');
+        $databox->set_label('de', 'german label');
+        $this->assertEquals($databox->get_dbname(), $databox->get_label('fr'));
+        $this->assertEquals($databox->get_dbname(), $databox->get_label('en'));
+        $this->assertEquals('dutch label', $databox->get_label('nl'));
+        $this->assertEquals('german label', $databox->get_label('de'));
+        $this->assertNull($databox->get_label('fr', false));
+        $this->assertNull($databox->get_label('en', false));
+    }
 }

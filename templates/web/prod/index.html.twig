@@ -6,7 +6,7 @@
             <input type="hidden" name="reference" value="{{sbas_id}}"/>
             <div class="clksbas" style="text-align: center;">
                 <label class="checkbox" for="sbasChkr_{{sbas_id}}_{{unique_id}}" onclick="clksbas({{sbas_id}}, $('#sbasChkr_{{sbas_id}}_{{unique_id}}')); return false;">
-                    <span>{{sbas_id|sbas_names(app)}}</span>
+                    <span>{{sbas_id|sbas_labels(app)}}</span>
                     <span class="infos_sbas_{{sbas_id}}">
                         {{base["collections"]|length}}/{{base['collections']|length}}
                     </span>
@@ -215,7 +215,7 @@
                                                     {% if base['thesaurus'] %}
                                                     <li id="TX_P.{{base['sbas_id']}}.T" class="expandable{% if loop.last %} last{% endif %}">
                                                         <div class="hitarea expandable-hitarea"></div>
-                                                        <span>{{base['sbas_id']|sbas_names(app)}}</span>
+                                                        <span>{{base['sbas_id']|sbas_labels(app)}}</span>
                                                         <ul style="display:none">{% trans 'chargement' %}</ul>
                                                     </li>
                                                     {% endif %}
@@ -233,7 +233,7 @@
                                                     {% if base['cterms'] %}
                                                     <li id="CX_P.{{base['sbas_id']}}.C" class="expandable{% if loop.last %} last{% endif %}">
                                                         <div class="hitarea expandable-hitarea"></div>
-                                                        <span>{{base['sbas_id']|sbas_names(app)}}</span>
+                                                        <span>{{base['sbas_id']|sbas_labels(app)}}</span>
                                                         <ul style="display:none">{% trans 'chargement' %}</ul>
                                                     </li>
                                                     {% endif %}

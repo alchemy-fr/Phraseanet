@@ -27,8 +27,9 @@
   - Upload now monitors number of files transmitted.
   - Add bin/developer console for developement purpose.
   - Add possibility to delete a basket from the workzone basket browser.
-  - Add localized labels for databox documentary fields.
-  - Add localized labels for databox collections.
+  - Add localized labels for databox documentary fields names.
+  - Add localized labels for databox collections names.
+  - Add localized labels for databox names.
   - Add plugin architecture for third party modules and customization.
   - Add records sent-by-mail report.
 

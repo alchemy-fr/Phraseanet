@@ -118,8 +118,8 @@
                                                                 {% set databox = databoxWrapper['databoxes'] %}
                                                                 {% set collections = databoxWrapper['collections'] %}
                                                                 {% if collections|length > 0 %}
-                                                                    <optgroup label="{{ databox.get_viewname() }}">
-                                                                        <option value="{{ collection|keys|join(';') }}">{{ databox.get_viewname() }}</option>
+                                                                    <optgroup label="{{ databox.get_label(app['locale.I18n']) }}">
+                                                                        <option value="{{ collection|keys|join(';') }}">{{ databox.get_label(app['locale.I18n']) }}</option>
                                                                         {% for collId, collection in collections %}
                                                                         <option value="{{ collId }}" checked="checked">{{ collection.get_name() }}</option>
                                                                         {% endfor %}
@@ -192,7 +192,7 @@
                                                                     <div class="basContTitle">
                                                                         <div class="basTitle">
                                                                             <input class="basChecker checkbox" id="basChecker{{ sbasId }}" type="checkbox" onclick="chkSbas({{ sbasId }},this)" />
-                                                                            <label for="basChecker{{ sbasId }}">{{ databox.get_viewname() }}</label>
+                                                                            <label for="basChecker{{ sbasId }}">{{ databox.get_label(app['locale.I18n']) }}</label>
                                                                             <img onclick="removeFilters({{ sbasId }});" id="filter_danger{{ sbasId }}" class="filter_danger" src="/skins/icons/alert.png" title="{% trans "client::recherche: cliquez ici pour desactiver tous les filtres de cette base" %}" style="vertical-align:bottom;width:12px;height:12px;display:none;"/>
                                                                         </div>
                                                                         {% set status_bit_filters = '' %}

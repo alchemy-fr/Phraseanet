@@ -57,7 +57,7 @@ class databox_cgu
 
                 if ( ! isset($cgus[$app['locale']]))
                     throw new Exception('No CGus for this locale');
-                $name = $databox->get_viewname();
+                $name = $databox->get_label($app['locale.I18n']);
 
                 $update = $cgus[$app['locale']]['updated_on'];
                 $value = $cgus[$app['locale']]['value'];

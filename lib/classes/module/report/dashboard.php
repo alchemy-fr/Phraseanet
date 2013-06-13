@@ -248,7 +248,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
             $sbas_id = $databox->get_sbas_id();
             if ( ! isset($all_coll[$sbas_id])) {
                 $all_coll[$sbas_id] = array();
-                $all_coll[$sbas_id]['name_sbas'] = $databox->get_viewname();
+                $all_coll[$sbas_id]['name_sbas'] = $databox->get_label($this->app['locale.I18n']);
             }
             $all_coll[$sbas_id]['sbas_collections'][] = array(
                 'base_id' => $base_id,
@@ -279,7 +279,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
             $this->authorizedCollection[] = array(
                 'sbas_id' => (int) $sbas,
                 'coll'    => implode(',', $listeColl),
-                'name'    => phrasea::sbas_names($sbas, $this->app)
+                'name'    => phrasea::sbas_labels($sbas, $this->app)
             );
         }
 
@@ -298,7 +298,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
         $all_coll = $this->getAllColl();
         $liste = '';
         foreach ($all_coll as $sbas => $info) {
-            $liste .= phrasea::sbas_names($sbas, $this->app) . ' ' . $separator . ' ';
+            $liste .= phrasea::sbas_labels($sbas, $this->app) . ' ' . $separator . ' ';
         }
 
         return $liste;

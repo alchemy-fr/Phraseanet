@@ -832,7 +832,7 @@ class Xmlhttp implements ControllerProviderInterface
 
         try {
             $connbas = \connection::getPDOConnection($app, $sbid);
-            $dbname = \phrasea::sbas_names($sbid, $app);
+            $dbname = \phrasea::sbas_labels($sbid, $app);
 
             $t_nrec = array();
             $lthid = strlen($thid);
@@ -1632,7 +1632,7 @@ class Xmlhttp implements ControllerProviderInterface
 
             $html = "" . '<LI id="TX_P.' . $sbid . '.T" class="expandable">' . "\n";
             $html .= "\t" . '<div class="hitarea expandable-hitarea"></div>' . "\n";
-            $html .= "\t" . '<span>' . \phrasea::sbas_names($sbid, $app) . '</span>' . "\n";
+            $html .= "\t" . '<span>' . \phrasea::sbas_labels($sbid, $app) . '</span>' . "\n";
 
             if ($request->get('t')) {
                 if ($request->get('field') != '') {

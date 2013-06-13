@@ -17,7 +17,7 @@
             {% for sbasId, baseInsc in inscriptions %}
                 {% if baseInsc["CollsRegistered"] or baseInsc["CollsRefuse"] or baseInsc["CollsWait"] or baseInsc["CollsIntime"] or baseInsc["CollsOuttime"] or baseInsc["CollsNonactif"] or baseInsc["CollsCGU"] or baseInsc["Colls"] %}
                     <tr>
-                        <td colspan="3" style="text-align: center;"><h3>{{ sbasId | sbas_names(app) }}</h3></td>
+                        <td colspan="3" style="text-align: center;"><h3>{{ sbasId | sbas_labels(app) }}</h3></td>
                     </tr>
                 {% endif %}
 
@@ -27,7 +27,7 @@
                             {% set base_id = sbasId |base_from_coll(collId, app) %}
                             <tr>
                                 <td colspan="3" style="text-align:center;">
-                                    {% trans "login::register: acces authorise sur la collection " %}{{ sbasId |sbas_names(app) }}
+                                    {% trans "login::register: acces authorise sur la collection " %}{{ sbasId |sbas_labels(app) }}
                                     {% if isTrue | trim != "" %}
                                         <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
                                     {% endif %}
@@ -46,7 +46,7 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span style="color: red;">{% trans "login::register: acces refuse sur la collection " %}{{ sbasId |sbas_names(app) }}</span>
+                                <span style="color: red;">{% trans "login::register: acces refuse sur la collection " %}{{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue | trim != "" %}
                                     <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
                                 {% endif %}
@@ -64,7 +64,7 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span style="color: orange;">{% trans "login::register: en attente d\'acces sur" %} {{ sbasId |sbas_names(app) }}</span>
+                                <span style="color: orange;">{% trans "login::register: en attente d\'acces sur" %} {{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue | trim != "" %}
                                     <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
                                 {% endif %}
@@ -79,7 +79,7 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span>{% trans "login::register: acces temporaire sur" %} {{ sbasId |sbas_names(app) }}</span>
+                                <span>{% trans "login::register: acces temporaire sur" %} {{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue |trim != "" %}
                                     <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
                                 {% endif %}
@@ -94,7 +94,7 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span style="color:red;">{% trans "login::register: acces temporaire termine sur " %}{{ sbasId |sbas_names(app) }}</span>
+                                <span style="color:red;">{% trans "login::register: acces temporaire termine sur " %}{{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue |trim != "" %}
                                     <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
                                 {% endif %}
@@ -109,7 +109,7 @@
                         {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;">
-                                <span style="color:red;">{% trans "login::register: acces supendu sur" %} {{ sbasId |sbas_names(app) }}</span>
+                                <span style="color:red;">{% trans "login::register: acces supendu sur" %} {{ sbasId |sbas_labels(app) }}</span>
                                 {% if isTrue |trim != "" %}
                                     <a class="inscriptlink" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">{% trans "login::register::CGU: lire les CGU" %}</a>
                                 {% endif %}
