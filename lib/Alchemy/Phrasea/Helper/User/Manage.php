@@ -55,6 +55,7 @@ class Manage extends Helper
             , 'like_value'   => $request->get('like_value')
             , 'sbas_id'      => $request->get('sbas_id')
             , 'base_id'      => $request->get('base_id')
+            , 'last_model'   => $this->request->get('last_model')
             , 'srt'          => $request->get("srt", \User_Query::SORT_CREATIONDATE)
             , 'ord'          => $request->get("ord", \User_Query::ORD_DESC)
             , 'offset_start' => 0
@@ -69,6 +70,7 @@ class Manage extends Helper
 
         $this->results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
+            ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
             ->on_bases_where_i_am($this->app['authentication']->getUser()->ACL(), array('canadmin'))
@@ -92,6 +94,7 @@ class Manage extends Helper
             , 'like_value'   => $this->request->get('like_value')
             , 'sbas_id'      => $this->request->get('sbas_id')
             , 'base_id'      => $this->request->get('base_id')
+            , 'last_model'   => $this->request->get('last_model')
             , 'srt'          => $this->request->get("srt", \User_Query::SORT_CREATIONDATE)
             , 'ord'          => $this->request->get("ord", \User_Query::ORD_DESC)
             , 'per_page'     => $results_quantity
@@ -107,6 +110,7 @@ class Manage extends Helper
 
         $this->results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
+            ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
             ->on_bases_where_i_am($this->app['authentication']->getUser()->ACL(), array('canadmin'))
