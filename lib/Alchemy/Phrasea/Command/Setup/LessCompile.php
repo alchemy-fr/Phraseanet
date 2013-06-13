@@ -36,8 +36,8 @@ class LessCompile extends Command
         $files = array(
             $this->container['root.path'] . '/www/skins/build/login.css' => realpath($this->container['root.path'] . '/www/skins/login/less/login.less'),
             $this->container['root.path'] . '/www/skins/build/account.css' => realpath($this->container['root.path'] . '/www/skins/account/account.less'),
-            $this->container['root.path'] . '/www/skins/build/bootstrap.css' => realpath($this->container['root.path'] . '/www/assets/bootstrap/less/bootstrap.less'),
-            $this->container['root.path'] . '/www/skins/build/bootstrap-responsive.css' => realpath($this->container['root.path'] . '/www/assets/bootstrap/less/responsive.less'),
+            $this->container['root.path'] . '/www/skins/build/bootstrap/css/bootstrap.css' => realpath($this->container['root.path'] . '/www/assets/bootstrap/less/bootstrap.less'),
+            $this->container['root.path'] . '/www/skins/build/bootstrap/css/bootstrap-responsive.css' => realpath($this->container['root.path'] . '/www/assets/bootstrap/less/responsive.less'),
         );
 
         $output->writeln('Building Assets...');
@@ -45,6 +45,7 @@ class LessCompile extends Command
         $failures = 0;
         $errors = array();
         foreach ($files as $buildFile => $lessFile) {
+            $this->container['filesystem']->mkdir(dirname($buildFile));
             $output->writeln(sprintf('Building %s', basename($lessFile)));
             $builder = ProcessBuilder::create(array(
                 'recess',
@@ -59,6 +60,16 @@ class LessCompile extends Command
                 $errors[] = $process->getErrorOutput();
             }
             file_put_contents($buildFile, $process->getOutput());
+        }
+
+        $copies = array(
+            $this->container['root.path'] . '/www/assets/bootstrap/img/glyphicons-halflings-white.png' => $this->container['root.path'] . '/www/skins/build/bootstrap/img/glyphicons-halflings-white.png',
+            $this->container['root.path'] . '/www/assets/bootstrap/img/glyphicons-halflings.png' => $this->container['root.path'] . '/www/skins/build/bootstrap/img/glyphicons-halflings.png',
+        );
+
+        foreach ($copies as $source => $target) {
+            $this->container['filesystem']->mkdir(dirname($target));
+            $this->container['filesystem']->copy($source, $target);
         }
 
         if (0 === $failures) {
