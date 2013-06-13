@@ -20,6 +20,7 @@ set_time_limit(0);
 $bower = 'bower';
 $node = 'node';
 $recess = 'recess';
+$uglifyjs = 'uglifyjs';
 $npm = 'npm';
 
 // Test if node exists
@@ -62,6 +63,18 @@ if (0 !== $code) {
     }
 }
 
+// Tests if recess exists else install it
+exec('uglifyjs --version', $output, $code);
+
+if (0 !== $code) {
+    exec(sprintf('sudo %s install uglify-js -g', $npm), $output, $code);
+
+    if (0 !== $code) {
+        echo 'Failed to install uglifyjs';
+        exit(1);
+    }
+}
+
 // Install asset dependencies with bower
 system(sprintf('%s install', $bower), $code);
 
@@ -100,5 +113,5 @@ if (isset($argv[1]) && $argv[1] == '--no-dev') {
     system($composer . ' install --dev --optimize-autoloader');
 }
 
-system('bin/setup less:compile');
-
+system('bin/setup assets:compile-less');
+system('bin/setup assets:build-javascript');
