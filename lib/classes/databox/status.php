@@ -86,6 +86,20 @@ class databox_status
                 $this->status[$bit]["labeloff"] = (string) $sb['labelOff'];
                 $this->status[$bit]["labelon"] = (string) $sb['labelOn'];
 
+                foreach ($app['locales.I18n.available'] as $code => $language){
+                    $this->status[$bit]['labels_on'][$code] = null;
+                    $this->status[$bit]['labels_off'][$code] = null;
+                }
+
+                foreach ($sb->label as $label) {
+                    $this->status[$bit]['labels_'.$label['switch']][(string) $label['code']] = (string) $label;
+                }
+
+                foreach ($app['locales.I18n.available'] as $code => $language){
+                    $this->status[$bit]['labels_on_i18n'][$code] = isset($this->status[$bit]['labels_on'][$code]) ? $this->status[$bit]['labels_on'][$code] : $this->status[$bit]["labelon"];
+                    $this->status[$bit]['labels_off_i18n'][$code] = isset($this->status[$bit]['labels_off'][$code]) ? $this->status[$bit]['labels_off'][$code] : $this->status[$bit]["labeloff"];
+                }
+
                 $this->status[$bit]["img_off"] = null;
                 $this->status[$bit]["img_on"] = null;
 
@@ -189,11 +203,13 @@ class databox_status
                     }
                     if (! $set) {
                         $stats[$bit][] = array(
-                            'sbas' => array($sbas_id),
-                            'labeloff' => $props['labeloff'],
-                            'labelon'  => $props['labelon'],
-                            'imgoff'   => $props['img_off'],
-                            'imgon'    => $props['img_on']
+                            'sbas'            => array($sbas_id),
+                            'labeloff'        => $props['labeloff'],
+                            'labelon'         => $props['labelon'],
+                            'labels_on_i18n'  => $props['labels_on_i18n'],
+                            'labels_off_i18n' => $props['labels_off_i18n'],
+                            'imgoff'          => $props['img_off'],
+                            'imgon'           => $props['img_on']
                         );
                         $set = true;
                     }
@@ -202,11 +218,13 @@ class databox_status
                 if (! $set) {
                     $stats[$bit] = array(
                         array(
-                            'sbas' => array($sbas_id),
-                            'labeloff' => $props['labeloff'],
-                            'labelon'  => $props['labelon'],
-                            'imgoff'   => $props['img_off'],
-                            'imgon'    => $props['img_on']
+                            'sbas'            => array($sbas_id),
+                            'labeloff'        => $props['labeloff'],
+                            'labelon'         => $props['labelon'],
+                            'labels_on_i18n'  => $props['labels_on_i18n'],
+                            'labels_off_i18n' => $props['labels_off_i18n'],
+                            'imgoff'          => $props['img_off'],
+                            'imgon'           => $props['img_on']
                         )
                     );
                 }
@@ -309,6 +327,10 @@ class databox_status
 
                 $sbit = $statbits->appendChild($doc->createElement("bit"));
 
+                if ($n = $sbit->appendChild($doc->createAttribute("n"))) {
+                    $n->value = $bit;
+                }
+
                 if ($labOn = $sbit->appendChild($doc->createAttribute("labelOn"))) {
                     $labOn->value = $properties['labelon'];
                 }
@@ -323,6 +345,24 @@ class databox_status
 
                 if ($labOff = $sbit->appendChild($doc->createAttribute("labelOff"))) {
                     $labOff->value = $properties['labeloff'];
+                }
+
+                foreach ($properties['labels_off'] as $code => $label) {
+                    $labelTag = $sbit->appendChild($doc->createElement("label"));
+                    $switch = $labelTag->appendChild($doc->createAttribute("switch"));
+                    $switch->value = 'off';
+                    $codeTag = $labelTag->appendChild($doc->createAttribute("code"));
+                    $codeTag->value = $code;
+                    $labelTag->appendChild($doc->createTextNode($label));
+                }
+
+                foreach ($properties['labels_on'] as $code => $label) {
+                    $labelTag = $sbit->appendChild($doc->createElement("label"));
+                    $switch = $labelTag->appendChild($doc->createAttribute("switch"));
+                    $switch->value = 'on';
+                    $codeTag = $labelTag->appendChild($doc->createAttribute("code"));
+                    $codeTag->value = $code;
+                    $labelTag->appendChild($doc->createTextNode($label));
                 }
             }
 

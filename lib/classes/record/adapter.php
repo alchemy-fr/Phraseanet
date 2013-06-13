@@ -430,11 +430,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $status .= '<img style="margin:1px;' . $style1 . '" ' .
                     'class="STAT_' . $this->base_id . '_'
                     . $this->record_id . '_' . $n . '_1" ' .
-                    'src="' . $source1 . '" title="' . $statbit["labelon"] . '"/>';
+                    'src="' . $source1 . '" title="' . $statbit['labels_on_i18n'][$this->app['locale.I18n']] . '"/>';
                 $status .= '<img style="margin:1px;' . $style0 . '" ' .
                     'class="STAT_' . $this->base_id . '_'
                     . $this->record_id . '_' . $n . '_0" ' .
-                    'src="' . $source0 . '" title="' . $statbit["labeloff"] . '"/>';
+                    'src="' . $source0 . '" title="' . $statbit['labels_off_i18n'][$this->app['locale.I18n']] . '"/>';
             }
         }
 
