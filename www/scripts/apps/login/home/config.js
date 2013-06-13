@@ -16,7 +16,7 @@ require.config({
         underscore: "../assets/underscore-amd/underscore",
         backbone: "../assets/backbone-amd/backbone",
         i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
-        bootstrap: "../skins/html5/bootstrap/js/bootstrap.min",
+        bootstrap: "../skins/build/bootstrap/js/bootstrap.min",
         multiselect: "../assets/bootstrap-multiselect/js/bootstrap-multiselect"
     },
     shim: {
