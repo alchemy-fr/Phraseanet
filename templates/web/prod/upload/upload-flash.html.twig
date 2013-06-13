@@ -68,11 +68,6 @@
                                             <tbody>
                                             {% for bit, status in availableCollections['databox'].get_statusbits() %}
                                                 <tr>
-                                                    <td colspan="2">
-                                                        <h6>{{ status['name']|title }}</h6>
-                                                    </td>
-                                                </tr>
-                                                <tr>
                                                     <td class="status-tab-left">
                                                         {% if status['img_off'] is not empty %}
                                                             <img src="{{ status['img_off'] }}" width="16" height="16" />

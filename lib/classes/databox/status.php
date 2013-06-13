@@ -11,8 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
-use MediaAlchemyst\Alchemyst;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
@@ -85,7 +83,6 @@ class databox_status
                 if ($bit < 4 && $bit > 31)
                     continue;
 
-                $this->status[$bit]["name"] = (string) ($sb);
                 $this->status[$bit]["labeloff"] = (string) $sb['labelOff'];
                 $this->status[$bit]["labelon"] = (string) $sb['labelOn'];
 
@@ -312,11 +309,6 @@ class databox_status
 
                 $sbit = $statbits->appendChild($doc->createElement("bit"));
 
-                if ($n = $sbit->appendChild($doc->createAttribute("n"))) {
-                    $n->value = $bit;
-                    $sbit->appendChild($doc->createTextNode($properties['name']));
-                }
-
                 if ($labOn = $sbit->appendChild($doc->createAttribute("labelOn"))) {
                     $labOn->value = $properties['labelon'];
                 }
@@ -336,11 +328,10 @@ class databox_status
 
             $databox->saveStructure($doc);
 
-            self::$_status[$sbas_id]->status[$bit]["name"] = $properties['name'];
             self::$_status[$sbas_id]->status[$bit]["labelon"] = $properties['labelon'];
             self::$_status[$sbas_id]->status[$bit]["labeloff"] = $properties['labeloff'];
-            self::$_status[$sbas_id]->status[$bit]["searchable"] = ! ! $properties['searchable'];
-            self::$_status[$sbas_id]->status[$bit]["printable"] = ! ! $properties['printable'];
+            self::$_status[$sbas_id]->status[$bit]["searchable"] = (Boolean) $properties['searchable'];
+            self::$_status[$sbas_id]->status[$bit]["printable"] = (Boolean) $properties['printable'];
 
             if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_on'])) {
                 self::$_status[$sbas_id]->status[$bit]['img_on'] = null;
