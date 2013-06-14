@@ -686,6 +686,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $this->assertLessThan(65, $status['bit']);
                 $this->assertArrayHasKey('label_on', $status);
                 $this->assertArrayHasKey('label_off', $status);
+                $this->assertArrayHasKey('labels', $status);
+                $this->assertArrayHasKey('fr', $status['labels']);
+                $this->assertArrayHasKey('en', $status['labels']);
+                $this->assertArrayHasKey('de', $status['labels']);
+                $this->assertArrayHasKey('nl', $status['labels']);
                 $this->assertArrayHasKey('img_on', $status);
                 $this->assertArrayHasKey('img_off', $status);
                 $this->assertArrayHasKey('searchable', $status);

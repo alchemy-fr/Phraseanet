@@ -5,106 +5,154 @@
     </div>
 {% endif %}
 
-<h1 style='padding-left:30px;'>{% trans 'status:: numero de bit' %} {{ app['request'].get('bit') }}</h1>
+<h1 style='padding-left:30px;'>
+    {% trans 'status:: numero de bit' %} {{ app['request'].get('bit') }}
+</h1>
 
-        <form id="fileupload" class="form-horizontal" enctype="multipart/form-data" method="post" action="{{ path('database_submit_statusbit', { 'databox_id' : app['request'].get('databox_id'), 'bit' : app['request'].get('bit') }) }}">
-            <fieldset>
-                <div class="span5 well-small">
-                    <label for="name">
-{% trans'admin::status: nom du status : '%}
-                            <input id="name" name="name" class="input-xlarge" type="text" value="{{ status['name']|default('') }}">
-                        </label>
+<form id="fileupload" class="form-horizontal" enctype="multipart/form-data" method="post" action="{{ path('database_submit_statusbit', { 'databox_id' : app['request'].get('databox_id'), 'bit' : app['request'].get('bit') }) }}">
+    <div class="row-fluid">
+        <div class="span12 well">
+            <span class="label">{% trans'admin::status: case A'%}</span>
+            <div class="row-fluid">
+                <label class="control-label" for="label_off">
+                    {% trans'admin::status: texte a afficher'%}
+                </label>
+                <div class="controls">
+                    <input id="label_off" name="label_off" class="input-xlarge" type="text" value="{{ status['labels_off_i18n'][app['locale.I18n']]|default('') }}">
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label">
+                </label>
+                <div class="controls">
+                    {% for code, language in app['locales.I18n.available'] %}
+                    <div class="span2">
+                        <h6>{{ language }}</h6>
                     </div>
-                    <div class="span5 well">
-<span class="label">{% trans'admin::status: case A'%}</span>
-                            <div class="control-group">
-                                <label class="control-label" for="label_off">
-{% trans'admin::status: texte a afficher'%}
-                                    </label>
-                                    <div class="controls">
-                                        <input id="name" name="label_off" class="input-xlarge" type="text" value="{{ status['labeloff']|default('') }}">
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="image_off">
-                        {% trans'admin::status: symboliser par'%}
-                                        </label>
-                                        <div class="controls">
-                                            <input type="file" name="image_off" accept="image/*"/>
-                                            <div class='thumbnail' style='height:20px;width:20px'>
-                                                {% if status['img_off'] is defined and status['img_off'] %}
-                                                    <img src="{{ status['img_off'] }}" />
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label class="control-label" for="delete_icon_off">
-{% trans'admin::status:: aucun symbole'%}
-                                            </label>
-                                            <div class="controls">
-                                                <label class="checkbox">
-                                                    <input id="delete_icon_off" name="delete_icon_off" type="checkbox">
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="span5 well">
-<span class="label">{% trans'admin::status: case B'%}</span>
-                                            <div class="control-group">
-                                                <label class="control-label" for="label_on">
-{% trans'admin::status: texte a afficher'%}
-                                                    </label>
-                                                    <div class="controls">
-                                                        <input id="label_on" name="label_on" class="input-xlarge" type="text" value="{{ status['labelon']|default('') }}">
-                                                    </div>
-                                                </div>
-                                                <div class="control-group">
-                                                    <label class="control-label" for="image_on">
-                        {% trans'admin::status: symboliser par'%}
-                                                        </label>
-                                                        <div class="controls">
-                                                            <input type="file" name="image_on" accept="image/*"/>
-                                                            <div class='thumbnail' style='height:20px;width:20px'>
-                                                                {% if status['img_on'] is defined and status['img_on'] %}
-                                                                    <img src="{{ status['img_on'] }}" />
-                                                                {% endif %}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="control-group">
-                                                        <label class="control-label" for="delete_icon_on">
-{% trans'admin::status:: aucun symbole'%}
-                                                            </label>
-                                                            <div class="controls">
-                                                                <label class="checkbox">
-                                                                    <input id="delete_icon_on" name="delete_icon_on" type="checkbox">
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="span10">
-                                                        <label class="checkbox">
-                                                            <input id="printable" name="printable" type="checkbox" {{ status['printable'] is defined and status['printable'] == '1' ? "checked" : "" }}>
-                                                                    {% trans'status:: Afficher le status dans les feuilles de reponses pour tous les utilisateurs' %}
-                                                        </label>
-                                                        <label class="checkbox">
-                                                            <input id="searchable" name="searchable" type="checkbox" {{ status['searchable'] is defined and status['searchable'] == '1' ? "checked" : "" }}>
-                                                                        {% trans'status:: retrouver sous forme de filtre dans la recherche' %}
-                                                        </label>
-                                                    </div>
-                    <div  class=" span10">
-                                                    <div class="form-actions">
-                                                        <button id="form_submitter" class="btn btn-primary" type="button">
-{% trans 'boutton::valider' %}
-                                                            </button>
-                                                            <a style='text-decoration:none;' class="btn" href="{{ path('database_display_statusbit', { 'databox_id' : app['request'].get('databox_id') }) }}">{% trans 'boutton::retour' %}
-                                                            </a>
-                                                        </div>
-                            </div>
-                                                    </fieldset>
-                                                </form>
-
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label">
+                    {% trans 'Labels'%}
+                </label>
+                <div class="controls">
+                {% for code, language in app['locales.I18n.available'] %}
+                <div class="span2">
+                    <input name="labels_off[{{ code }}]" value="{{ status['labels_off'][code] }}" class="span12" type="text">
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label" for="image_off">
+                    {% trans'admin::status: symboliser par'%}
+                </label>
+                <div class="controls">
+                    <input type="file" name="image_off" accept="image/*"/>
+                    <div class='thumbnail' style='height:20px;width:20px'>
+                        {% if status['img_off'] is defined and status['img_off'] %}
+                            <img src="{{ status['img_off'] }}" />
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label" for="delete_icon_off">
+                    {% trans'admin::status:: aucun symbole'%}
+                </label>
+                <div class="controls">
+                    <label class="checkbox">
+                        <input id="delete_icon_off" name="delete_icon_off" type="checkbox">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12 well">
+            <span class="label">{% trans'admin::status: case B'%}</span>
+            <div class="row-fluid">
+                <label class="control-label" for="label_on">
+                    {% trans'admin::status: texte a afficher'%}
+                </label>
+                <div class="controls">
+                    <input id="label_on" name="label_on" class="input-xlarge" type="text" value="{{ status['labels_on_i18n'][app['locale.I18n']]|default('') }}">
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label">
+                </label>
+                <div class="controls">
+                    {% for code, language in app['locales.I18n.available'] %}
+                    <div class="span2">
+                        <h6>{{ language }}</h6>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label">
+                    {% trans 'Labels'%}
+                </label>
+                <div class="controls">
+                {% for code, language in app['locales.I18n.available'] %}
+                <div class="span2">
+                    <input name="labels_on[{{ code }}]" value="{{ status['labels_on'][code] }}" class="span12" type="text">
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label" for="image_on">
+                    {% trans'admin::status: symboliser par'%}
+                </label>
+                <div class="controls">
+                    <input type="file" name="image_on" accept="image/*"/>
+                    <div class='thumbnail' style='height:20px;width:20px'>
+                        {% if status['img_on'] is defined and status['img_on'] %}
+                            <img src="{{ status['img_on'] }}" />
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label" for="delete_icon_on">
+                    {% trans'admin::status:: aucun symbole'%}
+                </label>
+                <div class="controls">
+                    <label class="checkbox">
+                        <input id="delete_icon_off" name="delete_icon_on" type="checkbox">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <label class="checkbox">
+                <input id="printable" name="printable" type="checkbox" {{ status['printable'] is defined and status['printable'] == '1' ? "checked" : "" }}>
+                        {% trans'status:: Afficher le status dans les feuilles de reponses pour tous les utilisateurs' %}
+            </label>
+            <label class="checkbox">
+                <input id="searchable" name="searchable" type="checkbox" {{ status['searchable'] is defined and status['searchable'] == '1' ? "checked" : "" }}>
+                            {% trans'status:: retrouver sous forme de filtre dans la recherche' %}
+            </label>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div  class=" span12">
+            <div class="form-actions">
+                <button id="form_submitter" class="btn btn-primary" type="button">
+                    {% trans 'boutton::valider' %}
+                </button>
+                <a style='text-decoration:none;' class="btn" href="{{ path('database_display_statusbit', { 'databox_id' : app['request'].get('databox_id') }) }}">
+                    {% trans 'boutton::retour' %}
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
 
 <script type="text/javascript">
 

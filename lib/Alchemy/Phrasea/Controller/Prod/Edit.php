@@ -125,8 +125,8 @@ class Edit implements ControllerProviderInterface
                     if (isset($dbstatus[$databox->get_sbas_id()])) {
                         foreach ($dbstatus[$databox->get_sbas_id()] as $n => $statbit) {
                             $status[$n] = array();
-                            $status[$n]['label0'] = $statbit['labeloff'];
-                            $status[$n]['label1'] = $statbit['labelon'];
+                            $status[$n]['label0'] = $statbit['labels_off_i18n'][$app['locale.I18n']];
+                            $status[$n]['label1'] = $statbit['labels_on_i18n'][$app['locale.I18n']];
                             $status[$n]['img_off'] = $statbit['img_off'];
                             $status[$n]['img_on'] = $statbit['img_on'];
                             $status[$n]['_value'] = 0;

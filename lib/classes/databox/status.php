@@ -11,8 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
-use MediaAlchemyst\Alchemyst;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
@@ -85,9 +83,22 @@ class databox_status
                 if ($bit < 4 && $bit > 31)
                     continue;
 
-                $this->status[$bit]["name"] = (string) ($sb);
                 $this->status[$bit]["labeloff"] = (string) $sb['labelOff'];
                 $this->status[$bit]["labelon"] = (string) $sb['labelOn'];
+
+                foreach ($app['locales.I18n.available'] as $code => $language){
+                    $this->status[$bit]['labels_on'][$code] = null;
+                    $this->status[$bit]['labels_off'][$code] = null;
+                }
+
+                foreach ($sb->label as $label) {
+                    $this->status[$bit]['labels_'.$label['switch']][(string) $label['code']] = (string) $label;
+                }
+
+                foreach ($app['locales.I18n.available'] as $code => $language){
+                    $this->status[$bit]['labels_on_i18n'][$code] = isset($this->status[$bit]['labels_on'][$code]) ? $this->status[$bit]['labels_on'][$code] : $this->status[$bit]["labelon"];
+                    $this->status[$bit]['labels_off_i18n'][$code] = isset($this->status[$bit]['labels_off'][$code]) ? $this->status[$bit]['labels_off'][$code] : $this->status[$bit]["labeloff"];
+                }
 
                 $this->status[$bit]["img_off"] = null;
                 $this->status[$bit]["img_on"] = null;
@@ -192,11 +203,13 @@ class databox_status
                     }
                     if (! $set) {
                         $stats[$bit][] = array(
-                            'sbas' => array($sbas_id),
-                            'labeloff' => $props['labeloff'],
-                            'labelon'  => $props['labelon'],
-                            'imgoff'   => $props['img_off'],
-                            'imgon'    => $props['img_on']
+                            'sbas'            => array($sbas_id),
+                            'labeloff'        => $props['labeloff'],
+                            'labelon'         => $props['labelon'],
+                            'labels_on_i18n'  => $props['labels_on_i18n'],
+                            'labels_off_i18n' => $props['labels_off_i18n'],
+                            'imgoff'          => $props['img_off'],
+                            'imgon'           => $props['img_on']
                         );
                         $set = true;
                     }
@@ -205,11 +218,13 @@ class databox_status
                 if (! $set) {
                     $stats[$bit] = array(
                         array(
-                            'sbas' => array($sbas_id),
-                            'labeloff' => $props['labeloff'],
-                            'labelon'  => $props['labelon'],
-                            'imgoff'   => $props['img_off'],
-                            'imgon'    => $props['img_on']
+                            'sbas'            => array($sbas_id),
+                            'labeloff'        => $props['labeloff'],
+                            'labelon'         => $props['labelon'],
+                            'labels_on_i18n'  => $props['labels_on_i18n'],
+                            'labels_off_i18n' => $props['labels_off_i18n'],
+                            'imgoff'          => $props['img_off'],
+                            'imgon'           => $props['img_on']
                         )
                     );
                 }
@@ -314,7 +329,6 @@ class databox_status
 
                 if ($n = $sbit->appendChild($doc->createAttribute("n"))) {
                     $n->value = $bit;
-                    $sbit->appendChild($doc->createTextNode($properties['name']));
                 }
 
                 if ($labOn = $sbit->appendChild($doc->createAttribute("labelOn"))) {
@@ -332,15 +346,32 @@ class databox_status
                 if ($labOff = $sbit->appendChild($doc->createAttribute("labelOff"))) {
                     $labOff->value = $properties['labeloff'];
                 }
+
+                foreach ($properties['labels_off'] as $code => $label) {
+                    $labelTag = $sbit->appendChild($doc->createElement("label"));
+                    $switch = $labelTag->appendChild($doc->createAttribute("switch"));
+                    $switch->value = 'off';
+                    $codeTag = $labelTag->appendChild($doc->createAttribute("code"));
+                    $codeTag->value = $code;
+                    $labelTag->appendChild($doc->createTextNode($label));
+                }
+
+                foreach ($properties['labels_on'] as $code => $label) {
+                    $labelTag = $sbit->appendChild($doc->createElement("label"));
+                    $switch = $labelTag->appendChild($doc->createAttribute("switch"));
+                    $switch->value = 'on';
+                    $codeTag = $labelTag->appendChild($doc->createAttribute("code"));
+                    $codeTag->value = $code;
+                    $labelTag->appendChild($doc->createTextNode($label));
+                }
             }
 
             $databox->saveStructure($doc);
 
-            self::$_status[$sbas_id]->status[$bit]["name"] = $properties['name'];
             self::$_status[$sbas_id]->status[$bit]["labelon"] = $properties['labelon'];
             self::$_status[$sbas_id]->status[$bit]["labeloff"] = $properties['labeloff'];
-            self::$_status[$sbas_id]->status[$bit]["searchable"] = ! ! $properties['searchable'];
-            self::$_status[$sbas_id]->status[$bit]["printable"] = ! ! $properties['printable'];
+            self::$_status[$sbas_id]->status[$bit]["searchable"] = (Boolean) $properties['searchable'];
+            self::$_status[$sbas_id]->status[$bit]["printable"] = (Boolean) $properties['printable'];
 
             if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_on'])) {
                 self::$_status[$sbas_id]->status[$bit]['img_on'] = null;
