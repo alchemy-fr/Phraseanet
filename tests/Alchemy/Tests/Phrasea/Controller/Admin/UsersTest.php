@@ -133,6 +133,16 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOK());
     }
 
+    public function testRouteRightTimeSbas()
+    {
+        $sbas_id = self::$DI['record_1']->get_databox()->get_sbas_id();
+        $params = array('sbas_id' => $sbas_id, 'users'   => self::$DI['user']->get_id());
+
+        self::$DI['client']->request('POST', '/admin/users/rights/time/sbas/', $params);
+        $response = self::$DI['client']->getResponse();
+        $this->assertTrue($response->isOK());
+    }
+
     public function testRouteRightTimeApply()
     {
         $username = uniqid('user_');
@@ -146,6 +156,37 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', array('base_id' => $base_id, 'dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->get_id()));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
+        $user->delete();
+    }
+
+    public function testRouteRightTimeApplySbas()
+    {
+        $username = uniqid('user_');
+        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
+        $sbas_id = self::$DI['record_1']->get_databox()->get_sbas_id();
+        $date = new \Datetime();
+        $date->modify("-10 days");
+        $dmin = $date->format(DATE_ATOM);
+        $date->modify("+30 days");
+        $dmax = $date->format(DATE_ATOM);
+        self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', array('sbas_id' => $sbas_id, 'dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->get_id()));
+        $response = self::$DI['client']->getResponse();
+        $this->assertTrue($response->isOK());
+        $user->delete();
+    }
+
+    public function testRouteRightTimeApplyWithtoutBasOrSbas()
+    {
+        $username = uniqid('user_');
+        $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
+        $date = new \Datetime();
+        $date->modify("-10 days");
+        $dmin = $date->format(DATE_ATOM);
+        $date->modify("+30 days");
+        $dmax = $date->format(DATE_ATOM);
+        self::$DI['client']->request('POST', '/admin/users/rights/time/apply/', array('dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->get_id()));
+        $response = self::$DI['client']->getResponse();
+        $this->assertEquals(400, $response->getStatusCode());
         $user->delete();
     }
 
