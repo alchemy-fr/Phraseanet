@@ -2053,6 +2053,12 @@ class API_V1_adapter extends API_V1_Abstract
                 'bit'        => $n,
                 'label_on'   => $datas['labelon'],
                 'label_off'  => $datas['labeloff'],
+                'labels'     => array(
+                    'en' => $datas['labels_on_i18n']['en'],
+                    'fr' => $datas['labels_on_i18n']['fr'],
+                    'de' => $datas['labels_on_i18n']['de'],
+                    'nl' => $datas['labels_on_i18n']['nl'],
+                ),
                 'img_on'     => $datas['img_on'],
                 'img_off'    => $datas['img_off'],
                 'searchable' => !!$datas['searchable'],

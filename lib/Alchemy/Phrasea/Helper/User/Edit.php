@@ -259,11 +259,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         foreach ($status as $bit => $datas) {
             $tbits_left[$bit]["nset"] = 0;
-            $tbits_left[$bit]["name"] = $datas["labeloff"];
+            $tbits_left[$bit]["name"] = $datas['labels_off_i18n'][$this->app['locale.I18n']];
             $tbits_left[$bit]["icon"] = $datas["img_off"];
 
             $tbits_right[$bit]["nset"] = 0;
-            $tbits_right[$bit]["name"] = $datas["labelon"];
+            $tbits_right[$bit]["name"] = $datas['labels_on_i18n'][$this->app['locale.I18n']];
             $tbits_right[$bit]["icon"] = $datas["img_on"];
         }
 

@@ -7,11 +7,9 @@
 
 <table class="table table-striped table-condensed">
     <thead>
-        <th>{% trans 'status:: numero de bit' %}</th>
-        <th colspan='2'></th>
+        <th style="width:30px;">{% trans 'status:: numero de bit' %}</th>
+        <th style="width:60px;" colspan='2'></th>
         <th>{% trans 'status:: nom' %}</th>
-        <th>{% trans 'status:: icone A' %}</th>
-        <th>{% trans 'status:: icone B' %}</th>
         <th>{% trans 'status:: cherchable par tous' %}</th>
         <th>{% trans 'status:: Affichable pour tous' %}</th>
     </thead>
@@ -42,14 +40,20 @@
 
                 {% if attribute(status, bit) is defined %}
                     {% set statusbit = attribute(status, bit) %}
-                    <td>{{ statusbit['name'] }}</td>
-                    <td>{% if statusbit['img_off'] %}<img title='{{ statusbit['labeloff'] }}' src='{{ statusbit['img_off'] }}' />{% endif %}</td>
-                    <td>{% if statusbit['img_on'] %}<img title='{{ statusbit['labelon'] }}' src='{{ statusbit['img_on'] }}' />{% endif %}</td>
+                    <td>
+                        {% if statusbit['img_off'] %}
+                            <img title='{{ statusbit['labels_off_i18n'][app['locale.I18n']] }}' src='{{ statusbit['img_off'] }}' />
+                        {% endif %}
+                        {{ statusbit['labels_off_i18n'][app['locale.I18n']] }}
+                        /
+                        {% if statusbit['img_on'] %}
+                            <img title='{{ statusbit['labels_on_i18n'][app['locale.I18n']] }}' src='{{ statusbit['img_on'] }}' />
+                        {% endif %}
+                        {{ statusbit['labels_on_i18n'][app['locale.I18n']] }}
+                    </td>
                     <td>{{ statusbit['searchable'] is defined and statusbit['searchable'] == '1' ? 'oui'| trans : 'non'| trans }}</td>
                     <td>{{ statusbit['printable'] is defined and statusbit['printable'] == '1' ? 'oui'| trans : 'non'| trans }}</td>
                 {% else %}
-                    <td></td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>

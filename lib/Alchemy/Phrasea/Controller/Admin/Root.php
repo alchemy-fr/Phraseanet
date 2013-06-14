@@ -240,9 +240,9 @@ class Root implements ControllerProviderInterface
                 $databox = $app['phraseanet.appbox']->get_databox($databox_id);
                 $databox->saveStructure($domst);
 
-                return $app->redirectPath('database_display_stucture', array('sbas_id' => $databox_id, 'success' => 1));
+                return $app->redirectPath('database_display_stucture', array('databox_id' => $databox_id, 'success' => 1));
             } else {
-                return $app->redirectPath('database_display_stucture', array('sbas_id' => $databox_id, 'success' => 0, 'error' => 'struct'));
+                return $app->redirectPath('database_display_stucture', array('databox_id' => $databox_id, 'success' => 0, 'error' => 'struct'));
             }
         })->assert('databox_id', '\d+')
           ->bind('database_submit_stucture');
@@ -326,7 +326,9 @@ class Root implements ControllerProviderInterface
                 'printable'  => $request->request->get('printable') ? '1' : '0',
                 'name'       => $request->request->get('name', ''),
                 'labelon'    => $request->request->get('label_on', ''),
-                'labeloff'   => $request->request->get('label_off', '')
+                'labeloff'   => $request->request->get('label_off', ''),
+                'labels_on'  => $request->request->get('labels_on', array()),
+                'labels_off' => $request->request->get('labels_off', array()),
             );
 
             \databox_status::updateStatus($app, $databox_id, $bit, $properties);
@@ -423,7 +425,7 @@ class Root implements ControllerProviderInterface
                 }
             }
 
-            return $app->redirectPath('database_display_stucture', array('sbas_id' => $databox_id, 'success' => 1));
+            return $app->redirectPath('database_display_statusbit', array('databox_id' => $databox_id, 'success' => 1));
         })->assert('databox_id', '\d+')
           ->assert('bit', '\d+')
           ->bind('database_submit_statusbit');
