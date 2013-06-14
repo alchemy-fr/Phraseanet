@@ -31,23 +31,12 @@
     </div>
 </form>
 
-{% set rules = [] %}
-{% set messages = [] %}
-
 <form id="GV_form" class="form-horizontal" method="post" action = "{{ path('setup_submit_globals') }}">
     {% for section in GV %}
         <div class="section">
             <h1> {{ section['section'] }} </h1>
 
             {% for value in section['vars'] %}
-
-                {% autoescape true js %}
-                    {% if value['required'] is defined %}
-                        {% set rules = rules | merge({ (value['name']) : {required : (value['required']) }})%}
-                        {% set messages = messages | merge({ (value['name']) : {required : ('Required field'| trans ) }})%}
-                    {% endif %}
-                {% endautoescape %}
-
                 {% set readonly = false %}
                 {% if value['readonly'] is defined and value['readonly'] == true %}
                     {% set readonly = true %}
@@ -66,14 +55,14 @@
                     <div class="controls">
                         <label class="control-label" for="id_{{ value['name'] }}"><span class="NEW">{{ is_new == false ? 'NEW' : '' }} </span>{{ value['comment'] | raw }}</label>
                         {% if value['type'] == 'boolean' %}
-                            <label class="radio inline" for="id_{{ value['name'] }}_no"><input {{ readonly ? 'readonly="readonly"' : '' }} {{ currentValue == '0' ? 'checked="selected"' : '' }} type="radio"  name="{{ value['name'] }}" value="False" id="id_{{ value['name'] }}_no" />False</label>
-                            <label class="radio inline" for="id_{{ value['name'] }}_yes"><input {{ readonly ? 'readonly="readonly"' : '' }} {{ currentValue == '1' ? 'checked="checked"' : '' }} type="radio"  name="{{ value['name'] }}" value="True" id="id_{{ value['name'] }}_tes" />True</label>
+                            <label class="radio inline" for="id_{{ value['name'] }}_no"><input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} {{ currentValue == '0' ? 'checked="selected"' : '' }} type="radio"  name="{{ value['name'] }}" value="False" id="id_{{ value['name'] }}_no" />False</label>
+                            <label class="radio inline" for="id_{{ value['name'] }}_yes"><input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} {{ currentValue == '1' ? 'checked="checked"' : '' }} type="radio"  name="{{ value['name'] }}" value="True" id="id_{{ value['name'] }}_tes" />True</label>
                         {% elseif value['type'] == 'string' %}
-                            <input {{ readonly ? 'readonly="readonly"' : '' }} name=" {{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}"/>
+                            <input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}"/>
                         {% elseif value['type'] == 'text' %}
                             <textarea {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">{{ currentValue }}</textarea>
                         {% elseif value['type'] == 'enum' %}
-                            <select {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">
+                            <select {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">
                                 {% if value['available'] is defined and value['available'] is iterable %}
                                     {% for key, val in value['available'] %}
                                         <option value="{{ key }}" {{ currentValue == key ? 'selected="selected"' : '' }} >{{ val }}</option>
@@ -91,7 +80,7 @@
                             {% if value['available'] is defined and value['available'] is iterable %}
                                 {% for key, availableValue in value['available'] %}
                                     <label class="checkbox">
-                                        <input type="checkbox" name="{{ value['name'] ~ '[]' }}" {{ readonly ? 'readonly="readonly"' : ''}} value="{{ key }}" {{ currentValue is iterable and key in currentValue| keys ? 'checked="checked"' : '' }} /> {{ availableValue }}</label>
+                                        <input type="checkbox" name="{{ value['name'] ~ '[]' }}" {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : ''}} value="{{ key }}" {{ currentValue is iterable and key in currentValue| keys ? 'checked="checked"' : '' }} /> {{ availableValue }}</label>
                                 {% endfor %}
                             {% else %}
                                 <p class='alert'>
@@ -102,15 +91,15 @@
                                 </p>
                             {% endif %}
                         {% elseif value['type'] == 'integer' %}
-                                <input {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}"/>
+                                <input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}"/>
                         {% elseif value['type'] == 'password' %}
-                                <input {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="password" value="{{ currentValue }}"/>
+                                <input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="password" value="{{ currentValue }}"/>
                         {% elseif value['type'] == 'timezone' %}
                             {% if currentValue is not empty %}
                                 {% set date = date() %}
                                 {% set currentValue = date.getTimezone().getName() %}
                             {% endif %}
-                                <select name="{{ value['name'] }}" id="id_{{ value['name'] }}">
+                                <select {{ value['required'] is defined ? 'required="required"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">
                                     {% set times = [] %}
                                     {% for k, v in listTimeZone %}
                                         {% for val in v %}
@@ -139,15 +128,41 @@
 
 <script type='text/javascript'>
     {% autoescape false %}
-    $(document).ready(function() {
-        // validate signup form on keyup and submit
-        $("#GV_form").validate({
-            rules: {{ rules|json_encode() }},
-            messages: {{ messages|json_encode() }},
-            errorPlacement: function(error, element) {
-                error.prependTo( element.parent().next() );
+        $(document).ready(function() {
+            // use html5 fallback validation if browser do not support required attribute
+            var form = $("#GV_form");
+            var inputs = form.find("input, select, textarea");
+            // if required not supported, emulate it
+            if (!Modernizr.input.required) {
+                form.bind("submit", function (event) {
+                    var required = [];
+                    // loop through input elements looking for required
+                    $.each(inputs, function(k, input){
+                        var input = $(input);
+                        if (typeof input.attr('required') !== "undefined") {
+                            // if the value is empty, add to required array
+                            if (input.val().replace(/^\s+|\s+$/g, '') === '') {
+                                required.push(input.attr('name'));
+                            }
+                        }
+                    });
+
+                    // show popover if required array contains any elements
+                    if (required.length > 0) {
+                        $.each(required, function(k, name) {
+                            var $this = $("input[name="+name+"], select[name="+name+"], textarea[name="+name+"]");
+                            $this.popover({ title: language.attention, content: language.requiredValue, placement:"bottom" })
+                            .blur(function () {
+                                $this.popover('hide');
+                            });
+                            $this.popover("show");
+                        });
+                        // prevent the form from being submitted
+                        event.stopImmediatePropagation();
+                        return false;
+                    }
+                });
             }
         });
-    });
     {% endautoescape %}
 </script>

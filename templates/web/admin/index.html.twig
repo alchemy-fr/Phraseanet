@@ -29,7 +29,9 @@
         create_template :  '{% trans 'Creer un model' %}',
         create_user :  '{% trans 'Creer un utilisateur' %}',
         annuler :  '{% trans 'boutton::annuler' %}',
-        errorFileApiTooBig :  '{% trans 'This file is too big' %}'
+        errorFileApiTooBig :  '{% trans 'This file is too big' %}',
+        requiredValue: '{% trans 'This field is required' %}',
+        attention: '{% trans 'Attention' %}'
     };
 
     function sessionactive(){
@@ -61,8 +63,7 @@
     };
 
     function enableForms(forms) {
-        forms.bind('submit', function(){
-
+        forms.bind('submit', function(event){
             var method = $(this).attr('method');
             var url = $(this).attr('action');
             var datas = $(this).serializeArray();
