@@ -389,9 +389,23 @@ class ACL implements cache_cacheableInterface
             $this->update_rights_to_base($base_id, $rights);
         }
 
+        $this->apply_template_time_limits($template_user, $base_ids);
+
         $this->user->set_last_template($template_user);
 
         return $this;
+    }
+
+    private function apply_template_time_limits(User_Interface $template_user, Array $base_ids)
+    {
+        foreach ($base_ids as $base_id) {
+            $limited = $template_user->ACL()->get_limits($base_id);
+            if (null !== $limited) {
+                $this->set_limits($base_id, '1', $limited['dmin'], $limited['dmax']);
+            } else {
+                $this->set_limits($base_id, '0', $limited['dmin'], $limited['dmax']);
+            }
+        }
     }
 
     /**
@@ -1555,7 +1569,7 @@ class ACL implements cache_cacheableInterface
             return null;
         }
 
-        return ($this->_limited[$base_id]);
+        return $this->_limited[$base_id];
     }
 
     public function set_limits($base_id, $limit, DateTime $limit_from = null, DateTime $limit_to = null)
