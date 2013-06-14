@@ -11,7 +11,7 @@ require([
     "jquery",
     "i18n",
     "apps/login/home/common",
-    "apps/login/home/views/form"
+    "apps/login/home/views/forms/passwordSetter"
 ], function($, i18n, Common, RenewPassword) {
     i18n.init({
             resGetPath: Common.languagePath,

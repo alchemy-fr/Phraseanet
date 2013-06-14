@@ -15,7 +15,7 @@ define([
     "common/validator",
     "apps/login/home/views/input"
 ], function($, _, Backbone, bootstrap, Validator, InputView) {
-    var RegisterForm = Backbone.View.extend({
+    var Form = Backbone.View.extend({
         events: {
             "submit": "_onSubmit"
         },
@@ -82,5 +82,5 @@ define([
         }
     });
 
-    return RegisterForm;
+    return Form;
 });
