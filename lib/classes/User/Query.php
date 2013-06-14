@@ -139,6 +139,7 @@ class User_Query implements User_QueryInterface
      * @var int
      */
     protected $offset_start;
+    protected $last_model;
 
     /**
      *
@@ -228,7 +229,7 @@ class User_Query implements User_QueryInterface
             $sql .= ' AND usr.invite=0 ';
         }
 
-        if (! $this->email_not_null) {
+        if ($this->email_not_null) {
             $sql .= ' AND usr.usr_mail IS NOT NULL ';
         }
 
@@ -321,6 +322,10 @@ class User_Query implements User_QueryInterface
             }
         }
 
+        if ($this->last_model) {
+            $sql .= ' AND usr.lastModel = "' . mysql_real_escape_string($this->last_model) . '" ';
+        }
+
         $sql_like = array();
 
         foreach ($this->like_field as $like_field => $like_value) {
@@ -393,6 +398,13 @@ class User_Query implements User_QueryInterface
         }
 
         $this->in_ids = array_unique($tmp_usr_ids);
+
+        return $this;
+    }
+
+    public function last_model_is($login = null)
+    {
+        $this->last_model = $login instanceof \User_Adapter ? $login->get_login() : $login;
 
         return $this;
     }

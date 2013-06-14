@@ -37,10 +37,16 @@
                     <option {% if parm['like_field'] == "pays" %}selected="selected"{% endif %} value="pays">{% trans 'Push::filter on countries' %}</option>
                     <option {% if parm['like_field'] == "societe" %}selected="selected"{% endif %} value="societe">{% trans 'Push::filter on companies' %}</option>
                     <option {% if parm['like_field'] == "usr_mail" %}selected="selected"{% endif %} value="usr_mail">{% trans 'Push::filter on emails' %}</option>
-                    <option {% if parm['like_field'] == "lastModel" %}selected="selected"{% endif %} value="lastModel">{% trans 'Push::filter on templates' %}</option>
                 </select>
                 <span>{% trans 'Push::filter starts' %}</span>
                 <input type="text" value="{{parm['like_value']}}" name="like_value" class="input-medium">
+                <span>{% trans 'Last applied template' %}</span>
+                <select name="last_model" class="input-medium">
+                    <option value="">{% trans 'Any template' %}</option>
+                    {% for template in templates %}
+                        <option {% if parm['last_model'] == template.get_login() %}selected="selected"{% endif %} value="{{ template.get_login() }}">{{ template.get_login() }}</option>
+                    {% endfor %}
+                </select>
                 <button type="submit" class="btn">{% trans 'boutton::chercher' %}</button>
             </p>
         </form>
@@ -161,6 +167,7 @@
             {% endif %}
             <input name="like_value" value="{{parm.like_value}}" type="hidden" />
             <input name="like_field" value="{{parm.like_field}}" type="hidden" />
+            <input name="last_model" value="{{parm.last_model}}" type="hidden" />
             <input name="inactives" value="{{parm.inactives}}" type="hidden" />
         </form>
 
