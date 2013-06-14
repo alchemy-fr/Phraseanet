@@ -75,13 +75,13 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $phpunit = $this;
         $crawler
             ->filter('div')
-            ->reduce(function ($node, $i) use ($phpunit) {
-                    if ( ! $node->getAttribute('class')) {
-                        return false;
-                    } elseif ($node->getAttribute('class') == 'error_auth') {
-                        $phpunit->fail("Erreur callback");
-                    }
-                });
+            ->reduce(function ($crawler, $i) use ($phpunit) {
+                if (!$crawler->attr('class')) {
+                    return false;
+                } elseif ($node->getAttribute('class') == 'error_auth') {
+                    $phpunit->fail("Erreur callback");
+                }
+            });
         $settings = self::$account->get_settings();
         $this->assertEquals("kikoo", $settings->get("auth_token"));
         $this->assertEquals("kooki", $settings->get("refresh_token"));
@@ -100,13 +100,13 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $phpunit = $this;
         $crawler
             ->filter('div')
-            ->reduce(function ($node, $i) use ($phpunit) {
-                    if ( ! $node->getAttribute('class')) {
-                        return false;
-                    } elseif ($node->getAttribute('class') == 'error_auth') {
-                        $phpunit->fail("Erreur callback");
-                    }
-                });
+            ->reduce(function ($crawler, $i) use ($phpunit) {
+                if (!$crawler->attr('class')) {
+                    return false;
+                } elseif ($node->getAttribute('class') == 'error_auth') {
+                    $phpunit->fail("Erreur callback");
+                }
+            });
         try {
             self::$account = \Bridge_Account::load_account_from_distant_id(self::$DI['app'], self::$api, self::$DI['user'], 'kirikoo');
             $settings = self::$account->get_settings();
