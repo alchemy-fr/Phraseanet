@@ -81,6 +81,48 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
             }
         }
 
+        foreach ($base_ids as $base_id) {
+            $this->assertNull($cobaye->ACL()->get_limits($base_id));
+        }
+
+        $template->delete();
+        $cobaye->delete();
+    }
+
+    public function testApply_model_with_time_limit()
+    {
+        $template = User_Adapter::create(self::$DI['app'], 'test_phpunit2', 'blabla2', 'test2@example.com', false);
+        $template->set_template(self::$DI['user']);
+
+        $base_ids = array();
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+            foreach ($databox->get_collections() as $collection) {
+                $base_id = $collection->get_base_id();
+                $base_ids[] = $base_id;
+            }
+        }
+        $template->ACL()->give_access_to_base($base_ids);
+
+        $limit_from = new \DateTime('-1 day');
+        $limit_to = new \DateTime('+1 day');
+
+        foreach ($base_ids as $base_id) {
+            $template->ACL()->set_limits($base_id, 1, $limit_from, $limit_to);
+        }
+
+        $cobaye = User_Adapter::create(self::$DI['app'], 'test_phpunit3', 'blabla3', 'test3@example.com', false);
+        $cobaye->ACL()->apply_model($template, $base_ids);
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+            foreach ($databox->get_collections() as $collection) {
+                $base_id = $collection->get_base_id();
+                $this->assertTrue($cobaye->ACL()->has_access_to_base($base_id));
+            }
+        }
+
+        foreach ($base_ids as $base_id) {
+            $this->assertEquals(array('dmin' => $limit_from, 'dmax' => $limit_to), $cobaye->ACL()->get_limits($base_id));
+        }
+
         $template->delete();
         $cobaye->delete();
     }

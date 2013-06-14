@@ -6,6 +6,7 @@
   - BC Break : Removed `bin/console check:system` command, replaced by `bin/setup check:system`.
   - BC Break : Removed `bin/console system:upgrade` command, replaced by `bin/setup system:upgrade`.
   - BC break : Configuration simplification, optimized for performances.
+  - BC Break : Time limits are now applied on templates application.
 
   - SwiftMailer integration (replaces PHPMailer).
       - Emails now include an HTML view.
