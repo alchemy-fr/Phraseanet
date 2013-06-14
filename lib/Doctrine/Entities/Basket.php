@@ -405,6 +405,20 @@ class Basket
         return false;
     }
 
+    public function getBasketElementFromRecord(Application $app, \record_adapter $record)
+    {
+        foreach ($this->getElements() as $basket_element) {
+            $bask_record = $basket_element->getRecord($app);
+
+            if ($bask_record->get_record_id() == $record->get_record_id()
+                && $bask_record->get_sbas_id() == $record->get_sbas_id()) {
+                return $basket_element;
+            }
+        }
+
+        return null;
+    }
+
     public function getSize(Application $app)
     {
         $totSize = 0;
@@ -433,7 +447,7 @@ class Basket
     public function addElement(\Entities\BasketElement $elements)
     {
         $this->elements[] = $elements;
-    
+
         return $this;
     }
 
