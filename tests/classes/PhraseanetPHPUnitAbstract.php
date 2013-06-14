@@ -99,6 +99,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     public function setUp()
     {
+        ini_set('memory_limit', '2048M');
+
         $this->start = $start = microtime(true);
 
         parent::setUp();
