@@ -169,12 +169,15 @@ class databox extends base
 
     public function set_viewname($viewname)
     {
+        $this->load();
+
         $sql = 'UPDATE sbas SET viewname = :viewname WHERE sbas_id = :sbas_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':viewname' => $viewname, ':sbas_id' => $this->id));
         $stmt->closeCursor();
 
+        $this->delete_data_from_cache(static::CACHE_BASE_DATABOX);
         $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         cache_databox::update($this->app, $this->id, 'structure');
 

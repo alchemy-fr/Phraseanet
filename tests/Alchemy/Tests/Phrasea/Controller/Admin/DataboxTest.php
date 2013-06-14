@@ -453,6 +453,11 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
+        $databox = self::$DI['app']['phraseanet.appbox']->get_databox(self::$DI['collection']->get_sbas_id());
+        $databox->set_viewname('old_databox_name');
+
+        $this->assertEquals('old_databox_name', $databox->get_viewname());
+
         $this->XMLHTTPRequest('POST', '/admin/databox/' . self::$DI['collection']->get_sbas_id() . '/view-name/', array(
             'viewname' => 'new_databox_name'
         ));
@@ -464,7 +469,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('sbas_id', $content, $response->getContent());
 
-        $databox = new \databox(self::$DI['app'], self::$DI['collection']->get_sbas_id());
+        $databox = self::$DI['app']['phraseanet.appbox']->get_databox(self::$DI['collection']->get_sbas_id());
         $this->assertEquals('new_databox_name', $databox->get_viewname());
     }
 
