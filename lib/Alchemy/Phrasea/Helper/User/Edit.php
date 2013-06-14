@@ -193,7 +193,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $sql = "SELECT u.usr_id, restrict_dwnld, remain_dwnld, month_dwnld_max
       FROM (usr u INNER JOIN basusr bu ON u.usr_id = bu.usr_id)
-      WHERE u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . "
+      WHERE (u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . ")
       AND bu.base_id = :base_id";
 
         $conn = \connection::getPDOConnection($this->app);
@@ -315,7 +315,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $sql = "SELECT u.usr_id, time_limited, limited_from, limited_to
       FROM (usr u INNER JOIN basusr bu ON u.usr_id = bu.usr_id)
-      WHERE u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . "
+      WHERE (u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . ")
       AND bu.base_id = :base_id";
 
         $conn = \connection::getPDOConnection($this->app);
@@ -360,6 +360,79 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             'users_serial' => implode(';', $this->users),
             'base_id'      => $this->base_id,
             'collection'   => \collection::get_from_base_id($this->app, $this->base_id),
+        );
+    }
+
+    public function get_time_sbas()
+    {
+        $sbas_id = (int) $this->request->get('sbas_id');
+
+        $sql = "SELECT u.usr_id, time_limited, limited_from, limited_to
+            FROM (usr u
+              INNER JOIN basusr bu ON u.usr_id = bu.usr_id
+              INNER JOIN bas b ON b.base_id = bu.base_id)
+            WHERE (u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . ")
+              AND b.sbas_id = :sbas_id";
+
+        $conn = \connection::getPDOConnection($this->app);
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':sbas_id' => $sbas_id));
+        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $time_limited = $limited_from = $limited_to = array();
+
+        foreach ($rs as $row) {
+            $time_limited[] = $row['time_limited'];
+            $limited_from[] = $row['limited_from'];
+            $limited_to[] = $row['limited_to'];
+        }
+
+        $time_limited = array_unique($time_limited);
+        $limited_from = array_unique($limited_from);
+        $limited_to = array_unique($limited_to);
+
+        if (1 === count($time_limited)
+            && 1 === count($limited_from)
+            && 1 === count($limited_to)) {
+            $limited_from = array_pop($limited_from);
+            $limited_to = array_pop($limited_to);
+
+            if ($limited_from !== '' && trim($limited_from) != '0000-00-00 00:00:00') {
+                $date_obj_from = new \DateTime($limited_from);
+                $limited_from = $date_obj_from->format('Y-m-d');
+            } else {
+                $limited_from = false;
+            }
+
+            if ($limited_to !== '' && trim($limited_to) != '0000-00-00 00:00:00') {
+                $date_obj_to = new \DateTime($limited_to);
+                $limited_to = $date_obj_to->format('Y-m-d');
+            } else {
+                $limited_to = false;
+            }
+
+            $datas = array(
+                'time_limited' => array_pop($time_limited),
+                'limited_from' => $limited_from,
+                'limited_to'   => $limited_to
+            );
+        } else {
+            $datas = array(
+                'time_limited' => 2,
+                'limited_from' => '',
+                'limited_to'   => ''
+            );
+        }
+
+        $this->users_datas = $datas;
+
+        return array(
+            'sbas_id'      => $sbas_id,
+            'datas'        => $this->users_datas,
+            'users'        => $this->users,
+            'users_serial' => implode(';', $this->users),
+            'databox'      => $this->app['phraseanet.appbox']->get_databox($sbas_id),
         );
     }
 
@@ -627,16 +700,27 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     public function apply_time()
     {
         $this->base_id = (int) $this->request->get('base_id');
+        $sbas_id = (int) $this->request->get('sbas_id');
 
         $dmin = $this->request->get('dmin') ? new \DateTime($this->request->get('dmin')) : null;
         $dmax = $this->request->get('dmax') ? new \DateTime($this->request->get('dmax')) : null;
 
         $activate = !!$this->request->get('limit');
 
+        $base_ids = array_keys($this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
+
         foreach ($this->users as $usr_id) {
             $user = \User_Adapter::getInstance($usr_id, $this->app);
 
-            $user->ACL()->set_limits($this->base_id, $activate, $dmin, $dmax);
+            if ($this->base_id > 0) {
+                $user->ACL()->set_limits($this->base_id, $activate, $dmin, $dmax);
+            } elseif ($sbas_id > 0) {
+                foreach ($base_ids as $base_id) {
+                    $user->ACL()->set_limits($base_id, $activate, $dmin, $dmax);
+                }
+            } else {
+                $this->app->abort(400, 'No collection or databox id available');
+            }
         }
     }
 
