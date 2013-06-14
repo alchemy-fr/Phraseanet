@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -94,7 +95,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         $stmt->closeCursor();
 
         if (!$row)
-            throw new Exception_FeedNotFound ();
+            throw new NotFoundHttpException('Feed not found');
 
         $this->title = $row['title'];
         $this->subtitle = $row['subtitle'];
@@ -464,7 +465,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
             return $feed;
         }
 
-        throw new Exception_FeedNotFound();
+        throw new NotFoundHttpException('Feed not found');
     }
 
     /**

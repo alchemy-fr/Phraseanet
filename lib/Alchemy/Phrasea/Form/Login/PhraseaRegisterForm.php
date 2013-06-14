@@ -44,7 +44,6 @@ class PhraseaRegisterForm extends AbstractType
             ),
         ));
 
-
         $builder->add('password', 'repeated', array(
             'type'              => 'password',
             'required'          => true,

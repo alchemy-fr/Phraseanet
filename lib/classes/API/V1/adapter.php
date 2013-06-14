@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -1190,7 +1191,7 @@ class API_V1_adapter extends API_V1_Abstract
         try {
             $record = $databox->get_record($record_id);
             $result->set_datas(array('record' => $this->list_record($record)));
-        } catch (Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('Record Not Found'));
         } catch (Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
@@ -1214,7 +1215,7 @@ class API_V1_adapter extends API_V1_Abstract
         try {
             $story = $databox->get_record($story_id);
             $result->set_datas(array('story' => $this->list_story($story)));
-        } catch (Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('Story Not Found'));
         } catch (Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));

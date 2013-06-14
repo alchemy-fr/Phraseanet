@@ -163,7 +163,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $prefs = '<? version="1.0" encoding="UTF-alues> </baseprefs>';
+        $prefs = '<?xml version="1.0" encoding="UTF-alues> </baseprefs>';
 
         $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/suggested-values/', array(
             'str' => $prefs

@@ -12,14 +12,21 @@
 namespace Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaExceptionHandlerSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\BridgeExceptionSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\FirewallSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\JsonRequestSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\DebuggerSubscriber;
+use Silex\Provider\WebProfilerServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-return call_user_func(function($environment = null) {
+return call_user_func(function($environment = PhraseaApplication::ENV_PROD) {
 
     $app = new PhraseaApplication($environment);
+
+    $app['exception_handler'] = $app->share(function ($app) {
+        return new PhraseaExceptionHandlerSubscriber($app['phraseanet.exception_handler']);
+    });
 
     $app->before(function (Request $request) use ($app) {
         if (0 === strpos($request->getPathInfo(), '/setup')) {
@@ -41,98 +48,23 @@ return call_user_func(function($environment = null) {
 
     $app->bindRoutes();
 
-    $app->error(function(\Exception $e) use ($app) {
-        $request = $app['request'];
+    if (PhraseaApplication::ENV_DEV === $app->getEnvironment()) {
+        $app->register(new WebProfilerServiceProvider(), array(
+            'profiler.cache_dir'    => $app['root.path'] . '/tmp/cache/profiler',
+            'profiler.mount_prefix' => '/_profiler',
+        ));
+    }
 
-        if ($e instanceof \Bridge_Exception) {
-            $params = array(
-                'message'      => $e->getMessage()
-                , 'file'         => $e->getFile()
-                , 'line'         => $e->getLine()
-                , 'r_method'     => $request->getMethod()
-                , 'r_action'     => $request->getRequestUri()
-                , 'r_parameters' => ($request->getMethod() == 'GET' ? array() : $request->request->all())
-            );
+    $app['dispatcher'] = $app->share(
+        $app->extend('dispatcher', function($dispatcher, PhraseaApplication $app){
+            $dispatcher->addSubscriber(new BridgeExceptionSubscriber($app));
+            $dispatcher->addSubscriber(new FirewallSubscriber());
+            $dispatcher->addSubscriber(new JsonRequestSubscriber());
+            $dispatcher->addSubscriber(new DebuggerSubscriber($app));
 
-            if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
-                $params = array_merge($params, array('account' => $app['current_account']));
-
-                $response = new Response($app['twig']->render('/prod/actions/Bridge/notconfigured.html.twig', $params), 200, array('X-Status-Code' => 200));
-            } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
-                $params = array_merge($params, array('account' => $app['current_account']));
-
-                $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, array('X-Status-Code' => 200));
-            } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
-                $params = array_merge($params, array('account' => $app['current_account']));
-
-                $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, array('X-Status-Code' => 200));
-            } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
-                $params = array_merge($params, array('api' => $e->get_api()));
-
-                $response = new Response($app['twig']->render('/prod/actions/Bridge/deactivated.html.twig', $params), 200, array('X-Status-Code' => 200));
-            } else {
-                $response = new Response($app['twig']->render('/prod/actions/Bridge/error.html.twig', $params), 200, array('X-Status-Code' => 200));
-            }
-
-            $response->headers->set('Phrasea-StatusCode', 200);
-
-            return $response;
-        }
-
-        if ((0 !== strpos($request->getPathInfo(), '/admin/')
-            || 0 === strpos($request->getPathInfo(), '/admin/collection/')
-            || 0 === strpos($request->getPathInfo(), '/admin/databox/'))
-            && $request->getRequestFormat() == 'json') {
-            $datas = array(
-                'success' => false
-                , 'message' => $e->getMessage()
-            );
-
-            return $app->json($datas, 200, array('X-Status-Code' => 200));
-        }
-
-        if ($e instanceof HttpExceptionInterface) {
-            $headers = $e->getHeaders();
-
-            if (isset($headers['X-Phraseanet-Redirect'])) {
-                return new RedirectResponse($headers['X-Phraseanet-Redirect'], 302, array('X-Status-Code' => 302));
-            }
-
-            $message = isset(Response::$statusTexts[$e->getStatusCode()]) ? Response::$statusTexts[$e->getStatusCode()] : '';
-
-            if (400 === $e->getStatusCode()) {
-                $message .= ' : ' . $e->getMessage();
-            }
-
-            return new Response($message, $e->getStatusCode(), $e->getHeaders());
-        }
-
-        if ($e instanceof \Exception_BadRequest) {
-            return new Response('Bad Request', 400, array('X-Status-Code' => 400));
-        }
-        if ($e instanceof \Exception_Forbidden) {
-            return new Response('Forbidden', 403, array('X-Status-Code' => 403));
-        }
-
-        if ($e instanceof \Exception_Session_NotAuthenticated) {
-            $code = 403;
-            $message = 'Forbidden';
-        } elseif ($e instanceof \Exception_NotAllowed) {
-            $code = 403;
-            $message = 'Forbidden';
-        } elseif ($e instanceof \Exception_NotFound) {
-            $code = 404;
-            $message = 'Not Found';
-        } elseif ($e instanceof \Exception_UnauthorizedAction) {
-            $code = 403;
-            $message = 'Forbidden';
-        } else {
-            $code = 500;
-            $message = 'Server Error' . ($app['debug'] ? ' : ' . $e->getMessage() : '');
-        }
-
-        return new Response($message, $code, array('X-Status-Code' => $code));
-    });
+            return $dispatcher;
+        })
+    );
 
     return $app;
 }, isset($environment) ? $environment : null);

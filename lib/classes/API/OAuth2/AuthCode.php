@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -44,7 +45,7 @@ class API_OAuth2_AuthCode
         $stmt->closeCursor();
 
         if ( ! $row)
-            throw new Exception_NotFound();
+            throw new NotFoundHttpException('Code not found');
 
         $this->account_id = (int) $row['api_account_id'];
         $this->redirect_uri = $row['redirect_uri'];

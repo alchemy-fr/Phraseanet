@@ -27,7 +27,7 @@ class Configuration extends Command
     {
         $this->container['phraseanet.configuration']->compileAndWrite();
         $output->writeln("Confguration compiled.");
-        
+
         return 0;
     }
 }

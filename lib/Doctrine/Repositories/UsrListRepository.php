@@ -4,6 +4,8 @@ namespace Repositories;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * UsrListRepository
@@ -49,11 +51,11 @@ class UsrListRepository extends EntityRepository
 
         /* @var $basket \Entities\UsrList */
         if (null === $list) {
-            throw new \Exception_NotFound(_('List is not found'));
+            throw new NotFoundHttpException(_('List is not found'));
         }
 
         if ( ! $list->hasAccess($user, $app)) {
-            throw new \Exception_Forbidden(_('You have not access to this list'));
+            throw new AccessDeniedHttpException(_('You have not access to this list'));
         }
 
         return $list;

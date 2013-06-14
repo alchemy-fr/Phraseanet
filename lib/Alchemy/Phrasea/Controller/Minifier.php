@@ -26,7 +26,7 @@ class Minifier implements ControllerProviderInterface
         $controllers->get('/', function (Application $app, Request $request) {
 
             // cache directory path
-            $min_cachePath = __DIR__ . '/../../../../tmp/cache_minify';
+            $min_cachePath = $app['root.path'] . '/tmp/cache_minify';
 
             /**
              * Cache file locking. Set to false if filesystem is NFS. On at least one

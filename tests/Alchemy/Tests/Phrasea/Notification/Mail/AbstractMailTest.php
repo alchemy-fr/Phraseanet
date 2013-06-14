@@ -3,10 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Notification\Mail\AbstractMail;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Routing\RequestContext;
 
 /**
  * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail

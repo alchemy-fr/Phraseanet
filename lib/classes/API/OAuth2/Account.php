@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -179,7 +180,7 @@ class API_OAuth2_Account
         if (! $this->token) {
             try {
                 $this->token = new API_OAuth2_Token($this->app['phraseanet.appbox'], $this);
-            } catch (Exception_NotFound $e) {
+            } catch (NotFoundHttpException $e) {
                 $this->token = API_OAuth2_Token::create($this->app['phraseanet.appbox'], $this);
             }
         }
@@ -263,7 +264,7 @@ class API_OAuth2_Account
         $stmt->closeCursor();
 
         if (! $row) {
-            throw new Exception_NotFound();
+            throw new NotFoundHttpException('Account nof found.');
         }
 
         return new self($app, $row['api_account_id']);

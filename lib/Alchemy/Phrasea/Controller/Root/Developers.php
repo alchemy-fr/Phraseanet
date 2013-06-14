@@ -16,6 +16,7 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -189,7 +190,7 @@ class Developers implements ControllerProviderInterface
         try {
             $clientApp = new \API_OAuth2_Application($app, $id);
             $clientApp->delete();
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $error = true;
         }
 
@@ -220,7 +221,7 @@ class Developers implements ControllerProviderInterface
             } else {
                 $error = true;
             }
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $error = true;
         }
 
@@ -283,7 +284,7 @@ class Developers implements ControllerProviderInterface
         try {
             $clientApp = new \API_OAuth2_Application($app, $id);
             $clientApp->set_grant_password((bool) $request->request->get('grant', false));
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $error = true;
         }
 
@@ -368,7 +369,7 @@ class Developers implements ControllerProviderInterface
     {
         try {
             $client = new \API_OAuth2_Application($app, $id);
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $app->abort(404);
         }
 

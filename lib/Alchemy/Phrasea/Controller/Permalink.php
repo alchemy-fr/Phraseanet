@@ -37,7 +37,7 @@ class Permalink extends AbstractDelivery
             $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
 
             if (!$record instanceof \record_adapter) {
-                throw new \Exception_NotFound('bad luck');
+                throw new NotFoundHttpException('bad luck');
             }
 
             $params = array(
@@ -56,7 +56,7 @@ class Permalink extends AbstractDelivery
             $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
 
             if (!($record instanceof \record_adapter)) {
-                throw new \Exception_NotFound('bad luck');
+                throw new NotFoundHttpException('bad luck');
             }
 
             $watermark = $stamp = false;

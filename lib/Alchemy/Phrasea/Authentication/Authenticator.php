@@ -17,6 +17,7 @@ use Browser;
 use Doctrine\ORM\EntityManager;
 use Entities\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Authenticator
 {
@@ -93,7 +94,7 @@ class Authenticator
 
         try {
             $user = \User_Adapter::getInstance($session->getUsrId(), $this->app);
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             throw new RuntimeException('Unable to refresh the session', $e->getCode(), $e);
         }
 

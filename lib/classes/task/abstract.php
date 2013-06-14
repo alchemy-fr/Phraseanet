@@ -455,7 +455,7 @@ abstract class task_abstract
             $stmt->execute(array(':task_id' => $this->getID()));
             $stmt->closeCursor();
 
-            $lock_file = __DIR__ . '/../../../tmp/locks/task_' . $this->getID() . '.lock';
+            $lock_file = $this->dependencyContainer['root.path'] . '/tmp/locks/task_' . $this->getID() . '.lock';
             @unlink($lock_file);
         }
     }

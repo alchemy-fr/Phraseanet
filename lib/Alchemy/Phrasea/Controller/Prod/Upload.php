@@ -19,6 +19,8 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Upload controller collection
@@ -159,27 +161,27 @@ class Upload implements ControllerProviderInterface
         );
 
         if (null === $request->files->get('files')) {
-            throw new \Exception_BadRequest('Missing file parameter');
+            throw new BadRequestHttpException('Missing file parameter');
         }
 
         if (count($request->files->get('files')) > 1) {
-            throw new \Exception_BadRequest('Upload is limited to 1 file per request');
+            throw new BadRequestHttpException('Upload is limited to 1 file per request');
         }
 
         $base_id = $request->request->get('base_id');
 
         if (!$base_id) {
-            throw new \Exception_BadRequest('Missing base_id parameter');
+            throw new BadRequestHttpException('Missing base_id parameter');
         }
 
         if (!$app['authentication']->getUser()->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
-            throw new \Exception_Forbidden('User is not allowed to add record on this collection');
+            throw new AccessDeniedHttpException('User is not allowed to add record on this collection');
         }
 
         $file = current($request->files->get('files'));
 
         if (!$file->isValid()) {
-            throw new \Exception_BadRequest('Uploaded file is invalid');
+            throw new BadRequestHttpException('Uploaded file is invalid');
         }
 
         try {

@@ -21,8 +21,8 @@ class JMSSerializerServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['serializer.cache-directory'] = __DIR__ . '/../../../../../tmp/serializer/';
-        $app['serializer.src_directory'] = __DIR__ . '/../../../../../vendor/jms/serializer/src/';
+        $app['serializer.cache-directory'] = $app['root.path'] . '/tmp/serializer/';
+        $app['serializer.src_directory'] = $app['root.path'] . '/vendor/jms/serializer/src/';
 
         $app['serializer.metadata.annotation_reader'] = $app->share(function () use ($app) {
             AnnotationRegistry::registerAutoloadNamespace("JMS\Serializer\Annotation", $app['serializer.src_directory']);

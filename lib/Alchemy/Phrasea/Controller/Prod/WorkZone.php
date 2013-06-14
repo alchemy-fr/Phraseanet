@@ -16,6 +16,9 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -121,7 +124,7 @@ class WorkZone implements ControllerProviderInterface
     public function attachStories(Application $app, Request $request)
     {
         if (!$request->request->get('stories')) {
-            throw new \Exception_BadRequest();
+            throw new BadRequestHttpException('Missing parameters stories');
         }
 
         $StoryWZRepo = $app['EM']->getRepository('\Entities\StoryWZ');
@@ -139,7 +142,7 @@ class WorkZone implements ControllerProviderInterface
             }
 
             if (!$app['authentication']->getUser()->ACL()->has_access_to_base($Story->get_base_id())) {
-                throw new \Exception_Forbidden('You do not have access to this Story');
+                throw new AccessDeniedHttpException('You do not have access to this Story');
             }
 
             if ($StoryWZRepo->findUserStory($app, $app['authentication']->getUser(), $Story)) {
@@ -205,7 +208,7 @@ class WorkZone implements ControllerProviderInterface
         $StoryWZ = $repository->findUserStory($app, $app['authentication']->getUser(), $Story);
 
         if (!$StoryWZ) {
-            throw new \Exception_NotFound('Story not found');
+            throw new NotFoundHttpException('Story not found');
         }
 
         $app['EM']->remove($StoryWZ);

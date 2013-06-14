@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  *
@@ -63,7 +64,7 @@ class Datafiles extends AbstractDelivery
                 }
 
                 if (!$app['authentication']->getUser()->ACL()->has_access_to_subdef($record, $subdef)) {
-                    throw new \Exception_UnauthorizedAction(sprintf('User has not access to subdef %s', $subdef));
+                    throw new AccessDeniedHttpException(sprintf('User has not access to subdef %s', $subdef));
                 }
 
                 $stamp = false;

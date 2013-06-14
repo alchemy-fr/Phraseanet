@@ -182,7 +182,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     protected function assertForbiddenResponse(Response $response)
     {
         $this->assertEquals(403, $response->getStatusCode());
-        $this->assertTrue(false !== stripos($response->getContent(), 'forbidden'));
+        $this->assertTrue(false !== stripos($response->getContent(), 'Sorry, you do have access to the page you are looking for'));
     }
 
     protected function assertBadResponse(Response $response)
@@ -194,7 +194,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     protected function assertNotFoundResponse(Response $response)
     {
         $this->assertEquals(404, $response->getStatusCode());
-        $this->assertTrue(false !== stripos($response->getContent(), 'not found'));
+        $this->assertTrue(false !== stripos($response->getContent(), 'Sorry, the page you are looking for could not be found'));
     }
 
     /**

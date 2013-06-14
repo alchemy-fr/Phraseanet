@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PasswordToken extends Constraint
 {
@@ -32,7 +33,7 @@ class PasswordToken extends Constraint
     {
         try {
             $data = $this->random->helloToken($token);
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             return false;
         }
 

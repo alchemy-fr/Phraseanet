@@ -18,6 +18,8 @@ use Entities\ValidationData;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -272,9 +274,9 @@ class Basket implements ControllerProviderInterface
 
             $success = true;
             $msg = _('Basket has been updated');
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $msg = _('The requested basket does not exist');
-        } catch (\Exception_Forbidden $e) {
+        } catch (AccessDeniedHttpException $e) {
             $msg = _('You do not have access to this basket');
         } catch (\Exception $e) {
             $msg = _('An error occurred');

@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Exception\SessionNotFound;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  *
@@ -340,7 +341,7 @@ class Root implements ControllerProviderInterface
             if (null !== $file = $request->files->get('image_off')) {
                 try {
                     \databox_status::updateIcon($app, $databox_id, $bit, 'off', $file);
-                } catch (\Exception_Forbidden $e) {
+                } catch (AccessDeniedHttpException $e) {
                     return $app->redirectPath('database_display_statusbit_form', array(
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
@@ -386,7 +387,7 @@ class Root implements ControllerProviderInterface
             if (null !== $file = $request->files->get('image_on')) {
                 try {
                     \databox_status::updateIcon($app, $databox_id, $bit, 'on', $file);
-                } catch (\Exception_Forbidden $e) {
+                } catch (AccessDeniedHttpException $e) {
                     return $app->redirectPath('database_display_statusbit_form', array(
                         'databox_id' => $databox_id,
                         'bit'        => $bit,
