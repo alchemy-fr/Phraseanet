@@ -85,7 +85,7 @@ class patch_320f implements patchInterface
         foreach ($rs as $row) {
             $user = User_Adapter::getInstance($row['usr_id'], $app);
 
-            $feed = $this->getFeed($appbox, $user, $row['pub_restrict'], $row['homelink'], $app);
+            $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink'], $app);
 
             if (! $feed instanceof Feed) {
                 continue;
@@ -149,7 +149,7 @@ class patch_320f implements patchInterface
         return true;
     }
 
-    protected function setFeedDates(DateTime $date_ref)
+    protected function set_feed_dates(DateTime $date_ref)
     {
         foreach (self::$feeds as $array_feeds) {
             foreach ($array_feeds as $feed) {
@@ -161,7 +161,7 @@ class patch_320f implements patchInterface
     }
     protected static $feeds = array();
 
-    protected function getFeed(appbox $appbox, User_Adapter $user, $pub_restrict, $homelink, Application $app)
+    protected function get_feed(appbox $appbox, User_Adapter $user, $pub_restrict, $homelink, Application $app)
     {
         $user_key = 'user_' . $user->get_id();
         if ($homelink == '1')
