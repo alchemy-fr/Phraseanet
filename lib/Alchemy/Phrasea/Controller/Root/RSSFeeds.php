@@ -28,8 +28,9 @@ class RSSFeeds implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
+        $that = $this;
 
-        $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) {
+        $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) use ($that) {
             $feed = $app['EM']->getRepository('Entities\Feed')->find($id);
 
             if (!$feed) {
@@ -45,13 +46,13 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app[$this->getFormater($format)]->createResponse($feed, $page);
+            return $app[$that->getFormater($format)]->createResponse($feed, $page);
         })
             ->bind('feed_public')
             ->assert('id', '\d+')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) {
+        $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) use ($that) {
             $token = $app["EM"]->find('Entities\FeedToken', $id);
             $feed = $token->getFeed();
             $usrId = $token->getUsrId();
@@ -63,13 +64,13 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app[$this->getFormater($format)]->createResponse($feed, $page, $user);
+            return $app[$that->getFormater($format)]->createResponse($feed, $page, $user);
         })
             ->bind('feed_user')
             ->assert('id', '\d+')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) {
+        $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) use ($that) {
             $token = $app['EM']->getRepository('Entities\AggregateToken')->findOneBy(array("value" => $token));
             $usrId = $token->getUsrId();
 
@@ -84,12 +85,12 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app[$this->getFormater($format)]->createResponse($aggregate, $page, $user);
+            return $app[$that->getFormater($format)]->createResponse($aggregate, $page, $user);
         })
             ->bind('feed_user_aggregated')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/aggregated/{format}/', function(Application $app, $format) {
+        $controllers->get('/aggregated/{format}/', function(Application $app, $format) use ($that) {
             $feeds = $app['EM']->getRepository('Entities\Feed')->findAllPublic();
             $feed = new Aggregate($app['EM'], $feeds);
 
@@ -97,12 +98,12 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app[$this->getFormater($format)]->createResponse($feed, $page);
+            return $app[$that->getFormater($format)]->createResponse($feed, $page);
         })
             ->bind('feed_public_aggregated')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/cooliris/', function(Application $app) {
+        $controllers->get('/cooliris/', function(Application $app) use ($that) {
             $feeds = $app['EM']->getRepository('Entities\Feed')->findAllPublic();
             $feed = new Aggregate($app['EM'], $feeds);
 
@@ -110,7 +111,7 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app[$this->getFormater('cooliris')]->createResponse($feed, $page, null, 'Phraseanet', $app);
+            return $app[$that->getFormater('cooliris')]->createResponse($feed, $page, null, 'Phraseanet', $app);
         })
             ->bind('feed_public_cooliris');
 
