@@ -1,6 +1,6 @@
 define([
     'chai',
-    'common/validator'
+    'common/forms/validator'
 ], function(chai, Validator) {
     var expect = chai.expect;
     var assert = chai.assert;

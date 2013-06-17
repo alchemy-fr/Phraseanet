@@ -2,9 +2,9 @@ define([
     'chai',
     'fixtures',
     'jquery',
-    'apps/login/home/views/form',
-    'apps/login/home/views/input',
-    'apps/login/home/views/error'
+    'common/forms/views/form',
+    'common/forms/views/input',
+    'common/forms/views/error'
 ], function(
     chai,
     fixtures,
@@ -65,7 +65,8 @@ define([
         describe("Input View", function() {
             it("should initialize error view", function() {
                 var input = new InputView({
-                    "name": "test"
+                    "name": "test",
+                    "errorTemplate": "#field_errors"
                 });
                 expect(input.errorView).to.be.an.instanceof(ErrorView);
             });
@@ -79,8 +80,10 @@ define([
                 };
 
                 var errorView = new ErrorView({
+                    "name": "test",
                     "errors": [error],
-                    "el" : $(".error-view").first()
+                    "el" : $(".error-view").first(),
+                    "errorTemplate": "#field_errors"
                 });
 
                 errorView.render();
@@ -94,8 +97,10 @@ define([
                 $el.html('previous error here');
 
                 var errorView = new ErrorView({
+                    "name": "test",
                     "errors": [],
-                    "el" : $el
+                    "el" : $el,
+                    "errorTemplate": "#field_errors"
                 });
 
                 errorView.render();

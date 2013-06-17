@@ -18,11 +18,11 @@ define([
         initialize: function(options) {
             options = options || {};
 
-            if (! "name" in options) {
+            if (false === "name" in options) {
                 throw "Missing name attribute in input view";
             }
 
-            if (! "errorTemplate" in options) {
+            if (false === "errorTemplate" in options) {
                 throw "Missing errorTemplate attribute in input view";
             }
 
