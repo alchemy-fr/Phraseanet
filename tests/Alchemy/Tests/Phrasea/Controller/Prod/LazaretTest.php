@@ -199,11 +199,11 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->will($this->onConsecutiveCalls('metadataValue', $story->get_serialize_key(), '00001111', 'metafieldValue'));
 
         //Add the 5 attribute
-        $lazaretFile->addLazaretAttribute($lazaretAttribute);
-        $lazaretFile->addLazaretAttribute($lazaretAttribute);
-        $lazaretFile->addLazaretAttribute($lazaretAttribute);
-        $lazaretFile->addLazaretAttribute($lazaretAttribute);
-        $lazaretFile->addLazaretAttribute($lazaretAttribute);
+        $lazaretFile->addAttribute($lazaretAttribute);
+        $lazaretFile->addAttribute($lazaretAttribute);
+        $lazaretFile->addAttribute($lazaretAttribute);
+        $lazaretFile->addAttribute($lazaretAttribute);
+        $lazaretFile->addAttribute($lazaretAttribute);
 
         $id = 1;
         //Expect the retrieval of the lazaret file with the provided id

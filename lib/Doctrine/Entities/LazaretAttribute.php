@@ -1,43 +1,52 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
 
 /**
- * Entities\LazaretAttribute
+ * LazaretAttribute
  */
 class LazaretAttribute
 {
     /**
-     * @var integer $id
+     * @var integer
      */
     private $id;
 
     /**
-     * @var string $name
+     * @var string
      */
     private $name;
 
     /**
-     * @var string $value
+     * @var string
      */
     private $value;
 
     /**
-     * @var datetime $created
+     * @var \DateTime
      */
     private $created;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime
      */
     private $updated;
 
     /**
-     * @var Entities\LazaretFile
+     * @var \Entities\LazaretFile
      */
     private $lazaretFile;
-
 
     /**
      * Get id
@@ -98,7 +107,7 @@ class LazaretAttribute
     /**
      * Set created
      *
-     * @param  datetime         $created
+     * @param  \DateTime        $created
      * @return LazaretAttribute
      */
     public function setCreated($created)
@@ -111,7 +120,7 @@ class LazaretAttribute
     /**
      * Get created
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -121,7 +130,7 @@ class LazaretAttribute
     /**
      * Set updated
      *
-     * @param  datetime         $updated
+     * @param  \DateTime        $updated
      * @return LazaretAttribute
      */
     public function setUpdated($updated)
@@ -134,7 +143,7 @@ class LazaretAttribute
     /**
      * Get updated
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -144,7 +153,7 @@ class LazaretAttribute
     /**
      * Set lazaretFile
      *
-     * @param  Entities\LazaretFile $lazaretFile
+     * @param  \Entities\LazaretFile $lazaretFile
      * @return LazaretAttribute
      */
     public function setLazaretFile(\Entities\LazaretFile $lazaretFile = null)
@@ -157,7 +166,7 @@ class LazaretAttribute
     /**
      * Get lazaretFile
      *
-     * @return Entities\LazaretFile
+     * @return \Entities\LazaretFile
      */
     public function getLazaretFile()
     {

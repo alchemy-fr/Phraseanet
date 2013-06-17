@@ -15,63 +15,48 @@ use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Kernel
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
+ * ValidationSession
  */
 class ValidationSession
 {
     /**
-     * @var integer $id
+     * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
-     * @var string $name
+     * @var integer
      */
-    protected $name;
+    private $initiator_id;
 
     /**
-     * @var text $description
+     * @var \DateTime
      */
-    protected $description;
+    private $created;
 
     /**
-     * @var boolean $archived
+     * @var \DateTime
      */
-    protected $archived;
+    private $updated;
 
     /**
-     * @var datetime $created
+     * @var \DateTime
      */
-    protected $created;
+    private $expires;
 
     /**
-     * @var datetime $updated
+     * @var \Entities\Basket
      */
-    protected $updated;
+    private $basket;
 
     /**
-     * @var datetime $expires
+     * @var \Doctrine\Common\Collections\Collection
      */
-    protected $expires;
+    private $participants;
 
     /**
-     * @var datetime $reminded
+     * Constructor
      */
-    protected $reminded;
-
-    /**
-     * @var Entities\Basket
-     */
-    protected $basket;
-
-    /**
-     * @var Entities\ValidationParticipant
-     */
-    protected $participants;
-
     public function __construct()
     {
         $this->participants = new \Doctrine\Common\Collections\ArrayCollection();
@@ -88,218 +73,16 @@ class ValidationSession
     }
 
     /**
-     * Set name
-     *
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set description
-     *
-     * @param text $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * Get description
-     *
-     * @return text
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Set archived
-     *
-     * @param boolean $archived
-     */
-    public function setArchived($archived)
-    {
-        $this->archived = $archived;
-    }
-
-    /**
-     * Get archived
-     *
-     * @return boolean
-     */
-    public function getArchived()
-    {
-        return $this->archived;
-    }
-
-    /**
-     * Set created
-     *
-     * @param datetime $created
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-    }
-
-    /**
-     * Get created
-     *
-     * @return datetime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set updated
-     *
-     * @param datetime $updated
-     */
-    public function setUpdated($updated)
-    {
-        $this->updated = $updated;
-    }
-
-    /**
-     * Get updated
-     *
-     * @return datetime
-     */
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
-    /**
-     * Set expires
-     *
-     * @param datetime $expires
-     */
-    public function setExpires($expires)
-    {
-        $this->expires = $expires;
-    }
-
-    /**
-     * Get expires
-     *
-     * @return datetime
-     */
-    public function getExpires()
-    {
-        return $this->expires;
-    }
-
-    /**
-     * Set reminded
-     *
-     * @param datetime $reminded
-     */
-    public function setReminded($reminded)
-    {
-        $this->reminded = $reminded;
-    }
-
-    /**
-     * Get reminded
-     *
-     * @return datetime
-     */
-    public function getReminded()
-    {
-        return $this->reminded;
-    }
-
-    /**
-     * Set basket
-     *
-     * @param Entities\Basket $basket
-     */
-    public function setBasket(\Entities\Basket $basket)
-    {
-        $this->basket = $basket;
-    }
-
-    /**
-     * Get basket
-     *
-     * @return Entities\Basket
-     */
-    public function getBasket()
-    {
-        return $this->basket;
-    }
-
-    /**
-     * Add participants
-     *
-     * @param Entities\ValidationParticipant $participants
-     */
-    public function addValidationParticipant(\Entities\ValidationParticipant $participants)
-    {
-        $this->participants[] = $participants;
-    }
-
-    /**
-     * Get participants
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getParticipants()
-    {
-        return $this->participants;
-    }
-
-    /**
-     * Get a participant
-     *
-     * @return Entities\ValidationParticipant
-     */
-    public function getParticipant(\User_Adapter $user, Application $app)
-    {
-        foreach ($this->getParticipants() as $participant) {
-            if ($participant->getUser($app)->get_id() == $user->get_id()) {
-                return $participant;
-            }
-        }
-
-        throw new NotFoundHttpException('Particpant not found' . $user->get_email());
-    }
-    /**
-     * @var integer $initiator
-     */
-    protected $initiator;
-
-    /**
-     * @var integer $initiator_id
-     */
-    protected $initiator_id;
-
-    /**
      * Set initiator_id
      *
-     * @param integer $initiatorId
+     * @param  integer           $initiatorId
+     * @return ValidationSession
      */
     public function setInitiatorId($initiatorId)
     {
         $this->initiator_id = $initiatorId;
+
+        return $this;
     }
 
     /**
@@ -329,6 +112,131 @@ class ValidationSession
         if ($this->initiator_id) {
             return \User_Adapter::getInstance($this->initiator_id, $app);
         }
+    }
+
+    /**
+     * Set created
+     *
+     * @param  \DateTime         $created
+     * @return ValidationSession
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param  \DateTime         $updated
+     * @return ValidationSession
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Set expires
+     *
+     * @param  \DateTime         $expires
+     * @return ValidationSession
+     */
+    public function setExpires($expires)
+    {
+        $this->expires = $expires;
+
+        return $this;
+    }
+
+    /**
+     * Get expires
+     *
+     * @return \DateTime
+     */
+    public function getExpires()
+    {
+        return $this->expires;
+    }
+
+    /**
+     * Set basket
+     *
+     * @param  \Entities\Basket  $basket
+     * @return ValidationSession
+     */
+    public function setBasket(\Entities\Basket $basket = null)
+    {
+        $this->basket = $basket;
+
+        return $this;
+    }
+
+    /**
+     * Get basket
+     *
+     * @return \Entities\Basket
+     */
+    public function getBasket()
+    {
+        return $this->basket;
+    }
+
+    /**
+     * Add participants
+     *
+     * @param  \Entities\ValidationParticipant $participants
+     * @return ValidationSession
+     */
+    public function addParticipant(\Entities\ValidationParticipant $participants)
+    {
+        $this->participants[] = $participants;
+
+        return $this;
+    }
+
+    /**
+     * Remove participants
+     *
+     * @param \Entities\ValidationParticipant $participants
+     */
+    public function removeParticipant(\Entities\ValidationParticipant $participants)
+    {
+        $this->participants->removeElement($participants);
+    }
+
+    /**
+     * Get participants
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getParticipants()
+    {
+        return $this->participants;
     }
 
     public function isFinished()
@@ -373,25 +281,18 @@ class ValidationSession
     }
 
     /**
-     * Add participants
+     * Get a participant
      *
-     * @param \Entities\ValidationParticipant $participants
-     * @return ValidationSession
+     * @return Entities\ValidationParticipant
      */
-    public function addParticipant(\Entities\ValidationParticipant $participants)
+    public function getParticipant(\User_Adapter $user, Application $app)
     {
-        $this->participants[] = $participants;
+        foreach ($this->getParticipants() as $participant) {
+            if ($participant->getUser($app)->get_id() == $user->get_id()) {
+                return $participant;
+            }
+        }
 
-        return $this;
-    }
-
-    /**
-     * Remove participants
-     *
-     * @param \Entities\ValidationParticipant $participants
-     */
-    public function removeParticipant(\Entities\ValidationParticipant $participants)
-    {
-        $this->participants->removeElement($participants);
+        throw new NotFoundHttpException('Particpant not found' . $user->get_email());
     }
 }

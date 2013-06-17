@@ -63,36 +63,6 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
         return parent::getUsrId();
     }
 
-    public function addValidationData(\Entities\ValidationData $datas)
-    {
-        $this->__load();
-        return parent::addValidationData($datas);
-    }
-
-    public function setSession(\Entities\ValidationSession $session)
-    {
-        $this->__load();
-        return parent::setSession($session);
-    }
-
-    public function getSession()
-    {
-        $this->__load();
-        return parent::getSession();
-    }
-
-    public function setIsAware($isAware)
-    {
-        $this->__load();
-        return parent::setIsAware($isAware);
-    }
-
-    public function getIsAware()
-    {
-        $this->__load();
-        return parent::getIsAware();
-    }
-
     public function setUser(\User_Adapter $user)
     {
         $this->__load();
@@ -105,22 +75,16 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
         return parent::getUser($app);
     }
 
-    public function setReminded($reminded)
+    public function setIsAware($isAware)
     {
         $this->__load();
-        return parent::setReminded($reminded);
+        return parent::setIsAware($isAware);
     }
 
-    public function getReminded()
+    public function getIsAware()
     {
         $this->__load();
-        return parent::getReminded();
-    }
-
-    public function getDatas()
-    {
-        $this->__load();
-        return parent::getDatas();
+        return parent::getIsAware();
     }
 
     public function setIsConfirmed($isConfirmed)
@@ -159,6 +123,48 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
         return parent::getCanSeeOthers();
     }
 
+    public function setReminded($reminded)
+    {
+        $this->__load();
+        return parent::setReminded($reminded);
+    }
+
+    public function getReminded()
+    {
+        $this->__load();
+        return parent::getReminded();
+    }
+
+    public function addData(\Entities\ValidationData $datas)
+    {
+        $this->__load();
+        return parent::addData($datas);
+    }
+
+    public function removeData(\Entities\ValidationData $datas)
+    {
+        $this->__load();
+        return parent::removeData($datas);
+    }
+
+    public function getDatas()
+    {
+        $this->__load();
+        return parent::getDatas();
+    }
+
+    public function setSession(\Entities\ValidationSession $session = NULL)
+    {
+        $this->__load();
+        return parent::setSession($session);
+    }
+
+    public function getSession()
+    {
+        $this->__load();
+        return parent::getSession();
+    }
+
     public function isReleasable()
     {
         $this->__load();
@@ -180,7 +186,7 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

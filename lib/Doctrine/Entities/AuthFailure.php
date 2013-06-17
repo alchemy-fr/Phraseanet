@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Entities;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -34,11 +43,10 @@ class AuthFailure
      */
     private $created;
 
-
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -48,20 +56,20 @@ class AuthFailure
     /**
      * Set username
      *
-     * @param string $username
+     * @param  string      $username
      * @return AuthFailure
      */
     public function setUsername($username)
     {
         $this->username = $username;
-    
+
         return $this;
     }
 
     /**
      * Get username
      *
-     * @return string 
+     * @return string
      */
     public function getUsername()
     {
@@ -71,20 +79,20 @@ class AuthFailure
     /**
      * Set ip
      *
-     * @param string $ip
+     * @param  string      $ip
      * @return AuthFailure
      */
     public function setIp($ip)
     {
         $this->ip = $ip;
-    
+
         return $this;
     }
 
     /**
      * Get ip
      *
-     * @return string 
+     * @return string
      */
     public function getIp()
     {
@@ -94,20 +102,20 @@ class AuthFailure
     /**
      * Set locked
      *
-     * @param boolean $locked
+     * @param  boolean     $locked
      * @return AuthFailure
      */
     public function setLocked($locked)
     {
         $this->locked = $locked;
-    
+
         return $this;
     }
 
     /**
      * Get locked
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getLocked()
     {
@@ -117,20 +125,20 @@ class AuthFailure
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param  \DateTime   $created
      * @return AuthFailure
      */
     public function setCreated($created)
     {
         $this->created = $created;
-    
+
         return $this;
     }
 
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {

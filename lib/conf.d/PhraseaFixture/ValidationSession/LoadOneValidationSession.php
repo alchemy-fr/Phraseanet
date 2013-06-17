@@ -35,9 +35,6 @@ class LoadOneValidationSession extends \PhraseaFixture\AbstractWZ implements Fix
             $this->getReference('one-basket') // load the one-basket stored reference
         );
 
-        $validationSession->setDescription('Une description au hasard');
-        $validationSession->setName('Un nom de validation');
-
         $expires = new \DateTime();
         $expires->modify('+1 week');
         $validationSession->setExpires($expires);

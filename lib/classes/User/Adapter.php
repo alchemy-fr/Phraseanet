@@ -1486,7 +1486,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
             $module->setModuleId($app_id);
             $module->setSession($session);
-            $session->addSessionModule($module);
+            $session->addModule($module);
 
             $app['EM']->persist($module);
             $app['EM']->persist($session);

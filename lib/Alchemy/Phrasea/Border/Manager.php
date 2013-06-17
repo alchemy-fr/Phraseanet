@@ -471,7 +471,7 @@ class Manager
             $attribute->setValue($fileAttribute->asString());
             $attribute->setLazaretFile($lazaretFile);
 
-            $lazaretFile->addLazaretAttribute($attribute);
+            $lazaretFile->addAttribute($attribute);
 
             $this->app['EM']->persist($attribute);
         }
@@ -483,7 +483,7 @@ class Manager
                 $check->setCheckClassname(get_class($response->getChecker()));
                 $check->setLazaretFile($lazaretFile);
 
-                $lazaretFile->addLazaretCheck($check);
+                $lazaretFile->addCheck($check);
 
                 $this->app['EM']->persist($check);
             }

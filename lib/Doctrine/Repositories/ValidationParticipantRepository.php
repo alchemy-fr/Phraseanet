@@ -44,4 +44,3 @@ class ValidationParticipantRepository extends EntityRepository
                 ->getResult();
     }
 }
-

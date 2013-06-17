@@ -3,7 +3,6 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * UsrAuthProvider
@@ -26,6 +25,11 @@ class UsrAuthProvider
     private $provider;
 
     /**
+     * @var string
+     */
+    private $distant_id;
+
+    /**
      * @var \DateTime
      */
     private $updated;
@@ -34,12 +38,6 @@ class UsrAuthProvider
      * @var \DateTime
      */
     private $created;
-
-    /**
-     * @var string
-     */
-    private $distant_id;
-
 
     /**
      * Get id
@@ -54,7 +52,7 @@ class UsrAuthProvider
     /**
      * Set usr_id
      *
-     * @param integer $usrId
+     * @param  integer         $usrId
      * @return UsrAuthProvider
      */
     public function setUsrId($usrId)
@@ -82,7 +80,7 @@ class UsrAuthProvider
     /**
      * Set provider
      *
-     * @param string $provider
+     * @param  string          $provider
      * @return UsrAuthProvider
      */
     public function setProvider($provider)
@@ -103,9 +101,32 @@ class UsrAuthProvider
     }
 
     /**
+     * Set distant_id
+     *
+     * @param  string          $distantId
+     * @return UsrAuthProvider
+     */
+    public function setDistantId($distantId)
+    {
+        $this->distant_id = $distantId;
+
+        return $this;
+    }
+
+    /**
+     * Get distant_id
+     *
+     * @return string
+     */
+    public function getDistantId()
+    {
+        return $this->distant_id;
+    }
+
+    /**
      * Set updated
      *
-     * @param \DateTime $updated
+     * @param  \DateTime       $updated
      * @return UsrAuthProvider
      */
     public function setUpdated($updated)
@@ -128,7 +149,7 @@ class UsrAuthProvider
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param  \DateTime       $created
      * @return UsrAuthProvider
      */
     public function setCreated($created)
@@ -146,28 +167,5 @@ class UsrAuthProvider
     public function getCreated()
     {
         return $this->created;
-    }
-
-    /**
-     * Set distant_id
-     *
-     * @param string $distantId
-     * @return UsrAuthProvider
-     */
-    public function setDistantId($distantId)
-    {
-        $this->distant_id = $distantId;
-
-        return $this;
-    }
-
-    /**
-     * Get distant_id
-     *
-     * @return string
-     */
-    public function getDistantId()
-    {
-        return $this->distant_id;
     }
 }

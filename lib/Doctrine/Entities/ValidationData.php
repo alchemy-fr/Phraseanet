@@ -11,42 +11,42 @@
 
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
+
 /**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
+ * ValidationData
  */
 class ValidationData
 {
     /**
-     * @var integer $id
+     * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
-     * @var boolean $agreement
+     * @var boolean
      */
-    protected $agreement;
+    private $agreement;
 
     /**
-     * @var text $note
+     * @var string
      */
-    protected $note;
+    private $note;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime
      */
-    protected $updated;
+    private $updated;
 
     /**
-     * @var Entities\ValidationParticipant
+     * @var \Entities\ValidationParticipant
      */
-    protected $participant;
+    private $participant;
 
     /**
-     * @var Entities\BasketElement
+     * @var \Entities\BasketElement
      */
-    protected $basket_element;
+    private $basket_element;
 
     /**
      * Get id
@@ -61,11 +61,14 @@ class ValidationData
     /**
      * Set agreement
      *
-     * @param boolean $agreement
+     * @param  boolean        $agreement
+     * @return ValidationData
      */
     public function setAgreement($agreement)
     {
         $this->agreement = $agreement;
+
+        return $this;
     }
 
     /**
@@ -81,17 +84,20 @@ class ValidationData
     /**
      * Set note
      *
-     * @param text $note
+     * @param  string         $note
+     * @return ValidationData
      */
     public function setNote($note)
     {
         $this->note = $note;
+
+        return $this;
     }
 
     /**
      * Get note
      *
-     * @return text
+     * @return string
      */
     public function getNote()
     {
@@ -101,17 +107,20 @@ class ValidationData
     /**
      * Set updated
      *
-     * @param datetime $updated
+     * @param  \DateTime      $updated
+     * @return ValidationData
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+
+        return $this;
     }
 
     /**
      * Get updated
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -121,17 +130,20 @@ class ValidationData
     /**
      * Set participant
      *
-     * @param Entities\ValidationParticipant $participant
+     * @param  \Entities\ValidationParticipant $participant
+     * @return ValidationData
      */
-    public function setParticipant(\Entities\ValidationParticipant $participant)
+    public function setParticipant(\Entities\ValidationParticipant $participant = null)
     {
         $this->participant = $participant;
+
+        return $this;
     }
 
     /**
      * Get participant
      *
-     * @return Entities\ValidationParticipant
+     * @return \Entities\ValidationParticipant
      */
     public function getParticipant()
     {
@@ -141,17 +153,20 @@ class ValidationData
     /**
      * Set basket_element
      *
-     * @param Entities\BasketElement $basketElement
+     * @param  \Entities\BasketElement $basketElement
+     * @return ValidationData
      */
-    public function setBasketElement(\Entities\BasketElement $basketElement)
+    public function setBasketElement(\Entities\BasketElement $basketElement = null)
     {
         $this->basket_element = $basketElement;
+
+        return $this;
     }
 
     /**
      * Get basket_element
      *
-     * @return Entities\BasketElement
+     * @return \Entities\BasketElement
      */
     public function getBasketElement()
     {

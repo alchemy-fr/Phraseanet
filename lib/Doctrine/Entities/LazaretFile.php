@@ -1,72 +1,95 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
 
 /**
- * Entities\LazaretFile
+ * LazaretFile
  */
 class LazaretFile
 {
     /**
-     * @var integer $id
+     * @var integer
      */
     private $id;
 
     /**
-     * @var integer $base_id
+     * @var string
      */
-    private $base_id;
+    private $filename;
 
     /**
-     * @var string $uuid
+     * @var string
      */
-    private $uuid;
+    private $thumbFilename;
 
     /**
-     * @var string $sha256
-     */
-    private $sha256;
-
-    /**
-     * @var datetime $created
-     */
-    private $created;
-
-    /**
-     * @var datetime $updated
-     */
-    private $updated;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    private $attributes;
-
-    /**
-     * @var Entities\LazaretSession
-     */
-    private $session;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    private $checks;
-
-    /**
-     * @var string $originalName
+     * @var string
      */
     private $originalName;
 
     /**
-     * @var boolean $forced
+     * @var integer
+     */
+    private $base_id;
+
+    /**
+     * @var string
+     */
+    private $uuid;
+
+    /**
+     * @var string
+     */
+    private $sha256;
+
+    /**
+     * @var boolean
      */
     private $forced = false;
 
+    /**
+     * @var \DateTime
+     */
+    private $created;
+
+    /**
+     * @var \DateTime
+     */
+    private $updated;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $attributes;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $checks;
+
+    /**
+     * @var \Entities\LazaretSession
+     */
+    private $session;
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->attributes = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->checks = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -77,6 +100,75 @@ class LazaretFile
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set filename
+     *
+     * @param  string      $filename
+     * @return LazaretFile
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+
+        return $this;
+    }
+
+    /**
+     * Get filename
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
+     * Set thumbFilename
+     *
+     * @param  string      $thumbFilename
+     * @return LazaretFile
+     */
+    public function setThumbFilename($thumbFilename)
+    {
+        $this->thumbFilename = $thumbFilename;
+
+        return $this;
+    }
+
+    /**
+     * Get thumbFilename
+     *
+     * @return string
+     */
+    public function getThumbFilename()
+    {
+        return $this->thumbFilename;
+    }
+
+    /**
+     * Set originalName
+     *
+     * @param  string      $originalName
+     * @return LazaretFile
+     */
+    public function setOriginalName($originalName)
+    {
+        $this->originalName = $originalName;
+
+        return $this;
+    }
+
+    /**
+     * Get originalName
+     *
+     * @return string
+     */
+    public function getOriginalName()
+    {
+        return $this->originalName;
     }
 
     /**
@@ -100,6 +192,16 @@ class LazaretFile
     public function getBaseId()
     {
         return $this->base_id;
+    }
+
+    /**
+     * Get the Destination Collection
+     *
+     * @return \collection
+     */
+    public function getCollection(Application $app)
+    {
+        return \collection::get_from_base_id($app, $this->getBaseId());
     }
 
     /**
@@ -149,144 +251,6 @@ class LazaretFile
     }
 
     /**
-     * Set created
-     *
-     * @param  datetime    $created
-     * @return LazaretFile
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created
-     *
-     * @return datetime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set updated
-     *
-     * @param  datetime    $updated
-     * @return LazaretFile
-     */
-    public function setUpdated($updated)
-    {
-        $this->updated = $updated;
-
-        return $this;
-    }
-
-    /**
-     * Get updated
-     *
-     * @return datetime
-     */
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
-    /**
-     * Add attributes
-     *
-     * @param  Entities\LazaretAttribute $attributes
-     * @return LazaretFile
-     */
-    public function addLazaretAttribute(\Entities\LazaretAttribute $attributes)
-    {
-        $this->attributes[] = $attributes;
-
-        return $this;
-    }
-
-    /**
-     * Get attributes
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getAttributes()
-    {
-        return $this->attributes;
-    }
-
-    /**
-     * Set session
-     *
-     * @param  Entities\LazaretSession $session
-     * @return LazaretFile
-     */
-    public function setSession(\Entities\LazaretSession $session = null)
-    {
-        $this->session = $session;
-
-        return $this;
-    }
-
-    /**
-     * Get session
-     *
-     * @return Entities\LazaretSession
-     */
-    public function getSession()
-    {
-        return $this->session;
-    }
-
-    /**
-     * Set originalName
-     *
-     * @param  string      $originalName
-     * @return LazaretFile
-     */
-    public function setOriginalName($originalName)
-    {
-        $this->originalName = $originalName;
-
-        return $this;
-    }
-
-    /**
-     * Get originalName
-     *
-     * @return string
-     */
-    public function getOriginalName()
-    {
-        return $this->originalName;
-    }
-
-    /**
-     * Add checks
-     *
-     * @param  Entities\LazaretCheck $checks
-     * @return LazaretFile
-     */
-    public function addLazaretCheck(\Entities\LazaretCheck $checks)
-    {
-        $this->checks[] = $checks;
-
-        return $this;
-    }
-
-    /**
-     * Get checks
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getChecks()
-    {
-        return $this->checks;
-    }
-
-    /**
      * Set forced
      *
      * @param  boolean     $forced
@@ -310,13 +274,138 @@ class LazaretFile
     }
 
     /**
-     * Get the Destination Collection
+     * Set created
      *
-     * @return \collection
+     * @param  \DateTime   $created
+     * @return LazaretFile
      */
-    public function getCollection(Application $app)
+    public function setCreated($created)
     {
-        return \collection::get_from_base_id($app, $this->getBaseId());
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param  \DateTime   $updated
+     * @return LazaretFile
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Add attributes
+     *
+     * @param  \Entities\LazaretAttribute $attributes
+     * @return LazaretFile
+     */
+    public function addAttribute(\Entities\LazaretAttribute $attributes)
+    {
+        $this->attributes[] = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * Remove attributes
+     *
+     * @param \Entities\LazaretAttribute $attributes
+     */
+    public function removeAttribute(\Entities\LazaretAttribute $attributes)
+    {
+        $this->attributes->removeElement($attributes);
+    }
+
+    /**
+     * Get attributes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * Add checks
+     *
+     * @param  \Entities\LazaretCheck $checks
+     * @return LazaretFile
+     */
+    public function addCheck(\Entities\LazaretCheck $checks)
+    {
+        $this->checks[] = $checks;
+
+        return $this;
+    }
+
+    /**
+     * Remove checks
+     *
+     * @param \Entities\LazaretCheck $checks
+     */
+    public function removeCheck(\Entities\LazaretCheck $checks)
+    {
+        $this->checks->removeElement($checks);
+    }
+
+    /**
+     * Get checks
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getChecks()
+    {
+        return $this->checks;
+    }
+
+    /**
+     * Set session
+     *
+     * @param  \Entities\LazaretSession $session
+     * @return LazaretFile
+     */
+    public function setSession(\Entities\LazaretSession $session = null)
+    {
+        $this->session = $session;
+
+        return $this;
+    }
+
+    /**
+     * Get session
+     *
+     * @return \Entities\LazaretSession
+     */
+    public function getSession()
+    {
+        return $this->session;
     }
 
     /**
@@ -345,106 +434,5 @@ class LazaretFile
         }
 
         return $ret;
-    }
-
-    /**
-     * @var string $filename
-     */
-    private $filename;
-
-    /**
-     * @var string $thumbFilename
-     */
-    private $thumbFilename;
-
-
-    /**
-     * Set filename
-     *
-     * @param string $filename
-     * @return LazaretFile
-     */
-    public function setFilename($filename)
-    {
-        $this->filename = $filename;
-        return $this;
-    }
-
-    /**
-     * Get filename
-     *
-     * @return string
-     */
-    public function getFilename()
-    {
-        return $this->filename;
-    }
-
-    /**
-     * Set thumbFilename
-     *
-     * @param string $thumbFilename
-     * @return LazaretFile
-     */
-    public function setThumbFilename($thumbFilename)
-    {
-        $this->thumbFilename = $thumbFilename;
-        return $this;
-    }
-
-    /**
-     * Get thumbFilename
-     *
-     * @return string
-     */
-    public function getThumbFilename()
-    {
-        return $this->thumbFilename;
-    }
-
-    /**
-     * Add attributes
-     *
-     * @param \Entities\LazaretAttribute $attributes
-     * @return LazaretFile
-     */
-    public function addAttribute(\Entities\LazaretAttribute $attributes)
-    {
-        $this->attributes[] = $attributes;
-    
-        return $this;
-    }
-
-    /**
-     * Remove attributes
-     *
-     * @param \Entities\LazaretAttribute $attributes
-     */
-    public function removeAttribute(\Entities\LazaretAttribute $attributes)
-    {
-        $this->attributes->removeElement($attributes);
-    }
-
-    /**
-     * Add checks
-     *
-     * @param \Entities\LazaretCheck $checks
-     * @return LazaretFile
-     */
-    public function addCheck(\Entities\LazaretCheck $checks)
-    {
-        $this->checks[] = $checks;
-    
-        return $this;
-    }
-
-    /**
-     * Remove checks
-     *
-     * @param \Entities\LazaretCheck $checks
-     */
-    public function removeCheck(\Entities\LazaretCheck $checks)
-    {
-        $this->checks->removeElement($checks);
     }
 }

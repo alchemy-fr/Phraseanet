@@ -86,7 +86,7 @@ class BasketsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $basketElement->setRecord($record);
         $basketElement->setLastInBasket();
 
-        $basket->addBasketElement($basketElement);
+        $basket->addElement($basketElement);
 
         self::$DI['app']['EM']->persist($basket);
         self::$DI['app']['EM']->flush();

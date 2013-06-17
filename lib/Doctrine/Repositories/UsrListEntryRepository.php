@@ -26,7 +26,6 @@ class UsrListEntryRepository extends EntityRepository
         $dql = 'SELECT e FROM Entities\UsrListEntry e
             WHERE e.usr_id = :usr_id';
 
-
         $params = array(
             'usr_id' => $user->get_id(),
         );
@@ -41,7 +40,7 @@ class UsrListEntryRepository extends EntityRepository
     {
         $entry = $this->find($entry_id);
 
-        if ( ! $entry) {
+        if (!$entry) {
             throw new NotFoundHttpException('Entry not found');
         }
 
@@ -69,7 +68,7 @@ class UsrListEntryRepository extends EntityRepository
 
         $entry = $query->getResult();
 
-        if ( ! $entry) {
+        if (!$entry) {
             throw new NotFoundHttpException('Entry not found');
         }
 
