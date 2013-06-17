@@ -101,6 +101,5 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ path('minifier', {'f': 'assets/zxcvbn/zxcvbn-async.js'}) }}"></script>
-    <script type="text/javascript" src="{{ path('minifier', {'f': 'scripts/apps/login/home/register.js'}) }}"></script>
+    <script type="text/javascript" src="{{ path('minifier', {'f': 'assets/zxcvbn/zxcvbn-async.js,/scripts/apps/login/home/register.js'}) }}"></script>
 {% endblock %}
