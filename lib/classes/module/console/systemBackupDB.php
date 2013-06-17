@@ -18,7 +18,7 @@
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\ProcessBuilder;
+use Symfony\Component\Process\Process;
 
 class module_console_systemBackupDB extends Command
 {
@@ -32,9 +32,11 @@ class module_console_systemBackupDB extends Command
             , dirname(dirname(dirname(dirname(__DIR__))))
         );
 
-        $this->setDescription('Backup Phraseanet Databases');
-
-        $this->addArgument('directory', null, 'The directory where to backup', $dir);
+        $this
+            ->setDescription('Backup Phraseanet Databases')
+            ->addArgument('directory', null, 'The directory where to backup', $dir)
+            ->addOption('gzip', 'g', null, 'Gzip the output (requires gzip utility)')
+            ->addOption('bzip', 'b', null, 'Bzip the output (requires bzip2 utility)');
 
         return $this;
     }
@@ -43,13 +45,14 @@ class module_console_systemBackupDB extends Command
     {
         $output->write('Phraseanet is going to be backup...', true);
 
-        $ok = $this->dump_base($this->getService('phraseanet.appbox'), $input, $output) && $ok;
+        $res = 0;
+        $res += $this->dump_base($this->getService('phraseanet.appbox'), $input, $output) && $ok;
 
         foreach ($this->getService('phraseanet.appbox')->get_databoxes() as $databox) {
-            $ok = $this->dump_base($databox, $input, $output) && $ok;
+            $res += $this->dump_base($databox, $input, $output) && $ok;
         }
 
-        return (int) ! $ok;
+        return $res;
     }
 
     protected function dump_base(base $base, InputInterface $input, OutputInterface $output)
@@ -63,33 +66,45 @@ class module_console_systemBackupDB extends Command
             , $date_obj->format('Y_m_d_H_i_s')
         );
 
-        $output->write(sprintf('Generating %s ... ', $filename));
+        $command = sprintf(
+            'mysqldump %s %s %s %s %s %s --default-character-set=utf8',
+            '--host='.escapeshellarg($base->get_host()),
+            '--port='.escapeshellarg($base->get_port()),
+            '--user='.escapeshellarg($base->get_user()),
+            '--password='.escapeshellarg($base->get_passwd()),
+            '--databases',
+            escapeshellarg($base->get_dbname())
+        );
 
-        $builder = ProcessBuilder::create(array(
-                'mysqldump',
-                '--host='.$base->get_host(),
-                '--port='.$base->get_port(),
-                '--user='.$base->get_user(),
-                '--password='.$base->get_passwd(),
-                '--databases', $base->get_dbname(),
-                '--default-character-set=utf8'
-            ));
+        if ($input->getOption('gzip')) {
+            $filename .= '.gz';
+            $command .= ' | gzip -9';
+        } elseif ($input->getOption('bzip')) {
+            $filename .= '.bz2';
+            $command .= ' | bzip2 -9';
+        }
 
-        $proces = $builder->getProcess();
-        $proces->run();
+        $output->write(sprintf('Generating <info>%s</info> ... ', $filename));
 
-        if ($proces->isSuccessful()) {
-            file_put_contents($filename, $proces->getOutput());
+        $command .= ' > ' . escapeshellarg($filename);
+
+        $process = new Process($command);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            $output->writeln('<error>Failed</error>');
+
+            return 1;
         }
 
         if (file_exists($filename) && filesize($filename) > 0) {
             $output->writeln('OK');
 
-            return true;
+            return 0;
         } else {
             $output->writeln('<error>Failed</error>');
 
-            return false;
+            return 1;
         }
     }
 }
