@@ -2502,6 +2502,12 @@ function evt_add_in_chutier(sbas_id, record_id,event, singleSelection)
     p4.WorkZone.addElementToBasket(sbas_id, record_id, event, singleSelection);
 }
 
+function remove_from_basket(el, confirm)
+{
+    var confirm = confirm || false;
+    p4.WorkZone.removeElementFromBasket(el, confirm);
+}
+
 
 function doSpecialSearch(qry, allbase){
     if (allbase) {
