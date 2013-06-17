@@ -42,7 +42,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testPublicFeedAggregated()
     {
-        $this->insertOneFeed(self::$DI['user']);
+        $this->insertOneFeed(self::$DI['user'], "test", true);
 
         self::$DI['client']->request('GET', '/feeds/aggregated/atom/');
         $response = self::$DI['client']->getResponse();

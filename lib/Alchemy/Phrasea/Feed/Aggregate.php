@@ -78,7 +78,7 @@ class Aggregate implements FeedInterface
         return true;
     }
 
-    public function getEntries($offset_start = 0, $how_many = null)
+    public function getEntries($offset_start = null, $how_many = null)
     {
         return $this->em->getRepository('Entities\FeedEntry')->findByFeeds($this->feeds, $offset_start, $how_many);
     }
