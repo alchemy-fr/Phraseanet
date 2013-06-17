@@ -433,7 +433,7 @@ class Basket
     public function addElement(\Entities\BasketElement $elements)
     {
         $this->elements[] = $elements;
-    
+
         return $this;
     }
 

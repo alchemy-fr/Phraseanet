@@ -310,7 +310,7 @@
               href="{{ path('prod_stories_story_remove_element', { 'sbas_id' : container.get_sbas_id(), 'record_id' : container.get_record_id(), 'child_sbas_id' : record.get_sbas_id(), 'child_record_id' : record.get_record_id() }) }}"
             {% elseif wz_scope == 'basket' %}
               id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
-              href="{{ path('prod_baskets_basket_element_remove', { 'basket_id' : container.getId(), 'basket_element_id' : contained.getId()}) }}/"
+              href="{{ path('prod_baskets_basket_element_remove', { 'basket_id' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
             {% elseif wz_scope == 'basket' %}
               href="#"
             {% endif %}

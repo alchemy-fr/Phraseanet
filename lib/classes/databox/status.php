@@ -86,7 +86,7 @@ class databox_status
                 $this->status[$bit]["labeloff"] = (string) $sb['labelOff'];
                 $this->status[$bit]["labelon"] = (string) $sb['labelOn'];
 
-                foreach ($app['locales.I18n.available'] as $code => $language){
+                foreach ($app['locales.I18n.available'] as $code => $language) {
                     $this->status[$bit]['labels_on'][$code] = null;
                     $this->status[$bit]['labels_off'][$code] = null;
                 }
@@ -95,7 +95,7 @@ class databox_status
                     $this->status[$bit]['labels_'.$label['switch']][(string) $label['code']] = (string) $label;
                 }
 
-                foreach ($app['locales.I18n.available'] as $code => $language){
+                foreach ($app['locales.I18n.available'] as $code => $language) {
                     $this->status[$bit]['labels_on_i18n'][$code] = isset($this->status[$bit]['labels_on'][$code]) ? $this->status[$bit]['labels_on'][$code] : $this->status[$bit]["labelon"];
                     $this->status[$bit]['labels_off_i18n'][$code] = isset($this->status[$bit]['labels_off'][$code]) ? $this->status[$bit]['labels_off'][$code] : $this->status[$bit]["labeloff"];
                 }
