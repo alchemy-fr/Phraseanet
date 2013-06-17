@@ -5,6 +5,8 @@
   - BC Break : Removed `bin/console check:config` command.
   - BC Break : Removed `bin/console check:system` command, replaced by `bin/setup check:system`.
   - BC Break : Removed `bin/console system:upgrade` command, replaced by `bin/setup system:upgrade`.
+  - BC Break : Removed `bin/console check:ensure-production-settings` and `bin/console check:ensure-dev-settings` 
+    commands, replaced by `bin/console check:config`.
   - BC break : Configuration simplification, optimized for performances.
   - BC Break : Time limits are now applied on templates application.
 
