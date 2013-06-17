@@ -1,0 +1,7 @@
+<script type="text/template" id="field_errors_block">
+     <span class=" text-error help-block">
+            <% _.each(errors, function(error) { %>
+                <div><%= error.message %></div>
+            <% }); %>
+     </span>
+</script>

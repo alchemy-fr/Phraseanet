@@ -35,8 +35,7 @@ $groups = array(
         , '//include/jquery.image_enhancer.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'),
     'admin' => array(
-        '//include/jslibs/jquery.validate.js'
-        , '//include/jslibs/jquery.validate.password.js'
+        '//assets/modernizr/modernizr.js'
         , '//include/jslibs/jquery-ui-1.8.24.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery-treeview/jquery.treeview.js'

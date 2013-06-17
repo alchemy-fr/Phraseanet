@@ -11,35 +11,36 @@ require([
     "jquery",
     "i18n",
     "apps/login/home/common",
-    "common/forms/views/formType/passwordSetter"
-], function($, i18n, Common, RenewPassword) {
+    "common/forms/views/form"
+], function($, i18n, Common, RenewEmail) {
     i18n.init({
             resGetPath: Common.languagePath,
             useLocalStorage: true
     }, function() {
         Common.initialize();
 
-        new RenewPassword({
-            el : $("form[name=passwordChangeForm]"),
+        new RenewEmail({
+            el : $("form[name=changeEmail]"),
+            errorTemplate: "#field_errors_block",
+            onRenderError: function(name, $el) {
+                $el.closest(".control-group").addClass("error");
+            },
             rules: [{
-                name: "oldPassword",
+                name: "form_password",
                 rules: "required",
                 message: i18n.t("validation_blank")
             },{
-                name: "password[password]",
+                name: "form_email",
                 rules: "required",
                 message: i18n.t("validation_blank")
             },{
-                name: "password[password]",
-                rules: "min_length[5]",
-                message: i18n.t("validation_length_min", {
-                    postProcess: "sprintf",
-                    sprintf: ["5"]
-                })
+                name: "form_email",
+                rules: "email",
+                message: i18n.t("validation_email")
             },{
-                name: "password[confirm]",
-                rules: "matches[password[password]]",
-                message: i18n.t("password_match")
+                name: "form_email_confirm",
+                rules: "matches[form_email]",
+                message: i18n.t("email_match")
             }]
         });
     });

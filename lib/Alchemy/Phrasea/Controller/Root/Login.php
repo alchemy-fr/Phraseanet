@@ -187,11 +187,17 @@ class Login implements ControllerProviderInterface
             'validation_ip'             => _('Please provide a valid IP address.'),
             'validation_length_min'     => _('Please provide a longer value. It should have %s character or more.'),
             'password_match'            => _('Please provide the same passwords.'),
+            'email_match'               => _('Please provide the same emails.'),
             'accept_tou'                => _('Please accept the terms of use to register.'),
             'no_collection_selected'    => _('No collection selected'),
             'one_collection_selected'   => _('%d collection selected'),
             'collections_selected'      => _('%d collections selected'),
-            'all_collections'           => _('Select all collections')
+            'all_collections'           => _('Select all collections'),
+            // password strength
+            'weak'                      => _('Weak'),
+            'ordinary'                  => _('Ordinary'),
+            'good'                      => _('Good'),
+            'great'                     => _('Great'),
         ));
 
         $response->setExpires(new \DateTime('+1 day'));
