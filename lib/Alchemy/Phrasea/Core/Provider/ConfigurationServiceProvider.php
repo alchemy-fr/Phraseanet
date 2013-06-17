@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\HttpFoundation\Request;
 
 class ConfigurationServiceProvider implements ServiceProviderInterface
 {
@@ -45,5 +46,7 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
 
     public function boot(SilexApplication $app)
     {
+        $proxies = isset($app['phraseanet.configuration']['trusted-proxies']) ? $app['phraseanet.configuration']['trusted-proxies'] : array();
+        Request::setTrustedProxies($proxies);
     }
 }

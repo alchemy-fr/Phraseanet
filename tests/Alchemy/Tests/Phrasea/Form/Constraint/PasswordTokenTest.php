@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\PasswordToken;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PasswordTokenTest extends \PhraseanetPHPUnitAbstract
 {
@@ -20,7 +21,7 @@ class PasswordTokenTest extends \PhraseanetPHPUnitAbstract
             ->expects($this->once())
             ->method('helloToken')
             ->with($token)
-            ->will($this->throwException(new \Exception_NotFound('Token not found')));
+            ->will($this->throwException(new NotFoundHttpException('Token not found')));
 
         $constraint = new PasswordToken(self::$DI['app'], $random);
         $this->assertFalse($constraint->isValid($token));

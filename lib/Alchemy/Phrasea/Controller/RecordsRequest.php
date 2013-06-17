@@ -15,6 +15,7 @@ use Entities\Basket;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RecordsRequest extends ArrayCollection
 {
@@ -223,7 +224,7 @@ class RecordsRequest extends ArrayCollection
                     $record = new \record_adapter($app, (int) $basrec[0], (int) $basrec[1]);
                     $received[$record->get_serialize_key()] = $record;
                     unset($record);
-                } catch (\Exception_NotFound $e) {
+                } catch (NotFoundHttpException $e) {
                     continue;
                 }
             }

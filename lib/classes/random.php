@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class random
 {
@@ -62,7 +63,7 @@ class random
                 switch ($row['type']) {
                     case 'download':
                     case 'email':
-                        $file = __DIR__ . '/../../tmp/download/' . $row['value'] . '.zip';
+                        $file = $this->app['root.path'] . '/tmp/download/' . $row['value'] . '.zip';
                         if (is_file($file))
                             unlink($file);
                         break;
@@ -225,7 +226,7 @@ class random
         $stmt->closeCursor();
 
         if ( ! $row)
-            throw new Exception_NotFound('Token not found');
+            throw new NotFoundHttpException('Token not found');
 
         return $row;
     }
@@ -238,7 +239,7 @@ class random
      *
      * @return string The token
      *
-     * @throws \Exception_NotFound
+     * @throws NotFoundHttpException
      */
     public function getValidationToken($userId, $basketId)
     {
@@ -260,7 +261,7 @@ class random
         $stmt->closeCursor();
 
         if (! $row) {
-            throw new \Exception_NotFound('Token not found');
+            throw new NotFoundHttpException('Token not found');
         }
 
         return $row['value'];

@@ -32,7 +32,6 @@ class Root implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-
             if (!$app['authentication']->isAuthenticated() && null !== $request->query->get('nolog')) {
                 return $app->redirectPath('login_authenticate_as_guest');
             }

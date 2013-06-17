@@ -15,6 +15,7 @@ use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -436,7 +437,7 @@ class appbox extends base
         foreach ($this->retrieve_sbas_ids() as $sbas_id) {
             try {
                 $ret[$sbas_id] = new \databox($this->app, $sbas_id);
-            } catch (\Exception_DataboxNotFound $e) {
+            } catch (NotFoundHttpException $e) {
 
             }
         }
@@ -476,7 +477,7 @@ class appbox extends base
         $databoxes = $this->get_databoxes();
 
         if (!array_key_exists($sbas_id, $databoxes)) {
-            throw new Exception_DataboxNotFound('Databox `' . $sbas_id . '` not found');
+            throw new NotFoundHttpException('Databox `' . $sbas_id . '` not found');
         }
 
         return $databoxes[$sbas_id];

@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -78,7 +79,7 @@ class API_OAuth2_Token
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ( ! $row)
-            throw new Exception_NotFound();
+            throw new NotFoundHttpException('Account not found');
 
         $stmt->closeCursor();
 
@@ -286,7 +287,7 @@ class API_OAuth2_Token
         $stmt->closeCursor();
 
         if ( ! $row)
-            throw new Exception_NotFound();
+            throw new NotFoundHttpException('Account not found');
 
         $account = new API_OAuth2_Account($app, $row['api_account_id']);
 

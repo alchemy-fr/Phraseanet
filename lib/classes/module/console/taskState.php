@@ -20,6 +20,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class module_console_taskState extends Command
 {
@@ -80,7 +81,7 @@ class module_console_taskState extends Command
             $task = $task_manager->getTask($task_id);
             $taskPID = $task->getPID();
             $taskState = $task->getState();
-        } catch (Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $output->writeln($input->getOption('short') ? 'unknown_id' : $e->getMessage());
 
             return self::EXITCODE_TASK_UNKNOWN;

@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -149,7 +150,7 @@ class API_OAuth2_Application
         $stmt->execute(array(':application_id' => $this->id));
 
         if (0 === $stmt->rowCount()) {
-            throw new \Exception_NotFound(sprintf('Application with id %d not found', $this->id));
+            throw new NotFoundHttpException(sprintf('Application with id %d not found', $this->id));
         }
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -546,7 +547,7 @@ class API_OAuth2_Application
         $stmt->closeCursor();
 
         if ( ! $row)
-            throw new Exception_NotFound();
+            throw new NotFoundHttpException('Application not found.');
 
         return new API_OAuth2_Account($this->app, $row['api_account_id']);
     }
@@ -659,7 +660,7 @@ class API_OAuth2_Application
         $stmt->closeCursor();
 
         if ( ! $row)
-            throw new Exception_NotFound();
+            throw new NotFoundHttpException('Client not found.');
 
         return new self($app, $row['application_id']);
     }

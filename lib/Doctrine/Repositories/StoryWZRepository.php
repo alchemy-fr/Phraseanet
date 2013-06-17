@@ -4,6 +4,8 @@ namespace Repositories;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * StoryWZRepository
@@ -30,7 +32,7 @@ class StoryWZRepository extends EntityRepository
         foreach ($stories as $key => $story) {
             try {
                 $story->getRecord($app)->get_title();
-            } catch (\Exception_NotFound $e) {
+            } catch (NotFoundHttpException $e) {
                 $this->getEntityManager()->remove($story);
                 unset($stories[$key]);
             }
@@ -67,16 +69,16 @@ class StoryWZRepository extends EntityRepository
         if ($story) {
             try {
                 $story->getRecord($app)->get_title();
-            } catch (\Exception_NotFound $e) {
+            } catch (NotFoundHttpException $e) {
                 $this->getEntityManager()->remove($story);
-                throw new \Exception_NotFound('Story not found');
+                throw new NotFoundHttpException('Story not found');
             }
 
             if ($story->getUser($app)->get_id() !== $user->get_id()) {
-                throw new \Exception_Forbidden('You have not access to ths story');
+                throw new AccessDeniedHttpException('You have not access to ths story');
             }
         } else {
-            throw new \Exception_NotFound('Story not found');
+            throw new NotFoundHttpException('Story not found');
         }
 
         return $story;
@@ -95,7 +97,7 @@ class StoryWZRepository extends EntityRepository
         if ($story) {
             try {
                 $record = $story->getRecord($app);
-            } catch (\Exception_NotFound $e) {
+            } catch (NotFoundHttpException $e) {
                 $this->getEntityManager()->remove($story);
                 $this->getEntityManager()->flush();
                 $story = null;
@@ -121,7 +123,7 @@ class StoryWZRepository extends EntityRepository
         foreach ($stories as $key => $story) {
             try {
                 $record = $story->getRecord();
-            } catch (\Exception_NotFound $e) {
+            } catch (NotFoundHttpException $e) {
                 $this->getEntityManager()->remove($story);
                 $this->getEntityManager()->flush();
                 unset($stories[$key]);
@@ -145,7 +147,7 @@ class StoryWZRepository extends EntityRepository
         foreach ($stories as $key => $story) {
             try {
                 $record = $story->getRecord();
-            } catch (\Exception_NotFound $e) {
+            } catch (NotFoundHttpException $e) {
                 $this->getEntityManager()->remove($story);
                 $this->getEntityManager()->flush();
                 unset($stories[$key]);

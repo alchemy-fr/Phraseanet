@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Authentication\Token;
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TokenValidator
 {
@@ -34,7 +35,7 @@ class TokenValidator
             $datas = $this->app['tokens']->helloToken($token);
 
             return $datas['usr_id'];
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
 
         }
 

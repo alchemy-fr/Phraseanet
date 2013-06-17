@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -31,13 +33,13 @@ class MustacheLoader implements ControllerProviderInterface
             $template_name = $request->query->get('template');
 
             if (!preg_match('/^[a-zA-Z0-9-_]+$/', $template_name)) {
-                throw new \Exception_BadRequest('Wrong template name : ' . $template_name);
+                throw new BadRequestHttpException('Wrong template name : ' . $template_name);
             }
 
             $template_path = realpath(__DIR__ . '/../../../../../templates/web/Mustache/Prod/' . $template_name . '.Mustache.html');
 
             if (!file_exists($template_path)) {
-                throw new \Exception_NotFound('Template does not exists : ' . $template_path);
+                throw new NotFoundHttpException('Template does not exists : ' . $template_path);
             }
 
             return new \Symfony\Component\HttpFoundation\Response(file_get_contents($template_path));

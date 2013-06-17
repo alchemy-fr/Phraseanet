@@ -65,7 +65,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(500, $response->getStatusCode());
-        $this->assertTrue(false !== stripos($response->getContent(), 'internal server error'));
+        $this->assertTrue(false !== stripos($response->getContent(), 'Whoops, looks like something went wrong'));
     }
 
     /**
@@ -243,7 +243,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(500, $response->getStatusCode());
-        $this->assertTrue(false !== stripos($response->getContent(), 'internal server error'));
+        $this->assertTrue(false !== stripos($response->getContent(), 'Whoops, looks like something went wrong'));
     }
 
     /**

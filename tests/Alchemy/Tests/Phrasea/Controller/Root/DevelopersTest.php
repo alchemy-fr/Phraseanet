@@ -2,6 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Root;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
@@ -129,7 +131,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         try {
             new \API_OAuth2_Application(self::$DI['app'], $oauthApp->get_id());
             $this->fail('Application not deleted');
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
 
         }
     }

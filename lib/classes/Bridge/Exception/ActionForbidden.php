@@ -9,13 +9,15 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 /**
  *
  * @package     Bridge
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Bridge_Exception_ActionForbidden extends Exception_Forbidden
+class Bridge_Exception_ActionForbidden extends AccessDeniedHttpException
 {
 
 }

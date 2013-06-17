@@ -4,6 +4,7 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Entities;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * BasketElementRepository
@@ -38,7 +39,7 @@ class BasketElementRepository extends EntityRepository
 
         /* @var $element \Entities\BasketElement */
         if (null === $element) {
-            throw new \Exception_NotFound(_('Element is not found'));
+            throw new NotFoundHttpException(_('Element is not found'));
         }
 
         return $element;

@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class Logout implements EventSubscriberInterface
+class LogoutSubscriber implements EventSubscriberInterface
 {
     public function onLogout(LogoutEvent $event)
     {

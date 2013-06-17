@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
@@ -90,7 +91,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         try {
             self::$DI['app']['tokens']->helloToken($token);
             $this->fail('Token has not been removed');
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
 
         }
 

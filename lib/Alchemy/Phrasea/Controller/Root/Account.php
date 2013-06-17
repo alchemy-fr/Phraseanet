@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Account implements ControllerProviderInterface
 {
@@ -221,7 +222,7 @@ class Account implements ControllerProviderInterface
             );
 
             $account->set_revoked((bool) $request->query->get('revoke'), false);
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $error = true;
         }
 

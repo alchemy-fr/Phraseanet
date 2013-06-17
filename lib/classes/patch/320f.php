@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -109,7 +110,7 @@ class patch_320f implements patchInterface
                 try {
                     $record = new record_adapter($app, phrasea::sbasFromBas($app, $row['base_id']), $row['record_id']);
                     $item = Feed_Entry_Item::create($appbox, $entry, $record);
-                } catch (Exception_NotFound $e) {
+                } catch (NotFoundHttpException $e) {
 
                 }
             }

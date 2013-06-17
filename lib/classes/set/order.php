@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -231,7 +232,7 @@ class set_order extends set_abstract
         $stmt->closeCursor();
 
         if ( ! $row)
-            throw new Exception_NotFound('unknown order ' . $id);
+            throw new NotFoundHttpException('unknown order ' . $id);
 
         $current_user = User_Adapter::getInstance($row['usr_id'], $app);
 

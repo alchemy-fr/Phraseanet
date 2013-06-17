@@ -2,6 +2,7 @@
 
 use Alchemy\Phrasea\Border\File as BorderFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
@@ -593,7 +594,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         try {
             $repo->findUserBasket(self::$DI['app'], $ssel_id, $user, true);
             $this->fail('An exception should have been raised');
-        } catch (Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
 
         }
     }

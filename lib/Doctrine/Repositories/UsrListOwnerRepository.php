@@ -3,6 +3,8 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * UsrListOwnerRepository
@@ -26,11 +28,11 @@ class UsrListOwnerRepository extends EntityRepository
 
         /* @var $owner \Entities\UsrListOwner */
         if (null === $owner) {
-            throw new \Exception_NotFound(_('Owner is not found'));
+            throw new NotFoundHttpException(_('Owner is not found'));
         }
 
         if ( ! $owner->getList()->getid() != $list->getId()) {
-            throw new \Exception_Forbidden(_('Owner and list mismatch'));
+            throw new AccessDeniedHttpException(_('Owner and list mismatch'));
         }
 
         return $owner;
@@ -61,7 +63,7 @@ class UsrListOwnerRepository extends EntityRepository
 
         /* @var $owner \Entities\UsrListOwner */
         if (null === $owner) {
-            throw new \Exception_NotFound(_('Owner is not found'));
+            throw new NotFoundHttpException(_('Owner is not found'));
         }
 
         return $owner;

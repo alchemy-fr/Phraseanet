@@ -2,6 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
@@ -88,7 +90,7 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databoxId);
             $databox->unmount_databox();
             $databox->delete();
-        } catch (\Exception_DataboxNotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $this->fail('databox not mounted');
         }
 
