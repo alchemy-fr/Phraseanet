@@ -32,8 +32,8 @@
         </div>
         <div class="descPubli">
             <div style="margin:10px 0 10px 20px;width:80%;">
-                {% if entry.get_subtitle()|trim is not empty %}
-                    {{ entry.get_subtitle()|nl2br }}
+                {% if entry.getSubtitle()|trim is not empty %}
+                    {{ entry.getSubtitle()|nl2br }}
                 {% endif %}
             </div>
         </div>
@@ -76,7 +76,7 @@
                     {% endset %}
                 {% endif %}
 
-                <div style="width:{{ wrapper_size }}px;" sbas="{{ record.get_sbas_id() }}" id="{{"IMGT_" ~ record.get_serialize_key() ~ "_PUB_" ~ entry.get_id() }}" class="IMGT diapo" onclick="openPreview('FEED','{{ item.get_ord() }}','{{ entry.get_id() }}');">
+                <div style="width:{{ wrapper_size }}px;" sbas="{{ record.get_sbas_id() }}" id="{{"IMGT_" ~ record.get_serialize_key() ~ "_PUB_" ~ entry.getId() }}" class="IMGT diapo" onclick="openPreview('FEED','{{ item.getOrd() }}','{{ entry.getId() }}');">
                     <div>
                         <div class="title" style="height:40px;">
                             {{ record.get_title() }}

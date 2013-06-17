@@ -45,6 +45,21 @@ class FeedServiceProvider implements ServiceProviderInterface
         $app['feed.cooliris-formatter'] = $app->share(function($app) {
             return new CoolirisFormatter($app['feed.link-generator-collection']);
         });
+        $app['feed.formatter-strategy'] = $app->protect(function($type) use ($app) {
+            switch ($type) {
+                case 'rss':
+                    return $app['feed.rss-formatter'];
+                    break;
+                case 'atom':
+                    return $app['feed.atom-formatter'];
+                    break;
+                case 'cooliris':
+                    return $app['feed.cooliris-formatter'];
+                    break;
+                default:
+                    throw new InvalidArgumentException(sprintf('Format %s is not recognized.', $type));
+            }
+        });
     }
 
     public function boot(Application $app)

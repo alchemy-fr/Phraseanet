@@ -43,7 +43,7 @@ class UserSettingRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameter('feeds', $feeds);
 
-        if (null !== $offset_start) {
+        if (null !== $offset_start && 0 !== $offset_start) {
             $query->setFirstResult($offset_start);
         }
         if (null !== $how_many) {

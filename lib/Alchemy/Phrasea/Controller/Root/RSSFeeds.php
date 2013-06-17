@@ -30,7 +30,7 @@ class RSSFeeds implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
         $that = $this;
 
-        $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) use ($that) {
+        $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) {
             $feed = $app['EM']->getRepository('Entities\Feed')->find($id);
 
             if (!$feed) {
@@ -46,13 +46,13 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app[$that->getFormater($format)]->createResponse($feed, $page);
+            return $app['feed.formatter-strategy']($format)->createResponse($feed, $page);
         })
             ->bind('feed_public')
             ->assert('id', '\d+')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) use ($that) {
+        $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) {
             $token = $app["EM"]->find('Entities\FeedToken', $id);
             $feed = $token->getFeed();
             $usrId = $token->getUsrId();
@@ -64,13 +64,13 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app[$that->getFormater($format)]->createResponse($feed, $page, $user);
+            return $app['feed.formatter-strategy']($format)->createResponse($feed, $page, $user);
         })
             ->bind('feed_user')
             ->assert('id', '\d+')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) use ($that) {
+        $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) {
             $token = $app['EM']->getRepository('Entities\AggregateToken')->findOneBy(array("value" => $token));
             $usrId = $token->getUsrId();
 
@@ -85,12 +85,12 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app[$that->getFormater($format)]->createResponse($aggregate, $page, $user);
+            return $app['feed.formatter-strategy']($format)->createResponse($aggregate, $page, $user);
         })
             ->bind('feed_user_aggregated')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/aggregated/{format}/', function(Application $app, $format) use ($that) {
+        $controllers->get('/aggregated/{format}/', function(Application $app, $format) {
             $feeds = $app['EM']->getRepository('Entities\Feed')->findAllPublic();
             $feed = new Aggregate($app['EM'], $feeds);
 
@@ -98,12 +98,12 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app[$that->getFormater($format)]->createResponse($feed, $page);
+            return $app['feed.formatter-strategy']($format)->createResponse($feed, $page);
         })
             ->bind('feed_public_aggregated')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/cooliris/', function(Application $app) use ($that) {
+        $controllers->get('/cooliris/', function(Application $app) {
             $feeds = $app['EM']->getRepository('Entities\Feed')->findAllPublic();
             $feed = new Aggregate($app['EM'], $feeds);
 
@@ -111,27 +111,11 @@ class RSSFeeds implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app[$that->getFormater('cooliris')]->createResponse($feed, $page, null, 'Phraseanet', $app);
+
+            return $app['feed.formatter-strategy']('cooliris')->createResponse($feed, $page, null, 'Phraseanet', $app);
         })
             ->bind('feed_public_cooliris');
 
         return $controllers;
-    }
-
-    private function getFormater($type)
-    {
-        switch ($type) {
-            case 'rss':
-                return 'feed.rss-formatter';
-                break;
-            case 'atom':
-                return 'feed.atom-formatter';
-                break;
-            case 'cooliris':
-                return 'feed.cooliris-formatter';
-                break;
-            default:
-                throw new InvalidArgumentException(sprintf('Format %s is not recognized.', $format));
-        }
     }
 }
