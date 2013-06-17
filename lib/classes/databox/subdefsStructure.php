@@ -220,7 +220,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @param  Array                    $options
      * @return databox_subdefsStructure
      */
-    public function set_subdef($group, $name, $class, $downloadable, $options)
+    public function set_subdef($group, $name, $class, $downloadable, $options, $labels)
     {
         $dom_struct = $this->databox->get_dom_structure();
 
@@ -228,6 +228,14 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $subdef->setAttribute('class', $class);
         $subdef->setAttribute('name', mb_strtolower($name));
         $subdef->setAttribute('downloadable', ($downloadable ? 'true' : 'false'));
+
+        foreach ($labels as $code => $label) {
+            $child = $dom_struct->createElement('label');
+            $labelElement = $child->appendChild($dom_struct->createTextNode($label));
+            $lang = $child->appendChild($dom_struct->createAttribute('lang'));
+            $lang->value = $code;
+            $subdef->appendChild($child);
+        }
 
         foreach ($options as $option => $value) {
 

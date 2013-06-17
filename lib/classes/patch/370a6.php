@@ -115,7 +115,7 @@ class patch_370a6 implements patchInterface
         $options['meta'] = $subdef->meta_writeable() ? 'yes' : 'no';
         $options['devices'] = array(databox_subdef::DEVICE_SCREEN);
 
-        $root->set_subdef($groupname, $subdef->get_name(), $subdef->get_class(), $subdef->is_downloadable(), $options);
+        $root->set_subdef($groupname, $subdef->get_name(), $subdef->get_class(), $subdef->is_downloadable(), $options, array());
     }
 
     protected function addMobileSubdefVideo($root, $baseSubdef, $groupname)
@@ -151,9 +151,9 @@ class patch_370a6 implements patchInterface
         $newSubdefOptionsX264['acodec'] = 'libvo_aacenc';
         $newSubdefOptionsX264['vcodec'] = 'libx264';
 
-        $root->set_subdef($groupname, $baseSubdef->get_name() . '_mobile_webM', $baseSubdef->get_class(), false, $newSubdefOptionsWebM);
-        $root->set_subdef($groupname, $baseSubdef->get_name() . '_mobile_OGG', $baseSubdef->get_class(), false, $newSubdefOptionsOgg);
-        $root->set_subdef($groupname, $baseSubdef->get_name() . '_mobile_X264', $baseSubdef->get_class(), false, $newSubdefOptionsX264);
+        $root->set_subdef($groupname, $baseSubdef->get_name() . '_mobile_webM', $baseSubdef->get_class(), false, $newSubdefOptionsWebM, array());
+        $root->set_subdef($groupname, $baseSubdef->get_name() . '_mobile_OGG', $baseSubdef->get_class(), false, $newSubdefOptionsOgg, array());
+        $root->set_subdef($groupname, $baseSubdef->get_name() . '_mobile_X264', $baseSubdef->get_class(), false, $newSubdefOptionsX264, array());
     }
 
     protected function addMobileSubdefImage($root, $baseSubdef, $groupname)
@@ -170,7 +170,7 @@ class patch_370a6 implements patchInterface
 
         $optionMobile['devices'] = array(databox_subdef::DEVICE_HANDHELD);
 
-        $root->set_subdef($groupname, $baseSubdef->get_name() . '_mobile', $baseSubdef->get_class(), false, $optionMobile);
+        $root->set_subdef($groupname, $baseSubdef->get_name() . '_mobile', $baseSubdef->get_class(), false, $optionMobile, array());
     }
 
     protected function addHtml5Video($root, $baseSubdef, $groupname)
@@ -192,7 +192,7 @@ class patch_370a6 implements patchInterface
         $newSubdefOptionsOgg['vcodec'] = 'libtheora';
         $newSubdefOptionsOgg['acodec'] = 'libvorbis';
 
-        $root->set_subdef($groupname, $baseSubdef->get_name() . '_webM', $baseSubdef->get_class(), false, $newSubdefOptionsWebM);
-        $root->set_subdef($groupname, $baseSubdef->get_name() . '_OGG', $baseSubdef->get_class(), false, $newSubdefOptionsOgg);
+        $root->set_subdef($groupname, $baseSubdef->get_name() . '_webM', $baseSubdef->get_class(), false, $newSubdefOptionsWebM, array());
+        $root->set_subdef($groupname, $baseSubdef->get_name() . '_OGG', $baseSubdef->get_class(), false, $newSubdefOptionsOgg, array());
     }
 }

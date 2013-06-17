@@ -166,6 +166,17 @@ class databox_subdef
         return $this->labels;
     }
 
+    public function get_label($code, $substitute = true)
+    {
+        if (!isset($this->labels[$code]) && $substitute) {
+            return $this->get_name();
+        } elseif (isset($this->labels[$code])) {
+            return $this->labels[$code];
+        }
+
+        return null;
+    }
+
     /**
      * boolean
      *

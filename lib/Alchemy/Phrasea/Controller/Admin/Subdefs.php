@@ -115,7 +115,9 @@ class Subdefs implements ControllerProviderInterface
                         $options[$option] = $value;
                     }
 
-                    $subdefs->set_subdef($group, $name, $class, $downloadable, $options);
+                    $labels = $request->request->get($post_sub . '_label', array());
+
+                    $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels);
                 }
             }
 
