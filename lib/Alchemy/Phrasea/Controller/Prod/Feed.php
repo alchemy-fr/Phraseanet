@@ -78,6 +78,7 @@ class Feed implements ControllerProviderInterface
                     $item->setEntry($entry);
                     $item->setRecordId($record->get_record_id());
                     $item->setSbasId($record->get_sbas_id());
+                    $item->setLastInFeedItem();
                     $entry->addItem($item);
                     $app['EM']->persist($item);
                 }
@@ -164,7 +165,7 @@ class Feed implements ControllerProviderInterface
                     continue;
                 }
 
-                $item = new FeedItem($entry, $item_sort_datas[0]);
+                $item = new FeedItem();
                 $item->setEntry($entry);
                 $entry->addItem($item);
                 $item->setOrd($item_sort_datas[1]);

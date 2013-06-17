@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Feed\Formatter;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
+use Alchemy\Phrasea\Feed\RSS\FeedRSSImage;
 use Symfony\Component\HttpFoundation\Response;
 
 class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterInterface
@@ -95,17 +96,17 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
             $this->addTag($doc, $channel, 'docs', $this->docs);
         if (isset($this->ttl))
             $this->addTag($doc, $channel, 'ttl', $this->ttl);
-        if (isset($this->image) && $this->image instanceof Feed_XML_RSS_Image) {
+        if (isset($this->image) && $this->image instanceof FeedRSSImage) {
             $image = $this->addTag($doc, $channel, 'image');
-            $this->addTag($doc, $image, 'url', $this->image->get_url());
-            $this->addTag($doc, $image, 'title', $this->image->get_title());
-            $this->addTag($doc, $image, 'link', $this->image->get_link());
-            if ($this->image->get_width())
-                $this->addTag($doc, $image, 'width', $this->image->get_width());
-            if ($this->image->get_height())
-                $this->addTag($doc, $image, 'height', $this->image->get_height());
-            if ($this->image->get_description())
-                $this->addTag($doc, $image, 'description', $this->image->get_description());
+            $this->addTag($doc, $image, 'url', $this->image->getUrl());
+            $this->addTag($doc, $image, 'title', $this->image->getTitle());
+            $this->addTag($doc, $image, 'link', $this->image->getLink());
+            if ($this->image->getWidth())
+                $this->addTag($doc, $image, 'width', $this->image->getWidth());
+            if ($this->image->getHeight())
+                $this->addTag($doc, $image, 'height', $this->image->getHeight());
+            if ($this->image->getDescription())
+                $this->addTag($doc, $image, 'description', $this->image->getDescription());
         }
         if (isset($this->skipHours) && count($this->skipHours)) {
             $skipHours = $this->addTag($doc, $channel, 'skipHours');

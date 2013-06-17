@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Exception_Feed_ItemNotFound extends NotFoundHttpException
+class Exception_FeedItemNotFound extends NotFoundHttpException
 {
 
 }

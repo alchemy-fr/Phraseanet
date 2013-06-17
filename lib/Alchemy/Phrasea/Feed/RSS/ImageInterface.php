@@ -9,26 +9,28 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Feed\RSS;
+
 /**
  *
  * @package     Feeds
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-interface Feed_XML_RSS_ImageInterface
+interface FeedXMLRSSImageInterface
 {
 
     public function __construct($url, $title, $link);
 
-    public function get_url();
+    public function getUrl();
 
-    public function get_title();
+    public function getTitle();
 
-    public function get_link();
+    public function getLink();
 
-    public function get_description();
+    public function getDescription();
 
-    public function get_height();
+    public function getHeight();
 
-    public function get_width();
+    public function getWidth();
 }

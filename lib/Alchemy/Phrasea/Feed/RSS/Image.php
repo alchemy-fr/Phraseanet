@@ -9,13 +9,15 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Feed\RSS;
+
 /**
  *
  * @package     Feeds
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
+class FeedRSSImage implements FeedRSSImageInterface
 {
     /**
      *
@@ -58,7 +60,7 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
      * @param  string             $url
      * @param  string             $title
      * @param  string             $link
-     * @return Feed_XML_RSS_Image
+     * @return FeedRSSImage
      */
     public function __construct($url, $title, $link)
     {
@@ -72,9 +74,9 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
     /**
      *
      * @param  type               $description
-     * @return Feed_XML_RSS_Image
+     * @return FeedRSSImage
      */
-    public function set_description($description)
+    public function setDescription($description)
     {
         $this->description = $description;
 
@@ -84,9 +86,9 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
     /**
      *
      * @param  int                $width
-     * @return Feed_XML_RSS_Image
+     * @return FeedRSSImage
      */
-    public function set_width($width)
+    public function setWidth($width)
     {
         $this->width = (int) $width;
 
@@ -96,9 +98,9 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
     /**
      *
      * @param  int                $height
-     * @return Feed_XML_RSS_Image
+     * @return FeedRSSImage
      */
-    public function set_height($height)
+    public function setHeight($height)
     {
         $this->height = (int) $height;
 
@@ -109,7 +111,7 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
      *
      * @return string
      */
-    public function get_url()
+    public function getUrl()
     {
         return $this->url;
     }
@@ -118,7 +120,7 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
      *
      * @return string
      */
-    public function get_title()
+    public function getTitle()
     {
         return $this->title;
     }
@@ -127,7 +129,7 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
      *
      * @return string
      */
-    public function get_link()
+    public function getLink()
     {
         return $this->link;
     }
@@ -136,7 +138,7 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
      *
      * @return string
      */
-    public function get_description()
+    public function getDescription()
     {
         return $this->description;
     }
@@ -145,7 +147,7 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
      *
      * @return int
      */
-    public function get_width()
+    public function getWidth()
     {
         return $this->width;
     }
@@ -154,7 +156,7 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
      *
      * @return int
      */
-    public function get_height()
+    public function getHeight()
     {
         return $this->height;
     }
