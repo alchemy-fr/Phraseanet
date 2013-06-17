@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Helper;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Entities\Basket as BasketEntity;
+
 /**
  *
  * WorkZone provides methods for working with the working zone of Phraseanet
@@ -43,9 +46,22 @@ class WorkZone extends Helper
 
         $sort = in_array($sort, array('date', 'name')) ? $sort : 'name';
 
-        $ret = new \Doctrine\Common\Collections\ArrayCollection();
+        $ret = new ArrayCollection();
 
         $baskets = $repo_baskets->findActiveByUser($this->app['authentication']->getUser(), $sort);
+
+        // force creation of a default basket
+        if (0 === count($baskets)) {
+            $basket = new BasketEntity();
+
+            $basket->setName(_('Default basket'));
+            $basket->setOwner($this->app['authentication']->getUser());
+
+            $this->app['EM']->persist($basket);
+            $this->app['EM']->flush();
+            $baskets = array($basket);
+        }
+
         $validations = $repo_baskets->findActiveValidationByUser($this->app['authentication']->getUser(), $sort);
 
         /* @var $repo_stories \Doctrine\Repositories\StoryWZRepository */
