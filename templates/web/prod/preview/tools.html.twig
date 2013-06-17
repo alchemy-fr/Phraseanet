@@ -5,16 +5,13 @@
        onclick="evt_add_in_chutier('{{record.get_sbas_id()}}','{{record.get_record_id()}}',false,this);return(false);"></div>
 {% endif %}
 
-{% if record.is_from_basket() and app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), 'canputinalbum') %}
-    {% set basketElement = record.get_container().getBasketElementFromRecord(app, record) %}
-    {% if basketElement is not none %}
-        <a sbas="{{record.get_sbas_id()}}" id="PREV_BASKDEL_{{record.get_serialize_key}}"
-           class="baskDeleter WorkZoneElementRemover" title="{% trans 'Remove from basket' %}"
-           data-context="reg_train_basket"
-           onclick="remove_from_basket($(this), false);return false;"
-           href="{{ path('prod_baskets_basket_element_remove', { 'basket_id' :  record.get_container().getId(), 'basket_element_id' : basketElement.getId()}) }}">
-        </a>
-    {% endif %}
+{% if record.is_from_basket() %}
+    <a sbas="{{record.get_sbas_id()}}" id="PREV_BASKDEL_{{record.get_serialize_key}}"
+       class="baskDeleter WorkZoneElementRemover" title="{% trans 'Remove from basket' %}"
+       data-context="reg_train_basket"
+       onclick="remove_from_basket($(this), false);return false;"
+       href="{{ path('prod_baskets_basket_element_remove', { 'basket_id' :  record.get_container().getId(), 'basket_element_id' : record.get_original_item().getId()}) }}">
+    </a>
 {% endif %}
 
   <div class="printer" title="'{% trans 'action : print' %}"
