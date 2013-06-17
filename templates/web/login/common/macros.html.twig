@@ -28,6 +28,9 @@
         <div class="row-fluid">
             <div class="span12">
                 {{ _self.fieldInput(passField, form_name, icon_name, custom_attributes) }}
+                {% if loop.first %}
+                    {% include 'common/password_strength_widget.html.twig' %}
+                {% endif %}
             </div>
         </div>
     {% endfor %}

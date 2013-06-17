@@ -753,6 +753,50 @@ form[name=registerForm] .multiselect-group {
     font-size: @fontSizeLarge;
 }
 
+.password_strength_widget,  .password_strength_widget tr, .password_strength_widget td {
+    border: none !important;
+}
+
+.password_strength_label, .password_strength_desc {
+    font-size: @fontSizeMini;
+    color: lighten(@backgroundSideBar, 5%) ;
+}
+
+.password_strength_desc {
+    text-align: right;
+}
+
+.password_strength_container {
+    position: relative;
+    width: 100%;
+    margin: 5px auto 0 auto;
+    height: 10px;
+}
+
+.password_strength_bg {
+    height: 4px;
+    background-color: lighten(@backgroundSideBar, 5%);
+    width: 100%;
+    position: absolute;
+    left: 0;
+}
+
+.password_strength {
+    height: 4px;
+    background-color: #c81818;
+    width: 0%;
+    position: absolute;
+    left: 0;
+}
+
+.password_strength_separator {
+    height: 4px;
+    width: 2px;
+    background-color: @backgroundSideBar;
+    position: absolute;
+    left: 0;
+}
+
 /** IE Fixes */
 
 .lt-ie8 authentication-sidebar-language .caret {

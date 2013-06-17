@@ -12,7 +12,7 @@ require([
     "jquery",
     "i18n",
     "apps/login/home/common",
-    "apps/login/home/views/form"
+    "common/forms/views/formType/passwordSetter"
 ], function($, i18n, Common, RegisterForm) {
     var fieldsConfiguration = [];
 
