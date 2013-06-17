@@ -213,6 +213,14 @@
                             <td style="width:250px;"></td>
                             <td></td>
                         </tr>
+
+                        {% for code, language in app['locales.I18n.available'] %}
+                            <tr>
+                                <td>{{ language }}</td>
+                                <td><input type="text" name="{{subdefgroup}}_{{subdefname}}_label[{{ code }}]" value="{{ subdef.get_label(code, false) }}" /></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
                         <tr>
                             <td>{% trans 'Telechargeable' %}</td>
                             <td><input type="checkbox" name="{{subdefgroup}}_{{subdefname}}_downloadable" {% if subdef.is_downloadable() %}checked="checked"{% endif %} value="1" /></td>
