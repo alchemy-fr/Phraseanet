@@ -19,7 +19,7 @@ class SearchEngineResultTest extends \PhraseanetPHPUnitAbstract
 
         $query = 'Gotainer';
         $duration = 1 / 3;
-        $offsetStart = 24;
+        $offsetStart = 23;
         $available = 25;
         $total = 10000;
         $error = 'this is an error message';
@@ -47,6 +47,34 @@ class SearchEngineResultTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals($duration, $result->getDuration());
         $this->assertEquals(2, $result->getCurrentPage(23));
         $this->assertEquals($available, $result->getAvailable());
+    }
+
+    public function testWithOffsetStartAtZero()
+    {
+        $results = new ArrayCollection(array(
+                    self::$DI['record_24']
+                ));
+
+        $query = 'Gotainer';
+        $duration = 1 / 3;
+        $offsetStart = 0;
+        $available = 25;
+        $total = 10000;
+        $error = 'this is an error message';
+        $warning = 'this is a warning message';
+        $suggestions = new ArrayCollection(array(
+                        new SearchEngineSuggestion($query, 'Richard', 22)
+        ));
+        $propositions = new ArrayCollection();
+        $indexes = 'new-index';
+
+        $result = new SearchEngineResult($results, $query, $duration,
+                        $offsetStart, $available, $total, $error, $warning,
+                        $suggestions, $propositions, $indexes);
+
+        $this->assertEquals(1, $result->getCurrentPage(10));
+        $this->assertEquals(1, $result->getCurrentPage(25));
+        $this->assertEquals(1, $result->getCurrentPage(40));
     }
 
 }

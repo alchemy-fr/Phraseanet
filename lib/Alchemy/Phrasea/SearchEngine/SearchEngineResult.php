@@ -94,7 +94,7 @@ class SearchEngineResult
      */
     public function getCurrentPage($amountPerPage)
     {
-        return ceil($this->offsetStart / $amountPerPage);
+        return max(1, ceil(($this->offsetStart + 1) / $amountPerPage));
     }
 
     /**
