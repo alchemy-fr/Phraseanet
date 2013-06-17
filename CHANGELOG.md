@@ -35,6 +35,7 @@
   - Add plugin architecture for third party modules and customization.
   - Add records sent-by-mail report.
   - User time limit restrictions can now be set per databox.
+  - Add gzip/bzip2 options for DBs backup commandline tool.
 
 * 3.7.12 (2013-05-13)
 
