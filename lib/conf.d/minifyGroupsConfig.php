@@ -36,8 +36,6 @@ $groups = array(
         , '//include/jslibs/jquery.contextmenu_scroll.js'),
     'admin' => array(
         '//assets/modernizr/modernizr.js'
-        ,'//include/jslibs/jquery.validate.js'
-        , '//include/jslibs/jquery.validate.password.js'
         , '//include/jslibs/jquery-ui-1.8.24.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery-treeview/jquery.treeview.js'
