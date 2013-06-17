@@ -80,6 +80,8 @@ class record_preview extends record_adapter
      */
     protected $download_popularity;
 
+    protected $original_item;
+
     /**
      *
      * @param Application           $app
@@ -110,6 +112,7 @@ class record_preview extends record_adapter
                 }
                 foreach ($results->getResults() as $record) {
                     $number = $pos;
+                    $this->original_item = $record;
                     $sbas_id = $record->get_sbas_id();
                     $record_id = $record->get_record_id();
                     break;
@@ -121,6 +124,7 @@ class record_preview extends record_adapter
                 $record_id = $contId[1];
 
                 $this->container = new record_adapter($app, $sbas_id, $record_id);
+                $this->original_item = $this->container;
                 if ($pos == 0) {
                     $number = 0;
                     $title = _('preview:: regroupement ');
@@ -128,6 +132,7 @@ class record_preview extends record_adapter
                     $children = $this->container->get_children();
                     foreach ($children as $child) {
                         $sbas_id = $child->get_sbas_id();
+                        $this->original_item = $child;
                         $record_id = $child->get_record_id();
                         if ($child->get_number() == $pos)
                             break;
@@ -153,6 +158,7 @@ class record_preview extends record_adapter
                     /* @var $element \Entities\BasketElement */
                     $i ++;
                     if ($first) {
+                        $this->original_item = $element;
                         $sbas_id = $element->getRecord($this->app)->get_sbas_id();
                         $record_id = $element->getRecord($this->app)->get_record_id();
                         $this->name = $Basket->getName();
@@ -161,6 +167,7 @@ class record_preview extends record_adapter
                     $first = false;
 
                     if ($element->getOrd() == $pos) {
+                        $this->original_item = $element;
                         $sbas_id = $element->getRecord($this->app)->get_sbas_id();
                         $record_id = $element->getRecord($this->app)->get_record_id();
                         $this->name = $Basket->getName();
@@ -181,6 +188,7 @@ class record_preview extends record_adapter
                     if ($first) {
                         $sbas_id = $element->get_record()->get_sbas_id();
                         $record_id = $element->get_record()->get_record_id();
+                        $this->original_item = $element;
                         $this->name = $entry->get_title();
                         $number = $element->get_ord();
                     }
@@ -189,6 +197,7 @@ class record_preview extends record_adapter
                     if ($element->get_ord() == $pos) {
                         $sbas_id = $element->get_record()->get_sbas_id();
                         $record_id = $element->get_record()->get_record_id();
+                        $this->original_item = $element;
                         $this->name = $entry->get_title();
                         $number = $element->get_ord();
                     }
@@ -256,6 +265,11 @@ class record_preview extends record_adapter
     public function is_from_reg()
     {
         return $this->env == 'REG';
+    }
+
+    public function get_original_item()
+    {
+        return $this->original_item;
     }
 
     /**

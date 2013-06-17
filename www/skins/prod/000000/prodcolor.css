@@ -517,7 +517,7 @@ span.ww_winTitle {
 /******* PRESENTATION DE MINIATURES *******************************************/
 
 .captionRolloverTips, .previewTips, .infoTips,
-.baskAdder, .printer, .downloader {
+.baskAdder, .printer, .downloader, .baskDeleter {
     background-image: url('../../icons/zoom.gif');
     background-repeat: no-repeat;
     background-position: center center;
@@ -537,6 +537,10 @@ span.ww_winTitle {
 
 .baskAdder {
     background-image: url('../../icons/basket.gif');
+}
+
+.baskDeleter {
+    background-image: url('../../icons/delete.gif');
 }
 
 .printer {
@@ -731,8 +735,9 @@ div.diapo {
     background-color:  transparent;
     border: none;
     width: 16px;
-    height: 16px;
+    height: 22px;
     cursor: pointer;
+    padding: 0px;
 }
 
 #idFrameC #baskets .alert_datas_changed {

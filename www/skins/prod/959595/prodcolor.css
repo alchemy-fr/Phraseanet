@@ -565,6 +565,10 @@ span.ww_winTitle {
     background-image: url('../../icons/basket.gif');
 }
 
+.baskDeleter {
+    background-image: url('../../icons/delete.gif');
+}
+
 .printer {
     background-image: url('../../icons/print.gif');
 }
@@ -761,8 +765,9 @@ div.diapo {
     background-color: transparent;
     border: none;
     width: 16px;
-    height: 16px;
+    height: 22px;
     cursor: pointer;
+    padding: 0px;
 }
 
 #idFrameC #baskets .alert_datas_changed {

@@ -1,45 +1,37 @@
-(function(){
-  
-  $(document).ready(function(){
-    
-    $('a.dialog').live('click', function(event){
+(function() {
+    $(document).ready(function() {
+        humane.info = humane.spawn({addnCls: 'humane-libnotify-info', timeout: 1000});
+        humane.error = humane.spawn({addnCls: 'humane-libnotify-error', timeout: 1000});
 
-      var $this = $(this), size = 'Medium';
-      
-      if($this.hasClass('small-dialog'))
-      {
-        size = 'Small';
-      }
-      else if($this.hasClass('full-dialog'))
-      {
-        size = 'Full';
-      }
-      
-      var options = {
-        size : size,
-        loading : true,
-        title : $this.attr('title'),
-        closeOnEscape : true
-      };
+        $('a.dialog').live('click', function(event) {
+            var $this = $(this), size = 'Medium';
 
-      $dialog = p4.Dialog.Create(options);
-      
-      $.ajax({
-        type: "GET",
-        url: $this.attr('href'),
-        dataType: 'html',
-        beforeSend:function(){
+            if ($this.hasClass('small-dialog')) {
+                size = 'Small';
+            } else if ($this.hasClass('full-dialog')) {
+                size = 'Full';
+            }
 
-        },
-        success: function(data){
-          $dialog.setContent(data);
-          return;
-        }
-      });
+            var options = {
+                size: size,
+                loading: true,
+                title: $this.attr('title'),
+                closeOnEscape: true
+            };
 
-      return false;
+            $dialog = p4.Dialog.Create(options);
+
+            $.ajax({
+                type: "GET",
+                url: $this.attr('href'),
+                dataType: 'html',
+                success: function(data) {
+                    $dialog.setContent(data);
+                    return;
+                }
+            });
+
+            return false;
+        });
     });
-    
-  });
-
-}())
+}());
