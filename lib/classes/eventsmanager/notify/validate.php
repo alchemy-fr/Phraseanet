@@ -113,6 +113,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
                 $mail = MailInfoValidationRequest::create($this->app, $receiver, $emitter, $params['message']);
                 $mail->setButtonUrl($params['url']);
                 $mail->setTitle($title);
+                $mail->setUser($user_from);
 
                 $this->app['notification.deliverer']->deliver($mail, $params['accuse']);
                 $mailed = true;
