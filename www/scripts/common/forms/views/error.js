@@ -15,19 +15,33 @@ define([
     var ErrorView = Backbone.View.extend({
         tagName: "div",
         initialize: function(options) {
-            if (options) {
-                this.errors = options.errors || {};
-            } else {
-                this.errors = {};
+            options = options || {};
+
+            if (! "name" in options) {
+                throw "Missing name attribute in error view";
             }
+
+            if (! "errorTemplate" in options) {
+                throw "Missing errorTemplate attribute in error view";
+            }
+
+            this.name = options.name;
+            this.errorTemplate = options.errorTemplate;
+
+            this.errors = options.errors || {};
+            this.onRenderError = options.onRenderError || null;
         },
         render: function() {
             if (this.errors.length > 0 ) {
-                var template = _.template($("#field_errors").html(), {
+                var template = _.template($(this.errorTemplate).html(), {
                     errors: this.errors
                 });
 
                 this.$el.html(template);
+
+                if (_.isFunction(this.onRenderError)) {
+                    this.onRenderError(this.name, this.$el);
+                }
             } else {
                 this.reset();
             }

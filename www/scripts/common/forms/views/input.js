@@ -11,13 +11,28 @@ define([
     "jquery",
     "underscore",
     "backbone",
-    "apps/login/home/views/error",
+    "common/forms/views/error",
     "common/multiviews"
 ], function($, _, Backbone, ErrorView, MultiViews) {
     var InputView = Backbone.View.extend(_.extend({}, MultiViews, {
         initialize: function(options) {
+            options = options || {};
+
+            if (! "name" in options) {
+                throw "Missing name attribute in input view";
+            }
+
+            if (! "errorTemplate" in options) {
+                throw "Missing errorTemplate attribute in input view";
+            }
+
             this.name = options.name;
-            this.errorView = new ErrorView();
+
+            this.errorView = new ErrorView({
+                name: this.name,
+                errorTemplate: options.errorTemplate,
+                onRenderError: options.onRenderError || null
+            });
         },
         render: function () {
             this._assignView({".error-view" : this.errorView});

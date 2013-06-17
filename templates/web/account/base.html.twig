@@ -2,7 +2,7 @@
     <head>
         <title>{{ app["phraseanet.registry"].get("GV_homeTitle") }} {% block title %}{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'skins/build/account.css' }) }}"/>
-        <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js,/assets/bootstrap/js/bootstrap-modal.js,/skins/account/account.js' }) }}"></script>
+        <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js,/build/bootstrap/js/bootstrap.js.js,/skins/account/account.js' }) }}"></script>
         {% block head %}{% endblock %}
     </head>
 
@@ -41,5 +41,6 @@
                 </div>
             </div>
         </div>
+        {% block scripts %}{% endblock %}
     </body>
 </html>

@@ -12,8 +12,6 @@ define([
     "underscore",
     "backbone"
 ], function($, _, Backbone) {
-
-
     var FormValidator = function(rules, handlers) {
         // rules setted by user
         this.rules = rules || [];

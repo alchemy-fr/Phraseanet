@@ -12,22 +12,22 @@ define([
     "underscore",
     "backbone",
     "bootstrap",
-    "common/validator",
-    "apps/login/home/views/input"
+    "common/forms/validator",
+    "common/forms/views/input"
 ], function($, _, Backbone, bootstrap, Validator, InputView) {
     var Form = Backbone.View.extend({
         events: {
             "submit": "_onSubmit"
         },
         initialize: function(options) {
-            var self = this;
-            var rules = [];
+            options = options || {};
 
-            if (options) {
-                rules = options.rules || [];
-            }
+            var self = this;
+
+            this.errorTemplate = options.errorTemplate || "#field_errors";
+            this.onRenderError = options.onRenderError || null;
             // get a new validator defined rules
-            this.validator = new Validator(rules);
+            this.validator = new Validator(options.rules || []);
 
             this.inputViews = {};
 
@@ -73,9 +73,12 @@ define([
         },
         _addInputView: function(input) {
             var name = input.name;
+
             this.inputViews[name] = new InputView({
                 name: name,
-                el : $("input[name='"+name+"'], select[name='"+name+"'], textarea[name='"+name+"']", this.$el).first().closest("div")
+                el : $("input[name='"+name+"'], select[name='"+name+"'], textarea[name='"+name+"']", this.$el).first().closest("div"),
+                errorTemplate: this.errorTemplate,
+                onRenderError: this.onRenderError
             });
 
             return this;

@@ -13,7 +13,7 @@ define([
     "i18n",
     "backbone",
     "bootstrap",
-    "apps/login/home/views/form"
+    "common/forms/views/form"
 ], function($, _, i18n, Backbone, bootstrap, FormView) {
     var PasswordSetterForm = FormView.extend({
         events: function(){

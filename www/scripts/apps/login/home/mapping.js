@@ -11,7 +11,7 @@ require([
     "jquery",
     "i18n",
     "apps/login/home/common",
-    "apps/login/home/views/form"
+    "common/forms/views/form"
 ], function($, i18n, Common, LoginForm) {
     Common.initialize();
 
