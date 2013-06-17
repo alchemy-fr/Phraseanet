@@ -83,10 +83,6 @@ class MailInfoOrderDelivered extends AbstractMail
      */
     public function getButtonURL()
     {
-        if (!$this->basket) {
-            throw new LogicException('You must set a basket before calling getSubject');
-        }
-
-        return $this->app->url('lightbox_compare', array('ssel_id' => $this->basket->getId()));
+        return $this->url;
     }
 }

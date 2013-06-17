@@ -169,8 +169,8 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $receveid = array(self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']);
 
-        return \set_order::create(
+        return new \set_order(self::$DI['app'], \set_order::create(
                 self::$DI['app'], new RecordsRequest($receveid, new ArrayCollection($receveid)), self::$DI['user_alt2'] ,$usage, new \DateTime('+10 minutes')
-        );
+        ));
     }
 }

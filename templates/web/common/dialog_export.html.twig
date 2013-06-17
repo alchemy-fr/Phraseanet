@@ -668,11 +668,11 @@
 
                 $('#order .order_button_loader').css('visibility','visible');
 
-                var options = $('#order form').serialize()+'&use='+escape(tinyMCE.get('order_usage').getContent());
+                var options = $('#order form').serialize();
 
                 var $this = $(this);
                 $this.attr('disabled', true).addClass('disabled');
-                $.post("/prod/order/"
+                $.post("../prod/order/"
                     , options
                     , function(data){
                         $this.attr('disabled', false).removeClass('disabled')
@@ -691,7 +691,7 @@
                           title : title
                         };
 
-                        p4.Dialog.Create(options, 2).setContent(data.message);
+                        p4.Dialog.Create(options, 2).setContent(data.msg);
 
                         if(!data.error)
                         {
@@ -722,7 +722,7 @@
                 var $this = $(this);
                 var options = $('#ftp form').serialize();
                 $this.attr('disabled','disabled');
-                $.post("/prod/export/ftp/"
+                $.post("../prod/export/ftp/"
                     , options
                     , function(data){
                         $this.removeAttr('disabled');
@@ -752,7 +752,7 @@
                 var $this = $(this);
                 $this.attr('disabled','disabled');
                 var options = $('#ftp form').serialize();
-                $.post("/prod/export/ftp/test/"
+                $.post("../prod/export/ftp/test/"
                     , options
                     , function(data){
                         $('#ftp .tryftp_button_loader').css('visibility','hidden');

@@ -113,7 +113,18 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
             }
 
             if ($readyToSend) {
-                $mail = MailInfoOrderDelivered::create($this->app, $receiver, $emitter);
+                $url = $this->app->url('lightbox_compare', array(
+                    'ssel_id' => $basket->getId(),
+                    'LOG' => $this->app['tokens']->getUrlToken(
+                        \random::TYPE_VIEW,
+                        $user_to->get_id(),
+                        null,
+                        $basket->getId()
+                    )
+                ));
+
+                $mail = MailInfoOrderDelivered::create($this->app, $receiver, $emitter, null);
+                $mail->setButtonUrl($url);
                 $mail->setBasket($basket);
                 $mail->setDeliverer($user_from);
 

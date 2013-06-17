@@ -92,15 +92,15 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
                 $user_from = User_Adapter::getInstance($params['from'], $this->app);
                 $user_to = User_Adapter::getInstance($params['to'], $this->app);
 
-                $receiver = Receiver::fromUser($user_from);
-                $emitter = Emitter::fromUser($user_to);
+                $receiver = Receiver::fromUser($user_to);
+                $emitter = Emitter::fromUser($user_from);
                 $readyToSend = true;
             } catch (\Exception $e) {
 
             }
 
             if ($readyToSend) {
-                $mail = MailInfoPushReceived::create($this->app, $receiver, $emitter, $params['message']);
+                $mail = MailInfoPushReceived::create($this->app, $receiver, $emitter, $params['message'], $params['url']);
                 $mail->setBasket($basket);
                 $mail->setPusher($user_from);
 

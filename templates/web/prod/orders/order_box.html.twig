@@ -51,7 +51,7 @@
                                 {% trans 'Aucune' %}
                             {% endif %}
                         </td>
-                        <td>{{ order.get_usage()|raw }}</td>
+                        <td>{{ order.get_usage() | nl2br }}</td>
                         <td>{% if order.get_todo() == 0 %}<img src="/skins/icons/ok.png" />{% endif %}</td>
                     </tr>
                 {% endfor %}
