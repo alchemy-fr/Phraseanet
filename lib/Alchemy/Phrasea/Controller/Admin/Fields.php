@@ -379,7 +379,7 @@ class Fields implements ControllerProviderInterface
     private function validateTagField(array $field)
     {
         try {
-            \databox_field::loadClassFromTagName($field['tag']);
+            \databox_field::loadClassFromTagName($field['tag'], true);
         } catch (\Exception_Databox_metadataDescriptionNotFound $e) {
             throw new BadRequestHttpException(_(sprintf('Provided tag %s is unknown.', $field['tag'])));
         }

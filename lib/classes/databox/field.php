@@ -143,6 +143,7 @@ class databox_field implements cache_cacheableInterface
     protected $Vocabulary;
     protected $VocabularyRestriction = false;
     protected $on_error = false;
+    protected $original_src;
 
     const TYPE_TEXT = "text";
     const TYPE_DATE = "date";
@@ -200,7 +201,8 @@ class databox_field implements cache_cacheableInterface
 
         $this->id = (int) $id;
 
-        $this->tag = self::loadClassFromTagName($row['src']);
+        $this->original_src = $row['src'];
+        $this->tag = self::loadClassFromTagName($row['src'], false);
 
         if ($row['src'] != $this->tag->getTagname()) {
             $this->on_error = true;
@@ -313,6 +315,11 @@ class databox_field implements cache_cacheableInterface
     public function get_connection()
     {
         return $this->databox->get_connection();
+    }
+
+    public function get_original_source()
+    {
+        return $this->original_src;
     }
 
     /**
@@ -527,7 +534,7 @@ class databox_field implements cache_cacheableInterface
      * @return \PHPExiftool\Driver\Tag
      * @throws Exception_Databox_metadataDescriptionNotFound
      */
-    public static function loadClassFromTagName($tagName)
+    public static function loadClassFromTagName($tagName, $throwException = true)
     {
         $tagName = str_replace('/rdf:rdf/rdf:description/', '', $tagName);
 
@@ -545,15 +552,22 @@ class databox_field implements cache_cacheableInterface
             $classname = '\\Alchemy\\Phrasea\\Metadata\\Tag\\' . $tagName;
 
             if ( ! class_exists($classname)) {
-                throw new Exception_Databox_metadataDescriptionNotFound(sprintf("tagname %s not found", $tagName));
+                if ($throwException) {
+                    throw new Exception_Databox_metadataDescriptionNotFound(sprintf("tagname %s not found", $tagName));
+                } else {
+                    $tag = new Alchemy\Phrasea\Metadata\Tag\Nosource();
+                }
+            } else {
+                $tag = new $classname();
             }
-
-            $tag = new $classname();
         } else {
             try {
                 $tag = TagFactory::getFromRDFTagname($tagName);
             } catch (TagUnknown $e) {
-                throw new NotFoundHttpException(sprintf("Tag %s not found", $tagName), $e);
+                if ($throwException) {
+                    throw new NotFoundHttpException(sprintf("Tag %s not found", $tagName), $e);
+                }
+                $tag = new Alchemy\Phrasea\Metadata\Tag\Nosource();
             }
         }
 
