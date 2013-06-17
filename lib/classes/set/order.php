@@ -119,7 +119,7 @@ class set_order extends set_abstract
         } catch (Exception $e) {
             $app['phraseanet.appbox']->get_connection()->rollBack();
 
-            return null;
+            return false;
         }
 
         $app['events-manager']->trigger('__NEW_ORDER__', array(
@@ -127,7 +127,7 @@ class set_order extends set_abstract
             'usr_id'   => $orderer->get_id()
         ));
 
-        return new static($app, $orderId);
+        return $orderId;
     }
 
     /**

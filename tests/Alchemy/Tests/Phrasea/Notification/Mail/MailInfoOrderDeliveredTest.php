@@ -69,13 +69,6 @@ class MailInfoOrderDeliveredTest extends MailTestCase
         } catch (LogicException $e) {
 
         }
-
-        try {
-            $mail->getButtonURL();
-            $this->fail('Should have raised an exception');
-        } catch (LogicException $e) {
-
-        }
     }
 
     public function getMail()
@@ -105,6 +98,7 @@ class MailInfoOrderDeliveredTest extends MailTestCase
 
         $mail->setDeliverer($user);
         $mail->setBasket($basket);
+        $mail->setButtonUrl('http://example.com/path/to/basket');
 
         return $mail;
     }

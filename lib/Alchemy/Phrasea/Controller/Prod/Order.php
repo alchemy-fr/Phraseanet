@@ -189,12 +189,15 @@ class Order implements ControllerProviderInterface
             }
 
             if (count($records) > 0) {
-                \set_order::create(
+                $success = (Boolean) \set_order::create(
                     $app, $records, $app['authentication']->getUser(), $request->request->get('use', ''), ( (null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine)
                 );
 
-                $success = true;
-                $msg = _('The records have been properly ordered');
+                if ($success) {
+                    $msg = _('The records have been properly ordered');
+                } else {
+                    $msg = _('An error occured');
+                }
             } else {
                 $msg = _('There is no record eligible for an order');
             }
