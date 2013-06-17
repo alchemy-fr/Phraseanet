@@ -165,6 +165,7 @@ class TaskManager implements ControllerProviderInterface
                 /**
                  * todo : add a message back
                  */
+
                 return $app->redirectPath('admin_tasks_list');
             }
         })->bind('admin_tasks_task_delete');
