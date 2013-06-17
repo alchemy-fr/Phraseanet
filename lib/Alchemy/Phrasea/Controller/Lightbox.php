@@ -278,7 +278,7 @@ class Lightbox implements ControllerProviderInterface
                 $app['EM']->flush();
             }
 
-            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser())->getIsAware() === false) {
+            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->getIsAware() === false) {
                 $basket = $app['EM']->merge($basket);
                 $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setIsAware(true);
                 $app['EM']->flush();
