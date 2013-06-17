@@ -27,6 +27,7 @@ use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
+use Alchemy\Phrasea\Command\CheckConfig;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -60,6 +61,7 @@ try {
     $app->command(new \module_console_aboutLicense('about:license'));
 
     $app->command(new \module_console_checkExtension('check:extension'));
+    $app->command(new CheckConfig('check:config'));
 
     $app->command(new UpgradeDBDatas('system:upgrade-datas'));
 
