@@ -41,7 +41,7 @@
             </tr>
             <tr>
                 <td>{% trans 'Utilisation prevue' %}</td>
-                <td>{{ order.get_usage()|raw }}</td>
+                <td>{{ order.get_usage() | nl2br }}</td>
             </tr>
             <tr>
                 <td>{% trans 'Nombre total d\'element commandes' %}</td>
@@ -195,7 +195,7 @@ function do_send_documents(order_id, elements_ids, force)
 
     $.ajax({
         type: "POST",
-        url: "/prod/order/"+order_id+"/send/",
+        url: "../prod/order/"+order_id+"/send/",
         dataType:'json',
         data: {
             'elements[]':elements_ids,
@@ -209,7 +209,7 @@ function do_send_documents(order_id, elements_ids, force)
                 success = '1';
             }
 
-            dialog.load('/prod/order/' + order_id + '/?success=' + success + '&action=send');
+            dialog.load('../prod/order/' + order_id + '/?success=' + success + '&action=send');
         },
         error: function(){
             $('button.deny, button.send', cont).removeAttr('disabled');
@@ -245,7 +245,7 @@ function deny_documents(order_id)
 
     $.ajax({
         type: "POST",
-        url: "/prod/order/"+ order_id +"/deny/",
+        url: "../prod/order/"+ order_id +"/deny/",
         dataType:'json',
         data: {
             'elements[]':elements_ids
