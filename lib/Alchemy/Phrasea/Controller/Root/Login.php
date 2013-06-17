@@ -480,7 +480,7 @@ class Login implements ControllerProviderInterface
 
         try {
             $datas = $app['tokens']->helloToken($code);
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $app->addFlash('error', _('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
@@ -801,7 +801,7 @@ class Login implements ControllerProviderInterface
 
             try {
                 $token = $this->app['tokens']->getValidationToken($participantId, $basketId);
-            } catch (\Exception_NotFound $e) {
+            } catch (NotFoundHttpException $e) {
                 continue;
             }
 

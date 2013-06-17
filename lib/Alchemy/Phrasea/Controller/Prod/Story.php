@@ -17,6 +17,7 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  *
@@ -43,7 +44,7 @@ class Story implements ControllerProviderInterface
             $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
 
             if (!$app['authentication']->getUser()->ACL()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
-                throw new \Exception_Forbidden('You can not create a story on this collection');
+                throw new AccessDeniedHttpException('You can not create a story on this collection');
             }
 
             $Story = \record_adapter::createStory($app, $collection);
@@ -121,7 +122,7 @@ class Story implements ControllerProviderInterface
             $Story = new \record_adapter($app, $sbas_id, $record_id);
 
             if (!$app['authentication']->getUser()->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
-                throw new \Exception_Forbidden('You can not add document to this Story');
+                throw new AccessDeniedHttpException('You can not add document to this Story');
 
             $n = 0;
 
@@ -154,7 +155,7 @@ class Story implements ControllerProviderInterface
             $record = new \record_adapter($app, $child_sbas_id, $child_record_id);
 
             if (!$app['authentication']->getUser()->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
-                throw new \Exception_Forbidden('You can not add document to this Story');
+                throw new AccessDeniedHttpException('You can not add document to this Story');
 
             $Story->removeChild($record);
 

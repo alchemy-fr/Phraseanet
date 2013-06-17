@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  *
@@ -111,23 +112,23 @@ class Publications implements ControllerProviderInterface
 
             try {
                 if (!$request->files->get('files')) {
-                    throw new \Exception_BadRequest('Missing file parameter');
+                    throw new BadRequestHttpException('Missing file parameter');
                 }
 
                 if (count($request->files->get('files')) > 1) {
-                    throw new \Exception_BadRequest('Upload is limited to 1 file per request');
+                    throw new BadRequestHttpException('Upload is limited to 1 file per request');
                 }
 
                 $file = current($request->files->get('files'));
 
                 if (!$file->isValid()) {
-                    throw new \Exception_BadRequest('Uploaded file is invalid');
+                    throw new BadRequestHttpException('Uploaded file is invalid');
                 }
 
                 $media = $app['mediavorus']->guess($file->getPathname());
 
                 if ($media->getType() !== \MediaVorus\Media\MediaInterface::TYPE_IMAGE) {
-                    throw new \Exception_BadRequest('Bad filetype');
+                    throw new BadRequestHttpException('Bad filetype');
                 }
 
                 $spec = new \MediaAlchemyst\Specification\Image();

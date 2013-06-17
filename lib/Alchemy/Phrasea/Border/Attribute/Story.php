@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Border\Attribute;
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Phraseanet Border Story Attribute
@@ -82,7 +83,7 @@ class Story implements AttributeInterface
 
         try {
             $story = new \record_adapter($app, $ids[0], $ids[1]);
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             throw new \InvalidArgumentException('Unable to fetch a story from string');
         }
 

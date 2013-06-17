@@ -4,25 +4,29 @@
             <tbody>
                 <tr>
                     <td>
-                    {% for type, display_name in account.get_api().get_connector().get_element_types() %}
-                        <a class="{% if adapter_action == 'load-elements' and action_type == type %} selected {% endif %} action_type_{{type}} bridge_action bridge_title" href="{{ path('bridge_load_elements', { 'account_id' : account.get_id(), 'type' : type }) }}">
-                            {{ display_name }}
-                        </a>
-                        {% if not loop.last %} - {% endif %}
-                    {% endfor %}
+                    {% if account is not none %}
+                        {% for type, display_name in account.get_api().get_connector().get_element_types() %}
+                            <a class="{% if adapter_action == 'load-elements' and action_type == type %} selected {% endif %} action_type_{{type}} bridge_action bridge_title" href="{{ path('bridge_load_elements', { 'account_id' : account.get_id(), 'type' : type }) }}">
+                                {{ display_name }}
+                            </a>
+                            {% if not loop.last %} - {% endif %}
+                        {% endfor %}
+                    {% endif %}
                         |
-                    {% for type, display_name in account.get_api().get_connector().get_container_types() %}
-                        <a class="{% if adapter_action == 'load-containers' and action_type == type %} selected {% endif %} action_type_{{type}} bridge_action bridge_title" href="{{ path('prod_bridge_account_loadcontainers', { 'account_id' : account.get_id(), 'type' : type }) }}">
-                            {{ display_name }}
-                        </a>
-                        {% if not loop.last %} - {% endif %}
-                    {% endfor %}
+                    {% if account is not none %}
+                        {% for type, display_name in account.get_api().get_connector().get_container_types() %}
+                            <a class="{% if adapter_action == 'load-containers' and action_type == type %} selected {% endif %} action_type_{{type}} bridge_action bridge_title" href="{{ path('prod_bridge_account_loadcontainers', { 'account_id' : account.get_id(), 'type' : type }) }}">
+                                {{ display_name }}
+                            </a>
+                            {% if not loop.last %} - {% endif %}
+                        {% endfor %}
                         <a class="{% if adapter_action == 'load-records' %} selected {% endif %} bridge_action bridge_title" href="{{ path('prod_bridge_account_loadrecords', { 'account_id' : account.get_id() }) }}">
                             {% trans 'Fichiers envoyes' %}
                         </a>
+                    {% endif %}
                     </td>
                     <td style="text-align:right;">
-                    {% if account %}
+                    {% if account is not none %}
                         <a class="bridge_action bridge_logout" href="{{ path('prod_bridge_account_logout', { 'account_id' : account.get_id() }) }}">
                             {% trans 'phraseanet:: deconnection' %}
                         </a>
@@ -56,17 +60,21 @@
                 <tbody>
                     <tr>
                         <td>
-                            {% if account.get_api().get_connector().get_terms_url() %}
-                                <a href="{{ account.get_api().get_connector().get_terms_url() }}" target="_blank">
-                                    {% trans 'Terms of service' %}
-                                </a>
+                            {% if account is not none %}
+                                {% if account.get_api().get_connector().get_terms_url() %}
+                                    <a href="{{ account.get_api().get_connector().get_terms_url() }}" target="_blank">
+                                        {% trans 'Terms of service' %}
+                                    </a>
+                                {% endif %}
                             {% endif %}
                         </td>
                         <td style="text-align:right;">
-                            <a href="{{ account.get_api().get_connector().get_url() }}" target="_blank">
-                                {{ account.get_api().get_connector().get_infos() }}
-                                <img style="height:16px;vertical-align:middle;" src="{{ account.get_api().get_connector().get_icon_url() }}" />
-                            </a>
+                            {% if account is not none %}
+                                <a href="{{ account.get_api().get_connector().get_url() }}" target="_blank">
+                                    {{ account.get_api().get_connector().get_infos() }}
+                                    <img style="height:16px;vertical-align:middle;" src="{{ account.get_api().get_connector().get_icon_url() }}" />
+                                </a>
+                            {% endif %}
                         </td>
                     </tr>
                 </tbody>

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Border\Attribute;
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Phraseanet Border MetaField Attribute
@@ -108,7 +109,7 @@ class MetaField implements AttributeInterface
             return new static($app['phraseanet.appbox']
                     ->get_databox($datas['sbas_id'])
                     ->get_meta_structure()->get_element($datas['id']), $datas['value']);
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             throw new \InvalidArgumentException('Field does not exist anymore');
         }
     }

@@ -219,11 +219,11 @@ class Manager
      */
     protected function bookLazaretPathfile($filename, $suffix = '')
     {
-        $output = __DIR__ . '/../../../../tmp/lazaret/lzrt_' . substr($filename, 0, 3) . '_' . $suffix . '.' . pathinfo($filename, PATHINFO_EXTENSION);
+        $output = $this->app['root.path'] . '/tmp/lazaret/lzrt_' . substr($filename, 0, 3) . '_' . $suffix . '.' . pathinfo($filename, PATHINFO_EXTENSION);
         $infos = pathinfo($output);
         $n = 0;
 
-        $this->app['filesystem']->mkdir(__DIR__ . '/../../../../tmp/lazaret');
+        $this->app['filesystem']->mkdir($this->app['root.path'] . '/tmp/lazaret');
 
         while (true) {
             $output = sprintf('%s/%s-%d%s', $infos['dirname'], $infos['filename'],  ++ $n, (isset($infos['extension']) ? '.' . $infos['extension'] : ''));

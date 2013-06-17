@@ -10,6 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  *
@@ -451,7 +453,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
         foreach ($rs as $item_id) {
             try {
                 $items[] = new Feed_Entry_Item($this->app['phraseanet.appbox'], $this, $item_id);
-            } catch (Exception_NotFound $e) {
+            } catch (NotFoundHttpException $e) {
 
             }
         }
@@ -514,7 +516,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
         if ( ! $feed->is_public() && $feed->get_collection() instanceof Collection) {
             if ( ! $publisher->get_user()->ACL()->has_access_to_base($feed->get_collection()->get_base_id())) {
-                throw new Exception_Unauthorized("User has no rights to publish in current feed");
+                throw new AccessDeniedHttpException("User has no rights to publish in current feed");
             }
         }
 

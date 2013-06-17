@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  *
@@ -644,7 +645,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $template = \User_adapter::getInstance($this->request->get('template'), $this->app);
 
         if ($template->get_template_owner()->get_id() != $this->app['authentication']->getUser()->get_id()) {
-            throw new \Exception_Forbidden('You are not the owner of the template');
+            throw new AccessDeniedHttpException('You are not the owner of the template');
         }
 
         $base_ids = array_keys($this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));

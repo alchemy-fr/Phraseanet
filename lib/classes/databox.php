@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Filesystem\Filesystem;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class databox extends base
 {
@@ -115,7 +116,7 @@ class databox extends base
         $connection_params = phrasea::sbas_params($this->app);
 
         if ( ! isset($connection_params[$sbas_id])) {
-            throw new Exception_DataboxNotFound(sprintf('databox %d not found', $sbas_id));
+            throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
         }
 
         $this->host = $connection_params[$sbas_id]['host'];
@@ -147,7 +148,7 @@ class databox extends base
         }
 
         if (!$row) {
-            throw new Exception_DataboxNotFound(sprintf('databox %d not found', $sbas_id));
+            throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
         }
 
         $this->ord = $row['ord'];

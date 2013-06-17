@@ -12,6 +12,7 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Kernel
@@ -279,7 +280,7 @@ class ValidationSession
             }
         }
 
-        throw new \Exception_NotFound('Particpant not found' . $user->get_email());
+        throw new NotFoundHttpException('Particpant not found' . $user->get_email());
     }
     /**
      * @var integer $initiator
@@ -380,7 +381,7 @@ class ValidationSession
     public function addParticipant(\Entities\ValidationParticipant $participants)
     {
         $this->participants[] = $participants;
-    
+
         return $this;
     }
 

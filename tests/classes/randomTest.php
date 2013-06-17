@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 class randomTest extends PhraseanetPHPUnitAbstract
 {
     protected $random;
@@ -20,7 +22,7 @@ class randomTest extends PhraseanetPHPUnitAbstract
         try {
             $this->random->helloToken($token);
             $this->fail();
-        } catch (Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
 
         }
     }
@@ -102,7 +104,7 @@ class randomTest extends PhraseanetPHPUnitAbstract
         try {
             $this->random->helloToken($token);
             $this->fail();
-        } catch (Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
 
         }
 
@@ -124,7 +126,7 @@ class randomTest extends PhraseanetPHPUnitAbstract
         try {
             $this->random->helloToken($token);
             $this->fail();
-        } catch (Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
 
         }
 
@@ -135,7 +137,7 @@ class randomTest extends PhraseanetPHPUnitAbstract
         try {
             $this->random->helloToken($token);
             $this->fail();
-        } catch (Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
 
         }
     }

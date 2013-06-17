@@ -27,6 +27,9 @@ main:
         options: []
     task-manager:
         options: null
+trusted-proxies: []
+debugger:
+    allowed-ips: []
 binaries: []
 border-manager:
     enabled: true

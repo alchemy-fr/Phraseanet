@@ -11,6 +11,9 @@ use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ApplicationTest extends \PhraseanetPHPUnitAbstract
 {
@@ -38,6 +41,21 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     public function testTestLocale()
     {
         $app = new Application();
+    }
+
+    public function testExceptionHandlerIsNotYetInstancied()
+    {
+        $app = new Application();
+        $app['exception_handler'] = new TestExceptionHandlerSubscriber();
+
+        $app->get('/', function () {
+            throw new \Exception();
+        });
+
+        $client = new Client($app);
+        $client->request('GET', '/');
+
+        $this->assertEquals('GOT IT !', $client->getResponse()->getContent());
     }
 
     /**
@@ -145,21 +163,6 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         $client->request('POST', '/prod/upload/', array('php_session_id'=>'123456'), array(), array('HTTP_USER_AGENT'=>'flash'));
         $this->assertEquals('123456', $sessionId);
-    }
-
-    public function testWebProfilerDisableByDefault()
-    {
-        $app = new Application('prod');
-        $this->assertFalse(isset($app['profiler']));
-
-        $app = new Application('test');
-        $this->assertFalse(isset($app['profiler']));
-    }
-
-    public function testWebProfilerEnableInDevMode()
-    {
-        $app = new Application('dev');
-        $this->assertTrue(isset($app['profiler']));
     }
 
     public function testGeneratePath()
@@ -346,5 +349,21 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         }
 
         return new Client($app, array(), null, $cookieJar);
+    }
+}
+
+class TestExceptionHandlerSubscriber implements EventSubscriberInterface
+{
+    public function onSilexError(GetResponseForExceptionEvent $event)
+    {
+        $event->setResponse(new Response('GOT IT !'));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(KernelEvents::EXCEPTION => array('onSilexError', 0));
     }
 }

@@ -255,11 +255,7 @@ class Order implements ControllerProviderInterface
      */
     public function displayOneOrder(Application $app, Request $request, $order_id)
     {
-        try {
-            $order = new \set_order($app, $order_id);
-        } catch (\Exception_NotFound $e) {
-            $app->abort(404);
-        }
+        $order = new \set_order($app, $order_id);
 
         return $app['twig']->render('prod/orders/order_item.html.twig', array(
             'order' => $order
@@ -278,11 +274,7 @@ class Order implements ControllerProviderInterface
     {
         $success = false;
 
-        try {
-            $order = new \set_order($app, $order_id);
-        } catch (\Exception_NotFound $e) {
-            $app->abort(404);
-        }
+        $order = new \set_order($app, $order_id);
 
         try {
             $order->send_elements($app, $request->request->get('elements', array()), !!$request->request->get('force', false));
@@ -317,11 +309,7 @@ class Order implements ControllerProviderInterface
     {
         $success = false;
 
-        try {
-            $order = new \set_order($app, $order_id);
-        } catch (\Exception_NotFound $e) {
-            $app->abort(404);
-        }
+        $order = new \set_order($app, $order_id);
 
         try {
             $order->deny_elements($request->request->get('elements', array()));

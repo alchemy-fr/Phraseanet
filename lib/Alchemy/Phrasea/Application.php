@@ -73,7 +73,8 @@ use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Alchemy\Phrasea\Controller\User\Notifications;
 use Alchemy\Phrasea\Controller\User\Preferences;
-use Alchemy\Phrasea\Core\Event\Subscriber\Logout;
+use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
+use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
@@ -121,7 +122,6 @@ use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
-use Silex\Provider\WebProfilerServiceProvider;
 use Symfony\Component\HttpFoundation\File\MimeType\FileBinaryMimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Unoconv\UnoconvServiceProvider;
@@ -155,34 +155,25 @@ class Application extends SilexApplication
     private $environment;
     private $sessionCookieEnabled = true;
 
+    const ENV_DEV = 'dev';
+    const ENV_PROD = 'prod';
+    const ENV_TEST = 'test';
+
     public function getEnvironment()
     {
         return $this->environment;
     }
 
-    public function __construct($environment = 'prod')
+    public function __construct($environment = self::ENV_PROD)
     {
         parent::__construct();
+
+        error_reporting(-1);
 
         $this['root.path'] = realpath(__DIR__ . '/../../..');
         $this->environment = $environment;
 
-        if ((int) ini_get('memory_limit') < 2048) {
-            ini_set('memory_limit', '2048M');
-        }
-
-        error_reporting(E_ALL | E_STRICT);
-
-        ini_set('display_errors', 'on');
-        ini_set('output_buffering', '4096');
         ini_set('default_charset', 'UTF-8');
-        ini_set('session.use_cookies', '1');
-        ini_set('session.use_only_cookies', '1');
-        ini_set('session.auto_start', '0');
-        ini_set('session.hash_function', '1');
-        ini_set('session.hash_bits_per_character', '6');
-        ini_set('session.cache_limiter', '');
-        ini_set('allow_url_fopen', 'on');
         mb_internal_encoding("UTF-8");
 
         !defined('JETON_MAKE_SUBDEF') ? define('JETON_MAKE_SUBDEF', 0x01) : '';
@@ -193,17 +184,12 @@ class Application extends SilexApplication
         $this['charset'] = 'UTF-8';
 
         $this['debug'] = $this->share(function(Application $app) {
-            return $app->getEnvironment() !== 'prod';
+            return Application::ENV_PROD !== $app->getEnvironment();
         });
 
         if ($this['debug'] === true) {
-            ini_set('display_errors', 'on');
-            if ($this->getEnvironment() === 'dev') {
-                ini_set('log_errors', 'on');
-                ini_set('error_log', __DIR__ . '/../../../logs/php_error.log');
-            }
-        } else {
-            ini_set('display_errors', 'off');
+            ini_set('log_errors', 'on');
+            ini_set('error_log', $this['root.path'] . '/logs/php_error.log');
         }
 
         $this->register(new AuthenticationManagerServiceProvider());
@@ -263,7 +249,7 @@ class Application extends SilexApplication
 
         $this->register(new SearchEngineServiceProvider());
         $this->register(new SessionServiceProvider(), array(
-            'session.test' => $this->getEnvironment() == 'test'
+            'session.test' => $this->getEnvironment() === static::ENV_TEST
         ));
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
@@ -272,7 +258,7 @@ class Application extends SilexApplication
         $this->register(new TokensServiceProvider());
         $this->register(new TwigServiceProvider(), array(
             'twig.options' => array(
-                'cache'           => realpath(__DIR__ . '/../../../tmp/cache_twig/'),
+                'cache'           => $this['root.path'] . '/tmp/cache_twig/',
             ),
             'twig.form.templates' => array('login/common/form_div_layout.html.twig')
         ));
@@ -285,19 +271,14 @@ class Application extends SilexApplication
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
 
-        if ('dev' === $this->environment) {
-            $this->register($p = new WebProfilerServiceProvider(), array(
-                'profiler.cache_dir' => __DIR__ . '/../../../tmp/cache/profiler',
-            ));
-            $this->mount('/_profiler', $p);
-        }
-
         $this->register(new XPDFServiceProvider());
 
+        $this['phraseanet.exception_handler'] = $this->share(function ($app) {
+            return PhraseaExceptionHandler::register($app['debug']);
+        });
+
         $this['swiftmailer.transport'] = $this->share(function ($app) {
-
             if ($app['phraseanet.registry']->get('GV_smtp')) {
-
                 $transport = new \Swift_Transport_EsmtpTransport(
                     $app['swiftmailer.transport.buffer'],
                     array($app['swiftmailer.transport.authhandler']),
@@ -340,9 +321,6 @@ class Application extends SilexApplication
             return $transport;
         });
 
-//        $this->register(new \Silex\Provider\HttpCacheServiceProvider());
-//        $this->register(new \Silex\Provider\SecurityServiceProvider());
-
         $this['imagine.factory'] = $this->share(function(Application $app) {
             if ($app['phraseanet.registry']->get('GV_imagine_driver') != '') {
                 return $app['phraseanet.registry']->get('GV_imagine_driver');
@@ -384,11 +362,17 @@ class Application extends SilexApplication
             })
         );
 
-        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initSession'), 254);
-        $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
-        $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'disableCookiesIfRequired'), -256);
-        $this['dispatcher']->addSubscriber(new Logout());
-        $this['dispatcher']->addSubscriber(new PhraseaLocaleSubscriber($this));
+        $this['dispatcher'] = $this->share(
+            $this->extend('dispatcher', function($dispatcher, Application $app){
+                $dispatcher->addListener(KernelEvents::REQUEST, array($app, 'initSession'), 254);
+                $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'addUTF8Charset'), -128);
+                $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'disableCookiesIfRequired'), -256);
+                $dispatcher->addSubscriber(new LogoutSubscriber());
+                $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
+
+                return $dispatcher;
+            })
+        );
 
         $this->register(new LocaleServiceProvider());
 

@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -74,7 +75,7 @@ class Feed_Token
         $stmt->closeCursor();
 
         if ( ! $row)
-            throw new Exception_FeedNotFound($token);
+            throw new NotFoundHttpException('Feed not found.');
 
         $this->feed_id = (int) $row['feed_id'];
         $this->usr_id = (int) $row['usr_id'];

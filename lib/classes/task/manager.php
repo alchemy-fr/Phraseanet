@@ -12,6 +12,7 @@
 use Monolog\Logger;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Process\Process;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -117,7 +118,7 @@ class task_manager
         $tasks = $this->getTasks(false);
 
         if (!isset($tasks[$task_id])) {
-            throw new Exception_NotFound('Unknown task_id ' . $task_id);
+            throw new NotFoundHttpException('Unknown task_id ' . $task_id);
         }
 
         return $tasks[$task_id];

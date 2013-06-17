@@ -3,6 +3,8 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * UsrListEntryRepository
@@ -40,12 +42,12 @@ class UsrListEntryRepository extends EntityRepository
         $entry = $this->find($entry_id);
 
         if ( ! $entry) {
-            throw new \Exception_NotFound('Entry not found');
+            throw new NotFoundHttpException('Entry not found');
         }
 
         /* @var $entry \Entities\UsrListEntry */
         if ($entry->getList()->getId() != $list->getId()) {
-            throw new \Exception_Forbidden('Entry mismatch list');
+            throw new AccessDeniedHttpException('Entry mismatch list');
         }
 
         return $entry;
@@ -68,7 +70,7 @@ class UsrListEntryRepository extends EntityRepository
         $entry = $query->getResult();
 
         if ( ! $entry) {
-            throw new \Exception_NotFound('Entry not found');
+            throw new NotFoundHttpException('Entry not found');
         }
 
         return $query->getSingleResult();

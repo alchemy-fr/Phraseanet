@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Helper\Record as RecordHelper;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -370,7 +371,7 @@ class Push implements ControllerProviderInterface
                     try {
                         $Participant = $Validation->getParticipant($participant_user, $app);
                         continue;
-                    } catch (\Exception_NotFound $e) {
+                    } catch (NotFoundHttpException $e) {
 
                     }
 

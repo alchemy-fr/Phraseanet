@@ -14,6 +14,8 @@ namespace Repositories;
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
 use Entities;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -120,8 +122,8 @@ class BasketRepository extends EntityRepository
     /**
      * Find a basket specified by his basket_id and his owner
      *
-     * @throws \Exception_NotFound
-     * @throws \Exception_Forbidden
+     * @throws NotFoundHttpException
+     * @throws AccessDeniedHttpException
      * @param  type                 $basket_id
      * @param  \User_Adapter        $user
      * @return \Entities\Basket
@@ -140,7 +142,7 @@ class BasketRepository extends EntityRepository
 
         /* @var $basket \Entities\Basket */
         if (null === $basket) {
-            throw new \Exception_NotFound(_('Basket is not found'));
+            throw new NotFoundHttpException(_('Basket is not found'));
         }
 
         if ($basket->getOwner($app)->get_id() != $user->get_id()) {
@@ -155,7 +157,7 @@ class BasketRepository extends EntityRepository
                 }
             }
             if ( ! $participant) {
-                throw new \Exception_Forbidden(_('You have not access to this basket'));
+                throw new AccessDeniedHttpException(_('You have not access to this basket'));
             }
         }
 

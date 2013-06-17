@@ -40,8 +40,8 @@ class module_console_systemClearCache extends Command
             ->exclude('.git')
             ->exclude('.svn')
             ->in(array(
-                __DIR__ . '/../../../../tmp/cache_minify/',
-                __DIR__ . '/../../../../tmp/cache_twig/'
+                $this->container['root.path'] . '/tmp/cache_minify/',
+                $this->container['root.path'] . '/tmp/cache_twig/'
             ));
 
         $filesystem = new Filesystem();

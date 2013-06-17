@@ -1,0 +1,141 @@
+main:
+    servername: 'http://local.phrasea/'
+    maintenance: false
+    database:
+        host: sql-host
+        port: '3306'
+        user: sql-user
+        password: sql-password
+        dbname: ab_phraseanet
+        driver: pdo_mysql
+        charset: UTF8
+    database-test:
+        driver: pdo_sqlite
+        path: /tmp/db.sqlite
+        charset: UTF8
+    api-timers: true
+    cache:
+        type: MemcacheCache
+        options:
+            host: localhost
+            port: 11211
+    opcodecache:
+        type: ArrayCache
+        options: {  }
+    search-engine:
+        type: Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine
+        options: {  }
+    task-manager:
+        options: ''
+trusted-proxies: {  }
+debugger:
+    allowed-ips: {  }
+binaries: {  }
+border-manager:
+    enabled: true
+    checkers:
+        -
+            type: Checker\Sha256
+            enabled: true
+        -
+            type: Checker\UUID
+            enabled: true
+        -
+            type: Checker\Colorspace
+            enabled: false
+            options:
+                colorspaces:
+                    - cmyk
+                    - grayscale
+                    - rgb
+        -
+            type: Checker\Dimension
+            enabled: false
+            options:
+                width: 80
+                height: 160
+        -
+            type: Checker\Extension
+            enabled: false
+            options:
+                extensions:
+                    - jpg
+                    - jpeg
+                    - bmp
+                    - tif
+                    - gif
+                    - png
+                    - pdf
+                    - doc
+                    - odt
+                    - mpg
+                    - mpeg
+                    - mov
+                    - avi
+                    - xls
+                    - flv
+                    - mp3
+                    - mp2
+        -
+            type: Checker\Filename
+            enabled: false
+            options:
+                sensitive: true
+        -
+            type: Checker\MediaType
+            enabled: false
+            options:
+                mediatypes:
+                    - Audio
+                    - Document
+                    - Flash
+                    - Image
+                    - Video
+authentication:
+    auto-create:
+        enabled: false
+        templates: {  }
+    captcha:
+        enabled: true
+        trials-before-failure: 9
+    providers:
+        facebook:
+            enabled: false
+            options:
+                app-id: ''
+                secret: ''
+        twitter:
+            enabled: false
+            options:
+                consumer-key: ''
+                consumer-secret: ''
+        google-plus:
+            enabled: false
+            options:
+                client-id: ''
+                client-secret: ''
+        github:
+            enabled: false
+            options:
+                client-id: ''
+                client-secret: ''
+        viadeo:
+            enabled: false
+            options:
+                client-id: ''
+                client-secret: ''
+        linkedin:
+            enabled: false
+            options:
+                client-id: ''
+                client-secret: ''
+registration-fields:
+    -
+        name: company
+        required: true
+    -
+        name: firstname
+        required: true
+    -
+        name: geonameid
+        required: true

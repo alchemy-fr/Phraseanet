@@ -16,6 +16,8 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -79,7 +81,7 @@ class Feed implements ControllerProviderInterface
             $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
 
             if (!$entry->is_publisher($app['authentication']->getUser())) {
-                throw new \Exception_UnauthorizedAction();
+                throw new AccessDeniedHttpException();
             }
 
             $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
@@ -102,7 +104,7 @@ class Feed implements ControllerProviderInterface
                 $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
 
                 if (!$entry->is_publisher($app['authentication']->getUser())) {
-                    throw new \Exception_UnauthorizedAction();
+                    throw new AccessDeniedHttpException();
                 }
 
                 $title = $request->request->get('title');
@@ -120,12 +122,12 @@ class Feed implements ControllerProviderInterface
                 if ($current_feed_id != $new_feed_id) {
                     try {
                         $new_feed = \Feed_Adapter::load_with_user($app, $app['authentication']->getUser(), $new_feed_id);
-                    } catch (\Exception_NotFound $e) {
-                        throw new \Exception_Forbidden('You have no access to this feed');
+                    } catch (NotFoundHttpException $e) {
+                        throw new AccessDeniedHttpException('You have no access to this feed');
                     }
 
                     if (!$new_feed->is_publisher($app['authentication']->getUser())) {
-                        throw new \Exception_Forbidden('You are not publisher of this feed');
+                        throw new AccessDeniedHttpException('You are not publisher of this feed');
                     }
 
                     $entry->set_feed($new_feed);
@@ -151,10 +153,10 @@ class Feed implements ControllerProviderInterface
             } catch (\Exception_Feed_EntryNotFound $e) {
                 $app['phraseanet.appbox']->get_connection()->rollBack();
                 $datas['message'] = _('Feed entry not found');
-            } catch (\Exception_NotFound $e) {
+            } catch (NotFoundHttpException $e) {
                 $app['phraseanet.appbox']->get_connection()->rollBack();
                 $datas['message'] = _('Feed not found');
-            } catch (\Exception_Forbidden $e) {
+            } catch (AccessDeniedHttpException $e) {
                 $app['phraseanet.appbox']->get_connection()->rollBack();
                 $datas['message'] = _('You are not authorized to access this feed');
             } catch (\Exception $e) {
@@ -178,7 +180,7 @@ class Feed implements ControllerProviderInterface
 
                 if (!$entry->is_publisher($app['authentication']->getUser())
                     && $entry->get_feed()->is_owner($app['authentication']->getUser()) === false) {
-                    throw new \Exception_UnauthorizedAction(_('Action Forbidden : You are not the publisher'));
+                    throw new AccessDeniedHttpException(_('Action Forbidden : You are not the publisher'));
                 }
 
                 $entry->delete();

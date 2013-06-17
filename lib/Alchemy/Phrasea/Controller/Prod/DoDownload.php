@@ -15,6 +15,7 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DoDownload implements ControllerProviderInterface
 {
@@ -91,11 +92,7 @@ class DoDownload implements ControllerProviderInterface
      */
     public function prepareDownload(Application $app, Request $request, $token)
     {
-        try {
-            $datas = $app['tokens']->helloToken($token);
-        } catch (\Exception_NotFound $e) {
-            $app->abort(404, 'Invalid token');
-        }
+        $datas = $app['tokens']->helloToken($token);
 
         if (false === $list = @unserialize((string) $datas['datas'])) {
             $app->abort(500, 'Invalid datas');
@@ -140,11 +137,7 @@ class DoDownload implements ControllerProviderInterface
      */
     public function downloadDocuments(Application $app, Request $request, $token)
     {
-        try {
-            $datas = $app['tokens']->helloToken($token);
-        } catch (\Exception_NotFound $e) {
-            $app->abort(404, 'Invalid token');
-        }
+        $datas = $app['tokens']->helloToken($token);
 
         if (false === $list = @unserialize((string) $datas['datas'])) {
             $app->abort(500, 'Invalid datas');
@@ -160,7 +153,7 @@ class DoDownload implements ControllerProviderInterface
             $mime = $subdef['mime'];
             $list['complete'] = true;
         } else {
-            $exportFile = __DIR__ . '/../../../../../tmp/download/' . $datas['value'] . '.zip';
+            $exportFile = $app['root.path'] . '/tmp/download/' . $datas['value'] . '.zip';
             $mime = 'application/zip';
         }
 
@@ -202,7 +195,7 @@ class DoDownload implements ControllerProviderInterface
     {
         try {
             $datas = $app['tokens']->helloToken($token);
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             return $app->json(array(
                 'success' => false,
                 'message' => 'Invalid token'
@@ -225,7 +218,7 @@ class DoDownload implements ControllerProviderInterface
             $app,
             $token,
             $list,
-            sprintf('%s/../../../../../tmp/download/%s.zip', __DIR__, $datas['value']) // Dest file
+            sprintf($app['root.path'] . '/tmp/download/%s.zip', $datas['value']) // Dest file
         );
 
         return $app->json(array(

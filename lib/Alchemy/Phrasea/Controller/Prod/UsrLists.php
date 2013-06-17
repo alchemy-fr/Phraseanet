@@ -19,6 +19,7 @@ use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  *
@@ -477,9 +478,9 @@ class UsrLists implements ControllerProviderInterface
         );
 
         if (!$app['request']->request->get('role'))
-            throw new \Exception_BadRequest('Missing role parameter');
+            throw new BadRequestHttpException('Missing role parameter');
         elseif (!in_array($app['request']->request->get('role'), $availableRoles))
-            throw new \Exception_BadRequest('Role is invalid');
+            throw new BadRequestHttpException('Role is invalid');
 
         try {
             $repository = $app['EM']->getRepository('\Entities\UsrList');

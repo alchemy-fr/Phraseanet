@@ -17,6 +17,7 @@ use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Lightbox implements ControllerProviderInterface
 {
@@ -43,7 +44,7 @@ class Lightbox implements ControllerProviderInterface
 
             try {
                 $datas = $app['tokens']->helloToken($request->query->get('LOG'));
-            } catch (\Exception_NotFound $e) {
+            } catch (NotFoundHttpException $e) {
                 return;
             }
             switch ($datas['type']) {
