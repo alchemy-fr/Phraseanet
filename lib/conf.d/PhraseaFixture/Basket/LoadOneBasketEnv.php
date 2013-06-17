@@ -45,7 +45,7 @@ class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInte
         $this->participants[] = $user;
     }
 
-    public function addBasketElement(\record_adapter $record)
+    public function addElement(\record_adapter $record)
     {
         $this->basketElements[] = $record;
     }
@@ -55,7 +55,6 @@ class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInte
         $basket = new \Entities\Basket();
 
         $basket->setName('test');
-
         $basket->setDescription('description');
 
         if (null === $this->user) {
@@ -67,12 +66,7 @@ class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInte
         $this->addElementToBasket($manager, $basket);
 
         $validationSession = new \Entities\ValidationSession();
-
         $validationSession->setBasket($basket);
-
-        $validationSession->setDescription('Une description au hasard');
-
-        $validationSession->setName('Un nom de validation');
 
         $expires = new \DateTime();
         $expires->modify('+1 week');

@@ -190,7 +190,7 @@ class Basket implements ControllerProviderInterface
 
             $app['EM']->persist($basket_element);
 
-            $Basket->addBasketElement($basket_element);
+            $Basket->addElement($basket_element);
 
             $n++;
         }
@@ -390,7 +390,7 @@ class Basket implements ControllerProviderInterface
 
             $app['EM']->persist($basket_element);
 
-            $basket->addBasketElement($basket_element);
+            $basket->addElement($basket_element);
 
             if (null !== $validationSession = $basket->getValidation()) {
 
@@ -438,7 +438,7 @@ class Basket implements ControllerProviderInterface
             }
 
             $basket_element->setBasket($basket);
-            $basket->addBasketElement($basket_element);
+            $basket->addElement($basket_element);
             $n++;
         }
 

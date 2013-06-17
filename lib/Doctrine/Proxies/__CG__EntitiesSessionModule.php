@@ -75,18 +75,6 @@ class SessionModule extends \Entities\SessionModule implements \Doctrine\ORM\Pro
         return parent::getCreated();
     }
 
-    public function setSession(\Entities\Session $session = NULL)
-    {
-        $this->__load();
-        return parent::setSession($session);
-    }
-
-    public function getSession()
-    {
-        $this->__load();
-        return parent::getSession();
-    }
-
     public function setUpdated($updated)
     {
         $this->__load();
@@ -97,6 +85,18 @@ class SessionModule extends \Entities\SessionModule implements \Doctrine\ORM\Pro
     {
         $this->__load();
         return parent::getUpdated();
+    }
+
+    public function setSession(\Entities\Session $session = NULL)
+    {
+        $this->__load();
+        return parent::setSession($session);
+    }
+
+    public function getSession()
+    {
+        $this->__load();
+        return parent::getSession();
     }
 
 
@@ -114,7 +114,7 @@ class SessionModule extends \Entities\SessionModule implements \Doctrine\ORM\Pro
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

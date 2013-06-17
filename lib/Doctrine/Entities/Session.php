@@ -1,79 +1,100 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Entities\Session
+ * Session
  */
 class Session
 {
     /**
-     * @var integer $id
+     * @var integer
      */
     private $id;
 
     /**
-     * @var integer $usr_id
+     * @var integer
      */
     private $usr_id;
 
     /**
-     * @var string $user_agent
+     * @var string
      */
     private $user_agent;
 
     /**
-     * @var string $ip_address
+     * @var string
      */
     private $ip_address;
 
     /**
-     * @var string $platform
+     * @var string
      */
     private $platform;
 
     /**
-     * @var string $browser_name
+     * @var string
      */
     private $browser_name;
 
     /**
-     * @var string $browser_version
+     * @var string
      */
     private $browser_version;
 
     /**
-     * @var integer $screen_width
+     * @var integer
      */
     private $screen_width;
 
     /**
-     * @var integer $screen_height
+     * @var integer
      */
     private $screen_height;
 
     /**
-     * @var string $token
+     * @var string
      */
     private $token;
 
     /**
-     * @var string $nonce
+     * @var string
      */
     private $nonce;
 
     /**
-     * @var datetime $created
+     * @var \DateTime
      */
     private $created;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime
      */
     private $updated;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $modules;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->modules = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -93,12 +114,13 @@ class Session
     /**
      * Set usr_id
      *
-     * @param integer $usrId
+     * @param  integer $usrId
      * @return Session
      */
     public function setUsrId($usrId)
     {
         $this->usr_id = $usrId;
+
         return $this;
     }
 
@@ -122,12 +144,13 @@ class Session
     /**
      * Set user_agent
      *
-     * @param string $userAgent
+     * @param  string  $userAgent
      * @return Session
      */
     public function setUserAgent($userAgent)
     {
         $this->user_agent = $userAgent;
+
         return $this;
     }
 
@@ -144,12 +167,13 @@ class Session
     /**
      * Set ip_address
      *
-     * @param string $ipAddress
+     * @param  string  $ipAddress
      * @return Session
      */
     public function setIpAddress($ipAddress)
     {
         $this->ip_address = $ipAddress;
+
         return $this;
     }
 
@@ -166,12 +190,13 @@ class Session
     /**
      * Set platform
      *
-     * @param string $platform
+     * @param  string  $platform
      * @return Session
      */
     public function setPlatform($platform)
     {
         $this->platform = $platform;
+
         return $this;
     }
 
@@ -188,12 +213,13 @@ class Session
     /**
      * Set browser_name
      *
-     * @param string $browserName
+     * @param  string  $browserName
      * @return Session
      */
     public function setBrowserName($browserName)
     {
         $this->browser_name = $browserName;
+
         return $this;
     }
 
@@ -210,12 +236,13 @@ class Session
     /**
      * Set browser_version
      *
-     * @param string $browserVersion
+     * @param  string  $browserVersion
      * @return Session
      */
     public function setBrowserVersion($browserVersion)
     {
         $this->browser_version = $browserVersion;
+
         return $this;
     }
 
@@ -232,12 +259,13 @@ class Session
     /**
      * Set screen_width
      *
-     * @param integer $screenWidth
+     * @param  integer $screenWidth
      * @return Session
      */
     public function setScreenWidth($screenWidth)
     {
         $this->screen_width = $screenWidth;
+
         return $this;
     }
 
@@ -254,12 +282,13 @@ class Session
     /**
      * Set screen_height
      *
-     * @param integer $screenHeight
+     * @param  integer $screenHeight
      * @return Session
      */
     public function setScreenHeight($screenHeight)
     {
         $this->screen_height = $screenHeight;
+
         return $this;
     }
 
@@ -276,12 +305,13 @@ class Session
     /**
      * Set token
      *
-     * @param string $token
+     * @param  string  $token
      * @return Session
      */
     public function setToken($token)
     {
         $this->token = $token;
+
         return $this;
     }
 
@@ -298,12 +328,13 @@ class Session
     /**
      * Set nonce
      *
-     * @param string $nonce
+     * @param  string  $nonce
      * @return Session
      */
     public function setNonce($nonce)
     {
         $this->nonce = $nonce;
+
         return $this;
     }
 
@@ -320,19 +351,20 @@ class Session
     /**
      * Set created
      *
-     * @param datetime $created
+     * @param  \DateTime $created
      * @return Session
      */
     public function setCreated($created)
     {
         $this->created = $created;
+
         return $this;
     }
 
     /**
      * Get created
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -342,50 +374,53 @@ class Session
     /**
      * Set updated
      *
-     * @param datetime $updated
+     * @param  \DateTime $updated
      * @return Session
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+
         return $this;
     }
 
     /**
      * Get updated
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getUpdated()
     {
         return $this->updated;
     }
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    private $modules;
-
-    public function __construct()
-    {
-        $this->modules = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Add modules
      *
-     * @param Entities\SessionModule $modules
+     * @param  \Entities\SessionModule $modules
      * @return Session
      */
-    public function addSessionModule(\Entities\SessionModule $modules)
+    public function addModule(\Entities\SessionModule $modules)
     {
         $this->modules[] = $modules;
+
         return $this;
+    }
+
+    /**
+     * Remove modules
+     *
+     * @param \Entities\SessionModule $modules
+     */
+    public function removeModule(\Entities\SessionModule $modules)
+    {
+        $this->modules->removeElement($modules);
     }
 
     /**
      * Get modules
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getModules()
     {
@@ -395,8 +430,8 @@ class Session
     /**
      * Get a module by its identifier
      *
-     * @param   integer     $moduleId
-     * @return  Entities\SessionModule|null
+     * @param  integer                     $moduleId
+     * @return Entities\SessionModule|null
      */
     public function getModuleById($moduleId)
     {
@@ -418,28 +453,5 @@ class Session
         }
 
         return false;
-    }
-
-    /**
-     * Add modules
-     *
-     * @param \Entities\SessionModule $modules
-     * @return Session
-     */
-    public function addModule(\Entities\SessionModule $modules)
-    {
-        $this->modules[] = $modules;
-    
-        return $this;
-    }
-
-    /**
-     * Remove modules
-     *
-     * @param \Entities\SessionModule $modules
-     */
-    public function removeModule(\Entities\SessionModule $modules)
-    {
-        $this->modules->removeElement($modules);
     }
 }

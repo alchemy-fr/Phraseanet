@@ -1,44 +1,52 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Alchemy\Phrasea\Application;
 
 /**
- * Entities\SessionModule
+ * SessionModule
  */
 class SessionModule
 {
     /**
-     * @var integer $id
+     * @var integer
      */
     private $id;
 
     /**
-     * @var integer $module_id
+     * @var integer
      */
     private $module_id;
 
     /**
-     * @var datetime $created
+     * @var \DateTime
      */
     private $created;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime
      */
     private $updated;
 
     /**
-     * @var Entities\Session
+     * @var \Entities\Session
      */
     private $session;
-
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -48,19 +56,20 @@ class SessionModule
     /**
      * Set module_id
      *
-     * @param integer $moduleId
+     * @param  integer       $moduleId
      * @return SessionModule
      */
     public function setModuleId($moduleId)
     {
         $this->module_id = $moduleId;
+
         return $this;
     }
 
     /**
      * Get module_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getModuleId()
     {
@@ -70,19 +79,20 @@ class SessionModule
     /**
      * Set created
      *
-     * @param datetime $created
+     * @param  \DateTime     $created
      * @return SessionModule
      */
     public function setCreated($created)
     {
         $this->created = $created;
+
         return $this;
     }
 
     /**
      * Get created
      *
-     * @return datetime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -92,19 +102,20 @@ class SessionModule
     /**
      * Set updated
      *
-     * @param datetime $updated
+     * @param  \DateTime     $updated
      * @return SessionModule
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+
         return $this;
     }
 
     /**
      * Get updated
      *
-     * @return datetime 
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -114,19 +125,20 @@ class SessionModule
     /**
      * Set session
      *
-     * @param Entities\Session $session
+     * @param  \Entities\Session $session
      * @return SessionModule
      */
     public function setSession(\Entities\Session $session = null)
     {
         $this->session = $session;
+
         return $this;
     }
 
     /**
      * Get session
      *
-     * @return Entities\Session 
+     * @return \Entities\Session
      */
     public function getSession()
     {

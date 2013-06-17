@@ -51,40 +51,34 @@ class ValidationSession extends \Entities\ValidationSession implements \Doctrine
         return parent::getId();
     }
 
-    public function setName($name)
+    public function setInitiatorId($initiatorId)
     {
         $this->__load();
-        return parent::setName($name);
+        return parent::setInitiatorId($initiatorId);
     }
 
-    public function getName()
+    public function getInitiatorId()
     {
         $this->__load();
-        return parent::getName();
+        return parent::getInitiatorId();
     }
 
-    public function setDescription($description)
+    public function isInitiator(\User_Adapter $user)
     {
         $this->__load();
-        return parent::setDescription($description);
+        return parent::isInitiator($user);
     }
 
-    public function getDescription()
+    public function setInitiator(\User_Adapter $user)
     {
         $this->__load();
-        return parent::getDescription();
+        return parent::setInitiator($user);
     }
 
-    public function setArchived($archived)
+    public function getInitiator(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::setArchived($archived);
-    }
-
-    public function getArchived()
-    {
-        $this->__load();
-        return parent::getArchived();
+        return parent::getInitiator($app);
     }
 
     public function setCreated($created)
@@ -123,19 +117,7 @@ class ValidationSession extends \Entities\ValidationSession implements \Doctrine
         return parent::getExpires();
     }
 
-    public function setReminded($reminded)
-    {
-        $this->__load();
-        return parent::setReminded($reminded);
-    }
-
-    public function getReminded()
-    {
-        $this->__load();
-        return parent::getReminded();
-    }
-
-    public function setBasket(\Entities\Basket $basket)
+    public function setBasket(\Entities\Basket $basket = NULL)
     {
         $this->__load();
         return parent::setBasket($basket);
@@ -147,52 +129,22 @@ class ValidationSession extends \Entities\ValidationSession implements \Doctrine
         return parent::getBasket();
     }
 
-    public function addValidationParticipant(\Entities\ValidationParticipant $participants)
+    public function addParticipant(\Entities\ValidationParticipant $participants)
     {
         $this->__load();
-        return parent::addValidationParticipant($participants);
+        return parent::addParticipant($participants);
+    }
+
+    public function removeParticipant(\Entities\ValidationParticipant $participants)
+    {
+        $this->__load();
+        return parent::removeParticipant($participants);
     }
 
     public function getParticipants()
     {
         $this->__load();
         return parent::getParticipants();
-    }
-
-    public function getParticipant(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
-    {
-        $this->__load();
-        return parent::getParticipant($user, $app);
-    }
-
-    public function setInitiatorId($initiatorId)
-    {
-        $this->__load();
-        return parent::setInitiatorId($initiatorId);
-    }
-
-    public function getInitiatorId()
-    {
-        $this->__load();
-        return parent::getInitiatorId();
-    }
-
-    public function isInitiator(\User_Adapter $user)
-    {
-        $this->__load();
-        return parent::isInitiator($user);
-    }
-
-    public function setInitiator(\User_Adapter $user)
-    {
-        $this->__load();
-        return parent::setInitiator($user);
-    }
-
-    public function getInitiator(\Alchemy\Phrasea\Application $app)
-    {
-        $this->__load();
-        return parent::getInitiator($app);
     }
 
     public function isFinished()
@@ -205,6 +157,12 @@ class ValidationSession extends \Entities\ValidationSession implements \Doctrine
     {
         $this->__load();
         return parent::getValidationString($app, $user);
+    }
+
+    public function getParticipant(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
+    {
+        $this->__load();
+        return parent::getParticipant($user, $app);
     }
 
 
@@ -222,7 +180,7 @@ class ValidationSession extends \Entities\ValidationSession implements \Doctrine
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

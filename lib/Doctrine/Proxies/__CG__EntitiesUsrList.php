@@ -87,16 +87,40 @@ class UsrList extends \Entities\UsrList implements \Doctrine\ORM\Proxy\Proxy
         return parent::getUpdated();
     }
 
-    public function addUsrListOwner(\Entities\UsrListOwner $owners)
+    public function addOwner(\Entities\UsrListOwner $owners)
     {
         $this->__load();
-        return parent::addUsrListOwner($owners);
+        return parent::addOwner($owners);
+    }
+
+    public function removeOwner(\Entities\UsrListOwner $owners)
+    {
+        $this->__load();
+        return parent::removeOwner($owners);
     }
 
     public function getOwners()
     {
         $this->__load();
         return parent::getOwners();
+    }
+
+    public function addEntrie(\Entities\UsrListEntry $entries)
+    {
+        $this->__load();
+        return parent::addEntrie($entries);
+    }
+
+    public function removeEntrie(\Entities\UsrListEntry $entries)
+    {
+        $this->__load();
+        return parent::removeEntrie($entries);
+    }
+
+    public function getEntries()
+    {
+        $this->__load();
+        return parent::getEntries();
     }
 
     public function hasAccess(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
@@ -111,46 +135,10 @@ class UsrList extends \Entities\UsrList implements \Doctrine\ORM\Proxy\Proxy
         return parent::getOwner($user, $app);
     }
 
-    public function addUsrListEntry(\Entities\UsrListEntry $entry)
-    {
-        $this->__load();
-        return parent::addUsrListEntry($entry);
-    }
-
-    public function getEntries()
-    {
-        $this->__load();
-        return parent::getEntries();
-    }
-
     public function has(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
     {
         $this->__load();
         return parent::has($user, $app);
-    }
-
-    public function addOwner(\Entities\UsrListOwner $owners)
-    {
-        $this->__load();
-        return parent::addOwner($owners);
-    }
-
-    public function removeOwner(\Entities\UsrListOwner $owners)
-    {
-        $this->__load();
-        return parent::removeOwner($owners);
-    }
-
-    public function addEntrie(\Entities\UsrListEntry $entries)
-    {
-        $this->__load();
-        return parent::addEntrie($entries);
-    }
-
-    public function removeEntrie(\Entities\UsrListEntry $entries)
-    {
-        $this->__load();
-        return parent::removeEntrie($entries);
     }
 
 

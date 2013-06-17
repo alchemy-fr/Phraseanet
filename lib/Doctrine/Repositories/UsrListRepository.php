@@ -28,7 +28,6 @@ class UsrListRepository extends EntityRepository
               JOIN l.owners o
             WHERE o.usr_id = :usr_id';
 
-
         $params = array(
             'usr_id' => $user->get_id(),
         );

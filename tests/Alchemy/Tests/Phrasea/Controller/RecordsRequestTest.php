@@ -210,7 +210,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
             $basket_element = new \Entities\BasketElement();
             $basket_element->setRecord($element);
             $basket_element->setBasket($basket);
-            $basket->addBasketElement($basket_element);
+            $basket->addElement($basket_element);
             self::$DI['app']['EM']->persist($basket_element);
             self::$DI['app']['EM']->flush();
         }

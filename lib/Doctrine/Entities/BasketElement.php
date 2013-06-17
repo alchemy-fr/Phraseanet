@@ -12,49 +12,60 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Kernel
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
+ * BasketElement
  */
 class BasketElement
 {
     /**
-     * @var integer $id
+     * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
-     * @var integer $record_id
+     * @var integer
      */
-    protected $record_id;
+    private $record_id;
 
     /**
-     * @var integer $sbas_id
+     * @var integer
      */
-    protected $sbas_id;
+    private $sbas_id;
 
     /**
-     * @var integer $ord
+     * @var integer
      */
-    protected $ord;
+    private $ord;
 
     /**
-     * @var datetime $created
+     * @var \DateTime
      */
-    protected $created;
+    private $created;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime
      */
-    protected $updated;
+    private $updated;
 
     /**
-     * @var Entities\Basket
+     * @var \Doctrine\Common\Collections\Collection
      */
-    protected $basket;
+    private $validation_datas;
+
+    /**
+     * @var \Entities\Basket
+     */
+    private $basket;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->validation_datas = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -69,11 +80,14 @@ class BasketElement
     /**
      * Set record_id
      *
-     * @param integer $recordId
+     * @param  integer       $recordId
+     * @return BasketElement
      */
     public function setRecordId($recordId)
     {
         $this->record_id = $recordId;
+
+        return $this;
     }
 
     /**
@@ -89,11 +103,14 @@ class BasketElement
     /**
      * Set sbas_id
      *
-     * @param integer $sbasId
+     * @param  integer       $sbasId
+     * @return BasketElement
      */
     public function setSbasId($sbasId)
     {
         $this->sbas_id = $sbasId;
+
+        return $this;
     }
 
     /**
@@ -106,14 +123,28 @@ class BasketElement
         return $this->sbas_id;
     }
 
+    public function getRecord(Application $app)
+    {
+        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
+    }
+
+    public function setRecord(\record_adapter $record)
+    {
+        $this->setRecordId($record->get_record_id());
+        $this->setSbasId($record->get_sbas_id());
+    }
+
     /**
      * Set ord
      *
-     * @param integer $ord
+     * @param  integer       $ord
+     * @return BasketElement
      */
     public function setOrd($ord)
     {
         $this->ord = $ord;
+
+        return $this;
     }
 
     /**
@@ -129,17 +160,20 @@ class BasketElement
     /**
      * Set created
      *
-     * @param datetime $created
+     * @param  \DateTime     $created
+     * @return BasketElement
      */
     public function setCreated($created)
     {
         $this->created = $created;
+
+        return $this;
     }
 
     /**
      * Get created
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -149,17 +183,20 @@ class BasketElement
     /**
      * Set updated
      *
-     * @param datetime $updated
+     * @param  \DateTime     $updated
+     * @return BasketElement
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+
+        return $this;
     }
 
     /**
      * Get updated
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -167,68 +204,67 @@ class BasketElement
     }
 
     /**
+     * Add validation_datas
+     *
+     * @param  \Entities\ValidationData $validationDatas
+     * @return BasketElement
+     */
+    public function addValidationData(\Entities\ValidationData $validationDatas)
+    {
+        $this->validation_datas[] = $validationDatas;
+
+        return $this;
+    }
+
+    /**
+     * Remove validation_datas
+     *
+     * @param \Entities\ValidationData $validationDatas
+     */
+    public function removeValidationData(\Entities\ValidationData $validationDatas)
+    {
+        $this->validation_datas->removeElement($validationDatas);
+    }
+
+    /**
+     * Get validation_datas
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getValidationDatas()
+    {
+        return $this->validation_datas;
+    }
+
+    /**
      * Set basket
      *
-     * @param Entities\Basket $basket
+     * @param  \Entities\Basket $basket
+     * @return BasketElement
      */
-    public function setBasket(\Entities\Basket $basket)
+    public function setBasket(\Entities\Basket $basket = null)
     {
         $this->basket = $basket;
+
+        return $this;
     }
 
     /**
      * Get basket
      *
-     * @return Entities\Basket
+     * @return \Entities\Basket
      */
     public function getBasket()
     {
         return $this->basket;
     }
 
-    public function getRecord(Application $app)
-    {
-        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
-    }
-
-    public function setRecord(\record_adapter $record)
-    {
-        $this->setRecordId($record->get_record_id());
-        $this->setSbasId($record->get_sbas_id());
-    }
-
+    /**
+     * @ORM\PrePersist
+     */
     public function setLastInBasket()
     {
         $this->setOrd($this->getBasket()->getElements()->count() + 1);
-    }
-    /**
-     * @var Entities\ValidationData
-     */
-    protected $validation_datas;
-
-    public function __construct()
-    {
-        $this->validation_datas = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add validation_datas
-     *
-     * @param Entities\ValidationData $validationDatas
-     */
-    public function addValidationData(\Entities\ValidationData $validationDatas)
-    {
-        $this->validation_datas[] = $validationDatas;
-    }
-
-    /**
-     * Get validation_datas
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getValidationDatas()
-    {
-        return $this->validation_datas;
     }
 
     /**
@@ -245,15 +281,5 @@ class BasketElement
         }
 
         throw new \Exception('There is no such participant ' . $user->get_email());
-    }
-
-    /**
-     * Remove validation_datas
-     *
-     * @param \Entities\ValidationData $validationDatas
-     */
-    public function removeValidationData(\Entities\ValidationData $validationDatas)
-    {
-        $this->validation_datas->removeElement($validationDatas);
     }
 }

@@ -133,7 +133,7 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $basket_element->setRecord($record);
         $basket_element->setLastInBasket();
 
-        $basket->addBasketElement($basket_element);
+        $basket->addElement($basket_element);
 
         self::$DI['app']['EM']->persist($basket);
         self::$DI['app']['EM']->flush();
@@ -164,7 +164,7 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $basket_element->setRecord($record);
         $basket_element->setLastInBasket();
 
-        $basket->addBasketElement($basket_element);
+        $basket->addElement($basket_element);
 
         self::$DI['app']['EM']->persist($basket);
         self::$DI['app']['EM']->flush();
@@ -423,9 +423,6 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $validationSession = new \Entities\ValidationSession();
 
-        $validationSession->setDescription('Une description au hasard');
-        $validationSession->setName('Un nom de validation');
-
         $expires = new \DateTime();
         $expires->modify('+1 week');
 
@@ -444,7 +441,7 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['app']['EM']->persist($validationParticipant);
 
-        $validationSession->addValidationParticipant($validationParticipant);
+        $validationSession->addParticipant($validationParticipant);
 
         self::$DI['app']['EM']->flush();
 

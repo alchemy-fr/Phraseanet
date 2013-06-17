@@ -57,6 +57,12 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
         return parent::setUsrId($usrId);
     }
 
+    public function getUsrId()
+    {
+        $this->__load();
+        return parent::getUsrId();
+    }
+
     public function getUser(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
@@ -87,30 +93,6 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
         return parent::getUpdated();
     }
 
-    public function addLazaretFiles(\Entities\LazaretFile $files)
-    {
-        $this->__load();
-        return parent::addLazaretFiles($files);
-    }
-
-    public function getFiles()
-    {
-        $this->__load();
-        return parent::getFiles();
-    }
-
-    public function addLazaretFile(\Entities\LazaretFile $files)
-    {
-        $this->__load();
-        return parent::addLazaretFile($files);
-    }
-
-    public function getUsrId()
-    {
-        $this->__load();
-        return parent::getUsrId();
-    }
-
     public function addFile(\Entities\LazaretFile $files)
     {
         $this->__load();
@@ -121,6 +103,12 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
     {
         $this->__load();
         return parent::removeFile($files);
+    }
+
+    public function getFiles()
+    {
+        $this->__load();
+        return parent::getFiles();
     }
 
 

@@ -14,9 +14,7 @@ namespace Entities;
 use Alchemy\Phrasea\Application;
 
 /**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
+ * Basket
  */
 class Basket
 {
@@ -25,50 +23,63 @@ class Basket
     const ELEMENTSORDER_ASC = 'asc';
 
     /**
-     * @var integer $id
+     * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
-     * @var string $name
+     * @var string
      */
-    protected $name;
+    private $name;
 
     /**
-     * @var text $description
+     * @var string
      */
-    protected $description;
+    private $description;
 
     /**
-     * @var integer $usr_id
+     * @var integer
      */
-    protected $usr_id;
+    private $usr_id;
 
     /**
-     * @var integer $pusher_id
+     * @var boolean
      */
-    protected $pusher_id;
+    private $is_read = false;
 
     /**
-     * @var boolean $archived
+     * @var integer
      */
-    protected $archived = false;
+    private $pusher_id;
 
     /**
-     * @var datetime $created
+     * @var boolean
      */
-    protected $created;
+    private $archived = false;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime
      */
-    protected $updated;
+    private $created;
 
     /**
-     * @var Entities\BasketElement
+     * @var \DateTime
      */
-    protected $elements;
+    private $updated;
 
+    /**
+     * @var \Entities\ValidationSession
+     */
+    private $validation;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $elements;
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->elements = new \Doctrine\Common\Collections\ArrayCollection();
@@ -87,11 +98,14 @@ class Basket
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string $name
+     * @return Basket
      */
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
     }
 
     /**
@@ -107,17 +121,20 @@ class Basket
     /**
      * Set description
      *
-     * @param text $description
+     * @param  string $description
+     * @return Basket
      */
     public function setDescription($description)
     {
         $this->description = $description;
+
+        return $this;
     }
 
     /**
      * Get description
      *
-     * @return text
+     * @return string
      */
     public function getDescription()
     {
@@ -127,11 +144,14 @@ class Basket
     /**
      * Set usr_id
      *
-     * @param integer $usrId
+     * @param  integer $usrId
+     * @return Basket
      */
     public function setUsrId($usrId)
     {
         $this->usr_id = $usrId;
+
+        return $this;
     }
 
     /**
@@ -144,14 +164,52 @@ class Basket
         return $this->usr_id;
     }
 
+    public function setOwner(\User_Adapter $user)
+    {
+        $this->setUsrId($user->get_id());
+    }
+
+    public function getOwner(Application $app)
+    {
+        if ($this->getUsrId()) {
+            return \User_Adapter::getInstance($this->getUsrId(), $app);
+        }
+    }
+
+    /**
+     * Set is_read
+     *
+     * @param  boolean $isRead
+     * @return Basket
+     */
+    public function setIsRead($isRead)
+    {
+        $this->is_read = $isRead;
+
+        return $this;
+    }
+
+    /**
+     * Get is_read
+     *
+     * @return boolean
+     */
+    public function getIsRead()
+    {
+        return $this->is_read;
+    }
+
     /**
      * Set pusher_id
      *
-     * @param integer $pusherId
+     * @param  integer $pusherId
+     * @return Basket
      */
     public function setPusherId($pusherId)
     {
         $this->pusher_id = $pusherId;
+
+        return $this;
     }
 
     /**
@@ -164,14 +222,29 @@ class Basket
         return $this->pusher_id;
     }
 
+    public function setPusher(\User_Adapter $user)
+    {
+        $this->setPusherId($user->get_id());
+    }
+
+    public function getPusher(Application $app)
+    {
+        if ($this->getPusherId()) {
+            return \User_Adapter::getInstance($this->getPusherId(), $app);
+        }
+    }
+
     /**
      * Set archived
      *
-     * @param boolean $archived
+     * @param  boolean $archived
+     * @return Basket
      */
     public function setArchived($archived)
     {
         $this->archived = $archived;
+
+        return $this;
     }
 
     /**
@@ -187,17 +260,20 @@ class Basket
     /**
      * Set created
      *
-     * @param datetime $created
+     * @param  \DateTime $created
+     * @return Basket
      */
     public function setCreated($created)
     {
         $this->created = $created;
+
+        return $this;
     }
 
     /**
      * Get created
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -207,17 +283,20 @@ class Basket
     /**
      * Set updated
      *
-     * @param datetime $updated
+     * @param  \DateTime $updated
+     * @return Basket
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+
+        return $this;
     }
 
     /**
      * Get updated
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -225,19 +304,55 @@ class Basket
     }
 
     /**
+     * Set validation
+     *
+     * @param  \Entities\ValidationSession $validation
+     * @return Basket
+     */
+    public function setValidation(\Entities\ValidationSession $validation = null)
+    {
+        $this->validation = $validation;
+
+        return $this;
+    }
+
+    /**
+     * Get validation
+     *
+     * @return \Entities\ValidationSession
+     */
+    public function getValidation()
+    {
+        return $this->validation;
+    }
+
+    /**
      * Add elements
      *
-     * @param Entities\BasketElement $elements
+     * @param  \Entities\BasketElement $elements
+     * @return Basket
      */
-    public function addBasketElement(\Entities\BasketElement $elements)
+    public function addElement(\Entities\BasketElement $elements)
     {
         $this->elements[] = $elements;
+
+        return $this;
+    }
+
+    /**
+     * Remove elements
+     *
+     * @param \Entities\BasketElement $elements
+     */
+    public function removeElement(\Entities\BasketElement $elements)
+    {
+        $this->elements->removeElement($elements);
     }
 
     /**
      * Get elements
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getElements()
     {
@@ -319,78 +434,6 @@ class Basket
         return $total_el1 < $total_el2 ? 1 : -1;
     }
 
-    public function setPusher(\User_Adapter $user)
-    {
-        $this->setPusherId($user->get_id());
-    }
-
-    public function getPusher(Application $app)
-    {
-        if ($this->getPusherId()) {
-            return \User_Adapter::getInstance($this->getPusherId(), $app);
-        }
-    }
-
-    public function setOwner(\User_Adapter $user)
-    {
-        $this->setUsrId($user->get_id());
-    }
-
-    public function getOwner(Application $app)
-    {
-        if ($this->getUsrId()) {
-            return \User_Adapter::getInstance($this->getUsrId(), $app);
-        }
-    }
-    /**
-     * @var Entities\ValidationSession
-     */
-    protected $validation;
-
-    /**
-     * Set validation
-     *
-     * @param Entities\ValidationSession $validation
-     */
-    public function setValidation(\Entities\ValidationSession $validation)
-    {
-        $this->validation = $validation;
-    }
-
-    /**
-     * Get validation
-     *
-     * @return Entities\ValidationSession
-     */
-    public function getValidation()
-    {
-        return $this->validation;
-    }
-    /**
-     * @var boolean $is_read
-     */
-    protected $is_read = true;
-
-    /**
-     * Set is_read
-     *
-     * @param boolean $isRead
-     */
-    public function setIsRead($isRead)
-    {
-        $this->is_read = $isRead;
-    }
-
-    /**
-     * Get is_read
-     *
-     * @return boolean
-     */
-    public function getIsRead()
-    {
-        return $this->is_read;
-    }
-
     public function hasRecord(Application $app, \record_adapter $record)
     {
         foreach ($this->getElements() as $basket_element) {
@@ -422,28 +465,5 @@ class Basket
         $totSize = round($totSize / (1024 * 1024), 2);
 
         return $totSize;
-    }
-
-    /**
-     * Add elements
-     *
-     * @param \Entities\BasketElement $elements
-     * @return Basket
-     */
-    public function addElement(\Entities\BasketElement $elements)
-    {
-        $this->elements[] = $elements;
-
-        return $this;
-    }
-
-    /**
-     * Remove elements
-     *
-     * @param \Entities\BasketElement $elements
-     */
-    public function removeElement(\Entities\BasketElement $elements)
-    {
-        $this->elements->removeElement($elements);
     }
 }

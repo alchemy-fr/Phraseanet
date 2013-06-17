@@ -14,36 +14,34 @@ namespace Entities;
 use Alchemy\Phrasea\Application;
 
 /**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
+ * StoryWZ
  */
 class StoryWZ
 {
     /**
-     * @var integer $id
+     * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
-     * @var integer $sbas_id
+     * @var integer
      */
-    protected $sbas_id;
+    private $sbas_id;
 
     /**
-     * @var integer $record_id
+     * @var integer
      */
-    protected $record_id;
+    private $record_id;
 
     /**
-     * @var integer $usr_id
+     * @var integer
      */
-    protected $usr_id;
+    private $usr_id;
 
     /**
-     * @var datetime $created
+     * @var \DateTime
      */
-    protected $created;
+    private $created;
 
     /**
      * Get id
@@ -58,11 +56,14 @@ class StoryWZ
     /**
      * Set sbas_id
      *
-     * @param integer $sbasId
+     * @param  integer $sbasId
+     * @return StoryWZ
      */
     public function setSbasId($sbasId)
     {
         $this->sbas_id = $sbasId;
+
+        return $this;
     }
 
     /**
@@ -78,11 +79,14 @@ class StoryWZ
     /**
      * Set record_id
      *
-     * @param integer $recordId
+     * @param  integer $recordId
+     * @return StoryWZ
      */
     public function setRecordId($recordId)
     {
         $this->record_id = $recordId;
+
+        return $this;
     }
 
     /**
@@ -95,14 +99,28 @@ class StoryWZ
         return $this->record_id;
     }
 
+    public function getRecord(Application $app)
+    {
+        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId());
+    }
+
+    public function setRecord(\record_adapter $record)
+    {
+        $this->setRecordId($record->get_record_id());
+        $this->setSbasId($record->get_sbas_id());
+    }
+
     /**
      * Set usr_id
      *
-     * @param integer $usrId
+     * @param  integer $usrId
+     * @return StoryWZ
      */
     public function setUsrId($usrId)
     {
         $this->usr_id = $usrId;
+
+        return $this;
     }
 
     /**
@@ -113,26 +131,6 @@ class StoryWZ
     public function getUsrId()
     {
         return $this->usr_id;
-    }
-
-    /**
-     * Set created
-     *
-     * @param datetime $created
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-    }
-
-    /**
-     * Get created
-     *
-     * @return datetime
-     */
-    public function getCreated()
-    {
-        return $this->created;
     }
 
     public function setUser(\User_Adapter $user)
@@ -147,14 +145,26 @@ class StoryWZ
         }
     }
 
-    public function getRecord(Application $app)
+    /**
+     * Set created
+     *
+     * @param  \DateTime $created
+     * @return StoryWZ
+     */
+    public function setCreated($created)
     {
-        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId());
+        $this->created = $created;
+
+        return $this;
     }
 
-    public function setRecord(\record_adapter $record)
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreated()
     {
-        $this->setRecordId($record->get_record_id());
-        $this->setSbasId($record->get_sbas_id());
+        return $this->created;
     }
 }

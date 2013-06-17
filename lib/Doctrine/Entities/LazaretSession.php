@@ -1,39 +1,51 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
 
 /**
- * Entities\LazaretSession
+ * LazaretSession
  */
 class LazaretSession
 {
     /**
-     * @var integer $id
+     * @var integer
      */
     private $id;
 
     /**
-     * @var integer $usr_id
+     * @var integer
      */
     private $usr_id;
 
     /**
-     * @var datetime $created
+     * @var \DateTime
      */
     private $created;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime
      */
     private $updated;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var \Doctrine\Common\Collections\Collection
      */
     private $files;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->files = new \Doctrine\Common\Collections\ArrayCollection();
@@ -63,6 +75,16 @@ class LazaretSession
     }
 
     /**
+     * Get usr_id
+     *
+     * @return integer
+     */
+    public function getUsrId()
+    {
+        return $this->usr_id;
+    }
+
+    /**
      * Get user
      *
      * @return \User_Adapter
@@ -83,7 +105,7 @@ class LazaretSession
     /**
      * Set created
      *
-     * @param  datetime       $created
+     * @param  \DateTime      $created
      * @return LazaretSession
      */
     public function setCreated($created)
@@ -96,7 +118,7 @@ class LazaretSession
     /**
      * Get created
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -106,7 +128,7 @@ class LazaretSession
     /**
      * Set updated
      *
-     * @param  datetime       $updated
+     * @param  \DateTime      $updated
      * @return LazaretSession
      */
     public function setUpdated($updated)
@@ -119,7 +141,7 @@ class LazaretSession
     /**
      * Get updated
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -129,59 +151,13 @@ class LazaretSession
     /**
      * Add files
      *
-     * @param  Entities\LazaretFile $files
-     * @return LazaretSession
-     */
-    public function addLazaretFiles(\Entities\LazaretFile $files)
-    {
-        $this->files[] = $files;
-
-        return $this;
-    }
-
-    /**
-     * Get files
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getFiles()
-    {
-        return $this->files;
-    }
-
-    /**
-     * Add files
-     *
-     * @param  Entities\LazaretFile $files
-     * @return LazaretSession
-     */
-    public function addLazaretFile(\Entities\LazaretFile $files)
-    {
-        $this->files[] = $files;
-
-        return $this;
-    }
-
-    /**
-     * Get usr_id
-     *
-     * @return integer
-     */
-    public function getUsrId()
-    {
-        return $this->usr_id;
-    }
-
-    /**
-     * Add files
-     *
-     * @param \Entities\LazaretFile $files
+     * @param  \Entities\LazaretFile $files
      * @return LazaretSession
      */
     public function addFile(\Entities\LazaretFile $files)
     {
         $this->files[] = $files;
-    
+
         return $this;
     }
 
@@ -193,5 +169,15 @@ class LazaretSession
     public function removeFile(\Entities\LazaretFile $files)
     {
         $this->files->removeElement($files);
+    }
+
+    /**
+     * Get files
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFiles()
+    {
+        return $this->files;
     }
 }

@@ -1,27 +1,37 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
 
 /**
- * Entities\LazaretCheck
+ * LazaretCheck
  */
 class LazaretCheck
 {
     /**
-     * @var integer $id
+     * @var integer
      */
     private $id;
 
     /**
-     * @var Entities\LazaretFile
-     */
-    private $lazaretFile;
-
-    /**
-     * @var string $checkClassname
+     * @var string
      */
     private $checkClassname;
+
+    /**
+     * @var \Entities\LazaretFile
+     */
+    private $lazaretFile;
 
     /**
      * Get id
@@ -31,29 +41,6 @@ class LazaretCheck
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set lazaretFile
-     *
-     * @param  Entities\LazaretFile $lazaretFile
-     * @return LazaretCheck
-     */
-    public function setLazaretFile(\Entities\LazaretFile $lazaretFile = null)
-    {
-        $this->lazaretFile = $lazaretFile;
-
-        return $this;
-    }
-
-    /**
-     * Get lazaretFile
-     *
-     * @return Entities\LazaretFile
-     */
-    public function getLazaretFile()
-    {
-        return $this->lazaretFile;
     }
 
     /**
@@ -80,6 +67,29 @@ class LazaretCheck
     }
 
     /**
+     * Set lazaretFile
+     *
+     * @param  \Entities\LazaretFile $lazaretFile
+     * @return LazaretCheck
+     */
+    public function setLazaretFile(\Entities\LazaretFile $lazaretFile = null)
+    {
+        $this->lazaretFile = $lazaretFile;
+
+        return $this;
+    }
+
+    /**
+     * Get lazaretFile
+     *
+     * @return \Entities\LazaretFile
+     */
+    public function getLazaretFile()
+    {
+        return $this->lazaretFile;
+    }
+
+    /**
      * Get checker message
      *
      * @return string
@@ -88,7 +98,7 @@ class LazaretCheck
     {
         $className = $this->getCheckClassname();
 
-        if(method_exists($className, "getMessage")) {
+        if (method_exists($className, "getMessage")) {
             return $className::getMessage();
         } else {
             return '';
