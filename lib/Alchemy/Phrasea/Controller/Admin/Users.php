@@ -329,11 +329,11 @@ class Users implements ControllerProviderInterface
 
             $out = \format::arr_to_csv($buffer);
 
-            $headers = array(
-                'Content-type'        => 'text/csv'
-                , 'Content-Disposition' => 'attachment; filename=export.csv'
-            );
-            $response = new Response($out, 200, $headers);
+            $response = new Response($out, 200, array(
+                'Content-type'        => 'text/csv',
+                'Content-Disposition' => 'attachment; filename=export.csv',
+            ));
+
             $response->setCharset('UTF-8');
 
             return $response;

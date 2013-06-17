@@ -228,7 +228,7 @@
             </p>
         </form>
 
-        <form target="_blank" method="post" action="{{ path('admin_users_export_csv') }}">
+        <form class="no-ajax" method="post" action="{{ path('admin_users_export_csv') }}">
             {% if parm.base_id is not empty %}
                 {% for base_id in parm.base_id %}
                     <input name="base_id[]" value="{{base_id}}" type="hidden" />
