@@ -14,9 +14,7 @@ namespace Entities;
 use Alchemy\Phrasea\Application;
 
 /**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
+ * UsrListOwner
  */
 class UsrListOwner
 {
@@ -25,34 +23,34 @@ class UsrListOwner
     const ROLE_ADMIN = 3;
 
     /**
-     * @var integer $id
+     * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
-     * @var integer $usr_id
+     * @var integer
      */
-    protected $usr_id;
+    private $usr_id;
 
     /**
-     * @var string $role
+     * @var string
      */
-    protected $role;
+    private $role;
 
     /**
-     * @var datetime $created
+     * @var \DateTime
      */
-    protected $created;
+    private $created;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime
      */
-    protected $updated;
+    private $updated;
 
     /**
-     * @var Entities\UsrList
+     * @var \Entities\UsrList
      */
-    protected $list;
+    private $list;
 
     /**
      * Get id
@@ -67,11 +65,14 @@ class UsrListOwner
     /**
      * Set usr_id
      *
-     * @param integer $usrId
+     * @param  integer      $usrId
+     * @return UsrListOwner
      */
     public function setUsrId($usrId)
     {
         $this->usr_id = $usrId;
+
+        return $this;
     }
 
     /**
@@ -84,10 +85,21 @@ class UsrListOwner
         return $this->usr_id;
     }
 
+    public function setUser(\User_Adapter $user)
+    {
+        return $this->setUsrId($user->get_id());
+    }
+
+    public function getUser(Application $app)
+    {
+        return \User_Adapter::getInstance($this->getUsrId(), $app);
+    }
+
     /**
      * Set role
      *
-     * @param string $role
+     * @param  string       $role
+     * @return UsrListOwner
      */
     public function setRole($role)
     {
@@ -95,6 +107,8 @@ class UsrListOwner
             throw new \Exception('Unknown role `' . $role . '`');
 
         $this->role = $role;
+
+        return $this;
     }
 
     /**
@@ -110,17 +124,20 @@ class UsrListOwner
     /**
      * Set created
      *
-     * @param datetime $created
+     * @param  \DateTime    $created
+     * @return UsrListOwner
      */
     public function setCreated($created)
     {
         $this->created = $created;
+
+        return $this;
     }
 
     /**
      * Get created
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -130,17 +147,20 @@ class UsrListOwner
     /**
      * Set updated
      *
-     * @param datetime $updated
+     * @param  \DateTime    $updated
+     * @return UsrListOwner
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+
+        return $this;
     }
 
     /**
      * Get updated
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -150,30 +170,23 @@ class UsrListOwner
     /**
      * Set list
      *
-     * @param Entities\UsrList $list
+     * @param  \Entities\UsrList $list
+     * @return UsrListOwner
      */
-    public function setList(\Entities\UsrList $list)
+    public function setList(\Entities\UsrList $list = null)
     {
         $this->list = $list;
+
+        return $this;
     }
 
     /**
      * Get list
      *
-     * @return Entities\UsrList
+     * @return \Entities\UsrList
      */
     public function getList()
     {
         return $this->list;
-    }
-
-    public function setUser(\User_Adapter $user)
-    {
-        return $this->setUsrId($user->get_id());
-    }
-
-    public function getUser(Application $app)
-    {
-        return \User_Adapter::getInstance($this->getUsrId(), $app);
     }
 }

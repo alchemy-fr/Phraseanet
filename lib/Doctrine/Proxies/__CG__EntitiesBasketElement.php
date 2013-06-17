@@ -75,6 +75,18 @@ class BasketElement extends \Entities\BasketElement implements \Doctrine\ORM\Pro
         return parent::getSbasId();
     }
 
+    public function getRecord(\Alchemy\Phrasea\Application $app)
+    {
+        $this->__load();
+        return parent::getRecord($app);
+    }
+
+    public function setRecord(\record_adapter $record)
+    {
+        $this->__load();
+        return parent::setRecord($record);
+    }
+
     public function setOrd($ord)
     {
         $this->__load();
@@ -111,7 +123,25 @@ class BasketElement extends \Entities\BasketElement implements \Doctrine\ORM\Pro
         return parent::getUpdated();
     }
 
-    public function setBasket(\Entities\Basket $basket)
+    public function addValidationData(\Entities\ValidationData $validationDatas)
+    {
+        $this->__load();
+        return parent::addValidationData($validationDatas);
+    }
+
+    public function removeValidationData(\Entities\ValidationData $validationDatas)
+    {
+        $this->__load();
+        return parent::removeValidationData($validationDatas);
+    }
+
+    public function getValidationDatas()
+    {
+        $this->__load();
+        return parent::getValidationDatas();
+    }
+
+    public function setBasket(\Entities\Basket $basket = NULL)
     {
         $this->__load();
         return parent::setBasket($basket);
@@ -123,34 +153,10 @@ class BasketElement extends \Entities\BasketElement implements \Doctrine\ORM\Pro
         return parent::getBasket();
     }
 
-    public function getRecord(\Alchemy\Phrasea\Application $app)
-    {
-        $this->__load();
-        return parent::getRecord($app);
-    }
-
-    public function setRecord(\record_adapter $record)
-    {
-        $this->__load();
-        return parent::setRecord($record);
-    }
-
     public function setLastInBasket()
     {
         $this->__load();
         return parent::setLastInBasket();
-    }
-
-    public function addValidationData(\Entities\ValidationData $validationDatas)
-    {
-        $this->__load();
-        return parent::addValidationData($validationDatas);
-    }
-
-    public function getValidationDatas()
-    {
-        $this->__load();
-        return parent::getValidationDatas();
     }
 
     public function getUserValidationDatas(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
@@ -174,7 +180,7 @@ class BasketElement extends \Entities\BasketElement implements \Doctrine\ORM\Pro
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

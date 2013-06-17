@@ -198,7 +198,7 @@ class UsrLists implements ControllerProviderInterface
             $Owner->setList($List);
 
             $List->setName($list_name);
-            $List->addUsrListOwner($Owner);
+            $List->addOwner($Owner);
 
             $app['EM']->persist($Owner);
             $app['EM']->persist($List);
@@ -410,7 +410,7 @@ class UsrLists implements ControllerProviderInterface
                 $entry->setUser($user_entry);
                 $entry->setList($list);
 
-                $list->addUsrListEntry($entry);
+                $list->addEntrie($entry);
 
                 $app['EM']->persist($entry);
 
@@ -505,7 +505,7 @@ class UsrLists implements ControllerProviderInterface
                 $owner->setList($list);
                 $owner->setUser($new_owner);
 
-                $list->addUsrListOwner($owner);
+                $list->addOwner($owner);
 
                 $app['EM']->persist($owner);
             }

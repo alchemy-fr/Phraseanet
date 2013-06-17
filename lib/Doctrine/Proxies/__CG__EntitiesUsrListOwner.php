@@ -63,6 +63,18 @@ class UsrListOwner extends \Entities\UsrListOwner implements \Doctrine\ORM\Proxy
         return parent::getUsrId();
     }
 
+    public function setUser(\User_Adapter $user)
+    {
+        $this->__load();
+        return parent::setUser($user);
+    }
+
+    public function getUser(\Alchemy\Phrasea\Application $app)
+    {
+        $this->__load();
+        return parent::getUser($app);
+    }
+
     public function setRole($role)
     {
         $this->__load();
@@ -99,7 +111,7 @@ class UsrListOwner extends \Entities\UsrListOwner implements \Doctrine\ORM\Proxy
         return parent::getUpdated();
     }
 
-    public function setList(\Entities\UsrList $list)
+    public function setList(\Entities\UsrList $list = NULL)
     {
         $this->__load();
         return parent::setList($list);
@@ -109,18 +121,6 @@ class UsrListOwner extends \Entities\UsrListOwner implements \Doctrine\ORM\Proxy
     {
         $this->__load();
         return parent::getList();
-    }
-
-    public function setUser(\User_Adapter $user)
-    {
-        $this->__load();
-        return parent::setUser($user);
-    }
-
-    public function getUser(\Alchemy\Phrasea\Application $app)
-    {
-        $this->__load();
-        return parent::getUser($app);
     }
 
 

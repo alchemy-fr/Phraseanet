@@ -128,12 +128,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertNull($this->basket->getValidation());
 
         $validationSession = new \Entities\ValidationSession();
-
         $validationSession->setBasket($this->basket);
-
-        $validationSession->setDescription('Une description au hasard');
-
-        $validationSession->setName('Un nom de validation');
 
         $expires = new \DateTime();
         $expires->modify('+1 week');

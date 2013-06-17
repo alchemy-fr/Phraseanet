@@ -75,6 +75,18 @@ class StoryWZ extends \Entities\StoryWZ implements \Doctrine\ORM\Proxy\Proxy
         return parent::getRecordId();
     }
 
+    public function getRecord(\Alchemy\Phrasea\Application $app)
+    {
+        $this->__load();
+        return parent::getRecord($app);
+    }
+
+    public function setRecord(\record_adapter $record)
+    {
+        $this->__load();
+        return parent::setRecord($record);
+    }
+
     public function setUsrId($usrId)
     {
         $this->__load();
@@ -85,18 +97,6 @@ class StoryWZ extends \Entities\StoryWZ implements \Doctrine\ORM\Proxy\Proxy
     {
         $this->__load();
         return parent::getUsrId();
-    }
-
-    public function setCreated($created)
-    {
-        $this->__load();
-        return parent::setCreated($created);
-    }
-
-    public function getCreated()
-    {
-        $this->__load();
-        return parent::getCreated();
     }
 
     public function setUser(\User_Adapter $user)
@@ -111,16 +111,16 @@ class StoryWZ extends \Entities\StoryWZ implements \Doctrine\ORM\Proxy\Proxy
         return parent::getUser($app);
     }
 
-    public function getRecord(\Alchemy\Phrasea\Application $app)
+    public function setCreated($created)
     {
         $this->__load();
-        return parent::getRecord($app);
+        return parent::setCreated($created);
     }
 
-    public function setRecord(\record_adapter $record)
+    public function getCreated()
     {
         $this->__load();
-        return parent::setRecord($record);
+        return parent::getCreated();
     }
 
 
@@ -138,7 +138,7 @@ class StoryWZ extends \Entities\StoryWZ implements \Doctrine\ORM\Proxy\Proxy
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

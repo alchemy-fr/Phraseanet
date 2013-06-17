@@ -54,7 +54,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $em->persist($basketElement);
 
-        $basket->addBasketElement($basketElement);
+        $basket->addElement($basketElement);
 
         $em->persist($basket);
         $em->flush();
@@ -505,7 +505,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         self::$DI['app']['EM']->persist($basket_element);
 
-        $basket->addBasketElement($basket_element);
+        $basket->addElement($basket_element);
         $basket = self::$DI['app']['EM']->merge($basket);
 
         self::$DI['app']['EM']->flush();

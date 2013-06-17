@@ -378,7 +378,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $basketElement->setRecord(self::$DI['record_1']);
         $basketElement->setBasket($basket);
 
-        $basket->addBasketElement($basketElement);
+        $basket->addElement($basketElement);
 
         $em = self::$DI['app']['EM'];
 
@@ -419,7 +419,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $Participant->setCanAgree(true);
         $Participant->setCanSeeOthers(true);
 
-        $Validation->addValidationParticipant($Participant);
+        $Validation->addParticipant($Participant);
         $Participant->setSession($Validation);
 
         $em->persist($Participant);
@@ -457,8 +457,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $basketFixture->addParticipant(self::$DI['user_alt1']);
             $basketFixture->addParticipant(self::$DI['user_alt2']);
 
-            $basketFixture->addBasketElement(self::$DI['record_1']);
-            $basketFixture->addBasketElement(self::$DI['record_2']);
+            $basketFixture->addElement(self::$DI['record_1']);
+            $basketFixture->addElement(self::$DI['record_2']);
 
             $loader = new Loader();
             $loader->addFixture($basketFixture);

@@ -63,6 +63,18 @@ class UsrListEntry extends \Entities\UsrListEntry implements \Doctrine\ORM\Proxy
         return parent::getUsrId();
     }
 
+    public function getUser(\Alchemy\Phrasea\Application $app)
+    {
+        $this->__load();
+        return parent::getUser($app);
+    }
+
+    public function setUser(\User_Adapter $user)
+    {
+        $this->__load();
+        return parent::setUser($user);
+    }
+
     public function setCreated($created)
     {
         $this->__load();
@@ -87,7 +99,7 @@ class UsrListEntry extends \Entities\UsrListEntry implements \Doctrine\ORM\Proxy
         return parent::getUpdated();
     }
 
-    public function setList(\Entities\UsrList $list)
+    public function setList(\Entities\UsrList $list = NULL)
     {
         $this->__load();
         return parent::setList($list);
@@ -97,18 +109,6 @@ class UsrListEntry extends \Entities\UsrListEntry implements \Doctrine\ORM\Proxy
     {
         $this->__load();
         return parent::getList();
-    }
-
-    public function getUser(\Alchemy\Phrasea\Application $app)
-    {
-        $this->__load();
-        return parent::getUser($app);
-    }
-
-    public function setUser(\User_Adapter $user)
-    {
-        $this->__load();
-        return parent::setUser($user);
     }
 
 
@@ -126,7 +126,7 @@ class UsrListEntry extends \Entities\UsrListEntry implements \Doctrine\ORM\Proxy
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

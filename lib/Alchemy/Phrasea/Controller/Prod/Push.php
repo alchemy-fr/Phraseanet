@@ -198,7 +198,7 @@ class Push implements ControllerProviderInterface
 
                         $app['EM']->persist($BasketElement);
 
-                        $Basket->addBasketElement($BasketElement);
+                        $Basket->addElement($BasketElement);
 
                         if ($receiver['HD']) {
                             $user_receiver->ACL()->grant_hd_on(
@@ -317,7 +317,7 @@ class Push implements ControllerProviderInterface
 
                         $app['EM']->persist($BasketElement);
 
-                        $Basket->addBasketElement($BasketElement);
+                        $Basket->addElement($BasketElement);
                     }
                     $app['EM']->flush();
                 }
@@ -413,7 +413,7 @@ class Push implements ControllerProviderInterface
                         $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
                             ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_PUSH, $participant_user->get_id(), '');
 
-                        $Participant->addValidationData($ValidationData);
+                        $Participant->addData($ValidationData);
                     }
 
                     $Participant = $app['EM']->merge($Participant);

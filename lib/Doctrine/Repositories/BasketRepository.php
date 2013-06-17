@@ -148,7 +148,7 @@ class BasketRepository extends EntityRepository
         if ($basket->getOwner($app)->get_id() != $user->get_id()) {
             $participant = false;
 
-            if ($basket->getValidation() && ! $requireOwner) {
+            if ($basket->getValidation() && !$requireOwner) {
                 try {
                     $basket->getValidation()->getParticipant($user, $app);
                     $participant = true;
@@ -156,7 +156,7 @@ class BasketRepository extends EntityRepository
 
                 }
             }
-            if ( ! $participant) {
+            if (!$participant) {
                 throw new AccessDeniedHttpException(_('You have not access to this basket'));
             }
         }

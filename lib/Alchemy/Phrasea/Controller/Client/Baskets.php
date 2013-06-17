@@ -224,7 +224,7 @@ class Baskets implements ControllerProviderInterface
                 $basketElement = new BasketElement();
                 $basketElement->setRecord($record);
                 $basketElement->setBasket($basket);
-                $basket->addBasketElement($basketElement);
+                $basket->addElement($basketElement);
 
                 $app['EM']->persist($basket);
 

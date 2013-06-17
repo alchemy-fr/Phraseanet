@@ -47,7 +47,7 @@ class UsrListEntry extends ListAbstract implements FixtureInterface
         $entry->setList($list);
 
         /* @var $list \Entities\UsrList */
-        $list->addUsrListEntry($entry);
+        $list->addEntrie($entry);
 
         $manager->persist($entry);
         $manager->flush();

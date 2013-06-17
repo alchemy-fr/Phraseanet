@@ -34,7 +34,7 @@ class UsrList extends ListAbstract implements FixtureInterface
         $owner = $this->getReference('one-listowner');
 
         $list->setName('new list');
-        $list->addUsrListOwner($owner);
+        $list->addOwner($owner);
 
         /* @var $owner \Entities\UsrListOwner */
         $owner->setList($list);

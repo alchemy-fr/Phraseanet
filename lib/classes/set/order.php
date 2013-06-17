@@ -415,7 +415,7 @@ class set_order extends set_abstract
                 $BasketElement->setRecord($record);
                 $BasketElement->setBasket($Basket);
 
-                $Basket->addBasketElement($BasketElement);
+                $Basket->addElement($BasketElement);
 
                 $app['EM']->persist($BasketElement);
 

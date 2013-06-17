@@ -14,42 +14,43 @@ namespace Entities;
 use Alchemy\Phrasea\Application;
 
 /**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
+ * UsrList
  */
 class UsrList
 {
     /**
-     * @var integer $id
+     * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
-     * @var string $name
+     * @var string
      */
-    protected $name;
+    private $name;
 
     /**
-     * @var datetime $created
+     * @var \DateTime
      */
-    protected $created;
+    private $created;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime
      */
-    protected $updated;
-
-    /**
-     * @var Entities\UsrListOwner
-     */
-    protected $owners;
+    private $updated;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    protected $entries;
+    private $owners;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $entries;
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->owners = new \Doctrine\Common\Collections\ArrayCollection();
@@ -69,11 +70,14 @@ class UsrList
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string  $name
+     * @return UsrList
      */
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
     }
 
     /**
@@ -89,17 +93,20 @@ class UsrList
     /**
      * Set created
      *
-     * @param datetime $created
+     * @param  \DateTime $created
+     * @return UsrList
      */
     public function setCreated($created)
     {
         $this->created = $created;
+
+        return $this;
     }
 
     /**
      * Get created
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -109,17 +116,20 @@ class UsrList
     /**
      * Set updated
      *
-     * @param datetime $updated
+     * @param  \DateTime $updated
+     * @return UsrList
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+
+        return $this;
     }
 
     /**
      * Get updated
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -129,21 +139,67 @@ class UsrList
     /**
      * Add owners
      *
-     * @param Entities\UsrListOwner $owners
+     * @param  \Entities\UsrListOwner $owners
+     * @return UsrList
      */
-    public function addUsrListOwner(\Entities\UsrListOwner $owners)
+    public function addOwner(\Entities\UsrListOwner $owners)
     {
         $this->owners[] = $owners;
+
+        return $this;
+    }
+
+    /**
+     * Remove owners
+     *
+     * @param \Entities\UsrListOwner $owners
+     */
+    public function removeOwner(\Entities\UsrListOwner $owners)
+    {
+        $this->owners->removeElement($owners);
     }
 
     /**
      * Get owners
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOwners()
     {
         return $this->owners;
+    }
+
+    /**
+     * Add entries
+     *
+     * @param  \Entities\UsrListEntry $entries
+     * @return UsrList
+     */
+    public function addEntrie(\Entities\UsrListEntry $entries)
+    {
+        $this->entries[] = $entries;
+
+        return $this;
+    }
+
+    /**
+     * Remove entries
+     *
+     * @param \Entities\UsrListEntry $entries
+     */
+    public function removeEntrie(\Entities\UsrListEntry $entries)
+    {
+        $this->entries->removeElement($entries);
+    }
+
+    /**
+     * Get entries
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEntries()
+    {
+        return $this->entries;
     }
 
     public function hasAccess(\User_Adapter $user, Application $app)
@@ -174,26 +230,6 @@ class UsrList
     }
 
     /**
-     * Add entry
-     *
-     * @param Entities\UsrListEntry $entry
-     */
-    public function addUsrListEntry(\Entities\UsrListEntry $entry)
-    {
-        $this->entries[] = $entry;
-    }
-
-    /**
-     * Get entries
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getEntries()
-    {
-        return $this->entries;
-    }
-
-    /**
      * Return true if one of the entry is related to the given user
      *
      * @param  \User_Adapter $user
@@ -202,55 +238,9 @@ class UsrList
     public function has(\User_Adapter $user, Application $app)
     {
         return $this->entries->exists(
-                function($key, $entry) use ($user) {
-                    return $entry->getUser($app)->get_id() === $user->get_id();
-                }
+            function($key, $entry) use ($user) {
+                return $entry->getUser($app)->get_id() === $user->get_id();
+            }
         );
-    }
-
-    /**
-     * Add owners
-     *
-     * @param \Entities\UsrListOwner $owners
-     * @return UsrList
-     */
-    public function addOwner(\Entities\UsrListOwner $owners)
-    {
-        $this->owners[] = $owners;
-    
-        return $this;
-    }
-
-    /**
-     * Remove owners
-     *
-     * @param \Entities\UsrListOwner $owners
-     */
-    public function removeOwner(\Entities\UsrListOwner $owners)
-    {
-        $this->owners->removeElement($owners);
-    }
-
-    /**
-     * Add entries
-     *
-     * @param \Entities\UsrListEntry $entries
-     * @return UsrList
-     */
-    public function addEntrie(\Entities\UsrListEntry $entries)
-    {
-        $this->entries[] = $entries;
-    
-        return $this;
-    }
-
-    /**
-     * Remove entries
-     *
-     * @param \Entities\UsrListEntry $entries
-     */
-    public function removeEntrie(\Entities\UsrListEntry $entries)
-    {
-        $this->entries->removeElement($entries);
     }
 }

@@ -207,16 +207,28 @@ class Session extends \Entities\Session implements \Doctrine\ORM\Proxy\Proxy
         return parent::getUpdated();
     }
 
-    public function addSessionModule(\Entities\SessionModule $modules)
+    public function addModule(\Entities\SessionModule $modules)
     {
         $this->__load();
-        return parent::addSessionModule($modules);
+        return parent::addModule($modules);
+    }
+
+    public function removeModule(\Entities\SessionModule $modules)
+    {
+        $this->__load();
+        return parent::removeModule($modules);
     }
 
     public function getModules()
     {
         $this->__load();
         return parent::getModules();
+    }
+
+    public function getModuleById($moduleId)
+    {
+        $this->__load();
+        return parent::getModuleById($moduleId);
     }
 
     public function hasModuleId($moduleId)
@@ -240,7 +252,7 @@ class Session extends \Entities\Session implements \Doctrine\ORM\Proxy\Proxy
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

@@ -87,7 +87,7 @@ class ValidationData extends \Entities\ValidationData implements \Doctrine\ORM\P
         return parent::getUpdated();
     }
 
-    public function setParticipant(\Entities\ValidationParticipant $participant)
+    public function setParticipant(\Entities\ValidationParticipant $participant = NULL)
     {
         $this->__load();
         return parent::setParticipant($participant);
@@ -99,7 +99,7 @@ class ValidationData extends \Entities\ValidationData implements \Doctrine\ORM\P
         return parent::getParticipant();
     }
 
-    public function setBasketElement(\Entities\BasketElement $basketElement)
+    public function setBasketElement(\Entities\BasketElement $basketElement = NULL)
     {
         $this->__load();
         return parent::setBasketElement($basketElement);
@@ -126,7 +126,7 @@ class ValidationData extends \Entities\ValidationData implements \Doctrine\ORM\P
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);
