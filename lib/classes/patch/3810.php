@@ -48,13 +48,13 @@ class patch_3810 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $sql = 'SELECT id, usage FROM `order`';
+        $sql = 'SELECT id, `usage` FROM `order`';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sql = 'UPDATE `order` SET usage = :usage WHERE id = :id';
+        $sql = 'UPDATE `order` SET `usage` = :usage WHERE id = :id';
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($rs as $row) {
