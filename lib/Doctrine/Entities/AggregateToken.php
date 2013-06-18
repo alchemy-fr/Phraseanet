@@ -2,8 +2,6 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * AggregateToken
  */
@@ -24,11 +22,10 @@ class AggregateToken
      */
     private $value;
 
-
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -38,20 +35,20 @@ class AggregateToken
     /**
      * Set usr_id
      *
-     * @param integer $usrId
+     * @param  integer        $usrId
      * @return AggregateToken
      */
     public function setUsrId($usrId)
     {
         $this->usr_id = $usrId;
-    
+
         return $this;
     }
 
     /**
      * Get usr_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getUsrId()
     {
@@ -61,20 +58,20 @@ class AggregateToken
     /**
      * Set value
      *
-     * @param string $value
+     * @param  string         $value
      * @return AggregateToken
      */
     public function setValue($value)
     {
         $this->value = $value;
-    
+
         return $this;
     }
 
     /**
      * Get value
      *
-     * @return string 
+     * @return string
      */
     public function getValue()
     {

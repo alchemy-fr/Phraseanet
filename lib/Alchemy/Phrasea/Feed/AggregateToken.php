@@ -2,8 +2,6 @@
 
 namespace Alchemy\Phrasea\Feed;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * FeedToken
  */
@@ -24,7 +22,6 @@ class AggregateToken
      */
     private $feed;
 
-
     /**
      * Get id
      *
@@ -38,7 +35,7 @@ class AggregateToken
     /**
      * Set usr_id
      *
-     * @param integer $usrId
+     * @param  integer   $usrId
      * @return FeedToken
      */
     public function setUsrId($usrId)
@@ -61,7 +58,7 @@ class AggregateToken
     /**
      * Set feed
      *
-     * @param \Entities\Feed $feed
+     * @param  \Entities\Feed $feed
      * @return FeedToken
      */
     public function setFeed(\Entities\Feed $feed = null)
@@ -85,11 +82,10 @@ class AggregateToken
      */
     private $value;
 
-
     /**
      * Set value
      *
-     * @param string $value
+     * @param  string    $value
      * @return FeedToken
      */
     public function setValue($value)

@@ -17,7 +17,7 @@ namespace Alchemy\Phrasea\Feed\RSS;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-interface FeedXMLRSSImageInterface
+interface ImageInterface
 {
 
     public function __construct($url, $title, $link);

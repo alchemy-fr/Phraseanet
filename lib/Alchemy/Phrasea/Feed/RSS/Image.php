@@ -17,7 +17,7 @@ namespace Alchemy\Phrasea\Feed\RSS;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class FeedRSSImage implements FeedRSSImageInterface
+class Image implements FeedRSSImageInterface
 {
     /**
      *
@@ -57,9 +57,9 @@ class FeedRSSImage implements FeedRSSImageInterface
 
     /**
      *
-     * @param  string             $url
-     * @param  string             $title
-     * @param  string             $link
+     * @param  string       $url
+     * @param  string       $title
+     * @param  string       $link
      * @return FeedRSSImage
      */
     public function __construct($url, $title, $link)
@@ -73,7 +73,7 @@ class FeedRSSImage implements FeedRSSImageInterface
 
     /**
      *
-     * @param  type               $description
+     * @param  type         $description
      * @return FeedRSSImage
      */
     public function setDescription($description)
@@ -85,7 +85,7 @@ class FeedRSSImage implements FeedRSSImageInterface
 
     /**
      *
-     * @param  int                $width
+     * @param  int          $width
      * @return FeedRSSImage
      */
     public function setWidth($width)
@@ -97,7 +97,7 @@ class FeedRSSImage implements FeedRSSImageInterface
 
     /**
      *
-     * @param  int                $height
+     * @param  int          $height
      * @return FeedRSSImage
      */
     public function setHeight($height)

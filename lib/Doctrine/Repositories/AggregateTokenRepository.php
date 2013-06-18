@@ -3,7 +3,6 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use Entities\Feed;
 
 /**
  * AggregateTokenRepository

@@ -9,10 +9,10 @@ interface LinkGeneratorInterface
     /**
      *
      * @param \Alchemy\Phrasea\Feed\FeedInterface $feed
-     * @param \User_Adapter $user
-     * @param type $format
-     * @param type $page
-     * @param type $renew
+     * @param \User_Adapter                       $user
+     * @param type                                $format
+     * @param type                                $page
+     * @param type                                $renew
      *
      * @throws InvalidArgumentException
      */
@@ -21,8 +21,8 @@ interface LinkGeneratorInterface
     /**
      *
      * @param \Alchemy\Phrasea\Feed\FeedInterface $feed
-     * @param type $format
-     * @param type $page
+     * @param type                                $format
+     * @param type                                $page
      *
      * @throws InvalidArgumentException
      */

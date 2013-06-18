@@ -2,8 +2,6 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
-
 class FeedToken
 {
     /**
@@ -21,7 +19,6 @@ class FeedToken
      */
     private $feed;
 
-
     /**
      * Get id
      *
@@ -35,7 +32,7 @@ class FeedToken
     /**
      * Set usr_id
      *
-     * @param integer $usrId
+     * @param  integer   $usrId
      * @return FeedToken
      */
     public function setUsrId($usrId)
@@ -58,7 +55,7 @@ class FeedToken
     /**
      * Set feed
      *
-     * @param \Entities\Feed $feed
+     * @param  \Entities\Feed $feed
      * @return FeedToken
      */
     public function setFeed(\Entities\Feed $feed = null)
@@ -82,11 +79,10 @@ class FeedToken
      */
     private $value;
 
-
     /**
      * Set value
      *
-     * @param string $value
+     * @param  string    $value
      * @return FeedToken
      */
     public function setValue($value)

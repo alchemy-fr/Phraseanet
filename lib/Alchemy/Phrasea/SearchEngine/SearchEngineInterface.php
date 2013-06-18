@@ -132,7 +132,7 @@ interface SearchEngineInterface
     /**
      * Add an entry to index
      *
-     * @param  FeedEntry   $entry
+     * @param  FeedEntry             $entry
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -141,7 +141,7 @@ interface SearchEngineInterface
     /**
      * Remove an entry to index
      *
-     * @param  FeedEntry   $entry
+     * @param  FeedEntry             $entry
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
@@ -150,7 +150,7 @@ interface SearchEngineInterface
     /**
      * Update an entry in the index
      *
-     * @param  FeedEntry   $entry
+     * @param  FeedEntry             $entry
      * @return SearchEngineInterface
      * @throws RuntimeException
      */

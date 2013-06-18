@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Silex\Application as SilexApplication;

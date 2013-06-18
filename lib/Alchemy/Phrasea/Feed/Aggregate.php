@@ -83,6 +83,7 @@ class Aggregate implements FeedInterface
         if (count($this->feeds) == 0) {
             return null;
         }
+
         return $this->em->getRepository('Entities\FeedEntry')->findByFeeds($this->feeds, $offset_start, $how_many);
     }
 
@@ -131,6 +132,7 @@ class Aggregate implements FeedInterface
         if (count($this->feeds) > 0) {
             return count($this->em->getRepository('Entities\FeedEntry')->findByFeeds($this->feeds));
         }
+
         return 0;
     }
 

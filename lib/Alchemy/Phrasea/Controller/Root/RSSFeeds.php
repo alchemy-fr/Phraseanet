@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Controller\Root;
 
 use Entities\Feed;
 use Alchemy\Phrasea\Feed\Aggregate;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 
@@ -110,7 +109,6 @@ class RSSFeeds implements ControllerProviderInterface
             $request = $app['request'];
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
-
 
             return $app['feed.formatter-strategy']('cooliris')->createResponse($feed, $page, null, 'Phraseanet', $app);
         })

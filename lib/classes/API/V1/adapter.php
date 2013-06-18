@@ -1583,8 +1583,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled informations about one feed
      *
-     * @param  Feed $feed
-     * @param  type         $user
+     * @param  Feed  $feed
+     * @param  type  $user
      * @return array
      */
     protected function list_publication(Feed $feed, $user)
@@ -1607,8 +1607,8 @@ class API_V1_adapter extends API_V1_Abstract
      * Retrieve all entries of one feed
      *
      * @param  FeedInterface $feed
-     * @param  int          $offset_start
-     * @param  int          $how_many
+     * @param  int           $offset_start
+     * @param  int           $how_many
      * @return array
      */
     protected function list_publications_entries(FeedInterface $feed, $offset_start = 0, $how_many = 5)

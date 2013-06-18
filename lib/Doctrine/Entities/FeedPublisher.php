@@ -3,7 +3,6 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * FeedPublisher
@@ -35,7 +34,6 @@ class FeedPublisher
      */
     private $feed;
 
-
     /**
      * Get id
      *
@@ -49,7 +47,7 @@ class FeedPublisher
     /**
      * Set usr_id
      *
-     * @param integer $usrId
+     * @param  integer       $usrId
      * @return FeedPublisher
      */
     public function setUsrId($usrId)
@@ -72,7 +70,7 @@ class FeedPublisher
     /**
      * Set owner
      *
-     * @param boolean $owner
+     * @param  boolean       $owner
      * @return FeedPublisher
      */
     public function setIsOwner($owner)
@@ -95,7 +93,7 @@ class FeedPublisher
     /**
      * Set feed
      *
-     * @param \Entities\Feed $feed
+     * @param  \Entities\Feed $feed
      * @return FeedPublisher
      */
     public function setFeed(\Entities\Feed $feed = null)
@@ -115,7 +113,6 @@ class FeedPublisher
         return $this->feed;
     }
 
-
     /**
      * Get user
      *
@@ -131,7 +128,7 @@ class FeedPublisher
     /**
      * Set created_on
      *
-     * @param \DateTime $createdOn
+     * @param  \DateTime     $createdOn
      * @return FeedPublisher
      */
     public function setCreatedOn($createdOn)

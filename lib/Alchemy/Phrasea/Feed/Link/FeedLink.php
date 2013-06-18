@@ -29,9 +29,9 @@ class FeedLink implements FeedLinkInterface
     protected $uri;
 
     /**
-     * @param  string    $uri
-     * @param  string    $title
-     * @param  string    $mimetype
+     * @param string $uri
+     * @param string $title
+     * @param string $mimetype
      *
      * @return FeedLink
      */

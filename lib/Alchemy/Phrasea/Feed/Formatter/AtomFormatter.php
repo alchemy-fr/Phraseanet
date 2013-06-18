@@ -32,6 +32,7 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
         $content = $this->format($feed, $page, $user, $generator);
         $response = new Response($content, 200, array('Content-Type' => 'application/atom+xml'));
         $response->setCharset('UTF-8');
+
         return $response;
     }
 
@@ -76,8 +77,7 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
 
         if (null !== $user) {
             $feedlink = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page);
-        }
-        else {
+        } else {
             $feedlink = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page);
         }
 
@@ -156,4 +156,3 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
         return $entry_node;
     }
 }
-

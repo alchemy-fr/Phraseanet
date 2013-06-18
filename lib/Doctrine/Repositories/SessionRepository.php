@@ -16,7 +16,7 @@ class SessionRepository extends EntityRepository
 
     /**
      *
-     * @param  User_Adapter    $user
+     * @param  User_Adapter                            $user
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getAllForUser(\User_Adapter $user)

@@ -38,6 +38,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
+
                 return new FeedLink(
                     $this->generator->generate('feed_user_aggregated', $params, UrlGenerator::ABSOLUTE_URL),
                     sprintf('%s - %s', $aggregate->getTitle(), 'Atom'),
@@ -50,6 +51,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
+
                 return new FeedLink(
                     $this->generator->generate('feed_user_aggregated', $params, UrlGenerator::ABSOLUTE_URL),
                     sprintf('%s - %s', $aggregate->getTitle(), 'RSS'),
@@ -78,6 +80,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
+
                 return new FeedLink(
                     $this->generator->generate('feed_public_aggregated', $params, UrlGenerator::ABSOLUTE_URL),
                     sprintf('%s - %s', $aggregate->getTitle(), 'Atom'),
@@ -89,6 +92,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
+
                 return new FeedLink(
                     $this->generator->generate('feed_public_aggregated', $params, UrlGenerator::ABSOLUTE_URL),
                     sprintf('%s - %s', $aggregate->getTitle(), 'RSS'),

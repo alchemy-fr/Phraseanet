@@ -34,6 +34,7 @@ class FeedServiceProvider implements ServiceProviderInterface
             $collection = new LinkGeneratorCollection();
             $collection->pushGenerator($app['feed.user-link-generator']);
             $collection->pushGenerator($app['feed.aggregate-link-generator']);
+
             return $collection;
         });
         $app['feed.rss-formatter'] = $app->share(function($app) {

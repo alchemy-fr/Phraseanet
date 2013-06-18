@@ -2,8 +2,6 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * FeedEntry
  */
@@ -80,7 +78,7 @@ class FeedEntry
     /**
      * Set title
      *
-     * @param string $title
+     * @param  string    $title
      * @return FeedEntry
      */
     public function setTitle($title)
@@ -103,7 +101,7 @@ class FeedEntry
     /**
      * Set subtitle
      *
-     * @param string $subtitle
+     * @param  string    $subtitle
      * @return FeedEntry
      */
     public function setSubtitle($subtitle)
@@ -126,7 +124,7 @@ class FeedEntry
     /**
      * Set author_name
      *
-     * @param string $authorName
+     * @param  string    $authorName
      * @return FeedEntry
      */
     public function setAuthorName($authorName)
@@ -149,7 +147,7 @@ class FeedEntry
     /**
      * Set author_email
      *
-     * @param string $authorEmail
+     * @param  string    $authorEmail
      * @return FeedEntry
      */
     public function setAuthorEmail($authorEmail)
@@ -172,7 +170,7 @@ class FeedEntry
     /**
      * Set created
      *
-     * @param \DateTime $createdOn
+     * @param  \DateTime $createdOn
      * @return FeedEntry
      */
     public function setCreatedOn($createdOn)
@@ -195,7 +193,7 @@ class FeedEntry
     /**
      * Set updated
      *
-     * @param \DateTime $updated
+     * @param  \DateTime $updated
      * @return FeedEntry
      */
     public function setUpdatedOn($updatedOn)
@@ -218,7 +216,7 @@ class FeedEntry
     /**
      * Add items
      *
-     * @param \Entities\FeedItem $items
+     * @param  \Entities\FeedItem $items
      * @return FeedEntry
      */
     public function addItem(\Entities\FeedItem $items)
@@ -251,7 +249,7 @@ class FeedEntry
     /**
      * Set publisher
      *
-     * @param \Entities\FeedPublisher $publisher
+     * @param  \Entities\FeedPublisher $publisher
      * @return FeedEntry
      */
     public function setPublisher(\Entities\FeedPublisher $publisher = null)
@@ -274,7 +272,7 @@ class FeedEntry
     /**
      * Set feed
      *
-     * @param \Entities\Feed $feed
+     * @param  \Entities\Feed $feed
      * @return FeedEntry
      */
     public function setFeed(\Entities\Feed $feed = null)

@@ -38,9 +38,9 @@ abstract class FeedFormatterAbstract
 
     /**
      *
-     * @param  DOMDocument        $document
-     * @param  DOMNode            $item
-     * @param  FeedItem    $content
+     * @param  DOMDocument           $document
+     * @param  DOMNode               $item
+     * @param  FeedItem              $content
      * @return FeedFormaterInterface
      */
     protected function addContent(Application $app, \DOMDocument $document, \DOMNode $item, FeedItem $content)

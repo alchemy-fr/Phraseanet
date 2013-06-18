@@ -10,9 +10,9 @@ interface FeedFormatterInterface
      * Returns a string representation of the feed
      *
      * @param FeedInterface $feed
-     * @param type $page
+     * @param type          $page
      * @param \User_Adapter $user
-     * @param type $generator
+     * @param type          $generator
      *
      * @return string
      */

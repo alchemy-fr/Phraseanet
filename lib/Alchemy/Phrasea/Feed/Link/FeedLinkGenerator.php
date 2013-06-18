@@ -62,6 +62,7 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
+
                 return new FeedLink(
                     $this->generator->generate('feed_user', $params, UrlGenerator::ABSOLUTE_URL),
                     sprintf('%s - %s', $feed->getTitle(), 'RSS'),

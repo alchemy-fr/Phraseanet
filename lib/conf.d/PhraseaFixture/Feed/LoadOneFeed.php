@@ -43,8 +43,7 @@ class LoadOneFeed extends AbstractFixture implements FixtureInterface
         $feed->addPublisher($publisher);
         if (isset($this->title) && $this->title !== null) {
             $feed->setTitle($this->title);
-        }
-        else {
+        } else {
             $feed->setTitle("test");
         }
 

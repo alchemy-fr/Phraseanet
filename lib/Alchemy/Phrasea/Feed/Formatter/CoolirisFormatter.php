@@ -33,6 +33,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         $content = $this->format($feed, $page, $user, $generator, $app);
         $response = new Response($content, 200, array('Content-Type' => 'application/rss+xml'));
         $response->setCharset('UTF-8');
+
         return $response;
     }
 
@@ -61,8 +62,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
 
         if (null !== $user) {
             $link = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page);
-        }
-        else {
+        } else {
             $link = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page);
         }
 
@@ -265,4 +265,3 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         return $this;
     }
 }
-

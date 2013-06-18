@@ -52,7 +52,7 @@ class FeedItem
     /**
      * Set record_id
      *
-     * @param integer $recordId
+     * @param  integer  $recordId
      * @return FeedItem
      */
     public function setRecordId($recordId)
@@ -75,7 +75,7 @@ class FeedItem
     /**
      * Set sbas_id
      *
-     * @param integer $sbasId
+     * @param  integer  $sbasId
      * @return FeedItem
      */
     public function setSbasId($sbasId)
@@ -98,7 +98,7 @@ class FeedItem
     /**
      * Set entry
      *
-     * @param \Entities\FeedEntry $entry
+     * @param  \Entities\FeedEntry $entry
      * @return FeedItem
      */
     public function setEntry(\Entities\FeedEntry $entry = null)
@@ -122,11 +122,10 @@ class FeedItem
      */
     private $ord;
 
-
     /**
      * Set ord
      *
-     * @param integer $ord
+     * @param  integer  $ord
      * @return FeedItem
      */
     public function setOrd($ord)
@@ -149,7 +148,7 @@ class FeedItem
     /**
      * Set created_on
      *
-     * @param \DateTime $createdOn
+     * @param  \DateTime $createdOn
      * @return FeedItem
      */
     public function setCreatedOn($createdOn)
@@ -172,7 +171,7 @@ class FeedItem
     /**
      * Set updated_on
      *
-     * @param \DateTime $updatedOn
+     * @param  \DateTime $updatedOn
      * @return FeedItem
      */
     public function setUpdatedOn($updatedOn)

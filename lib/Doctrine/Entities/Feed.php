@@ -4,7 +4,6 @@ namespace Entities;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Feed\FeedInterface;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Feed
@@ -88,7 +87,7 @@ class Feed implements FeedInterface
     /**
      * Set public
      *
-     * @param boolean $public
+     * @param  boolean $public
      * @return Feed
      */
     public function setIsPublic($public)
@@ -111,7 +110,7 @@ class Feed implements FeedInterface
     /**
      * Set icon_url
      *
-     * @param boolean $iconUrl
+     * @param  boolean $iconUrl
      * @return Feed
      */
     public function setIconUrl($iconUrl)
@@ -134,7 +133,7 @@ class Feed implements FeedInterface
     /**
      * Set base_id
      *
-     * @param integer $baseId
+     * @param  integer $baseId
      * @return Feed
      */
     public function setBaseId($baseId)
@@ -157,7 +156,7 @@ class Feed implements FeedInterface
     /**
      * Set title
      *
-     * @param string $title
+     * @param  string $title
      * @return Feed
      */
     public function setTitle($title)
@@ -180,7 +179,7 @@ class Feed implements FeedInterface
     /**
      * Add publishers
      *
-     * @param \Entities\FeedPublisher $publishers
+     * @param  \Entities\FeedPublisher $publishers
      * @return Feed
      */
     public function addPublisher(\Entities\FeedPublisher $publishers)
@@ -213,7 +212,7 @@ class Feed implements FeedInterface
     /**
      * Add entries
      *
-     * @param \Entities\FeedEntry $entries
+     * @param  \Entities\FeedEntry $entries
      * @return Feed
      */
     public function addEntry(\Entities\FeedEntry $entries)
@@ -243,6 +242,7 @@ class Feed implements FeedInterface
         if (null === $how_many) {
             return $this->entries;
         }
+
         return $this->entries->slice($offset_start, $how_many);
     }
 
@@ -276,6 +276,7 @@ class Feed implements FeedInterface
     {
         if ($collection === null) {
             $this->base_id = null;
+
             return;
         }
         $this->base_id = $collection->get_base_id();
@@ -284,7 +285,7 @@ class Feed implements FeedInterface
     /**
      * Set created_on
      *
-     * @param \DateTime $createdOn
+     * @param  \DateTime $createdOn
      * @return Feed
      */
     public function setCreatedOn($createdOn)
@@ -307,7 +308,7 @@ class Feed implements FeedInterface
     /**
      * Set updated_on
      *
-     * @param \DateTime $updatedOn
+     * @param  \DateTime $updatedOn
      * @return Feed
      */
     public function setUpdatedOn($updatedOn)
@@ -352,7 +353,7 @@ class Feed implements FeedInterface
     /**
      * Set subtitle
      *
-     * @param string $subtitle
+     * @param  string $subtitle
      * @return Feed
      */
     public function setSubtitle($subtitle)
@@ -394,7 +395,7 @@ class Feed implements FeedInterface
     /**
      * Add tokens
      *
-     * @param \Entities\FeedToken $tokens
+     * @param  \Entities\FeedToken $tokens
      * @return Feed
      */
     public function addToken(\Entities\FeedToken $tokens)
@@ -427,7 +428,7 @@ class Feed implements FeedInterface
     /**
      * Add entries
      *
-     * @param \Entities\FeedEntry $entries
+     * @param  \Entities\FeedEntry $entries
      * @return Feed
      */
     public function addEntrie(\Entities\FeedEntry $entries)
