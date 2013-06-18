@@ -76,7 +76,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler
             ->filter('div')
             ->reduce(function ($crawler, $i) use ($phpunit) {
-                if (!$crawler->hasAttribute('class')) {
+                if (!$crawler->attr('class')) {
                     return false;
                 } elseif ($node->getAttribute('class') == 'error_auth') {
                     $phpunit->fail("Erreur callback");
@@ -101,7 +101,7 @@ class BridgeApplication extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler
             ->filter('div')
             ->reduce(function ($crawler, $i) use ($phpunit) {
-                if (!$crawler->hasAttribute('class')) {
+                if (!$crawler->attr('class')) {
                     return false;
                 } elseif ($node->getAttribute('class') == 'error_auth') {
                     $phpunit->fail("Erreur callback");
