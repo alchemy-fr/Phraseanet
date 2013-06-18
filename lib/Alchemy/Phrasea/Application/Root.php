@@ -49,10 +49,10 @@ return call_user_func(function($environment = PhraseaApplication::ENV_PROD) {
     $app->bindRoutes();
 
     if (PhraseaApplication::ENV_DEV === $app->getEnvironment()) {
-        $app->register(new WebProfilerServiceProvider(), array(
+        $app->register($p = new WebProfilerServiceProvider(), array(
             'profiler.cache_dir'    => $app['root.path'] . '/tmp/cache/profiler',
-            'profiler.mount_prefix' => '/_profiler',
         ));
+        $app->mount('/_profiler', $p);
     }
 
     $app['dispatcher'] = $app->share(
