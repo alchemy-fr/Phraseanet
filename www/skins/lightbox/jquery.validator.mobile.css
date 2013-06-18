@@ -49,3 +49,23 @@ a.active_choice{
 .valid_choice.disagree{
   background-image: url(/skins/icons/delete.png);
 }
+
+.thumb_wrapper {
+    text-align:center;
+}
+
+@media screen and (orientation: landscape) {
+
+ .thumb_wrapper img {
+   width: 50%;
+ }
+
+}
+
+@media screen and (orientation: portrait) {
+
+ .thumb_wrapper img {
+   width: 100%;
+ }
+
+}
