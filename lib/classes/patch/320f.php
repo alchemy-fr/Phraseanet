@@ -141,9 +141,9 @@ class patch_320f implements patchInterface
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute(array(':ssel_id' => $row['ssel_id']));
             $stmt->closeCursor();
+            $app['EM']->persist($feed);
         }
         $this->set_feed_dates($date_ref);
-        $app['EM']->persist($feed);
         $app['EM']->flush();
 
         return true;
