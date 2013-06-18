@@ -527,18 +527,17 @@ class Application extends SilexApplication
     {
         $this['twig'] = $this->share(
             $this->extend('twig', function ($twig, $app) {
+                $paths = array();
 
                 if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
-                    $app['twig.loader.filesystem']->setPaths(array(
-                        realpath(__DIR__ . '/../../../config/templates/mobile'),
-                        realpath(__DIR__ . '/../../../templates/mobile'),
-                    ));
-                } else {
-                    $app['twig.loader.filesystem']->setPaths(array(
-                        realpath(__DIR__ . '/../../../config/templates/web'),
-                        realpath(__DIR__ . '/../../../templates/web'),
-                    ));
+                    $paths[] = realpath($app['root.path'] . '/config/templates/mobile');
+                    $paths[] = realpath($app['root.path'] . '/templates/mobile');
                 }
+
+                $paths[] = realpath($app['root.path'] . '/config/templates/web');
+                $paths[] = realpath($app['root.path'] . '/templates/web');
+
+                $app['twig.loader.filesystem']->setPaths($paths);
 
                 $twig->addGlobal('current_date', new \DateTime());
 
