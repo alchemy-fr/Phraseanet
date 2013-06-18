@@ -128,7 +128,7 @@
             <label>Email : </label><input name="email" type="text" />
             <input type="submit" class="btn btn-warning" value="{% trans 'boutton::valider' %}"/>
             {% if email_status %}
-                <p>{% trans 'result : ' %}{{ email_status }}</p>
+                <p>{% trans %}Email test result : {{ email_status }}{% endtrans %}</p>
             {% endif %}
         </form>
 

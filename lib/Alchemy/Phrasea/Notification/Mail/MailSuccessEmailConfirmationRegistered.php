@@ -34,7 +34,7 @@ class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return sprintf(_('Access %'), $this->app['phraseanet.registry']->get('GV_homeTile'));
+        return sprintf(_('Your access on %s'), $this->app['phraseanet.registry']->get('GV_homeTile'));
     }
 
     /**

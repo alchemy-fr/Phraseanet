@@ -20,8 +20,10 @@
        {% elseif list['complete'] is defined and list['complete'] %}
             <div class="alert alert-success">
                 {% set url = path('document_download', {'token': token}) %}
+                {% set before_link = '<a href="' ~ url ~ '" target="_self">' %}
+                {% set after_link = '</a>' %}
                 {% trans %}
-                    Your documents are ready. If the download does not start, <a href="{{ url }}" target="_self">click here</a>
+                    Your documents are ready. If the download does not start, {{ before_link }}click here{{ after_link }}
                 {% endtrans %}
             </div>
        {% endif %}

@@ -1,5 +1,5 @@
 <div class="header">
-    <h1>{% trans 'Upload a "csv" file for users creation' %}</h1>
+    <h1>{% trans 'Upload a csv file for users creation' %}</h1>
 </div>
 
 {% if app['request'].query.get('error') is not none %}
@@ -9,9 +9,9 @@
         {% if error == 'file-invalid' %}
             {% trans 'An error occured while upload the file. Please retry' %}
         {% elseif error == 'row-login' %}
-            {% trans 'Row "login" is missing, script has stopped' %}
+            {% trans 'Row login is missing, script has stopped' %}
         {% elseif error == 'row-pwd' %}
-            {% trans 'Row "password" is missing, script has stopped' %}
+            {% trans 'Row password is missing, script has stopped' %}
         {% elseif error == 'no-user' %}
             {% trans 'The file does not contains any user to add' %}
         {% endif %}
