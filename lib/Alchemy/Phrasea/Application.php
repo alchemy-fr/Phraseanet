@@ -530,12 +530,12 @@ class Application extends SilexApplication
                 $paths = array();
 
                 if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
-                    $paths[] = realpath($app['root.path'] . '/config/templates/mobile');
-                    $paths[] = realpath($app['root.path'] . '/templates/mobile');
+                    $paths[] = $app['root.path'] . '/config/templates/mobile';
+                    $paths[] = $app['root.path'] . '/templates/mobile';
                 }
 
-                $paths[] = realpath($app['root.path'] . '/config/templates/web');
-                $paths[] = realpath($app['root.path'] . '/templates/web');
+                $paths[] = $app['root.path'] . '/config/templates/web';
+                $paths[] = $app['root.path'] . '/templates/web';
 
                 $app['twig.loader.filesystem']->setPaths($paths);
 
