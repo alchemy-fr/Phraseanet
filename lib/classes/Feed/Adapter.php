@@ -133,8 +133,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
         $url = '/skins/icons/rss32.gif';
 
-        $file = $this->app['phraseanet.registry']->get('GV_RootPath')
-            . 'www/custom/feed_' . $this->get_id() . '.jpg';
+        $file = $this->app['root.path']
+            . '/www/custom/feed_' . $this->get_id() . '.jpg';
 
         if (file_exists($file)) {
             $url = '/custom/feed_' . $this->get_id() . '.jpg';
@@ -156,8 +156,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
             throw new \Alchemy\Phrasea\Exception\InvalidArgumentException('File does not exists');
         }
 
-        $config_file = $this->app['phraseanet.registry']->get('GV_RootPath') . 'config/feed_' . $this->get_id() . '.jpg';
-        $www_file = $this->app['phraseanet.registry']->get('GV_RootPath') . 'www/custom/feed_' . $this->get_id() . '.jpg';
+        $config_file = $this->app['root.path'] . '/config/feed_' . $this->get_id() . '.jpg';
+        $www_file = $this->app['root.path'] . '/www/custom/feed_' . $this->get_id() . '.jpg';
 
         copy($file, $config_file);
         copy($file, $www_file);
@@ -185,10 +185,10 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     public function reset_icon()
     {
-        $config_file = $this->app['phraseanet.registry']->get('GV_RootPath')
-            . 'config/feed_' . $this->get_id() . '.jpg';
-        $www_file = $this->app['phraseanet.registry']->get('GV_RootPath')
-            . 'www/custom/feed_' . $this->get_id() . '.jpg';
+        $config_file = $this->app['root.path']
+            . '/config/feed_' . $this->get_id() . '.jpg';
+        $www_file = $this->app['root.path']
+            . '/www/custom/feed_' . $this->get_id() . '.jpg';
 
         if (is_file($config_file))
             unlink($config_file);

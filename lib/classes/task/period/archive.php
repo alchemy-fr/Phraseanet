@@ -1426,7 +1426,7 @@ class task_period_archive extends task_abstract
             if (!($rep = $node->getAttribute('grp_representation'))) {
 
                 try {
-                    $this->dependencyContainer['filesystem']->copy(p4string::addEndSlash($this->dependencyContainer['phraseanet.registry']->get('GV_RootPath')) . 'www/skins/icons/substitution/regroup_doc.png', $genericdoc = ($path . '/group.jpg'), true);
+                    $this->dependencyContainer['filesystem']->copy($this->dependencyContainer['root.path'] . '/www/skins/icons/substitution/regroup_doc.png', $genericdoc = ($path . '/group.jpg'), true);
                 } catch (IOException $e) {
                     $this->log($e->getMessage());
                 }

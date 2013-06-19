@@ -83,7 +83,7 @@ class task_Scheduler
             $this->method = self::METHOD_FORK;
         }
 
-        $lockdir = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/locks/';
+        $lockdir = $this->dependencyContainer['root.path'] . '/tmp/locks/';
 
         for ($try = 1; true; $try ++) {
             $lockfile = ($lockdir . 'scheduler.lock');
@@ -228,7 +228,7 @@ class task_Scheduler
                         "cmd"            => $this->dependencyContainer['phraseanet.registry']->get('php_binary'),
                         "args"           => array(
                             '-f',
-                            $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'bin/console',
+                            $this->dependencyContainer['root.path'] . '/bin/console',
                             '--',
                             '-q',
                             'task:run',
@@ -339,7 +339,7 @@ class task_Scheduler
                                     escapeshellarg($taskPoll[$tkey]["cmd"]) . ' ' . implode(' ', array_map('escapeshellarg', $taskPoll[$tkey]["args"]))
                                     , $descriptors
                                     , $taskPoll[$tkey]["pipes"]
-                                    , $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . "bin/"
+                                    , $this->dependencyContainer['root.path'] . "/bin/"
                                     , null
                                     , array('bypass_shell' => true)
                                 );

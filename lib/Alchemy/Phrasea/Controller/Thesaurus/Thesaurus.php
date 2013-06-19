@@ -441,9 +441,9 @@ class Thesaurus implements ControllerProviderInterface
                     } elseif ($request->get("ofm") == 'tofiles') {
                         $fname = 'topics_' . $lng . '.xml';
 
-                        @rename($app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/' . $fname, $app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/topics_' . $lng . '_BKP_' . $now . '.xml');
+                        @rename($app['root.path'] . '/config/topics/' . $fname, $app['root.path'] . '/config/topics/topics_' . $lng . '_BKP_' . $now . '.xml');
 
-                        if ($dom->save($app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/' . $fname)) {
+                        if ($dom->save($app['root.path'] . '/config/topics/' . $fname)) {
                             $lngs[$lng] = \p4string::MakeString(sprintf(_('thesaurus:: fichier genere : %s'), $fname));
                         } else {
                             $lngs[$lng] = \p4string::MakeString(_('thesaurus:: erreur lors de l\'enregsitrement du fichier'));

@@ -640,7 +640,7 @@ class set_export extends set_abstract
             $files[$id]["export_name"] = $tmp_name;
 
             if (in_array('caption', $subdefs)) {
-                $caption_dir = $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/desc_tmp/'
+                $caption_dir = $this->app['root.path'] . '/tmp/desc_tmp/'
                     . time() . $this->app['authentication']->getUser()->get_id() . '/';
 
                 $filesystem->mkdir($caption_dir, 0750);
@@ -662,7 +662,7 @@ class set_export extends set_abstract
             }
 
             if (in_array('caption-yaml', $subdefs)) {
-                $caption_dir = $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/desc_tmp/'
+                $caption_dir = $this->app['root.path'] . '/tmp/desc_tmp/'
                     . time() . $this->app['authentication']->getUser()->get_id() . '/';
 
                 $filesystem->mkdir($caption_dir, 0750);
@@ -785,8 +785,8 @@ class set_export extends set_abstract
                 $file_xaccel = str_replace(
                     array(
                     $app['phraseanet.registry']->get('GV_X_Accel_Redirect'),
-                    $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/',
-                    $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/'
+                    $app['root.path'] . '/tmp/download/',
+                    $app['root.path'] . '/tmp/lazaret/'
                     )
                     , array(
                     '/' . $app['phraseanet.registry']->get('GV_X_Accel_Redirect_mount_point') . '/',

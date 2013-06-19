@@ -181,7 +181,7 @@ class Databoxes implements ControllerProviderInterface
         $upgrader = new \Setup_Upgrade($app);
 
         return $app['twig']->render('admin/databases.html.twig', array(
-            'files'             => new \DirectoryIterator($app['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates'),
+            'files'             => new \DirectoryIterator($app['root.path'] . '/lib/conf.d/data_templates'),
             'sbas'              => $sbas,
             'error_msg'         => $errorMsg,
             'recommendations'   => $upgrader->getRecommendations(),
@@ -217,7 +217,7 @@ class Databoxes implements ControllerProviderInterface
             $user = $connexion['user'];
             $password = $connexion['password'];
 
-            $dataTemplate = new \SplFileInfo($app['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
+            $dataTemplate = new \SplFileInfo($app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
 
             try {
                 $connbas = new \connection_pdo('databox_creation', $hostname, $port, $user, $password, $dbName, array(), $app['debug']);
@@ -245,7 +245,7 @@ class Databoxes implements ControllerProviderInterface
             && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
 
             try {
-                $data_template = new \SplFileInfo($app['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
+                $data_template = new \SplFileInfo($app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
                 $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, array(), $app['debug']);
                 try {
                     $base = \databox::create($app, $connbas, $data_template, $app['phraseanet.registry']);

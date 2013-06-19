@@ -238,7 +238,7 @@ class Account implements ControllerProviderInterface
      */
     public function accountAccess(Application $app, Request $request)
     {
-        require_once $app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
+        require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
         return $app['twig']->render('account/access.html.twig', array(
             'inscriptions' => giveMeBases($app, $app['authentication']->getUser()->get_id())

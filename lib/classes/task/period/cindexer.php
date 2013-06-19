@@ -442,7 +442,7 @@ class task_period_cindexer extends task_abstract
             $args_nopwd[] = '--run';
         }
 
-        $logdir = p4string::addEndSlash($this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'logs');
+        $logdir = $this->dependencyContainer['root.path'] . '/logs/';
 
         $this->new_status = NULL; // new status to set at the end
         $this->exception = NULL; // exception to throw at the end

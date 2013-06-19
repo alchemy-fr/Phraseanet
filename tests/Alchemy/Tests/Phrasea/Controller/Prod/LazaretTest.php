@@ -170,8 +170,8 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $lazaretFile = $this->getOneLazaretFile();
 
-        $lazaretFileName = self::$DI['app']['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
-        $lazaretThumbFileName = self::$DI['app']['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+        $lazaretFileName = self::$DI['app']['root.path'] . '/tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = self::$DI['app']['root.path'] . '/tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', $lazaretFileName);
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', $lazaretThumbFileName);

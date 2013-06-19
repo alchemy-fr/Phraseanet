@@ -46,7 +46,7 @@ class Root implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $cssPath = $app['phraseanet.registry']->get('GV_RootPath') . 'www/skins/prod/';
+            $cssPath = $app['root.path'] . '/www/skins/prod/';
 
             $css = array();
             $cssfile = false;
