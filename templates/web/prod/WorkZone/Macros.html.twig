@@ -100,25 +100,25 @@
           <div class="menu">
             <table>
                   <tr>
-                        <td>
-                            {% if basket.getValidation() %}
+                       {% if basket.getValidation() %}
+                            <td>
                                 <img
                                     style="display:inline;padding:0;margin:0;"
                                     title="{% trans 'Vous avez envoye une demande de validation de document sur ce panier' %}"
                                     class="basketTips"
                                     src="/skins/icons/myvalid.png"
                                 />
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if basket.getPusher(app) %}
+                            </td>
+                        {% endif %}
+                        {% if basket.getPusher(app) %}
+                            <td>
                                 {% set pusher = basket.getPusher(app).get_display_name() %}
-                                    <img
-                                        class="basketTips"
-                                        title="{% trans %}paniers:: panier recu de {{pusher}}{% endtrans %}"
-                                        src="/skins/icons/push16.png"/>
-                            {% endif %}
-                        </td>
+                                <img
+                                    class="basketTips"
+                                    title="{% trans %}paniers:: panier recu de {{pusher}}{% endtrans %}"
+                                    src="/skins/icons/push16.png"/>
+                            </td>
+                        {% endif %}
                         <td>
                             <a
                                 style="cursor:pointer;display:inline;padding:0;margin:0;"
