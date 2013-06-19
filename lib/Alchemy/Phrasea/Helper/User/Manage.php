@@ -187,6 +187,7 @@ class Manage extends Helper
                     $token = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id(), $expire, $createdUser->get_email());
 
                     $mail = MailRequestPasswordSetup::create($this->app, $receiver);
+                    $mail->setLogin($createdUser->get_login());
                     $mail->setButtonUrl($this->app->url('login_register_confirm', array('code' => $token)));
                     $mail->setExpiration($expire);
 

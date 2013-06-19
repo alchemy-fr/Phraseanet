@@ -9,7 +9,7 @@
  */
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Notification\Mail\MailSuccessFTP;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
 use Alchemy\Phrasea\Notification\Receiver;
 
 class task_period_ftp extends task_appboxAbstract
@@ -667,7 +667,7 @@ class task_period_ftp extends task_appboxAbstract
         }
 
         if ($receiver) {
-            $mail = MailSuccessFTP::create($this->dependencyContainer, $receiver, null, $sender_message);
+            $mail = MailSuccessFTPSender::create($this->dependencyContainer, $receiver, null, $sender_message);
             $mail->setServer($ftp_server);
             $this->dependencyContainer['notification.deliverer']->deliver($mail);
         }
