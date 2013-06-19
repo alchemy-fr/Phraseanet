@@ -3,6 +3,8 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Entities\Feed;
+use Entities\FeedPublisher;
 
 /**
  * OrderElementRepository
@@ -12,18 +14,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class OrderElementRepository extends EntityRepository
 {
-    public function find($id)
-    {
-        $dql = 'SELECT f FROM Entities\FeedPublisher f
-                WHERE f.id = :id ';
-
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('id', $id);
-
-        return $query->getOneOrNullResult();
-    }
-
-    public function findByUser(\Entities\Feed $feed, \User_Adapter $user)
+    /**
+     * Finds a FeedPublisher based on a given Feed and a User_Adapter.
+     *
+     * @param Feed $feed
+     * @param \User_Adapter $user
+     *
+     * @return FeedPublisher
+     */
+    public function findByUser(Feed $feed, \User_Adapter $user)
     {
         $dql = 'SELECT f FROM Entities\FeedPublisher f
                 WHERE f.usr_id = :usrId AND f.feed = :feed';

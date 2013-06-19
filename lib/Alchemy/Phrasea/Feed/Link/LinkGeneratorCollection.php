@@ -9,11 +9,19 @@ class LinkGeneratorCollection implements LinkGeneratorInterface
 {
     private $generators = array();
 
+    /**
+     * Adds a LinkGeneratorInterface to the internal array.
+     *
+     * @param LinkGeneratorInterface $generator
+     */
     public function pushGenerator(LinkGeneratorInterface $generator)
     {
         $this->generators[] = $generator;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generate(FeedInterface $feed, \User_Adapter $user, $format, $page = null, $renew = false)
     {
         if (null === $generator = $this->findGenerator($feed)) {
@@ -23,6 +31,9 @@ class LinkGeneratorCollection implements LinkGeneratorInterface
         return $generator->generate($feed, $user, $format, $page);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generatePublic(FeedInterface $feed, $format, $page = null)
     {
         if (null === $generator = $this->findGenerator($feed)) {
@@ -32,6 +43,9 @@ class LinkGeneratorCollection implements LinkGeneratorInterface
         return $generator->generatePublic($feed, $format, $page);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function supports(FeedInterface $feed)
     {
         return null !== $this->findGenerator($feed);

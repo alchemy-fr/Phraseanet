@@ -22,7 +22,7 @@ class FeedPublisher
     /**
      * @var boolean
      */
-    private $owner;
+    private $owner = false;
 
     /**
      * @var \DateTime

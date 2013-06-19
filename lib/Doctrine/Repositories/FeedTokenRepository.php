@@ -4,6 +4,7 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Entities\Feed;
+use Entities\FeedToken;
 
 /**
  * FeedTokenRepository
@@ -13,6 +14,14 @@ use Entities\Feed;
  */
 class FeedTokenRepository extends EntityRepository
 {
+    /**
+     * Finds a FeedToken based on given Feed and User_Adapter.
+     *
+     * @param Feed          $feed
+     * @param \User_Adapter $user
+     *
+     * @return FeedToken
+     */
     public function findByFeedAndUser(Feed $feed, \User_Adapter $user)
     {
         $dql = 'SELECT t

@@ -53,45 +53,49 @@ class Feed implements ControllerProviderInterface
          * I've selected a publication for my docs, let's publish them
          */
         $controllers->post('/entry/create/', function(Application $app, Request $request) {
-            try {
-                $feed = $app['EM']->getRepository('Entities\Feed')->find($request->request->get('feed_id'));
-                $publisher = $app['EM']->getRepository('Entities\FeedPublisher')->findByUser($feed, $app['authentication']->getUser());
-                $title = $request->request->get('title');
-                $subtitle = $request->request->get('subtitle');
-                $author_name = $request->request->get('author_name');
-                $author_email = $request->request->get('author_mail');
+            $feed = $app['EM']->getRepository('Entities\Feed')->find($request->request->get('feed_id'));
 
-                $entry = new FeedEntry();
-                $entry->setFeed($feed);
-                $entry->setPublisher($publisher);
-                $entry->setTitle($title);
-                $entry->setSubtitle($subtitle);
-                $entry->setAuthorName($author_name);
-                $entry->setAuthorEmail($author_email);
-
-                $feed->addEntry($entry);
-
-                $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
-                foreach ($publishing as $record) {
-                    $item = new FeedItem();
-                    $item->setEntry($entry);
-                    $item->setRecordId($record->get_record_id());
-                    $item->setSbasId($record->get_sbas_id());
-                    $item->setLastInFeedItem();
-                    $entry->addItem($item);
-                    $app['EM']->persist($item);
-                }
-
-                $app['EM']->persist($entry);
-                $app['EM']->persist($feed);
-                $app['EM']->flush();
-
-                $app['events-manager']->trigger('__FEED_ENTRY_CREATE__', array('entry_id' => $entry->getId()), $entry);
-
-                $datas = array('error' => false, 'message' => false);
-            } catch (\Exception $e) {
-                $datas = array('error' => true, 'message' => _('An error occured'), 'details' => $e->getMessage());
+            if (null === $feed) {
+                $app->abort(404, "Feed not found");
             }
+
+            $publisher = $app['EM']->getRepository('Entities\FeedPublisher')->findByUser($feed, $app['authentication']->getUser());
+
+            if ('' === $title = trim($request->request->get('title', ''))) {
+                $app->abort(400, "Bad request");
+            }
+
+            if (!$feed->isPublisher($app['authentication']->getUser())) {
+                $app->abort(403, 'Unathorized action');
+            }
+
+            $entry = new FeedEntry();
+            $entry->setAuthorEmail($request->request->get('author_mail'))
+                ->setAuthorName($request->request->get('author_name'))
+                ->setTitle($title)
+                ->setFeed($feed)
+                ->setPublisher($publisher)
+                ->setSubtitle($request->request->get('subtitle', ''));
+
+            $feed->addEntry($entry);
+
+            $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
+            foreach ($publishing as $record) {
+                $item = new FeedItem();
+                $item->setEntry($entry)
+                    ->setRecordId($record->get_record_id())
+                    ->setSbasId($record->get_sbas_id());
+                $entry->addItem($item);
+                $app['EM']->persist($item);
+            }
+
+            $app['EM']->persist($entry);
+            $app['EM']->persist($feed);
+            $app['EM']->flush();
+
+            $app['events-manager']->trigger('__FEED_ENTRY_CREATE__', array('entry_id' => $entry->getId()), $entry);
+
+            $datas = array('error' => false, 'message' => false);
 
             return $app->json($datas);
         })
@@ -107,7 +111,7 @@ class Feed implements ControllerProviderInterface
                 throw new AccessDeniedHttpException();
             }
 
-            $feeds = $app['EM']->getRepository('Entities\Feed')->findAll();
+            $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser($app['authentication']->getUser());
 
             $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', array('entry' => $entry, 'feeds' => $feeds));
 
@@ -129,20 +133,18 @@ class Feed implements ControllerProviderInterface
             if (!$entry->isPublisher($app['authentication']->getUser())) {
                 $app->abort(403, 'Unathorized action');
             }
+            if ('' === $title = trim($request->request->get('title', ''))) {
+                    $app->abort(400, "Bad request");
+            }
 
-            $title = $request->request->get('title');
-            $subtitle = $request->request->get('subtitle');
-            $author_name = $request->request->get('author_name');
-            $author_mail = $request->request->get('author_mail');
-
-            $entry->setAuthorEmail($author_mail)
-                ->setAuthorName($author_name)
+            $entry->setAuthorEmail($request->request->get('author_mail'))
+                ->setAuthorName($request->request->get('author_name'))
                 ->setTitle($title)
-                ->setSubtitle($subtitle);
+                ->setSubtitle($request->request->get('subtitle', ''));
 
             $current_feed_id = $entry->getFeed()->getId();
             $new_feed_id = $request->request->get('feed_id', $current_feed_id);
-            if ($current_feed_id != $new_feed_id) {
+            if ($current_feed_id !== (int) $new_feed_id) {
 
                 $new_feed = $app['EM']->getRepository('Entities\Feed')->find($new_feed_id);
 
@@ -163,10 +165,7 @@ class Feed implements ControllerProviderInterface
                 if (count($item_sort_datas) != 2) {
                     continue;
                 }
-
-                $item = new FeedItem();
-                $item->setEntry($entry);
-                $entry->addItem($item);
+                $item = $app['EM']->getRepository('Entities\FeedItem')->find($item_sort_datas[0]);
                 $item->setOrd($item_sort_datas[1]);
                 $app['EM']->persist($item);
             }
@@ -214,7 +213,7 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feeds = $app['EM']->getRepository('Entities\Feed')->findAll();
+            $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser($app['authentication']->getUser());
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig'
                 , array(
@@ -232,7 +231,7 @@ class Feed implements ControllerProviderInterface
             $page = $page > 0 ? $page : 1;
 
             $feed = $app['EM']->getRepository('Entities\Feed')->loadWithUser($app, $app['authentication']->getUser(), $id);
-            $feeds = $app['EM']->getRepository('Entities\Feed')->findAll();
+            $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser($app['authentication']->getUser());
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array('feed' => $feed, 'feeds' => $feeds, 'page' => $page));
 
@@ -244,7 +243,7 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/subscribe/aggregated/', function(Application $app, Request $request) {
             $renew = ($request->query->get('renew') === 'true');
 
-            $feeds = $app['EM']->getRepository('Entities\Feed')->findAll();
+            $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser($app['authentication']->getUser());
 
             $aggregate = new Aggregate($app['EM'], $feeds);
 

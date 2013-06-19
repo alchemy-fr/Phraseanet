@@ -12,29 +12,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class UserSettingRepository extends EntityRepository
 {
-    public function find($id)
-    {
-        $dql = 'SELECT f FROM Entities\FeedEntry f
-                WHERE f.id = :id ';
-
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('id', $id);
-
-        return $query->getOneOrNullResult();
-    }
-
-    public function findByFeed($feed, $id)
-    {
-        $dql = 'SELECT f FROM Entities\FeedEntry f
-                WHERE f.id = :id AND f.feed = :feed';
-
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('id', $id);
-        $query->setParameter('feed', $feed);
-
-        return $query->getOneOrNullResult();
-    }
-
+    /**
+     * Returns a collection of FeedEntry from given feeds, limited to $how_many results, starting with $offset_start
+     *
+     * @param array   $feeds
+     * @param integer $offset_start
+     * @param integer $how_many
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
     public function findByFeeds($feeds, $offset_start = null, $how_many = null)
     {
         $dql = 'SELECT f FROM Entities\FeedEntry f

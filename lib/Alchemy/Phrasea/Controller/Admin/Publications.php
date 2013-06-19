@@ -48,6 +48,10 @@ class Publications implements ControllerProviderInterface
 
         $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
 
+            if ('' === $title = trim($request->request->get('title', ''))) {
+                $app->abort(400, "Bad request");
+            }
+
             $publisher = new FeedPublisher();
 
             $feed = new Feed();
@@ -57,9 +61,8 @@ class Publications implements ControllerProviderInterface
             $publisher->setIsOwner(true);
 
             $feed->addPublisher($publisher);
-            $feed->setTitle($request->request->get('title'));
-            $feed->setSubtitle($request->request->get('subtitle'));
-            $feed->setIconUrl(false);
+            $feed->setTitle($title);
+            $feed->setSubtitle($request->request->get('subtitle', ''));
 
             if ($request->request->get('public') == '1') {
                 $feed->setIsPublic(true);
@@ -88,6 +91,10 @@ class Publications implements ControllerProviderInterface
 
         $controllers->post('/feed/{id}/update/', function(PhraseaApplication $app, Request $request, $id) {
 
+           if ('' === $title = trim($request->request->get('title', ''))) {
+                $app->abort(400, "Bad request");
+            }
+
             $feed = $app["EM"]->find('Entities\Feed', $id);
 
             try {
@@ -95,14 +102,10 @@ class Publications implements ControllerProviderInterface
             } catch (\Exception $e) {
                 $collection = null;
             }
-            if (null !== $title = $request->request->get('title')) {
-                $feed->setTitle($title);
-            }
-            if (null !== $subtitle = $request->request->get('subtitle')) {
-                $feed->setSubtitle($subtitle);
-            }
+            $feed->setTitle($title);
+            $feed->setSubtitle($request->request->get('subtitle', ''));
             $feed->setCollection($collection);
-            $feed->setIsPublic($request->request->get('public') === '1' ? true : false);
+            $feed->setIsPublic('1' === $request->request->get('public'));
             $app['EM']->persist($feed);
             $app['EM']->flush();
 
@@ -110,7 +113,7 @@ class Publications implements ControllerProviderInterface
         })->before(function(Request $request) use ($app) {
             $feed = $app["EM"]->find('Entities\Feed', $request->attributes->get('id'));
 
-            if (!$feed->getOwner($app['authentication']->getUser())) {
+            if (!$feed->isOwner($app['authentication']->getUser())) {
                 return $app->redirectPath('admin_feeds_feed', array('id' => $request->attributes->get('id'), 'error' =>  _('You are not the owner of this feed, you can not edit it')));
             }
         })
@@ -176,16 +179,14 @@ class Publications implements ControllerProviderInterface
                 $app['EM']->persist($feed);
                 $app['EM']->flush();
 
-                $baseDir = realpath(__DIR__ . '/../../../../../');
-
-                $app['filesystem']->copy($tmpname, $baseDir . '/config/feed_' . $feed->getId() . '.jpg');
+                $app['filesystem']->copy($tmpname, $app['root.path'] . '/config/feed_' . $feed->getId() . '.jpg');
                 $app['filesystem']->copy($tmpname, 'custom/feed_' . $feed->getId() . '.jpg');
 
                 $app['filesystem']->remove($tmpname);
 
                 $datas['success'] = true;
             } catch (\Exception $e) {
-                $datas['message'] = _('Unable to add file to Phraseanet') . $e->getMessage();
+                $datas['message'] = _('Unable to add file to Phraseanet');
             }
 
             return $app->json($datas);
@@ -202,7 +203,6 @@ class Publications implements ControllerProviderInterface
 
                 $publisher = new FeedPublisher();
                 $publisher->setUsrId($user->get_id());
-                $publisher->setIsOwner(false);
                 $publisher->setFeed($feed);
 
                 $feed->addPublisher($publisher);
@@ -232,7 +232,7 @@ class Publications implements ControllerProviderInterface
                 }
 
                 $user = $publisher->getUser($app);
-                if ($feed->isPublisher($user) === true && $feed->isOwner($user) === false) {
+                if ($feed->isPublisher($user) && false === $feed->isOwner($user)) {
                     $feed->removePublisher($publisher);
 
                     $app['EM']->remove($publisher);
@@ -249,10 +249,12 @@ class Publications implements ControllerProviderInterface
 
         $controllers->post('/feed/{id}/delete/', function(PhraseaApplication $app, $id) {
             $feed = $app["EM"]->find('Entities\Feed', $id);
-            $publishers = $feed->getPublishers();
-            foreach ($publishers as $publisher) {
-                $app['EM']->remove($publisher);
+
+            if (true === $feed->getIconURL()) {
+                unlink($app['root.path'] . '/config/feed_' . $feed->getId() . '.jpg');
+                unlink('custom/feed_' . $feed->getId() . '.jpg');
             }
+
             $app['EM']->remove($feed);
             $app['EM']->flush();
 

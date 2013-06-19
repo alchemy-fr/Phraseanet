@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
+use Entities\FeedItem;
 use Symfony\Component\CssSelector\CssSelector;
 
 class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -72,12 +73,32 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , 'lst'          => self::$DI['record_1']->get_serialize_key()
         );
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
-        $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
-        $this->assertTrue(is_object($pageContent));
-        $this->assertTrue($pageContent->error);
-        $this->assertTrue(is_string($pageContent->message));
+        $this->assertFalse(self::$DI['client']->getResponse()->isOk());
+        $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
+    }
+
+    public function testEntryCreateUnauthorized()
+    {
+        $feed = $this->insertOneFeed(self::$DI['user_alt1']);
+
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['app']['notification.deliverer']->expects($this->never())
+            ->method('deliver');
+
+        $params = array(
+            "feed_id"        => $feed->getId()
+            , "title"        => "salut"
+            , "subtitle"     => "coucou"
+            , "author_name"  => "robert"
+            , "author_mail"  => "robert@kikoo.mail"
+            , 'lst'          => self::$DI['record_1']->get_serialize_key()
+        );
+
+        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/create/', $params);
+        $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     public function testEntryEdit()
@@ -257,6 +278,41 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());;
+    }
+
+    public function testEntryUpdateChangeOrder()
+    {
+        $item1 = $this->insertOneFeedItem(self::$DI['user']);
+        $entry = $item1->getEntry();
+        $item2 = new FeedItem();
+        $item2->setEntry($entry)
+            ->setRecordId(self::$DI['record_2']->get_record_id())
+            ->setSbasId(self::$DI['record_2']->get_sbas_id());
+        $entry->addItem($item2);
+
+        self::$DI['app']['EM']->persist($entry);
+        self::$DI['app']['EM']->persist($item2);
+        self::$DI['app']['EM']->flush();
+
+        $ord1 = $item1->getOrd();
+        $ord2 = $item2->getOrd();
+
+        $params = array(
+            "title"         => $entry->getTitle(),
+            "author_name"   => $entry->getAuthorName(),
+            "author_mail"   => $entry->getAuthorEmail(),
+            'sorted_lst'    => $item1->getId() . '_' . $item2->getOrd() . ';'
+                             . $item2->getId() . '_' . $item1->getOrd()
+            );
+
+        $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+
+        $newItem1 = self::$DI['app']['EM']->getRepository('Entities\FeedItem')->find($item1->getId());
+        $newItem2 = self::$DI['app']['EM']->getRepository('Entities\FeedItem')->find($item2->getId());
+
+        $this->assertEquals($ord1, (int) $newItem2->getOrd());
+        $this->assertEquals($ord2, (int) $newItem1->getOrd());
     }
 
     public function testDelete()

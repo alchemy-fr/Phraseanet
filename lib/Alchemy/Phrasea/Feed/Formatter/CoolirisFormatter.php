@@ -23,24 +23,30 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
     const VERSION = '2.0';
     private $linkGenerator;
 
+    /**
+     * @param LinkGeneratorCollection $generator
+     */
     public function __construct(LinkGeneratorCollection $generator)
     {
         $this->linkGenerator = $generator;
     }
 
-    public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', $app = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null)
     {
         $content = $this->format($feed, $page, $user, $generator, $app);
         $response = new Response($content, 200, array('Content-Type' => 'application/rss+xml'));
-        $response->setCharset('UTF-8');
 
         return $response;
     }
 
-    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', $app = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null)
     {
-        $title = $feed->getTitle();
-        $subtitle = $feed->getSubtitle();
         $updated_on = $feed->getUpdatedOn();
 
         $doc = new \DOMDocument('1.0', 'UTF-8');
@@ -56,9 +62,9 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
 
         $channel = $this->addTag($doc, $root, 'channel');
 
-        $this->addTag($doc, $channel, 'title', $title);
-        $this->addTag($doc, $channel, 'dc:title', $title);
-        $this->addTag($doc, $channel, 'description', $subtitle);
+        $this->addTag($doc, $channel, 'title', $feed->getTitle());
+        $this->addTag($doc, $channel, 'dc:title', $feed->getTitle());
+        $this->addTag($doc, $channel, 'description', $feed->getSubtitle());
 
         if (null !== $user) {
             $link = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page);
@@ -66,8 +72,9 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
             $link = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page);
         }
 
-        if ($link instanceof FeedLink)
+        if ($link instanceof FeedLink) {
             $this->addTag($doc, $channel, 'link', $link->getURI());
+        }
 
         if (isset($this->language))
             $this->addTag($doc, $channel, 'language', $this->language);
@@ -126,23 +133,22 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
             $self_link->setAttribute('href', $link->getURI());
         }
 
+        $next = $prev = null;
+
         if ($feed->hasPage($page + 1, static::PAGE_SIZE)) {
             if (null === $user) {
                 $next = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page + 1);
             } else {
                 $next = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page + 1);
             }
-        } else {
-            $next = null;
         }
+
         if ($feed->hasPage($page - 1, static::PAGE_SIZE)) {
             if (null === $user) {
                 $prev = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page - 1);
             } else {
                 $prev = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page - 1);
             }
-        } else {
-            $prev = null;
         }
 
         $prefix = 'atom';
@@ -175,7 +181,6 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
 
     protected function addContent(Application $app, \DOMDocument $document, \DOMNode $node, FeedItem $content)
     {
-
         $preview_sd = $content->getRecord($app)->get_subdef('preview');
         $preview_permalink = $preview_sd->get_permalink();
         $thumbnail_sd = $content->getRecord($app)->get_thumbnail();
@@ -187,7 +192,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
             return $this;
         }
 
-        if (! $preview_permalink || ! $thumbnail_permalink) {
+        if (null === $preview_permalink || null === $thumbnail_permalink) {
             return $this;
         }
 
@@ -197,7 +202,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         $caption =  $content->getRecord($app)->get_caption();
 
         $title_field = $caption->get_dc_field(databox_Field_DCESAbstract::Title);
-        if ($title_field) {
+        if (null !== $title_field) {
             $str_title = $title_field->get_serialized_values(' ');
         } else {
             $str_title = $content->getRecord($app)->get_title();
@@ -207,7 +212,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         $title = $this->addTag($document, $item, 'title', $str_title);
 
         $desc_field = $caption->get_dc_field(databox_Field_DCESAbstract::Description);
-        if ($desc_field) {
+        if (null !== $desc_field) {
             $str_desc = $desc_field->get_serialized_values(' ');
         } else {
             $str_desc = '';
@@ -218,7 +223,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
 
         $duration = $content->getRecord($app)->get_duration();
 
-        if ($preview_permalink) {
+        if (null !== $preview_permalink) {
             $preview = $this->addTag($document, $item, 'media:content');
 
             $preview->setAttribute('url', $preview_permalink->get_url());
@@ -228,23 +233,28 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
             $preview->setAttribute('expression', 'full');
             $preview->setAttribute('isDefault', 'true');
 
-            if ($preview_sd->get_width())
+            if (null !== $preview_sd->get_width()) {
                 $preview->setAttribute('width', $preview_sd->get_width());
-            if ($preview_sd->get_height())
+            }
+            if (null !== $preview_sd->get_height()) {
                 $preview->setAttribute('height', $preview_sd->get_height());
-            if ($duration)
+            }
+            if (null !== $duration) {
                 $preview->setAttribute('duration', $duration);
+            }
         }
 
-        if ($thumbnail_permalink) {
+        if (null !== $thumbnail_permalink) {
             $thumbnail = $this->addTag($document, $item, 'media:thumbnail');
 
             $thumbnail->setAttribute('url', $thumbnail_permalink->get_url());
 
-            if ($thumbnail_sd->get_width())
+            if (null !== $thumbnail_sd->get_width()) {
                 $thumbnail->setAttribute('width', $thumbnail_sd->get_width());
-            if ($thumbnail_sd->get_height())
+            }
+            if (null !== $thumbnail_sd->get_height()) {
                 $thumbnail->setAttribute('height', $thumbnail_sd->get_height());
+            }
 
             $thumbnail = $this->addTag($document, $item, 'media:content');
 
@@ -254,12 +264,15 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
             $thumbnail->setAttribute('medium', $medium);
             $thumbnail->setAttribute('isDefault', 'false');
 
-            if ($thumbnail_sd->get_width())
+            if (null !== $thumbnail_sd->get_width()) {
                 $thumbnail->setAttribute('width', $thumbnail_sd->get_width());
-            if ($thumbnail_sd->get_height())
+            }
+            if (null !== $thumbnail_sd->get_height()) {
                 $thumbnail->setAttribute('height', $thumbnail_sd->get_height());
-            if ($duration)
+            }
+            if (null !== $duration) {
                 $thumbnail->setAttribute('duration', $duration);
+            }
         }
 
         return $this;

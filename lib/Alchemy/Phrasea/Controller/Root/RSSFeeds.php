@@ -27,12 +27,11 @@ class RSSFeeds implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
-        $that = $this;
 
         $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) {
             $feed = $app['EM']->getRepository('Entities\Feed')->find($id);
 
-            if (!$feed) {
+            if (null === $feed) {
                 $app->abort(404, 'Feed not found');
             }
 
@@ -54,9 +53,8 @@ class RSSFeeds implements ControllerProviderInterface
         $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) {
             $token = $app["EM"]->find('Entities\FeedToken', $id);
             $feed = $token->getFeed();
-            $usrId = $token->getUsrId();
 
-            $user = \User_Adapter::getInstance($usrId, $app);
+            $user = \User_Adapter::getInstance($token->getUsrId(), $app);
 
             $request = $app['request'];
 
@@ -71,9 +69,8 @@ class RSSFeeds implements ControllerProviderInterface
 
         $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) {
             $token = $app['EM']->getRepository('Entities\AggregateToken')->findOneBy(array("value" => $token));
-            $usrId = $token->getUsrId();
 
-            $user = \User_Adapter::getInstance($usrId, $app);
+            $user = \User_Adapter::getInstance($token->getUsrId(), $app);
 
             $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser($user);
 
@@ -90,8 +87,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('format', '(rss|atom)');
 
         $controllers->get('/aggregated/{format}/', function(Application $app, $format) {
-            $feeds = $app['EM']->getRepository('Entities\Feed')->findAllPublic();
-            $feed = new Aggregate($app['EM'], $feeds);
+            $feed = Aggregate::getPublic($app);
 
             $request = $app['request'];
             $page = (int) $request->query->get('page');
@@ -103,8 +99,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('format', '(rss|atom)');
 
         $controllers->get('/cooliris/', function(Application $app) {
-            $feeds = $app['EM']->getRepository('Entities\Feed')->findAllPublic();
-            $feed = new Aggregate($app['EM'], $feeds);
+            $feed = Aggregate::getPublic($app);
 
             $request = $app['request'];
             $page = (int) $request->query->get('page');

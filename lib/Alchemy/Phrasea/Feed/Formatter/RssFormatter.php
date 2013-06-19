@@ -24,25 +24,33 @@ class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterfa
     const VERSION = '2.0';
     private $linkGenerator;
 
+    /**
+     * @param LinkGeneratorCollection $generator
+     */
     public function __construct(LinkGeneratorCollection $generator)
     {
         $this->linkGenerator = $generator;
     }
 
-    public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet')
+    /**
+     * {@inheritdoc}
+     */
+    public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null)
     {
-        $content = $this->format($feed, $page, $user, $generator);
+        $content = $this->format($feed, $page, $user, $generator, $app);
         $response = new Response($content, 200, array('Content-Type' => 'application/rss+xml'));
-        $response->setCharset('UTF-8');
 
         return $response;
     }
 
-    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', $app = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null)
     {
-        $title = $feed->getTitle();
-        $subtitle = $feed->getSubtitle();
         $updated_on = $feed->getUpdatedOn();
+
+        $next = $prev = null;
 
         if ($feed->hasPage($page + 1, static::PAGE_SIZE)) {
             if (null === $user) {
@@ -50,8 +58,6 @@ class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterfa
             } else {
                 $next = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page + 1);
             }
-        } else {
-            $next = null;
         }
         if ($feed->hasPage($page - 1, static::PAGE_SIZE)) {
             if (null === $user) {
@@ -59,8 +65,6 @@ class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterfa
             } else {
                 $prev = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page - 1);
             }
-        } else {
-            $prev = null;
         }
 
         if (null !== $user) {
@@ -82,11 +86,12 @@ class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterfa
 
         $channel = $this->addTag($doc, $root, 'channel');
 
-        $this->addTag($doc, $channel, 'title', $title);
-        $this->addTag($doc, $channel, 'dc:title', $title);
-        $this->addTag($doc, $channel, 'description', $subtitle);
-        if ($link instanceof FeedLink)
+        $this->addTag($doc, $channel, 'title', $feed->getTitle());
+        $this->addTag($doc, $channel, 'dc:title', $feed->getTitle());
+        $this->addTag($doc, $channel, 'description', $feed->getSubtitle());
+        if ($link instanceof FeedLink) {
             $this->addTag($doc, $channel, 'link', $link->getURI());
+        }
 
         if (isset($this->language))
             $this->addTag($doc, $channel, 'language', $this->language);

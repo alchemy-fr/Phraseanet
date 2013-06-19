@@ -13,27 +13,19 @@ namespace Alchemy\Phrasea\Feed\Link;
 
 class FeedLink implements FeedLinkInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $mimetype;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $title;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $uri;
 
     /**
      * @param string $uri
      * @param string $title
      * @param string $mimetype
-     *
-     * @return FeedLink
      */
     public function __construct($uri, $title, $mimetype)
     {

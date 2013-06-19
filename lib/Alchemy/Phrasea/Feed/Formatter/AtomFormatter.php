@@ -22,24 +22,30 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
     const FORMAT = 'atom';
     private $linkGenerator;
 
+    /**
+     * @param LinkGeneratorCollection $generator
+     */
     public function __construct(LinkGeneratorCollection $generator)
     {
         $this->linkGenerator = $generator;
     }
 
-    public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet')
+    /**
+     * {@inheritdoc}
+     */
+    public function createResponse(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null)
     {
-        $content = $this->format($feed, $page, $user, $generator);
+        $content = $this->format($feed, $page, $user, $generator, $app);
         $response = new Response($content, 200, array('Content-Type' => 'application/atom+xml'));
-        $response->setCharset('UTF-8');
 
         return $response;
     }
 
-    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', $app = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app = null)
     {
-        $title = $feed->getTitle();
-        $subtitle = $feed->getSubtitle();
         $updated_on = $feed->getUpdatedOn();
 
         $document = new \DOMDocument('1.0', 'UTF-8');
@@ -50,11 +56,13 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
         $root->setAttribute('xmlns', 'http://www.w3.org/2005/Atom');
         $root->setAttribute('xmlns:media', 'http://search.yahoo.com/mrss/');
 
-        $this->addTag($document, $root, 'title', $title);
+        $this->addTag($document, $root, 'title', $feed->getTitle());
         if ($updated_on instanceof \DateTime) {
             $updated_on = $updated_on->format(DATE_ATOM);
             $this->addTag($document, $root, 'updated', $updated_on);
         }
+
+        $next = $prev = null;
 
         if ($feed->hasPage($page + 1, static::PAGE_SIZE)) {
             if (null === $user) {
@@ -62,17 +70,14 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
             } else {
                 $next = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page + 1);
             }
-        } else {
-            $next = null;
         }
+
         if ($feed->hasPage($page - 1, static::PAGE_SIZE)) {
             if (null === $user) {
                 $prev = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page - 1);
             } else {
                 $prev = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page - 1);
             }
-        } else {
-            $prev = null;
         }
 
         if (null !== $user) {
@@ -100,12 +105,15 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
             $next_link->setAttribute('href', $next->getURI());
         }
 
-        if (isset($generator))
+        if (null !== $generator) {
             $this->addTag($document, $root, 'generator', $generator);
-        if (isset($subtitle))
-            $this->addTag($document, $root, 'subtitle', $subtitle);
-        if (isset($this->icon))
+        }
+        if (null !== $feed->getSubtitle()) {
+            $this->addTag($document, $root, 'subtitle', $feed->getSubtitle());
+        }
+        if (isset($this->icon)) {
             $this->addTag($document, $root, 'icon', $this->icon);
+        }
         if (isset($this->author)) {
             $author = $this->addTag($document, $root, 'author');
             if (isset($this->author_email))
@@ -142,11 +150,13 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
         $this->addTag($document, $entry_node, 'title', $entry->getTitle());
         $author = $this->addTag($document, $entry_node, 'author');
 
-        if ($entry->getAuthorEmail())
+        if ($entry->getAuthorEmail()) {
             $this->addTag($document, $author, 'email', $entry->getAuthorEmail());
-        if ($entry->getAuthorName())
+        }
+        if ($entry->getAuthorName()) {
             $this->addTag($document, $author, 'name', $entry->getAuthorName());
-
+        }
+        
         $this->addTag($document, $entry_node, 'content', $entry->getSubtitle());
 
         foreach ($entry->getItems() as $content) {

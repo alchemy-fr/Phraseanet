@@ -1,26 +1,31 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2013 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Feed;
 
+use Alchemy\Phrasea\Feed\Aggregate;
+
 /**
- * FeedToken
+ * AggregateToken
  */
 class AggregateToken
 {
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $id;
 
-    /**
-     * @var integer
-     */
+    /** @var string */
     private $usr_id;
 
-    /**
-     * @var \Entities\Feed
-     */
-    private $feed;
+    /** @var Aggregate */
+    private $aggregatedFeed;
 
     /**
      * Get id
@@ -36,7 +41,7 @@ class AggregateToken
      * Set usr_id
      *
      * @param  integer   $usrId
-     * @return FeedToken
+     * @return AggregateToken
      */
     public function setUsrId($usrId)
     {
@@ -58,12 +63,12 @@ class AggregateToken
     /**
      * Set feed
      *
-     * @param  \Entities\Feed $feed
-     * @return FeedToken
+     * @param  Aggregate $feed
+     * @return AggregateToken
      */
     public function setFeed(\Entities\Feed $feed = null)
     {
-        $this->feed = $feed;
+        $this->aggregatedFeed = $feed;
 
         return $this;
     }
@@ -71,11 +76,11 @@ class AggregateToken
     /**
      * Get feed
      *
-     * @return \Entities\Feed
+     * @return Aggregate
      */
     public function getFeed()
     {
-        return $this->feed;
+        return $this->aggregatedFeed;
     }
     /**
      * @var string
@@ -86,7 +91,7 @@ class AggregateToken
      * Set value
      *
      * @param  string    $value
-     * @return FeedToken
+     * @return AggregateToken
      */
     public function setValue($value)
     {

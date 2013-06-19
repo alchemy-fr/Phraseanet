@@ -127,7 +127,6 @@ class patch_320f implements patchInterface
                     $entry->addItem($item);
                     $item->setRecordId($record->get_record_id());
                     $item->setSbasId($record->get_sbas_id());
-                    $item->setLastInFeedItem();
                     $app['EM']->persist($item);
                 } catch (NotFoundHttpException $e) {
 
@@ -164,12 +163,13 @@ class patch_320f implements patchInterface
     protected function get_feed(appbox $appbox, User_Adapter $user, $pub_restrict, $homelink, Application $app)
     {
         $user_key = 'user_' . $user->get_id();
-        if ($homelink == '1')
+        if ($homelink == '1') {
             $feed_key = 'feed_homelink';
-        elseif ($pub_restrict == '1')
+        } elseif ($pub_restrict == '1') {
             $feed_key = 'feed_restricted';
-        else
+        } else {
             $feed_key = 'feed_public';
+        }
 
         if ( ! array_key_exists($user_key, self::$feeds) || ! isset(self::$feeds[$user_key][$feed_key])) {
             if ($homelink == '1')
@@ -183,7 +183,6 @@ class patch_320f implements patchInterface
             $publisher = new FeedPublisher();
             $feed->setTitle('title');
             $feed->setSubtitle('');
-            $feed->setIconUrl(false);
             $feed->addPublisher($publisher);
             $publisher->setFeed($feed);
             $publisher->setOwner(true);

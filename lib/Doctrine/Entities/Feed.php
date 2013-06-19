@@ -246,6 +246,11 @@ class Feed implements FeedInterface
         return $this->entries->slice($offset_start, $how_many);
     }
 
+    /**
+     * Returns the owner of the feed.
+     *
+     * @return FeedPublisher
+     */
     public function getOwner()
     {
         foreach ($this->getPublishers() as $publisher) {
@@ -255,6 +260,13 @@ class Feed implements FeedInterface
         }
     }
 
+    /**
+     * Returns a boolean indicating whether the given User_Adapter is the owner of the feed.
+     *
+     * @param \User_Adapter $user
+     *
+     * @return boolean
+     */
     public function isOwner(\User_Adapter $user)
     {
         $owner = $this->getOwner();
@@ -265,6 +277,13 @@ class Feed implements FeedInterface
         return false;
     }
 
+    /**
+     * Returns the collection to which the feed belongs.
+     *
+     * @param  Application $app
+     *
+     * @return type
+     */
     public function getCollection(Application $app)
     {
         if ($this->getBaseId() !== null) {
@@ -272,6 +291,13 @@ class Feed implements FeedInterface
         }
     }
 
+    /**
+     * Sets the collection.
+     *
+     * @param \collection $collection
+     *
+     * @return type
+     */
     public function setCollection(\collection $collection = null)
     {
         if ($collection === null) {
@@ -328,6 +354,13 @@ class Feed implements FeedInterface
         return $this->updated_on;
     }
 
+    /**
+     * Returns a boolean indicating whether the given User_Adapter is a publisher of the feed.
+     *
+     * @param \User_Adapter $user
+     *
+     * @return boolean
+     */
     public function isPublisher(\User_Adapter $user)
     {
         foreach ($this->getPublishers() as $publisher) {
@@ -339,6 +372,13 @@ class Feed implements FeedInterface
         return false;
     }
 
+    /**
+     * Returns an instance of FeedPublisher matching to the given User_Adapter
+     *
+     * @param \User_Adapter $user
+     *
+     * @return FeedPublisher
+     */
     public function getPublisher(\User_Adapter $user)
     {
         foreach ($this->getPublishers() as $publisher) {
@@ -373,16 +413,34 @@ class Feed implements FeedInterface
         return $this->subtitle;
     }
 
+    /**
+     * Returns a boolean indicating whether the feed is aggregated.
+     *
+     * @return boolean
+     */
     public function isAggregated()
     {
         return false;
     }
 
+    /**
+     * Returns the number of entries the feed contains
+     *
+     * @return integer
+     */
     public function getCountTotalEntries()
     {
         return (count($this->entries));
     }
 
+    /**
+     * Returns a boolean indicating whether the given User_Adapter has access to the feed
+     *
+     * @param \User_Adapter $user
+     * @param Application   $app
+     *
+     * @return boolean
+     */
     public function hasAccess(\User_Adapter $user, Application $app)
     {
         if ($this->getCollection($app) instanceof collection) {
@@ -448,11 +506,24 @@ class Feed implements FeedInterface
         $this->entries->removeElement($entries);
     }
 
+    /**
+     * Returns a boolean indicating whether the feed contains a given page, assuming a given page size.
+     *
+     * @param integer $page
+     * @param integer $pageSize
+     *
+     * @return boolean
+     */
     public function hasPage($page, $pageSize)
     {
+        if (0 >= $pageSize) {
+            throw new LogicException;
+        }
+
         $count = $this->getCountTotalEntries();
-        if ($page >= $count / $pageSize + $pageSize)
+        if (0 > $page && $page <= $count / $pageSize) {
             return true;
+        }
         return false;
     }
 }

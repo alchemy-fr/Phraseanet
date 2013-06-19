@@ -14,16 +14,22 @@ namespace Alchemy\Phrasea\Feed\Link;
 interface FeedLinkInterface
 {
     /**
+     * Returns the mimetype of the link.
+     *
      * @return string
      */
     public function getMimetype();
 
     /**
+     * Returns the title of the link.
+     *
      * @return string
      */
     public function getTitle();
 
     /**
+     * Returns the URI of the link.
+     *
      * @return string
      */
     public function getURI();

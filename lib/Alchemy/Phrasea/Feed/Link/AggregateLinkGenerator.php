@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\Feed\Link;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
+use Alchemy\Phrasea\Feed\Link\FeedLink;
 use Entities\AggregateToken;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\Generator\UrlGenerator;
@@ -18,6 +19,11 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
     private $generator;
     private $random;
 
+    /**
+     * @param UrlGenerator  $generator
+     * @param EntityManager $em
+     * @param \random       $random
+     */
     public function __construct(UrlGenerator $generator, EntityManager $em, \random $random)
     {
         $this->generator = $generator;
@@ -25,6 +31,9 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
         $this->random = $random;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generate(FeedInterface $aggregate, \User_Adapter $user, $format, $page = null, $renew = false)
     {
         if (!$this->supports($aggregate)) {
@@ -33,8 +42,10 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
 
         switch ($format) {
             case self::FORMAT_ATOM:
-                $params = array('token'  => $this->getAggregateToken($user, $renew)->getValue(),
-                                'format' => 'atom');
+                $params = array(
+                    'token'  => $this->getAggregateToken($user, $renew)->getValue(),
+                    'format' => 'atom'
+                    );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -44,10 +55,11 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                     sprintf('%s - %s', $aggregate->getTitle(), 'Atom'),
                     'application/atom+xml'
                 );
-                break;
             case self::FORMAT_RSS:
-                $params = array('token'  => $this->getAggregateToken($user, $renew)->getValue(),
-                                'format' => 'rss');
+                $params = array(
+                    'token'  => $this->getAggregateToken($user, $renew)->getValue(),
+                    'format' => 'rss'
+                    );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -57,17 +69,22 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                     sprintf('%s - %s', $aggregate->getTitle(), 'RSS'),
                     'application/rss+xml'
                 );
-                break;
             default:
                 throw new InvalidArgumentException(sprintf('Format %s is not recognized.', $format));
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function supports(FeedInterface $feed)
     {
         return $feed instanceof Aggregate;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generatePublic(FeedInterface $aggregate, $format, $page = null)
     {
         if (!$this->supports($aggregate)) {
@@ -86,7 +103,6 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                     sprintf('%s - %s', $aggregate->getTitle(), 'Atom'),
                     'application/atom+xml'
                 );
-                break;
             case self::FORMAT_RSS:
                 $params = array('format' => 'rss');
                 if (null !== $page) {
@@ -98,7 +114,6 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                     sprintf('%s - %s', $aggregate->getTitle(), 'RSS'),
                     'application/rss+xml'
                 );
-                break;
             default:
                 throw new InvalidArgumentException(sprintf('Format %s is not recognized.', $format));
         }

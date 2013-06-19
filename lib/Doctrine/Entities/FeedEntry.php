@@ -292,16 +292,31 @@ class FeedEntry
         return $this->feed;
     }
 
+    /**
+     * Returns a boolean indicating whether the given User_Adapter is the publisher of the entry.
+     *
+     * @param \User_Adapter $user
+     *
+     * @return boolean
+     */
     public function isPublisher(\User_Adapter $user)
     {
         if ($this->publisher) {
-            if ($this->publisher->getUsrId() === $user->get_id())
+            if ($this->publisher->getUsrId() === $user->get_id()) {
                 return true;
+            }
         }
 
         return false;
     }
 
+    /**
+     * Returns the item from a given id.
+     *
+     * @param int $id
+     *
+     * @return null
+     */
     public function getItem($id)
     {
         foreach ($this->items as $item) {

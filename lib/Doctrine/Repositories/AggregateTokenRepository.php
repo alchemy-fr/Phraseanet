@@ -3,6 +3,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Entities\AggregateToken;
 
 /**
  * AggregateTokenRepository
@@ -12,6 +13,13 @@ use Doctrine\ORM\EntityRepository;
  */
 class AggregateTokenRepository extends EntityRepository
 {
+    /**
+     * Finds an AggregateToken based on given User_Adapter.
+     *
+     * @param \User_Adapter $user
+     *
+     * @return AggregateToken
+     */
     public function findByUser(\User_Adapter $user)
     {
         $dql = 'SELECT t

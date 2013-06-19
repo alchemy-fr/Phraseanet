@@ -12,9 +12,9 @@
 namespace Alchemy\Phrasea\Feed\Link;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Feed\FeedInterface;
 use Doctrine\ORM\EntityManager;
 use Entities\Feed;
-use Alchemy\Phrasea\Feed\FeedInterface;
 use Entities\FeedToken;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
@@ -27,6 +27,11 @@ class FeedLinkGenerator implements LinkGeneratorInterface
     private $generator;
     private $random;
 
+    /**
+     * @param UrlGenerator  $generator
+     * @param EntityManager $em
+     * @param \random       $random
+     */
     public function __construct(UrlGenerator $generator, EntityManager $em, \random $random)
     {
         $this->generator = $generator;
@@ -34,6 +39,9 @@ class FeedLinkGenerator implements LinkGeneratorInterface
         $this->random = $random;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generate(FeedInterface $feed, \User_Adapter $user, $format, $page = null, $renew = false)
     {
         if (!$this->supports($feed)) {
@@ -42,9 +50,11 @@ class FeedLinkGenerator implements LinkGeneratorInterface
 
         switch ($format) {
             case self::FORMAT_ATOM:
-                $params = array('token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
-                                'id'     => $feed->getId(),
-                                'format' => 'atom');
+                $params = array(
+                    'token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
+                    'id'     => $feed->getId(),
+                    'format' => 'atom'
+                    );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -54,11 +64,12 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                     sprintf('%s - %s', $feed->getTitle(), 'Atom'),
                     'application/atom+xml'
                 );
-                break;
             case self::FORMAT_RSS:
-                $params = array('token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
-                                'id'     => $feed->getId(),
-                                'format' => 'rss');
+                $params = array(
+                    'token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
+                    'id'     => $feed->getId(),
+                    'format' => 'rss'
+                    );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -68,17 +79,22 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                     sprintf('%s - %s', $feed->getTitle(), 'RSS'),
                     'application/rss+xml'
                 );
-                break;
             default:
                 throw new InvalidArgumentException(sprintf('Format %s is not recognized.', $format));
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function supports(FeedInterface $feed)
     {
         return $feed instanceof Feed;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generatePublic(FeedInterface $feed, $format, $page = null)
     {
         if (!$this->supports($feed)) {
@@ -87,8 +103,10 @@ class FeedLinkGenerator implements LinkGeneratorInterface
 
         switch ($format) {
             case self::FORMAT_ATOM:
-                $params = array('id'     => $feed->getId(),
-                                'format' => 'atom');
+                $params = array(
+                    'id'     => $feed->getId(),
+                    'format' => 'atom'
+                    );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -98,10 +116,11 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                     sprintf('%s - %s', $feed->getTitle(), 'Atom'),
                     'application/atom+xml'
                 );
-                break;
             case self::FORMAT_RSS:
-                $params = array('id'     => $feed->getId(),
-                                'format' => 'rss');
+                $params = array(
+                    'id'     => $feed->getId(),
+                    'format' => 'rss'
+                    );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -111,7 +130,6 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                     sprintf('%s - %s', $feed->getTitle(), 'RSS'),
                     'application/rss+xml'
                 );
-                break;
             default:
                 throw new InvalidArgumentException(sprintf('Format %s is not recognized.', $format));
         }

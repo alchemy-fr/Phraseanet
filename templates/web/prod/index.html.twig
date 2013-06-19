@@ -55,9 +55,13 @@
     {% for feed in feeds %}
         {% set link = app['feed.user-link-generator'].generate(feed, app['authentication'].getUser(), 'rss') %}
         <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
-        {% set link = app['feed.user-link-generator'].generate(feed, app['authentication'].getUser(), 'rss') %}
+        {% set link = app['feed.user-link-generator'].generate(feed, app['authentication'].getUser(), 'atom') %}
         <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
     {% endfor %}
+    {% set link = app['feed.aggregate-link-generator'].generate(aggregate, app['authentication'].getUser(), 'rss') %}
+        <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
+    {% set link = app['feed.aggregate-link-generator'].generate(aggregate, app['authentication'].getUser(), 'atom') %}
+        <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
 {% endblock %}
 
 {% block stylesheet %}

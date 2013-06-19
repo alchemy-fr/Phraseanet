@@ -191,11 +191,21 @@ class FeedItem
         return $this->updated_on;
     }
 
+    /**
+     * Marks this item as the last added.
+     */
     public function setLastInFeedItem()
     {
         $this->setOrd($this->getEntry()->getItems()->count() + 1);
     }
 
+    /**
+     * Returns the record_adapter associated to this FeedItem.
+     *
+     * @param Application $app
+     *
+     * @return \record_adapter
+     */
     public function getRecord(Application $app)
     {
         return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
