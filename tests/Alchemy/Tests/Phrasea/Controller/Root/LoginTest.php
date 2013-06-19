@@ -1287,44 +1287,6 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['user']->set_mail_locked(false);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
-     */
-    public function testAuthenticateUnavailable()
-    {
-        self::$DI['app']['authentication']->closeAccount();
-        $password = \random::generatePassword();
-        self::$DI['app']['phraseanet.registry']->set('GV_maintenance', true , \registry::TYPE_BOOLEAN);
-
-        self::$DI['client'] = new Client(self::$DI['app'], array());
-
-        self::$DI['client']->request('POST', '/login/authenticate/', array(
-            'login' => self::$DI['user']->get_login(),
-            'password'   => $password,
-            '_token' => 'token'
-        ));
-        self::$DI['app']['phraseanet.registry']->set('GV_maintenance', false, \registry::TYPE_BOOLEAN);
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertFlashMessagePopulated(self::$DI['app'], 'warning', 1);
-        $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
-
-    }
-
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
-     */
-    public function testMaintenanceOnLoginDoesNotRedirect()
-    {
-        self::$DI['app']['authentication']->closeAccount();
-        self::$DI['app']['phraseanet.registry']->set('GV_maintenance', true , \registry::TYPE_BOOLEAN);
-
-        self::$DI['client'] = new Client(self::$DI['app'], array());
-
-        self::$DI['client']->request('GET', '/login/');
-        self::$DI['app']['phraseanet.registry']->set('GV_maintenance', false, \registry::TYPE_BOOLEAN);
-        $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
-    }
-
     public function testAuthenticateWithProvider()
     {
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');

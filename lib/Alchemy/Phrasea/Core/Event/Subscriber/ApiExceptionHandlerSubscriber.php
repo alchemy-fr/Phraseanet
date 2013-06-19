@@ -15,9 +15,13 @@ use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
 {
@@ -44,6 +48,8 @@ class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
             $code = \API_V1_result::ERROR_METHODNOTALLOWED;
         } elseif ($e instanceof MethodNotAllowedHttpException) {
             $code = \API_V1_result::ERROR_METHODNOTALLOWED;
+        } elseif ($e instanceof BadRequestHttpException) {
+            $code = \API_V1_result::ERROR_BAD_REQUEST;
         } elseif ($e instanceof \API_V1_exception_badrequest) {
             $code = \API_V1_result::ERROR_BAD_REQUEST;
         } elseif ($e instanceof \API_V1_exception_forbidden) {
@@ -52,13 +58,23 @@ class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
             $code = \API_V1_result::ERROR_UNAUTHORIZED;
         } elseif ($e instanceof \API_V1_exception_internalservererror) {
             $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
+        } elseif ($e instanceof AccessDeniedHttpException) {
+            $code = \API_V1_result::ERROR_FORBIDDEN;
+        } elseif ($e instanceof UnauthorizedHttpException) {
+            $code = \API_V1_result::ERROR_UNAUTHORIZED;
         } elseif ($e instanceof NotFoundHttpException) {
             $code = \API_V1_result::ERROR_NOTFOUND;
+        } elseif ($e instanceof HttpExceptionInterface) {
+            if (503 === $e->getStatusCode()) {
+                $code = \API_V1_result::ERROR_MAINTENANCE;
+            } else {
+                $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
+            }
         } else {
             $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
         }
 
-        if ($e instanceof HttpException) {
+        if ($e instanceof HttpExceptionInterface) {
             $headers = $e->getHeaders();
         }
 

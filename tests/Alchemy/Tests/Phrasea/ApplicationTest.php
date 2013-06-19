@@ -302,6 +302,32 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals('cat.turbocat.com', $app['url_generator']->getContext()->getHost());
     }
 
+    public function testMaintenanceModeTriggers503s()
+    {
+        $app = new Application('test');
+
+        $app['phraseanet.configuration.config-path'] = __DIR__ . '/Core/Event/Subscriber/Fixtures/configuration-maintenance.yml';
+        $app['phraseanet.configuration.config-compiled-path'] = __DIR__ . '/Core/Event/Subscriber/Fixtures/configuration-maintenance.php';
+
+        if (is_file($app['phraseanet.configuration.config-compiled-path'])) {
+            unlink($app['phraseanet.configuration.config-compiled-path']);
+        }
+
+        $app->get('/', function(Application $app, Request $request) {
+            return 'Hello';
+        });
+
+        $client = new Client($app);
+        $client->request('GET', '/');
+
+        $this->assertEquals(503, $client->getResponse()->getStatusCode());
+        $this->assertNotEquals('Hello', $client->getResponse()->getContent());
+
+        if (is_file($app['phraseanet.configuration.config-compiled-path'])) {
+            unlink($app['phraseanet.configuration.config-compiled-path']);
+        }
+    }
+
     private function getAppThatReturnLocale()
     {
         $app = new Application('test');

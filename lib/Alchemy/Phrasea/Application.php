@@ -76,6 +76,7 @@ use Alchemy\Phrasea\Controller\User\Preferences;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
@@ -369,6 +370,7 @@ class Application extends SilexApplication
                 $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'disableCookiesIfRequired'), -256);
                 $dispatcher->addSubscriber(new LogoutSubscriber());
                 $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
+                $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
 
                 return $dispatcher;
             })
