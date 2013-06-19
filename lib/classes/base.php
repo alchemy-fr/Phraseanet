@@ -262,6 +262,7 @@ abstract class base implements cache_cacheableInterface
         $stmt->closeCursor();
 
         $ORMTables = array(
+            'AuthFailures',
             'BasketElements',
             'Baskets',
             'StoryWZ',
@@ -275,6 +276,9 @@ abstract class base implements cache_cacheableInterface
             'LazaretChecks',
             'LazaretFiles',
             'LazaretSessions',
+            'SessionModules',
+            'Sessions',
+            'UsrAuthProviders',
         );
 
         foreach ($rs as $row) {

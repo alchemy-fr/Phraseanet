@@ -68,6 +68,13 @@ The idea of `bin/setup` is to provide an commandline tool that is not aware of
 Phraseanet Installation, whereas `bin/console` requires an up-to-date Phraseanet
 install.
 
+## Database Upgrade
+
+Database will be upgraded when running the `bin/console system:upgrade` command.
+This command will not remove old tables. To remove them, use the
+`--dump` option of the previous command to get a dump of the raw SQL commands to
+execute;
+
 ## Customization
 
 If you were using custom homepage or LDAP connection, they might not work.
