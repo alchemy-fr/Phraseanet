@@ -44,8 +44,9 @@
 {% endmacro %}
 
 
-{% extends "common/index_bootstrap.html.twig" %}
+{% set jquery_theme = 'dark-hive' %}
 
+{% extends "common/index_bootstrap.html.twig" %}
 
 {% block icon %}
     <link rel="shortcut icon" type="image/x-icon" href="/skins/prod/favicon.ico">
@@ -97,7 +98,7 @@
         }
     </style>
 
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/geonames/geonames.css,include/jquery.image_enhancer.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css' }) }}" >
+    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/geonames/geonames.css,include/jquery.image_enhancer.css' }) }}" >
     <link id="skinCss" type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/prod/' ~ cssfile ~ '/prodcolor.css' }) }}" >
     <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/humane-js/themes/libnotify.css,skins/prod/Prod.css,skins/prod/Basket.css,skins/prod/Push.css' }) }}" >
 
@@ -122,6 +123,7 @@
 
 
 {% block javascript %}
+    {% include "common/templates.html.twig" %}
 {% endblock %}
 
 
@@ -169,7 +171,7 @@
                         </li>
                         {% endif %}
                         <li style="float:right;">
-                            <a href="#" class="escamote" style="margin:8px 0;">
+                            <a href="#" class="" style="margin:8px 0;">
                                 <img src="/skins/icons/workzoneEscamote.png" title="{% trans 'Close the WorkZone' %}"/>
                             </a>
                         </li>
@@ -1016,7 +1018,6 @@
         {% include "prod/thesaurus.js" %}
     </script>
     <script type="text/javascript" src="{{ path('minifier', { 'g' : 'prod' }) }}"></script>
-    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.24.js' }) }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             p4.reg_delete="{% if app['authentication'].getUser().getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";

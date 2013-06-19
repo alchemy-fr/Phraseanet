@@ -1586,6 +1586,7 @@ function preset_load(preset_id)
     p,
     function(data, textStatus)
     {
+
       $("#Edit_copyPreset_dlg").dialog("close");
 
       for(i in p4.edit.T_fields)
@@ -2041,6 +2042,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       success: function(data, textStatus)
       {
         preset_paint(data);
+
         $("#Edit_copyPreset_dlg").dialog("close");
       }
     });
@@ -2074,8 +2076,6 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     dateFormat: 'yy/mm/dd',
     onSelect: function(dateText, inst)
     {
-
-
       var lval = $('#idEditZTextArea', p4.edit.editBox).val();
       if(lval != dateText)
       {

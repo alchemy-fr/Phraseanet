@@ -374,7 +374,7 @@ span.ww_winTitle {
 }
 
 .ui-state-active .ui-icon {
-    background-image: url('/include/jslibs/jquery-ui-1.8.17/css/dark-hive/images/ui-icons_cccccc_256x240.png');
+    background-image: url('/include/jslibs/jquery-ui-1.10.3/css/dark-hive/images/ui-icons_cccccc_256x240.png');
 }
 
 #baskets .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
@@ -402,6 +402,12 @@ span.ww_winTitle {
 
 .ui-accordion .ui-accordion-header.unread {
     background-image: url('../../icons/bask_new_back.png');
+}
+
+.ui-accordion .ui-accordion-header.header {
+    padding-bottom: 0;
+    padding-right: 0;
+    padding-top: 0;
 }
 
 #keyboard-dialog h1 {

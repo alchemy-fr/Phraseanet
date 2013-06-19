@@ -4,9 +4,9 @@ body{
     padding:0;
     font-family:Helvetica,Arial,sans-serif;
     font-size:12px;
-
     overflow:hidden;
 }
+
 #mainMenu{
     height:30px;
     bottom:auto;
@@ -15,12 +15,14 @@ body{
     z-index:100;
     line-height:30px;
 }
+
 #mainMenu ol{
     display: block;
     margin:0;
     padding:0;
     list-style: none outside none;
 }
+
 #mainMenu li{
     display: inline-block;
     float:left;
@@ -32,10 +34,12 @@ body{
 #mainMenu span.selected{
     border-top:3px solid white;
 }
+
 #mainMenu span{
     display: block;
     padding:0 5px;
 }
+
 #mainMenu .title{
     font-size:18px;
     color:#F7F7F7;
@@ -46,59 +50,43 @@ body{
     background-color:#FFFFFF;
     color:black;
 }
+
 #mainMenu span{
     color:#b1b1b1;
     font-size:12px;
     font-weight:normal;
     border-top:3px solid transparent;
 }
+
 #mainMenu a{
     text-decoration:none;
     display:inline-block;
 }
-#mainMenu #notification_box a
-{
+
+#mainMenu #notification_box a {
     margin-left:0;
 }
+
 #mainMenu .account a{
     text-decoration:underline;
 }
+
 #mainMenu b{
     color:#EDEDED;
     font-weight:bold;
 }
+
 #mainMenu nobr{
     padding:0 5px;
 }
+
 img{
     border:none;
-}
-
-
-
-
-
-.overlay{
-    width:100%;
-    height:100%;
-    background-color:#111111;
-    position:absolute;
-    z-index:850;
-}
-.ui-widget-overlay{
-    width:100%;
-    height:100%;
-    background-color:#111111;
-    position:absolute;
-    z-index:850;
-    background-image:none;
 }
 
 #MODALDL{
     z-index:1200;
 }
-
-
 
 #tooltip{
     color:black;
@@ -111,17 +99,9 @@ img{
     margin: 8px 0;
 }
 
-
-
-
-
-
-
-
 #notification_trigger{
     cursor:pointer;
 }
-
 
 #notification_trigger .counter{
     border:1px solid white;
@@ -222,8 +202,6 @@ img{
     padding:15px 0;
 }
 
-
-
 .PNB
 {
     position:absolute;
@@ -241,11 +219,11 @@ img{
     bottom:10px;
 }
 
-
 input.checkbox{
     background:transparent;
     border:none;
 }
+
 #ui-datepicker-div{
     display:none;
 }

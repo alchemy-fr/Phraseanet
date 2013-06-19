@@ -150,7 +150,6 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
 
         if (null !== $unoconv) {
             $output = null;
-            exec($unoconv . ' --version', $output);
             $data = sscanf($output[0], 'unoconv %d.%d');
             $version = sprintf('%d.%d', $data[0], $data[1]);
 

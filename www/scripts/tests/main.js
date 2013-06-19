@@ -10,7 +10,7 @@ require.config({
         sinonStub: "../assets/sinon/lib/sinon/stub",
         app: "apps/admin/fields/app",
         jquery: "../assets/jquery/jquery",
-        jqueryui: "../include/jslibs/jquery-ui-1.8.24",
+        jqueryui: "../include/jslibs/jquery-ui-1.10.3",
         underscore: "../assets/underscore-amd/underscore",
         backbone: "../assets/backbone-amd/backbone",
         twig: "../assets/twig/twig",

@@ -18,7 +18,7 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $lst = implode(';', $records);
 
-        $crawler = self::$DI['client']->request('POST', '/prod/printer/', array('lst' => $lst));
+        self::$DI['client']->request('POST', '/prod/printer/', array('lst' => $lst));
 
         $response = self::$DI['client']->getResponse();
 
@@ -45,7 +45,7 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
         foreach ($layouts as $layout) {
-            $crawler = self::$DI['client']->request('POST', '/prod/printer/print.pdf', array(
+            self::$DI['client']->request('POST', '/prod/printer/print.pdf', array(
                 'lst' => $lst,
                 'lay' => $layout
                 )
@@ -53,9 +53,8 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
             $response = self::$DI['client']->getResponse();
 
-            $this->assertEquals("application/pdf", $response->headers->get("content-type"));
-
             $this->assertTrue($response->isOk());
+            $this->assertEquals("application/pdf", $response->headers->get("content-type"));
             $this->assertEquals(0, $response->getMaxAge());
             $this->assertTrue($response->headers->has('pragma'));
             $this->assertEquals('public', $response->headers->get('pragma'));

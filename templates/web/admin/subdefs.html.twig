@@ -2,7 +2,7 @@
 {% extends "admin/common/iframe_wrap.html.twig" %}
 
 {% block stylesheet %}
-<link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css' }) }}" >
+<link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.10.3/css/ui-lightness/jquery-ui-1.10.3.custom.css' }) }}" >
 <style>
     body{
       overflow:auto;
@@ -12,13 +12,13 @@
 
 {% block javascript %}
   <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js,include/path_files_tests.jquery.js' }) }}"></script>
-  <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.24.js' }) }}"></script>
+  <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.10.3.js' }) }}"></script>
   <script type="text/javascript">
     $(document).ready(function(){
       $('.path_testable').path_file_test();
       $('.url_testable').url_test();
       $('.tabs').tabs({
-        show:function(event, ui){
+        beforeActivate:function(event, ui){
           $('.path_testable:visible, .url_testable:visible').trigger('keyup');
         }
       });

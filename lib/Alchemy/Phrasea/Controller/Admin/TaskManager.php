@@ -97,7 +97,7 @@ class TaskManager implements ControllerProviderInterface
                 return $app->redirectPath('admin_tasks_scheduler_log');
             }
 
-            return $app->stream(function() use ($finder) {
+            return $app->stream(function() use ($finder, $app) {
                 foreach ($finder->getIterator() as $file) {
                     printf("<h4>%s\n", $file->getRealPath());
                     printf("&nbsp;<a href=\"".$app->path('admin_tasks_scheduler_log', array('clr' => $file->getFilename()))."\">%s</a>"

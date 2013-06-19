@@ -1,0 +1,194 @@
+<script type="text/template" id="list_user_tpl">
+<li class="list-item user" class="">
+    <a>
+        <table>
+            <tr>
+                <td class="icon">
+                    <img src="/skins/icons/user.png"/>
+                </td>
+                <td class="infos">
+                    <div style="margin:5px 10px 5px;">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span class="name"><%= item.display_name %></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="subtite"><%= item.subtitle || '' %></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </a>
+</li>
+</script>
+
+<script type="text/template" id="list_list_tpl">
+<li class="list-item list" class="width:280px;height:45px;">
+    <a>
+        <table>
+            <tr>
+                <td class="icon">
+                    <img src="/skins/prod/Push/list-icon.png"/>
+                </td>
+                <td class="infos">
+                    <div style="margin:5px 10px 5px;">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span class="name"><%= item.name %></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="subtite"><%= item.length %> {% trans %}element(s){% endtrans %}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </a>
+</li>
+</script>
+
+<script type="text/template" id="feeback_badge_tpl">
+<div class="badge badge_<%= user.usr_id %>">
+    <a href="#" class="deleter">
+        <img src="/skins/prod/Push/close_badge.png"/>
+    </a>
+    <input name="id" value="<%= user.usr_id %>" type="hidden" />
+    <table>
+        <tr>
+            <td class="icon">
+                <img src="/skins/icons/user.png"/>
+            </td>
+            <td class="infos">
+                <div>
+                    <input type="hidden" name="participants[<%= user.usr_id %>][usr_id]" value="<%= user.usr_id %>" />
+                    <table>
+                        <tr>
+                            <td colspan="3">
+                                <span class="name"><%= user.display_name %></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <span class="subtite"><%= user.subtitle || '' %></span>
+                            </td>
+                        </tr>
+                        <tr class="toggles">
+                            <td class="toggle status_on toggle_agree">
+                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_off" src="/skins/prod/Push/contributeur_off_badge.png" />
+                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_on" src="/skins/prod/Push/contributeur_badge.png" />
+                                <input type="hidden" name="participants[<%= user.usr_id %>][agree]" value="1" />
+                            </td>
+                            <td class="toggle status_off toggle_see_others">
+                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_off" src="/skins/prod/Push/see_other_off_badge.png" />
+                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_on" src="/skins/prod/Push/see_other_badge.png" />
+                                <input type="hidden" name="participants[<%= user.usr_id %>][see_others]" value="0" />
+                            </td>
+                            <td class="toggle status_off toggle_HD">
+                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off" src="/skins/prod/Push/download_off_badge.png" />
+                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on" src="/skins/prod/Push/download_badge.png" />
+                                <input type="hidden" name="participants[<%= user.usr_id %>][HD]" value="0" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+</script>
+
+<script type="text/template" id="list_editor_dialog_add_tpl">
+<form action="{{ path('prod_lists_list') }}" method="POST" onsubmit="return false;">
+    <label style='display:inline'>{% trans %}New list name ?{% endtrans %}</label>
+    <input type="text" name="name" style="margin:0"/>
+</form>
+</script>
+
+<script type="text/template" id="list_editor_dialog_delete_tpl">
+<p>
+    {% trans %}Are you sure you want to delete this list ?{% endtrans %}
+</p>
+</script>
+
+<script type="text/template" id="feedback_sendform_tpl">
+<form>
+    <div class="Feedback" style="display:none;">
+        <label for="PushSendFormDuration">{% trans %}Time for feedback (days){% endtrans %}</label>
+        <select id="PushSendFormDuration" name="duration" class="input-block-level">
+            <option value="20">20</option>
+            <option value="15">15</option>
+            <option value="10">10</option>
+            <option value="5">5</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+        </select>
+    </div>
+    <div>
+        <label for="PushSendFormRecept">{% trans %}Name{% endtrans %}</label>
+        <input id="PushSendFormName" type="text" name="name" class="input-block-level"/>
+    </div>
+    <div>
+        <label for="PushSendFormMessage">{% trans %}Message{% endtrans %}</label>
+        <textarea id="PushSendFormMessage" name="message" class="input-block-level"></textarea>
+    </div>
+    <div>
+        <label for="PushSendFormRecept" class="checkbox">
+            <input id="PushSendFormRecept" type="checkbox" name="recept" value="1"/>
+            {% trans %}Accuse de reception{% endtrans %}
+        </label>
+    </div>
+</form>
+</script>
+
+<script type="text/template" id="push_badge_tpl">
+<div class="badge badge_<%= user.usr_id %>">
+    <a href="#" class="deleter">
+        <img src="/skins/prod/Push/close_badge.png"/>
+    </a>
+    <input name="id" value="<%= user.usr_id %>" type="hidden" />
+    <table>
+        <tr>
+            <td class="icon">
+                <img src="/skins/icons/user.png"/>
+            </td>
+            <td class="infos">
+                <div>
+                    <input type="hidden" name="participants[<%= user.usr_id %>][usr_id]" value="<%= user.usr_id %>" />
+                    <table>
+                        <tr>
+                            <td colspan="3">
+                                <span class="name"><%= user.display_name %></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <span class="subtite"><%= user.subtitle || '' %></span>
+                            </td>
+                        </tr>
+                        <tr class="toggles">
+                            <td class="toggle status_off toggle_HD">
+                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off" src="/skins/prod/Push/download_off_badge.png" />
+                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on" src="/skins/prod/Push/download_badge.png" />
+                                <input type="hidden" name="participants[<%= user.usr_id %>][HD]" value="0" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+</script>
+

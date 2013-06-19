@@ -236,11 +236,11 @@
     <form method="post"></form>
 </div>
 
+{% include "prod/templates/push.html.twig" %}
+
 <script type="text/javascript">
     $(document).ready(function(){
-
-    p4.Feedback = new Feedback($('#PushBox'), '{{ context }}');
-    p4.ListManager = new ListManager($('#ListManager'));
-
+        p4.Feedback = new Feedback($('#PushBox'), '{{ context }}');
+        p4.ListManager = new ListManager($('#ListManager'));
     });
 </script>

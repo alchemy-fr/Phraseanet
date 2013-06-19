@@ -37,7 +37,7 @@
         });
 
         $("#natcase-reorder").bind('click', function(){
-            select.find('option').sort(natCaseSort).appendTo(select)
+            select.find('option').sort(natCaseSort).appendTo(select);
         });
 
         upButton.bind('click', function(){
@@ -67,9 +67,10 @@
                     $this.attr('disabled', true);
                 },
                 success : function(datas) {
-                    p4.Mustache.Render('Alert-Success', function,(html) {
-                        $('#table-order').insertBefore(html);
+                    var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
+                        content:datas.msg
                     });
+                    $('#table-order').insertBefore(html);
                 },
                 complete : function() {
                     $this.attr('disabled', false);

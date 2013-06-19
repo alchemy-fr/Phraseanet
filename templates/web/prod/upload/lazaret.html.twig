@@ -94,16 +94,20 @@
                     if(data.success){
 
                     }else{
-                        p4.Mustache.Render('Alert-Error', {content:data.message}, function(html){
-                            that.closest(".btn-group").before( html );
+                        var html = _.template($("#alert_error_tpl").html(), {
+                             content:datas.message
                         });
+
+                        that.closest(".btn-group").before( html );
                     }
                 },
                 error: function(){
                     stopAjax(that);
-                    p4.Mustache.Render('Alert-Error', {content:data.message}, function(html){
-                        that.closest(".btn-group").before( html );
+                    var html = _.template($("#alert_error_tpl").html(), {
+                        content:datas.message
                     });
+
+                    that.closest(".btn-group").before( html );
                 },
                 complete: function(){
                     stopAjax(that);
@@ -133,15 +137,17 @@
                     if(data.success){
                         that.closest(".wrapper-item").remove();
                     }else{
-                        p4.Mustache.Render('Alert-Error', {content:data.message}, function(html){
-                            that.closest(".thumbnail").append(html);
+                        var html = _.template($("#alert_error_tpl").html(), {
+                             content:datas.message
                         });
+                        that.closest(".thumbnail").append(html);
                     }
                 },
                 error: function(){
-                    p4.Mustache.Render('Alert-Error', {content:language.errorAjaxRequest}, function(html){
-                        that.closest(".thumbnail").append(html);
-                    });
+                   var html = _.template($("#alert_error_tpl").html(), {
+                        content:language.errorAjaxRequest
+                   });
+                   that.closest(".thumbnail").append(html);
                 },
                 complete: function(){
                     stopAjax(that);
@@ -166,15 +172,17 @@
                     if(data.success){
                         that.closest(".wrapper-item").remove();
                     }else{
-                        p4.Mustache.Render('Alert-Error', {content:data.message}, function(html){
-                            that.closest(".thumbnail").append(html);
-                        });
+                       var html = _.template($("#alert_error_tpl").html(), {
+                            content:data.message
+                       });
+                       that.closest(".thumbnail").append(html);
                     }
                 },
                 error: function(){
-                    p4.Mustache.Render('Alert-Error', {content:language.errorAjaxRequest}, function(html){
-                        that.closest(".thumbnail").append(html);
+                    var html = _.template($("#alert_error_tpl").html(), {
+                        content:language.errorAjaxRequest
                     });
+                    that.closest(".thumbnail").append(html);
                 },
                 complete: function(){
                     stopAjax(that);
@@ -225,15 +233,17 @@
                     if(data.success){
                         that.closest(".wrapper-item").remove();
                     }else{
-                        p4.Mustache.Render('Alert-Error', {content:data.message}, function(html){
-                            that.closest(".thumbnail").append(html);
+                        var html = _.template($("#alert_error_tpl").html(), {
+                            content:data.message
                         });
+                        that.closest(".thumbnail").append(html);
                     }
                 },
                 error: function(){
-                    p4.Mustache.Render('Alert-Error', {content:language.errorAjaxRequest}, function(html){
-                        that.closest(".thumbnail").append(html);
+                    var html = _.template($("#alert_error_tpl").html(), {
+                        content:language.errorAjaxRequest
                     });
+                    that.closest(".thumbnail").append(html);
                 },
                 complete: function(){
                     stopAjax(that);

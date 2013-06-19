@@ -109,7 +109,7 @@ $(function() {
       $('.error_box, .notice_box', $panel).delay(10000).fadeOut();
 
       $('.back_link', $panel).bind('click', function(){
-        $('#pub_tabs').tabs('load',$('#pub_tabs').tabs('option', 'selected'));
+        $('#pub_tabs').tabs('load',$('#pub_tabs').tabs('option', 'active'));
 
         return false;
       });
@@ -316,15 +316,19 @@ $(function() {
   }
 
   pub_tabs.tabs({
+    beforeLoad: function( event, ui ) {
+        ui.tab.find('span').html("<i>loading...</i>");
+    },
     load: function(event, ui)
     {
+      ui.tab.find('span').empty();
       $panel = $(ui.panel);
       $('.container-bridge', $panel).removeClass('loading');
       panel_load($panel);
     }
+    //@todo remove this as it is deprected, check where new tabs is added
     , panelTemplate : '<div class="PNB"><div class="PNB10 container-bridge"></div></div>'
-    , spinner: '<i>loading...</i>'
-    ,select: function(event, ui)
+    ,beforeActivate: function(event, ui)
     {
       if($(ui.tab).hasClass('account'))
       {

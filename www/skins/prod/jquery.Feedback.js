@@ -35,7 +35,7 @@
         url: $this.attr('href'),
         dataType: 'html',
         beforeSend:function(){
-          if($('#user_adder_dialog').length == 0)
+          if($('#user_adder_dialog').length === 0)
           {
             $('body').append('<div id="user_adder_dialog" title="' + $this.html() + '" style="display:none;"></div>');
           }
@@ -188,9 +188,11 @@
 
       var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
 
-      var callback = function(rendered){
+      var html = _.template($("#feedback_sendform_tpl").html(), {
+            item: item
+      });
 
-        $dialog.setContent(rendered);
+        $dialog.setContent(html);
 
         $('input[name="name"]', $dialog.getDomElement()).val($('input[name="name"]', $FeedBackForm).val());
         $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
@@ -199,11 +201,6 @@
         $('form', $dialog.getDomElement()).submit(function() {
             return false;
         });
-      };
-
-      p4.Mustache.Render('Feedback-SendForm', {
-        language:language
-      }, callback);
     });
 
     $('.user_content .badges', this.container).disableSelection();
@@ -226,11 +223,11 @@
 
       var toggles = $('.status_off.toggle_' + feature, $badges);
 
-      if(toggles.length == 0)
+      if(toggles.length === 0)
       {
         var toggles = $('.status_on.toggle_' + feature, $badges);
       }
-      if(toggles.length == 0)
+      if(toggles.length === 0)
       {
         humane.info('No user selected');
       }
@@ -257,13 +254,13 @@
       var url = $(this).attr('href');
 
       var callbackList = function(list){
-        for(i in list.entries)
+        for(var i in list.entries)
         {
           this.selectUser(list.entries[i].User);
         }
-      }
+      };
 
-      $this.loadList(url, callbackList)
+      $this.loadList(url, callbackList);
 
       return false;
     });
@@ -276,7 +273,7 @@
 
       var users = p4.Feedback.getUsers();
 
-      if(users.length == 0)
+      if(users.length === 0)
       {
         humane.error('No users');
         return false;
@@ -291,58 +288,47 @@
     });
 
     $('input[name="users-search"]', this.container).autocomplete({
-      minLength: 2,
-      source: function( request, response ) {
-
-      $.ajax({
-        url: '/prod/push/search-user/',
-        dataType: "json",
-        data: {
-        query: request.term
+        minLength: 2,
+        source: function( request, response ) {
+          $.ajax({
+              url: '/prod/push/search-user/',
+              dataType: "json",
+              data: {
+                  query: request.term
+              },
+              success: function( data ) {
+                  response(data);
+              }
+          });
         },
-        success: function( data ) {
-        response( data );
+        focus: function( event, ui ) {
+          $( 'input[name="users-search"]' ).val( ui.item.label );
+        },
+        select: function( event, ui ) {
+            if(ui.item.type === 'USER') {
+                $this.selectUser(ui.item);
+            } else if(ui.item.type === 'LIST') {
+                for(var e in ui.item.entries) {
+                    $this.selectUser(ui.item.entries[e].User);
+                }
+            }
+            return false;
         }
-        });
-      },
-      select: function( event, ui ) {
-      if(ui.item.type == 'USER')
-      {
-      $this.selectUser(ui.item);
-      }
-      if(ui.item.type == 'LIST')
-      {
-      for(e in ui.item.entries)
-      {
-      $this.selectUser(ui.item.entries[e].User);
-      }
-      }
-      return false;
-      }
       })
-    .data( "autocomplete" )._renderItem = function( ul, item ) {
+    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+        var html = "";
 
-      var autocompleter = $('input[name="users-search"]', $this.container);
+        if(item.type === 'USER') {
+            html = _.template($("#list_user_tpl").html(), {
+                item: item
+            });
+        } else if(item.type === 'LIST') {
+            html = _.template($("#list_list_tpl").html(), {
+                item: item
+            });
+        }
 
-      autocompleter.addClass('loading');
-
-      var callback = function(datas){
-        $(datas).data( "item.autocomplete", item ).appendTo( ul );
-        autocompleter.data( "autocomplete" ).menu.refresh();
-        autocompleter.data('autocomplete')._resizeMenu();
-        autocompleter.removeClass('loading');
-      };
-
-      if(item.type == 'USER')
-      {
-        var datas = p4.Mustache.Render('List-User-Item', item, callback);
-      }
-      if(item.type == 'LIST')
-      {
-        var datas = p4.Mustache.Render('List-List-Item', item, callback);
-      }
-
-      return;
+        return  $(html).data( "ui-autocomplete-item", item ).appendTo(ul);
     };
 
     return this;
@@ -368,7 +354,11 @@
         console.log('Selecting', user);
       }
 
-      p4.Mustache.Render(this.Context + '-Badge', {user:user, language:language}, p4.Feedback.appendBadge);
+      var html = _.template($("#" + this.Context.toLowerCase() + "_badge_tpl").html(), {
+            user: user
+      });
+
+      p4.Feedback.appendBadge(html);
     },
     loadUser : function(usr_id, callback) {
       var $this = this;
@@ -462,7 +452,7 @@
       },
       $dialog = p4.Dialog.Create(options, 2);
 
-      $dialog.load($this.attr('href'), 'GET')
+      $dialog.load($this.attr('href'), 'GET');
 
       return false;
     });
@@ -477,7 +467,7 @@
         url: $this.attr('href'),
         dataType: 'html',
         beforeSend:function(){
-          if($('#user_adder_dialog').length == 0)
+          if($('#user_adder_dialog').length === 0)
           {
             $('body').append('<div id="user_adder_dialog" style="display:none;"></div>');
           }
@@ -560,7 +550,9 @@
           p4.Dialog.Create(options, 2).setContent(box);
         };
 
-        p4.Mustache.Render('ListEditor-DialogAdd', language, makeDialog);
+        var html = _.template($("#list_editor_dialog_add_tpl").html());
+
+        makeDialog(html);
 
         return false;
       });
@@ -692,7 +684,9 @@
           p4.Dialog.Create(options, 2).setContent(box);
         };
 
-        p4.Mustache.Render('ListEditor-DialogDelete', language, makeDialog);
+        var html = _.template($("#list_editor_dialog_delete_tpl").html());
+
+        makeDialog(html);
 
         return false;
       });

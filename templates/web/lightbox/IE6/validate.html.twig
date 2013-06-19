@@ -4,14 +4,12 @@
 {% import 'common/caption_templates/preview.html.twig' as caption %}
 
 {% block javascript %}
-    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js' }) }}"></script>
-    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.24.js' }) }}"></script>
         <script type="text/javascript" src="{{ path('minifier', { 'g' : 'lightboxie6' }) }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet"
-        href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/lightbox/lightboxie6.css' }) }}" media="screen"/>
+        href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.10.3/css/ui-lightness/jquery-ui-1.10.3.custom.css,skins/lightbox/lightboxie6.css' }) }}" media="screen"/>
 {% endblock %}
 
 {% block content %}

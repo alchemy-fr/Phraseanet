@@ -168,7 +168,7 @@ var p4 = p4 || {};
 
         cache.accordion({
             active: 'active',
-            heightStyle: "fill",
+            heightStyle: "content",
             collapsible: true,
             header: 'div.header',
             activate: function(event, ui) {
@@ -194,9 +194,6 @@ var p4 = p4 || {};
                 if (uiactive.length === 0) {
                     return; /* everything is closed */
                 }
-
-                var clicked = uiactive.attr('id').split('_').pop();
-                var href = $('a', uiactive).attr('href');
 
                 uiactive.addClass('ui-state-focus active');
 
@@ -555,40 +552,40 @@ var p4 = p4 || {};
                 getContent(sstt.prev());
             },
             'close': function() {
-                var frame = $('#idFrameC'), that = this;
-
-                if (!frame.hasClass('closed'))
-                {
-                    frame.data('openwidth', frame.width());
-                    frame.animate({width: 100},
-                    300,
-                            'linear',
-                            function() {
-                                answerSizer();
-                                linearize();
-                                $('#answers').trigger('resize');
-                            });
-                    frame.addClass('closed');
-                    $('.escamote', frame).hide();
-                    $('li.ui-tabs-selected', frame).removeClass('ui-tabs-selected');
-                    frame.unbind('click.escamote').bind('click.escamote', function() {
-                        that.open();
-                    });
-                }
+//                var frame = $('#idFrameC'), that = this;
+//
+//                if (!frame.hasClass('closed'))
+//                {
+//                    frame.data('openwidth', frame.width());
+//                    frame.animate({width: 100},
+//                    300,
+//                            'linear',
+//                            function() {
+//                                answerSizer();
+//                                linearize();
+//                                $('#answers').trigger('resize');
+//                            });
+//                    frame.addClass('closed');
+//                    $('.escamote', frame).hide();
+//                    $('li.ui-tabs-selected', frame).removeClass('ui-tabs-selected');
+//                    frame.unbind('click.escamote').bind('click.escamote', function() {
+//                        that.open();
+//                    });
+//                }
             },
             'open': function() {
-                var frame = $('#idFrameC');
-
-                if (frame.hasClass('closed'))
-                {
-                    var width = frame.data('openwidth') ? frame.data('openwidth') : 300;
-                    frame.css({width: width});
-                    answerSizer();
-                    linearize();
-                    frame.removeClass('closed');
-                    $('.escamote', frame).show();
-                    frame.unbind('click.escamote');
-                }
+//                var frame = $('#idFrameC');
+//
+//                if (frame.hasClass('closed'))
+//                {
+//                    var width = frame.data('openwidth') ? frame.data('openwidth') : 300;
+//                    frame.css({width: width});
+//                    answerSizer();
+//                    linearize();
+//                    frame.removeClass('closed');
+//                    $('.escamote', frame).show();
+//                    frame.unbind('click.escamote');
+//                }
             }
         };
     });

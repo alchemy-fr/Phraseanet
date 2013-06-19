@@ -27,7 +27,7 @@ $(document).ready(function()
   });
   //do tabs and resize window on show
   $('#mainTabs:visible').tabs({
-    show:function(){
+    activate:function(){
       resize();
     }
   });
@@ -114,9 +114,8 @@ function reportDatePicker()
     dateFormat:'dd-mm-yy',
     numberOfMonths: 3,
     maxDate: "-0d",
-    onSelect: function(selectedDate) {
+    onSelect: function(selectedDate, instance) {
       var option = $(this).hasClass("dmin") ? "minDate" : "maxDate";
-      var instance = $(this).data("datepicker");
       var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
       $(dates).not(':hidden').not(this).datepicker("option", option, date);
     }
@@ -133,7 +132,7 @@ function dashboardDatePicker()
       dateFormat:'dd-mm-yy',
       numberOfMonths: 3,
       maxDate: "-0d",
-      onSelect: function(selectedDate) {
+      onSelect: function(selectedDate, instance) {
         var id = $(".selected_em").attr('id').substr(3);
         changeDash(id);
         $('.btn-slide').trigger('click');
@@ -170,8 +169,8 @@ function submiterAction(domSubmiter)
   var container = domSubmiter.closest('.inside-container');
 
   var data = form.serializeArray();
-  var action = form.find('select.options option:selected');
-  data.push({name: "action", value: action.data('action')});
+
+  data.push({name: "action", value: domSubmiter.data('action')});
 
   //check if a base is selected, pop an alert message if not
   if(!isOneBaseSelected(form))
@@ -222,18 +221,17 @@ function submiterAction(domSubmiter)
 function initTabs(wrapper)
 {
   $tabs = wrapper.find('div.tabs').tabs({
-    selected: -1, //no panel selected when load
-    cache: true,
-    select: function(event, ui){
-      //define the div where the table is loaded
-      load = $(ui.panel).find('.load');
-      //define the form that contain all parameters to build the table in the loaded div
-      form = $(ui.panel).find("form");
-      //serialize all the form values
-      f_val = form.serialize(true);
-      //build the table
-      update_tab(load, form, f_val);
-    }
+      active: 1,
+      create: function( event, ui ) {
+        //define the div where the table is loaded
+        load = $(ui.panel).find('.load');
+        //define the form that contain all parameters to build the table in the loaded div
+        form = $(ui.panel).find("form");
+        //serialize all the form values
+        f_val = form.serialize(true);
+        //build the table
+        update_tab(load, form, f_val);
+      }
   });
 }
 
@@ -1081,7 +1079,7 @@ function update_tab(submit, form, f_val)
       //load the result
       submit.empty().append(data.rs);
       //get selected li index
-      var selected_tab = $tabs.tabs('option', 'selected');
+      var selected_tab = $tabs.tabs('option', 'active');
       if( typeof(selected_tab) == 'undefined')
         selected_tab = 0;
       class_selected_tab = $('.tabb:visible li').eq(selected_tab).attr('class');

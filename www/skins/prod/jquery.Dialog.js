@@ -54,7 +54,7 @@ var p4 = p4 || {};
       $('body').append($dialog);
 
       return $dialog;
-    }
+    };
 
     var defaults = {
       size : 'Medium',
@@ -126,7 +126,11 @@ var p4 = p4 || {};
       }
     };
 
-    this.$dialog.dialog('destroy').attr('title', this.options.title)
+    if (this.$dialog.data('ui-dialog')) {
+        this.$dialog.dialog('destroy');
+    }
+
+    this.$dialog.attr('title', this.options.title)
     .empty()
     .dialog({
       buttons:this.options.buttons,
@@ -257,7 +261,11 @@ var p4 = p4 || {};
       $(window).unbind('resize.DIALOG' + getLevel(level));
 
       this.get(level).closing = true;
-      this.get(level).getDomElement().dialog('close').dialog('destroy').remove();
+      var dialog = this.get(level).getDomElement();
+      if (dialog.data('ui-dialog')) {
+          dialog.dialog('close').dialog('destroy');
+      }
+      dialog.remove();
 
       var id = this.get(level).getId();
 

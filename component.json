@@ -2,7 +2,7 @@
   "name": "Phraseanet",
   "version": "3.8.0",
   "dependencies": {
-    "bootstrap": "~2.2.2",
+    "bootstrap": "~2.3.0",
     "jquery": "~1.8.3",
     "font-awesome": "~3.0.2",
     "underscore": "~1.4.4",
@@ -11,8 +11,7 @@
     "json3" : "3.2.4",
     "humane-js": "~3.0.6",
     "qunit": "https://github.com/jquery/qunit.git#1.11.0",
-    "mustache": "~0.7.2",
-    "jquery-file-upload": "https://github.com/blueimp/jQuery-File-Upload/archive/75d11179fd9c248c061c8eb428782bb556c8db0a.zip",
+    "jquery-file-upload": "~8.3.2",
     "blueimp-load-image": "latest",
     "requirejs" : "~2.1",
     "backbone-amd": "~1.0",
