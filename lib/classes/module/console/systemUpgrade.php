@@ -30,8 +30,9 @@ class module_console_systemUpgrade extends Command
 
         $this
             ->setDescription('Upgrade Phraseanet to the latest version')
-            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions and do not ask the user')
-            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the upgrade even if there is a concurrent upgrade');
+            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answers yes to all questions and do not ask the user')
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Forces the upgrade even if there is a concurrent upgrade')
+            ->addOption('dump', 'd', InputOption::VALUE_NONE, 'Dumps SQL queries that can be used to clean database.');
 
         return $this;
     }
@@ -72,7 +73,21 @@ class module_console_systemUpgrade extends Command
 
                 $upgrader = new Setup_Upgrade($this->container, $input->getOption('force'));
 
-                $this->getService('phraseanet.appbox')->forceUpgrade($upgrader, $this->container);
+                $queries = $this->getService('phraseanet.appbox')->forceUpgrade($upgrader, $this->container);
+
+                if ($input->getOption('dump')) {
+                    if (0 < count($queries)) {
+                        $output->writeln("Some SQL queries can be executed to optimize\n");
+
+                        foreach ($queries as $query) {
+                            $output->writeln(" ".$query['sql']);
+                        }
+
+                        $output->writeln("\n");
+                    } else {
+                        $output->writeln("No SQL queries to execute to optimize\n");
+                    }
+                }
 
                 foreach ($upgrader->getRecommendations() as $recommendation) {
                     list($message, $command) = $recommendation;
