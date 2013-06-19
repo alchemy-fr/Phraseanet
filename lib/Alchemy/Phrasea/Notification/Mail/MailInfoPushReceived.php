@@ -57,7 +57,7 @@ class MailInfoPushReceived extends AbstractMailWithLink
             throw new LogicException('You must set a basket before calling getMessage');
         }
         if (!$this->basket) {
-            throw new LogicException('You must set basket before calling getMessage');
+            throw new LogicException('You must set a basket before calling getMessage');
         }
 
         return
