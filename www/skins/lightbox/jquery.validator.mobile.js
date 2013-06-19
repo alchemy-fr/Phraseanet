@@ -2,11 +2,50 @@ $(document).ready(function(){
   if(typeof validator_loaded === 'boolean')
     return;
 
+
+
+$('.confirm_report').live('click',function(){
+  var $this = $(this);
+
+    $('.loader', $this).css({
+        visibility:'visible'
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "/lightbox/ajax/SET_RELEASE/" + $('#basket_validation_id').val() + "/",
+        dataType: 'json',
+        error: function(data) {
+            $('.loader', $this).css({
+                visibility: 'hidden'
+            });
+        },
+        timeout: function(data) {
+            $('.loader', $this).css({
+                visibility: 'hidden'
+            });
+        },
+        success: function(data) {
+            $('.loader', $this).css({
+                visibility: 'hidden'
+            });
+            if (data.datas) {
+                alert(data.datas);
+            }
+            if (!data.error) {
+               releasable = false;
+            }
+
+            return;
+        }
+    });
+});
+
   $('.agreement_radio').live('vmousedown', function(){
     var sselcont_id = $(this).attr('for').split('_').pop();
     var agreement = $('#' + $(this).attr('for')).val() == 'yes' ? '1' : '-1';
-  
-    $.mobile.pageLoading();
+
+    $.mobile.loading();
 
     $.ajax({
       type: "POST",
@@ -17,11 +56,11 @@ $(document).ready(function(){
       },
       error: function(datas){
         alert('error');
-        $.mobile.pageLoading(true);
+        $.mobile.loading();
       },
       timeout: function(datas){
         alert('error');
-        $.mobile.pageLoading(true);
+        $.mobile.loading();
       },
       success: function(datas){
         if(!datas.error)
@@ -30,12 +69,14 @@ $(document).ready(function(){
             $('.valid_choice_'+sselcont_id).removeClass('disagree').addClass('agree');
           else
             $('.valid_choice_'+sselcont_id).removeClass('agree').addClass('disagree');
-          $.mobile.pageLoading(true);
+          $.mobile.loading();
           if(datas.error)
           {
             alert(datas.datas);
             return;
           }
+
+          releasable = datas.release;
         }
         else
         {
@@ -50,7 +91,7 @@ $(document).ready(function(){
   $('.note_area_validate').live('click', function(){
     var sselcont_id = $(this).closest('form').find('input[name="sselcont_id"]').val();
 
-    $.mobile.pageLoading();
+    $.mobile.loading();
     $.ajax({
       type: "POST",
       url: "/lightbox/ajax/SET_NOTE/"+sselcont_id+"/",
@@ -60,14 +101,14 @@ $(document).ready(function(){
       },
       error: function(datas){
         alert('error');
-        $.mobile.pageLoading(true);
+        $.mobile.loading();
       },
       timeout: function(datas){
         alert('error');
-        $.mobile.pageLoading(true);
+        $.mobile.loading();
       },
       success: function(datas){
-        $.mobile.pageLoading(true);
+        $.mobile.loading();
         if(datas.error)
         {
           alert(datas.datas);
