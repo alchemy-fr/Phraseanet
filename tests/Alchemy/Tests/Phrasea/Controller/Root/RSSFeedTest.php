@@ -5,11 +5,9 @@ namespace Alchemy\Tests\Phrasea\Controller\Root;
 require_once __DIR__ . '/../../../../../classes/FeedValidator.inc';
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Feed\Aggregate;
 use Entities\Feed;
 use Entities\FeedEntry;
 use Entities\FeedItem;
-use Alchemy\Phrasea\Feed\FeedLink;
 use Symfony\Component\HttpFoundation\Response;
 
 class RssFeedTest extends \PhraseanetWebTestCaseAbstract

@@ -17,7 +17,7 @@ class OrderElementRepository extends EntityRepository
     /**
      * Finds a FeedPublisher based on a given Feed and a User_Adapter.
      *
-     * @param Feed $feed
+     * @param Feed          $feed
      * @param \User_Adapter $user
      *
      * @return FeedPublisher

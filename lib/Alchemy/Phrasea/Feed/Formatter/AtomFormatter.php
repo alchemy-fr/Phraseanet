@@ -156,7 +156,7 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
         if ($entry->getAuthorName()) {
             $this->addTag($document, $author, 'name', $entry->getAuthorName());
         }
-        
+
         $this->addTag($document, $entry_node, 'content', $entry->getSubtitle());
 
         foreach ($entry->getItems() as $content) {

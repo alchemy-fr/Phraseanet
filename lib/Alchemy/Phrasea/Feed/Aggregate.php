@@ -40,8 +40,8 @@ class Aggregate implements FeedInterface
     private $em;
 
     /**
-     * @param EntityManager $em
-     * @param array $feeds
+     * @param EntityManager  $em
+     * @param array          $feeds
      * @param AggregateToken $token
      *
      * @return Aggregate
@@ -86,7 +86,7 @@ class Aggregate implements FeedInterface
      * Creates an aggregate from given Feed id array.
      *
      * @param EntityManager $em
-     * @param array $feed_ids
+     * @param array         $feed_ids
      *
      * @return Aggregate
      */
@@ -214,6 +214,7 @@ class Aggregate implements FeedInterface
         if (0 > $page && $page <= $count / $pageSize) {
             return true;
         }
+
         return false;
     }
 

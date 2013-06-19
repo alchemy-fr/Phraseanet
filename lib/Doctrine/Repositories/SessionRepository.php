@@ -4,6 +4,7 @@ namespace Repositories;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
+use Entities\Feed;
 
 /**
  * SessionRepository
@@ -14,9 +15,9 @@ use Doctrine\ORM\EntityRepository;
 class SessionRepository extends EntityRepository
 {
     /**
+     * Returns all the feeds a user can access.
      *
      * @param  User_Adapter                            $user
-     * 
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getAllForUser(\User_Adapter $user)
@@ -35,11 +36,15 @@ class SessionRepository extends EntityRepository
             ORDER BY f.updated_on DESC';
 
         $query = $this->_em->createQuery($dql);
-        $feeds = $query->getResult();
 
-        return $feeds;
+        return $query->getResult();
     }
 
+    /**
+     * Returns all the public feeds.
+     *
+     * @return Collection
+     */
     public function findAllPublic()
     {
         $dql = 'SELECT f FROM Entities\Feed f
@@ -47,11 +52,18 @@ class SessionRepository extends EntityRepository
             ORDER BY f.updated_on DESC';
 
         $query = $this->_em->createQuery($dql);
-        $feeds = $query->getResult();
 
-        return $feeds;
+        return $query->getResult();
     }
 
+    /**
+     * Returns the given feed if the user can access to it.
+     *
+     * @param  Application   $app
+     * @param  \User_Adapter $user
+     * @param  type          $id
+     * @return Feed
+     */
     public function loadWithUser(Application $app, \User_Adapter $user, $id)
     {
         $feed = $this->find($id);
@@ -67,6 +79,12 @@ class SessionRepository extends EntityRepository
         return null;
     }
 
+    /**
+     * Returns all the feeds from a given array containing their id.
+     *
+     * @param  array      $feed_id
+     * @return Collection
+     */
     public function findByIdArray(array $feed_id)
     {
         $dql = 'SELECT f FROM Entities\Feed f
@@ -74,8 +92,7 @@ class SessionRepository extends EntityRepository
             WHERE f.id IN (' . implode(",", $feed_id) . ')';
 
         $query = $this->_em->createQuery($dql);
-        $feeds = $query->getResult();
 
-        return $feeds;
+        return $query->getResult();
     }
 }

@@ -280,7 +280,7 @@ class Feed implements FeedInterface
     /**
      * Returns the collection to which the feed belongs.
      *
-     * @param  Application $app
+     * @param Application $app
      *
      * @return type
      */
@@ -524,6 +524,7 @@ class Feed implements FeedInterface
         if (0 > $page && $page <= $count / $pageSize) {
             return true;
         }
+
         return false;
     }
 }

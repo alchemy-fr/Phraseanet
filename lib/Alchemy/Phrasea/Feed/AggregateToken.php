@@ -40,7 +40,7 @@ class AggregateToken
     /**
      * Set usr_id
      *
-     * @param  integer   $usrId
+     * @param  integer        $usrId
      * @return AggregateToken
      */
     public function setUsrId($usrId)
@@ -63,7 +63,7 @@ class AggregateToken
     /**
      * Set feed
      *
-     * @param  Aggregate $feed
+     * @param  Aggregate      $feed
      * @return AggregateToken
      */
     public function setFeed(\Entities\Feed $feed = null)
@@ -90,7 +90,7 @@ class AggregateToken
     /**
      * Set value
      *
-     * @param  string    $value
+     * @param  string         $value
      * @return AggregateToken
      */
     public function setValue($value)

@@ -44,8 +44,7 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
         if ($format == "atom") {
             $this->assertSame("application/atom+xml", $link->getMimetype());
             $this->assertSame("Title - Atom", $link->getTitle());
-        }
-        elseif ($format == "rss") {
+        } elseif ($format == "rss") {
             $this->assertSame("application/rss+xml", $link->getMimetype());
             $this->assertSame("Title - RSS", $link->getTitle());
         }
@@ -133,8 +132,7 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
         if ($format == "atom") {
             $this->assertSame("application/atom+xml", $link->getMimetype());
             $this->assertSame("Title - Atom", $link->getTitle());
-        }
-        elseif ($format == "rss") {
+        } elseif ($format == "rss") {
             $this->assertSame("application/rss+xml", $link->getMimetype());
             $this->assertSame("Title - RSS", $link->getTitle());
         }
