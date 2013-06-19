@@ -28,12 +28,20 @@ class Probe31 implements ProbeInterface
      */
     public function isMigrable()
     {
-        /**
-         * We can not use registry to inject a path as the install is not yet done
-         */
-
-        return is_file(__DIR__ . "/../../../../../../config/connexion.inc")
+        $oldFilesExist = is_file(__DIR__ . "/../../../../../../config/connexion.inc")
             && is_file(__DIR__ . "/../../../../../../config/_GV.php");
+
+        if ($oldFilesExist) {
+            if (!is_file(__DIR__ . "/../../../../../../config/config.yml")) {
+                return true;
+            }
+            // previous upgrade did not rename this file
+            rename(__DIR__ . "/../../../../../../config/_GV.php", __DIR__ . "/../../../../../../config/_GV.php.old");
+
+            return false;
+        }
+
+        return false;
     }
 
     /**
