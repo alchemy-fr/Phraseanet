@@ -35,6 +35,9 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler
             case 500 === $exception->getStatusCode():
                 $title = _('Whoops, looks like something went wrong.');
                 break;
+            case 503 === $exception->getStatusCode():
+                $title = _('Sorry, site is currently undergoing maintenance, come back soon.');
+                break;
             case isset(Response::$statusTexts[$exception->getStatusCode()]):
                 $title = $exception->getStatusCode() . ' : ' . Response::$statusTexts[$exception->getStatusCode()];
                 break;
@@ -65,6 +68,9 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler
                 break;
             case 500:
                 $errorImg = '/skins/error-pages/500.png';
+                break;
+            case 503:
+                $errorImg = '/skins/error-pages/503.png';
                 break;
             default:
                 $errorImg = '/skins/error-pages/error.png';
