@@ -94,10 +94,10 @@ class patch_3811 implements patchInterface
             }
 
             if (false !== $apps = @unserialize($row['app'])) {
-                foreach ($apps as $app) {
+                foreach ($apps as $appli) {
                     $module = new SessionModule();
                     $module
-                        ->setModuleId($app)
+                        ->setModuleId($appli)
                         ->setCreated($created)
                         ->setSession($session)
                         ->setUpdated($updated);
