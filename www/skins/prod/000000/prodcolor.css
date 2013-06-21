@@ -210,14 +210,14 @@ span.ww_winTitle {
     overflow: hidden;
 }
 
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
     background-color: #404040;
     border: none;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li {
     width: auto;
-    height: 52px;
+    height: 45px;
     display: inline-block;
     background-color: #404040;
     z-index: 10;
@@ -303,14 +303,14 @@ span.ww_winTitle {
     font-weight: normal;
 }
 
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
+.ui-tabs .ui-tabs-nav li.ui-tabs-active a,
 .ui-tabs .ui-tabs-nav li.ui-state-disabled a,
 .ui-tabs .ui-tabs-nav li.ui-state-processing a {
     cursor: pointer;
 }
 
 .ui-tabs .ui-tabs-nav li a,
-.ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a {
+.ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a {
     cursor: pointer;
 }
 
@@ -624,14 +624,21 @@ div.diapo {
 }
 
 /******* POPOVERS *************************************************************/
+#tooltip .popover {
+    background-color:inherit;
+}
 
 .popover-inner {
-    background: none repeat scroll 0 0 #666666;
+    background-color: black;
+    border: 2px solid #444;
+    padding: 0px;
     color: #FFFFFF;
+    border-radius: 4px;
 }
 
 .popover-inner .popover-title {
     background-color: #404040;
+    border-radius: 0;
 }
 
 .popover-inner .popover-content {
@@ -1769,7 +1776,7 @@ H4 {
     color: #333333;
 }
 
-.bodyprofile .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+.bodyprofile .ui-tabs .ui-tabs-nav li.ui-tabs-active {
     background-color: #a3a3a3;
     color: #404040;
 }
@@ -2286,7 +2293,7 @@ DIV.thesaurus U.w {
     background-color: #404040;
 }
 
-#EDIT_MID_R li.ui-tabs-selected,
+#EDIT_MID_R li.ui-tabs-active,
 #EDIT_MID_R li.ui-state-active {
     background-color: #404040;
 }
@@ -2972,7 +2979,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     color: #c0c0c0;
 }
 
-#THPD_tabs .ui-tabs-nav .ui-tabs-selected A {
+#THPD_tabs .ui-tabs-nav .ui-tabs-active A {
     color: #FFFFFF;
     text-decoration: underline;
 }
@@ -4255,4 +4262,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #lazaretBox .lazaret-file .thumbnail button img {
     margin-right: 5px;
+}
+
+ui-dialog-titlebar {
+    min-height: 20px;
 }

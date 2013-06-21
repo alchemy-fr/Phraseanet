@@ -7,11 +7,6 @@
         <script type="text/javascript" src="{{ path('minifier', { 'g' : 'lightboxie6' }) }}"></script>
 {% endblock %}
 
-{% block stylesheet %}
-    <link type="text/css" rel="stylesheet"
-        href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.10.3/css/ui-lightness/jquery-ui-1.10.3.custom.css,skins/lightbox/lightboxie6.css' }) }}" media="screen"/>
-{% endblock %}
-
 {% block content %}
     {% set basket_element = basket.getElements().first() %}
     <div id="innerWrapper" style="top:10px;left:10px;position:relative;width:100%;height:100%;">

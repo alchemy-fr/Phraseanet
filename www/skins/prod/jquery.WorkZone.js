@@ -27,10 +27,15 @@ var p4 = p4 || {};
             success: function(data) {
                 var cache = $("#idFrameC #baskets");
 
-                $(".SSTT", cache).droppable('destroy');
-                $('.bloc', cache).droppable('destroy');
-
-                cache.accordion('destroy').empty().append(data);
+                if ($(".SSTT", cache).data("ui-droppable")) {
+                    $(".SSTT", cache).droppable('destroy');
+                }
+                if ($(".bloc", cache).data("ui-droppable")) {
+                    $('.bloc', cache).droppable('destroy');
+                }
+                if (cache.data("ui-accordion")) {
+                    cache.accordion('destroy').empty().append(data);
+                }
 
                 activeBaskets();
                 $('.basketTips').tooltip({
@@ -124,7 +129,10 @@ var p4 = p4 || {};
                     humane.info(data.message);
                     p4.WorkZone.Selection.remove(id);
 
-                    $('.wrapCHIM_' + id).find('.CHIM').draggable('destroy');
+                    if ($('.wrapCHIM_' + id).find('.CHIM').data("ui-draggable")) {
+                        $('.wrapCHIM_' + id).find('.CHIM').draggable('destroy');
+                    }
+
                     $('.wrapCHIM_' + id).remove();
 
                     if (context === "reg_train_basket") {
@@ -294,8 +302,10 @@ var p4 = p4 || {};
                 header.removeClass('unread');
 
                 var dest = header.next();
-
-                dest.droppable('destroy').empty().removeClass('loading');
+                if (dest.data("ui-droppable")) {
+                    dest.droppable('destroy')
+                }
+                dest.empty().removeClass('loading');
 
                 dest.append(data);
 
@@ -552,40 +562,40 @@ var p4 = p4 || {};
                 getContent(sstt.prev());
             },
             'close': function() {
-//                var frame = $('#idFrameC'), that = this;
-//
-//                if (!frame.hasClass('closed'))
-//                {
-//                    frame.data('openwidth', frame.width());
-//                    frame.animate({width: 100},
-//                    300,
-//                            'linear',
-//                            function() {
-//                                answerSizer();
-//                                linearize();
-//                                $('#answers').trigger('resize');
-//                            });
-//                    frame.addClass('closed');
-//                    $('.escamote', frame).hide();
-//                    $('li.ui-tabs-selected', frame).removeClass('ui-tabs-selected');
-//                    frame.unbind('click.escamote').bind('click.escamote', function() {
-//                        that.open();
-//                    });
-//                }
+                var frame = $('#idFrameC'), that = this;
+
+                if (!frame.hasClass('closed'))
+                {
+                    frame.data('openwidth', frame.width());
+                    frame.animate({width: 100},
+                    300,
+                            'linear',
+                            function() {
+                                answerSizer();
+                                linearize();
+                                $('#answers').trigger('resize');
+                            });
+                    frame.addClass('closed');
+                    $('.escamote', frame).hide();
+                    $('li.ui-tabs-selected', frame).removeClass('ui-tabs-selected');
+                    frame.unbind('click.escamote').bind('click.escamote', function() {
+                        that.open();
+                    });
+                }
             },
             'open': function() {
-//                var frame = $('#idFrameC');
-//
-//                if (frame.hasClass('closed'))
-//                {
-//                    var width = frame.data('openwidth') ? frame.data('openwidth') : 300;
-//                    frame.css({width: width});
-//                    answerSizer();
-//                    linearize();
-//                    frame.removeClass('closed');
-//                    $('.escamote', frame).show();
-//                    frame.unbind('click.escamote');
-//                }
+                var frame = $('#idFrameC');
+
+                if (frame.hasClass('closed'))
+                {
+                    var width = frame.data('openwidth') ? frame.data('openwidth') : 300;
+                    frame.css({width: width});
+                    answerSizer();
+                    linearize();
+                    frame.removeClass('closed');
+                    $('.escamote', frame).show();
+                    frame.unbind('click.escamote');
+                }
             }
         };
     });

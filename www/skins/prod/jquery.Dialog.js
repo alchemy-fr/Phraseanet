@@ -155,10 +155,12 @@ var p4 = p4 || {};
       var $this = this;
       $(window).unbind('resize.DIALOG' + getLevel(level))
       .bind('resize.DIALOG' + getLevel(level), function(){
-        $this.$dialog.dialog('option', {
-          width : bodySize.x - 30,
-          height : bodySize.y - 30
-        });
+        if ($this.$dialog.data("ui-dialog")) {
+            $this.$dialog.dialog('option', {
+              width : bodySize.x - 30,
+              height : bodySize.y - 30
+            });
+        }
       });
     }
 
@@ -213,22 +215,24 @@ var p4 = p4 || {};
       return this.$dialog;
     },
     getOption : function (optionName) {
-      return this.$dialog.dialog('option', optionName);
+      if (this.$dialog.data("ui-dialog")) {
+          return this.$dialog.dialog('option', optionName);
+      }
+      return null;
     },
     setOption : function (optionName, optionValue) {
-
       if(optionName === 'buttons')
       {
         optionValue = addButtons(optionValue, this);
       }
-
-      this.$dialog.dialog('option', optionName, optionValue);
+      if (this.$dialog.data("ui-dialog")) {
+        this.$dialog.dialog('option', optionName, optionValue);
+      }
     }
   };
 
   var Dialog = function () {
     this.currentStack = {};
-
   };
 
   Dialog.prototype = {

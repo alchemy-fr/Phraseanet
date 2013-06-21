@@ -1079,8 +1079,10 @@ function update_tab(submit, form, f_val)
       //load the result
       submit.empty().append(data.rs);
       //get selected li index
-      var selected_tab = $tabs.tabs('option', 'active');
-      if( typeof(selected_tab) == 'undefined')
+      if ($tabs.data("ui-tabs")) {
+        var selected_tab = $tabs.tabs('option', 'active');
+      }
+      if( typeof(selected_tab) === 'undefined')
         selected_tab = 0;
       class_selected_tab = $('.tabb:visible li').eq(selected_tab).attr('class');
       //hide show the next and previous button according to the results

@@ -66,16 +66,17 @@
     $("#QuickAddUser button").button();
 
     $("#QuickAddUser form").bind('submit', function(){
-
-
       return false;
     });
     $("#QuickAddUser form button.cancel").bind('click', function(){
+        var dialog = $(this).closest('.ui-dialog-content');
+        if (dialog.data("ui-dialog")) {
+            dialog.dialog('destroy');
+        }
 
-      $(this).closest('.ui-dialog-content').dialog('destroy');
-      $(this).closest('.ui-dialog-content').remove();
+        dialog.remove();
 
-      return false;
+        return false;
     });
     $("#QuickAddUser form button.valid").bind('click', function(){
 
@@ -83,7 +84,10 @@
       var $this = $(this);
 
       var callback = function(){
-        $this.closest('.ui-dialog-content').dialog('destroy').remove()
+          var dialog = $this.closest('.ui-dialog-content');
+          if (dialog.data("ui-dialog")) {
+              dialog.dialog('destroy').remove();
+          }
       };
 
       p4.Feedback.addUser($form, callback);

@@ -168,7 +168,9 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
           success: function(data){
             var dialog = $('#time_dialog');
 
-            dialog.html(data).dialog('open');
+            if (dialog.data("ui-dialog")) {
+                dialog.html(data).dialog('open');
+            }
 
             $('div.switch_time', dialog).bind('click', function(event){
               var newclass, boxes;
@@ -238,9 +240,11 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
         base_id:base_id
       },
       success: function(data){
-
         var dialog = $('#quotas_dialog');
-        dialog.html(data).dialog('open');
+
+        if (dialog.data("ui-dialog")) {
+            dialog.html(data).dialog('open');
+        }
 
         $('div.switch_quota', dialog).bind('click', function(event){
           var newclass, boxes;

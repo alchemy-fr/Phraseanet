@@ -228,5 +228,6 @@ input.checkbox{
     display:none;
 }
 
-
-
+#tooltip .popover {
+    max-width: none;
+}

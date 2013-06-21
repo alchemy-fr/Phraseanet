@@ -157,9 +157,13 @@
                 });
 
 {% if task.getInterfaceHTML() is empty %}
-                $("#taskTabs").tabs("disable", 0);
+                if ($("#taskTabs").tabs.data("ui-tabs")) {
+                    $("#taskTabs").tabs("disable", 0);
+                }
 {% else %}
-                $("#taskTabs").tabs("active", 0);
+                if ($("#taskTabs").tabs.data("ui-tabs")) {
+                    $("#taskTabs").tabs("active", 0);
+                }
 {% endif %}
 
                 $("#taskResetCrashCounterButton").click(function()

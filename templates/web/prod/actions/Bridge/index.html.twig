@@ -109,7 +109,9 @@ $(function() {
       $('.error_box, .notice_box', $panel).delay(10000).fadeOut();
 
       $('.back_link', $panel).bind('click', function(){
-        $('#pub_tabs').tabs('load',$('#pub_tabs').tabs('option', 'active'));
+        if ($('#pub_tabs').data("ui-tabs")) {
+            $('#pub_tabs').tabs('load',$('#pub_tabs').tabs('option', 'active'));
+        }
 
         return false;
       });
@@ -317,25 +319,26 @@ $(function() {
 
   pub_tabs.tabs({
     beforeLoad: function( event, ui ) {
-        ui.tab.find('span').html("<i>loading...</i>");
+        ui.tab.html_tab = ui.tab.find('span').html();
+        ui.tab.find('span').html("<i>{{ 'Loading'|trans }}...</i>");
     },
     load: function(event, ui)
     {
-      ui.tab.find('span').empty();
-      $panel = $(ui.panel);
-      $('.container-bridge', $panel).removeClass('loading');
-      panel_load($panel);
+        ui.tab.find('span').empty().append(ui.tab.html_tab);
+        $panel = $(ui.panel);
+        $('.container-bridge', $panel).removeClass('loading');
+        $panel.addClass("PNB");
+        $panel.wrapInner("<div class='PNB10 container-bridge' />");
+        panel_load($panel);
     }
-    //@todo remove this as it is deprected, check where new tabs is added
-    , panelTemplate : '<div class="PNB"><div class="PNB10 container-bridge"></div></div>'
     ,beforeActivate: function(event, ui)
     {
-      if($(ui.tab).hasClass('account'))
-      {
-        var container = $('.container-bridge', ui.panel);
-        container.empty();
-        $('.container', ui.panel).addClass('loading');
-      }
+        if($(ui.tab).hasClass('account'))
+        {
+          var container = $('.container-bridge', ui.panel);
+          container.empty();
+          $('.container', ui.panel).addClass('loading');
+        }
     }
   }).addClass('ui-tabs-vertical ui-helper-clearfix');
   $('.ui-tabs-nav', pub_tabs).removeClass('ui-corner-all');
@@ -399,16 +402,23 @@ $(function() {
 
 
   $("li", pub_tabs).removeClass('ui-corner-top').addClass('ui-corner-left');
+
   $("#api_connexion").click(function(){
-    container.dialog("close")
+    if (container.data("ui-dialog")) {
+        container.dialog("close");
+    }
   });
 
   {% if route.get_count_element_received() == 0 %}
     alert('{{ "Vous n\'avez selectionne aucun element"|trans|e('js') }}');
-    container.dialog('close');
+    if (container.data("ui-dialog")) {
+        container.dialog("close");
+    }
   {% elseif route.get_count_actionable() == 0 %}
     alert('{{ "Vous n\'avez pas assez de droits sur les elements selectionnes"|trans|e('js') }}');
-    container.dialog('close');
+    if (container.data("ui-dialog")) {
+        container.dialog("close");
+    }
   {% elseif route.get_count_actionable() != route.get_count_element_received() %}
     alert('{{ "Vous n\'avez pas assez de droits sur certains elements selectionnes"|trans|e('js') }}');
   {% endif %}

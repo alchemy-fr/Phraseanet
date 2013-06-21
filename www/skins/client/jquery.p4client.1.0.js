@@ -62,7 +62,9 @@ function activateCgus()
 			    var currentdialog = $(this);
 			    $('.cgus-accept',$(this)).bind('click',function(){
 			    	acceptCgus($('.cgus-accept',currentdialog).attr('id'),$('.cgus-accept',currentdialog).attr('date'));
-			    	$('.cgu-dialog').dialog('close');
+			    	if ($('.cgu-dialog').data("ui-dialog")) {
+                                    $('.cgu-dialog').dialog('close');
+                                }
 			    });
 			    $('.cgus-cancel',$(this)).bind('click',function(){
 			    	if(confirm(language.warningDenyCgus))

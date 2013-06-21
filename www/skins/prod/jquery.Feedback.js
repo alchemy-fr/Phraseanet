@@ -54,12 +54,16 @@
           return;
         },
         error: function(){
-          $('#user_adder_dialog').dialog('destroy');
+          if ($('#user_adder_dialog').data("ui-dialog")) {
+            $('#user_adder_dialog').dialog('destroy');
+          }
           $('#user_adder_dialog').remove();
           return;
         },
         timeout: function(){
-          $('#user_adder_dialog').dialog('destroy');
+          if ($('#user_adder_dialog').data("ui-dialog")) {
+            $('#user_adder_dialog').dialog('destroy');
+          }
           $('#user_adder_dialog').remove();
           return;
         }
@@ -486,12 +490,16 @@
           return;
         },
         error: function(){
-          $('#user_adder_dialog').dialog('destroy');
+          if ($('#user_adder_dialog').data("ui-dialog")) {
+            $('#user_adder_dialog').dialog('destroy');
+          }
           $('#user_adder_dialog').remove();
           return;
         },
         timeout: function(){
-          $('#user_adder_dialog').dialog('destroy');
+          if ($('#user_adder_dialog').data("ui-dialog")) {
+            $('#user_adder_dialog').dialog('destroy');
+          }
           $('#user_adder_dialog').remove();
           return;
         }

@@ -95,7 +95,7 @@
 
                     }else{
                         var html = _.template($("#alert_error_tpl").html(), {
-                             content:datas.message
+                             content:data.message
                         });
 
                         that.closest(".btn-group").before( html );
@@ -104,7 +104,7 @@
                 error: function(){
                     stopAjax(that);
                     var html = _.template($("#alert_error_tpl").html(), {
-                        content:datas.message
+                        content:language.errorAjaxRequest
                     });
 
                     that.closest(".btn-group").before( html );
@@ -138,7 +138,7 @@
                         that.closest(".wrapper-item").remove();
                     }else{
                         var html = _.template($("#alert_error_tpl").html(), {
-                             content:datas.message
+                             content:data.message
                         });
                         that.closest(".thumbnail").append(html);
                     }

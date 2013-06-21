@@ -11,6 +11,9 @@
 
         <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js' }) }}"></script>
         <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.10.3.js' }) }}"></script>
+        <script type="text/javascript">
+            $.widget.bridge('uitooltip', $.ui.tooltip);
+        </script>
         <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/build/bootstrap/js/bootstrap.js' }) }}"></script>
         <script type="text/javascript">
             var btn = $.fn.button.noConflict(); // reverts $.fn.button to jqueryui btn

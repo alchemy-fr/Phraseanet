@@ -62,12 +62,16 @@ function datePicker()
     }
   });
   {% if datas.limited_to %}
-    var instance = $('.dmin').data("datepicker");
-    $('.dmin').datepicker("option", 'maxDate', $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, "{{datas.limited_to}}", instance.settings));
+    var instance = $('.dmin').data("ui-datepicker");
+    if (instance) {
+        $('.dmin').datepicker("option", 'maxDate', $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, "{{datas.limited_to}}", instance.settings));
+    }
   {% endif %}
   {% if datas.limited_from %}
-    var instance = $('.dmax').data("datepicker");
-    $('.dmax').datepicker("option", 'minDate', $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, "{{datas.limited_from}}", instance.settings));
+    var instance = $('.dmax').data("ui-datepicker");
+    if (instance) {
+        $('.dmax').datepicker("option", 'minDate', $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, "{{datas.limited_from}}", instance.settings));
+    }
   {% endif %}
 }
 </script>
