@@ -50,7 +50,7 @@ class module_console_systemTemplateGenerator extends Command
         foreach ($tplDirs as $tplDir) {
             $this->container['twig.loader.filesystem']->setPaths(array($tplDir));
             $finder = new Finder();
-            foreach ($finder->files()->in(array($tplDir))->exclude('Mustache') as $file) {
+            foreach ($finder->files()->in(array($tplDir)) as $file) {
                 try {
                     $this->container['twig']->loadTemplate(str_replace($tplDir, '', $file->getPathname()));
                     $output->writeln('' . $file . '');

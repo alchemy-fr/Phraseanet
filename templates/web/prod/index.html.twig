@@ -44,8 +44,9 @@
 {% endmacro %}
 
 
-{% extends "common/index_bootstrap.html.twig" %}
+{% set jquery_theme = 'dark-hive' %}
 
+{% extends "common/index_bootstrap.html.twig" %}
 
 {% block icon %}
     <link rel="shortcut icon" type="image/x-icon" href="/skins/prod/favicon.ico">
@@ -74,30 +75,14 @@
     </style>
     <style type="text/css">
         /* Vertical Tabs */
-        .ui-tabs-vertical .ui-tabs-nav {
-            padding: .2em .1em .2em .2em;
-            float: left;
-            width: 12em;
-        }
-        .ui-tabs-vertical .ui-tabs-nav li {
-            clear: left;
-            width: 100%;
-            border-bottom-width: 1px !important;
-            border-right-width: 0 !important;
-            margin: 0 -1px .2em 0;
-        }
-        .ui-tabs-vertical .ui-tabs-nav li a {
-            display:block;
-        }
-        .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected {
-            padding-bottom: 0;
-            padding-right: .1em;
-            border-right-width: 1px;
-            border-right-width: 1px;
-        }
+        .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+        .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+        .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+        .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+        .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right;}
     </style>
 
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/geonames/geonames.css,include/jquery.image_enhancer.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css' }) }}" >
+    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/geonames/geonames.css,include/jquery.image_enhancer.css' }) }}" >
     <link id="skinCss" type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/prod/' ~ cssfile ~ '/prodcolor.css' }) }}" >
     <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/humane-js/themes/libnotify.css,skins/prod/Prod.css,skins/prod/Basket.css,skins/prod/Push.css' }) }}" >
 
@@ -122,6 +107,7 @@
 
 
 {% block javascript %}
+    {% include "common/templates.html.twig" %}
 {% endblock %}
 
 
@@ -824,7 +810,7 @@
                         <h1>{% trans 'Theme' %}</h1>
                         {% for color, file in css %}
                             <div title="{% trans 'Selecteur de theme' %}" class="colorpicker_box"
-                                onclick="setCss('{{color}}')" style="width:16px;height:16px;background-color:#{{ color }};">&nbsp;</div>
+                                onclick="setCss('{{color}}');" style="width:16px;height:16px;background-color:#{{ color }};">&nbsp;</div>
                         {% endfor %}
                     </div>
                 </div>
@@ -1016,7 +1002,6 @@
         {% include "prod/thesaurus.js" %}
     </script>
     <script type="text/javascript" src="{{ path('minifier', { 'g' : 'prod' }) }}"></script>
-    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.24.js' }) }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             p4.reg_delete="{% if app['authentication'].getUser().getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";
@@ -1025,7 +1010,7 @@
         function sessionactive(){
             $.ajax({
                 type: "POST",
-                url: "/session/update/",
+                url: "{{ path('update_session') }}",
                 dataType: "json",
                 data: {
                     module : 1,
@@ -1047,14 +1032,14 @@
 
                     return;
                 }
-            })
+            });
         };
 
         function setCss(color) {
             $("#skinCss").attr("href","/include/minify/?f=skins/prod/"+color+"/prodcolor.css");
-            $.post("prodFeedBack.php", {
-                action: "CSS",
-                color: color,
+            $.post("{{ path('save_pref') }}", {
+                prop: "css",
+                value: color,
                 t: Math.random()
             }, function(data){
                 return;

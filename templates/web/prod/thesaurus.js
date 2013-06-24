@@ -541,7 +541,7 @@ function C_MenuOption(menuItem, menu, option, parm)
       // set the content of the wizard
       $("#THPD_WIZARDS .wiz_1 .txt").html(msg);
       // ... and switch to the thesaurus tab
-      p4.thesau.tabs.tabs('select', 0);
+      p4.thesau.tabs.tabs('active', 0);
       thesauShowWizard("wiz_1", true);
 
       break;
@@ -567,7 +567,7 @@ function C_MenuOption(menuItem, menu, option, parm)
         msg = $.sprintf('{{ messageMany |e }}', trees.C._selInfos.n);
       }
 
-      p4.thesau.tabs.tabs('select', 0);
+      p4.thesau.tabs.tabs('active', 0);
 
       // set the content of the wizard
       $("#THPD_WIZARDS .wiz_2 .txt").html(msg);

@@ -270,7 +270,7 @@
 
     {# hd sub section #}
     {% if selectionLength == 1 and (app['phraseanet.registry'].get('GV_seeOngChgDoc') or app['phraseanet.registry'].get('GV_seeNewThumb')) %}
-      {% for record in selection %}
+      {% for record in records %}
         <div id="substitution" class="tabBox">
 
          {% if "unknown" == record.get_type() %}

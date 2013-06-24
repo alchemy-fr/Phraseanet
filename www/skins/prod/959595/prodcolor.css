@@ -210,20 +210,20 @@ span.ww_winTitle {
     overflow: hidden;
 }
 
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
     background-color: #B1B1B1;
     border: none;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li {
     width: auto;
-    height: 52px;
+    height: 45px;
     display: inline-block;
     background-color: #999999;
     z-index: 10;
 }
 
-#idFrameC .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+#idFrameC .ui-tabs .ui-tabs-nav li.ui-tabs-active {
     background-color: #B1B1B1;
 }
 
@@ -312,7 +312,7 @@ span.ww_winTitle {
     font-weight: normal;
 }
 
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
+.ui-tabs .ui-tabs-nav li.ui-tabs-active a,
 .ui-tabs .ui-tabs-nav li.ui-state-disabled a,
 .ui-tabs .ui-tabs-nav li.ui-state-processing a {
     cursor: pointer;
@@ -320,7 +320,7 @@ span.ww_winTitle {
 }
 
 .ui-tabs .ui-tabs-nav li a,
-.ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a {
+.ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a {
     cursor: pointer;
     color: black;
 }
@@ -385,7 +385,7 @@ span.ww_winTitle {
 }
 
 .ui-state-active .ui-icon {
-    background-image: url('/include/jslibs/jquery-ui-1.8.17/css/ui-lightness/images/ui-icons_ffffff_256x240.png');
+    background-image: url('/include/jslibs/jquery-ui-1.10.3/css/ui-lightness/images/ui-icons_ffffff_256x240.png');
 }
 
 #baskets .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
@@ -413,6 +413,12 @@ span.ww_winTitle {
 
 .ui-accordion .ui-accordion-header.unread {
     background-image: url('../../icons/bask_new_back_light.png');
+}
+
+.ui-accordion .ui-accordion-header.header {
+    padding-bottom: 0;
+    padding-right: 0;
+    padding-top: 0;
 }
 
 #keyboard-dialog h1 {
@@ -646,13 +652,21 @@ div.diapo {
 
 /******* POPOVERS *************************************************************/
 
+#tooltip .popover {
+    background-color:inherit;
+}
+
 .popover-inner {
-    background: none repeat scroll 0 0 #999999;
+    background-color: #999999;
+    border: 2px solid #444;
+    padding: 0px;
     color: #333333;
+    border-radius: 4px;
 }
 
 .popover-inner .popover-title {
     background-color: #B1B1B1;
+    border-radius: 0;
 }
 
 .popover-inner .popover-content {
@@ -1814,7 +1828,7 @@ H4 {
     color: #333333;
 }
 
-.bodyprofile .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+.bodyprofile .ui-tabs .ui-tabs-nav li.ui-tabs-active {
     background-color: #a3a3a3;
     color: #FFFFFF;
 }
@@ -2345,7 +2359,7 @@ DIV.thesaurus U.w {
     background-color: #D9D9D9;
 }
 
-#EDIT_MID_R li.ui-tabs-selected,
+#EDIT_MID_R li.ui-tabs-active,
 #EDIT_MID_R li.ui-state-active {
     background-color: #D9D9D9;
 }
@@ -3045,7 +3059,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     color: #c0c0c0;
 }
 
-#THPD_tabs .ui-tabs-nav .ui-tabs-selected A {
+#THPD_tabs .ui-tabs-nav .ui-tabs-active A {
     color: #FFFFFF;
     text-decoration: underline;
 }
@@ -4392,4 +4406,8 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 
 #lazaretBox .lazaret-file .thumbnail button img {
     margin-right: 5px;
+}
+
+ui-dialog-titlebar {
+    min-height: 20px;
 }

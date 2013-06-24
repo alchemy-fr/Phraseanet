@@ -8,11 +8,12 @@
 {% endblock %}
 
 {% block stylesheet %}
-<link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,include/jslibs/jquery-treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/geonames/geonames.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css,skins/admin/css/fields.css' }) }}" />
+<link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/geonames/geonames.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css,skins/admin/css/fields.css' }) }}" />
 {% endblock %}
 
 
 {% block javascript %}
+  {% include "common/templates.html.twig" %}
   <script type="text/javascript" src="{{ path('minifier', { 'g' : 'admin' }) }}"></script>
   <script type="text/javascript">
 

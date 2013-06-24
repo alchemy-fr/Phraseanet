@@ -94,9 +94,9 @@
             $(document).ready(function(){
 
                 $("#taskTabs").tabs({
-                    selected: 1,
-                    select: function(event, ui) {
-                        switch(ui.panel.id)
+                    active: 1,
+                    beforeActivate: function(event, ui) {
+                        switch(ui.newPanel.id)
                         {
 {% if task.getInterfaceHTML() is not empty %}
                             case "taskGuiTab":
@@ -157,9 +157,13 @@
                 });
 
 {% if task.getInterfaceHTML() is empty %}
-                $("#taskTabs").tabs("disable", 0);
+                if ($("#taskTabs").tabs.data("ui-tabs")) {
+                    $("#taskTabs").tabs("disable", 0);
+                }
 {% else %}
-                $("#taskTabs").tabs("select", 0);
+                if ($("#taskTabs").tabs.data("ui-tabs")) {
+                    $("#taskTabs").tabs("active", 0);
+                }
 {% endif %}
 
                 $("#taskResetCrashCounterButton").click(function()

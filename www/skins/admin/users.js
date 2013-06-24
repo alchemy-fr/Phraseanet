@@ -64,7 +64,7 @@ $(document).ready(function(){
     check_new_user(true);
   };
   buttons[language.annuler] = function(){
-    $('#template_add_dialog').dialog('close')
+    $('#template_add_dialog').dialog('close');
   };
 
   $('#template_add_dialog').dialog({
@@ -96,7 +96,9 @@ $(document).ready(function(){
         $('.new_user_loader', container).hide();
         if(!data.error)
         {
-          container.dialog('close');
+          if (container.data("ui-dialog")) {
+            container.dialog('close');
+          }
           $('input[name="value"]', container).val('');
           $('#right-ajax').empty().addClass('loading');
           p4.users.sel = [];
@@ -130,14 +132,15 @@ $(document).ready(function(){
 
 
   $('#users_page .user_adder').live('click', function(){
-
-    $('#user_add_dialog').dialog('open');
-
+    if ($('#user_add_dialog').data("ui-dialog")) {
+        $('#user_add_dialog').dialog('open');
+    }
   });
+
   $('#users_page .template_adder').live('click', function(){
-
-    $('#template_add_dialog').dialog('open');
-
+      if ($('#template_add_dialog').data("ui-dialog")) {
+        $('#template_add_dialog').dialog('open');
+      }
   });
 
   $('#users_page_form').live('submit', function(){
