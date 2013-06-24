@@ -61,8 +61,8 @@ class Oauth2 implements ControllerProviderInterface
             $template = "api/auth/end_user_authorization.html.twig";
 
             $custom_template = sprintf(
-                "%sconfig/templates/web/api/auth/end_user_authorization/%s.html.twig"
-                , $app['phraseanet.registry']->get('GV_RootPath')
+                "%s/config/templates/web/api/auth/end_user_authorization/%s.html.twig"
+                , $app['root.path']
                 , $client->get_id()
             );
 

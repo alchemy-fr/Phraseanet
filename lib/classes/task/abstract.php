@@ -574,7 +574,7 @@ abstract class task_abstract
      */
     private function getLockfilePath()
     {
-        $lockdir = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/locks/';
+        $lockdir = $this->dependencyContainer['root.path'] . '/tmp/locks/';
         $lockfilePath = ($lockdir . 'task_' . $this->getID() . '.lock');
 
         return $lockfilePath;

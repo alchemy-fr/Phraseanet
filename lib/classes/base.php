@@ -765,7 +765,7 @@ abstract class base implements cache_cacheableInterface
 
         $upgrader->add_steps(1)->set_current_message(_('Looking for patches'));
 
-        $iterator = new DirectoryIterator($this->app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/patch/');
+        $iterator = new DirectoryIterator($this->app['root.path'] . '/lib/classes/patch/');
 
         foreach ($iterator as $fileinfo) {
             if ( ! $fileinfo->isDot()) {

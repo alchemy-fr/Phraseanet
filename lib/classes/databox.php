@@ -1002,7 +1002,7 @@ class databox extends base
                 $base_ids[] = $base_id = $conn->lastInsertId();
 
                 if ( ! empty($row['logo'])) {
-                    file_put_contents($this->app['phraseanet.registry']->get('GV_RootPath') . 'config/minilogos/' . $base_id, $row['logo']);
+                    file_put_contents($this->app['root.path'] . '/config/minilogos/' . $base_id, $row['logo']);
                 }
             } catch (Exception $e) {
                 unset($e);

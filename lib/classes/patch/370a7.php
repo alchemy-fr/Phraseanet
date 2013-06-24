@@ -87,7 +87,7 @@ class patch_370a7 implements patchInterface
         try {
             foreach ($rs as $row) {
 
-                $filePath = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $row['filepath'];
+                $filePath = $app['root.path'] . '/tmp/lazaret/' . $row['filepath'];
 
                 if (file_exists($filePath)) {
 
@@ -96,7 +96,7 @@ class patch_370a7 implements patchInterface
                     $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
                     $spec->setDimensions(375, 275);
 
-                    $thumbPath = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . sprintf("thumb_%s", $row['filepath']);
+                    $thumbPath = $app['root.path'] . '/tmp/lazaret/' . sprintf("thumb_%s", $row['filepath']);
 
                     try {
                         $app['media-alchemyst']

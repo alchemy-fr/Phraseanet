@@ -334,8 +334,7 @@ class PDF
             $RIGHT_TEXT = "";
             $RIGHT_IMG = NULL;
 
-            $LEFT__IMG = $this->app['phraseanet.registry']->get('GV_RootPath') . "config/minilogos/logopdf_"
-                . $rec->get_sbas_id() . "";
+            $LEFT__IMG = $this->app['root.path'] . "/config/minilogos/logopdf_" . $rec->get_sbas_id();
 
             if (!is_file($LEFT__IMG)) {
                 $databox = $rec->get_databox();
@@ -356,7 +355,7 @@ class PDF
             if ($vn == "" || $vn == "1") {
                 $RIGHT_TEXT = \phrasea::bas_labels($rec->get_base_id(), $this->app);
             } elseif ($vn == "2") {
-                $RIGHT_IMG = $this->app['phraseanet.registry']->get('GV_RootPath') . "config/minilogos/" . $rec->get_base_id();
+                $RIGHT_IMG = $this->app['root.path'] . "/config/minilogos/" . $rec->get_base_id();
             }
 
             $xtmp = $this->pdf->GetX();

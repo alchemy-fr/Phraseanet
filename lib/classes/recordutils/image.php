@@ -102,7 +102,7 @@ class recordutils_image extends recordutils
 
         $pathIn = $subdef->get_path() . $subdef->get_file();
         $pathOut = $subdef->get_path() . 'stamp_' . $subdef->get_file();
-        $pathTmpStamp = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/' . time() . '-stamptmp_' . $subdef->get_file();
+        $pathTmpStamp = $app['root.path'] . '/tmp/' . time() . '-stamptmp_' . $subdef->get_file();
 
         if ($xpprefs->query('/baseprefs/stamp')->length == 0) {
             return $subdef->get_pathfile();
@@ -158,7 +158,7 @@ class recordutils_image extends recordutils
         $text_xpos = 0;
         $text_width = $image_width;
 
-        $logofile = $app['phraseanet.registry']->get('GV_RootPath') . 'config/stamp/' . $base_id;
+        $logofile = $app['root.path'] . '/config/stamp/' . $base_id;
         $logopos = null;
         $imlogo = null; // gd image
         $logo_phywidth = $logo_phyheight = 0; // physical size
@@ -342,11 +342,11 @@ class recordutils_image extends recordutils
         }
 
         if ($app['phraseanet.registry']->get('composite_binary') &&
-            file_exists($app['phraseanet.registry']->get('GV_RootPath') . 'config/wm/' . $base_id)) {
+            file_exists($app['root.path'] . '/config/wm/' . $base_id)) {
 
             $builder = ProcessBuilder::create(array(
                     $app['phraseanet.registry']->get('composite_binary'),
-                    $app['phraseanet.registry']->get('GV_RootPath') . 'config/wm/' . $base_id,
+                    $app['root.path'] . '/config/wm/' . $base_id,
                     $pathIn,
                     '-strip', '-watermark', '90%', '-gravity', 'center',
                     $pathOut
