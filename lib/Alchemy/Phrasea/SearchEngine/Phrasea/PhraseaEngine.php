@@ -427,8 +427,10 @@ class PhraseaEngine implements SearchEngineInterface
         $propositions = $this->getPropositions();
 
         $tsug = array();
-        foreach($this->qp['main']->proposals['QUERIES'] as $q)
-            $tsug[] = $q;
+        if ($this->qp && isset($this->qp['main'])) {
+            foreach($this->qp['main']->proposals['QUERIES'] as $q)
+                $tsug[] = $q;
+        }
         $suggestions = new ArrayCollection($tsug);
 
         return new SearchEngineResult($records, $query, $row['duration'], $offset, $row['total'], $row['total'], $error, '', $suggestions, $propositions, '');
