@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {{ module_name }} </title>
-    <link type="text/css" rel="stylesheet" href="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/skins/common/main.css">
+    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/common/main.css' }) }}">
     {% block stylesheet %}{% endblock %}
     {% block icon %}{% endblock %}
     {% block rss %}{% endblock %}

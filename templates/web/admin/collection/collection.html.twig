@@ -237,12 +237,12 @@
                 $('input[name="admins[]"]:last', form).val(ui.item.id);
                 form.submit();
             }
-        }).data( "autocomplete" )._renderItem = function( ul, item ) {
+        }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
             var email = item.email ? '<br/>'+item.email : '';
-            var login = item.login != item.name ? " ("+ item.login +")" : '';
+            var login = item.login !== item.name ? " ("+ item.login +")" : '';
 
             return $( "<li></li>" )
-            .data( "item.autocomplete", item )
+            .data( "ui-autocomplete-item", item )
             .append( "<a>" + item.name + login + email + "</a>" )
             .appendTo( ul );
         };
@@ -260,15 +260,10 @@
                     pub_wm: $this.val()
                 },
                 success: function(datas) {
-                    if(datas.success) {
-                        p4.Mustache.Render('Alert-Success', {content:datas.msg}, function(html){
-                            $this.closest('.action-block').prepend(html);
-                        });
-                    } else {
-                        p4.Mustache.Render('Alert-Error', {content:datas.msg}, function(html){
-                            $this.closest('.action-block').prepend(html);
-                        });
-                    }
+                    var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
+                        content:datas.msg
+                    });
+                    $this.closest('.action-block').prepend(html);
                 }
             });
         });

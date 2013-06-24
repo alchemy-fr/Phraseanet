@@ -128,12 +128,27 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $("#tabs-records-property").tabs({
-           ajaxOptions: {
-               data : {
+           beforeLoad: function( event, ui ) {
+               ui.ajaxSettings.data = {
                    lst: $("input[name=original_selection]", $(this)).val()
+               };
+
+               // load template only once
+               if ( ui.tab.data( "loaded" ) ) {
+                    event.preventDefault();
+                    return;
                }
+
+               ui.jqXHR.success(function() {
+                    ui.tab.data( "loaded", true );
+               });
+
+               ui.tab.find('span').html("<i>{{ 'Loading'|trans }}...</i>");
            },
-           cache: true //Load template only once
+            load: function(event, ui)
+            {
+                ui.tab.find('span').empty();
+            }
         });
 
         var $dialog = p4.Dialog.get(1);

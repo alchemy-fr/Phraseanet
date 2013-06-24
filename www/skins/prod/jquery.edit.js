@@ -25,9 +25,15 @@ function setSizeLimits()
   if(!$('#EDITWINDOW').is(':visible'))
     return;
 
-  $('#EDIT_TOP').resizable('option','maxHeight', ($('#EDIT_ALL').height() - $('#buttonEditing').height() - 10 - 160));
-  $('#divS_wrapper').resizable('option','maxWidth', ($('#EDIT_MID_L').width() - 270));
-  $('#EDIT_MID_R').resizable('option','maxWidth', ($('#EDIT_MID_R').width() + $('#idEditZone').width() - 240));
+  if ($('#EDIT_TOP').data("ui-resizable")) {
+    $('#EDIT_TOP').resizable('option','maxHeight', ($('#EDIT_ALL').height() - $('#buttonEditing').height() - 10 - 160));
+  }
+  if ($('#divS_wrapper').data("ui-resizable")) {
+    $('#divS_wrapper').resizable('option','maxWidth', ($('#EDIT_MID_L').width() - 270));
+  }
+  if ($('#EDIT_MID_R').data("ui-resizable")) {
+    $('#EDIT_MID_R').resizable('option','maxWidth', ($('#EDIT_MID_R').width() + $('#idEditZone').width() - 240));
+  }
 }
 
 function edit_kdwn(evt, src)
@@ -303,7 +309,10 @@ function editField(evt, meta_struct_id)
             dateObj.setMonth((d[1]-1));
             dateObj.setDate(d[2]);
           }
-          $("#idEditDateZone", p4.edit.editBox).datepicker('setDate', dateObj);
+
+          if ($("#idEditDateZone", p4.edit.editBox).data("ui-datepicker")) {
+              $("#idEditDateZone", p4.edit.editBox).datepicker('setDate', dateObj);
+          }
         }
       }
       p4.edit.textareaIsDirty = false;
@@ -1511,14 +1520,16 @@ function preset_copy()
   {
     if(p4.edit.T_fields[i]._status == 1)
     {
-      var c = p4.edit.T_fields[i]._value == "" ? "" : "checked=\"1\"";
+      var c = p4.edit.T_fields[i]._value === "" ? "" : "checked=\"1\"";
       var v = p4.edit.T_fields[i]._value;
       html += "<div><label class=\"checkbox\" for=\"new_preset_" + p4.edit.T_fields[i].name + "\"><input type=\"checkbox\" class=\"checkbox\" id=\"new_preset_" + p4.edit.T_fields[i].name + "\" value=\"" + i + "\" " + c + "/>" + "<b>" + p4.edit.T_fields[i].label + " : </b></label> ";
       html += cleanTags(p4.edit.T_fields[i]._value) + "</div>";
     }
   }
   $("#Edit_copyPreset_dlg FORM DIV").html(html);
-  $("#Edit_copyPreset_dlg").dialog('open');
+  if ( $("#Edit_copyPreset_dlg").data("ui-dialog")) {
+      $("#Edit_copyPreset_dlg").dialog('open');
+  }
 }
 
 function preset_paint(data)
@@ -1586,7 +1597,9 @@ function preset_load(preset_id)
     p,
     function(data, textStatus)
     {
-      $("#Edit_copyPreset_dlg").dialog("close");
+      if ($("#Edit_copyPreset_dlg").data("ui-dialog")) {
+        $("#Edit_copyPreset_dlg").dialog("close");
+      }
 
       for(i in p4.edit.T_fields)
       {
@@ -2041,7 +2054,10 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       success: function(data, textStatus)
       {
         preset_paint(data);
-        $("#Edit_copyPreset_dlg").dialog("close");
+
+        if ($("#Edit_copyPreset_dlg").data("ui-dialog")) {
+            $("#Edit_copyPreset_dlg").dialog("close");
+        }
       }
     });
   };
@@ -2074,8 +2090,6 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     dateFormat: 'yy/mm/dd',
     onSelect: function(dateText, inst)
     {
-
-
       var lval = $('#idEditZTextArea', p4.edit.editBox).val();
       if(lval != dateText)
       {

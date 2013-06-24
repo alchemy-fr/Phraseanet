@@ -72,12 +72,12 @@
                 $('input.new[name="admins[]"]', form).val(ui.item.id);
                 form.submit();
             }
-        }).data( "autocomplete" )._renderItem = function( ul, item ) {
+        }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
             var email = item.email ? '<br/>'+item.email : '';
             var login = item.login != item.name ? " ("+ item.login +")" : '';
 
             return $( "<li></li>" )
-            .data( "item.autocomplete", item )
+            .data( "ui-autocomplete-item", item )
             .append( "<a>" + item.name + login + email + "</a>" )
             .appendTo( ul );
         };

@@ -6,17 +6,17 @@ var p4 = p4 || {};
         type = typeof type === 'undefined' ? 'basket' : type;
 
         var active = $('#baskets .SSTT.ui-state-active');
-        if (baskId == 'current' && active.length > 0)
+        if (baskId === 'current' && active.length > 0) {
             baskId = active.attr('id').split('_').slice(1, 2).pop();
+        }
         sort = ($.inArray(sort, ['date', 'name']) >= 0) ? sort : '';
 
-        scrolltobottom = typeof scrolltobottom == 'undefined' ? false : scrolltobottom;
+        scrolltobottom = typeof scrolltobottom === 'undefined' ? false : scrolltobottom;
 
         $.ajax({
             type: "GET",
             url: "/prod/WorkZone/",
             data: {
-                type: 'basket',
                 id: baskId,
                 sort: sort,
                 type:type
@@ -25,15 +25,17 @@ var p4 = p4 || {};
                 $('#basketcontextwrap').remove();
             },
             success: function(data) {
-
                 var cache = $("#idFrameC #baskets");
-                $(".SSTT", cache).droppable('destroy');
 
-                $('.bloc', cache).droppable('destroy');
-
-                cache.accordion('destroy')
-                        .empty()
-                        .append(data);
+                if ($(".SSTT", cache).data("ui-droppable")) {
+                    $(".SSTT", cache).droppable('destroy');
+                }
+                if ($(".bloc", cache).data("ui-droppable")) {
+                    $('.bloc', cache).droppable('destroy');
+                }
+                if (cache.data("ui-accordion")) {
+                    cache.accordion('destroy').empty().append(data);
+                }
 
                 activeBaskets();
                 $('.basketTips').tooltip({
@@ -41,8 +43,9 @@ var p4 = p4 || {};
                 });
                 cache.disableSelection();
 
-                if (!scrolltobottom)
+                if (!scrolltobottom) {
                     return;
+                }
 
                 p4.next_bask_scroll = true;
                 return;
@@ -104,7 +107,6 @@ var p4 = p4 || {};
                 draggable: false,
                 modal: true,
                 buttons: buttons,
-                draggable:false,
                 overlay: {
                     backgroundColor: '#000',
                     opacity: 0.7
@@ -127,7 +129,10 @@ var p4 = p4 || {};
                     humane.info(data.message);
                     p4.WorkZone.Selection.remove(id);
 
-                    $('.wrapCHIM_' + id).find('.CHIM').draggable('destroy');
+                    if ($('.wrapCHIM_' + id).find('.CHIM').data("ui-draggable")) {
+                        $('.wrapCHIM_' + id).find('.CHIM').draggable('destroy');
+                    }
+
                     $('.wrapCHIM_' + id).remove();
 
                     if (context === "reg_train_basket") {
@@ -171,10 +176,10 @@ var p4 = p4 || {};
 
         cache.accordion({
             active: 'active',
-            autoHeight: false,
+            heightStyle: "content",
             collapsible: true,
             header: 'div.header',
-            change: function(event, ui) {
+            activate: function(event, ui) {
                 var b_active = $('#baskets .SSTT.active');
                 if (p4.next_bask_scroll) {
                     p4.next_bask_scroll = false;
@@ -198,9 +203,6 @@ var p4 = p4 || {};
                     return; /* everything is closed */
                 }
 
-                var clicked = uiactive.attr('id').split('_').pop();
-                var href = $('a', uiactive).attr('href');
-
                 uiactive.addClass('ui-state-focus active');
 
                 p4.WorkZone.Selection.empty();
@@ -208,7 +210,7 @@ var p4 = p4 || {};
                 getContent(uiactive);
 
             },
-            changestart: function(event, ui) {
+            beforeActivate: function(event, ui) {
                 ui.newHeader.addClass('active');
                 $('#basketcontextwrap .basketcontextmenu').hide();
             }
@@ -240,11 +242,11 @@ var p4 = p4 || {};
             tolerance: 'pointer',
             accept: function(elem) {
                 if ($(elem).hasClass('CHIM'))  {
-                    if ($(elem).closest('.content').prev()[0] == $(this)[0]) {
+                    if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
                         return false;
                     }
                 }
-                if ($(elem).hasClass('grouping') || $(elem).parent()[0] == $(this)[0])
+                if ($(elem).hasClass('grouping') || $(elem).parent()[0] === $(this)[0])
                     return false;
                 return true;
             },
@@ -300,8 +302,10 @@ var p4 = p4 || {};
                 header.removeClass('unread');
 
                 var dest = header.next();
-
-                dest.droppable('destroy').empty().removeClass('loading');
+                if (dest.data("ui-droppable")) {
+                    dest.droppable('destroy')
+                }
+                dest.empty().removeClass('loading');
 
                 dest.append(data);
 
@@ -314,11 +318,11 @@ var p4 = p4 || {};
                 dest.droppable({
                     accept: function(elem) {
                         if ($(elem).hasClass('CHIM')) {
-                            if ($(elem).closest('.content')[0] == $(this)[0]) {
+                            if ($(elem).closest('.content')[0] === $(this)[0]) {
                                 return false;
                             }
                         }
-                        if ($(elem).hasClass('grouping') || $(elem).parent()[0] == $(this)[0])
+                        if ($(elem).hasClass('grouping') || $(elem).parent()[0] === $(this)[0])
                             return false;
                         return true;
                     },
@@ -434,7 +438,7 @@ var p4 = p4 || {};
                 var sameSbas = true, sbas_reg = destKey.attr('sbas');
 
                 for (var i = 0; i < lstbr.length && sameSbas; i++) {
-                    if (lstbr[i].split('_').shift() != sbas_reg) {
+                    if (lstbr[i].split('_').shift() !== sbas_reg) {
                         sameSbas = false;
                         break;
                     }
@@ -491,7 +495,7 @@ var p4 = p4 || {};
                 } else {
                     humane.info(data.message);
                 }
-                if (act == 'MOV' || $(destKey).next().is(':visible') === true || $(destKey).hasClass('content') === true) {
+                if (act === 'MOV' || $(destKey).next().is(':visible') === true || $(destKey).hasClass('content') === true) {
                     $('.CHIM.selected:visible').fadeOut();
                     p4.WorkZone.Selection.empty();
                     return p4.WorkZone.reloadCurrent();
@@ -576,7 +580,7 @@ var p4 = p4 || {};
                     $('li.ui-tabs-selected', frame).removeClass('ui-tabs-selected');
                     frame.unbind('click.escamote').bind('click.escamote', function() {
                         that.open();
-                    })
+                    });
                 }
             },
             'open': function() {

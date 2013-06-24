@@ -47,9 +47,8 @@ function datePicker()
     changeYear: true,
     dateFormat:'yy-mm-dd',
     numberOfMonths: 3,
-    onSelect: function(selectedDate) {
+    onSelect: function(selectedDate, instance) {
       var option = $(this).hasClass("dmin") ? "minDate" : "maxDate";
-      var instance = $(this).data("datepicker");
       var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
       $(dates).not(':hidden').not(this).datepicker("option", option, date);
     }
@@ -60,9 +59,8 @@ function datePicker()
     changeYear: true,
     dateFormat:'yy-mm-dd',
     numberOfMonths: 3,
-    onSelect: function(selectedDate) {
+    onSelect: function(selectedDate, instance) {
       var option = $(this).hasClass("dmin") ? "minDate" : "maxDate";
-      var instance = $(this).data("datepicker");
       var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
       $(dates).not(':hidden').not(this).datepicker("option", option, date);
     }

@@ -12,7 +12,7 @@ require.config({
     baseUrl: "/scripts",
     paths: {
         jquery: "../assets/jquery/jquery",
-        jqueryui: "../include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min",
+        jqueryui: "../include/jslibs/jquery-ui-1.10.3.min",
         underscore: "../assets/underscore-amd/underscore",
         backbone: "../assets/backbone-amd/backbone",
         i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",

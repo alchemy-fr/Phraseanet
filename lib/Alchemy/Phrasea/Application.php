@@ -40,7 +40,6 @@ use Alchemy\Phrasea\Controller\Prod\Feed;
 use Alchemy\Phrasea\Controller\Prod\Language;
 use Alchemy\Phrasea\Controller\Prod\Lazaret;
 use Alchemy\Phrasea\Controller\Prod\MoveCollection;
-use Alchemy\Phrasea\Controller\Prod\MustacheLoader;
 use Alchemy\Phrasea\Controller\Prod\Order;
 use Alchemy\Phrasea\Controller\Prod\Printer;
 use Alchemy\Phrasea\Controller\Prod\Push;
@@ -717,7 +716,6 @@ class Application extends SilexApplication
         $this->mount('/prod/story', new Story());
         $this->mount('/prod/WorkZone', new WorkZone());
         $this->mount('/prod/lists', new UsrLists());
-        $this->mount('/prod/MustacheLoader', new MustacheLoader());
         $this->mount('/prod/records/', new Records());
         $this->mount('/prod/records/edit', new Edit());
         $this->mount('/prod/records/property', new Property());

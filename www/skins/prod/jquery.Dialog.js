@@ -54,7 +54,7 @@ var p4 = p4 || {};
       $('body').append($dialog);
 
       return $dialog;
-    }
+    };
 
     var defaults = {
       size : 'Medium',
@@ -126,7 +126,11 @@ var p4 = p4 || {};
       }
     };
 
-    this.$dialog.dialog('destroy').attr('title', this.options.title)
+    if (this.$dialog.data('ui-dialog')) {
+        this.$dialog.dialog('destroy');
+    }
+
+    this.$dialog.attr('title', this.options.title)
     .empty()
     .dialog({
       buttons:this.options.buttons,
@@ -151,10 +155,12 @@ var p4 = p4 || {};
       var $this = this;
       $(window).unbind('resize.DIALOG' + getLevel(level))
       .bind('resize.DIALOG' + getLevel(level), function(){
-        $this.$dialog.dialog('option', {
-          width : bodySize.x - 30,
-          height : bodySize.y - 30
-        });
+        if ($this.$dialog.data("ui-dialog")) {
+            $this.$dialog.dialog('option', {
+              width : bodySize.x - 30,
+              height : bodySize.y - 30
+            });
+        }
       });
     }
 
@@ -209,22 +215,24 @@ var p4 = p4 || {};
       return this.$dialog;
     },
     getOption : function (optionName) {
-      return this.$dialog.dialog('option', optionName);
+      if (this.$dialog.data("ui-dialog")) {
+          return this.$dialog.dialog('option', optionName);
+      }
+      return null;
     },
     setOption : function (optionName, optionValue) {
-
       if(optionName === 'buttons')
       {
         optionValue = addButtons(optionValue, this);
       }
-
-      this.$dialog.dialog('option', optionName, optionValue);
+      if (this.$dialog.data("ui-dialog")) {
+        this.$dialog.dialog('option', optionName, optionValue);
+      }
     }
   };
 
   var Dialog = function () {
     this.currentStack = {};
-
   };
 
   Dialog.prototype = {
@@ -257,7 +265,11 @@ var p4 = p4 || {};
       $(window).unbind('resize.DIALOG' + getLevel(level));
 
       this.get(level).closing = true;
-      this.get(level).getDomElement().dialog('close').dialog('destroy').remove();
+      var dialog = this.get(level).getDomElement();
+      if (dialog.data('ui-dialog')) {
+          dialog.dialog('close').dialog('destroy');
+      }
+      dialog.remove();
 
       var id = this.get(level).getId();
 

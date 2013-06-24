@@ -68,6 +68,9 @@
       </form>
     </div>
   </div>
+
+  {% include "prod/templates/push.html.twig" %}
+
   <script type="text/javascript">
     $(document).ready(function(){
       var $container = $('#ListShare'),
@@ -136,7 +139,6 @@
 
       function unShareWith(usr_id, callback)
       {
-
         $.ajax({
           type: 'POST',
           url: '/prod/lists/list/{{ list.getId() }}/unshare/' + usr_id + '/',
@@ -182,7 +184,7 @@
               });
             },
             select: function( event, ui ) {
-              if(ui.item.type == 'USER')
+              if(ui.item.type === 'USER')
               {
                 shareWith(ui.item.usr_id);
               }
@@ -190,23 +192,14 @@
               return false;
             }
           })
-          .data( "autocomplete" )._renderItem = function( ul, item ) {
+          .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+                if(item.type === 'USER') {
+                    html = _.template($("#list_user_tpl").html(), {
+                        item: item
+                    });
 
-            $autocompleter.addClass('loading');
-
-            var callback = function(datas){
-              $(datas).data( "item.autocomplete", item ).appendTo( ul );
-              $autocompleter.data( "autocomplete" ).menu.refresh();
-              $autocompleter.data('autocomplete')._resizeMenu();
-              $autocompleter.removeClass('loading');
-            };
-
-            if(item.type == 'USER')
-            {
-              var datas = p4.Mustache.Render('List-User-Item', item, callback);
-            }
-
-            return;
+                    return  $(html).data( "ui-autocomplete-item", item ).appendTo(ul);
+                }
           };
     });
   </script>

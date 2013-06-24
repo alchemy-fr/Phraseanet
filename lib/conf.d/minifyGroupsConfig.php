@@ -21,7 +21,7 @@ $groups = array(
     ),
     'client' => array(
         '//include/jslibs/swfobject/swfobject.js'
-        , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
+        , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
         , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
@@ -36,10 +36,10 @@ $groups = array(
         , '//include/jslibs/jquery.contextmenu_scroll.js'),
     'admin' => array(
         '//assets/modernizr/modernizr.js'
-        , '//include/jslibs/jquery-ui-1.8.24.js'
+        , '//assets/underscore-amd/underscore.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery-treeview/jquery.treeview.js'
-        , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
+        , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
         , '//include/jquery.kb-event.js'
         , '//skins/admin/users.js'
         , '//skins/admin/editusers.js'
@@ -53,7 +53,7 @@ $groups = array(
         , '//assets/jquery-file-upload/js/jquery.fileupload.js'
     ),
     'report' => array(
-         '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
+         '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//include/jquery.tooltip.js'
@@ -65,19 +65,19 @@ $groups = array(
         , '//skins/report/report.js'
     ),
     'modalBox' => array(
-         '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
+         '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
     ),
     'prod' => array(
         '//include/jslibs/swfobject/swfobject.js'
+        , '//assets/underscore-amd/underscore.js'
         , '//include/jslibs/json2.js'
         , '//include/jslibs/colorpicker/js/colorpicker.js'
         , '//include/jslibs/jquery.mousewheel.js'
         , '//include/jslibs/jquery.lazyload/jquery.lazyload.1.8.1.js'
-        , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
+        , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//assets/humane-js/humane.js'
-        , '//assets/mustache/mustache.js'
         , '//assets/blueimp-load-image/load-image.js'
         , '//assets/jquery-file-upload/js/vendor/jquery.ui.widget.js'
         , '//assets/jquery-file-upload/js/jquery.iframe-transport.js'
@@ -88,7 +88,6 @@ $groups = array(
         , '//include/js/jquery.Selection.js'
         , '//include/js/jquery.Edit.js'
         , '//include/js/jquery.lists.js'
-        , '//skins/prod/jquery.Mustache.js'
         , '//skins/prod/jquery.Prod.js'
         , '//skins/prod/jquery.Dialog.js'
         , '//skins/prod/jquery.Feedback.js'
@@ -124,7 +123,7 @@ $groups = array(
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
         , '//skins/geonames/geonames.js'
-        , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
+        , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
@@ -136,7 +135,7 @@ $groups = array(
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
         , '//skins/geonames/geonames.js'
-        , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
+        , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
