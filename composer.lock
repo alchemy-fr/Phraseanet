@@ -641,12 +641,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg",
-                "reference": "1d326e08bbd74c73825e71fb22a9b92ee2636f13"
+                "reference": "1c504e9b4d4bcdbc2d8fef5a954127303fae8b77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/archive/1d326e08bbd74c73825e71fb22a9b92ee2636f13.zip",
-                "reference": "1d326e08bbd74c73825e71fb22a9b92ee2636f13",
+                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/archive/1c504e9b4d4bcdbc2d8fef5a954127303fae8b77.zip",
+                "reference": "1c504e9b4d4bcdbc2d8fef5a954127303fae8b77",
                 "shasum": ""
             },
             "require": {
