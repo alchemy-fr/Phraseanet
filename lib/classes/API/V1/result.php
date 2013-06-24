@@ -89,6 +89,7 @@ class API_V1_result
     const ERROR_UNAUTHORIZED = 'Unauthorized';
     const ERROR_FORBIDDEN = 'Forbidden';
     const ERROR_NOTFOUND = 'Not Found';
+    const ERROR_MAINTENANCE = 'Service Temporarily Unavailable';
     const ERROR_METHODNOTALLOWED = 'Method Not Allowed';
     const ERROR_INTERNALSERVERERROR = 'Internal Server Error';
 
@@ -294,6 +295,11 @@ class API_V1_result
                 $this->http_code = 500;
                 $this->error_type = $const;
                 $this->error_message = API_V1_exception_internalservererror::get_details();
+                break;
+            case self::ERROR_MAINTENANCE:
+                $this->http_code = 503;
+                $this->error_type = $const;
+                $this->error_message = API_V1_exception_maintenance::get_details();
                 break;
             case OAUTH2_ERROR_INVALID_REQUEST:
                 $this->error_type = $const;

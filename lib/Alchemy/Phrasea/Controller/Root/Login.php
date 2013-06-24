@@ -57,13 +57,6 @@ class Login implements ControllerProviderInterface
             if ($request->getPathInfo() == $app->path('homepage')) {
                 return;
             }
-            if ($app['phraseanet.registry']->get('GV_maintenance')) {
-                $app->addFlash('warning', _('login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee'));
-
-                return $app->redirect($app->path('homepage', array(
-                    'redirect' => ltrim($request->get('redirect'), '/'),
-                )));
-            }
         });
 
         // Displays the homepage
@@ -697,9 +690,7 @@ class Login implements ControllerProviderInterface
         $feeds = $public_feeds->get_feeds();
         array_unshift($feeds, $public_feeds->get_aggregate());
 
-        $form = $app->form(new PhraseaAuthenticationForm(), null, array(
-            'disabled' => $app['phraseanet.registry']->get('GV_maintenance')
-        ));
+        $form = $app->form(new PhraseaAuthenticationForm());
 
         return $app['twig']->render('login/index.html.twig', array(
             'module_name'       => _('Accueil'),

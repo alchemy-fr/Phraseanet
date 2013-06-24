@@ -50,7 +50,6 @@ class registry implements registryInterface
         if ($app['phraseanet.configuration-tester']->isInstalled()) {
             $this->cache->save('GV_ServerName', $app['phraseanet.configuration']['main']['servername']);
             $this->cache->save('GV_debug', $app['debug']);
-            $this->cache->save('GV_maintenance', $app['phraseanet.configuration']['main']['maintenance']);
 
             $config = $app['phraseanet.configuration']->getConfig();
 
@@ -91,7 +90,7 @@ class registry implements registryInterface
 
             }
             foreach ($rs as $row) {
-                if (in_array($row['key'], array('GV_ServerName', 'GV_sit', 'GV_debug', 'GV_maintenance'))) {
+                if (in_array($row['key'], array('GV_ServerName', 'GV_sit', 'GV_debug'))) {
                     continue;
                 }
 
