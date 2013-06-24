@@ -76,7 +76,7 @@ class TaskManager implements ControllerProviderInterface
         })->bind('admin_tasks_scheduler_stop');
 
         $controllers->get('/scheduler/log', function(Application $app, Request $request) {
-            $logdir = \p4string::addEndSlash($app['phraseanet.registry']->get('GV_RootPath') . 'logs');
+            $logdir = $app['root.path'] . '/logs/';
 
             $rname = '/scheduler((\.log)|(-.*\.log))$/';
 
@@ -114,7 +114,7 @@ class TaskManager implements ControllerProviderInterface
         })->bind('admin_tasks_scheduler_log');
 
         $controllers->get('/task/{id}/log', function(Application $app, Request $request, $id) {
-            $logdir = \p4string::addEndSlash($app['phraseanet.registry']->get('GV_RootPath') . 'logs');
+            $logdir = $app['root.path'] . '/logs/';
 
             $rname = '/task_' . $id . '((\.log)|(-.*\.log))$/';
 

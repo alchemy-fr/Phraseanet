@@ -255,7 +255,7 @@ class Login implements ControllerProviderInterface
                         throw new FormProcessingException(_('Invalid captcha answer.'));
                     }
 
-                    require_once($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
+                    require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
                     $selected = isset($data['collections']) ? $data['collections'] : null;
                     $inscriptions = giveMeBases($app);
@@ -677,7 +677,7 @@ class Login implements ControllerProviderInterface
      */
     public function login(PhraseaApplication $app, Request $request)
     {
-        require_once($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
+        require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
         try {
             $app['phraseanet.appbox']->get_connection();

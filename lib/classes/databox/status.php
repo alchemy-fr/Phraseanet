@@ -69,7 +69,7 @@ class databox_status
             return;
         }
 
-        $path = $this->path = $app['phraseanet.registry']->get('GV_RootPath') . "config/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
+        $path = $this->path = $app['root.path'] . "/config/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
         $url = $this->url = "/custom/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
 
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
@@ -431,12 +431,12 @@ class databox_status
         $name = "-stat_" . $bit . "_" . ($switch == 'on' ? '1' : '0') . ".gif";
 
         try {
-            $file = $file->move($app['phraseanet.registry']->get('GV_RootPath') . "config/status/", $path.$name);
+            $file = $file->move($app['root.path'] . "/config/status/", $path.$name);
         } catch (FileException $e) {
             throw new Exception_Upload_CannotWriteFile();
         }
 
-        $custom_path = $app['phraseanet.registry']->get('GV_RootPath') . 'www/custom/status/';
+        $custom_path = $app['root.path'] . '/www/custom/status/';
 
         $app['filesystem']->mkdir($custom_path, 0750);
 

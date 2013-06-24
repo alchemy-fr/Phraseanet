@@ -275,7 +275,7 @@ class Export implements ControllerProviderInterface
                 $app,
                 $token,
                 $list,
-                $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/' . $token . '.zip'
+                $app['root.path'] . '/tmp/download/' . $token . '.zip'
             );
 
             $remaingEmails = $destMails;

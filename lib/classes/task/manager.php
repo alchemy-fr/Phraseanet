@@ -128,7 +128,7 @@ class task_manager
     {
         $phpcli = $this->app['phraseanet.registry']->get('php_binary');
 
-        $cmd = $phpcli . ' -f ' . $this->app['phraseanet.registry']->get('GV_RootPath') . "bin/console scheduler:start";
+        $cmd = $phpcli . ' -f ' . $this->app['root.path'] . "/bin/console scheduler:start";
 
         return new Process($cmd);
     }
@@ -165,7 +165,7 @@ class task_manager
 
         $pid = NULL;
 
-        $lockdir = $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/locks/';
+        $lockdir = $this->app['root.path'] . '/tmp/locks/';
         if (($schedlock = fopen($lockdir . 'scheduler.lock', 'a+')) != FALSE) {
             if (flock($schedlock, LOCK_EX | LOCK_NB) === FALSE) {
                 // already locked : running !

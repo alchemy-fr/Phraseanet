@@ -111,7 +111,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
         }
 
         $databox = \databox::create(
-                self::$DI['app'], $conn, new \SplFileInfo(self::$DI['app']['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates/fr-simple.xml'), self::$DI['app']['phraseanet.registry']
+                self::$DI['app'], $conn, new \SplFileInfo(self::$DI['app']['root.path'] . '/lib/conf.d/data_templates/fr-simple.xml'), self::$DI['app']['phraseanet.registry']
         );
 
         self::$createdDataboxes[] = $databox;

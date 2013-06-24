@@ -148,8 +148,8 @@ class appbox extends base
             $collection->update_logo($pathfile);
         }
 
-        $file = $this->app['phraseanet.registry']->get('GV_RootPath') . 'config/' . $pic_type . '/' . $collection->get_base_id();
-        $custom_path = $this->app['phraseanet.registry']->get('GV_RootPath') . 'www/custom/' . $pic_type . '/' . $collection->get_base_id();
+        $file = $this->app['root.path'] . '/config/' . $pic_type . '/' . $collection->get_base_id();
+        $custom_path = $this->app['root.path'] . '/www/custom/' . $pic_type . '/' . $collection->get_base_id();
 
         foreach (array($file, $custom_path) as $target) {
 
@@ -206,8 +206,8 @@ class appbox extends base
             }
         }
 
-        $file = $this->app['phraseanet.registry']->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
-        $custom_path = $this->app['phraseanet.registry']->get('GV_RootPath') . 'www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
+        $file = $this->app['root.path'] . '/config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
+        $custom_path = $this->app['root.path'] . '/www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
 
         foreach (array($file, $custom_path) as $target) {
 
@@ -329,8 +329,8 @@ class appbox extends base
 
         $finder = new Finder();
         $finder->in(array(
-            $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/cache_minify/',
-            $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/cache_twig/',
+            $this->app['root.path'] . '/tmp/cache_minify/',
+            $this->app['root.path'] . '/tmp/cache_twig/',
         ))
             ->depth(0)
             ->ignoreVCS(true)
@@ -354,7 +354,7 @@ class appbox extends base
         'config/status/'       => 'www/custom/status/',
         'config/wm/'           => 'www/custom/wm/',
         ) as $source => $target) {
-            $app['filesystem']->mirror($this->app['phraseanet.registry']->get('GV_RootPath') . $source, $this->app['phraseanet.registry']->get('GV_RootPath') . $target);
+            $app['filesystem']->mirror($this->app['root.path'] . '/' . $source, $this->app['root.path'] . '/' . $target);
         }
 
         $upgrader->add_steps_complete(1);
