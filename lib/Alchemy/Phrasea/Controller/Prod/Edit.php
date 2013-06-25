@@ -387,9 +387,9 @@ class Edit implements ControllerProviderInterface
                 }
 
                 $record
+                    ->write_metas()
                     ->get_collection()
-                    ->reset_stamp($record->get_record_id())
-                    ->write_metas();
+                    ->reset_stamp($record->get_record_id());
 
                 if ($statbits != '') {
                     $app['phraseanet.logger']($record->get_databox())
@@ -401,7 +401,7 @@ class Edit implements ControllerProviderInterface
                 }
             }
 
-            return $app['twig']->render('prod/actions/edit_default.html.twig', array('edit'    => $editing, 'message' => ''));
+            return $app->json(array('success' => true));
         });
 
         return $controllers;
