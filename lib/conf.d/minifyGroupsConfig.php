@@ -48,7 +48,6 @@ $groups = array(
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//assets/blueimp-load-image/load-image.js'
-        , '//assets/jquery-file-upload/js/vendor/jquery.ui.widget.js'
         , '//assets/jquery-file-upload/js/jquery.iframe-transport.js'
         , '//assets/jquery-file-upload/js/jquery.fileupload.js'
     ),
@@ -79,7 +78,6 @@ $groups = array(
         , '//include/jquery.common.js'
         , '//assets/humane-js/humane.js'
         , '//assets/blueimp-load-image/load-image.js'
-        , '//assets/jquery-file-upload/js/vendor/jquery.ui.widget.js'
         , '//assets/jquery-file-upload/js/jquery.iframe-transport.js'
         , '//assets/jquery-file-upload/js/jquery.fileupload.js'
         , '//skins/geonames/geonames.js'
