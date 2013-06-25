@@ -222,7 +222,7 @@ function editField(evt, meta_struct_id)
         minLength: 2,
         source: function( request, response ) {
           $.ajax({
-            url: '/prod/records/edit/vocabulary/' + vocabType + '/',
+            url: '../prod/records/edit/vocabulary/' + vocabType + '/',
             dataType: "json",
             data: {
               sbas_id: p4.edit.sbas_id,
@@ -249,7 +249,7 @@ function editField(evt, meta_struct_id)
 
       $('#idEditZTextArea, #EditTextMultiValued').bind('keyup.maxLength', function(){
         var remaining = Math.max((p4.edit.T_fields[meta_struct_id].maxLength - $(this).val().length), 0);
-        idexplain.html("<span class='metadatas_restrictionsTips' tooltipsrc='/prod/tooltip/metas/restrictionsInfos/"+p4.edit.sbas_id+"/"+meta_struct_id+"/'><img src='/skins/icons/help32.png' /><!--<img src='/skins/icons/alert.png' />--> Caracteres restants : "+(remaining)+"</span>");
+        idexplain.html("<span class='metadatas_restrictionsTips' tooltipsrc='../prod/tooltip/metas/restrictionsInfos/"+p4.edit.sbas_id+"/"+meta_struct_id+"/'><img src='/skins/icons/help32.png' /><!--<img src='/skins/icons/alert.png' />--> Caracteres restants : "+(remaining)+"</span>");
         $('.metadatas_restrictionsTips', idexplain).tooltip();
       }).trigger('keyup.maxLength');
     }
@@ -1185,7 +1185,7 @@ function edit_applyMultiDesc(evt)
 
 
   $.ajax({
-    url :"/prod/records/edit/apply/"
+    url :"../prod/records/edit/apply/"
     ,
     data : options
     //    ,dataType:'json'
