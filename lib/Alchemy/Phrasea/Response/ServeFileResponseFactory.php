@@ -14,20 +14,28 @@ namespace Alchemy\Phrasea\Response;
 use Alchemy\Phrasea\Response\DeliverDataInterface;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ServeFileResponseFactory implements DeliverDataInterface
 {
-    public static $X_SEND_FILE = false;
+    private $xSendFileEnable = false;
+    private $mappings;
+    private $unicode;
 
-    private $rootPath;
-    private $xAccelRedirectPath = '';
-    private $xAccelRedirectMountPoint = '';
-
-    public function __construct($rootPath)
+    public function __construct($enableXSendFile, $xAccelMappings, \unicode $unicode)
     {
-        $this->rootPath = $rootPath;
+        $this->xSendFileEnable = $enableXSendFile;
+
+        $mappings = array();
+
+        foreach ($xAccelMappings as $path => $mountPoint) {
+            if (is_dir($path) && '' !== $mountPoint) {
+                $mappings[$this->sanitizeXAccelPath($path)] = $this->sanitizeXAccelMountPoint($mountPoint);
+            }
+        }
+
+        $this->mappings = $mappings;
+        $this->unicode = $unicode;
     }
 
     /**
@@ -36,29 +44,32 @@ class ServeFileResponseFactory implements DeliverDataInterface
      */
     public static function create(Application $app)
     {
-        $factory = new self($app['root.path']);
-
-        ServeFileResponseFactory::$X_SEND_FILE = $app['phraseanet.registry']->get('GV_modxsendfile');
-
-        $factory->setXAccelRedirectPath($app['phraseanet.registry']->get('GV_X_Accel_Redirect'));
-        $factory->setXAccelRedirectMountPoint($app['phraseanet.registry']->get('GV_X_Accel_Redirect_mount_point'));
-
-        return $factory;
+        return new self(
+            $app['phraseanet.registry']->get('GV_modxsendfile'),
+            array(
+                $app['phraseanet.registry']->get('GV_X_Accel_Redirect') => $app['phraseanet.registry']->get('GV_X_Accel_Redirect_mount_point'),
+                $app['root.path'] . '/tmp/download/'                    => '/download/',
+                $app['root.path'] . '/tmp/lazaret/'                     => '/lazaret/'
+        ), new \unicode());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function deliverFile($file, $filename = '', $disposition = ResponseHeaderBag::DISPOSITION_INLINE)
+    public function deliverFile($file, $filename = '', $disposition = self::DISPOSITION_INLINE, $mimeType = null ,$cacheDuration = 3600)
     {
         $response = new BinaryFileResponse($file);
         $response->setContentDisposition($disposition, $this->sanitizeFilename($filename), $this->sanitizeFilenameFallback($filename));
 
-        if (self::$X_SEND_FILE) {
+        if ($this->isXSendFileEnable() && $this->isMapped($file)) {
             $response->headers->set('X-Accel-Redirect', $this->xAccelRedirectMapping($file));
         }
 
-        $response->headers->set('Pragma', 'public', true);
+        if (null !== $mimeType) {
+             $response->headers->set('Content-Type', $mimeType);
+        }
+
+        $response->setMaxAge($cacheDuration);
 
         return $response;
     }
@@ -66,54 +77,33 @@ class ServeFileResponseFactory implements DeliverDataInterface
     /**
      * {@inheritdoc}
      */
-    public function deliverData($data, $filename, $mimeType, $disposition = ResponseHeaderBag::DISPOSITION_INLINE)
+    public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = 3600)
     {
         $response = new Response($data);
 
         $dispositionHeader = $response->headers->makeDisposition($disposition, $this->sanitizeFilename($filename), $this->sanitizeFilenameFallback($filename));
         $response->headers->set('Content-Disposition', $dispositionHeader);
 
-        $response->headers->set('pragma', 'no-cache');
         $response->headers->set('Content-Type', $mimeType);
 
-        $response->setMaxAge(3600);
-
-        $d = new \DateTime();
-        $d->format(\DateTime::RFC822);
-
-        $response->setExpires(new \DateTime('1997-07-26'));
-        $response->setLastModified(new \DateTime());
-        $response->setPublic();
+        $response->setMaxAge($cacheDuration);
 
         return $response;
     }
 
-    public function getXAccelRedirectPath()
+    public function isXSendFileEnable()
     {
-        return $this->xAccelRedirectPath;
+        return $this->xSendFileEnable;
     }
 
-    public function setXAccelRedirectPath($xAccelRedirectPath)
+    private function sanitizeXAccelPath($path)
     {
-        $xAccelRedirectPath .= substr($xAccelRedirectPath, -1) === '/' ? '' : '/';
-        $this->xAccelRedirectPath = $xAccelRedirectPath;
-
-        return $this;
+        return sprintf('%s/', rtrim($path, '/'));
     }
 
-    public function getXAccelRedirectMountPoint()
+    private function sanitizeXAccelMountPoint($mountPoint)
     {
-        return $this->xAccelRedirectMountPoint;
-    }
-
-    public function setXAccelRedirectMountPoint($xAccelRedirectMountPoint)
-    {
-        $xAccelRedirectMountPoint = (substr($xAccelRedirectMountPoint, 0, 1) === '/' ? '' : '/') . $xAccelRedirectMountPoint;
-        $xAccelRedirectMountPoint .= substr($xAccelRedirectMountPoint, -1) === '/' ? '' : '/';
-
-        $this->xAccelRedirectMountPoint = $xAccelRedirectMountPoint;
-
-        return $this;
+        return sprintf('/%s/', rtrim(ltrim($mountPoint, '/'), '/'));
     }
 
     private function sanitizeFilename($filename)
@@ -123,23 +113,22 @@ class ServeFileResponseFactory implements DeliverDataInterface
 
     private function sanitizeFilenameFallback($filename)
     {
-        $unicode = new \unicode();
-        return $unicode->remove_nonazAZ09($filename, true, true, true);
+        return $this->unicode->remove_nonazAZ09($filename, true, true, true);
     }
 
     private function xAccelRedirectMapping($file)
     {
-        return str_replace(
-            array(
-                $this->xAccelRedirectPath,
-                $this->rootPath . '/tmp/download/',
-                $this->rootPath . '/tmp/lazaret/'
-            ), array(
-                $this->xAccelRedirectMountPoint,
-                '/download/',
-                '/lazaret/'
-            ),
-            $file
-        );
+        return str_replace(array_keys($this->mappings), array_values($this->mappings), $file);
+    }
+
+    private function isMapped($file)
+    {
+        foreach (array_keys($this->mappings) as $path) {
+            if (false !== strpos($file, $path)) {
+                 return true;
+            }
+        }
+
+        return false;
     }
 }
