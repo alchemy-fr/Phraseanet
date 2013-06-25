@@ -425,8 +425,24 @@ class PhraseaEngine implements SearchEngineInterface
         }
 
         $propositions = $this->getPropositions();
+        $suggestions = $this->getSuggestions();
 
-        return new SearchEngineResult($records, $query, $row['duration'], $offset, $row['total'], $row['total'], $error, '', new ArrayCollection(), $propositions, '');
+        return new SearchEngineResult($records, $query, $row['duration'], $offset, $row['total'], $row['total'], $error, '', $suggestions, $propositions, '');
+    }
+
+    /**
+     * Returns suggestions for api
+     *
+     * @return ArrayCollection
+     */
+    private function getSuggestions()
+    {
+        $tsug = array();
+        if ($this->qp && isset($this->qp['main'])) {
+            $tsug = array_values($this->qp['main']->proposals['QUERIES']);
+        }
+
+        return new ArrayCollection($tsug);
     }
 
     /**

@@ -606,7 +606,7 @@ class PhraseaEngineQueryParser
                     $lng = $n->getAttribute("lng");
                     if (!array_key_exists($lng, $tsy))
                         $tsy[$lng] = array();
-                    $zsy = array("v" => $n->getAttribute("v"), "w" => $n->getAttribute("w"), "k" => $n->getAttribute("k"));
+                    $zsy = array("v" => $n->getAttribute("v"), "w" => $n->getAttribute("w"), "k" => $n->getAttribute("k"), "lng" => $lng);
 
                     if ($lngfound == "?" || ($lng == $this->lng && $lngfound != $lng)) {
                         $lngfound = $lng;
@@ -625,7 +625,9 @@ class PhraseaEngineQueryParser
                 }
             }
 
-            $this->proposals['QUERIES'][$syfound["w"]] = $syfound["w"];
+            $ksug = $syfound["w"] . '(' . $syfound["k"] . ')';
+            $vsug = $syfound["w"] . ($syfound["k"] ? (' (' . $syfound["k"] . ')'):'');
+            $this->proposals['QUERIES'][$ksug] = array('value'=>$vsug, 'current'=>$node->getAttribute("marked")=="2", 'hits'=>null, 'lng'=>$syfound['lng']);
 
             $thtml = $syfound["v"];
             $kjs = $syfound["k"] ? ("'" . \p4string::MakeString($syfound["k"], "js") . "'") : "null";
@@ -655,7 +657,6 @@ class PhraseaEngineQueryParser
                         }
                     }
                 }
-                $n->removeAttribute("marked");
                 for ($i = 0; array_key_exists($syfound . $i, $tsort) && $i < 9999; $i++)
                     ;
                 $tsort[$syfound . $i] = $n;
@@ -666,6 +667,8 @@ class PhraseaEngineQueryParser
         foreach ($tsort as $n) {
             $this->propAsHTML($n, $html, $path, $depth + 1);
         }
+
+        $node->removeAttribute("marked");
 
         if ($depth > 0)
             $html .= $tab . "</div>\n";
@@ -837,8 +840,6 @@ class PhraseaEngineQueryParser
         }
 // printf("<%s id='%s'><br/>\n", $DOMnode->tagName, $DOMnode->getAttribute("id"));
 //    printf("<b>found node &lt;%s id='%s' w='%s' k='%s'></b><br/>\n", $DOMnode->nodeName, $DOMnode->getAttribute('id'), $DOMnode->getAttribute('w'), $DOMnode->getAttribute('k'));
-        // on marque le terme principal
-        $DOMnode->parentNode->setAttribute("term", "1");
         // on commence par marquer les fils directs. rappel:$DOMnode pointe sur un sy
         for ($node = $DOMnode->parentNode->firstChild; $node; $node = $node->nextSibling) {
             if ($node->nodeName == "te") {
@@ -852,6 +853,8 @@ class PhraseaEngineQueryParser
                 break; // on a dépassé la racine du thésaurus
             $node->setAttribute("marked", "1");
         }
+        // on marque spécialement le node principal
+        $DOMnode->parentNode->setAttribute("marked", "2");
     }
 
     public function astext_ambigu($tree, &$ambiguites, $mouseCallback = "void", $depth = 0)
