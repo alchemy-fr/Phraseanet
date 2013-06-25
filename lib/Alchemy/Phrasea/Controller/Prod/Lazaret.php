@@ -521,9 +521,7 @@ class Lazaret implements ControllerProviderInterface
 
         $lazaretThumbFileName = $app['root.path'] . '/tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
-        return \set_export::stream_file(
-                $app, $lazaretThumbFileName, $lazaretFile->getOriginalName(), 'image/jpeg', 'inline'
-        );
+        return $app['phraseanet.file-serve']->deliverFile($lazaretThumbFileName, $lazaretFile->getOriginalName());
     }
 
     /**
