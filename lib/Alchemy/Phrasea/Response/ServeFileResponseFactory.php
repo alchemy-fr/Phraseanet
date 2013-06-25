@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Response;
 
 use Alchemy\Phrasea\Response\DeliverDataInterface;
 use Alchemy\Phrasea\Application;
+use Psr\Log\LoggerInterface,
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -21,9 +22,12 @@ class ServeFileResponseFactory implements DeliverDataInterface
     private $xSendFileEnable = false;
     private $mappings;
     private $unicode;
+    private $logger;
 
-    public function __construct($enableXSendFile, $xAccelMappings, \unicode $unicode)
+    public function __construct($enableXSendFile, $xAccelMappings, \unicode $unicode, LoggerInterface $logger = null)
     {
+        $this->logger = $logger;
+
         $this->xSendFileEnable = $enableXSendFile;
 
         $mappings = array();
@@ -50,7 +54,7 @@ class ServeFileResponseFactory implements DeliverDataInterface
                 $app['phraseanet.registry']->get('GV_X_Accel_Redirect') => $app['phraseanet.registry']->get('GV_X_Accel_Redirect_mount_point'),
                 $app['root.path'] . '/tmp/download/'                    => '/download/',
                 $app['root.path'] . '/tmp/lazaret/'                     => '/lazaret/'
-        ), new \unicode());
+        ), new \unicode(), $app['logger']);
     }
 
     /**
@@ -61,8 +65,12 @@ class ServeFileResponseFactory implements DeliverDataInterface
         $response = new BinaryFileResponse($file);
         $response->setContentDisposition($disposition, $this->sanitizeFilename($filename), $this->sanitizeFilenameFallback($filename));
 
-        if ($this->isXSendFileEnable() && $this->isMapped($file)) {
-            $response->headers->set('X-Accel-Redirect', $this->xAccelRedirectMapping($file));
+        if ($this->isXSendFileEnable()) {
+            if ($this->isMappedFile($file)) {
+                $response->headers->set('X-Accel-Redirect', $this->xAccelRedirectMapping($file));
+            } else if (null !== $this->logger) {
+                $this->logger->warning(sprintf('%s is not located under a nginx xAccelPath'));
+            }
         }
 
         if (null !== $mimeType) {
