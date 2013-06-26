@@ -99,10 +99,7 @@ class patch_370a7 implements patchInterface
                     $thumbPath = $app['root.path'] . '/tmp/lazaret/' . sprintf("thumb_%s", $row['filepath']);
 
                     try {
-                        $app['media-alchemyst']
-                            ->open($filePath)
-                            ->turnInto($thumbPath, $spec)
-                            ->close();
+                        $app['media-alchemyst']->turnInto($filePath, $thumbPath, $spec);
                     } catch (MediaAlchemystException $e) {
 
                     }

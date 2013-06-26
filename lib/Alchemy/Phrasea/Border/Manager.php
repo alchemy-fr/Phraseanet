@@ -442,10 +442,7 @@ class Manager
         $spec->setDimensions(375, 275);
 
         try {
-            $this->app['media-alchemyst']
-                ->open($file->getFile()->getPathname())
-                ->turnInto($lazaretPathnameThumb, $spec)
-                ->close();
+            $this->app['media-alchemyst']->turnInto($file->getFile()->getPathname(), $lazaretPathnameThumb, $spec);
         } catch (MediaAlchemystException $e) {
 
         }

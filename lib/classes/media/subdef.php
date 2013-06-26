@@ -563,9 +563,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $specs->setRotationAngle($angle);
 
         try {
-            $alchemyst->open($this->get_pathfile())
-                ->turnInto($this->get_pathfile(), $specs)
-                ->close();
+            $alchemyst->turnInto($this->get_pathfile(), $this->get_pathfile(), $specs);
         } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
             return $this;
         }
