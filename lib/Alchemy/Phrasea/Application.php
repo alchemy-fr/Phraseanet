@@ -76,7 +76,7 @@ use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\XSendFileSuscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\XSendFileSubscriber;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
@@ -413,7 +413,7 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new LogoutSubscriber());
                 $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
                 $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
-                $dispatcher->addSubscriber(new XSendFileSuscriber($app));
+                $dispatcher->addSubscriber(new XSendFileSubscriber($app));
 
                 return $dispatcher;
             })
