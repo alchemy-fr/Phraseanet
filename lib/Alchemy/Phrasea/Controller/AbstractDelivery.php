@@ -71,6 +71,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
 
                     $response->setMaxAge($expiration);
                     $response->setSharedMaxAge($expiration);
+                    $response->setPublic();
                 }
             } catch (\Exception $e) {
 
