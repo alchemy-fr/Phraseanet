@@ -1256,12 +1256,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "85271c70bd5eb6d42d7f02521fb10f3b36307cc7"
+                "reference": "c51db47c1eccbf72799a2b506f9b050448828d49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/85271c70bd5eb6d42d7f02521fb10f3b36307cc7",
-                "reference": "85271c70bd5eb6d42d7f02521fb10f3b36307cc7",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/c51db47c1eccbf72799a2b506f9b050448828d49",
+                "reference": "c51db47c1eccbf72799a2b506f9b050448828d49",
                 "shasum": ""
             },
             "require": {
@@ -1319,7 +1319,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-06-26 10:45:28"
+            "time": "2013-06-26 17:36:09"
         },
         {
             "name": "mediavorus/mediavorus",
@@ -1750,12 +1750,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
-                "reference": "890cbce1f9505e15e20c122c94bc7a2a9ce64417"
+                "reference": "a39d8939dbc9992e290c5c0525964662c934eb9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/890cbce1f9505e15e20c122c94bc7a2a9ce64417",
-                "reference": "890cbce1f9505e15e20c122c94bc7a2a9ce64417",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/a39d8939dbc9992e290c5c0525964662c934eb9c",
+                "reference": "a39d8939dbc9992e290c5c0525964662c934eb9c",
                 "shasum": ""
             },
             "require": {
@@ -1810,7 +1810,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-06-25 22:21:12"
+            "time": "2013-06-26 13:17:16"
         },
         {
             "name": "php-mp4box/php-mp4box",
