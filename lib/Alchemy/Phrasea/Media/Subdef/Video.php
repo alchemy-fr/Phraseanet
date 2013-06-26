@@ -20,6 +20,7 @@ namespace Alchemy\Phrasea\Media\Subdef;
 class Video extends Audio
 {
     const OPTION_SIZE = 'size';
+    const OPTION_BITRATE = 'bitrate';
     const OPTION_FRAMERATE = 'fps';
     const OPTION_VCODEC = 'vcodec';
     const OPTION_GOPSIZE = 'GOPsize';
@@ -30,6 +31,7 @@ class Video extends Audio
     {
         parent::__construct();
 
+        $this->registerOption(new OptionType\Range(_('Birate'), self::OPTION_BITRATE, 100, 4000, 800));
         $this->registerOption(new OptionType\Range(_('GOP size'), self::OPTION_GOPSIZE, 1, 300, 10));
         $this->registerOption(new OptionType\Range(_('Dimension'), self::OPTION_SIZE, 64, 2000, 600, 16));
         $this->registerOption(new OptionType\Range(_('Frame Rate'), self::OPTION_FRAMERATE, 1, 200, 20));
@@ -58,6 +60,7 @@ class Video extends Audio
 
         $this->spec->setAudioCodec($this->getOption(self::OPTION_ACODEC)->getValue());
         $this->spec->setAudioSampleRate($this->getOption(self::OPTION_AUDIOSAMPLERATE)->getValue());
+        $this->spec->setAudioKiloBitrate($this->getOption(self::OPTION_AUDIOBITRATE)->getValue());
         $this->spec->setKiloBitrate($this->getOption(self::OPTION_BITRATE)->getValue());
         $this->spec->setVideoCodec($this->getOption(self::OPTION_VCODEC)->getValue());
         $this->spec->setDimensions($size, $size);
