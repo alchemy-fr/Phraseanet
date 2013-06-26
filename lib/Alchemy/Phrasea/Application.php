@@ -308,12 +308,7 @@ class Application extends SilexApplication
         $this->register(new ValidatorServiceProvider());
 
         $this->register(new XPDFServiceProvider());
-        $this->register(new XSendFileMappingServiceProvider(), array(
-            'xsendfile.mapping' => array(
-                $this['root.path'] . '/tmp/download/' => '/download/',
-                $this['root.path'] . '/tmp/lazaret/'  => '/lazaret/'
-            )
-        ));
+        $this->register(new XSendFileMappingServiceProvider());
         $this->register(new FileServeServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {

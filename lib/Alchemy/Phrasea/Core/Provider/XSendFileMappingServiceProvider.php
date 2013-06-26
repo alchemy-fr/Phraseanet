@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\XSendFile\Mapping;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -20,24 +19,27 @@ class XSendFileMappingServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        if (!isset($app['xsendfile.mapping'])) {
-            $app['xsendfile.mapping'] = array();
-        }
-
-        if (!is_array($app['xsendfile.mapping'])) {
-            throw new InvalidArgumentException('XSendFile mapping must be an array');
-        }
-
-        $app['phraseanet.xsendfile-mapping'] = $app->share(function($app) {
+        $app['xsendfile.mapping'] = $app->share(function(Application $app) {
             $mapping = array();
-            foreach($app['xsendfile.mapping'] as $path => $mountPoint) {
-                $mapping[] = array(
-                    'directory' => $path,
-                    'mount-point' => $mountPoint,
-                );
+
+            if (isset($app['phraseanet.configuration']['xsendfile']['mapping'])) {
+                $mapping = $app['phraseanet.configuration']['xsendfile']['mapping'];
             }
 
-            return Mapping::create($app, $mapping);
+            $mapping[] = array(
+                'directory' => $app['root.path'] . '/tmp/download/',
+                'mount-point' => '/download/',
+            );
+            $mapping[] = array(
+                'directory' => $app['root.path'] . '/tmp/lazaret/',
+                'mount-point' => '/lazaret/',
+            );
+
+            return $mapping;
+        });
+
+        $app['phraseanet.xsendfile-mapping'] = $app->share(function($app) {
+            return new Mapping($app['xsendfile.mapping']);
         });
     }
 

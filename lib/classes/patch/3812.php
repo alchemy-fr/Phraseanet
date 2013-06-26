@@ -32,7 +32,7 @@ class patch_3812 implements patchInterface
      */
     public function require_all_upgrades()
     {
-        return true;
+        return false;
     }
 
     /**
