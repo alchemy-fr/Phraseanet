@@ -198,26 +198,6 @@ return call_user_func_array(function(Application $app) {
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
-                    'name'    => 'GV_modxsendfile',
-                    'comment' => _('reglages:: mod_xsendfileapache active'),
-                    'default' => false
-                ),
-                array(
-                    'type'      => \registry::TYPE_STRING,
-                    'name'      => 'GV_X_Accel_Redirect',
-                    'comment'   => _('reglages:: Path en acces pour X-Accel-Redirect (NginX Uniquement)'),
-                    'default'   => '',
-                    'end_slash' => true
-                ),
-                array(
-                    'type'      => \registry::TYPE_STRING,
-                    'name'      => 'GV_X_Accel_Redirect_mount_point',
-                    'comment'   => _('reglages:: Point de montage pour X-Accel-Redirect (NginX Uniquement)'),
-                    'default'   => 'noweb',
-                    'end_slash' => false
-                ),
-                array(
-                    'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_h264_streaming',
                     'comment' => _('reglages:: activation du stream h264 via mod_token - attention, necessite les modules apache mod_h264_streaming et mod_auth_token'),
                     'default' => false

@@ -99,6 +99,7 @@ use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
+use Alchemy\Phrasea\Core\Provider\XSendFileMappingServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
@@ -306,6 +307,12 @@ class Application extends SilexApplication
         $this->register(new ValidatorServiceProvider());
 
         $this->register(new XPDFServiceProvider());
+        $this->register(new XSendFileMappingServiceProvider(), array(
+            'xsendfile.mapping' => array(
+                $this['root.path'] . '/tmp/download/' => '/download/',
+                $this['root.path'] . '/tmp/lazaret/'  => '/lazaret/'
+            )
+        ));
         $this->register(new FileServeServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
