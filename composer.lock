@@ -1649,13 +1649,13 @@
             "version": "0.2.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
-                "reference": "0.2.4"
+                "url": "https://github.com/alchemy-fr/PHP-FFmpeg",
+                "reference": "1c504e9b4d4bcdbc2d8fef5a954127303fae8b77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0.2.4",
-                "reference": "0.2.4",
+                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/archive/1c504e9b4d4bcdbc2d8fef5a954127303fae8b77.zip",
+                "reference": "1c504e9b4d4bcdbc2d8fef5a954127303fae8b77",
                 "shasum": ""
             },
             "require": {
