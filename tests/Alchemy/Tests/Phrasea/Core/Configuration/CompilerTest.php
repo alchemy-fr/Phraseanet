@@ -47,6 +47,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
             array(array()),
             array(array('key' => array('value1', 'value2', 'booleantrue' => true, 'booleanfalse' => false), array('gizmo'))),
             array(array(array(array()))),
+            array(array(null, false, array(), true)),
             array(array('key' => 'value', "associativeint" => 12345, 34567)),
         );
     }
