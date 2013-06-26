@@ -24,7 +24,7 @@ class XSendFileMappingNginxDumper extends Command
     {
         parent::__construct('xsendfile:dump-nginx');
 
-        $this->setDescription('Dump xsendfile mapping for Nginx and Apache web server');
+        $this->setDescription('Dump xsendfile mapping for Nginx web server');
     }
 
     /**

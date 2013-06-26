@@ -20,7 +20,7 @@ class Mapping
 
     /**
      * @param array $mapping
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $mapping)
     {
@@ -49,6 +49,12 @@ class Mapping
         return $this->mapping;
     }
 
+    /**
+     * @param \Alchemy\Phrasea\Application $app
+     * @param array $mapping
+     * @return \Alchemy\Phrasea\XSendFile\Mapping
+     * @throws InvalidArgumentException
+     */
     public static function create(Application $app, array $mapping = array())
     {
         if (isset($app['phraseanet.configuration']['xsendfile']['mapping'])) {
@@ -80,11 +86,11 @@ class Mapping
     {
         foreach($mapping as $entry) {
             if (!is_array($entry)) {
-                throw new \InvalidArgumentException('XSendFile mapping entry must be an array');
+                throw new InvalidArgumentException('XSendFile mapping entry must be an array');
             }
 
             if (!isset($entry['directory']) && !isset($entry['mount-point'])) {
-                throw new \InvalidArgumentException('XSendFile mapping entry must contain at least two keys "directory" and "mounbt-point"');
+                throw new InvalidArgumentException('XSendFile mapping entry must contain at least two keys "directory" and "mounbt-point"');
             }
         }
     }
