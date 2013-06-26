@@ -13,32 +13,17 @@ namespace Alchemy\Phrasea\Response;
 
 use Alchemy\Phrasea\Response\DeliverDataInterface;
 use Alchemy\Phrasea\Application;
-use Psr\Log\LoggerInterface,
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ServeFileResponseFactory implements DeliverDataInterface
 {
     private $xSendFileEnable = false;
-    private $mappings;
     private $unicode;
-    private $logger;
 
-    public function __construct($enableXSendFile, $xAccelMappings, \unicode $unicode, LoggerInterface $logger = null)
+    public function __construct($enableXSendFile, \unicode $unicode)
     {
-        $this->logger = $logger;
-
         $this->xSendFileEnable = $enableXSendFile;
-
-        $mappings = array();
-
-        foreach ($xAccelMappings as $path => $mountPoint) {
-            if (is_dir($path) && '' !== $mountPoint) {
-                $mappings[$this->sanitizeXAccelPath($path)] = $this->sanitizeXAccelMountPoint($mountPoint);
-            }
-        }
-
-        $this->mappings = $mappings;
         $this->unicode = $unicode;
     }
 
@@ -49,12 +34,9 @@ class ServeFileResponseFactory implements DeliverDataInterface
     public static function create(Application $app)
     {
         return new self(
-            $app['phraseanet.registry']->get('GV_modxsendfile'),
-            array(
-                $app['phraseanet.registry']->get('GV_X_Accel_Redirect') => $app['phraseanet.registry']->get('GV_X_Accel_Redirect_mount_point'),
-                $app['root.path'] . '/tmp/download/'                    => '/download/',
-                $app['root.path'] . '/tmp/lazaret/'                     => '/lazaret/'
-        ), new \unicode(), $app['logger']);
+            $app['phraseanet.configuration']['xsendfile']['enable'],
+            $app['unicode']
+        );
     }
 
     /**
@@ -66,11 +48,7 @@ class ServeFileResponseFactory implements DeliverDataInterface
         $response->setContentDisposition($disposition, $this->sanitizeFilename($filename), $this->sanitizeFilenameFallback($filename));
 
         if ($this->isXSendFileEnable()) {
-            if ($this->isMappedFile($file)) {
-                $response->headers->set('X-Accel-Redirect', $this->xAccelRedirectMapping($file));
-            } else if (null !== $this->logger) {
-                $this->logger->warning(sprintf('%s is not located under a nginx xAccelPath'));
-            }
+            BinaryFileResponse::trustXSendfileTypeHeader();
         }
 
         if (null !== $mimeType) {
@@ -104,16 +82,6 @@ class ServeFileResponseFactory implements DeliverDataInterface
         return $this->xSendFileEnable;
     }
 
-    private function sanitizeXAccelPath($path)
-    {
-        return sprintf('%s/', rtrim($path, '/'));
-    }
-
-    private function sanitizeXAccelMountPoint($mountPoint)
-    {
-        return sprintf('/%s/', rtrim(ltrim($mountPoint, '/'), '/'));
-    }
-
     private function sanitizeFilename($filename)
     {
         return str_replace(array('/', '\\'), '', $filename);
@@ -122,21 +90,5 @@ class ServeFileResponseFactory implements DeliverDataInterface
     private function sanitizeFilenameFallback($filename)
     {
         return $this->unicode->remove_nonazAZ09($filename, true, true, true);
-    }
-
-    private function xAccelRedirectMapping($file)
-    {
-        return str_replace(array_keys($this->mappings), array_values($this->mappings), $file);
-    }
-
-    private function isMapped($file)
-    {
-        foreach (array_keys($this->mappings) as $path) {
-            if (false !== strpos($file, $path)) {
-                 return true;
-            }
-        }
-
-        return false;
     }
 }

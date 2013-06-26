@@ -3,6 +3,8 @@
 namespace Alchemy\Tests\Phrasea\Response;
 
 use Alchemy\Phrasea\Response\ServeFileResponseFactory;
+use Alchemy\Phrasea\XSendFile\Mapping;
+use Symfony\Component\HttpFoundation\Request;
 
 class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 {
@@ -10,11 +12,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
     public function testDeliverFile()
     {
-        $this->factory = new ServeFileResponseFactory(
-            false,
-            array(
-            __DIR__ . '/../../../../files/' => '/protected/'
-        ), new \unicode());
+        $this->factory = new ServeFileResponseFactory(false, new \unicode());
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg');
 
@@ -24,11 +22,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
     public function testDeliverFileWithFilename()
     {
-        $this->factory = new ServeFileResponseFactory(
-            false,
-            array(
-            __DIR__ . '/../../../../files/' => '/protected/'
-        ), new \unicode());
+        $this->factory = new ServeFileResponseFactory(false, new \unicode());
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg');
 
@@ -38,11 +32,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
     public function testDeliverFileWithFilenameAndDisposition()
     {
-        $this->factory = new ServeFileResponseFactory(
-            false,
-            array(
-            __DIR__ . '/../../../../files/' => '/protected/'
-        ), new \unicode());
+        $this->factory = new ServeFileResponseFactory(false, new \unicode());
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg', 'attachment');
 
@@ -52,13 +42,18 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
     public function testDeliverFileWithFilenameAndDispositionAndXSendFile()
     {
-        $this->factory = new ServeFileResponseFactory(
-            true,
+        $this->factory = new ServeFileResponseFactory(true, new \unicode());
+        $request = Request::create('/');
+        $request->headers->set('X-SendFile-Type', 'X-Accel-Redirect');
+        $request->headers->set('X-Accel-Mapping', (string) new Mapping(array(
             array(
-            __DIR__ . '/../../../../files/' => '/protected/'
-        ), new \unicode());
+                'directory' => __DIR__ . '/../../../../files/',
+                'mount-point' => '/protected/'
+            )
+        )));
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg', 'attachment');
+        $response->prepare($request);
 
         $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
         $this->assertEquals('attachment; filename="toto.jpg"', $response->headers->get('content-disposition'));
@@ -67,13 +62,18 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
     public function testDeliverFileWithFilenameAndDispositionAndXSendFileAndNoTrailingSlashes()
     {
-        $this->factory = new ServeFileResponseFactory(
-            true,
+        $this->factory = new ServeFileResponseFactory(true, new \unicode());
+        $request = Request::create('/');
+        $request->headers->set('X-SendFile-Type', 'X-Accel-Redirect');
+        $request->headers->set('X-Accel-Mapping', (string) new Mapping(array(
             array(
-            __DIR__ . '/../../../../files' => 'protected'
-        ), new \unicode());
+                'directory' => __DIR__ . '/../../../../files/',
+                'mount-point' => '/protected/'
+            )
+        )));
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg', 'attachment');
+        $response->prepare($request);
 
         $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
         $this->assertEquals('attachment; filename="toto.jpg"', $response->headers->get('content-disposition'));
@@ -85,37 +85,36 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testDeliverUnexistingFile()
     {
-        $this->factory = new ServeFileResponseFactory(
-            true,
-            array(
-            __DIR__ . '/../../../../files' => 'protected'
-        ), new \unicode());
+        $this->factory = new ServeFileResponseFactory(true, new \unicode());
 
         $this->factory->deliverFile(__DIR__ . '/../../../../files/does_not_exists.jpg', 'toto.jpg', 'attachment');
     }
 
     public function testDeliverFileWithFilenameAndDispositionAndXSendFileButFileNotInXAccelMapping()
     {
-        $this->factory = new ServeFileResponseFactory(
-            true,
+        $this->factory = new ServeFileResponseFactory(true, new \unicode());
+        $request = Request::create('/');
+        $request->headers->set('X-SendFile-Type', 'X-Accel-Redirect');
+        $request->headers->set('X-Accel-Mapping', (string) new Mapping(array(
             array(
-            __DIR__ . '/../../../../files' => 'protected'
-        ), new \unicode());
+                'directory' => __DIR__ . '/../../../../files/',
+                'mount-point' => '/protected/'
+            )
+        )));
 
-        $response = $this->factory->deliverFile(__DIR__ . '/../../../../classes/PhraseanetPHPUnitAbstract.php', 'PhraseanetPHPUnitAbstract.php', 'attachment');
+        $file = __DIR__ . '/../../../../classes/PhraseanetPHPUnitAbstract.php';
+
+        $response = $this->factory->deliverFile($file, 'PhraseanetPHPUnitAbstract.php', 'attachment');
+        $response->prepare($request);
 
         $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
         $this->assertEquals('attachment; filename="PhraseanetPHPUnitAbstract.php"', $response->headers->get('content-disposition'));
-        $this->assertEquals(null, $response->headers->get('x-accel-redirect'));
+        $this->assertEquals(realpath($file), $response->headers->get('x-accel-redirect'));
     }
 
     public function testDeliverDatas()
     {
-        $this->factory = new ServeFileResponseFactory(
-            false,
-            array(
-            __DIR__ . '/../../../../files/' => '/protected/'
-        ), new \unicode());
+        $this->factory = new ServeFileResponseFactory(false, new \unicode());
 
         $data = 'Sex,Name,Birthday
                 M,Alphonse,1932
