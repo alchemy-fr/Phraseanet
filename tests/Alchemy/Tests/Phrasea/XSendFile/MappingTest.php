@@ -6,6 +6,7 @@ use Alchemy\Phrasea\XSendFile\Mapping;
 
 class MappingTest extends \PhraseanetWebTestCaseAbstract
 {
+
     public function testOneMapping()
     {
         $mapping = new Mapping(array(
@@ -15,12 +16,12 @@ class MappingTest extends \PhraseanetWebTestCaseAbstract
             )
         ));
 
-        $this->assertEquals('/protected/=/home/nlegoff/workspace/Phraseanet/tests/files/', (string) $mapping);
+        $this->assertEquals('/protected=/home/nlegoff/workspace/Phraseanet/tests/files', (string) $mapping);
     }
 
     public function testMultiMapping()
     {
-         $mapping = new Mapping(array(
+        $mapping = new Mapping(array(
             array(
                 'directory' => __DIR__ . '/../../../../files/',
                 'mount-point' => '/protected/'
@@ -31,12 +32,12 @@ class MappingTest extends \PhraseanetWebTestCaseAbstract
             ),
         ));
 
-        $this->assertEquals('/protected/=/home/nlegoff/workspace/Phraseanet/tests/files/,/uploads/=/home/nlegoff/workspace/Phraseanet/tests/', (string) $mapping);
+        $this->assertEquals('/protected=/home/nlegoff/workspace/Phraseanet/tests/files,/uploads=/home/nlegoff/workspace/Phraseanet/tests', (string) $mapping);
     }
 
     public function testMultiMappingWithANotExsistingDir()
     {
-         $mapping = new Mapping(array(
+        $mapping = new Mapping(array(
             array(
                 'directory' => __DIR__ . '/../../../../files/',
                 'mount-point' => '/protected/'
@@ -47,12 +48,12 @@ class MappingTest extends \PhraseanetWebTestCaseAbstract
             ),
         ));
 
-        $this->assertEquals('/protected/=/home/nlegoff/workspace/Phraseanet/tests/files/', (string) $mapping);
+        $this->assertEquals('/protected=/home/nlegoff/workspace/Phraseanet/tests/files', (string) $mapping);
     }
 
     public function testEmptyMapping()
     {
-         $mapping = new Mapping(array());
+        $mapping = new Mapping(array());
 
         $this->assertEquals('', (string) $mapping);
     }

@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\XSendFile;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
 class Mapping
@@ -20,12 +19,12 @@ class Mapping
 
     /**
      * @param array $mapping
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(array $mapping)
     {
         $this->validate($mapping);
-
         $this->mapping = $mapping;
     }
 
@@ -49,37 +48,14 @@ class Mapping
         return $this->mapping;
     }
 
-    /**
-     * @param \Alchemy\Phrasea\Application $app
-     * @param array $mapping
-     * @return \Alchemy\Phrasea\XSendFile\Mapping
-     * @throws InvalidArgumentException
-     */
-    public static function create(Application $app, array $mapping = array())
-    {
-        if (isset($app['phraseanet.configuration']['xsendfile']['mapping'])) {
-            $confMapping = $app['phraseanet.configuration']['xsendfile']['mapping'];
-
-            if (!is_array($confMapping)) {
-                throw new InvalidArgumentException('XSendFile mapping configuration must be an array');
-            }
-
-            foreach($confMapping as $entry) {
-                $mapping[] = $entry;
-            }
-        }
-
-        return new Mapping($mapping);
-    }
-
     public function sanitizePath($path)
     {
-        return sprintf('/%s', rtrim(ltrim($path, '/'),'/'));
+        return sprintf('/%s', trim($path, '/'));
     }
 
     public function sanitizeMountPoint($mountPoint)
     {
-        return sprintf('/%s', rtrim(ltrim($mountPoint, '/'), '/'));
+        return sprintf('/%s', trim($mountPoint, '/'));
     }
 
     private function validate(array $mapping)

@@ -23,7 +23,12 @@ class ServeFileResponseFactory implements DeliverDataInterface
 
     public function __construct($enableXSendFile, \unicode $unicode)
     {
-        $this->xSendFileEnable = $enableXSendFile;
+        $this->xSendFileEnable = (Boolean) $enableXSendFile;
+
+        if ($this->xSendFileEnable) {
+            BinaryFileResponse::trustXSendfileTypeHeader();
+        }
+
         $this->unicode = $unicode;
     }
 
@@ -46,10 +51,6 @@ class ServeFileResponseFactory implements DeliverDataInterface
     {
         $response = new BinaryFileResponse($file);
         $response->setContentDisposition($disposition, $this->sanitizeFilename($filename), $this->sanitizeFilenameFallback($filename));
-
-        if ($this->isXSendFileEnable()) {
-            BinaryFileResponse::trustXSendfileTypeHeader();
-        }
 
         if (null !== $mimeType) {
              $response->headers->set('Content-Type', $mimeType);
