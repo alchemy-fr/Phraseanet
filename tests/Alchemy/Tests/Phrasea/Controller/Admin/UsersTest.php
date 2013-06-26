@@ -285,7 +285,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteCreateUserAndValidateEmail()
     {
-        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup');
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation');
         $username = uniqid('user_');
 
         self::$DI['client']->request('POST', '/admin/users/create/', array(
@@ -312,7 +312,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteCreateUserAndSendCredentials()
     {
-        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered');
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup');
         $username = uniqid('user_');
 
         self::$DI['client']->request('POST', '/admin/users/create/', array(

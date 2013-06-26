@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Helper\Helper;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
-use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
+use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 
 /**
  *
@@ -185,12 +185,9 @@ class Manage extends Helper
                 if ($receiver) {
                     $expire = new \DateTime('+3 days');
                     $token = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id(), $expire, $createdUser->get_email());
+                    $url = $this->app->url('login_register_confirm', array('code' => $token));
 
-                    $mail = MailRequestPasswordSetup::create($this->app, $receiver);
-                    $mail->setLogin($createdUser->get_login());
-                    $mail->setButtonUrl($this->app->url('login_register_confirm', array('code' => $token)));
-                    $mail->setExpiration($expire);
-
+                    $mail = MailRequestEmailConfirmation::create($this->app, $receiver, null, '', $url, $expire);
                     $this->app['notification.deliverer']->deliver($mail);
                 }
             }
@@ -199,8 +196,9 @@ class Manage extends Helper
                 $urlToken = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id());
 
                 if ($receiver && false !== $urlToken) {
-                    $mail = MailSuccessEmailConfirmationUnregistered::create($this->app, $receiver);
-                    $mail->setButtonUrl($this->app->url('login_forgot_password', array('token' => $urlToken)));
+                    $url = $this->app->url('login_renew_password', array('token' => $urlToken));
+                    $mail = MailRequestPasswordSetup::create($this->app, $receiver, null, '', $url);
+                    $mail->setLogin($createdUser->get_login());
                     $this->app['notification.deliverer']->deliver($mail);
                 }
             }
