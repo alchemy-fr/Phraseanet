@@ -13,10 +13,12 @@ var p4 = p4 || {};
             viewNbSelect();
           },
           callbackSelection:function(element){
-            return $(element).attr('id').split('_').slice(1,3).join('_');
+            var elements = $(element).attr('id').split('_');
+
+            return elements.slice(elements.length - 2 ,elements.length).join('_');
           }
         })
       };
 
   return;
-}(p4, window))
+}(p4, window));
