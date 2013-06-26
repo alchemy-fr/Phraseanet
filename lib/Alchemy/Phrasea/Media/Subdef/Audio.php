@@ -31,7 +31,7 @@ class Audio extends Provider
             47250, 48000, 50000, 50400, 88200, 96000
         );
 
-        $this->registerOption(new OptionType\Range(_('Audio Birate'), self::OPTION_AUDIOBITRATE, 32, 1024, 128));
+        $this->registerOption(new OptionType\Range(_('Audio Birate'), self::OPTION_AUDIOBITRATE, 32, 320, 128, 32));
         $this->registerOption(new OptionType\Enum(_('AudioSamplerate'), self::OPTION_AUDIOSAMPLERATE, $AVaudiosamplerate));
         $this->registerOption(new OptionType\Enum(_('Audio Codec'), self::OPTION_ACODEC, array('libmp3lame', 'flac'), 'libmp3lame'));
     }
