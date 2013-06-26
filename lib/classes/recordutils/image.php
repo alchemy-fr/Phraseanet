@@ -75,6 +75,7 @@ class recordutils_image extends recordutils
     public static function stamp(Application $app, \media_subdef $subdef)
     {
         $base_id = $subdef->get_record()->get_base_id();
+        $binaries = $app['phraseanet.configuration']['binaries'];
 
         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
             return $subdef->get_pathfile();
@@ -84,7 +85,7 @@ class recordutils_image extends recordutils
             return $subdef->get_pathfile();
         }
 
-        if ( ! $app['phraseanet.registry']->get('convert_binary')) {
+        if ( ! isset($binaries['convert_binary'])) {
             return $subdef->get_pathfile();
         }
 
@@ -287,7 +288,7 @@ class recordutils_image extends recordutils
 
         $newh = $image_height + $stampheight;
 
-        $builder = ProcessBuilder::create(array($app['phraseanet.registry']->get('convert_binary')));
+        $builder = ProcessBuilder::create(array($binaries['convert_binary']));
         $builder->add('-extent')
             ->add($image_width . 'x' . $newh)
             ->add('-draw')
@@ -316,6 +317,7 @@ class recordutils_image extends recordutils
     public static function watermark(Application $app, \media_subdef $subdef)
     {
         $base_id = $subdef->get_record()->get_base_id();
+        $binaries = $app['phraseanet.configuration']['binaries'];
 
         if ($subdef->get_name() !== 'preview') {
             return $subdef->get_pathfile();
@@ -341,11 +343,11 @@ class recordutils_image extends recordutils
             return $pathOut;
         }
 
-        if ($app['phraseanet.registry']->get('composite_binary') &&
+        if (isset($binaries['composite_binary']) &&
             file_exists($app['root.path'] . '/config/wm/' . $base_id)) {
 
             $builder = ProcessBuilder::create(array(
-                    $app['phraseanet.registry']->get('composite_binary'),
+                    $binaries['composite_binary'],
                     $app['root.path'] . '/config/wm/' . $base_id,
                     $pathIn,
                     '-strip', '-watermark', '90%', '-gravity', 'center',
@@ -353,7 +355,7 @@ class recordutils_image extends recordutils
                 ));
 
             $builder->getProcess()->run();
-        } elseif ($app['phraseanet.registry']->get('convert_binary')) {
+        } elseif (isset($binaries['convert_binary'])) {
             $collname = phrasea::bas_labels($base_id, $app);
             $tailleimg = @getimagesize($pathIn);
             $max = ($tailleimg[0] > $tailleimg[1] ? $tailleimg[0] : $tailleimg[1]);
@@ -369,7 +371,7 @@ class recordutils_image extends recordutils
                 $decalage = 1;
 
             $builder = ProcessBuilder::create(array(
-                $app['phraseanet.registry']->get('convert_binary'),
+                $binaries['convert_binary'],
                 '-fill', 'white', '-draw', 'line 0,0 ' . $tailleimg[0] . ',' . $tailleimg[1] . '',
                 '-fill', 'black', '-draw', 'line 1,0 ' . $tailleimg[0] + 1 . ',' . $tailleimg[1] . '',
                 '-fill', 'white', '-draw', 'line ' . $tailleimg[0] . ',0 0,' . $tailleimg[1] . '',

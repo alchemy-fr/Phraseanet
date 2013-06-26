@@ -90,12 +90,12 @@ class patch_373 implements patchInterface
             'GV_pdftotext'     => 'pdftotext_binary',
         );
 
-        $binaries = array('ghostscript_binary' => '');
+        $binaries = array('ghostscript_binary' => null);
 
         foreach ($Regbinaries as $name) {
             $stmt->execute(array(':key' => $name));
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $value = is_executable($row['value']) ? $row['value'] : '';
+            $value = is_executable($row['value']) ? $row['value'] : null;
 
             $binaries[$mapping[$name]] = $value;
         }

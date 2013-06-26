@@ -16,20 +16,20 @@ use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
 
 class BinariesProbe extends BinariesRequirements implements ProbeInterface
 {
-    public function __construct(\registryInterface $registry)
+    public function __construct(array $binaries)
     {
         parent::__construct(array_filter(array(
-            'php_binary'         => $registry->get('php_binary'),
-            'convert_binary'     => $registry->get('convert_binary'),
-            'pdf2swf_binary'     => $registry->get('pdf2swf_binary'),
-            'unoconv_binary'     => $registry->get('unoconv_binary'),
-            'swf_extract_binary' => $registry->get('swf_extract_binary'),
-            'swf_render_binary'  => $registry->get('swf_render_binary'),
-            'mp4box_binary'      => $registry->get('mp4box_binary'),
-            'pdftotext_binary'   => $registry->get('pdftotext_binary'),
-            'composite_binary'   => $registry->get('composite_binary'),
-            'ffmpeg_binary'      => $registry->get('ffmpeg_binary'),
-            'ffprobe_binary'     => $registry->get('ffprobe_binary'),
+            'php_binary'         => isset($binaries['php_binary']) ? $binaries['php_binary'] : null,
+            'convert_binary'     => isset($binaries['convert_binary']) ? $binaries['convert_binary'] : null,
+            'pdf2swf_binary'     => isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : null,
+            'unoconv_binary'     => isset($binaries['unoconv_binary']) ? $binaries['unoconv_binary'] : null,
+            'swf_extract_binary' => isset($binaries['swf_extract_binary']) ? $binaries['swf_extract_binary'] : null,
+            'swf_render_binary'  => isset($binaries['swf_render_binary']) ? $binaries['swf_render_binary'] : null,
+            'mp4box_binary'      => isset($binaries['mp4box_binary']) ? $binaries['mp4box_binary'] : null,
+            'pdftotext_binary'   => isset($binaries['pdftotext_binary']) ? $binaries['pdftotext_binary'] : null,
+            'composite_binary'   => isset($binaries['composite_binary']) ? $binaries['composite_binary'] : null,
+            'ffmpeg_binary'      => isset($binaries['ffmpeg_binary']) ? $binaries['ffmpeg_binary'] : null,
+            'ffprobe_binary'     => isset($binaries['ffprobe_binary']) ? $binaries['ffprobe_binary'] : null,
         )));
     }
 
@@ -40,6 +40,6 @@ class BinariesProbe extends BinariesRequirements implements ProbeInterface
      */
     public static function create(Application $app)
     {
-        return new static($app['phraseanet.registry']);
+        return new static($app['phraseanet.configuration']['binaries']);
     }
 }
