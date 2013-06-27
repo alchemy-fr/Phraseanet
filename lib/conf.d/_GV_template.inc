@@ -9,9 +9,9 @@ return call_user_func_array(function(Application $app) {
     $youtube_console_url = '<a href="https://code.google.com/apis/console/" target="_blank">https://code.google.com/apis/console/</a>';
     $dashboard_youtube = '<a href="https://code.google.com/apis/youtube/dashboard/" target="_blank">https://code.google.com/apis/youtube/dashboard/</a>';
     $create_api_flickr = '<a href="https://secure.flickr.com/services/apps/create/" target="_blank">https://secure.flickr.com/services/apps/create/</a>';
-    $youtube_callback = trim($app['phraseanet.registry']->get('GV_ServerName'),'/') . '/prod/bridge/callback/youtube/';
-    $flickr_callback = trim($app['phraseanet.registry']->get('GV_ServerName'),'/') . '/prod/bridge/callback/flickr/';
-    $dailymotion_callback = trim($app['phraseanet.registry']->get('GV_ServerName'),'/') . '/prod/bridge/callback/dailymotion/';
+    $youtube_callback = trim($app['phraseanet.configuration']['main']['servername'],'/') . '/prod/bridge/callback/youtube/';
+    $flickr_callback = trim($app['phraseanet.configuration']['main']['servername'],'/') . '/prod/bridge/callback/flickr/';
+    $dailymotion_callback = trim($app['phraseanet.configuration']['main']['servername'],'/') . '/prod/bridge/callback/dailymotion/';
     $create_api_dailymotion = '<a href="http://www.dailymotion.com/profile/developer" target="_blank">http://www.dailymotion.com/profile/developer</a>';
 
     return array(
@@ -71,7 +71,7 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'      => \registry::TYPE_STRING,
                     'name'      => 'GV_i18n_service',
-                    'comment'   => _('Use a Geonames Server'),
+                    'comment'   => _('Geonames server address'),
                     'default'   => 'http://localization.webservice.alchemyasp.com/',
                     'end_slash' => true,
                     'required'  => true
@@ -243,7 +243,7 @@ return call_user_func_array(function(Application $app) {
                     'name'      => 'GV_imagine_driver',
                     'default'   => '',
                     'comment'   => _('Imagine driver'),
-                    'help'   => _('See') . ' <a href="http://imagine.readthedocs.org/en/latest/usage/introduction.html">http://imagine.readthedocs.org/en/latest/usage/introduction.html</a> ',
+                    'help'      => _('See documentation at %s') . ' <a href="http://imagine.readthedocs.org/en/latest/usage/introduction.html">http://imagine.readthedocs.org/en/latest/usage/introduction.html</a> ',
                     'available' => array(
                         ''        => 'Auto',
                         'gmagick' => 'GraphicsMagick',
@@ -254,8 +254,7 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_ffmpeg_threads',
-                    'comment' => _('FFmpeg threads'),
-                    'help'    => _('The number of threads used to process videos'),
+                    'comment' => _('Number of threads to use for FFMpeg'),
                     'default' => 2
                 ),
                 array(
@@ -318,7 +317,7 @@ return call_user_func_array(function(Application $app) {
                     'type'      => \registry::TYPE_ENUM,
                     'name'      => 'GV_social_tools',
                     'comment'   => _('Enable sharing'),
-                    'help'   => _('Facebook et Twitter'),
+                    'help'   => _('Facebook and Twitter'),
                     'available' => array(
                         'none' => _('Disabled'),
                         'publishers' => _('Publishers'),
@@ -352,8 +351,8 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_min_letters_truncation',
-                    'comment' => _('Minimum number of letters with the truncation'),
-                    'help'    => _('Used for searching'),
+                    'comment' => _('Minimum number of letters before truncation'),
+                    'help'    => _('Used in search engine'),
                     'default' => 1
                 ),
                 array(
@@ -365,7 +364,7 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'      => \registry::TYPE_ENUM,
                     'name'      => 'GV_defaultQuery_type',
-                    'comment'   => _('Type of document sought by default'),
+                    'comment'   => _('Default searched type'),
                     'help'      => _('Used when opening the application'),
                     'available' => array(
                         '0' => _('Documents'),
@@ -483,7 +482,7 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_activeFTP',
-                    'comment' => _('Enable export through FTP'),
+                    'comment' => _('Enable FTP export'),
                     'help'    => _('Available in multi-export tab'),
                     'default' => false
                 ),
@@ -616,7 +615,7 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_val_expiration',
-                    'comment' => _('Duration of links generated for validation'),
+                    'comment' => _('Default validation links duration'),
                     'help'    => _('If set to 0, duration is permanent'),
                     'default' => 10
                 )
