@@ -1,4 +1,4 @@
-<?php
+X<?php
 
 /*
  * This file is part of Phraseanet
@@ -76,7 +76,6 @@ use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\XSendFileSubscriber;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
@@ -100,7 +99,6 @@ use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
-use Alchemy\Phrasea\Core\Provider\XSendFileMappingServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
@@ -306,9 +304,7 @@ class Application extends SilexApplication
         $this->setupUrlGenerator();
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
-
         $this->register(new XPDFServiceProvider());
-        $this->register(new XSendFileMappingServiceProvider());
         $this->register(new FileServeServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
@@ -348,7 +344,6 @@ class Application extends SilexApplication
                     $transport->setPassword($options['password']);
                     $transport->setAuthMode($options['auth_mode']);
                 }
-
             } else {
                 $transport = new \Swift_Transport_MailTransport(
                     new \Swift_Transport_SimpleMailInvoker(),
@@ -363,7 +358,6 @@ class Application extends SilexApplication
             if ($app['phraseanet.registry']->get('GV_imagine_driver') != '') {
                 return $app['phraseanet.registry']->get('GV_imagine_driver');
             }
-
             if (class_exists('\Gmagick')) {
                 return 'gmagick';
             }
@@ -408,7 +402,6 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new LogoutSubscriber());
                 $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
                 $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
-                $dispatcher->addSubscriber(new XSendFileSubscriber($app));
 
                 return $dispatcher;
             })

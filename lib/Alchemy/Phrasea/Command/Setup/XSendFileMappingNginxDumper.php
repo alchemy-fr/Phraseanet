@@ -38,7 +38,7 @@ class XSendFileMappingNginxDumper extends Command
         foreach ($this->container['phraseanet.xsendfile-mapping']->getMapping() as $entry) {
             $output->writeln('  location ' . $mapper->sanitizeMountPoint($entry['mount-point']) . ' {');
             $output->writeln('      internal;');
-            $output->writeln('      alias ' .  $mapper->sanitizePath($entry['directory']));
+            $output->writeln('      alias ' .  $mapper->sanitizePath($entry['directory']) . ';');
             $output->writeln('  }');
             $output->writeln('');
         }
