@@ -83,7 +83,7 @@ $(document).ready(function(){
     $('#new_user_loader').show();
     $.ajax({
       type: 'POST',
-      url: '../../admin/users/create/',
+      url: '../admin/users/create/',
       dataType : 'json',
       data: {
         act:'CREATENEWUSER',
@@ -104,7 +104,7 @@ $(document).ready(function(){
           p4.users.sel = [];
           $.ajax({
             type: 'POST',
-            url: '../../admin/users/rights/',
+            url: '../admin/users/rights/',
             data: {
               users : data.data
             },
@@ -148,7 +148,7 @@ $(document).ready(function(){
     $('#right-ajax').empty().addClass('loading');
     $.ajax({
       type: 'POST',
-      url: '../../admin/users/search/',
+      url: '../admin/users/search/',
       data: datas,
       success: function(data){
         $('#right-ajax').removeClass('loading').empty().html(data);
@@ -163,7 +163,7 @@ $(document).ready(function(){
     $('#right-ajax').empty().addClass('loading');
     $.ajax({
       type: 'POST',
-      url: '../../admin/users/search/',
+      url: '../admin/users/search/',
       data: datas,
       success: function(data){
         $('#right-ajax').removeClass('loading').empty().html(data);
@@ -334,7 +334,7 @@ $(document).ready(function(){
     p4.users.sel = [];
     $.ajax({
       type: 'POST',
-      url: '../../admin/users/rights/',
+      url: '../admin/users/rights/',
       data: {
         users : users
       },
@@ -357,7 +357,7 @@ $(document).ready(function(){
     p4.users.sel = [];
     $.ajax({
       type: 'POST',
-      url: '../../admin/users/delete/',
+      url: '../admin/users/delete/',
       data: {
         users : users
       },
@@ -379,7 +379,7 @@ $(document).ready(function(){
     p4.users.sel = [];
     $.ajax({
       type: 'POST',
-      url: '../../admin/users/rights/',
+      url: '../admin/users/rights/',
       data: {
         users : users
       },
