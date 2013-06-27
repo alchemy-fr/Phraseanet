@@ -30,7 +30,26 @@ main:
 trusted-proxies: []
 debugger:
     allowed-ips: []
-binaries: []
+binaries:
+    ghostscript_binary: null
+    php_binary: null
+    convert_binary: null
+    composite_binary: null
+    swf_extract_binary: null
+    pdf2swf_binary: null
+    swf_render_binary: null
+    unoconv_binary: null
+    ffmpeg_binary: null
+    ffprobe_binary: null
+    mp4box_binary: null
+    pdftotext_binary: null
+    phraseanet_indexer: null
+    ffmpeg_timeout: 3600
+    ffprobe_timeout: 60
+    gs_timeout: 60
+    mp4box_timeout: 60
+    swftools_timeout: 60
+    unoconv_timeout: 60
 border-manager:
     enabled: true
     checkers:

@@ -449,10 +449,7 @@ class databox_status
         $destPath = sprintf("%s%s", $custom_path, basename($path . $name));
 
         try {
-            $app['media-alchemyst']
-                ->open($filePath)
-                ->turninto($destPath, $imageSpec)
-                ->close();
+            $app['media-alchemyst']->turninto($filePath, $destPath, $imageSpec);
         } catch (\MediaAlchemyst\Exception $e) {
 
         }

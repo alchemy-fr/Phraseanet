@@ -141,10 +141,7 @@ class Publications implements ControllerProviderInterface
                 $tmpname = tempnam(sys_get_temp_dir(), 'feed_icon');
 
                 try {
-                    $app['media-alchemyst']
-                        ->open($media->getFile()->getPathname())
-                        ->turnInto($tmpname, $spec)
-                        ->close();
+                    $app['media-alchemyst']->turnInto($media->getFile()->getPathname(), $tmpname, $spec);
                 } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
                     throw new \Exception_InternalServerError('Error while resizing');
                 }

@@ -335,6 +335,8 @@ class API_V1_adapter extends API_V1_Abstract
             $SEStatus = array('error' => $e->getMessage());
         }
 
+        $binaries = $app['phraseanet.configuration']['binaries'];
+
         return array(
             'global_values' => array(
                 'serverName'  => $app['phraseanet.registry']->get('GV_ServerName'),
@@ -426,17 +428,17 @@ class API_V1_adapter extends API_V1_Abstract
                     ),
                 ),
                 'binary'  => array(
-                    'phpCli'            => $app['phraseanet.registry']->get('php_binary'),
+                    'phpCli'            => isset($binaries['php_binary']) ? $binaries['php_binary'] : null,
                     'phpIni'            => $app['phraseanet.registry']->get('GV_PHP_INI'),
                     'imagick'           => $app['phraseanet.registry']->get('convert_binary'),
-                    'swfExtract'        => $app['phraseanet.registry']->get('swf_extract_binary'),
-                    'pdf2swf'           => $app['phraseanet.registry']->get('pdf2swf_binary'),
-                    'swfRender'         => $app['phraseanet.registry']->get('swf_render_binary'),
-                    'unoconv'           => $app['phraseanet.registry']->get('unoconv_binary'),
-                    'ffmpeg'            => $app['phraseanet.registry']->get('ffmpeg_binary'),
-                    'ffprobe'           => $app['phraseanet.registry']->get('ffprobe_binary'),
-                    'mp4box'            => $app['phraseanet.registry']->get('mp4box_binary'),
-                    'pdftotext'         => $app['phraseanet.registry']->get('pdftotext_binary'),
+                    'swfExtract'        => isset($binaries['swf_extract_binary']) ? $binaries['swf_extract_binary'] : null,
+                    'pdf2swf'           => isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : null,
+                    'swfRender'         => isset($binaries['swf_render_binary']) ? $binaries['swf_render_binary'] : null,
+                    'unoconv'           => isset($binaries['unoconv_binary']) ? $binaries['unoconv_binary'] : null,
+                    'ffmpeg'            => isset($binaries['ffmpeg_binary']) ? $binaries['ffmpeg_binary'] : null,
+                    'ffprobe'           => isset($binaries['ffprobe_binary']) ? $binaries['ffprobe_binary'] : null,
+                    'mp4box'            => isset($binaries['mp4box_binary']) ? $binaries['mp4box_binary'] : null,
+                    'pdftotext'         => isset($binaries['pdftotext_binary']) ? $binaries['pdftotext_binary'] : null,
                     'pdfmaxpages'       => $app['phraseanet.registry']->get('GV_pdfmaxpages'),),
                 'mainConfiguration' => array(
                     'adminMail'          => $app['phraseanet.registry']->get('GV_adminMail'),

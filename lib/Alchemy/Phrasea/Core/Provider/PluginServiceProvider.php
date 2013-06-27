@@ -57,7 +57,9 @@ class PluginServiceProvider implements ServiceProviderInterface
         });
 
         $app['plugins.composer-installer'] = $app->share(function (Application $app) {
-            $phpBinary = $app['phraseanet.registry']->get('php_binary');
+            $binaries = $app['phraseanet.configuration']['binaries'];
+            $phpBinary = isset($binaries['php_binary']) ? $binaries['php_binary'] : null;
+            
             if (!is_executable($phpBinary)) {
                 $finder = new ExecutableFinder();
                 $phpBinary = $finder->find('php');
