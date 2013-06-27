@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Response\DeliverDataInterface;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DoDownload implements ControllerProviderInterface
 {
-
     /**
      * {@inheritDoc}
      */
@@ -171,15 +171,7 @@ class DoDownload implements ControllerProviderInterface
             );
         });
 
-        $response = \set_export::stream_file(
-            $app,
-            $exportFile,
-            $exportName,
-            $mime,
-            'attachment'
-        );
-
-        return $response;
+        return $app['phraseanet.file-serve']->deliverFile($exportFile, $exportName, DeliverDataInterface::DISPOSITION_ATTACHMENT, $mime);
     }
 
     /**

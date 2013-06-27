@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Entities\LazaretFile;
 use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Alchemy\Phrasea\Response\DeliverDataInterface;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -521,9 +522,7 @@ class Lazaret implements ControllerProviderInterface
 
         $lazaretThumbFileName = $app['root.path'] . '/tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
-        return \set_export::stream_file(
-                $app, $lazaretThumbFileName, $lazaretFile->getOriginalName(), 'image/jpeg', 'inline'
-        );
+        return $app['phraseanet.file-serve']->deliverFile($lazaretThumbFileName, $lazaretFile->getOriginalName(), DeliverDataInterface::DISPOSITION_INLINE, 'image/jpeg');
     }
 
     /**

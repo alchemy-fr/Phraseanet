@@ -82,6 +82,7 @@ use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
+use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\InstallerServiceProvider;
@@ -303,8 +304,8 @@ class Application extends SilexApplication
         $this->setupUrlGenerator();
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
-
         $this->register(new XPDFServiceProvider());
+        $this->register(new FileServeServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             return PhraseaExceptionHandler::register($app['debug']);
@@ -343,7 +344,6 @@ class Application extends SilexApplication
                     $transport->setPassword($options['password']);
                     $transport->setAuthMode($options['auth_mode']);
                 }
-
             } else {
                 $transport = new \Swift_Transport_MailTransport(
                     new \Swift_Transport_SimpleMailInvoker(),
@@ -358,7 +358,6 @@ class Application extends SilexApplication
             if ($app['phraseanet.registry']->get('GV_imagine_driver') != '') {
                 return $app['phraseanet.registry']->get('GV_imagine_driver');
             }
-
             if (class_exists('\Gmagick')) {
                 return 'gmagick';
             }

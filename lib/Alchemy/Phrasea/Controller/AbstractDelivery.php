@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Response\DeliverDataInterface;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -51,7 +52,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
 
         }
 
-        $response = \set_export::stream_file($app, $pathOut, $file->get_file(), $file->get_mime(), 'inline');
+        $response = $app['phraseanet.file-serve']->deliverFile($pathOut, $file->get_file(), DeliverDataInterface::DISPOSITION_INLINE, $file->get_mime());
         $response->setPrivate();
 
         /* @var $response \Symfony\Component\HttpFoundation\Response */
@@ -70,6 +71,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
 
                     $response->setMaxAge($expiration);
                     $response->setSharedMaxAge($expiration);
+                    $response->setPublic();
                 }
             } catch (\Exception $e) {
 
