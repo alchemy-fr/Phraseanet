@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Response\ServeFileResponseFactory;
+use Alchemy\Phrasea\Response\DeliverDataInterface;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -171,7 +171,7 @@ class DoDownload implements ControllerProviderInterface
             );
         });
 
-        return $app['phraseanet.file-serve']->deliverFile($exportFile, $exportName, ServeFileResponseFactory::DISPOSITION_ATTACHMENT, $mime);
+        return $app['phraseanet.file-serve']->deliverFile($exportFile, $exportName, DeliverDataInterface::DISPOSITION_ATTACHMENT, $mime);
     }
 
     /**

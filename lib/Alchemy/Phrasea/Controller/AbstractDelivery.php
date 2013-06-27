@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Response\ServeFileResponseFactory;
+use Alchemy\Phrasea\Response\DeliverDataInterface;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -52,7 +52,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
 
         }
 
-        $response = $app['phraseanet.file-serve']->deliverFile($pathOut, $file->get_file(), ServeFileResponseFactory::DISPOSITION_INLINE, $file->get_mime());
+        $response = $app['phraseanet.file-serve']->deliverFile($pathOut, $file->get_file(), DeliverDataInterface::DISPOSITION_INLINE, $file->get_mime());
         $response->setPrivate();
 
         /* @var $response \Symfony\Component\HttpFoundation\Response */

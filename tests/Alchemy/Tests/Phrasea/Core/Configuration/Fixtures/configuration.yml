@@ -114,3 +114,9 @@ registration-fields:
     -
         name: geonameid
         required: true
+xsendfile:
+    enable: false
+    mapping:
+        -
+            directory: ''
+            mount-point: ''
