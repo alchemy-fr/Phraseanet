@@ -48,22 +48,32 @@ class patch_3813 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $binaries = $app['phraseanet.configuration']['binaries'];
+        $xsendfilePath = $app['phraseanet.registry']->get('GV_X_Accel_Redirect');
+        $xsendfileMountPoint = $app['phraseanet.registry']->get('GV_X_Accel_Redirect_mount_point');
 
-        foreach ($binaries as $name => $value) {
-            if ('' === $value) {
-                $binaries[$name] = null;
-            }
+        $config = $app['phraseanet.configuration']->setDefault('xsendfile')->getConfig();
+
+        $config['xsendfile']['enable'] = (Boolean) $app['phraseanet.registry']->get('GV_modxsendfile', false);
+
+        if (null !== $xsendfilePath && null !== $xsendfileMountPoint) {
+            $config['xsendfile']['mapping'][0] = array(
+                'directory' => $xsendfilePath,
+                'mount-point' => $xsendfileMountPoint,
+            );
         }
 
-        $binaries['ffmpeg_timeout'] = 3600;
-        $binaries['ffprobe_timeout'] = 60;
-        $binaries['gs_timeout'] = 60;
-        $binaries['mp4box_timeout'] = 60;
-        $binaries['swftools_timeout'] = 60;
-        $binaries['unoconv_timeout'] = 60;
+        $app['phraseanet.configuration']->setConfig($config);
 
-        $app['phraseanet.configuration']['binaries'] = $binaries;
+        $toRemove = array('GV_X_Accel_Redirect', 'GV_X_Accel_Redirect_mount_point', 'GV_modxsendfile');
+
+        $sql = 'DELETE FROM registry WHERE key = :k';
+        $stmt = $appbox->get_connection()->prepare($sql);
+        foreach ($toRemove as $registryKey) {
+            $stmt->execute(array(
+                ':k' => $registryKey
+            ));
+        }
+        $stmt->closeCursor();
 
         return true;
     }
