@@ -88,8 +88,9 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
             $localeSet = false;
 
             foreach ($event->getRequest()->getLanguages() as $code) {
-                if (array_key_exists($code, $app['locales.mapping'])) {
-                    $event->getRequest()->setLocale($app['locales.mapping'][$code]);
+                $data = preg_split('/[-_]/', $code);
+                if (array_key_exists($data[0], $app['locales.mapping'])) {
+                    $event->getRequest()->setLocale($app['locales.mapping'][$data[0]]);
                     $localeSet = true;
                     break;
                 }
