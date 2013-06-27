@@ -160,15 +160,15 @@
                             </a>
                         </li>
                     </ul>
-                    <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:52px;">
+                    <div id="baskets" class="PNB" style="top:52px;">
                         {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
                         {{WorkZoneMacros.make_bloc(app, WorkZone)}}
                     </div>
                     {% if GV_thesaurus %}
-                    <div id="proposals" class="PNB ui-tabs-panel ui-tabs-hide" style="top:52px;"
+                    <div id="proposals" class="PNB" style="top:52px;"
                         ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
                     </div>
-                    <div id="thesaurus_tab" class="PNB ui-tabs-panel ui-tabs-hide" style="top:52px;">
+                    <div id="thesaurus_tab" class="PNB" style="top:52px;">
                         <div id="THPD_tabs">
                             <ul>
                                 <li class="th_tab"><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
@@ -188,13 +188,15 @@
                                         <div class="wizard wiz_2" style="display:none">
                                             <div class="txt">{% trans 'prod::thesaurusTab:wizard:remplacer par le terme' %}</div>
                                         </div>
-                                        <form class="gform" href="#" onsubmit="T_Gfilter(this);return(false);">
-                                            <input type="text" class="input-medium" onkeyup="T_Gfilter_delayed(this.value, 300)" />
-                                            <input type="submit" class="th_ok btn" value="{% trans 'boutton::rechercher' %}" />
-                                            <input type="button" class="th_cancel btn" value="{% trans 'boutton::annuler' %}" onclick="thesauCancelWizard();return(false);"/>
+                                        <form class="gform form-inline" href="#" onsubmit="T_Gfilter(this);return(false);">
+                                            <div class="input-append">
+                                                <input type="text" class="input-medium" onkeyup="T_Gfilter_delayed(this.value, 300)" />
+                                                <input type="submit" class="th_ok btn" value="{% trans 'boutton::rechercher' %}" />
+                                                <input type="button" class="th_cancel btn" value="{% trans 'boutton::annuler' %}" onclick="thesauCancelWizard();return(false);"/>
+                                             </div>
                                         </form>
                                     </div>
-                                    <div id='THPD_T_treeBox' class="searchZone" style="position:absolute; top:0px; bottom:0px; left:0px; width:100%; overflow:auto">
+                                    <div id='THPD_T_treeBox' class="searchZone" style="position:absolute; top:45px; bottom:0px; left:0px; width:100%; overflow:auto">
                                         <div onclick="Xclick(event);return(false);" ondblclick="TXdblClick(event);">
                                             <ul class="treeview" id="THPD_T_tree">
                                                 {% for base in search_datas['bases'] %}

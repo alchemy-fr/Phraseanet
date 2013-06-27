@@ -1414,11 +1414,6 @@ $(document).ready(function(){
     });
 
     $('#idFrameC .tabs').tabs({
-        load: function(event, ui)
-        {
-            if(ui.newTab.hash=="#thesaurus_tab")
-                thesau_show();
-        },
         activate: function(event, ui){
             p4.WorkZone.open();
         }
