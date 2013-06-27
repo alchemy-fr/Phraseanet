@@ -2,44 +2,49 @@
 
 {% block content %}
 
-<form class="no-ajax form_publication form-vertical" method="post" action="{{ path('admin_feeds_create') }}">
-    <h2>{% trans 'Ajouter une publication' %}</h2>
-    <div class="control-group">
-        <label class="control-label" for="add_pub_titre">{% trans 'Titre' %} :</label>
-        <div class="controls">
-            <input type="text" id="add_pub_titre" class="required_text input-large" placeholder="{% trans 'Feed name' %}" maxlength="128" name="title" />
+<form style="max-width:500px" class="no-ajax form_publication form-horizontal" method="post" action="{{ path('admin_feeds_create') }}">
+    <fieldset>
+        <legend>{% trans 'Ajouter une publication' %}</legend>
+        <div class="control-group">
+            <label class="control-label" for="add_pub_titre">{% trans 'Titre' %}</label>
+            <div class="controls">
+                <input type="text" id="add_pub_titre" class="required_text input-large" placeholder="{% trans 'Feed name' %}" maxlength="128" name="title" />
+            </div>
         </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="add_pub_subtitre">{% trans 'Sous-titre' %} :</label>
-        <div class="controls">
-            <input type="text" id="add_pub_subtitre" class="input-large" placeholder="{% trans 'Short description' %}" maxlength="512" name="subtitle" />
+
+        <div class="control-group">
+            <label class="control-label" for="add_pub_subtitre">{% trans 'Sous-titre' %}</label>
+            <div class="controls">
+                <input type="text" id="add_pub_subtitre" class="input-large" placeholder="{% trans 'Short description' %}" maxlength="512" name="subtitle" />
+            </div>
         </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="add_pub_base_id">{% trans 'Etendue de la publication' %} :</label>
-        <div class="controls">
-            <select id="add_pub_base_id" class="input-large" name="base_id">
-                <option value="">{% trans 'Non-Restreinte (publique)' %}</option>
-                {% for databox in app['authentication'].getUser().ACL().get_granted_sbas('bas_chupub') %}
-                    <optgroup label="{{ databox.get_label(app['locale.I18n']) }}">
-                        {% for collection in databox.get_collections() %}
-                            <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
-                        {% endfor %}
-                    </optgroup>
-                {% endfor %}
-            </select>
+        <div class="control-group">
+            <label class="control-label" for="add_pub_base_id">{% trans 'Etendue de la publication' %}</label>
+            <div class="controls">
+                <select id="add_pub_base_id" class="input-large" name="base_id">
+                    <option value="">{% trans 'Non-Restreinte (publique)' %}</option>
+                    {% for databox in app['authentication'].getUser().ACL().get_granted_sbas('bas_chupub') %}
+                        <optgroup label="{{ databox.get_label(app['locale.I18n']) }}">
+                            {% for collection in databox.get_collections() %}
+                                <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-    </div>
-    <div class="control-group">
-        <div class="controls">
-            <label class="checkbox" for="add_pub_public">
-                <input type="checkbox" id="add_pub_public" name="public" value="1" />
-                {% trans 'Publique' %}
-            </label>
+        <div class="control-group">
+            <div class="controls">
+                <label class="checkbox" for="add_pub_public">
+                    <input type="checkbox" id="add_pub_public" name="public" value="1" />
+                    {% trans 'Publique' %}
+                </label>
+            </div>
         </div>
-    </div>
-    <button type="submit" class="btn btn-warning">{% trans 'boutton::valider' %}</button>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-warning">{% trans 'boutton::valider' %}</button>
+        </div>
+    </fieldset>
 </form>
 
 <table class="admintable" cellspacing="0" cellpadding="0">

@@ -1,5 +1,5 @@
-<div class="header">
-    <h1>{{ databox.get_serialized_server_info() }}<small>{% trans "Details" %}</small></h1>
+<div class="page-header">
+    <h1>{{ databox.get_serialized_server_info() }}<small style="font-size:16px;">{% trans "Details" %}</small></h1>
 </div>
 
 <table class="table table-bordered">
@@ -58,5 +58,5 @@
 </table>
 
 <div>
-    <a class="btn btn-mini" href="{{ path('admin_database', { 'databox_id' : databox.get_sbas_id() }) }}">{% trans 'boutton::retour' %}</a>
+    <a style="text-decoration:none" class="btn" href="{{ path('admin_database', { 'databox_id' : databox.get_sbas_id() }) }}">{% trans 'boutton::retour' %}</a>
 </div>

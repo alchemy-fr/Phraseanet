@@ -65,7 +65,7 @@
         var val = $('#model_'+usr)[0].value;
 
         var bool = false;
-        if(!isNaN(val) && val!='')
+        if(!isNaN(val) && val!== '')
             bool = true;
 
         if(bool)
@@ -89,28 +89,26 @@
             //        {
             if(first && !$(this).hasClass('active'))
                 bool = false;
-            if (bool = false)
+            if (bool === false)
                 $(this).removeClass('active');
             else
                 $(this).addClass('active');
             first = false;
-            if(that == 'deny')
+            if(that === 'deny')
                 checkDeny($(this));
-            if(that == 'accept_hd')
-                checkAdd(this)
-            if(that == 'watermark')
-                checkAdd(this)
-            if(that == 'accept')
-                checkRemove(this)
+            if(that === 'accept_hd')
+                checkAdd(this);
+            if(that === 'watermark')
+                checkAdd(this);
+            if(that === 'accept')
+                checkRemove(this);
             //        }
         });
     }
 </script>
 
-
-
-<div class="header">
-    <h1>{% trans 'admin:: demandes en cours' %}</h1>
+<div class="page-header">
+     <h1>{% trans 'admin:: demandes en cours' %}</h1>
 </div>
 
 {% if app['request'].query.get('success') == '1' %}
