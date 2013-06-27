@@ -11,6 +11,7 @@
 
 use Monolog\Logger;
 use Alchemy\Phrasea\Application;
+use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -131,7 +132,7 @@ class task_manager
             $php = $this->app['phraseanet.configuration']['binaries']['php_binary'];
         } else {
             $finder = new ExecutableFinder();
-            $php = $finder->find($php);
+            $php = $finder->find('php');
         }
 
         $cmd = $php . ' -f ' . $this->app['root.path'] . "/bin/console scheduler:start";
