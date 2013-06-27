@@ -42,11 +42,6 @@ class BuildMissingSubdefs extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('verbose')) {
-            $handler = new StreamHandler('php://stdout');
-            $this->container['monolog']->pushHandler($handler);
-        }
-
         $start = microtime(true);
         $n = 0;
 
