@@ -28,13 +28,13 @@ class XSendFileSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => array('applyHeaders', 16),
+            KernelEvents::REQUEST => array('applyHeaders', 0),
         );
     }
 
     public function applyHeaders(GetResponseEvent $event)
     {
-        if ($this->app['phraseanet.configuration']['xsendfile']['enable']) {
+        if ($this->app['phraseanet.configuration']['xsendfile']['enabled']) {
             $request = $event->getRequest();
             $request->headers->set('X-Sendfile-Type', 'X-Accel-Redirect');
             $request->headers->set('X-Accel-Mapping', (string) $this->app['phraseanet.xsendfile-mapping']);

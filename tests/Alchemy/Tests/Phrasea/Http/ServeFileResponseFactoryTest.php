@@ -1,9 +1,9 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Response;
+namespace Alchemy\Tests\Phrasea\Http;
 
-use Alchemy\Phrasea\Response\ServeFileResponseFactory;
-use Alchemy\Phrasea\XSendFile\Mapping;
+use Alchemy\Phrasea\Http\ServeFileResponseFactory;
+use Alchemy\Phrasea\Http\XsendfileMapping;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
@@ -18,6 +18,19 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
         $this->assertInstanceOf("Symfony\Component\HttpFoundation\Response", $response);
         $this->assertEquals('inline; filename="cestlafete.jpg"', $response->headers->get('content-disposition'));
+        $this->assertEquals(0, $response->getMaxAge());
+        $response->setPrivate();
+        $this->assertTrue($response->headers->getCacheControlDirective('private'));
+    }
+
+    public function testDeliverFileWithDuration()
+    {
+        $this->factory = new ServeFileResponseFactory(false, new \unicode());
+
+        $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'hello', 'attachment', 'application/json', 23456);
+
+        $this->assertEquals(23456, $response->getMaxAge());
+        $this->assertTrue($response->headers->getCacheControlDirective('private'));
     }
 
     public function testDeliverFileWithFilename()
@@ -45,7 +58,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
         $this->factory = new ServeFileResponseFactory(true, new \unicode());
         $request = Request::create('/');
         $request->headers->set('X-SendFile-Type', 'X-Accel-Redirect');
-        $request->headers->set('X-Accel-Mapping', (string) new Mapping(array(
+        $request->headers->set('X-Accel-Mapping', (string) new XsendfileMapping(array(
             array(
                 'directory' => __DIR__ . '/../../../../files/',
                 'mount-point' => '/protected/'
@@ -65,7 +78,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
         $this->factory = new ServeFileResponseFactory(true, new \unicode());
         $request = Request::create('/');
         $request->headers->set('X-SendFile-Type', 'X-Accel-Redirect');
-        $request->headers->set('X-Accel-Mapping', (string) new Mapping(array(
+        $request->headers->set('X-Accel-Mapping', (string) new XsendfileMapping(array(
             array(
                 'directory' => __DIR__ . '/../../../../files/',
                 'mount-point' => '/protected/'
@@ -95,7 +108,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
         $this->factory = new ServeFileResponseFactory(true, new \unicode());
         $request = Request::create('/');
         $request->headers->set('X-SendFile-Type', 'X-Accel-Redirect');
-        $request->headers->set('X-Accel-Mapping', (string) new Mapping(array(
+        $request->headers->set('X-Accel-Mapping', (string) new XsendfileMapping(array(
             array(
                 'directory' => __DIR__ . '/../../../../files/',
                 'mount-point' => '/protected/'

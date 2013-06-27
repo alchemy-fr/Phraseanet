@@ -51,22 +51,24 @@ class patch_3813 implements patchInterface
         $xsendfilePath = $app['phraseanet.registry']->get('GV_X_Accel_Redirect');
         $xsendfileMountPoint = $app['phraseanet.registry']->get('GV_X_Accel_Redirect_mount_point');
 
-        $config = $app['phraseanet.configuration']->setDefault('xsendfile')->getConfig();
+        $config = $app['phraseanet.configuration']
+            ->setDefault('xsendfile')
+            ->getConfig();
 
-        $config['xsendfile']['enable'] = (Boolean) $app['phraseanet.registry']->get('GV_modxsendfile', false);
+        $config['xsendfile']['enabled'] = (Boolean) $app['phraseanet.registry']->get('GV_modxsendfile', false);
 
         if (null !== $xsendfilePath && null !== $xsendfileMountPoint) {
-            $config['xsendfile']['mapping'][0] = array(
+            $config['xsendfile']['mapping'] = array(array(
                 'directory' => $xsendfilePath,
                 'mount-point' => $xsendfileMountPoint,
-            );
+            ));
         }
 
         $app['phraseanet.configuration']->setConfig($config);
 
         $toRemove = array('GV_X_Accel_Redirect', 'GV_X_Accel_Redirect_mount_point', 'GV_modxsendfile');
 
-        $sql = 'DELETE FROM registry WHERE key = :k';
+        $sql = 'DELETE FROM registry WHERE `key` = :k';
         $stmt = $appbox->get_connection()->prepare($sql);
         foreach ($toRemove as $registryKey) {
             $stmt->execute(array(

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Response;
+namespace Alchemy\Phrasea\Http;
 
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 

@@ -13,7 +13,8 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Alchemy\Phrasea\Response\ServeFileResponseFactory;
+use Alchemy\Phrasea\Http\ServeFileResponseFactory;
+use Alchemy\Phrasea\Http\XsendfileMapping;
 use Alchemy\Phrasea\Core\Event\Subscriber\XSendFileSubscriber;
 
 class FileServeServiceProvider implements ServiceProviderInterface
@@ -43,7 +44,7 @@ class FileServeServiceProvider implements ServiceProviderInterface
         });
 
         $app['phraseanet.xsendfile-mapping'] = $app->share(function($app) {
-            return new Mapping($app['xsendfile.mapping']);
+            return new XsendfileMapping($app['xsendfile.mapping']);
         });
 
         $app['phraseanet.file-serve'] = $app->share(function (Application $app) {

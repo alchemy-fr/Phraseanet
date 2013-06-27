@@ -351,7 +351,7 @@ class API_V1_adapter extends API_V1_Abstract
                     'defaultLanguage' => $app['phraseanet.registry']->get('id_GV_default_lng'),
                     'allowIndexing'   => $app['phraseanet.registry']->get('GV_allow_search_engine'),
                     'modes'           => array(
-                        'XsendFile'                     => $app['phraseanet.configuration']['xsendfile']['enable'],
+                        'XsendFile'                     => $app['phraseanet.configuration']['xsendfile']['enabled'],
                         'XsendFileMapping'              => $app['phraseanet.configuration']['xsendfile']['mapping'],
                         'h264Streaming'                 => $app['phraseanet.registry']->get('GV_h264_streaming'),
                         'authTokenDirectory'            => $app['phraseanet.registry']->get('GV_mod_auth_token_directory'),

@@ -131,7 +131,7 @@ registration-fields:
         name: geonameid
         required: true
 xsendfile:
-    enable: false
+    enabled: false
     mapping:
         -
             directory: ''

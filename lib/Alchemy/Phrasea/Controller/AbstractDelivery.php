@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Response\DeliverDataInterface;
+use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -66,7 +66,6 @@ abstract class AbstractDelivery implements ControllerProviderInterface
                 if ($file->getDataboxSubdef()->get_class() == \databox_subdef::CLASS_THUMBNAIL) {
                     // default expiration is 5 days
                     $expiration = 60 * 60 * 24 * 5;
-
                     $response->setExpires(new \DateTime(sprintf('+%d seconds', $expiration)));
 
                     $response->setMaxAge($expiration);

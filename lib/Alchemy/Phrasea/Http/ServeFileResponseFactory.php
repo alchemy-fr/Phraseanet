@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Response;
+namespace Alchemy\Phrasea\Http;
 
-use Alchemy\Phrasea\Response\DeliverDataInterface;
+use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -38,7 +38,7 @@ class ServeFileResponseFactory implements DeliverDataInterface
     public static function create(Application $app)
     {
         return new self(
-            $app['phraseanet.configuration']['xsendfile']['enable'],
+            $app['phraseanet.configuration']['xsendfile']['enabled'],
             $app['unicode']
         );
     }
@@ -46,11 +46,12 @@ class ServeFileResponseFactory implements DeliverDataInterface
     /**
      * {@inheritdoc}
      */
-    public function deliverFile($file, $filename = '', $disposition = self::DISPOSITION_INLINE, $mimeType = null ,$cacheDuration = 3600)
+    public function deliverFile($file, $filename = '', $disposition = self::DISPOSITION_INLINE, $mimeType = null ,$cacheDuration = 0)
     {
         $response = new BinaryFileResponse($file);
         $response->setContentDisposition($disposition, $this->sanitizeFilename($filename), $this->sanitizeFilenameFallback($filename));
         $response->setMaxAge($cacheDuration);
+        $response->setPrivate();
 
         if (null !== $mimeType) {
              $response->headers->set('Content-Type', $mimeType);
@@ -62,7 +63,7 @@ class ServeFileResponseFactory implements DeliverDataInterface
     /**
      * {@inheritdoc}
      */
-    public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = 3600)
+    public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = 0)
     {
         $response = new Response($data);
         $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
