@@ -104,8 +104,11 @@ use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
 use FFMpeg\FFMpegServiceProvider;
 use Neutron\Silex\Provider\ImagineServiceProvider;
-use MediaVorus\MediaVorus;
 use MediaVorus\MediaVorusServiceProvider;
+use MediaVorus\Utils\RawImageMimeTypeGuesser;
+use MediaVorus\Utils\PostScriptMimeTypeGuesser;
+use MediaVorus\Utils\AudioMimeTypeGuesser;
+use MediaVorus\Utils\VideoMimeTypeGuesser;
 use MediaAlchemyst\MediaAlchemystServiceProvider;
 use MediaAlchemyst\Driver\Imagine;
 use Monolog\Handler\NullHandler;
@@ -123,8 +126,6 @@ use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
-use Symfony\Component\HttpFoundation\File\MimeType\FileBinaryMimeTypeGuesser;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -134,6 +135,8 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
+use Symfony\Component\HttpFoundation\File\MimeType\FileBinaryMimeTypeGuesser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -242,19 +245,6 @@ class Application extends SilexApplication
         });
 
         $this->register(new MediaVorusServiceProvider());
-
-        $this['mediavorus'] = $this->share(
-            $this->extend('mediavorus', function(MediaVorus $mediavorus, Application $app){
-                $guesser = MimeTypeGuesser::getInstance();
-                /**
-                 * temporary hack to use this guesser before fileinfo
-                 */
-                $guesser->register(new FileBinaryMimeTypeGuesser());
-
-                return $mediavorus;
-            })
-        );
-
         $this->register(new MonologServiceProvider());
         $this['monolog.name'] = 'Phraseanet logger';
         $this['monolog.handler'] = $this->share(function () {
@@ -412,6 +402,14 @@ class Application extends SilexApplication
         $this->mount('/include/minify/', new Minifier());
         $this->mount('/permalink/', new Permalink());
         $this->mount('/lightbox/', new Lightbox());
+
+        $guesser = MimeTypeGuesser::getInstance();
+
+        $guesser->register(new FileBinaryMimeTypeGuesser());
+        $guesser->register(new RawImageMimeTypeGuesser());
+        $guesser->register(new PostScriptMimeTypeGuesser());
+        $guesser->register(new AudioMimeTypeGuesser());
+        $guesser->register(new VideoMimeTypeGuesser());
 
         call_user_func(function ($app) {
             require $app['plugins.directory'] . '/services.php';
