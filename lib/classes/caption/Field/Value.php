@@ -368,42 +368,14 @@ class caption_Field_Value implements cache_cacheableInterface
             $q = "//sy[@w='" . $term_noacc . "' and not(@k)]";
         }
         $qjs = $link = "";
+
+        // loop on each linked branch for field
         foreach ($DOM_branchs as $DOM_branch) {
             $nodes = $XPATH_thesaurus->cache_query($q, $DOM_branch);
-            if ($nodes->length > 0) {
-                $lngfound = false;
-                foreach ($nodes as $node) {
-                    if ($node->getAttribute("lng") == $this->app['locale.I18n']) {
-                        // le terme est dans la bonne langue, on le rend cliquable
-                        list($term, $context) = $this->splitTermAndContext($fvalue);
-                        $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
-                        $context = str_replace(array("<em>", "</em>"), array("", ""), $context);
-                        $qjs = $term;
-                        if ($context) {
-                            $qjs .= " [" . $context . "]";
-                        }
-                        $link = $fvalue;
-
-                        $lngfound = true;
-                        break;
-                    }
-
-                    $synonyms = $XPATH_thesaurus->query("sy[@lng='" . $this->app['locale.I18n'] . "']", $node->parentNode);
-                    foreach ($synonyms as $synonym) {
-                        $k = $synonym->getAttribute("k");
-                        if ($synonym->getAttribute("w") != $term_noacc || $k != $context_noacc) {
-                            $link = $qjs = $synonym->getAttribute("v");
-                            if ($k) {
-                                $link .= " (" . $k . ")";
-                                $qjs .= " [" . $k . "]";
-                            }
-
-                            $lngfound = true;
-                            break;
-                        }
-                    }
-                }
-                if (! $lngfound) {
+            $lngfound = false;
+            foreach ($nodes as $node) {
+                if ($node->getAttribute("lng") == $this->app['locale.I18n']) {
+                    // le terme est dans la bonne langue, on le rend cliquable
                     list($term, $context) = $this->splitTermAndContext($fvalue);
                     $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
                     $context = str_replace(array("<em>", "</em>"), array("", ""), $context);
@@ -412,9 +384,34 @@ class caption_Field_Value implements cache_cacheableInterface
                         $qjs .= " [" . $context . "]";
                     }
                     $link = $fvalue;
+
+                    $lngfound = true;
+                    break;
                 }
+
+                $synonyms = $XPATH_thesaurus->query("sy[@lng='" . $this->app['locale.I18n'] . "']", $node->parentNode);
+                foreach ($synonyms as $synonym) {
+                    $k = $synonym->getAttribute("k");
+                    if ($synonym->getAttribute("w") != $term_noacc || $k != $context_noacc) {
+                        $link = $qjs = $synonym->getAttribute("v");
+                        $lngfound = true;
+                        break;
+                    }
+                }
+
+            }
+            if (! $lngfound) {
+                list($term, $context) = $this->splitTermAndContext($fvalue);
+                $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
+                $context = str_replace(array("<em>", "</em>"), array("", ""), $context);
+                $qjs = $term;
+                if ($context) {
+                    $qjs .= " [" . $context . "]";
+                }
+                $link = $fvalue;
             }
         }
+
         if ($qjs) {
             $value = "<a class=\"bounce\" onclick=\"bounce('" . $databox->get_sbas_id() . "','"
                 . str_replace("'", "\'", $qjs)
