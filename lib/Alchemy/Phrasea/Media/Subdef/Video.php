@@ -31,7 +31,7 @@ class Video extends Audio
     {
         parent::__construct();
 
-        $this->registerOption(new OptionType\Range(_('Birate'), self::OPTION_BITRATE, 100, 4000, 800));
+        $this->registerOption(new OptionType\Range(_('Bitrate'), self::OPTION_BITRATE, 100, 4000, 800));
         $this->registerOption(new OptionType\Range(_('GOP size'), self::OPTION_GOPSIZE, 1, 300, 10));
         $this->registerOption(new OptionType\Range(_('Dimension'), self::OPTION_SIZE, 64, 2000, 600, 16));
         $this->registerOption(new OptionType\Range(_('Frame Rate'), self::OPTION_FRAMERATE, 1, 200, 20));
