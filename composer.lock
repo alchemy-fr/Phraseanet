@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8ad2d0c4a9f85c8b8c80bbda1ae83fc9",
+    "hash": "ad3bafe566af66a209d7a19edc54f8bc",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -27,28 +27,6 @@
             ],
             "description": "Accept-* Header parsing for PHP",
             "time": "2012-07-27 20:10:01"
-        },
-        {
-            "name": "alchemy/Phlickr",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/alchemy-fr/Phlickr",
-                "reference": "89993abd6a02b42e0b765114c34c26c4056762fa"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/alchemy-fr/Phlickr/zipball/89993abd6a02b42e0b765114c34c26c4056762fa",
-                "reference": "89993abd6a02b42e0b765114c34c26c4056762fa",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Phlickr_": "./"
-                }
-            },
-            "time": "2012-04-13 17:43:31"
         },
         {
             "name": "alchemy/binary-driver",
@@ -164,12 +142,12 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/oauth2-php",
+                "url": "https://github.com/alchemy-fr/oauth2-php.git",
                 "reference": "5f949209461e8f4c31e8476155188923aafa2ae5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/oauth2-php/zipball/5f949209461e8f4c31e8476155188923aafa2ae5",
+                "url": "https://api.github.com/repos/alchemy-fr/oauth2-php/zipball/5f949209461e8f4c31e8476155188923aafa2ae5",
                 "reference": "5f949209461e8f4c31e8476155188923aafa2ae5",
                 "shasum": ""
             },
@@ -179,7 +157,24 @@
                     "lib/"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "time": "2012-03-30 15:47:07"
+        },
+        {
+            "name": "alchemy/phlickr",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/Phlickr",
+                "reference": "93c5100ec15f70e9be567d22bf01a4667fb75cb8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Phlickr_": "./"
+                }
+            },
+            "time": "2013-06-27 15:20:17"
         },
         {
             "name": "dailymotion/sdk",
@@ -317,7 +312,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -510,9 +505,9 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -630,7 +625,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -985,51 +980,6 @@
             "time": "2013-03-10 23:05:38"
         },
         {
-            "name": "imagine/Imagine",
-            "version": "dev-ColorSpaces",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/romainneutron/Imagine.git",
-                "reference": "1c48d4871eb7dbe9c834045d82e35eaf1044c8c4"
-            },
-            "require": {
-                "php": ">=5.3.2"
-            },
-            "require-dev": {
-                "sami/sami": "dev-master"
-            },
-            "suggest": {
-                "ext-gd": "to use the GD implementation",
-                "ext-gmagick": "to use the Gmagick implementation",
-                "ext-imagick": "to use the Imagick implementation"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Imagine": "lib/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Bulat Shakirzyanov",
-                    "email": "mallluhuct@gmail.com",
-                    "homepage": "http://avalanche123.com"
-                }
-            ],
-            "description": "Image processing for PHP 5.3",
-            "homepage": "http://imagine.readthedocs.org/",
-            "keywords": [
-                "drawing",
-                "graphics",
-                "image manipulation",
-                "image processing"
-            ],
-            "time": "2013-04-17 23:05:55"
-        },
-        {
             "name": "jms/metadata",
             "version": "1.3.0",
             "source": {
@@ -1068,7 +1018,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1166,9 +1116,9 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1256,19 +1206,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "c51db47c1eccbf72799a2b506f9b050448828d49"
+                "reference": "bdeb69cdcebecedecd9e6f7bfdde2779af3ffbaf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/c51db47c1eccbf72799a2b506f9b050448828d49",
-                "reference": "c51db47c1eccbf72799a2b506f9b050448828d49",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/bdeb69cdcebecedecd9e6f7bfdde2779af3ffbaf",
+                "reference": "bdeb69cdcebecedecd9e6f7bfdde2779af3ffbaf",
                 "shasum": ""
             },
             "require": {
                 "alchemy/ghostscript": ">=0.4,<0.5",
-                "imagine/imagine": "dev-ColorSpaces",
-                "mediavorus/mediavorus": "0.3.x-dev",
+                "mediavorus/mediavorus": "0.3.x-dev@dev",
                 "monolog/monolog": ">=1.0,<2.0",
+                "neutron/imagine": "dev-neutron-colorspace@dev",
                 "php": ">=5.3.3",
                 "php-ffmpeg/php-ffmpeg": "0.3.x-dev@dev",
                 "php-mp4box/php-mp4box": ">=0.3,<0.4",
@@ -1319,7 +1269,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-06-26 17:36:09"
+            "time": "2013-06-27 15:43:21"
         },
         {
             "name": "mediavorus/mediavorus",
@@ -1327,12 +1277,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/MediaVorus.git",
-                "reference": "7e5a4946f0bb2bc341423773db8c494a775ea48f"
+                "reference": "3b006b54e198b489ca674af6c9713eac9e0314bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/7e5a4946f0bb2bc341423773db8c494a775ea48f",
-                "reference": "7e5a4946f0bb2bc341423773db8c494a775ea48f",
+                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/3b006b54e198b489ca674af6c9713eac9e0314bf",
+                "reference": "3b006b54e198b489ca674af6c9713eac9e0314bf",
                 "shasum": ""
             },
             "require": {
@@ -1380,7 +1330,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2013-06-25 20:17:26"
+            "time": "2013-06-27 11:40:44"
         },
         {
             "name": "monolog/monolog",
@@ -1483,6 +1433,61 @@
             "description": "Minify is a PHP5 app that helps you follow several rules for client-side performance. It combines multiple CSS or Javascript files, removes unnecessary whitespace and comments, and serves them with gzip encoding and optimal client-side cache headers",
             "homepage": "http://code.google.com/p/minify/",
             "time": "2013-06-24 18:56:00"
+        },
+        {
+            "name": "neutron/imagine",
+            "version": "dev-neutron-colorspace",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/romainneutron/Imagine.git",
+                "reference": "6f80efbd5c2addca16c8676485ddabec3309a217"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/romainneutron/Imagine/zipball/6f80efbd5c2addca16c8676485ddabec3309a217",
+                "reference": "6f80efbd5c2addca16c8676485ddabec3309a217",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "replace": {
+                "imagine/imagine": "*"
+            },
+            "require-dev": {
+                "sami/sami": "dev-master"
+            },
+            "suggest": {
+                "ext-gd": "to use the GD implementation",
+                "ext-gmagick": "to use the Gmagick implementation",
+                "ext-imagick": "to use the Imagick implementation"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Imagine": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bulat Shakirzyanov",
+                    "email": "mallluhuct@gmail.com",
+                    "homepage": "http://avalanche123.com"
+                }
+            ],
+            "description": "Image processing for PHP 5.3",
+            "homepage": "http://imagine.readthedocs.org/",
+            "keywords": [
+                "drawing",
+                "graphics",
+                "image manipulation",
+                "image processing"
+            ],
+            "time": "2013-06-27 15:40:09"
         },
         {
             "name": "neutron/recaptcha",
@@ -1999,9 +2004,9 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -2145,9 +2150,9 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -2332,12 +2337,12 @@
             "target-dir": "Silex/Provider",
             "source": {
                 "type": "git",
-                "url": "https://github.com/sensiolabs/Silex-WebProfiler.git",
+                "url": "https://github.com/silexphp/Silex-WebProfiler.git",
                 "reference": "v1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/Silex-WebProfiler/zipball/v1.0.0",
+                "url": "https://api.github.com/repos/silexphp/Silex-WebProfiler/zipball/v1.0.0",
                 "reference": "v1.0.0",
                 "shasum": ""
             },
