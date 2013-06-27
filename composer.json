@@ -97,5 +97,10 @@
             "PhraseaFixture" : "lib/conf.d"
         }
     },
-    "include-path": ["vendor/zend/gdata/library"]
+    "include-path": ["vendor/zend/gdata/library"],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.8-dev"
+        }
+    }
 }
