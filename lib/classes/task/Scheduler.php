@@ -67,11 +67,11 @@ class task_Scheduler
             $php = $this->dependencyContainer['phraseanet.configuration']['binaries']['php_binary'];
         } else {
             $finder = new ExecutableFinder();
-            $php = $finder->find($php);
+            $php = $finder->find('php');
         }
 
         if ( ! is_executable($php)) {
-            throw new \RuntimeException('PHP cli is not provided in registry');
+            throw new \RuntimeException('PHP cli is not provided in binary configuration');
         }
 
         $this->method = self::METHOD_PROC_OPEN;
