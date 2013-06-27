@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "1adb50a47aa80a6c0631f1e87531f2da",
+    "hash": "8ad2d0c4a9f85c8b8c80bbda1ae83fc9",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -51,34 +51,86 @@
             "time": "2012-04-13 17:43:31"
         },
         {
-            "name": "alchemy/ghostscript",
-            "version": "0.2.0",
+            "name": "alchemy/binary-driver",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
-                "url": "git://github.com/alchemy-fr/Ghostscript-PHP.git",
-                "reference": "0.2.0"
+                "url": "https://github.com/alchemy-fr/BinaryDriver.git",
+                "reference": "1.5.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Ghostscript-PHP/zipball/0.2.0",
-                "reference": "0.2.0",
+                "url": "https://api.github.com/repos/alchemy-fr/BinaryDriver/zipball/1.5.0",
+                "reference": "1.5.0",
                 "shasum": ""
             },
             "require": {
-                "monolog/monolog": ">=1.0,<2.0",
+                "evenement/evenement": ">=1.0,<2.0",
+                "monolog/monolog": ">=1.3,<2.0",
                 "php": ">=5.3.3",
+                "psr/log": ">=1.0,<2.0",
                 "symfony/process": ">=2.0,<3.0"
             },
             "require-dev": {
-                "sami/sami": "dev-master",
-                "silex/silex": "1.0.x-dev@dev"
+                "phpunit/phpunit": ">=3.7,<4.0"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.2.x-dev"
+            "autoload": {
+                "psr-0": {
+                    "Alchemy": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Neutron",
+                    "email": "imprec@gmail.com",
+                    "homepage": "http://www.lickmychip.com/"
+                },
+                {
+                    "name": "Nicolas Le Goff",
+                    "email": "legoff.n@gmail.com"
+                },
+                {
+                    "name": "Phraseanet Team",
+                    "email": "info@alchemy.fr",
+                    "homepage": "http://www.phraseanet.com/"
+                }
+            ],
+            "description": "A set of tools to build binary drivers",
+            "keywords": [
+                "binary",
+                "driver"
+            ],
+            "time": "2013-06-21 15:51:20"
+        },
+        {
+            "name": "alchemy/ghostscript",
+            "version": "0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/Ghostscript-PHP.git",
+                "reference": "0.4.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/Ghostscript-PHP/zipball/0.4.0",
+                "reference": "0.4.0",
+                "shasum": ""
+            },
+            "require": {
+                "alchemy/binary-driver": ">=1.5,<2.0",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=3.7,<4.0",
+                "sami/sami": ">=1.0,<2.0",
+                "silex/silex": ">=1.0,<2.0"
+            },
+            "type": "library",
             "autoload": {
                 "psr-0": {
                     "Ghostscript": "src"
@@ -105,7 +157,7 @@
                 "ghostscript",
                 "pdf"
             ],
-            "time": "2013-02-01 08:51:59"
+            "time": "2013-06-25 09:12:58"
         },
         {
             "name": "alchemy/oauth2php",
@@ -661,6 +713,46 @@
             "time": "2013-05-11 07:51:12"
         },
         {
+            "name": "evenement/evenement",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/igorw/evenement",
+                "reference": "v1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/igorw/evenement/zipball/v1.0.0",
+                "reference": "v1.0.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Evenement": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch",
+                    "homepage": "http://wiedler.ch/igor/"
+                }
+            ],
+            "description": "Événement is a very simple event dispatching library for PHP 5.3",
+            "keywords": [
+                "event-dispatcher"
+            ],
+            "time": "2012-05-30 08:01:08"
+        },
+        {
             "name": "facebook/php-sdk",
             "version": "v3.2.2",
             "source": {
@@ -1160,36 +1252,43 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.2.5",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "0.2.5"
+                "reference": "c51db47c1eccbf72799a2b506f9b050448828d49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0.2.5",
-                "reference": "0.2.5",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/c51db47c1eccbf72799a2b506f9b050448828d49",
+                "reference": "c51db47c1eccbf72799a2b506f9b050448828d49",
                 "shasum": ""
             },
             "require": {
-                "alchemy/ghostscript": ">=0.2,<0.3",
-                "imagine/imagine": "dev-ColorSpaces as 0.4.1",
-                "mediavorus/mediavorus": ">=0.2,<1.0",
+                "alchemy/ghostscript": ">=0.4,<0.5",
+                "imagine/imagine": "dev-ColorSpaces",
+                "mediavorus/mediavorus": "0.3.x-dev",
                 "monolog/monolog": ">=1.0,<2.0",
                 "php": ">=5.3.3",
-                "php-ffmpeg/php-ffmpeg": ">=0.2,<0.3",
-                "php-mp4box/php-mp4box": ">=0.1,<0.2",
-                "php-unoconv/php-unoconv": ">=0.1,<0.2",
+                "php-ffmpeg/php-ffmpeg": "0.3.x-dev@dev",
+                "php-mp4box/php-mp4box": ">=0.3,<0.4",
+                "php-unoconv/php-unoconv": ">=0.3,<0.4",
                 "pimple/pimple": ">=1.0,<2.0",
-                "swftools/swftools": ">=0.1,<0.2",
+                "swftools/swftools": ">=0.3,<0.4",
                 "symfony/console": ">=2.0,<3.0"
             },
             "require-dev": {
+                "neutron/silex-imagine-provider": ">=0.1,<1.0",
                 "phpexiftool/phpexiftool": ">=0.1,<1.0",
-                "silex/silex": "1.0.*@dev"
+                "phpunit/phpunit": ">=3.7,<4.0",
+                "silex/silex": ">=1.0,<2.0"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
                     "MediaAlchemyst": "src"
@@ -1220,34 +1319,35 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-04-17 23:22:57"
+            "time": "2013-06-26 17:36:09"
         },
         {
             "name": "mediavorus/mediavorus",
-            "version": "0.3.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/MediaVorus.git",
-                "reference": "0.3.2"
+                "reference": "7e5a4946f0bb2bc341423773db8c494a775ea48f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/0.3.2",
-                "reference": "0.3.2",
+                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/7e5a4946f0bb2bc341423773db8c494a775ea48f",
+                "reference": "7e5a4946f0bb2bc341423773db8c494a775ea48f",
                 "shasum": ""
             },
             "require": {
                 "doctrine/collections": ">=1.0,<2.0",
                 "monolog/monolog": ">=1.0,<2.0",
                 "php": ">=5.3.0",
-                "php-ffmpeg/php-ffmpeg": ">=0.2,<1.0",
+                "php-ffmpeg/php-ffmpeg": "0.3.x-dev",
                 "phpexiftool/phpexiftool": ">=0.1,<1.0",
                 "symfony/console": ">=2.0,<3.0",
                 "symfony/http-foundation": ">=2.0,<3.0"
             },
             "require-dev": {
-                "jms/serializer": ">=0.10.0,<1.0",
-                "silex/silex": "1.0.x-dev@dev",
+                "jms/serializer": ">=0.12.0,<0.13.0",
+                "phpunit/phpunit": ">=3.7,<4.0",
+                "silex/silex": ">=1.0,<2.0",
                 "symfony/yaml": ">=2.0,<3.0"
             },
             "suggest": {
@@ -1280,7 +1380,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2013-04-16 17:31:58"
+            "time": "2013-06-25 20:17:26"
         },
         {
             "name": "monolog/monolog",
@@ -1350,12 +1450,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mrclay/minify.git",
-                "reference": "6f5721d2db7f290a4528ea4c0b0be21621f670bc"
+                "reference": "3a1f9f55cf8d137e49667a363cb93ccfaac10706"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mrclay/minify/zipball/6f5721d2db7f290a4528ea4c0b0be21621f670bc",
-                "reference": "6f5721d2db7f290a4528ea4c0b0be21621f670bc",
+                "url": "https://api.github.com/repos/mrclay/minify/zipball/3a1f9f55cf8d137e49667a363cb93ccfaac10706",
+                "reference": "3a1f9f55cf8d137e49667a363cb93ccfaac10706",
                 "shasum": ""
             },
             "require": {
@@ -1382,7 +1482,7 @@
             ],
             "description": "Minify is a PHP5 app that helps you follow several rules for client-side performance. It combines multiple CSS or Javascript files, removes unnecessary whitespace and comments, and serves them with gzip encoding and optimal client-side cache headers",
             "homepage": "http://code.google.com/p/minify/",
-            "time": "2013-04-01 15:25:27"
+            "time": "2013-06-24 18:56:00"
         },
         {
             "name": "neutron/recaptcha",
@@ -1646,31 +1746,38 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.2.4",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg",
-                "reference": "1c504e9b4d4bcdbc2d8fef5a954127303fae8b77"
+                "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
+                "reference": "a39d8939dbc9992e290c5c0525964662c934eb9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/archive/1c504e9b4d4bcdbc2d8fef5a954127303fae8b77.zip",
-                "reference": "1c504e9b4d4bcdbc2d8fef5a954127303fae8b77",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/a39d8939dbc9992e290c5c0525964662c934eb9c",
+                "reference": "a39d8939dbc9992e290c5c0525964662c934eb9c",
                 "shasum": ""
             },
             "require": {
-                "monolog/monolog": ">=1.0,<2.0",
-                "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<3.0"
+                "alchemy/binary-driver": ">=1.5,<2.0",
+                "doctrine/cache": ">=1.0,<2.0",
+                "evenement/evenement": ">=1.0,<2.0",
+                "php": ">=5.3.3"
             },
             "require-dev": {
-                "sami/sami": "dev-master@dev",
-                "silex/silex": "1.0.x-dev@dev"
+                "phpunit/phpunit": ">=3.7,<4.0",
+                "sami/sami": ">=1.0,<2.0",
+                "silex/silex": ">=1.0,<2.0"
             },
             "suggest": {
                 "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
                     "FFMpeg": "src"
@@ -1703,29 +1810,29 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-05-10 21:28:35"
+            "time": "2013-06-26 13:17:16"
         },
         {
             "name": "php-mp4box/php-mp4box",
-            "version": "0.1.1",
+            "version": "0.3.0",
             "source": {
                 "type": "git",
-                "url": "git://github.com/alchemy-fr/PHP-MP4Box.git",
-                "reference": "0.1.1"
+                "url": "https://github.com/alchemy-fr/PHP-MP4Box.git",
+                "reference": "0.3.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-MP4Box/zipball/0.1.1",
-                "reference": "0.1.1",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-MP4Box/zipball/0.3.0",
+                "reference": "0.3.0",
                 "shasum": ""
             },
             "require": {
-                "monolog/monolog": ">=1.0,<2.0",
-                "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<3.0"
+                "alchemy/binary-driver": ">=1.5,<2.0",
+                "php": ">=5.3.3"
             },
             "require-dev": {
-                "silex/silex": "1.0.x-dev@dev"
+                "phpunit/phpunit": ">=3.7,<4.0",
+                "silex/silex": ">=1.0,<2.0"
             },
             "type": "library",
             "autoload": {
@@ -1750,29 +1857,33 @@
                 }
             ],
             "description": "PHP MP4Box, an Object Oriented library for easy file conversion with MP4 Box",
-            "time": "2013-02-11 11:30:00"
+            "keywords": [
+                "gpac",
+                "mp4box"
+            ],
+            "time": "2013-06-25 10:13:06"
         },
         {
             "name": "php-unoconv/php-unoconv",
-            "version": "0.1.1",
+            "version": "0.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/PHP-Unoconv",
-                "reference": "0.1.1"
+                "url": "https://github.com/alchemy-fr/PHP-Unoconv.git",
+                "reference": "0.3.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-Unoconv/zipball/0.1.1",
-                "reference": "0.1.1",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-Unoconv/zipball/0.3.0",
+                "reference": "0.3.0",
                 "shasum": ""
             },
             "require": {
-                "monolog/monolog": ">=1.0,<2.0",
-                "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<3.0"
+                "alchemy/binary-driver": ">=1.5,<2.0",
+                "php": ">=5.3.3"
             },
             "require-dev": {
-                "silex/silex": "1.0.x-dev@dev"
+                "phpunit/phpunit": ">=3.7,<4.0",
+                "silex/silex": ">=1.0,<2.0"
             },
             "type": "library",
             "autoload": {
@@ -1800,7 +1911,7 @@
             "keywords": [
                 "unoconv"
             ],
-            "time": "2013-02-11 11:38:30"
+            "time": "2013-06-25 09:53:08"
         },
         {
             "name": "php-xpdf/php-xpdf",
@@ -2262,26 +2373,28 @@
         },
         {
             "name": "swftools/swftools",
-            "version": "0.1.1",
+            "version": "0.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/PHPSwftools",
-                "reference": "0.1.1"
+                "url": "https://github.com/alchemy-fr/PHPSwftools.git",
+                "reference": "0.3.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPSwftools/zipball/0.1.1",
-                "reference": "0.1.1",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPSwftools/zipball/0.3.0",
+                "reference": "0.3.0",
                 "shasum": ""
             },
             "require": {
+                "alchemy/binary-driver": ">=1.5,<2.0",
                 "monolog/monolog": ">=1.0,<2.0",
                 "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<3.0"
+                "pimple/pimple": ">=1.0,<2.0"
             },
             "require-dev": {
-                "sami/sami": "dev-master@dev",
-                "silex/silex": "1.0.x-dev@dev"
+                "phpunit/phpunit": ">=3.7,<4.0",
+                "sami/sami": ">=1.0,<2.0",
+                "silex/silex": ">=1.0,<2.0"
             },
             "type": "library",
             "autoload": {
@@ -2311,7 +2424,7 @@
                 "flash",
                 "swf"
             ],
-            "time": "2013-02-11 11:46:21"
+            "time": "2013-06-25 12:09:36"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2577,16 +2690,16 @@
         },
         {
             "name": "themattharris/tmhoauth",
-            "version": "0.7.5",
+            "version": "0.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/themattharris/tmhOAuth.git",
-                "reference": "0.7.5"
+                "reference": "0.8.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/themattharris/tmhOAuth/zipball/0.7.5",
-                "reference": "0.7.5",
+                "url": "https://api.github.com/repos/themattharris/tmhOAuth/zipball/0.8.2",
+                "reference": "0.8.2",
                 "shasum": ""
             },
             "require": {
@@ -2610,12 +2723,12 @@
                     "role": "Developer"
                 }
             ],
-            "description": "An OAuth 1.0A library written in PHP by @themattharris, specifically for use with the Twitter API",
+            "description": "An OAuth library written in PHP by @themattharris",
             "keywords": [
                 "oauth",
                 "twitter"
             ],
-            "time": "2013-02-20 15:57:52"
+            "time": "2013-06-15 18:00:16"
         },
         {
             "name": "twig/extensions",
@@ -3687,6 +3800,9 @@
         "badfaith/badfaith": 20,
         "dailymotion/sdk": 20,
         "imagine/imagine": 20,
+        "mediavorus/mediavorus": 20,
+        "media-alchemyst/media-alchemyst": 20,
+        "php-ffmpeg/php-ffmpeg": 20,
         "mrclay/minify": 20,
         "neutron/silex-imagine-provider": 20,
         "neutron/silex-badfaith-provider": 20,

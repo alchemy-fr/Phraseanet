@@ -19,7 +19,7 @@ namespace Alchemy\Phrasea\Media\Subdef;
  */
 class Audio extends Provider
 {
-    const OPTION_BITRATE = 'bitrate';
+    const OPTION_AUDIOBITRATE = 'audiobitrate';
     const OPTION_THREADS = 'threads';
     const OPTION_ACODEC = 'acodec';
     const OPTION_AUDIOSAMPLERATE = 'audiosamplerate';
@@ -31,8 +31,7 @@ class Audio extends Provider
             47250, 48000, 50000, 50400, 88200, 96000
         );
 
-        $this->registerOption(new OptionType\Range(_('Birate'), self::OPTION_BITRATE, 100, 4000, 800));
-        $this->registerOption(new OptionType\Range(_('Threads'), self::OPTION_THREADS, 1, 16, 1));
+        $this->registerOption(new OptionType\Range(_('Audio Birate'), self::OPTION_AUDIOBITRATE, 32, 320, 128, 32));
         $this->registerOption(new OptionType\Enum(_('AudioSamplerate'), self::OPTION_AUDIOSAMPLERATE, $AVaudiosamplerate));
         $this->registerOption(new OptionType\Enum(_('Audio Codec'), self::OPTION_ACODEC, array('libmp3lame', 'flac'), 'libmp3lame'));
     }
@@ -55,7 +54,7 @@ class Audio extends Provider
 
         $this->spec->setAudioCodec($this->getOption(self::OPTION_ACODEC)->getValue());
         $this->spec->setAudioSampleRate($this->getOption(self::OPTION_AUDIOSAMPLERATE)->getValue());
-        $this->spec->setKiloBitrate($this->getOption(self::OPTION_BITRATE)->getValue());
+        $this->spec->setAudioKiloBitrate($this->getOption(self::OPTION_AUDIOBITRATE)->getValue());
 
         return $this->spec;
     }

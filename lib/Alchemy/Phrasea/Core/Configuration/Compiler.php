@@ -71,6 +71,9 @@ class Compiler
         if (false === $string) {
             return 'false';
         }
+        if (null === $string) {
+            return 'null';
+        }
 
         return $this->quote($string);
     }

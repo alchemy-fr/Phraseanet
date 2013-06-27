@@ -126,9 +126,15 @@ class task_manager
 
     public function getSchedulerProcess()
     {
-        $phpcli = $this->app['phraseanet.registry']->get('php_binary');
+        //prevent scheduler to fail if GV_cli is not provided
+        if (isset($this->app['phraseanet.configuration']['binaries']['php_binary'])) {
+            $php = $this->app['phraseanet.configuration']['binaries']['php_binary'];
+        } else {
+            $finder = new ExecutableFinder();
+            $php = $finder->find($php);
+        }
 
-        $cmd = $phpcli . ' -f ' . $this->app['root.path'] . "/bin/console scheduler:start";
+        $cmd = $php . ' -f ' . $this->app['root.path'] . "/bin/console scheduler:start";
 
         return new Process($cmd);
     }

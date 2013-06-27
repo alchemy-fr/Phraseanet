@@ -50,14 +50,10 @@ class Installer
         $this->phraseaIndexer = $path;
     }
 
-    private function populateRegistryData($serverName, $dataPath, $binaryData)
+    private function populateRegistryData($serverName, $dataPath)
     {
         $this->app['phraseanet.registry']->set('GV_base_datapath_noweb', $dataPath, \registry::TYPE_STRING);
         $this->app['phraseanet.registry']->set('GV_ServerName', $serverName, \registry::TYPE_STRING);
-
-        foreach ($binaryData as $key => $value) {
-            $this->app['phraseanet.registry']->set($key, $value, \registry::TYPE_STRING);
-        }
 
         // required to load GV template
         $app = $this->app;

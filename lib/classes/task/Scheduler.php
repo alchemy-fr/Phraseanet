@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Monolog\Logger;
+use Symfony\Component\Process\ExecutableFinder;
 
 /**
  *
@@ -62,7 +63,14 @@ class task_Scheduler
     public function run()
     {
         //prevent scheduler to fail if GV_cli is not provided
-        if ( ! is_executable($this->dependencyContainer['phraseanet.registry']->get('php_binary'))) {
+        if (isset($this->dependencyContainer['phraseanet.configuration']['binaries']['php_binary'])) {
+            $php = $this->dependencyContainer['phraseanet.configuration']['binaries']['php_binary'];
+        } else {
+            $finder = new ExecutableFinder();
+            $php = $finder->find($php);
+        }
+
+        if ( ! is_executable($php)) {
             throw new \RuntimeException('PHP cli is not provided in registry');
         }
 
@@ -225,7 +233,7 @@ class task_Scheduler
                     $taskPoll[$tkey] = array(
                         "task"           => $task,
                         "current_status" => $status,
-                        "cmd"            => $this->dependencyContainer['phraseanet.registry']->get('php_binary'),
+                        "cmd"            => $php,
                         "args"           => array(
                             '-f',
                             $this->dependencyContainer['root.path'] . '/bin/console',

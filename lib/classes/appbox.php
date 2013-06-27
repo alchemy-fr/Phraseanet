@@ -101,10 +101,7 @@ class appbox extends base
                 $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
                 try {
-                    $alchemyst
-                        ->open($pathfile->getPathname())
-                        ->turninto($tmp, $imageSpec)
-                        ->close();
+                    $alchemyst->turninto($pathfile->getPathname(), $tmp, $imageSpec);
                     $filename = $tmp;
                 } catch (\MediaAlchemyst\Exception $e) {
 
@@ -118,10 +115,7 @@ class appbox extends base
                 $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
                 try {
-                    $alchemyst
-                        ->open($pathfile->getPathname())
-                        ->turninto($tmp, $imageSpec)
-                        ->close();
+                    $alchemyst->turninto($pathfile->getPathname(), $tmp, $imageSpec);
                     $filename = $tmp;
                 } catch (\MediaAlchemyst\Exception $e) {
 
@@ -196,10 +190,7 @@ class appbox extends base
             $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
             try {
-                $alchemyst
-                    ->open($pathfile->getPathname())
-                    ->turninto($tmp, $imageSpec)
-                    ->close();
+                $alchemyst->turninto($pathfile->getPathname(), $tmp, $imageSpec);
                 $filename = $tmp;
             } catch (\MediaAlchemyst\Exception $e) {
 

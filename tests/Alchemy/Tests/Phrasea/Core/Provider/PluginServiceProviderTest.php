@@ -95,28 +95,16 @@ class PluginServiceProvidertest extends ServiceProviderTestCase
         }
 
         $app = new Application();
-        $app['phraseanet.registry'] = $this->createRegistryMock();
-        $app['phraseanet.registry']->expects($this->once())
-            ->method('get')
-            ->with('php_binary')
-            ->will($this->returnValue($php));
-
+        $app['phraseanet.configuration'] = array('binaries' => array('php_binary' => null));
         $app->register(new PluginServiceProvider());
-
         $this->assertInstanceOf('Alchemy\Phrasea\Plugin\Management\ComposerInstaller', $app['plugins.composer-installer']);
     }
 
     public function testInstallerCanDetectPhpConf()
     {
         $app = new Application();
-        $app['phraseanet.registry'] = $this->createRegistryMock();
-        $app['phraseanet.registry']->expects($this->once())
-            ->method('get')
-            ->with('php_binary')
-            ->will($this->returnValue(null));
-
+        $app['phraseanet.configuration'] = array('binaries' => array('php_binary' => null));
         $app->register(new PluginServiceProvider());
-
         $this->assertInstanceOf('Alchemy\Phrasea\Plugin\Management\ComposerInstaller', $app['plugins.composer-installer']);
     }
 

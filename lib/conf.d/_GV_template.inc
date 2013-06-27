@@ -254,10 +254,10 @@ return call_user_func_array(function(Application $app) {
                     'default'   => '',
                     'comment'   => _('Imagine driver'),
                     'available' => array(
-                        ''                                             => 'Auto',
-                        \MediaAlchemyst\Driver\Imagine::DRIVER_GMAGICK => 'GraphicsMagick',
-                        \MediaAlchemyst\Driver\Imagine::DRIVER_IMAGICK => 'ImageMagick',
-                        \MediaAlchemyst\Driver\Imagine::DRIVER_GD      => 'GD',
+                        ''        => 'Auto',
+                        'gmagick' => 'GraphicsMagick',
+                        'imagick' => 'ImageMagick',
+                        'gd'      => 'GD',
                     )
                 ),
                 array(

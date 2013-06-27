@@ -322,8 +322,8 @@ class databox_subdef
         if ($sd->acodec) {
             $audio->setOptionValue(Audio::OPTION_ACODEC, (string) $sd->acodec);
         }
-        if ($sd->bitrate) {
-            $audio->setOptionValue(Audio::OPTION_BITRATE, (int) $sd->bitrate);
+        if ($sd->audiobitrate) {
+            $audio->setOptionValue(Audio::OPTION_AUDIOBITRATE, (int) $sd->audiobitrate);
         }
         if ($sd->audiosamplerate) {
             $audio->setOptionValue(Audio::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
@@ -387,6 +387,9 @@ class databox_subdef
         }
         if ($sd->bitrate) {
             $video->setOptionValue(Video::OPTION_BITRATE, (int) $sd->bitrate);
+        }
+        if ($sd->audiobitrate) {
+            $video->setOptionValue(Video::OPTION_AUDIOBITRATE, (int) $sd->audiobitrate);
         }
         if ($sd->audiosamplerate) {
             $video->setOptionValue(Video::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);

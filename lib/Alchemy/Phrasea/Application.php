@@ -206,7 +206,40 @@ class Application extends SilexApplication
         $this->register(new FilesystemServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
+
         $this->register(new MediaAlchemystServiceProvider());
+        $this['media-alchemyst.configuration'] = $this->share(function(Application $app) {
+            $configuration = array();
+
+            foreach (array(
+                    'swftools.pdf2swf.binaries'    => 'pdf2swf_binary',
+                    'swftools.swfrender.binaries'  => 'swf_render_binary',
+                    'swftools.swfextract.binaries' => 'swf_extract_binary',
+                    'unoconv.binaries'             => 'unoconv_binary',
+                    'mp4box.binaries'              => 'mp4box_binary',
+                    'gs.binaries'                  => 'ghostscript_binary',
+                    'ffmpeg.ffmpeg.binaries'       => 'ffmpeg_binary',
+                    'ffmpeg.ffprobe.binaries'      => 'ffprobe_binary',
+                    'ffmpeg.ffmpeg.timeout'        => 'ffmpeg_timeout',
+                    'ffmpeg.ffprobe.timeout'       => 'ffprobe_timeout',
+                    'gs.timeout'                   => 'gs_timeout',
+                    'mp4box.timeout'               => 'mp4box_timeout',
+                    'swftools.timeout'             => 'swftools_timeout',
+                    'unoconv.timeout'              => 'unoconv_timeout',
+            ) as $parameter => $key) {
+                if (isset($this['phraseanet.configuration']['binaries'][$key])) {
+                    $configuration[$parameter] = $this['phraseanet.configuration']['binaries'][$key];
+                }
+            }
+
+            $imagineDriver = $app['phraseanet.registry']->get('GV_imagine_driver');
+
+            $configuration['ffmpeg.threads'] = $app['phraseanet.registry']->get('GV_ffmpeg_threads');
+            $configuration['imagine.driver'] = $imagineDriver ?: null;
+
+            return $configuration;
+        });
+
         $this->register(new MediaVorusServiceProvider());
 
         $this['mediavorus'] = $this->share(
@@ -327,13 +360,13 @@ class Application extends SilexApplication
             }
 
             if (class_exists('\Gmagick')) {
-                return Imagine::DRIVER_GMAGICK;
+                return 'gmagick';
             }
             if (class_exists('\Imagick')) {
-                return Imagine::DRIVER_IMAGICK;
+                return 'imagick';
             }
             if (extension_loaded('gd')) {
-                return Imagine::DRIVER_GD;
+                return 'gd';
             }
 
             throw new \RuntimeException('No Imagine driver available');
