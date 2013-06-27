@@ -87,13 +87,10 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
 
             $localeSet = false;
 
-            foreach ($app['bad-faith']->headerLists['accept_language']->items as $language) {
-                $code = $language->lang . ($language->sublang ? '_' . $language->sublang : null);
-                if (isset($languages[$code])) {
-                    $event->getRequest()->setLocale($code);
+            foreach ($event->getRequest()->getLanguages() as $code) {
+                if (array_key_exists($code, $app['locales.mapping'])) {
+                    $event->getRequest()->setLocale($app['locales.mapping'][$code]);
                     $localeSet = true;
-
-                    return $event->getRequest()->getLocale();
                     break;
                 }
             }

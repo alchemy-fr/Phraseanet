@@ -3,31 +3,8 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ad3bafe566af66a209d7a19edc54f8bc",
+    "hash": "ef1d183afd3605cda9551a25233bd774",
     "packages": [
-        {
-            "name": "BadFaith/BadFaith",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/winmillwill/BadFaith",
-                "reference": "9f80653350aa1f342a53a2f3a690422256686707"
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "BadFaith": "lib/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Accept-* Header parsing for PHP",
-            "time": "2012-07-27 20:10:01"
-        },
         {
             "name": "alchemy/binary-driver",
             "version": "1.5.0",
@@ -69,7 +46,7 @@
                     "homepage": "http://www.lickmychip.com/"
                 },
                 {
-                    "name": "Nicolas Le Goff",
+                    "name": "nlegoff",
                     "email": "legoff.n@gmail.com"
                 },
                 {
@@ -138,6 +115,44 @@
             "time": "2013-06-25 09:12:58"
         },
         {
+            "name": "alchemy/google-plus-api-client",
+            "version": "0.6.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/google-plus-api-client.git",
+                "reference": "0.6.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/google-plus-api-client/zipball/0.6.2",
+                "reference": "0.6.2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Google",
+                    "email": "noreply@google.com",
+                    "homepage": "http://www.google.com/"
+                }
+            ],
+            "description": "PHP Client for Google APIs",
+            "homepage": "https://code.google.com/p/google-api-php-client/",
+            "time": "2013-06-27 15:13:37"
+        },
+        {
             "name": "alchemy/oauth2php",
             "version": "dev-master",
             "source": {
@@ -165,8 +180,14 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/Phlickr",
+                "url": "https://github.com/alchemy-fr/Phlickr.git",
                 "reference": "93c5100ec15f70e9be567d22bf01a4667fb75cb8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/Phlickr/zipball/93c5100ec15f70e9be567d22bf01a4667fb75cb8",
+                "reference": "93c5100ec15f70e9be567d22bf01a4667fb75cb8",
+                "shasum": ""
             },
             "type": "library",
             "autoload": {
@@ -174,6 +195,7 @@
                     "Phlickr_": "./"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "time": "2013-06-27 15:20:17"
         },
         {
@@ -871,22 +893,6 @@
             "time": "2013-05-21 12:09:55"
         },
         {
-            "name": "google-plus/api-client",
-            "version": "0.6.1",
-            "dist": {
-                "type": "tar",
-                "url": "http://google-api-php-client.googlecode.com/files/google-api-php-client-0.6.1.tar.gz",
-                "reference": null,
-                "shasum": null
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            }
-        },
-        {
             "name": "guzzle/guzzle",
             "version": "v3.3.1",
             "source": {
@@ -1532,52 +1538,6 @@
             ],
             "description": "ReCaptcha Client",
             "time": "2013-02-14 13:42:00"
-        },
-        {
-            "name": "neutron/silex-badfaith-provider",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/romainneutron/BadFaith-ServiceProvider.git",
-                "reference": "5bc683cea2996fe5fda6f72b1f9c83299a381336"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/BadFaith-ServiceProvider/zipball/5bc683cea2996fe5fda6f72b1f9c83299a381336",
-                "reference": "5bc683cea2996fe5fda6f72b1f9c83299a381336",
-                "shasum": ""
-            },
-            "require": {
-                "badfaith/badfaith": "*",
-                "php": ">=5.3.3",
-                "silex/silex": ">=1.0",
-                "symfony/browser-kit": ">=1.0"
-            },
-            "require-dev": {
-                "fabpot/php-cs-fixer": "master"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Neutron": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Romain Neutron",
-                    "email": "imprec@gmail.com",
-                    "homepage": "http://www.lickmychip.com/"
-                }
-            ],
-            "description": "A provider to BadFaith content negociation library",
-            "keywords": [
-                "content negociation"
-            ],
-            "time": "2012-12-19 23:40:50"
         },
         {
             "name": "neutron/silex-filesystem-provider",
@@ -2419,7 +2379,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "support@alchemy.fr",
+                    "email": "info@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
@@ -3802,15 +3762,13 @@
     "stability-flags": {
         "alchemy/oauth2php": 20,
         "alchemy/phlickr": 20,
-        "badfaith/badfaith": 20,
         "dailymotion/sdk": 20,
-        "imagine/imagine": 20,
+        "neutron/imagine": 20,
         "mediavorus/mediavorus": 20,
         "media-alchemyst/media-alchemyst": 20,
         "php-ffmpeg/php-ffmpeg": 20,
         "mrclay/minify": 20,
         "neutron/silex-imagine-provider": 20,
-        "neutron/silex-badfaith-provider": 20,
         "neutron/silex-filesystem-provider": 20,
         "doctrine/data-fixtures": 20
     },
