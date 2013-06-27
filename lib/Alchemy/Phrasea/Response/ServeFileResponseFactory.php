@@ -24,12 +24,11 @@ class ServeFileResponseFactory implements DeliverDataInterface
     public function __construct($enableXSendFile, \unicode $unicode)
     {
         $this->xSendFileEnable = (Boolean) $enableXSendFile;
+        $this->unicode = $unicode;
 
         if ($this->xSendFileEnable) {
             BinaryFileResponse::trustXSendfileTypeHeader();
         }
-
-        $this->unicode = $unicode;
     }
 
     /**
@@ -51,12 +50,11 @@ class ServeFileResponseFactory implements DeliverDataInterface
     {
         $response = new BinaryFileResponse($file);
         $response->setContentDisposition($disposition, $this->sanitizeFilename($filename), $this->sanitizeFilenameFallback($filename));
+        $response->setMaxAge($cacheDuration);
 
         if (null !== $mimeType) {
              $response->headers->set('Content-Type', $mimeType);
         }
-
-        $response->setMaxAge($cacheDuration);
 
         return $response;
     }
@@ -67,12 +65,12 @@ class ServeFileResponseFactory implements DeliverDataInterface
     public function deliverData($data, $filename, $mimeType, $disposition = self::DISPOSITION_INLINE, $cacheDuration = 3600)
     {
         $response = new Response($data);
-
-        $dispositionHeader = $response->headers->makeDisposition($disposition, $this->sanitizeFilename($filename), $this->sanitizeFilenameFallback($filename));
-        $response->headers->set('Content-Disposition', $dispositionHeader);
-
+        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+            $disposition,
+            $this->sanitizeFilename($filename),
+            $this->sanitizeFilenameFallback($filename
+        )));
         $response->headers->set('Content-Type', $mimeType);
-
         $response->setMaxAge($cacheDuration);
 
         return $response;
