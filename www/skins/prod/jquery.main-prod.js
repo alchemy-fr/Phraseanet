@@ -789,8 +789,7 @@ function HueToRgb(m1, m2, hue) {
 
 $(document).ready(function(){
 
-    $('a.adv_search_button').live('click', function(){
-
+    $('.adv_search_button').live('click', function(){
         var searchForm = $('#searchForm');
         var parent = searchForm.parent();
 
@@ -1130,10 +1129,7 @@ $(document).ready(function(){
     $('.datepicker').datepicker({
         changeYear: true,
         changeMonth:true,
-        dateFormat:'yy/mm/dd',
-        showOn: 'button',
-        buttonImage:'/skins/icons/cal.png',
-        buttonImageOnly: true
+        dateFormat:'yy/mm/dd'
     });
 
     $.ajaxSetup({
