@@ -1,6 +1,6 @@
 {% macro board_sub_section(requirements) %}
     <h2>{{ requirements.getName() }}</h2>
-    <ul class="setup">
+    <ul class="setup unstyled">
         {% if requirements.getRequirements() is not empty %}
             <li><strong>{% trans 'Requirements' %}</strong></li>
             {% for requirement in requirements.getRequirements() %}
@@ -60,9 +60,7 @@
 
 
 <script type="text/javascript">
-
     $(document).ready(function(){
-
         var container = $('#right-ajax');
         $( ".admin_adder", container ).autocomplete({
             source: "/admin/users/typeahead/search/",
@@ -74,7 +72,7 @@
             }
         }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
             var email = item.email ? '<br/>'+item.email : '';
-            var login = item.login != item.name ? " ("+ item.login +")" : '';
+            var login = item.login !== item.name ? " ("+ item.login +")" : '';
 
             return $( "<li></li>" )
             .data( "ui-autocomplete-item", item )
@@ -85,59 +83,75 @@
     });
 </script>
 
-
+<div class="page-header">
+    <h1>{% trans %}General settings{% endtrans %}<small style="font-size:18px; margin-left: 15px;">{% trans %}your configuration{% endtrans %}</small></h1>
+</div>
 
 {% if cache_flushed %}
-    <div>
+    <div class="well well-small">
         {% trans 'all caches services have been flushed' %}
     </div>
 {% endif %}
 
-
 <div class="board_section">
-    <h1>{% trans 'setup:: administrateurs de l\'application' %}</h1>
-    <form id="admin_adder" action="{{ path('admin_dashboard_add_admins') }}" method="post">
-        <ul>
-        {% for usr_id, usr_login in admins %}
-            <li>
-                <label class="checkbox" for="adm_{{ usr_id }}">
-                    <input type="checkbox" id="adm_{{ usr_id }}" name="admins[]" value="{{ usr_id }}" checked />
-                    {{ usr_login }}
-                </label>
-            </li>
-        {% endfor %}
-        </ul>
-        <label>{% trans 'setup:: ajouter un administrateur de l\'application' %} :</label>
-        <input class="admin_adder input-large" />
-        <input type="hidden" class="new" name="admins[]" />
-        <input type="submit" class="btn btn-warning" value="{% trans 'boutton::valider' %}" />
+    <form id="admin_adder" action="{{ path('admin_dashboard_add_admins') }}" method="post" class="form-inline">
+        <fieldset>
+            <legend>{% trans 'setup:: administrateurs de l\'application' %}</legend>
+            <ul class="unstyled">
+                {% for usr_id, usr_login in admins %}
+                    <li>
+                        <label class="checkbox" for="adm_{{ usr_id }}">
+                            <input type="checkbox" id="adm_{{ usr_id }}" name="admins[]" value="{{ usr_id }}" checked />
+                            {{ usr_login }}
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="input-append" style="margin-left:20px">
+                <input class="admin_adder input-large" placeholder="{% trans 'Add an admin' %}"/>
+                <input type="submit" class="btn btn-warning" value="{% trans 'boutton::valider' %}" />
+            </div>
+            <input type="hidden" class="new" name="admins[]" />
+        </fieldset>
     </form>
-    <h2>{% trans 'setup:: Reinitialisation des droits admins' %}</h2>
-    <form id="admin_reset" action="{{ path('admin_dashboard_reset_admin_rights') }}" method="post">
-        <input type="submit" class="btn btn-warning" value="{% trans 'boutton::reinitialiser' %}" />
+    <form id="admin_reset" action="{{ path('admin_dashboard_reset_admin_rights') }}" method="post" class="form-inline" style="display:inline">
+        <fieldset>
+            <legend>{% trans 'setup:: Reinitialisation des droits admins' %}</legend>
+            <input type="submit" class="btn btn-warning" value="{% trans 'boutton::reinitialiser' %}" />
+        </fieldset>
     </form>
 </div>
 
 <div class="board_section">
-    <h1 style="margin-bottom: 0;">{% trans 'setup:: Reglages generaux' %}</h1>
-    <h2 style="margin-top: 0; font-style: italic;">{% trans 'setup::Votre configuration' %}</h2>
     <div class="section">
-
-        <h2>{% trans 'setup::Tests d\'envois d\'emails' %}</h2>
-        <form id="mail_checker" method="post" action="{{ path('admin_dashboard_test_mail') }}" target="_self">
-            <label>Email : </label><input name="email" type="text" />
-            <input type="submit" class="btn btn-warning" value="{% trans 'boutton::valider' %}"/>
-            {% if email_status %}
-                <p>{% trans %}Email test result : {{ email_status }}{% endtrans %}</p>
-            {% endif %}
+        <form id="mail_checker" method="post" action="{{ path('admin_dashboard_test_mail') }}" target="_self" class="form-inline">
+            <fieldset>
+                <legend>{% trans 'setup::Tests d\'envois d\'emails' %}</legend>
+                <div class="input-append">
+                    <input class="span3" id="appendedInputButton" type="text" placeholder="{% trans %}Email{% endtrans %}">
+                    <input type="submit" class="btn btn-warning" value="{% trans 'Send' %}"/>
+                </div>
+                <div>
+                    {% if email_status %}
+                        <p>{% trans %}Email test result : {{ email_status }}{% endtrans %}</p>
+                    {% endif %}
+                </div>
+            </fieldset>
         </form>
+    </div>
 
-        {% if app['cache'].isServer() %}
-            <form id="cache_flusher" method="post" action="{{ path('admin_dashboard_flush_cache') }}">
-                <input type="submit" id="flush_button" class="btn btn-warning" value="Flush All Caches" />
+    {% if app['cache'].isServer() %}
+        <div class="section">
+            <form id="cache_flusher" method="post" action="{{ path('admin_dashboard_flush_cache') }}" class="form-inline">
+                <fieldset>
+                <legend>{% trans %}Reset cache{% endtrans %}</legend>
+                    <input type="submit" id="flush_button" class="btn btn-warning span4" value="Flush All Caches" />
+                </fieldset>
             </form>
-        {% endif %}
+        </div>
+    {% endif %}
 
+    <div class="section">
         {% for requirements in app['phraseanet.configuration-tester'].getRequirements() %}
             {{ _self.board_sub_section(requirements) }}
         {% endfor %}

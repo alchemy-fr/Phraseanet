@@ -9,18 +9,21 @@ return call_user_func_array(function(Application $app) {
     $youtube_console_url = '<a href="https://code.google.com/apis/console/" target="_blank">https://code.google.com/apis/console/</a>';
     $dashboard_youtube = '<a href="https://code.google.com/apis/youtube/dashboard/" target="_blank">https://code.google.com/apis/youtube/dashboard/</a>';
     $create_api_flickr = '<a href="https://secure.flickr.com/services/apps/create/" target="_blank">https://secure.flickr.com/services/apps/create/</a>';
-    $flickr_callback = '/prod/bridge/callback/flickr/';
-    $dailymotion_callback = '/prod/bridge/callback/dailymotion/';
+    $youtube_callback = $app->url('prod_bridge_callback', array('api_name' => 'youtube'));
+    $flickr_callback = $app->url('prod_bridge_callback', array('api_name' => 'flickr'));
+    $dailymotion_callback = $app->url('prod_bridge_callback', array('api_name' => 'dailymotion'));
     $create_api_dailymotion = '<a href="http://www.dailymotion.com/profile/developer" target="_blank">http://www.dailymotion.com/profile/developer</a>';
+    $recaptchaDoc = '<a href="http://www.google.com/recaptcha">http://www.google.com/recaptcha</a>';
+    $imagineDoc = '<a href="http://imagine.readthedocs.org/en/latest/usage/introduction.html">http://imagine.readthedocs.org/en/latest/usage/introduction.html</a>';
 
     return array(
         array(
-            'section' => _('GV::section:: Serveur HTTP'),
+            'section' => _('HTTP Server'),
             'vars'    => array(
                 array(
                     'type'      => \registry::TYPE_ENUM,
                     'name'      => 'GV_default_lng',
-                    'comment'   => _('reglages:: Langue par defaut'),
+                    'comment'   => _('Default language'),
                     'default'   => 'fr_FR',
                     'available' => $avLanguages,
                     'required'  => true
@@ -29,48 +32,48 @@ return call_user_func_array(function(Application $app) {
                     'type'      => \registry::TYPE_STRING,
                     'name'      => 'GV_STATIC_URL',
                     'end_slash' => false,
-                    'comment'   => _('reglages:: URL statique (optionnel)'),
+                    'comment'   => _('Static URL'),
+                    'help'      => _('optional'),
                     'default'   => '',
-                    'required'  => false
                 )
             )
         ), array(
-            'section' => _('GV::section:: Etat de maintenance'),
+            'section' => _('Maintenance state'),
             'rolled'  => true,
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_TEXT,
                     'name'    => 'GV_message',
-                    'comment' => _('reglages:: Message a diffuser aux utilisateurs'),
+                    'comment' => _('Maintenance message'),
                     'default' => "May the force be with you"
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_message_on',
-                    'comment' => _('reglages:: activation du message a diffuser aux utilistaeurs'),
+                    'comment' => _('Enable maintenance message broadcast'),
                     'default' => false
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_log_errors',
-                    'comment' => _('reglages:: logguer les erreurs'),
+                    'comment' => _('Log errors'),
                     'default' => false
                 )
             )
         ), array(
-            'section' => _('GV::section:: Connectivite aux webservices'),
+            'section' => _('Webservices connectivity'),
             'vars'    => array(
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_google_api',
-                    'comment'  => _('reglages:: Utiliser els google apis'),
+                    'comment'  => _('Use Google API'),
                     'default'  => true,
                     'required' => true
                 ),
                 array(
                     'type'      => \registry::TYPE_STRING,
                     'name'      => 'GV_i18n_service',
-                    'comment'   => _('reglages:: Service phrasea de localisation'),
+                    'comment'   => _('Geonames server address'),
                     'default'   => 'http://localization.webservice.alchemyasp.com/',
                     'end_slash' => true,
                     'required'  => true
@@ -78,111 +81,117 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_captchas',
-                    'comment'  => _('reglages:: Utilisation de l\'api recpatcha'),
+                    'comment'  => _('Use recaptcha API'),
+                    'help'     => _(sprintf('See documentation at %s', $recaptchaDoc)),
                     'default'  => false,
                     'required' => true
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_captcha_public_key',
-                    'comment' => _('reglages:: clef publique recaptcha'),
+                    'comment' => _('Recaptcha public key'),
                     'default' => ''
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_captcha_private_key',
-                    'comment' => _('reglages:: clef privee recaptcha'),
+                    'comment' => _('Recaptcha private key'),
                     'default' => ''
                 )
             )
         ), array(
-            'section' => _('GV::section:: Connectivite a Youtube'),
+            'section' => _('Youtube connectivity'),
             'vars'    => array(
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_youtube_api',
-                    'comment'  => sprintf(_('reglages:: Utiliser l\'api youtube, voir %s, <br/> mettre la callback a WEBSITE_URL/prod/bridge/callback/youtube'), $youtube_console_url),
+                    'comment'  => _('Use youtube API'),
+                    'help'     => sprintf(_('Create API account at %s, then use %s as callback URL value'), $youtube_console_url, $youtube_callback),
                     'default'  => false,
                     'required' => true
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_youtube_client_id',
-                    'comment' => _('reglages:: Youtube client id'),
+                    'comment' => _('Youtube public key'),
                     'default' => ''
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_youtube_client_secret',
-                    'comment' => _('reglages:: Youtube clientsecret'),
+                    'comment' => _('Youtube secret key'),
                     'default' => ''
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_youtube_dev_key',
-                    'comment' => sprintf(_('reglages:: Youtube cle developpeur, voir %s'), $dashboard_youtube),
+                    'comment' => _('Youtube developer key'),
+                    'help'    => sprintf(_('See %s'), $dashboard_youtube),
                     'default' => ''
                 )
             )
         ), array(
-            'section' => _('GV::section:: Connectivite a FlickR'),
+            'section' => _('FlickR connectivity'),
             'vars'    => array(
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_flickr_api',
-                    'comment'  => sprintf(_('reglages:: Utiliser l api flickr, voir %s, puis set la callback a %s'), $create_api_flickr, $flickr_callback),
+                    'comment'  => _('Use Flickr API'),
+                    'help'     => sprintf(_('Create API account at %s, then use %s as callback URL value'), $create_api_flickr, $flickr_callback),
                     'default'  => false,
                     'required' => true
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_flickr_client_id',
-                    'comment' => _('reglages:: FlickR client id'),
+                    'comment' => _('Flickr public key'),
                     'default' => ''
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_flickr_client_secret',
-                    'comment' => _('reglages:: FlickR client secret'),
+                    'comment' => _('Flickr secret key'),
                     'default' => ''
                 )
             )
         ), array(
-            'section' => _('GV::section:: Connectivite a Dailymotion'),
+            'section' => _('Dailymotion connectivity'),
             'vars'    => array(
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_dailymotion_api',
-                    'comment'  => sprintf(_('reglages:: Utiliser l api dailymotion, voir %s, puis set la callback a %s'), $create_api_dailymotion, $dailymotion_callback),
+                    'comment'  => _('Use Dailymotion API'),
+                    'help'     => sprintf(_('Create API account at %s, then use %s as callback URL value'), $create_api_dailymotion, $dailymotion_callback),
                     'default'  => false,
                     'required' => true
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_dailymotion_client_id',
-                    'comment' => _('reglages:: dailymotion client id'),
+                    'comment' => _('Dailymotion public key'),
                     'default' => ''
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_dailymotion_client_secret',
-                    'comment' => _('reglages:: dailymotion client secret'),
+                    'comment' => _('Dailymotion secret key'),
                     'default' => ''
                 )
             )
         ), array(
-            'section' => _('GV::section:: Client Phraseanet API'),
+            'section' => _('Phraseanet client API'),
             'vars'    => array(
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_client_navigator',
-                    'comment'  => _('reglages:: Authoriser l\'application smartphone *Phraseanet Navigator* a se connecter sur cette instance'),
+                    'comment'  => _('Authorize *Phraseanet Navigator*'),
+                    'help'     => _('*Phraseanet Navigator* is a smartphone application that allow user to connect on this instance'),
                     'default'  => false,
                     'required' => true
                 )
             )
         ), array(
-            'section' => _('GV::section:: Stockage des documents'),
+            'section' => _('Documents storage'),
             'vars'    => array(
                 array(
                     'type'      => \registry::TYPE_STRING,
@@ -194,38 +203,41 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Executables externes'),
+            'section' => _('Executables settings'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_h264_streaming',
-                    'comment' => _('reglages:: activation du stream h264 via mod_token - attention, necessite les modules apache mod_h264_streaming et mod_auth_token'),
+                    'comment' => _('Enable H264 stream mode'),
+                    'help'    => _('Use with mod_token. Attention requires the apache modules and mod_h264_streaming mod_auth_token'),
                     'default' => false
                 ),
                 array(
                     'type'      => \registry::TYPE_STRING,
                     'name'      => 'GV_mod_auth_token_directory',
                     'end_slash' => true,
-                    'comment'   => _('reglages:: point de montage du dossier protege via auth_token'),
+                    'comment'   => _('Auth_token mount point'),
                     'default'   => false
                 ),
                 array(
                     'type'      => \registry::TYPE_STRING,
                     'name'      => 'GV_mod_auth_token_directory_path',
                     'end_slash' => false,
-                    'comment'   => _('reglages:: path complet du dossier protege via auth_token'),
+                    'comment'   => _('Auth_token directory path'),
                     'default'   => false
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_mod_auth_token_passphrase',
-                    'comment' => _('reglages:: passphrase du mod_auth_token (definie dans le fichier de configuration apache)'),
+                    'comment' => _('Auth_token passphrase'),
+                    'help'    => _('Defined in Apache configuration'),
                     'default' => false
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_PHP_INI',
-                    'comment' => _('reglages:: path du php.ini specifique (vide si non utilise)'),
+                    'comment' => _('php.ini path'),
+                    'help'    => _('Empty if not used'),
                     'default' => ''
                 ),
                 array(
@@ -233,6 +245,7 @@ return call_user_func_array(function(Application $app) {
                     'name'      => 'GV_imagine_driver',
                     'default'   => '',
                     'comment'   => _('Imagine driver'),
+                    'help'      => _(sprintf('See documentation at %s', $imagineDoc)),
                     'available' => array(
                         ''        => 'Auto',
                         'gmagick' => 'GraphicsMagick',
@@ -243,154 +256,155 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_ffmpeg_threads',
-                    'comment' => _('Number of threads allowed for FFmpeg'),
+                    'comment' => _('Number of threads to use for FFMpeg'),
                     'default' => 2
                 ),
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_pdfmaxpages',
-                    'comment' => _('reglages:: nombre maximum de page a extraire (PDF)'),
+                    'comment' => _('Maximum number of pages to be extracted from PDF'),
                     'default' => 5
                 )
             )
         ), array(
-            'section' => _('GV::section:: Repertoires utilitaires'),
-            'vars'    => array(
-                array(
-                    'type'    => \registry::TYPE_STRING,
-                    'name'    => 'GV_filesOwner',
-                    'comment' => _('reglages:: proprietaire des fichiers'),
-                    'default' => ''
-                ),
-                array(
-                    'type'    => \registry::TYPE_STRING,
-                    'name'    => 'GV_filesGroup',
-                    'comment' => _('reglages:: groupes des fichiers'),
-                    'default' => ''
-                )
-            )
-        ), array(
-            'section' => _('GV::section:: Configuration principale'),
+            'section' => _('Main configuration'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_adminMail',
-                    'comment' => _('reglages:: email de l\'administrateur'),
+                    'comment' => _('Admin email'),
                     'default' => 'support@alchemy.fr'
                 ),
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_view_bas_and_coll',
-                    'comment'  => _('reglages:: Afficher le nom des bases et des collections'),
+                    'comment'  => _('Display the name of databases and collections'),
                     'default'  => true,
                     'required' => true
                 ),
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_choose_export_title',
-                    'comment'  => _('reglages:: activer le choix du nom de fichier a l\'export'),
+                    'comment'  => _('Choose the title of the document to export'),
                     'default'  => false,
                     'required' => true
                 ),
                 array(
                     'type'      => \registry::TYPE_ENUM,
                     'name'      => 'GV_default_export_title',
-                    'comment'   => _('reglages:: choix par defaut des noms de fichier a l\'export'),
-                    'default'   => 'support@alchemy.fr',
-                    'available' => array('title'    => 'Titre du document', 'original' => 'Nom original')
+                    'comment'   => _('Default export title'),
+                    'default'   => 'title',
+                    'available' => array(
+                        'title' => _('Document title'),
+                        'original' => _('Original name'),
+                    )
                 ),
                 array(
                     'type'      => \registry::TYPE_ENUM,
                     'name'      => 'GV_social_tools',
-                    'comment'   => _('reglages:: Active les partages Facebook et Twitter'),
-                    'available' => array('none'       => 'Disabled', 'publishers' => 'Publishers', 'all'        => 'Activated'),
+                    'comment'   => _('Enable this setting to share on Facebook and Twitter'),
+                    'available' => array(
+                        'none' => _('Disabled'),
+                        'publishers' => _('Publishers'),
+                        'all' => _('Enabled'),
+                    ),
                     'default'    => 'none',
                     'required'   => false
                 )
             )
         ), array(
-            'section' => _('GV::section:: Page d\'accueil'),
+            'section' => _('Homepage'),
             'rolled'  => true,
             'vars'    => array(
                 array(
                     'type'      => \registry::TYPE_ENUM,
                     'name'      => 'GV_home_publi',
-                    'comment'   => _('reglages:: presentation sur la home'),
+                    'comment'   => _('Homepage slideshow'),
                     'default'   => 'COOLIRIS',
-                    'available' => array('DISPLAYx1' => 'slideshow', 'SCROLL'    => 'Bandeau defilant', 'COOLIRIS'  => 'Cooliris'),
+                    'available' => array(
+                        'DISPLAYx1' => _('Single image'),
+                        'SCROLL'    => _('Slide show'),
+                        'COOLIRIS'  => 'Cooliris'
+                    ),
                     'required'  => true
                 )
             )
         ), array(
-            'section' => _('GV::section:: Moteur de recherche'),
+            'section' => _('Search engine'),
             'rolled'  => true,
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_min_letters_truncation',
-                    'comment' => _('reglages:: Nombre minimal de lettre avec la troncature (Recherche)'),
+                    'comment' => _('Minimum number of letters before truncation'),
+                    'help'    => _('Used in search engine'),
                     'default' => 1
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_defaultQuery',
-                    'comment' => _('reglages:: Question par defaut'),
+                    'comment' => _('Default query'),
                     'default' => 'all'
                 ),
                 array(
                     'type'      => \registry::TYPE_ENUM,
                     'name'      => 'GV_defaultQuery_type',
-                    'comment'   => _('reglages:: type de document cherches par defaut e l\'ouverture du site'),
-                    'available' => array('0'       => 'Documents', '1'       => 'Regroupements'),
+                    'comment'   => _('Default searched type'),
+                    'help'      => _('Used when opening the application'),
+                    'available' => array(
+                        '0' => _('Documents'),
+                        '1' => _('Stories'),
+                    ),
                     'default' => '0'
                 )
             )
         ), array(
-            'section' => _('GV::section:: Report'),
+            'section' => _('Report'),
             'rolled'  => true,
             'vars'    => array(
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_anonymousReport',
-                    'comment'  => _('reglages:: report anonyme (masque les infos concernant les utilisateurs)'),
+                    'comment'  => _('Anonymous report'),
+                    'help'     => _('Hide information about users'),
                     'default'  => false,
                     'required' => true
                 )
             )
         ), array(
-            'section' => _('GV::section:: Modules supplementaires'),
+            'section' => _('Additionnal modules'),
             'rolled'  => true,
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_thesaurus',
-                    'comment' => _('reglages:: Activation de l\'outil thesaurus'),
+                    'comment' => _('Enable thesaurus'),
                     'default' => true
                 ), array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_multiAndReport',
-                    'comment' => _('reglages:: Activation du Mode MultiDOC'),
+                    'comment' => _('Enable multi-doc mode'),
                     'default' => true
                 ), array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_seeOngChgDoc',
-                    'comment' => _('reglages:: Substitution de HD d\'un record '),
+                    'comment' => _('Enable HD substitution'),
                     'default' => false
                 ), array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_seeNewThumb',
-                    'comment' => _('reglages:: Substitution de thumbnail d\'un record'),
+                    'comment' => _('Enable thumbnail substitution'),
                     'default' => false
                 )
             )
         )
         , array(
-            'section' => _('GV::section:: Envois de mails'),
+            'section' => _('Emails'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_defaulmailsenderaddr',
-                    'comment' => _('reglages:: Expediteur mail par defaut'),
+                    'comment' => _('Default mail sender address'),
                     'default' => 'phraseanet@example.com'
                 ),
                 array(
@@ -402,25 +416,25 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_smtp',
-                    'comment' => _('reglages:: Utilisation d\'un serveur SMTP'),
+                    'comment' => _('Use a SMTP server'),
                     'default' => false
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_smtp_auth',
-                    'comment' => _('reglages:: Activation de l\'authentification smtp'),
+                    'comment' => _('Enable SMTP authentication'),
                     'default' => false
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_smtp_host',
-                    'comment' => _('reglages:: Hote SMTP'),
+                    'comment' => _('SMTP host'),
                     'default' => ''
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_smtp_port',
-                    'comment' => _('reglages:: Port SMTP'),
+                    'comment' => _('SMTP port'),
                     'default' => ''
                 ),
                 array(
@@ -428,112 +442,126 @@ return call_user_func_array(function(Application $app) {
                     'name'      => 'GV_smtp_secure',
                     'comment'   => _('SMTP encryption'),
                     'default'   => 'tls',
-                    'available' => array('none' => _('None'), 'ssl' => 'SSL', 'tls' => 'TLS'),
+                    'available' => array(
+                        'none' => _('None'),
+                        'ssl' => 'SSL',
+                        'tls' => 'TLS'
+                    ),
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_smtp_user',
-                    'comment' => _('reglages:: User SMTP'),
+                    'comment' => _('SMTP user'),
                     'default' => ''
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_smtp_password',
-                    'comment' => _('reglages:: Mot de passe SMTP'),
+                    'comment' => _('SMTP password'),
                     'default' => ''
                 )
             )
         ), array(
-            'section' => _('GV::section:: Exports FTP'),
+            'section' => _('FTP Export'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_activeFTP',
-                    'comment' => _('reglages:: active la possibilite d\'exports FTP ou non (onglet dans multiexports)'),
+                    'comment' => _('Enable FTP export'),
+                    'help'    => _('Available in multi-export tab'),
                     'default' => false
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_ftp_for_user',
-                    'comment' => _('reglages:: Donne ou non export FTP aux utilisateurs ou e l\'admin uniquement'),
+                    'comment' => _('Enable FTP for users'),
+                    'help'    => _('By default it is available for admins'),
                     'default' => false
                 )
             )
         ), array(
-            'section' => _('GV::section:: Configuration du client'),
+            'section' => _('Client'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_download_max',
-                    'comment' => _('Maximum megabytes allowed in download (if request is bigger, then mail is still available)'),
+                    'comment' => _('Maximum megabytes allowed for download'),
+                    'help'    => _('If request is bigger, then mail is still available'),
                     'default' => 120
                 ),
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_ong_search',
-                    'comment' => _('reglages:: position de l\'onglet de recherche'),
+                    'comment' => _('Search tab position'),
                     'default' => 1
                 ),
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_ong_advsearch',
-                    'comment' => _('reglages:: position de l\'onglet de recherche avancee'),
+                    'comment' => _('Advanced search tab position'),
                     'default' => 2
                 ),
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_ong_topics',
-                    'comment' => _('reglages:: position de l\'onglet des topics'),
+                    'comment' => _('Topics tab position'),
                     'default' => 0
                 ),
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_ong_actif',
-                    'comment' => _('reglages:: numero de l\'onglet actif'),
+                    'comment' => _('Active tab position'),
                     'default' => 1
                 ),
                 array(
                     'type'      => \registry::TYPE_ENUM,
                     'name'      => 'GV_client_render_topics',
-                    'comment'   => _('reglages:: rendu des topics'),
-                    'available' => array('tree'    => 'Arbres', 'popups'  => 'Menus deroulants'),
+                    'comment'   => _('Topics display mode'),
+                    'available' => array(
+                        'tree'    => _('Trees'),
+                        'popups'  => _('Drop-down'),
+                    ),
                     'default' => 'tree'
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_rollover_reg_preview',
-                    'comment' => _('reglages:: Voir le rollover sur les regroupements (fenetre de preview)'),
+                    'comment' => _('Enable roll-over on stories'),
                     'default' => true
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_rollover_chu',
-                    'comment' => _('reglages:: Voir le rollover sur les elements du chutier'),
+                    'comment' => _('Enable roll-over on basket elements'),
                     'default' => true
                 ),
                 array(
                     'type'      => \registry::TYPE_ENUM,
                     'name'      => 'GV_client_coll_ckbox',
-                    'comment'   => _('reglages:: Presentation des collections'),
+                    'comment'   => _('Collections display mode'),
                     'default'   => 'checkbox',
-                    'available' => array('popup'    => 'Menu deroulant', 'checkbox' => 'case a cocher')
+                    'available' => array(
+                        'popup' => _('Drop-down'),
+                        'checkbox' => _('Check-box'),
+                    )
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_viewSizeBaket',
-                    'comment' => _('reglages:: Voir taille HD total des doc d\'un chutiers'),
+                    'comment' => _('Display the total size of the document basket'),
                     'default' => true
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_clientAutoShowProposals',
-                    'comment' => _('reglages:: Afficher automatiquement l\'onglet des propositions s\'il y\'en a'),
+                    'comment' => _('Display proposals tab'),
                     'default' => true
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_needAuth2DL',
-                    'comment' => _('reglages:: Il est necessaire d\'etre connecte pour pouvoir telecharger en compte invite'),
+                    'comment' => _('Require authentication to download documents'),
+                    'help'    => _('Used for guest account'),
                     'default' => true
                 ),
                 array(
@@ -544,62 +572,64 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Parametrage de l\'inscription'),
+            'section' => _('Registration'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_autoselectDB',
-                    'comment' => _('reglages:: A true, cette option descative le choix de selection des bases sur lesquelles on s\'inscrit, et l\'inscription se fait sur toutes les bases ou jai le droit de m\'inscrire'),
+                    'comment' => _('Auto select databases'),
+                    'help'    => _('This option disables the selecting of the databases on which a user can register himself, and registration is made on all granted databases.'),
                     'default' => true
                 ),
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_autoregister',
-                    'comment' => _('reglages:: Activation de l\'autoinscription'),
+                    'comment' => _('Enable auto registration'),
                     'default' => false
                 )
             )
         ), array(
-            'section' => _('GV::section:: Configuration du push'),
+            'section' => _('Push configuration'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_validation_reminder',
-                    'comment' => _('reglages:: Nombre de jour avant la fin de la validation pour envoie de mail de rappel'),
+                    'comment' => _('Number of days before the end of the validation to send a reminder email'),
                     'default' => 2
                 ),
                 array(
                     'type'    => \registry::TYPE_INTEGER,
                     'name'    => 'GV_val_expiration',
-                    'comment' => _('reglages:: dure de validite des liens genere pour les  validations,  si 0 => validite permanente'),
+                    'comment' => _('Default validation links duration'),
+                    'help'    => _('If set to 0, duration is permanent'),
                     'default' => 10
                 )
             )
         ), array(
-            'section' => _('GV::section:: Indexation par les robots'),
+            'section' => _('Robot indexing'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_homeTitle',
-                    'comment' => _('reglages :: Titre de l\'installation'),
+                    'comment' => _('Application title'),
                     'default' => 'Phraseanet'
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_metaKeywords',
-                    'comment' => _('reglages:: Mots clefs pour l\'indexation des robots de moteurs de recherche'),
+                    'comment' => _('Keywords used for indexing purposes by search engines robots'),
                     'default' => ''
                 ),
                 array(
                     'type'    => \registry::TYPE_TEXT,
                     'name'    => 'GV_metaDescription',
-                    'comment' => _('reglages :: Description de l\'installation'),
+                    'comment' => _('Application description'),
                     'default' => ''
                 ),
                 array(
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_googleAnalytics',
-                    'comment' => _('reglages:: identifiant google analytics'),
+                    'comment' => _('Google Analytics identifier'),
                     'default' => ''
                 ),
                 array(
@@ -611,7 +641,7 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_display_gcf',
-                    'comment' => _('reglages:: Afficher le bandeau Google Chrome Frame'),
+                    'comment' => _('Enable Google Chrome frame'),
                     'default' => true
                 )
             )

@@ -1,14 +1,14 @@
-
-<h1>{% trans 'admin::tasks: planificateur de taches' %}
-    <span style="font-size:12px;">
+<div class="page-header">
+    <h1>{% trans 'admin::tasks: planificateur de taches' %}
+    <small style="font-size:16px;">
         {% trans 'Last update at' %} <span id="pingTime"></span>
-    </span>
+    </small>
 </h1>
+</div>
 
-<form id="taskManagerForm" method="get" name="taskManager" action="{{ path('admin_tasks_list') }}" >
-</form>
+<form id="taskManagerForm" method="get" name="taskManager" action="{{ path('admin_tasks_list') }}"></form>
 
-<form id="createTask" method="post"  name="createTask" action="{{ path('admin_tasks_task_create') }}" >
+<form id="createTask" method="post"  name="createTask" action="{{ path('admin_tasks_task_create') }}">
     <input type="hidden" name="tcl" value="" />
     <input type="hidden" name="view" value="GRAPHIC" />
 </form>
@@ -81,12 +81,12 @@
     <tfoot>
         <tr>
             <td colspan="7">
-                    <select id="newTaskMenu">
-                        <option value="">{% trans 'admin::tasks: Nouvelle tache' %}...</option>
-{% for t in task_manager.getAvailableTasks() %}
+                <select id="newTaskMenu" style="margin:20px 0;">
+                    <option value="">{% trans 'admin::tasks: Nouvelle tache' %}...</option>
+                    {% for t in task_manager.getAvailableTasks() %}
                         <option value="{{ t.class }}" {% if t.err %}disabled="disabled"{% endif %}>{{ t.name }}</option>
-{% endfor %}
-                    </select>
+                    {% endfor %}
+                </select>
             </td>
         </tr>
     </tfoot>

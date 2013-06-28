@@ -208,8 +208,7 @@ div.switch_right.unchecked {
 .board_section {
   margin: 0 0 30px;
 }
-.board_section ul,
-.board_section #mail_checker {
+.board_section ul {
   margin: 0 0 20px 15px;
 }
 .board_section div[class="section"] {
@@ -239,17 +238,7 @@ div.switch_right.unchecked {
 .board_section div[class="section"] ul.setup li:hover {
   background-color: #fffbcd;
 }
-.board_section div[class="section"] #cache_flusher {
-  margin: -10px 0 20px 0;
-}
-.board_section #flush_button {
-  width: 362px;
-  margin-left: 15px;
-}
 /******* PUBLICATIONS *********************************************************/
-.form_publication .controls {
-  margin-left: 10px;
-}
 #pub_icon {
   width: 42px;
   height: 42px;
@@ -270,16 +259,6 @@ div.switch_right.unchecked {
   margin-left: 47px;
 }
 /******* GLOBAL VALUES FORM ***************************************************/
-#GV_form_head .control-label {
-  width: 100px;
-  text-align: left;
-}
-#GV_form_head .controls {
-  margin-left: 110px;
-}
-#GV_form_head .controls input[type="checkbox"] {
-  margin-top: 8px;
-}
 #GV_form .error,
 #GV_form .NEW {
   color: #ff0000;
@@ -288,20 +267,19 @@ div.switch_right.unchecked {
 #GV_form .section {
   padding-bottom: 10px;
 }
+
+#GV_form .controls {
+    margin-left: 260px;
+}
+
+#GV_form .control-label {
+    width: 240px;
+}
+
 #GV_form .section h1 {
   font-weight: bold;
   font-size: 16px;
   text-align: left;
   margin: 10px 0;
   line-height: 22px;
-}
-#GV_form .section .control-label {
-  width: auto;
-  margin-left: 230px;
-  float: none;
-  text-align: left;
-}
-#GV_form .section .controls {
-  margin-left: 0;
-  float: left;
 }
