@@ -9,7 +9,7 @@
     <input type="submit">
 </form>
 
-<div class="header">
+<div class="page-header">
     <h1>{% trans 'Suggested values' %}</h1>
 </div>
 
@@ -655,7 +655,7 @@ function valid()
                 if(data.success) {
                     $('#tree li.selected a').trigger('click');
                 } else {
-                    $(".header").insertAfter(
+                    $(".page-header").insertAfter(
                     '<div class="alert alert-error">'
                     +'<button class="close" data-dismiss="alert">×</button>'
                     + data.msg

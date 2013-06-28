@@ -1,17 +1,14 @@
 {% macro format_checkbox(admin, right, name, users, type) %}
 
-  {% set id = right['base_id'] %}
-  {% set class = 'base_id' %}
-  {% if type == 'sbas' %}
-    {% set id = right['sbas_id'] %}
-    {% set class = 'sbas_id' %}
-    {% set sbas_class = "" %}
-  {% else %}
-    {% set sbas_class = "inside_sbas_" ~ right['sbas_id'] %}
-  {% endif %}
-
-
-
+    {% set id = right['base_id'] %}
+    {% set class = 'base_id' %}
+    {% if type == 'sbas' %}
+      {% set id = right['sbas_id'] %}
+      {% set class = 'sbas_id' %}
+      {% set sbas_class = "" %}
+    {% else %}
+      {% set sbas_class = "inside_sbas_" ~ right['sbas_id'] %}
+    {% endif %}
 
     {% set display = 'block' %}
 
@@ -50,12 +47,8 @@
        </div>
     {% endif %}
   {% endif %}
-
-
-
 {% endmacro %}
 <style>
-
   div.no_switch,
   div.switch_quota,
   div.switch_masks,

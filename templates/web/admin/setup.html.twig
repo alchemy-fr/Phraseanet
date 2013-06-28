@@ -1,3 +1,7 @@
+<div class="page-header">
+    <h1>{% trans 'Setup' %}</h1>
+</div>
+
 {% if update_post_datas is not none %}
     <div class='alert'>
         {{ update_post_datas }}
@@ -8,13 +12,13 @@
     <div class="control-group">
         <label class="control-label">Adresse : </label>
         <div class="controls">
-            <input type="text" class="input-xlarge" readonly="readonly" value="{{ app['phraseanet.registry'].get('GV_ServerName') }}" />
+            <input type="text" class="input-xxlarge" readonly="readonly" value="{{ app['phraseanet.registry'].get('GV_ServerName') }}" />
         </div>
     </div>
     <div class="control-group">
         <label class="control-label">Installation : </label>
         <div class="controls">
-            <input type="text" class="input-xlarge" readonly="readonly" value="{{ app['root.path'] }}" />
+            <input type="text" class="input-xxlarge" readonly="readonly" value="{{ app['root.path'] }}" />
         </div>
     </div>
     <div class="control-group">
@@ -33,9 +37,8 @@
 
 <form id="GV_form" class="form-horizontal" method="post" action = "{{ path('setup_submit_globals') }}">
     {% for section in GV %}
-        <div class="section">
-            <h1> {{ section['section'] }} </h1>
-
+        <fieldset>
+            <legend> {{ section['section'] }} </legend>
             {% for value in section['vars'] %}
                 {% set readonly = false %}
                 {% if value['readonly'] is defined and value['readonly'] == true %}
@@ -52,17 +55,17 @@
                 {% endif %}
 
                 <div class="control-group">
-                    <div class="controls">
-                        <label class="control-label" for="id_{{ value['name'] }}"><span class="NEW">{{ is_new == false ? 'NEW' : '' }} </span>{{ value['comment'] | raw }}</label>
+                        <label class="control-label" for="id_{{ value['name'] }}" style="color:#666;word-wrap: break-word;text-align: right;" ><span class="NEW">{{ is_new == false ? 'NEW' : '' }} </span>{{ value['comment'] | raw }}</label>
                         {% if value['type'] == 'boolean' %}
+                            <div class="controls">
                             <label class="radio inline" for="id_{{ value['name'] }}_no"><input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} {{ currentValue == '0' ? 'checked="selected"' : '' }} type="radio"  name="{{ value['name'] }}" value="False" id="id_{{ value['name'] }}_no" />False</label>
                             <label class="radio inline" for="id_{{ value['name'] }}_yes"><input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} {{ currentValue == '1' ? 'checked="checked"' : '' }} type="radio"  name="{{ value['name'] }}" value="True" id="id_{{ value['name'] }}_tes" />True</label>
                         {% elseif value['type'] == 'string' %}
-                            <input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}"/>
+                            <div class="controls"><input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}" class="input-xxlarge"/>
                         {% elseif value['type'] == 'text' %}
-                            <textarea {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">{{ currentValue }}</textarea>
+                            <div class="controls"><textarea {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" class="input-xxlarge">{{ currentValue }}</textarea>
                         {% elseif value['type'] == 'enum' %}
-                            <select {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">
+                            <div class="controls"><select {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" class="input-xlarge">
                                 {% if value['available'] is defined and value['available'] is iterable %}
                                     {% for key, val in value['available'] %}
                                         <option value="{{ key }}" {{ currentValue == key ? 'selected="selected"' : '' }} >{{ val }}</option>
@@ -78,11 +81,13 @@
                             </select>
                         {% elseif value['type'] == 'enum_multi' %}
                             {% if value['available'] is defined and value['available'] is iterable %}
+                                <div class="controls">
                                 {% for key, availableValue in value['available'] %}
                                     <label class="checkbox">
                                         <input type="checkbox" name="{{ value['name'] ~ '[]' }}" {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : ''}} value="{{ key }}" {{ currentValue is iterable and key in currentValue| keys ? 'checked="checked"' : '' }} /> {{ availableValue }}</label>
                                 {% endfor %}
                             {% else %}
+                                <div class="controls">
                                 <p class='alert'>
                                     {% set name = value['name'] %}
                                     {% trans %}
@@ -91,15 +96,18 @@
                                 </p>
                             {% endif %}
                         {% elseif value['type'] == 'integer' %}
-                                <input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}"/>
+                                <div class="controls">
+                                <input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="text" value="{{ currentValue }}" class="input-xxlarge"/>
                         {% elseif value['type'] == 'password' %}
-                                <input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="password" value="{{ currentValue }}"/>
+                                <div class="controls">
+                                <input {{ value['required'] is defined ? 'required="required"' : '' }} {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" type="password" value="{{ currentValue }}" class="input-xxlarge"/>
                         {% elseif value['type'] == 'timezone' %}
                             {% if currentValue is not empty %}
                                 {% set date = date() %}
                                 {% set currentValue = date.getTimezone().getName() %}
                             {% endif %}
-                                <select {{ value['required'] is defined ? 'required="required"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">
+                                <div class="controls">
+                                <select {{ value['required'] is defined ? 'required="required"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}" class="input-xlarge">
                                     {% set times = [] %}
                                     {% for k, v in listTimeZone %}
                                         {% for val in v %}
@@ -115,15 +123,20 @@
                                 </select>
                         {% endif %}
                      </div>
+                     <span class="help-block" style="margin-left:260px;">{{ value['help'] is defined ? value['help']|raw : '' }}</span>
                 </div>
             {% endfor %}
 
             {% if section['javascript'] is defined %}
                 <div><input type='button' onclick='{{ section['javascript'] ~ '(this);' }}' value='Tester' /></div>
             {% endif %}
-        </div>
+        </fieldset>
     {% endfor %}
-    <input type="submit" class="btn btn-warning" style="margin-bottom: 10px;" value="{% trans 'boutton::valider' %}"/>
+    <div class="well well-large">
+        <div style="max-width: 400px;margin: 0 auto 10px;">
+            <input type="submit" class="btn btn-warning btn-block btn-large" value="{% trans 'boutton::valider' %}"/>
+        </div>
+    </div>
 </form>
 
 <script type='text/javascript'>

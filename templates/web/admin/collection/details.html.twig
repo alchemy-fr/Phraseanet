@@ -1,5 +1,5 @@
 <div class="header">
-    <h1>{{ collection.get_label(app['locale.I18n']) }} <small>{% trans "Details" %}</small></h1>
+    <h1>{{ collection.get_label(app['locale.I18n']) }} <small style="font-size:16px">{% trans "Details" %}</small></h1>
 </div>
 
 <table class="table table-bordered">
@@ -13,7 +13,7 @@
     </thead>
     <tbody>
         {% for row in table['result'] %}
-            <tr style='backgound-color:{{ loop.index is even ? '#ccc' : '#fff' }}'>
+            <tr style="background-color:{{ loop.index is even ? '#ccc' : '#fff' }}">
                 <td>{{ row['name'] }}</td>
                 <td>{{ row['amount'] }}</td>
                 <td>{{ row['mega'] }}</td>
@@ -35,13 +35,11 @@
                 <th>
                     {{ totals['giga'] }}
                 </th>
-
             </tr>
         </tfoot>
     </tbody>
 </table>
 
-
 <div>
-    <a class="btn btn-mini" href="{{ path('admin_display_collection', { 'bas_id' : collection.get_base_id() }) }}">{% trans 'boutton::retour' %}</a>
+    <a style="text-decoration:none" class="btn" href="{{ path('admin_display_collection', { 'bas_id' : collection.get_base_id() }) }}">{% trans 'boutton::retour' %}</a>
 </div>

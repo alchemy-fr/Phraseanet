@@ -15,8 +15,11 @@
     </div>
 {% endif %}
 
-<div id="users_page">
+<div class="page-header">
     <h1>{% trans 'Users' %}</h1>
+</div>
+
+<div id="users_page">
         <p class="admin_head_opts">
             <a class="user_adder" href="#">{% trans 'admin::user: nouvel utilisateur' %}</a>
             <a class="template_adder" href="#">{% trans 'admin::user: nouveau template' %}</a>
@@ -28,8 +31,8 @@
             <input type="hidden" value="{{autoregister_user.get_id()}}" name="autoregister_user_id"/>
         </p>
 
-        <form id="users_page_search" method="post" action="{{ path('admin_users_search') }}" target="_self">
-            <p class="admin_head_opts">
+        <form id="users_page_search" method="post" action="{{ path('admin_users_search') }}" target="_self" class="form-inline">
+            <fieldset class="admin_head_opts">
             <span>{% trans 'Filter' %}</span>
                 <select name="like_field" class="input-medium">
                     <option {% if parm['like_field'] == "usr_login" %}selected="selected"{% endif %} value="usr_login">{% trans 'Push::filter on login' %}</option>
@@ -48,11 +51,11 @@
                     {% endfor %}
                 </select>
                 <button type="submit" class="btn">{% trans 'boutton::chercher' %}</button>
-            </p>
+            </fieldset>
         </form>
 
-        <form id="users_apply_template" method="post" action="{{ path('admin_users_apply_template') }}" target="_self" style="float:left">
-            <p class="admin_head_opts">
+        <form id="users_apply_template" method="post" action="{{ path('admin_users_apply_template') }}" target="_self" class="form-inline pull-left" style="margin:0">
+            <fieldset class="admin_head_opts">
                 <span>{% trans 'Apply a template' %}</span>
                 <select name="template_chooser" class="input-medium">
                     <option value="">{% trans 'boutton::choisir' %}</option>
@@ -61,12 +64,14 @@
                     {% endfor %}
                 </select>
                 <button type="submit" class="btn">{% trans 'boutton::appliquer' %}</button>
-            </p>
+            </fieldset>
         </form>
 
-        <form id="users_reset_rights" method="post" action="{{ path('admin_users_rights_reset') }}" target="_self" style="float:right">
-            <input type="hidden" value="" name="users">
-            <button type='button' class="btn btn-warning">{% trans 'Delete all users rights' %}</button>
+        <form id="users_reset_rights" method="post" action="{{ path('admin_users_rights_reset') }}" target="_self" class="form-inline pull-right" style="margin:0">
+            <fieldset class="admin_head_opts">
+                <input type="hidden" value="" name="users">
+                <button type='button' class="btn btn-warning">{% trans 'Delete all users rights' %}</button>
+            </fieldset>
         </form>
 
         <table id="users" cellspacing="0"  cellpadding="0" border="0" class="admintable">
@@ -153,7 +158,7 @@
             </tbody>
         </table>
 
-        <form id="export_form" method="post" target="_blank" class="no-ajax" action="{{ path('admin_users_search_export') }}">
+        <form id="export_form" method="post" target="_blank" class="no-ajax" action="{{ path('admin_users_search_export') }}" class="inline-form">
             <input name="srt" value="{{parm['srt']}}" type="hidden" />
             <input name="ord" value="{{parm.ord}}" type="hidden" />
             {% for sbas_id in parm.sbas_id %}
@@ -171,15 +176,13 @@
             <input name="inactives" value="{{parm.inactives}}" type="hidden" />
         </form>
 
-        <form id="users_page_form" method="post" target="_self" action="{{ path('admin_users_search') }}">
-            <p>
-                <span>{{users.get_total}} resultats,</span>
-
+        <form id="users_page_form" method="post" target="_self" action="{{ path('admin_users_search') }}" class="inline-form pull-left">
+            <fieldset>
                 {% set pages = users.get_total() / parm['per_page'] %}
                 {% set modulo = users.get_total() % parm['per_page'] %}
 
                 {% if modulo > 0 %}{% set pages = pages + 1 %}{% endif %}
-                <span>{{pages|floor}} pages</span>
+                <span>{{users.get_total}} resultats, {{pages|floor}} pages</span>
 
                 {% if users.get_page > 2 %}
                     <button class="pager first btn"><<</button>
@@ -187,7 +190,7 @@
                 {% if users.get_page > 1 %}
                     <button class="pager prev btn"><</button>
                 {% endif %}
-                    <input type="text" value="{{users.get_page}}" class="input-mini"/>
+                    <input type="text" value="{{users.get_page}}" class="input-mini" style="margin:0"/>
                 {% if users.get_page < pages -1 %}
                     <button class="pager next btn">></button>
                 {% endif %}
@@ -225,10 +228,10 @@
                 <input name="like_field" value="{{parm.like_field}}" type="hidden" />
                 <input name="inactives" value="{{parm.inactives}}" type="hidden" />
                 <input name="offset_start" value="{{parm.offset_start}}" type="hidden" />
-            </p>
+            </fieldset>
         </form>
 
-        <form class="no-ajax" method="post" action="{{ path('admin_users_export_csv') }}">
+        <form method="post" action="{{ path('admin_users_export_csv') }}"  class="inline-form pull-right no-ajax">
             {% if parm.base_id is not empty %}
                 {% for base_id in parm.base_id %}
                     <input name="base_id[]" value="{{base_id}}" type="hidden" />

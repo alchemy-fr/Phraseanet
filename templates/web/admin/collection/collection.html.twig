@@ -27,11 +27,11 @@
     </div>
 {% endif %}
 
-<ul>
+<ul class="unstyled">
     <li>{% trans 'phraseanet:: adresse' %} : {{ collection.get_databox().get_serialized_server_info() }}</li>
     <li>{% trans 'admin::base:collection: numero de collection distante' %} : {{ collection.get_coll_id() }}</li>
     <li>{% trans 'admin::base:collection: etat de la collection' %} : {{ collection.is_active() ? "admin::base:collection: activer la collection"| trans : "admin::base:collection: descativer la collection"|trans }}</li>
-    <li>{{ collection.get_record_amount() }} records <a target="_self" href="{{ path('admin_collection_display_document_details', { 'bas_id' : collection.get_base_id() }) }}">{% trans 'phraseanet:: details' %}</a></li>
+    <li>{{ collection.get_record_amount() }} records <a class="ajax" target="rights" href="{{ path('admin_collection_display_document_details', { 'bas_id' : collection.get_base_id() }) }}">{% trans 'phraseanet:: details' %}</a></li>
 </ul>
 
 {% if app['authentication'].getUser().ACL.has_right_on_base(bas_id, 'manage') %}
@@ -39,7 +39,7 @@
     <h5>{% trans 'admin::collection:: Gestionnaires des commandes' %}</h5>
     <form id="admin_adder" action="{{ path('admin_collection_submit_order_admins', { 'bas_id' : bas_id }) }}" method="post" style="margin:0;">
         {% if admins | length > 0 %}
-            <ul>
+            <ul class="unstyled">
                 {% for user in admins %}
                     <li>
                         <label for="adm_{{ user.get_id() }}" class="checkbox">
@@ -51,12 +51,10 @@
             </ul>
         {% endif %}
 
-        <h6>{% trans 'setup:: ajouter un administrateur des commandes' %}</h6>
-
-        <div>
-            <input class="admin_adder"/>
+        <div class="input-append">
+            <input class="admin_adder" placeholder="{% trans 'setup:: ajouter un administrateur des commandes' %}"/>
             <input type="hidden" name="admins[]"/>
-            <input type="submit" value="{% trans 'boutton::valider' %}" />
+            <input type="submit" class="btn btn-warning" value="{% trans 'boutton::valider' %}" />
         </div>
     </form>
 </div>
@@ -76,18 +74,6 @@
             <input id="pub_wm_stamp" type="radio" name="pub_wm" {{ collection.get_pub_wm() == 'stamp' ? 'checked' : ''}} value="stamp" />
             {% trans 'admin::colelction::presentation des elements : stamp' %}
         </label>
-    </form>
-</div>
-
-<div class="well well-small action-block">
-    <form class="form-inline" method="post" action="{{ path('admin_collection_rename', { 'bas_id' : bas_id }) }}" style="margin:0;">
-        <div class="input-append">
-            <input name="name" class="span2" type="text" size="16">
-            <button class="btn reload-tree" type="submit">
-                <img src="/skins/icons/edit_0.gif" />
-                {% trans 'admin::base:collection: renommer la collection' %}
-            </button>
-        </div>
     </form>
 </div>
 
@@ -118,7 +104,17 @@
     </form>
 </div>
 
-<div class="well well-small btn-group">
+<div class="well well-small">
+    <form style="display:inline; margin:0 2px 0 0;" method="post" action="{{ path('admin_collection_rename', { 'bas_id' : bas_id }) }}" style="margin:0;">
+        <div class="input-append" style="display:inline; margin:0;">
+            <input name="name" class="span3" type="text" size="16">
+            <button class="btn reload-tree" type="submit">
+                <img src="/skins/icons/edit_0.gif" />
+                {% trans 'admin::base:collection: renommer la collection' %}
+            </button>
+        </div>
+    </form>
+
     <form style="display:inline; margin:0;" method="post" action="{% if collection.is_active() %}{{ path('admin_collection_disable', { 'bas_id' : bas_id }) }}{% else %}{{ path('admin_collection_enable', { 'bas_id' : bas_id }) }}{% endif %}">
         <button class="btn confirm" data-confirm-msg="{{ collection.is_active() ? 'admin::base:collection: etes vous sur darreter la publication de cette collection'|trans  : 'admin::base:collection: etes vous sur de publier cette collection ?'|trans }}">
             <img src="/skins/icons/db-remove.png"/>

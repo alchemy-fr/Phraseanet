@@ -1,12 +1,14 @@
-<h1>{% trans'Terms Of Use' %}</h1>
+<div class="page-header">
+    <h1>{% trans'Terms Of Use' %}</h1>
+</div>
 
-<form target="_self" method="post" action="{{ path('admin_database_submit_cgus', {'databox_id': app['request'].attributes.get('databox_id')}) }}">
+<form target="_self" method="post" action="{{ path('admin_database_submit_cgus', {'databox_id': app['request'].attributes.get('databox_id')}) }}" class="form-inline">
     <div class='well'>
-        <input class='btn btn-primary' type="submit" value="{% trans'Mettre a jour' %}" id="valid"/>
         <label for="valid" class='checkbox'>
-            {% trans'admin::CGU Les utilisateurs doivent imperativement revalider ces conditions' %}
             <input type="checkbox" value="1" name="valid"/>
+            {% trans'admin::CGU Les utilisateurs doivent imperativement revalider ces conditions' %}
         </label>
+        <input class='btn btn-warning' type="submit" value="{% trans'Mettre a jour' %}" id="valid"/>
     </div>
     <div id="tabs">
         <ul>

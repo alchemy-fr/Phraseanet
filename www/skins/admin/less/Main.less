@@ -251,7 +251,7 @@ div.switch_right {
 
 .board_section {
     margin: 0 0 30px;
-    ul, #mail_checker {
+    ul {
         margin: 0 0 20px 15px;
     }
     div[class="section"] {
@@ -280,13 +280,6 @@ div.switch_right {
                 }
             }
         }
-        #cache_flusher {
-            margin: -10px 0 20px 0;
-        }
-    }
-    #flush_button {
-        width: 362px;
-        margin-left: 15px;
     }
 }
 
@@ -323,20 +316,11 @@ div.switch_right {
 
 /******* GLOBAL VALUES FORM ***************************************************/
 
-#GV_form_head {
-    .control-label {
-        width: 100px;
-        text-align: left;
-    }
-    .controls {
-        margin-left: 110px;
-        input[type="checkbox"] {
-            margin-top: 8px;
-        }
-    }
-}
-
 #GV_form {
+    .controls {
+        margin-left: 260px;
+    }
+
     .error, .NEW {
         .color(@red);
         font-weight: bold;
@@ -347,17 +331,6 @@ div.switch_right {
             .title(16px, 10px, 0);
             line-height: 22px;
         }
-        .control-label {
-            width: auto;
-            margin-left: 230px;
-            float: none;
-            text-align: left;
-        }
-        .controls {
-            margin-left: 0;
-            float: left;
-        }
-
     }
 }
 
