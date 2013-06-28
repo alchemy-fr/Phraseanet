@@ -161,11 +161,11 @@
                     <table style='position:relative; top:5px; table-layout:fixed; width:240px'>
                         <tr>
                         <td style='width:30px; text-align:right'>
-                            <input type='button' value='&#9668;' class='input-button' onclick="edit_chgFld(event, -1);return(false);" />
+                            <input type='button' value='&#9668;' class='btn btn-inverse' onclick="edit_chgFld(event, -1);return(false);" />
                         </td>
                         <td id="idFieldNameEdit"></td>
                         <td style='width:30px; text-align:left'>
-                            <input type='button' value='&#9658;' class='input-button' onclick="edit_chgFld(event, 1);return(false);" />
+                            <input type='button' value='&#9658;' class='btn btn-inverse' onclick="edit_chgFld(event, 1);return(false);" />
                         </td>
                         </tr>
                     </table>
@@ -223,9 +223,9 @@
                     </div>
                 </div>
                 <div id="idDivButtons" class="PNB">
-                    <input id="ok"     type="button" value="{% trans 'boutton::remplacer' %}" class="input-button" onclick="edit_validField(event, 'ok');return(false);">
-                    <input id="fusion" type="button" value="{% trans 'boutton::ajouter' %}" class="input-button" onclick="edit_validField(event, 'fusion');return(false);">
-                    <input id="cancel" type="button" value="{% trans 'boutton::annuler' %}" class="input-button" onclick="edit_validField(event, 'cancel');return(false);">
+                    <input id="ok"     type="button" value="{% trans 'boutton::remplacer' %}" class="btn btn-inverse" onclick="edit_validField(event, 'ok');return(false);">
+                    <input id="fusion" type="button" value="{% trans 'boutton::ajouter' %}" class="btn btn-inverse" onclick="edit_validField(event, 'fusion');return(false);">
+                    <input id="cancel" type="button" value="{% trans 'boutton::annuler' %}" class="btn btn-inverse" onclick="edit_validField(event, 'cancel');return(false);">
                 </div>
                 <div id="idExplain" class="PNB"></div>
             </div>
@@ -360,7 +360,7 @@
         <br/>
         <br/>
         <input type="hidden" name="edit-lst" id="edit_lst" value="{{ recordsRequest.serializedList() }}" />
-        <input type='button' class='input-button'
+        <input type='button' class='btn btn-inverse'
             value="{% trans 'boutton::fermer' %}"
             onClick="$('#EDITWINDOW').fadeOut();hideOverlay(2);return(false);" />
     </center>
