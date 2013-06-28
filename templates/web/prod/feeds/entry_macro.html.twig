@@ -16,10 +16,10 @@
         </td>
         <td style="width:60px;text-align:right;">
           {% if entry.get_feed().is_owner(app['authentication'].getUser()) or entry.is_publisher(app['authentication'].getUser()) %}
-          <a class="tools options feed_edit" href="{{ path('prod_feeds_feed_edit', { 'id' : entry.get_feed().get_id() }) }}">
+          <a class="tools options feed_edit" href="{{ path('feed_entry_edit', { 'id' : entry.get_id() }) }}">
             <img src="/skins/icons/file-edit.png" title="{% trans 'boutton::editer' %}"/>
           </a>
-          <a class="tools feed_delete" href="{{ path('prod_feeds_feed_delete', { 'id' : entry.get_feed().get_id() }) }}">
+          <a class="tools feed_delete" href="{{ path('feed_entry_delete', { 'id' : entry.get_id() }) }}">
             <img src="/skins/icons/delete.png" title="{% trans 'boutton::supprimer' %}"/>
           </a>
           {% endif %}
@@ -60,5 +60,4 @@
     {% endfor %}
     </div>
   </div>
-
 {% endmacro %}

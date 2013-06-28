@@ -1009,16 +1009,10 @@ div.diapo {
 }
 
 form.phrasea_query input.query {
-    border: 2px solid #444444;
-    padding: 4px;
     padding-left: 30px;
-    background-position: 6px center;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
     font-size: 16px;
+    margin: 0;
     width: 370px;
-    height: 22px;
 }
 
 #basket-rename-box .btn, #reorder_box .btn {
