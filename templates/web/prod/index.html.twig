@@ -252,19 +252,19 @@
             <div id="basket_menu" class="context-menu context-menu-theme-vista" style="display:none;">
                 <ul style="list-style-type:none;margin:0;padding:0">
                     <li class="context-menu-item">
-                        <div class="context-menu-item-inner"@>
+                        <div class="context-menu-item-inner">
                             <a title="{% trans 'action:: nouveau panier' %}" class="dialog small-dialog" href="/prod/baskets/create/">
                                 <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau panier' %}" />
                                 {% trans 'action:: nouveau panier' %}
                             </a>
                         </div>
-                        <div class="context-menu-item-inner"@>
+                        <div class="context-menu-item-inner">
                             <a title="{% trans 'Browse Baskets' %}" class="dialog" href="/prod/WorkZone/Browse/">
                                 {% trans 'Browse Baskets' %}
                             </a>
                         </div>
-                        {% if registry.get('GV_multiAndReport') %}
-                            <div class="context-menu-item-inner"@>
+                        {% if registry.get('GV_multiAndReport') and if user.ACL().has_right('canaddrecord') %} %}
+                            <div class="context-menu-item-inner">
                                 <a title="{% trans 'action:: nouveau reportage' %}" class="dialog small-dialog" href="/prod/story/create/">
                                     <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau reportage' %}" />
                                     {% trans 'action:: nouveau reportage' %}
