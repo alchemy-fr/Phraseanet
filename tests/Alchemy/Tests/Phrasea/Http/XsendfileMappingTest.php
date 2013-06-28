@@ -60,4 +60,44 @@ class XsendfileMappingTest extends \PhraseanetWebTestCaseAbstract
 
         $this->assertEquals('', (string) $mapping);
     }
+
+    /**
+     * @dataProvider provideVariousMappings
+     */
+    public function testGetMapping($map, $expected)
+    {
+        $mapping = new XsendfileMapping($map);
+
+        $this->assertEquals($expected, $mapping->getMapping());
+    }
+
+    public function provideVariousMappings()
+    {
+        return array(
+            array(array(), array()),
+            array(array(array('mount-point' => false, 'directory' => false)), array()),
+            array(array(array('mount-point' => 'mount', 'directory' => false)), array()),
+            array(array(array('mount-point' => false, 'directory' => __DIR__)), array()),
+            array(array(array('mount-point' => 'mount', 'directory' => __DIR__)), array(array('mount-point' => '/mount', 'directory' => __DIR__))),
+            array(array(array('mount-point' => '/mount/', 'directory' => __DIR__ . '/../..')), array(array('mount-point' => '/mount', 'directory' => realpath(__DIR__.'/../..')))),
+        );
+    }
+
+    /**
+     * @dataProvider provideInvalidMappings
+     * @expectedException Alchemy\Phrasea\Exception\InvalidArgumentException
+     */
+    public function testInvalidMapping($map)
+    {
+        new XsendfileMapping($map);
+    }
+
+    public function provideInvalidMappings()
+    {
+        return array(
+            array(array('mount-point' => '/mount', 'directory' => __DIR__)),
+            array(array(array('mount-point' => '/mount'))),
+            array(array(array('directory' => __DIR__))),
+        );
+    }
 }
