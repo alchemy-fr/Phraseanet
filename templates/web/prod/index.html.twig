@@ -244,7 +244,7 @@
                                 {% trans 'Browse Baskets' %}
                             </a>
                         </div>
-                        {% if app['phraseanet.registry'].get('GV_multiAndReport') and user.ACL().has_right('canaddrecord') %}
+                        {% if app['phraseanet.registry'].get('GV_multiAndReport') and app['authentication'].getUser().ACL().has_right('canaddrecord') %}
                             <div class="context-menu-item-inner">
                                 <a title="{% trans 'action:: nouveau reportage' %}" class="dialog small-dialog" href="{{ path('prod_stories_create') }}">
                                     <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau reportage' %}" />
