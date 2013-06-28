@@ -21,8 +21,6 @@ use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Setup\Install;
 use Alchemy\Phrasea\Command\Setup\LessCompiler;
 use Alchemy\Phrasea\Command\Setup\JavascriptBuilder;
-use Alchemy\Phrasea\Command\Setup\XSendFileMappingNginxDumper;
-use Alchemy\Phrasea\Command\Setup\XSendFileMappingApacheDumper;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 
@@ -68,8 +66,6 @@ try {
     $app->command(new Install('system:install'));
     $app->command(new LessCompiler());
     $app->command(new JavascriptBuilder());
-    $app->command(new XSendFileMappingNginxDumper());
-    $app->command(new XSendFileMappingApacheDumper());
 
     $result_code = is_int($app->run()) ? : 1;
 } catch (\Exception $e) {
