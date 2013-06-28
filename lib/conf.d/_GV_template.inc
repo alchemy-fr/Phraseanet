@@ -9,10 +9,12 @@ return call_user_func_array(function(Application $app) {
     $youtube_console_url = '<a href="https://code.google.com/apis/console/" target="_blank">https://code.google.com/apis/console/</a>';
     $dashboard_youtube = '<a href="https://code.google.com/apis/youtube/dashboard/" target="_blank">https://code.google.com/apis/youtube/dashboard/</a>';
     $create_api_flickr = '<a href="https://secure.flickr.com/services/apps/create/" target="_blank">https://secure.flickr.com/services/apps/create/</a>';
-    $youtube_callback = trim($app['phraseanet.configuration']['main']['servername'],'/') . '/prod/bridge/callback/youtube/';
-    $flickr_callback = trim($app['phraseanet.configuration']['main']['servername'],'/') . '/prod/bridge/callback/flickr/';
-    $dailymotion_callback = trim($app['phraseanet.configuration']['main']['servername'],'/') . '/prod/bridge/callback/dailymotion/';
+    $youtube_callback = $app->url('prod_bridge_callback', array('api_name' => 'youtube'));
+    $flickr_callback = $app->url('prod_bridge_callback', array('api_name' => 'flickr'));
+    $dailymotion_callback = $app->url('prod_bridge_callback', array('api_name' => 'dailymotion'));
     $create_api_dailymotion = '<a href="http://www.dailymotion.com/profile/developer" target="_blank">http://www.dailymotion.com/profile/developer</a>';
+    $recaptchaDoc = '<a href="http://www.google.com/recaptcha">http://www.google.com/recaptcha</a>';
+    $imagineDoc = '<a href="http://imagine.readthedocs.org/en/latest/usage/introduction.html">http://imagine.readthedocs.org/en/latest/usage/introduction.html</a>';
 
     return array(
         array(
@@ -48,7 +50,7 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_message_on',
-                    'comment' => _('Broadcast maintenance message'),
+                    'comment' => _('Enable maintenance message broadcast'),
                     'default' => false
                 ),
                 array(
@@ -80,7 +82,7 @@ return call_user_func_array(function(Application $app) {
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_captchas',
                     'comment'  => _('Use recaptcha API'),
-                    'help'  => _('See') . ' <a href="http://www.google.com/recaptcha">http://www.google.com/recaptcha</a>',
+                    'help'     => _(sprintf('See documentation at %s', $recaptchaDoc)),
                     'default'  => false,
                     'required' => true
                 ),
@@ -104,7 +106,7 @@ return call_user_func_array(function(Application $app) {
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_youtube_api',
                     'comment'  => _('Use youtube API'),
-                    'help'     => sprintf(_('See %s, then set callback URL to %s'), $youtube_console_url, $youtube_callback),
+                    'help'     => sprintf(_('Create API account at %s, then use %s as callback URL value'), $youtube_console_url, $youtube_callback),
                     'default'  => false,
                     'required' => true
                 ),
@@ -135,7 +137,7 @@ return call_user_func_array(function(Application $app) {
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_flickr_api',
                     'comment'  => _('Use Flickr API'),
-                    'help'     => sprintf(_('See %s, then set callback URL to %s'), $create_api_flickr, $flickr_callback),
+                    'help'     => sprintf(_('Create API account at %s, then use %s as callback URL value'), $create_api_flickr, $flickr_callback),
                     'default'  => false,
                     'required' => true
                 ),
@@ -158,8 +160,8 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
                     'name'     => 'GV_dailymotion_api',
-                    'comment'  => _('Use Daylimotion API'),
-                    'help'     => sprintf(_('See %s, then set callback URL to %s'), $create_api_dailymotion, $dailymotion_callback),
+                    'comment'  => _('Use Dailymotion API'),
+                    'help'     => sprintf(_('Create API account at %s, then use %s as callback URL value'), $create_api_dailymotion, $dailymotion_callback),
                     'default'  => false,
                     'required' => true
                 ),
@@ -201,12 +203,12 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('External executables'),
+            'section' => _('Executables settings'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_h264_streaming',
-                    'comment' => _('Activate H264 stream mode'),
+                    'comment' => _('Enable H264 stream mode'),
                     'help'    => _('Use with mod_token. Attention requires the apache modules and mod_h264_streaming mod_auth_token'),
                     'default' => false
                 ),
@@ -228,7 +230,7 @@ return call_user_func_array(function(Application $app) {
                     'type'    => \registry::TYPE_STRING,
                     'name'    => 'GV_mod_auth_token_passphrase',
                     'comment' => _('Auth_token passphrase'),
-                    'help'    => _('Defined in Apache configuration file'),
+                    'help'    => _('Defined in Apache configuration'),
                     'default' => false
                 ),
                 array(
@@ -243,7 +245,7 @@ return call_user_func_array(function(Application $app) {
                     'name'      => 'GV_imagine_driver',
                     'default'   => '',
                     'comment'   => _('Imagine driver'),
-                    'help'      => _('See documentation at %s') . ' <a href="http://imagine.readthedocs.org/en/latest/usage/introduction.html">http://imagine.readthedocs.org/en/latest/usage/introduction.html</a> ',
+                    'help'      => _(sprintf('See documentation at %s', $imagineDoc)),
                     'available' => array(
                         ''        => 'Auto',
                         'gmagick' => 'GraphicsMagick',
@@ -300,12 +302,11 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'      => \registry::TYPE_ENUM,
                     'name'      => 'GV_social_tools',
-                    'comment'   => _('Enable sharing'),
-                    'help'   => _('Facebook and Twitter'),
+                    'comment'   => _('Enable this setting to share on Facebook and Twitter'),
                     'available' => array(
                         'none' => _('Disabled'),
                         'publishers' => _('Publishers'),
-                        'all' => _('Activated'),
+                        'all' => _('Enabled'),
                     ),
                     'default'    => 'none',
                     'required'   => false
@@ -377,12 +378,12 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_thesaurus',
-                    'comment' => _('Activate thesaurus tool'),
+                    'comment' => _('Enable thesaurus'),
                     'default' => true
                 ), array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_multiAndReport',
-                    'comment' => _('Activate multi-doc mode'),
+                    'comment' => _('Enable multi-doc mode'),
                     'default' => true
                 ), array(
                     'type'    => \registry::TYPE_BOOLEAN,
@@ -421,7 +422,7 @@ return call_user_func_array(function(Application $app) {
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
                     'name'    => 'GV_smtp_auth',
-                    'comment' => _('rActivate SMTP authentication'),
+                    'comment' => _('Enable SMTP authentication'),
                     'default' => false
                 ),
                 array(
