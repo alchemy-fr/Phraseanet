@@ -263,7 +263,7 @@
                                 {% trans 'Browse Baskets' %}
                             </a>
                         </div>
-                        {% if registry.get('GV_multiAndReport') and if user.ACL().has_right('canaddrecord') %} %}
+                        {% if registry.get('GV_multiAndReport') and user.ACL().has_right('canaddrecord') %} %}
                             <div class="context-menu-item-inner">
                                 <a title="{% trans 'action:: nouveau reportage' %}" class="dialog small-dialog" href="/prod/story/create/">
                                     <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau reportage' %}" />
