@@ -76,6 +76,7 @@ use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Phrasea\Core\Event\Subscriber\LogoutSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
@@ -110,7 +111,6 @@ use MediaVorus\Utils\PostScriptMimeTypeGuesser;
 use MediaVorus\Utils\AudioMimeTypeGuesser;
 use MediaVorus\Utils\VideoMimeTypeGuesser;
 use MediaAlchemyst\MediaAlchemystServiceProvider;
-use MediaAlchemyst\Driver\Imagine;
 use Monolog\Handler\NullHandler;
 use MP4Box\MP4BoxServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
@@ -129,15 +129,12 @@ use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
 
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\MimeType\FileBinaryMimeTypeGuesser;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Form\FormFactory;
@@ -156,7 +153,6 @@ class Application extends SilexApplication
     );
     private static $flashTypes = array('warning', 'info', 'success', 'error');
     private $environment;
-    private $sessionCookieEnabled = true;
 
     const ENV_DEV = 'dev';
     const ENV_PROD = 'prod';
@@ -386,10 +382,10 @@ class Application extends SilexApplication
             $this->extend('dispatcher', function($dispatcher, Application $app){
                 $dispatcher->addListener(KernelEvents::REQUEST, array($app, 'initSession'), 254);
                 $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'addUTF8Charset'), -128);
-                $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'disableCookiesIfRequired'), -256);
                 $dispatcher->addSubscriber(new LogoutSubscriber());
                 $dispatcher->addSubscriber(new PhraseaLocaleSubscriber($app));
                 $dispatcher->addSubscriber(new MaintenanceSubscriber($app));
+                $dispatcher->addSubscriber(new CookiesDisablerSubscriber($app));
 
                 return $dispatcher;
             })
@@ -513,28 +509,6 @@ class Application extends SilexApplication
         $event->getResponse()->setCharset('UTF-8');
     }
 
-    public function disableCookiesIfRequired(FilterResponseEvent $event)
-    {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
-        }
-
-        if ($this->sessionCookieEnabled) {
-            return;
-        }
-
-        $response = $event->getResponse();
-
-        foreach ($response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY) as $cookie_domains) {
-            foreach ($cookie_domains as $cookie_paths) {
-                foreach ($cookie_paths as $cookie) {
-                    $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
-                }
-            }
-        }
-
-        $event->setResponse($response);
-    }
 
     private function setupUrlGenerator()
     {
@@ -799,11 +773,5 @@ class Application extends SilexApplication
     public static function getAvailableFlashTypes()
     {
         return static::$flashTypes;
-    }
-
-    public function disableCookies()
-    {
-        $this['session.test'] = true;
-        $this->sessionCookieEnabled = false;
     }
 }

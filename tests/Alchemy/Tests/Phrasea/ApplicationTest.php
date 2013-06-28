@@ -76,19 +76,34 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @covers Alchemy\Phrasea\Application
+     * @dataProvider provideDisabledRoutes
      */
-    public function testTestDisableCookie()
+    public function testCookieDisabledOnSomeRoutes($disabled, $route)
     {
         $app = $this->getApp();
-        $app->disableCookies();
+        $app->get($route, function () {
+           $response = new Response();
+           $response->headers->setCookie(new Cookie('key', 'value'));
 
-        $client = $this->getClientWithCookie($app);
-        $client->request('GET', '/');
+           return $response;
+        });
 
-        $response = $client->getResponse();
-        $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
-        $this->assertEquals(0, count($cookies));
+        $client = new Client($app);
+        $client->request('GET', $route);
+
+        if ($disabled) {
+            $this->assertCount(0, $client->getResponse()->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY));
+        } else {
+            $this->assertGreaterThanOrEqual(1, count($client->getResponse()->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY)));
+        }
+    }
+
+    public function provideDisabledRoutes()
+    {
+        return array(
+            array(true, '/api/v1/'),
+            array(false, '/'),
+        );
     }
 
     /**

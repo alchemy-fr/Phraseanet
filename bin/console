@@ -28,6 +28,8 @@ use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 use Alchemy\Phrasea\Command\CheckConfig;
+use Alchemy\Phrasea\Command\Setup\XSendFileMappingNginxDumper;
+use Alchemy\Phrasea\Command\Setup\XSendFileMappingApacheDumper;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -96,6 +98,8 @@ try {
     $app->command(new AddPlugin());
     $app->command(new RemovePlugin());
     $app->command(new Configuration());
+    $app->command(new XSendFileMappingNginxDumper());
+    $app->command(new XSendFileMappingApacheDumper());
 
     $result_code = is_int($app->run()) ? : 1;
 } catch (\Exception $e) {
