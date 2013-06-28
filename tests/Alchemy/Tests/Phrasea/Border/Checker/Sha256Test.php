@@ -19,8 +19,8 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
     {
         parent::setUp();
         $this->object = new Sha256(self::$DI['app']);
-        $this->filename = __DIR__ . '/../../../../../../tmp/test001.CR2';
-        copy(__DIR__ . '/../../../../../files/test001.CR2', $this->filename);
+        $this->filename = __DIR__ . '/../../../../../../tmp/test001.jpg';
+        copy(__DIR__ . '/../../../../../files/test001.jpg', $this->filename);
         $this->media = self::$DI['app']['mediavorus']->guess($this->filename);
     }
 
@@ -48,7 +48,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
         $mock
             ->expects($this->once())
             ->method('getSha256')
-            ->will($this->returnValue($this->media->getHash('sha256', __DIR__ . '/../../../../../files/test001.CR2')))
+            ->will($this->returnValue($this->media->getHash('sha256', __DIR__ . '/../../../../../files/test001.jpg')))
         ;
 
         $response = $this->object->check(self::$DI['app']['EM'], $mock);

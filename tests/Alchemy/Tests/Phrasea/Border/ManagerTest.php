@@ -459,7 +459,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $manager = new ManagerTester(self::$DI['app']);
 
-        $file = File::buildFromPathfile(__DIR__ . '/../../../../files/test012.wav', self::$DI['collection'], self::$DI['app']);
+        $file = File::buildFromPathfile(__DIR__ . '/../../../../files/audio.wav', self::$DI['collection'], self::$DI['app']);
 
         $count = count($file->getAttributes());
         $manager->addMediaAttributesTester($file);
