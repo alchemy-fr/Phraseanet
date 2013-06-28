@@ -23,7 +23,7 @@ before_script:
   - bin/setup assets:build-javascript
   - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
   - tar xzf sphinx-2.0.6-release.tar.gz
-  - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make --quiet && sudo make install"
+  - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make -j --quiet && sudo make install"
   - sudo mkdir -p /var/sphinx/datas
   - sudo chmod -R 0777 /var/sphinx
   - mysql -e 'create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;'
@@ -33,18 +33,14 @@ before_script:
   - mysql -e 'SET @@global.sql_mode= "";'
   - mysql -e 'SET @@global.wait_timeout= 999999;'
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
-  - sh -c "cd Phraseanet-Extension && phpize && ./configure --quiet && make --quiet && sudo make install"
+  - sh -c "cd Phraseanet-Extension && phpize && ./configure --quiet && make -j --quiet && sudo make install"
   - echo "extension=phrasea2.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - git clone git://github.com/alchemy-fr/Phraseanet-Indexer.git
-  - sh -c "cd Phraseanet-Indexer && autoreconf --force --install && ./configure --quiet && make --quiet && sudo make install"
+  - sh -c "cd Phraseanet-Indexer && autoreconf --force --install && ./configure --quiet && make -j --quiet && sudo make install"
   - wget http://pecl.php.net/get/imagick-3.1.0RC2.tgz
   - tar -xzf imagick-3.1.0RC2.tgz
-  - sh -c "cd imagick-3.1.0RC2 && phpize && ./configure --with-imagick=/usr/local && make && sudo make install"
+  - sh -c "cd imagick-3.1.0RC2 && phpize && ./configure --with-imagick=/usr/local && make -j && sudo make install"
   - echo "extension=imagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-#  - wget http://pecl.php.net/get/gmagick-1.1.0RC2.tgz
-#  - tar -xzf gmagick-1.1.0RC2.tgz
-#  - sh -c "cd gmagick-1.1.0RC2 && phpize && ./configure --with-gmagick=/usr/local && make && sudo make install"
-#  - echo "extension=gmagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
 
 notifications:
   irc:
