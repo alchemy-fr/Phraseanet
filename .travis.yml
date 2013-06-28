@@ -19,8 +19,6 @@ before_script:
   - bower install
   - composer self-update
   - composer install --dev --prefer-source
-  - bin/setup assets:compile-less
-  - bin/setup assets:build-javascript
   - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
   - tar xzf sphinx-2.0.6-release.tar.gz
   - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make -j --quiet && sudo make install"
@@ -57,6 +55,8 @@ php:
   - 5.5
 
 script:
+  - bin/setup assets:compile-less
+  - bin/setup assets:build-javascript
   - bin/setup system:upgrade -y -v -f
   - php hudson/cleanupSubdefs.php
   - sh tests/js/run.sh
