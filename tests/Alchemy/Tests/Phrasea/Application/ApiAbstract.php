@@ -1149,7 +1149,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test001.CR2'), self::$DI['collection']);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test001.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
 
         $route = '/api/v1/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
@@ -1268,7 +1268,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testMoveRecordToCollection()
     {
-        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test001.CR2'), self::$DI['collection']);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../files/test001.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
 
         $this->setToken(self::$token);

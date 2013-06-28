@@ -27,7 +27,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.CR2');
+        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg');
         $file = new File(self::$DI['app'], $media, self::$DI['collection']);
         $response = $this->object->check(self::$DI['app']['EM'], $file);
 
@@ -35,7 +35,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
 
         $object = new MediaType(self::$DI['app'], array('mediatypes' => array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO)));
 
-        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.CR2');
+        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg');
         $file = new File(self::$DI['app'], $media, self::$DI['collection']);
         $response = $object->check(self::$DI['app']['EM'], $file);
 

@@ -36,7 +36,7 @@ class ExtensionTest extends \PhraseanetPHPUnitAbstract
 
         foreach ($tests as $extension => $result) {
 
-            $spl = $this->getMock('\\Symfony\\Component\\HttpFoundation\\File\\File', array('getExtension'), array(__DIR__ . '/../../../../../files/test001.CR2'));
+            $spl = $this->getMock('\\Symfony\\Component\\HttpFoundation\\File\\File', array('getExtension'), array(__DIR__ . '/../../../../../files/test001.jpg'));
 
             $spl->expects($this->any())
                 ->method('getExtension')

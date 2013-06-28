@@ -260,14 +260,14 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_original_name()
     {
-        $this->assertEquals('test001.CR2', self::$DI['record_1']->get_original_name());
+        $this->assertEquals('test001.jpg', self::$DI['record_1']->get_original_name());
     }
 
     public function testGet_title()
     {
         $this->markTestSkipped('Unable to test title');
 
-        $this->assertEquals('test001.CR2', self::$DI['record_1']->get_title());
+        $this->assertEquals('test001.jpg', self::$DI['record_1']->get_title());
     }
 
     public function testGet_preview()

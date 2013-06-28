@@ -632,8 +632,8 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //The lazaret file
         $lazaretFile = new \Entities\LazaretFile();
         $lazaretFile->setOriginalName('test');
-        $lazaretFile->setFilename('test001.CR2');
-        $lazaretFile->setThumbFilename('test001.CR2');
+        $lazaretFile->setFilename('test001.jpg');
+        $lazaretFile->setThumbFilename('test001.jpg');
         $lazaretFile->setBaseId(self::$DI['collection']->get_base_id());
         $lazaretFile->setSession($lazaretSession);
         $lazaretFile->setSha256('3191af52748620e0d0da50a7b8020e118bd8b8a0845120b0bb');
