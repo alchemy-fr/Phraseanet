@@ -230,4 +230,9 @@ input.checkbox{
 
 #tooltip .popover {
     max-width: none;
+    width: auto;
+}
+
+.ui-dialog-titlebar {
+    min-height: 20px;
 }

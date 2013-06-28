@@ -90,7 +90,7 @@ class Feed implements ControllerProviderInterface
 
             return new Response($datas);
         })
-            ->bind('prod_feeds_feed_edit')
+            ->bind('feed_entry_edit')
             ->assert('id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');
@@ -197,7 +197,7 @@ class Feed implements ControllerProviderInterface
 
             return $app->json($datas);
         })
-            ->bind('prod_feeds_feed_delete')
+            ->bind('feed_entry_delete')
             ->assert('id', '\d+')->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');
             });

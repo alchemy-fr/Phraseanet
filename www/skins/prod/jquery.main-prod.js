@@ -23,7 +23,7 @@ function resizePreview(){
 
 function getHome(cas, page){
 
-    if(typeof(page) == 'undefined')
+    if(typeof(page) === 'undefined')
         page = 0;
 
     switch (cas) {
@@ -41,7 +41,7 @@ function getHome(cas, page){
                 beforeSend: function(){
                     if (answAjaxrunning && answAjax.abort)
                         answAjax.abort();
-                    if(page == 0)
+                    if(page === 0)
                         clearAnswers();
                     answAjaxrunning = true;
                     $('#answers').addClass('loading');
@@ -137,11 +137,11 @@ function is_ctrl_key(event)
         return true;
     if(event.metaKey)	// apple key opera
         return true;
-    if(event.keyCode == '17')	// apple key opera
+    if(event.keyCode === 17)	// apple key opera
         return true;
-    if(event.keyCode == '224')	// apple key mozilla
+    if(event.keyCode === 224)	// apple key mozilla
         return true;
-    if(event.keyCode == '91')	// apple key safari
+    if(event.keyCode === 91)	// apple key safari
         return true;
 
     return false;
@@ -237,11 +237,11 @@ function checkFilters(save)
         });
     });
 
-    search.fields = (search.fields = $('.field_filter select').val()) != null ? search.fields : new Array;
+    search.fields = (search.fields = $('.field_filter select').val()) !== null ? search.fields : new Array;
 
     var reset_field = false;
     $.each(search.fields, function(i,n){
-        if(n == 'phraseanet--all--fields')
+        if(n === 'phraseanet--all--fields')
             reset_field = true;
     });
     if(reset_field)
@@ -278,7 +278,7 @@ function checkFilters(save)
     if(save===true)
         setPref('search',JSON.stringify(search));
 
-    if(danger===true || danger=='medium')
+    if(danger===true || danger === 'medium')
         $('#EDIT_query').addClass('danger');
     else
         $('#EDIT_query').removeClass('danger');
@@ -397,7 +397,6 @@ function afterSearch()
             openEvt:'click',
             dropDown:true,
             theme:'vista',
-            dropDown:true,
             showTransition:'slideDown',
             hideTransition:'hide',
             shadow:false
@@ -674,8 +673,7 @@ function triggerShortcuts()
 {
 
     $('#keyboard-stop').bind('click', function(){
-
-        var display = $(this).get(0).checked ? '0' : '1' ;
+        var display = $(this).get(0).checked ? '0' : '1';
 
         setPref('keyboard_infos',display);
 
@@ -718,7 +716,7 @@ function activeZoning()
     $('#idFrameC, #rightFrame').bind('mousedown',function(event){
         var old_zone = p4.active_zone;
         p4.active_zone = $(this).attr('id');
-        if(p4.active_zone != old_zone && p4.active_zone != 'headBlock')
+        if(p4.active_zone !== old_zone && p4.active_zone !== 'headBlock')
         {
             $('.effectiveZone.activeZone').removeClass('activeZone');
             $('.effectiveZone', this).addClass('activeZone');//.flash('#555555');
@@ -732,9 +730,9 @@ function RGBtoHex(R,G,B) {
     return toHex(R)+toHex(G)+toHex(B);
 }
 function toHex(N) {
-    if (N==null) return "00";
+    if (N === null) return "00";
     N=parseInt(N);
-    if (N==0 || isNaN(N)) return "00";
+    if (N === 0 || isNaN(N)) return "00";
     N=Math.max(0,N);
     N=Math.min(N,255);
     N=Math.round(N);
@@ -785,12 +783,9 @@ function HueToRgb(m1, m2, hue) {
     return 255 * v;
 }
 
-
-
 $(document).ready(function(){
 
-    $('a.adv_search_button').live('click', function(){
-
+    $('.adv_search_button').live('click', function(){
         var searchForm = $('#searchForm');
         var parent = searchForm.parent();
 
@@ -829,17 +824,17 @@ $(document).ready(function(){
         else
         if (event.srcElement)
             targ = event.srcElement;
-        if (targ.nodeType == 3)// safari bug
+        if (targ.nodeType === 3)// safari bug
             targ = targ.parentNode;
 
         var gogo = true;
         var targ_name = targ.nodeName ? targ.nodeName.toLowerCase() : false;
 
-        if(targ_name != 'input' && targ_name.toLowerCase() != 'textarea')
+        if(targ_name !== 'input' && targ_name.toLowerCase() !== 'textarea')
         {
             gogo = false;
         }
-        if(targ_name == 'input')
+        if(targ_name === 'input')
         {
             if($(targ).is(':checkbox'))
                 gogo = false;
@@ -894,7 +889,7 @@ $(document).ready(function(){
             {
                 back_hex = 'FFFFFF';
 
-                var sim_b = 100 - 0.1 * (100 - hsb.b) ;
+                var sim_b = 100 - 0.1 * (100 - hsb.b);
             }
 
             var sim_b = 0.1 * hsb.b;
@@ -906,7 +901,7 @@ $(document).ready(function(){
             setPref('background-selection-disabled', sim_hex);
             setPref('fontcolor-selection', back_hex);
 
-            $('style[title=color_selection]').empty()
+            $('style[title=color_selection]').empty();
 
             var datas = '.diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo' +
             '{'+
@@ -923,7 +918,7 @@ $(document).ready(function(){
     $('#answers .see_more a').live('click', function(event){
         $see_more = $(this).closest('.see_more');
         $see_more.addClass('loading');
-    })
+    });
 
     $('#answers .feed .entry').live('mouseover', function(){
         $(this).addClass('hover');
@@ -984,7 +979,7 @@ $(document).ready(function(){
 
         var $this = $(this);
 
-        if(typeof(renew)=='undefined')
+        if(typeof(renew) === 'undefined')
             renew = 'false';
         else
             renew = renew ? 'true' : 'false';
@@ -1130,10 +1125,7 @@ $(document).ready(function(){
     $('.datepicker').datepicker({
         changeYear: true,
         changeMonth:true,
-        dateFormat:'yy/mm/dd',
-        showOn: 'button',
-        buttonImage:'/skins/icons/cal.png',
-        buttonImageOnly: true
+        dateFormat:'yy/mm/dd'
     });
 
     $.ajaxSetup({
@@ -1211,12 +1203,12 @@ $(document).ready(function(){
                         break;
 
                     case 33:	// pg up
-                        if(!p4.edit.textareaIsDirty || edit_validField(event, "ask_ok")==true)
+                        if(!p4.edit.textareaIsDirty || edit_validField(event, "ask_ok"))
                             skipImage(event, 1);
                         cancelKey = true;
                         break;
                     case 34:	// pg dn
-                        if(!p4.edit.textareaIsDirty || edit_validField(event, "ask_ok")==true)
+                        if(!p4.edit.textareaIsDirty || edit_validField(event, "ask_ok"))
                             skipImage(event, -1);
                         cancelKey = true;
                         break;
@@ -1386,7 +1378,7 @@ $(document).ready(function(){
         if(!$('#EDIT_query').hasClass('focused') && event.keyCode !== 17)
         {
 
-            if($('#keyboard-dialog.auto').length > 0 && shortCut == true)
+            if($('#keyboard-dialog.auto').length > 0 && shortCut)
             {
                 triggerShortcuts();
             }
@@ -1552,7 +1544,7 @@ function editThis(type,value)
             {
                 return;
             }
-            color = typeof color != 'undefined' ? color : 'red';
+            color = typeof color !== 'undefined' ? color : 'red';
             var oldColor = $(this).css('backgroundColor');
             return $(this).addClass('animating').stop().animate({
                 backgroundColor: color
@@ -1574,7 +1566,7 @@ function editThis(type,value)
             {
                 return true;
             }
-            color = typeof color != 'undefined' ? color : 'red';
+            color = typeof color !== 'undefined' ? color : 'red';
 
             var pos = $(this).offset();
 
@@ -2783,9 +2775,9 @@ function set_start_page()
 
     var start_page_query = $('#look_box_settings input[name=start_page_value]').val();
 
-    if(val == 'QUERY')
+    if(val === 'QUERY')
     {
-        if($.trim(start_page_query) == '')
+        if($.trim(start_page_query) === '')
         {
             alert(language.start_page_query_error);
             return;
@@ -2804,7 +2796,6 @@ function basketPrefs()
         resizable:false,
         width:450,
         height:500,
-        draggable:false,
         modal:true,
         draggable:false,
         overlay: {
@@ -2821,7 +2812,6 @@ function lookBox(el,event)
         resizable:false,
         width:450,
         height:500,
-        draggable:false,
         modal:true,
         draggable:false,
         overlay: {
@@ -2880,7 +2870,6 @@ function showAnswer(p)
 
 
 /**  FROM INDEX.php **/
-
 function saveeditPbar(idesc, ndesc)
 {
     document.getElementById("saveeditPbarI").innerHTML = idesc;
@@ -2918,12 +2907,8 @@ function getWinPosAsXML()
     return ret;
 }
 
-
-
-
 function saveWindows()
 {
-
     var key = '';
     var value = '';
 
@@ -2975,7 +2960,7 @@ function autoorder()
 {
     var val = $.trim($('#auto_order').val());
 
-    if(val == '')
+    if(val === '')
         return;
 
     var sorter = new Array();
@@ -3047,9 +3032,9 @@ function set_up_feed_box(data)
         $(this).addClass('selected');
         $('input[name="feed_id"]', $form).val($('input', this).val());
     }).hover(function(){
-        $(this).addClass('hover')
+        $(this).addClass('hover');
     },function(){
-        $(this).removeClass('hover')
+        $(this).removeClass('hover');
     });
 
     $form.bind('submit', function(){
@@ -3069,12 +3054,12 @@ function set_up_feed_box(data)
 
         if(error)
         {
-            alert(language.feed_require_fields)
+            alert(language.feed_require_fields);
         }
 
         if($('input[name="feed_id"]', $form).val() === '')
         {
-            alert(language.feed_require_feed)
+            alert(language.feed_require_feed);
             error = true;
         }
 
@@ -3082,7 +3067,6 @@ function set_up_feed_box(data)
         {
             return false;
         }
-
 
         $.ajax({
             type: 'POST',
@@ -3109,8 +3093,17 @@ function set_up_feed_box(data)
                 if($('form.main_form', $feed_box).hasClass('entry_update'))
                 {
                     var id = $('form input[name="entry_id"]', $feed_box).val();
-                    $('#entry_'+id).replaceWith(data.datas);
-                    $('#entry_'+id).hide().fadeIn();
+                    var container = $('#entry_'+id);
+
+                    container.replaceWith(data.datas);
+
+                    container.hide().fadeIn();
+
+                    var answers = $('#answers');
+
+                    answers.find("img.lazyload").lazyload({
+                        container: answers
+                    });
                 }
 
                 if ($feed_box.data("ui-dialog")) {

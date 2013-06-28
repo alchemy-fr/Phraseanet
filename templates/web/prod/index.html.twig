@@ -25,11 +25,11 @@
                                             onclick="cancelEvent(event);return false;"
                                             onmousedown="infoSbas(this, {{sbas_id}}, false, event); return false;"
                                             id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
-                                            name="bas[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
+                                            name="bases[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
                                     </td>
                                     <td>
                                         <label style="line-height: 18px;" onclick="infoSbas($('#ck_{{base_id}}_{{unique_id}}'),{{sbas_id}}, false, event); return false;"
-                                            for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox">
+                                            for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox inline">
                                             {{base_id|get_collection_logo(app)|raw}} {{base_id|bas_labels(app)}}
                                         </label>
                                     </td>
@@ -43,7 +43,6 @@
     {% endfor %}
 {% endmacro %}
 
-
 {% set jquery_theme = 'dark-hive' %}
 
 {% extends "common/index_bootstrap.html.twig" %}
@@ -51,7 +50,6 @@
 {% block icon %}
     <link rel="shortcut icon" type="image/x-icon" href="/skins/prod/favicon.ico">
 {% endblock %}
-
 
 {% block rss %}
     {% for feed in feeds %}
@@ -61,7 +59,6 @@
         <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
     {% endfor %}
 {% endblock %}
-
 
 {% block stylesheet %}
     <style type="text/css">
@@ -105,14 +102,11 @@
     </style>
 {% endblock %}
 
-
 {% block javascript %}
     {% include "common/templates.html.twig" %}
 {% endblock %}
 
-
 {% block content %}
-
     {% set search_datas = module_prod.get_search_datas() %}
     <div style="position:absolute; top:0; left:0; right:0; bottom:0; background-color:#1a1a1a; z-index:32766;">
         <div id="loader" style="top:200px; margin:0 auto; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; background-color:#CCCCCC; position:relative; margin:0 auto; text-align:center; width:400px; height:100px; padding:20px; z-index:32767;">
@@ -125,14 +119,13 @@
     </div>
 
     <div id="desktop" class="PNB" style="overflow:hidden;">
-
         {% set ratio = app['authentication'].getUser().getPrefs('search_window') %}
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}
         {% endif %}
         {% set w1 = (100 * ratio)|round %}
         {% set w2 = (100 - w1) %}
-        <div id="idFrameC" class="PNB" style="right:auto;width:{{w1}}%;">
+        <div id="idFrameC" class="PNB" style="right:auto;width:{{ w1 ~ '%' }}">
             <div class="PNB wrapper">
                 <div class="tabs ui-tabs">
                     <ul class="icon-menu ui-tabs-nav ui-helper-reset">
@@ -190,7 +183,7 @@
                                         </div>
                                         <form class="gform form-inline" href="#" onsubmit="T_Gfilter(this);return(false);">
                                             <div class="input-append">
-                                                <input type="text" class="input-medium" onkeyup="T_Gfilter_delayed(this.value, 300)" />
+                                                <input type="text" class="input-medium" onkeyup="T_Gfilter_delayed(this.value, 300);" />
                                                 <input type="submit" class="th_ok btn" value="{% trans 'boutton::rechercher' %}" />
                                                 <input type="button" class="th_cancel btn" value="{% trans 'boutton::annuler' %}" onclick="thesauCancelWizard();return(false);"/>
                                              </div>
@@ -281,15 +274,17 @@
             </div>
         </div>
 
-        <div class="PNB" id="rightFrame" style="left:auto; width:{{w2}}%;">
+        <div class="PNB" id="rightFrame" style="left:auto; width:{{ w2 ~ '%' }}">
             <div id="headBlock" class="PNB" style="height: 90px; bottom: auto;">
                 <div style="margin: 15px auto; line-height: 30px; width: 580px;">
                     <form id="searchForm" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
-                        <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}">
-                        <a href="#" class="adv_trigger adv_search_button">
-                            <img src="/skins/icons/settings.png" title="{% trans 'Advanced Search' %}"/>
-                        </a>
-                        <button type="submit" class="btn btn-inverse">{% trans 'boutton::rechercher' %}</button>
+                        <div class="input-append">
+                            <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}">
+                            <button href="#" class="btn btn-inverse adv_trigger adv_search_button">
+                                <img src="/skins/icons/settings.png" title="{% trans 'Advanced Search' %}"/>
+                            </button>
+                            <button type="submit" class="btn btn-inverse" style="font-size:14px">{% trans 'boutton::rechercher' %}</button>
+                        </div>
                         <div class="control-group" style="margin:5px;">
                             <div class="controls">
                                 {% if GV_multiAndReport %}
@@ -338,19 +333,21 @@
                                             </div>
 
                                             <span>{% trans 'Trier par ' %}</span>
-                                            <select name="sort" class="input-mini">
+                                            <select name="sort" class="input-small">
                                                 {% for sort, sort_name in app['phraseanet.SE'].getAvailableSort() %}
                                                 <option value="{{ sort }}" {% if sort == app['phraseanet.SE'].getDefaultSort() %}selected="selected"{% endif %}>{{ sort_name }}</option>
                                                 {% endfor %}
                                             </select>
-                                            <select name="ord" class="span2">
+                                            <select name="ord" class="input-medium">
                                                 {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}
                                                 <option value="{{ ord }}">{{ ord_name }}</option>
                                                 {% endfor %}
                                             </select>
                                             {% if app['phraseanet.SE'].hasStemming() %}
                                             <div>
-                                                <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
+                                                <label class="checkbox">
+                                                     <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
+                                                </label>
                                             </div>
                                             {% endif %}
                                             <div class="field_filter">
@@ -406,9 +403,9 @@
                                             {% if app['phraseanet.SE'].getAvailableDateFields() | length > 0 %}
                                                 <hr />
                                                 <div class="date_filter">
-                                                    <span>{% trans 'Rechercher dans un champ date' %}</span>
                                                     <table>
                                                         <tr>
+                                                            <td colspan="2">{% trans 'Rechercher dans un champ date' %}</td>
                                                             <td colspan="2">
                                                                 <select name="date_field" class="input-medium">
                                                                     {% for field in app['phraseanet.SE'].getAvailableDateFields() %}
@@ -422,13 +419,19 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
+                                                            <td>{% trans 'phraseanet::time:: de' %}</td>
                                                             <td style="padding-right: 5px;">
-                                                                <span>{% trans 'phraseanet::time:: de' %}</span><br />
-                                                                <input onchange="checkFilters(true);" class="datepicker input-medium" type="text" name="date_min" style="height: 18px;" />
+                                                                <div class="input-prepend">
+                                                                    <span class="add-on"><i class="icon-calendar"></i></span>
+                                                                    <input onchange="checkFilters(true);" class="datepicker input-small" type="text" name="date_min" style="margin: 0;" />
+                                                                </div>
                                                             </td>
+                                                            <td>{% trans 'phraseanet::time:: a' %}</td>
                                                             <td>
-                                                                <span>{% trans 'phraseanet::time:: a' %}</span><br />
-                                                                <input onchange="checkFilters(true);" class="datepicker input-medium" type="text" name="date_max" style="height: 18px;" />
+                                                                <div class="input-prepend">
+                                                                    <span class="add-on"><i class="icon-calendar"></i></span>
+                                                                    <input onchange="checkFilters(true);" class="datepicker input-small" type="text" name="date_max" style="margin: 0;" />
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -674,9 +677,9 @@
                     <script>
                         $(document).ready(function(){
                             {% if app['authentication'].getUser().getPrefs('start_page') == 'QUERY' %}
-                                $('form[name="phrasea_query"]').addClass('triggerAfterInit')
+                                $('form[name="phrasea_query"]').addClass('triggerAfterInit');
                             {% elseif app['authentication'].getUser().getPrefs('start_page') == 'LAST_QUERY' %}
-                                $('form[name="phrasea_query"]').addClass('triggerAfterInit')
+                                $('form[name="phrasea_query"]').addClass('triggerAfterInit');
                             {% elseif app['authentication'].getUser().getPrefs('start_page') == 'PUBLI' %}
                                 getHome('PUBLI');
                             {% endif %}
@@ -800,11 +803,11 @@
                         <h1>{% trans 'Mode de presentation' %}</h1>
                         {% set mod = app['authentication'].getUser().getPrefs('view') %}
                         <label class="radio inline" for="thumbs_view">
-                            <input onchange="setPref('view',$(this).val())" name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio" value="thumbs" id="thumbs_view" {% if mod == 'thumbs' %}checked="checked"{% endif %}/>
+                            <input onchange="setPref('view',$(this).val());" name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio" value="thumbs" id="thumbs_view" {% if mod == 'thumbs' %}checked="checked"{% endif %}/>
                             {% trans 'reponses:: mode vignettes' %}
                         </label>
                         <label class="radio inline" for="list_view">
-                            <input onchange="setPref('view',$(this).val())" name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio" value="list" id="list_view" {% if mod == 'list' %}checked="checked"{% endif %}/>
+                            <input onchange="setPref('view',$(this).val());" name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio" value="list" id="list_view" {% if mod == 'list' %}checked="checked"{% endif %}/>
                             {% trans 'reponses:: mode liste' %}
                         </label>
                     </div>
@@ -812,7 +815,7 @@
                         <h1>{% trans 'Theme' %}</h1>
                         {% for color, file in css %}
                             <div title="{% trans 'Selecteur de theme' %}" class="colorpicker_box"
-                                onclick="setCss('{{color}}');" style="width:16px;height:16px;background-color:#{{ color }};">&nbsp;</div>
+                                onclick="setCss('{{color}}');" style="width:16px;height:16px;background-color:{{ '#' ~ color ~ ';' }}">&nbsp;</div>
                         {% endfor %}
                     </div>
                 </div>
@@ -820,11 +823,11 @@
                     {% set rollover_thumbnail = app['authentication'].getUser().getPrefs('rollover_thumbnail') %}
                     <h1>{% trans 'Presentation de vignettes' %}</h1>
                     <label class="radio" for="rollover_caption">
-                        <input onchange="setPref('rollover_thumbnail',$(this).val())" name="rollover_thumbnail" type="radio" class="radio" value="caption" id="rollover_caption" {% if rollover_thumbnail == 'caption' %}checked="checked" {% endif %}/>
+                        <input onchange="setPref('rollover_thumbnail',$(this).val());" name="rollover_thumbnail" type="radio" class="radio" value="caption" id="rollover_caption" {% if rollover_thumbnail == 'caption' %}checked="checked" {% endif %}/>
                         {% trans 'Iconographe (description au rollover)' %}
                     </label>
                     <label class="radio" for="rollover_preview">
-                        <input onchange="setPref('rollover_thumbnail',$(this).val())" name="rollover_thumbnail" type="radio" class="radio" value="preview" id="rollover_preview" {% if rollover_thumbnail == 'preview' %}checked="checked" {% endif %}/>
+                        <input onchange="setPref('rollover_thumbnail',$(this).val());" name="rollover_thumbnail" type="radio" class="radio" value="preview" id="rollover_preview" {% if rollover_thumbnail == 'preview' %}checked="checked" {% endif %}/>
                         {% trans 'Graphiste (preview au rollover)' %}
                     </label>
                 </div>
@@ -832,15 +835,15 @@
                     {% set technical_display = app['authentication'].getUser().getPrefs('technical_display') %}
                     <h1>{% trans 'Informations techniques' %}</h1>
                     <label class="radio" for="technical_show">
-                        <input onchange="setPref('technical_display',$(this).val())" name="technical_display" type="radio" class="radio" value="1" id="technical_show" {% if technical_display == '1' %}checked="checked"{% endif %}/>
+                        <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="1" id="technical_show" {% if technical_display == '1' %}checked="checked"{% endif %}/>
                         {% trans 'Afficher' %}
                     </label>
                     <label class="radio" for="technical_group">
-                        <input onchange="setPref('technical_display',$(this).val())" name="technical_display" type="radio" class="radio" value="group" id="technical_group" {% if technical_display == 'group' %}checked="checked"{% endif %}/>
+                        <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="group" id="technical_group" {% if technical_display == 'group' %}checked="checked"{% endif %}/>
                         {% trans 'Afficher dans la notice' %}
                     </label>
                     <label class="radio" for="technical_hide">
-                        <input onchange="setPref('technical_display',$(this).val())" name="technical_display" type="radio" class="radio" value="0" id="technical_hide" {% if technical_display == '0' %}checked="checked"{% endif %}/>
+                        <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="0" id="technical_hide" {% if technical_display == '0' %}checked="checked"{% endif %}/>
                         {% trans 'Ne pas afficher' %}
                     </label>
                 </div>
@@ -848,7 +851,7 @@
                     {% set doctype_display = app['authentication'].getUser().getPrefs('doctype_display') %}
                     <h1>{% trans 'Type de documents' %}</h1>
                     <label class="checkbox" for="doctype_display_show">
-                        <input onchange="setPref('doctype_display',($(this).attr('checked') ? '1' :'0'))" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
+                        <input onchange="setPref('doctype_display',($(this).attr('checked') ? '1' :'0'));" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
                         {% trans 'Afficher une icone' %}
                     </label>
 
@@ -968,7 +971,7 @@
             <div>
                 {% set basket_status_display = app['authentication'].getUser().getPrefs('basket_status_display') %}
                 <label for="basket_status_display" class="checkbox">
-                    <input onchange="setPref('basket_status_display',($(this).attr('checked') ? '1' :'0'))"
+                    <input onchange="setPref('basket_status_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_status_display" type="checkbox" class="checkbox" value="1"
                     id="basket_status_display" {% if basket_status_display == '1' %}checked="checked"{% endif %} />
                     {% trans 'Afficher les status' %}
@@ -977,7 +980,7 @@
             <div>
                 {% set basket_caption_display = app['authentication'].getUser().getPrefs('basket_caption_display') %}
                 <label for="basket_caption_display" class="checkbox">
-                    <input onchange="setPref('basket_caption_display',($(this).attr('checked') ? '1' :'0'))"
+                    <input onchange="setPref('basket_caption_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_caption_display" type="checkbox" class="checkbox" value="1"
                     id="basket_caption_display" {% if basket_caption_display == '1' %}checked="checked"{% endif %} />
                     {% trans 'Afficher la fiche descriptive' %}
@@ -986,7 +989,7 @@
             <div>
                 {% set basket_title_display = app['authentication'].getUser().getPrefs('basket_title_display') %}
                 <label for="basket_title_display" class="checkbox">
-                    <input onchange="setPref('basket_title_display',($(this).attr('checked') ? '1' :'0'))"
+                    <input onchange="setPref('basket_title_display',($(this).attr('checked') ? '1' :'0'));"
                     name="basket_title_display" type="checkbox" class="checkbox" value="1"
                     id="basket_title_display" {% if basket_title_display == '1' %}checked="checked"{% endif %} />
                     {% trans 'Afficher le titre' %}
@@ -1046,7 +1049,7 @@
             }, function(data){
                 return;
             });
-            if ($.browser.msie && $.browser.version == "6.0")
+            if ($.browser.msie && $.browser.version === "6.0")
                 $("select").hide().show();
         }
 
