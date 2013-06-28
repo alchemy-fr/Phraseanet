@@ -532,8 +532,6 @@ class Application extends SilexApplication
                 }
             }
         }
-
-        $event->setResponse($response);
     }
 
     private function setupUrlGenerator()
@@ -804,6 +802,8 @@ class Application extends SilexApplication
     public function disableCookies()
     {
         $this['session.test'] = true;
+        $this['session'];
+        var_dump(get_class($this['session.storage']));exit;
         $this->sessionCookieEnabled = false;
     }
 }
