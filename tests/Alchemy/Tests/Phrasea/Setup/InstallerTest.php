@@ -39,6 +39,7 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
     public function testInstall()
     {
         $app = new Application('test');
+        $app->bindRoutes();
 
         $parser = new Parser();
         $connDatas = $parser->parse(file_get_contents(__DIR__ . '/../../../../../config/configuration.yml'));
