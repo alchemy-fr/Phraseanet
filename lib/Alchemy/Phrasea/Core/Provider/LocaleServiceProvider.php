@@ -39,6 +39,16 @@ class LocaleServiceProvider implements ServiceProviderInterface
             return PhraseaApplication::getAvailableLanguages();
         };
 
+        $app['locales.mapping'] = function (Application $app) {
+            $codes = array();
+            foreach (PhraseaApplication::getAvailableLanguages() as $code => $language) {
+                $data = explode('_', $code);
+                $codes[$data[0]] = $code;
+            }
+
+            return $codes;
+        };
+
         $app['locales.I18n.available'] = $app->share(function (Application $app) {
             $locales = array();
 

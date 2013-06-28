@@ -115,7 +115,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->mockRegistryAndReturnLocale($app, 'en_USA');
 
         $client = $this->getClientWithCookie($app, null);
-        $client->request('GET', '/');
+        $client->request('GET', '/', array(), array(), array('HTTP_ACCEPT_LANGUAGE' => ''));
 
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
     }
@@ -129,23 +129,9 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->mockRegistryAndReturnLocale($app, 'en_USA');
 
         $client = $this->getClientWithCookie($app, 'de_PL');
-        $client->request('GET', '/');
+        $client->request('GET', '/', array(), array(), array('HTTP_ACCEPT_LANGUAGE' => ''));
 
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
-    public function testNoCookieReturnsContentNegotiated()
-    {
-        $app = $this->getAppThatReturnLocale();
-        $this->mockRegistryAndReturnLocale($app, 'en_USA');
-
-        $client = $this->getClientWithCookie($app, null);
-        $client->request('GET', '/', array(), array(), array('accept_language' => 'en-US;q=0.75,en;q=0.8,fr-FR;q=0.9'));
-
-        $this->assertEquals('fr_FR', $client->getResponse()->getContent());
     }
 
     /**

@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 
 use Silex\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
-use Neutron\Silex\Provider\BadFaithServiceProvider;
+use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
@@ -19,7 +19,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $this->mockRegistryAndReturnLocale($app, 'fr_FR');
 
         $client = new Client($app);
-        $client->request('GET', '/');
+        $client->request('GET', '/', array(), array(), array('HTTP_accept-language' => ''));
 
         $this->assertEquals('fr_FR', $client->getResponse()->getContent());
     }
@@ -32,7 +32,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $cookieJar->set(new BrowserCookie('locale', 'de_DE'));
 
         $client = new Client($app, array(), null, $cookieJar);
-        $client->request('GET', '/');
+        $client->request('GET', '/', array(), array(), array('HTTP_accept-language' => ''));
 
         $this->assertEquals('de_DE', $client->getResponse()->getContent());
     }
@@ -66,7 +66,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $this->mockRegistryAndReturnLocale($app, 'en_USA');
 
         $client = $this->getClientWithCookie($app, null);
-        $client->request('GET', '/');
+        $client->request('GET', '/', array(), array(), array('HTTP_accept-language' => ''));
 
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
     }
@@ -80,31 +80,16 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $this->mockRegistryAndReturnLocale($app, 'en_USA');
 
         $client = $this->getClientWithCookie($app, 'de_PL');
-        $client->request('GET', '/');
+        $client->request('GET', '/', array(), array(), array('HTTP_accept-language' => ''));
 
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
-    public function testNoCookieReturnsContentNegotiated()
-    {
-        $app = $this->getAppThatReturnLocale();
-        $this->mockRegistryAndReturnLocale($app, 'en_USA');
-
-        $client = $this->getClientWithCookie($app, null);
-        $client->request('GET', '/', array(), array(), array('accept_language' => 'en-US;q=0.75,en;q=0.8,fr-FR;q=0.9'));
-
-        $this->assertEquals('fr_FR', $client->getResponse()->getContent());
     }
 
     private function getAppThatReturnLocale()
     {
         $app = new Application();
         $app['debug'] = true;
-
-        $app->register(new BadFaithServiceProvider());
+        $app->register(new LocaleServiceProvider());
         $app['phraseanet.registry'] = $this->getMockBuilder('\registry')
             ->disableOriginalConstructor()
             ->getmock();

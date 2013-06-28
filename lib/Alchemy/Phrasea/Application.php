@@ -113,7 +113,6 @@ use MediaAlchemyst\MediaAlchemystServiceProvider;
 use MediaAlchemyst\Driver\Imagine;
 use Monolog\Handler\NullHandler;
 use MP4Box\MP4BoxServiceProvider;
-use Neutron\Silex\Provider\BadFaithServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
@@ -197,7 +196,6 @@ class Application extends SilexApplication
         }
 
         $this->register(new AuthenticationManagerServiceProvider());
-        $this->register(new BadFaithServiceProvider());
         $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
         $this->register(new ConfigurationServiceProvider());

@@ -9,15 +9,14 @@
         "php"                              : ">=5.3.3",
         "alchemy/oauth2php"                : "dev-master",
         "alchemy/phlickr"                  : "dev-master",
-        "badfaith/badfaith"                : "dev-master",
         "dailymotion/sdk"                  : "dev-master",
         "data-uri/data-uri"                : "~0.1.0",
         "doctrine/orm"                     : "~2.3.0",
         "facebook/php-sdk"                 : "~3.0",
         "gedmo/doctrine-extensions"        : "~2.3.0",
-        "google-plus/api-client"           : "~0.6.1",
+        "alchemy/google-plus-api-client"   : "~0.6.2",
         "guzzle/guzzle"                    : "~3.0",
-        "imagine/imagine"                  : "dev-ColorSpaces@dev",
+        "neutron/imagine"                  : "dev-neutron-colorspace@dev",
         "jms/serializer"                   : "~0.10",
         "justinrainbow/json-schema"        : "~1.3",
         "mediavorus/mediavorus"            : "0.3.x-dev@dev",
@@ -26,7 +25,6 @@
         "monolog/monolog"                  : "~1.3.0",
         "mrclay/minify"                    : "dev-master",
         "neutron/silex-imagine-provider"   : "dev-master",
-        "neutron/silex-badfaith-provider"  : "dev-master",
         "neutron/silex-filesystem-provider": "dev-master",
         "neutron/sphinxsearch-api"         : "~2.0.6",
         "neutron/recaptcha"                : "~0.1.0",
@@ -53,38 +51,6 @@
         "behat/mink-selenium2-driver"      : "~1.0",
         "fabpot/goutte"                    : "~1.0"
     },
-    "repositories": [
-    {
-        "type": "git",
-        "url":  "https://github.com/romainneutron/Imagine.git"
-    },
-    {
-        "type" : "git",
-        "url"  : "https://github.com/winmillwill/BadFaith"
-    },
-    {
-        "type": "package",
-        "package": {
-            "name": "google-plus/api-client",
-            "version": "0.6.1",
-            "dist": {
-                "url": "http://google-api-php-client.googlecode.com/files/google-api-php-client-0.6.1.tar.gz",
-                "type": "tar"
-            },
-            "autoload": {
-                "classmap": ["src/"]
-            }
-        }
-    },
-    {
-        "type" : "git",
-        "url"  : "https://github.com/alchemy-fr/oauth2-php"
-    },
-    {
-        "type" : "git",
-        "url"  : "https://github.com/alchemy-fr/Phlickr"
-    }
-    ],
     "autoload": {
         "psr-0": {
             ""               : "lib/classes",
