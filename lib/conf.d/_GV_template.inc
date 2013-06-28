@@ -16,7 +16,7 @@ return call_user_func_array(function(Application $app) {
 
     return array(
         array(
-            'section' => _('GV::section:: Serveur HTTP'),
+            'section' => _('HTTP Server'),
             'vars'    => array(
                 array(
                     'type'      => \registry::TYPE_ENUM,
@@ -36,7 +36,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Etat de maintenance'),
+            'section' => _('Maintenance state'),
             'rolled'  => true,
             'vars'    => array(
                 array(
@@ -59,7 +59,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Connectivite aux webservices'),
+            'section' => _('Webservices connectivity'),
             'vars'    => array(
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
@@ -98,7 +98,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Connectivite a Youtube'),
+            'section' => _('Youtube connectivity'),
             'vars'    => array(
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
@@ -129,7 +129,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Connectivite a FlickR'),
+            'section' => _('FlickR connectivity'),
             'vars'    => array(
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
@@ -153,7 +153,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Connectivite a Dailymotion'),
+            'section' => _('Dailymotion connectivity'),
             'vars'    => array(
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
@@ -177,7 +177,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Client Phraseanet API'),
+            'section' => _('Phraseanet client API'),
             'vars'    => array(
                 array(
                     'type'     => \registry::TYPE_BOOLEAN,
@@ -189,7 +189,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Stockage des documents'),
+            'section' => _('Documents storage'),
             'vars'    => array(
                 array(
                     'type'      => \registry::TYPE_STRING,
@@ -201,7 +201,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Executables externes'),
+            'section' => _('External executables'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
@@ -265,23 +265,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Repertoires utilitaires'),
-            'vars'    => array(
-                array(
-                    'type'    => \registry::TYPE_STRING,
-                    'name'    => 'GV_filesOwner',
-                    'comment' => _('File\'s owner'),
-                    'default' => ''
-                ),
-                array(
-                    'type'    => \registry::TYPE_STRING,
-                    'name'    => 'GV_filesGroup',
-                    'comment' => _('File\'s group'),
-                    'default' => ''
-                )
-            )
-        ), array(
-            'section' => _('GV::section:: Configuration principale'),
+            'section' => _('Main configuration'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_STRING,
@@ -328,7 +312,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Page d\'accueil'),
+            'section' => _('Homepage'),
             'rolled'  => true,
             'vars'    => array(
                 array(
@@ -345,7 +329,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Moteur de recherche'),
+            'section' => _('Search engine'),
             'rolled'  => true,
             'vars'    => array(
                 array(
@@ -374,7 +358,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Report'),
+            'section' => _('Report'),
             'rolled'  => true,
             'vars'    => array(
                 array(
@@ -387,7 +371,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Modules supplementaires'),
+            'section' => _('Additionnal modules'),
             'rolled'  => true,
             'vars'    => array(
                 array(
@@ -414,7 +398,7 @@ return call_user_func_array(function(Application $app) {
             )
         )
         , array(
-            'section' => _('GV::section:: Envois de mails'),
+            'section' => _('Emails'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_STRING,
@@ -477,7 +461,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Exports FTP'),
+            'section' => _('FTP Export'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
@@ -495,7 +479,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Configuration du client'),
+            'section' => _('Client'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_INTEGER,
@@ -587,7 +571,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Parametrage de l\'inscription'),
+            'section' => _('Registration'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_BOOLEAN,
@@ -604,7 +588,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Configuration du push'),
+            'section' => _('Push configuration'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_INTEGER,
@@ -621,7 +605,7 @@ return call_user_func_array(function(Application $app) {
                 )
             )
         ), array(
-            'section' => _('GV::section:: Indexation par les robots'),
+            'section' => _('Robot indexing'),
             'vars'    => array(
                 array(
                     'type'    => \registry::TYPE_STRING,

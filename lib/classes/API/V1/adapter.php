@@ -357,10 +357,6 @@ class API_V1_adapter extends API_V1_Abstract
                         'authTokenDirectory'            => $app['phraseanet.registry']->get('GV_mod_auth_token_directory'),
                         'authTokenDirectoryPath'        => $app['phraseanet.registry']->get('GV_mod_auth_token_directory_path'),
                         'authTokenPassphrase'           => $app['phraseanet.registry']->get('GV_mod_auth_token_passphrase'),
-                    ),
-                    'files'                         => array(
-                        'owner'       => $app['phraseanet.registry']->get('GV_filesOwner'),
-                        'group'       => $app['phraseanet.registry']->get('GV_filesOwner'),
                     )
                 ),
                 'maintenance' => array(
