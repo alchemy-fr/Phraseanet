@@ -2345,9 +2345,7 @@ function checkDeleteThis(type, el)
             var buttons = {};
             buttons[language.valider]= function(e)
             {
-
                 deleteBasket(el);
-
             };
 
             $('#DIALOG').empty().append(language.confirmDel).attr('title','Attention !').dialog({
@@ -2366,9 +2364,13 @@ function checkDeleteThis(type, el)
 
     }
 }
+
 function shareThis(bas,rec)
 {
-    var dialog = p4.Dialog.Create({title: language['share'], size:'Small'});
+    var dialog = p4.Dialog.Create({
+        title: language['share']
+    });
+
     dialog.load("/prod/share/record/"+bas+"/"+rec+ "/","GET");
 }
 

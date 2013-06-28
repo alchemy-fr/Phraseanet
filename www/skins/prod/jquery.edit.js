@@ -2102,15 +2102,6 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     }
   });
 
-  $('input.input-button').hover(
-    function(){
-      $(this).addClass('hover');
-    },
-    function(){
-      $(this).removeClass('hover');
-    }
-    );
-
   ETHSeeker = new EditThesaurusSeeker(p4.edit.sbas_id);
 
   hsplit1();
