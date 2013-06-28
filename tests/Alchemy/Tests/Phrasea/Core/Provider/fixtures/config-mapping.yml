@@ -1,0 +1,6 @@
+xsendfile:
+    enabled: false
+    mapping:
+        -
+            directory: '/tmp'
+            mount-point: 'mount'
