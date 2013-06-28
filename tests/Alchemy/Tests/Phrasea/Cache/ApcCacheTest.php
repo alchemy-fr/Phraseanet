@@ -19,7 +19,7 @@ class ApcCacheTest extends \PHPUnit_Framework_TestCase
         if (!ini_get('apc.enable_cli')) {
             $this->markTestSkipped('Apc is not loaded in CLI');
         }
-        
+
         $this->object = new ApcCache;
     }
 

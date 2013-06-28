@@ -11,8 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  *

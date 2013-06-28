@@ -13,12 +13,6 @@ namespace Alchemy\Phrasea\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
-use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
-use Alchemy\Phrasea\Setup\Requirements\LocalesRequirements;
-use Alchemy\Phrasea\Setup\Requirements\PhraseaRequirements;
-use Alchemy\Phrasea\Setup\Requirements\PhpRequirements;
-use Alchemy\Phrasea\Setup\Requirements\SystemRequirements;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 
 class CheckConfig extends CheckEnvironment

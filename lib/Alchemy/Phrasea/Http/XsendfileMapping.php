@@ -32,7 +32,7 @@ class XsendfileMapping
     {
         $final = array();
 
-        foreach($this->mapping as $entry) {
+        foreach ($this->mapping as $entry) {
             if (!is_dir($entry['directory']) || '' === $entry['mount-point']) {
                 continue;
             }
@@ -60,7 +60,7 @@ class XsendfileMapping
 
     private function validate(array $mapping)
     {
-        foreach($mapping as $entry) {
+        foreach ($mapping as $entry) {
             if (!is_array($entry)) {
                 throw new InvalidArgumentException('XSendFile mapping entry must be an array');
             }

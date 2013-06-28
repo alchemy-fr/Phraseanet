@@ -32,7 +32,7 @@ class ServeFileResponseFactory implements DeliverDataInterface
     }
 
     /**
-     * @param Application $app
+     * @param  Application $app
      * @return self
      */
     public static function create(Application $app)
