@@ -32,6 +32,19 @@ class CookiesDisablerSubscriberTest extends \PHPUnit_Framework_TestCase
         $client->request('GET', $route);
 
         $this->assertSame($disabled, $app['session.test']);
+        if ($disabled) {
+            $this->assertCount(0, $client->getResponse()->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY));
+        } else {
+            $this->assertGreaterThanOrEqual(1, count($client->getResponse()->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY)));
+        }
+    }
+
+    private function getClientWithCookie(Application $app)
+    {
+        $cookieJar = new CookieJar();
+        $cookieJar->set(new BrowserCookie('test-cookie', 'cookievalue'));
+
+        return new Client($app, array(), null, $cookieJar);
     }
 
     public function provideVariousRoutes()
