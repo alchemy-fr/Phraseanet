@@ -116,28 +116,18 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_6']);
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_7']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_8']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_9']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_10']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_13']);
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_15']);
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_16']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_19']);
 
                 $entry = \Feed_Entry_Adapter::create(self::$DI['app'], self::$feed_1_private, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
 
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_6']);
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_7']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_8']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_9']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_10']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_13']);
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_15']);
                 $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_16']);
-                $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_19']);
 
                 self::$feed_4_entries[] = $entry;
             }
