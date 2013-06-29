@@ -30,8 +30,6 @@ return call_user_func(function($environment = PhraseaApplication::ENV_PROD) {
         return new ApiExceptionHandlerSubscriber($app);
     });
 
-    $app->disableCookies();
-
     $app->register(new \API_V1_Timer());
     $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_START, new ApiLoadStartEvent());
 

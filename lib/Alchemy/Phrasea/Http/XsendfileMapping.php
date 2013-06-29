@@ -25,19 +25,31 @@ class XsendfileMapping
     public function __construct(array $mapping)
     {
         $this->validate($mapping);
-        $this->mapping = $mapping;
+
+        $final = array();
+
+        foreach($mapping as $entry) {
+            if (!is_dir(trim($entry['directory'])) || '' === trim($entry['mount-point'])) {
+                continue;
+            }
+
+            $entry = array(
+                'directory' => $this->sanitizePath(realpath($entry['directory'])),
+                'mount-point' => $this->sanitizeMountPoint($entry['mount-point']),
+            );
+
+            $final[] = $entry;
+        }
+
+        $this->mapping = $final;
     }
 
     public function __toString()
     {
         $final = array();
 
-        foreach ($this->mapping as $entry) {
-            if (!is_dir($entry['directory']) || '' === $entry['mount-point']) {
-                continue;
-            }
-
-            $final[] = sprintf('%s=%s', $this->sanitizeMountPoint($entry['mount-point']), $this->sanitizePath(realpath($entry['directory'])));
+        foreach($this->mapping as $entry) {
+            $final[] = sprintf('%s=%s', $entry['mount-point'], $entry['directory']);
         }
 
         return implode(',', $final);
@@ -65,8 +77,8 @@ class XsendfileMapping
                 throw new InvalidArgumentException('XSendFile mapping entry must be an array');
             }
 
-            if (!isset($entry['directory']) && !isset($entry['mount-point'])) {
-                throw new InvalidArgumentException('XSendFile mapping entry must contain at least two keys "directory" and "mounbt-point"');
+            if (!isset($entry['directory']) || !isset($entry['mount-point'])) {
+                throw new InvalidArgumentException('XSendFile mapping entry must contain at least two keys "directory" and "mount-point"');
             }
         }
     }

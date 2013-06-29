@@ -11,14 +11,13 @@
 
 namespace Alchemy\Phrasea\Command\Setup;
 
-use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * This command dumps XsendFile Apache condifuration
  */
-class XSendFileMappingApacheDumper extends Command
+class XSendFileMappingApacheDumper extends AbstractXSendFileMappingDumper
 {
     public function __construct()
     {
@@ -30,7 +29,7 @@ class XSendFileMappingApacheDumper extends Command
     /**
      * {@inheritdoc}
      */
-    protected function doExecute(InputInterface $input, OutputInterface $output)
+    protected function doDump(InputInterface $input, OutputInterface $output)
     {
         $mapper = $this->container['phraseanet.xsendfile-mapping'];
 
@@ -46,6 +45,6 @@ class XSendFileMappingApacheDumper extends Command
         $output->writeln('</IfModule>');
         $output->writeln('');
 
-        return 1;
+        return 0;
     }
 }
