@@ -18,17 +18,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ServeFileResponseFactory implements DeliverDataInterface
 {
-    private $xSendFileEnable = false;
     private $unicode;
 
-    public function __construct($enableXSendFile, \unicode $unicode)
+    public function __construct(\unicode $unicode)
     {
-        $this->xSendFileEnable = (Boolean) $enableXSendFile;
         $this->unicode = $unicode;
-
-        if ($this->xSendFileEnable) {
-            BinaryFileResponse::trustXSendfileTypeHeader();
-        }
     }
 
     /**
@@ -38,7 +32,6 @@ class ServeFileResponseFactory implements DeliverDataInterface
     public static function create(Application $app)
     {
         return new self(
-            $app['phraseanet.configuration']['xsendfile']['enabled'],
             $app['unicode']
         );
     }
@@ -75,11 +68,6 @@ class ServeFileResponseFactory implements DeliverDataInterface
         $response->setMaxAge($cacheDuration);
 
         return $response;
-    }
-
-    public function isXSendFileEnable()
-    {
-        return $this->xSendFileEnable;
     }
 
     private function sanitizeFilename($filename)

@@ -145,7 +145,7 @@
                 <option value="{{ template.get_id() }}">{{ template.get_display_name() }}</option>
                 {% endfor %}
               </select>
-               <button type='button' id='reset_rights'>{% trans 'Delete all users rights' %}</button>
+               <button class="btn" type='button' id='reset_rights'>{% trans 'Delete all users rights' %}</button>
             </td>
           </tr>
         </table>
@@ -565,7 +565,7 @@
     {% endif %}
   </div>
   <div class="PNB10" style="top:auto;height:20px;">
-    <button class="users_rights_valid">{% trans 'boutton::valider' %}</button>
+    <button class="users_rights_valid btn">{% trans 'boutton::valider' %}</button>
     <a href="{{ path('admin_users_search') }}" class="users_rights_cancel">{% trans 'boutton::retour' %}</a>
   </div>
 </div>

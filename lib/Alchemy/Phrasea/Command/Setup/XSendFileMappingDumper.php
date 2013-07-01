@@ -12,35 +12,45 @@
 namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class AbstractXSendFileMappingDumper extends Command
+class XSendFileMappingDumper extends Command
 {
+    public function __construct($name = null) {
+        parent::__construct('xsendfile:configuration-dumper');
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $configuration = 0;
-
         $output->writeln('');
-        if ($this->container['phraseanet.file-serve']->isXSendFileEnable()) {
-            $output->writeln('XSendFile support is <info>enabled</info>');
-        } else {
+
+        if (!$this->container['phraseanet.xsendfile-factory']->isXSendFileModeEnabled()) {
             $output->writeln('XSendFile support is <error>disabled</error>');
-            $configuration++;
+
+            return 1;
         }
-        if (2 < count($this->container['phraseanet.xsendfile-mapping']->getMapping())) {
+
+        $output->writeln('XSendFile support is <info>enabled</info>');
+
+        try {
+            $configuration = $this->container['phraseanet.xsendfile-factory']->getMode(true)->getVirtualHostConfiguration();
             $output->writeln('XSendFile configuration seems <info>OK</info>');
-        } else {
+            $output->writeln($configuration);
+
+            return 0;
+        } catch (RuntimeException $e) {
             $output->writeln('XSendFile configuration seems <error>invalid</error>');
-            $configuration++;
+
+            return 1;
         }
+
         $output->writeln('');
 
-        return $configuration + $this->doDump($input, $output);
+        return 0;
     }
-
-    abstract protected function doDump(InputInterface $input, OutputInterface $output);
 }

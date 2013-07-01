@@ -21,32 +21,24 @@ class FileServeServiceProviderTest extends ServiceProviderTestCase
             ),
             array(
                 'Alchemy\Phrasea\Core\Provider\FileServeServiceProvider',
-                'phraseanet.xsendfile-mapping',
-                'Alchemy\Phrasea\Http\XsendfileMapping'
+                'phraseanet.xsendfile-factory',
+                'Alchemy\Phrasea\Http\XSendFile\XSendFileFactory'
             ),
         );
     }
 
     public function testMapping()
     {
-        $app = new Application();
-
+        $app = clone self::$DI['app'];
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
         $app->register(new FileServeServiceProvider());
         $app['phraseanet.configuration.config-path'] = __DIR__ . '/fixtures/config-mapping.yml';
         $app['phraseanet.configuration.config-compiled-path'] = __DIR__ . '/fixtures/config-mapping.php';
-        $this->assertEquals(array(array(
-            'directory' => '/tmp',
-            'mount-point' => 'mount',
-        ),array(
-            'directory' => __DIR__ . '/../../../../../../tmp/download/',
-            'mount-point' => '/download/',
-        ),array(
-            'directory' => __DIR__ . '/../../../../../../tmp/lazaret/',
-            'mount-point' => '/lazaret/',
-        )), $app['xsendfile.mapping']);
+        $this->assertInstanceOf('Alchemy\Phrasea\Http\XSendFile\NginxMode', $app['phraseanet.xsendfile-factory']->getMode());
+        $this->assertEquals(3, count($app['phraseanet.xsendfile-factory']->getMode()->getMapping()));
 
         unlink($app['phraseanet.configuration.config-compiled-path']);
+        unset($app);
     }
 }

@@ -135,6 +135,7 @@ registration-fields:
         required: true
 xsendfile:
     enabled: false
+    type: nginx|apache2
     mapping:
         -
             directory: ''

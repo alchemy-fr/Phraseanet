@@ -1,5 +1,6 @@
 xsendfile:
-    enabled: false
+    enabled: true
+    type: 'nginx'
     mapping:
         -
             directory: '/tmp'
