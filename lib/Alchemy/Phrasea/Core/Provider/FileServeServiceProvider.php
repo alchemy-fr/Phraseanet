@@ -50,6 +50,14 @@ class FileServeServiceProvider implements ServiceProviderInterface
         $app['phraseanet.file-serve'] = $app->share(function (Application $app) {
             return ServeFileResponseFactory::create($app);
         });
+
+        $app['dispatcher'] = $app->share(
+            $app->extend('dispatcher', function($dispatcher, Application $app){
+                $dispatcher->addSubscriber(new XSendFileSubscriber($app));
+
+                return $dispatcher;
+            })
+        );
     }
 
     /**
@@ -57,6 +65,5 @@ class FileServeServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        $app['dispatcher']->addSubscriber(new XSendFileSubscriber($app));
     }
 }
