@@ -865,7 +865,7 @@ abstract class task_abstract
 
         $tid = $dependencyContainer['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        $task = new $class_name($tid, $dependencyContainer, $dependencyContainer['monolog']);
+        $task = new $class_name($tid, $dependencyContainer, $dependencyContainer['task-manager.logger']);
         $task->setTitle($task->getName());
 
         return $task;
