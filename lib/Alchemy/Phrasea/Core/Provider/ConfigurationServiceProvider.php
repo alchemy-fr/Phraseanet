@@ -17,11 +17,10 @@ use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Core\Event\Subscriber\TrustedProxySubscriber;
 
 class ConfigurationServiceProvider implements ServiceProviderInterface
 {
-
     public function register(SilexApplication $app)
     {
         $app['phraseanet.configuration.yaml-parser'] = $app->share(function (SilexApplication $app) {
@@ -42,11 +41,17 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
                 $app['debug']
             );
         });
+
+        $app['dispatcher'] = $app->share(
+            $app->extend('dispatcher', function($dispatcher, SilexApplication $app){
+                $dispatcher->addSubscriber(new TrustedProxySubscriber($app['phraseanet.configuration']));
+
+                return $dispatcher;
+            })
+        );
     }
 
     public function boot(SilexApplication $app)
     {
-        $proxies = isset($app['phraseanet.configuration']['trusted-proxies']) ? $app['phraseanet.configuration']['trusted-proxies'] : array();
-        Request::setTrustedProxies($proxies);
     }
 }
