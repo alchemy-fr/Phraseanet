@@ -37,7 +37,21 @@ abstract class Command extends SymfoCommand
     {
         if ($input->getOption('verbose')) {
             $handler = new StreamHandler('php://stdout');
-            $this->container['monolog']->pushHandler($handler);
+
+            $this->container['monolog'] = $this->container->share(
+                $this->container->extend('monolog', function($logger, $app) use ($handler) {
+                    $logger->pushHandler($handler);
+
+                    return $logger;
+                })
+            );
+            $this->container['task-manager.logger'] = $this->container->share(
+                $this->container->extend('task-manager.logger', function($logger, $app) use ($handler) {
+                    $logger->pushHandler($handler);
+
+                    return $logger;
+                })
+            );
         }
 
         return $this->doExecute($input, $output);

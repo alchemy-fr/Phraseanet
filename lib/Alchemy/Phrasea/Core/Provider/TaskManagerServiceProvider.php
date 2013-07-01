@@ -13,37 +13,22 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Monolog\Handler\SyslogHandler;
-use Monolog\Handler\NativeMailerHandler;
-use Alchemy\Phrasea\Exception\RuntimeException;
+use Monolog\Logger;
+use Monolog\Handler\NullHandler;
 
 class TaskManagerServiceProvider implements ServiceProviderInterface
 {
-
     public function register(Application $app)
     {
+        $app['task-manager.logger'] = $app->share(function(Application $app) {
+            $logger = new Logger('task-manager logger');
+            $logger->pushHandler(new NullHandler());
+
+            return $logger;
+        });
+
         $app['task-manager'] = $app->share(function(Application $app) {
-
-            $logger = clone $app['monolog'];
-
-            $options = $app['phraseanet.configuration']['main']['task-manager']['options'];
-
-            if (isset($options['syslog_level']) && null !== $syslogLevel = constant($options['syslog_level'])) {
-                $handler = new SyslogHandler("Phraseanet-Task", "user", $syslogLevel);
-                $logger->pushHandler($handler);
-            }
-
-            if (isset($options['maillog_level']) && null !== $maillogLevel = constant($options['maillog_level'])) {
-                if ('' === $adminMail = trim($app['phraseanet.registry']->get('GV_adminMail'))) {
-                    throw new RuntimeException("Admininstrator mail must be set to get log by mail.");
-                }
-                $senderMail = $app['phraseanet.registry']->get('GV_defaultmailsenderaddr');
-
-                $handler = new NativeMailerHandler($adminMail, "Phraseanet-Task", $senderMail, $maillogLevel);
-                $logger->pushHandler($handler);
-            }
-
-            return new \task_manager($app, $logger);
+            return new \task_manager($app, $app['task-manager.logger']);
         });
     }
 

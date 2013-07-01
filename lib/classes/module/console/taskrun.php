@@ -95,13 +95,9 @@ class module_console_taskrun extends Command
             }
         }
 
-        if ($input->getOption('verbose')) {
-            $this->container['monolog']->pushHandler(new StreamHandler('php://stdout'));
-        }
-
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
-        $this->container['monolog']->pushHandler(new RotatingFileHandler($logfile, 10));
-        $this->task = $task_manager->getTask($task_id, $this->container['monolog']);
+        $this->container['task-manager.logger']->pushHandler(new RotatingFileHandler($logfile, 10));
+        $this->task = $task_manager->getTask($task_id, $this->container['task-manager.logger']);
 
         $lib2v = array(
             'DEBUG'    => \task_abstract::LOG_DEBUG,
