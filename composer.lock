@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ef1d183afd3605cda9551a25233bd774",
+    "hash": "44cc0ac367d2fa982850f99b59222413",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -46,7 +46,7 @@
                     "homepage": "http://www.lickmychip.com/"
                 },
                 {
-                    "name": "nlegoff",
+                    "name": "Nicolas Le Goff",
                     "email": "legoff.n@gmail.com"
                 },
                 {
@@ -154,16 +154,16 @@
         },
         {
             "name": "alchemy/oauth2php",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/oauth2-php.git",
-                "reference": "5f949209461e8f4c31e8476155188923aafa2ae5"
+                "reference": "1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/oauth2-php/zipball/5f949209461e8f4c31e8476155188923aafa2ae5",
-                "reference": "5f949209461e8f4c31e8476155188923aafa2ae5",
+                "url": "https://api.github.com/repos/alchemy-fr/oauth2-php/zipball/1.0.0",
+                "reference": "1.0.0",
                 "shasum": ""
             },
             "type": "library",
@@ -173,20 +173,20 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2012-03-30 15:47:07"
+            "time": "2013-07-01 09:46:59"
         },
         {
             "name": "alchemy/phlickr",
-            "version": "dev-master",
+            "version": "0.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Phlickr.git",
-                "reference": "93c5100ec15f70e9be567d22bf01a4667fb75cb8"
+                "reference": "0.2.7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Phlickr/zipball/93c5100ec15f70e9be567d22bf01a4667fb75cb8",
-                "reference": "93c5100ec15f70e9be567d22bf01a4667fb75cb8",
+                "url": "https://api.github.com/repos/alchemy-fr/Phlickr/zipball/0.2.7",
+                "reference": "0.2.7",
                 "shasum": ""
             },
             "type": "library",
@@ -196,7 +196,7 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2013-06-27 15:20:17"
+            "time": "2013-07-01 09:47:54"
         },
         {
             "name": "dailymotion/sdk",
@@ -1541,16 +1541,16 @@
         },
         {
             "name": "neutron/silex-filesystem-provider",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Silex-Filesystem-Service-Provider.git",
-                "reference": "98771524bba1ffa58373c4c06d438f5fb5442ff4"
+                "reference": "1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/Silex-Filesystem-Service-Provider/zipball/98771524bba1ffa58373c4c06d438f5fb5442ff4",
-                "reference": "98771524bba1ffa58373c4c06d438f5fb5442ff4",
+                "url": "https://api.github.com/repos/romainneutron/Silex-Filesystem-Service-Provider/zipball/1.0.0",
+                "reference": "1.0.0",
                 "shasum": ""
             },
             "require": {
@@ -1585,7 +1585,7 @@
         },
         {
             "name": "neutron/silex-imagine-provider",
-            "version": "dev-master",
+            "version": "0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Imagine-Silex-Service-Provider.git",
@@ -2379,7 +2379,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "info@alchemy.fr",
+                    "email": "support@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
@@ -3760,16 +3760,12 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "alchemy/oauth2php": 20,
-        "alchemy/phlickr": 20,
         "dailymotion/sdk": 20,
         "neutron/imagine": 20,
         "mediavorus/mediavorus": 20,
         "media-alchemyst/media-alchemyst": 20,
         "php-ffmpeg/php-ffmpeg": 20,
         "mrclay/minify": 20,
-        "neutron/silex-imagine-provider": 20,
-        "neutron/silex-filesystem-provider": 20,
         "doctrine/data-fixtures": 20
     },
     "platform": {
