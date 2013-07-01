@@ -139,3 +139,4 @@ xsendfile:
         -
             directory: ''
             mount-point: ''
+plugins: []
