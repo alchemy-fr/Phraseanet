@@ -19,9 +19,10 @@ use Entities\Order;
 use Entities\OrderElement;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -156,75 +157,75 @@ class Orders implements ControllerProviderInterface
         $collectionHasOrderAdmins = new ArrayCollection();
         $toRemove = array();
 
-        try {
-            $records = RecordsRequest::fromRequest($app, $request, true, array('cancmd'));
-            $query = new \User_Query($app);
+        $records = RecordsRequest::fromRequest($app, $request, true, array('cancmd'));
+        $query = new \User_Query($app);
 
-            if (count($records) > 0) {
-                $order = new Order();
-                $order->setUsrId($app['authentication']->getUser()->get_id());
-                $order->setDeadline((null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine);
-                $order->setOrderUsage($request->request->get('use', ''));
-                foreach ($records as $key => $record) {
-                    if ($collectionHasOrderAdmins->containsKey($record->get_base_id())) {
-                        if (!$collectionHasOrderAdmins->get($record->get_base_id())) {
-                            $records->remove($key);
-                        }
-                    }
-
-                    $hasOneAdmin = !!count($query->on_base_ids(array($record->get_base_id()))
-                               ->who_have_right(array('order_master'))
-                               ->execute()->get_results());
-
-                    $collectionHasOrderAdmins->set($record->get_base_id(), $hasOneAdmin);
-
-                    if (!$hasOneAdmin) {
-                        $toRemove[] = $key;
-                    } else {
-                        $orderElement = new OrderElement();
-                        $order->addElement($orderElement);
-                        $orderElement->setOrder($order);
-                        $orderElement->setBaseId($record->get_base_id());
-                        $orderElement->setRecordId($record->get_record_id());
-                        $app['EM']->persist($orderElement);
-                    }
-                }
-
-                foreach ($toRemove as $key) {
-                    if ($records->containsKey($key)) {
+        if (count($records) > 0) {
+            $order = new Order();
+            $order->setUsrId($app['authentication']->getUser()->get_id());
+            $order->setDeadline((null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine);
+            $order->setOrderUsage($request->request->get('use', ''));
+            foreach ($records as $key => $record) {
+                if ($collectionHasOrderAdmins->containsKey($record->get_base_id())) {
+                    if (!$collectionHasOrderAdmins->get($record->get_base_id())) {
                         $records->remove($key);
                     }
                 }
 
-                $noAdmins = $collectionHasOrderAdmins->forAll(function($key, $hasAdmin) {
-                        return false === $hasAdmin;
-                    });
+                $hasOneAdmin = !!count($query->on_base_ids(array($record->get_base_id()))
+                           ->who_have_right(array('order_master'))
+                           ->execute()->get_results());
 
-                if ($noAdmins) {
-                    $msg = _('There is no one to validate orders, please contact an administrator');
+                $collectionHasOrderAdmins->set($record->get_base_id(), $hasOneAdmin);
+
+                if (!$hasOneAdmin) {
+                    $toRemove[] = $key;
+                } else {
+                    $orderElement = new OrderElement();
+                    $order->addElement($orderElement);
+                    $orderElement->setOrder($order);
+                    $orderElement->setBaseId($record->get_base_id());
+                    $orderElement->setRecordId($record->get_record_id());
+                    $app['EM']->persist($orderElement);
                 }
+            }
 
-                $order->setTodo($order->getElements()->count());
+            foreach ($toRemove as $key) {
+                if ($records->containsKey($key)) {
+                    $records->remove($key);
+                }
+            }
 
-                $app['EM']->persist($order);
-                $app['EM']->flush();
+            $noAdmins = $collectionHasOrderAdmins->forAll(function($key, $hasAdmin) {
+                    return false === $hasAdmin;
+                });
 
+            if ($noAdmins) {
+                $msg = _('There is no one to validate orders, please contact an administrator');
+            }
+
+            $order->setTodo($order->getElements()->count());
+
+            $app['EM']->persist($order);
+            $app['EM']->flush();
+
+            try {
                 $app['events-manager']->trigger('__NEW_ORDER__', array(
                     'order_id' => $order->getId(),
                     'usr_id'   => $order->getUsrId()
                 ));
                 $success = true;
+            } catch (\Exception $e) {
 
-                if ($success) {
-                    $msg = _('The records have been properly ordered');
-                } else {
-                    $msg = _('An error occured');
-                }
-            } else {
-                $msg = _('There is no record eligible for an order');
             }
-        } catch (\Exception $e) {
-            $msg = _('An error occured') . $e->getMessage();
+
+            if ($success) {
+                $msg = _('The records have been properly ordered');
+            } else {
+                $msg = _('An error occured');
+            }
+        } else {
+            $msg = _('There is no record eligible for an order');
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
@@ -280,10 +281,9 @@ class Orders implements ControllerProviderInterface
      */
     public function displayOneOrder(Application $app, Request $request, $order_id)
     {
-        try {
-            $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
-        } catch (\Exception_NotFound $e) {
-            $app->abort(404);
+        $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
+        if (null === $order) {
+            throw new NotFoundHttpException('Order not found');
         }
 
         return $app['twig']->render('prod/orders/order_item.html.twig', array(
@@ -302,69 +302,60 @@ class Orders implements ControllerProviderInterface
     public function sendOrder(Application $app, Request $request, $order_id)
     {
         $success = false;
-        try {
-            $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
-        } catch (\Exception_NotFound $e) {
-            $app->abort(404);
+        $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
+        if (null === $order) {
+            throw new NotFoundHttpException('Order not found');
+        }
+
+        $dest_user = \User_Adapter::getInstance($order->getUsrId(), $app);
+
+        $basket = null;
+        if ($order->getSselId()) {
+            $basket = $app['EM']->getRepository('\Entities\Basket')->findUserBasket($app, $order->getSselId(), $dest_user, false);
+        }
+
+        if (null === $basket) {
+            $basket = new Basket();
+            $basket->setName(sprintf(_('Commande du %s'), $order->getCreatedOn()->format('Y-m-d')));
+            $basket->setOwner($dest_user);
+            $basket->setPusher($app['authentication']->getUser());
+
+            $app['EM']->persist($basket);
+            $app['EM']->flush(); // this is necessary in order to use $basket->getId()
+
+            $order->setSselId($basket->getId());
+
+            $app['EM']->persist($order);
+            $app['EM']->flush();
+        }
+
+        $n = 0;
+        foreach ($order->getElements() as $orderElement) {
+            if (in_array($orderElement->getId(), $request->request->get('elements', array()))) {
+                $sbas_id = \phrasea::sbasFromBas($app, $orderElement->getBaseId());
+                $record = new \record_adapter($app, $sbas_id, $orderElement->getRecordId());
+
+                $basketElement = new BasketElement();
+                $basketElement->setRecord($record);
+                $basketElement->setBasket($basket);
+
+                $orderElement->setOrderMasterId($app['authentication']->getUser()->get_id());
+                $orderElement->setDeny(false);
+                $orderElement->setBasket($basket);
+
+                $basket->addElement($basketElement);
+
+                $app['EM']->persist($basket);
+                $app['EM']->persist($orderElement);
+
+                $app['EM']->flush();
+
+                $n++;
+                $dest_user->ACL()->grant_hd_on($record, $app['authentication']->getUser(), 'order');
+            }
         }
 
         try {
-            $dest_user = \User_Adapter::getInstance($order->getUsrId(), $app);
-
-            $basket = null;
-            if ($order->getSselId()) {
-                $repository = $app['EM']->getRepository('\Entities\Basket');
-
-                try {
-                    $basket = $repository->findUserBasket($app, $order->getSselId(), $dest_user, false);
-                } catch (\Exception $e) {
-                    $basket = null;
-                }
-            }
-
-            if (null === $basket) {
-                $basket = new Basket();
-                $basket->setName(sprintf(_('Commande du %s'), $order->getCreatedOn()->format('Y-m-d')));
-                $basket->setOwner($dest_user);
-                $basket->setPusher($app['authentication']->getUser());
-
-                $app['EM']->persist($basket);
-                $app['EM']->flush(); // this is necessary in order to use $basket->getId()
-
-                $order->setSselId($basket->getId());
-
-                $app['EM']->persist($order);
-                $app['EM']->flush();
-            }
-
-            $n = 0;
-            foreach ($order->getElements() as $orderElement) {
-                if (in_array($orderElement->getId(), $request->request->get('elements', array()))) {
-                    $sbas_id = \phrasea::sbasFromBas($app, $orderElement->getBaseId());
-                    $record = new \record_adapter($app, $sbas_id, $orderElement->getRecordId());
-
-                    $basketElement = new BasketElement();
-                    $basketElement->setRecord($record);
-                    $basketElement->setBasket($basket);
-
-                    $orderElement->setOrderMasterId($app['authentication']->getUser()->get_id());
-                    $orderElement->setDeny(false);
-                    $orderElement->setBasket($basket);
-
-                    $basket->addElement($basketElement);
-
-                    $app['EM']->persist($basket);
-                    $app['EM']->persist($orderElement);
-
-                    $app['EM']->flush();
-
-                    $n++;
-                    $dest_user->ACL()->grant_hd_on($record, $app['authentication']->getUser(), 'order');
-                }
-            }
-
-            $success = true;
-
             if ($n > 0) {
 
                 $order->setTodo($order->getTodo() - $n);
@@ -380,6 +371,7 @@ class Orders implements ControllerProviderInterface
 
                 $app['events-manager']->trigger('__ORDER_DELIVER__', $params);
             }
+            $success = true;
 
         } catch (\Exception $e) {
 
@@ -410,28 +402,27 @@ class Orders implements ControllerProviderInterface
     public function denyOrder(Application $app, Request $request, $order_id)
     {
         $success = false;
-
-        try {
-            $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
-        } catch (\Exception_NotFound $e) {
-            $app->abort(404);
+        $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
+        $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
+        if (null === $order) {
+            throw new NotFoundHttpException('Order not found');
         }
 
-        try {
-            $n = 0;
-            foreach ($order->getElements() as $orderElement) {
-                if (in_array($orderElement->getId(), $request->request->get('elements', array()))) {
+        $n = 0;
+        foreach ($order->getElements() as $orderElement) {
+            if (in_array($orderElement->getId(), $request->request->get('elements', array()))) {
 
-                    $orderElement->setOrderMasterId($app['authentication']->getUser()->get_id());
-                    $orderElement->setDeny(true);
+                $orderElement->setOrderMasterId($app['authentication']->getUser()->get_id());
+                $orderElement->setDeny(true);
 
-                    $app['EM']->persist($orderElement);
-                    $n++;
-                }
+                $app['EM']->persist($orderElement);
+                $n++;
             }
+        }
 
-            $app['EM']->flush();
+        $app['EM']->flush();
 
+        try {
             if ($n > 0) {
 
                 $order->setTodo($order->getTodo() - $n);
