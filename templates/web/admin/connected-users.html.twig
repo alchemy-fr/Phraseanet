@@ -97,7 +97,8 @@
             </tr>
         </thead>
         <tbody>
-            {% for row in data['sessions'] %}
+            {% for session in data['sessions'] %}
+                {% set row = session['session'] %}
             <tr title="{{ _self.tooltip_connected_users(row) | e }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
 
                 {% if row.getId() == app['session'].get('session_id') %}
@@ -112,20 +113,7 @@
                     {% endfor %}
                 </td>
 
-                {% set geoname = app['geonames'].find_geoname_from_ip(row.getIpAddress()) %}
-
-                {% if geoname['city']  %}
-                    {% set ip_infos = geoname['city'] ~ ' (' ~ geoname['country'] ~ ')' %}
-                {% elseif geoname['fips'] %}
-                    {% set ip_infos = geoname['fips'] ~ ' (' ~ geoname['country'] ~ ')' %}
-                {% elseif geoname['country'] %}
-                    {% set ip_infos = geoname['country'] %}
-                {% else %}
-                    {% set ip_infos = '' %}
-                {% endif %}
-
-
-                <td>{{ row.getIpAddress() }}<br/>{{ ip_infos }}</td>
+                <td>{{ row.getIpAddress() }}<br/>{{ session['info'] }}</td>
                 <td>{{ app['date-formatter'].getDate(row.getCreated()) }}</td>
                 <td>{{ app['date-formatter'].getPrettyString(row.getUpdated()) }}</td>
 

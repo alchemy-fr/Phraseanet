@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 
 /**
  *
@@ -521,7 +522,17 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public function get_country()
     {
         if ($this->geonameid) {
-            return $this->app['geonames']->get_country($this->geonameid);
+            try {
+                $country = $this->app['geonames.connector']
+                    ->geoname($this->geonameid)
+                    ->get('country');
+
+                if (isset($country['name'])) {
+                    return $country['name'];
+                }
+            } catch (GeonamesExceptionInterface $e) {
+
+            }
         }
 
         return '';
@@ -751,7 +762,20 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function set_geonameid($geonameid)
     {
-        $country_code = $this->app['geonames']->get_country_code($geonameid);
+        $country_code = null;
+
+        try {
+            $country = $this->app['geonames.connector']
+                ->geoname($this->geonameid)
+                ->get('country');
+
+            if (isset($country['code'])) {
+                $country_code = $country['code'];
+            }
+        } catch (GeonamesExceptionInterface $e) {
+
+        }
+
         $sql = 'UPDATE usr SET geonameid = :geonameid, pays=:country_code WHERE usr_id = :usr_id';
 
         $datas = array(
@@ -1102,7 +1126,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $this->modificationdate = new DateTime($row['usr_modificationdate']);
         $this->applied_template = $row['lastModel'];
 
-        $this->country = $this->app['geonames']->get_country($row['geonameid']);
+        $this->country = $this->get_country();
 
         $this->is_guest = ($row['invite'] == '1');
 

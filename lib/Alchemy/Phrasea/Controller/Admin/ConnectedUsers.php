@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,6 +44,38 @@ class ConnectedUsers implements ControllerProviderInterface
 
         $query = $app['EM']->createQuery($dql);
         $sessions = $query->getResult();
+
+        $result = array();
+
+        foreach ($sessions as $session) {
+            $info = '';
+            try {
+                $geoname = $app['geonames.connector']->ip($session->getIpAddress());
+                $country = $geoname->get('country');
+                $city = $geoname->get('city');
+                $region = $geoname->get('region');
+
+                $countryName = isset($country['name']) ? $country['name'] : null;
+                $regionName = isset($region['name']) ? $region['name'] : null;
+
+                if (null !== $city) {
+                    $info = $city . ($countryName ? ' (' . $countryName . ')' : null);
+                } elseif (null !== $regionName) {
+                    $info = $regionName . ($countryName ? ' (' . $countryName . ')' : null);
+                } elseif (null !== $countryName) {
+                    $info = $countryName;
+                } else {
+                    $info = '';
+                }
+            } catch (GeonamesExceptionInterface $e) {
+
+            }
+
+            $result[] = array(
+                'session' => $session,
+                'info' => $info,
+            );
+        }
 
         $ret = array(
             'sessions'     => $sessions,

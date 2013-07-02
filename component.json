@@ -23,6 +23,7 @@
     "sinon-chai": "~2.4",
     "js-fixtures": "https://github.com/badunk/js-fixtures/archive/master.zip",
     "bootstrap-multiselect": "https://github.com/davidstutz/bootstrap-multiselect.git",
-    "zxcvbn" : "https://github.com/lowe/zxcvbn.git"
+    "zxcvbn" : "https://github.com/lowe/zxcvbn.git",
+    "geonames-server-jquery-plugin" : "~0.1.0"
   }
 }
