@@ -18,5 +18,10 @@
         {
             "class": "Vendor\\PluginService"
         }
+    ],
+    "commands" : [
+        {
+            "class": "Vendor\\CustomCommand"
+        }
     ]
 }

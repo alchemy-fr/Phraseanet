@@ -70,6 +70,11 @@ class Manifest
         return $this->get('services');
     }
 
+    public function getCommands()
+    {
+        return $this->get('commands') ? : array();
+    }
+
     public function getExtra()
     {
         return $this->get('extra');

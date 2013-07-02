@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Plugin\Management;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Plugin\Management\AutoloaderGenerator;
 use Alchemy\Phrasea\Plugin\Schema\Manifest;
 use Symfony\Component\Process\ProcessBuilder;
@@ -15,7 +16,11 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
         $pluginDir = __DIR__ . '/../Fixtures/PluginDirInstalled/TestPlugin';
         $pluginsDir = __DIR__ . '/../Fixtures/PluginDirInstalled';
 
-        $files = array($pluginsDir . '/services.php', $pluginsDir . '/autoload.php');
+        $files = array(
+            $pluginsDir . '/services.php',
+            $pluginsDir . '/autoload.php',
+            $pluginsDir . '/commands.php',
+        );
 
         $this->cleanup($files);
 
@@ -48,6 +53,13 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($app, $retrievedApp);
         $this->assertEquals('hello world', $app['plugin-test']);
+
+        // load services
+        $cli = new CLI('test');
+        $retrievedCli = require $pluginsDir . '/commands.php';
+
+        $this->assertSame($cli, $retrievedCli);
+        $this->assertInstanceOf('Vendor\CustomCommand', $cli['console']->find('hello:world'));
 
         $this->cleanup($files);
     }
