@@ -3,16 +3,23 @@
 namespace Alchemy\Tests\Phrasea\Http;
 
 use Alchemy\Phrasea\Http\ServeFileResponseFactory;
-use Alchemy\Phrasea\Http\XsendfileMapping;
+use Alchemy\Phrasea\Http\XSendFile\NginxMode;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 {
     protected $factory;
 
+    public function testDeliverFileFactoryCreation()
+    {
+        $factory = ServeFileResponseFactory::create(self::$DI['app']);
+        $this->assertInstanceOf('Alchemy\Phrasea\Http\ServeFileResponseFactory', $factory);
+    }
+
     public function testDeliverFile()
     {
-        $this->factory = new ServeFileResponseFactory(false, new \unicode());
+        $this->factory = new ServeFileResponseFactory(new \unicode());
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg');
 
@@ -25,7 +32,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
     public function testDeliverFileWithDuration()
     {
-        $this->factory = new ServeFileResponseFactory(false, new \unicode());
+        $this->factory = new ServeFileResponseFactory(new \unicode());
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'hello', 'attachment', 'application/json', 23456);
 
@@ -35,7 +42,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
     public function testDeliverFileWithFilename()
     {
-        $this->factory = new ServeFileResponseFactory(false, new \unicode());
+        $this->factory = new ServeFileResponseFactory(new \unicode());
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg');
 
@@ -45,7 +52,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
     public function testDeliverFileWithFilenameAndDisposition()
     {
-        $this->factory = new ServeFileResponseFactory(false, new \unicode());
+        $this->factory = new ServeFileResponseFactory(new \unicode());
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg', 'attachment');
 
@@ -55,15 +62,18 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
     public function testDeliverFileWithFilenameAndDispositionAndXSendFile()
     {
-        $this->factory = new ServeFileResponseFactory(true, new \unicode());
-        $request = Request::create('/');
-        $request->headers->set('X-SendFile-Type', 'X-Accel-Redirect');
-        $request->headers->set('X-Accel-Mapping', (string) new XsendfileMapping(array(
+        BinaryFileResponse::trustXSendfileTypeHeader();
+        $this->factory = new ServeFileResponseFactory(new \unicode());
+        $mode = new NginxMode(
             array(
-                'directory' => __DIR__ . '/../../../../files/',
-                'mount-point' => '/protected/'
+                array(
+                    'directory' => __DIR__ . '/../../../../files/',
+                    'mount-point' => '/protected/'
+                )
             )
-        )));
+        );
+        $request = Request::create('/');
+        $mode->setHeaders($request);
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg', 'attachment');
         $response->prepare($request);
@@ -75,15 +85,18 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
     public function testDeliverFileWithFilenameAndDispositionAndXSendFileAndNoTrailingSlashes()
     {
-        $this->factory = new ServeFileResponseFactory(true, new \unicode());
-        $request = Request::create('/');
-        $request->headers->set('X-SendFile-Type', 'X-Accel-Redirect');
-        $request->headers->set('X-Accel-Mapping', (string) new XsendfileMapping(array(
+        BinaryFileResponse::trustXSendfileTypeHeader();
+        $this->factory = new ServeFileResponseFactory(new \unicode());
+        $mode = new NginxMode(
             array(
-                'directory' => __DIR__ . '/../../../../files/',
-                'mount-point' => '/protected/'
+                array(
+                    'directory' => __DIR__ . '/../../../../files',
+                    'mount-point' => '/protected'
+                )
             )
-        )));
+        );
+        $request = Request::create('/');
+        $mode->setHeaders($request);
 
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg', 'attachment');
         $response->prepare($request);
@@ -98,22 +111,26 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testDeliverUnexistingFile()
     {
-        $this->factory = new ServeFileResponseFactory(true, new \unicode());
+        BinaryFileResponse::trustXSendfileTypeHeader();
+        $this->factory = new ServeFileResponseFactory(new \unicode());
 
         $this->factory->deliverFile(__DIR__ . '/../../../../files/does_not_exists.jpg', 'toto.jpg', 'attachment');
     }
 
     public function testDeliverFileWithFilenameAndDispositionAndXSendFileButFileNotInXAccelMapping()
     {
-        $this->factory = new ServeFileResponseFactory(true, new \unicode());
-        $request = Request::create('/');
-        $request->headers->set('X-SendFile-Type', 'X-Accel-Redirect');
-        $request->headers->set('X-Accel-Mapping', (string) new XsendfileMapping(array(
+        BinaryFileResponse::trustXSendfileTypeHeader();
+        $this->factory = new ServeFileResponseFactory(new \unicode());
+        $mode = new NginxMode(
             array(
-                'directory' => __DIR__ . '/../../../../files/',
-                'mount-point' => '/protected/'
+                array(
+                    'directory' => __DIR__ . '/../../../../files/',
+                    'mount-point' => '/protected/'
+                )
             )
-        )));
+        );
+        $request = Request::create('/');
+        $mode->setHeaders($request);
 
         $file = __DIR__ . '/../../../../classes/PhraseanetPHPUnitAbstract.php';
 
@@ -127,7 +144,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCaseAbstract
 
     public function testDeliverDatas()
     {
-        $this->factory = new ServeFileResponseFactory(false, new \unicode());
+        $this->factory = new ServeFileResponseFactory(new \unicode());
 
         $data = 'Sex,Name,Birthday
                 M,Alphonse,1932

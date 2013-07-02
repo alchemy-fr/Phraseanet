@@ -11,11 +11,11 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Core\Event\Subscriber\XSendFileSubscriber;
+use Alchemy\Phrasea\Http\ServeFileResponseFactory;
+use Alchemy\Phrasea\Http\XSendFile\XSendFileFactory;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Alchemy\Phrasea\Http\ServeFileResponseFactory;
-use Alchemy\Phrasea\Http\XsendfileMapping;
-use Alchemy\Phrasea\Core\Event\Subscriber\XSendFileSubscriber;
 
 class FileServeServiceProvider implements ServiceProviderInterface
 {
@@ -24,27 +24,8 @@ class FileServeServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
-        $app['xsendfile.mapping'] = $app->share(function(Application $app) {
-            $mapping = array();
-
-            if (isset($app['phraseanet.configuration']['xsendfile']['mapping'])) {
-                $mapping = $app['phraseanet.configuration']['xsendfile']['mapping'];
-            }
-
-            $mapping[] = array(
-                'directory' => $app['root.path'] . '/tmp/download/',
-                'mount-point' => '/download/',
-            );
-            $mapping[] = array(
-                'directory' => $app['root.path'] . '/tmp/lazaret/',
-                'mount-point' => '/lazaret/',
-            );
-
-            return $mapping;
-        });
-
-        $app['phraseanet.xsendfile-mapping'] = $app->share(function($app) {
-            return new XsendfileMapping($app['xsendfile.mapping']);
+        $app['phraseanet.xsendfile-factory'] = $app->share(function($app) {
+            return XSendFileFactory::create($app);
         });
 
         $app['phraseanet.file-serve'] = $app->share(function (Application $app) {

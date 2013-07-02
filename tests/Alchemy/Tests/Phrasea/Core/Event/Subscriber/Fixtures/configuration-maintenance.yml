@@ -141,6 +141,7 @@ registration-fields:
         required: true
 xsendfile:
     enabled: false
+    type: ''
     mapping:
         -
             directory: ''
