@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea;
 
+use Alchemy\Phrasea\Command\CommandInterface;
 use Symfony\Component\Console;
 
 /**
@@ -73,9 +74,9 @@ class CLI extends Application
      *
      * If a command with the same name already exists, it will be overridden.
      *
-     * @param \Cilex\Command\Command $command A Command object
+     * @param CommandInterface $command A Command object
      */
-    public function command(Command\Command $command)
+    public function command(CommandInterface $command)
     {
         $command->setContainer($this);
         $this['console']->add($command);

@@ -14,6 +14,11 @@
     "version"     : "0.1",
     "minimum-phraseanet-version": "3.8",
     "maximum-phraseanet-version": "3.9",
+    "Commands" : [
+        {
+            "class": "Vendor\\Connector\\CustomCommand"
+        }
+    ],
     "services" : [
         {
             "class": "Vendor\\Connector\\PluginServiceInterface"

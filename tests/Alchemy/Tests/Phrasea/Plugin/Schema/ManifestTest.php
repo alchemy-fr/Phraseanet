@@ -24,6 +24,7 @@ class ManifestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('0.1', $manifest->getVersion());
         $this->assertEquals('3.8', $manifest->getMinimumPhraseanetVersion());
         $this->assertEquals('3.9', $manifest->getMaximumPhraseanetVersion());
+        $this->assertEquals(array(array('class' => 'Vendor\CustomCommand')), $manifest->getCommands());
         $this->assertEquals(array(array('class' => 'Vendor\PluginService')), $manifest->getServices());
         $this->assertEquals(array('property' => 'value'), $manifest->getExtra());
     }
