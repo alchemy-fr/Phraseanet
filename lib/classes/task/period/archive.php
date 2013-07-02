@@ -210,38 +210,74 @@ class task_period_archive extends task_abstract
     {
         ob_start();
         ?>
-        <form name="graphicForm" onsubmit="return(false);" method="post">
-            <br/>
-            <?php echo _('task::archive:archivage sur base/collection/') ?> :
-
-            <select class="formElem" name="base_id">
-                <option value="">...</option>
-                <?php
-                foreach ($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $databox) {
-                    foreach ($databox->get_collections() as $collection) {
-                        print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_label($this->dependencyContainer['locale.I18n']) . " / " . $collection->get_label($this->dependencyContainer['locale.I18n']) . "</option>");
-                    }
-                }
-                ?>
-            </select>
-            <br/>
-            <br/>
-            <?php echo _('task::_common_:hotfolder') ?>
-            <input class="formElem" type="text" name="hotfolder" style="width:400px;" value=""><br/>
-            <br/>
-            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-            <input class="formElem" type="text" name="period" style="width:40px;" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
-            <br/>
-            <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
-            <input class="formElem" type="text" name="cold" style="width:40px;" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
-            <br/>
-            <input class="formElem" type="checkbox" name="move_archived">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <input class="formElem" type="checkbox" name="move_error">&nbsp;<?php echo _('task::archive:deplacer les fichiers non-archives dans _error') ?><br/>
-            <br/>
-            <input class="formElem" type="checkbox" name="copy_spe">&nbsp;<?php echo _('task::archive:copier les fichiers \'.phrasea.xml\' et \'.grouping.xml\' dans _archived') ?><br/>
-            <br/>
-            <input class="formElem" type="checkbox" name="delfolder">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
+        <form name="graphicForm" class="form-horizontal" onsubmit="return(false);" method="post">
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::archive:archivage sur base/collection/') ?></label>
+                <div class="controls">
+                    <select class="formElem" name="base_id">
+                        <option value="">...</option>
+                        <?php
+                        foreach ($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $databox) {
+                            foreach ($databox->get_collections() as $collection) {
+                                print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_label($this->dependencyContainer['locale.I18n']) . " / " . $collection->get_label($this->dependencyContainer['locale.I18n']) . "</option>");
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::_common_:hotfolder') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="text" name="hotfolder" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::_common_:periodicite de la tache') ?></label>
+                <div class="controls">
+                    <input class="formElem input-small" type="text" name="period" value="">
+                    <span class="help-inline"><?php echo _('task::_common_:secondes (unite temporelle)') ?></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::archive:delai de \'repos\' avant traitement') ?></label>
+                <div class="controls">
+                    <input class="formElem input-small" type="text" name="cold" value="">
+                    <span class="help-inline"><?php echo _('task::_common_:secondes (unite temporelle)') ?></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input class="formElem" type="checkbox" name="move_archived">
+                        <?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
+                    </label>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input class="formElem" type="checkbox" name="move_error">
+                        <?php echo _('task::archive:deplacer les fichiers non-archives dans _error') ?>
+                    </label>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input class="formElem" type="checkbox" name="copy_spe">
+                        <?php echo _('task::archive:copier les fichiers \'.phrasea.xml\' et \'.grouping.xml\' dans _archived') ?>
+                    </label>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input class="formElem" type="checkbox" name="delfolder">
+                        <?php echo _('task::archive:supprimer les repertoires apres archivage') ?>
+                    </label>
+                </div>
+            </div>
         </form>
         <?php
 

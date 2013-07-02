@@ -128,7 +128,7 @@
             {% endfor %}
 
             {% if section['javascript'] is defined %}
-                <div><input type='button' onclick='{{ section['javascript'] ~ '(this);' }}' value='Tester' /></div>
+                <div><input type='button' class="btn" onclick='{{ section['javascript'] ~ '(this);' }}' value='Tester' /></div>
             {% endif %}
         </fieldset>
     {% endfor %}

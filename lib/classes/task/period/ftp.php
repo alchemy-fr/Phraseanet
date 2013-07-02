@@ -139,17 +139,26 @@ class task_period_ftp extends task_appboxAbstract
     {
         ob_start();
         ?>
-        <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
-            <br/>
-            <?php echo _('task::ftp:proxy') ?>
-            <input class="formElem" type="text" name="proxy" style="width:400px;" /><br/>
-            <br/>
-            <?php echo _('task::ftp:proxy port') ?>
-            <input class="formElem" type="text" name="proxyport" style="width:400px;" /><br/>
-            <br/>
-            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-            <input class="formElem" type="text" name="period" style="width:40px;" />
-            &nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+        <form id="graphicForm" name="graphicForm" class="form-horizontal" onsubmit="return(false);" method="post">
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::ftp:proxy') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="text" name="proxy" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::ftp:proxy port') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="text" name="proxyport" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::_common_:periodicite de la tache') ?></label>
+                <div class="controls">
+                    <input class="formElem input-small" type="text" name="period" />
+                    <span class="help-inline"><?php echo _('task::_common_:secondes (unite temporelle)') ?></span>
+                </div>
+            </div>
         </form>
         <?php
 

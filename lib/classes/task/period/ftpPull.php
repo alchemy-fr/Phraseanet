@@ -163,42 +163,75 @@ class task_period_ftpPull extends task_appboxAbstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-            <br/>
-            <?php echo('task::ftp:proxy') ?>
-            <input class="formElem" type="text" name="proxy" style="width:400px;" /><br/>
-            <br/>
-            <?php echo('task::ftp:proxy port') ?>
-            <input class="formElem" type="text" name="proxyport" style="width:400px;" /><br/>
-            <br/>
-
-            <?php echo('task::ftp:host') ?>
-            <input class="formElem" type="text" name="host" style="width:400px;" /><br/>
-            <br/>
-            <?php echo('task::ftp:port') ?>
-            <input class="formElem" type="text" name="port" style="width:400px;" /><br/>
-            <br/>
-            <?php echo('task::ftp:user') ?>
-            <input class="formElem" type="text" name="user" style="width:400px;" /><br/>
-            <br/>
-            <?php echo('task::ftp:password') ?>
-            <input class="formElem" type="password" name="password" style="width:400px;" /><br/>
-            <br/>
-            <?php echo('task::ftp:chemin distant') ?>
-            <input class="formElem" type="text" name="ftppath" style="width:400px;" /><br/>
-            <br/>
-            <?php echo('task::ftp:localpath') ?>
-            <input class="formElem" type="text" name="localpath" style="width:400px;" /><br/>
-            <br/>
-
-            <input class="formElem" type="checkbox" name="passive" />
-            <?php echo _('task::ftp:mode passif') ?>
-            <br/>
-            <input class="formElem" type="checkbox" name="ssl" />
-            <?php echo _('task::ftp:utiliser SSL') ?>
-            <br/>
-            <?php echo('task::_common_:periodicite de la tache') ?>
-            <input class="formElem" type="text" name="period" style="width:40px;" />
-            &nbsp;<?php echo('task::_common_:minutes (unite temporelle)') ?><br/>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::ftp:proxy') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="text" name="proxy" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::ftp:proxy port') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="text" name="proxyport" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo('task::ftp:host') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="text" name="host" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo('task::ftp:port') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="text" name="port"  />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo('task::ftp:user') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="text" name="user"  />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo('task::ftp:password') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="password" name="password"  />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo('task::ftp:chemin distant') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="text" name="ftppath"  />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo('task::ftp:localpath') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="text" name="localpath"  />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::ftp:mode passif') ?></label>
+                <div class="controls">
+                    <input class="formElem" type="checkbox" name="passive" />
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input class="formElem" type="checkbox" name="ssl" />
+                        <?php echo _('task::ftp:utiliser SSL') ?>
+                    </label>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::_common_:periodicite de la tache') ?></label>
+                <div class="controls">
+                    <input class="formElem input-small" type="text" name="period" value="">
+                    <span class="help-inline"><?php echo _('task::_common_:secondes (unite temporelle)') ?></span>
+                </div>
+            </div>
         </form>
         <?php
 

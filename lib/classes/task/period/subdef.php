@@ -206,22 +206,33 @@ class task_period_subdef extends task_databoxAbstract
     {
         ob_start();
         ?>
-        <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
-            <br/>
-            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-            <input class="formElem" type="text" name="period" style="width:40px;" value="">
-            <?php echo _('task::_common_:secondes (unite temporelle)') ?>
-            <br/>
-            <br/>
-            <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input class="formElem" type="text" name="flush" style="width:40px;" value="">'); ?>
-            <br/>
-            <br/>
-            <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
-            <input class="formElem" type="text" name="maxrecs" style="width:40px;" value="">
-            <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
-            <input class="formElem" type="text" name="maxmegs" style="width:40px;" value="">
-            Mo
-            <br/>
+        <form id="graphicForm" class="form-horizontal" name="graphicForm" onsubmit="return(false);" method="post">
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::_common_:periodicite de la tache') ?></label>
+                <div class="controls">
+                    <input class="formElem input-small" type="text" name="period" />
+                    <span class="help-inline"><?php echo _('task::_common_:secondes (unite temporelle)') ?></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"> <?php echo sprintf(_("Number of records before proceeding the next step")) ?></label>
+                <div class="controls">
+                   <input class="formElem input-mini" type="text" name="flush" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('Restart the task every X records') ?></label>
+                <div class="controls">
+                    <input class="formElem input-mini" type="text" name="maxrecs" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('Restart the task if memory reaches') ?></label>
+                <div class="controls">
+                    <input class="formElem input-mini" type="text" name="maxmegs" value="">
+                    <span class="help-inline">Mo</span>
+                </div>
+            </div>
         </form>
         <?php
 

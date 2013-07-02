@@ -1,11 +1,4 @@
     <div id="taskBody">
-        <style>
-             #taskBody label
-             {
-                 display: inline;
-             }
-        </style>
-
         <!-- _____________  head added part of graphic interface of '{{task.getName()}}'   _____________ -->
         {{task.printInterfaceHEAD()}}
         <!-- ______________ end of head part of graphic interface of '{{task.getName()}}' ______________ -->
@@ -18,19 +11,18 @@
 
             {{task.getName()}} <span id="taskid">id : {{task.getID()}}</span>
 
-            <form name="__ftask" onsubmit="return(false);" method="post">
+            <form name="__ftask" onsubmit="return(false);" method="post" class="form-inline">
                 <label for="taskTaskname">{% trans 'admin::tasks: nom de la tache' %}</label>
                 <input type="text" id="taskTaskname" value="{{task.getTitle()}}" onchange="setDirty();" />
-
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-                <label for="taskTaskActive">{% trans 'admin::tasks: lancer au demarrage du scheduler' %}</label>
-                <input type="checkbox" id="taskTaskActive" {% if task.isActive() %}checked="checked"{% endif %} onchange="setDirty();" />
+                <label for="taskTaskActive" class="checkbox">
+                    <input type="checkbox" id="taskTaskActive" {% if task.isActive() %}checked="checked"{% endif %} onchange="setDirty();" />
+                    {% trans 'admin::tasks: lancer au demarrage du scheduler' %}
+                </label>
             </form>
             <div id="idCrashLine" style="display:{% if task.getCrashCounter() == 0 %}none{% endif %}">
                 {% trans 'admin::tasks: Nombre de crashes : ' %} {{task.getCrashCounter()}}
 
-                <button id="taskResetCrashCounterButton">
+                <button class="btn btn-warning" id="taskResetCrashCounterButton">
                     {% trans 'admin::tasks: reinitialiser el compteur de crashes' %}
                 </button>
             </div>
@@ -65,8 +57,8 @@
         <!-- __________ end form to go back on list   __________ -->
 
 
-        <button id="taskCancelButton">{% trans 'boutton::annuler' %}</button>
-        <button id="taskSaveButton">{% trans 'boutton::valider' %}</button>
+        <button class="btn" id="taskCancelButton">{% trans 'boutton::annuler' %}</button>
+        <button class="btn btn-warning" id="taskSaveButton">{% trans 'boutton::valider' %}</button>
         <br/>
         <br/>
     </div>
@@ -109,7 +101,7 @@
                                     , type:"POST"
                                     , async:false
                                     , success:function(data) {
-                                        if(typeof(taskFillGraphic_{{task.getClass()}}) == "function")
+                                        if(typeof(taskFillGraphic_{{task.getClass()}}) === "function")
                                         {
                                             var x = $("#txtareaxml").val();
                                             try
@@ -157,12 +149,12 @@
                 });
 
 {% if task.getInterfaceHTML() is empty %}
-                if ($("#taskTabs").tabs.data("ui-tabs")) {
-                    $("#taskTabs").tabs("disable", 0);
+                if ($("#taskTabs").data("ui-tabs")) {
+                    $("#taskTabs").tabs( "option", "disable", 0 );
                 }
 {% else %}
-                if ($("#taskTabs").tabs.data("ui-tabs")) {
-                    $("#taskTabs").tabs("active", 0);
+                if ($("#taskTabs").data("ui-tabs")) {
+                    $("#taskTabs").tabs( "option", "active", 1 );
                 }
 {% endif %}
 
@@ -175,7 +167,7 @@
                         , type:"GET"
                         , async:false
                         , success:function(data) {
-                            if(data == true)
+                            if(data)
                             {
                                 $("#idCrashLine").hide();
                             }

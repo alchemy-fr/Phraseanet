@@ -268,54 +268,109 @@ class task_period_cindexer extends task_abstract
     {
         ob_start();
         ?>
-        <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
-            <?php echo _('task::cindexer:host') ?>&nbsp;:&nbsp;<input type="text" name="host" style="width:100px;" value="">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <?php echo _('task::cindexer:port') ?>&nbsp;:&nbsp;<input type="text" name="port" style="width:50px;" value="">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <?php echo _('task::cindexer:base') ?>&nbsp;:&nbsp;<input type="text" name="base" style="width:100px;" value="">
-            <br/>
+        <form id="graphicForm" name="graphicForm" class="form-horizontal" onsubmit="return(false);" method="post">
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::cindexer:host') ?></label>
+                <div class="controls">
+                    <input type="text" name="host" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::cindexer:port') ?></label>
+                <div class="controls">
+                    <input type="text" name="port" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::cindexer:base') ?></label>
+                <div class="controls">
+                    <input type="text" name="base" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::cindexer:user') ?></label>
+                <div class="controls">
+                    <input type="text" name="user" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::cindexer:password') ?></label>
+                <div class="controls">
+                    <input type="password" name="password" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::cindexer:MySQL charset') ?></label>
+                <div class="controls">
+                    <input type="text" name="charset" class="input-small" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::cindexer:control socket') ?></label>
+                <div class="controls">
+                    <input type="text" name="socket" class="input-small" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::cindexer:Debug mask') ?></label>
+                <div class="controls">
+                    <input type="text" name="debugmask" class="input-small" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input type="checkbox" name="use_sbas" checked="checked" disabled="disabled">
+                        <?php echo _('task::cindexer:use table \'sbas\' (unchecked: use \'xbas\')') ?>
+                    </label>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::cindexer:default language for new candidates') ?></label>
+                <div class="controls">
+                    <input type="text" name="clng" class="input-small" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::cindexer:stemming languages') ?></label>
+                <div class="controls">
+                    <input type="text" name="stem" class="input-small" value="">
+                    <span class="help-block"><?php echo _('task::cindexer:ex.: fr,en') ?></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::cindexer:sort records with an empty field') ?></label>
+                <div class="controls">
+                    <select name="sortempty">
+                        <option value=""><?php echo _('task::not shown') ?></option>
+                        <option value="A"><?php echo _('task::at the beginning') ?></option>
+                        <option value="Z"><?php echo _('task::at the end') ?></option>
+                    </select>
+                </div>
+            </div>
 
-            <?php echo _('task::cindexer:user') ?>&nbsp;:&nbsp;<input type="text" name="user" style="width:100px;" value="">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <?php echo _('task::cindexer:password') ?>&nbsp;:&nbsp;<input type="password" name="password" style="width:100px;" value="">
-            <br/>
-
-            <?php echo _('task::cindexer:MySQL charset') ?>&nbsp;:&nbsp;<input type="text" name="charset" style="width:100px;" value="">
-            <br/>
-
-            <?php echo _('task::cindexer:control socket') ?>&nbsp;:&nbsp;<input type="text" name="socket" style="width:50px;" value="">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <?php echo _('task::cindexer:Debug mask') ?>&nbsp;:&nbsp;<input type="text" name="debugmask" style="width:50px;" value="">
-            <br/>
-
-            <input type="checkbox" name="use_sbas" checked="checked" disabled="disabled">&nbsp;<?php echo _('task::cindexer:use table \'sbas\' (unchecked: use \'xbas\')') ?>
-            <br/>
-
-            <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" value="">
-            <br/>
-
-            <?php echo _('task::cindexer:stemming languages') ?>&nbsp;:&nbsp;<input type="text" name="stem" style="width:150px;" value="">
-            &nbsp;<?php echo _('task::cindexer:ex.: fr,en') ?>
-            <br/>
 <!--
             <?php echo _('task::cindexer:sort empty') ?>&nbsp;:&nbsp;<input type="text" name="sortempty" style="width:20px;" value="">
             &nbsp;<?php echo _('task:: A | Z') ?>
             <br/>
 -->
-            <?php echo _('task::cindexer:sort records with an empty field') ?>&nbsp;
-            <select name="sortempty">
-                <option value=""><?php echo _('task::not shown') ?></option>
-                <option value="A"><?php echo _('task::at the beginning') ?></option>
-                <option value="Z"><?php echo _('task::at the end') ?></option>
-            </select>
-            <br/>
-
-            <input type="checkbox" name="nolog">&nbsp;<?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
-            <br/>
-
-            <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
-            <input type="checkbox" name="winsvc_run">&nbsp;<?php echo _('task::cindexer:run as application, not as service') ?>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input type="checkbox" name="nolog">
+                        <?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
+                    </label>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input type="checkbox" name="winsvc_run">
+                        <?php echo _('task::cindexer:windows specific') ?>
+                    </label>
+                    <span class="help-block"><?php echo _('task::cindexer:run as application, not as service') ?></span>
+                </div>
+            </div>
         </form>
 
         <center>

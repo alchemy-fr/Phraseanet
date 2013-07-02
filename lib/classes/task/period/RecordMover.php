@@ -287,13 +287,21 @@ class task_period_RecordMover extends task_appboxAbstract
     {
         ob_start();
         ?>
-        <form name="graphicForm" onsubmit="return(false);" method="post">
-            <br/>
-            <?php echo _('task::_common_:periodicite de la tache') ?>
-            <input class="formElem" type="text" name="period" style="width:40px;" value="" />
-            <?php echo _('task::_common_:secondes (unite temporelle)') ?>
-            <br/>
-            <input class="formElem" type="checkbox" name="logsql" />&nbsp;log changes
+        <form class="form-horizontal" name="graphicForm" onsubmit="return(false);" method="post">
+            <div class="control-group">
+                <label class="control-label"><?php echo _('task::_common_:periodicite de la tache') ?></label>
+                <div class="controls">
+                     <input class="formElem input-small" type="text" name="period" value="" />
+                     <span class="help-inline"><?php echo _('task::_common_:secondes (unite temporelle)') ?></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input class="formElem" type="checkbox" name="logsql" /><?php echo _('Log changes') ?>
+                    </label>
+                </div>
+            </div>
         </form>
         <center>
             <div class="terminal" id="sqla"></div>
