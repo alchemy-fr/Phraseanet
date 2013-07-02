@@ -391,6 +391,8 @@ class Application extends SilexApplication
             })
         );
 
+        $this['log.channels'] = array('monolog', 'task-manager.logger');
+
         $this->register(new LocaleServiceProvider());
 
         $this->mount('/include/minify/', new Minifier());
