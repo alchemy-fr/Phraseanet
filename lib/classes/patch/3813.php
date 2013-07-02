@@ -56,6 +56,7 @@ class patch_3813 implements patchInterface
             ->getConfig();
 
         $config['xsendfile']['enabled'] = (Boolean) $app['phraseanet.registry']->get('GV_modxsendfile', false);
+        $config['xsendfile']['type'] = $config['xsendfile']['enabled'] ? 'nginx' : '';
 
         if (null !== $xsendfilePath && null !== $xsendfileMountPoint) {
             $config['xsendfile']['mapping'] = array(array(
