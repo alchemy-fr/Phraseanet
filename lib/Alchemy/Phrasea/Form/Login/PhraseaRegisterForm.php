@@ -111,7 +111,7 @@ class PhraseaRegisterForm extends AbstractType
             'expanded'    => false,
             'constraints' => array(
                 new Assert\Choice(array(
-                    'choices' => array_flip($baseIds),
+                    'choices' => $baseIds,
                     'minMessage' => _('You must select at least %s collection.'),
                     'multiple' => true,
                     'min'      => 1,
