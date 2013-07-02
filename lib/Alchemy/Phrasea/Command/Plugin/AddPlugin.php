@@ -50,6 +50,13 @@ class AddPlugin extends AbstractPluginCommand
         $this->container['filesystem']->mirror($temporaryDir, $targetDir);
         $output->writeln(" <comment>OK</comment>");
 
+        $output->write("Copying public files <info>".$manifest->getName()."</info>...");
+        $this->container['filesystem']->mirror(
+            $targetDir . DIRECTORY_SEPARATOR . 'public',
+            $this->container['root.path'] . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $manifest->getName()
+        );
+        $output->writeln(" <comment>OK</comment>");
+
         $output->write("Removing temporary directory...");
         $this->container['filesystem']->remove($temporaryDir);
         $output->writeln(" <comment>OK</comment>");

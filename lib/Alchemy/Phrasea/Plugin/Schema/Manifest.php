@@ -75,6 +75,11 @@ class Manifest
         return $this->get('commands') ? : array();
     }
 
+    public function getTwigPaths()
+    {
+        return $this->get('twig-paths') ? : array();
+    }
+
     public function getExtra()
     {
         return $this->get('extra');

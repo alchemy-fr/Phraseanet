@@ -62,6 +62,10 @@ class AddPluginTest extends PluginCommandTestCase
             ->with('tempdir', self::$DI['app']['plugins.directory'].'/TestPlugin');
 
         self::$DI['app']['filesystem']->expects($this->at(1))
+            ->method('mirror')
+            ->with(self::$DI['app']['plugins.directory'].'/TestPlugin/public', self::$DI['app']['root.path'].'/www/plugins/TestPlugin');
+
+        self::$DI['app']['filesystem']->expects($this->at(2))
             ->method('remove')
             ->with('tempdir');
 
