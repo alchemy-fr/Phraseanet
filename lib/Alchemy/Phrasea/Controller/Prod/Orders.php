@@ -437,8 +437,8 @@ class Orders implements ControllerProviderInterface
 
                 $app['events-manager']->trigger('__ORDER_NOT_DELIVERED__', $params);
             }
-
             $success = true;
+
         } catch (\Exception $e) {
 
         }
