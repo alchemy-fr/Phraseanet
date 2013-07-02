@@ -33,7 +33,7 @@ use Alchemy\Phrasea\Command\Setup\XSendFileMappingDumper;
 require_once __DIR__ . '/../lib/autoload.php';
 
 try {
-    $app = new CLI("
+    $cli = new CLI("
   _____  _    _ _____            _____ ______          _   _ ______ _______
  |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
  | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |
@@ -51,55 +51,59 @@ try {
  under certain conditions; type `about:license' for details.\n\n"
             . ' KONSOLE KOMMANDER', Version::getName() . ' ' . Version::getNumber());
 
-    if (!$app['phraseanet.configuration-tester']->isInstalled()) {
+    if (!$cli['phraseanet.configuration-tester']->isInstalled()) {
         throw new \RuntimeException('Phraseanet is not installed, use setup command instead');
     }
-    if (!$app['phraseanet.configuration-tester']->isUpToDate()) {
+    if (!$cli['phraseanet.configuration-tester']->isUpToDate()) {
         throw new \RuntimeException('Phraseanet is not up-to-date, use setup command instead');
     }
 
-    $app->command(new \module_console_aboutAuthors('about:authors'));
-    $app->command(new \module_console_aboutLicense('about:license'));
+    $cli->command(new \module_console_aboutAuthors('about:authors'));
+    $cli->command(new \module_console_aboutLicense('about:license'));
 
-    $app->command(new \module_console_checkExtension('check:extension'));
-    $app->command(new CheckConfig('check:config'));
+    $cli->command(new \module_console_checkExtension('check:extension'));
+    $cli->command(new CheckConfig('check:config'));
 
-    $app->command(new UpgradeDBDatas('system:upgrade-datas'));
+    $cli->command(new UpgradeDBDatas('system:upgrade-datas'));
 
-    $app->command(new \module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
+    $cli->command(new \module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
 
-    $app->command(new \module_console_systemMailCheck('system:mail-check'));
-    $app->command(new \module_console_systemBackupDB('system:backup-db'));
-    $app->command(new \module_console_systemClearCache('system:clear-cache'));
-    $app->command(new \module_console_systemTemplateGenerator('system:template-generator'));
-    $app->command(new \module_console_systemExport('system:export'));
+    $cli->command(new \module_console_systemMailCheck('system:mail-check'));
+    $cli->command(new \module_console_systemBackupDB('system:backup-db'));
+    $cli->command(new \module_console_systemClearCache('system:clear-cache'));
+    $cli->command(new \module_console_systemTemplateGenerator('system:template-generator'));
+    $cli->command(new \module_console_systemExport('system:export'));
 
-    $app->command(new \module_console_taskrun('task:run'));
-    $app->command(new \module_console_tasklist('task:list'));
-    $app->command(new \module_console_taskState('task:state'));
-    $app->command(new \module_console_schedulerState('scheduler:state'));
-    $app->command(new \module_console_schedulerStop('scheduler:stop'));
-    $app->command(new \module_console_schedulerStart('scheduler:start'));
+    $cli->command(new \module_console_taskrun('task:run'));
+    $cli->command(new \module_console_tasklist('task:list'));
+    $cli->command(new \module_console_taskState('task:state'));
+    $cli->command(new \module_console_schedulerState('scheduler:state'));
+    $cli->command(new \module_console_schedulerStop('scheduler:stop'));
+    $cli->command(new \module_console_schedulerStart('scheduler:start'));
 
-    $app->command(new Mailtest('mail:test'));
+    $cli->command(new Mailtest('mail:test'));
 
-    $app->command(new \module_console_fieldsList('fields:list'));
-    $app->command(new \module_console_fieldsDelete('fields:delete'));
-    $app->command(new \module_console_fieldsRename('fields:rename'));
-    $app->command(new \module_console_fieldsMerge('fields:merge'));
+    $cli->command(new \module_console_fieldsList('fields:list'));
+    $cli->command(new \module_console_fieldsDelete('fields:delete'));
+    $cli->command(new \module_console_fieldsRename('fields:rename'));
+    $cli->command(new \module_console_fieldsMerge('fields:merge'));
 
-    $app->command(new CreateCollection('collection:create'));
+    $cli->command(new CreateCollection('collection:create'));
 
-    $app->command(new RecordAdd('records:add'));
-    $app->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
-    $app->command(new BuildMissingSubdefs('records:build-missing-subdefs'));
+    $cli->command(new RecordAdd('records:add'));
+    $cli->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
+    $cli->command(new BuildMissingSubdefs('records:build-missing-subdefs'));
 
-    $app->command(new AddPlugin());
-    $app->command(new RemovePlugin());
-    $app->command(new Configuration());
-    $app->command(new XSendFileMappingDumper());
+    $cli->command(new AddPlugin());
+    $cli->command(new RemovePlugin());
+    $cli->command(new Configuration());
+    $cli->command(new XSendFileMappingDumper());
 
-    $result_code = is_int($app->run()) ? : 1;
+    call_user_func(function ($cli) {
+        require $cli['plugins.directory'] . '/commands.php';
+    }, $cli);
+
+    $result_code = is_int($cli->run()) ? : 1;
 } catch (\Exception $e) {
     $result_code = 1;
     echo sprintf("\nAn error occured :\n\n\t\033[0;31m%s\033[0;37m\n\n", $e->getMessage());

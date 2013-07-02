@@ -70,6 +70,20 @@
             "type": "string",
             "description": "The maximum phraseanet version for the plugin, excluding the one provided"
         },
+        "commands": {
+            "type": "array",
+            "description": "An array of commands to register.",
+            "items": {
+                "type": "object",
+                "description": "A command",
+                "properties": {
+                    "class": {
+                        "type": "string",
+                        "description": "The plugin command name"
+                    }
+                }
+            }
+        },
         "services": {
             "type": "array",
             "description": "An array of services to register.",

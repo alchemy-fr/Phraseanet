@@ -23,7 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-abstract class Command extends SymfoCommand
+abstract class Command extends SymfoCommand implements CommandInterface
 {
     /**
      * @var Application
@@ -119,5 +119,13 @@ abstract class Command extends SymfoCommand
         }
 
         return $duration;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function create()
+    {
+        return new static();
     }
 }
