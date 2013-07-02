@@ -14,6 +14,7 @@
     "version"     : "0.1",
     "minimum-phraseanet-version": "3.8",
     "maximum-phraseanet-version": "3.9",
+    "twig-paths": ["views", "twig-views"],
     "services" : [
         {
             "class": "Vendor\\PluginService"

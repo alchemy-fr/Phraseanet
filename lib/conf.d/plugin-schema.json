@@ -70,6 +70,14 @@
             "type": "string",
             "description": "The maximum phraseanet version for the plugin, excluding the one provided"
         },
+        "twig-paths": {
+            "type": "array",
+            "description": "An array of optional relative Twig paths to register",
+            "items": {
+                "type": "string",
+                "description": "A Twig path relative to the plugin root directory."
+            }
+        },
         "commands": {
             "type": "array",
             "description": "An array of commands to register.",

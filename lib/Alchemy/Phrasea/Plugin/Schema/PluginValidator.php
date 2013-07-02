@@ -44,7 +44,13 @@ class PluginValidator
             throw new PluginValidationException('Manifest file is invalid', $e->getCode(), $e);
         }
 
-        return new Manifest($this->objectToArray($data));
+        $manifest = new Manifest($this->objectToArray($data));
+
+        foreach ($manifest->getTwigPaths() as $path) {
+            $this->ensureDir($directory . DIRECTORY_SEPARATOR . $path, 'Missing template directory %s');
+        }
+
+        return $manifest;
     }
 
     private function ensureManifest($directory)
@@ -59,10 +65,10 @@ class PluginValidator
         $this->ensureFile($composer);
     }
 
-    private function ensureDir($dir)
+    private function ensureDir($dir, $message = 'Missing mandatory directory %s')
     {
         if (!file_exists($dir) || !is_dir($dir) || !is_readable($dir)) {
-            throw new PluginValidationException(sprintf('Missing mandatory directory %s', $dir));
+            throw new PluginValidationException(sprintf($message, $dir));
         }
     }
 
