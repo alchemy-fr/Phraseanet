@@ -1,0 +1,34 @@
+Entities\Order:
+  type: entity
+  repositoryClass: Repositories\OrderRepository
+  table: Orders
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    usr_id:
+      type: integer
+    ssel_id:
+      type: integer
+      nullable: true
+    order_usage:
+      type: string
+      length: 2048
+    deadline:
+      type: datetime
+    todo:
+      type: integer
+      nullable: true
+    created_on:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+  oneToMany:
+    elements:
+      targetEntity: OrderElement
+      mappedBy: order
+      cascade: ["ALL"]
+

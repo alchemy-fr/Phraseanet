@@ -40,10 +40,10 @@
             </thead>
             <tbody>
                 {% for order in orders %}
-                    {% set deadline = app['date-formatter'].getPrettyString(order.get_deadline()) %}
-                    <tr id="order_{{ order.get_order_id() }}" class="order_row" {{ current_date > order.get_deadline() ? "style=color:#777": "" }}>
-                        <td>{{ order.get_user().get_display_name() }}</td>
-                        <td>{{ app['date-formatter'].getPrettyString(order.get_created_on()) }}</td>
+                    {% set deadline = app['date-formatter'].getPrettyString(order.getDeadline()) %}
+                    <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
+                        <td>{{ order.getUser(app).get_display_name() }}</td>
+                        <td>{{ app['date-formatter'].getPrettyString(order.getCreatedOn()) }}</td>
                         <td>
                             {% if deadline != '' %}
                                 {{deadline}}
@@ -51,8 +51,8 @@
                                 {% trans 'Aucune' %}
                             {% endif %}
                         </td>
-                        <td>{{ order.get_usage() | nl2br }}</td>
-                        <td>{% if order.get_todo() == 0 %}<img src="/skins/icons/ok.png" />{% endif %}</td>
+                        <td>{{ order.getOrderUsage() | nl2br }}</td>
+                        <td>{% if order.getTodo() == 0 %}<img src="/skins/icons/ok.png" />{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
