@@ -797,6 +797,50 @@ form[name=registerForm] .multiselect-group {
     left: 0;
 }
 
+.geocompleter-menu {
+    max-height: 180px;
+    overflow: auto;
+    background: @backgroundSideBar;
+    .glow(@sideBarGlow);
+    list-style-type: none;
+}
+
+.geocompleter-menu .ui-menu-item.selected {
+        border: 2px solid @green;
+}
+
+.geocompleter-menu .ui-menu-item a.ui-state-focus,
+.geocompleter-menu .ui-menu-item a.ui-state-hover,
+.geocompleter-menu .ui-menu-item a.ui-state-active {
+    text-decoration: none;
+}
+
+.geocompleter-menu .ui-menu-item {
+     padding: 5px 10px;
+}
+
+.geocompleter-menu .ui-menu-item:nth-child(odd) {
+     background: lighten(@backgroundSideBar, 25%);
+}
+
+.geocompleter-menu .region {
+    font-size:  @fontSizeMini;
+    font-style: italic;
+    display: block;
+}
+
+.geocompleter-menu .highlight {
+    background: @green;
+}
+
+.geocompleter-input.input-loading {
+    background: url('/skins/icons/loader-black.gif') @black center right no-repeat;
+}
+
+.geocompleter-input.input-error {
+    color: red !important;
+}
+
 /** IE Fixes */
 
 .lt-ie8 authentication-sidebar-language .caret {

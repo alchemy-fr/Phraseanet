@@ -1,13 +1,17 @@
- <html lang="{{ app["locale.I18n"] }}">
-    <head>
-        <title>{{ app["phraseanet.registry"].get("GV_homeTitle") }} {% block title %}{% endblock %}</title>
-        <link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'skins/build/account.css' }) }}"/>
-        <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js,/build/bootstrap/js/bootstrap.js.js,/skins/account/account.js' }) }}"></script>
-        {% block head %}{% endblock %}
-    </head>
+{% set jquery_theme = 'dark-hive' %}
 
-    <body>
-        <div class="container">
+{% extends "common/index_bootstrap.html.twig" %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'skins/build/account.css' }) }}"/>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : '/skins/account/account.js' }) }}"></script>
+{% endblock %}
+
+{% block content %}
+     <div class="container">
             <div class="row-fluid">
                 <div class="span12">
                     {% block menu %}
@@ -29,7 +33,7 @@
             <div class="row-fluid">
                 <div class="span12">
                     <div class="content">
-                        {% block content %}{% endblock %}
+                        {% block content_account %}{% endblock %}
                     </div>
                 </div>
             </div>
@@ -42,5 +46,4 @@
             </div>
         </div>
         {% block scripts %}{% endblock %}
-    </body>
-</html>
+{% endblock %}

@@ -44,7 +44,7 @@
     {% endif %}
 {% endmacro %}
 
-{% block content %}
+{% block content_account %}
 <form id="form_create" action="{{ path("submit_developers_application") }}" method="POST" class="form-horizontal">
     {% if form is none %}
       {% set name, description, website, callback = "", "", "", ""%}

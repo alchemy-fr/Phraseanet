@@ -30,6 +30,7 @@
                      name="registerForm"
                      method="POST"
                      action="{{ path("login_register_classic") }}"
+                     data-geonames-server-adress="{{ app['phraseanet.registry'].get('GV_i18n_service') }}"
                 >
                     {% if form.vars.errors|length > 0 %}
                         <div class="row-fluid">

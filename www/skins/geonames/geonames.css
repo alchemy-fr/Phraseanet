@@ -1,21 +1,52 @@
 
-.geoname_city_finder div.box{
-    cursor:pointer;
-    text-align:left;
-    padding:3px	;
-    color:white;
+.geocompleter-menu {
+    max-height: 180px;
+    overflow: auto;
+    background: #666;
+     box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+    -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+    list-style-type: none;
 }
 
-.geoname_city_finder div.boxI{
-    background-color:#666666;
-    border:1px solid #666666;
+.geocompleter-menu li.ui-menu-item.selected {
+    border: 2px solid #46a546;
 }
 
-.geoname_city_finder div.boxP{
-    background-color:#444444;
-    border:1px solid #444444;
+.geocompleter-menu .ui-menu-item a {
+    color: #fff;
 }
 
-.geoname_city_finder div.box.selected{
-    border:1px solid red;
+.geocompleter-menu .ui-menu-item a.ui-state-focus,
+.geocompleter-menu .ui-menu-item a.ui-state-hover,
+.geocompleter-menu .ui-menu-item a.ui-state-active {
+    text-decoration: none;
+    background: none;
+    border:none;
+}
+
+.geocompleter-menu .ui-menu-item {
+     padding: 5px 10px;
+}
+
+.geocompleter-menu .ui-menu-item:nth-child(odd) {
+     background: #444444;
+}
+
+.geocompleter-menu .region {
+    font-size:  11px;
+    font-style: italic;
+    display: block;
+}
+
+.geocompleter-menu .highlight {
+    background: #46a546;
+}
+
+.geocompleter-input.input-loading {
+    background: url('/skins/icons/loaderFFF.gif') center right no-repeat;
+}
+
+.geocompleter-input.input-error {
+    color: red !important;
 }

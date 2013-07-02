@@ -13,6 +13,7 @@ $groups = array(
         '//assets/normalize-css/normalize.css',
         '//skins/build/login.css',
         '//assets/font-awesome/css/font-awesome.css',
+        '//assets/jquery.ui/themes/base/jquery.ui.autocomplete.css'
     ),
     'authentication' => array(
         '//assets/modernizr/modernizr.js',

@@ -613,7 +613,28 @@
                 dialog.Close();
             });
 
-            initialize_geoname_field($('#command_geoname_field'));
+            var geocompleter = $('#command_geoname_field').geocompleter({
+                "server": "{{ app['phraseanet.registry'].get('GV_i18n_service') }}",
+                "limit": 40
+            });
+
+            geocompleter.geocompleter("autocompleter", "on", "autocompletesearch", function(event, ui) {
+                $(this).addClass('input-loading');
+                $(this).removeClass('input-error');
+            });
+
+            geocompleter.geocompleter("autocompleter", "on", "autocompleteresponse", function(event, ui) {
+                $(this).removeClass('input-loading');
+            });
+
+            geocompleter.geocompleter("autocompleter", "on", "autocompleteclose", function(event, ui) {
+                $(this).removeClass('input-loading');
+            });
+
+            geocompleter.geocompleter("autocompleter", "on", "geotocompleter.request.error", function(jqXhr, status, error) {
+                $(this).removeClass('input-loading');
+                $(this).addClass('input-error');
+            });
 
             $('#download .download_button').bind('click',function(){
                 if(!check_subdefs($('#download')))

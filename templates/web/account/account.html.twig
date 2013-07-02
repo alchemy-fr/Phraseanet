@@ -4,12 +4,47 @@
 
 {% set selected = "informations" %}
 
-{% block head %}
+{% block stylesheet %}
+    {{ parent() }}
     <link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'skins/geonames/geonames.css' }) }}">
-    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/geonames/geonames.js' }) }}"></script>
+{% endblock %}
 
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : '/skins/account/account.js,assets/geonames-server-jquery-plugin/jquery.geonames.js' }) }}"></script>
     <script type="text/javascript">
-        initialize_geoname_field($("#form_geonameid"));
+        $(document).ready(function() {
+            var geocompleter = $("#form_geonameid").geocompleter({
+                "server": "{{ app['phraseanet.registry'].get('GV_i18n_service') }}",
+                "limit": 40
+            });
+
+            geocompleter.data("geocompleter").getAutocompleter().addClass("input-xlarge");
+
+            // On focus add select-state
+            geocompleter.geocompleter("autocompleter", "on", "autocompletefocus", function(event, ui) {
+                $("li", $(event.originalEvent.target)).closest("li").removeClass("selected");
+                $("a.ui-state-active, a.ui-state-hover, a.ui-state-focus", $(event.originalEvent.target)).closest("li").addClass("selected");
+            });
+
+            geocompleter.geocompleter("autocompleter", "on", "autocompletesearch", function(event, ui) {
+                $(this).addClass('input-loading');
+                $(this).removeClass('input-error');
+            });
+
+            geocompleter.geocompleter("autocompleter", "on", "autocompleteresponse", function(event, ui) {
+                $(this).removeClass('input-loading');
+            });
+
+            geocompleter.geocompleter("autocompleter", "on", "autocompleteclose", function(event, ui) {
+                $(this).removeClass('input-loading');
+            });
+
+            geocompleter.geocompleter("autocompleter", "on", "geotocompleter.request.error", function(jqXhr, status, error) {
+                $(this).removeClass('input-loading');
+                $(this).addClass('input-error');
+            });
+        });
     </script>
 {% endblock %}
 
@@ -17,7 +52,7 @@
     {% trans "login:: Mon compte" %}
 {% endblock %}
 
-{% block content %}
+{% block content_account %}
     <div class="row-fluid">
         <div class="span12">
             {{ auth_macro.flashes() }}
@@ -94,7 +129,7 @@
                         <div class="control-group">
                             <label class="form_label control-label" for="form_city"><strong>{% trans "admin::compte-utilisateur ville" %}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge geoname_field" type="text" name="form_geonameid" id="form_geonameid" value="{{ app["authentication"].getUser().get_geonameid() }}" />
+                                <input class="input_element input-xlarge geoname_field" type="text" name="form_geonameid" id="form_geonameid" value="" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
