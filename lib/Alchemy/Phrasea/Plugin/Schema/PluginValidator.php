@@ -29,6 +29,7 @@ class PluginValidator
     {
         $this->ensureComposer($directory);
         $this->ensureManifest($directory);
+        $this->ensureDir($directory . DIRECTORY_SEPARATOR . 'public');
 
         $manifest = $directory . DIRECTORY_SEPARATOR . 'manifest.json';
         $data = @json_decode(@file_get_contents($manifest));
@@ -56,6 +57,13 @@ class PluginValidator
     {
         $composer = $directory . DIRECTORY_SEPARATOR . 'composer.json';
         $this->ensureFile($composer);
+    }
+
+    private function ensureDir($dir)
+    {
+        if (!file_exists($dir) || !is_dir($dir) || !is_readable($dir)) {
+            throw new PluginValidationException(sprintf('Missing mandatory directory %s', $dir));
+        }
     }
 
     private function ensureFile($file)
