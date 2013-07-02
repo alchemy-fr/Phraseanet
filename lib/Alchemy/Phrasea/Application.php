@@ -535,7 +535,7 @@ class Application extends SilexApplication
     {
         $this['twig'] = $this->share(
             $this->extend('twig', function ($twig, $app) {
-                $paths = array();
+                $paths = require $app['plugins.directory'] . '/twig-paths.php';
 
                 if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
                     $paths[] = $app['root.path'] . '/config/templates/mobile';
@@ -545,7 +545,13 @@ class Application extends SilexApplication
                 $paths[] = $app['root.path'] . '/config/templates/web';
                 $paths[] = $app['root.path'] . '/templates/web';
 
-                $app['twig.loader.filesystem']->setPaths($paths);
+                foreach ($paths as $namespace => $path) {
+                    if (!is_int($namespace)) {
+                        $app['twig.loader.filesystem']->addPath($path, $namespace);
+                    } else {
+                        $app['twig.loader.filesystem']->addPath($path);
+                    }
+                }
 
                 $twig->addGlobal('current_date', new \DateTime());
 
