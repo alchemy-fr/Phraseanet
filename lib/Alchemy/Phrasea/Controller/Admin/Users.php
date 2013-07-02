@@ -317,7 +317,7 @@ class Users implements ControllerProviderInterface
                         , $user->get_address()
                         , $user->get_city()
                         , $user->get_zipcode()
-                        , $app['geonames']->get_country($user->get_geonameid())
+                        , $user->get_country()
                         , $user->get_tel()
                         , $user->get_fax()
                         , $user->get_job()

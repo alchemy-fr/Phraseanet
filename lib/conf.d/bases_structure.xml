@@ -3903,7 +3903,7 @@
             <name>pays</name>
             <type>varchar(64)</type>
 
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
             <default></default>

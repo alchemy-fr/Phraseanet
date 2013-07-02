@@ -85,7 +85,7 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
-use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
+use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\InstallerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
@@ -204,6 +204,9 @@ class Application extends SilexApplication
         $this->register(new FilesystemServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
+        $this['geonames.server-uri'] = $this->share(function (Application $app) {
+            return $app['phraseanet.registry']->get('GV_i18n_service', 'http://geoloc.preprod.alchemyasp.com/');
+        });
 
         $this->register(new MediaAlchemystServiceProvider());
         $this['media-alchemyst.configuration'] = $this->share(function(Application $app) {

@@ -365,7 +365,7 @@
                     <div class="control-group">
                         <label class="control-label" for="command_geoname_field">{% trans 'admin::compte-utilisateur ville' %}</label>
                         <div class="controls">
-                            <input class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" geonameid="{{ app['authentication'].getUser().get_geonameid() }}" value="{{ app['geonames'].name_from_id(app['authentication'].getUser().get_geonameid()) }}" />
+                            <input class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" value="{{ app['authentication'].getUser().get_geonameid() }}" />
                         </div>
                     </div>
 
