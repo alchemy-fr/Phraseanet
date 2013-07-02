@@ -34,7 +34,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for row in sessions %}
+                    {% for session in sessions %}
+                        {% set row = session['session'] %}
                         <tr>
                             <td>
                                 {% if app['session'].get('phrasea_session_id') != row.Id() %}
@@ -48,20 +49,8 @@
                                 {{ app['date-formatter'].getDate(row.getUpdated()) }}
                             </td>
                             <td>
-                                {% set geoname = app['geonames'].find_geoname_from_ip(row.getIpAddress()) %}
-
-                                {% if geoname['city']  %}
-                                    {% set ip_infos = geoname['city'] ~ ' (' ~ geoname['country'] ~ ')' %}
-                                {% elseif geoname['fips'] %}
-                                    {% set ip_infos = geoname['fips'] ~ ' (' ~ geoname['country'] ~ ')' %}
-                                {% elseif geoname['country'] %}
-                                    {% set ip_infos = geoname['country'] %}
-                                {% else %}
-                                    {% set ip_infos = '' %}
-                                {% endif %}
-
                                 {{ row.getIpAddress() }}
-                                {{ ip_infos }}
+                                {{ session['info'] }}
                             </td>
                             <td>
                                 {{ row.getBrowserName() }} {{ row.getBrowserVersion() }}

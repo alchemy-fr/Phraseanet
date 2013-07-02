@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Root;
 
+use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -276,7 +277,38 @@ class Account implements ControllerProviderInterface
         $query->setParameters(array('usr_id' => $app['session']->get('usr_id')));
         $sessions = $query->getResult();
 
-        return $app['twig']->render('account/sessions.html.twig', array('sessions' => $sessions));
+        $result = array();
+        foreach ($sessions as $session) {
+            $info = '';
+            try {
+                $geoname = $app['geonames.connector']->ip($session->getIpAddress());
+                $country = $geoname->get('country');
+                $city = $geoname->get('city');
+                $region = $geoname->get('region');
+
+                $countryName = isset($country['name']) ? $country['name'] : null;
+                $regionName = isset($region['name']) ? $region['name'] : null;
+
+                if (null !== $city) {
+                    $info = $city . ($countryName ? ' (' . $countryName . ')' : null);
+                } elseif (null !== $regionName) {
+                    $info = $regionName . ($countryName ? ' (' . $countryName . ')' : null);
+                } elseif (null !== $countryName) {
+                    $info = $countryName;
+                } else {
+                    $info = '';
+                }
+            } catch (GeonamesExceptionInterface $e) {
+
+            }
+
+            $result[] = array(
+                'session' => $session,
+                'info'    => $info,
+            );
+        }
+
+        return $app['twig']->render('account/sessions.html.twig', array('sessions' => $result));
     }
 
     /**

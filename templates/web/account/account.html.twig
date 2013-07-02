@@ -94,7 +94,7 @@
                         <div class="control-group">
                             <label class="form_label control-label" for="form_city"><strong>{% trans "admin::compte-utilisateur ville" %}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge geoname_field" type="text" name="form_geonameid" id="form_geonameid" geonameid="{{ app["authentication"].getUser().get_geonameid() }}" value="{{ app["geonames"].name_from_id(app["authentication"].getUser().get_geonameid()) }}" />
+                                <input class="input_element input-xlarge geoname_field" type="text" name="form_geonameid" id="form_geonameid" value="{{ app["authentication"].getUser().get_geonameid() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>

@@ -515,7 +515,7 @@
               {% trans 'admin::compte-utilisateur ville' %}
             </td>
             <td>
-              <input type="text" geonameid="{{main_user.get_geonameid()}}" value="{{ app['geonames'].name_from_id(main_user.get_geonameid()) }}" class="geoname_field" name="geonameid" />
+              <input type="text" value="{{ main_user.get_geonameid() }}" class="geoname_field" name="geonameid" />
             </td>
           </tr>
           <tr>
