@@ -75,6 +75,26 @@ if (0 !== $code) {
     }
 }
 
+// Remove previous assets
+$assetDir = __DIR__. '/www/assets';
+$code = 0;
+if (is_dir($assetDir)) {
+    system('rm -rf ' . escapeshellarg($assetDir), $code);
+}
+
+if (0 !== $code) {
+    echo sprintf('Attention, failed to remove previous %s dependencies in %s', $bower, $assetDir);
+    echo "\n";
+}
+
+// Clean bower cache
+system(sprintf('%s cache-clean', $bower), $code);
+
+if (0 !== $code) {
+    echo sprintf('Attention, failed to clean %s cache', $bower);
+    echo "\n";
+}
+
 // Install asset dependencies with bower
 system(sprintf('%s install', $bower), $code);
 
