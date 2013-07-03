@@ -18,16 +18,20 @@ require.config({
         i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
         bootstrap: "../skins/build/bootstrap/js/bootstrap.min",
         multiselect: "../assets/bootstrap-multiselect/js/bootstrap-multiselect",
-        "jquery.geocompleter": "../assets/geonames-server-jquery-plugin/jquery.geonames"
+        "jquery.geonames": "../assets/geonames-server-jquery-plugin/jquery.geonames",
+        geonames: "../skins/geonames/geonames"
     },
     shim: {
         bootstrap : ["jquery"],
         jqueryui: {
             deps: ["jquery"]
         },
-        "jquery.geocompleter" : {
-            deps: ['jquery'],
-            exports: 'jQuery.fn.geocompleter'
+        "jquery.geonames" : {
+            deps: ['jquery', 'jqueryui'],
+            exports: '$.fn.geocompleter'
+        },
+        geonames: {
+            deps: ["jquery.geonames"]
         },
         multiselect: {
             deps: ["jquery", "bootstrap"]
