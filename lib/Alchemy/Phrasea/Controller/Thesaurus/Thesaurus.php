@@ -3061,7 +3061,7 @@ class Thesaurus implements ControllerProviderInterface
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
             $connbas = \connection::getPDOConnection($app, $bid);
 
-            $dom = $databox->get_cterms();
+            $dom = $databox->get_dom_cterms();
 
             if ($dom) {
                 $xpath = new \DOMXPath($dom);
