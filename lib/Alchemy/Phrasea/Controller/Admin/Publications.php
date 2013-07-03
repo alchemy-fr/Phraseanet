@@ -138,7 +138,7 @@ class Publications implements ControllerProviderInterface
                 $spec->setStrip(true);
                 $spec->setQuality(72);
 
-                $tmpname = tempnam(sys_get_temp_dir(), 'feed_icon');
+                $tmpname = tempnam(sys_get_temp_dir(), 'feed_icon').'.png';
 
                 try {
                     $app['media-alchemyst']->turnInto($media->getFile()->getPathname(), $tmpname, $spec);
