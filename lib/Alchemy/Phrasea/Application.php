@@ -371,13 +371,13 @@ class Application extends SilexApplication
             return new \phraseadate($app);
         });
 
-        $this['xpdf.pdf2text'] = $this->share(
-            $this->extend('xpdf.pdf2text', function(PdfToText $pdf2text, Application $app){
+        $this['xpdf.pdftotext'] = $this->share(
+            $this->extend('xpdf.pdftotext', function(PdfToText $pdftotext, Application $app){
                 if ($app['phraseanet.registry']->get('GV_pdfmaxpages')) {
-                    $pdf2text->setPageQuantity($app['phraseanet.registry']->get('GV_pdfmaxpages'));
+                    $pdftotext->setPageQuantity($app['phraseanet.registry']->get('GV_pdfmaxpages'));
                 }
 
-                return $pdf2text;
+                return $pdftotext;
             })
         );
 

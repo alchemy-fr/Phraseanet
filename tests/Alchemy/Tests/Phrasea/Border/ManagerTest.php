@@ -403,20 +403,20 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAddMediaAttributesPDF()
     {
+        $pdfToText = $this->getMockBuilder('XPDF\PdfToText')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $manager = new ManagerTester(self::$DI['app']);
+        $manager->setPdfToText($pdfToText);
 
-        if (null === self::$DI['app']['xpdf.pdf2text']) {
-            $this->markTestSkipped('Pdf To Text could not be instantiate');
-        }
-
-        $manager->setPdfToText(self::$DI['app']['xpdf.pdf2text']);
+        $pdfToText->expects($this->once())
+            ->method('getText')
+            ->with(realpath(__DIR__ . '/../../../../files/HelloWorld.pdf'))
+            ->will($this->returnValue('text content'));
 
         $file = File::buildFromPathfile(__DIR__ . '/../../../../files/HelloWorld.pdf', self::$DI['collection'], self::$DI['app']);
-
-        $count = count($file->getAttributes());
         $manager->addMediaAttributesTester($file);
-
-        $count = count($file->getAttributes());
 
         $toFound = array(
             'Phraseanet:tf-width',

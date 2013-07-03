@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "a265177770eb277554b943a7e807eac1",
+    "hash": "8cb517c5c12c271a4ef12a2dd1b8360f",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -1249,32 +1249,32 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "bdeb69cdcebecedecd9e6f7bfdde2779af3ffbaf"
+                "reference": "12a688d7f987f540cb48be9f3c05c83817204153"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/bdeb69cdcebecedecd9e6f7bfdde2779af3ffbaf",
-                "reference": "bdeb69cdcebecedecd9e6f7bfdde2779af3ffbaf",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/12a688d7f987f540cb48be9f3c05c83817204153",
+                "reference": "12a688d7f987f540cb48be9f3c05c83817204153",
                 "shasum": ""
             },
             "require": {
-                "alchemy/ghostscript": ">=0.4,<0.5",
-                "mediavorus/mediavorus": "0.3.x-dev@dev",
-                "monolog/monolog": ">=1.0,<2.0",
+                "alchemy/ghostscript": "~0.4.0",
+                "mediavorus/mediavorus": "0.4.x-dev@dev",
+                "monolog/monolog": "~1.0",
                 "neutron/imagine": "dev-neutron-colorspace@dev",
                 "php": ">=5.3.3",
                 "php-ffmpeg/php-ffmpeg": "0.3.x-dev@dev",
-                "php-mp4box/php-mp4box": ">=0.3,<0.4",
-                "php-unoconv/php-unoconv": ">=0.3,<0.4",
-                "pimple/pimple": ">=1.0,<2.0",
-                "swftools/swftools": ">=0.3,<0.4",
-                "symfony/console": ">=2.0,<3.0"
+                "php-mp4box/php-mp4box": "~0.3.0",
+                "php-unoconv/php-unoconv": "~0.3.0",
+                "pimple/pimple": "~1.0",
+                "swftools/swftools": "~0.3.0",
+                "symfony/console": "~2.0"
             },
             "require-dev": {
-                "neutron/silex-imagine-provider": ">=0.1,<1.0",
-                "phpexiftool/phpexiftool": ">=0.1,<1.0",
-                "phpunit/phpunit": ">=3.7,<4.0",
-                "silex/silex": ">=1.0,<2.0"
+                "neutron/silex-imagine-provider": "~0.1",
+                "phpexiftool/phpexiftool": "~0.1",
+                "phpunit/phpunit": "~3.7",
+                "silex/silex": "~1.0"
             },
             "type": "library",
             "extra": {
@@ -1312,7 +1312,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-06-27 15:43:21"
+            "time": "2013-07-03 14:04:15"
         },
         {
             "name": "mediavorus/mediavorus",
@@ -1320,28 +1320,28 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/MediaVorus.git",
-                "reference": "3b006b54e198b489ca674af6c9713eac9e0314bf"
+                "reference": "458113d6110fe986a1e3de40b84265a5317d8dd5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/3b006b54e198b489ca674af6c9713eac9e0314bf",
-                "reference": "3b006b54e198b489ca674af6c9713eac9e0314bf",
+                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/458113d6110fe986a1e3de40b84265a5317d8dd5",
+                "reference": "458113d6110fe986a1e3de40b84265a5317d8dd5",
                 "shasum": ""
             },
             "require": {
-                "doctrine/collections": ">=1.0,<2.0",
-                "monolog/monolog": ">=1.0,<2.0",
+                "doctrine/collections": "~1.0",
+                "monolog/monolog": "~1.0",
                 "php": ">=5.3.0",
                 "php-ffmpeg/php-ffmpeg": "0.3.x-dev",
-                "phpexiftool/phpexiftool": ">=0.1,<1.0",
-                "symfony/console": ">=2.0,<3.0",
-                "symfony/http-foundation": ">=2.0,<3.0"
+                "phpexiftool/phpexiftool": "~0.1",
+                "symfony/console": "~2.0",
+                "symfony/http-foundation": "~2.0"
             },
             "require-dev": {
-                "jms/serializer": ">=0.12.0,<0.13.0",
-                "phpunit/phpunit": ">=3.7,<4.0",
-                "silex/silex": ">=1.0,<2.0",
-                "symfony/yaml": ">=2.0,<3.0"
+                "jms/serializer": "~0.12.0",
+                "phpunit/phpunit": "~3.7",
+                "silex/silex": "~1.0",
+                "symfony/yaml": "~2.0"
             },
             "suggest": {
                 "jms/serializer": "To serialize Medias",
@@ -1350,7 +1350,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -1373,7 +1373,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2013-06-27 11:40:44"
+            "time": "2013-07-03 12:24:16"
         },
         {
             "name": "monolog/monolog",
@@ -1752,24 +1752,24 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
-                "reference": "a39d8939dbc9992e290c5c0525964662c934eb9c"
+                "reference": "8e87d243d9096e8bec832c781a8aeaca9056f268"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/a39d8939dbc9992e290c5c0525964662c934eb9c",
-                "reference": "a39d8939dbc9992e290c5c0525964662c934eb9c",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/8e87d243d9096e8bec832c781a8aeaca9056f268",
+                "reference": "8e87d243d9096e8bec832c781a8aeaca9056f268",
                 "shasum": ""
             },
             "require": {
-                "alchemy/binary-driver": ">=1.5,<2.0",
-                "doctrine/cache": ">=1.0,<2.0",
-                "evenement/evenement": ">=1.0,<2.0",
+                "alchemy/binary-driver": "~1.5",
+                "doctrine/cache": "~1.0",
+                "evenement/evenement": "~1.0",
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=3.7,<4.0",
-                "sami/sami": ">=1.0,<2.0",
-                "silex/silex": ">=1.0,<2.0"
+                "phpunit/phpunit": "~3.7",
+                "sami/sami": "~1.0",
+                "silex/silex": "~1.0"
             },
             "suggest": {
                 "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
@@ -1812,7 +1812,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-06-26 13:17:16"
+            "time": "2013-07-03 12:13:29"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -1917,26 +1917,26 @@
         },
         {
             "name": "php-xpdf/php-xpdf",
-            "version": "0.1.1",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/PHP-XPDF",
-                "reference": "0.1.1"
+                "url": "https://github.com/alchemy-fr/PHP-XPDF.git",
+                "reference": "0.2.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-XPDF/zipball/0.1.1",
-                "reference": "0.1.1",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-XPDF/zipball/0.2.1",
+                "reference": "0.2.1",
                 "shasum": ""
             },
             "require": {
-                "monolog/monolog": ">=1.0,<2.0",
-                "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<3.0"
+                "alchemy/binary-driver": "~1.5",
+                "php": ">=5.3.3"
             },
             "require-dev": {
-                "sami/sami": "dev-master@dev",
-                "silex/silex": "1.0.x@dev"
+                "phpunit/phpunit": "~3.7",
+                "sami/sami": "~1.0",
+                "silex/silex": "~1.0"
             },
             "type": "library",
             "autoload": {
@@ -1965,7 +1965,7 @@
                 "pdf",
                 "xpdf"
             ],
-            "time": "2013-01-31 11:08:08"
+            "time": "2013-07-03 09:37:09"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -2375,28 +2375,27 @@
         },
         {
             "name": "swftools/swftools",
-            "version": "0.3.0",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPSwftools.git",
-                "reference": "0.3.0"
+                "reference": "0.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPSwftools/zipball/0.3.0",
-                "reference": "0.3.0",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPSwftools/zipball/0.3.1",
+                "reference": "0.3.1",
                 "shasum": ""
             },
             "require": {
-                "alchemy/binary-driver": ">=1.5,<2.0",
-                "monolog/monolog": ">=1.0,<2.0",
+                "alchemy/binary-driver": "~1.5",
                 "php": ">=5.3.3",
-                "pimple/pimple": ">=1.0,<2.0"
+                "pimple/pimple": "~1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=3.7,<4.0",
-                "sami/sami": ">=1.0,<2.0",
-                "silex/silex": ">=1.0,<2.0"
+                "phpunit/phpunit": "~3.7",
+                "sami/sami": "~1.0",
+                "silex/silex": "~1.0"
             },
             "type": "library",
             "autoload": {
@@ -2426,7 +2425,7 @@
                 "flash",
                 "swf"
             ],
-            "time": "2013-06-25 12:09:36"
+            "time": "2013-07-03 13:11:36"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2479,21 +2478,20 @@
         },
         {
             "name": "symfony/icu",
-            "version": "v1.2.0",
+            "version": "v1.0.0",
             "target-dir": "Symfony/Component/Icu",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Icu.git",
-                "reference": "v1.2.0"
+                "reference": "v1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Icu/zipball/v1.2.0",
-                "reference": "v1.2.0",
+                "url": "https://api.github.com/repos/symfony/Icu/zipball/v1.0.0",
+                "reference": "v1.0.0",
                 "shasum": ""
             },
             "require": {
-                "lib-icu": ">=4.4",
                 "php": ">=5.3.3",
                 "symfony/intl": ">=2.3,<3.0"
             },
@@ -2523,7 +2521,7 @@
                 "icu",
                 "intl"
             ],
-            "time": "2013-06-03 18:32:58"
+            "time": "2013-06-03 18:32:07"
         },
         {
             "name": "symfony/symfony",
