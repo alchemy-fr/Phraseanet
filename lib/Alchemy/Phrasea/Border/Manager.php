@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Metadata\Tag\PdfText;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
@@ -36,6 +35,7 @@ use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
+use Silex\Application;
 use Symfony\Component\Filesystem\Exception\IOException;
 use XPDF\PdfToText;
 
@@ -78,7 +78,7 @@ class Manager
     }
 
     /**
-     * Set a PdfToText object for extracting PDF content
+     * Sets a PdfToText driver for extracting PDF content.
      *
      * @param PdfTotext $pdfToText The PdfToText Object
      *
@@ -89,6 +89,16 @@ class Manager
         $this->pdfToText = $pdfToText;
 
         return $this;
+    }
+
+    /**
+     * Gets the PdfToText driver.
+     *
+     * @return PdfTotext
+     */
+    public function getPdfToText()
+    {
+        return $this->pdfToText;
     }
 
     /**
@@ -550,8 +560,7 @@ class Manager
         if ($file->getFile()->getMimeType() == 'application/pdf' && null !== $this->pdfToText) {
 
             try {
-                $text = $this->pdfToText->open($file->getFile()->getRealPath())
-                    ->getText();
+                $text = $this->pdfToText->getText($file->getFile()->getRealPath());
 
                 if (trim($text)) {
                     $file->addAttribute(
@@ -562,8 +571,6 @@ class Manager
                         )
                     );
                 }
-
-                $this->pdfToText->close();
             } catch (\XPDF\Exception\Exception $e) {
 
             }

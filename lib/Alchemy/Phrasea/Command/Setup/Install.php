@@ -263,7 +263,7 @@ class Install extends Command
             'ffmpeg_binary'        => $this->executableFinder->find('ffmpeg', $this->executableFinder->find('avconv')),
             'ffprobe_binary'       => $this->executableFinder->find('ffprobe', $this->executableFinder->find('avprobe')),
             'mp4box_binary'        => $this->executableFinder->find('MP4Box'),
-            'pdftotext_binary'     => $this->executableFinder->find('pdf2text'),
+            'pdftotext_binary'     => $this->executableFinder->find('pdftotext'),
             'ghostscript_binary'   => $this->executableFinder->find('gs'),
         );
     }
