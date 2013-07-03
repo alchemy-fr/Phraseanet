@@ -79,11 +79,11 @@ if (0 !== $code) {
 $assetDir = __DIR__. '/www/assets';
 $code = 0;
 if (is_dir($assetDir)) {
-    system('rm -rf ' . escapeshellarg($assetDir), $code);
+    system('rm -r ' . escapeshellarg($assetDir), $code);
 }
 
 if (0 !== $code) {
-    echo sprintf('Attention, failed to remove previous %s dependencies in %s', $bower, $assetDir);
+    echo sprintf('Warning, failed to remove previous %s dependencies in %s', $bower, $assetDir);
     echo "\n";
 }
 
@@ -91,7 +91,7 @@ if (0 !== $code) {
 system(sprintf('%s cache-clean', $bower), $code);
 
 if (0 !== $code) {
-    echo sprintf('Attention, failed to clean %s cache', $bower);
+    echo sprintf('Warning, failed to clean %s cache', $bower);
     echo "\n";
 }
 
