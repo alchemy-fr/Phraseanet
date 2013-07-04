@@ -36,7 +36,7 @@ class FileServeServiceProviderTest extends ServiceProviderTestCase
         $app['phraseanet.configuration.config-path'] = __DIR__ . '/fixtures/config-mapping.yml';
         $app['phraseanet.configuration.config-compiled-path'] = __DIR__ . '/fixtures/config-mapping.php';
         $this->assertInstanceOf('Alchemy\Phrasea\Http\XSendFile\NginxMode', $app['phraseanet.xsendfile-factory']->getMode());
-        $this->assertEquals(3, count($app['phraseanet.xsendfile-factory']->getMode()->getMapping()));
+        $this->assertEquals(1, count($app['phraseanet.xsendfile-factory']->getMode()->getMapping()));
 
         unlink($app['phraseanet.configuration.config-compiled-path']);
         unset($app);

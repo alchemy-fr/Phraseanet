@@ -5,7 +5,7 @@
   - BC Break : Removed `bin/console check:config` command.
   - BC Break : Removed `bin/console check:system` command, replaced by `bin/setup check:system`.
   - BC Break : Removed `bin/console system:upgrade` command, replaced by `bin/setup system:upgrade`.
-  - BC Break : Removed `bin/console check:ensure-production-settings` and `bin/console check:ensure-dev-settings` 
+  - BC Break : Removed `bin/console check:ensure-production-settings` and `bin/console check:ensure-dev-settings`
     commands, replaced by `bin/console check:config`.
   - BC break : Configuration simplification, optimized for performances.
   - BC Break : Time limits are now applied on templates application.
@@ -19,7 +19,6 @@
   - Add bin/setup command utility, it is now recommanded to use `bin/setup system:install`
     command to install Phraseanet.
   - Lots of cleanup and code refactorisation.
-  - Add task-manager logging to syslog.
   - Add bin/console mail:test command to check email configuration.
   - Admin databox structure fields editing redesigned.
   - Refactor of the configuration tester.
@@ -38,6 +37,11 @@
   - Add records sent-by-mail report.
   - User time limit restrictions can now be set per databox.
   - Add gzip/bzip2 options for DBs backup commandline tool.
+  - Add convenient XSendFile configuration tools in bin/console :
+      - bin/console xsendfile:configuration-generator that generates your
+        xsendfile mapping depending on databoxes configuration.
+      - bin/console xsendfile:configuration-dumper that dumps your virtual
+        host configuration depending on Phraseanet configuration
 
 * 3.7.13 (2013-07-04)
 
