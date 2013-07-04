@@ -67,12 +67,6 @@ class task_period_cindexer extends task_abstract
      *
      * @var string
      */
-    protected $use_sbas;
-
-    /**
-     *
-     * @var string
-     */
     protected $charset;
 
     /**
@@ -111,7 +105,7 @@ class task_period_cindexer extends task_abstract
      */
     public function getName()
     {
-        return(_("task::cindexer:Indexation"));
+        return(_("Indexation task"));
     }
 
     /**
@@ -120,7 +114,7 @@ class task_period_cindexer extends task_abstract
      */
     public function help()
     {
-        return(_("task::cindexer:indexing records"));
+        return(_("This task is used to index records for Phrasea engine."));
     }
 
     /**
@@ -133,13 +127,13 @@ class task_period_cindexer extends task_abstract
         $request = http_request::getInstance();
 
         $parm2 = $request->get_parms(
-            'host', 'port', 'base', 'user', 'password', 'socket', 'use_sbas', 'nolog', 'clng', 'winsvc_run', 'charset', 'debugmask', 'stem', 'sortempty'
+            'host', 'port', 'base', 'user', 'password', 'socket', 'nolog', 'clng', 'winsvc_run', 'charset', 'debugmask', 'stem', 'sortempty'
         );
         $dom = new DOMDocument();
         $dom->formatOutput = true;
         if ($dom->loadXML($oldxml)) {
             $xmlchanged = false;
-            foreach (array("str:host", "str:port", "str:base", "str:user", "str:password", "str:socket", "boo:use_sbas", "boo:nolog", "str:clng", "boo:winsvc_run", "str:charset", 'str:debugmask', 'str:stem', 'str:sortempty') as $pname) {
+            foreach (array("str:host", "str:port", "str:base", "str:user", "str:password", "str:socket", "boo:nolog", "str:clng", "boo:winsvc_run", "str:charset", 'str:debugmask', 'str:stem', 'str:sortempty') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -199,7 +193,6 @@ class task_period_cindexer extends task_abstract
                         socket.value       = xml.find("socket").text();
                         password.value     = xml.find("password").text();
                         clng.value         = xml.find("clng").text();
-                        use_sbas.checked   = true | isyes(xml.find("use_sbas").text());
                         nolog.checked      = isyes(xml.find("nolog").text());
                         winsvc_run.checked = isyes(xml.find("winsvc_run").text());
                         charset.value      = xml.find("charset").text();
@@ -212,8 +205,6 @@ class task_period_cindexer extends task_abstract
                 var cmd = '';
                 with(document.forms['graphicForm'])
                 {
-                    use_sbas.checked = true;
-
                     cmd += "<?php echo $this->getIndexer() ?>";
                     if(host.value)
                         cmd += " -h=" + host.value;
@@ -270,95 +261,81 @@ class task_period_cindexer extends task_abstract
         ?>
         <form id="graphicForm" name="graphicForm" class="form-horizontal" onsubmit="return(false);" method="post">
             <div class="control-group">
-                <label class="control-label"><?php echo _('task::cindexer:host') ?></label>
+                <label class="control-label"><?php echo _('MySQL Host') ?></label>
                 <div class="controls">
                     <input type="text" name="host" value="">
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"><?php echo _('task::cindexer:port') ?></label>
+                <label class="control-label"><?php echo _('MySQL Port') ?></label>
                 <div class="controls">
                     <input type="text" name="port" value="">
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"><?php echo _('task::cindexer:base') ?></label>
+                <label class="control-label"><?php echo _('MySQL Database') ?></label>
                 <div class="controls">
                     <input type="text" name="base" value="">
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"><?php echo _('task::cindexer:user') ?></label>
+                <label class="control-label"><?php echo _('MySQL Login') ?></label>
                 <div class="controls">
                     <input type="text" name="user" value="">
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"><?php echo _('task::cindexer:password') ?></label>
+                <label class="control-label"><?php echo _('MySQL password') ?></label>
                 <div class="controls">
                     <input type="password" name="password" value="">
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"><?php echo _('task::cindexer:MySQL charset') ?></label>
+                <label class="control-label"><?php echo _('MySQL charset') ?></label>
                 <div class="controls">
                     <input type="text" name="charset" class="input-small" value="">
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"><?php echo _('task::cindexer:control socket') ?></label>
+                <label class="control-label"><?php echo _('Socket port') ?></label>
                 <div class="controls">
                     <input type="text" name="socket" class="input-small" value="">
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"><?php echo _('task::cindexer:Debug mask') ?></label>
+                <label class="control-label"><?php echo _('Debug binary mask') ?></label>
                 <div class="controls">
                     <input type="text" name="debugmask" class="input-small" value="">
                 </div>
             </div>
             <div class="control-group">
-                <div class="controls">
-                    <label class="checkbox">
-                        <input type="checkbox" name="use_sbas" checked="checked" disabled="disabled">
-                        <?php echo _('task::cindexer:use table \'sbas\' (unchecked: use \'xbas\')') ?>
-                    </label>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label"><?php echo _('task::cindexer:default language for new candidates') ?></label>
+                <label class="control-label"><?php echo _('Default language for thesaurus candidates') ?></label>
                 <div class="controls">
                     <input type="text" name="clng" class="input-small" value="">
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"><?php echo _('task::cindexer:stemming languages') ?></label>
+                <label class="control-label"><?php echo _('Enable stemming languages') ?></label>
                 <div class="controls">
                     <input type="text" name="stem" class="input-small" value="">
-                    <span class="help-block"><?php echo _('task::cindexer:ex.: fr,en') ?></span>
+                    <span class="help-block"><?php echo _('example : fr,en') ?></span>
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"><?php echo _('task::cindexer:sort records with an empty field') ?></label>
+                <label class="control-label"><?php echo _('Sort records with an empty field') ?></label>
                 <div class="controls">
                     <select name="sortempty">
-                        <option value=""><?php echo _('task::not shown') ?></option>
-                        <option value="A"><?php echo _('task::at the beginning') ?></option>
-                        <option value="Z"><?php echo _('task::at the end') ?></option>
+                        <option value=""><?php echo _('Hide records') ?></option>
+                        <option value="A"><?php echo _('At the beginning') ?></option>
+                        <option value="Z"><?php echo _('At the end') ?></option>
                     </select>
                 </div>
             </div>
-
-<!--
-            <?php echo _('task::cindexer:sort empty') ?>&nbsp;:&nbsp;<input type="text" name="sortempty" style="width:20px;" value="">
-            &nbsp;<?php echo _('task:: A | Z') ?>
-            <br/>
--->
             <div class="control-group">
                 <div class="controls">
                     <label class="checkbox">
                         <input type="checkbox" name="nolog">
-                        <?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
+                        <?php echo _('Do not (sys)log, output to console)') ?>
                     </label>
                 </div>
             </div>
@@ -366,9 +343,9 @@ class task_period_cindexer extends task_abstract
                 <div class="controls">
                     <label class="checkbox">
                         <input type="checkbox" name="winsvc_run">
-                        <?php echo _('task::cindexer:windows specific') ?>
+                        <?php echo _('Windows specific') ?>
                     </label>
-                    <span class="help-block"><?php echo _('task::cindexer:run as application, not as service') ?></span>
+                    <span class="help-block"><?php echo _('Run as application, not as service') ?></span>
                 </div>
             </div>
         </form>
@@ -394,7 +371,6 @@ class task_period_cindexer extends task_abstract
         $this->user = trim($sx_task_settings->user);
         $this->password = trim($sx_task_settings->password);
         $this->socket = trim($sx_task_settings->socket);
-        $this->use_sbas = p4field::isyes(trim($sx_task_settings->use_sbas));
         $this->charset = trim($sx_task_settings->charset);
         $this->stem = trim($sx_task_settings->stem);
         $this->sortempty = trim($sx_task_settings->sortempty);
@@ -436,7 +412,7 @@ class task_period_cindexer extends task_abstract
 
         if ( ! file_exists($cmd) || ! is_executable($cmd)) {
             $this->setState(self::STATE_STOPPED);
-            $this->log(sprintf(_('task::cindexer:file \'%s\' does not exists'), $cmd));
+            $this->log(sprintf('File \'%s\' does not exists', $cmd));
             throw new Exception('cindexer executable not found', self::ERR_EXECUTABLE_NOT_FOUND);
 
             return;
@@ -577,13 +553,13 @@ class task_period_cindexer extends task_abstract
             if (! $proc_status['running']) {
                 // the cindexer died
                 if ($qsent == 'Q') {
-                    $this->log(_('task::cindexer:the cindexer clean-quit'));
+                    $this->log('Phrasea indexer stopped');
                     $this->new_status = self::STATE_STOPPED;
                 } elseif ($qsent == 'K') {
-                    $this->log(_('task::cindexer:the cindexer has been killed'));
+                    $this->log('Phrasea indexer has been killed');
                     $this->new_status = self::STATE_STOPPED;
                 } else {
-                    $this->log(_('task::cindexer:the cindexer crashed'));
+                    $this->log('Phrasea indexer crashed');
                     $this->exception = new Exception('cindexer crashed', self::ERR_CRASHED);
                     // do not change the status so scheduler may restart it
                 }
@@ -593,7 +569,7 @@ class task_period_cindexer extends task_abstract
                 if ($qsent == 'Q') {
                     if (time() > $timetokill) {
                         // must kill cindexer
-                        $this->log(_('task::cindexer:killing the cindexer'));
+                        $this->log('Sending kill signal to Phrasea indexer');
                         $qsent = 'K';
                         proc_terminate($process); // sigint
                     }
@@ -645,7 +621,7 @@ class task_period_cindexer extends task_abstract
                     // dead...
                     if ($sigsent === NULL) {
                         // but it's not my fault
-                        $this->log(_('task::cindexer:the cindexer crashed'));
+                        $this->log('Phrasea indexer crashed');
                         $this->exception = new Exception('cindexer crashed', self::ERR_CRASHED);
                         // do not change the status so scheduler may restart it
                         break;
@@ -662,13 +638,13 @@ class task_period_cindexer extends task_abstract
                 if (pcntl_wait($status, WNOHANG) == $pid) {
                     // child (indexer) has exited
                     if ($sigsent == SIGINT) {
-                        $this->log(_('task::cindexer:the cindexer clean-quit'));
+                        $this->log('Phrasea indexer stopped');
                         $this->new_status = self::STATE_STOPPED;
                     } elseif ($sigsent == SIGKILL) {
-                        $this->log(_('task::cindexer:the cindexer has been killed'));
+                        $this->log('Phrasea indexer has been killed');
                         $this->new_status = self::STATE_STOPPED;
                     } else {
-                        $this->log(_('task::cindexer:the cindexer crashed'));
+                        $this->log('Phrasea indexer crashed');
                         $this->exception = new Exception('cindexer crashed', self::ERR_CRASHED);
                         // do not change the status so scheduler may restart it
                     }
@@ -676,7 +652,7 @@ class task_period_cindexer extends task_abstract
                 } else {
                     if ($sigsent == SIGINT && time() > $timetokill) {
                         // must kill cindexer
-                        $this->log(_('task::cindexer:killing the cindexer'));
+                        $this->log('Kill signal sent to Phrasea indexer');
                         posix_kill($pid, ($sigsent = SIGKILL));
                     }
                     sleep(2);
