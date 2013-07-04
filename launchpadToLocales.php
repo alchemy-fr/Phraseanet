@@ -13,12 +13,9 @@
  *
  */
 
-require_once __DIR__ . '/lib/Alchemy/Phrasea/Core.php';
+require_once __DIR__ . '/lib/autoload.php';
 
 use Symfony\Component\Finder\Finder;
-
-\Alchemy\Phrasea\Core::initAutoloads();
-
 
 if ( ! isset($argv[1]) || ! is_dir(__DIR__ . '/' . $argv[1])) {
     echo "You need to specify a directory with the latest launchpad locales" . PHP_EOL;
