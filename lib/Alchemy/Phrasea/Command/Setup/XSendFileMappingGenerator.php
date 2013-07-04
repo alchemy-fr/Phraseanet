@@ -19,7 +19,8 @@ use Symfony\Component\Yaml\Yaml;
 
 class XSendFileMappingGenerator extends Command
 {
-    public function __construct($name = null) {
+    public function __construct($name = null)
+    {
         parent::__construct('xsendfile:configuration-generator');
 
         $this->addOption('write', 'w', null, 'Writes the configuration')
