@@ -20,6 +20,8 @@ class XSendFileMappingDumper extends Command
 {
     public function __construct($name = null) {
         parent::__construct('xsendfile:configuration-dumper');
+
+        $this->setDescription('Dump the virtual host configuration depending on Phraseanet configuration');
     }
 
     /**
