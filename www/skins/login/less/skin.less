@@ -798,11 +798,8 @@ form[name=registerForm] .multiselect-group {
 }
 
 .geocompleter-menu {
-    max-height: 180px;
-    overflow: auto;
     background: @backgroundSideBar;
     .glow(@sideBarGlow);
-    list-style-type: none;
 }
 
 .geocompleter-menu .ui-menu-item.selected {
@@ -825,20 +822,14 @@ form[name=registerForm] .multiselect-group {
 
 .geocompleter-menu .region {
     font-size:  @fontSizeMini;
-    font-style: italic;
-    display: block;
 }
 
-.geocompleter-menu .highlight {
+.geocompleter-menu .ui-state-highlight {
     background: @green;
 }
 
 .geocompleter-input.input-loading {
     background: url('/skins/icons/loader-black.gif') @black center right no-repeat;
-}
-
-.geocompleter-input.input-error {
-    color: red !important;
 }
 
 /** IE Fixes */

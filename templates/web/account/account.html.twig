@@ -5,8 +5,8 @@
 {% set selected = "informations" %}
 
 {% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'skins/geonames/geonames.css' }) }}">
     {{ parent() }}
-    {#<link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'skins/geonames/geonames.css' }) }}">#}
 {% endblock %}
 
 {% block javascript %}
@@ -14,12 +14,10 @@
     <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : '/skins/account/account.js,assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            var geocompleter = geonames.init($("#form_geonameid"), {
+            geonames.init($("#form_geonameid"), {
                 "server": "{{ app['geonames.server-uri'] }}",
                 "limit": 40
             });
-
-            geocompleter.data("geocompleter").getAutocompleter().addClass("input-xlarge");
         });
     </script>
 {% endblock %}

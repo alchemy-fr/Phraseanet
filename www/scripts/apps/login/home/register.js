@@ -90,7 +90,8 @@ require([
 
             var geocompleter = geonames.init($("#geonameid"), {
                 "server": $form.data("geonames-server-adress"),
-                "limit": 40
+                "limit": 40,
+                "init-input": false
             });
 
             // Positioning menu below input

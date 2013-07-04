@@ -9,9 +9,6 @@
         init: function($field, options) {
             var geocompleter = $field.geocompleter(options);
 
-            var geonameId = $field.val();
-
-            
             // On focus add select-state
             geocompleter.geocompleter("autocompleter", "on", "autocompletefocus", function(event, ui) {
                 $("li", $(event.originalEvent.target)).closest("li").removeClass("selected");

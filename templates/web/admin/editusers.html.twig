@@ -576,7 +576,7 @@
     $('div.tabs').tabs();
 
     $('#users_rights_form button#reset_rights').bind('click', function(){
-        if(confirm("{% trans'Are you sure you want to reset rights?' %}"))
+        if(confirm("{% trans 'Are you sure you want to reset rights?' %}"))
         {
           var users = $('#users_rights_form input[name="users"]').val();
 

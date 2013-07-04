@@ -29,7 +29,7 @@ require.config({
             deps: ['jquery', 'jqueryui'],
             exports: '$.fn.geocompleter'
         },
-        geonames: {
+        "common/geonames": {
             deps: ["jquery.geonames"]
         },
         multiselect: {
