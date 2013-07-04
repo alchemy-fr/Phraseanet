@@ -56,16 +56,6 @@ class XSendFileFactory
             $mapping = $conf['mapping'];
         }
 
-        $mapping[] = array(
-            'directory' => $app['root.path'] . '/tmp/download/',
-            'mount-point' => '/download/',
-        );
-
-        $mapping[] = array(
-            'directory' => $app['root.path'] . '/tmp/lazaret/',
-            'mount-point' => '/lazaret/',
-        );
-
         return new self($app['monolog'], $conf['enabled'], $conf['type'], $mapping);
     }
 
