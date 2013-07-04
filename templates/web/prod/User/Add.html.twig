@@ -1,103 +1,105 @@
 {# designed to be printed in a small box #}
 <div id="QuickAddUser" class="PNB10" callback="{{ callback }}">
-  <form method="POST" action="{{ path('prod_push_do_add_user') }}">
-    <table>
-      <tr>
-        <td>
-          <label for="">{% trans 'First Name' %} *</label>
-        </td>
-        <td>
-          <input name="firstname" type="text" value=""/>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="">{% trans 'Last Name' %} *</label>
-        </td>
-        <td>
-          <input name="lastname" type="text" value=""/>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="">{% trans 'Email Name' %} *</label>
-        </td>
-        <td>
-          <input name="email" type="text" value=""/>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="">{% trans 'Job' %}</label>
-        </td>
-        <td>
-          <input name="job" type="text" value=""/>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="">{% trans 'Company' %}</label>
-        </td>
-        <td>
-          <input name="company" type="text" value=""/>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="">{% trans 'City' %}</label>
-        </td>
-        <td>
-          <input name="city" type="text" value="" class="geoname_field"/>
-        </td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>
-          <button class="valid btn btn-inverse">{% trans 'Add' %}</button>
-          <button class="cancel btn btn-inverse">{% trans 'Cancel' %}</button>
-        </td>
-      </tr>
-    </table>
-  </form>
+    <form method="POST" action="{{ path('prod_push_do_add_user') }}">
+        <table>
+            <tr>
+                <td>
+                    <label for="">{% trans 'First Name' %} *</label>
+                </td>
+                <td>
+                    <input name="firstname" type="text" value=""/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">{% trans 'Last Name' %} *</label>
+                </td>
+                <td>
+                    <input name="lastname" type="text" value=""/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">{% trans 'Email Name' %} *</label>
+                </td>
+                <td>
+                    <input name="email" type="text" value=""/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">{% trans 'Job' %}</label>
+                </td>
+                <td>
+                    <input name="job" type="text" value=""/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">{% trans 'Company' %}</label>
+                </td>
+                <td>
+                    <input name="company" type="text" value=""/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">{% trans 'City' %}</label>
+                </td>
+                <td>
+                    <input name="city" type="text" value="" class="geoname_field"/>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button class="valid btn btn-inverse">{% trans 'Add' %}</button>
+                    <button class="cancel btn btn-inverse">{% trans 'Cancel' %}</button>
+                </td>
+            </tr>
+        </table>
+    </form>
 </div>
+
+<script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
 <script type="text/javascript">
-  $(document).ready(function(){
+    $(document).ready(function() {
+        geonames.init($('#QuickAddUser input.geoname_field'), {
+            "server": "{{ app['geonames.server-uri'] }}",
+            "limit": 40
+        });
 
-    $("#QuickAddUser button").button();
+        $("#QuickAddUser button").button();
 
-    $("#QuickAddUser form").bind('submit', function(){
-      return false;
+        $("#QuickAddUser form").bind('submit', function() {
+            return false;
+        });
+
+        $("#QuickAddUser form button.cancel").bind('click', function() {
+            var dialog = $(this).closest('.ui-dialog-content');
+            if (dialog.data("ui-dialog")) {
+                dialog.dialog('destroy');
+            }
+
+            dialog.remove();
+
+            return false;
+        });
+
+        $("#QuickAddUser form button.valid").bind('click', function() {
+            var $form = $(this).closest('form');
+            var $this = $(this);
+
+            var callback = function() {
+                var dialog = $this.closest('.ui-dialog-content');
+                if (dialog.data("ui-dialog")) {
+                    dialog.dialog('destroy').remove();
+                }
+            };
+
+            p4.Feedback.addUser($form, callback);
+
+            return false;
+        });
     });
-    $("#QuickAddUser form button.cancel").bind('click', function(){
-        var dialog = $(this).closest('.ui-dialog-content');
-        if (dialog.data("ui-dialog")) {
-            dialog.dialog('destroy');
-        }
-
-        dialog.remove();
-
-        return false;
-    });
-    $("#QuickAddUser form button.valid").bind('click', function(){
-
-      var $form = $(this).closest('form');
-      var $this = $(this);
-
-      var callback = function(){
-          var dialog = $this.closest('.ui-dialog-content');
-          if (dialog.data("ui-dialog")) {
-              dialog.dialog('destroy').remove();
-          }
-      };
-
-      p4.Feedback.addUser($form, callback);
-
-      return false;
-    });
-
-
-
-
-
-  });
-</script>
+    </script>

@@ -1,7 +1,4 @@
 function ini_edit_usrs(){
-
-  initialize_geoname_field($('#user_infos_tab input.geoname_field'));
-
   $('.users_col.options').bind('click', function(event){
     $('#users_check_uncheck').remove();
     event.stopPropagation();

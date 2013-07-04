@@ -12,8 +12,9 @@ require([
     "jquery",
     "i18n",
     "apps/login/home/common",
-    "common/forms/views/formType/passwordSetter"
-], function($, i18n, Common, RegisterForm) {
+    "common/forms/views/formType/passwordSetter",
+    "common/geonames"
+], function($, i18n, Common, RegisterForm, geonames) {
     var fieldsConfiguration = [];
 
     $.when.apply($, [
@@ -80,9 +81,29 @@ require([
                 }
             });
 
+            var $form = $("form[name=registerForm]");
+
             new RegisterForm({
-                el : $("form[name=registerForm]"),
+                el : $form,
                 rules: rules
+            });
+
+            var geocompleter = geonames.init($("#geonameid"), {
+                "server": $form.data("geonames-server-adress"),
+                "limit": 40,
+                "init-input": false
+            });
+
+            // Positioning menu below input
+            geocompleter.geocompleter("autocompleter", "option", "position", {
+                "of": geocompleter.closest(".input-table"),
+                "my": "left top",
+                "at": "left bottom"
+            });
+
+            // On open menu calculate max-width
+            geocompleter.geocompleter("autocompleter", "on", "autocompleteopen", function(event, ui) {
+                $(this).autocomplete("widget").css("min-width", geocompleter.closest(".input-table").outerWidth());
             });
         });
     });
