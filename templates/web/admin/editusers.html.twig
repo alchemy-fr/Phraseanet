@@ -1,5 +1,4 @@
 {% macro format_checkbox(admin, right, name, users, type) %}
-
     {% set id = right['base_id'] %}
     {% set class = 'base_id' %}
     {% if type == 'sbas' %}
@@ -30,7 +29,7 @@
       <div class="no_switch">
       </div>
     {% else %}
-      <div style="display:{{display}};" class="{{class}} switch_right {{sbas_class}} {{type}} {{type}}_{{id}} right_{{name}}">
+      <div style="display:{{display}}" class="{{class}} switch_right {{sbas_class}} {{type}} {{type}}_{{id}} right_{{name}}">
         <input class="{{class}}" name="{{name}}_{{id}}" value="" type="hidden"/>
        </div>
     {% endif %}
@@ -42,7 +41,7 @@
       <div class="no_switch">
       </div>
     {% else %}
-      <div style="display:{{display}};" class="{{class}} switch_right {{sbas_class}} {{type}} {{type}}_{{id}} right_{{name}}">
+      <div style="display:{{display}}" class="{{class}} switch_right {{sbas_class}} {{type}} {{type}}_{{id}} right_{{name}}">
         <input class="{{class}}" name="{{name}}_{{id}}" value="" type="hidden"/>
        </div>
     {% endif %}
@@ -91,14 +90,8 @@
     z-index:1500;
   }
 </style>
-<script type="text/javascript">
-  $(document).ready(function(){
-    ini_edit_usrs();
-    $('div.tabs').tabs();
-  });
-</script>
-<div>
 
+<div>
   <div class="tabs PNB" style="bottom:40px;">
     <ul>
       <li>
@@ -566,54 +559,60 @@
   </div>
   <div class="PNB10" style="top:auto;height:20px;">
     <button class="users_rights_valid btn">{% trans 'boutton::valider' %}</button>
-    <a href="{{ path('admin_users_search') }}" class="users_rights_cancel">{% trans 'boutton::retour' %}</a>
+    <a href="{{ path('admin_users_search') }}" class="users_rights_cancel btn" style="text-decoration:none">{% trans 'boutton::retour' %}</a>
   </div>
 </div>
 
-<script type='text/javascript'>
-$('#users_rights_form button#reset_rights').bind('click', function(){
-    if(confirm("{% trans'are you sure you want reset rights ?' %}"))
-    {
-      var users = $('#users_rights_form input[name="users"]').val();
+<script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    ini_edit_usrs();
 
-      $.ajax({
-        type: 'POST',
-        url: '/admin/users/rights/reset/',
-        dataType:'json',
-        data: {
-          users : users
-        },
-        success: function(data){
+    geonames.init($('#user_infos_tab input.geoname_field'), {
+        "server": "{{ app['geonames.server-uri'] }}",
+        "limit": 40
+    });
 
-          if(!data.error)
-          {
-            if(users === '')
-            {
-              return false;
-            }
+    $('div.tabs').tabs();
 
-            $('#right-ajax').empty().addClass('loading');
-            p4.users.sel = [];
-            $.ajax({
-              type: 'GET',
-              url: '/admin/users/rights/',
-              data: {
-                users : users
-              },
-              success: function(data){
-                $('#right-ajax').removeClass('loading').html(data);
+    $('#users_rights_form button#reset_rights').bind('click', function(){
+        if(confirm("{% trans 'Are you sure you want to reset rights?' %}"))
+        {
+          var users = $('#users_rights_form input[name="users"]').val();
+
+          $.ajax({
+            type: 'POST',
+            url: '/admin/users/rights/reset/',
+            dataType:'json',
+            data: {
+              users : users
+            },
+            success: function(data){
+              if(!data.error) {
+                if(users === '') {
+                  return false;
+                }
+
+                $('#right-ajax').empty().addClass('loading');
+                p4.users.sel = [];
+                $.ajax({
+                  type: 'GET',
+                  url: '/admin/users/rights/',
+                  data: {
+                    users : users
+                  },
+                  success: function(data){
+                    $('#right-ajax').removeClass('loading').html(data);
+                  }
+                });
+
+                return false;
+              } else {
+                alert(data.message);
               }
-            });
-
-            return false;
-          }
-          else
-          {
-            alert(data.message);
-          }
+            }
+          });
         }
       });
-    }
-  });
-
+    });
 </script>

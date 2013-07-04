@@ -17,12 +17,20 @@ require.config({
         backbone: "../assets/backbone-amd/backbone",
         i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
         bootstrap: "../skins/build/bootstrap/js/bootstrap.min",
-        multiselect: "../assets/bootstrap-multiselect/js/bootstrap-multiselect"
+        multiselect: "../assets/bootstrap-multiselect/js/bootstrap-multiselect",
+        "jquery.geonames": "../assets/geonames-server-jquery-plugin/jquery.geonames"
     },
     shim: {
         bootstrap : ["jquery"],
         jqueryui: {
             deps: ["jquery"]
+        },
+        "jquery.geonames" : {
+            deps: ['jquery', 'jqueryui'],
+            exports: '$.fn.geocompleter'
+        },
+        "common/geonames": {
+            deps: ["jquery.geonames"]
         },
         multiselect: {
             deps: ["jquery", "bootstrap"]

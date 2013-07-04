@@ -4,12 +4,21 @@
 
 {% set selected = "informations" %}
 
-{% block head %}
+{% block stylesheet %}
     <link rel="stylesheet" type="text/css" href="{{ path('minifier', { 'f' : 'skins/geonames/geonames.css' }) }}">
-    <script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/geonames/geonames.js' }) }}"></script>
+    {{ parent() }}
+{% endblock %}
 
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : '/skins/account/account.js,assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
     <script type="text/javascript">
-        initialize_geoname_field($("#form_geonameid"));
+        $(document).ready(function() {
+            geonames.init($("#form_geonameid"), {
+                "server": "{{ app['geonames.server-uri'] }}",
+                "limit": 40
+            });
+        });
     </script>
 {% endblock %}
 
@@ -17,7 +26,7 @@
     {% trans "login:: Mon compte" %}
 {% endblock %}
 
-{% block content %}
+{% block content_account %}
     <div class="row-fluid">
         <div class="span12">
             {{ auth_macro.flashes() }}

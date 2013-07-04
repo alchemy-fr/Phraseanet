@@ -13,6 +13,7 @@ $groups = array(
         '//assets/normalize-css/normalize.css',
         '//skins/build/login.css',
         '//assets/font-awesome/css/font-awesome.css',
+        '//assets/jquery.ui/themes/base/jquery.ui.autocomplete.css'
     ),
     'authentication' => array(
         '//assets/modernizr/modernizr.js',
@@ -22,7 +23,6 @@ $groups = array(
     'client' => array(
         '//include/jslibs/swfobject/swfobject.js'
         , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
-        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//include/jslibs/json2.js'
@@ -44,7 +44,6 @@ $groups = array(
         , '//skins/admin/users.js'
         , '//skins/admin/editusers.js'
         , '//include/jquery.common.js'
-        , '//skins/geonames/geonames.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//assets/blueimp-load-image/js/load-image.js'
@@ -80,7 +79,6 @@ $groups = array(
         , '//assets/blueimp-load-image/js/load-image.js'
         , '//assets/jquery-file-upload/js/jquery.iframe-transport.js'
         , '//assets/jquery-file-upload/js/jquery.fileupload.js'
-        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery.form.2.49.js'
         , '//include/jslibs/jquery.vertical.buttonset.js'
         , '//include/js/jquery.Selection.js'
@@ -120,7 +118,6 @@ $groups = array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
-        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
@@ -132,7 +129,6 @@ $groups = array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
-        , '//skins/geonames/geonames.js'
         , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
