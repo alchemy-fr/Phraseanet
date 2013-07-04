@@ -425,7 +425,6 @@ class API_V1_adapter extends API_V1_Abstract
                 'binary'  => array(
                     'phpCli'            => isset($binaries['php_binary']) ? $binaries['php_binary'] : null,
                     'phpIni'            => $app['phraseanet.registry']->get('GV_PHP_INI'),
-                    'imagick'           => $app['phraseanet.registry']->get('convert_binary'),
                     'swfExtract'        => isset($binaries['swf_extract_binary']) ? $binaries['swf_extract_binary'] : null,
                     'pdf2swf'           => isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : null,
                     'swfRender'         => isset($binaries['swf_render_binary']) ? $binaries['swf_render_binary'] : null,

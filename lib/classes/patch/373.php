@@ -78,8 +78,6 @@ class patch_373 implements patchInterface
 
         $mapping = array(
             'GV_cli'           => 'php_binary',
-            'GV_imagick'       => 'convert_binary',
-            'GV_pathcomposite' => 'composite_binary',
             'GV_swf_extract'   => 'swf_extract_binary',
             'GV_pdf2swf'       => 'pdf2swf_binary',
             'GV_swf_render'    => 'swf_render_binary',
