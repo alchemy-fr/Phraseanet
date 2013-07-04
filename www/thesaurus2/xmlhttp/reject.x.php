@@ -49,7 +49,7 @@ if ($parm["bid"] !== null) {
         $databox = databox::get_instance((int) $parm['bid']);
         $connbas = connection::getPDOConnection($parm['bid']);
 
-        $dom = $databox->get_cterms();
+        $dom = $databox->get_dom_cterms();
 
         if ($dom) {
             $xpath = new DOMXPath($dom);
