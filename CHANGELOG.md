@@ -39,6 +39,13 @@
   - User time limit restrictions can now be set per databox.
   - Add gzip/bzip2 options for DBs backup commandline tool.
 
+* 3.7.13 (2013-07-04)
+
+  - Some users were able to access story creation form whereas they were not allowed to.
+  - Disable detailed view keyboard shortcuts when export modal is open.
+  - Update to PHP-FFMpeg 0.2.4, better support for video resizing.
+  - BugFix : Unablt to reject a thesaurus term from thesaurus module.
+
 * 3.7.12 (2013-05-13)
 
   - Fix : Removed "required" attribute on non-required fields in order form.
