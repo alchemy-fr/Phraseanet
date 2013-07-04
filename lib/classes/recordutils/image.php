@@ -36,8 +36,9 @@ class recordutils_image extends recordutils
 
         $xmlToColor = function($attr, $ret = array(255, 255, 255, 0)) use ($palette) {
             foreach (explode(',', $attr) as $i => $v) {
-                if ($i > 3)
+                if ($i > 3) {
                     break;
+                }
                 $v = (int) (trim($v));
                 if ($v >= 0 && ($v <= 100 || ($i < 3 && $v < 256))) {
                     $ret[$i] = $v;
@@ -164,8 +165,9 @@ class recordutils_image extends recordutils
                 $n = $vars->item($i);
                 switch (strtoupper($n->getAttribute('name'))) {
                     case 'DATE':
-                        if (!($format = $n->getAttribute('format')))
+                        if (!($format = $n->getAttribute('format'))) {
                             $format = 'Y/m/d H:i:s';
+                        }
                         $varval = date($format);
                         @unlink($pathOut);  // no cache possible when date changes
                         break;
@@ -473,7 +475,7 @@ class recordutils_image extends recordutils
      * @param  string $fontFace
      * @param  string $string
      * @param  int    $width
-     * @return Array
+     * @return array
      */
     protected static function wrap(ImagineInterface $imagine, $fontSize, $angle, $fontFace, $string, $width)
     {
