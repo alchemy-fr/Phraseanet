@@ -18,8 +18,7 @@ require.config({
         i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
         bootstrap: "../skins/build/bootstrap/js/bootstrap.min",
         multiselect: "../assets/bootstrap-multiselect/js/bootstrap-multiselect",
-        "jquery.geonames": "../assets/geonames-server-jquery-plugin/jquery.geonames",
-        geonames: "../skins/geonames/geonames"
+        "jquery.geonames": "../assets/geonames-server-jquery-plugin/jquery.geonames"
     },
     shim: {
         bootstrap : ["jquery"],

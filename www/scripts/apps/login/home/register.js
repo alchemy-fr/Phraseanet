@@ -13,7 +13,7 @@ require([
     "i18n",
     "apps/login/home/common",
     "common/forms/views/formType/passwordSetter",
-    "geonames"
+    "common/geonames"
 ], function($, i18n, Common, RegisterForm, geonames) {
     var fieldsConfiguration = [];
 

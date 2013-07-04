@@ -61,11 +61,11 @@
     </form>
 </div>
 
-<script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,skins/geonames/geonames.js' }) }}"></script>
+<script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         geonames.init($('#QuickAddUser input.geoname_field'), {
-            "server": "{{ app['phraseanet.registry'].get('GV_i18n_service') }}",
+            "server": "{{ app['geonames.server-uri'] }}",
             "limit": 40
         });
 

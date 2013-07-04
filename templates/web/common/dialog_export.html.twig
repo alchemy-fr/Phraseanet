@@ -63,7 +63,7 @@
 {% macro choose_title(id, choose_export_title, default_export_title)%}
     <div class="buttons_line" style="display:{% if choose_export_title %}{% else %}none{% endif %}; text-align: left;">
         <p>{% trans 'Nom des fichiers a l\'export'%}</p>
-        <div classe="well-small">
+        <div class="well-small">
             <label for="type_{{id}}_original" class="radio">
                 <input type="radio" name="type" id="type_{{id}}_original" {% if default_export_title == "title" %}checked{% endif %} value="title" />
                 {% trans 'export::titre: titre du documument' %}
@@ -498,7 +498,7 @@
         {% endif %}
     </div>
 
-    <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,skins/geonames/geonames.js' }) }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
     <script type="text/javascript">
 
         function check_TOU(container)
@@ -615,7 +615,7 @@
             });
 
             geonames.init($('#command_geoname_field'), {
-                "server": "{{ app['phraseanet.registry'].get('GV_i18n_service') }}",
+                "server": "{{ app['geonames.server-uri'] }}",
                 "limit": 40
             });
 

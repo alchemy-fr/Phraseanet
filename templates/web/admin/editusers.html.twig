@@ -563,20 +563,20 @@
   </div>
 </div>
 
-<script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,skins/geonames/geonames.js' }) }}"></script>
+<script type="text/javascript" language="javascript" src="{{ path('minifier', { 'f' : 'assets/geonames-server-jquery-plugin/jquery.geonames.js,scripts/common/geonames.js' }) }}"></script>
 <script type="text/javascript">
   $(document).ready(function(){
     ini_edit_usrs();
 
     geonames.init($('#user_infos_tab input.geoname_field'), {
-        "server": "{{ app['phraseanet.registry'].get('GV_i18n_service') }}",
+        "server": "{{ app['geonames.server-uri'] }}",
         "limit": 40
     });
 
     $('div.tabs').tabs();
 
     $('#users_rights_form button#reset_rights').bind('click', function(){
-        if(confirm("{% trans'are you sure you want reset rights ?' %}"))
+        if(confirm("{% trans'Are you sure you want to reset rights?' %}"))
         {
           var users = $('#users_rights_form input[name="users"]').val();
 
