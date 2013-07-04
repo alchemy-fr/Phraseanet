@@ -58,48 +58,6 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
             );
         }
 
-        $convert = isset($binaries['convert_binary']) ? $binaries['convert_binary'] : $finder->find('convert');
-
-        $this->addRequirement(
-            null !== $convert && is_executable($convert),
-            'ImageMagick Convert is required',
-            'Please install ImageMagick'
-        );
-
-        if (null !== $convert) {
-            $output = null;
-            exec($convert . ' --version', $output);
-            $data = sscanf($output[0], 'Version: ImageMagick %d.%d.%d');
-            $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
-
-            $this->addRequirement(
-                version_compare(static::IMAGICK_VERSION, $version, '<'),
-                sprintf('Convert version %s or higher is required (%s provided)', static::IMAGICK_VERSION, $version),
-                'Please update to a more recent version'
-            );
-        }
-
-        $composite = isset($binaries['composite_binary']) ? $binaries['composite_binary'] : $finder->find('composite');
-
-        $this->addRequirement(
-            null !== $composite && is_executable($composite),
-            'ImageMagick Composite is required',
-            'Please install ImageMagick'
-        );
-
-        if (null !== $composite) {
-            $output = null;
-            exec($composite . ' --version', $output);
-            $data = sscanf($output[0], 'Version: ImageMagick %d.%d.%d');
-            $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
-
-            $this->addRequirement(
-                version_compare(static::IMAGICK_VERSION, $version, '<'),
-                sprintf('Composite version %s or higher is required (%s provided)', static::IMAGICK_VERSION, $version),
-                'Please update to a more recent version.'
-            );
-        }
-
         $exiftool = __DIR__ . '/../../../../../vendor/phpexiftool/exiftool/exiftool' . (defined('PHP_WINDOWS_VERSION_BUILD') ? '.exe' : '');
 
         $this->addRequirement(

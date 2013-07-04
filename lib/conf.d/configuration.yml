@@ -33,8 +33,6 @@ debugger:
 binaries:
     ghostscript_binary: null
     php_binary: null
-    convert_binary: null
-    composite_binary: null
     swf_extract_binary: null
     pdf2swf_binary: null
     swf_render_binary: null
