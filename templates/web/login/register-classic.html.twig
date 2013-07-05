@@ -79,7 +79,7 @@
 
                     {{ form_rest(form) }}
 
-                    {% if recaptcha_display %}
+                    {% if app.isCaptchaRequired() %}
                         <div class="row-fluid">
                             <div class="span12">
                                 {{ macro.captcha() }}
