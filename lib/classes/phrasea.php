@@ -87,17 +87,6 @@ class phrasea
         return self::$_sbas_params;
     }
 
-    public static function guest_allowed(Application $app)
-    {
-        $usr_id = User_Adapter::get_usr_id_from_login($app, 'invite');
-        if (!$usr_id) {
-            return false;
-        }
-        $user = User_Adapter::getInstance($usr_id, $app);
-
-        return count($user->ACL()->get_granted_base()) > 0;
-    }
-
     public static function use_i18n($locale, $textdomain = 'phraseanet')
     {
         $codeset = "UTF-8";

@@ -110,8 +110,8 @@
     </div>
     {% endif %}
 
-    {% include "login/include/register-link-block.html.twig" with {"login" : login, "last_item" : app['registration.enabled'] and not guest_allowed} %}
-    {% include "login/include/guest-access-block.html.twig" with {"guest_allowed" : guest_allowed, "last_item" : guest_allowed} %}
+    {% include "login/include/register-link-block.html.twig" %}
+    {% include "login/include/guest-access-block.html.twig" %}
 {% endblock %}
 
 {% block left_content %}

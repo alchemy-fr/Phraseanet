@@ -704,7 +704,6 @@ class Login implements ControllerProviderInterface
             'unlock_usr_id'     => $app->getUnlockAccountData(),
             'login'             => new \login(),
             'feeds'             => $feeds,
-            'guest_allowed'     => \phrasea::guest_allowed($app),
             'form'              => $form->createView(),
         ));
     }
@@ -732,7 +731,7 @@ class Login implements ControllerProviderInterface
 
     public function authenticateAsGuest(PhraseaApplication $app, Request $request)
     {
-        if (!\phrasea::guest_allowed($app)) {
+        if (!$app->isGuestAllowed()) {
             $app->abort(403, _('Phraseanet guest-access is disabled'));
         }
 

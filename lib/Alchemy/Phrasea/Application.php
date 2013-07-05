@@ -682,6 +682,17 @@ class Application extends SilexApplication
         return false;
     }
 
+    public function isGuestAllowed()
+    {
+        $usrId = \User_Adapter::get_usr_id_from_login($this, 'invite');
+
+        if (!$usrId) {
+            return false;
+        }
+
+        return count(\User_Adapter::getInstance($usrId, $this)->ACL()->get_granted_base()) > 0;
+    }
+
     /**
      * Returns an an array of available collection for offline queries
      *
