@@ -8,15 +8,17 @@
 <!--<![endif]-->
     <head>
         {% block header %}
-            <meta charset="utf-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
             <title>{% block title %}Phraseanet{% endblock title %}</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-            <meta content="{{ app['phraseanet.registry'].get('GV_metaDescription') }}" name="description"/>
-            <meta http-equiv="X-UA-Compatible" content="chrome=1">
-            <meta content="{{ app['phraseanet.registry'].get('GV_metaKeywords') }}" name="keywords"/>
-            <meta content="phraseanet" name="generator"/>
+            {% block header_meta %}
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <meta content="{{ app['phraseanet.registry'].get('GV_metaDescription') }}" name="description"/>
+                <meta http-equiv="X-UA-Compatible" content="chrome=1">
+                <meta content="{{ app['phraseanet.registry'].get('GV_metaKeywords') }}" name="keywords"/>
+                <meta content="phraseanet" name="generator"/>
+            {% endblock header_meta %}
 
             {% block header_rss %}{% endblock %}
 
@@ -45,15 +47,21 @@
         {% endblock header %}
     </head>
     <body>
-        {% if app['phraseanet.registry'].get('GV_display_gcf') %}
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]-->
-        {% endif %}
-        <div class="container">
-            {% block content_scaffholding %}
+        {% block google_chrome_frame %}
+            {% if app['phraseanet.registry'].get('GV_display_gcf') %}
+                <!--[if lt IE 7]>
+                    {% set browserLink = "<a href='http://browsehappy.com/'>" ~ app['browser'].getBrowser() ~ "</a>"|raw %}
+                    {% set GCFLink = "<a href='http://www.google.com/chromeframe/?redirect=true'>Google Chrome Frame</a>"|raw %}
+                    <p class="alert alert-warning text-center">
+                        <strong>{% trans %}You are using an outdated browser.{% endtrans %}</strong>
+                        {% trans %}Please upgrade {{ browserLink }} or activate {{ GCFLink }} to improve your experience.{% endtrans %}
+                    </p>
+                <![endif]-->
+            {% endif %}
+        {% endblock google_chrome_frame %}
 
-            {% endblock %}
+        <div class="container full-height">
+            {% block content_scaffholding %}{% endblock %}
             {% block footer_scaffholding %}
                 <div class="row-fluid">
                    <div class="span12">
@@ -99,7 +107,6 @@
             {% endblock footer_scaffholding %}
         </div><!--/.fluid-container-->
         {% include 'common/analytics.html.twig' %}
-
-        {% block scripts %}{% endblock %}
+        {% block scripts %}{% endblock scripts %}
     </body>
 </html>
