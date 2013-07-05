@@ -699,7 +699,6 @@ class Login implements ControllerProviderInterface
         return $app['twig']->render('login/index.html.twig', array(
             'module_name'       => _('Accueil'),
             'redirect'          => ltrim($request->query->get('redirect'), '/'),
-            'unlock_usr_id'     => $app->getUnlockAccountData(),
             'login'             => new \login(),
             'feeds'             => $feeds,
             'form'              => $form->createView(),
