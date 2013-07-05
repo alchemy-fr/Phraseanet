@@ -693,7 +693,7 @@ class Application extends SilexApplication
         return count(\User_Adapter::getInstance($usrId, $this)->ACL()->get_granted_base()) > 0;
     }
 
-    public function hasTermsOfUse()
+    public function hasLoginTermsOfUse()
     {
         return '' !== \databox_cgu::getHome($this);
     }
