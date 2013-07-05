@@ -67,7 +67,7 @@ class Manifest
 
     public function getServices()
     {
-        return $this->get('services');
+        return $this->get('services') ? : array();
     }
 
     public function getCommands()
