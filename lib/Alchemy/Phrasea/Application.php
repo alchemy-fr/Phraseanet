@@ -693,6 +693,11 @@ class Application extends SilexApplication
         return count(\User_Adapter::getInstance($usrId, $this)->ACL()->get_granted_base()) > 0;
     }
 
+    public function hasTermsOfUse()
+    {
+        return '' !== \databox_cgu::getHome($this);
+    }
+
     /**
      * Returns an an array of available collection for offline queries
      *

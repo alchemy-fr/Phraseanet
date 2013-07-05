@@ -78,7 +78,7 @@
                                                    <li>
                                                       <a href="#">{% trans "Help" %}</a>
                                                    </li>
-                                                   {% if login.get_cgus(app) is not empty %}
+                                                   {% if app.hasTermsOfUse() %}
                                                        <li>
                                                            {% block tou_link %}
                                                                <a href="{{ path("login_cgus") }}">{% trans "Terms of use" %}</a>
