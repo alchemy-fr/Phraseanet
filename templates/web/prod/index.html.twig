@@ -280,9 +280,9 @@
                     <form id="searchForm" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <div class="input-append">
                             <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}">
-                            <button href="#" class="btn btn-inverse adv_trigger adv_search_button">
+                            <a href="#" class="btn btn-inverse adv_trigger adv_search_button">
                                 <img src="/skins/icons/settings.png" title="{% trans 'Advanced Search' %}"/>
-                            </button>
+                            </a>
                             <button type="submit" class="btn btn-inverse" style="font-size:14px">{% trans 'boutton::rechercher' %}</button>
                         </div>
                         <div class="control-group" style="margin:5px;">
