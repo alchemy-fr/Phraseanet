@@ -9,7 +9,7 @@
     {% trans 'status:: numero de bit' %} {{ app['request'].get('bit') }}
 </h1>
 
-<form id="fileupload" class="form-horizontal" enctype="multipart/form-data" method="post" action="{{ path('database_submit_statusbit', { 'databox_id' : app['request'].get('databox_id'), 'bit' : app['request'].get('bit') }) }}">
+<form id="fileupload" class="form-horizontal" target="_self" enctype="multipart/form-data" method="post" action="{{ path('database_submit_statusbit', { 'databox_id' : app['request'].get('databox_id'), 'bit' : app['request'].get('bit') }) }}">
     <div class="row-fluid">
         <div class="span12 well">
             <span class="label">{% trans'admin::status: case A'%}</span>
@@ -18,7 +18,7 @@
                     {% trans'admin::status: texte a afficher'%}
                 </label>
                 <div class="controls">
-                    <input id="label_off" name="label_off" class="input-xlarge" type="text" value="{{ status['labels_off_i18n'][app['locale.I18n']]|default('') }}">
+                    <input id="label_off" name="label_off" class="input-xlarge" type="text" value="{{ status['labeloff'] }}">
                 </div>
             </div>
             <div class="row-fluid">
@@ -77,7 +77,7 @@
                     {% trans'admin::status: texte a afficher'%}
                 </label>
                 <div class="controls">
-                    <input id="label_on" name="label_on" class="input-xlarge" type="text" value="{{ status['labels_on_i18n'][app['locale.I18n']]|default('') }}">
+                    <input id="label_on" name="label_on" class="input-xlarge" type="text" value="{{ status['labelon'] }}">
                 </div>
             </div>
             <div class="row-fluid">
@@ -146,7 +146,7 @@
                 <button id="form_submitter" class="btn btn-primary" type="button">
                     {% trans 'boutton::valider' %}
                 </button>
-                <a style='text-decoration:none;' class="btn" href="{{ path('database_display_statusbit', { 'databox_id' : app['request'].get('databox_id') }) }}">
+                <a style='text-decoration:none;' target='right' class="btn" href="{{ path('database_display_statusbit', { 'databox_id' : app['request'].get('databox_id') }) }}">
                     {% trans 'boutton::retour' %}
                 </a>
             </div>
@@ -180,7 +180,7 @@ $(document).ready(function(){
                     maxWidth: 16,
                     maxHeight: 16,
                     minWidth: 16,
-                    minHeight: 16,
+                    minHeight: 16
                 });
             });
 
