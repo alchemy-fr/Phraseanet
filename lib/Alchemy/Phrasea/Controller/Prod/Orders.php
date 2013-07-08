@@ -357,7 +357,6 @@ class Orders implements ControllerProviderInterface
 
         try {
             if ($n > 0) {
-
                 $order->setTodo($order->getTodo() - $n);
                 $app['EM']->persist($order);
                 $app['EM']->flush();
@@ -403,7 +402,6 @@ class Orders implements ControllerProviderInterface
     {
         $success = false;
         $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
-        $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
         if (null === $order) {
             throw new NotFoundHttpException('Order not found');
         }
@@ -411,7 +409,6 @@ class Orders implements ControllerProviderInterface
         $n = 0;
         foreach ($order->getElements() as $orderElement) {
             if (in_array($orderElement->getId(), $request->request->get('elements', array()))) {
-
                 $orderElement->setOrderMasterId($app['authentication']->getUser()->get_id());
                 $orderElement->setDeny(true);
 
@@ -424,7 +421,6 @@ class Orders implements ControllerProviderInterface
 
         try {
             if ($n > 0) {
-
                 $order->setTodo($order->getTodo() - $n);
                 $app['EM']->persist($order);
                 $app['EM']->flush();

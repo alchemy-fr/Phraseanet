@@ -57,7 +57,6 @@ class OrderRepository extends EntityRepository
      *
      * @return integer
      */
-
     public function countTotalOrders(array $baseIds = array())
     {
         $dql = 'SELECT distinct o.id
