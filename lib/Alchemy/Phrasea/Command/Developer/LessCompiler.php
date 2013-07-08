@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Utilities\Compiler\RecessLessCompiler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ProcessBuilder;
@@ -22,11 +23,16 @@ use Symfony\Component\Process\ProcessBuilder;
  */
 class LessCompiler extends Command
 {
-    public function __construct()
+    private $recessLessCompiler;
+
+    public function __construct($recessLessCompiler = null)
     {
         parent::__construct('assets:compile-less');
 
         $this->setDescription('Compile less files');
+
+
+        $this->recessLessCompiler = $recessLessCompiler ?: new RecessLessCompiler();
     }
 
     /**
@@ -45,31 +51,16 @@ class LessCompiler extends Command
 
         $failures = 0;
         $errors = array();
-        foreach ($files as $lessFile => $buildFile) {
-            $this->container['filesystem']->mkdir(dirname($buildFile));
+        foreach ($files as $lessFile => $target) {
+            $this->container['filesystem']->mkdir(dirname($target));
             $output->writeln(sprintf('Building %s', basename($lessFile)));
 
-            if (!is_file($lessFile)) {
-                throw new RuntimeException(realpath($lessFile) . ' does not exists.');
-            }
-
-            if (!is_writable(dirname($buildFile))) {
-                throw new RuntimeException(realpath(dirname($buildFile)) . ' is not writable.');
-            }
-
-            $builder = ProcessBuilder::create(array(
-                'recess',
-                '--compile',
-                $lessFile,
-            ));
-            $process = $builder->getProcess();
-            $process->run();
-
-            if (!$process->isSuccessful()) {
+            try {
+                $this->recessLessCompiler->compile($target, $lessFile);
+            } catch (\Exception $e) {
                 $failures++;
-                $errors[] = $process->getErrorOutput();
+                $errors[] = $e->getMessage();
             }
-            file_put_contents($buildFile, $process->getOutput());
         }
 
         $copies = array(
