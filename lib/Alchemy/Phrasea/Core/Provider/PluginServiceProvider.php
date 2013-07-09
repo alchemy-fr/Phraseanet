@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Plugin\Importer\Importer;
 use Alchemy\Phrasea\Plugin\Importer\ImportStrategy;
 use Alchemy\Phrasea\Plugin\Importer\FolderImporter;
 use Alchemy\Phrasea\Plugin\Management\AutoloaderGenerator;
+use Alchemy\Phrasea\Plugin\Management\AssetsManager;
 use Guzzle\Http\Client as Guzzle;
 use JsonSchema\Validator as JsonValidator;
 use Symfony\Component\Process\ExecutableFinder;
@@ -50,6 +51,10 @@ class PluginServiceProvider implements ServiceProviderInterface
 
         $app['plugins.autoloader-generator'] = $app->share(function (Application $app) {
             return new AutoloaderGenerator($app['plugins.directory']);
+        });
+
+        $app['plugins.assets-manager'] = $app->share(function (Application $app) {
+            return new AssetsManager($app['filesystem'], $app['plugins.directory'], $app['root.path']);
         });
 
         $app['plugins.guzzle'] = $app->share(function (Application $app) {
@@ -84,5 +89,13 @@ class PluginServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
+        $app['twig'] = $app->share(
+            $app->extend('twig', function($twig, Application $app){
+                $function = new \Twig_SimpleFunction('plugin_asset', array('Alchemy\Phrasea\Plugin\Management\AssetsManager', 'twigPluginAsset'));
+                $twig->addFunction($function);
+
+                return $twig;
+            })
+        );
     }
 }

@@ -64,6 +64,11 @@ class PluginServiceProvidertest extends ServiceProviderTestCase
                 'plugins.importer.folder-importer',
                 'Alchemy\Phrasea\Plugin\Importer\FolderImporter'
             ),
+            array(
+                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
+                'plugins.assets-manager',
+                'Alchemy\Phrasea\Plugin\Management\AssetsManager'
+            )
         );
     }
 
