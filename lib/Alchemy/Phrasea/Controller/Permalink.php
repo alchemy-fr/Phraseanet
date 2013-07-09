@@ -78,7 +78,7 @@ class Permalink extends AbstractDelivery
                 }
                 $response = $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
 
-                $linkToCaption = $app->path("permalinks_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
+                $linkToCaption = $app->url("permalinks_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
                 $response->headers->set('Link', $linkToCaption);
 
                 return $response;
@@ -100,7 +100,7 @@ class Permalink extends AbstractDelivery
 
             $response = $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
 
-            $linkToCaption = $app->path("permalinks_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
+            $linkToCaption = $app->url("permalinks_caption", array('sbas_id' => $sbas_id, 'record_id' => $record_id, 'token' => $token));
             $response->headers->set('Link', $linkToCaption);
 
             return $response;
