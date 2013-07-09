@@ -1,5 +1,5 @@
 {
-    "name": "test-plugin",
+    "name": "TestPlugin",
     "description" : "A custom class connector",
     "keywords"    : ["connector"],
     "authors" : [
@@ -14,7 +14,6 @@
     "version"     : "0.1",
     "minimum-phraseanet-version": "3.8",
     "maximum-phraseanet-version": "3.9",
-    "twig-paths" : ["twig-views"],
     "services" : [
         {
             "class": "Vendor\\PluginService"

@@ -11,7 +11,7 @@ class ManifestTest extends \PHPUnit_Framework_TestCase
         $data = json_decode(file_get_contents(__DIR__ . '/../Fixtures/PluginDir/TestPlugin/manifest.json'), true);
         $manifest = new Manifest($data);
 
-        $this->assertEquals('TestPlugin', $manifest->getName());
+        $this->assertEquals('test-plugin', $manifest->getName());
         $this->assertEquals('A custom class connector', $manifest->getDescription());
         $this->assertEquals(array('connector'), $manifest->getKeywords());
         $this->assertEquals(array(array(

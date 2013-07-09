@@ -51,7 +51,7 @@ class ManifestValidator
             throw new JsonValidationException('Manifest file does not match the expected JSON schema', $errors);
         }
 
-        if (!preg_match('/^[a-z0-9-_]+$/i', $data->name)) {
+        if (!preg_match('/^[a-z0-9-_]+$/', $data->name)) {
             throw new JsonValidationException('Does not match the expected JSON schema', array('"name" must not contains only alphanumeric caracters'));
         }
 
