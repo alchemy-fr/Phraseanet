@@ -12,11 +12,9 @@
 namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
-use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Utilities\Compiler\RecessLessCompiler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * This command builds less file
@@ -40,29 +38,6 @@ class LessCompiler extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $files = array(
-            $this->container['root.path'] . '/www/skins/login/less/login.less' => $this->container['root.path'] . '/www/skins/build/login.css',
-            $this->container['root.path'] . '/www/skins/account/account.less' => $this->container['root.path'] . '/www/skins/build/account.css',
-            $this->container['root.path'] . '/www/assets/bootstrap/less/bootstrap.less' => $this->container['root.path'] . '/www/skins/build/bootstrap/css/bootstrap.css',
-            $this->container['root.path'] . '/www/assets/bootstrap/less/responsive.less' => $this->container['root.path'] . '/www/skins/build/bootstrap/css/bootstrap-responsive.css',
-        );
-
-        $output->writeln('Building Assets...');
-
-        $failures = 0;
-        $errors = array();
-        foreach ($files as $lessFile => $target) {
-            $this->container['filesystem']->mkdir(dirname($target));
-            $output->writeln(sprintf('Building %s', basename($lessFile)));
-
-            try {
-                $this->recessLessCompiler->compile($target, $lessFile);
-            } catch (\Exception $e) {
-                $failures++;
-                $errors[] = $e->getMessage();
-            }
-        }
-
         $copies = array(
             $this->container['root.path'] . '/www/assets/bootstrap/img/glyphicons-halflings-white.png' => $this->container['root.path'] . '/www/skins/build/bootstrap/img/glyphicons-halflings-white.png',
             $this->container['root.path'] . '/www/assets/bootstrap/img/glyphicons-halflings.png' => $this->container['root.path'] . '/www/skins/build/bootstrap/img/glyphicons-halflings.png',
@@ -73,14 +48,23 @@ class LessCompiler extends Command
             $this->container['filesystem']->copy($source, $target);
         }
 
-        if (0 === $failures) {
-            $output->writeln('<info>Build done !</info>');
+        $files = array(
+            $this->container['root.path'] . '/www/skins/login/less/login.less' => $this->container['root.path'] . '/www/skins/build/login.css',
+            $this->container['root.path'] . '/www/skins/account/account.less' => $this->container['root.path'] . '/www/skins/build/account.css',
+            $this->container['root.path'] . '/www/assets/bootstrap/less/bootstrap.less' => $this->container['root.path'] . '/www/skins/build/bootstrap/css/bootstrap.css',
+            $this->container['root.path'] . '/www/assets/bootstrap/less/responsive.less' => $this->container['root.path'] . '/www/skins/build/bootstrap/css/bootstrap-responsive.css',
+        );
 
-            return 0;
+        $output->writeln('Building Assets...');
+
+        if (false === $this->container['phraseanet.less-builder']->build($files)) {
+            $output->writeln(sprintf('<error>Errors occured during the build %s</error>', implode(', ', $this->container['phraseanet.less-builder']->getErrors())));
+
+            return 1;
         }
 
-        $output->writeln(sprintf('<error>%d errors occured during the build %s</error>', $failures, implode(', ', $errors)));
+        $output->writeln('<info>Build done !</info>');
 
-        return 1;
+        return 0;
     }
 }
