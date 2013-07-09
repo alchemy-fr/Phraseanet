@@ -77,7 +77,6 @@ abstract class AbstractDelivery implements ControllerProviderInterface
             }
         }
 
-        $response->headers->addCacheControlDirective('must-revalidate', true);
         $response->isNotModified($request);
 
         return $response;
