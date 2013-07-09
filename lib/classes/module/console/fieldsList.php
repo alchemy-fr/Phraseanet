@@ -26,7 +26,7 @@ class module_console_fieldsList extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('List all databox fields');
+        $this->setDescription('List all databoxes fields');
 
         return $this;
     }
