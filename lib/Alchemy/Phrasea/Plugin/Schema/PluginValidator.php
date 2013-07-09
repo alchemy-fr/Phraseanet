@@ -47,7 +47,7 @@ class PluginValidator
         $manifest = new Manifest($this->objectToArray($data));
 
         foreach ($manifest->getTwigPaths() as $path) {
-            $this->ensureDir($directory . DIRECTORY_SEPARATOR . $path, 'Missing template directory %s');
+            $this->ensureDirIn($directory . DIRECTORY_SEPARATOR . $path, $directory);
         }
 
         return $manifest;
@@ -69,6 +69,15 @@ class PluginValidator
     {
         if (!file_exists($dir) || !is_dir($dir) || !is_readable($dir)) {
             throw new PluginValidationException(sprintf($message, $dir));
+        }
+    }
+
+    private function ensureDirIn($dir, $in, $message = 'Invalid twig-path declaration ; directory %s is not a subdir of %s')
+    {
+        $this->ensureDir($dir);
+
+        if (0 !== strpos(realpath($dir), realpath($in))) {
+            throw new PluginValidationException(sprintf($message, $dir, $in));
         }
     }
 

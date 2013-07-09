@@ -40,6 +40,7 @@ class PluginValidatorTest extends PluginTestCase
             array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginMissingComposer'),
             array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginMissingManifest'),
             array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidName'),
+            array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidTwigPath'),
             array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginNoPublicDirectory'),
             array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidTwigPathMapping'),
             array(__DIR__ . '/../Fixtures/WrongPlugins/TestPluginWrongManifest'),
