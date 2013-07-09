@@ -115,7 +115,7 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayCaption(Application $app, $sbas_id, $record_id, $context)
     {
-        $number = (int) $app['request']->request->get('number');
+        $number = (int) $app['request']->get('number');
         $record = new \record_adapter($app, $sbas_id, $record_id, $number);
 
         $search_engine = $app['phraseanet.SE'];

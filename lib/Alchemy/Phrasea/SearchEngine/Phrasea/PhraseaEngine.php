@@ -595,8 +595,9 @@ class PhraseaEngine implements SearchEngineInterface
         $this->initialize();
         $this->checkSession();
 
+        $offset = $record->get_number() + 1;
         $res = phrasea_fetch_results(
-            $this->app['session']->get('phrasea_session_id'), 1, 20, true, "[[em]]", "[[/em]]"
+            $this->app['session']->get('phrasea_session_id'), $offset, 1, true, "[[em]]", "[[/em]]"
         );
 
         if (!isset($res['results']) || !is_array($res['results'])) {
