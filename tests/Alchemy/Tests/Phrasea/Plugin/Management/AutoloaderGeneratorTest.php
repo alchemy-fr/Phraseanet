@@ -63,7 +63,7 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Vendor\CustomCommand', $cli['console']->find('hello:world'));
 
         $mapping = require $pluginsDir . '/twig-paths.php';
-        $this->assertSame(array('TestPlugin' => $pluginsDir . '/TestPlugin/views', $pluginsDir . '/TestPlugin/views', $pluginsDir . '/TestPlugin/twig-views'), $mapping);
+        $this->assertSame(array('plugin-TestPlugin' => $pluginsDir . '/TestPlugin/views', $pluginsDir . '/TestPlugin/views', $pluginsDir . '/TestPlugin/twig-views'), $mapping);
 
         $this->cleanup($files);
     }

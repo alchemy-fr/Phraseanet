@@ -153,13 +153,13 @@ return array(
 EOF;
 
         foreach ($manifests as $manifest) {
-            $name = $this->quote($manifest->getName());
+            $namespace = $this->quote('plugin-' . $manifest->getName());
             $path = $this->pluginDirectory . DIRECTORY_SEPARATOR . $manifest->getName() . DIRECTORY_SEPARATOR . 'views';
 
             if (is_dir($path)) {
                 $path = $this->quote($path);
                 $buffer .= <<<EOF
-    $name => $path,
+    $namespace => $path,
 EOF;
             }
 
