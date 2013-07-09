@@ -19,7 +19,7 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
     const FILE_VERSION = '5.04';
     const IMAGICK_VERSION = '6.2.9';
     const SWFTOOLS_VERSION = '0.9.0';
-    const UNOCONV_VERSION = '0.5.0';
+    const UNOCONV_VERSION = '0.5';
     const MP4BOX_VERSION = '0.4.0';
     const EXIFTOOL_VERSION = '9.15';
 
