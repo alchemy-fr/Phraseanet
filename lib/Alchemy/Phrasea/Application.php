@@ -205,7 +205,7 @@ class Application extends SilexApplication
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
         $this['geonames.server-uri'] = $this->share(function (Application $app) {
-            return $app['phraseanet.registry']->get('GV_i18n_service', 'http://geoloc.preprod.alchemyasp.com/');
+            return $app['phraseanet.registry']->get('GV_i18n_service', 'https://geonames.alchemyasp.com/');
         });
 
         $this->register(new MediaAlchemystServiceProvider());
