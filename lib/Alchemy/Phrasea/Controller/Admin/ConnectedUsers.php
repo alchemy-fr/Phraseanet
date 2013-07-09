@@ -78,7 +78,7 @@ class ConnectedUsers implements ControllerProviderInterface
         }
 
         $ret = array(
-            'sessions'     => $sessions,
+            'sessions'     => $result,
             'applications' => array(
                 '0' => 0,
                 '1' => 0,
@@ -92,8 +92,8 @@ class ConnectedUsers implements ControllerProviderInterface
             )
         );
 
-        foreach ($sessions as $session) {
-            foreach ($session->getModules() as $module) {
+        foreach ($result as $session) {
+            foreach ($session['session']->getModules() as $module) {
                 if (isset($ret['applications'][$module->getModuleId()])) {
                     $ret['applications'][$module->getModuleId()]++;
                 }

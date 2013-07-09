@@ -81,7 +81,7 @@ class Session implements ControllerProviderInterface
             return $app->json($ret);
         }
 
-        if ($moduleId = (int) $request->request->get('module') < 1) {
+        if (1 > $moduleId = (int) $request->request->get('module')) {
             $ret['message'] = 'Missing or Invalid `module` parameter';
 
             return $app->json($ret);
@@ -98,6 +98,7 @@ class Session implements ControllerProviderInterface
         } else {
             $app['EM']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
         }
+        $app['EM']->flush();
 
         $ret['status'] = 'ok';
 
