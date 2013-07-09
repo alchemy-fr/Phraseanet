@@ -79,7 +79,7 @@ return call_user_func_array(function(Application $app) {
                     'type'      => \registry::TYPE_STRING,
                     'name'      => 'GV_i18n_service',
                     'comment'   => _('Geonames server address'),
-                    'default'   => 'http://geoloc.preprod.alchemyasp.com/',
+                    'default'   => 'https://geonames.alchemyasp.com/',
                     'end_slash' => true,
                     'required'  => true
                 ),
