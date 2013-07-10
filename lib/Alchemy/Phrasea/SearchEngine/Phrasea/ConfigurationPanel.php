@@ -14,15 +14,17 @@ namespace Alchemy\Phrasea\SearchEngine\Phrasea;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\AbstractConfigurationPanel;
 use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 
 class ConfigurationPanel extends AbstractConfigurationPanel
 {
     protected $charsets;
     protected $searchEngine;
 
-    public function __construct(PhraseaEngine $engine)
+    public function __construct(PhraseaEngine $engine, ConfigurationInterface $conf)
     {
         $this->searchEngine = $engine;
+        $this->conf = $conf;
     }
 
     /**
@@ -63,7 +65,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
         $configuration['default_sort'] = $request->request->get('default_sort');
 
-        file_put_contents($this->getConfigPathFile(), json_encode($configuration));
+        $this->saveConfiguration($configuration);
 
         return $app->redirectPath('admin_searchengine_get');
     }
@@ -73,7 +75,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
      */
     public function getConfiguration()
     {
-        $configuration = @json_decode(file_get_contents($this->getConfigPathFile()), true);
+        $configuration = isset($this->conf['main']['search-engine']['options']) ? $this->conf['main']['search-engine']['options'] : array();
 
         if (!is_array($configuration)) {
             $configuration = array();
@@ -88,15 +90,5 @@ class ConfigurationPanel extends AbstractConfigurationPanel
         }
 
         return $configuration;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function saveConfiguration(array $configuration)
-    {
-        file_put_contents($this->getConfigPathFile(), json_encode($configuration));
-
-        return $this;
     }
 }
