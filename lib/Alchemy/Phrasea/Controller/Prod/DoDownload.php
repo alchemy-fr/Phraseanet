@@ -117,7 +117,7 @@ class DoDownload implements ControllerProviderInterface
 
         return new Response($app['twig']->render(
             '/prod/actions/Download/prepare.html.twig', array(
-            'module_name'   => _('Export download'),
+            'module_name'   => _('Export'),
             'module'        => _('Export'),
             'list'          => $list,
             'records'       => $records,

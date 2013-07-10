@@ -1037,7 +1037,7 @@ class Collection implements ControllerProviderInterface
     public function setPublicationDisplay(Application $app, Request $request, $bas_id)
     {
         if (null === $watermark = $request->request->get('pub_wm')) {
-            $app->abort(400, _('Missing pub_wm format'));
+            $app->abort(400, 'Missing public watermark setting');
         }
 
         $success = false;
