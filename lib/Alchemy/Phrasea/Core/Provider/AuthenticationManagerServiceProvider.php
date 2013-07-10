@@ -26,6 +26,7 @@ use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Alchemy\Phrasea\Authentication\Token\TokenValidator;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Alchemy\Phrasea\Core\Event\Subscriber\PersistentCookieSubscriber;
 
 class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 {
@@ -67,7 +68,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
                 }
             }, $authConf['auto-create']['templates']));
-            
+
             $enabled = $app['phraseanet.registry']->get('GV_autoregister') && $app['registration.enabled'];
 
             return new AccountCreator($app['tokens'], $app['phraseanet.appbox'], $enabled, $templates);
@@ -126,5 +127,12 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
+        $app['dispatcher'] = $app->share(
+            $app->extend('dispatcher', function($dispatcher, Application $app){
+                $dispatcher->addSubscriber(new PersistentCookieSubscriber($app));
+
+                return $dispatcher;
+            })
+        );
     }
 }

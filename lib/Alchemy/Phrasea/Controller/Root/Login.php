@@ -1010,6 +1010,9 @@ class Login implements ControllerProviderInterface
                 ->setNonce($nonce);
             $cookie = new Cookie('persistent', $token);
             $response->headers->setCookie($cookie);
+
+            $app['EM']->persist($session);
+            $app['EM']->flush();
         }
 
         $event = new PostAuthenticate($request, $response, $user, $context);
