@@ -55,7 +55,7 @@ class LessCompiler extends Command
         try {
             $this->container['phraseanet.less-builder']->build($files);
         } catch (RuntimeException $e) {
-            $output->writeln(sprintf('<error>Could not build less files %s</error>', implode(', ', $e->getMessage())));
+            $output->writeln(sprintf('<error>Could not build less files %s</error>', $e->getMessage()));
 
             return 1;
         }

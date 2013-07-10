@@ -35,6 +35,8 @@ class Builder
      * Build LESS files
      *
      * @param array $files
+     *
+     * @throws RuntimeException
      */
     public function build($files)
     {

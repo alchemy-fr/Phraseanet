@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\BinaryDriver\BinaryInterface;
 use Alchemy\BinaryDriver\Exception\ExecutionFailureException;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Filesystem\Filesystem;
 
 class Compiler
@@ -52,19 +51,19 @@ class Compiler
             $files = new \ArrayObject(is_array($files) ? $files : array($files));
         }
 
-        $files = new ArrayCollection((array) $files);
+        $files = (array) $files;
 
-        if ($files->forAll(function($file) {
-            return is_file($file);
-        })) {
-            throw new RuntimeException($files . ' does not exists.');
+        foreach($files as $file) {
+            if (false === is_file($file)) {
+                throw new RuntimeException($file . ' does not exists.');
+            }
         }
 
         if (!is_writable(dirname($target))) {
             throw new RuntimeException(realpath(dirname($target)) . ' is not writable.');
         }
 
-        $commands = $files->toArray();
+        $commands = $files;
         array_unshift($commands, '--compile');
 
         try {

@@ -18,7 +18,7 @@ use Symfony\Component\Process\ProcessBuilder;
 use Alchemy\Phrasea\Exception\RuntimeException;
 
 /**
- * This command builds less file
+ * This command builds javascript files
  */
 class JavascriptBuilder extends Command
 {
