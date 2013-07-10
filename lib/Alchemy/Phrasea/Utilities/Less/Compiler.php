@@ -36,6 +36,14 @@ class Compiler
         return new self($app['filesystem'], RecessDriver::create($binaries));
     }
 
+    /**
+     * Compile LESS files
+     *
+     * @param string $target
+     * @param string $files
+     *
+     * @throws RuntimeException
+     */
     public function compile($target, $files)
     {
         $this->filesystem->mkdir(dirname($target));

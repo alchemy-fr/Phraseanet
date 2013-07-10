@@ -38,20 +38,9 @@ class Builder
      */
     public function build($files)
     {
-        $failures = 0;
-        $errors = array();
-
         foreach ($files as $lessFile => $target) {
             $this->filesystem->mkdir(dirname($target));
-
-            try {
-                $this->compiler->compile($target, $lessFile);
-            } catch (\Exception $e) {
-                $failures++;
-                $errors[] = $e->getMessage();
-            }
+            $this->compiler->compile($target, $lessFile);
         }
-
-        return $errors;
     }
 }

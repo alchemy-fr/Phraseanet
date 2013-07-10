@@ -44,11 +44,12 @@ abstract class AbstractPluginCommand extends Command
         );
 
         $output->write('Building Assets...');
-        $errors = $this->container['phraseanet.less-builder']->build($files);
-
-        if (count($errors) > 0) {
-            $output->writeln(sprintf('<error>Error(s) occured during the build %s</error>', implode(', ', $errors)));
+        
+        try {
+            $this->container['phraseanet.less-builder']->build($files);
+            $output->writeln(" <comment>OK</comment>");
+        } catch (RuntimeException $e) {
+            $output->writeln(sprintf('<error>Could not build less files %s</error>', implode(', ', $e->getMessage())));
         }
-        $output->writeln(" <comment>OK</comment>");
     }
 }

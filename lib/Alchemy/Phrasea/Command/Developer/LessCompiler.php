@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -51,10 +52,10 @@ class LessCompiler extends Command
 
         $output->writeln('Building Assets...');
 
-        $errors = $this->container['phraseanet.less-builder']->build($files);
-        
-        if (count($errors) > 0) {
-            $output->writeln(sprintf('<error>Errors occured during the build %s</error>', implode(', ', $errors)));
+        try {
+            $this->container['phraseanet.less-builder']->build($files);
+        } catch (RuntimeException $e) {
+            $output->writeln(sprintf('<error>Could not build less files %s</error>', implode(', ', $e->getMessage())));
 
             return 1;
         }

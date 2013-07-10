@@ -27,8 +27,6 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
         $builder = new Builder($compiler, $filesystem);
 
-        $build = $builder->build(array( __FILE__ => __DIR__ . '/output.css'));
-
-        $this->assertTrue($build);
+        $builder->build(array( __FILE__ => __DIR__ . '/output.css'));
     }
 }
