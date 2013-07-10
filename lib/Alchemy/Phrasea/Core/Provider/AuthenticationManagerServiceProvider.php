@@ -67,8 +67,10 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
                 }
             }, $authConf['auto-create']['templates']));
+            
+            $enabled = $app['phraseanet.registry']->get('GV_autoregister') && $app['registration.enabled'];
 
-            return new AccountCreator($app['tokens'], $app['phraseanet.appbox'], $authConf['auto-create']['enabled'], $templates);
+            return new AccountCreator($app['tokens'], $app['phraseanet.appbox'], $enabled, $templates);
         });
 
         $app['authentication.providers'] = $app->share(function (Application $app) {

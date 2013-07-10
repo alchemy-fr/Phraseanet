@@ -107,12 +107,11 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app = new PhraseaApplication();
         $app->register(new ConfigurationServiceProvider());
 
-        $app['phraseanet.configuration'] = $conf = $app['phraseanet.configuration']->getConfig();
+        $conf = $app['phraseanet.configuration']->getConfig();
         $conf['authentication']['auto-create'] = array(
-            'enabled' => true,
             'templates' => array(),
         );
-        $app['phraseanet.configuration'] = $conf;
+        $app['phraseanet.configuration']->setConfig($conf);
 
         $app['authentication.providers.account-creator'];
     }
@@ -139,11 +138,11 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
             }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $app['phraseanet.configuration'] = $conf = $app['phraseanet.configuration']->getConfig();
+        $conf = $app['phraseanet.configuration']->getConfig();
         $conf['authentication']['captcha'] = array(
             'enabled' => true,
         );
-        $app['phraseanet.configuration'] = $conf;
+        $app['phraseanet.configuration']->setConfig($conf);
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
             ->disableOriginalConstructor()
@@ -177,11 +176,11 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
             }));
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $app['phraseanet.configuration'] = $conf = $app['phraseanet.configuration']->getConfig();
+        $conf = $app['phraseanet.configuration']->getConfig();
         $conf['authentication']['captcha'] = array(
             'enabled' => false,
         );
-        $app['phraseanet.configuration'] = $conf;
+        $app['phraseanet.configuration']->setConfig($conf);
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')
             ->disableOriginalConstructor()
@@ -203,15 +202,14 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $template2 = \User_Adapter::create(self::$DI['app'], 'template' . $random->generatePassword(), $random->generatePassword(), null, false);
         $template2->set_template(self::$DI['user']);
 
-        $app['phraseanet.configuration'] = $conf = $app['phraseanet.configuration']->getConfig();
+        $conf = $app['phraseanet.configuration']->getConfig();
         $conf['authentication']['auto-create'] = array(
-            'enabled' => true,
             'templates' => array(
                 $template1->get_id(),
                 $template2->get_login()
             )
         );
-        $app['phraseanet.configuration'] = $conf;
+        $app['phraseanet.configuration']->setConfig($conf);
 
         $this->assertEquals(array($template1, $template2), $app['authentication.providers.account-creator']->getTemplates());
 

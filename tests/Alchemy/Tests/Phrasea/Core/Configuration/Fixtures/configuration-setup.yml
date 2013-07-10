@@ -68,7 +68,6 @@ border-manager:
                 mediatypes: [Audio, Document, Flash, Image, Video]
 authentication:
     auto-create:
-        enabled: false
         templates: {  }
     captcha:
         enabled: true
@@ -116,8 +115,6 @@ registration-fields:
         required: true
 xsendfile:
     enabled: false
-    type: ''
-    mapping:
-        -
-            directory: ''
-            mount-point: ''
+    type: nginx
+    mapping: []
+plugins: []

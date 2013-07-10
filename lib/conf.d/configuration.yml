@@ -85,7 +85,6 @@ border-manager:
                 mediatypes: [Audio, Document, Flash, Image, Video]
 authentication:
     auto-create:
-        enabled: false
         templates: {  }
     captcha:
         enabled: true

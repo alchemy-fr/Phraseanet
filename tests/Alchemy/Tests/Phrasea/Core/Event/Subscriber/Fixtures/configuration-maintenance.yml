@@ -93,7 +93,6 @@ border-manager:
                     - Video
 authentication:
     auto-create:
-        enabled: false
         templates: {  }
     captcha:
         enabled: true

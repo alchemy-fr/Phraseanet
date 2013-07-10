@@ -50,13 +50,13 @@ class patch_3817 implements patchInterface
     {
         $auth = $app['phraseanet.configuration']['authentication'];
 
-        if (!isset($auth['captcha'])) {
-            return true;
-        }
-
-        if (isset($auth['captcha']['trials-before-failure'])) {
+        if (isset($auth['captcha']) && isset($auth['captcha']['trials-before-failure'])) {
             $auth['captcha']['trials-before-display'] = $auth['captcha']['trials-before-failure'];
             unset($auth['captcha']['trials-before-failure']);
+        }
+
+        if (isset($auth['auto-create']) && isset($auth['auto-create']['enabled'])) {
+            unset($auth['auto-create']['enabled']);
         }
 
         $app['phraseanet.configuration']['authentication'] = $auth;
