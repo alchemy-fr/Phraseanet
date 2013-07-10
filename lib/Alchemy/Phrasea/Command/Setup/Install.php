@@ -148,7 +148,7 @@ class Install extends Command
     {
         $credentials = $abConn->get_credentials();
 
-        $dbConn = null;
+        $dbConn = $template = null;
         if (!$input->getOption('databox')) {
             do {
                 $retry = false;
