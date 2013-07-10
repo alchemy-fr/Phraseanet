@@ -28,8 +28,8 @@ use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 use Alchemy\Phrasea\Command\CheckConfig;
-use Alchemy\Phrasea\Command\Setup\XSendFileMappingDumper;
 use Alchemy\Phrasea\Command\Setup\XSendFileMappingGenerator;
+use Alchemy\Phrasea\Command\Setup\XSendFileConfigurationDumper;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -98,7 +98,7 @@ try {
     $cli->command(new AddPlugin());
     $cli->command(new RemovePlugin());
     $cli->command(new Configuration());
-    $cli->command(new XSendFileMappingDumper());
+    $cli->command(new XSendFileConfigurationDumper());
     $cli->command(new XSendFileMappingGenerator());
 
     call_user_func(function ($cli) {
