@@ -384,7 +384,7 @@ class Login implements ControllerProviderInterface
         return $app['twig']->render('login/register-classic.html.twig', array(
             'form' => $form->createView(),
             'home_title' => $app['phraseanet.registry']->get('GV_homeTitle'),
-            'login' => new \login(),
+            'recaptcha_display' => $app->isCaptchaRequired(),
         ));
     }
 
@@ -562,7 +562,6 @@ class Login implements ControllerProviderInterface
         }
 
         return $app['twig']->render('login/renew-password.html.twig', array(
-            'login'       => new \login(),
             'form'        => $form->createView(),
         ));
     }
@@ -620,7 +619,6 @@ class Login implements ControllerProviderInterface
         }
 
         return $app['twig']->render('login/forgot-password.html.twig', array(
-            'login' => new \login(),
             'form'  => $form->createView(),
         ));
     }
@@ -639,9 +637,7 @@ class Login implements ControllerProviderInterface
         }
 
         if (0 < count($app['authentication.providers'])) {
-            return $app['twig']->render('login/register.html.twig', array(
-                'login' => new \login(),
-            ));
+            return $app['twig']->render('login/register.html.twig');
         } else {
             return $app->redirectPath('login_register_classic');
         }
@@ -699,9 +695,9 @@ class Login implements ControllerProviderInterface
         return $app['twig']->render('login/index.html.twig', array(
             'module_name'       => _('Accueil'),
             'redirect'          => ltrim($request->query->get('redirect'), '/'),
-            'login'             => new \login(),
             'feeds'             => $feeds,
             'form'              => $form->createView(),
+            'recaptcha_display' => $app->isCaptchaRequired(),
         ));
     }
 
@@ -842,7 +838,6 @@ class Login implements ControllerProviderInterface
 
     public function authenticationCallback(PhraseaApplication $app, Request $request, $providerId)
     {
-        $login = new \login();
         $provider = $this->findProvider($app, $providerId);
 
         // triggers what's necessary

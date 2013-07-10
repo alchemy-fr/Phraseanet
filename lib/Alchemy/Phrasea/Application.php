@@ -222,7 +222,6 @@ class Application extends SilexApplication
                     'gs.binaries'                  => 'ghostscript_binary',
                     'ffmpeg.ffmpeg.binaries'       => 'ffmpeg_binary',
                     'ffmpeg.ffprobe.binaries'      => 'ffprobe_binary',
-                    'recess.binaries'              => 'recess_binary',
                     'ffmpeg.ffmpeg.timeout'        => 'ffmpeg_timeout',
                     'ffmpeg.ffprobe.timeout'       => 'ffprobe_timeout',
                     'gs.timeout'                   => 'gs_timeout',
@@ -672,7 +671,7 @@ class Application extends SilexApplication
     }
 
     /**
-     * Tells if a captcha is required for next authentication
+     * Returns true if a captcha is required for next authentication
      *
      * @return boolean
      */
@@ -688,7 +687,7 @@ class Application extends SilexApplication
     }
 
     /**
-     * Tells if guests are allowed
+     * Returns true if guest access is allowed.
      *
      * @return boolean
      */
@@ -704,7 +703,7 @@ class Application extends SilexApplication
     }
 
     /**
-     * Tells if application has terms of use
+     * Returns true if application has terms of use
      *
      * @return noolean
      */
