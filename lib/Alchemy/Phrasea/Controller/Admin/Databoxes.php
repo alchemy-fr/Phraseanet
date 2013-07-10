@@ -186,6 +186,7 @@ class Databoxes implements ControllerProviderInterface
             'error_msg'         => $errorMsg,
             'recommendations'   => $upgrader->getRecommendations(),
             'advices'           => $request->query->get('advices', array()),
+            'reloadTree'        => (Boolean) $request->query->get('reload-tree'),
         ));
     }
 

@@ -67,8 +67,10 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
                 }
             }, $authConf['auto-create']['templates']));
+            
+            $enabled = $app['phraseanet.registry']->get('GV_autoregister') && $app['registration.enabled'];
 
-            return new AccountCreator($app['tokens'], $app['phraseanet.appbox'], $authConf['auto-create']['enabled'], $templates);
+            return new AccountCreator($app['tokens'], $app['phraseanet.appbox'], $enabled, $templates);
         });
 
         $app['authentication.providers'] = $app->share(function (Application $app) {
@@ -101,7 +103,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
             $authConf = $app['phraseanet.configuration']['authentication']['captcha'];
 
-            return new FailureManager($app['EM'], $app['recaptcha'], isset($authConf['trials-before-failure']) ? $authConf['trials-before-failure'] : 9);
+            return new FailureManager($app['EM'], $app['recaptcha'], isset($authConf['trials-before-display']) ? $authConf['trials-before-display'] : 9);
         });
 
         $app['auth.password-checker'] = $app->share(function (Application $app) {
