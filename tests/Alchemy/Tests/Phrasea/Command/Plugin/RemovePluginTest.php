@@ -8,7 +8,7 @@ class RemovePluginTest extends PluginCommandTestCase
 {
     public function testExecute()
     {
-        $name = 'TestPlugin';
+        $name = 'test-plugin';
 
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $input->expects($this->once())
@@ -22,7 +22,11 @@ class RemovePluginTest extends PluginCommandTestCase
         $command->setContainer(self::$DI['app']);
 
         self::$DI['app']['filesystem'] = $this->createFilesystemMock();
-        self::$DI['app']['filesystem']->expects($this->once())
+        self::$DI['app']['filesystem']->expects($this->at(0))
+            ->method('remove')
+            ->with(self::$DI['app']['root.path'].'/www/plugins/'.$name);
+
+        self::$DI['app']['filesystem']->expects($this->at(1))
             ->method('remove')
             ->with(self::$DI['app']['plugins.directory'].'/'.$name);
 

@@ -51,10 +51,7 @@ class AddPlugin extends AbstractPluginCommand
         $output->writeln(" <comment>OK</comment>");
 
         $output->write("Copying public files <info>".$manifest->getName()."</info>...");
-        $this->container['filesystem']->mirror(
-            $targetDir . DIRECTORY_SEPARATOR . 'public',
-            $this->container['root.path'] . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $manifest->getName()
-        );
+        $this->container['plugins.assets-manager']->update($manifest);
         $output->writeln(" <comment>OK</comment>");
 
         $output->write("Removing temporary directory...");

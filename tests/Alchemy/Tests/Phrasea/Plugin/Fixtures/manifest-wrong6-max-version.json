@@ -1,5 +1,5 @@
 {
-    "name": "TestPlugin",
+    "name": "testplugin",
     "description" : "A custom class connector",
     "maximum-phraseanet-version": "3.8"
 }

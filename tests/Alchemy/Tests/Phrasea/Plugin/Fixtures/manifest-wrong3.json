@@ -1,5 +1,5 @@
 {
-    "name": "TestPlugin",
+    "name": "test-plugin",
     "description" : "A custom class connector",
     "authors" : {
         "name"     : "Author name",
