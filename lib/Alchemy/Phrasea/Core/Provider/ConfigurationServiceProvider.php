@@ -41,7 +41,13 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
                 $app['debug']
             );
         });
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function boot(SilexApplication $app)
+    {
         $app['dispatcher'] = $app->share(
             $app->extend('dispatcher', function($dispatcher, SilexApplication $app){
                 $dispatcher->addSubscriber(new TrustedProxySubscriber($app['phraseanet.configuration']));
@@ -49,9 +55,5 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
                 return $dispatcher;
             })
         );
-    }
-
-    public function boot(SilexApplication $app)
-    {
     }
 }

@@ -38,14 +38,6 @@ return call_user_func(function($environment = PhraseaApplication::ENV_PROD) {
         }
     });
 
-    $app->before(function(Request $request) use ($app) {
-        if ($request->cookies->has('persistent') && !$app['authentication']->isAuthenticated()) {
-            if (false !== $session = $app['authentication.persistent-manager']->getSession($request->cookies->get('persistent'))) {
-                $app['authentication']->refreshAccount($session);
-            }
-        }
-    });
-
     $app->bindRoutes();
 
     if (PhraseaApplication::ENV_DEV === $app->getEnvironment()) {
