@@ -56,6 +56,7 @@ class PhpRequirements extends RequirementCollection implements RequirementInterf
         }
 
         $this->addPhpIniRequirement('safe_mode', false, true);
+        $this->addPhpIniRequirement('detect_unicode', false, true);
         $this->addPhpIniRequirement('file_uploads', true, true);
         $this->addPhpIniRequirement('session.cache_limiter', '');
         $this->addPhpIniRequirement('default_charset', 'UTF-8', true, 'Default charset should be UTF-8', 'Set default_charset to UTF-8 in php.ini');

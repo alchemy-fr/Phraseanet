@@ -172,7 +172,6 @@ class Application extends SilexApplication
         $this['root.path'] = realpath(__DIR__ . '/../../..');
         $this->environment = $environment;
 
-        ini_set('default_charset', 'UTF-8');
         mb_internal_encoding("UTF-8");
 
         !defined('JETON_MAKE_SUBDEF') ? define('JETON_MAKE_SUBDEF', 0x01) : '';
