@@ -215,7 +215,7 @@ class task_period_subdef extends task_databoxAbstract
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"> <?php echo sprintf(_("Number of records before proceeding the next step")) ?></label>
+                <label class="control-label"> <?php echo sprintf(_("Number of records to process per batch")) ?></label>
                 <div class="controls">
                    <input class="formElem input-mini" type="text" name="flush" value="">
                 </div>
