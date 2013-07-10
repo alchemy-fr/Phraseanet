@@ -37,7 +37,7 @@ class Install extends Command
             ->addOption('db-port', null, InputOption::VALUE_OPTIONAL, 'MySQL server port', 3306)
             ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, 'MySQL server user', 'phrasea')
             ->addOption('db-password', null, InputOption::VALUE_OPTIONAL, 'MySQL server password', null)
-            ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Metadata structure language template', null)
+            ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Metadata structure language template (available are fr (french) and en (english))', null)
             ->addOption('databox', null, InputOption::VALUE_OPTIONAL, 'Database name for the DataBox', null)
             ->addOption('appbox', null, InputOption::VALUE_OPTIONAL, 'Database name for the ApplicationBox', null)
             ->addOption('indexer', null, InputOption::VALUE_OPTIONAL, 'Path to Phraseanet Indexer', 'auto')
@@ -160,7 +160,7 @@ class Install extends Command
                         $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
 
                         do {
-                            $template = $dialog->ask($output, 'Choose a language template for metadata structure (en) : ', 'en');
+                            $template = $dialog->ask($output, 'Choose a language template for metadata structure, available are fr (french) and en (english) (en) : ', 'en');
                         } while (!in_array($template, array('en', 'fr')));
 
                         $output->writeln("\n\tLanguage selected is <info>'$template'</info>\n");
