@@ -970,8 +970,9 @@ class databox_field implements cache_cacheableInterface
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ($row)
-            $sorter = (int) $row['sorter'];
+        if ($row) {
+            $sorter = max(1, (int) $row['sorter']);
+        }
 
         $sql = "INSERT INTO metadatas_structure
         (`id`, `name`, `src`, `readonly`, `indexable`, `type`, `tbranch`,
