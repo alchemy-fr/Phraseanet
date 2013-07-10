@@ -38,12 +38,16 @@ abstract class AbstractPluginCommand extends Command
         $this->container['plugins.autoloader-generator']->write($manifests);
         $output->writeln(" <comment>OK</comment>");
 
-        $output->write('Building Assets...');
-        if (false === $this->container['phraseanet.less-builder']->build(array(
+        $files = array(
             $this->container['root.path'] . '/www/skins/login/less/login.less' => $this->container['root.path'] . '/www/skins/build/login.css',
             $this->container['root.path'] . '/www/skins/account/account.less' => $this->container['root.path'] . '/www/skins/build/account.css',
-        ))) {
-            $output->writeln(sprintf('<error>Error(s) occured during the build %s</error>', implode(', ', $this->container['phraseanet.less-builder']->getErrors())));
+        );
+
+        $output->write('Building Assets...');
+        $errors = $this->container['phraseanet.less-builder']->build($files);
+
+        if (count($errors) > 0) {
+            $output->writeln(sprintf('<error>Error(s) occured during the build %s</error>', implode(', ', $errors)));
         }
         $output->writeln(" <comment>OK</comment>");
     }

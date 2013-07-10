@@ -24,10 +24,6 @@ class Builder
      * @var Filesystem
      */
     protected $filesystem;
-    /**
-     * @var array
-     */
-    protected $errors = array();
 
     public function __construct(LessCompiler $compiler, Filesystem $filesystem)
     {
@@ -43,7 +39,7 @@ class Builder
     public function build($files)
     {
         $failures = 0;
-        $this->errors = array();
+        $errors = array();
 
         foreach ($files as $lessFile => $target) {
             $this->filesystem->mkdir(dirname($target));
@@ -52,20 +48,10 @@ class Builder
                 $this->compiler->compile($target, $lessFile);
             } catch (\Exception $e) {
                 $failures++;
-                $this->errors[] = $e->getMessage();
+                $errors[] = $e->getMessage();
             }
         }
 
-        return $this->hasErrors();
-    }
-
-    public function hasErrors()
-    {
-        return count($this->errors) === 0;
-    }
-
-    public function getErrors()
-    {
-        return $this->errors;
+        return $errors;
     }
 }

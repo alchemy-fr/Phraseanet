@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
-use Alchemy\Phrasea\Utilities\Compiler\RecessLessCompiler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,16 +20,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class LessCompiler extends Command
 {
-    private $recessLessCompiler;
-
-    public function __construct($recessLessCompiler = null)
+    public function __construct()
     {
         parent::__construct('assets:compile-less');
 
         $this->setDescription('Compile less files');
-
-
-        $this->recessLessCompiler = $recessLessCompiler ?: new RecessLessCompiler();
     }
 
     /**
@@ -57,8 +51,10 @@ class LessCompiler extends Command
 
         $output->writeln('Building Assets...');
 
-        if (false === $this->container['phraseanet.less-builder']->build($files)) {
-            $output->writeln(sprintf('<error>Errors occured during the build %s</error>', implode(', ', $this->container['phraseanet.less-builder']->getErrors())));
+        $errors = $this->container['phraseanet.less-builder']->build($files);
+        
+        if (count($errors) > 0) {
+            $output->writeln(sprintf('<error>Errors occured during the build %s</error>', implode(', ', $errors)));
 
             return 1;
         }
