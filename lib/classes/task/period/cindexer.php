@@ -291,7 +291,7 @@ class task_period_cindexer extends task_abstract
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label"><?php echo _('MySQL charset') ?></label>
+                <label class="control-label"><?php echo _('MySQL connection charset') ?></label>
                 <div class="controls">
                     <input type="text" name="charset" class="input-small" value="">
                 </div>
@@ -335,7 +335,7 @@ class task_period_cindexer extends task_abstract
                 <div class="controls">
                     <label class="checkbox">
                         <input type="checkbox" name="nolog">
-                        <?php echo _('Do not (sys)log, output to console)') ?>
+                        <?php echo _('Do not log, output to console') ?>
                     </label>
                 </div>
             </div>
