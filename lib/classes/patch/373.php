@@ -64,8 +64,6 @@ class patch_373 implements patchInterface
 
         $Regbinaries = array(
             'GV_cli',
-            'GV_imagick',
-            'GV_pathcomposite',
             'GV_swf_extract',
             'GV_pdf2swf',
             'GV_swf_render',
