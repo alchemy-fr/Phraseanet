@@ -11,8 +11,8 @@
 
 use Monolog\Logger;
 use Alchemy\Phrasea\Application;
+use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\Process\Process;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -135,9 +135,17 @@ class task_manager
             $php = $finder->find('php');
         }
 
-        $cmd = $php . ' -f ' . $this->app['root.path'] . "/bin/console scheduler:start";
+        $builder = ProcessBuilder::create(array($php));
 
-        return new Process($cmd);
+        if ($this->app['phraseanet.registry']->get('GV_PHP_INI')) {
+            $builder->add('-c')->add($this->app['phraseanet.registry']->get('GV_PHP_INI'));
+        }
+
+        return $builder
+            ->add('-f')
+            ->add($this->app['root.path'] . "/bin/console")
+            ->add('scheduler:start')
+            ->getProcess();
     }
 
     public function setSchedulerState($status)

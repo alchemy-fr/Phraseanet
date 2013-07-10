@@ -41,9 +41,11 @@
         {% endblock header %}
     </head>
     <body>
+        {% if app['phraseanet.registry'].get('GV_display_gcf') %}
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
+        {% endif %}
         <div class="container full-height">
             {% block content_scaffholding %}
 
@@ -73,7 +75,7 @@
                                                    {% endif %}
                                                    <li>
                                                        {% block copyright %}
-                                                          &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}
+                                                          &copy; Copyright <a href="http://www.alchemy.fr" target="_blank">Alchemy</a> 2005-{{ "now"|date("Y") }}
                                                        {% endblock copyright %}
                                                    </li>
                                                </ul>
@@ -82,7 +84,7 @@
                                    </div>
                                    <div class="span3">
                                        <div class="footer-block text-right">
-                                           {% block footer_logo %}Phraseanet{% endblock footer_logo %}
+                                           {% block footer_logo %}<a href="https://www.phraseanet.com" target="_blank">Phraseanet</a>{% endblock footer_logo %}
                                        </div>
                                    </div>
                                </div>
