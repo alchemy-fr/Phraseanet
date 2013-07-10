@@ -44,6 +44,7 @@ class ManifestValidatorTest extends PluginTestCase
             array(__DIR__ . '/../Fixtures/manifest-wrong4.json'),
             array(__DIR__ . '/../Fixtures/manifest-wrong5-min-version.json'),
             array(__DIR__ . '/../Fixtures/manifest-wrong6-max-version.json'),
+            array(__DIR__ . '/../Fixtures/manifest-wrong7-invalid-name.json')
         );
     }
 

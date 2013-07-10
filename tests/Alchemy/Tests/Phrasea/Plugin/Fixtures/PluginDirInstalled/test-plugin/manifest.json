@@ -14,13 +14,15 @@
     "version"     : "0.1",
     "minimum-phraseanet-version": "3.8",
     "maximum-phraseanet-version": "3.9",
-    "twig-paths" : ["twig-views"],
+    "twig-paths": ["views", "twig-views"],
     "services" : [
         {
             "class": "Vendor\\PluginService"
         }
     ],
-    "extra" : {
-        "property" : "value"
-    }
+    "commands" : [
+        {
+            "class": "Vendor\\CustomCommand"
+        }
+    ]
 }

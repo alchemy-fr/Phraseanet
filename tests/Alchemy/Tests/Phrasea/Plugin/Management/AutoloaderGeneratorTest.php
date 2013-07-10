@@ -13,7 +13,7 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
 {
     public function testGeneratedFileAfterInstall()
     {
-        $pluginDir = __DIR__ . '/../Fixtures/PluginDirInstalled/TestPlugin';
+        $pluginDir = __DIR__ . '/../Fixtures/PluginDirInstalled/test-plugin';
         $pluginsDir = __DIR__ . '/../Fixtures/PluginDirInstalled';
 
         $files = array(
@@ -63,7 +63,7 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Vendor\CustomCommand', $cli['console']->find('hello:world'));
 
         $mapping = require $pluginsDir . '/twig-paths.php';
-        $this->assertSame(array('TestPlugin' => $pluginsDir . '/TestPlugin/views', $pluginsDir . '/TestPlugin/views', $pluginsDir . '/TestPlugin/twig-views'), $mapping);
+        $this->assertSame(array('plugin-test-plugin' => $pluginsDir . '/test-plugin/views', $pluginsDir . '/test-plugin/views', $pluginsDir . '/test-plugin/twig-views'), $mapping);
 
         $this->cleanup($files);
     }

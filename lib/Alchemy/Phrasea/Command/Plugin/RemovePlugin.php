@@ -30,8 +30,12 @@ class RemovePlugin extends AbstractPluginCommand
     {
         $name = $input->getArgument('name');
 
-        $path = $this->container['plugins.directory'] . DIRECTORY_SEPARATOR . $name;
+        $output->write("Removing public assets...");
+        $this->container['plugins.assets-manager']->remove($name);
+        $output->writeln(" <comment>OK</comment>");
 
+        $path = $this->container['plugins.directory'] . DIRECTORY_SEPARATOR . $name;
+        
         $output->write("Removing <info>$name</info>...");
         $this->container['filesystem']->remove($path);
         $output->writeln(" <comment>OK</comment>");
