@@ -217,7 +217,7 @@ define([
         _selectModelView: function(index) {
              // select previous or next itemview
             if (index >= 0) {
-                AdminFieldApp.fieldListView.itemViews[index].select().animate();
+                AdminFieldApp.fieldListView.itemViews[index].select().animate().click();
             }
         },
         _toggleLabels: function(event) {
