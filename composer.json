@@ -9,7 +9,7 @@
         "php"                              : ">=5.3.3",
         "alchemy/oauth2php"                : "1.0.0",
         "alchemy/phlickr"                  : "0.2.7",
-        "dailymotion/sdk"                  : "dev-master@dev",
+        "dailymotion/sdk"                  : "~1.5",
         "data-uri/data-uri"                : "~0.1.0",
         "doctrine/orm"                     : "~2.3.0",
         "facebook/php-sdk"                 : "~3.0",
