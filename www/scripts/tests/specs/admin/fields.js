@@ -76,7 +76,7 @@ define([
                 beforeEach(function() {
                     this.collection = new FieldCollection([
                         {"id": 1, "sbas-id": sbasId, "name": "Categorie", "tag": "XMP:Categorie"},
-                        {"id": 2, "sbas-id": sbasId, "name": "Object", "tag": "XMP:Object"},
+                        {"id": 2, "sbas-id": sbasId, "name": "Object", "tag": "XMP:Object"}
                     ], {
                         "sbas_id": sbasId
                     });
@@ -96,7 +96,7 @@ define([
 
                 describe("Methods", function() {
                     it("should retrieve categorie item if searching terms begins with 'cat'", function() {
-                        this.collection.search('Cat').length.should.equal(1);
+                        this.collection.search('Cat')._wrapped.length.should.equal(1);
                     });
 
                     it("should retrieve previous and next index for given model", function() {
@@ -306,7 +306,7 @@ define([
             it("should reorder collection on drop action", function() {
                 var ui = {item: {index: function() {return 2;}}};
                 AdminFieldApp.fieldListView.itemViews[0].dropAction({},ui);
-                assert.equal(AdminFieldApp.fieldListView.collection.last().get('sorter'), 2, 'model is updated');
+                assert.equal(AdminFieldApp.fieldListView.collection.last().get('sorter'), 3, 'model is updated');
             });
         });
     });
