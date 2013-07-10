@@ -88,7 +88,7 @@ class AuthenticationManagerServiceProvidertest extends ServiceProviderTestCase
         $app->register(new ConfigurationServiceProvider());
 
         $app['phraseanet.configuration'] = $conf = $app['phraseanet.configuration']->getConfig();
-        $conf['authentication']['captcha']['trials-before-failure'] = 42;
+        $conf['authentication']['captcha']['trials-before-display'] = 42;
         $app['phraseanet.configuration'] = $conf;
 
         $app['EM'] = $this->getMockBuilder('Doctrine\Orm\EntityManager')

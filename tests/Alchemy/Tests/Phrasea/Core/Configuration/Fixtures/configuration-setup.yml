@@ -72,7 +72,7 @@ authentication:
         templates: {  }
     captcha:
         enabled: true
-        trials-before-failure: 9
+        trials-before-display: 9
     providers:
         facebook:
             enabled: false

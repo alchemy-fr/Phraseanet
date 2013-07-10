@@ -208,7 +208,7 @@ class Migration38Test extends AbstractSetupTester
                 ),
                 'captcha' => array(
                     'enabled' => true,
-                    'trials-before-failure' => 9,
+                    'trials-before-display' => 9,
                 ),
                 'providers' => array(
                     'facebook' => array(
