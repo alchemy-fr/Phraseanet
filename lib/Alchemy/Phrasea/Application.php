@@ -686,6 +686,11 @@ class Application extends SilexApplication
         return false;
     }
 
+    /**
+     * Tells if guests are allowed
+     *
+     * @return boolean
+     */
     public function isGuestAllowed()
     {
         $usrId = \User_Adapter::get_usr_id_from_login($this, 'invite');
@@ -697,7 +702,12 @@ class Application extends SilexApplication
         return count(\User_Adapter::getInstance($usrId, $this)->ACL()->get_granted_base()) > 0;
     }
 
-    public function hasLoginTermsOfUse()
+    /**
+     * Tells if application has terms of use
+     *
+     * @return noolean
+     */
+    public function hasTermsOfUse()
     {
         return '' !== \databox_cgu::getHome($this);
     }
