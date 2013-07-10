@@ -80,11 +80,10 @@ border-manager:
                 mediatypes: [Audio, Document, Flash, Image, Video]
 authentication:
     auto-create:
-        enabled: false
         templates: {  }
     captcha:
         enabled: true
-        trials-before-failure: 9
+        trials-before-display: 9
     providers:
         facebook:
             enabled: false

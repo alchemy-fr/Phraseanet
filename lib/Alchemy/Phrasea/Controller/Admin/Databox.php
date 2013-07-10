@@ -854,9 +854,7 @@ class Databox implements ControllerProviderInterface
             ));
         }
 
-        return $app->redirectPath('admin_database', array(
-            'databox_id'  => $databox_id,
-            'error'       => 'file-too-big',
+        return $app->redirectPath('admin_databases', array(
             'reload-tree' => 1,
         ));
     }

@@ -37,7 +37,7 @@ class Install extends Command
             ->addOption('db-port', null, InputOption::VALUE_OPTIONAL, 'MySQL server port', 3306)
             ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, 'MySQL server user', 'phrasea')
             ->addOption('db-password', null, InputOption::VALUE_OPTIONAL, 'MySQL server password', null)
-            ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Metadata structure language template', null)
+            ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Metadata structure language template (available are fr (french) and en (english))', null)
             ->addOption('databox', null, InputOption::VALUE_OPTIONAL, 'Database name for the DataBox', null)
             ->addOption('appbox', null, InputOption::VALUE_OPTIONAL, 'Database name for the ApplicationBox', null)
             ->addOption('indexer', null, InputOption::VALUE_OPTIONAL, 'Path to Phraseanet Indexer', 'auto')
@@ -126,7 +126,7 @@ class Install extends Command
                 $hostname = $dialog->ask($output, "DB hostname (localhost) : ", 'localhost');
                 $port = $dialog->ask($output, "DB port (3306) : ", 3306);
                 $dbUser = $dialog->ask($output, "DB user : ");
-                $dbPassword = $dialog->ask($output, "DB password : ");
+                $dbPassword = $dialog->askHiddenResponse($output, "DB password (hidden) : ");
                 $abName = $dialog->ask($output, "DB name (phraseanet) : ", 'phraseanet');
 
                 try {
@@ -148,7 +148,7 @@ class Install extends Command
     {
         $credentials = $abConn->get_credentials();
 
-        $dbConn = null;
+        $dbConn = $template = null;
         if (!$input->getOption('databox')) {
             do {
                 $retry = false;
@@ -160,7 +160,7 @@ class Install extends Command
                         $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
 
                         do {
-                            $template = $dialog->ask($output, 'Choose a language template for metadata structure (en) : ', 'en');
+                            $template = $dialog->ask($output, 'Choose a language template for metadata structure, available are fr (french) and en (english) (en) : ', 'en');
                         } while (!in_array($template, array('en', 'fr')));
 
                         $output->writeln("\n\tLanguage selected is <info>'$template'</info>\n");
@@ -192,7 +192,7 @@ class Install extends Command
             } while (!\Swift_Validate::email($email));
 
             do {
-                $password = $dialog->ask($output, 'Please provide a password (6 character min) : ');
+                $password = $dialog->askHiddenResponse($output, 'Please provide a password (hidden, 6 character min) : ');
             } while (strlen($password) < 6);
 
             $output->writeln("\n\t<info>Email / Password successfully set</info>\n");

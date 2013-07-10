@@ -603,6 +603,7 @@ class Login implements ControllerProviderInterface
                     $url = $app->url('login_renew_password', array('token' => $token), true);
 
                     $mail = MailRequestPasswordUpdate::create($app, $receiver);
+                    $mail->setLogin($user->get_login());
                     $mail->setButtonUrl($url);
 
                     $app['notification.deliverer']->deliver($mail);
