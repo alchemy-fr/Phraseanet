@@ -230,18 +230,27 @@ class task_Scheduler
 
                 if ( ! isset($taskPoll[$tkey])) {
                     // the task is not in the poll, add it
+
+                    $arguments = array();
+                    if ($this->dependencyContainer['phraseanet.registry']->get('GV_PHP_INI')) {
+                        $arguments[] = '-c';
+                        $arguments[] = $this->dependencyContainer['phraseanet.registry']->get('GV_PHP_INI');
+                    }
+
+                    $arguments = array_merge($arguments, array(
+                        '-f',
+                        $this->dependencyContainer['root.path'] . '/bin/console',
+                        '--',
+                        '-q',
+                        'task:run',
+                        $task->getID(), '--runner=scheduler'
+                    ));
+
                     $taskPoll[$tkey] = array(
                         "task"           => $task,
                         "current_status" => $status,
                         "cmd"            => $php,
-                        "args"           => array(
-                            '-f',
-                            $this->dependencyContainer['root.path'] . '/bin/console',
-                            '--',
-                            '-q',
-                            'task:run',
-                            $task->getID(), '--runner=scheduler'
-                        ),
+                        "args"           => $arguments,
                         "killat"       => null,
                         "sigterm_sent" => false,
                         "pid"          => false
