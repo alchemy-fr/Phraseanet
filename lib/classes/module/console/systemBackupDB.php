@@ -35,6 +35,7 @@ class module_console_systemBackupDB extends Command
         $this
             ->setDescription('Backup Phraseanet Databases')
             ->addArgument('directory', null, 'The directory where to backup', $dir)
+            ->addOption('timeout', 't', null, 'The timeout for this command (default is 3600s / 1h). Set 0 to disable timeout.', 3600)
             ->addOption('gzip', 'g', null, 'Gzip the output (requires gzip utility)')
             ->addOption('bzip', 'b', null, 'Bzip the output (requires bzip2 utility)');
 
@@ -89,6 +90,7 @@ class module_console_systemBackupDB extends Command
         $command .= ' > ' . escapeshellarg($filename);
 
         $process = new Process($command);
+        $process->setTimeout((int) $input->getOption('timeout'));
         $process->run();
 
         if (!$process->isSuccessful()) {
