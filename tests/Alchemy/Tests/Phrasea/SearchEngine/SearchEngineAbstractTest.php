@@ -375,11 +375,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
             'nl' => array('word' => 'lichamelijk', 'stemm' => 'licham'),
         );
 
-        foreach (Application::getAvailableLanguages() as $language => $name) {
-
-            $codes = explode('_', $language);
-            $languageCode = $codes[0];
-
+        foreach (Application::getAvailableLanguages() as $languageCode) {
             if (!isset($examples[$languageCode])) {
                 $this->fail(sprintf('Missing stemm examples for language %s', $languageCode));
             }

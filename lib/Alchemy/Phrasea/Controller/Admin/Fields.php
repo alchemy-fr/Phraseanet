@@ -144,7 +144,7 @@ class Fields implements ControllerProviderInterface
     {
         $languages = array();
 
-        foreach (PhraseaApplication::getAvailableLanguages() as $code => $language) {
+        foreach ($app['locales.available'] as $code => $language) {
             $data = explode('_', $code);
             $languages[$data[0]] = $language;
         }

@@ -123,7 +123,7 @@ class Root implements ControllerProviderInterface
                 'thesau_js_list'       => $thjslist,
                 'thesau_json_sbas'     => json_encode($sbas),
                 'thesau_json_bas2sbas' => json_encode($bas2sbas),
-                'thesau_languages'     => $app->getAvailableLanguages(),
+                'thesau_languages'     => $app['locales.available'],
             ));
         })->bind('prod');
 

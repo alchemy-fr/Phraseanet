@@ -1671,7 +1671,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function set_locale($locale)
     {
-        if (!array_key_exists($locale, $this->app->getAvailableLanguages())) {
+        if (!array_key_exists($locale, $this->app['locales.available'])) {
             throw new \InvalidArgumentException(sprintf('Locale %s is not recognized', $locale));
         }
 
