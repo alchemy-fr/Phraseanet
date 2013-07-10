@@ -4,7 +4,7 @@
 {% import "login/common/macros.html.twig" as auth_macro %}
 
 {% block title %}
-    {{ app['phraseanet.registry'].get('GV_homeTitle') }}
+    {{ instance_title }}
 {% endblock %}
 
 {% block header_rss %}
@@ -30,11 +30,11 @@
             <div class="span12">
                 {{ auth_macro.flashes() }}
 
-                {% if app.getUnlockAccountData() is not empty %}
+                {% if unlock_usr_id is not empty %}
                 <div class="row-fluid">
                     <div class="span12">
                         {% trans 'Your account is locked, please follow the following link to unlock it' %}<br/>
-                        <a href="{{ path('login_send_mail', { 'usr_id' : app.getUnlockAccountData() }) }}" target ="_self">
+                        <a href="{{ path('login_send_mail', { 'usr_id' : unlock_usr_id }) }}" target ="_self">
                             {% trans 'login:: Envoyer a nouveau le mail de confirmation' %}
                         </a>
                     </div>
@@ -70,7 +70,7 @@
                             {% trans "Forgot password?" %}
                         </a>
                     </div>
-                    {% if app.isCaptchaRequired() %}
+                    {% if recaptcha_display %}
                         <div class="row-fluid">
                             <div class="span12">
                                 {{ macro.captcha() }}
@@ -95,7 +95,7 @@
             </div>
         </div>
     </div><!-- /sidebar block -->
-    {% if app['authentication.providers'] | count > 0 %}
+    {% if authentication_providers | count > 0 %}
     <div class="well-large sidebar-block">
         <div class="row-fluid">
             <div class="span12 text-center">
@@ -111,13 +111,11 @@
     {% endif %}
 
     {% include "login/include/register-link-block.html.twig" %}
-    {% include "login/include/guest-access-block.html.twig" %}
+    {% include "login/include/guest-access-block.html.twig" with {"guest_allowed": guest_allowed} %}
 {% endblock %}
 
 {% block left_content %}
     {{ parent() }}
-
-    {% set display_layout = app['phraseanet.registry'].get('GV_home_publi') %}
 
     {% if display_layout == 'DISPLAYx1' %}
         {% include 'login/include/x1-content.html.twig' %}

@@ -106,9 +106,9 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return $app['twig']->render('account/change-password.html.twig', array(
-            'form'  => $form->createView(),
-            'login' => new \login(),
+        return $app['twig']->render('account/change-password.html.twig', array_merge(
+            Login::getDefaultTemplateVariables($app),
+            array('form' => $form->createView())
         ));
     }
 
@@ -195,7 +195,7 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return $app['twig']->render('account/reset-email.html.twig');
+        return $app['twig']->render('account/reset-email.html.twig', Login::getDefaultTemplateVariables($app));
     }
 
     /**

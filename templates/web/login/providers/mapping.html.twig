@@ -75,7 +75,7 @@
                     <div class="text-right">
                         <a class="forget-password-link" href="{{ path("login_forgot_password") }}">{% trans "Forgot password?" %}</a>
                     </div>
-                    {% if app.isCaptchaRequired() %}
+                    {% if recaptcha_display %}
                         <div class="row-fluid">
                             <div class="span12">
                                 {{ macro.captcha() }}
@@ -110,7 +110,7 @@
             </div>
         </div>
     </div>
-    {% include "login/include/register-link-block.html.twig" with {"login" : login, "last_item" : app['registration.enabled']} %}
+    {% include "login/include/register-link-block.html.twig" with {"last_item" : register_enable} %}
 {% endblock %}
 
 {% block scripts %}

@@ -2,7 +2,7 @@
     {% set input_name = field.vars.name %}
 
     {% set attributes = custom_attributes|default({})|merge({
-            'class': app['browser'].getBrowser() == constant('Browser::BROWSER_IE') and app['browser'].getVersion() <= 8  ? '' : 'input-block-level',
+            'class': browser_name == constant('Browser::BROWSER_IE') and browser_version <= 8  ? '' : 'input-block-level',
         })
     %}
 
@@ -54,7 +54,7 @@
 
 {% macro providerList() %}
     <ul class="unstyled inline provider-list">
-        {% for provider in app['authentication.providers'] %}
+        {% for provider in authentication_providers %}
         <li>
             <a href="{{ path('login_authentication_provider_authenticate', { 'providerId' : provider.getId() } ) }}">
                 <img src="{{ provider.getIconURI() }}" />
@@ -139,7 +139,7 @@
 {% endmacro %}
 
 {% macro flashes() %}
-    {% for type in app.getAvailableFlashTypes %}
+    {% for type in flash_types %}
         {% for message in app.getFlash(type) %}
             <div class="alert alert-{{ type }}">
                 {% set sign = "icon-exclamation-sign" %}

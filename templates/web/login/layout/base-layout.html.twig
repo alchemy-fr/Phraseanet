@@ -14,9 +14,9 @@
                 <meta charset="utf-8">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <meta content="{{ app['phraseanet.registry'].get('GV_metaDescription') }}" name="description"/>
+                <meta content="{{ meta_description }}" name="description"/>
                 <meta http-equiv="X-UA-Compatible" content="chrome=1">
-                <meta content="{{ app['phraseanet.registry'].get('GV_metaKeywords') }}" name="keywords"/>
+                <meta content="{{ meta_keywords }}" name="keywords"/>
                 <meta content="phraseanet" name="generator"/>
             {% endblock header_meta %}
 
@@ -48,9 +48,9 @@
     </head>
     <body>
         {% block google_chrome_frame %}
-            {% if app['phraseanet.registry'].get('GV_display_gcf') %}
+            {% if display_google_chrome_frame %}
                 <!--[if lt IE 7]>
-                    {% set browserLink = "<a href='http://browsehappy.com/'>" ~ app['browser'].getBrowser() ~ "</a>"|raw %}
+                    {% set browserLink = "<a href='http://browsehappy.com/'>" ~ browser_name ~ "</a>"|raw %}
                     {% set GCFLink = "<a href='http://www.google.com/chromeframe/?redirect=true'>Google Chrome Frame</a>"|raw %}
                     <p class="alert alert-warning text-center">
                         <strong>{% trans %}You are using an outdated browser.{% endtrans %}</strong>
@@ -78,7 +78,7 @@
                                                    <li>
                                                       <a href="#">{% trans "Help" %}</a>
                                                    </li>
-                                                   {% if app.hasTermsOfUse() %}
+                                                   {% if has_terms_of_use %}
                                                        <li>
                                                            {% block tou_link %}
                                                                <a href="{{ path("login_cgus") }}">{% trans "Terms of use" %}</a>
@@ -106,7 +106,10 @@
                </div>
             {% endblock footer_scaffholding %}
         </div><!--/.fluid-container-->
-        {% include 'common/analytics.html.twig' %}
+        {% block analytics %}
+            {% include 'common/analytics.html.twig' %}
+        {% endblock analytics %}
+
         {% block scripts %}{% endblock scripts %}
     </body>
 </html>

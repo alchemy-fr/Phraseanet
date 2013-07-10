@@ -58,7 +58,7 @@
                             {% trans "Forgot password?" %}
                         </a>
                     </div>
-                    {% if app.isCaptchaRequired() %}
+                    {% if recaptcha_display %}
                         <div class="row-fluid">
                             <div class="span12">
                                 {{ macro.captcha() }}
@@ -84,7 +84,7 @@
             </div>
         </div>
     </div>
-    {% if app['authentication.providers'] | count > 0 %}
+    {% if authentication_providers | count > 0 %}
     <div class="well-large sidebar-block">
         <div class="row-fluid">
             <div class="span12 text-center">
