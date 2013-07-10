@@ -21,7 +21,7 @@ class XSendFileMappingGenerator extends Command
 {
     public function __construct($name = null)
     {
-        parent::__construct('xsendfile:configuration-generator');
+        parent::__construct('xsendfile:generate-mapping');
 
         $this->addOption('write', 'w', null, 'Writes the configuration')
             ->addOption('enabled', 'e', null, 'Set the enable toggle to `true`')
@@ -53,7 +53,7 @@ class XSendFileMappingGenerator extends Command
             $this->container['phraseanet.configuration']['xsendfile'] = $conf;
             $output->writeln(" <info>OK</info>");
             $output->writeln("");
-            $output->write("It now strongly recommended to use <info>xsendfile:configuration-dumper</info> command to upgrade your virtual-host");
+            $output->write("It is now strongly recommended to use <info>xsendfile:dump-configuration</info> command to upgrade your virtual-host");
         } else {
             $output->writeln("Configuration will <info>not</info> be written, use <info>--write</info> option to write it");
             $output->writeln("");
