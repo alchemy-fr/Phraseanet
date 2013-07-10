@@ -61,6 +61,7 @@ class PhraseaEngine implements SearchEngineInterface
     public function getAvailableDateFields()
     {
         if (!$this->dateFields) {
+            $this->dateFields = array();
             foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
                 foreach ($databox->get_meta_structure() as $databox_field) {
                     if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
