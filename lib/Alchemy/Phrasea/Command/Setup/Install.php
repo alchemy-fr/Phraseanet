@@ -126,7 +126,7 @@ class Install extends Command
                 $hostname = $dialog->ask($output, "DB hostname (localhost) : ", 'localhost');
                 $port = $dialog->ask($output, "DB port (3306) : ", 3306);
                 $dbUser = $dialog->ask($output, "DB user : ");
-                $dbPassword = $dialog->ask($output, "DB password : ");
+                $dbPassword = $dialog->askHiddenResponse($output, "DB password (hidden) : ");
                 $abName = $dialog->ask($output, "DB name (phraseanet) : ", 'phraseanet');
 
                 try {
@@ -192,7 +192,7 @@ class Install extends Command
             } while (!\Swift_Validate::email($email));
 
             do {
-                $password = $dialog->ask($output, 'Please provide a password (6 character min) : ');
+                $password = $dialog->askHiddenResponse($output, 'Please provide a password (hidden, 6 character min) : ');
             } while (strlen($password) < 6);
 
             $output->writeln("\n\t<info>Email / Password successfully set</info>\n");
