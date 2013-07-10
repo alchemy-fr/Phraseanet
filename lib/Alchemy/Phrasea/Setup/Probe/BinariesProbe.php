@@ -28,6 +28,7 @@ class BinariesProbe extends BinariesRequirements implements ProbeInterface
             'pdftotext_binary'   => isset($binaries['pdftotext_binary']) ? $binaries['pdftotext_binary'] : null,
             'ffmpeg_binary'      => isset($binaries['ffmpeg_binary']) ? $binaries['ffmpeg_binary'] : null,
             'ffprobe_binary'     => isset($binaries['ffprobe_binary']) ? $binaries['ffprobe_binary'] : null,
+            'recess_binary'      => isset($binaries['recess_binary']) ? $binaries['recess_binary'] : null,
         )));
     }
 

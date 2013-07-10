@@ -222,6 +222,7 @@ class Application extends SilexApplication
                     'gs.binaries'                  => 'ghostscript_binary',
                     'ffmpeg.ffmpeg.binaries'       => 'ffmpeg_binary',
                     'ffmpeg.ffprobe.binaries'      => 'ffprobe_binary',
+                    'recess.binaries'              => 'recess_binary',
                     'ffmpeg.ffmpeg.timeout'        => 'ffmpeg_timeout',
                     'ffmpeg.ffprobe.timeout'       => 'ffprobe_timeout',
                     'gs.timeout'                   => 'gs_timeout',
