@@ -238,16 +238,16 @@
         },
         {
             "name": "dailymotion/sdk",
-            "version": "1.51",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dailymotion/dailymotion-sdk-php.git",
-                "reference": "1.51"
+                "reference": "1.5.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dailymotion/dailymotion-sdk-php/zipball/1.51",
-                "reference": "1.51",
+                "url": "https://api.github.com/repos/dailymotion/dailymotion-sdk-php/zipball/1.5.1",
+                "reference": "1.5.1",
                 "shasum": ""
             },
             "type": "library",
