@@ -15,6 +15,7 @@ use Alchemy\Phrasea\SearchEngine\AbstractConfigurationPanel;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Finder\Finder;
+use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 
 class ConfigurationPanel extends AbstractConfigurationPanel
 {
@@ -23,9 +24,10 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     protected $charsets;
     protected $searchEngine;
 
-    public function __construct(SphinxSearchEngine $engine)
+    public function __construct(SphinxSearchEngine $engine, ConfigurationInterface $conf)
     {
         $this->searchEngine = $engine;
+        $this->conf = $conf;
     }
 
     /**
@@ -84,11 +86,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
      */
     public function getConfiguration()
     {
-        $configuration = @json_decode(file_get_contents($this->getConfigPathFile()), true);
-
-        if (!is_array($configuration)) {
-            $configuration = array();
-        }
+        $configuration = isset($this->conf['main']['search-engine']['options']) ? $this->conf['main']['search-engine']['options'] : array();
 
         if (!isset($configuration['charset_tables'])) {
             $configuration['charset_tables'] = array("common", "latin");
@@ -122,7 +120,9 @@ class ConfigurationPanel extends AbstractConfigurationPanel
      */
     public function saveConfiguration(array $configuration)
     {
-        file_put_contents($this->getConfigPathFile(), json_encode($configuration));
+        $conf = $this->conf->getConfig();
+        $conf['main']['search-engine']['options'] = $configuration;
+        $this->conf->setConfig($conf);
 
         return $this;
     }

@@ -13,15 +13,7 @@ namespace Alchemy\Phrasea\SearchEngine;
 
 abstract class AbstractConfigurationPanel implements ConfigurationPanelInterface
 {
-    /**
-     * Return the path to the file where the configuration is saved
-     *
-     * @return string The path to the file
-     */
-    public function getConfigPathFile()
-    {
-        return __DIR__ . '/../../../../config/'.$this->getName().'.json';
-    }
+    protected $conf;
 
     /**
      * {@inheritdoc}
@@ -41,5 +33,17 @@ abstract class AbstractConfigurationPanel implements ConfigurationPanelInterface
         }
 
         return $date_fields;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveConfiguration(array $configuration)
+    {
+        $conf = $this->conf->getConfig();
+        $conf['main']['search-engine']['options'] = $configuration;
+        $this->conf->setConfig($conf);
+
+        return $this;
     }
 }

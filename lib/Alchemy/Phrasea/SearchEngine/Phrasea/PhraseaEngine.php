@@ -216,7 +216,7 @@ class PhraseaEngine implements SearchEngineInterface
     public function getConfigurationPanel()
     {
         if (!$this->configurationPanel) {
-            $this->configurationPanel = new ConfigurationPanel($this);
+            $this->configurationPanel = new ConfigurationPanel($this, $this->app['phraseanet.configuration']);
         }
 
         return $this->configurationPanel;

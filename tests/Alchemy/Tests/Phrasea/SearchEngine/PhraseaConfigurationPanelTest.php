@@ -18,6 +18,6 @@ class PhraseaConfigurationPanelTest extends ConfigurationPanelAbstractTest
 
     public function getPanel()
     {
-        return new ConfigurationPanel(new PhraseaEngine(self::$DI['app']));
+        return new ConfigurationPanel(new PhraseaEngine(self::$DI['app']), self::$DI['app']['phraseanet.configuration']);
     }
 }
