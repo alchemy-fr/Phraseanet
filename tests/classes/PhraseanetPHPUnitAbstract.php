@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
+use Symfony\Component\Routing\RequestContext;
 
 abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 {
@@ -117,6 +118,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $app['form.csrf_provider'] = $app->share(function () {
                 return new CsrfTestProvider();
             });
+
+            $app['url_generator'] = $app->share($app->extend('url_generator', function($generator, $app) {
+                $host = parse_url($app['phraseanet.configuration']['main']['servername'], PHP_URL_HOST);
+                $generator->setContext(new RequestContext('', 'GET', $host));
+
+                return $generator;
+            }));
 
             $app['debug'] = true;
 

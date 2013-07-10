@@ -2,7 +2,6 @@
 
 * 3.8.0 (2013-xx-xx)
 
-  - BC Break : Removed `bin/console check:config` command.
   - BC Break : Removed `bin/console check:system` command, replaced by `bin/setup check:system`.
   - BC Break : Removed `bin/console system:upgrade` command, replaced by `bin/setup system:upgrade`.
   - BC Break : Removed `bin/console check:ensure-production-settings` and `bin/console check:ensure-dev-settings`
