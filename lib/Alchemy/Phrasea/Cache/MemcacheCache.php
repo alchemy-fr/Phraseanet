@@ -34,7 +34,7 @@ class MemcacheCache extends DoctrineMemcache implements Cache
      */
     public function isOnline()
     {
-        return $this->getMemcache()->getstats();
+        return (Boolean) $this->getMemcache()->getstats();
     }
 
     /**
