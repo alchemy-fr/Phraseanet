@@ -105,19 +105,21 @@ class PhraseaRegisterForm extends AbstractType
             }
         }
 
-        $builder->add('collections', 'choice', array(
-            'choices'     => $choices,
-            'multiple'    => true,
-            'expanded'    => false,
-            'constraints' => array(
-                new Assert\Choice(array(
-                    'choices' => $baseIds,
-                    'minMessage' => _('You must select at least %s collection.'),
-                    'multiple' => true,
-                    'min'      => 1,
-                )),
-            ),
-        ));
+        if (!$this->app['phraseanet.registry']->get('GV_autoSelectDb')) {
+            $builder->add('collections', 'choice', array(
+                'choices'     => $choices,
+                'multiple'    => true,
+                'expanded'    => false,
+                'constraints' => array(
+                    new Assert\Choice(array(
+                        'choices' => $baseIds,
+                        'minMessage' => _('You must select at least %s collection.'),
+                        'multiple' => true,
+                        'min'      => 1,
+                    )),
+                ),
+            ));
+        }
 
         foreach ($this->params as $param) {
             $name = $param['name'];
