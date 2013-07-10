@@ -4,7 +4,7 @@
 {% import "login/common/macros.html.twig" as auth_macro %}
 
 {% block title %}
-    {{ app['phraseanet.registry']->get('GV_homeTitle') }}
+    {{ app['phraseanet.registry'].get('GV_homeTitle') }}
 {% endblock %}
 
 {% block header_rss %}
