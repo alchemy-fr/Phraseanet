@@ -11,22 +11,16 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use Doctrine\Common\Cache\MemcacheCache as DoctrineMemcache;
+use Doctrine\Common\Cache\MemcachedCache as DoctrineMemcached;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-class MemcacheCache extends DoctrineMemcache implements Cache
+class MemcachedCache extends DoctrineMemcached implements Cache
 {
-
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'memcache';
+        return 'memcached';
     }
 
     /**
@@ -34,7 +28,7 @@ class MemcacheCache extends DoctrineMemcache implements Cache
      */
     public function isOnline()
     {
-        return (Boolean) $this->getMemcache()->getstats();
+        return (Boolean) $this->getMemcached()->getstats();
     }
 
     /**
