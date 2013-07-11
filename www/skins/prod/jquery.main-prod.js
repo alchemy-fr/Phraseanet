@@ -1517,7 +1517,7 @@ function editThis(type,value)
     }
 
     $.ajax({
-        url: "/prod/records/edit/",
+        url: "../prod/records/edit/",
         type: "POST",
         dataType: "html",
         data: options,
