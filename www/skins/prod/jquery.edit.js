@@ -1527,8 +1527,11 @@ function preset_copy()
     }
   }
   $("#Edit_copyPreset_dlg FORM DIV").html(html);
-  if ( $("#Edit_copyPreset_dlg").data("ui-dialog")) {
-      $("#Edit_copyPreset_dlg").dialog('open');
+  var $dialog = $("#Edit_copyPreset_dlg");
+  if ($dialog.data("ui-dialog")) {
+      // to show dialog on top of edit window
+      $dialog.dialog("widget").css("z-index", 1300);
+      $dialog.dialog("open");
   }
 }
 
