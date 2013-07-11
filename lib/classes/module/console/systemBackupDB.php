@@ -18,6 +18,7 @@
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 
 class module_console_systemBackupDB extends Command
@@ -35,7 +36,7 @@ class module_console_systemBackupDB extends Command
         $this
             ->setDescription('Backup Phraseanet Databases')
             ->addArgument('directory', null, 'The directory where to backup', $dir)
-            ->addOption('timeout', 't', null, 'The timeout for this command (default is 3600s / 1h). Set 0 to disable timeout.', 3600)
+            ->addOption('timeout', 't', InputOption::VALUE_REQUIRED, 'The timeout for this command (default is 3600s / 1h). Set 0 to disable timeout.', 3600)
             ->addOption('gzip', 'g', null, 'Gzip the output (requires gzip utility)')
             ->addOption('bzip', 'b', null, 'Bzip the output (requires bzip2 utility)');
 
