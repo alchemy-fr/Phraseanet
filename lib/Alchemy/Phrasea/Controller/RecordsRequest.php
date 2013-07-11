@@ -19,10 +19,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RecordsRequest extends ArrayCollection
 {
+    protected $isSingleStory = false;
     protected $received;
     protected $basket;
     protected $databoxes;
     protected $collections;
+
+    const FLATTEN_NO = false;
+    const FLATTEN_YES = true;
+    const FLATTEN_YES_PRESERVE_STORIES = 'preserve';
 
     /**
      * Constructor
@@ -32,17 +37,20 @@ class RecordsRequest extends ArrayCollection
      * @param Basket          $basket
      * @param Boolean         $flatten
      */
-    public function __construct(array $elements, ArrayCollection $received, Basket $basket = null, $flatten = false)
+    public function __construct(array $elements, ArrayCollection $received, Basket $basket = null, $flatten = self::FLATTEN_NO)
     {
         parent::__construct($elements);
         $this->received = $received;
         $this->basket = $basket;
+        $this->isSingleStory = ($flatten !== self::FLATTEN_YES && 1 === count($this) && $this->first()->is_grouping());
 
-        if ($flatten) {
+        if (self::FLATTEN_NO !== $flatten) {
             $to_remove = array();
             foreach ($this as $key => $record) {
                 if ($record->is_grouping()) {
-                    $to_remove[] = $key;
+                    if (self::FLATTEN_YES === $flatten) {
+                        $to_remove[] = $key;
+                    }
                     foreach ($record->get_children() as $child) {
                         $this->set($child->get_serialize_key(), $child);
                     }
@@ -140,13 +148,7 @@ class RecordsRequest extends ArrayCollection
      */
     public function isSingleStory()
     {
-        if ($this->count() === 1) {
-            if ($this->first()->is_grouping()) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->isSingleStory;
     }
 
     /**
@@ -192,7 +194,7 @@ class RecordsRequest extends ArrayCollection
      * @param  array          $rightsDatabox
      * @return RecordsRequest
      */
-    public static function fromRequest(Application $app, Request $request, $flattenStories = false, array $rightsColl = array(), array $rightsDatabox = array())
+    public static function fromRequest(Application $app, Request $request, $flattenStories = self::FLATTEN_NO, array $rightsColl = array(), array $rightsDatabox = array())
     {
         $elements = $received = array();
         $basket = null;

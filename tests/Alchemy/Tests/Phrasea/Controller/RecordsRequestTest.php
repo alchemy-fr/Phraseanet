@@ -260,6 +260,26 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertNotContains($story->getRecord(self::$DI['app'])->get_serialize_key(), $exploded);
     }
 
+    public function testSimpleStoryFlattenAndPreserve()
+    {
+        $story = $this->getStoryWZ();
+        $request = new Request(array('story' => $story->getId()));
+
+        $records = RecordsRequest::fromRequest(self::$DI['app'], $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES);
+
+        $this->assertEquals(1, count($records));
+        $this->assertEquals(1, count($records->received()));
+        $this->assertEquals(1, count($records->stories()));
+        $this->assertInstanceOf('\record_adapter', $records->singleStory());
+        $this->assertTrue($records->isSingleStory());
+        $this->assertCount(1, $records->databoxes());
+
+        $serialized = $records->serializedList();
+        $exploded = explode(';', $serialized);
+
+        $this->assertEquals($story->getRecord(self::$DI['app'])->get_serialize_key(), $serialized);
+    }
+
     protected function getStoryWZ()
     {
         $story = new \Entities\StoryWZ();
