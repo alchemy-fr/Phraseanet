@@ -310,6 +310,7 @@ class Root implements ControllerProviderInterface
             'search_order'      => SearchEngineOptions::SORT_MODE_DESC,
             'storage_access'    => $this->getDocumentStorageAccess($app),
             'tabs_setup'        => $this->getTabSetup($app),
+            'module'            => 'client',
             'menubar'           => $app['twig']->render('common/menubar.html.twig', array('module'           => 'client')),
             'css_file'          => $this->getCssFile($app),
             'basket_status'     => null !== $app['authentication']->getUser()->getPrefs('client_basket_status') ? $app['authentication']->getUser()->getPrefs('client_basket_status') : "1",
@@ -515,7 +516,7 @@ class Root implements ControllerProviderInterface
 
         $subRequest = Request::create('/client/query/', 'POST', $queryParameters);
 
-        return $app->handle($subRequest, HttpKernelInterface::SUB_REQUEST)->getContent();
+        return $this->query($app, $subRequest)->getContent();
     }
 
      /**
