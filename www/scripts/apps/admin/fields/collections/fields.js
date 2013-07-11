@@ -30,9 +30,9 @@ define([
 
             var pattern = new RegExp(letters, "gi");
 
-            return this.filter(function(data) {
+            return _(this.filter(function(data) {
                 return pattern.test(data.get("name"));
-            });
+            }));
         },
         comparator: function(item) {
             return item.get("sorter");
