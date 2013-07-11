@@ -61,6 +61,12 @@ class RecordsRequest extends ArrayCollection
                 $this->remove($key);
             }
         }
+
+        $i = 1;
+        $records = $this->toArray();
+        array_walk($records, function ($record) use (&$i) {
+            $record->set_number($i++);
+        });
     }
 
     /**
