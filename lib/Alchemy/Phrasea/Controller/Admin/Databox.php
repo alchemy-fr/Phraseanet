@@ -1045,7 +1045,7 @@ class Databox implements ControllerProviderInterface
             $collection = \collection::create($app, $databox, $app['phraseanet.appbox'], $name, $app['authentication']->getUser());
 
             if (($request->request->get('ccusrothercoll') === "on")
-                && ($othcollsel = $request->request->get('othcollsel') !== null)) {
+                && (null !== $othcollsel = $request->request->get('othcollsel'))) {
                 $query = new \User_Query($app);
                 $total = $query->on_base_ids(array($othcollsel))->get_total();
                 $n = 0;
