@@ -708,6 +708,9 @@ function triggerShortcuts()
             }
         }
     }).dialog('option','buttons',buttons).dialog('open');
+
+    $('#keyboard-dialog').scrollTop(0);
+
     return false;
 }
 
