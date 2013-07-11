@@ -328,9 +328,9 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $basket = $this->insertOneBasket();
 
-        $route = sprintf('/prod/baskets/%s/archive/', $basket->getId());
+        $route = sprintf('/prod/baskets/%s/archive/?archive=1', $basket->getId());
 
-        $crawler = self::$DI['client']->request('POST', $route, array('archive' => '1'));
+        $crawler = self::$DI['client']->request('POST', $route);
 
         $response = self::$DI['client']->getResponse();
 
@@ -338,7 +338,8 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($basket->getArchived());
 
-        $crawler = self::$DI['client']->request('POST', $route, array('archive' => '0'));
+        $route = sprintf('/prod/baskets/%s/archive/?archive=0', $basket->getId());
+        $crawler = self::$DI['client']->request('POST', $route);
 
         $response = self::$DI['client']->getResponse();
 
@@ -353,12 +354,10 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $basket = $this->insertOneBasket();
 
-        $route = sprintf('/prod/baskets/%s/archive/', $basket->getId());
+        $route = sprintf('/prod/baskets/%s/archive/?archive=1', $basket->getId());
 
         $crawler = self::$DI['client']->request(
-            'POST', $route, array(
-            'archive' => '1'
-            ), array(), array(
+            'POST', $route, array(), array(), array(
             "HTTP_ACCEPT" => "application/json"
             )
         );
@@ -369,10 +368,9 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($basket->getArchived());
 
+        $route = sprintf('/prod/baskets/%s/archive/?archive=0', $basket->getId());
         $crawler = self::$DI['client']->request(
-            'POST', $route, array(
-            'archive' => '0'
-            ), array(), array(
+            'POST', $route, array(), array(), array(
             "HTTP_ACCEPT" => "application/json"
             )
         );

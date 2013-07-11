@@ -345,7 +345,7 @@ class Basket implements ControllerProviderInterface
         $basket = $app['EM']->getRepository('\Entities\Basket')
             ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), true);
 
-        $archive_status = !!$request->request->get('archive');
+        $archive_status = (Boolean) $request->query->get('archive');
 
         $basket->setArchived($archive_status);
 
