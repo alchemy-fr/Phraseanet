@@ -218,16 +218,16 @@ class Records implements ControllerProviderInterface
                     $deleted[] = $element->getRecord($app)->get_serialize_key();
                 }
 
-                $attachedStories = $StoryWZRepository->findByRecord($record);
+                $attachedStories = $StoryWZRepository->findByRecord($app, $record);
 
                 foreach ($attachedStories as $attachedStory) {
                     $app['EM']->remove($attachedStory);
                 }
 
-                $record->delete();
                 $deleted[] = $record->get_serialize_key();
+                $record->delete();
             } catch (\Exception $e) {
-
+                
             }
         }
 
