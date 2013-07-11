@@ -942,8 +942,8 @@ class databox extends base
                     )
                 ) ? $type : databox_field::TYPE_STRING;
 
-            $multi = isset($field['multi']) ? (Boolean) $field['multi'] : false;
-
+            $multi = isset($field['multi']) ? (Boolean) (string) $field['multi'] : false;
+            
             $meta_struct_field = databox_field::create($this->app, $this, $fname, $multi);
             $meta_struct_field
                 ->set_readonly(isset($field['readonly']) ? (string) $field['readonly'] : 0)
