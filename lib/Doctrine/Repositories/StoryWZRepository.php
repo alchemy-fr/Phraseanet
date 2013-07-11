@@ -107,7 +107,7 @@ class StoryWZRepository extends EntityRepository
         return $story;
     }
 
-    public function findByRecord(\record_adapter $Story)
+    public function findByRecord(Application $app, \record_adapter $Story)
     {
         $dql = 'SELECT s FROM Entities\StoryWZ s WHERE s.sbas_id = :sbas_id
                 AND s.record_id = :record_id';
@@ -122,7 +122,7 @@ class StoryWZRepository extends EntityRepository
 
         foreach ($stories as $key => $story) {
             try {
-                $record = $story->getRecord();
+                $record = $story->getRecord($app);
             } catch (NotFoundHttpException $e) {
                 $this->getEntityManager()->remove($story);
                 $this->getEntityManager()->flush();
@@ -133,7 +133,7 @@ class StoryWZRepository extends EntityRepository
         return $stories;
     }
 
-    public function findByDatabox(\databox $databox)
+    public function findByDatabox(Application $app, \databox $databox)
     {
         $dql = 'SELECT s FROM Entities\StoryWZ s WHERE s.sbas_id = :sbas_id';
 
@@ -146,7 +146,7 @@ class StoryWZRepository extends EntityRepository
 
         foreach ($stories as $key => $story) {
             try {
-                $record = $story->getRecord();
+                $record = $story->getRecord($app);
             } catch (NotFoundHttpException $e) {
                 $this->getEntityManager()->remove($story);
                 $this->getEntityManager()->flush();
