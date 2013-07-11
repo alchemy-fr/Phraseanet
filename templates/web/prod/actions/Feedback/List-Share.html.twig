@@ -29,8 +29,8 @@
               <img src="/skins/icons/user.png"/>
             </td>
             <td style="width:150px;padding:5px;">
-              {{ owner.getUser().get_display_name() }}
-              <input type="hidden" name="usr_id" value="{{ owner.getUser().get_id() }}" />
+              {{ owner.getUser(app).get_display_name() }}
+              <input type="hidden" name="usr_id" value="{{ owner.getUser(app).get_id() }}" />
             </td>
             <td style="padding-right:10px;min-width:100px;">
               {% if app['authentication'].getUser().get_id() == owner.getUser(app).get_id() %}
