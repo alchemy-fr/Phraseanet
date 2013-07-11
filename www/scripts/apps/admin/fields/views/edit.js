@@ -183,23 +183,10 @@ define([
 
             modalView.render();
             modalView.on("modal:confirm", function() {
-                self.model.destroy({
-                    success: function(model, response) {
-                        AdminFieldApp.fieldListView.collection.remove(self.model);
-                        self._selectModelView(index);
-
-                        new AlertView({alert: "info", message: i18n.t("deleted_success", {
-                                postProcess: "sprintf",
-                                sprintf: [model.get("name")]
-                            })
-                        }).render();
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        new AlertView({
-                            alert: "error", message: '' !== xhr.responseText ? xhr.responseText : i18n.t("something_wrong")
-                        }).render();
-                    }
-                });
+                AdminFieldApp.fieldsToDelete.push(self.model);
+                AdminFieldApp.fieldListView.collection.remove(self.model);
+                self._selectModelView(index);
+                AdminFieldApp.saveView.updateStateButton();
             });
 
             return this;
@@ -217,7 +204,7 @@ define([
         _selectModelView: function(index) {
              // select previous or next itemview
             if (index >= 0) {
-                AdminFieldApp.fieldListView.itemViews[index].select().animate();
+                AdminFieldApp.fieldListView.itemViews[index].select().animate().click();
             }
         },
         _toggleLabels: function(event) {

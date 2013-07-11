@@ -122,10 +122,7 @@ define([
                 "label_fr" : $("#new-label_fr", this.$el).val(),
                 "label_de" : $("#new-label_de", this.$el).val(),
                 "label_nl" : $("#new-label_nl", this.$el).val(),
-                "multi": $("#new-multivalued", this.$el).is(":checked"),
-                "sorter": AdminFieldApp.fieldsCollection.max(function(model) {
-                    return model.get("sorter");
-                }).get("sorter") + 1
+                "multi": $("#new-multivalued", this.$el).is(":checked")
             });
 
             field.save(null, {

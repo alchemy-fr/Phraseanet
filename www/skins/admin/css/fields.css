@@ -53,6 +53,7 @@
 #admin-field-app #collection-fields li table {
     table-layout: fixed;
     width: 100%;
+    height: 100%;
 }
 
 #admin-field-app #collection-fields li .field-name {
@@ -219,6 +220,10 @@
     height: 42px;
     line-height: 42px;
     font-weight: bold
+}
+
+#admin-field-app .save-all{
+    padding: 15px;
 }
 
 #admin-field-app .overlay {

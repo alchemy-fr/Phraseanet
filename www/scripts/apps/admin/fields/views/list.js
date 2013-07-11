@@ -30,6 +30,7 @@ define([
             // rerender whenever there is a change on the collection
             this.collection.bind("reset", this.render, this);
             this.collection.bind("add", this.render, this);
+            this.collection.bind("remove", this._onRemove, this);
             this.collection.bind("remove", this.render, this);
 
             AdminFieldApp.errorManager.on('add-error', function(error) {
@@ -112,15 +113,27 @@ define([
 
             return this;
         },
+        _onRemove : function (model) {
+            var models = [];
+            this.collection.each(function(m) {
+                if (m.get("sorter") > model.get("sorter")) {
+                    m.set("sorter", m.get("sorter") - 1);
+                }
+
+                models.push(m);
+            });
+
+            this.collection.reset(models);
+        },
         updateSortAction: function(event, model, ui) {
             var newPosition = ui.item.index();
             this.collection.remove(model, {silent: true});
             this.collection.each(function (model, index) {
                 var ordinal = index;
-                if (index >= newPosition) ordinal += 1;
+                if (index >= newPosition) ordinal += 2; else ordinal += 1;
                 model.set({'sorter': ordinal}, {silent: true});
             });
-            model.set({'sorter': newPosition}, {silent: true});
+            model.set({'sorter': newPosition + 1}, {silent: true});
             this.collection.add(model, {at: newPosition});
 
             this.itemViews[0].animate(Math.abs(ui.firstItemPosition));

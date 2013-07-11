@@ -24,12 +24,13 @@ define([
         DcFieldsCollection, FieldListView, SaveView, FieldErrorView, ErrorManager) {
     var initialize = function() {
         AdminFieldApp = {
-            $window     : $(window),
-            $scope      : $("#admin-field-app"),
-            $top        : $(".row-top", this.$scope),
-            $bottom     : $(".row-bottom", this.$scope),
-            $leftBlock  : $(".left-block", this.$bottom),
-            $rightBlock : $(".right-block", this.$bottom),
+            $window         : $(window),
+            $scope          : $("#admin-field-app"),
+            $top            : $(".row-top", this.$scope),
+            $bottom         : $(".row-bottom", this.$scope),
+            $leftBlock      : $(".left-block", this.$bottom),
+            $rightBlock     : $(".right-block", this.$bottom),
+            fieldsToDelete  : [],
             resizeListBlock: function () {
                 var listBlock = $(".list-block", AdminFieldApp.$leftBlock);
                 listBlock.height(AdminFieldApp.$window.height() - listBlock.offset().top - 10);
@@ -92,7 +93,9 @@ define([
                 AdminFieldApp.$window.trigger("resize");
 
                 // click on first item list
-                _.first(AdminFieldApp.fieldListView.itemViews).clickAction().animate();
+                if (AdminFieldApp.fieldListView.itemViews.length > 0 ) {
+                    _.first(AdminFieldApp.fieldListView.itemViews).clickAction().animate();
+                }
             }
         );
     };

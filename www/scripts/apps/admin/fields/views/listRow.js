@@ -70,6 +70,10 @@ define([
 
             return this;
         },
+        click: function() {
+            this.$el.find('.trigger-click').first().trigger('click');
+            return this;
+        },
         // scroll to current view in item list
         animate: function (top) {
             top = top || null;
