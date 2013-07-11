@@ -179,6 +179,17 @@ class Manage extends Helper
 
             }
 
+            if ($sendCredentials) {
+                $urlToken = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id());
+
+                if ($receiver && false !== $urlToken) {
+                    $url = $this->app->url('login_renew_password', array('token' => $urlToken));
+                    $mail = MailRequestPasswordSetup::create($this->app, $receiver, null, '', $url);
+                    $mail->setLogin($createdUser->get_login());
+                    $this->app['notification.deliverer']->deliver($mail);
+                }
+            }
+
             if ($validateMail) {
                 $createdUser->set_mail_locked(true);
 
@@ -188,17 +199,6 @@ class Manage extends Helper
                     $url = $this->app->url('login_register_confirm', array('code' => $token));
 
                     $mail = MailRequestEmailConfirmation::create($this->app, $receiver, null, '', $url, $expire);
-                    $this->app['notification.deliverer']->deliver($mail);
-                }
-            }
-
-            if ($sendCredentials) {
-                $urlToken = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id());
-
-                if ($receiver && false !== $urlToken) {
-                    $url = $this->app->url('login_renew_password', array('token' => $urlToken));
-                    $mail = MailRequestPasswordSetup::create($this->app, $receiver, null, '', $url);
-                    $mail->setLogin($createdUser->get_login());
                     $this->app['notification.deliverer']->deliver($mail);
                 }
             }
