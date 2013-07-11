@@ -160,37 +160,37 @@
     });
 
     $('.FeedbackSend', this.container).bind('click', function(){
-      if($('.badges .badge', $container).length === 0)
-      {
-        alert(language.FeedBackNoUsersSelected);
-        return;
-      }
+        if($('.badges .badge', $container).length === 0)
+        {
+          alert(language.FeedBackNoUsersSelected);
+          return;
+        }
 
-      var buttons = {};
+        var buttons = {};
 
-      buttons[language.send] = function(){
-        $dialog.Close();
+        buttons[language.send] = function(){
+          $dialog.Close();
 
-        $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
-        $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
-        $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
-        $('input[name="recept"]', $FeedBackForm).attr('checked', $('input[name="recept"]', $dialog.getDomElement()).attr('checked'));
+          $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
+          $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
+          $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
+          $('input[name="recept"]', $FeedBackForm).attr('checked', $('input[name="recept"]', $dialog.getDomElement()).attr('checked'));
 
-        $FeedBackForm.trigger('submit');
-      };
+          $FeedBackForm.trigger('submit');
+        };
 
-      var options = {
-        size : 'Small',
-        buttons : buttons,
-        loading : true,
-        title : language.send,
-        closeOnEscape : true,
-        cancelButton : true
-      };
+        var options = {
+          size : 'Small',
+          buttons : buttons,
+          loading : true,
+          title : language.send,
+          closeOnEscape : true,
+          cancelButton : true
+        };
 
-      var $dialog = p4.Dialog.Create(options, 2);
+        var $dialog = p4.Dialog.Create(options, 2);
 
-      var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
+        var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
 
       var html = _.template($("#feedback_sendform_tpl").html());
 
