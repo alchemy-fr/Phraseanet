@@ -192,9 +192,7 @@
 
       var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
 
-      var html = _.template($("#feedback_sendform_tpl").html(), {
-            item: item
-      });
+      var html = _.template($("#feedback_sendform_tpl").html());
 
         $dialog.setContent(html);
 
