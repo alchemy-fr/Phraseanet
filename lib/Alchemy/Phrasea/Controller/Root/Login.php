@@ -666,9 +666,9 @@ class Login implements ControllerProviderInterface
             'redirect' => $request->query->get("redirect")
         ));
 
-        $response->headers->removeCookie('persistent');
-        $response->headers->removeCookie('last_act');
-        $response->headers->removeCookie('postlog');
+        $response->headers->clearCookie('persistent');
+        $response->headers->clearCookie('last_act');
+        $response->headers->clearCookie('postlog');
 
         return $response;
     }
@@ -774,8 +774,8 @@ class Login implements ControllerProviderInterface
             $response = $app->redirectPath('prod');
         }
 
-        $response->headers->removeCookie('postlog');
-        $response->headers->removeCookie('last_act');
+        $response->headers->clearCookie('postlog');
+        $response->headers->clearCookie('last_act');
 
         return $response;
     }
