@@ -38,7 +38,7 @@ class Edit implements ControllerProviderInterface
 
         $controllers->post('/', function(Application $app, Request $request) {
 
-            $records = RecordsRequest::fromRequest($app, $request, true, array('canmodifrecord'));
+            $records = RecordsRequest::fromRequest($app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, array('canmodifrecord'));
 
             $thesaurus = $multipleDataboxes = false;
             $status = $ids = $elements = $suggValues =
