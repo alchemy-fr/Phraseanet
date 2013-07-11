@@ -452,7 +452,7 @@ class databox extends base
             $n+=50;
         }
 
-        foreach ($this->app['EM']->getRepository('\Entities\StoryWZ')->findByDatabox($this) as $story) {
+        foreach ($this->app['EM']->getRepository('\Entities\StoryWZ')->findByDatabox($this->app, $this) as $story) {
             $this->app['EM']->remove($story);
         }
 
