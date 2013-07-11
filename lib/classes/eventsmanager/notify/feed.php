@@ -171,7 +171,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return _('Recevoir des notifications lorsqu\'on me push quelque chose');
+        return _('Receive notification when a publication is available');
     }
 
     /**
