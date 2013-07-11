@@ -33,7 +33,7 @@ function getHome(cas, page){
         case 'PUBLI':
             answAjax = $.ajax({
                 type: "GET",
-                url: "/prod/feeds/",
+                url: "../prod/feeds/",
                 dataType: 'html',
                 data: {
                     page: page
@@ -120,7 +120,7 @@ function getHome(cas, page){
 function getLanguage(){
     $.ajax({
         type: "GET",
-        url: "/prod/language/",
+        url: "../prod/language/",
         dataType: 'json',
         success: function(data){
             language = data;
@@ -618,7 +618,7 @@ function cancelCgus(id)
 
     $.ajax({
         type: "POST",
-        url: "/prod/TOU/deny/" + id + "/",
+        url: "../prod/TOU/deny/" + id + "/",
         dataType:'json',
         success: function(data){
             if(data.success)
@@ -1517,7 +1517,7 @@ function editThis(type,value)
     }
 
     $.ajax({
-        url: "/prod/records/edit/",
+        url: "../prod/records/edit/",
         type: "POST",
         dataType: "html",
         data: options,
@@ -1623,7 +1623,7 @@ function deleteThis(lst)
 
     $.ajax({
         type: "POST",
-        url: "/prod/records/delete/what/",
+        url: "../prod/records/delete/what/",
         dataType: 'html',
         data: {lst: lst},
         success: function(data){
@@ -1643,7 +1643,7 @@ function chgCollThis(datas)
     });
     $.ajax({
         type: "POST",
-        url: "/prod/records/movecollection/",
+        url: "../prod/records/movecollection/",
         data: datas,
         success: function(data){
             $dialog.setContent(data);
@@ -1658,7 +1658,7 @@ function pushThis(sstt_id, lst, story)
         title:'Push'
     });
 
-    $.post("/prod/push/sendform/", {
+    $.post("../prod/push/sendform/", {
         lst : lst,
         ssel : sstt_id,
         story : story
@@ -1676,7 +1676,7 @@ function feedbackThis(sstt_id, lst, story)
         title:'Feedback'
     });
 
-    $.post("/prod/push/validateform/", {
+    $.post("../prod/push/validateform/", {
         lst : lst,
         ssel : sstt_id,
         story : story
@@ -1694,7 +1694,7 @@ function toolREFACTOR(datas){
         loading: true
     });
 
-    $.get("/prod/tools/"
+    $.get("../prod/tools/"
         , datas
         , function(data){
             dialog.setContent(data);
@@ -2004,7 +2004,7 @@ function activeIcons()
                 break;
         }
 
-        $.post("/prod/feeds/requestavailable/"
+        $.post("../prod/feeds/requestavailable/"
             , options
             , function(data){
 
@@ -2097,7 +2097,7 @@ function activeIcons()
 
         if (false === $.isEmptyObject(params)) {
             var dialog = p4.Dialog.Create();
-            dialog.load('/prod/records/property/', 'GET', params);
+            dialog.load('../prod/records/property/', 'GET', params);
         } else {
             alert(language.nodocselected);
         }
@@ -2363,7 +2363,7 @@ function shareThis(bas,rec)
         title: language['share']
     });
 
-    dialog.load("/prod/share/record/"+bas+"/"+rec+ "/","GET");
+    dialog.load("../prod/share/record/"+bas+"/"+rec+ "/","GET");
 }
 
 function printThis(value)
@@ -2385,7 +2385,7 @@ function printThis(value)
 
     $.ajax({
         type: "POST",
-        url: '/prod/printer/?'+value,
+        url: '../prod/printer/?'+value,
         dataType: 'html',
         beforeSend:function(){
 
@@ -2403,7 +2403,7 @@ function downloadThis(datas)
 {
     var dialog = p4.Dialog.Create({title: language['export']});
 
-    $.post("/prod/export/multi-export/", datas, function(data) {
+    $.post("../prod/export/multi-export/", datas, function(data) {
 
         dialog.setContent(data);
 
@@ -2550,7 +2550,7 @@ function doDelete(lst)
         children = '1';
     $.ajax({
         type: "POST",
-        url: "/prod/delete/",
+        url: "../prod/delete/",
         dataType: 'json',
         data: {
             lst: lst.join(';'),
@@ -2597,7 +2597,7 @@ function archiveBasket(basket_id)
 {
     $.ajax({
         type: "POST",
-        url: "/prod/baskets/" + basket_id + "/archive/?archive=1",
+        url: "../prod/baskets/" + basket_id + "/archive/?archive=1",
         dataType:'json',
         beforeSend:function(){
 
@@ -2643,7 +2643,7 @@ function deleteBasket(item)
     var k = $(item).attr('id').split('_').slice(1,2).pop();	// id de chutier
     $.ajax({
         type: "POST",
-        url: "/prod/baskets/"+k+'/delete/',
+        url: "../prod/baskets/"+k+'/delete/',
         dataType:'json',
         beforeSend:function(){
 
