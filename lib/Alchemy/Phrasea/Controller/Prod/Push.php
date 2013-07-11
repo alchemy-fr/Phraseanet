@@ -44,11 +44,11 @@ class Push implements ControllerProviderInterface
         };
     }
 
-    protected function getListFormatter()
+    protected function getListFormatter($app)
     {
         $userFormatter = $this->getUserFormatter();
 
-        return function(\Entities\UsrList $List) use ($userFormatter) {
+        return function(\Entities\UsrList $List) use ($userFormatter, $app) {
             $entries = array();
 
             foreach ($List->getEntries() as $entry) {
@@ -106,7 +106,7 @@ class Push implements ControllerProviderInterface
 
         $userFormatter = $this->getUserFormatter();
 
-        $listFormatter = $this->getListFormatter();
+        $listFormatter = $this->getListFormatter($app);
 
         $userSelection = $this->getUsersInSelectionExtractor();
 
