@@ -28,6 +28,9 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
             ->with('main')
             ->will($this->returnValue(true));
         $app['phraseanet.configuration']->expects($this->any())
+            ->method('isSetup')
+            ->will($this->returnValue(true));
+        $app['phraseanet.configuration']->expects($this->any())
             ->method('offsetGet')
             ->with('main')
             ->will($this->returnValue(array('languages' => array('fr_FR', 'en_US', 'de'))));
@@ -49,6 +52,9 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
             ->with('main')
             ->will($this->returnValue(true));
         $app['phraseanet.configuration']->expects($this->any())
+            ->method('isSetup')
+            ->will($this->returnValue(true));
+        $app['phraseanet.configuration']->expects($this->any())
             ->method('offsetGet')
             ->with('main')
             ->will($this->returnValue(array('languages' => array('en_US'))));
@@ -57,9 +63,6 @@ class LocaleServiceProvidertest extends \PhraseanetPHPUnitAbstract
             ->method('error');
 
         $original = Application::getAvailableLanguages();
-        unset($original['nl_NL']);
-        unset($original['fr_FR']);
-        unset($original['de_DE']);
 
         $this->assertEquals($original, $app['locales.available']);
     }
