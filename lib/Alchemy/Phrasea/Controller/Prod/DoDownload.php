@@ -57,7 +57,7 @@ class DoDownload implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{token}/get/', $this->call('downloadDocuments'))
+        $controllers->match('/{token}/get/', $this->call('downloadDocuments'))
             ->bind('document_download')
             ->assert('token', '[a-zA-Z0-9]{8,16}');
 

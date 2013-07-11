@@ -40,7 +40,7 @@
             <img class="require_alert" src="/skins/icons/alert.png" style="display:none;cursor:help;" title="{% trans 'edit::Certains champs doivent etre remplis pour valider cet editing' %}">
         </div>
         <div style='position:absolute; bottom:0px; left:0px; height:20px'>
-            <div class="previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}/"></div>
+            <div class="previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}"></div>
             <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}" src="/skins/icons/info.gif"/>
         </div>
         <div class="reg_opts" style="display:none;position:absolute;bottom:0;right:0;">
