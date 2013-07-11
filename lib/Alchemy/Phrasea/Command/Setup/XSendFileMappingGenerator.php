@@ -66,8 +66,8 @@ class XSendFileMappingGenerator extends Command
     private function computeMapping($paths)
     {
         return array_merge(array(
-            array('mount-point' => 'lazaret', 'directory' => $this->container['root.path'] . '/tmp/lazaret'),
-            array('mount-point' => 'download', 'directory' => $this->container['root.path'] . '/tmp/download'),
+            array('mount-point' => 'protected_lazaret', 'directory' => $this->container['root.path'] . '/tmp/lazaret'),
+            array('mount-point' => 'protected_download', 'directory' => $this->container['root.path'] . '/tmp/download'),
         ), array_map(array($this, 'pathsToConf'), array_unique($paths)));
     }
 
