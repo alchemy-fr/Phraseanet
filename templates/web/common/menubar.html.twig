@@ -58,7 +58,7 @@
           {# MODULE #}
           {% if app['authentication'].getUser().ACL.has_access_to_module('report') %}
           <li>
-            <a target="_blank" href="{{ app.path('report_dashboard') }}">
+            <a target="_blank" href="{{ path('report_dashboard') }}">
               <span class="{% if module == "report" %}selected{% endif %}">
                 {% trans 'admin::monitor: module report' %}
               </span>
@@ -79,10 +79,10 @@
           {% if module == "prod" %}
             {% if app['authentication'].getUser().ACL.has_access_to_module('upload') %}
             <li>
-                {% set link = '/prod/upload/' %}
+                {% set link = path('upload_form') %}
 
                 {% if not app['browser'].supportFileAPI() %}
-                    {% set link = '/prod/upload/flash-version/' %}
+                    {% set link = path('upload_flash_form') %}
                 {% endif %}
 
                 <a  href="{{ link }}" class="dialog full-dialog" title="{% trans 'Upload' %}">
