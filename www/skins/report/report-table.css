@@ -351,9 +351,6 @@ table.center{
 	padding-top:30px;
 }
 
-.form{
-	margin-left: 10px;
-}
 div.form_titre{
 	padding-bottom:2px;
 	font-size:large;
@@ -370,21 +367,18 @@ div.form_titre{
 	float:left;
 	width: 140px;
 	padding:3px;
-	height:120px;
 	border-right:1px  groove #454545;
 }
 .form2{
 	float:left;
 	width: 400px;
 	padding:3px;
-	height:120px;
 	border-right: 1px groove #454545;
 }
 .form3{
 	float:left;
 	width: 420px;
 	padding:3px;
-	height:120px;
 }
 input{
 	font-family: Verdana, sans-serif;
