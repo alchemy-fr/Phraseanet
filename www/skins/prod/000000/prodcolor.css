@@ -4245,3 +4245,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
 ui-dialog-titlebar {
     min-height: 20px;
 }
+
+.chim-wrapper {
+    position: relative;
+    float: left;
+}

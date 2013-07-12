@@ -326,9 +326,9 @@
 
 {% macro display_basket(app, basket) %}
   {% for basket_element in basket.getElements() %}
-      <span class="wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }}">
+      <div class="chim-wrapper wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }}">
       {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd()) }}
-      </span>
+      </div>
   {% endfor %}
 {% endmacro %}
 
@@ -344,7 +344,7 @@
   </div>
 
   {% for basket_element in basket.getElementsByOrder(ordre) %}
-      <span class="wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }} valid">
+      <span class="chim-wrapper wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }} valid">
           <table style="width: 100%; min-width: 330px; display: inline-block;">
               <tr>
                   <td style="width:80px;">
