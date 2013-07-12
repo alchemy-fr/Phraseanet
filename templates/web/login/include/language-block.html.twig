@@ -7,10 +7,12 @@
 
 {% set currentUrl = app['request'].getBaseUrl() ~ app['request'].getPathInfo() ~ qs %}
 
-<div id="authentication-sidebar-language" class="text-right well-small">
-    <span class="language"><b>{% trans "language" %}</b></span>
-    <div class="btn-group">
-        <button id="language-button" class="btn btn-mini btn-flat dropdown-toggle" data-toggle="dropdown">
+<div id="authentication-sidebar-language" class="text-right well-small clearfix">
+    <div class="pull-left">
+        <a href="{{ path("homepage") }}" title="{% trans "Home" %}"><i class="icon-home icon-white"></i></a>
+    </div>
+    <div class="pull-right btn-group">
+        <button id="language-button" class="btn btn-mini btn-flat dropdown-toggle" data-toggle="dropdown" type="button">
             {{ attribute(languages, app['locale']) }}
             <span class="caret"></span>
         </button>
@@ -20,4 +22,5 @@
             {% endfor %}
         </ul>
     </div>
+    <div class="language pull-right"><b>{% trans "language" %}</b></div>
 </div>

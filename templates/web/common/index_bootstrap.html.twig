@@ -9,6 +9,10 @@
         <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/build/bootstrap/css/bootstrap-responsive.css' }) }}" />
         <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/common/main.css' }) }}"/>
 
+        <!--[if lte IE 8]>
+            <script type="text/javascript" src="{{ path('minifier', {'f' : 'assets/json3/lib/json3.js'}) }}"></script>
+        <![endif]-->
+
         <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js' }) }}"></script>
         <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.10.3.js' }) }}"></script>
         <script type="text/javascript">

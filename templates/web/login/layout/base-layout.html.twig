@@ -27,12 +27,16 @@
             {% block header_stylesheet %}
                 <link rel="stylesheet" href="{{ path('minifier', { 'g' : 'authentication_css' }) }}">
 
-                <!--[if IE 7]>
+                <!--[if lte IE 8]>
                     <link rel="stylesheet" href="{ path('minifier', { 'f' : 'assets/font-awesome/css/font-awesome-ie7.min.css' }) }}">
                 <![endif]-->
             {% endblock header_stylesheet %}
 
             {% block header_javascript %}
+                 <!--[if lte IE 8]>
+                    <script type="text/javascript" src="{{ path('minifier', {'f' : 'assets/json3/lib/json3.js'}) }}"></script>
+                <![endif]-->
+
                 {# include backbone templates #}
                 {% include "login/common/templates.html.twig" %}
 
@@ -46,7 +50,7 @@
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
         {% endif %}
-        <div class="container full-height">
+        <div class="container">
             {% block content_scaffholding %}
 
             {% endblock %}
