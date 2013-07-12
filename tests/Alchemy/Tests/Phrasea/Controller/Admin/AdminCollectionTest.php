@@ -371,6 +371,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertContains('/admin/collection/'.$collection->get_base_id().'/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     /**
