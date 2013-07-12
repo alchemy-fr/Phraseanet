@@ -88,6 +88,8 @@ use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\InstallerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\LessBuilderServiceProvider;
+use Alchemy\Phrasea\Core\Provider\LessCompilerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
@@ -255,6 +257,8 @@ class Application extends SilexApplication
         $this->register(new PluginServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
         $this->register(new ReCaptchaServiceProvider());
+        $this->register(new LessCompilerServiceProvider());
+        $this->register(new LessBuilderServiceProvider());
 
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
             if ($app['phraseanet.registry']->get('GV_captchas')) {
@@ -667,7 +671,7 @@ class Application extends SilexApplication
     }
 
     /**
-     * Tells if a captcha is required for next authentication
+     * Returns true if a captcha is required for next authentication
      *
      * @return boolean
      */
@@ -680,6 +684,32 @@ class Application extends SilexApplication
         }
 
         return false;
+    }
+
+    /**
+     * Returns true if guest access is allowed.
+     *
+     * @return boolean
+     */
+    public function isGuestAllowed()
+    {
+        $usrId = \User_Adapter::get_usr_id_from_login($this, 'invite');
+
+        if (!$usrId) {
+            return false;
+        }
+
+        return count(\User_Adapter::getInstance($usrId, $this)->ACL()->get_granted_base()) > 0;
+    }
+
+    /**
+     * Returns true if application has terms of use
+     *
+     * @return noolean
+     */
+    public function hasTermsOfUse()
+    {
+        return '' !== \databox_cgu::getHome($this);
     }
 
     /**

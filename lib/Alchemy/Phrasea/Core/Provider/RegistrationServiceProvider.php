@@ -25,9 +25,19 @@ class RegistrationServiceProvider implements ServiceProviderInterface
         });
 
         $app['registration.enabled'] = $app->share(function (Application $app){
-            $login = new \login();
+            require_once __DIR__ . '/../../../../classes/deprecated/inscript.api.php';
 
-            return $login->register_enabled($app);
+            $bases = giveMeBases($app);
+
+            if ($bases) {
+                foreach ($bases as $base) {
+                    if ($base['inscript']) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         });
 
         $app['registration.optional-fields'] = $app->share(function (Application $app) {

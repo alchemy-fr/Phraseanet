@@ -45,9 +45,9 @@
                         </div>
                     </div>
 
-                    {% for field in app['registration.fields'] %}
+                    {% for field in registration_fields %}
                         {% set name = field['name'] %}
-                        {% if name in app['registration.optional-fields']|keys %}
+                        {% if name in registration_optional_fields|keys %}
                             <div class="row-fluid">
                                 <div class="span12">
                                     {{ auth_macro.fieldInput(attribute(form, name|camelize), "registerForm") }}

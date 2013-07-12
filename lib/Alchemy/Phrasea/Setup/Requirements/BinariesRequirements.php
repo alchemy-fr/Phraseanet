@@ -213,5 +213,13 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
             'FFProbe (or avprobe) is required for Video processing',
             'Please install FFProbe (or avprobe)'
         );
+
+        $recess = isset($binaries['recess_binary']) ? $binaries['recess_binary'] : $finder->find('recess');
+
+        $this->addRecommendation(
+            null !== $recess && is_executable($recess),
+            'Recess is required for compiling css or less files.',
+            'Please install Recess (https://github.com/twitter/recess)'
+        );
     }
 }

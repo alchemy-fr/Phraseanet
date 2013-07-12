@@ -10,11 +10,13 @@
  */
 
 use Alchemy\Phrasea\CLI;
-use Alchemy\Phrasea\Core\Version;
-use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
-use Alchemy\Phrasea\Command\Developer\RoutesDumper;
 use Alchemy\Phrasea\Command\Developer\APIRoutesDumper;
 use Alchemy\Phrasea\Command\Developer\Behat;
+use Alchemy\Phrasea\Command\Developer\JavascriptBuilder;
+use Alchemy\Phrasea\Command\Developer\LessCompiler;
+use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
+use Alchemy\Phrasea\Command\Developer\RoutesDumper;
+use Alchemy\Phrasea\Core\Version;
 
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
@@ -66,6 +68,8 @@ try {
     $cli->command(new APIRoutesDumper());
     $cli->command(new RoutesDumper());
     $cli->command(new Behat());
+    $cli->command(new LessCompiler());
+    $cli->command(new JavascriptBuilder());
 
     $cli['console']->addCommands(array(
         // DBAL Commands

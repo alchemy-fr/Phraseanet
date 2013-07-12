@@ -167,6 +167,10 @@ class setup
                 'name'   => 'FFmpeg',
                 'binary' => $finder->find('ffmpeg')
             ),
+            'recess' => array(
+                'name'   => 'Recesss',
+                'binary' => $finder->find('recess')
+            ),
         );
     }
 }

@@ -263,6 +263,7 @@ class Install extends Command
             'mp4box_binary'        => $this->executableFinder->find('MP4Box'),
             'pdftotext_binary'     => $this->executableFinder->find('pdftotext'),
             'ghostscript_binary'   => $this->executableFinder->find('gs'),
+            'recess_binary'        => $this->executableFinder->find('recess'),
         );
     }
 }
