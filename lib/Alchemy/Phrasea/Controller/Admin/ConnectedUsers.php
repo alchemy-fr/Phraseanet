@@ -36,13 +36,15 @@ class ConnectedUsers implements ControllerProviderInterface
     public function listConnectedUsers(Application $app, Request $request)
     {
         $dql = 'SELECT s FROM Entities\Session s
-            LEFT JOIN s.modules m
             WHERE
-                s.created > (CURRENT_TIMESTAMP() - 15 * 60)
-                OR m.created > (CURRENT_TIMESTAMP() - 5 * 60)
-            ORDER BY s.created DESC';
+                s.updated > :date
+            ORDER BY s.updated DESC';
+
+        $date = new \DateTime('-2 hours');
+        $params = array('date' => $date->format('Y-m-d h:i:s'));
 
         $query = $app['EM']->createQuery($dql);
+        $query->setParameters($params);
         $sessions = $query->getResult();
 
         $result = array();
@@ -68,7 +70,9 @@ class ConnectedUsers implements ControllerProviderInterface
                     $info = '';
                 }
             } catch (GeonamesExceptionInterface $e) {
-
+                $app['monolog']->error(sprintf(
+                    "Unable to get IP information for %s : %s", $session->getIpAddress(), $e->getMessage()
+                ));
             }
 
             $result[] = array(
