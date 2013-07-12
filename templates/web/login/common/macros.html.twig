@@ -2,7 +2,7 @@
     {% set input_name = field.vars.name %}
 
     {% set attributes = custom_attributes|default({})|merge({
-            'class': browser_name == constant('Browser::BROWSER_IE') and browser_version <= 8  ? '' : 'input-block-level',
+            'class': app['browser'].getBrowser() == constant('Browser::BROWSER_IE') and app['browser'].getVersion() <= 8  ? '' : 'input-block-level',
         })
     %}
 
@@ -139,7 +139,7 @@
 {% endmacro %}
 
 {% macro flashes() %}
-    {% for type in flash_types %}
+    {% for type in app.getAvailableFlashTypes %}
         {% for message in app.getFlash(type) %}
             <div class="alert alert-{{ type }}">
                 {% set sign = "icon-exclamation-sign" %}

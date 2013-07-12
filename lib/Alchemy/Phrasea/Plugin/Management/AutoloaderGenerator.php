@@ -42,9 +42,9 @@ class AutoloaderGenerator
 EOF;
 
         foreach ($manifests as $manifest) {
-            $filepath = $this->pluginDirectory . DIRECTORY_SEPARATOR . $manifest->getName() . DIRECTORY_SEPARATOR . 'login.less';
+            $filepath = $this->pluginDirectory . DIRECTORY_SEPARATOR . $manifest->getName() . DIRECTORY_SEPARATOR . 'less' . DIRECTORY_SEPARATOR . 'login.less';
             if (is_file($filepath)) {
-                $relativePath = $manifest->getName() . DIRECTORY_SEPARATOR . 'login.less';
+                $relativePath = $manifest->getName() . DIRECTORY_SEPARATOR . 'less' . DIRECTORY_SEPARATOR . 'login.less';
                 $buffer .= <<<EOF
 
     @import "$relativePath";
@@ -62,9 +62,9 @@ EOF;
 EOF;
 
         foreach ($manifests as $manifest) {
-            $filepath = $this->pluginDirectory . DIRECTORY_SEPARATOR . $manifest->getName() . DIRECTORY_SEPARATOR . 'account.less';
+            $filepath = $this->pluginDirectory . DIRECTORY_SEPARATOR . $manifest->getName() . DIRECTORY_SEPARATOR . 'less' . DIRECTORY_SEPARATOR . 'account.less';
             if (is_file($filepath)) {
-                $relativePath = $manifest->getName() . DIRECTORY_SEPARATOR . 'account.less';
+                $relativePath = $manifest->getName() . DIRECTORY_SEPARATOR . 'less' . DIRECTORY_SEPARATOR . 'account.less';
                 $buffer .= <<<EOF
 
     @import "$relativePath";

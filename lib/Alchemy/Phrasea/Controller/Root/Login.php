@@ -47,6 +47,31 @@ use Symfony\Component\Form\FormInterface;
 
 class Login implements ControllerProviderInterface
 {
+    public static function getDefaultTemplateVariables(Application $app)
+    {
+        return array(
+            'instance_title' => $app['phraseanet.registry']->get('GV_homeTitle'),
+            'has_terms_of_use' => $app->hasTermsOfUse(),
+            'display_google_chrome_frame' => $app['phraseanet.registry']->get('GV_display_gcf'),
+            'meta_description' =>  $app['phraseanet.registry']->get('GV_metaDescription'),
+            'meta_keywords' => $app['phraseanet.registry']->get('GV_metakeywords'),
+            'browser_name' => $app['browser']->getBrowser(),
+            'browser_version' => $app['browser']->getVersion(),
+            'available_language' => $app->getAvailableLanguages(),
+            'locale' => $app['locale'],
+            'current_url' => $app['request']->getUri(),
+            'flash_types' => $app->getAvailableFlashTypes(),
+            'recaptcha_display' => $app->isCaptchaRequired(),
+            'unlock_usr_id' => $app->getUnlockAccountData(),
+            'guest_allowed' => $app->isGuestAllowed(),
+            'register_enable' => $app['registration.enabled'],
+            'display_layout' => $app['phraseanet.registry']->get('GV_home_publi'),
+            'authentication_providers' => $app['authentication.providers'],
+            'registration_fields' => $app['registration.fields'],
+            'registration_optional_fields' => $app['registration.optional-fields']
+        );
+    }
+
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
@@ -162,7 +187,10 @@ class Login implements ControllerProviderInterface
 
         // Displays Terms of use
         $controllers->get('/cgus', function(PhraseaApplication $app, Request $request) {
-            return $app['twig']->render('login/cgus.html.twig', self::getDefaultTemplateVariables($app));
+            return $app['twig']->render('login/cgus.html.twig', array_merge(
+                array('cgus' => \databox_cgu::getHome($app)),
+                self::getDefaultTemplateVariables($app)
+            ));
         })->bind('login_cgus');
 
         $controllers->get('/language.json', 'login.controller:getLanguage')
@@ -1016,30 +1044,5 @@ class Login implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
 
         return $event->getResponse();
-    }
-
-    public static function getDefaultTemplateVariables(Application $app)
-    {
-        return array(
-            'instance_title' => $app['phraseanet.registry'].get('GV_homeTitle'),
-            'has_terms_of_use' => $app->hasTermsOfUse(),
-            'display_google_chrome_frame' => $app['phraseanet.registry']->get('GV_display_gcf'),
-            'meta_description' =>  $app['phraseanet.registry']->get('GV_metaDescription'),
-            'meta_keywords' => $app['phraseanet.registry']->get('GV_metakeywords'),
-            'browser_name' => $app['browser']->getBrowser(),
-            'browser_version' => $app['browser']->getVersion(),
-            'available_language' => $app->getAvailableLanguages(),
-            'locale' => $app['locale'],
-            'current_url' => $app['request']->getUri(),
-            'flash_types' => $app->getAvailableFlashTypes(),
-            'recaptcha_display' => $app->isCaptchaRequired(),
-            'unlock_usr_id' => $app->getUnlockAccountData(),
-            'guest_allowed' => $app->isGuestAllowed(),
-            'register_enable' => $app['registration.enabled'],
-            'display_layout' => $app['phraseanet.registry']->get('GV_home_publi'),
-            'authentication_providers' => $app['authentication.providers'],
-            'registration_fields' => $app['registration.fields'],
-            'registration_optional_fields' => $app['registration.optional-fields']
-        );
     }
 }
