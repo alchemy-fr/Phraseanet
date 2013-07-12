@@ -65,6 +65,14 @@
               <field>base_id</field>
             </fields>
           </index>
+          <index>
+            <name>collection</name>
+            <type>UNIQUE</type>
+            <fields>
+              <field>sbas_id</field>
+              <field>server_coll_id</field>
+            </fields>
+          </index>
         </indexes>
         <engine>InnoDB</engine>
       </table>
