@@ -88,16 +88,18 @@ class Session implements ControllerProviderInterface
         }
 
         $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
-
+        $session->setUpdated(new \DateTime());
+        
         if (!$session->hasModuleId($moduleId)) {
             $module = new \Entities\SessionModule();
             $module->setModuleId($moduleId);
             $module->setSession($session);
             $app['EM']->persist($module);
-            $app['EM']->persist($session);
         } else {
             $app['EM']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
         }
+
+        $app['EM']->persist($session);
         $app['EM']->flush();
 
         $ret['status'] = 'ok';
