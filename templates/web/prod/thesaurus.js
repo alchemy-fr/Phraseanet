@@ -44,11 +44,11 @@ function T_Gfilter(o)
 {
   var f;
   if(o.nodeName=="FORM")
-    f = $(o).children(":text").val();
+    f = $(o).find("input[name=search_value]").val();
   else if(o.nodeName=="INPUT")
-    f = o.value;
+    f = $(o).val();
 
-  T_Gfilter_delayed(f, 0);
+    T_Gfilter_delayed(f, 0);
 
   switch(p4.thesau.currentWizard)
   {

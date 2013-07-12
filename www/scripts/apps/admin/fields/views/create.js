@@ -21,7 +21,8 @@ define([
         events: {
             "click .btn-submit-field": "createAction",
             "click .btn-add-field": "toggleCreateFormAction",
-            "click .btn-cancel-field": "toggleCreateFormAction"
+            "click .btn-cancel-field": "toggleCreateFormAction",
+            "keyup input":  "onKeyupInput"
         },
         render: function() {
             var template = _.template($("#create_template").html());
@@ -50,6 +51,13 @@ define([
             }).autocomplete("widget").addClass("ui-autocomplete-admin-field");
 
             return this;
+        },
+        onKeyupInput: function (event) {
+            $(event.target)
+                .closest(".control-group")
+                .removeClass("error")
+                .find(".help-block")
+                .empty();
         },
         createAction: function(event) {
             var self = this;

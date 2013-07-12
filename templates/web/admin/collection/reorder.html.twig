@@ -32,8 +32,8 @@
 
         activeButtons(select, upButton, downButton);
 
-        select.find('option').bind('click', function(){
-             activeButtons(select, upButton, downButton);
+        select.bind('click', function(){
+            activeButtons(select, upButton, downButton);
         });
 
         $("#natcase-reorder").bind('click', function(){
@@ -104,7 +104,7 @@
                 upButton.attr('disabled', false);
             }
 
-            if (selectedIndex + 1 === select.length) {
+            if (selectedIndex + 1 === select.find('option').length) {
                 downButton.attr('disabled', true);
             } else {
                 downButton.attr('disabled', false);

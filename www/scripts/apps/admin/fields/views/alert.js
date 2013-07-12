@@ -23,6 +23,7 @@ define([
             if (options) {
                 this.alert = options.alert || "info";
                 this.message = options.message || "";
+                this.delay = parseInt(options.delay, 10) || 0;
             }
             // remove view when alert is closed
             this.$el.bind("closed", function () {
@@ -30,11 +31,16 @@ define([
             });
         },
         render: function() {
+            var self = this;
             var template = _.template($("#alert_template").html(), {
                 msg: this.message
             });
 
             this.$el.addClass("alert-" + this.alert).html(template).alert();
+
+            if (this.delay > 0) {
+                window.setTimeout(function() { self.$el.alert('close') }, this.delay);
+            }
 
             $(".block-alert").empty().append(this.$el);
 
