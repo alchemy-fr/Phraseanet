@@ -4,7 +4,7 @@
 <div style="margin:0 7px;overflow:hidden;">
     {% for basket_element in basket.getElements() %}
     {% set record = basket_element.getRecord(app) %}
-        <span class="wrapCHIM_{{basket_element.getId()}} valid">
+        <div class="chim-wrapper wrapCHIM_{{basket_element.getId()}} valid">
             <div style="margin:20px;">
                 <table style="width: 100%; min-width: 330px;">
                     <tr valign="top">
@@ -44,7 +44,7 @@
                     </tr>
                 </table>
             </div>
-        </span>
+        </div>
         <div><hr/></div>
     {% endfor %}
 </div>
