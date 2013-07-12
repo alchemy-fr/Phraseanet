@@ -59,7 +59,8 @@ define([
 
                                 new AlertView({
                                     alert: "success",
-                                    message: i18n.t("fields_save")
+                                    message: i18n.t("fields_save"),
+                                    delay: 2000
                                 }).render();
                             },
                             error: function(xhr, textStatus, errorThrown) {
