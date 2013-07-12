@@ -1020,7 +1020,7 @@ class Collection implements ControllerProviderInterface
         }
 
         return $app->redirectPath('admin_display_collection', array(
-            'bas_id'      => $collection->get_sbas_id(),
+            'bas_id'      => $collection->get_base_id(),
             'success'     => (int) $success,
             'reload-tree' => 1,
         ));
