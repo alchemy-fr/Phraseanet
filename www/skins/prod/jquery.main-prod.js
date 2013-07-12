@@ -1064,7 +1064,7 @@ $(document).ready(function(){
         stop:function(){
 
             var el = $('.SSTT.active').next().find('div:first');
-            var w = el.find('span:first').outerWidth();
+            var w = el.find('div.chim-wrapper:first').outerWidth();
             var iw = el.innerWidth();
             var diff  = $('#idFrameC').width() - el.outerWidth();
             var n = Math.floor(iw/w);
@@ -1079,7 +1079,7 @@ $(document).ready(function(){
             }
             if(nwidth<265)
                 nwidth = 265;
-            if(el.find('span:first').hasClass('valid') && nwidth<410)
+            if(el.find('div.chim-wrapper:first').hasClass('valid') && nwidth<410)
                 nwidth = 410;
 
 
