@@ -12,9 +12,9 @@
 namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Alchemy\Phrasea\Http\XSendFile\XSendFileFactory;
 use Symfony\Component\Yaml\Yaml;
 
 class XSendFileMappingGenerator extends Command
@@ -35,17 +35,20 @@ class XSendFileMappingGenerator extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $paths = $this->extractPath($this->container['phraseanet.appbox']);
+        foreach ($paths as $path) {
+            $this->container['filesystem']->mkdir($path);
+        }
+
         $type = strtolower($input->getArgument('type'));
         $enabled = $input->getOption('enabled');
 
-        if (!in_array($type, array('nginx', 'apache'))) {
-            throw new InvalidArgumentException('Invalid type %s, available types are `nginx` or `apache`');
-        }
+        $factory = new XSendFileFactory($this->container['monolog'], true, $type, $this->computeMapping($paths));
+        $mode = $factory->getMode(true);
 
         $conf = array(
             'enabled' => $enabled,
             'type' => $type,
-            'mapping' => $this->computeMapping($paths),
+            'mapping' => $mode->getMapping(),
         );
 
         if ($input->getOption('write')) {
@@ -90,6 +93,6 @@ class XSendFileMappingGenerator extends Command
             }
         }
 
-        return array_unique($paths);
+        return array_filter(array_unique($paths));
     }
 }
