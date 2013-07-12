@@ -25,7 +25,11 @@ class XSendFileMappingGeneratorTest extends \PhraseanetPHPUnitAbstract
             ->will($this->returnValue($option));
 
         $command = new XSendFileMappingGenerator();
+        $phpunit = $this;
 
+        self::$DI['app']['monolog'] = self::$DI['app']->share(function () use ($phpunit) {
+            return $phpunit->getMockBuilder('Monolog\Logger')->disableOriginalConstructor()->getMock();
+        });
         self::$DI['app']['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
         if ($option) {
             self::$DI['app']['phraseanet.configuration']->expects($this->once())
