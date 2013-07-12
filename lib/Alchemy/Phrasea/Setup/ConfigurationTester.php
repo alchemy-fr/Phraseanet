@@ -18,12 +18,14 @@ use Alchemy\Phrasea\Setup\Version\Probe\Probe38;
 use Alchemy\Phrasea\Setup\Version\Probe\ProbeInterface as VersionProbeInterface;
 use Alchemy\Phrasea\Setup\Probe\BinariesProbe;
 use Alchemy\Phrasea\Setup\Probe\CacheServerProbe;
-use Alchemy\Phrasea\Setup\Probe\OpcodeCacheProbe;
+use Alchemy\Phrasea\Setup\Probe\DataboxStructureProbe;
 use Alchemy\Phrasea\Setup\Probe\FilesystemProbe;
 use Alchemy\Phrasea\Setup\Probe\LocalesProbe;
+use Alchemy\Phrasea\Setup\Probe\OpcodeCacheProbe;
 use Alchemy\Phrasea\Setup\Probe\PhpProbe;
 use Alchemy\Phrasea\Setup\Probe\PhraseaProbe;
 use Alchemy\Phrasea\Setup\Probe\SearchEngineProbe;
+use Alchemy\Phrasea\Setup\Probe\SubdefsPathsProbe;
 use Alchemy\Phrasea\Setup\Probe\SystemProbe;
 
 class ConfigurationTester
@@ -52,12 +54,14 @@ class ConfigurationTester
         $this->requirements = array(
             BinariesProbe::create($this->app),
             CacheServerProbe::create($this->app),
+            DataboxStructureProbe::create($this->app),
             OpcodeCacheProbe::create($this->app),
             FilesystemProbe::create($this->app),
             LocalesProbe::create($this->app),
             PhpProbe::create($this->app),
             PhraseaProbe::create($this->app),
             SearchEngineProbe::create($this->app),
+            SubdefsPathsProbe::create($this->app),
             SystemProbe::create($this->app),
         );
 
