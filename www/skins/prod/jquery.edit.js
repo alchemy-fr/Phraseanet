@@ -1954,19 +1954,21 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     }
   });
 
-  $('#EDIT_MID_R', p4.edit.editBox).resizable({
-    handles : 'w',
-    minWidth:200,
-    resize:function(){
-      vsplit2();
-      setPreviewEdit();
-    },
-    stop:function(){
-      setPref('editing_left_box', Math.floor($('#EDIT_MID_R').width() * 100 / $('#EDIT_MID').width()) + '%');
-      vsplit2();
-      setSizeLimits();
-    }
-  });
+$('#EDIT_MID_R')
+    .css('left', $('#EDIT_MID_R').position().left)
+    .resizable({
+        handles : 'w',
+        minWidth:200,
+        resize:function(){
+          vsplit2();
+          setPreviewEdit();
+        },
+        stop:function(){
+          setPref('editing_left_box', Math.floor($('#EDIT_MID_R').width() * 100 / $('#EDIT_MID').width()) + '%');
+          vsplit2();
+          setSizeLimits();
+        }
+    });
 
   $('#EDIT_ZOOMSLIDER', p4.edit.editBox).slider({
     min:60,
