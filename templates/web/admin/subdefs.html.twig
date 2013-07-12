@@ -65,7 +65,7 @@
 
       function checkPresence( o ) {
 
-        var el = $('input[name=subdefs[]][value='+get_current_group()+'_'+o.val()+']');
+        var el = $('input[name="subdefs[]"][value="'+get_current_group()+'_'+o.val()+'"]');
         if ( el.length !== 0 ) {
           o.addClass( "ui-state-error" );
           updateTips( "SubdefName should be unique per group" );
