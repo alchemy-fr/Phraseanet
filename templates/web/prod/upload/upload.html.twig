@@ -98,7 +98,8 @@
 
                         {# upload box #}
                         <div class='upload-box' style="display: none;">
-                            <h5>{% trans 'Selected files' %} : <span class="pull-right number-files">0</span></h5>
+                            {% set quantity = '<span class="number-files">0</span>' %}
+                            <h5>{% trans %}{{ quantity }}selected files{% endtrans %}</h5>
                             <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Clear list' %}</button>
                             <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Send' %}</button>
                             <div class="clear"></div>
