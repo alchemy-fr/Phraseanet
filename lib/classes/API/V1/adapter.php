@@ -433,6 +433,7 @@ class API_V1_adapter extends API_V1_Abstract
                     'ffprobe'           => isset($binaries['ffprobe_binary']) ? $binaries['ffprobe_binary'] : null,
                     'mp4box'            => isset($binaries['mp4box_binary']) ? $binaries['mp4box_binary'] : null,
                     'pdftotext'         => isset($binaries['pdftotext_binary']) ? $binaries['pdftotext_binary'] : null,
+                    'recess'            => isset($binaries['recess_binary']) ? $binaries['recess_binary'] : null,
                     'pdfmaxpages'       => $app['phraseanet.registry']->get('GV_pdfmaxpages'),),
                 'mainConfiguration' => array(
                     'adminMail'          => $app['phraseanet.registry']->get('GV_adminMail'),

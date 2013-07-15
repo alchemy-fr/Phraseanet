@@ -456,6 +456,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $crawler = self::$DI['client']->request('GET', '/login/register-classic/?providerId=provider-test');
 
+        echo self::$DI['client']->getResponse();
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals(1, $crawler->filterXPath("//input[@value='supermail@superprovider.com' and @name='email']")->count());
     }

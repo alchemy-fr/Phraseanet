@@ -21,6 +21,8 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
             $pluginsDir . '/autoload.php',
             $pluginsDir . '/commands.php',
             $pluginsDir . '/twig-paths.php',
+            $pluginsDir . '/login.less',
+            $pluginsDir . '/account.less',
         );
 
         $this->cleanup($files);
@@ -64,6 +66,9 @@ class AutoloaderGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $mapping = require $pluginsDir . '/twig-paths.php';
         $this->assertSame(array('plugin-test-plugin' => $pluginsDir . '/test-plugin/views', $pluginsDir . '/test-plugin/views', $pluginsDir . '/test-plugin/twig-views'), $mapping);
+
+        $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/login.less'));
+        $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/account.less'));
 
         $this->cleanup($files);
     }

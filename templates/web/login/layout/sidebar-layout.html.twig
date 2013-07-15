@@ -1,7 +1,7 @@
 {% extends "login/layout/base-layout.html.twig" %}
 
 {% block title %}
-    {{ app['phraseanet.registry'].get('GV_homeTitle')|default('Phraseanet') }}
+    {{ instance_title|default('Phraseanet') }}
 {% endblock %}
 
 {% block content_scaffholding %}

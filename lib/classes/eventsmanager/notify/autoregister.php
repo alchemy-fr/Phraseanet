@@ -220,9 +220,8 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
     public function is_available()
     {
         $bool = false;
-        $login = new \login();
 
-        if ( ! $this->app['authentication']->isAuthenticated() || ! $login->register_enabled($this->app)) {
+        if ( ! $this->app['authentication']->isAuthenticated() || ! $this->app['registration.enabled']) {
             return false;
         }
 
