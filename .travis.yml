@@ -18,7 +18,6 @@ before_script:
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
   - composer self-update
   - composer install --dev --prefer-source
-  - bin/developer dependencies:all --prefer-source
   - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
   - tar xzf sphinx-2.0.6-release.tar.gz
   - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make -j --quiet && sudo make install"
@@ -56,6 +55,7 @@ php:
 
 script:
   - bin/setup system:upgrade -y -v -f
+  - bin/developer dependencies:all --prefer-source
   - php hudson/cleanupSubdefs.php
   - bin/developer assets:compile-less
   - bin/developer assets:build-javascript
