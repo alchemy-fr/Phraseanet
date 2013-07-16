@@ -57,14 +57,16 @@ try {
  under certain conditions; type `about:license' for details.\n\n"
             . ' Phraseanet Developer Tools ', Version::getName() . ' ' . Version::getNumber());
 
-    $helpers = array(
-        'db' => new ConnectionHelper($cli['EM']->getConnection()),
-        'em' => new EntityManagerHelper($cli['EM'])
-    );
+    if ($cli['phraseanet.configuration']->isSetup()) {
+        $helpers = array(
+            'db' => new ConnectionHelper($cli['EM']->getConnection()),
+            'em' => new EntityManagerHelper($cli['EM'])
+        );
 
-    $helperSet = $cli['console']->getHelperSet();
-    foreach ($helpers as $name => $helper) {
-        $helperSet->set($helper, $name);
+        $helperSet = $cli['console']->getHelperSet();
+        foreach ($helpers as $name => $helper) {
+            $helperSet->set($helper, $name);
+        }
     }
 
     $cli->command(new InstallAll());

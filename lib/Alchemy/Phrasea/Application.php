@@ -89,7 +89,6 @@ use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\InstallerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LessBuilderServiceProvider;
-use Alchemy\Phrasea\Core\Provider\LessCompilerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
@@ -255,7 +254,6 @@ class Application extends SilexApplication
         $this->register(new PhraseaVersionServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
         $this->register(new ReCaptchaServiceProvider());
-        $this->register(new LessCompilerServiceProvider());
         $this->register(new LessBuilderServiceProvider());
 
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
