@@ -52,7 +52,6 @@ class CLI extends Application
 
         $this->register(new PluginServiceProvider());
         $this->register(new ComposerSetupServiceProvider());
-
         $this->register(new CLIDriversServiceProvider());
         $this->register(new LessBuilderServiceProvider());
 

@@ -28,7 +28,7 @@ class RecessDriver extends AbstractBinary
 
     /**
      * @param array|ConfigurationInterface $conf
-     * @param LoggerInterface $logger
+     * @param LoggerInterface              $logger
      *
      * @return RecessDriver
      */
