@@ -54,8 +54,8 @@ php:
   - 5.5
 
 script:
-  - bin/setup system:upgrade -y -v -f
   - bin/developer dependencies:all --prefer-source
+  - bin/setup system:upgrade -y -v -f
   - php hudson/cleanupSubdefs.php
   - bin/developer assets:compile-less
   - bin/developer assets:build-javascript
