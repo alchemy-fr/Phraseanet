@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Command\Developper;
 
 use Alchemy\Phrasea\Command\Developer\ComposerInstall;
 
-class BowerInstallTest extends \PhraseanetPHPUnitAbstract
+class ComposerInstallTest extends \PhraseanetPHPUnitAbstract
 {
     public function testRunWithoutProblems()
     {
