@@ -818,7 +818,7 @@ class Login implements ControllerProviderInterface
             $basketId = $validationSession->getBasket()->getId();
 
             try {
-                $token = $this->app['tokens']->getValidationToken($participantId, $basketId);
+                $token = $app['tokens']->getValidationToken($participantId, $basketId);
             } catch (NotFoundHttpException $e) {
                 continue;
             }
