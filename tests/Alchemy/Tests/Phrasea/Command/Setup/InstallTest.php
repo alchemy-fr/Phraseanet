@@ -78,17 +78,17 @@ class InstallTest extends \PhraseanetPHPUnitAbstract
                 }
             }));
 
-        self::$DI['app']['phraseanet.installer'] = $this->getMockBuilder('Alchemy\Phrasea\Setup\Installer')
+        self::$DI['cli']['phraseanet.installer'] = $this->getMockBuilder('Alchemy\Phrasea\Setup\Installer')
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['phraseanet.installer']->expects($this->once())
+        self::$DI['cli']['phraseanet.installer']->expects($this->once())
             ->method('install')
             ->with($email, $password, $this->isInstanceOf('\connection_interface'), $serverName, $dataPath, $this->isInstanceOf('\connection_interface'), $template, $this->anything());
 
         $command = new Install('system:check');
         $command->setHelperSet($helperSet);
-        $command->setContainer(self::$DI['app']);
+        $command->setContainer(self::$DI['cli']);
         $this->assertEquals(0, $command->execute($input, $output));
     }
 }

@@ -95,7 +95,6 @@ use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
-use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
@@ -254,7 +253,6 @@ class Application extends SilexApplication
         $this->register(new InstallerServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
-        $this->register(new PluginServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
         $this->register(new ReCaptchaServiceProvider());
         $this->register(new LessCompilerServiceProvider());
@@ -413,6 +411,10 @@ class Application extends SilexApplication
         $guesser->register(new AudioMimeTypeGuesser());
         $guesser->register(new VideoMimeTypeGuesser());
 
+        $app['plugins.directory'] = $app->share(function () {
+            return realpath(__DIR__ . '/../../../plugins');
+        });
+
         call_user_func(function ($app) {
             require $app['plugins.directory'] . '/services.php';
         }, $this);
@@ -516,7 +518,6 @@ class Application extends SilexApplication
 
         $event->getResponse()->setCharset('UTF-8');
     }
-
 
     private function setupUrlGenerator()
     {

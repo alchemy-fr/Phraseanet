@@ -62,12 +62,12 @@ class ManifestValidatorTest extends PluginTestCase
      */
     public function testConstructWithInvalidSchema()
     {
-        new ManifestValidator(new JsonSchemaValidator(), array(), self::$DI['app']['phraseanet.version']);
+        new ManifestValidator(new JsonSchemaValidator(), array(), self::$DI['cli']['phraseanet.version']);
     }
 
     public function testCreate()
     {
-        $validator = ManifestValidator::create(self::$DI['app']);
+        $validator = ManifestValidator::create(self::$DI['cli']);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Plugin\Schema\ManifestValidator', $validator);
     }
@@ -76,6 +76,6 @@ class ManifestValidatorTest extends PluginTestCase
     {
         $schema = json_decode($this->getSchema());
 
-        return new ManifestValidator(new JsonSchemaValidator(), $schema, self::$DI['app']['phraseanet.version']);
+        return new ManifestValidator(new JsonSchemaValidator(), $schema, self::$DI['cli']['phraseanet.version']);
     }
 }

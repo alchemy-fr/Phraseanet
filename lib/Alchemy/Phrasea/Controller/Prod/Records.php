@@ -227,7 +227,7 @@ class Records implements ControllerProviderInterface
                 $deleted[] = $record->get_serialize_key();
                 $record->delete();
             } catch (\Exception $e) {
-                
+
             }
         }
 

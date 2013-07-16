@@ -67,4 +67,3 @@ class CookiesDisablerSubscriber implements EventSubscriberInterface
         }
     }
 }
-

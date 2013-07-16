@@ -18,7 +18,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class XSendFileConfigurationDumper extends Command
 {
-    public function __construct($name = null) {
+    public function __construct($name = null)
+    {
         parent::__construct('xsendfile:dump-configuration');
 
         $this->setDescription('Dump the virtual host configuration depending on Phraseanet configuration');

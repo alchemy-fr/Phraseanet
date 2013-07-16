@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea;
 
 use Alchemy\Phrasea\Command\CommandInterface;
 use Symfony\Component\Console;
+use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
+use Alchemy\Phrasea\Core\CLIProvider\ComposerSetupServiceProvider;
 
 /**
  * Phraseanet Command Line Application
@@ -45,6 +47,9 @@ class CLI extends Application
         $this['dispatcher']->addListener('phraseanet.notification.sent', function() use ($app) {
             $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
         });
+
+        $this->register(new PluginServiceProvider());
+        $this->register(new ComposerSetupServiceProvider());
 
         $this->bindRoutes();
     }

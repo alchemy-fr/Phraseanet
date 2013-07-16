@@ -18,11 +18,11 @@ class MailTestTest extends \PhraseanetPHPUnitAbstract
 
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
 
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+        self::$DI['cli']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['notification.deliverer']->expects($this->once())
+        self::$DI['cli']['notification.deliverer']->expects($this->once())
             ->method('deliver')
             ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailTest'), $this->equalTo(null))
             ->will($this->returnCallback(function ($email) use (&$capturedEmail) {
@@ -30,7 +30,7 @@ class MailTestTest extends \PhraseanetPHPUnitAbstract
             }));
 
         $command = new MailTest('mail:test');
-        $command->setContainer(self::$DI['app']);
+        $command->setContainer(self::$DI['cli']);
         $result = $command->execute($input, $output);
 
         $this->assertSame(0, $result);

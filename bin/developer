@@ -10,13 +10,16 @@
  */
 
 use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\Developer\APIRoutesDumper;
 use Alchemy\Phrasea\Command\Developer\Behat;
-use Alchemy\Phrasea\Command\Developer\JavascriptBuilder;
+use Alchemy\Phrasea\Command\Developer\BowerInstall;
+use Alchemy\Phrasea\Command\Developer\ComposerInstall;
 use Alchemy\Phrasea\Command\Developer\LessCompiler;
+use Alchemy\Phrasea\Command\Developer\InstallAll;
+use Alchemy\Phrasea\Command\Developer\JavascriptBuilder;
 use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
 use Alchemy\Phrasea\Command\Developer\RoutesDumper;
-use Alchemy\Phrasea\Core\Version;
 
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
@@ -64,6 +67,9 @@ try {
         $helperSet->set($helper, $name);
     }
 
+    $cli->command(new InstallAll());
+    $cli->command(new BowerInstall());
+    $cli->command(new ComposerInstall());
     $cli->command(new RegenerateSqliteDb());
     $cli->command(new APIRoutesDumper());
     $cli->command(new RoutesDumper());

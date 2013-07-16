@@ -19,16 +19,16 @@ class RemovePluginTest extends PluginCommandTestCase
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
 
         $command = new RemovePlugin();
-        $command->setContainer(self::$DI['app']);
+        $command->setContainer(self::$DI['cli']);
 
-        self::$DI['app']['filesystem'] = $this->createFilesystemMock();
-        self::$DI['app']['filesystem']->expects($this->at(0))
+        self::$DI['cli']['filesystem'] = $this->createFilesystemMock();
+        self::$DI['cli']['filesystem']->expects($this->at(0))
             ->method('remove')
-            ->with(self::$DI['app']['root.path'].'/www/plugins/'.$name);
+            ->with(self::$DI['cli']['root.path'].'/www/plugins/'.$name);
 
-        self::$DI['app']['filesystem']->expects($this->at(1))
+        self::$DI['cli']['filesystem']->expects($this->at(1))
             ->method('remove')
-            ->with(self::$DI['app']['plugins.directory'].'/'.$name);
+            ->with(self::$DI['cli']['plugins.directory'].'/'.$name);
 
         $result = $command->execute($input, $output);
 
