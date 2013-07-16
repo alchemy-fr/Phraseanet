@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Command\CommandInterface;
 use Symfony\Component\Console;
 use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\ComposerSetupServiceProvider;
+use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
 
 /**
  * Phraseanet Command Line Application
@@ -50,6 +51,7 @@ class CLI extends Application
 
         $this->register(new PluginServiceProvider());
         $this->register(new ComposerSetupServiceProvider());
+        $this->register(new CLIDriversServiceProvider());
 
         $this->bindRoutes();
     }

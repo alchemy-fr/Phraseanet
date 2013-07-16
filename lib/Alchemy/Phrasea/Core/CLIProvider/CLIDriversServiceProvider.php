@@ -27,8 +27,8 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
         });
 
         $app['driver.bower'] = $app->share(function (Application $app) {
-            if (isset($this->container['phraseanet.configuration']['binaries']['bower_binary'])) {
-                $bowerBinary = $this->container['phraseanet.configuration']['binaries']['bower_binary'];
+            if (isset($app['phraseanet.configuration']['binaries']['bower_binary'])) {
+                $bowerBinary = $app['phraseanet.configuration']['binaries']['bower_binary'];
             } else {
                 $bowerBinary = $app['executable-finder']->find('bower');
             }
@@ -37,12 +37,12 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
                 throw new RuntimeException('Unable to find bower executable.');
             }
 
-            return BowerDriver::create(array('bower.binaries' => $bowerBinary), $this->container['monolog']);
+            return BowerDriver::create(array('bower.binaries' => $bowerBinary), $app['monolog']);
         });
 
         $app['driver.composer'] = $app->share(function (Application $app) {
-            if (isset($this->container['phraseanet.configuration']['binaries']['composer_binary'])) {
-                $composerBinary = $this->container['phraseanet.configuration']['binaries']['composer_binary'];
+            if (isset($app['phraseanet.configuration']['binaries']['composer_binary'])) {
+                $composerBinary = $app['phraseanet.configuration']['binaries']['composer_binary'];
             } else {
                 $composerBinary = $app['executable-finder']->find('composer');
             }
@@ -51,11 +51,11 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
                 throw new RuntimeException('Unable to find composer executable.');
             }
 
-            return ComposerDriver::create(array('composer.binaries' => $composerBinary), $this->container['monolog']);
+            return ComposerDriver::create(array('composer.binaries' => $composerBinary), $app['monolog']);
         });
 
         $app['driver.uglifyjs'] = $app->share(function (Application $app) {
-            return UglifyJsDriver::create(array(), $this->container['monolog']);
+            return UglifyJsDriver::create(array(), $app['monolog']);
         });
     }
 
