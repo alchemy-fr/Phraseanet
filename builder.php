@@ -9,25 +9,14 @@ use Symfony\Component\Finder\Finder;
 
 printf('Retrieve vendors ...' . PHP_EOL);
 
-system('./vendors.php --no-dev');
+system('./bin/developer dependencies:all --no-dev', $exitcode);
+
+if (0 !== $exitcode) {
+    echo "failed to retrieve binaries\n";
+    exit(1);
+}
 
 require __DIR__ . '/vendor/autoload.php';
-
-chdir(__DIR__);
-
-system('bin/setup assets:compile-less', $code);
-
-if (0 !== $code) {
-    echo "Failed to build less files\n";
-    exit(1);
-}
-
-system('bin/setup assets:build-javascript', $code);
-
-if (0 !== $code) {
-    echo "Failed to build javascript files\n";
-    exit(1);
-}
 
 set_time_limit(0);
 
