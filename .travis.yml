@@ -10,13 +10,12 @@ before_script:
   - cp -f hudson/_GV.php config/
   - node --version
   - npm --version
-  - npm install bower mocha-phantomjs@">=2.0 <3.0" recess@">=1.1.0 <1.1.7" uglify-js -g
+  - npm install bower-canary mocha-phantomjs@">=2.0 <3.0" recess@">=1.1.0 <1.1.7" uglify-js -g
   - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then pecl install redis; fi;'
   - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
-  - bower install
   - composer self-update
   - composer install --dev --prefer-source
   - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
@@ -56,6 +55,7 @@ php:
 
 script:
   - bin/setup system:upgrade -y -v -f
+  - bin/developer dependencies:all --prefer-source
   - php hudson/cleanupSubdefs.php
   - bin/developer assets:compile-less
   - bin/developer assets:build-javascript

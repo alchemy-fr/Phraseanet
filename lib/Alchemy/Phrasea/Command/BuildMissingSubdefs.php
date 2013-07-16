@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Command;
 
-use Monolog\Handler\StreamHandler;
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;

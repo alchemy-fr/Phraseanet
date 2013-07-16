@@ -1,5 +1,6 @@
 <?php
 
+use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\Common\DataFixtures\Loader;
@@ -114,6 +115,48 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::$DI['app'] = self::$DI->share(function($DI) use ($phpunit) {
             $environment = 'test';
             $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Root.php';
+
+            $app['form.csrf_provider'] = $app->share(function () {
+                return new CsrfTestProvider();
+            });
+
+            $app['url_generator'] = $app->share($app->extend('url_generator', function($generator, $app) {
+                $host = parse_url($app['phraseanet.configuration']['main']['servername'], PHP_URL_HOST);
+                $generator->setContext(new RequestContext('', 'GET', $host));
+
+                return $generator;
+            }));
+
+            $app['debug'] = true;
+
+            $app['EM'] = $app->share($app->extend('EM', function($em) {
+                @unlink('/tmp/db.sqlite');
+                copy(__DIR__ . '/../db-ref.sqlite', '/tmp/db.sqlite');
+
+                return $em;
+            }));
+
+            $app['browser'] = $app->share($app->extend('browser', function($browser) {
+
+                $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
+
+                return $browser;
+            }));
+
+            $app['notification.deliverer'] = $phpunit->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+                ->disableOriginalConstructor()
+                ->getMock();
+            $app['notification.deliverer']->expects($phpunit->any())
+                ->method('deliver')
+                ->will($phpunit->returnCallback(function() use ($phpunit) {
+                    $phpunit->fail('Notification deliverer must be mocked');
+                }));
+
+            return $app;
+        });
+
+        self::$DI['cli'] = self::$DI->share(function($DI) use ($phpunit) {
+            $app = new CLI('cli test', null, 'test');
 
             $app['form.csrf_provider'] = $app->share(function () {
                 return new CsrfTestProvider();

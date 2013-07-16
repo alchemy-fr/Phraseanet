@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Plugin\Management;
 
 use Alchemy\Phrasea\Plugin\Management\ComposerInstaller;
+use Alchemy\Phrasea\Utilities\ComposerSetup;
 use Guzzle\Http\Client as Guzzle;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Filesystem\Filesystem;
@@ -26,7 +27,11 @@ class ComposerInstallerTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Unable to find PHP executable.');
         }
 
-        $installer = new ComposerInstaller(__DIR__, new Guzzle(), $php);
+        $setupMock = $this->getMockBuilder('Alchemy\Phrasea\Utilities\ComposerSetup')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $installer = new ComposerInstaller(new ComposerSetup(new Guzzle()), __DIR__, $php);
         $installer->install(__DIR__ . '/../Fixtures/PluginDir/TestPlugin');
 
         $this->assertFileExists($composer);

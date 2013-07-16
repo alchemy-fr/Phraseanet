@@ -27,19 +27,19 @@ class XSendFileMappingGeneratorTest extends \PhraseanetPHPUnitAbstract
         $command = new XSendFileMappingGenerator();
         $phpunit = $this;
 
-        self::$DI['app']['monolog'] = self::$DI['app']->share(function () use ($phpunit) {
+        self::$DI['cli']['monolog'] = self::$DI['cli']->share(function () use ($phpunit) {
             return $phpunit->getMockBuilder('Monolog\Logger')->disableOriginalConstructor()->getMock();
         });
-        self::$DI['app']['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        self::$DI['cli']['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
         if ($option) {
-            self::$DI['app']['phraseanet.configuration']->expects($this->once())
+            self::$DI['cli']['phraseanet.configuration']->expects($this->once())
                 ->method('offsetSet')
                 ->with('xsendfile');
         } else {
-            self::$DI['app']['phraseanet.configuration']->expects($this->never())
+            self::$DI['cli']['phraseanet.configuration']->expects($this->never())
                 ->method('offsetSet');
         }
-        $command->setContainer(self::$DI['app']);
+        $command->setContainer(self::$DI['cli']);
 
         $this->assertEquals(0, $command->execute($input, $output));
     }
@@ -55,7 +55,7 @@ class XSendFileMappingGeneratorTest extends \PhraseanetPHPUnitAbstract
             ->will($this->returnValue(null));
 
         $command = new XSendFileMappingGenerator();
-        $command->setContainer(self::$DI['app']);
+        $command->setContainer(self::$DI['cli']);
         $this->setExpectedException('Alchemy\Phrasea\Exception\InvalidArgumentException');
         $command->execute($input, $output);
     }

@@ -9,10 +9,10 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     public function testExecute()
     {
         $command = new Configuration();
-        $command->setContainer(self::$DI['app']);
+        $command->setContainer(self::$DI['cli']);
 
-        self::$DI['app']['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        self::$DI['app']['phraseanet.configuration']->expects($this->once())
+        self::$DI['cli']['phraseanet.configuration'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        self::$DI['cli']['phraseanet.configuration']->expects($this->once())
             ->method('compileAndWrite');
 
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');

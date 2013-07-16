@@ -28,7 +28,7 @@ abstract class AbstractCheckCommand extends Command
     {
         $ret = static::CHECK_OK;
 
-        foreach($this->provideRequirements() as $collection) {
+        foreach ($this->provideRequirements() as $collection) {
 
             $output->writeln('');
             $output->writeln($collection->getName() . ' requirements : ');

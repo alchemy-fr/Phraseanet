@@ -52,6 +52,7 @@ class JavascriptBuilder extends Command
             )
         );
 
+        $output->writeln('Building JavaScript assets');
         foreach ($files as $target => $sources) {
             $this->buildJavascript($input, $output, $target, $sources);
 
@@ -62,7 +63,7 @@ class JavascriptBuilder extends Command
 
     private function buildJavascript(InputInterface $input, OutputInterface $output, $target, $sources)
     {
-        $output->writeln("Building <info>".basename($target)."</info>");
+        $output->writeln("\t".basename($target));
         $this->container['filesystem']->remove($target);
 
         $process = ProcessBuilder::create(array_merge(array('cat'), $sources))->getProcess();
@@ -81,19 +82,11 @@ class JavascriptBuilder extends Command
 
     private function buildMinifiedJavascript(InputInterface $input, OutputInterface $output, $target, $source)
     {
-        $output->writeln("Building <info>".basename($target)."</info>");
+        $output->writeln("\t".basename($target));
         $this->container['filesystem']->remove($target);
 
-        $process = ProcessBuilder::create(array('uglifyjs', $source, '-nc'))->getProcess();
-        if ($input->getOption('verbose')) {
-            $output->writeln("Executing ".$process->getCommandLine()."\n");
-        }
-        $process->run();
+        $output = $this->container['driver.uglifyjs']->command(array($source, '-nc'));
 
-        if (!$process->isSuccessFul()) {
-            throw new RuntimeException(sprintf('Failed to generate %s', $target));
-        }
-
-        file_put_contents($target, $process->getOutput());
+        file_put_contents($target, $output);
     }
 }

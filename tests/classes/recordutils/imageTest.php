@@ -46,9 +46,9 @@ class recordutils_imageTest extends PhraseanetPHPUnitAbstract
 
         $prefs = '<?xml version="1.0" encoding="UTF-8"?>
 <baseprefs>
-	<status>0</status>
+    <status>0</status>
 
-	<stamp>
+    <stamp>
         <logo position="left" width="25%"/>
         <text size="50%">Date: <var name="date"/></text>
         <text size="50%">Record_id: <var name="record_id"/></text>';
@@ -59,9 +59,9 @@ class recordutils_imageTest extends PhraseanetPHPUnitAbstract
         }
 
         $prefs .= '</stamp>
-	<caninscript>1</caninscript>
-	<sugestedValues>
-	</sugestedValues>
+    <caninscript>1</caninscript>
+    <sugestedValues>
+    </sugestedValues>
 </baseprefs>';
 
         $newdom = new DOMDocument();

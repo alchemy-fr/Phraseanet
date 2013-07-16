@@ -8,7 +8,7 @@ class PluginTestCase extends \PhraseanetPHPUnitAbstract
 {
     protected function createManifestValidator()
     {
-        return ManifestValidator::create(self::$DI['app']);
+        return ManifestValidator::create(self::$DI['cli']);
     }
 
     protected function getPluginDirectory()

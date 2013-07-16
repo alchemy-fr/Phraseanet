@@ -12,7 +12,7 @@ class CustomCommand extends Command
     {
         parent::__construct('hello:world');
     }
-    
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->write('Hello World');
