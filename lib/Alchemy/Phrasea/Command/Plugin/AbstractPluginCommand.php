@@ -38,18 +38,8 @@ abstract class AbstractPluginCommand extends Command
         $this->container['plugins.autoloader-generator']->write($manifests);
         $output->writeln(" <comment>OK</comment>");
 
-        $files = array(
-            $this->container['root.path'] . '/www/skins/login/less/login.less' => $this->container['root.path'] . '/www/skins/build/login.css',
-            $this->container['root.path'] . '/www/skins/account/account.less' => $this->container['root.path'] . '/www/skins/build/account.css',
-        );
-
-        $output->write('Building Assets...');
-
-        try {
-            $this->container['phraseanet.less-builder']->build($files);
-            $output->writeln(" <comment>OK</comment>");
-        } catch (RuntimeException $e) {
-            $output->writeln(sprintf('<error>Could not build less files %s</error>', $e->getMessage()));
-        }
+        $output->write('Building LESS assets');
+        $this->container['phraseanet.less-builder']->build($this->container['phraseanet.less-mapping.customizable'], $output);
+        $output->writeln(" <comment>OK</comment>");
     }
 }

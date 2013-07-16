@@ -22,6 +22,7 @@ class ConsoleAPITest extends \PHPUnit_Framework_TestCase
         return array(
             array('console'),
             array('setup'),
+            array('developer'),
         );
     }
 }

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Utilities\Less;
 
 use Alchemy\Phrasea\Utilities\Less\Compiler as LessCompiler;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 class Builder
@@ -38,10 +39,13 @@ class Builder
      *
      * @throws RuntimeException
      */
-    public function build($files)
+    public function build($files, OutputInterface $output = null)
     {
         foreach ($files as $lessFile => $target) {
             $this->filesystem->mkdir(dirname($target));
+            if (null !== $output) {
+                $output->writeln("\t".basename($target));
+            }
             $this->compiler->compile($target, $lessFile);
         }
     }

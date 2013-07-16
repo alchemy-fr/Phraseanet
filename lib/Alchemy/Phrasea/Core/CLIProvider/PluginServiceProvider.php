@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Provider;
+namespace Alchemy\Phrasea\Core\CLIProvider;
 
 use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
 use Alchemy\Phrasea\Plugin\Management\PluginsExplorer;
@@ -20,7 +20,6 @@ use Alchemy\Phrasea\Plugin\Importer\ImportStrategy;
 use Alchemy\Phrasea\Plugin\Importer\FolderImporter;
 use Alchemy\Phrasea\Plugin\Management\AutoloaderGenerator;
 use Alchemy\Phrasea\Plugin\Management\AssetsManager;
-use Guzzle\Http\Client as Guzzle;
 use JsonSchema\Validator as JsonValidator;
 use Symfony\Component\Process\ExecutableFinder;
 use Silex\Application;
@@ -30,7 +29,6 @@ class PluginServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['plugins.directory'] = realpath(__DIR__ . '/../../../../../plugins');
         $app['plugins.schema'] = realpath(__DIR__ . '/../../../../conf.d/plugin-schema.json');
 
         $app['plugins.json-validator'] = $app->share(function (Application $app) {
@@ -57,10 +55,6 @@ class PluginServiceProvider implements ServiceProviderInterface
             return new AssetsManager($app['filesystem'], $app['plugins.directory'], $app['root.path']);
         });
 
-        $app['plugins.guzzle'] = $app->share(function (Application $app) {
-            return new Guzzle();
-        });
-
         $app['plugins.composer-installer'] = $app->share(function (Application $app) {
             $binaries = $app['phraseanet.configuration']['binaries'];
             $phpBinary = isset($binaries['php_binary']) ? $binaries['php_binary'] : null;
@@ -70,7 +64,7 @@ class PluginServiceProvider implements ServiceProviderInterface
                 $phpBinary = $finder->find('php');
             }
 
-            return new ComposerInstaller($app['plugins.directory'], $app['plugins.guzzle'], $phpBinary);
+            return new ComposerInstaller($app['composer-setup'], $app['plugins.directory'], $phpBinary);
         });
         $app['plugins.explorer'] = $app->share(function (Application $app) {
             return new PluginsExplorer($app['plugins.directory']);

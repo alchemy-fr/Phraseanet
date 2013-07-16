@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
-use Silex\Application;
 
 /**
  * @covers Alchemy\Phrasea\Core\Provider\FileServeServiceProvider

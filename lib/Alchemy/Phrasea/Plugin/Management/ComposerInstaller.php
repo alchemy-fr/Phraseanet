@@ -12,28 +12,25 @@
 namespace Alchemy\Phrasea\Plugin\Management;
 
 use Alchemy\Phrasea\Plugin\Exception\ComposerInstallException;
+use Alchemy\Phrasea\Utilities\ComposerSetup;
 use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Process\Exception\ExceptionInterface as ProcessException;
-use Guzzle\Common\Exception\GuzzleException;
-use Guzzle\Http\Client as Guzzle;
 
 class ComposerInstaller
 {
     private $composer;
-    private $guzzle;
-    private $pluginsDirectory;
     private $phpExecutable;
+    private $setup;
 
-    public function __construct($pluginsDirectory, Guzzle $guzzle, $phpExecutable)
+    public function __construct(ComposerSetup $setup, $pluginsDirectory, $phpExecutable)
     {
         if (!is_executable($phpExecutable)) {
             throw new ComposerInstallException(sprintf('`%s` is not a valid PHP executable', $phpExecutable));
         }
 
-        $this->guzzle = $guzzle;
-        $this->pluginsDirectory = $pluginsDirectory;
+        $this->setup = $setup;
         $this->phpExecutable = $phpExecutable;
-        $this->composer = $this->pluginsDirectory . DIRECTORY_SEPARATOR . 'composer.phar';
+        $this->composer = $pluginsDirectory . DIRECTORY_SEPARATOR . 'composer.phar';
     }
 
     public function install($directory)
@@ -63,7 +60,11 @@ class ComposerInstaller
     private function createProcessBuilder()
     {
         if (!file_exists($this->composer)) {
-            $this->installComposer();
+            try {
+                $this->setup->setup($this->composer);
+            } catch (RuntimeException $e) {
+                throw new ComposerInstallException('Unable to install composer.', $e->getCode(), $e);
+            }
         } else {
             $process = ProcessBuilder::create(array(
                 $this->phpExecutable, $this->composer, 'self-update'
@@ -72,53 +73,5 @@ class ComposerInstaller
         }
 
         return ProcessBuilder::create(array($this->phpExecutable, $this->composer));
-    }
-
-    private function installComposer()
-    {
-        $installer = $this->pluginsDirectory . DIRECTORY_SEPARATOR . 'installer';
-        $handle = fopen($installer, 'w+');
-
-        $request = $this->guzzle->get('https://getcomposer.org/installer', null, $handle);
-
-        try {
-            $response = $request->send();
-            fclose($handle);
-        } catch (GuzzleException $e) {
-            fclose($handle);
-            throw new ComposerInstallException('Unable to download composer install script.');
-        }
-
-        if (200 !== $response->getStatusCode()) {
-            @unlink($installer);
-            throw new ComposerInstallException('Unable to download composer install script.');
-        }
-
-        $dir = getcwd();
-        if (!@chdir($this->pluginsDirectory)) {
-            throw new ComposerInstallException('Unable to move to plugins directory for composer install.');
-        }
-
-        $process = ProcessBuilder::create(array($this->phpExecutable, $installer))->getProcess();
-
-        try {
-            $process->run();
-            @unlink($installer);
-        } catch (ProcessException $e) {
-            @unlink($installer);
-            throw new ComposerInstallException('Unable run composer install script.');
-        }
-
-        if (!@chdir($dir)) {
-            throw new ComposerInstallException('Unable to move to plugins directory for composer install.');
-        }
-
-        if (!$process->isSuccessful()) {
-            throw new ComposerInstallException('Composer install failed.');
-        }
-
-        if (!file_exists($this->composer)) {
-            throw new ComposerInstallException('Composer install failed.');
-        }
     }
 }

@@ -89,7 +89,7 @@ class Session implements ControllerProviderInterface
 
         $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
         $session->setUpdated(new \DateTime());
-        
+
         if (!$session->hasModuleId($moduleId)) {
             $module = new \Entities\SessionModule();
             $module->setModuleId($moduleId);

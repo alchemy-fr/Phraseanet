@@ -53,7 +53,7 @@ class Compiler
 
         $files = (array) $files;
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             if (false === is_file($file)) {
                 throw new RuntimeException($file . ' does not exists.');
             }

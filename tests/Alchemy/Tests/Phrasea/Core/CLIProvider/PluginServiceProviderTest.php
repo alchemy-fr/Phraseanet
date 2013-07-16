@@ -1,13 +1,12 @@
 <?php
 
-namespace Alchemy\Tests\Phrasea\Core\Provider;
+namespace Alchemy\Tests\Phrasea\Core\CLIProvider;
 
-use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
-use Silex\Application;
+use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Symfony\Component\Process\ExecutableFinder;
 
 /**
- * @covers Alchemy\Phrasea\Core\Provider\PluginServiceProvider
+ * @covers Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider
  */
 class PluginServiceProvidertest extends ServiceProviderTestCase
 {
@@ -15,57 +14,52 @@ class PluginServiceProvidertest extends ServiceProviderTestCase
     {
         return array(
             array(
-                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.json-validator',
                 'JsonSchema\Validator'
             ),
             array(
-                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.plugins-validator',
                 'Alchemy\Phrasea\Plugin\Schema\PluginValidator'
             ),
             array(
-                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.manifest-validator',
                 'Alchemy\Phrasea\Plugin\Schema\ManifestValidator'
             ),
             array(
-                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.import-strategy',
                 'Alchemy\Phrasea\Plugin\Importer\ImportStrategy'
             ),
             array(
-                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.autoloader-generator',
                 'Alchemy\Phrasea\Plugin\Management\AutoloaderGenerator'
             ),
             array(
-                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
-                'plugins.guzzle',
-                'Guzzle\Http\Client'
-            ),
-            array(
-                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.composer-installer',
                 'Alchemy\Phrasea\Plugin\Management\ComposerInstaller'
             ),
             array(
-                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.explorer',
                 'Alchemy\Phrasea\Plugin\Management\PluginsExplorer'
             ),
             array(
-                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.importer',
                 'Alchemy\Phrasea\Plugin\Importer\Importer'
             ),
             array(
-                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.importer.folder-importer',
                 'Alchemy\Phrasea\Plugin\Importer\FolderImporter'
             ),
             array(
-                'Alchemy\Phrasea\Core\Provider\PluginServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider',
                 'plugins.assets-manager',
                 'Alchemy\Phrasea\Plugin\Management\AssetsManager'
             )
@@ -74,7 +68,7 @@ class PluginServiceProvidertest extends ServiceProviderTestCase
 
     public function testSchemaIsDefined()
     {
-        $app = new Application();
+        $app = self::$DI['cli'];
         $app->register(new PluginServiceProvider());
 
         $this->assertFileExists($app['plugins.schema']);
@@ -83,7 +77,7 @@ class PluginServiceProvidertest extends ServiceProviderTestCase
 
     public function testPluginDirIsDefined()
     {
-        $app = new Application();
+        $app = self::$DI['cli'];
         $app->register(new PluginServiceProvider());
 
         $this->assertFileExists($app['plugins.directory']);
@@ -99,7 +93,7 @@ class PluginServiceProvidertest extends ServiceProviderTestCase
             $this->markTestSkipped('Unable to detect PHP binary');
         }
 
-        $app = new Application();
+        $app = self::$DI['cli'];
         $app['phraseanet.configuration'] = array('binaries' => array('php_binary' => null));
         $app->register(new PluginServiceProvider());
         $this->assertInstanceOf('Alchemy\Phrasea\Plugin\Management\ComposerInstaller', $app['plugins.composer-installer']);
@@ -107,7 +101,7 @@ class PluginServiceProvidertest extends ServiceProviderTestCase
 
     public function testInstallerCanDetectPhpConf()
     {
-        $app = new Application();
+        $app = self::$DI['cli'];
         $app['phraseanet.configuration'] = array('binaries' => array('php_binary' => null));
         $app->register(new PluginServiceProvider());
         $this->assertInstanceOf('Alchemy\Phrasea\Plugin\Management\ComposerInstaller', $app['plugins.composer-installer']);

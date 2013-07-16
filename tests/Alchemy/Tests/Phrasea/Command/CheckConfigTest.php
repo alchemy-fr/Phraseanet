@@ -12,7 +12,7 @@ class CheckConfigTest extends \PhraseanetPHPUnitAbstract
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
 
         $command = new CheckConfig('check:config');
-        $command->setContainer(self::$DI['app']);
+        $command->setContainer(self::$DI['cli']);
         $this->assertLessThan(2, $command->execute($input, $output));
     }
 }
