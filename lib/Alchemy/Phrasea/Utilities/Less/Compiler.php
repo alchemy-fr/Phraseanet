@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Utilities\Less;
 
+use Alchemy\Phrasea\Command\Developer\Utils\RecessDriver;
 use Alchemy\BinaryDriver\Exception\ExecutionFailureException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;

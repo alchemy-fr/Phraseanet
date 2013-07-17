@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Core\CLIProvider;
 use Alchemy\Phrasea\Command\Developer\Utils\BowerDriver;
 use Alchemy\Phrasea\Command\Developer\Utils\UglifyJsDriver;
 use Alchemy\Phrasea\Command\Developer\Utils\ComposerDriver;
-use Alchemy\Phrasea\Utilities\Less\RecessDriver;
+use Alchemy\Phrasea\Command\Developer\Utils\RecessDriver;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Process\ExecutableFinder;

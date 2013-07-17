@@ -18,7 +18,7 @@ class CompilerTest extends \PhraseanetPHPUnitAbstract
 {
     public function testCompileSuccess()
     {
-        $recessDriver = $this->getMockBuilder('Alchemy\Phrasea\Utilities\Less\RecessDriver')
+        $recessDriver = $this->getMockBuilder('Alchemy\Phrasea\Command\Developer\Utils\RecessDriver')
             ->disableOriginalConstructor()
             ->getMock();
         $recessDriver->expects($this->once())->method('command');
@@ -37,7 +37,7 @@ class CompilerTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCompileFileNotExists()
     {
-        $recessDriver = $this->getMockBuilder('Alchemy\Phrasea\Utilities\Less\RecessDriver')
+        $recessDriver = $this->getMockBuilder('Alchemy\Phrasea\Command\Developer\Utils\RecessDriver')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -54,7 +54,7 @@ class CompilerTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCompileExecutionFailure()
     {
-        $recessDriver = $this->getMockBuilder('Alchemy\Phrasea\Utilities\Less\RecessDriver')
+        $recessDriver = $this->getMockBuilder('Alchemy\Phrasea\Command\Developer\Utils\RecessDriver')
             ->disableOriginalConstructor()
             ->getMock();
 

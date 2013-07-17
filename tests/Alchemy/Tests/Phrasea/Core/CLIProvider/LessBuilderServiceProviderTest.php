@@ -11,12 +11,12 @@ class LessBuilderServiceProvidertest extends ServiceProviderTestCase
     {
         return array(
             array(
-                'Alchemy\Phrasea\Core\Provider\LessBuilderServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\LessBuilderServiceProvider',
                 'phraseanet.less-compiler',
                 '\Alchemy\Phrasea\Utilities\Less\Compiler'
             ),
             array(
-                'Alchemy\Phrasea\Core\Provider\LessBuilderServiceProvider',
+                'Alchemy\Phrasea\Core\CLIProvider\LessBuilderServiceProvider',
                 'phraseanet.less-builder',
                 '\Alchemy\Phrasea\Utilities\Less\Builder'
             ),
