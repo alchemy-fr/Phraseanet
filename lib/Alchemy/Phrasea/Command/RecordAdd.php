@@ -37,7 +37,7 @@ class RecordAdd extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Add a record to Phraseanet')
+        $this->setDescription('Adds a record to Phraseanet')
             ->setHelp('')
             ->addArgument('base_id', InputArgument::REQUIRED, 'The target collection id', null)
             ->addArgument('file', InputArgument::REQUIRED, 'The file to archive', null)

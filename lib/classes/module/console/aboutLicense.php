@@ -26,7 +26,7 @@ class module_console_aboutLicense extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('This program license');
+        $this->setDescription('Displays this program license');
 
         return $this;
     }

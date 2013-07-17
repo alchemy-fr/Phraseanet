@@ -26,7 +26,7 @@ class module_console_aboutAuthors extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('List authors and contributors');
+        $this->setDescription('Lists authors and contributors');
 
         return $this;
     }

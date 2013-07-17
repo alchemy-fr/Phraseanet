@@ -27,7 +27,7 @@ class module_console_systemMailCheck extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Check if email addresses are unique (mandatory since 3.5)');
+        $this->setDescription('Checks if email addresses are uniques (mandatory since 3.5)');
         $this->addOption('list'
             , 'l'
             , null

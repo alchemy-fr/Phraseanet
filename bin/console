@@ -62,8 +62,8 @@ try {
     $cli->command(new \module_console_aboutAuthors('about:authors'));
     $cli->command(new \module_console_aboutLicense('about:license'));
 
-    $cli->command(new \module_console_checkExtension('check:extension'));
     $cli->command(new CheckConfig('check:config'));
+    $cli->command(new \module_console_checkExtension('check:extension'));
 
     $cli->command(new UpgradeDBDatas('system:upgrade-datas'));
 
@@ -72,7 +72,6 @@ try {
     $cli->command(new \module_console_systemMailCheck('system:mail-check'));
     $cli->command(new \module_console_systemBackupDB('system:backup-db'));
     $cli->command(new \module_console_systemClearCache('system:clear-cache'));
-    $cli->command(new \module_console_systemTemplateGenerator('system:template-generator'));
     $cli->command(new \module_console_systemExport('system:export'));
 
     $cli->command(new \module_console_taskrun('task:run'));
@@ -82,7 +81,7 @@ try {
     $cli->command(new \module_console_schedulerStop('scheduler:stop'));
     $cli->command(new \module_console_schedulerStart('scheduler:start'));
 
-    $cli->command(new Mailtest('mail:test'));
+    $cli->command(new MailTest('mail:test'));
 
     $cli->command(new \module_console_fieldsList('fields:list'));
     $cli->command(new \module_console_fieldsDelete('fields:delete'));

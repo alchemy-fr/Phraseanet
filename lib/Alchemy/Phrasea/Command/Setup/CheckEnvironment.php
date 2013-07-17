@@ -31,7 +31,7 @@ class CheckEnvironment extends AbstractCheckCommand
     {
         parent::__construct($name);
 
-        $this->setDescription("Check environment");
+        $this->setDescription("Performs a check against the environment");
 
         return $this;
     }

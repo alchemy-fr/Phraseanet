@@ -33,7 +33,7 @@ class CreateCollection extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Create a collection in Phraseanet')
+        $this->setDescription('Creates a collection in Phraseanet')
             ->setHelp('')
             ->addArgument('databox_id', InputArgument::REQUIRED, 'The id of the databox where to create the collection', null)
             ->addArgument('collname', InputArgument::REQUIRED, 'The name of the new collection', null)

@@ -26,7 +26,7 @@ class module_console_schedulerStop extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Stop the scheduler');
+        $this->setDescription('Stops Phraseanet scheduler');
 
         return $this;
     }

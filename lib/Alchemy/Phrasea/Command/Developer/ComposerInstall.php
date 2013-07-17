@@ -25,7 +25,7 @@ class ComposerInstall extends Command
         parent::__construct('dependencies:composer');
 
         $this
-            ->setDescription('Install composer dependencies')
+            ->setDescription('Installs composer dependencies')
             ->addOption('no-dev', 'd', InputOption::VALUE_NONE, 'Do not install dev dependencies')
             ->addOption('prefer-source', 'p', InputOption::VALUE_NONE, 'Use the --prefer-source composer option');
     }

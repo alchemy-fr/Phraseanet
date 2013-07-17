@@ -31,7 +31,7 @@ class BuildMissingSubdefs extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Build missing subviews');
+        $this->setDescription('Builds subviews that previously failed to be generated / did not exist when records were added');
 
         return $this;
     }

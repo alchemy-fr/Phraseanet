@@ -29,7 +29,7 @@ class module_console_systemUpgrade extends Command
         parent::__construct($name);
 
         $this
-            ->setDescription('Upgrade Phraseanet to the latest version')
+            ->setDescription('Upgrades Phraseanet to the latest version')
             ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answers yes to all questions and do not ask the user')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Forces the upgrade even if there is a concurrent upgrade')
             ->addOption('dump', 'd', InputOption::VALUE_NONE, 'Dumps SQL queries that can be used to clean database.');

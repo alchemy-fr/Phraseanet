@@ -24,7 +24,7 @@ class LessCompiler extends Command
     {
         parent::__construct('assets:compile-less');
 
-        $this->setDescription('Compile less files');
+        $this->setDescription('Compiles Phraseanet LESS files');
     }
 
     /**

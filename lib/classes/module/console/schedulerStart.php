@@ -29,7 +29,7 @@ class module_console_schedulerStart extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Start the scheduler');
+        $this->setDescription('Starts Phraseanet scheduler');
 
         return $this;
     }

@@ -19,6 +19,8 @@ class APIRoutesDumper extends AbstractRoutesDumper
     public function __construct()
     {
         parent::__construct('routes:dump-api');
+
+        $this->setDescription('Dumps Phraseanet API routes');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)

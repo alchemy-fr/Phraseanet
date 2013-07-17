@@ -26,7 +26,7 @@ class BowerInstall extends Command
         parent::__construct('dependencies:bower');
 
         $this
-            ->setDescription('Install bower dependencies')
+            ->setDescription('Installs bower dependencies')
             ->addOption('no-dev', 'd', InputOption::VALUE_NONE, 'Do not install dev dependencies')
             ->addOption('attempts', 'a', InputOption::VALUE_REQUIRED, 'Number of attempts to install dependencies.', 4);
     }
