@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Notification\Mail\MailInfoValidationReminder;
 use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Emitter;
 
 class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstract
 {
@@ -102,7 +103,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
                 $title = $basket->getName();
 
                 $receiver = Receiver::fromUser($user_to);
-                $emitter = Receiver::fromUser($user_from);
+                $emitter = Emitter::fromUser($user_from);
 
                 $readyToSend = true;
             } catch (\Exception $e) {
