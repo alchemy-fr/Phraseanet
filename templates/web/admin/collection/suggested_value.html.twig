@@ -655,7 +655,7 @@ function valid()
                 if(data.success) {
                     $('#tree li.selected a').trigger('click');
                 } else {
-                    $(".page-header").insertAfter(
+                    $(".page-header").after(
                     '<div class="alert alert-error">'
                     +'<button class="close" data-dismiss="alert">×</button>'
                     + data.msg
