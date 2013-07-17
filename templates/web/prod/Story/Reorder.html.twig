@@ -92,7 +92,7 @@
           var elem = $('#ORDER_'+i);
           if(last_moved)
           {
-            elem.insertAfter(last_moved);
+            elem.after(last_moved);
           }
           else
           {
@@ -146,7 +146,7 @@
           var elem = $(n);
           if(last_moved)
           {
-            elem.insertBefore(last_moved);
+            elem.before(last_moved);
           }
           else
           {
@@ -181,7 +181,7 @@
 
           while(n > 0)
           {
-            $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').insertAfter($('.diapo.ui-sortable-placeholder', container));
+            $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after($('.diapo.ui-sortable-placeholder', container));
             n--;
           }
         },
@@ -223,9 +223,9 @@
             else
             {
               if(before)
-                $(n).insertBefore($(ui.item[0]));
+                $(n).before($(ui.item[0]));
               else
-                $(n).insertAfter($(last_moved));
+                $(n).after($(last_moved));
 
             }
             last_moved = sorter[i];
@@ -238,7 +238,7 @@
           var n = OrderSelection.length() - 1 ;
           while(n > 0)
           {
-            $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').insertAfter($('.diapo.ui-sortable-placeholder', container));
+            $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after($('.diapo.ui-sortable-placeholder', container));
             n--;
           }
         }
