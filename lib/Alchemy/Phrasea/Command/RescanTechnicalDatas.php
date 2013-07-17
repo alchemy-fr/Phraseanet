@@ -38,7 +38,7 @@ class RescanTechnicalDatas extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Rescan databases for technical datas');
+        $this->setDescription('Rescans records for technical datas');
         $this->setHelp('Old Phraseanet version did not fully read technical datas. This command rescan all records of these datas.');
 
         return $this;

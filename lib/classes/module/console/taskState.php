@@ -45,7 +45,7 @@ class module_console_taskState extends Command
 
         $this->addArgument('task_id', InputArgument::REQUIRED, 'The task_id to test');
 
-        $this->setDescription('Get task state');
+        $this->setDescription('Returns a Phraseanet task state given its id');
 
         $this->addOption(
             'short'

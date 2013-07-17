@@ -19,6 +19,8 @@ class RoutesDumper extends AbstractRoutesDumper
     public function __construct()
     {
         parent::__construct('routes:dump');
+
+        $this->setDescription('Dumps Phraseanet routes');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)

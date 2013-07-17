@@ -23,7 +23,9 @@ class MailTest extends Command
     {
         parent::__construct($name);
 
-        $this->addArgument('email', InputArgument::REQUIRED, 'An email where to send the test email');
+        $this
+            ->setDescription('Sends an email to a given address to test mail-server configuration')
+            ->addArgument('email', InputArgument::REQUIRED, 'An email where to send the test email');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)

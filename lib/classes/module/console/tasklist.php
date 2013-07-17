@@ -27,7 +27,7 @@ class module_console_tasklist extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('List tasks');
+        $this->setDescription('Lists Phraseanet tasks');
 
         return $this;
     }

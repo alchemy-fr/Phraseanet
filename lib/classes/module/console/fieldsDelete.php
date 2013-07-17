@@ -27,7 +27,7 @@ class module_console_fieldsDelete extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Delete a documentation field from a Databox');
+        $this->setDescription('Deletes a documentation field from a Databox');
 
         $this->addArgument('meta_struct_id', InputArgument::REQUIRED, 'Metadata structure id destination');
         $this->addArgument('sbas_id', InputArgument::REQUIRED, 'Databox sbas_id');

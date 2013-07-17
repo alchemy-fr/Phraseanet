@@ -16,7 +16,7 @@ class RegenerateSqliteDb extends Command
     {
         parent::__construct('phraseanet:regenerate-sqlite');
 
-        $this->setDescription("Update the sqlite 'tests/db-ref.sqlite' database with current database definition.");
+        $this->setDescription("Updates the sqlite 'tests/db-ref.sqlite' database with current database definition.");
     }
 
     public function doExecute(InputInterface $input, OutputInterface $output)

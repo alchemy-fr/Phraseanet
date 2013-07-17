@@ -29,7 +29,7 @@ class module_console_checkExtension extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Checks if the Phrasea PHP Extension is well installed & working properly.');
+        $this->setDescription('Performs a serie of tests against Phrasea Engine PHP Extension');
 
         $this->addArgument('usr_id', InputOption::VALUE_REQUIRED, 'Usr_id to use.');
 

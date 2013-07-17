@@ -33,7 +33,7 @@ class CheckConfig extends AbstractCheckCommand
     {
         parent::__construct($name);
 
-        $this->setDescription("Checks environment");
+        $this->setDescription("Performs a check against the environment and configuration. Give some advices for production settings.");
 
         return $this;
     }

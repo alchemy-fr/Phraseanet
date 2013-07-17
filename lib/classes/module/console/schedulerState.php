@@ -36,7 +36,7 @@ class module_console_schedulerState extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Get scheduler status');
+        $this->setDescription('Returns Phraseanet scheduler status');
 
         $this->addOption(
             'short'
