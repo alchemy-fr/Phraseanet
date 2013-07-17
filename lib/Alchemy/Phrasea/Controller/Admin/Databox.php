@@ -985,7 +985,8 @@ class Databox implements ControllerProviderInterface
         $success = false;
 
         try {
-            foreach ($request->request->get('order', array()) as $order => $baseId) {
+            foreach ($request->request->get('order', array()) as $order => $data) {
+                $baseId = $data['id'];
                 $collection = \collection::get_from_base_id($app, $baseId);
                 $app['phraseanet.appbox']->set_collection_order($collection, $order);
                 unset($collection);

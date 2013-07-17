@@ -19,7 +19,13 @@
         <td colspan="2" style="height:20px;" />
     </tr>
     <tr>
-        <td colspan="2" valign="center" align="left"><div class="form-actions"><button class="btn btn-primary" id="apply">{% trans 'boutton::valider' %}</button></div></td>
+        <td colspan="2" valign="center" align="left">
+            <div class="form-actions">
+                <button class="btn btn-primary" id="apply">
+                    {% trans 'boutton::valider' %}
+                </button>
+            </div>
+        </td>
     </tr>
 </table>
 
@@ -70,7 +76,7 @@
                     var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
                         content:datas.msg
                     });
-                    $('#table-order').insertBefore(html);
+                    $('#table-order').before(html);
                 },
                 complete : function() {
                     $this.attr('disabled', false);
@@ -81,13 +87,13 @@
 
     function moveUpItem(select){
         select.find('option:selected').each(function(){
-            $(this).insertBefore($(this).prev());
+            $(this).before($(this).prev());
         });
     }
 
     function moveDownItem(select){
         select.find('option:selected').each(function(){
-            $(this).insertAfter($(this).next());
+            $(this).after($(this).next());
         });
     }
 
