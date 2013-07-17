@@ -122,6 +122,7 @@ $groups = array(
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
+        , '//skins/prod/jquery.Dialog.js'
         , '//skins/lightbox/jquery.lightbox.js'
         , '//include/jslibs/flowplayer/flowplayer-3.2.11.min.js'
     ),
@@ -133,6 +134,7 @@ $groups = array(
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
+        , '//skins/prod/jquery.Dialog.js'
         , '//skins/lightbox/jquery.lightbox.ie6.js'
         , '//include/jslibs/flowplayer/flowplayer-3.2.11.min.js'
     ),
