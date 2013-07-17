@@ -385,12 +385,7 @@
               $('#right-ajax').empty().addClass('loading');
             },
             done: function (e, data) {
-               $('#right-ajax').removeClass('loading').html(data.result);
-                enableForms($('#right-ajax form:not(.no-ajax)'));
-
-                $.each($('#right-ajax a'),function(i, el){
-                    enableLink($(el));
-                });
+                enableFormsCallback(data.result);
             }
         });
     });
