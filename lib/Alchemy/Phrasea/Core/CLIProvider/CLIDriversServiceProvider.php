@@ -46,7 +46,7 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
                 throw new RuntimeException('Unable to find bower executable.');
             }
 
-            return BowerDriver::create(array('bower.binaries' => $bowerBinary), $app['monolog']);
+            return BowerDriver::create(array('bower.binaries' => $bowerBinary, 'timeout' => 300), $app['monolog']);
         });
 
         $app['driver.recess'] = $app->share(function (Application $app) {
@@ -66,7 +66,7 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
                 throw new RuntimeException('Unable to find composer executable.');
             }
 
-            return ComposerDriver::create(array('composer.binaries' => $composerBinary), $app['monolog']);
+            return ComposerDriver::create(array('composer.binaries' => $composerBinary, 'timeout' => 300), $app['monolog']);
         });
 
         $app['driver.uglifyjs'] = $app->share(function (Application $app) {
