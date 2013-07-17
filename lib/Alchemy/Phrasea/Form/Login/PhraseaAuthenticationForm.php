@@ -48,7 +48,6 @@ class PhraseaAuthenticationForm extends AbstractType
         ));
 
         $builder->add('redirect', 'hidden', array(
-            'mapped'   => false,
             'required' => false,
         ));
     }
