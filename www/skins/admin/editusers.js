@@ -337,10 +337,10 @@ $('#right-ajax button.users_rights_valid').bind('click', function(){
               newbit_vxor_and = "1";
               newbit_vxor_or  = "1";
             }
-            vand_and.val( vand_and.val().substr(0, 63 - bit) + newbit_vand_and + vand_and.val().substr(63 + 1 - bit) );
-            vand_or.val ( vand_or.val().substr( 0, 63 - bit) + newbit_vand_or  + vand_or.val().substr( 63 + 1 - bit) );
-            vxor_and.val( vxor_and.val().substr(0, 63 - bit) + newbit_vxor_and + vxor_and.val().substr(63 + 1 - bit) );
-            vxor_or.val ( vxor_or.val().substr( 0, 63 - bit) + newbit_vxor_or  + vxor_and.val().substr(63 + 1 - bit) );
+            vand_and.val( vand_and.val().substr(0, 31 - bit) + newbit_vand_and + vand_and.val().substr(31 + 1 - bit) );
+            vand_or.val ( vand_or.val().substr( 0, 31 - bit) + newbit_vand_or  + vand_or.val().substr( 31 + 1 - bit) );
+            vxor_and.val( vxor_and.val().substr(0, 31 - bit) + newbit_vxor_and + vxor_and.val().substr(31 + 1 - bit) );
+            vxor_or.val ( vxor_or.val().substr( 0, 31 - bit) + newbit_vxor_or  + vxor_and.val().substr(31 + 1 - bit) );
           }
         });
       }
