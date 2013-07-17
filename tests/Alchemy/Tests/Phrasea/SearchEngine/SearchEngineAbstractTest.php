@@ -366,7 +366,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function provideStemmData()
     {
-        $data = array();
+        $stemms = array();
 
         $examples = array(
             'fr' => array('word' => 'chevaux', 'stemm' => 'cheval'),
@@ -375,23 +375,22 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
             'nl' => array('word' => 'lichamelijk', 'stemm' => 'licham'),
         );
 
-        foreach (Application::getAvailableLanguages() as $language => $name) {
-
-            $codes = explode('_', $language);
-            $languageCode = $codes[0];
-
-            if (!isset($examples[$languageCode])) {
-                $this->fail(sprintf('Missing stemm examples for language %s', $languageCode));
+        foreach (Application::getAvailableLanguages() as $languageCode => $name) {
+            $data = explode('_', $languageCode);
+            $code = $data[0];
+            
+            if (!isset($examples[$code])) {
+                $this->fail(sprintf('Missing stemm examples for language %s', $code));
             }
 
-            $data[] = array(
-                $languageCode,
-                $examples[$languageCode]['word'],
-                $examples[$languageCode]['stemm'],
+            $stemms[] = array(
+                $code,
+                $examples[$code]['word'],
+                $examples[$code]['stemm'],
             );
         }
 
-        return $data;
+        return $stemms;
     }
 
     public function testUpdateQueryOnField()

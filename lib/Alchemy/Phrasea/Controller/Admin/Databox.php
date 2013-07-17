@@ -446,7 +446,7 @@ class Databox implements ControllerProviderInterface
     public function getDatabaseCGU(Application $app, Request $request, $databox_id)
     {
         return $app['twig']->render('admin/databox/cgus.html.twig', array(
-            'languages'      => $app->getAvailableLanguages(),
+            'languages'      => $app['locales.available'],
             'cgus'           => $app['phraseanet.appbox']->get_databox($databox_id)->get_cgus(),
             'current_locale' => $app['locale']
         ));

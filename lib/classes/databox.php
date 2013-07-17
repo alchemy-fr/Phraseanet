@@ -1380,7 +1380,7 @@ class databox extends base
 
         $missing_locale = array();
 
-        $avLanguages = $this->app->getAvailableLanguages();
+        $avLanguages = $this->app['locales.available'];
         foreach ($avLanguages as $code => $language) {
             if (!isset($TOU[$code])) {
                 $missing_locale[] = $code;

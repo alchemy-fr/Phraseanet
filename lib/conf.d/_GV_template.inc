@@ -4,7 +4,7 @@ use Alchemy\Phrasea\Application;
 
 return call_user_func_array(function(Application $app) {
 
-    $avLanguages = Application::getAvailableLanguages();
+    $avLanguages = $app['locales.available'];
 
     $youtube_console_url = '<a href="https://code.google.com/apis/console/" target="_blank">https://code.google.com/apis/console/</a>';
     $dashboard_youtube = '<a href="https://code.google.com/apis/youtube/dashboard/" target="_blank">https://code.google.com/apis/youtube/dashboard/</a>';
