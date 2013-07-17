@@ -78,19 +78,22 @@
                     type: method,
                     url: url,
                     data: datas,
-                    success: function(datas){
-                        $('#right-ajax').removeClass('loading').html(datas);
-                        enableForms($('#right-ajax form:not(.no-ajax)'));
-
-                        $.each($('#right-ajax a'),function(i, el){
-                            enableLink($(el));
-                        });
-                        return;
-                    }
+                    success: enableFormsCallback
                 });
                 return false;
             }
         });
+    }
+
+    function enableFormsCallback(datas)
+    {
+        $('#right-ajax').removeClass('loading').html(datas);
+        enableForms($('#right-ajax form:not(.no-ajax)'));
+
+        $.each($('#right-ajax a'),function(i, el){
+            enableLink($(el));
+        });
+        return;
     }
 
     function enableLink(link) {
@@ -103,11 +106,7 @@
                 $('#right-ajax').empty().addClass('loading').parent().show();
 
                 $.get(dest, function(data) {
-                  $('#right-ajax').removeClass('loading').html(data);
-                  enableForms($('#right-ajax form:not(.no-ajax)'));
-                    $.each($('#right-ajax a:not(.no-ajax)'),function(i, el){
-                        enableLink($(el));
-                    });
+                    enableFormsCallback(data);
                 });
                 return false;
             }
@@ -129,12 +128,7 @@
             $('#right-ajax').empty().addClass('loading').parent().show();
 
             $.get(dest, function(data) {
-                $('#right-ajax').removeClass('loading').html(data);
-                enableForms($('#right-ajax form:not(.no-ajax)'));
-
-                $.each($('#right-ajax a'),function(i, el){
-                    enableLink($(el));
-                });
+                enableFormsCallback(data);
             });
             $('#tree .selected').removeClass('selected');
             $(this).parent().addClass('selected');
