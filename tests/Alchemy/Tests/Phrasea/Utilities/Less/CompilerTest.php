@@ -18,7 +18,9 @@ class CompilerTest extends \PhraseanetPHPUnitAbstract
 {
     public function testCompileSuccess()
     {
-        $recessDriver = $this->getMock('Alchemy\BinaryDriver\BinaryInterface');
+        $recessDriver = $this->getMockBuilder('Alchemy\Phrasea\Command\Developer\Utils\RecessDriver')
+            ->disableOriginalConstructor()
+            ->getMock();
         $recessDriver->expects($this->once())->method('command');
 
         $filesystem = $this->getMock('Symfony\Component\Filesystem\Filesystem');
@@ -30,18 +32,14 @@ class CompilerTest extends \PhraseanetPHPUnitAbstract
         $compiler->compile(__DIR__ . '/output.css', __FILE__);
     }
 
-    public function testCreate()
-    {
-        $compiler = Compiler::create(self::$DI['app']);
-        $this->assertInstanceOf('Alchemy\Phrasea\Utilities\Less\Compiler', $compiler);
-    }
-
-   /**
+    /**
      * @expectedException Alchemy\Phrasea\Exception\RuntimeException
      */
     public function testCompileFileNotExists()
     {
-        $recessDriver = $this->getMock('Alchemy\BinaryDriver\BinaryInterface');
+        $recessDriver = $this->getMockBuilder('Alchemy\Phrasea\Command\Developer\Utils\RecessDriver')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $filesystem = $this->getMock('Symfony\Component\Filesystem\Filesystem');
         $filesystem->expects($this->once())->method('mkdir');
@@ -56,7 +54,10 @@ class CompilerTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCompileExecutionFailure()
     {
-        $recessDriver = $this->getMock('Alchemy\BinaryDriver\BinaryInterface');
+        $recessDriver = $this->getMockBuilder('Alchemy\Phrasea\Command\Developer\Utils\RecessDriver')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $recessDriver->expects($this->once())->method('command')->will(
             $this->throwException(new ExecutionFailureException())
         );

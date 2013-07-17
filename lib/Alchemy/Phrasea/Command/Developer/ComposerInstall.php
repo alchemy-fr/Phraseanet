@@ -54,7 +54,7 @@ class ComposerInstall extends Command
                 $output->writeln("<info>OK</info>");
             }
         } catch (ExecutionFailureException $e) {
-            throw new RuntimeException('Unable to install bower dependencies', $e->getCode(), $e);
+            throw new RuntimeException('Unable to install composer dependencies', $e->getCode(), $e);
         }
 
         return 0;
