@@ -366,7 +366,7 @@
                   {{_self.format_checkbox(app['authentication'].getUser(), rights, 'cancmd', users, 'base')}}
                 </td>
                 <td class="users_col case_right_quota" title="{% trans 'Set download quotas' %}">
-                  <div class="quota_trigger quota_{{rights['base_id']}}">
+                  <div class="quota_trigger quota_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['restrict_dwnld'] > 0 %}
                     <img src="/skins/icons/user_details_on.png" />
                     {% else %}
@@ -376,7 +376,7 @@
                   </div>
                 </td>
                 <td class="users_col case_right_time" title="{% trans 'Set time restrictions' %}">
-                  <div class="time_trigger time_{{rights['base_id']}}">
+                  <div class="time_trigger time_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['time_limited'] > 0 %}
                     <img src="/skins/icons/user_details_on.png" />
                     {% else %}
@@ -386,7 +386,7 @@
                   </div>
                 </td>
                 <td class="users_col case_right_masks" title="{% trans 'Set statuses restrictions' %}">
-                  <div class="masks_trigger quotatime_{{rights['base_id']}}">
+                  <div class="masks_trigger quotatime_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['masks'] > 0 %}
                     <img src="/skins/icons/user_details_on.png" />
                     {% else %}
