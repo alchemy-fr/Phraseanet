@@ -1,9 +1,17 @@
-var p4 = {
-  releasable:false
+var p4 = p4 || {};
+
+p4.releasable = false;
+
+var bodySize = {
+    x:0,
+    y:0
 };
 
 $(document).ready(function(){
 
+  bodySize.y = $('#mainContainer').height();
+  bodySize.x = $('#mainContainer').width();
+  
   $(this).data('slideshow',false);
   $(this).data('slideshow_ctime', false);
 
@@ -191,6 +199,8 @@ function is_shift_key(event)
 
 function resize()
 {
+  bodySize.y = $('#mainContainer').height();
+  bodySize.x = $('#mainContainer').width();
   display_record($('#record_compare').css('visibility') != 'hidden');
 }
 

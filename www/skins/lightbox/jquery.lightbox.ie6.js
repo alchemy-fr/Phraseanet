@@ -1,5 +1,10 @@
-var p4 = {
-  releasable:false
+var p4 = p4 || {};
+
+p4.releasable = false;
+
+var bodySize = {
+    x:0,
+    y:0
 };
 
 $(window).bind('beforeunload', function(){
@@ -13,7 +18,8 @@ $(window).bind('beforeunload', function(){
 });
 
 $(document).ready(function(){
-
+    bodySize.y = $('#mainContainer').height();
+    bodySize.x = $('#mainContainer').width();
 
 	$(window).bind('resize',function(){
 		resize();
@@ -21,6 +27,9 @@ $(document).ready(function(){
 
 	function resize()
 	{
+
+        bodySize.y = $('#mainContainer').height();
+        bodySize.x = $('#mainContainer').width();
 		var h = $(window).height();
 		var w = $(window).width();
 
