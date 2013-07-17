@@ -286,8 +286,28 @@ class Root implements ControllerProviderInterface
                     break;
             }
 
+            if (isset($status[$bit])) {
+                $status = $status[$bit];
+            } else {
+                $status = array(
+                    "labeloff" => '',
+                    "labelon" => '',
+                    "img_off" => '',
+                    "img_on" => '',
+                    "path_off" => '',
+                    "path_on" => '',
+                    "searchable" => false,
+                    "printable" => false,
+                );
+
+                foreach ($app['locales.I18n.available'] as $code => $language) {
+                    $status['labels_on'][$code] = null;
+                    $status['labels_off'][$code] = null;
+                }
+            }
+
             return $app['twig']->render('admin/statusbit/edit.html.twig', array(
-                'status' => isset($status[$bit]) ? $status[$bit] : array(),
+                'status' => $status,
                 'errorMsg' => $errorMsg
             ));
         })->assert('databox_id', '\d+')
