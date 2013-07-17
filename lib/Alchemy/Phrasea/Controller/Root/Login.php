@@ -722,6 +722,9 @@ class Login implements ControllerProviderInterface
         array_unshift($feeds, $public_feeds->get_aggregate());
 
         $form = $app->form(new PhraseaAuthenticationForm());
+        $form->setData(array(
+            'redirect' => $request->query->get('redirect')
+        ));
 
         return $app['twig']->render('login/index.html.twig', array_merge(
             self::getDefaultTemplateVariables($app),
