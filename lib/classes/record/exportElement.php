@@ -179,7 +179,7 @@ class record_exportElement extends record_adapter
             }
 
             if ($go_dl[$class]) {
-                if (isset($sd[$name]) && is_file($sd[$name]->get_pathfile())) {
+                if (isset($sd[$name]) && $sd[$name]->is_physically_present()) {
                     if ($class == 'document') {
 
                         if ($this->app['authentication']->getUser()->ACL()->is_restricted_download($this->base_id)) {
