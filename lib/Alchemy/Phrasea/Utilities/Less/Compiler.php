@@ -11,8 +11,7 @@
 
 namespace Alchemy\Phrasea\Utilities\Less;
 
-use Alchemy\Phrasea\Application;
-use Alchemy\BinaryDriver\BinaryInterface;
+use Alchemy\Phrasea\Command\Developer\Utils\RecessDriver;
 use Alchemy\BinaryDriver\Exception\ExecutionFailureException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -22,17 +21,10 @@ class Compiler
     private $filesystem;
     private $recess;
 
-    public function __construct(Filesystem $filesystem, BinaryInterface $recess)
+    public function __construct(Filesystem $filesystem, RecessDriver $recess)
     {
         $this->filesystem = $filesystem;
         $this->recess = $recess;
-    }
-
-    public static function create(Application $app)
-    {
-        $binaries = $app['phraseanet.configuration']['binaries'];
-
-        return new self($app['filesystem'], RecessDriver::create($binaries));
     }
 
     /**

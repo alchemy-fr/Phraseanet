@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Utilities\Less;
+namespace Alchemy\Phrasea\Command\Developer\Utils;
 
 use Alchemy\BinaryDriver\AbstractBinary;
 use Psr\Log\LoggerInterface;
@@ -18,11 +18,20 @@ use Alchemy\BinaryDriver\ConfigurationInterface;
 
 class RecessDriver extends AbstractBinary
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'recess';
     }
 
+    /**
+     * @param array|ConfigurationInterface $conf
+     * @param LoggerInterface              $logger
+     *
+     * @return RecessDriver
+     */
     public static function create($conf = array(), LoggerInterface $logger = null)
     {
         if (!$conf instanceof ConfigurationInterface) {

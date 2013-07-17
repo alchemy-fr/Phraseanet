@@ -30,6 +30,11 @@ class CLISDriversServiceProviderTest extends ServiceProviderTestCase
                 'driver.uglifyjs',
                 'Alchemy\Phrasea\Command\Developer\Utils\UglifyJsDriver'
             ),
+            array(
+                'Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider',
+                'driver.recess',
+                'Alchemy\Phrasea\Command\Developer\Utils\RecessDriver'
+            ),
         );
     }
 }

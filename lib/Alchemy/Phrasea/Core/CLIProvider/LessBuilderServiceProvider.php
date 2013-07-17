@@ -9,11 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Provider;
+namespace Alchemy\Phrasea\Core\CLIProvider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Alchemy\Phrasea\Utilities\Less\Builder as LessBuilder;
+use Alchemy\Phrasea\Utilities\Less\Compiler as LessCompiler;
 
 class LessBuilderServiceProvider implements ServiceProviderInterface
 {
@@ -45,6 +46,10 @@ class LessBuilderServiceProvider implements ServiceProviderInterface
                 $app['phraseanet.less-mapping.base'],
                 $app['phraseanet.less-mapping.customizable']
             );
+        });
+
+        $app['phraseanet.less-compiler'] = $app->share(function($app) {
+            return new LessCompiler($app['filesystem'], $app['driver.recess']);
         });
 
         $app['phraseanet.less-builder'] = $app->share(function($app) {

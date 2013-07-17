@@ -10,8 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\Session;
-use Entities\SessionModule;
 
 class patch_3814 implements patchInterface
 {
