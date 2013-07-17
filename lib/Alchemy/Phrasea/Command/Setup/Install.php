@@ -30,7 +30,7 @@ class Install extends Command
         $this->executableFinder = new ExecutableFinder();
 
         $this
-            ->setDescription("Install Phraseanet")
+            ->setDescription("Installs Phraseanet")
             ->addOption('email', null, InputOption::VALUE_OPTIONAL, 'Admin e-mail address', null)
             ->addOption('password', null, InputOption::VALUE_OPTIONAL, 'Admin password', null)
             ->addOption('db-host', null, InputOption::VALUE_OPTIONAL, 'MySQL server host', 'localhost')

@@ -28,7 +28,7 @@ class module_console_fieldsMerge extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Merge databox structure fields');
+        $this->setDescription('Merges databox documentation fields');
 
         $this->addArgument('sbas_id', InputArgument::REQUIRED, 'Databox sbas_id');
         $this->addArgument('destination', InputArgument::REQUIRED, 'Metadata structure id destination');

@@ -21,6 +21,8 @@ class Behat extends Command
     public function __construct()
     {
         parent::__construct('behat:help');
+
+        $this->setDescription('Prints helps about Phraseanet configuration for behat tests');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)

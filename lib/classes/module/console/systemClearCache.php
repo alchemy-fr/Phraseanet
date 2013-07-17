@@ -27,7 +27,7 @@ class module_console_systemClearCache extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Empty cache directories, clear Memcached, Redis if avalaible');
+        $this->setDescription('Empties cache directories and cache-server data');
 
         return $this;
     }

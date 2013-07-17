@@ -32,7 +32,7 @@ class UpgradeDBDatas extends Command
         parent::__construct($name);
 
         $this
-            ->setDescription("Upgrade Phraseanet datas")
+            ->setDescription("Upgrades Phraseanet datas, useful after migrations")
             ->setHelp(<<<EOF
 Upgrade Phraseanet datas from older version
 

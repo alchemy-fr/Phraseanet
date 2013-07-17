@@ -27,7 +27,7 @@ class module_console_systemExport extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Export all phraseanet records to a directory');
+        $this->setDescription('Exports all phraseanet records to a given directory');
 
         /**
          * To implement

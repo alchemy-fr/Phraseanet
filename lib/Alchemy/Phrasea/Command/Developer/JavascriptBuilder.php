@@ -26,7 +26,7 @@ class JavascriptBuilder extends Command
     {
         parent::__construct('assets:build-javascript');
 
-        $this->setDescription('Compile less files');
+        $this->setDescription('Builds Phraseanet JavaScript files');
     }
 
     /**

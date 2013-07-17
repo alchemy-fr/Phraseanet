@@ -28,7 +28,7 @@ class module_console_sphinxGenerateSuggestion extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Generate suggestions for Sphinx Search Engine');
+        $this->setDescription('Generates suggestions for Sphinx Search Engine, useful for query auto-completion');
 
         return $this;
     }

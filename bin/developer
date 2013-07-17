@@ -78,6 +78,7 @@ try {
     $cli->command(new Behat());
     $cli->command(new LessCompiler());
     $cli->command(new JavascriptBuilder());
+    $cli->command(new \module_console_systemTemplateGenerator('system:generate-templates'));
 
     $cli['console']->addCommands(array(
         // DBAL Commands

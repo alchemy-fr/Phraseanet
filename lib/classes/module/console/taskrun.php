@@ -53,7 +53,7 @@ class module_console_taskrun extends Command
                 'threshold : (DEBUG|INFO|WARNING|ERROR|CRITICAL|ALERT)',
                 ''
             )
-            ->setDescription('Run task');
+            ->setDescription('Runs a Phraseanet task given its id');
 
         return $this;
     }

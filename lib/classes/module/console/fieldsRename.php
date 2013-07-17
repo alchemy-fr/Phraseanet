@@ -27,7 +27,7 @@ class module_console_fieldsRename extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Rename a documentation field from a Databox');
+        $this->setDescription('Renames a documentation field from a Databox');
 
         $this->addArgument('name', InputArgument::REQUIRED, 'The new name');
         $this->addArgument('meta_struct_id', InputArgument::REQUIRED, 'Metadata structure id destination');

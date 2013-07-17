@@ -28,7 +28,7 @@ class module_console_systemTemplateGenerator extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Generate template files');
+        $this->setDescription('Generates Twig templates files');
 
         return $this;
     }
