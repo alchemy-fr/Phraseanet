@@ -86,9 +86,9 @@ define([
         events: {
             "click": "focusAction",
             "click .delete-field": "deleteAction",
-            "keyup input#tbranch": "fieldChangedAction",
+            "blur input#tbranch": "fieldChangedAction",
             "keyup input#tag": "tagFieldChangedAction",
-            "keyup input.input-label": "labelChangedAction",
+            "blur input.input-label": "labelChangedAction",
             "change input[type=checkbox]": "fieldChangedAction",
             "change select": "selectionChangedAction",
             "click .lng-label a": "_toggleLabels"
