@@ -36,12 +36,40 @@ class LocaleServiceProvider implements ServiceProviderInterface
         };
 
         $app['locales.available'] = function (Application $app) {
-            return PhraseaApplication::getAvailableLanguages();
+            $availableLanguages = PhraseaApplication::getAvailableLanguages();
+
+            if ($app['phraseanet.configuration']->isSetup()
+                && isset($app['phraseanet.configuration']['main']['languages'])
+                && !empty($app['phraseanet.configuration']['main']['languages'])) {
+                $languages = $app['phraseanet.configuration']['main']['languages'];
+                $enabledLanguages = $availableLanguages;
+
+                foreach ($enabledLanguages as $code => $language) {
+                    if (in_array($code, $languages)) {
+                        continue;
+                    }
+                    $data = explode('_', $code);
+                    if (in_array($data[0], $languages)) {
+                        continue;
+                    }
+                    unset($enabledLanguages[$code]);
+                }
+
+                if (0 === count($enabledLanguages)) {
+                    $app['monolog']->error('Wrong language configuration, no language activated');
+
+                    return $availableLanguages;
+                }
+
+                return $enabledLanguages;
+            } else {
+                return $availableLanguages;
+            }
         };
 
         $app['locales.mapping'] = function (Application $app) {
             $codes = array();
-            foreach (PhraseaApplication::getAvailableLanguages() as $code => $language) {
+            foreach ($app['locales.available'] as $code => $language) {
                 $data = explode('_', $code);
                 $codes[$data[0]] = $code;
             }
@@ -52,7 +80,7 @@ class LocaleServiceProvider implements ServiceProviderInterface
         $app['locales.I18n.available'] = $app->share(function (Application $app) {
             $locales = array();
 
-            foreach (PhraseaApplication::getAvailableLanguages() as $code => $language) {
+            foreach ($app['locales.available'] as $code => $language) {
                 $data = explode('_', $code);
                 $locales[$data[0]] = $language;
             }

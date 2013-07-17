@@ -369,7 +369,7 @@ class Thesaurus implements ControllerProviderInterface
                 $lng_code = explode('_', $code);
 
                 return $lng_code[0];
-            }, array_keys(PhraseaApplication::getAvailableLanguages()));
+            }, array_keys($app['locales.available']));
         } else {
             $t_lng[] = $request->get('piv');
         }
@@ -792,7 +792,7 @@ class Thesaurus implements ControllerProviderInterface
             $bases[$row['sbas_id']] = \phrasea::sbas_labels($row['sbas_id'], $app);
         }
 
-        foreach (PhraseaApplication::getAvailableLanguages() as $lng_code => $lng) {
+        foreach ($app['locales.available'] as $lng_code => $lng) {
             $lng_code = explode('_', $lng_code);
             $languages[$lng_code[0]] = $lng;
         }
@@ -1125,7 +1125,7 @@ class Thesaurus implements ControllerProviderInterface
     {
         $languages = array();
 
-        foreach (PhraseaApplication::getAvailableLanguages() as $lng_code => $lng) {
+        foreach ($app['locales.available'] as $lng_code => $lng) {
             $lng_code = explode('_', $lng_code);
             $languages[$lng_code[0]] = $lng;
         }
@@ -1202,7 +1202,7 @@ class Thesaurus implements ControllerProviderInterface
             );
         }
 
-        foreach (PhraseaApplication::getAvailableLanguages() as $code => $language) {
+        foreach ($app['locales.available'] as $code => $language) {
             $lng_code = explode('_', $code);
             $languages[$lng_code[0]] = $language;
         }
@@ -1229,7 +1229,7 @@ class Thesaurus implements ControllerProviderInterface
     {
         $flags = $jsFlags = array();
 
-        foreach (PhraseaApplication::getAvailableLanguages() as $code => $language) {
+        foreach ($app['locales.available'] as $code => $language) {
             $lng_code = explode('_', $code);
             $flags[$lng_code[0]] = $language;
             $jsFlags[$lng_code[0]] = array('w' => 18, 'h' => 13);

@@ -41,6 +41,7 @@
         xsendfile mapping depending on databoxes configuration.
       - bin/console xsendfile:configuration-dumper that dumps your virtual
         host configuration depending on Phraseanet configuration
+  - Phraseanet enabled languages is now configurable.
 
 * 3.7.13 (2013-07-04)
 
