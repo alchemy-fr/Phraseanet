@@ -549,7 +549,7 @@ class PhraseaEngine implements SearchEngineInterface
                     , $BF
                     , $this->options->isStemmed() ? $this->options->getLocale() : null
             );
-
+file_put_contents("/tmp/phrasea_query.log", var_export($results, true), FILE_APPEND);
             if ($results) {
                 $total_time += $results['time_all'];
                 $nbanswers += $results["nbanswers"];
