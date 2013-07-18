@@ -17,19 +17,19 @@
         <p class="header">
             <h4 style='text-align:center;'>
                 {% trans %}
-                    You have selected one document.
+                    You have selected one record.
                 {% plural nbReceivedDocuments %}
-                    You have selected {{ nbReceivedDocuments }} documents.
+                    You have selected {{ nbReceivedDocuments }} records.
                 {% endtrans %}
 
                   {% if nbEditableDocuments == 0 %}
-                    {% trans %}No documents editable{% endtrans %}
+                    {% trans %}None of the records can be modified.{% endtrans %}
                   {% else %}
                     {% if nbEditableDocuments < nbReceivedDocuments %}
                         {% trans %}
-                            Only one document is editable.
+                            Only one record can be modified.
                         {% plural nbEditableDocuments %}
-                            Only {{ nbEditableDocuments }} documents are editable.
+                            Only {{ nbEditableDocuments }} records can be modified.
                         {% endtrans %}
                   {% endif %}
                 {% endif %}
@@ -55,9 +55,9 @@
                         <tr style='border-bottom:1px solid #FFF;'>
                             <td colspan="6" style='font-size:11px;text-align:center'>
                                 {% if nbRecords == 0 and nbStories > 0 %}
-                                    <i>({% trans %}Status edition of stories{% endtrans %})</i>
+                                    <i>({% trans %}Stories status edition{% endtrans %})</i>
                                 {% elseif nbRecords > 0 and nbStories == 0 %}
-                                    <i>({% trans %}Status edition of documents{% endtrans %})</i>
+                                    <i>({% trans %}Records status edition{% endtrans %})</i>
                                 {% endif %}
                             </td>
                         </tr>
