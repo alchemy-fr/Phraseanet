@@ -549,6 +549,7 @@ class PhraseaEngine implements SearchEngineInterface
                     , $BF
                     , $this->options->isStemmed() ? $this->options->getLocale() : null
             );
+
             if ($results) {
                 $total_time += $results['time_all'];
                 $nbanswers += $results["nbanswers"];
