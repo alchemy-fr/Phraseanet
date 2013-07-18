@@ -22,12 +22,16 @@
                     You have selected {{ nbReceivedDocuments }} documents.
                 {% endtrans %}
 
-                {% if nbEditableDocuments < nbReceivedDocuments %}
-                    {% trans %}
-                        Only one document is editable.
-                    {% plural nbEditableDocuments %}
-                        Only {{ nbEditableDocuments }} documents are editable.
-                    {% endtrans %}
+                  {% if nbEditableDocuments == 0 %}
+                    {% trans %}No documents editable{% endtrans %}
+                  {% else %}
+                    {% if nbEditableDocuments < nbReceivedDocuments %}
+                        {% trans %}
+                            Only one document is editable.
+                        {% plural nbEditableDocuments %}
+                            Only {{ nbEditableDocuments }} documents are editable.
+                        {% endtrans %}
+                  {% endif %}
                 {% endif %}
             </h4>
         </p>
@@ -110,7 +114,9 @@
                 </table>
             {% endfor %}
             <div class="form-actions" style="background:transparent">
+            {% if nbEditableDocuments > 0 %}
                 <button type="button" class="btn btn-primary submiter">{% trans "Apply changes" %}</button>
+            {% endif %}
                 <button type="button" class="btn cancel">{% trans "Cancel" %}</button>
                 <span class="form-action-loader" style="display:none;">
                     <img src="../skins/icons/loader414141.gif" />
