@@ -67,11 +67,6 @@
                                 {% set inverse = 1 %}
                             {% endif %}
                             <tr>
-                                <td colspan="6" style='text-align:center;'>
-                                    <h6>{{ values['name']|title }}</h6>
-                                </td>
-                            </tr>
-                            <tr>
                                 <td style='text-align:right'>
                                     {% if values['img_off'] is not empty %}
                                         <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}">
