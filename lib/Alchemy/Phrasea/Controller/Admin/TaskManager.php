@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Exception\XMLParseErrorException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,12 +68,12 @@ class TaskManager implements ControllerProviderInterface
             try {
                 $app['task-manager']->setSchedulerState(\task_manager::STATE_TOSTOP);
 
-                return $app->json(true);
+                return $app->json(array('success' => true));
             } catch (Exception $e) {
 
             }
 
-            return $app->json(false);
+            return $app->json(array('success' => false));
         })->bind('admin_tasks_scheduler_stop');
 
         $controllers->get('/scheduler/log', function(Application $app, Request $request) {
@@ -215,9 +216,9 @@ class TaskManager implements ControllerProviderInterface
 
                 $task->resetCrashCounter();
 
-                return $app->json(true);
+                return $app->json(array('success' => true));
             } catch (\Exception $e) {
-                return $app->json(false);
+                return $app->json(array('success' => false));
             }
         })->bind('admin_tasks_task_reset');
 
@@ -234,10 +235,7 @@ class TaskManager implements ControllerProviderInterface
                     throw new XMLParseErrorException($request->request->get('xml'));
                 }
             } catch (XMLParseErrorException $e) {
-                return new Response(
-                        $e->getXMLErrMessage(),
-                        412    // Precondition Failed
-                );
+                return $app->json(array('success' => false, 'message' => $e->getMessage()));
             }
 
             try {
@@ -247,12 +245,9 @@ class TaskManager implements ControllerProviderInterface
                 $task->setActive(\p4field::isyes($request->request->get('active')));
                 $task->setSettings($request->request->get('xml'));
 
-                return $app->json(true);
+                return $app->json(array('success' => true));
             } catch (\Exception $e) {
-                return new Response(
-                        'Bad task ID',
-                        404    // Not Found
-                );
+                return $app->json(array('success' => false, 'message' => 'Task not found'));
             }
         })->bind('admin_tasks_task_save');
 
@@ -346,7 +341,7 @@ class TaskManager implements ControllerProviderInterface
 
         $app['task-manager']->getSchedulerProcess()->run();
 
-        return $app->json(true);
+        return $app->json(array('success' => true));
     }
 
     /**

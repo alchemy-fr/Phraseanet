@@ -199,7 +199,14 @@
                                 , type:"POST"
                                 , async:false
                                 , success:function(data) {
-                                    $("#taskFormByeBye").submit();
+                                    if (data.success) {
+                                        $("#taskFormByeBye").submit();
+                                    } else {
+                                        if (window.console) {
+                                            console.log(data.message);
+                                        }
+                                        alert("{% trans %}An error occured{% endtrans %}");
+                                    }
                                 }
                                 , error:function(jqXHR, textStatus, errorThrown) {
                                     alert("Erreur XML:\n\n" + jqXHR.responseText);
