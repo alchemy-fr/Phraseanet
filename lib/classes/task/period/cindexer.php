@@ -265,32 +265,22 @@ class task_period_cindexer extends task_abstract
                 <div class="controls">
                     <input type="text" name="host" value="">
                 </div>
-            </div>
-            <div class="control-group">
                 <label class="control-label"><?php echo _('MySQL Port') ?></label>
                 <div class="controls">
                     <input type="text" name="port" value="">
                 </div>
-            </div>
-            <div class="control-group">
                 <label class="control-label"><?php echo _('MySQL Database') ?></label>
                 <div class="controls">
                     <input type="text" name="base" value="">
                 </div>
-            </div>
-            <div class="control-group">
                 <label class="control-label"><?php echo _('MySQL Login') ?></label>
                 <div class="controls">
                     <input type="text" name="user" value="">
                 </div>
-            </div>
-            <div class="control-group">
                 <label class="control-label"><?php echo _('MySQL password') ?></label>
                 <div class="controls">
                     <input type="password" name="password" value="">
                 </div>
-            </div>
-            <div class="control-group">
                 <label class="control-label"><?php echo _('MySQL connection charset') ?></label>
                 <div class="controls">
                     <input type="text" name="charset" class="input-small" value="">
@@ -318,7 +308,7 @@ class task_period_cindexer extends task_abstract
                 <label class="control-label"><?php echo _('Enable stemming languages') ?></label>
                 <div class="controls">
                     <input type="text" name="stem" class="input-small" value="">
-                    <span class="help-block"><?php echo _('example : fr,en') ?></span>
+                    <span class="help-inline"><?php echo _('example : fr,en') ?></span>
                 </div>
             </div>
             <div class="control-group">
@@ -343,9 +333,9 @@ class task_period_cindexer extends task_abstract
                 <div class="controls">
                     <label class="checkbox">
                         <input type="checkbox" name="winsvc_run">
-                        <?php echo _('Windows specific') ?>
+                        <?php echo _('Run as application, not as service') ?>
+                    <span class="help-inline">(<?php echo _('Windows specific') ?>)</span>
                     </label>
-                    <span class="help-block"><?php echo _('Run as application, not as service') ?></span>
                 </div>
             </div>
         </form>
