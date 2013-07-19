@@ -93,6 +93,9 @@ $parm = $request->get_parms(
 
                     try {
                         $record = new record_adapter($basrec[0], $basrec[1]);
+                        if ( ! $ACL->has_right_on_base($record->get_base_id(), 'chgstatus')) {
+                            continue;
+                        }
                         $base_id = $record->get_base_id();
                         if (isset($mska[$basrec[0]]) && isset($msko[$basrec[0]])) {
                             $record = new record_adapter($basrec[0], $basrec[1]);
