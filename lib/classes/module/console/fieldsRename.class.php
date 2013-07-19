@@ -76,12 +76,43 @@ class module_console_fieldsRename extends Command
             return 1;
         }
 
-        $output->writeln("Renaming ... ");
+        $output->write("Renaming ... ");
 
         $field->set_name($new_name);
         $field->save();
 
-        $output->writeln("Done with success !");
+        $output->writeln("<info>OK</info>");
+
+        $sql = 'SELECT count(record_id) as total FROM record';
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        
+        $total = $data['total'];
+        $start = 0;
+        $quantity = 100;
+
+        do {
+            $output->write("\rUpdating records... <info>".min($start, $total)." / $total</info>");
+
+            $sql = 'SELECT record_id FROM record
+                  ORDER BY record_id LIMIT ' . $start . ', ' . $quantity;
+            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            foreach ($results as $row) {
+                $record = $databox->get_record($row['record_id']);
+                $record->set_metadatas(array());
+                unset($record);
+            }
+
+            $start += $quantity;
+        } while (count($results) > 0);
+
+        $output->writeln("\nDone with success !");
 
         return 0;
     }
