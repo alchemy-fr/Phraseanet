@@ -31,8 +31,8 @@
 
         <div id="taskTabs">
             <ul>
-                <li><a href="#taskGuiTab">{% trans 'boutton::vue graphique' %}</a></li>
                 <li><a href="#taskXmlTab">{% trans 'boutton::vue xml' %}</a></li>
+                <li><a href="#taskGuiTab">{% trans 'boutton::vue graphique' %}</a></li>
             </ul>
 
             <!-- ______________   graphic interface '{{task.getName()}}'   ___________________ -->
@@ -82,9 +82,16 @@
                 };
             })( jQuery );
 
-
             $(document).ready(function(){
                 $("#taskTabs").tabs({
+                    create: function(event, ui) {
+{% if task.getInterfaceHTML() is empty %}
+                        $("#taskTabs").tabs({ disabled: [1], active: 0 });
+{% else %}
+                        $("#taskTabs").tabs({ active: 1 });
+{% endif %}
+                    }
+                    ,
                     beforeActivate: function(event, ui) {
                         switch($(ui.newPanel).attr("id"))
                         {
@@ -145,17 +152,6 @@
                         }
                     }
                 });
-
-{% if task.getInterfaceHTML() is empty %}
-                if ($("#taskTabs").data("ui-tabs")) {
-                    $("#taskTabs").tabs( "option", "disable", 0 );
-                    $("#taskTabs").tabs( "option", "active", 1 );
-                }
-{% else %}
-                if ($("#taskTabs").data("ui-tabs")) {
-                    $("#taskTabs").tabs( "option", "active", 0 );
-                }
-{% endif %}
 
                 $("#taskResetCrashCounterButton").click(function()
                 {
