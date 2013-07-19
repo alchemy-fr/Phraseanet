@@ -631,7 +631,7 @@ class SearchEngineOptions
 
         $bas = array_filter($bas, function($collection) use ($app) {
             if ($app['authentication']->isAuthenticated()) {
-                return $app['authentication']->getUser()->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+                return $app['authentication']->getUser()->ACL()->has_access_to_base($collection->get_base_id());
             } else {
                 return in_array($collection, $app->getOpenCollections());
             }
