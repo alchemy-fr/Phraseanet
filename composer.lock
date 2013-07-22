@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "9d64a5bd6201a8a30e4181b7ece5f91b",
+    "hash": "7f9f9a1dd0a8021cebb26a9a24e968c0",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -1023,6 +1023,63 @@
             "time": "2013-05-30 07:01:25"
         },
         {
+            "name": "imagine/imagine",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/avalanche123/Imagine.git",
+                "reference": "0af397b3b96aac5b11593ca9136ca43a55869c5f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/0af397b3b96aac5b11593ca9136ca43a55869c5f",
+                "reference": "0af397b3b96aac5b11593ca9136ca43a55869c5f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "sami/sami": "dev-master"
+            },
+            "suggest": {
+                "ext-gd": "to use the GD implementation",
+                "ext-gmagick": "to use the Gmagick implementation",
+                "ext-imagick": "to use the Imagick implementation"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "0.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Imagine": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bulat Shakirzyanov",
+                    "email": "mallluhuct@gmail.com",
+                    "homepage": "http://avalanche123.com"
+                }
+            ],
+            "description": "Image processing for PHP 5.3",
+            "homepage": "http://imagine.readthedocs.org/",
+            "keywords": [
+                "drawing",
+                "graphics",
+                "image manipulation",
+                "image processing"
+            ],
+            "time": "2013-07-19 16:16:00"
+        },
+        {
             "name": "jms/metadata",
             "version": "1.3.0",
             "source": {
@@ -1245,23 +1302,23 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.3.0",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "0.3.0"
+                "reference": "0.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0.3.0",
-                "reference": "0.3.0",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0.3.1",
+                "reference": "0.3.1",
                 "shasum": ""
             },
             "require": {
                 "alchemy/ghostscript": "~0.4.0",
+                "imagine/imagine": "0.6.x@dev",
                 "mediavorus/mediavorus": "~0.4.0",
                 "monolog/monolog": "~1.0",
-                "neutron/imagine": "dev-neutron-colorspace@dev",
                 "php": ">=5.3.3",
                 "php-ffmpeg/php-ffmpeg": "~0.3.0",
                 "php-mp4box/php-mp4box": "~0.3.0",
@@ -1312,7 +1369,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-07-04 10:23:09"
+            "time": "2013-07-22 11:10:25"
         },
         {
             "name": "mediavorus/mediavorus",
@@ -1439,16 +1496,16 @@
         },
         {
             "name": "mrclay/minify",
-            "version": "dev-master",
+            "version": "2.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mrclay/minify.git",
-                "reference": "3a1f9f55cf8d137e49667a363cb93ccfaac10706"
+                "reference": "2.1.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mrclay/minify/zipball/3a1f9f55cf8d137e49667a363cb93ccfaac10706",
-                "reference": "3a1f9f55cf8d137e49667a363cb93ccfaac10706",
+                "url": "https://api.github.com/repos/mrclay/minify/zipball/2.1.6",
+                "reference": "2.1.6",
                 "shasum": ""
             },
             "require": {
@@ -1475,62 +1532,7 @@
             ],
             "description": "Minify is a PHP5 app that helps you follow several rules for client-side performance. It combines multiple CSS or Javascript files, removes unnecessary whitespace and comments, and serves them with gzip encoding and optimal client-side cache headers",
             "homepage": "http://code.google.com/p/minify/",
-            "time": "2013-06-24 18:56:00"
-        },
-        {
-            "name": "neutron/imagine",
-            "version": "dev-neutron-colorspace",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/romainneutron/Imagine.git",
-                "reference": "6f80efbd5c2addca16c8676485ddabec3309a217"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/Imagine/zipball/6f80efbd5c2addca16c8676485ddabec3309a217",
-                "reference": "6f80efbd5c2addca16c8676485ddabec3309a217",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2"
-            },
-            "replace": {
-                "imagine/imagine": "*"
-            },
-            "require-dev": {
-                "sami/sami": "dev-master"
-            },
-            "suggest": {
-                "ext-gd": "to use the GD implementation",
-                "ext-gmagick": "to use the Gmagick implementation",
-                "ext-imagick": "to use the Imagick implementation"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Imagine": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Bulat Shakirzyanov",
-                    "email": "mallluhuct@gmail.com",
-                    "homepage": "http://avalanche123.com"
-                }
-            ],
-            "description": "Image processing for PHP 5.3",
-            "homepage": "http://imagine.readthedocs.org/",
-            "keywords": [
-                "drawing",
-                "graphics",
-                "image manipulation",
-                "image processing"
-            ],
-            "time": "2013-06-27 15:40:09"
+            "time": "2013-07-20 02:46:02"
         },
         {
             "name": "neutron/recaptcha",
@@ -2526,24 +2528,24 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.3.1",
+            "version": "v2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "v2.3.1"
+                "reference": "v2.3.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/v2.3.1",
-                "reference": "v2.3.1",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/v2.3.2",
+                "reference": "v2.3.2",
                 "shasum": ""
             },
             "require": {
-                "doctrine/common": ">=2.2,<3.0",
+                "doctrine/common": "~2.2",
                 "php": ">=5.3.3",
-                "psr/log": ">=1.0,<2.0",
-                "symfony/icu": ">=1.0,<2.0",
-                "twig/twig": ">=1.11.0,<2.0"
+                "psr/log": "~1.0",
+                "symfony/icu": "~1.0",
+                "twig/twig": "~1.11"
             },
             "replace": {
                 "symfony/browser-kit": "self.version",
@@ -2586,10 +2588,10 @@
             },
             "require-dev": {
                 "doctrine/data-fixtures": "1.0.*",
-                "doctrine/dbal": ">=2.2,<3.0",
-                "doctrine/orm": ">=2.2,<3.0,>=2.2.3",
+                "doctrine/dbal": "~2.2",
+                "doctrine/orm": "~2.2,>=2.2.3",
                 "ircmaxell/password-compat": "1.0.*",
-                "monolog/monolog": ">=1.3,<2.0",
+                "monolog/monolog": "~1.3",
                 "ocramius/proxy-manager": ">=0.3.1,<0.4-dev",
                 "propel/propel1": "1.6.*"
             },
@@ -2630,15 +2632,15 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-06-11 11:46:38"
+            "time": "2013-07-17 06:22:21"
         },
         {
             "name": "tecnick.com/tcpdf",
-            "version": "6.0.020",
+            "version": "6.0.021",
             "source": {
                 "type": "git",
                 "url": "http://git.code.sf.net/p/tcpdf/code",
-                "reference": "6.0.020"
+                "reference": "6.0.021"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -2687,7 +2689,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2013-06-04 21:06:38"
+            "time": "2013-07-18 19:45:24"
         },
         {
             "name": "themattharris/tmhoauth",
@@ -3277,12 +3279,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "6924952026b77ff492da559b04ad166d25c611cb"
+                "reference": "b4a135c7db56ecc4602b54a2184368f440cac33e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/6924952026b77ff492da559b04ad166d25c611cb",
-                "reference": "6924952026b77ff492da559b04ad166d25c611cb",
+                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/b4a135c7db56ecc4602b54a2184368f440cac33e",
+                "reference": "b4a135c7db56ecc4602b54a2184368f440cac33e",
                 "shasum": ""
             },
             "require": {
@@ -3324,20 +3326,20 @@
             "keywords": [
                 "database"
             ],
-            "time": "2013-04-11 23:14:04"
+            "time": "2013-07-10 17:04:07"
         },
         {
             "name": "fabpot/goutte",
-            "version": "dev-master",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Goutte.git",
-                "reference": "2f5104765152d51b501de452a83153ac0b1492df"
+                "reference": "v1.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Goutte/zipball/2f5104765152d51b501de452a83153ac0b1492df",
-                "reference": "2f5104765152d51b501de452a83153ac0b1492df",
+                "url": "https://api.github.com/repos/fabpot/Goutte/zipball/v1.0.2",
+                "reference": "v1.0.2",
                 "shasum": ""
             },
             "require": {
@@ -3380,7 +3382,7 @@
             "keywords": [
                 "scraper"
             ],
-            "time": "2013-07-02 07:48:02"
+            "time": "2013-07-15 19:47:12"
         },
         {
             "name": "instaclick/php-webdriver",
@@ -3805,10 +3807,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "neutron/imagine": 20,
-        "mrclay/minify": 20,
-        "doctrine/data-fixtures": 20,
-        "fabpot/goutte": 20
+        "imagine/imagine": 20,
+        "doctrine/data-fixtures": 20
     },
     "platform": {
         "php": ">=5.3.3"
