@@ -29,7 +29,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class RecordAdd extends Command
 {
-
     /**
      * Constructor
      */
@@ -41,7 +40,8 @@ class RecordAdd extends Command
             ->setHelp('')
             ->addArgument('base_id', InputArgument::REQUIRED, 'The target collection id', null)
             ->addArgument('file', InputArgument::REQUIRED, 'The file to archive', null)
-            ->addOption('force', 'f', InputOption::VALUE_OPTIONAL, 'Force a behavior (record|quarantine)', null)
+            ->addOption('force', 'f', InputOption::VALUE_OPTIONAL, 'Force a behavior (record|quarantine)', 'record')
+            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions')
             ->addOption('in-place', 'i', InputOption::VALUE_NONE, 'Set this flag to archive record in place. When record is added, it is copied to a temporary folder and file has some metadatas written. If you choose to archive in place, please be warned that the file will be updated (UUID will be written in it)');
 
         return $this;
@@ -50,7 +50,7 @@ class RecordAdd extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $collection = \collection::get_from_base_id($app, $input->getArgument('base_id'));
+            $collection = \collection::get_from_base_id($this->container, $input->getArgument('base_id'));
         } catch (\Exception $e) {
             throw new \InvalidArgumentException(sprintf('Collection %s is invalid', $input->getArgument('base_id')));
         }
@@ -65,14 +65,16 @@ class RecordAdd extends Command
 
         $dialog = $this->getHelperSet()->get('dialog');
 
-        do {
-            $continue = strtolower($dialog->ask($output, sprintf("Will add record <info>%s</info> (%s) on collection <info>%s</info>\n<question>Continue ? (y/N)</question>", $file, $media->getType(), $collection->get_label($this->container['locale.I18n'])), 'N'));
-        } while ( ! in_array($continue, array('y', 'n')));
+        if (!$input->getOption('yes')) {
+            do {
+                $continue = strtolower($dialog->ask($output, sprintf("Will add record <info>%s</info> (%s) on collection <info>%s</info>\n<question>Continue ? (y/N)</question>", $file, $media->getType(), $collection->get_label($this->container['locale.I18n'])), 'N'));
+            } while ( ! in_array($continue, array('y', 'n')));
 
-        if (strtolower($continue) !== 'y') {
-            $output->writeln('Aborted !');
+            if (strtolower($continue) !== 'y') {
+                $output->writeln('Aborted !');
 
-            return;
+                return;
+            }
         }
 
         $tempfile = $originalName = null;
