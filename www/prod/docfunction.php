@@ -259,7 +259,22 @@ $user = $Core->getAuthenticatedUser();
         $parm['lst'] = implode(';', $parm['lst']);
     }
 
+    $tmplst = array();
     $lst = liste::filter(explode(';', $parm['lst']));
+    foreach ($lst as $basrec) {
+        $data = explode('_', $basrec);
+        try {
+            $record = new \record_adapter($data[0], $data[1]);
+        } catch (\Exception $e) {
+            continue;
+        }
+        if (!$user->ACL()->has_right_on_base($record->get_base_id(), 'chgstatus')) {
+            continue;
+        }
+        $tmplst[] = $basrec;
+    }
+    $lst = $tmplst;
+    $sbasid = null;
 
     foreach ($lst as $basrec) {
         if ($basrec && count($basrec) == 2) {
