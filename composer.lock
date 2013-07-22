@@ -433,7 +433,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Imagine.git",
-                "reference": "f1ca9348f170138b9cc83033406bec90193f9708"
+                "reference": "851e26464bbf4221bc5919d09bad1fa3d4317572"
             },
             "require": {
                 "php": ">=5.3.2"
@@ -478,12 +478,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "0.1.6"
+                "reference": "0.1.7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0.1.6",
-                "reference": "0.1.6",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0.1.7",
+                "reference": "0.1.7",
                 "shasum": ""
             },
             "require": {
