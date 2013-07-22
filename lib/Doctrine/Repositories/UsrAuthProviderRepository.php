@@ -12,6 +12,20 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsrAuthProviderRepository extends EntityRepository
 {
+    public function findByUser(\User_Adapter $user)
+    {
+        $dql = 'SELECT u
+                FROM Entities\UsrAuthProvider u
+                WHERE u.usr_id = :usrId';
+
+        $params = array('usrId' => $user->get_id());
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters($params);
+
+        return $query->getResult();
+    }
+
     public function findWithProviderAndId($providerId, $distantId)
     {
         $dql = 'SELECT u
