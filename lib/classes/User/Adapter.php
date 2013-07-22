@@ -960,6 +960,14 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      */
     public function delete()
     {
+        $repo = $this->app['EM']->getRepository('Entities\UsrAuthProvider');
+
+        foreach ($repo->findByUser($this) as $provider) {
+            $this->app['EM']->remove($provider);
+        }
+
+        $this->app['EM']->flush();
+
         $sql = 'UPDATE usr SET usr_login = :usr_login , usr_mail = null
             WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -1577,7 +1585,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public static function get_sys_admins(Application $app)
     {
-        $sql = 'SELECT usr_id, usr_login FROM usr WHERE create_db="1"';
+        $sql = 'SELECT usr_id, usr_login FROM usr
+                WHERE create_db="1"
+                    AND model_of="0"
+                    AND usr_login NOT LIKE "(#deleted%"';
         $conn = connection::getPDOConnection($app);
         $stmt = $conn->prepare($sql);
         $stmt->execute();
