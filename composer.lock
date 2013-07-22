@@ -478,12 +478,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "0.1.6"
+                "reference": "0.1.7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0.1.6",
-                "reference": "0.1.6",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0.1.7",
+                "reference": "0.1.7",
                 "shasum": ""
             },
             "require": {
