@@ -329,6 +329,14 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         }
     }
 
+    public function testThatMediaAlachemystIsRegistered()
+    {
+        $app = new Application('test');
+
+        $this->assertSame($app['monolog'], $app['media-alchemyst.logger']);
+        $this->assertInstanceOf('MediaAlchemyst\Alchemyst', $app['media-alchemyst']);
+    }
+
     private function getAppThatReturnLocale()
     {
         $app = new Application('test');

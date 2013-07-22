@@ -238,6 +238,9 @@ class Application extends SilexApplication
 
             return $configuration;
         });
+        $this['media-alchemyst.logger'] = $this->share(function(Application $app) {
+            return $app['monolog'];
+        });
 
         $this->register(new MediaVorusServiceProvider());
         $this->register(new MonologServiceProvider());
