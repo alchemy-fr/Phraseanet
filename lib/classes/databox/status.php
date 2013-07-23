@@ -96,8 +96,8 @@ class databox_status
                 }
 
                 foreach ($app['locales.I18n.available'] as $code => $language) {
-                    $this->status[$bit]['labels_on_i18n'][$code] = isset($this->status[$bit]['labels_on'][$code]) ? $this->status[$bit]['labels_on'][$code] : $this->status[$bit]["labelon"];
-                    $this->status[$bit]['labels_off_i18n'][$code] = isset($this->status[$bit]['labels_off'][$code]) ? $this->status[$bit]['labels_off'][$code] : $this->status[$bit]["labeloff"];
+                    $this->status[$bit]['labels_on_i18n'][$code] = '' !== trim($this->status[$bit]['labels_on'][$code]) ? $this->status[$bit]['labels_on'][$code] : $this->status[$bit]["labelon"];
+                    $this->status[$bit]['labels_off_i18n'][$code] = '' !== trim($this->status[$bit]['labels_off'][$code]) ? $this->status[$bit]['labels_off'][$code] : $this->status[$bit]["labeloff"];
                 }
 
                 $this->status[$bit]["img_off"] = null;
