@@ -61,7 +61,7 @@
             flowplayer("preview{{random}}",
               {src:"/include/jslibs/flowplayer/flowplayer-3.2.12.swf", wmode: "transparent"},
               {clip:{url:"{{url|url_encode}}",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"},
-              onError:function(code,message){getNewVideoToken({{thumbnail.get_sbas_id() ~'_'~thumbnail.get_record_id()}}, this);},
+              onError:function(code,message){getNewVideoToken("{{thumbnail.get_sbas_id() ~'_'~thumbnail.get_record_id()}}", this);},
               plugins: {h264streaming: {url: "/include/jslibs/flowplayer/flowplayer.pseudostreaming-3.2.9.swf"}}
               });
           </script>

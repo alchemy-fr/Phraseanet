@@ -11,7 +11,7 @@ function getNewVideoToken(lst, obj)
 {
 	$.ajax({
 		type: "POST",
-		url: "/prod/records/renew-url/",
+		url: "../prod/records/renew-url/",
 		dataType: 'json',
 		data: {
 			lst: lst
@@ -78,7 +78,7 @@ function openPreview(env, pos, contId, reload){
 
 	prevAjax = $.ajax({
 		type: "POST",
-		url: "/prod/records/",
+		url: "../prod/records/",
 		dataType: 'json',
 		data: {
 			env: env,

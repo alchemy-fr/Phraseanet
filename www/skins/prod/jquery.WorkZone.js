@@ -15,7 +15,7 @@ var p4 = p4 || {};
 
         $.ajax({
             type: "GET",
-            url: "/prod/WorkZone/",
+            url: "../prod/WorkZone/",
             data: {
                 id: baskId,
                 sort: sort,
@@ -510,7 +510,7 @@ var p4 = p4 || {};
     {
         $.ajax({
             type: "POST",
-            url: "/prod/WorkZone/attachStories/",
+            url: "../prod/WorkZone/attachStories/",
             data: {stories: p4.Results.Selection.get()},
             dataType: "json",
             success: function(data) {
