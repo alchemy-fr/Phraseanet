@@ -36,7 +36,7 @@ class PersistentCookieSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        if ($request->cookies->has('persistent') && !$this->app['authentication']->isAuthenticated()) {
+        if ($this->app['phraseanet.configuration']->isSetup() && $request->cookies->has('persistent') && !$this->app['authentication']->isAuthenticated()) {
             if (false !== $session = $this->app['authentication.persistent-manager']->getSession($request->cookies->get('persistent'))) {
                 $this->app['authentication']->refreshAccount($session);
             }

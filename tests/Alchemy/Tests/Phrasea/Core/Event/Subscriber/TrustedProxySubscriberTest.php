@@ -20,6 +20,9 @@ class TrustedProxySubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $configuration = $this->getConfigurationMock();
         $configuration->expects($this->once())
+            ->method('isSetup')
+            ->will($this->returnValue(true));
+        $configuration->expects($this->once())
             ->method('offsetGet')
             ->with('trusted-proxies')
             ->will($this->returnValue(array('8.8.8.8', '127.0.0.1')));
@@ -45,6 +48,9 @@ class TrustedProxySubscriberTest extends \PHPUnit_Framework_TestCase
     public function testAllowedIpsAreSetWhenEmpty()
     {
         $configuration = $this->getConfigurationMock();
+        $configuration->expects($this->once())
+            ->method('isSetup')
+            ->will($this->returnValue(true));
         $configuration->expects($this->once())
             ->method('offsetExists')
             ->with('trusted-proxies')
