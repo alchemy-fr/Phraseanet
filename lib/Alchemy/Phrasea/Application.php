@@ -521,13 +521,15 @@ class Application extends SilexApplication
     private function setupUrlGenerator()
     {
         $this['url_generator'] = $this->share($this->extend('url_generator', function($urlGenerator, $app) {
-            $data = parse_url($app['phraseanet.configuration']['main']['servername']);
+            if ($app['phraseanet.configuration']->isSetup()) {
+                $data = parse_url($app['phraseanet.configuration']['main']['servername']);
 
-            if (isset($data['scheme'])) {
-                $urlGenerator->getContext()->setScheme($data['scheme']);
-            }
-            if (isset($data['host'])) {
-                $urlGenerator->getContext()->setHost($data['host']);
+                if (isset($data['scheme'])) {
+                    $urlGenerator->getContext()->setScheme($data['scheme']);
+                }
+                if (isset($data['host'])) {
+                    $urlGenerator->getContext()->setHost($data['host']);
+                }
             }
 
             return $urlGenerator;
