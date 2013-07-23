@@ -40,7 +40,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="container PNB">
+                    <div class="container PNB record_display_box">
                     {% if first_item %}
                         {% if app['authentication'].getUser().ACL().has_access_to_subdef(first_item.get_record(), 'preview') %}
                             {% set bask_prev = first_item.get_record().get_preview() %}
@@ -70,7 +70,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="container PNB">
+                    <div class="container PNB record_display_box">
                     </div>
                 </div>
             </div>
