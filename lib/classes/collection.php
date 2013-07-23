@@ -518,11 +518,6 @@ class collection implements cache_cacheableInterface
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $sql = "DELETE FROM sselcont WHERE base_id = :base_id";
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
-
         $sql = "DELETE FROM bas WHERE base_id = :base_id";
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
