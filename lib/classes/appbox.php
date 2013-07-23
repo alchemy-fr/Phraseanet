@@ -275,7 +275,7 @@ class appbox extends base
 
         $indexable = $row ? $row['indexable'] : null;
 
-        return $indexable;
+        return (Boolean) $indexable;
     }
 
     /**

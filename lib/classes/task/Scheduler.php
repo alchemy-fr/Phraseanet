@@ -11,7 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Monolog\Logger;
-use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\PhpExecutableFinder;
 
 /**
  *
@@ -66,8 +66,8 @@ class task_Scheduler
         if (isset($this->dependencyContainer['phraseanet.configuration']['binaries']['php_binary'])) {
             $php = $this->dependencyContainer['phraseanet.configuration']['binaries']['php_binary'];
         } else {
-            $finder = new ExecutableFinder();
-            $php = $finder->find('php');
+            $finder = new PhpExecutableFinder();
+            $php = $finder->find();
         }
 
         if ( ! is_executable($php)) {

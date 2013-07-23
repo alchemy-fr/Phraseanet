@@ -9,6 +9,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\Process\PhpExecutableFinder;
+use Symfony\Component\Process\ExecutableFinder;
 
 /**
  *
@@ -120,12 +122,13 @@ class setup
 
     public static function discover_binaries()
     {
-        $finder = new \Symfony\Component\Process\ExecutableFinder();
+        $phpFinder = new PhpExecutableFinder();
+        $finder = new ExecutableFinder();
 
         return array(
             'php' => array(
                 'name'               => 'PHP CLI',
-                'binary'             => $finder->find('php')
+                'binary'             => $phpFinder->find()
             ),
             'phraseanet_indexer' => array(
                 'name'    => 'Indexeur Phrasea',

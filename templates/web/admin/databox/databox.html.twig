@@ -91,7 +91,7 @@
     <div>
          <form method="post" action="{{ path('admin_database_set_indexable', {'databox_id': databox.get_sbas_id()}) }}" style="margin:0;">
              <label class="checkbox" for="is_indexable">
-                <input type="checkbox" id="is_indexable" name="indexable" {{ app['phraseanet.appbox'].is_databox_indexable(databox) ? 'checked' : ''}} />
+                <input type="checkbox" id="is_indexable" name="indexable" value="1" {{ app['phraseanet.appbox'].is_databox_indexable(databox) ? 'checked' : ''}} />
                 {% trans "admin::base: Cette base est indexable" %}
             </label>
         </form>
@@ -291,19 +291,17 @@
     $(document).ready(function(){
         refreshDatabaseInformations();
 
-        $('#is_indexable').bind('click', function(){
+        $('#is_indexable').bind('change', function(){
             var form = $(this).closest('form');
+            var checked = !!$(this).attr('checked');
 
             $.ajax({
                 dataType: 'json',
                 type: form.attr('method'),
                 url: form.attr('action'),
-                data: form.serializeArray(),
+                data: {"indexable" : checked ? 1 : 0},
                 success: function(datas) {
                     if(datas.success) {
-                        if(submitLink.hasClass('reload')) {
-                            reloadTree('base:{{ databox.get_sbas_id() }}');
-                        }
                     } else {
                         alert(datas.msg);
                     }

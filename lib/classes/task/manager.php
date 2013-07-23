@@ -12,7 +12,7 @@
 use Monolog\Logger;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\Process\ProcessBuilder;
-use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -131,8 +131,8 @@ class task_manager
         if (isset($this->app['phraseanet.configuration']['binaries']['php_binary'])) {
             $php = $this->app['phraseanet.configuration']['binaries']['php_binary'];
         } else {
-            $finder = new ExecutableFinder();
-            $php = $finder->find('php');
+            $finder = new PhpExecutableFinder();
+            $php = $finder->find();
         }
 
         $builder = ProcessBuilder::create(array($php));
