@@ -34,7 +34,9 @@ return call_user_func(function($environment = PhraseaApplication::ENV_PROD) {
                 return $app->redirectPath('homepage');
             }
         } else {
-            $app['firewall']->requireSetup();
+            if (false === strpos($request->getPathInfo(), '/include/minify')) {
+                $app['firewall']->requireSetup();
+            }
         }
     });
 
