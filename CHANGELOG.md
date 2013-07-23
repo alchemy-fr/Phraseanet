@@ -43,12 +43,12 @@
         host configuration depending on Phraseanet configuration
   - Phraseanet enabled languages is now configurable.
 
-* 3.7.14 (2013-xx-xx)
+* 3.7.14 (2013-07-23)
 
   - BugFix : Multi layered images are not rendered properly.
   - BugFix : Status editing can be accessed on some records by users that are not granted.
   - BugFix : Records index is not updated after databox structure field rename.
-  - Enhancement : Add support for grayscale colorspace images.
+  - Enhancement : Add support for grayscale colorspaces.
 
 * 3.7.13 (2013-07-04)
 
