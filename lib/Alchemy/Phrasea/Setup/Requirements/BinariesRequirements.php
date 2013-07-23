@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Setup\Requirements;
 
 use Alchemy\Phrasea\Setup\RequirementCollection;
 use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\PhpExecutableFinder;
 
 class BinariesRequirements extends RequirementCollection implements RequirementInterface
 {
@@ -27,9 +28,10 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
     {
         $this->setName('Binaries');
 
+        $phpFinder = new PhpExecutableFinder();
         $finder = new ExecutableFinder();
 
-        $phpCLI = isset($binaries['php_binary']) ? $binaries['php_binary'] : $finder->find('php');
+        $phpCLI = isset($binaries['php_binary']) ? $binaries['php_binary'] : $phpFinder->find();
 
         $this->addRequirement(
             null !== $phpCLI && is_executable($phpCLI),

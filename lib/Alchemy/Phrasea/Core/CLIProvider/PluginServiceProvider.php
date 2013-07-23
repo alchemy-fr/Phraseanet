@@ -21,7 +21,7 @@ use Alchemy\Phrasea\Plugin\Importer\FolderImporter;
 use Alchemy\Phrasea\Plugin\Management\AutoloaderGenerator;
 use Alchemy\Phrasea\Plugin\Management\AssetsManager;
 use JsonSchema\Validator as JsonValidator;
-use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\PhpExecutableFinder;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -60,8 +60,8 @@ class PluginServiceProvider implements ServiceProviderInterface
             $phpBinary = isset($binaries['php_binary']) ? $binaries['php_binary'] : null;
 
             if (!is_executable($phpBinary)) {
-                $finder = new ExecutableFinder();
-                $phpBinary = $finder->find('php');
+                $finder = new PhpExecutableFinder();
+                $phpBinary = $finder->find();
             }
 
             return new ComposerInstaller($app['composer-setup'], $app['plugins.directory'], $phpBinary);
