@@ -1139,6 +1139,10 @@ form.phrasea_query input.query {
     color: #000000;
 }
 
+#searchForm .danger label {
+    color: #000000;
+}
+
 #adv_search table.colllist {
     width: 290px;
 }
