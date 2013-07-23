@@ -1520,6 +1520,9 @@ function preset_copy()
   {
     if(p4.edit.T_fields[i]._status == 1)
     {
+      if (p4.edit.T_fields[i].readonly) {
+          continue;
+      }
       var c = p4.edit.T_fields[i]._value === "" ? "" : "checked=\"1\"";
       var v = p4.edit.T_fields[i]._value;
       html += "<div><label class=\"checkbox\" for=\"new_preset_" + p4.edit.T_fields[i].name + "\"><input type=\"checkbox\" class=\"checkbox\" id=\"new_preset_" + p4.edit.T_fields[i].name + "\" value=\"" + i + "\" " + c + "/>" + "<b>" + p4.edit.T_fields[i].label + " : </b></label> ";
