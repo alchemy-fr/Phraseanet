@@ -165,7 +165,8 @@ class caption_record implements caption_interface, cache_cacheableInterface
         } catch (Exception $e) {
             $sql = "SELECT m.id as meta_id, s.id as structure_id
           FROM metadatas m, metadatas_structure s
-          WHERE m.record_id = :record_id AND s.id = m.meta_struct_id";
+          WHERE m.record_id = :record_id AND s.id = m.meta_struct_id
+            ORDER BY s.sorter ASC";
             $stmt = $this->databox->get_connection()->prepare($sql);
             $stmt->execute(array(':record_id' => $this->record->get_record_id()));
             $fields = $stmt->fetchAll(PDO::FETCH_ASSOC);
