@@ -35,6 +35,10 @@ class XSendFileSubscriber implements EventSubscriberInterface
 
     public function applyHeaders(GetResponseEvent $event)
     {
+        if (!$this->app['phraseanet.configuration']->isSetup()) {
+            return;
+        }
+
         if ($this->app['phraseanet.xsendfile-factory']->isXSendFileModeEnabled()) {
             BinaryFileResponse::trustXSendfileTypeHeader();
             $this->app['phraseanet.xsendfile-factory']->getMode()->setHeaders($event->getRequest());
