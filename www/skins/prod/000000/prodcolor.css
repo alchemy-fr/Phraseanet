@@ -979,6 +979,9 @@ div.diapo {
 #baskets .SSTT .workzone-menu-title {
     text-overflow: ellipsis;
     padding-right:65px;
+    overflow: hidden;
+    white-space: nowrap;
+    display: block;
 }
 
 /** hack IE7 only */
