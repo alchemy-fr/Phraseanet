@@ -213,7 +213,9 @@ define([
             $('.lng-label', this.$el).removeClass("select");
             curLabel.closest(".lng-label").addClass("select");
             $('.input-label', this.$el).hide();
-            $(curLabel.attr('href'), this.$el).show();
+            var href = curLabel.attr('href');
+
+            $("#" + href.split("#").pop(), this.$el).show();
         }
     }));
 
