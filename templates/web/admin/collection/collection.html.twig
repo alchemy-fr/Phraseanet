@@ -154,7 +154,11 @@
     {% elseif app['authentication'].getUser().ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_logo', { 'bas_id' : bas_id }) }}" style="margin:0;">
-            <input name="newLogo" type="file" accept="image/*" />
+            <span class="btn btn-success fileinput-button">
+                <i class="icon-plus icon-white"></i>
+                <span>{% trans %}Select files{% endtrans %}...</span>
+                <input name="newLogo" type="file" accept="image/*" />
+            </span>
         </form>
     {% endif %}
 </div>
@@ -175,7 +179,11 @@
     {% elseif app['authentication'].getUser().ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_watermark', { 'bas_id' : bas_id }) }}" style="margin:0;">
-            <input name="newWm" type="file" accept="image/*" />
+            <span class="btn btn-success fileinput-button">
+                <i class="icon-plus icon-white"></i>
+                <span>{% trans %}Select files{% endtrans %}...</span>
+                <input name="newWm" type="file" accept="image/*" />
+            </span>
         </form>
     {% endif %}
 </div>
@@ -196,7 +204,11 @@
     {% elseif app['authentication'].getUser().ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_stamp', { 'bas_id' : bas_id }) }}" style="margin:0;">
-            <input name="newStamp" type="file" accept="image/*" />
+            <span class="btn btn-success fileinput-button">
+                <i class="icon-plus icon-white"></i>
+                <span>{% trans %}Select files{% endtrans %}...</span>
+                <input name="newStamp" type="file" accept="image/*" />
+            </span>
         </form>
     {% endif %}
 </div>
@@ -217,7 +229,11 @@
     {% elseif app['authentication'].getUser().ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_banner', { 'bas_id' : bas_id }) }}" style="margin:0;">
-            <input name="newBanner" type="file" accept="image/*" />
+            <span class="btn btn-success fileinput-button">
+                <i class="icon-plus icon-white"></i>
+                <span>{% trans %}Select files{% endtrans %}...</span>
+                <input name="newBanner" type="file" accept="image/*" />
+            </span>
         </form>
     {% endif %}
 </div>
@@ -295,7 +311,7 @@
                     if(datas.success) {
                         alert(datas.msg);
                         if(submitLink.hasClass('reload')) {
-                            reloadTree('base:{{ databox.get_sbas_id() }}', true);
+                            reloadTree('base:{{ collection.get_sbas_id() }}', true);
                         } else if(submitLink.hasClass('reload-tree')) {
                             reloadTree('bases:bases', true);
                         }
@@ -313,11 +329,13 @@
             $(this).fileupload({
                 dataType: 'html',
                 add: function(e, data) {
-                    if( ! /(\.|\/)(png|jpeg|jpg|pjpg|gif)$/i.test(data.files[0].type)) {
-                        {% set supported_file_types = ['jpg', 'jpeg', 'pjpg', 'gif', 'png']|join(' | ') %}
-                        alert("{% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}");
+                    if (typeof data.files[0].type !== "undefined") {
+                        if( ! /(\.|\/)(png|jpeg|jpg|pjpg|gif)$/i.test(data.files[0].type)) {
+                            {% set supported_file_types = ['jpg', 'jpeg', 'pjpg', 'gif', 'png']|join(' | ') %}
+                            alert("{% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}");
 
-                        return false;
+                            return false;
+                        }
                     }
 
                     data.submit();
