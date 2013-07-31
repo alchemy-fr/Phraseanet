@@ -153,7 +153,7 @@
         </form>
 
          <form style="display:inline;" method="post" action="{{ path('admin_database_delete', {'databox_id': databox.get_sbas_id()}) }}">
-            <button type="button" class="btn submiter confirm" data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de la base' %}">
+            <button type="button" class="btn submiter confirm reload-tree" data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de la base' %}">
                 <img src="/skins/icons/delete.gif" />
                 {% trans "admin::base: supprimer la base" %}
             </button>
@@ -350,8 +350,11 @@
                 },
                 success: function(datas) {
                     if(datas.success) {
+                        alert(datas.msg);
                         if(submitLink.hasClass('reload')) {
-                            reloadTree('base:{{ databox.get_sbas_id() }}');
+                            reloadTree('base:{{ databox.get_sbas_id() }}', true);
+                        } else if(submitLink.hasClass('reload-tree')) {
+                            reloadTree('bases:bases', true);
                         }
                     } else {
                         alert(datas.msg);
@@ -364,8 +367,6 @@
         }
 
         setTimeout("refreshDatabaseInformations();", 6000);
-
-
 
         $('#fileupload').fileupload({
             dataType: 'html',

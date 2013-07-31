@@ -875,15 +875,19 @@ class Databox implements ControllerProviderInterface
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
-            foreach ($databox->get_collections() as $collection) {
-                if ($collection->get_record_amount() <= 500) {
-                    $collection->empty_collection(500);
-                    $msg = _('Base empty successful');
-                } else {
-                    $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
-                    \task_abstract::create($app, 'task_period_emptyColl', $settings);
-                    $msg = _('A task has been creted, please run it to complete empty collection');
+            if (count($databox->get_collections()) > 0) {
+                foreach ($databox->get_collections() as $collection) {
+                    if ($collection->get_record_amount() <= 500) {
+                        $collection->empty_collection(500);
+                        $msg = _('Base empty successful');
+                    } else {
+                        $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
+                        \task_abstract::create($app, 'task_period_emptyColl', $settings);
+                        $msg = _('A task has been creted, please run it to complete empty collection');
+                    }
                 }
+            } else  {
+                $msg = _('Base empty successful');
             }
 
             $success = true;
