@@ -11,20 +11,30 @@
 
 namespace Entities;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ORM\Table(name="FeedTokens")
+ * @ORM\Entity(repositoryClass="Repositories\FeedTokenRepository")
+ */
 class FeedToken
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $usr_id;
 
     /**
-     * @var \Entities\Feed
+     * @ORM\ManyToOne(targetEntity="Feed", inversedBy="tokens", cascade={"persist"})
+     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id")
      */
     private $feed;
 
@@ -84,7 +94,7 @@ class FeedToken
         return $this->feed;
     }
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128)
      */
     private $value;
 

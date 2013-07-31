@@ -12,34 +12,41 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * FeedPublisher
+ * @ORM\Table(name="FeedPublishers")
+ * @ORM\Entity(repositoryClass="Repositories\FeedPublisherRepository")
  */
 class FeedPublisher
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $usr_id;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean")
      */
     private $owner = false;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created_on;
 
     /**
-     * @var \Entities\Feed
+     * @ORM\ManyToOne(targetEntity="Feed", inversedBy="publishers", cascade={"persist"})
+     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id")
      */
     private $feed;
 

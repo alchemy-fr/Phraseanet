@@ -13,38 +13,50 @@ namespace Entities;
 
 use Alchemy\Phrasea\Application;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
- * FeedItem
+ * @ORM\Table(name="FeedItems", uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={
+ *         "entry_id","sbas_id","record_id"
+ * }})
+ * @ORM\Entity(repositoryClass="Repositories\FeedItemRepository")
+ * @HasLifecycleCallbacks
  */
 class FeedItem
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $record_id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $sbas_id;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created_on;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
      */
     private $updated_on;
 
     /**
-     * @var \Entities\FeedEntry
+     * @ORM\ManyToOne(targetEntity="FeedEntry", inversedBy="items", cascade={"persist"})
+     * @ORM\JoinColumn(name="items", referencedColumnName="id")
      */
     private $entry;
 
@@ -201,7 +213,7 @@ class FeedItem
     }
 
     /**
-     * Marks this item as the last added.
+     * @PrePersist
      */
     public function setLastInFeedItem()
     {

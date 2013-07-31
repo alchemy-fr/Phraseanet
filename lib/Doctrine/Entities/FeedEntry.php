@@ -11,58 +11,73 @@
 
 namespace Entities;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
- * FeedEntry
+ * @ORM\Table(name="FeedEntries")
+ * @ORM\Entity(repositoryClass="Repositories\FeedEntryRepository")
  */
 class FeedEntry
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128)
      */
     private $title;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128)
      */
     private $subtitle;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128)
      */
     private $author_name;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128)
      */
     private $author_email;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created_on;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
      */
     private $updated_on;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(
+     *   targetEntity="FeedItem",
+     *   mappedBy="entry",
+     *   cascade=["ALL"]
+     * )
+     * @ORM\OrderBy({"ord" = "ASC"})
      */
     private $items;
 
     /**
-     * @var \Entities\FeedPublisher
+     * @ORM\ManyToOne(targetEntity="FeedPublisher", cascade={"persist"})
+     * @ORM\JoinColumn(name="publisher_id", referencedColumnName="id")
      */
     private $publisher;
 
     /**
-     * @var \Entities\Feed
+     * @ORM\ManyToOne(targetEntity="Feed", inversedBy="entries", cascade={"persist"})
+     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id")
      */
     private $feed;
 

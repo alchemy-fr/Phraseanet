@@ -13,64 +13,84 @@ namespace Entities;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Feed\FeedInterface;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Feed
+ * @ORM\Table(name="Feeds")
+ * @ORM\Entity(repositoryClass="Repositories\FeedRepository")
  */
 class Feed implements FeedInterface
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean")
      */
     private $public = false;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean")
      */
     private $icon_url = false;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $base_id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128)
      */
     private $title;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128)
      */
     private $subtitle;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created_on;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
      */
     private $updated_on;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(
+     *   targetEntity="FeedPublisher",
+     *   mappedBy="feed",
+     *   cascade=["ALL"]
+     * )
      */
     private $publishers;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(
+     *   targetEntity="FeedEntry",
+     *   mappedBy="feed",
+     *   cascade=["ALL"]
+     * )
+     * @ORM\OrderBy({"created_on" = "ASC"})
      */
     private $entries;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(
+     *   targetEntity="FeedToken",
+     *   mappedBy="feed",
+     *   cascade=["ALL"]
+     * )
      */
     private $tokens;
 

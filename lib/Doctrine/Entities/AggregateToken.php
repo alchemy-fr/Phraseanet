@@ -11,23 +11,29 @@
 
 namespace Entities;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
- * AggregateToken
+ * @ORM\Table(name="AggregateTokens")
+ * @ORM\Entity(repositoryClass="Repositories\AggregateTokenRepository")
  */
 class AggregateToken
 {
-    /**
-     * @var integer
+   /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $usr_id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128)
      */
     private $value;
 
