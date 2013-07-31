@@ -15,7 +15,7 @@
             {% for code, lang in languages %}
                 {% if code in cgus| keys %}
                     <li {{ code == current_locale ? 'class="current"' : ''}}>
-                        <a href="#terms-{{ code }}">{{ lang }}</a>
+                        <a class="no-ajax" href="#terms-{{ code }}">{{ lang }}</a>
                     </li>
                 {% endif %}
             {% endfor %}
