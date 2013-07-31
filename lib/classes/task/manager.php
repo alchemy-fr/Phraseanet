@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Application;
 use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Finder\Finder;
 
 /**
  *
@@ -220,32 +221,28 @@ class task_manager
 
     public static function getAvailableTasks()
     {
-        $taskdir = array(
-            __DIR__ . "/period/",
-            __DIR__ . "/../../../config/classes/task/period/",
-        );
+        $dirs = array(__DIR__ . "/period");
+
+        if (is_dir($configDir = __DIR__ . "/../../../config/classes/task/period")) {
+            $dirs[] = $configDir;
+        }
 
         $tasks = array();
-        foreach ($taskdir as $path) {
-            if (($hdir = @opendir($path)) != FALSE) {
-                $max = 9999;
-                while (($max-- > 0) && (($file = readdir($hdir)) !== false)) {
-                    if (!is_file($path . '/' . $file) || substr($file, 0, 1) == "." || substr($file, -10) != ".php") {
-                        continue;
-                    }
+        $finder = new Finder();
 
-                    $classname = 'task_period_' . substr($file, 0, strlen($file) - 10);
+        foreach ($finder->files()->in($dirs)->name("*.php") as $file) {
+            $classname = 'task_period_' . $file->getBasename('.php');
 
-                    try {
-                        //      $testclass = new $classname(null);
-                        if ($classname::interfaceAvailable()) {
-                            $tasks[] = array("class" => $classname, "name"  => $classname::getName(), "err"   => null);
-                        }
-                    } catch (Exception $e) {
-
-                    }
+            try {
+                if (class_exists($classname) && $classname::interfaceAvailable()) {
+                    $tasks[] = array(
+                        "class" => $classname,
+                        "name" => $classname::getName(),
+                        "err" => null
+                    );
                 }
-                closedir($hdir);
+            } catch (Exception $e) {
+
             }
         }
 
