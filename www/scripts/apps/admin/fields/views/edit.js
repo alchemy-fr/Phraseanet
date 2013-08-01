@@ -87,7 +87,7 @@ define([
             "click": "focusAction",
             "click .delete-field": "deleteAction",
             "blur input#tbranch": "fieldChangedAction",
-            "keyup input#tag": "tagFieldChangedAction",
+            "blur input#tag": "tagFieldChangedAction",
             "blur input.input-label": "labelChangedAction",
             "change input[type=checkbox]": "fieldChangedAction",
             "change select": "selectionChangedAction",
