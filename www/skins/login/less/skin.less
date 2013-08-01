@@ -802,10 +802,6 @@ form[name=registerForm] .multiselect-group {
     .glow(@sideBarGlow);
 }
 
-.geocompleter-menu .ui-menu-item.selected {
-        border: 2px solid @green;
-}
-
 .geocompleter-menu .ui-menu-item a.ui-state-focus,
 .geocompleter-menu .ui-menu-item a.ui-state-hover,
 .geocompleter-menu .ui-menu-item a.ui-state-active {
@@ -818,6 +814,15 @@ form[name=registerForm] .multiselect-group {
 
 .geocompleter-menu .ui-menu-item:nth-child(odd) {
      background: lighten(@backgroundSideBar, 25%);
+     border: 1px solid lighten(@backgroundSideBar, 25%);
+}
+
+.geocompleter-menu .ui-menu-item:nth-child(even) {
+     border: 1px solid @backgroundSideBar;
+}
+
+.geocompleter-menu .ui-menu-item.selected {
+        border: 1px solid @green;
 }
 
 .geocompleter-menu .region {
