@@ -91,7 +91,11 @@ require([
             var geocompleter = geonames.init($("#geonameid"), {
                 "server": $form.data("geonames-server-adress"),
                 "limit": 40,
-                "init-input": false
+                "init-input": false,
+                "onInit": function(input, autoinput) {
+                    // Set default name to geonameid-completer
+                    autoinput.prop("name", "geonameid-completer");
+                }
             });
 
             // Positioning menu below input
