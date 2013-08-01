@@ -237,7 +237,15 @@ class Login implements ControllerProviderInterface
         ));
 
         if ('POST' === $request->getMethod()) {
-            $form->bind($request);
+            $requestData = $request->request->all();
+
+            // Remove geocompleter field for validation this field is added client side
+            // with jquery geonames plugin
+            if (isset($requestData['geonameid']) && isset($requestData['geonameid-completer'])) {
+                unset($requestData['geonameid-completer']);
+            }
+
+            $form->bind($requestData);
             $data = $form->getData();
 
             $provider = null;
