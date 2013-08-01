@@ -87,6 +87,7 @@ define([
             "click": "focusAction",
             "click .delete-field": "deleteAction",
             "blur input#tbranch": "fieldChangedAction",
+            "blur input#separator": "fieldChangedAction",
             "blur input#tag": "tagFieldChangedAction",
             "blur input.input-label": "labelChangedAction",
             "change input[type=checkbox]": "fieldChangedAction",
@@ -194,9 +195,6 @@ define([
         _onModelChange: function() {
             AdminFieldApp.fieldListView.collection.remove(this.model, {silent: true});
             AdminFieldApp.fieldListView.collection.add(this.model);
-            var index = AdminFieldApp.fieldListView.collection.indexOf(this.model);
-
-            this._selectModelView(index);
 
             AdminFieldApp.saveView.updateStateButton();
         },
