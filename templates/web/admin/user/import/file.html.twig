@@ -36,9 +36,9 @@
     <div class="well well-small">
         <a target="_blank" href="{{ path('users_import_rtf') }}" class="no-ajax"> <i class="icon-share"></i> {% trans 'You can download the documentation here' %}</a>
     </div>
-    <span class="label" style="display:inline-block;" >
+    <span class="btn btn-success fileinput-button">
         <i class="icon-plus icon-white"></i>
-        <span>{% trans 'Select a file' %}</span>
+        <span>{% trans %}Select files{% endtrans %}...</span>
         <input id="fileupload" type="file" name="files" data-url="/admin/users/import/file/" accept="text/csv, text/rtf">
     </span>
     <a href="{{ path('admin_users_search') }}" class="btn ajax">{% trans 'boutton::retour' %}</a>
