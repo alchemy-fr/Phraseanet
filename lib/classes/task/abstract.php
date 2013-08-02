@@ -1,6 +1,7 @@
 <?php
 
 use Monolog\Logger;
+use Alchemy\Phrasea\Core\Configuration\Configuration;
 
 abstract class task_abstract
 {
@@ -833,12 +834,8 @@ abstract class task_abstract
      * @param  string        $settings
      * @return task_abstract
      */
-    public static function create(\Pimple $dependencyContainer, $class_name, $settings = null)
+    public static function create(\Pimple $dependencyContainer, $settings = null)
     {
-        if ( ! class_exists($class_name)) {
-            throw new Exception('Unknown task class');
-        }
-
         $sql = 'INSERT INTO task2
                     (task_id, usr_id_owner, status, crashed, active,
                       name, last_exec_time, class, settings)
@@ -848,24 +845,25 @@ abstract class task_abstract
 
         $domdoc = new DOMDocument();
         if ($settings && ! $domdoc->loadXML($settings)) {
-            throw new Exception('settings invalide');
+            throw new Exception('Invalid settings');
         } elseif (! $settings) {
-            $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
+            $settings = static::getDefaultSettings($dependencyContainer['phraseanet.configuration']);
         }
 
         $params = array(
             ':active'   => 1
             , ':name'     => ''
-            , ':class'    => $class_name
+            , ':class'    => get_called_class()
             , ':settings' => $settings
         );
+
         $stmt = $dependencyContainer['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
         $tid = $dependencyContainer['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        $task = new $class_name($tid, $dependencyContainer, $dependencyContainer['task-manager.logger']);
+        $task = new static($tid, $dependencyContainer, $dependencyContainer['task-manager.logger']);
         $task->setTitle($task->getName());
 
         return $task;
@@ -916,5 +914,14 @@ abstract class task_abstract
         }
 
         return $this;
+    }
+
+    /**
+    *
+    * @param array $params
+    */
+    public static function getDefaultSettings(Configuration $config, array $params = array())
+    {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
     }
 }

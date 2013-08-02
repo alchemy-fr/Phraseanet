@@ -882,7 +882,7 @@ class Databox implements ControllerProviderInterface
                         $msg = _('Base empty successful');
                     } else {
                         $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
-                        \task_abstract::create($app, 'task_period_emptyColl', $settings);
+                        \task_period_emptyColl::create($app, $settings);
                         $msg = _('A task has been creted, please run it to complete empty collection');
                     }
                 }

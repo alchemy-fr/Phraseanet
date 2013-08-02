@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration\Configuration;
+
 class task_period_subdef extends task_databoxAbstract
 {
     const MINMEGS = 20;
@@ -327,5 +329,29 @@ class task_period_subdef extends task_databoxAbstract
         $this->recs_to_write = array();
 
         return $this;
+    }
+
+    /**
+     * @param array $params
+     */
+    public static function getDefaultSettings(Configuration $config, array $params = array())
+    {
+        $period = isset($params['period']) ? $params['period'] : self::MINPERIOD;
+        $flush = isset($params['flush']) ? $params['flush'] : self::MINFLUSH;
+        $maxrecs = isset($params['maxrecs']) ? $params['maxrecs'] : self::MINRECS;
+        $maxmegs = isset($params['maxmegs']) ? $params['maxmegs'] : self::MINMEGS;
+
+        return sprintf('<?xml version="1.0" encoding="UTF-8"?>
+            <tasksettings>
+                <period>%s</period>
+                <flush>%s</flush>
+                <maxrecs>%s</maxrecs>
+                <maxmegs>%s</maxmegs>
+            </tasksettings>',
+            min(max($period, self::MINPERIOD), self::MAXPERIOD),
+            min(max($flush, self::MINFLUSH), self::MAXFLUSH),
+            min(max($maxrecs, self::MINRECS), self::MAXRECS),
+            min(max($maxmegs, self::MINMEGS), self::MAXMEGS)
+        );
     }
 }
