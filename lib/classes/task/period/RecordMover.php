@@ -8,14 +8,10 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+use Alchemy\Phrasea\Core\Configuration\Configuration;
+
 class task_period_RecordMover extends task_appboxAbstract
 {
-
     /**
      *
      * @return string
@@ -788,25 +784,97 @@ class task_period_RecordMover extends task_appboxAbstract
         switch ($parm2['ACT']) {
             case 'CALCTEST':
                 $sxml = simplexml_load_string($parm2['xml']);
-                foreach ($sxml->tasks->task as $sxtask) {
-                    $ret['tasks'][] = $this->calcSQL($sxtask, false);
+                if (isset($sxml->tasks->task)) {
+                    foreach ($sxml->tasks->task as $sxtask) {
+                        $ret['tasks'][] = $this->calcSQL($sxtask, false);
+                    }
                 }
                 break;
             case 'PLAYTEST':
                 $sxml = simplexml_load_string($parm2['xml']);
-                foreach ($sxml->tasks->task as $sxtask) {
-                    $ret['tasks'][] = $this->calcSQL($sxtask, true);
+                if (isset($sxml->tasks->task)) {
+                    foreach ($sxml->tasks->task as $sxtask) {
+                        $ret['tasks'][] = $this->calcSQL($sxtask, true);
+                    }
                 }
                 break;
             case 'CALCSQL':
                 $xml = $this->graphic2xml('<?xml version="1.0" encoding="UTF-8"?><tasksettings/>');
                 $sxml = simplexml_load_string($xml);
-                foreach ($sxml->tasks->task as $sxtask) {
-                    $ret['tasks'][] = $this->calcSQL($sxtask, false);
+                if (isset($sxml->tasks->task)) {
+                    foreach ($sxml->tasks->task as $sxtask) {
+                        $ret['tasks'][] = $this->calcSQL($sxtask, false);
+                    }
                 }
                 break;
         }
 
         return json_encode($ret);
+    }
+
+    /**
+     * @param array $params
+     */
+    public static function getDefaultSettings(Configuration $config, array $params = array())
+    {
+        $period = isset($params['period']) ? $params['period'] : self::MINPERIOD;
+
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+        <tasksettings>
+            <period>". min(max($period, self::MINPERIOD), self::MAXPERIOD) ."</period>
+            <logsql>0</logsql>
+            <!--
+            <tasks>
+                //Maintain offline (sb4 = 1) all docs under copyright
+                <task active=\"1\" name=\"confidentiel\" action=\"update\" sbas_id=\"1\">
+                    <from>
+                        <date direction=\"before\" field=\"FIN_COPYRIGHT\"/>
+                    </from>
+                    <to>
+                        <status mask=\"x1xxxx\"/>
+                    </to>
+                </task>
+                //Put online (sb4 = 0) all docs from 'public' collection and between the copyright date and the date of filing
+                <task active=\"1\" name=\"visible\" action=\"update\" sbas_id=\"1\">
+                    <from>
+                        <coll compare=\"=\" id=\"5\"/>
+                        <date direction=\"after\" field=\"FIN_COPYRIGHT\"/>
+                        <date direction=\"before\" field=\"ARCHIVAGE\"/>
+                    </from>
+                    <to>
+                        <status mask=\"x0xxxx\"/>
+                    </to>
+                </task>
+                // Warn 10 days before archiving (raise sb5)
+                <task active=\"1\" name=\"bientôt la fin\" action=\"update\" sbas_id=\"1\">
+                    <from>
+                        <coll compare=\"=\" id=\"5\"/>
+                        <date direction=\"after\" field=\"ARCHIVAGE\" delta=\"-10\"/>
+                    </from>
+                    <to>
+                        <status mask=\"1xxxxx\"/>
+                    </to>
+                </task>
+                //Move to 'archive' collection
+                <task active=\"1\" name=\"archivage\" action=\"update\" sbas_id=\"1\">
+                    <from>
+                        <coll compare=\"=\" id=\"5\"/>
+                        <date direction=\"after\" field=\"ARCHIVAGE\" />
+                    </from>
+                    <to>
+                        <status mask=\"00xxxx\"/>   on nettoie les status pour la forme
+                        <coll id=\"666\" />
+                    </to>
+                </task>
+                //Purge the archived documents from one year that are in the 'archive' collection
+                <task active=\"1\" name=\"archivage\" action=\"delete\" sbas_id=\"1\">
+                    <from>
+                        <coll compare=\"=\" id=\"666\"/>
+                        <date direction=\"after\" field=\"ARCHIVAGE\" delta=\"+365\" />
+                    </from>
+                </task>
+            </tasks>
+            -->
+        </tasksettings>";
     }
 }
