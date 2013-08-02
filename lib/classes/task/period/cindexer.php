@@ -8,13 +8,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Symfony\Component\Process\ExecutableFinder;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class task_period_cindexer extends task_abstract
 {
     // how to execute indexer (choose in 'run2' method)
@@ -655,5 +651,24 @@ class task_period_cindexer extends task_abstract
     {
         pcntl_exec($cmd, $args);
         sleep(2);
+    }
+
+    /**
+     * @param array $params
+     */
+    public static function getDefaultSettings(Configuration $config, array $params = array())
+    {
+        $binaries = $config['binaries'];
+        $database = $config['main']['database'];
+
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<binpath>"
+            . (array_key_exists('phraseanet_indexer', $binaries) ? str_replace('/phraseanet_indexer', '', $binaries['phraseanet_indexer']) : '')
+            . "</binpath><host>" . $database['host'] . "</host><port>"
+            . $database['port'] . "</port><base>"
+            . $database['dbname'] . "</base><user>"
+            . $database['user'] . "</user><password>"
+            . $database['password'] . "</password><socket>25200</socket>"
+            . "<use_sbas>1</use_sbas><nolog>0</nolog><clng></clng>"
+            . "<winsvc_run>0</winsvc_run><charset>utf8</charset></tasksettings>";
     }
 }

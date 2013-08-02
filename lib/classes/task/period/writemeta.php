@@ -8,16 +8,12 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration\Configuration;
 use PHPExiftool\Driver\Metadata;
 use PHPExiftool\Driver\Value;
 use PHPExiftool\Driver\Tag;
 use PHPExiftool\Writer;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class task_period_writemeta extends task_databoxAbstract
 {
     protected $clear_doc;
@@ -339,5 +335,27 @@ class task_period_writemeta extends task_databoxAbstract
         $stmt->closeCursor();
 
         return $this;
+    }
+
+    /**
+     * @param array $params
+     */
+    public static function getDefaultSettings(Configuration $config, array $params = array())
+    {
+        $period = isset($params['period']) ? $params['period'] : self::MINPERIOD;
+        $maxrecs = isset($params['maxrecs']) ? $params['maxrecs'] : self::MINRECS;
+        $maxmegs = isset($params['maxmegs']) ? $params['maxmegs'] : self::MINMEGS;
+
+        return sprintf('<?xml version="1.0" encoding="UTF-8"?>
+            <tasksettings>
+              <period>%s</period>
+              <maxrecs>%s</maxrecs>
+              <maxmegs>%s</maxmegs>
+              <cleardoc>0</cleardoc>
+            </tasksettings>',
+            min(max($period, self::MINPERIOD), self::MAXPERIOD),
+            min(max($maxrecs, self::MINRECS), self::MAXRECS),
+            min(max($maxmegs, self::MINMEGS), self::MAXMEGS)
+        );
     }
 }

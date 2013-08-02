@@ -9,11 +9,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class task_period_emptyColl extends task_appboxAbstract
 {
     protected $base_id;
@@ -33,6 +28,15 @@ class task_period_emptyColl extends task_appboxAbstract
     public function help()
     {
         return("Vide une collection");
+    }
+
+     /**
+     *
+     * @param array $params
+     */
+    public static function getDefaultSettings(Configuration $config, array $params = array())
+    {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
     }
 
     protected function loadSettings(SimpleXMLElement $sx_task_settings)

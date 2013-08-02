@@ -15,7 +15,7 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
         parent::setUpBeforeClass();
         $app = new Application('test');
 
-        self::$task = task_abstract::create($app, 'task_period_test');
+        self::$task = task_period_test::create($app);
         self::$tid = self::$task->getID();
     }
 

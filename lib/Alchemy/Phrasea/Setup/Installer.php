@@ -94,30 +94,13 @@ class Installer
         );
 
         foreach (array('cindexer', 'subdef', 'writemeta') as $task) {
-            $class_name = sprintf('task_period_%s', $task);
-            if ($task === 'cindexer' && is_executable($this->phraseaIndexer)) {
-                $credentials = $databox->get_appbox()->get_connection()->get_credentials();
+            $className = sprintf('task_period_%s', $task);
 
-                $host = $credentials['hostname'];
-                $port = $credentials['port'];
-                $user_ab = $credentials['user'];
-                $password = $credentials['password'];
-                $dbname = $credentials['dbname'];
-
-                $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<binpath>"
-                    . str_replace('/phraseanet_indexer', '', $this->phraseaIndexer)
-                    . "</binpath><host>" . $host . "</host><port>"
-                    . $port . "</port><base>"
-                    . $dbname . "</base><user>"
-                    . $user_ab . "</user><password>"
-                    . $password . "</password><socket>25200</socket>"
-                    . "<use_sbas>1</use_sbas><nolog>0</nolog><clng></clng>"
-                    . "<winsvc_run>0</winsvc_run><charset>utf8</charset></tasksettings>";
-            } else {
-                $settings = null;
+            if (!class_exists($className)) {
+                throw new \InvalidArgumentException('Unknown task class "' . $className.'"');
             }
 
-            \task_abstract::create($this->app, $class_name, $settings);
+            $className::create($this->app);
         }
     }
 
