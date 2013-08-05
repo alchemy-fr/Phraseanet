@@ -12,13 +12,16 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\FileCacheReader;
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\Logger\MonologSQLLogger;
+use Gedmo\DoctrineExtensions;
 use Gedmo\Timestampable\TimestampableListener;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -58,19 +61,20 @@ class ORMServiceProvider implements ServiceProviderInterface
             $cacheType = $app['phraseanet.configuration']['main']['cache']['type'];
             $cacheOptions = $app['phraseanet.configuration']['main']['cache']['options'];
 
-            $annotationReader = new \Doctrine\Common\Annotations\AnnotationReader;
-            $cachedAnnotationReader = new \Doctrine\Common\Annotations\CachedReader(
+            $annotationReader = new AnnotationReader;
+            $fileCacheReader = new FileCacheReader(
                 $annotationReader,
-                new \Doctrine\Common\Cache\ArrayCache
+                $app['root.path']."/tmp/doctrine",
+                $app['debug']
             );
 
-            $driverChain = new \Doctrine\ORM\Mapping\Driver\DriverChain();
-            \Gedmo\DoctrineExtensions::registerAbstractMappingIntoDriverChainORM(
+            $driverChain = new DriverChain();
+            DoctrineExtensions::registerAbstractMappingIntoDriverChainORM(
                 $driverChain,
-                $cachedAnnotationReader
+                $fileCacheReader
             );
 
-            $annotationDriver = new \Doctrine\ORM\Mapping\Driver\AnnotationDriver(
+            $annotationDriver = new AnnotationDriver(
                 $annotationReader,
                 array($app['root.path'].'/lib/Doctrine/Entities')
             );
@@ -89,9 +93,6 @@ class ORMServiceProvider implements ServiceProviderInterface
             ));
 
             $config->setAutoGenerateProxyClasses($app['debug']);
-
-//            $driverYaml = new YamlDriver(array($app['root.path'] . '/lib/conf.d/Doctrine'));
-//            $chainDriverImpl->addDriver($driverYaml, 'Entities');
 
             $config->setMetadataDriverImpl($driverChain);
 
