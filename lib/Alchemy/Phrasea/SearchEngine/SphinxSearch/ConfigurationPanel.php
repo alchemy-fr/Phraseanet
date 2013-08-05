@@ -72,7 +72,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
         }
 
         $configuration['host'] = $request->request->get('host');
-        $configuration['host'] = $request->request->get('port');
+        $configuration['port'] = $request->request->get('port');
         $configuration['rt_host'] = $request->request->get('rt_host');
         $configuration['rt_port'] = $request->request->get('rt_port');
 
