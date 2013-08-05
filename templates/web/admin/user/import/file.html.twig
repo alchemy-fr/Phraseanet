@@ -12,6 +12,8 @@
             {% trans 'Row login is missing, script has stopped' %}
         {% elseif error == 'row-pwd' %}
             {% trans 'Row password is missing, script has stopped' %}
+        {% elseif error == 'row-mail' %}
+            {% trans 'Row mail is missing, script has stopped' %}
         {% elseif error == 'no-user' %}
             {% trans 'The file does not contains any user to add' %}
         {% endif %}
