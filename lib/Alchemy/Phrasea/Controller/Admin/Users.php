@@ -576,32 +576,47 @@ class Users implements ControllerProviderInterface
         })->bind('users_display_import_file');
 
         $controllers->post('/import/file/', function(Application $app, Request $request) {
-
             if ((null === $file = $request->files->get('files')) || !$file->isValid()) {
                 return $app->redirectPath('users_display_import_file', array('error' => 'file-invalid'));
             }
 
-            $array = \format::csv_to_arr($file->getPathname());
-
-            $equivalenceToMysqlField = Users::getEquivalenceToMysqlField();
-            $loginDefined = $pwdDefined = false;
+            $equivalenceToMysqlField = self::getEquivalenceToMysqlField();
+            $loginDefined = $pwdDefined = $mailDefined = false;
             $loginNew = array();
-            $out = array('ignored_row' => array(), 'errors' => array());
+            $out = array(
+                'ignored_row' => array(),
+                'errors' => array()
+            );
             $nbUsrToAdd = 0;
 
-            for ($j = 0; $j < sizeof($array[0]); $j++) {
-                $array[0][$j] = trim(mb_strtolower($array[0][$j]));
+            $lines = \format::csv_to_arr($file->getPathname());
 
-                if (!isset($equivalenceToMysqlField[$array[0][$j]])) {
-                    $out['ignored_row'][] = $array[0][$j];
-                } else {
-                    if (($equivalenceToMysqlField[$array[0][$j]]) == 'usr_login') {
-                        $loginDefined = true;
-                    }
+            $roughColumns = array_shift($lines);
 
-                    if (($equivalenceToMysqlField[$array[0][$j]]) == 'usr_password') {
-                        $pwdDefined = true;
-                    }
+            $columnsSanitized = array_map(function($columnName) {
+                return trim(mb_strtolower($columnName));
+            }, $roughColumns);
+
+            $columns = array_filter($columnsSanitized, function ($columnName) use (&$out, $equivalenceToMysqlField) {
+                if (!isset($equivalenceToMysqlField[$columnName])) {
+                    $out['ignored_row'][] = $columnName;
+                    return false;
+                }
+
+                return true;
+            });
+
+            foreach($columns as $columnName) {
+                if ($equivalenceToMysqlField[$columnName] === 'usr_login') {
+                    $loginDefined = true;
+                }
+
+                if (($equivalenceToMysqlField[$columnName]) === 'usr_password') {
+                    $pwdDefined = true;
+                }
+
+                if (($equivalenceToMysqlField[$columnName]) === 'usr_mail') {
+                    $mailDefined = true;
                 }
             }
 
@@ -613,101 +628,112 @@ class Users implements ControllerProviderInterface
                 return $app->redirectPath('users_display_import_file', array('error' => 'row-pwd'));
             }
 
-            $nbLines = sizeof($array);
-            $nbCols = sizeof($array[0]);
+            if (!$mailDefined) {
+                return $app->redirectPath('users_display_import_file', array('error' => 'row-mail'));
+            }
 
-            for ($i = 1; $i < $nbLines; $i++) {
-                $hasVerifLogin = false;
-                $hasVerifPwd = false;
+            foreach ($lines as $nbLine => $line) {
+                $loginValid = false;
+                $pwdValid = false;
+                $mailValid = false;
 
-                for ($j = 0; $j < $nbCols; $j++) {
-                    $array[$i][$j] = trim($array[$i][$j]);
-
-                    if (!isset($equivalenceToMysqlField[$array[0][$j]])) {
+                foreach ($columns as $nbCol => $colName) {
+                    if (!isset($equivalenceToMysqlField[$colName])) {
+                        unset($lines[$nbCol]);
                         continue;
                     }
 
-                    if (($equivalenceToMysqlField[$array[0][$j]]) == 'usr_login') {
-                        $loginToAdd = $array[$i][$j];
+                    $sqlField = $equivalenceToMysqlField[$colName];
+                    $value = $line[$nbCol];
 
-                        if ($loginToAdd == "") {
-                            $out['errors'][] = sprintf(_("Login line %d is empty"), $i);
-                        } elseif (isset($loginNew[$loginToAdd])) {
+                    if ($sqlField === 'usr_login') {
+                        $loginToAdd = $value;
+                        if ($loginToAdd === "") {
+                            $out['errors'][] = sprintf(_("Login line %d is empty"), $nbLine + 1);
+                        } elseif (in_array($loginToAdd, $loginNew)) {
                             $out['errors'][] = sprintf(_("Login %s is already defined in the file at line %d"), $loginToAdd, $i);
                         } else {
                             if (\User_Adapter::get_usr_id_from_login($app, $loginToAdd)) {
                                 $out['errors'][] = sprintf(_("Login %s already exists in database"), $loginToAdd);
                             } else {
-                                $loginNew[$loginToAdd] = ($i + 1);
+                                $loginValid = true;
                             }
                         }
-                        $hasVerifLogin = true;
                     }
 
-                    if (($equivalenceToMysqlField[$array[0][$j]]) == 'usr_password') {
-                        $passwordToVerif = $array[$i][$j];
+                    if ($loginValid && $sqlField === 'usr_mail') {
+                        $mailToAdd = $value;
 
-                        if ($passwordToVerif == "") {
+                        if ($mailToAdd === "") {
+                            $out['errors'][] = sprintf(_("Mail line %d is empty"), $nbLine + 1);
+                        } else if (false !== \User_Adapter::get_usr_id_from_email($app, $mailToAdd)) {
+                            $out['errors'][] = sprintf(_("Email '%s' for login '%s' already exists in database"), $mailToAdd, $loginToAdd);
+                        } else {
+                            $mailValid = true;
+                        }
+                    }
+
+                    if ($sqlField === 'usr_password') {
+                        $passwordToVerif = $value;
+
+                        if ($passwordToVerif === "") {
                             $out['errors'][] = sprintf(_("Password is empty at line %d"), $i);
-                        }
-
-                        $hasVerifPwd = true;
-                    }
-
-                    if ($hasVerifLogin && $hasVerifPwd) {
-                        $j = $nbCols;
-                    }
-
-                    if (($j + 1) >= $nbCols) {
-                        if (count($out['errors']) === 0) {
-                            $nbUsrToAdd++;
+                        } else {
+                            $pwdValid = true;
                         }
                     }
                 }
+
+                 if ($loginValid && $pwdValid && $mailValid) {
+                    $loginNew[] = $loginToAdd;
+                    $nbUsrToAdd++;
+                }
             }
 
-            if (count($out['errors']) > 0) {
+            if (count($out['errors']) > 0 && $nbUsrToAdd === 0) {
                 return $app['twig']->render('admin/user/import/file.html.twig', array(
-                        'errors' => $out['errors']
-                    ));
-            } elseif ($nbUsrToAdd === 0) {
-                return $app->redirectPath('users_display_import_file', array('error' => 'no-user'));
-            } else {
-                for ($i = 1; $i < sizeof($array); $i++) {
-                    for ($j = 0; $j < sizeof($array[0]); $j++) { {
-                            if ((isset($array[$i][$j]) && trim($array[$i][$j]) == "") || (!isset($equivalenceToMysqlField[$array[0][$j]])))
-                                unset($array[$i][$j]);
-                        }
-                    }
-                }
-
-                $sql = "
-                SELECT usr.usr_id,usr.usr_login
-                FROM usr
-                  INNER JOIN basusr
-                    ON (basusr.usr_id=usr.usr_id)
-                WHERE usr.model_of = :usr_id
-                  AND base_id in(" . implode(', ', array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('manage')))) . ")
-                  AND usr_login not like '(#deleted_%)'
-                GROUP BY usr_id";
-
-                $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                $stmt->execute(array(':usr_id' => $app['authentication']->getUser()->get_id()));
-                $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                return $app['twig']->render('/admin/user/import/view.html.twig', array(
-                        'nb_user_to_add'   => $nbUsrToAdd,
-                        'models'           => $models,
-                        'array_serialized' => serialize($array)
-                    ));
+                    'errors' => $out['errors']
+                ));
             }
+
+            if ($nbUsrToAdd === 0) {
+                return $app->redirectPath('users_display_import_file', array(
+                    'error' => 'no-user'
+                ));
+            }
+
+            $sql = "
+            SELECT usr.usr_id,usr.usr_login
+            FROM usr
+              INNER JOIN basusr
+                ON (basusr.usr_id=usr.usr_id)
+            WHERE usr.model_of = :usr_id
+              AND base_id in(" . implode(', ', array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('manage')))) . ")
+              AND usr_login not like '(#deleted_%)'
+            GROUP BY usr_id";
+
+            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt->execute(array(':usr_id' => $app['authentication']->getUser()->get_id()));
+            $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            return $app['twig']->render('/admin/user/import/view.html.twig', array(
+                'nb_user_to_add'   => $nbUsrToAdd,
+                'models'           => $models,
+                'lines_serialized' => serialize($lines),
+                'columns_serialized' => serialize($columns),
+                'errors' => $out['errors']
+            ));
         })->bind('users_submit_import_file');
 
         $controllers->post('/import/', function(Application $app, Request $request) {
             $nbCreation = 0;
 
-            if ((null === $serializedArray = $request->request->get('sr')) || ('' === $serializedArray)) {
+            if ((null === $serializedColumns = $request->request->get('sr_columns')) || ('' === $serializedColumns)) {
+                $app->abort(400);
+            }
+
+            if ((null === $serializedLines = $request->request->get('sr_lines')) || ('' === $serializedLines)) {
                 $app->abort(400);
             }
 
@@ -715,27 +741,30 @@ class Users implements ControllerProviderInterface
                 $app->abort(400);
             }
 
-            $array = unserialize($serializedArray);
-
-            $nbLines = sizeof($array);
-            $nbCols = sizeof($array[0]);
+            $lines = unserialize($serializedLines);
+            $columns = unserialize($serializedColumns);
 
             $equivalenceToMysqlField = Users::getEquivalenceToMysqlField();
 
-            for ($i = 1; $i < $nbLines; $i++) {
-                $curUser = null;
-                for ($j = 0; $j < $nbCols; $j++) {
-                    if (!isset($equivalenceToMysqlField[$array[0][$j]]))
+            foreach ($lines as $nbLine => $line) {
+                $curUser = array();
+                foreach ($columns as $nbCol => $colName) {
+                    if (!isset($equivalenceToMysqlField[$colName]) || !isset($line[$nbCol])) {
                         continue;
-                    if ($equivalenceToMysqlField[$array[0][$j]] == "usr_sexe" && isset($array[$i][$j])) {
-                        switch ($array[$i][$j]) {
+                    }
+
+                    $sqlField = $equivalenceToMysqlField[$colName];
+                    $value = trim($line[$nbCol]);
+
+                    if ($sqlField === "usr_sexe") {
+                        switch ($value) {
                             case "Mlle":
                             case "Mlle.":
                             case "mlle":
                             case "Miss":
                             case "miss":
                             case "0":
-                                $curUser[$equivalenceToMysqlField[$array[0][$j]]] = 0;
+                                $curUser[$sqlField] = 0;
                                 break;
 
                             case "Mme":
@@ -743,7 +772,7 @@ class Users implements ControllerProviderInterface
                             case "Ms":
                             case "Ms.":
                             case "1":
-                                $curUser[$equivalenceToMysqlField[$array[0][$j]]] = 1;
+                                $curUser[$sqlField] = 1;
                                 break;
 
                             case "M":
@@ -753,77 +782,76 @@ class Users implements ControllerProviderInterface
                             case "Monsieur":
                             case "Mister":
                             case "2":
-                                $curUser[$equivalenceToMysqlField[$array[0][$j]]] = 2;
+                                $curUser[$sqlField] =  2;
                                 break;
                         }
                     } else {
-                        if (isset($array[$i][$j])) {
-                            $curUser[$equivalenceToMysqlField[$array[0][$j]]] = trim($array[$i][$j]);
-                        }
+                            $curUser[$sqlField] = $value;
                     }
                 }
-            }
 
-            if (isset($curUser['usr_login']) && trim($curUser['usr_login']) !== '' && isset($curUser['usr_password']) && trim($curUser['usr_password']) !== "") {
-                $loginNotExist = !\User_Adapter::get_usr_id_from_login($app, $curUser['usr_login']);
+                if (isset($curUser['usr_login']) && trim($curUser['usr_login']) !== ''
+                        && isset($curUser['usr_password']) && trim($curUser['usr_password']) !== ''
+                        && isset($curUser['usr_mail']) && trim($curUser['usr_mail']) !== '') {
+                    if (false === \User_Adapter::get_usr_id_from_login($app, $curUser['usr_login'])
+                            && false === \User_Adapter::get_usr_id_from_email($app, $curUser['usr_mail'])) {
+                        $NewUser = \User_Adapter::create($app, $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
 
-                if ($loginNotExist) {
-                    $NewUser = \User_Adapter::create($app, $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
+                        if (isset($curUser['defaultftpdatasent'])) {
+                            $NewUser->set_defaultftpdatas($curUser['defaultftpdatasent']);
+                        }
+                        if (isset($curUser['activeFTP'])) {
+                            $NewUser->set_activeftp((int) ($curUser['activeFTP']));
+                        }
+                        if (isset($curUser['addrFTP'])) {
+                            $NewUser->set_ftp_address($curUser['addrFTP']);
+                        }
+                        if (isset($curUser['passifFTP'])) {
+                            $NewUser->set_ftp_passif((int) ($curUser['passifFTP']));
+                        }
+                        if (isset($curUser['destFTP'])) {
+                            $NewUser->set_ftp_dir($curUser['destFTP']);
+                        }
+                        if (isset($curUser['prefixFTPfolder'])) {
+                            $NewUser->set_ftp_dir_prefix($curUser['prefixFTPfolder']);
+                        }
+                        if (isset($curUser['usr_prenom'])) {
+                            $NewUser->set_firstname($curUser['usr_prenom']);
+                        }
+                        if (isset($curUser['usr_nom'])) {
+                            $NewUser->set_lastname($curUser['usr_nom']);
+                        }
+                        if (isset($curUser['adresse'])) {
+                            $NewUser->set_address($curUser['adresse']);
+                        }
+                        if (isset($curUser['cpostal'])) {
+                            $NewUser->set_zip($curUser['cpostal']);
+                        }
+                        if (isset($curUser['usr_sexe'])) {
+                            $NewUser->set_gender((int) ($curUser['usr_sexe']));
+                        }
+                        if (isset($curUser['tel'])) {
+                            $NewUser->set_tel($curUser['tel']);
+                        }
+                        if (isset($curUser['fax'])) {
+                            $NewUser->set_fax($curUser['fax']);
+                        }
+                        if (isset($curUser['activite'])) {
+                            $NewUser->set_job($curUser['activite']);
+                        }
+                        if (isset($curUser['fonction'])) {
+                            $NewUser->set_position($curUser['fonction']);
+                        }
+                        if (isset($curUser['societe'])) {
+                            $NewUser->set_company($curUser['societe']);
+                        }
 
-                    if (isset($curUser['defaultftpdatasent'])) {
-                        $NewUser->set_defaultftpdatas($curUser['defaultftpdatasent']);
-                    }
-                    if (isset($curUser['activeFTP'])) {
-                        $NewUser->set_activeftp((int) ($curUser['activeFTP']));
-                    }
-                    if (isset($curUser['addrFTP'])) {
-                        $NewUser->set_ftp_address($curUser['addrFTP']);
-                    }
-                    if (isset($curUser['passifFTP'])) {
-                        $NewUser->set_ftp_passif((int) ($curUser['passifFTP']));
-                    }
-                    if (isset($curUser['destFTP'])) {
-                        $NewUser->set_ftp_dir($curUser['destFTP']);
-                    }
-                    if (isset($curUser['prefixFTPfolder'])) {
-                        $NewUser->set_ftp_dir_prefix($curUser['prefixFTPfolder']);
-                    }
-                    if (isset($curUser['usr_prenom'])) {
-                        $NewUser->set_firstname($curUser['usr_prenom']);
-                    }
-                    if (isset($curUser['usr_nom'])) {
-                        $NewUser->set_lastname($curUser['usr_nom']);
-                    }
-                    if (isset($curUser['adresse'])) {
-                        $NewUser->set_address($curUser['adresse']);
-                    }
-                    if (isset($curUser['cpostal'])) {
-                        $NewUser->set_zip($curUser['cpostal']);
-                    }
-                    if (isset($curUser['usr_sexe'])) {
-                        $NewUser->set_gender((int) ($curUser['usr_sexe']));
-                    }
-                    if (isset($curUser['tel'])) {
-                        $NewUser->set_tel($curUser['tel']);
-                    }
-                    if (isset($curUser['fax'])) {
-                        $NewUser->set_fax($curUser['fax']);
-                    }
-                    if (isset($curUser['activite'])) {
-                        $NewUser->set_job($curUser['activite']);
-                    }
-                    if (isset($curUser['fonction'])) {
-                        $NewUser->set_position($curUser['fonction']);
-                    }
-                    if (isset($curUser['societe'])) {
-                        $NewUser->set_company($curUser['societe']);
-                    }
+                        $NewUser->ACL()->apply_model(
+                            \User_Adapter::getInstance($model, $app), array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('manage')))
+                        );
 
-                    $NewUser->ACL()->apply_model(
-                        \User_Adapter::getInstance($model, $app), array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('manage')))
-                    );
-
-                    $nbCreation++;
+                        $nbCreation++;
+                    }
                 }
             }
 
