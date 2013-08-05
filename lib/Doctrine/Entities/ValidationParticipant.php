@@ -12,54 +12,60 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * ValidationParticipant
+ * @ORM\Table(name="ValidationParticipants")
+ * @ORM\Entity(repositoryClass="Repositories\ValidationParticipantRepository")
  */
 class ValidationParticipant
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $usr_id;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean")
      */
     private $is_aware = false;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean")
      */
     private $is_confirmed = false;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean")
      */
     private $can_agree = false;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean")
      */
     private $can_see_others = false;
 
     /**
-     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $reminded;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="ValidationData", mappedBy="participant", cascade={"all"})
      */
     private $datas;
 
     /**
-     * @var \Entities\ValidationSession
+     * @ORM\ManyToOne(targetEntity="ValidationSession", inversedBy="participants", cascade={"persist"})
+     * @ORM\JoinColumn(name="ValidationSession_id", referencedColumnName="id")
      */
     private $session;
 

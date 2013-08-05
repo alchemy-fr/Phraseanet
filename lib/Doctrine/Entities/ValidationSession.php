@@ -12,45 +12,53 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * ValidationSession
+ * @ORM\Table(name="ValidationSessions")
+ * @ORM\Entity
  */
 class ValidationSession
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $initiator_id;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
-     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $expires;
 
     /**
-     * @var \Entities\Basket
+     * @ORM\OneToOne(targetEntity="Basket", mappedBy="validation", cascade={"persist"})
+     * @ORM\JoinColumn(name="basket_id", referencedColumnName="id")
      */
     private $basket;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="ValidationParticipant", mappedBy="session", cascade={"all"})
      */
     private $participants;
 

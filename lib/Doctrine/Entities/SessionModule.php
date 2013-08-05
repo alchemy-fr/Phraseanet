@@ -12,34 +12,42 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * SessionModule
+ * @ORM\Table(name="SessionModules", uniqueConstraints={@ORM\UniqueConstraint(name="unique_module", columns={"session_id", "module_id"})})
+ * @ORM\Entity(repositoryClass="Repositories\SessionModuleRepository")
  */
 class SessionModule
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $module_id;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
-     * @var \Entities\Session
+     * @ORM\ManyToOne(targetEntity="Session", inversedBy="modules", cascade={"persist"})
+     * @ORM\JoinColumn(name="session_id", referencedColumnName="id")
      */
     private $session;
 

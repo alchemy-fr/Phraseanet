@@ -12,39 +12,47 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * LazaretAttribute
+ * @ORM\Table(name="LazaretAttributes")
+ * @ORM\Entity
  */
 class LazaretAttribute
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=64)
      */
     private $name;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=2048)
      */
     private $value;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
-     * @var \Entities\LazaretFile
+     * @ORM\ManyToOne(targetEntity="LazaretFile", inversedBy="attributes", cascade={"persist"})
+     * @ORM\JoinColumn(name="lazaret_file_id", referencedColumnName="id")
      */
     private $lazaretFile;
 

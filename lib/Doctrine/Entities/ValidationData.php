@@ -12,39 +12,47 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * ValidationData
+ * @ORM\Table(name="ValidationDatas")
+ * @ORM\Entity
  */
 class ValidationData
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private $agreement;
 
     /**
-     * @var string
+     * @ORM\Column(type="text", nullable=true)
      */
     private $note;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
-     * @var \Entities\ValidationParticipant
+     * @ORM\ManyToOne(targetEntity="ValidationParticipant", inversedBy="datas", cascade={"persist"})
+     * @ORM\JoinColumn(name="participant_id", referencedColumnName="id")
      */
     private $participant;
 
     /**
-     * @var \Entities\BasketElement
+     * @ORM\ManyToOne(targetEntity="BasketElement", inversedBy="validation_datas", cascade={"persist"})
+     * @ORM\JoinColumn(name="basket_element_id", referencedColumnName="id")
      */
     private $basket_element;
 

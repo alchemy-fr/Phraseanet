@@ -12,34 +12,42 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * UsrListEntry
+ * @ORM\Table(name="UsrListsContent", uniqueConstraints={@ORM\UniqueConstraint(name="unique_usr_per_list", columns={"usr_id", "list_id"})})
+ * @ORM\Entity(repositoryClass="Repositories\UsrListEntryRepository")
  */
 class UsrListEntry
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $usr_id;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
-     * @var \Entities\UsrList
+     * @ORM\ManyToOne(targetEntity="UsrList", inversedBy="entries", cascade={"persist"})
+     * @ORM\JoinColumn(name="list_id", referencedColumnName="id")
      */
     private $list;
 

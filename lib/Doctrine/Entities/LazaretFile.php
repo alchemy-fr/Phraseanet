@@ -12,74 +12,84 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * LazaretFile
+ * @ORM\Table(name="LazaretFiles")
+ * @ORM\Entity(repositoryClass="Repositories\LazaretFileRepository")
  */
 class LazaretFile
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=512)
      */
     private $filename;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=512)
      */
     private $thumbFilename;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=256)
      */
     private $originalName;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $base_id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=36)
      */
     private $uuid;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=64)
      */
     private $sha256;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean")
      */
     private $forced = false;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="LazaretAttribute", mappedBy="lazaretFile", cascade={"all"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $attributes;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="LazaretCheck", mappedBy="lazaretFile", cascade={"all"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $checks;
 
     /**
-     * @var \Entities\LazaretSession
+     * @ORM\ManyToOne(targetEntity="LazaretSession", inversedBy="files", cascade={"persist"})
+     * @ORM\JoinColumn(name="lazaret_session_id", referencedColumnName="id")
      */
     private $session;
 
