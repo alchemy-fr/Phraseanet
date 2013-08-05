@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
@@ -51,7 +52,7 @@ class ORMServiceProvider implements ServiceProviderInterface
                 $config->setSQLLogger($app['EM.sql-logger']);
             }
 
-            \Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
+            AnnotationRegistry::registerFile(
                 $app['root.path'] .'/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
             );
 
