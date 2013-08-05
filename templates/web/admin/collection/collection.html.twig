@@ -156,7 +156,7 @@
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_logo', { 'bas_id' : bas_id }) }}" style="margin:0;">
             <span class="btn btn-success fileinput-button">
                 <i class="icon-plus icon-white"></i>
-                <span>{% trans %}Select files{% endtrans %}...</span>
+                <span>{% trans %}Select files...{% endtrans %}</span>
                 <input name="newLogo" type="file" accept="image/*" />
             </span>
         </form>
@@ -181,7 +181,7 @@
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_watermark', { 'bas_id' : bas_id }) }}" style="margin:0;">
             <span class="btn btn-success fileinput-button">
                 <i class="icon-plus icon-white"></i>
-                <span>{% trans %}Select files{% endtrans %}...</span>
+                <span>{% trans %}Select files...{% endtrans %}</span>
                 <input name="newWm" type="file" accept="image/*" />
             </span>
         </form>
@@ -206,7 +206,7 @@
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_stamp', { 'bas_id' : bas_id }) }}" style="margin:0;">
             <span class="btn btn-success fileinput-button">
                 <i class="icon-plus icon-white"></i>
-                <span>{% trans %}Select files{% endtrans %}...</span>
+                <span>{% trans %}Select files...{% endtrans %}</span>
                 <input name="newStamp" type="file" accept="image/*" />
             </span>
         </form>
@@ -231,7 +231,7 @@
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_banner', { 'bas_id' : bas_id }) }}" style="margin:0;">
             <span class="btn btn-success fileinput-button">
                 <i class="icon-plus icon-white"></i>
-                <span>{% trans %}Select files{% endtrans %}...</span>
+                <span>{% trans %}Select files...{% endtrans %}</span>
                 <input name="newBanner" type="file" accept="image/*" />
             </span>
         </form>
@@ -309,7 +309,6 @@
                 },
                 success: function(datas) {
                     if(datas.success) {
-                        alert(datas.msg);
                         if(submitLink.hasClass('reload')) {
                             reloadTree('base:{{ collection.get_sbas_id() }}', true);
                         } else if(submitLink.hasClass('reload-tree')) {

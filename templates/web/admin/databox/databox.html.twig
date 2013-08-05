@@ -350,7 +350,6 @@
                 },
                 success: function(datas) {
                     if(datas.success) {
-                        alert(datas.msg);
                         if(submitLink.hasClass('reload')) {
                             reloadTree('base:{{ databox.get_sbas_id() }}', true);
                         } else if(submitLink.hasClass('reload-tree')) {
