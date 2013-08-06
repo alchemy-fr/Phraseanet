@@ -4,31 +4,47 @@ namespace Entities;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
+use Entities\Order;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * OrderElement
+ * @ORM\Table(name="OrderElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_ordercle", columns={"base_id","record_id","order_id"})})
+ * @ORM\Entity(repositoryClass="Repositories\OrderElementRepository")
  */
 class OrderElement
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     */
+    private $base_id;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $record_id;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $order_master_id;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private $deny;
 
     /**
-     * @var \Entities\Basket
+     * @ORM\ManyToOne(targetEntity="Order", inversedBy="elements", cascade={"persist"})
+     * @ORM\JoinColumn(name="order_id", referencedColumnName="id")
      */
-    private $basket;
+    private $order;
 
 
     /**
@@ -106,64 +122,26 @@ class OrderElement
     }
 
     /**
-     * Set basket
+     * Set order
      *
-     * @param \Entities\Basket $basket
+     * @param Order $order
      * @return OrderElement
      */
-    public function setBasket(\Entities\Basket $basket = null)
+    public function setOrder(Order $order = null)
     {
-        $this->basket = $basket;
+        $this->order = $order;
 
         return $this;
     }
 
     /**
-     * Get basket
+     * Get order
      *
-     * @return \Entities\Basket
+     * @return Order
      */
-    public function getBasket()
+    public function getOrder()
     {
-        return $this->basket;
-    }
-    /**
-     * @var integer
-     */
-    private $order_id;
-
-    /**
-     * @var integer
-     */
-    private $base_id;
-
-    /**
-     * @var integer
-     */
-    private $record_id;
-
-
-    /**
-     * Set order_id
-     *
-     * @param integer $orderId
-     * @return OrderElement
-     */
-    public function setOrderId($orderId)
-    {
-        $this->order_id = $orderId;
-
-        return $this;
-    }
-
-    /**
-     * Get order_id
-     *
-     * @return integer
-     */
-    public function getOrderId()
-    {
-        return $this->order_id;
+        return $this->order;
     }
 
     /**
@@ -215,30 +193,6 @@ class OrderElement
      * @var \Entities\Order
      */
     private $order;
-
-
-    /**
-     * Set order
-     *
-     * @param \Entities\Order $order
-     * @return OrderElement
-     */
-    public function setOrder(\Entities\Order $order = null)
-    {
-        $this->order = $order;
-
-        return $this;
-    }
-
-    /**
-     * Get order
-     *
-     * @return \Entities\Order
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
 
     /**
      * Returns a record from the element's base_id and record_id

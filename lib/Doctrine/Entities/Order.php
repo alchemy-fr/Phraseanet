@@ -4,44 +4,54 @@ namespace Entities;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Order
+ * @ORM\Table(name="Orders")
+ * @ORM\Entity(repositoryClass="Repositories\OrderRepository")
  */
 class Order
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
-    private $id;
+   private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $usr_id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $ssel_id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=2048)
      */
-    private $usage;
+    private $order_usage;
 
     /**
-     * @var \DateTime
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $todo;
+
+    /**
+     * @ORM\Column(type="datetime")
      */
     private $deadline;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created_on;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="OrderElement", mappedBy="order", cascade={"ALL"})
      */
     private $elements;
 
@@ -203,12 +213,6 @@ class Order
     }
 
     /**
-     * @var integer
-     */
-    private $todo;
-
-
-    /**
      * Set todo
      *
      * @param integer $todo
@@ -240,12 +244,6 @@ class Order
     {
         return count($this->elements);
     }
-
-    /**
-     * @var string
-     */
-    private $order_usage;
-
 
     /**
      * Set order_usage
