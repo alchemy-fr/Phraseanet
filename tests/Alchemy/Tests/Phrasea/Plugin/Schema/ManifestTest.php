@@ -23,7 +23,7 @@ class ManifestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('MIT', $manifest->getLicense());
         $this->assertEquals('0.1', $manifest->getVersion());
         $this->assertEquals('3.8', $manifest->getMinimumPhraseanetVersion());
-        $this->assertEquals('3.9', $manifest->getMaximumPhraseanetVersion());
+        $this->assertEquals('3.10', $manifest->getMaximumPhraseanetVersion());
         $this->assertEquals(array('views', 'twig-views'), $manifest->getTwigPaths());
         $this->assertEquals(array(array('class' => 'Vendor\CustomCommand')), $manifest->getCommands());
         $this->assertEquals(array(array('class' => 'Vendor\PluginService')), $manifest->getServices());
