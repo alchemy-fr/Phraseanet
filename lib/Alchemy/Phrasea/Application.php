@@ -102,6 +102,7 @@ use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\Camelize;
+use Alchemy\Phrasea\Twig\BytesConverter;
 use FFMpeg\FFMpegServiceProvider;
 use Neutron\Silex\Provider\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
@@ -572,6 +573,7 @@ class Application extends SilexApplication
                 $twig->addExtension(new \Twig_Extensions_Extension_Text());
                 $twig->addExtension(new JSUniqueID());
                 $twig->addExtension(new Camelize());
+                $twig->addExtension(new BytesConverter());
 
                 $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
                 $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
