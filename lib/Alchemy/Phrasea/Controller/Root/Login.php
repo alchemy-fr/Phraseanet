@@ -228,9 +228,9 @@ class Login implements ControllerProviderInterface
 
     public function doRegistration(PhraseaApplication $app, Request $request)
     {
-        if (!$app['registration.enabled']) {
-            $app->abort(404, 'Registration is disabled');
-        }
+//        if (!$app['registration.enabled']) {
+//            $app->abort(404, 'Registration is disabled');
+//        }
 
         $form = $app->form(new PhraseaRegisterForm(
             $app, $app['registration.optional-fields'], $app['registration.fields']
@@ -418,9 +418,10 @@ class Login implements ControllerProviderInterface
         }
 
         return $app['twig']->render('login/register-classic.html.twig', array_merge(
-           self::getDefaultTemplateVariables($app),
-           array(
-            'form' => $form->createView(),
+            self::getDefaultTemplateVariables($app),
+            array(
+                'geonames_server_uri' => str_replace(sprintf('%s:', parse_url($app['geonames.server-uri'], PHP_URL_SCHEME)), '', $app['geonames.server-uri']),
+                'form' => $form->createView()
         )));
     }
 
