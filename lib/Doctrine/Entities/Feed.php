@@ -40,7 +40,7 @@ class Feed implements FeedInterface
     private $icon_url = false;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $base_id;
 
@@ -50,7 +50,7 @@ class Feed implements FeedInterface
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=1024, nullable=true)
      */
     private $subtitle;
 
@@ -67,30 +67,18 @@ class Feed implements FeedInterface
     private $updated_on;
 
     /**
-     * @ORM\OneToMany(
-     *   targetEntity="FeedPublisher",
-     *   mappedBy="feed",
-     *   cascade=["ALL"]
-     * )
+     * @ORM\OneToMany(targetEntity="FeedPublisher", mappedBy="feed", cascade={"ALL"})
      */
     private $publishers;
 
     /**
-     * @ORM\OneToMany(
-     *   targetEntity="FeedEntry",
-     *   mappedBy="feed",
-     *   cascade=["ALL"]
-     * )
+     * @ORM\OneToMany(targetEntity="FeedEntry", mappedBy="feed", cascade={"ALL"})
      * @ORM\OrderBy({"created_on" = "ASC"})
      */
     private $entries;
 
     /**
-     * @ORM\OneToMany(
-     *   targetEntity="FeedToken",
-     *   mappedBy="feed",
-     *   cascade=["ALL"]
-     * )
+     * @ORM\OneToMany(targetEntity="FeedToken", mappedBy="feed", cascade={"ALL"})
      */
     private $tokens;
 

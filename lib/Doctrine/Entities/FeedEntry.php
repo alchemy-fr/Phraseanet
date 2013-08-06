@@ -60,11 +60,7 @@ class FeedEntry
     private $updated_on;
 
     /**
-     * @ORM\OneToMany(
-     *   targetEntity="FeedItem",
-     *   mappedBy="entry",
-     *   cascade=["ALL"]
-     * )
+     * @ORM\OneToMany(targetEntity="FeedItem", mappedBy="entry", cascade={"ALL"})
      * @ORM\OrderBy({"ord" = "ASC"})
      */
     private $items;

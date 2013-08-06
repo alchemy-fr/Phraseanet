@@ -33,6 +33,11 @@ class FeedToken
     private $usr_id;
 
     /**
+     * @ORM\Column(type="string", length=12, nullable=true)
+     */
+    private $value;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Feed", inversedBy="tokens", cascade={"persist"})
      * @ORM\JoinColumn(name="feed_id", referencedColumnName="id")
      */
@@ -93,10 +98,6 @@ class FeedToken
     {
         return $this->feed;
     }
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
-    private $value;
 
     /**
      * Set value

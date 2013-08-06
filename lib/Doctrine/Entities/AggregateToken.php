@@ -33,7 +33,7 @@ class AggregateToken
     private $usr_id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=12, nullable=true)
      */
     private $value;
 

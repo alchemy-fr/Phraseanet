@@ -17,9 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="FeedItems", uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={
- *         "entry_id","sbas_id","record_id"
- * }})
+ * @ORM\Table(name="FeedItems", uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={"entry_id","sbas_id","record_id"})})
  * @ORM\Entity(repositoryClass="Repositories\FeedItemRepository")
  * @HasLifecycleCallbacks
  */
@@ -41,6 +39,11 @@ class FeedItem
      * @ORM\Column(type="integer")
      */
     private $sbas_id;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $ord;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -138,10 +141,6 @@ class FeedItem
     {
         return $this->entry;
     }
-    /**
-     * @var integer
-     */
-    private $ord;
 
     /**
      * Set ord
