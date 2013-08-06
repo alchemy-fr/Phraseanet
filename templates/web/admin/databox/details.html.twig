@@ -2,58 +2,61 @@
     <h1>{{ databox.get_serialized_server_info() }}<small style="font-size:16px;">{% trans "Details" %}</small></h1>
 </div>
 
-<table class="table table-bordered">
+<table class="table table-bordered detail-table">
     <thead>
         <tr>
             <th class='col'>
                 {% if app['request'].query.get('sort') == 'col' %}
                     <img src="/skins/icons/tsort_desc.gif">
                 {% endif %}
-                {% trans 'phraseanet:: collection' %}
+                {% trans 'Collection' %}
             </th>
 
             <th class="obj">
                 {% if app['request'].query.get('sort') == 'obj' %}
                     <img src="/skins/icons/tsort_desc.gif">
                 {% endif %}
-                {% trans 'admin::base: objet' %}
+                {% trans 'Subdef' %}
             </th>
 
-            <th>{% trans 'admin::base: nombre' %}</th>
-            <th>{% trans 'admin::base: poids' %} (Mo)</th>
-            <th>{% trans 'admin::base: poids' %} (Go)</th>
+            <th>{% trans 'Number' %}</th>
+            <th>{% trans 'Weight' %}</th>
         </tr>
     </thead>
     <tbody>
-        {% for row in table['result'] %}
-            <tr>
-                 <td>
-                    {{ row['asciiname'] }}
-                </td>
-                <td>
-                    {{ row['name'] }}
-                </td>
-                <td>
-                    {{ row['n'] }}
-                </td>
-                <td>
-                    {{ row['mega'] }}
-                </td>
-                <td>
-                    {{ row['giga'] }}
-                </td>
-            </tr>
+        {% for colName,row in table %}
+            {% for subdef in row['medias'] %}
+                <tr class="{{ loop.parent.loop.index is even ? "even" : "odd" }}">
+                    {% if loop.first %}
+                        <td rowspan="{{ row['medias']|length + 1 }}">
+                            <h2>{{ colName }}</h2>
+                        </td>
+                    {% endif %}
+                    <td>
+                        {{ subdef['subdef_name'] }}
+                    </td>
+                    <td>
+                        {{ subdef['total_subdefs'] }}
+                    </td>
+                    <td>
+                        {{ subdef['total_size']|bytesToAuto }}
+                    </td>
+                </tr>
+            {% endfor %}
+                <tr class="{{ loop.index is even ? "even" : "odd" }}">
+                    <td><b>{% trans %}Total{% endtrans %}</b></td>
+                    <td><b>{{ row['total_subdefs'] }}</b></td>
+                    <td><b>{{ row['total_size']|bytesToAuto }}</b></td>
+                </tr>
         {% endfor %}
     </tbody>
     <tfoot>
-        {% set total = table['total'] %}
         <tr>
-            <th>{% trans 'report:: total' %}</th>
             <th></th>
-            <th>{{ total['totobj'] }}</th>
-            <th>{{ total['mega'] }} (Mo)</th>
-            <th>{{ total['giga'] }} (Go)</th>
-        </tr>
+            <th>{% trans %}Cumulative total{% endtrans %}</th>
+            <th>{{ total['total_subdefs'] }}</th>
+            <th>{{ total['total_size']|bytesToAuto }}</th>
+        </th>
     </tfoot>
 </table>
 

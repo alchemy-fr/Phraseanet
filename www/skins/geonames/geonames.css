@@ -3,6 +3,7 @@
     overflow-y: auto;
     /* prevent horizontal scrollbar */
     overflow-x: hidden;
+    list-style-type: none;
 }
 
 .geocompleter-menu .region {

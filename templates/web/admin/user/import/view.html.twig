@@ -1,22 +1,54 @@
-<div class="page-header">
-    <h1>{% trans 'Apply a model' %} <small>({{ nb_user_to_add }} {% trans 'Users' %})</small></h1>
-</div>
-
-{% if nb_user_to_add > 0 and models|length > 0 %}
-    <form method="post" name="importform2" action="{{ path('users_submit_import') }}" ENCTYPE="multipart/form-data" >
-        <textarea style="display:none;" name="sr">{{ array_serialized }}</textarea>
-        <select name="modelToApply">
-        {% for model in models %}
-            <option value='{{ model['usr_id'] }}'>{{ model['usr_login'] }}</option>
-        {% endfor %}
-        </select>
-        <div class="form-actions">
-            <button class="btn btn-primary" type="submit">Save changes</button>
-            <button class="btn">Cancel</button>
+{% if nb_user_to_add > 0 and models|length > 0%}
+    {# Display errors #}
+    {% if errors|length > 0 %}
+        <div class="well import-errors">
+            <h4 class="alert-heading">{% trans %}The following errors have been detected{% endtrans %}</h4>
+            <ul class="unstyled text-error">
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor%}
+            </ul>
+            {% trans %}Would you like to continue ?{% endtrans %}
+            <div>
+                <a href="#" class="no-ajax btn btn-primary accept-import">{% trans %}Yes{% endtrans %}</a>
+                <a href="{{ path('users_display_import_file') }}" target="right" class="btn">{% trans %}no{% endtrans %}</a>
+            </div>
         </div>
-    </form>
+
+        <script type="text/javascript">
+            {# If the user agrees to continue despite errors, show wrapper #}
+            $("a.accept-import").bind("click", function(e) {
+                $(".import-errors").remove();
+                $(".wrapper").removeClass("hidden");
+            });
+        </script>
+    {% endif %}
+    {# Hide wrapper if there are errors #}
+    <div class="wrapper {% if errors|length > 0 %}hidden{% endif %}">
+        <div class="page-header">
+            <h1>{% trans 'Apply a model' %} <small>({{ nb_user_to_add }} {% trans 'Users' %})</small></h1>
+        </div>
+
+        <form method="post" name="importform2" action="{{ path('users_submit_import') }}" ENCTYPE="multipart/form-data" >
+            <textarea class="hidden" name="sr_lines">{{ lines_serialized }}</textarea>
+            <textarea class="hidden" name="sr_columns">{{ columns_serialized }}</textarea>
+            <select name="modelToApply">
+            {% for model in models %}
+                <option value='{{ model['usr_id'] }}'>{{ model['usr_login'] }}</option>
+            {% endfor %}
+            </select>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">{% trans %}Save changes{% endtrans %}</button>
+                <a href="{{ path('users_display_import_file') }}" target="right" class="btn">{% trans %}Cancel{% endtrans %}</a>
+            </div>
+        </form>
+    </div>
 {% elseif models|length == 0 %}
         <div class="alert alert-block">
             {% trans 'You need define a model before importing a list of users' %}
+        </div>
+{% elseif nb_user_to_add == 0 %}
+        <div class="alert alert-block">
+            {% trans 'There is no user to add.' %}
         </div>
 {% endif %}

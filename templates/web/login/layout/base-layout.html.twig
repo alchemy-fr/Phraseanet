@@ -27,10 +27,10 @@
             {% endblock favicon %}
 
             {% block header_stylesheet %}
+                <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/geonames/geonames.css' }) }}">
                 <link rel="stylesheet" href="{{ path('minifier', { 'g' : 'authentication_css' }) }}">
-
                 <!--[if lte IE 8]>
-                    <link rel="stylesheet" href="{ path('minifier', { 'f' : 'assets/font-awesome/css/font-awesome-ie7.min.css' }) }}">
+                    <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/font-awesome/css/font-awesome-ie7.min.css' }) }}">
                 <![endif]-->
             {% endblock header_stylesheet %}
 

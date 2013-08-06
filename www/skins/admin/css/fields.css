@@ -60,6 +60,15 @@
     font-weight: bold;
     font-size: 16px;
     color: #666;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#admin-field-app #collection-fields li .field-tag {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 #admin-field-app #collection-fields li .handle {

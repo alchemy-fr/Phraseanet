@@ -496,7 +496,7 @@ class Collection implements ControllerProviderInterface
                 $msg = _('Collection empty successful');
             } else {
                 $settings = '<?xml version="1.0" encoding="UTF-8"?><tasksettings><bas_id>' . $collection->get_base_id() . '</bas_id></tasksettings>';
-                \task_abstract::create($app, 'task_period_emptyColl', $settings);
+                \task_period_emptyColl::create($app, $settings);
                 $msg = _('A task has been creted, please run it to complete empty collection');
             }
 

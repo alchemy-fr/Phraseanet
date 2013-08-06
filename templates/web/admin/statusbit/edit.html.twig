@@ -44,13 +44,18 @@
                 {% endfor %}
                 </div>
             </div>
+            <br />
             <div class="row-fluid">
                 <label class="control-label" for="image_off">
-                    {% trans'admin::status: symboliser par'%}
+                    {% trans %}Symbolized by{% endtrans %}
                 </label>
-                <div class="controls">
-                    <input type="file" name="image_off" accept="image/*"/>
-                    <div class='thumbnail' style='height:20px;width:20px'>
+                <div class="controls clearfix">
+                    <span class="btn btn-success fileinput-button pull-left">
+                        <i class="icon-plus icon-white"></i>
+                        <span>{% trans %}Select files...{% endtrans %}</span>
+                        <input type="file" name="image_off" accept="image/*"/>
+                    </span>
+                    <div class='thumbnail pull-left' style='height:20px;width:20px;margin-left:10px;'>
                         {% if status['img_off'] is defined and status['img_off'] %}
                             <img src="{{ status['img_off'] }}" />
                         {% endif %}
@@ -103,13 +108,18 @@
                 {% endfor %}
                 </div>
             </div>
+            <br />
             <div class="row-fluid">
                 <label class="control-label" for="image_on">
-                    {% trans'admin::status: symboliser par'%}
+                    {% trans %}Symbolized by{% endtrans %}
                 </label>
-                <div class="controls">
-                    <input type="file" name="image_on" accept="image/*"/>
-                    <div class='thumbnail' style='height:20px;width:20px'>
+                <div class="controls clearfix">
+                    <span class="btn btn-success fileinput-button pull-left">
+                        <i class="icon-plus icon-white"></i>
+                        <span>{% trans %}Select files...{% endtrans %}</span>
+                        <input type="file" name="image_on" accept="image/*"/>
+                    </span>
+                    <div class='thumbnail pull-left' style='height:20px;width:20px;margin-left:10px'>
                         {% if status['img_on'] is defined and status['img_on'] %}
                             <img src="{{ status['img_on'] }}" />
                         {% endif %}

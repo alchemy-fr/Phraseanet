@@ -134,3 +134,7 @@ td.users_col.options {
   text-decoration: none;
   color: #ffffff;
 }
+
+.detail-table tr.even {
+    background-color: #FAFBDF;
+}

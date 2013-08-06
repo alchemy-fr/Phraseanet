@@ -71,3 +71,7 @@ div[id$="_indexed_percent"] {
   min-width: 70px;
   text-align: center;
 }
+
+a.btn {
+    text-decoration: none;
+}

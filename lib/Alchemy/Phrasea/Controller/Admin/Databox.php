@@ -875,15 +875,19 @@ class Databox implements ControllerProviderInterface
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
-            foreach ($databox->get_collections() as $collection) {
-                if ($collection->get_record_amount() <= 500) {
-                    $collection->empty_collection(500);
-                    $msg = _('Base empty successful');
-                } else {
-                    $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
-                    \task_abstract::create($app, 'task_period_emptyColl', $settings);
-                    $msg = _('A task has been creted, please run it to complete empty collection');
+            if (count($databox->get_collections()) > 0) {
+                foreach ($databox->get_collections() as $collection) {
+                    if ($collection->get_record_amount() <= 500) {
+                        $collection->empty_collection(500);
+                        $msg = _('Base empty successful');
+                    } else {
+                        $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
+                        \task_period_emptyColl::create($app, $settings);
+                        $msg = _('A task has been creted, please run it to complete empty collection');
+                    }
                 }
+            } else  {
+                $msg = _('Base empty successful');
             }
 
             $success = true;
@@ -1077,86 +1081,34 @@ class Databox implements ControllerProviderInterface
     {
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
-        $out = array('total' => array('totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'), 'result' => array());
+        $details = array();
+        $total = array('total_subdefs' => 0, 'total_size' => 0);
 
-        foreach ($databox->get_record_details($request->query->get('sort')) as $vgrp) {
+        foreach ($databox->get_record_details($request->query->get('sort')) as $collName => $colDetails) {
+            $details[$collName] = array(
+                'total_subdefs' => 0,
+                'total_size' => 0,
+                'medias' => array()
+            );
 
-            $last_k1 = $last_k2 = null;
-            $outRow = array('midobj' => 0, 'midsiz' => 0);
+            foreach($colDetails as $subdefName => $subdefDetails) {
+                $details[$collName]['total_subdefs'] += $subdefDetails['n'];
+                $total['total_subdefs'] += $subdefDetails['n'];
+                $details[$collName]['total_size'] += $subdefDetails['siz'];
+                $total['total_size'] += $subdefDetails['siz'];
 
-            foreach ($vgrp as $vrow) {
-                if ($vrow["n"] > 0 || $last_k1 !== $vrow["coll_id"]) {
-
-                    $outRow['midobj'] += $vrow["n"];
-
-                    if (extension_loaded("bcmath")) {
-                        $outRow['midsiz'] = bcadd($outRow['midsiz'], $vrow["siz"], 0);
-                    } else {
-                        $outRow['midsiz'] += $vrow["siz"];
-                    }
-
-                    if ($last_k1 !== $vrow["coll_id"]) {
-                        if ((int) $vrow["lostcoll"] <= 0) {
-                            $outRow['asciiname'] = $vrow["asciiname"];
-                        } else {
-                            $outRow['asciiname'] = _('admin::base: enregistrements orphelins') . ' ' . sprintf("(coll_id=%d)", (int) $vrow["coll_id"]);
-                        }
-
-                        $last_k1 = (int) $vrow["coll_id"];
-                    }
-                    if ($last_k2 !== $vrow["name"]) {
-                        $outRow['name'] = $vrow["name"];
-                        $last_k2 = $vrow["name"];
-                    }
-
-                    $outRow['n'] = $vrow["n"];
-
-                    if (extension_loaded("bcmath")) {
-                        $mega = bcdiv($vrow["siz"], 1024 * 1024, 5);
-                    } else {
-                        $mega = $vrow["siz"] / (1024 * 1024);
-                    }
-
-                    if (extension_loaded("bcmath")) {
-                        $giga = bcdiv($vrow["siz"], 1024 * 1024 * 1024, 5);
-                    } else {
-                        $giga = $vrow["siz"] / (1024 * 1024 * 1024);
-                    }
-
-                    $outRow['mega'] = sprintf("%.2f", $mega);
-                    $outRow['giga'] = sprintf("%.2f", $giga);
-                }
-
-                $last_k1 = null;
+                $details[$collName]['medias'][] = array (
+                    'subdef_name' => $subdefName,
+                    'total_subdefs' => $subdefDetails['n'],
+                    'total_size' => $subdefDetails['siz'],
+                );
             }
-
-            $out['result'][] = $outRow;
-        }
-
-        $out['total']['totobj'] += $outRow['midobj'];
-
-        if (extension_loaded("bcmath")) {
-            $out['total']['totsiz'] = bcadd($out['total']['totsiz'], $outRow['midsiz'], 0);
-        } else {
-            $out['total']['totsiz'] += $outRow['midsiz'];
-        }
-
-        if (extension_loaded("bcmath")) {
-            $out['total']['mega'] = bcdiv($out['total']['totsiz'], 1024 * 1024, 5);
-        } else {
-            $out['total']['mega'] = $out['total']['totsiz'] / (1024 * 1024);
-        }
-
-        if (extension_loaded("bcmath")) {
-            $out['total']['giga'] = bcdiv($out['total']['totsiz'], 1024 * 1024 * 1024, 5);
-        } else {
-            $out['total']['giga'] = $out['total']['totsiz'] / (1024 * 1024 * 1024);
         }
 
         return $app['twig']->render('admin/databox/details.html.twig', array(
             'databox' => $databox,
-            'table'   => $out,
-            'bcmath'  => extension_loaded("bcmath"),
+            'table'   => $details,
+            'total'   => $total
         ));
     }
 
