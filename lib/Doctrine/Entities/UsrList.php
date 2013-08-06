@@ -12,39 +12,46 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * UsrList
+ * @ORM\Table(name="UsrLists")
+ * @ORM\Entity(repositoryClass="Repositories\UsrListRepository")
  */
 class UsrList
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string")
      */
     private $name;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="UsrListOwner", mappedBy="list", cascade={"all"})
      */
     private $owners;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="UsrListEntry", mappedBy="list", cascade={"all"})
      */
     private $entries;
 

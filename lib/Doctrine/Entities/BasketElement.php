@@ -13,49 +13,57 @@ namespace Entities;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * BasketElement
+ * @ORM\Table(name="BasketElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_recordcle", columns={"basket_id","sbas_id","record_id"})})
+ * @ORM\Entity(repositoryClass="Repositories\BasketElementRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class BasketElement
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $record_id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $sbas_id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $ord;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="ValidationData", mappedBy="basket_element", cascade={"all"})
      */
     private $validation_datas;
 
     /**
-     * @var \Entities\Basket
+     * @ORM\ManyToOne(targetEntity="Basket", inversedBy="elements", cascade={"persist"})
+     * @ORM\JoinColumn(name="basket_id", referencedColumnName="id")
      */
     private $basket;
 

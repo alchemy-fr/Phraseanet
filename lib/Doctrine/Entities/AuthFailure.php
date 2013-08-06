@@ -12,34 +12,39 @@
 namespace Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * AuthFailure
+ * @ORM\Table(name="AuthFailures")
+ * @ORM\Entity(repositoryClass="Repositories\AuthFailureRepository")
  */
 class AuthFailure
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128)
      */
     private $username;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $ip;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean")
      */
     private $locked;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
