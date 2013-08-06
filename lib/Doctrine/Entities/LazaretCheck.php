@@ -11,9 +11,7 @@
 
 namespace Entities;
 
-use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="LazaretChecks")
