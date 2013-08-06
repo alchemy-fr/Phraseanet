@@ -75,7 +75,7 @@ class Basket
     private $updated;
 
     /**
-     * @ORM\OneToOne(targetEntity="ValidationSession", mappedBy="basket", cascade={"ALL"})
+     * @ORM\OneToOne(targetEntity="ValidationSession", inversedBy="basket", cascade={"ALL"})
      */
     private $validation;
 

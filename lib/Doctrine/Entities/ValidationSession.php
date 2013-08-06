@@ -52,7 +52,7 @@ class ValidationSession
     private $expires;
 
     /**
-     * @ORM\OneToOne(targetEntity="Basket", mappedBy="validation", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Basket", inversedBy="validation", cascade={"persist"})
      * @ORM\JoinColumn(name="basket_id", referencedColumnName="id")
      */
     private $basket;
