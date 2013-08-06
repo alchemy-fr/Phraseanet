@@ -13,33 +13,40 @@ namespace Entities;
 
 use Alchemy\Phrasea\Application;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
- * StoryWZ
+ * @ORM\Table(name="StoryWZ", uniqueConstraints={@ORM\UniqueConstraint(name="user_story", columns={"usr_id", "sbas_id", "record_id"})})
+ * @ORM\Entity(repositoryClass="Repositories\StoryWZRepository")
  */
 class StoryWZ
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $sbas_id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $record_id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $usr_id;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 

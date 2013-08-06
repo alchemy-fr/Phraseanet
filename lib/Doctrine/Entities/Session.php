@@ -12,79 +12,87 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Session
+ * @ORM\Table(name="Sessions", indexes={@ORM\index(name="usr_id", columns={"usr_id"})})
+ * @ORM\Entity(repositoryClass="Repositories\SessionRepository")
  */
 class Session
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $usr_id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=512)
      */
     private $user_agent;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=40, nullable=true)
      */
     private $ip_address;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $platform;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $browser_name;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=32, nullable=true)
      */
     private $browser_version;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $screen_width;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $screen_height;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128, nullable=true, unique=true)
      */
     private $token;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=16, nullable=true)
      */
     private $nonce;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="SessionModule", mappedBy="session", cascade={"all"})
+     * @ORM\OrderBy({"module_id" = "ASC"})
      */
     private $modules;
 

@@ -3,41 +3,51 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * UsrAuthProvider
+ * @ORM\Table(name="UsrAuthProviders", uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="unique_provider_per_user", columns={"usr_id", "provider"}),
+ *          @ORM\UniqueConstraint(name="provider_ids", columns={"provider", "distant_id"})
+ * })
+ * @ORM\Entity(repositoryClass="Repositories\UsrAuthProviderRepository")
  */
 class UsrAuthProvider
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $usr_id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=32)
      */
     private $provider;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=192)
      */
     private $distant_id;
 
     /**
-     * @var \DateTime
-     */
-    private $updated;
-
-    /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
+
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    private $updated;
 
     /**
      * Get id

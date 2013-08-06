@@ -11,25 +11,29 @@
 
 namespace Entities;
 
-use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * LazaretCheck
+ * @ORM\Table(name="LazaretChecks")
+ * @ORM\Entity
  */
 class LazaretCheck
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=512)
      */
     private $checkClassname;
 
     /**
-     * @var \Entities\LazaretFile
+     * @ORM\ManyToOne(targetEntity="LazaretFile", inversedBy="checks", cascade={"persist"})
+     * @ORM\JoinColumn(name="lazaret_file_id", referencedColumnName="id")
      */
     private $lazaretFile;
 

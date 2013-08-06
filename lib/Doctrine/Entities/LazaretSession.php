@@ -12,34 +12,42 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * LazaretSession
+ * @ORM\Table(name="LazaretSessions")
+ * @ORM\Entity
  */
 class LazaretSession
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
-    /**
-     * @var integer
+     /**
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $usr_id;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="LazaretFile", mappedBy="session", cascade={"all"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $files;
 

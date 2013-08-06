@@ -12,9 +12,12 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Basket
+ * @ORM\Table(name="Baskets")
+ * @ORM\Entity(repositoryClass="Repositories\BasketRepository")
  */
 class Basket
 {
@@ -23,57 +26,62 @@ class Basket
     const ELEMENTSORDER_ASC = 'asc';
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=128)
      */
     private $name;
 
     /**
-     * @var string
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $usr_id;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean")
      */
     private $is_read = false;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $pusher_id;
 
     /**
-     * @var boolean
+     * @ORM\Column(type="boolean")
      */
     private $archived = false;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @var \DateTime
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
     /**
-     * @var \Entities\ValidationSession
+     * @ORM\OneToOne(targetEntity="ValidationSession", mappedBy="basket", cascade={"ALL"})
      */
     private $validation;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="BasketElement", mappedBy="basket", cascade={"ALL"})
+     * @ORM\OrderBy({"ord" = "ASC"})
      */
     private $elements;
 

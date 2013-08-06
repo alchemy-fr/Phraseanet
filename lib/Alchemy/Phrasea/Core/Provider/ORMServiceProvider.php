@@ -12,13 +12,17 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Annotations\FileCacheReader;
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\Logger\MonologSQLLogger;
+use Gedmo\DoctrineExtensions;
 use Gedmo\Timestampable\TimestampableListener;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -48,15 +52,40 @@ class ORMServiceProvider implements ServiceProviderInterface
                 $config->setSQLLogger($app['EM.sql-logger']);
             }
 
+            AnnotationRegistry::registerFile(
+                $app['root.path'].'/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
+            );
+
             $opCodeCacheType = $app['phraseanet.configuration']['main']['opcodecache']['type'];
             $opCodeCacheOptions = $app['phraseanet.configuration']['main']['opcodecache']['options'];
 
             $cacheType = $app['phraseanet.configuration']['main']['cache']['type'];
             $cacheOptions = $app['phraseanet.configuration']['main']['cache']['options'];
 
+            $annotationReader = new AnnotationReader();
+            $fileCacheReader = new FileCacheReader(
+                $annotationReader,
+                $app['root.path']."/tmp/doctrine",
+                $app['debug']
+            );
+
+            $driverChain = new DriverChain();
+            DoctrineExtensions::registerAbstractMappingIntoDriverChainORM(
+                $driverChain,
+                $fileCacheReader
+            );
+
+            $annotationDriver = new AnnotationDriver(
+                $annotationReader,
+                array($app['root.path'].'/lib/Doctrine/Entities')
+            );
+
+            $driverChain->addDriver($annotationDriver, 'Entities');
+
             $config->setMetadataCacheImpl($app['phraseanet.cache-service']->factory(
                 'ORMmetadata', $opCodeCacheType, $opCodeCacheOptions
             ));
+
             $config->setQueryCacheImpl($app['phraseanet.cache-service']->factory(
                 'ORMquery', $opCodeCacheType, $opCodeCacheOptions
             ));
@@ -64,14 +93,9 @@ class ORMServiceProvider implements ServiceProviderInterface
                 'ORMresult', $cacheType, $cacheOptions
             ));
 
-            //define autoregeneration of proxies base on debug mode
             $config->setAutoGenerateProxyClasses($app['debug']);
 
-            $chainDriverImpl = new DriverChain();
-            $driverYaml = new YamlDriver(array($app['root.path'] . '/lib/conf.d/Doctrine'));
-            $chainDriverImpl->addDriver($driverYaml, 'Entities');
-            $chainDriverImpl->addDriver($driverYaml, 'Gedmo\Timestampable');
-            $config->setMetadataDriverImpl($chainDriverImpl);
+            $config->setMetadataDriverImpl($driverChain);
 
             $config->setProxyDir($app['root.path'] . '/lib/Doctrine/Proxies');
             $config->setProxyNamespace('Proxies');
