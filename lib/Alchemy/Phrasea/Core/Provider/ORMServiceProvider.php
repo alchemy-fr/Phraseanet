@@ -53,7 +53,7 @@ class ORMServiceProvider implements ServiceProviderInterface
             }
 
             AnnotationRegistry::registerFile(
-                $app['root.path'] .'/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
+                $app['root.path'].'/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
             );
 
             $opCodeCacheType = $app['phraseanet.configuration']['main']['opcodecache']['type'];
@@ -62,7 +62,7 @@ class ORMServiceProvider implements ServiceProviderInterface
             $cacheType = $app['phraseanet.configuration']['main']['cache']['type'];
             $cacheOptions = $app['phraseanet.configuration']['main']['cache']['options'];
 
-            $annotationReader = new AnnotationReader;
+            $annotationReader = new AnnotationReader();
             $fileCacheReader = new FileCacheReader(
                 $annotationReader,
                 $app['root.path']."/tmp/doctrine",
