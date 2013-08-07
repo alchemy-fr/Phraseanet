@@ -4218,6 +4218,9 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 }
 
 #uploadBox .upload-record .infos-doc {
+    overflow: hidden;
+    -o-text-overflow: ellipsis; /* pour Opera 9 */
+    text-overflow: ellipsis;
     color: #777777;
     height: 40px;
 }
