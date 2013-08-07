@@ -42,7 +42,7 @@ $(document).ready(function(){
 //		$('.right_column_wrapper').height(right_column_wrapper_height);
 
 		$('.record_display_box').each(function(i,n){
-			$('.container',n).height($(n).innerHeight() - $('.header').outerHeight());
+			$('.lightbox_container',n).height($(n).innerHeight() - $('.header').outerHeight());
 		});
 		display_record($('#record_compare').css('visibility') != 'hidden');
 	}
@@ -100,7 +100,7 @@ $(document).ready(function(){
 	}
 
 
-	set_sizeable($('#record_main .container, #record_compare .container'));
+	set_sizeable($('#record_main .lightbox_container, #record_compare .lightbox_container'));
 
 	$('#navigation')
 			.bind('change',
@@ -347,7 +347,7 @@ function display_basket_element(compare, sselcont_id)
 		text	: true
 	}).bind('click',function()
 			{
-				if($('.container', container).hasClass('note_editing'))
+				if($('.lightbox_container', container).hasClass('note_editing'))
 				{
 					hide_notes(container);
 				}
@@ -393,7 +393,7 @@ function display_basket_element(compare, sselcont_id)
 		get_next();
 	});
 
-	$('.container', container).bind('dblclick',function(event){
+	$('.lightbox_container', container).bind('dblclick',function(event){
 								display_record();
 							});
 
@@ -430,7 +430,7 @@ function display_basket_element(compare, sselcont_id)
       });
 			display_record(compare);
 			$('#record_infos, #right_column').show();
-			$('#record_compare .container').empty();
+			$('#record_compare .lightbox_container').empty();
 		}
 
 	}
@@ -450,13 +450,13 @@ function set_container_status(status)
 function show_notes(container)
 {
 	$('.notes_wrapper', container).animate({top:0});
-	$('.container', container).addClass('note_editing');
+	$('.lightbox_container', container).addClass('note_editing');
 }
 
 function hide_notes(container)
 {
 	$('.notes_wrapper', container).animate({top:'-100%'});
-	$('.container', container).removeClass('note_editing');
+	$('.lightbox_container', container).removeClass('note_editing');
 }
 
 function activate_notes(container)
@@ -516,8 +516,8 @@ function display_record(compare)
 	var main_box					= $('#record_main');
 	var compare_box					= $('#record_compare');
 
-	var main_record 				= $('.container .record', main_box);
-	var compare_record 				= $('.container .record', compare_box);
+	var main_record 				= $('.lightbox_container .record', main_box);
+	var compare_record 				= $('.lightbox_container .record', compare_box);
 
 	var main_record_width			= parseInt($('input[name=width]', main_box).val());
 	var main_record_height			= parseInt($('input[name=height]', main_box).val());
@@ -867,7 +867,7 @@ function save_note(container, button)
 		success: function(datas){
 				hide_notes(container);
 				$('.notes_wrapper', container).remove();
-				$('.container', container).append(datas.datas);
+				$('.lightbox_container', container).append(datas.datas);
 				activate_notes(container);
 			return;
 		}
@@ -975,7 +975,7 @@ function scid_click(event, el)
 			{
 				container = $('#record_main');
 
-				$('#record_infos .container')
+				$('#record_infos .lightbox_container')
 						.empty()
 						.append(data.caption);
 
@@ -998,7 +998,7 @@ function scid_click(event, el)
 					.empty()
 					.append(data.options_html);
 
-			$('.container', container).empty()
+			$('.lightbox_container', container).empty()
                             .append(data.preview+data.selector_html+data.note_html);
 
 

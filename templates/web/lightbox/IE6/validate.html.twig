@@ -34,7 +34,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="container left">
+                    <div class="lightbox_container left">
                         {% if basket_element %}
 
                             {% set bask_prev = basket_element.getRecord(app).get_preview() %}
@@ -68,7 +68,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="container left">
+                    <div class="lightbox_container left">
                     </div>
                 </div>
             </div>
@@ -92,7 +92,7 @@
 
                 <div class="right_column_wrapper right_column_wrapper_caption left unselectable" style="width:230px;height:auto;{% if basket.getValidation() %}display:none;{% endif %}">
                     <div id="record_infos">
-                        <div class="container">
+                        <div class="lightbox_container">
               {% if basket_element %}
                 {% set business = app['authentication'].getUser().ACL().has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
                 {{caption.format_caption(basket_element.getRecord(app), '', null, business)}}

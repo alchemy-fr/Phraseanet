@@ -32,7 +32,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="container left">
+                    <div class="lightbox_container left">
                         {% if first_item %}
                             {% if app['authentication'].getUser().ACL().has_access_to_subdef(first_item.get_record(), 'preview') %}
                                 {% set preview = first_item.get_record().get_preview() %}
@@ -62,7 +62,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="container left">
+                    <div class="lightbox_container left">
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
 
                 <div class="right_column_wrapper right_column_wrapper_caption left unselectable" style="width:230px;height:auto;">
                     <div id="record_infos">
-                        <div class="container">
+                        <div class="lightbox_container">
               {% set business = app['authentication'].getUser().ACL().has_right_on_base(first_item.get_record().get_base_id(), 'canmodifrecord') %}
               {% if first_item %}
                 {{caption.format_caption(first_item.get_record(), '', null, business)}}
