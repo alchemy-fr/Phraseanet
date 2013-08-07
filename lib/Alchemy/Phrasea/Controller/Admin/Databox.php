@@ -876,28 +876,21 @@ class Databox implements ControllerProviderInterface
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
-            if (count($databox->get_collections()) > 0) {
-                foreach ($databox->get_collections() as $collection) {
-                    if ($collection->get_record_amount() <= 500) {
-                        $collection->empty_collection(500);
-                        if (false === $taskCreated) {
-                            $msg = _('Base empty successful');
-                        }
-                    } else {
-                        $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
-                        \task_period_emptyColl::create($app, $settings);
-
-                        if (false === $taskCreated) {
-                            $msg = _('A task has been created, please run it to complete empty collection');
-                            $taskCreated = true;
-                        }
-                    }
+            foreach ($databox->get_collections() as $collection) {
+                if ($collection->get_record_amount() <= 500) {
+                    $collection->empty_collection(500);
+                } else {
+                    $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
+                    \task_period_emptyColl::create($app, $settings);
                 }
-            } else  {
-                $msg = _('Base empty successful');
             }
 
+            $msg = _('Base empty successful');
             $success = true;
+
+            if ($taskCreated) {
+                $msg = _('A task has been created, please run it to complete empty collection');
+            }
         } catch (\Exception $e) {
 
         }

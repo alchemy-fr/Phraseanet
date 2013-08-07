@@ -917,9 +917,10 @@ abstract class task_abstract
     }
 
     /**
-    *
-    * @param array $params
-    */
+     * @param Configuration $config
+     * @param array         $params
+     * @return string
+     */
     public static function getDefaultSettings(Configuration $config, array $params = array())
     {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
