@@ -495,7 +495,9 @@ class Collection implements ControllerProviderInterface
                 $collection->empty_collection(500);
                 $msg = _('Collection empty successful');
             } else {
-                $settings = '<?xml version="1.0" encoding="UTF-8"?><tasksettings><bas_id>' . $collection->get_base_id() . '</bas_id></tasksettings>';
+                $settings = \task_period_emptyColl::getDefaultSettings($app['phraseanet.configuration'], array(
+                    'bas_id' => $collection->get_base_id()
+                ));
                 \task_period_emptyColl::create($app, $settings);
                 $msg = _('A task has been creted, please run it to complete empty collection');
             }

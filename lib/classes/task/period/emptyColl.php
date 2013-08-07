@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration\Configuration;
+
 class task_period_emptyColl extends task_appboxAbstract
 {
     protected $base_id;
@@ -30,13 +32,13 @@ class task_period_emptyColl extends task_appboxAbstract
         return("Vide une collection");
     }
 
-     /**
+    /**
      *
      * @param array $params
      */
     public static function getDefaultSettings(Configuration $config, array $params = array())
     {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
+        return '<?xml version="1.0" encoding="UTF-8"?><tasksettings><bas_id>' . (isset($params['bas_id']) ? $params['bas_id'] : '' ) . '</bas_id></tasksettings>';
     }
 
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
