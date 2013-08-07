@@ -9,6 +9,7 @@
  */
 
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
 use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
 use Alchemy\Phrasea\Border\MetadataBag;
@@ -17,11 +18,6 @@ use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\Filesystem\Exception\IOException;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class task_period_archive extends task_abstract
 {
     const MINCOLD = 5;
@@ -2205,5 +2201,25 @@ class CListFolder
     public function read()
     {
         return array_shift($this->list);
+    }
+
+    /**
+     * @param array $params
+     */
+    public static function getDefaultSettings(Configuration $config, array $params = array())
+    {
+        $period = isset($params['period']) ? $params['period'] : self::MINPERIOD;
+
+        return sprintf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+            <tasksettings>
+                <base_id></base_id>
+                <hotfolder></hotfolder>
+                <period>%s</period>
+                <move_archived>0</move_archived>
+                <move_error>0</move_error>
+                <delfolder>0</delfolder>
+                <copy_spe>0</copy_spe>
+                <cold></cold>
+            </tasksettings>", min(max($period, self::MINPERIOD), self::MAXPERIOD));
     }
 }

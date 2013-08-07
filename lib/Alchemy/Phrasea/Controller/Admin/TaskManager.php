@@ -49,7 +49,11 @@ class TaskManager implements ControllerProviderInterface
         })->bind('admin_tasks_list');
 
         $controllers->post('/tasks/create/', function(Application $app, Request $request) {
-            $task = \task_abstract::create($app, $request->request->get('tcl'));
+            if (!class_exists($className = $request->request->get('tcl'))) {
+                $app->abort(400, sprintf('Unknown task %s', $className));
+            }
+
+            $task = $className::create($app);
             $tid = $task->getId();
 
             return $app->redirectPath('admin_tasks_task_show', array('id' => $tid));

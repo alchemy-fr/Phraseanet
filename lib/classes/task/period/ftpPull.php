@@ -8,11 +8,8 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+use Alchemy\Phrasea\Core\Configuration\Configuration;
+
 class task_period_ftpPull extends task_appboxAbstract
 {
     protected $proxy;
@@ -452,5 +449,28 @@ class task_period_ftpPull extends task_appboxAbstract
     protected function postProcessOneContent(appbox $appbox, Array $row)
     {
 
+    }
+
+    /**
+     * @param array $params
+     */
+    public static function getDefaultSettings(Configuration $config, array $params = array())
+    {
+        $period = isset($params['period']) ? $params['period'] : self::MINPERIOD;
+
+        return sprintf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+            <tasksettings>
+                <proxy></proxy>
+                <proxyport></proxyport>
+                <period>%s</period>
+                <passive>0</passive>
+                <ssl>0</ssl>
+                <password></password>
+                <user></user>
+                <ftppath></ftppath>
+                <localpath></localpath>
+                <port>21</port>
+                <host></host>
+            </tasksettings>", min(max($period, self::MINPERIOD), self::MAXPERIOD));
     }
 }

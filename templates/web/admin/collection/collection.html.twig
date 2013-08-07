@@ -108,7 +108,7 @@
     <form style="display:inline; margin:0 2px 0 0;" method="post" action="{{ path('admin_collection_rename', { 'bas_id' : bas_id }) }}" style="margin:0;">
         <div class="input-append" style="display:inline; margin:0;">
             <input name="name" class="span3" type="text" size="16">
-            <button class="btn reload-tree" type="submit">
+            <button class="btn reload-tree submiter" type="submit">
                 <img src="/skins/icons/edit_0.gif" />
                 {% trans 'admin::base:collection: renommer la collection' %}
             </button>
@@ -116,21 +116,21 @@
     </form>
 
     <form style="display:inline; margin:0;" method="post" action="{% if collection.is_active() %}{{ path('admin_collection_disable', { 'bas_id' : bas_id }) }}{% else %}{{ path('admin_collection_enable', { 'bas_id' : bas_id }) }}{% endif %}">
-        <button class="btn confirm" data-confirm-msg="{{ collection.is_active() ? 'admin::base:collection: etes vous sur darreter la publication de cette collection'|trans  : 'admin::base:collection: etes vous sur de publier cette collection ?'|trans }}">
+        <button class="btn confirm reload submiter" data-confirm-msg="{{ collection.is_active() ? 'admin::base:collection: etes vous sur darreter la publication de cette collection'|trans  : 'admin::base:collection: etes vous sur de publier cette collection ?'|trans }}">
             <img src="/skins/icons/db-remove.png"/>
             {{ collection.is_active() ? 'admin::base:collection: descativer la collection' | trans  : 'admin::base:collection: activer la collection'| trans }}
         </button>
     </form>
 
     <form style="display:inline; margin:0;" method="post" action="{{ path('admin_collection_empty', { 'bas_id' : bas_id }) }}">
-        <button class="btn confirm" data-confirm-msg="{% trans 'admin::base:collection: etes vous sur de vider la collection ?' %}">
+        <button class="btn confirm submiter" data-confirm-msg="{% trans 'admin::base:collection: etes vous sur de vider la collection ?' %}">
             <img src="/skins/icons/trash.png" />
             {% trans 'admin::base:collection: vider la collection' %}
         </button>
     </form>
 
     <form style="display:inline; margin:0;" method="post" action="{{ path('admin_collection_delete', { 'bas_id' : bas_id }) }}">
-        <button class="btn confirm" data-confirm-msg="{% trans 'admin::collection: Confirmez vous la suppression de cette collection ?' %}">
+        <button class="btn confirm submiter reload-tree" data-confirm-msg="{% trans 'admin::collection: Confirmez vous la suppression de cette collection ?' %}">
             <img src="/skins/icons/delete.gif" />
             {% trans 'boutton::supprimer' %}
         </button>
@@ -154,7 +154,11 @@
     {% elseif app['authentication'].getUser().ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_logo', { 'bas_id' : bas_id }) }}" style="margin:0;">
-            <input name="newLogo" type="file" accept="image/*" />
+            <span class="btn btn-success fileinput-button">
+                <i class="icon-plus icon-white"></i>
+                <span>{% trans %}Select files...{% endtrans %}</span>
+                <input name="newLogo" type="file" accept="image/*" />
+            </span>
         </form>
     {% endif %}
 </div>
@@ -175,7 +179,11 @@
     {% elseif app['authentication'].getUser().ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_watermark', { 'bas_id' : bas_id }) }}" style="margin:0;">
-            <input name="newWm" type="file" accept="image/*" />
+            <span class="btn btn-success fileinput-button">
+                <i class="icon-plus icon-white"></i>
+                <span>{% trans %}Select files...{% endtrans %}</span>
+                <input name="newWm" type="file" accept="image/*" />
+            </span>
         </form>
     {% endif %}
 </div>
@@ -196,7 +204,11 @@
     {% elseif app['authentication'].getUser().ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_stamp', { 'bas_id' : bas_id }) }}" style="margin:0;">
-            <input name="newStamp" type="file" accept="image/*" />
+            <span class="btn btn-success fileinput-button">
+                <i class="icon-plus icon-white"></i>
+                <span>{% trans %}Select files...{% endtrans %}</span>
+                <input name="newStamp" type="file" accept="image/*" />
+            </span>
         </form>
     {% endif %}
 </div>
@@ -217,13 +229,38 @@
     {% elseif app['authentication'].getUser().ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_banner', { 'bas_id' : bas_id }) }}" style="margin:0;">
-            <input name="newBanner" type="file" accept="image/*" />
+            <span class="btn btn-success fileinput-button">
+                <i class="icon-plus icon-white"></i>
+                <span>{% trans %}Select files...{% endtrans %}</span>
+                <input name="newBanner" type="file" accept="image/*" />
+            </span>
         </form>
     {% endif %}
 </div>
 
+{# Invalid file type modal shown when uploaded logo file is invalid #}
+<div id="invalid-modal" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>{% trans %}Invalid file type{% endtrans %}</h3>
+    </div>
+    <div class="modal-body">
+        <p>
+            {% set supported_file_types = ['jpg', 'jpeg', 'pjpg', 'gif', 'png']|join(' | ') %}
+            {% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+    </div>
+</div>
+
 <script type="text/javascript">
     $(document).ready(function(){
+        $('#invalid-modal').modal({
+            "show": false
+        });
+
         //add admins
         $( ".admin_adder" ).autocomplete({
             source: "/admin/users/typeahead/search/?have_not_right[]=order_master&on_base[]={{ bas_id }}",
@@ -294,7 +331,9 @@
                 success: function(datas) {
                     if(datas.success) {
                         if(submitLink.hasClass('reload')) {
-                            reloadTree('base:{{ collection.get_sbas_id() }}');
+                            reloadTree('base:{{ collection.get_sbas_id() }}', true);
+                        } else if(submitLink.hasClass('reload-tree')) {
+                            reloadTree('bases:bases', true);
                         }
                     } else {
                         alert(datas.msg);
@@ -310,11 +349,11 @@
             $(this).fileupload({
                 dataType: 'html',
                 add: function(e, data) {
-                    if( ! /(\.|\/)(png|jpeg|jpg|pjpg|gif)$/i.test(data.files[0].type)) {
-                        {% set supported_file_types = ['jpg', 'jpeg', 'pjpg', 'gif', 'png']|join(' | ') %}
-                        alert("{% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}");
-
-                        return false;
+                    if (typeof data.files[0].type !== "undefined") {
+                        if( ! /(\.|\/)(png|jpeg|jpg|pjpg|gif)$/i.test(data.files[0].type)) {
+                            $('#invalid-modal').modal('toggle');
+                            return false;
+                        }
                     }
 
                     data.submit();

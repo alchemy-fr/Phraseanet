@@ -237,7 +237,15 @@ class Login implements ControllerProviderInterface
         ));
 
         if ('POST' === $request->getMethod()) {
-            $form->bind($request);
+            $requestData = $request->request->all();
+
+            // Remove geocompleter field for validation this field is added client side
+            // with jquery geonames plugin
+            if (isset($requestData['geonameid']) && isset($requestData['geonameid-completer'])) {
+                unset($requestData['geonameid-completer']);
+            }
+
+            $form->bind($requestData);
             $data = $form->getData();
 
             $provider = null;
@@ -410,9 +418,10 @@ class Login implements ControllerProviderInterface
         }
 
         return $app['twig']->render('login/register-classic.html.twig', array_merge(
-           self::getDefaultTemplateVariables($app),
-           array(
-            'form' => $form->createView(),
+            self::getDefaultTemplateVariables($app),
+            array(
+                'geonames_server_uri' => str_replace(sprintf('%s:', parse_url($app['geonames.server-uri'], PHP_URL_SCHEME)), '', $app['geonames.server-uri']),
+                'form' => $form->createView()
         )));
     }
 

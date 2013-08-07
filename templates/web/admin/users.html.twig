@@ -36,7 +36,7 @@
             <span>{% trans 'Filter' %}</span>
                 <select name="like_field" class="input-medium">
                     <option {% if parm['like_field'] == "usr_login" %}selected="selected"{% endif %} value="usr_login">{% trans 'Push::filter on login' %}</option>
-                    <option {% if parm['like_field'] == "name" %}selected="selected"{% endif %} value="name">{% trans 'Push::filter on name' %}</option>
+                    <option {% if parm['like_field'] == "name" %}selected="selected"{% endif %} value="name">{% trans 'First/Last Name' %}</option>
                     <option {% if parm['like_field'] == "pays" %}selected="selected"{% endif %} value="pays">{% trans 'Push::filter on countries' %}</option>
                     <option {% if parm['like_field'] == "societe" %}selected="selected"{% endif %} value="societe">{% trans 'Push::filter on companies' %}</option>
                     <option {% if parm['like_field'] == "usr_mail" %}selected="selected"{% endif %} value="usr_mail">{% trans 'Push::filter on emails' %}</option>
@@ -88,7 +88,7 @@
                         <input type="hidden" name="srt" value="usr_login" />
                     </th>
                     <th class="sortable {{ parm.srt == 'usr_nom' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-                        <span>{% trans 'admin::compte-utilisateur nom/prenom' %}</span>
+                        <span>{% trans 'First/Last Name' %}</span>
                         <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
                         <input type="hidden" name="srt" value="usr_nom" />
                     </th>
@@ -136,7 +136,7 @@
                             {{usr.get_login()}}
                         </td>
                         <td>
-                            {{usr.get_firstname()}} {{usr.get_lastname()}}
+                            {{usr.get_firstname()}} {{usr.get_lastname()}} 
                         </td>
                         <td>
                             {{usr.get_company()}}

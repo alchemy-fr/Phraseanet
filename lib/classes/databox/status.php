@@ -254,11 +254,9 @@ class databox_status
 
     public static function deleteStatus(Application $app, \databox $databox, $bit)
     {
-        $status = self::getStatus($app, $sbas_id);
+        $status = self::getStatus($app, $databox->get_sbas_id());
 
         if (isset($status[$bit])) {
-            $connbas = connection::getPDOConnection($app, $sbas_id);
-
             $doc = $databox->get_dom_structure();
             if ($doc) {
                 $xpath = $databox->get_xpath_structure();
@@ -271,7 +269,7 @@ class databox_status
                     }
                     if ($sbit->parentNode->removeChild($sbit)) {
                         $sql = 'UPDATE record SET status = status&(~(1<<' . $bit . '))';
-                        $stmt = $connbas->prepare($sql);
+                        $stmt = $databox->get_connection()->prepare($sql);
                         $stmt->execute();
                         $stmt->closeCursor();
                     }
@@ -287,7 +285,7 @@ class databox_status
                     $app['filesystem']->remove($status[$bit]['path_on']);
                 }
 
-                unset(self::$_status[$sbas_id]->status[$bit]);
+                unset(self::$_status[$databox->get_sbas_id()]->status[$bit]);
 
                 return true;
             }

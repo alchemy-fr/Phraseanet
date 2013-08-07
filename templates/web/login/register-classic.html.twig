@@ -30,7 +30,7 @@
                      name="registerForm"
                      method="POST"
                      action="{{ path("login_register_classic") }}"
-                     data-geonames-server-adress="{{ app['geonames.server-uri'] }}"
+                     data-geonames-server-adress="{{ geonames_server_uri }}"
                 >
                     {% if form.vars.errors|length > 0 %}
                         <div class="row-fluid">

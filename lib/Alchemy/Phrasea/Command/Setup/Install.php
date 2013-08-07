@@ -94,7 +94,7 @@ class Install extends Command
         $abConn = $this->getABConn($input, $output, $dialog);
         list($dbConn, $template) = $this->getDBConn($input, $output, $abConn, $dialog);
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
-        $dataPath = $this->getDataPath($input, $output);
+        $dataPath = $this->getDataPath($input, $output, $dialog);
         $serverName = $this->getServerName($input, $output, $dialog);
         $indexer = $this->getindexer($input, $output);
 
@@ -209,9 +209,19 @@ class Install extends Command
         return array($email, $password);
     }
 
-    private function getDataPath(InputInterface $input, OutputInterface $output)
+    private function getDataPath(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
     {
         $dataPath = $input->getOption('data-path');
+
+        if (!$input->getOption('yes')) {
+            $continue = $dialog->askConfirmation($output, 'Would you like to change default data-path ? (N/y)', false);
+
+            if ($continue) {
+                do {
+                    $dataPath = $dialog->ask($output, 'Please provide the data path : ', null);
+                } while (!$dataPath || !is_writable($dataPath));
+            }
+        }
 
         if (!$dataPath || !is_writable($dataPath)) {
             throw new \RuntimeException(sprintf('Data path `%s` is not writable', $dataPath));
@@ -226,7 +236,6 @@ class Install extends Command
 
         if (!$serverName && !$input->getOption('yes')) {
             do {
-                $retry = false;
                 $serverName = $dialog->ask($output, 'Please provide the server name : ', null);
             } while (!$serverName);
         }

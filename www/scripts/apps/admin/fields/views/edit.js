@@ -87,7 +87,8 @@ define([
             "click": "focusAction",
             "click .delete-field": "deleteAction",
             "blur input#tbranch": "fieldChangedAction",
-            "keyup input#tag": "tagFieldChangedAction",
+            "blur input#separator": "fieldChangedAction",
+            "blur input#tag": "tagFieldChangedAction",
             "blur input.input-label": "labelChangedAction",
             "change input[type=checkbox]": "fieldChangedAction",
             "change select": "selectionChangedAction",
@@ -194,9 +195,6 @@ define([
         _onModelChange: function() {
             AdminFieldApp.fieldListView.collection.remove(this.model, {silent: true});
             AdminFieldApp.fieldListView.collection.add(this.model);
-            var index = AdminFieldApp.fieldListView.collection.indexOf(this.model);
-
-            this._selectModelView(index);
 
             AdminFieldApp.saveView.updateStateButton();
         },
@@ -213,7 +211,9 @@ define([
             $('.lng-label', this.$el).removeClass("select");
             curLabel.closest(".lng-label").addClass("select");
             $('.input-label', this.$el).hide();
-            $(curLabel.attr('href'), this.$el).show();
+            var href = curLabel.attr('href');
+
+            $("#" + href.split("#").pop(), this.$el).show();
         }
     }));
 
