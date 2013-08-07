@@ -71,9 +71,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             ->method('deliver')
             ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewOrder'), $this->equalTo(null));
 
-        return new set_order(self::$DI['app'], \set_order::create(
-                self::$DI['app'], new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$DI['user_alt2'], 'I need this photos', new \DateTime('+10 minutes')
-        ));
+        return $this->createOneOrder('I need this pictures');
     }
 
     public function testGet_creation_date()
