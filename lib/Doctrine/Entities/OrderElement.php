@@ -189,10 +189,6 @@ class OrderElement
     {
         return $this->record_id;
     }
-    /**
-     * @var \Entities\Order
-     */
-    private $order;
 
     /**
      * Returns a record from the element's base_id and record_id
