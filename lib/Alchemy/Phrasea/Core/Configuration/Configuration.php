@@ -231,6 +231,7 @@ class Configuration implements ConfigurationInterface
             }
         }
 
+        unlink($tmpFile);
         throw new RuntimeException(sprintf('Unable to write %s', $file));
     }
 
