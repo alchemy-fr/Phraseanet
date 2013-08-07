@@ -238,8 +238,29 @@
     {% endif %}
 </div>
 
+{# Invalid file type modal shown when uploaded logo file is invalid #}
+<div id="invalid-modal" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>{% trans %}Invalid file type{% endtrans %}</h3>
+    </div>
+    <div class="modal-body">
+        <p>
+            {% set supported_file_types = ['jpg', 'jpeg', 'pjpg', 'gif', 'png']|join(' | ') %}
+            {% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+    </div>
+</div>
+
 <script type="text/javascript">
     $(document).ready(function(){
+        $('#invalid-modal').modal({
+            "show": false
+        });
+
         //add admins
         $( ".admin_adder" ).autocomplete({
             source: "/admin/users/typeahead/search/?have_not_right[]=order_master&on_base[]={{ bas_id }}",
@@ -330,9 +351,7 @@
                 add: function(e, data) {
                     if (typeof data.files[0].type !== "undefined") {
                         if( ! /(\.|\/)(png|jpeg|jpg|pjpg|gif)$/i.test(data.files[0].type)) {
-                            {% set supported_file_types = ['jpg', 'jpeg', 'pjpg', 'gif', 'png']|join(' | ') %}
-                            alert("{% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}");
-
+                            $('#invalid-modal').modal('toggle');
                             return false;
                         }
                     }

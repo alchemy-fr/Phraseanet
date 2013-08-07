@@ -94,7 +94,7 @@ class Install extends Command
         $abConn = $this->getABConn($input, $output, $dialog);
         list($dbConn, $template) = $this->getDBConn($input, $output, $abConn, $dialog);
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
-        $dataPath = $this->getDataPath($input, $output,$dialog);
+        $dataPath = $this->getDataPath($input, $output, $dialog);
         $serverName = $this->getServerName($input, $output, $dialog);
         $indexer = $this->getindexer($input, $output);
 

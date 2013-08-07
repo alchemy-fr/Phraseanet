@@ -658,12 +658,10 @@ class task_period_cindexer extends task_abstract
      */
     public static function getDefaultSettings(Configuration $config, array $params = array())
     {
-        $binaries = $config['binaries'];
         $database = $config['main']['database'];
 
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<binpath>"
-            . (array_key_exists('phraseanet_indexer', $binaries) ? str_replace('/phraseanet_indexer', '', $binaries['phraseanet_indexer']) : '')
-            . "</binpath><host>" . $database['host'] . "</host><port>"
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n"
+            ."<host>" . $database['host'] . "</host><port>"
             . $database['port'] . "</port><base>"
             . $database['dbname'] . "</base><user>"
             . $database['user'] . "</user><password>"
