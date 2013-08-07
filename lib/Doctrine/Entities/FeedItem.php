@@ -19,7 +19,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Table(name="FeedItems", uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={"entry_id","sbas_id","record_id"})})
  * @ORM\Entity(repositoryClass="Repositories\FeedItemRepository")
- * @HasLifecycleCallbacks
+ * @ORM\HasLifecycleCallbacks
  */
 class FeedItem
 {
