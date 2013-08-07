@@ -871,6 +871,7 @@ class Databox implements ControllerProviderInterface
     {
         $msg = _('An error occurred');
         $success = false;
+        $taskCreated = false;
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
@@ -879,11 +880,17 @@ class Databox implements ControllerProviderInterface
                 foreach ($databox->get_collections() as $collection) {
                     if ($collection->get_record_amount() <= 500) {
                         $collection->empty_collection(500);
-                        $msg = _('Base empty successful');
+                        if (false === $taskCreated) {
+                            $msg = _('Base empty successful');
+                        }
                     } else {
                         $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
                         \task_period_emptyColl::create($app, $settings);
-                        $msg = _('A task has been creted, please run it to complete empty collection');
+
+                        if (false === $taskCreated) {
+                            $msg = _('A task has been created, please run it to complete empty collection');
+                            $taskCreated = true;
+                        }
                     }
                 }
             } else  {

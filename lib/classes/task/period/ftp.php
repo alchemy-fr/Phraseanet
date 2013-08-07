@@ -13,7 +13,6 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
 use Alchemy\Phrasea\Notification\Receiver;
 
-
 class task_period_ftp extends task_appboxAbstract
 {
     protected $proxy;
@@ -706,7 +705,6 @@ class task_period_ftp extends task_appboxAbstract
 
         return $this;
     }
-
 
     /**
      * @param array $params
