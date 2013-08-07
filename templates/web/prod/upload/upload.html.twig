@@ -386,7 +386,8 @@ $(document).ready(function () {
         //get form datas attached to the file
         data.formData = $.extend(
             data.context.find('input, select').serializeArray(),
-            UploaderManager.getSettingsBox().find('.collection-status:visible input, select').serializeArray()
+            $("input", $('.collection-status:visible', UploaderManager.getSettingsBox())).serializeArray(),
+            $("select", UploaderManager.getSettingsBox()).serializeArray()
         );
 
         //remove current context
