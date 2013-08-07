@@ -16,7 +16,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
         $app = new Application('test');
 
-        $task = \task_period_archive::create($app, 'task_period_archive');
+        $task = \task_period_archive::create($app);
 
         $logger = new \Monolog\Logger('test');
         $logger->pushHandler(new \Monolog\Handler\NullHandler());

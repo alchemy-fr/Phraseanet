@@ -194,7 +194,7 @@
     <div class="tabs">
         <ul>
             {% for subdefgroup, subdeflist in subdefs %}
-            <li><a href="#{{subdefgroup}}">{{subdefgroup}}</a></li>
+            <li><a class="no-ajax" href="#{{subdefgroup}}">{{subdefgroup}}</a></li>
             {% endfor %}
         </ul>
 
@@ -295,9 +295,12 @@
                                         {% if option.getStep() is not empty %}step : {{ option.getStep() }},{% endif %}
                                         slide: function( event, ui ) {
                                             $( "#slidervalue{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}{{ option.getName() }}" ).val( ui.value );
+                                        },
+                                        create: function (event, ui) {
+                                            {# add no-ajax class to slider link to prevent page load in IE7 #}
+                                            $("a.ui-slider-handle", event.target).addClass("no-ajax");
                                         }
-
-                                        });
+                                    });
                                     </script>
                                 {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
                                     <select name="{{varname}}">

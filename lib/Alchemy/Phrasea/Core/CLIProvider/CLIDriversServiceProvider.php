@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Command\Developer\Utils\BowerDriver;
 use Alchemy\Phrasea\Command\Developer\Utils\UglifyJsDriver;
 use Alchemy\Phrasea\Command\Developer\Utils\ComposerDriver;
 use Alchemy\Phrasea\Command\Developer\Utils\RecessDriver;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Process\ExecutableFinder;

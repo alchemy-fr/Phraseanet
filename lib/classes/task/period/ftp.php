@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -703,5 +704,21 @@ class task_period_ftp extends task_appboxAbstract
         }
 
         return $this;
+    }
+
+    /**
+     * @param array $params
+     */
+    public static function getDefaultSettings(Configuration $config, array $params = array())
+    {
+        $period = isset($params['period']) ? $params['period'] : self::MINPERIOD;
+
+        return sprintf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+            <tasksettings>
+                <proxy></proxy>
+                <proxyport></proxyport>
+                <period>%s</period>
+                <syslog></syslog>
+            </tasksettings>", min(max($period, self::MINPERIOD), self::MAXPERIOD));
     }
 }

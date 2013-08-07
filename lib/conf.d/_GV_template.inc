@@ -1,6 +1,7 @@
 <?php
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 return call_user_func_array(function(Application $app) {
 
@@ -9,15 +10,26 @@ return call_user_func_array(function(Application $app) {
     $youtube_console_url = '<a href="https://code.google.com/apis/console/" target="_blank">https://code.google.com/apis/console/</a>';
     $dashboard_youtube = '<a href="https://code.google.com/apis/youtube/dashboard/" target="_blank">https://code.google.com/apis/youtube/dashboard/</a>';
     $create_api_flickr = '<a href="https://secure.flickr.com/services/apps/create/" target="_blank">https://secure.flickr.com/services/apps/create/</a>';
-
-    if ($app['phraseanet.configuration-tester']->isUpToDate()) {
-        $youtube_callback = $app->url('prod_bridge_callback', array('api_name' => 'youtube'));
-        $flickr_callback = $app->url('prod_bridge_callback', array('api_name' => 'flickr'));
-        $dailymotion_callback = $app->url('prod_bridge_callback', array('api_name' => 'dailymotion'));
-    } else {
-        $youtube_callback = $flickr_callback = $dailymotion_callback = null;
-    }
     $create_api_dailymotion = '<a href="http://www.dailymotion.com/profile/developer" target="_blank">http://www.dailymotion.com/profile/developer</a>';
+    
+    try {
+        $youtube_callback = $app->url('prod_bridge_callback', array('api_name' => 'youtube'));
+    } catch (RouteNotFoundException $e) {
+        $youtube_callback = null;
+    }
+
+    try {
+        $flickr_callback = $app->url('prod_bridge_callback', array('api_name' => 'flickr'));
+    } catch (RouteNotFoundException $e) {
+        $flickr_callback = null;
+    }
+
+    try {
+        $dailymotion_callback = $app->url('prod_bridge_callback', array('api_name' => 'dailymotion'));
+    } catch (RouteNotFoundException $e) {
+        $dailymotion_callback = null;
+    }
+
     $recaptchaDoc = '<a href="http://www.google.com/recaptcha">http://www.google.com/recaptcha</a>';
     $imagineDoc = '<a href="http://imagine.readthedocs.org/en/latest/usage/introduction.html">http://imagine.readthedocs.org/en/latest/usage/introduction.html</a>';
 
