@@ -30,7 +30,7 @@
         "neutron/recaptcha"                : "~0.1.0",
         "neutron/temporary-filesystem"     : "~2.0",
         "php-xpdf/php-xpdf"                : "~0.2.1",
-        "phpexiftool/phpexiftool"          : "~0.2, >=0.2.2",
+        "phpexiftool/phpexiftool"          : "~0.3",
         "silex/silex"                      : "~1.0.0",
         "silex/web-profiler"               : "~1.0.0",
         "swiftmailer/swiftmailer"          : "~4.3.0",
