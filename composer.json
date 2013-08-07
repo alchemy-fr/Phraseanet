@@ -28,7 +28,7 @@
         "neutron/silex-filesystem-provider": "~1.0",
         "neutron/sphinxsearch-api"         : "~2.0.6",
         "neutron/recaptcha"                : "~0.1.0",
-        "neutron/temporary-filesystem"     : "~2.0",
+        "neutron/temporary-filesystem"     : "~2.1",
         "php-xpdf/php-xpdf"                : "~0.2.1",
         "phpexiftool/phpexiftool"          : "~0.3",
         "silex/silex"                      : "~1.0.0",

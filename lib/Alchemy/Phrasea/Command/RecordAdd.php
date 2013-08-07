@@ -81,7 +81,7 @@ class RecordAdd extends Command
 
         if ($input->getOption('in-place') !== '1') {
             $originalName = pathinfo($file, PATHINFO_BASENAME);
-            $tempfile = tempnam(sys_get_temp_dir(), 'addrecord') . '.' . pathinfo($file, PATHINFO_EXTENSION);
+            $tempfile = $this->container['temporary-filesystem']->createTemporaryFile('add_record', null, pathinfo($file, PATHINFO_EXTENSION));
             $this->container['monolog']->addInfo(sprintf('copy file from `%s` to temporary `%s`', $file, $tempfile));
             $this->container['filesystem']->copy($file, $tempfile, true);
             $file = $tempfile;
@@ -97,6 +97,7 @@ class RecordAdd extends Command
         if ($input->getOption('force')) {
             switch ($input->getOption('force')) {
                 default:
+                    $this->container['temporary-filesystem']->clean('add_record');
                     throw new \InvalidArgumentException(sprintf('`%s` is not a valid force option', $input->getOption('force')));
                     break;
                 case 'record':
@@ -130,7 +131,7 @@ class RecordAdd extends Command
 
         if ($tempfile) {
             $this->container['monolog']->addInfo(sprintf('Remove temporary file `%s`', $tempfile));
-            $this->container['filesystem']->remove($tempfile);
+            $this->container['temporary-filesystem']->clean('add_record');
         }
 
         return;
