@@ -3,8 +3,8 @@
 {% import "common/macros.html.twig" as macro %}
 {% import "login/common/macros.html.twig" as auth_macro %}
 
-{% block title %}
-    {{ instance_title }}
+{% block main_title %}
+    {{ instance_title|default('Phraseanet') }}
 {% endblock %}
 
 {% block header_rss %}

@@ -29,7 +29,7 @@ label {
 }
 
 legend {
-    #333333;
+    color: #333333;
     width: auto;
     border: none;
 }
@@ -501,49 +501,16 @@ span.ww_winTitle {
 
 /******* FORMULAIRE DE RECHERCHE **********************************************/
 
-#searchForm > button.btn {
-    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+#searchForm .input-append .btn {
+    border:none;
 }
 
-#searchForm > button.btn-inverse {
-    width: 110px;
+#searchForm .input-append a.btn {
+    height: 22px;
+}
+
+#searchForm .input-append button.btn {
     height: 30px;
-    margin-left: 4px;
-    background-color: #D6D6D6;
-    *background-color: #D6D6D6;
-    background-image: -ms-linear-gradient(top, #FFFFFF, #D6D6D6);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#D6D6D6));
-    background-image: -webkit-linear-gradient(top, #FFFFFF, #D6D6D6);
-    background-image: -o-linear-gradient(top, #FFFFFF, #D6D6D6);
-    background-image: linear-gradient(top, #FFFFFF, #D6D6D6);
-    background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
-    border-color: #D6D6D6 #D6D6D6 #bfbfbf;
-    border-bottom-color: #b3b3b3;
-    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
-    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    *border: 1px solid #666666;
-    text-shadow: none;
-    color: #777777;
-}
-
-#searchForm > button.btn-inverse:hover {
-    background-color: #D6D6D6;
-    *background-color: #D6D6D6;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    color: #FFFFFF;
-}
-
-#searchForm label {
-    color: #333333;
-}
-
-#searchForm #recordtype_sel {
-    margin-left: 10px;
 }
 
 /******* PRESENTATION DE MINIATURES *******************************************/

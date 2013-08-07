@@ -3518,11 +3518,9 @@
           <field>
             <name>usr_sexe</name>
             <type>int(1) unsigned</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-
-
-            <default>0</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -4013,7 +4011,7 @@
           <default>
             <data key="usr_id">null</data>
             <data key="ldap_created">2</data>
-            <data key="usr_sexe">0</data>
+            <data key="usr_sexe">null</data>
             <data key="usr_login">autoregister</data>
             <data key="usr_password">autoregister</data>
             <data key="usr_creationdate">NOW()</data>
@@ -4032,7 +4030,7 @@
           <default>
             <data key="usr_id">null</data>
             <data key="ldap_created">2</data>
-            <data key="usr_sexe">0</data>
+            <data key="usr_sexe">null</data>
             <data key="usr_login">invite</data>
             <data key="usr_password">invite</data>
             <data key="usr_creationdate">NOW()</data>

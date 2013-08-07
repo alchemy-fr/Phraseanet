@@ -81,7 +81,7 @@ img {
     overflow: hidden;
 }
 
-.record_display_box .container {
+.record_display_box .lightbox_container {
     top: 30px;
     overflow: hidden;
 }
@@ -299,11 +299,11 @@ img {
     left: auto;
 }
 
-#record_compare .header, #record_compare .container {
+#record_compare .header, #record_compare .lightbox_container {
     left: 5px;
 }
 
-#record_wrapper.comparison #record_main .header, #record_wrapper.comparison #record_main .container {
+#record_wrapper.comparison #record_main .header, #record_wrapper.comparison #record_main .lightbox_container {
     right: 5px;
 }
 
