@@ -56,6 +56,11 @@ class Order
     private $elements;
 
     /**
+     * @ORM\OneToOne(targetEntity="Basket", inversedBy="order", cascade={"ALL"})
+     */
+    private $basket;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -267,4 +272,28 @@ class Order
     {
         return $this->order_usage;
     }
+
+    /**
+     * Set basket
+     *
+     * @param  \Entities\Basket $basket
+     * @return Order
+     */
+    public function setBasket(\Entities\Basket $basket = null)
+    {
+        $this->basket = $basket;
+
+        return $this;
+    }
+
+    /**
+     * Get basket
+     *
+     * @return \Entities\Basket
+     */
+    public function getBasket()
+    {
+        return $this->basket;
+    }
+
 }
