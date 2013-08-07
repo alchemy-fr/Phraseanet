@@ -1673,16 +1673,16 @@
         },
         {
             "name": "neutron/sphinxsearch-api",
-            "version": "2.0.6",
+            "version": "2.0.8",
             "source": {
                 "type": "git",
-                "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client",
-                "reference": "2.0.6"
+                "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client.git",
+                "reference": "2.0.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client/zipball/2.0.6",
-                "reference": "2.0.6",
+                "url": "https://api.github.com/repos/romainneutron/Sphinx-Search-API-PHP-Client/zipball/2.0.8",
+                "reference": "2.0.8",
                 "shasum": ""
             },
             "require": {
@@ -1711,7 +1711,7 @@
                 "api",
                 "search-engine"
             ],
-            "time": "2012-10-23 02:05:12"
+            "time": "2013-08-07 18:06:02"
         },
         {
             "name": "neutron/temporary-filesystem",
