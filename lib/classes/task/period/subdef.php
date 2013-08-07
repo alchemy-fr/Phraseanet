@@ -10,6 +10,8 @@
 
 use Alchemy\Phrasea\Core\Configuration\Configuration;
 
+use MediaAlchemyst\Transmuter\Image2Image;
+
 class task_period_subdef extends task_databoxAbstract
 {
     const MINMEGS = 20;
@@ -31,6 +33,8 @@ class task_period_subdef extends task_databoxAbstract
      * @var <type>
      */
     protected $record_buffer_size;
+
+    protected $thumbnailExtraction;
 
     /**
      * Return about text
@@ -54,6 +58,13 @@ class task_period_subdef extends task_databoxAbstract
         return(_('task::subdef:creation des sous definitions'));
     }
 
+    protected function loadSettings(SimpleXMLElement $sx_task_settings)
+    {
+        $this->thumbnailExtraction = (Boolean) trim($sx_task_settings->embedded);
+
+        parent::loadSettings($sx_task_settings);
+    }
+
     /**
      * must return the xml (text) version of the form
      *
@@ -64,14 +75,14 @@ class task_period_subdef extends task_databoxAbstract
     {
         $request = http_request::getInstance();
 
-        $parm2 = $request->get_parms('period', 'flush', 'maxrecs', 'maxmegs');
+        $parm2 = $request->get_parms('period', 'flush', 'maxrecs', 'maxmegs', 'embedded');
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         if (@$dom->loadXML($oldxml)) {
             $xmlchanged = false;
 
-            foreach (array('str:period', 'str:flush', 'str:maxrecs', 'str:maxmegs') as $pname) {
+            foreach (array('str:period', 'str:flush', 'str:maxrecs', 'str:maxmegs', 'boo:embedded') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
@@ -137,6 +148,7 @@ class task_period_subdef extends task_databoxAbstract
             <?php echo $form ?>.flush.value   = "<?php echo p4string::MakeString($sxml->flush, "js", '"') ?>";
             <?php echo $form ?>.maxrecs.value = "<?php echo p4string::MakeString($sxml->maxrecs, "js", '"') ?>";
             <?php echo $form ?>.maxmegs.value = "<?php echo p4string::MakeString($sxml->maxmegs, "js", '"') ?>";
+            <?php echo $form ?>.embedded.value = <?php echo (Boolean) trim($sxml->embedded); ?>;
             </script>
 
             <?php
@@ -168,6 +180,7 @@ class task_period_subdef extends task_databoxAbstract
                         flush.value   = xml.find("flush").text();
                         maxrecs.value = xml.find("maxrecs").text();
                         maxmegs.value = xml.find("maxmegs").text();
+                        embedded.checked = !!parseInt(xml.find("embedded").text());
                     }
                 }
             }
@@ -235,6 +248,12 @@ class task_period_subdef extends task_databoxAbstract
                     <span class="help-inline">Mo</span>
                 </div>
             </div>
+            <div class="control-group">
+                <label class="control-label"><?php echo _('Try to extract embedded thumbnails') ?></label>
+                <div class="controls">
+                    <input class="formElem input-mini" type="checkbox" name="embedded" value="1">
+                </div>
+            </div>
         </form>
         <?php
 
@@ -243,6 +262,8 @@ class task_period_subdef extends task_databoxAbstract
 
     public function retrieveSbasContent(databox $databox)
     {
+        Image2Image::$lookForEmbeddedPreview = $this->thumbnailExtraction;
+
         $connbas = $databox->get_connection();
 
         $sql = 'SELECT coll_id, record_id
@@ -347,6 +368,7 @@ class task_period_subdef extends task_databoxAbstract
                 <flush>%s</flush>
                 <maxrecs>%s</maxrecs>
                 <maxmegs>%s</maxmegs>
+                <embedded>0</embedded>
             </tasksettings>',
             min(max($period, self::MINPERIOD), self::MAXPERIOD),
             min(max($flush, self::MINFLUSH), self::MAXFLUSH),
