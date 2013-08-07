@@ -217,11 +217,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
             $this->assertEquals($value, $response->headers->get($name));
         }
 
-<<<<<<< HEAD
         $this->assertEquals(rtrim(self::$DI['app']['phraseanet.configuration']['main']['servername'], '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
-=======
-        $this->assertEquals($response->headers->get("Link"), "/permalink/v1/1/". self::$DI['record_24']->get_record_id()."/caption/?token=".$token);
->>>>>>> Rebased, fixed minor bugs
         $this->assertEquals(200, $response->getStatusCode());
     }
 

@@ -59,7 +59,7 @@ class FeedItem
 
     /**
      * @ORM\ManyToOne(targetEntity="FeedEntry", inversedBy="items", cascade={"persist"})
-     * @ORM\JoinColumn(name="items", referencedColumnName="id")
+     * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
      */
     private $entry;
 
@@ -212,7 +212,7 @@ class FeedItem
     }
 
     /**
-     * @PrePersist
+     * @ORM\PrePersist
      */
     public function setLastInFeedItem()
     {
