@@ -4,8 +4,15 @@ namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
 use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Annotations\FileCacheReader;
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -32,13 +39,28 @@ class RegenerateSqliteDb extends Command
             $dbParams = $this->container['phraseanet.configuration']->getTestConnectionParameters();
             $dbParams['path'] = $source;
 
-            $config = Setup::createYAMLMetadataConfiguration(array(__DIR__ . '/../../../../conf.d/Doctrine'), true);
-            $em = EntityManager::create($dbParams, $config);
+            $config = new ORMConfiguration();
+            AnnotationRegistry::registerFile(
+                $this->container['root.path'].'/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
+            );
+
+            $annotationReader = new AnnotationReader();
+            $driverChain = new DriverChain();
+            $annotationDriver = new AnnotationDriver(
+                $annotationReader,
+                array($this->container['root.path'].'/lib/Doctrine/Entities')
+            );
+            $driverChain->addDriver($annotationDriver, 'Entities');
+
+            $config->setAutoGenerateProxyClasses(true);
+            $config->setMetadataDriverImpl($driverChain);
+            $config->setProxyDir($this->container['root.path'] . '/lib/Doctrine/Proxies');
+            $config->setProxyNamespace('Proxies');
+
+            $em = EntityManager::create($dbParams, $config, new EventManager());
 
             $metadatas = $em->getMetadataFactory()->getAllMetadata();
-
             $schemaTool = new SchemaTool($em);
-
             $schemaTool->createSchema($metadatas);
         } catch (\Exception $e) {
             $fs->rename($target, $source);
