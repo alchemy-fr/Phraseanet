@@ -34,7 +34,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
         $app = new Application('test');
         $appbox = $app['phraseanet.appbox'];
-        self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 19306, '127.0.0.1', 19308);
+        self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 9312, '127.0.0.1', 9306);
 
         self::$config = tempnam(sys_get_temp_dir(), 'tmp_sphinx.conf');
         $configuration = self::$searchEngine->getConfigurationPanel()->getConfiguration();
@@ -63,7 +63,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         self::$searchd = new Process($searchd . ' -c ' . self::$config);
         self::$searchd->run();
 
-        self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 19306, '127.0.0.1', 19308);
+        self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 9312, '127.0.0.1', 9306);
     }
 
     public function setUp()
