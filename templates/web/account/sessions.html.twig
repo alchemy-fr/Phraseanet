@@ -9,6 +9,9 @@
 {% block content_account %}
     <div class="row-fluid">
         <div class="span12">
+            <div class="well well-small alert-info">
+                {% trans %}If you notice any unfamiliar devices or locations, click 'End Activity' to end the session.{% endtrans %}
+            </div>
             <table class="table table-striped">
                 <thead>
                      <tr>
@@ -25,21 +28,15 @@
                         <th>
                             {% trans 'Browser' %}
                         </th>
-                        <th>
-                            {% trans 'ecran' %}
-                        </th>
-                        <th>
-                            {% trans 'Session persistante' %}
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for session in sessions %}
                         {% set row = session['session'] %}
-                        <tr>
+                        <tr id="row-{{ row.Id() }}">
                             <td>
                                 {% if app['session'].get('phrasea_session_id') != row.Id() %}
-                                    <img src="/skins/icons/delete.png"/>
+                                    <a href="{{ path('delete_session', {"id": row.Id()}) }}" title="{% trans %}End Activity{% endtrans %}" class="btn btn-inverse btn-small delete-session"><i class="icon-remove"> {% trans %}End Activity{% endtrans %}</i></a>
                                 {% endif %}
                             </td>
                             <td>
@@ -55,16 +52,56 @@
                             <td>
                                 {{ row.getBrowserName() }} {{ row.getBrowserVersion() }}
                             </td>
-                            <td>
-                                {{ row.getScreenWidth() }} x {{ row.getScreenHeight() }}
-                            </td>
-                            <td>
-                                {% if row.getToken %}{{ yes }}{% endif %}
-                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+
+    <div id="modal-delete-confirm" class="modal hide">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3>{% trans %}End session activity{% endtrans %}</h3>
+        </div>
+        <div class="modal-body">
+            <p>{% trans %}Do you really want to end the activity of this session?{% endtrans %}</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">{% trans %}no{% endtrans %}</button>
+            <a href="#" class="btn btn-info confirm-delete">{% trans %}yes{% endtrans %}</a>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var modal = $("#modal-delete-confirm").modal({
+                "show" : false
+            });
+
+            $("a.delete-session").bind("click", function(e) {
+                e.preventDefault();
+                modal
+                    .data("delete-url", $(this).prop("href"))
+                    .modal("toggle");
+
+                return false;
+            });
+
+            $("a.confirm-delete").on("click", function(e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: modal.data("delete-url"),
+                    dataType: "json",
+                    success: function(data){
+                        if (data.success) {
+                            $("#row-" +  data.session_id).closest("tr").remove();
+                        }
+                        modal.modal("toggle");
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
