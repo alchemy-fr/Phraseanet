@@ -100,9 +100,7 @@ try {
     $cli->command(new XSendFileConfigurationDumper());
     $cli->command(new XSendFileMappingGenerator());
 
-    call_user_func(function ($cli) {
-        require $cli['plugins.directory'] . '/commands.php';
-    }, $cli);
+    $cli->loadPlugins();
 
     $result_code = is_int($cli->run()) ? : 1;
 } catch (\Exception $e) {

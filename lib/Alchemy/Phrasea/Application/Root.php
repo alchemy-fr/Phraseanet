@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 return call_user_func(function($environment = PhraseaApplication::ENV_PROD) {
 
     $app = new PhraseaApplication($environment);
+    $app->loadPlugins();
 
     $app['exception_handler'] = $app->share(function ($app) {
         return new PhraseaExceptionHandlerSubscriber($app['phraseanet.exception_handler']);

@@ -90,4 +90,16 @@ class CLI extends Application
         $command->setContainer($this);
         $this['console']->add($command);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function loadPlugins()
+    {
+        parent::loadPlugins();
+
+        call_user_func(function ($cli) {
+            require $cli['plugins.directory'] . '/commands.php';
+        }, $this);
+    }
 }
