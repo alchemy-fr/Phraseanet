@@ -10,6 +10,7 @@
 .DS_Store
 /vendor
 /plugins
+/node_modules
 composer.phar
 behat.yml
 /datas

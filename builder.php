@@ -92,6 +92,7 @@ $finder
     ->name('sinon')
     ->name('sinon-chai')
     ->name('js-fixtures')
+    ->name('node_modules')
     ->ignoreDotFiles(false)
     ->ignoreVCS(false)
     ->in(__DIR__);
