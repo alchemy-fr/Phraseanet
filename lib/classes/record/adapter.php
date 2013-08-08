@@ -1036,11 +1036,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $this->rebuild_subdefs();
         }
 
-        $type = $name == 'document' ? 'HD' : $name;
-
-        $this->app['phraseanet.logger']($this->get_databox())
-            ->log($this, Session_Logger::EVENT_SUBSTITUTE, $type, '');
-
         return $this;
     }
 
