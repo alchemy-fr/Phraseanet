@@ -138,28 +138,33 @@
     </div>
 {% endmacro %}
 
+{% macro alert(type, message) %}
+    <div class="alert alert-{{ type }}">
+        {% set sign = "icon-exclamation-sign" %}
+
+        {% if type == "error" %}
+             {% set sign = "icon-warning-sign" %}
+        {% elseif type == "success" %}
+             {% set sign = "icon-ok-sign" %}
+        {% elseif type == "info" %}
+             {% set sign = "icon-info-sign" %}
+        {% endif %}
+
+        <table>
+            <tr>
+                <td class="alert-block-logo"><i class="icon-2x icon-white {{ sign }}"></i></td>
+                <td class="alert-block-content">{{ message }}</td>
+                <td class="alert-block-close"><a href="#"><b>&times;</b></a></td>
+            </tr>
+        </table>
+    </div>
+{% endmacro %}
+
 {% macro flashes() %}
+    {% import _self as login %}
     {% for type in app.getAvailableFlashTypes %}
         {% for message in app.getFlash(type) %}
-            <div class="alert alert-{{ type }}">
-                {% set sign = "icon-exclamation-sign" %}
-
-                {% if type == "error" %}
-                     {% set sign = "icon-warning-sign" %}
-                {% elseif type == "success" %}
-                     {% set sign = "icon-ok-sign" %}
-                {% elseif type == "info" %}
-                     {% set sign = "icon-info-sign" %}
-                {% endif %}
-
-                <table>
-                    <tr>
-                        <td class="alert-block-logo"><i class="icon-2x icon-white {{ sign }}"></i></td>
-                        <td class="alert-block-content">{{ message }}</td>
-                        <td class="alert-block-close"><a href="#"><b>&times;</b></a></td>
-                    </tr>
-                </table>
-            </div>
+            {{ login.alert(type, message) }}
         {% endfor %}
     {% endfor %}
 {% endmacro %}
