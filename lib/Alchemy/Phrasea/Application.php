@@ -416,9 +416,9 @@ class Application extends SilexApplication
 
             if (is_dir($dir)) {
                 return realpath($dir);
-            } else {
-                return $dir;
             }
+
+            return $dir;
         });
     }
 
