@@ -203,7 +203,7 @@ class Feed implements ControllerProviderInterface
 
             return $app->json($datas);
         })
-            ->bind('feed_entry_delete')
+            ->bind('prod_feeds_entry_delete')
             ->assert('id', '\d+')->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');
             });
