@@ -251,9 +251,8 @@ class Upload implements ControllerProviderInterface
                     try {
                         $dataUri = DataURI\Parser::parse($b64Image);
 
-                        $fileName = sprintf('%s/tmp/%s.png', $app['root.path'], sprintf('base_64_thumb_%s', $id));
+                        $fileName = $app['temporary-filesystem']->createTemporaryFile('base_64_thumb', null, "png");
                         file_put_contents($fileName, $dataUri->getData());
-
                         $media = $app['mediavorus']->guess($fileName);
                         $elementCreated->substitute_subdef('thumbnail', $media, $app);
                         $app['phraseanet.logger']($elementCreated->get_databox())->log(
@@ -264,7 +263,7 @@ class Upload implements ControllerProviderInterface
                         );
 
                         unset($media);
-                        $app['filesystem']->remove($fileName);
+                        $app['temporary-filesystem']->clean('base_64_thumb');
                     } catch (DataUriException $e) {
 
                     }
