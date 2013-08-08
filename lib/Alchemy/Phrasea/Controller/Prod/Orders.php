@@ -341,7 +341,7 @@ class Orders implements ControllerProviderInterface
 
                 $orderElement->setOrderMasterId($app['authentication']->getUser()->get_id());
                 $orderElement->setDeny(false);
-                $orderElement->setBasket($basket);
+                $orderElement->getOrder()->setBasket($basket);
 
                 $basket->addElement($basketElement);
 
