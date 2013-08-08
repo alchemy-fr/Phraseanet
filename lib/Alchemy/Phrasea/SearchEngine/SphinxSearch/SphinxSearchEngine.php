@@ -571,6 +571,8 @@ class SphinxSearchEngine implements SearchEngineInterface
      */
     public static function create(Application $app, array $options = array())
     {
+        $options = ConfigurationPanel::populateConfiguration($options);
+
         return new static($app, $options['host'], $options['port'], $options['rt_host'], $options['rt_port']);
     }
 

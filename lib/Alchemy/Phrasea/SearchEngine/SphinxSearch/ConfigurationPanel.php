@@ -88,31 +88,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
     {
         $configuration = isset($this->conf['main']['search-engine']['options']) ? $this->conf['main']['search-engine']['options'] : array();
 
-        if (!isset($configuration['charset_tables'])) {
-            $configuration['charset_tables'] = array("common", "latin");
-        }
-
-        if (!isset($configuration['date_fields'])) {
-            $configuration['date_fields'] = array();
-        }
-
-        if (!isset($configuration['host'])) {
-            $configuration['host'] = '127.0.0.1';
-        }
-
-        if (!isset($configuration['port'])) {
-            $configuration['port'] = 9306;
-        }
-
-        if (!isset($configuration['rt_host'])) {
-            $configuration['rt_host'] = '127.0.0.1';
-        }
-
-        if (!isset($configuration['rt_port'])) {
-            $configuration['rt_port'] = 9308;
-        }
-
-        return $configuration;
+        return self::populateConfiguration($configuration);
     }
 
     /**
@@ -165,11 +141,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
      */
     public function generateSphinxConf(array $databoxes, array $configuration)
     {
-        $defaults = array(
-            'charset_tables' => array(),
-        );
-
-        $options = array_merge($defaults, $configuration);
+        $options = self::populateConfiguration($configuration);
 
         $options['charset_tables'] = array_unique($options['charset_tables']);
 
@@ -657,8 +629,8 @@ searchd
   # listen                = 192.168.0.1:9312
   # listen                = 9312
   # listen                = /var/run/searchd.sock
-  listen                  = 127.0.0.1:19306
-  listen                  = 127.0.0.1:19308:mysql41
+  listen                  = '.$options['host'].':'.$options['port'].'
+  listen                  = '.$options['rt_host'].':'.$options['rt_port'].':mysql41
 
   # log file, searchd run info is logged here
   # optional, default is \'searchd.log\'
@@ -755,5 +727,24 @@ searchd
 ';
 
         return $conf;
+    }
+
+    /**
+     * Populates a configuration with the default options, if missing.
+     *
+     * @param array $configuration
+     *
+     * @return array
+     */
+    public static function populateConfiguration(array $configuration)
+    {
+        return array_replace(array(
+            'charset_tables' => array("common", "latin"),
+            'date_fields'    => array(),
+            'host'           => '127.0.0.1',
+            'port'           => 9312,
+            'rt_host'        => '127.0.0.1',
+            'rt_port'        => 9306,
+        ), $configuration);
     }
 }

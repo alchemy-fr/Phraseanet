@@ -204,8 +204,8 @@ class Query implements ControllerProviderInterface
             $propals = $result->getSuggestions();
             if (count($propals) > 0) {
                 foreach ($propals as $prop_array) {
-                    if ($prop_array['value'] !== $query && $prop_array['hits'] > $result->getTotal()) {
-                        $prop = $prop_array['value'];
+                    if ($prop_array->getSuggestion() !== $query && $prop_array->getHits() > $result->getTotal()) {
+                        $prop = $prop_array->getSuggestion();
                         break;
                     }
                 }
