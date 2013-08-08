@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
+use DataURI;
+use DataURI\Exception\Exception as DataUriException;
 use Entities\LazaretSession;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -243,6 +245,30 @@ class Upload implements ControllerProviderInterface
                 $element = 'record';
                 $message = _('The record was successfully created');
                 $app['phraseanet.SE']->addRecord($elementCreated);
+
+                // try to create thumbnail from data URI
+                if ('' !== $b64Image = $request->request->get('b64_image', '')) {
+                    try {
+                        $dataUri = DataURI\Parser::parse($b64Image);
+
+                        $fileName = sprintf('%s/tmp/%s.png', $app['root.path'], sprintf('base_64_thumb_%s', $id));
+                        file_put_contents($fileName, $dataUri->getData());
+
+                        $media = $app['mediavorus']->guess($fileName);
+                        $elementCreated->substitute_subdef('thumbnail', $media, $app);
+                        $app['phraseanet.logger']($elementCreated->get_databox())->log(
+                            $elementCreated,
+                            \Session_Logger::EVENT_SUBSTITUTE,
+                            'thumbnail',
+                            ''
+                        );
+
+                        unset($media);
+                        $app['filesystem']->remove($fileName);
+                    } catch (DataUriException $e) {
+
+                    }
+                }
             } else {
                 $params = array('lazaret_file' => $elementCreated);
 
