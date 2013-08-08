@@ -277,7 +277,7 @@
         <div class="PNB" id="rightFrame" style="left:auto; width:{{ w2 ~ '%' }}">
             <div id="headBlock" class="PNB" style="height: 90px; bottom: auto;">
                 <div style="margin: 15px auto; line-height: 30px; width: 580px;">
-                    <form id="searchForm" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
+                    <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <div class="input-append">
                             <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}">
                             <a href="#" class="btn btn-inverse adv_trigger adv_search_button">

@@ -46,6 +46,7 @@
                             <label class="form_label control-label" for="form_gender"><strong>{% trans "admin::compte-utilisateur sexe" %}</strong></label>
                             <div class="controls">
                                 <select name="form_gender" class="input-xlarge">
+                                    <option value=""></option>
                                     <option {% if app["authentication"].getUser().get_gender() == "0" %}selected{% endif %} value="0" >
                                         {% trans "admin::compte-utilisateur:sexe: mademoiselle" %}
                                     </option>
