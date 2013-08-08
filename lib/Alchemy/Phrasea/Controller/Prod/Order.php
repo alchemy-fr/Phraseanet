@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Controller\RecordsRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Entities\Basket;
 use Entities\BasketElement;
-use Entities\Order;
+use Entities\Order as OrderEntity;
 use Entities\OrderElement;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Orders implements ControllerProviderInterface
+class Order implements ControllerProviderInterface
 {
 
     /**
@@ -161,7 +161,7 @@ class Orders implements ControllerProviderInterface
         $query = new \User_Query($app);
 
         if (count($records) > 0) {
-            $order = new Order();
+            $order = new OrderEntity();
             $order->setUsrId($app['authentication']->getUser()->get_id());
             $order->setDeadline((null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine);
             $order->setOrderUsage($request->request->get('use', ''));

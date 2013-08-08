@@ -40,7 +40,7 @@ use Alchemy\Phrasea\Controller\Prod\Feed;
 use Alchemy\Phrasea\Controller\Prod\Language;
 use Alchemy\Phrasea\Controller\Prod\Lazaret;
 use Alchemy\Phrasea\Controller\Prod\MoveCollection;
-use Alchemy\Phrasea\Controller\Prod\Orders;
+use Alchemy\Phrasea\Controller\Prod\Order;
 use Alchemy\Phrasea\Controller\Prod\Printer;
 use Alchemy\Phrasea\Controller\Prod\Push;
 use Alchemy\Phrasea\Controller\Prod\Query;
@@ -768,7 +768,7 @@ class Application extends SilexApplication
         $this->mount('/client/baskets', new ClientBasket());
 
         $this->mount('/prod/query/', new Query());
-        $this->mount('/prod/order/', new Orders());
+        $this->mount('/prod/order/', new Order());
         $this->mount('/prod/baskets', new Basket());
         $this->mount('/prod/download', new Download());
         $this->mount('/prod/story', new Story());
