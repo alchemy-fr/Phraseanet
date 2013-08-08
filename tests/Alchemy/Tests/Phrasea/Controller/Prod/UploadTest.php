@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\Manager;
+use DataURI;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -76,8 +77,10 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
+        $data = DataUri\Data::buildFromFile(__DIR__ . '/../../../../../files/cestlafete.jpg');
         $params = array(
-            'base_id' => self::$DI['collection']->get_base_id()
+            'base_id' => self::$DI['collection']->get_base_id(),
+            'b64_image' => DataUri\Dumper::dump($data)
         );
 
         $files = array(
