@@ -490,34 +490,16 @@ span.ww_winTitle {
 
 /******* FORMULAIRE DE RECHERCHE **********************************************/
 
-#searchForm > button.btn {
-    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+#searchForm .input-append .btn {
+    border:none;
 }
 
-#searchForm > button.btn-inverse {
-    width: 110px;
+#searchForm .input-append a.btn {
+    height: 22px;
+}
+
+#searchForm .input-append button.btn {
     height: 30px;
-    margin-left: 4px;
-    *border: 1px solid #515151;
-    color: #AAAAAA;
-    font-weight: bold;
-}
-
-#searchForm > button.btn-inverse:hover {
-    color: #FFFFFF;
-}
-
-#searchForm label {
-    color: #FFFFFF;
-}
-
-#searchForm #recordtype_sel {
-    margin-left: 10px;
 }
 
 /******* PRESENTATION DE MINIATURES *******************************************/
