@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
+use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -426,7 +427,7 @@ class PhraseaEngine implements SearchEngineInterface
         }
 
         $propositions = $this->getPropositions();
-        $suggestions = $this->getSuggestions();
+        $suggestions = $this->getSuggestions($query);
 
         return new SearchEngineResult($records, $query, $row['duration'], $offset, $row['total'], $row['total'], $error, '', $suggestions, $propositions, '');
     }
@@ -436,14 +437,17 @@ class PhraseaEngine implements SearchEngineInterface
      *
      * @return ArrayCollection
      */
-    private function getSuggestions()
+    private function getSuggestions($query)
     {
-        $tsug = array();
+        $suggestions = array();
+        
         if ($this->qp && isset($this->qp['main'])) {
-            $tsug = array_values($this->qp['main']->proposals['QUERIES']);
+            $suggestions = array_map(function ($value) use ($query) {
+                return new SearchEngineSuggestion($query, $value['value'], $value['hits']);
+            }, array_values($this->qp['main']->proposals['QUERIES']));
         }
 
-        return new ArrayCollection($tsug);
+        return new ArrayCollection($suggestions);
     }
 
     /**
