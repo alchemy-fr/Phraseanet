@@ -142,7 +142,12 @@ class Tools implements ControllerProviderInterface
                         $media = $app['mediavorus']->guess($tempoFile);
 
                         $record->substitute_subdef('document', $media, $app);
-                        $app['phraseanet.logger']($record->get_databox())->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'HD', '');
+                        $app['phraseanet.logger']($record->get_databox())->log(
+                            $record,
+                            \Session_Logger::EVENT_SUBSTITUTE,
+                            'HD',
+                            ''
+                        );
 
                         if ((int) $request->request->get('ccfilename') === 1) {
                             $record->set_original_name($fileName);
@@ -195,7 +200,12 @@ class Tools implements ControllerProviderInterface
                         $media = $app['mediavorus']->guess($tempoFile);
 
                         $record->substitute_subdef('thumbnail', $media, $app);
-                        $app['phraseanet.logger']($record->get_databox())->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
+                        $app['phraseanet.logger']($record->get_databox())->log(
+                            $record,
+                            \Session_Logger::EVENT_SUBSTITUTE,
+                            'thumbnail',
+                            ''
+                        );
 
                         unlink($tempoFile);
                         rmdir($tempoDir);
