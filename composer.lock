@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "fc4798a0b0a28c7354853a650f70c071",
+    "hash": "8f2b9cc38d641ce5a30b779388b27465",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -1302,16 +1302,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.3.3",
+            "version": "0.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "0.3.3"
+                "reference": "0.3.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0.3.3",
-                "reference": "0.3.3",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/0.3.4",
+                "reference": "0.3.4",
                 "shasum": ""
             },
             "require": {
@@ -1371,7 +1371,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-08-07 10:36:16"
+            "time": "2013-08-08 10:18:56"
         },
         {
             "name": "mediavorus/mediavorus",
@@ -1755,16 +1755,16 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.3.1",
+            "version": "0.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
-                "reference": "0.3.1"
+                "reference": "0.3.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0.3.1",
-                "reference": "0.3.1",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0.3.2",
+                "reference": "0.3.2",
                 "shasum": ""
             },
             "require": {
@@ -1819,7 +1819,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-08-06 14:40:26"
+            "time": "2013-08-08 10:15:15"
         },
         {
             "name": "php-mp4box/php-mp4box",

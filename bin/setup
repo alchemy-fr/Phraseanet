@@ -19,6 +19,7 @@ namespace KonsoleKommander;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Setup\Install;
+use Alchemy\Phrasea\Command\Setup\PluginsReset;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 
@@ -60,6 +61,7 @@ try {
         $app->command(new UpgradeDBDatas('system:upgrade-datas'));
     }
 
+    $app->command(new PluginsReset());
     $app->command(new CheckEnvironment('check:system'));
     $app->command(new Install('system:install'));
 

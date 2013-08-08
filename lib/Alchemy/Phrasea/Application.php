@@ -412,9 +412,21 @@ class Application extends SilexApplication
         $guesser->register(new VideoMimeTypeGuesser());
 
         $app['plugins.directory'] = $app->share(function () {
-            return realpath(__DIR__ . '/../../../plugins');
-        });
+            $dir = __DIR__ . '/../../../plugins';
 
+            if (is_dir($dir)) {
+                return realpath($dir);
+            }
+
+            return $dir;
+        });
+    }
+
+    /**
+     * Loads Phraseanet plugins
+     */
+    public function loadPlugins()
+    {
         call_user_func(function ($app) {
             require $app['plugins.directory'] . '/services.php';
         }, $this);

@@ -46,5 +46,14 @@
                 </div>
             </div>
         </div>
-        {% block scripts %}{% endblock %}
+        {% block scripts %}
+            <script type="text/javascript">
+                // close alerts
+                $(document).on("click", ".alert .alert-block-close a", function(e){
+                    e.preventDefault();
+                    $(this).closest('.alert').alert('close');
+                    return false;
+                });
+            </script>
+        {% endblock %}
 {% endblock %}
