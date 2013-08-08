@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
-use DataURI;
+use DataURI\Parser;
 use DataURI\Exception\Exception as DataUriException;
 use Entities\LazaretSession;
 use Silex\Application;
@@ -249,7 +249,7 @@ class Upload implements ControllerProviderInterface
                 // try to create thumbnail from data URI
                 if ('' !== $b64Image = $request->request->get('b64_image', '')) {
                     try {
-                        $dataUri = DataURI\Parser::parse($b64Image);
+                        $dataUri = Parser::parse($b64Image);
 
                         $fileName = $app['temporary-filesystem']->createTemporaryFile('base_64_thumb', null, "png");
                         file_put_contents($fileName, $dataUri->getData());
