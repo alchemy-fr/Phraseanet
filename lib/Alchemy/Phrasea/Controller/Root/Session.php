@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Session implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
@@ -38,6 +37,12 @@ class Session implements ControllerProviderInterface
          */
         $controllers->post('/update/', $this->call('updateSession'))
             ->bind('update_session');
+
+        $controllers->post('/delete/{id}', $this->call('deleteSession'))
+            ->before(function() use ($app) {
+                $app['firewall']->requireAuthentication();
+            })
+            ->bind('delete_session');
 
         return $controllers;
     }
@@ -125,6 +130,40 @@ class Session implements ControllerProviderInterface
         }
 
         return $app->json($ret);
+    }
+
+    /**
+     * Deletes identified session
+     *
+     * @param Application $app
+     * @param Request $request
+     * @param integer $id
+     *
+     * @return RedirectResponse|JsonResponse
+     */
+    public function deleteSession(Application $app, Request $request, $id)
+    {
+        $session = $app['EM']->find('Entities\Session', $id);
+
+        if (null === $session) {
+            $app->abort(404, 'Unknown session');
+        }
+
+        if ($session->getUsrId() !== $app['authentication']->getUser()->get_id()) {
+            $app->abort(403, 'Unauthorized');
+        }
+
+        $app['EM']->remove($session);
+        $app['EM']->flush();
+
+        if ($app['request']->isXmlHttpRequest()) {
+            return $app->json(array(
+                'success' => true,
+                'session_id' => $id
+            ));
+        }
+
+        return $app->redirectPath('account_sessions');
     }
 
     /**
