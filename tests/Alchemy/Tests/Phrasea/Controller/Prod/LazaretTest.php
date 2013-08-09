@@ -442,12 +442,22 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $em->expects($this->once())
             ->method('flush');
 
+        $called = false;
+        $phpunit = $this;
+        self::$DI['app']['phraseanet.logger'] = self::$DI['app']->protect(function () use (&$called, $phpunit) {
+            $called = true;
+            return $phpunit->getMockBuilder('\Session_Logger')
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        });
+
         self::$DI['app']['EM'] = $em;
         self::$DI['client'] = new Client(self::$DI['app'], array());
 
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', array(
             'record_id' => self::$DI['record_1']->get_record_id()
         ));
+        $this->assertTrue($called);
 
         $response = self::$DI['client']->getResponse();
 
