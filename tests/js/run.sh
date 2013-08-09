@@ -5,15 +5,11 @@ ROOTDIR="$BASEDIR/../.."
 PHANTOMJS_BIN=""
 MOCHA_PHANTOMJS_BIN=""
 
-if type "phantomjs" > /dev/null; then
-    PHANTOMJS_BIN="phantomjs"
-elif type "$ROOTDIR/node_modules/.bin/phantomjs" > /dev/null; then
+if type "$ROOTDIR/node_modules/.bin/phantomjs" > /dev/null; then
     PHANTOMJS_BIN="$ROOTDIR/node_modules/.bin/phantomjs"
 fi
 
-if type "mocha-phantomjs" > /dev/null; then
-    MOCHA_PHANTOMJS_BIN="mocha-phantomjs"
-elif type "$ROOTDIR/node_modules/.bin/mocha-phantomjs" > /dev/null; then
+if type "$ROOTDIR/node_modules/.bin/mocha-phantomjs" > /dev/null; then
     MOCHA_PHANTOMJS_BIN="$ROOTDIR/node_modules/.bin/mocha-phantomjs"
 fi
 
