@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\Manager;
+use DataURI;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -76,6 +77,48 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
+        $data = DataUri\Data::buildFromFile(__DIR__ . '/../../../../../files/cestlafete.jpg');
+        $params = array(
+            'base_id' => self::$DI['collection']->get_base_id(),
+            'b64_image' => DataUri\Dumper::dump($data)
+        );
+
+        $files = array(
+            'files' => array(
+                new UploadedFile(
+                    $this->tmpFile, 'KIKOO.JPG'
+                )
+            )
+        );
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+
+        $response = self::$DI['client']->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertTrue($datas['success']);
+
+        if ($datas['element'] == 'record') {
+            $id = explode('_', $datas['id']);
+
+            $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
+            $this->assertTrue($record->get_thumbnail()->is_physically_present());
+        }
+    }
+
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getJsonResponse
+     */
+    public function testUploadWithoutB64Image()
+    {
+        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $params = array(
             'base_id' => self::$DI['collection']->get_base_id()
         );
@@ -101,6 +144,8 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $id = explode('_', $datas['id']);
 
             $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
+
+           $this->assertFalse($record->get_thumbnail()->is_physically_present());
         }
     }
 

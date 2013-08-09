@@ -483,6 +483,12 @@ class Lazaret implements ControllerProviderInterface
 
             $record = $lazaretFile->getCollection($app)->get_databox()->get_record($recordId);
             $record->substitute_subdef('document', $media, $app);
+            $app['phraseanet.logger']($record->get_databox())->log(
+                $record,
+                \Session_Logger::EVENT_SUBSTITUTE,
+                'HD',
+                ''
+            );
 
             //Delete lazaret file
             $app['EM']->remove($lazaretFile);

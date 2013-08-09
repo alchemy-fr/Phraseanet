@@ -336,6 +336,7 @@ $(document).ready(function () {
                     UploaderManager.Preview.render(file, function(img){
                         context.find('.thumbnail .canva-wrapper').prepend(img);
                         UploaderManager.addAttributeToData(uploadIndex, 'image', img);
+                        UploaderManager.addAttributeToData(uploadIndex, 'b64_image', img.toDataURL("image/png") || '');
                     });
                 }
             });
@@ -389,6 +390,11 @@ $(document).ready(function () {
             $("input", $('.collection-status:visible', UploaderManager.getSettingsBox())).serializeArray(),
             $("select", UploaderManager.getSettingsBox()).serializeArray()
         );
+
+        data.formData.push({
+            "name": "b64_image",
+            "value": data["b64_image"]
+        });
 
         //remove current context
         data.context.remove();
