@@ -40,7 +40,7 @@ class BowerInstall extends Command
 
         if (!version_compare('1.0.0-alpha.1', $version, '<=')) {
             throw new RuntimeException(sprintf(
-                'Bower version 1.0.0-alpha.1 is required (version %s provided), please install bower-canary : `npm install -g bower-canary`', $version
+                'Bower version 1.0.0-alpha.1 is required (version %s provided), please install bower-canary : `npm install -g bower-canary or run npm install from root directory`', $version
             ));
         }
 
