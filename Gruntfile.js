@@ -1,5 +1,11 @@
 module.exports = function(grunt) {
     grunt.initConfig({
+        mocha_phantomjs: {
+            all: ['www/scripts/tests/index.html']
+        },
+        qunit: {
+            all: ['www/include/js/tests/*.html']
+        },
         clean: {
             "assets": ["assets", "www/assets"],
         },
@@ -120,13 +126,13 @@ module.exports = function(grunt) {
                 ],
                 "dest": "www/assets/jquery.ui/"
             },
-            "js-fixture": {
+            "js-fixtures": {
                 "expand": true,
                 "src": [
                     "assets/js-fixtures/LICENSE",
                     "assets/js-fixtures/fixtures.js"
                 ],
-                "dest": "www/assets/js-fixture/",
+                "dest": "www/assets/js-fixtures/",
                 "flatten": true
             },
             "json3": {
@@ -166,11 +172,15 @@ module.exports = function(grunt) {
             "qunit": {
                 "expand": true,
                 "src": [
-                    "assets/qunit/qunit/qunit.css",
-                    "assets/qunit/qunit/qunit.js"
+                    "qunit/qunit.css",
+                    "qunit/qunit.js",
+                    "addons/phantomjs/*"
                 ],
                 "dest": "www/assets/qunit/",
-                "flatten": true
+                "cwd": "assets/qunit/",
+                "rename": function(dest, src) {
+                    return dest + src.replace("qunit", "");
+                },
             },
             "requirejs": {
                 "expand": true,
@@ -223,6 +233,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib");
     grunt.loadNpmTasks("grunt-bower-task");
     grunt.loadNpmTasks("grunt-bower-postinst");
+    grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
     grunt.registerTask("build-assets", ["clean:assets", "bower", "bower_postinst", "copy", "less"]);
+    grunt.registerTask('test', ["qunit", "mocha_phantomjs"]);
 };

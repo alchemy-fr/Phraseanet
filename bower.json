@@ -16,7 +16,7 @@
     "requirejs" : "~2.1",
     "backbone-amd": "~1.0",
     "underscore-amd": "~1.4",
-    "mocha": "~1.9",
+    "mocha": "latest",
     "chai" : "~1.6",
     "i18next": "~1.6",
     "js-fixtures": "https://github.com/badunk/js-fixtures/archive/master.zip",

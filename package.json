@@ -6,10 +6,10 @@
         "mocha-phantomjs": ">=2.0 <3.0",
         "recess": ">=1.1.0 <1.1.7",
         "uglify-js": "latest",
-        "phantomjs": "latest",
         "grunt": "~0.4.1",
         "grunt-contrib": "latest",
         "grunt-bower-task": "latest",
-        "grunt-bower-postinst": "latest"
+        "grunt-bower-postinst": "latest",
+        "grunt-mocha-phantomjs": "~0.3.0"
     }
 }
