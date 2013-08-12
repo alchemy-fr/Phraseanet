@@ -22,6 +22,16 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testCreateOrder()
     {
+        $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $eventManagerStub->expects($this->once())
+             ->method('trigger')
+             ->with($this->equalTo('__NEW_ORDER__'), $this->isType('array'))
+             ->will($this->returnValue(null));
+
+        self::$DI['app']['events-manager'] = $eventManagerStub;
         self::$DI['client']->request('POST', '/prod/order/', array(
             'lst'      => self::$DI['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
@@ -35,6 +45,17 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testCreateOrderJson()
     {
+        $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $eventManagerStub->expects($this->once())
+             ->method('trigger')
+             ->with($this->equalTo('__NEW_ORDER__'), $this->isType('array'))
+             ->will($this->returnValue(null));
+
+        self::$DI['app']['events-manager'] = $eventManagerStub;
+
         $this->XMLHTTPRequest('POST', '/prod/order/', array(
             'lst'      => self::$DI['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
@@ -47,6 +68,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('success', $content, $response->getContent());
         $this->assertObjectHasAttribute('msg', $content, $response->getContent());
+        $this->assertTrue($content->success);
     }
 
     /**
@@ -54,7 +76,13 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDisplayOrders()
     {
-        self::$DI['client']->request('GET', '/prod/order/');
+        $this->XMLHTTPRequest('POST', '/prod/order/', array(
+            'lst'      => self::$DI['record_1']->get_serialize_key(),
+            'deadline' => '+10 minutes'
+        ));
+        self::$DI['client']->request('GET', '/prod/order/', array(
+            'sort' => 'usage'
+        ));
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 

@@ -87,7 +87,7 @@ class Basket
 
     /**
      * @ORM\OneToOne(targetEntity="Order", mappedBy="basket", cascade={"ALL"})
-    */
+     */
     private $order;
 
     /**

@@ -22,32 +22,29 @@ class OrderRepository extends EntityRepository
      *
      * @return array
      */
-    public function listOrders($baseIds, $offsetStart, $perPage, $sort)
+    public function listOrders($baseIds, $offsetStart = 0, $perPage = 20, $sort = "created_on")
     {
-        $dql = 'SELECT o
-        FROM Entities\OrderElement e, Entities\Order o
-        WHERE e.base_id IN (' . implode(', ', $baseIds) . ')
-        AND e.order = o
-        GROUP BY o.id';
+        $qb = $this
+            ->createQueryBuilder('o')
+            ->innerJoin('o.elements', 'e');
 
-        if ($sort == 'created_on') {
-            $dql .= ' ORDER BY o.created_on DESC';
-        } elseif ($sort == 'user') {
-            $dql .= ' ORDER BY o.user_id ASC';
-        }
-        elseif ($sort == 'o.order_usage') {
-            $dql .= ' ORDER BY o.usage ASC';
-        }
+         if (!empty($baseIds)) {
+             $qb->where($qb->expr()->in('e.baseId', $baseIds));
+         }
 
-        $query = $this->_em->createQuery($dql);
-        if (null !== $offsetStart && 0 !== $offsetStart) {
-            $query->setFirstResult($offsetStart);
-        }
-        if (null !== $perPage) {
-            $query->setMaxResults($perPage);
-        }
+         if ($sort === 'user') {
+             $qb->orderBy('o.userId', 'ASC');
+         } else if ($sort === 'usage') {
+             $qb->orderBy('o.orderUsage', 'ASC');
+         } else {
+             $qb->orderBy('o.createdOn', 'ASC');
+         }
 
-        return $query->getResult();
+         $qb
+             ->setFirstResult((int) $offsetStart)
+             ->setMaxResults(max(10, (int) $perPage));
+
+         return ($qb->getQuery()->getResult());
     }
 
     /**
@@ -59,14 +56,17 @@ class OrderRepository extends EntityRepository
      */
     public function countTotalOrders(array $baseIds = array())
     {
-        $dql = 'SELECT distinct o.id
-        FROM Entities\OrderElement e, Entities\Order o
-        WHERE ' . (count($baseIds > 0 ) ? 'e.base_id IN (' . implode(', ', $baseIds) . ') AND ': '' ).
-        'e.order = o
-        GROUP BY o.id';
+        $qb = $this
+            ->createQueryBuilder('o');
+        $qb->select($qb->expr()->countDistinct('o.id'))
+            ->innerJoin('o.elements', 'e');
 
-        $query = $this->_em->createQuery($dql);
+        if (!empty($baseIds)) {
+            $qb->where($qb->expr()->in('e.baseId', $baseIds));
+        }
 
-        return count($query->getResult());
+        $qb->groupBy('o.id');
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

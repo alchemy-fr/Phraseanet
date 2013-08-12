@@ -160,7 +160,7 @@ class Order implements ControllerProviderInterface
         $records = RecordsRequest::fromRequest($app, $request, true, array('cancmd'));
         $query = new \User_Query($app);
 
-        if (count($records) > 0) {
+        if (!$records->isEmpty()) {
             $order = new OrderEntity();
             $order->setUsrId($app['authentication']->getUser()->get_id());
             $order->setDeadline((null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine);
@@ -206,15 +206,15 @@ class Order implements ControllerProviderInterface
 
             $order->setTodo($order->getElements()->count());
 
-            $app['EM']->persist($order);
-            $app['EM']->flush();
-
             try {
                 $app['events-manager']->trigger('__NEW_ORDER__', array(
                     'order_id' => $order->getId(),
                     'usr_id'   => $order->getUsrId()
                 ));
                 $success = true;
+
+                $app['EM']->persist($order);
+                $app['EM']->flush();
             } catch (\Exception $e) {
 
             }
@@ -321,17 +321,15 @@ class Order implements ControllerProviderInterface
             $basket->setPusher($app['authentication']->getUser());
 
             $app['EM']->persist($basket);
-            $app['EM']->flush(); // this is necessary in order to use $basket->getId()
+            $app['EM']->flush();
 
             $order->setSselId($basket->getId());
-
-            $app['EM']->persist($order);
-            $app['EM']->flush();
         }
 
         $n = 0;
+        $elements = $request->request->get('elements', array());
         foreach ($order->getElements() as $orderElement) {
-            if (in_array($orderElement->getId(), $request->request->get('elements', array()))) {
+            if (in_array($orderElement->getId(), $elements)) {
                 $sbas_id = \phrasea::sbasFromBas($app, $orderElement->getBaseId());
                 $record = new \record_adapter($app, $sbas_id, $orderElement->getRecordId());
 
@@ -345,11 +343,6 @@ class Order implements ControllerProviderInterface
 
                 $basket->addElement($basketElement);
 
-                $app['EM']->persist($basket);
-                $app['EM']->persist($orderElement);
-
-                $app['EM']->flush();
-
                 $n++;
                 $dest_user->ACL()->grant_hd_on($record, $app['authentication']->getUser(), 'order');
             }
@@ -358,20 +351,20 @@ class Order implements ControllerProviderInterface
         try {
             if ($n > 0) {
                 $order->setTodo($order->getTodo() - $n);
-                $app['EM']->persist($order);
-                $app['EM']->flush();
 
-                $params = array(
+                $app['events-manager']->trigger('__ORDER_DELIVER__', array(
                     'ssel_id' => $order->getSselId(),
                     'from'    => $app['authentication']->getUser()->get_id(),
                     'to'      => $dest_user->get_id(),
                     'n'       => $n
-                );
-
-                $app['events-manager']->trigger('__ORDER_DELIVER__', $params);
+                ));
             }
             $success = true;
 
+            $app['EM']->persist($basket);
+            $app['EM']->persist($orderElement);
+            $app['EM']->persist($order);
+            $app['EM']->flush();
         } catch (\Exception $e) {
 
         }
@@ -417,24 +410,20 @@ class Order implements ControllerProviderInterface
             }
         }
 
-        $app['EM']->flush();
-
         try {
             if ($n > 0) {
                 $order->setTodo($order->getTodo() - $n);
-                $app['EM']->persist($order);
-                $app['EM']->flush();
 
-                $params = array(
+                $app['events-manager']->trigger('__ORDER_NOT_DELIVERED__', array(
                     'from' => $app['authentication']->getUser()->get_id(),
                     'to'   => $order->getUsrId(),
                     'n'    => $n
-                );
-
-                $app['events-manager']->trigger('__ORDER_NOT_DELIVERED__', $params);
+                ));
             }
             $success = true;
 
+            $app['EM']->persist($order);
+            $app['EM']->flush();
         } catch (\Exception $e) {
 
         }

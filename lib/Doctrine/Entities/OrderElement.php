@@ -21,19 +21,19 @@ class OrderElement
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="base_id")
      */
-    private $base_id;
+    private $baseId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="record_id")
      */
-    private $record_id;
+    private $recordId;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true, name="order_master_id")
      */
-    private $order_master_id;
+    private $orderMasterId;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -65,7 +65,7 @@ class OrderElement
      */
     public function setOrderMasterId($orderMasterId)
     {
-        $this->order_master_id = $orderMasterId;
+        $this->orderMasterId = $orderMasterId;
 
         return $this;
     }
@@ -77,7 +77,7 @@ class OrderElement
      */
     public function getOrderMasterId()
     {
-        return $this->order_master_id;
+        return $this->orderMasterId;
     }
 
     /**
@@ -89,8 +89,8 @@ class OrderElement
      */
     public function getOrderMasterName(Application $app)
     {
-        if (isset($this->order_master_id) && null !== $this->order_master_id) {
-            $user = \User_Adapter::getInstance($this->order_master_id, $app);
+        if (isset($this->orderMasterId) && null !== $this->orderMasterId) {
+            $user = \User_Adapter::getInstance($this->orderMasterId, $app);
 
             return $user->get_firstname();
         }
@@ -152,7 +152,7 @@ class OrderElement
      */
     public function setBaseId($baseId)
     {
-        $this->base_id = $baseId;
+        $this->baseId = $baseId;
 
         return $this;
     }
@@ -164,7 +164,7 @@ class OrderElement
      */
     public function getBaseId()
     {
-        return $this->base_id;
+        return $this->baseId;
     }
 
     /**
@@ -175,7 +175,7 @@ class OrderElement
      */
     public function setRecordId($recordId)
     {
-        $this->record_id = $recordId;
+        $this->recordId = $recordId;
 
         return $this;
     }
@@ -187,7 +187,7 @@ class OrderElement
      */
     public function getRecordId()
     {
-        return $this->record_id;
+        return $this->recordId;
     }
 
     /**

@@ -20,19 +20,19 @@ class Order
    private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true, name="ssel_id")
      */
-    private $ssel_id;
+    private $sselId;
 
     /**
-     * @ORM\Column(type="string", length=2048)
+     * @ORM\Column(type="string", length=2048, name="order_usage")
      */
-    private $order_usage;
+    private $orderUsage;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -46,9 +46,9 @@ class Order
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", name="created_on")
      */
-    private $created_on;
+    private $createdOn;
 
     /**
      * @ORM\OneToMany(targetEntity="OrderElement", mappedBy="order", cascade={"ALL"})
@@ -86,7 +86,7 @@ class Order
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
@@ -98,7 +98,7 @@ class Order
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**
@@ -109,7 +109,7 @@ class Order
      */
     public function setSselId($sselId)
     {
-        $this->ssel_id = $sselId;
+        $this->sselId = $sselId;
 
         return $this;
     }
@@ -121,7 +121,7 @@ class Order
      */
     public function getSselId()
     {
-        return $this->ssel_id;
+        return $this->sselId;
     }
 
     /**
@@ -155,7 +155,7 @@ class Order
      */
     public function setCreatedOn($createdOn)
     {
-        $this->created_on = $createdOn;
+        $this->createdOn = $createdOn;
 
         return $this;
     }
@@ -167,7 +167,7 @@ class Order
      */
     public function getCreatedOn()
     {
-        return $this->created_on;
+        return $this->createdOn;
     }
 
     /**
@@ -258,7 +258,7 @@ class Order
      */
     public function setOrderUsage($orderUsage)
     {
-        $this->order_usage = $orderUsage;
+        $this->orderUsage = $orderUsage;
 
         return $this;
     }
@@ -270,7 +270,7 @@ class Order
      */
     public function getOrderUsage()
     {
-        return $this->order_usage;
+        return $this->orderUsage;
     }
 
     /**

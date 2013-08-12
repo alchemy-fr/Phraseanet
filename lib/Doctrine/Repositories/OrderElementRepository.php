@@ -12,4 +12,20 @@ use Doctrine\ORM\EntityRepository;
  */
 class OrderElementRepository extends EntityRepository
 {
+    public function findElementsByRecord(\record_adapter $record)
+    {
+        $dql = 'SELECT e
+            FROM Entities\OrderElement e
+            WHERE e.recordId = :record_id';
+
+        $params = array(
+            'record_id' => $record->get_record_id()
+        );
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters($params);
+
+        return $query->getResult();
+    }
+
 }
