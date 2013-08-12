@@ -38,9 +38,10 @@ module.exports = function(grunt) {
             },
             "blueimp": {
                 "expand": true,
-                "src": ["js/load-image.js", "css/jquery.fileupload-ui.css"],
+                "src": "js/load-image.js",
                 "dest": "www/assets/blueimp-load-image/",
-                "cwd": "assets/blueimp-load-image"
+                "cwd": "assets/blueimp-load-image",
+                "flatten": true
             },
             "bootstrap": {
                 "expand": true,
@@ -109,21 +110,26 @@ module.exports = function(grunt) {
                 "expand": true,
                 "src": [
                     "assets/jquery-file-upload/js/jquery.fileupload.js",
-                    "assets/jquery-file-upload/js/jquery.iframe-transport.js"
+                    "assets/jquery-file-upload/js/jquery.iframe-transport.js",
+                    "assets/jquery-file-upload/css/jquery.fileupload-ui.css"
                 ],
                 "dest": "www/assets/jquery-file-upload/",
                 "flatten": true
             },
             "jquery-ui": {
                 "expand": true,
-                "cwd": "assets/jquery.ui/dist",
+                "cwd": "assets/jquery.ui",
                 "src": [
-                    "i18n/*",
-                    "images/*",
-                    "themes/*",
-                    "jquery-ui.css",
-                    "jquery-ui.js"
+                    "dist/i18n/*",
+                    "dist/images/*",
+                    "themes/base/*",
+                    "themes/base/images/*",
+                    "dist/jquery-ui.css",
+                    "dist/jquery-ui.js"
                 ],
+                "rename": function(dest, src) {
+                    return dest + src.replace("dist", "");
+                },
                 "dest": "www/assets/jquery.ui/"
             },
             "js-fixtures": {

@@ -12,7 +12,7 @@
 
 {% block javascript %}
   <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery/jquery.js,include/path_files_tests.jquery.js' }) }}"></script>
-  <script type="text/javascript" src="{{ path('minifier', { 'f' : 'include/jslibs/jquery-ui-1.10.3.js' }) }}"></script>
+  <script type="text/javascript" src="{{ path('minifier', { 'f' : 'assets/jquery.ui/jquery-ui.js' }) }}"></script>
   <script type="text/javascript">
     $(document).ready(function(){
       $('.path_testable').path_file_test();
