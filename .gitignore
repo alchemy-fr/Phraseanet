@@ -15,4 +15,5 @@ composer.phar
 behat.yml
 /datas
 /www/assets
+/assets
 /www/skins/build
