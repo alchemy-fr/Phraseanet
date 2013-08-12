@@ -11,6 +11,7 @@ before_script:
   - node --version
   - npm --version
   - npm install
+  - npm install grunt-cli -g
   - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then pecl install redis; fi;'
@@ -54,10 +55,9 @@ php:
   - 5.5
 
 script:
-  - bin/developer dependencies:all --prefer-source
+  - bin/developer dependencies:composer --prefer-source
+  - grunt build-assets
   - bin/setup system:upgrade -y -v -f
   - php hudson/cleanupSubdefs.php
-  - bin/developer assets:compile-less
-  - bin/developer assets:build-javascript
-  - sh tests/js/run.sh
+  - grunt test
   - bin/phpunit
