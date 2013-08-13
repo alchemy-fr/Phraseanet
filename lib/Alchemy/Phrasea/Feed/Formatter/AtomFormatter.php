@@ -64,26 +64,26 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
 
         $next = $prev = null;
 
-        if ($feed->hasPage($page + 1, static::PAGE_SIZE)) {
+        if ($feed->hasPage($page + 1, self::PAGE_SIZE)) {
             if (null === $user) {
-                $next = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page + 1);
+                $next = $this->linkGenerator->generatePublic($feed, self::FORMAT, $page + 1);
             } else {
-                $next = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page + 1);
+                $next = $this->linkGenerator->generate($feed, $user, self::FORMAT, $page + 1);
             }
         }
 
-        if ($feed->hasPage($page - 1, static::PAGE_SIZE)) {
+        if ($feed->hasPage($page - 1, self::PAGE_SIZE)) {
             if (null === $user) {
-                $prev = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page - 1);
+                $prev = $this->linkGenerator->generatePublic($feed, self::FORMAT, $page - 1);
             } else {
-                $prev = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page - 1);
+                $prev = $this->linkGenerator->generate($feed, $user, self::FORMAT, $page - 1);
             }
         }
 
         if (null !== $user) {
-            $feedlink = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page);
+            $feedlink = $this->linkGenerator->generate($feed, $user, self::FORMAT, $page);
         } else {
-            $feedlink = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page);
+            $feedlink = $this->linkGenerator->generatePublic($feed, self::FORMAT, $page);
         }
 
         if ($feedlink instanceof FeedLink) {

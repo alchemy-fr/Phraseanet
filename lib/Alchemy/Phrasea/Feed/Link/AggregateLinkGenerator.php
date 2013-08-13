@@ -45,7 +45,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                 $params = array(
                     'token'  => $this->getAggregateToken($user, $renew)->getValue(),
                     'format' => 'atom'
-                    );
+                );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -59,7 +59,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
                 $params = array(
                     'token'  => $this->getAggregateToken($user, $renew)->getValue(),
                     'format' => 'rss'
-                    );
+                );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }

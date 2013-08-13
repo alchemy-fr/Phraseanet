@@ -67,9 +67,9 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         $this->addTag($doc, $channel, 'description', $feed->getSubtitle());
 
         if (null !== $user) {
-            $link = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page);
+            $link = $this->linkGenerator->generate($feed, $user, self::FORMAT, $page);
         } else {
-            $link = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page);
+            $link = $this->linkGenerator->generatePublic($feed, self::FORMAT, $page);
         }
 
         if ($link instanceof FeedLink) {
@@ -135,19 +135,19 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
 
         $next = $prev = null;
 
-        if ($feed->hasPage($page + 1, static::PAGE_SIZE)) {
+        if ($feed->hasPage($page + 1, self::PAGE_SIZE)) {
             if (null === $user) {
-                $next = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page + 1);
+                $next = $this->linkGenerator->generatePublic($feed, self::FORMAT, $page + 1);
             } else {
-                $next = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page + 1);
+                $next = $this->linkGenerator->generate($feed, $user, self::FORMAT, $page + 1);
             }
         }
 
-        if ($feed->hasPage($page - 1, static::PAGE_SIZE)) {
+        if ($feed->hasPage($page - 1, self::PAGE_SIZE)) {
             if (null === $user) {
-                $prev = $this->linkGenerator->generatePublic($feed, static::FORMAT, $page - 1);
+                $prev = $this->linkGenerator->generatePublic($feed, self::FORMAT, $page - 1);
             } else {
-                $prev = $this->linkGenerator->generate($feed, $user, static::FORMAT, $page - 1);
+                $prev = $this->linkGenerator->generate($feed, $user, self::FORMAT, $page - 1);
             }
         }
 

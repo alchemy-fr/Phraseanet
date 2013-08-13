@@ -54,7 +54,7 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                     'token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
                     'id'     => $feed->getId(),
                     'format' => 'atom'
-                    );
+                );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -69,7 +69,7 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                     'token'  => $this->getFeedToken($feed, $user, $renew)->getValue(),
                     'id'     => $feed->getId(),
                     'format' => 'rss'
-                    );
+                );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -106,7 +106,7 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                 $params = array(
                     'id'     => $feed->getId(),
                     'format' => 'atom'
-                    );
+                );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
@@ -120,7 +120,7 @@ class FeedLinkGenerator implements LinkGeneratorInterface
                 $params = array(
                     'id'     => $feed->getId(),
                     'format' => 'rss'
-                    );
+                );
                 if (null !== $page) {
                     $params['page'] = $page;
                 }
