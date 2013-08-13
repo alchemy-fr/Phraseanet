@@ -52,16 +52,14 @@ class RSSFeeds implements ControllerProviderInterface
 
         $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) {
             $token = $app["EM"]->find('Entities\FeedToken', $id);
-            $feed = $token->getFeed();
-
-            $user = \User_Adapter::getInstance($token->getUsrId(), $app);
 
             $request = $app['request'];
 
             $page = (int) $request->query->get('page');
             $page = $page < 1 ? 1 : $page;
 
-            return $app['feed.formatter-strategy']($format)->createResponse($feed, $page, $user);
+            return $app['feed.formatter-strategy']($format)
+                ->createResponse($token->getFeed(), $page, \User_Adapter::getInstance($token->getUsrId(), $app));
         })
             ->bind('feed_user')
             ->assert('id', '\d+')

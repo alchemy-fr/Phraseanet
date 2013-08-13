@@ -173,11 +173,13 @@ class Feed implements ControllerProviderInterface
             $app['EM']->persist($entry);
             $app['EM']->flush();
 
-            $entry = $app['twig']->render('prod/feeds/entry.html.twig', array('entry' => $entry));
-
-            $datas = array('error' => false, 'message' => 'succes', 'datas' => $entry);
-
-            return $app->json($datas);
+            return $app->json(array(
+                'error' => false,
+                'message' => 'succes',
+                'datas' => $app['twig']->render('prod/feeds/entry.html.twig', array(
+                    'entry' => $entry
+                ))
+            ));
         })
             ->bind('prod_feeds_entry_update')
             ->assert('id', '\d+')->before(function(Request $request) use ($app) {
@@ -199,9 +201,7 @@ class Feed implements ControllerProviderInterface
             $app['EM']->remove($entry);
             $app['EM']->flush();
 
-            $datas = array('error' => false, 'message' => 'succes');
-
-            return $app->json($datas);
+            return $app->json(array('error' => false, 'message' => 'succes'));
         })
             ->bind('prod_feeds_entry_delete')
             ->assert('id', '\d+')->before(function(Request $request) use ($app) {
@@ -243,9 +243,7 @@ class Feed implements ControllerProviderInterface
 
             $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser($app['authentication']->getUser());
 
-            $aggregate = new Aggregate($app['EM'], $feeds);
-
-            $link = $app['feed.aggregate-link-generator']->generate($aggregate,
+            $link = $app['feed.aggregate-link-generator']->generate(new Aggregate($app['EM'], $feeds),
                 $app['authentication']->getUser(),
                 AggregateLinkGenerator::FORMAT_RSS,
                 null, $renew
