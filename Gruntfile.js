@@ -6,6 +6,9 @@ module.exports = function(grunt) {
             "asset": "www/assets"
         },
         mocha_phantomjs: {
+            options: {
+                'reporter': 'dot'
+            },
             all: ['www/scripts/tests/index.html']
         },
         qunit: {
