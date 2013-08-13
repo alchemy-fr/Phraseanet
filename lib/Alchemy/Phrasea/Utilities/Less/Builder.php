@@ -44,7 +44,8 @@ class Builder
         foreach ($files as $lessFile => $target) {
             $this->filesystem->mkdir(dirname($target));
             if (null !== $output) {
-                $output->writeln("\t".basename($target));
+                $output->write("  Building <info>" . basename($target) . "</info>...");
+                $output->writeln(" <comment>OK</comment>");
             }
             $this->compiler->compile($target, $lessFile);
         }
