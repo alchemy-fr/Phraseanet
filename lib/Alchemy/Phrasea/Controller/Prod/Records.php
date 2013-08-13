@@ -211,7 +211,7 @@ class Records implements ControllerProviderInterface
 
         foreach ($records as $record) {
             try {
-                $basketElements = $basketElementsRepository->findBy(array('recordId' => $record->getId()));
+                $basketElements = $basketElementsRepository->findBy(array('recordId' => $record->get_id()));
 
                 foreach ($basketElements as $element) {
                     $app['EM']->remove($element);
