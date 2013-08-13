@@ -50,22 +50,6 @@ class SessionRepository extends EntityRepository
     }
 
     /**
-     * Returns all the public feeds.
-     *
-     * @return Collection
-     */
-    public function findAllPublic()
-    {
-        $dql = 'SELECT f FROM Entities\Feed f
-            WHERE f.public = true
-            ORDER BY f.updated_on DESC';
-
-        $query = $this->_em->createQuery($dql);
-
-        return $query->getResult();
-    }
-
-    /**
      * Returns the given feed if the user can access to it.
      *
      * @param  Application   $app

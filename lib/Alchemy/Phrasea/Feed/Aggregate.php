@@ -227,6 +227,6 @@ class Aggregate implements FeedInterface
      */
     public static function getPublic(Application $app)
     {
-        return new static($app['EM'], $app['EM']->getRepository('Entities\Feed')->findAllPublic());
+        return new static($app['EM'], $app['EM']->getRepository('Entities\Feed')->findBy(array('public' => true), array('updated_on' => 'DESC')));
     }
 }
