@@ -211,6 +211,12 @@ module.exports = function(grunt) {
                 "dest": "www/assets/requirejs/",
                 "flatten": true
             },
+            "swfobject": {
+                "expand": true,
+                "src": "assets/swfobject/swfobject/swfobject.js",
+                "dest": "www/assets/swfobject",
+                "flatten": true
+            },
             "underscore": {
                 "expand": true,
                 "src": [

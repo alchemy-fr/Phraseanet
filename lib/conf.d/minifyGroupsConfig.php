@@ -21,7 +21,7 @@ $groups = array(
         '//scripts/apps/login/home/config.js'
     ),
     'client' => array(
-        '//include/jslibs/swfobject/swfobject.js'
+        '//assets/swfobject/swfobject.js'
         , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
@@ -66,7 +66,7 @@ $groups = array(
          '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
     ),
     'prod' => array(
-        '//include/jslibs/swfobject/swfobject.js'
+        '//assets/swfobject/swfobject.js'
         , '//assets/underscore-amd/underscore.js'
         , '//include/jslibs/json2.js'
         , '//include/jslibs/colorpicker/js/colorpicker.js'
@@ -117,7 +117,7 @@ $groups = array(
     'lightbox' => array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
-        , '//include/jslibs/swfobject/swfobject.js'
+        , '//assets/swfobject/swfobject.js'
         , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
@@ -129,7 +129,7 @@ $groups = array(
     'lightboxie6' => array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
-        , '//include/jslibs/swfobject/swfobject.js'
+        , '//assets/swfobject/swfobject.js'
         , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
