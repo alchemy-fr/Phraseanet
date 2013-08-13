@@ -155,6 +155,12 @@ module.exports = function(grunt) {
                 "dest": "www/assets/js-fixtures/",
                 "flatten": true
             },
+            "json2": {
+                "expand": true,
+                "src": "assets/json2/json2.js",
+                "dest": "www/assets/json2/",
+                "flatten": true
+            },
             "json3": {
                 "expand": true,
                 "src": [

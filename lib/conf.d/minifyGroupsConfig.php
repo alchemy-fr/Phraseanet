@@ -25,7 +25,7 @@ $groups = array(
         , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
-        , '//include/jslibs/json2.js'
+        , '//assets/json2/json2.js'
         , '//include/jslibs/audio-player/audio-player-noswfobject.js'
         , '//include/jslibs/jquery.form.2.49.js'
         , '//skins/prod/jquery.Dialog.js'
@@ -68,7 +68,7 @@ $groups = array(
     'prod' => array(
         '//assets/swfobject/swfobject.js'
         , '//assets/underscore-amd/underscore.js'
-        , '//include/jslibs/json2.js'
+        , '//assets/json2/json2.js'
         , '//include/jslibs/colorpicker/js/colorpicker.js'
         , '//include/jslibs/jquery.mousewheel.js'
         , '//include/jslibs/jquery.lazyload/jquery.lazyload.1.8.1.js'
