@@ -63,6 +63,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
             foreach ($results as $result) {
                 $base_ids[] = $result->getBaseId();
             }
+            $base_ids = array_unique($base_ids);
 
             $query = new User_Query($this->app);
             $users = $query->on_base_ids($base_ids)

@@ -400,8 +400,9 @@ class Order implements ControllerProviderInterface
         }
 
         $n = 0;
+        $elements = $request->request->get('elements', array());
         foreach ($order->getElements() as $orderElement) {
-            if (in_array($orderElement->getId(), $request->request->get('elements', array()))) {
+            if (in_array($orderElement->getId(),$elements)) {
                 $orderElement->setOrderMasterId($app['authentication']->getUser()->get_id());
                 $orderElement->setDeny(true);
 

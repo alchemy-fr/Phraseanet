@@ -1594,7 +1594,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $orderElementRepository = $this->app['EM']->getRepository('\Entities\OrderElement');
 
         /* @var $repository \Repositories\OrderElementRepository */
-        foreach ($orderElementRepository->findElementsByRecord($this) as $order_element) {
+        foreach ($orderElementRepository->findBy(array('recordId' => $this->get_record_id())) as $order_element) {
             if ($order_element->getSbasId($this->app) == $this->get_sbas_id()) {
                 $this->app['EM']->remove($order_element);
             }
