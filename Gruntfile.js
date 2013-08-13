@@ -21,7 +21,8 @@ module.exports = function(grunt) {
                 options: {
                     components: {
                         "jquery.ui": ["npm", {"grunt": "build"}],
-                        "bootstrap": ["npm", {"make": "bootstrap"}]
+                        "bootstrap": ["npm", {"make": "bootstrap"}],
+                        "jquery-mobile": ["npm", {"make": "all"}]
                     }
                 }
             }
@@ -115,6 +116,19 @@ module.exports = function(grunt) {
                 ],
                 "dest": "www/assets/jquery-file-upload/",
                 "flatten": true
+            },
+            "jquery-mobile": {
+                "expand": true,
+                "cwd": "assets/jquery-mobile",
+                "src": [
+                    "compiled/images/*",
+                    "jquery.mobile.css",
+                    "jquery.mobile.js"
+                ],
+                "rename": function(dest, src) {
+                    return dest + src.replace("compiled", "");
+                },
+                "dest": "www/assets/jquery-mobile/"
             },
             "jquery-ui": {
                 "expand": true,
