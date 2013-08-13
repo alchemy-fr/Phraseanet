@@ -248,6 +248,10 @@ class Publications implements ControllerProviderInterface
         $controllers->post('/feed/{id}/delete/', function(PhraseaApplication $app, $id) {
             $feed = $app["EM"]->find('Entities\Feed', $id);
 
+            if (null === $feed) {
+                $app->abort(404);
+            }
+
             if (true === $feed->getIconURL()) {
                 unlink($app['root.path'] . '/config/feed_' . $feed->getId() . '.jpg');
                 unlink('custom/feed_' . $feed->getId() . '.jpg');
