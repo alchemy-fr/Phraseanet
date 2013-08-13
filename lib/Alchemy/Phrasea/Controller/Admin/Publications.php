@@ -37,7 +37,6 @@ class Publications implements ControllerProviderInterface
         });
 
         $controllers->get('/list/', function(PhraseaApplication $app) {
-
             $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser(
                 $app['authentication']->getUser()
             );
@@ -47,7 +46,6 @@ class Publications implements ControllerProviderInterface
         })->bind('admin_feeds_list');
 
         $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
-
             if ('' === $title = trim($request->request->get('title', ''))) {
                 $app->abort(400, "Bad request");
             }

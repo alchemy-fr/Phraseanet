@@ -134,7 +134,7 @@ class Feed implements ControllerProviderInterface
                 $app->abort(403, 'Unathorized action');
             }
             if ('' === $title = trim($request->request->get('title', ''))) {
-                    $app->abort(400, "Bad request");
+                $app->abort(400, "Bad request");
             }
 
             $entry->setAuthorEmail($request->request->get('author_mail'))
@@ -215,13 +215,11 @@ class Feed implements ControllerProviderInterface
 
             $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser($app['authentication']->getUser());
 
-            $datas = $app['twig']->render('prod/feeds/feeds.html.twig'
-                , array(
-                'feeds' => $feeds
-                , 'feed' => new Aggregate($app['EM'], $feeds)
-                , 'page' => $page
-                )
-            );
+            $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array(
+                'feeds' => $feeds,
+                'feed' => new Aggregate($app['EM'], $feeds),
+                'page' => $page
+            ));
 
             return new Response($datas);
         })->bind('prod_feeds');
@@ -247,7 +245,11 @@ class Feed implements ControllerProviderInterface
 
             $aggregate = new Aggregate($app['EM'], $feeds);
 
-            $link = $app['feed.aggregate-link-generator']->generate($aggregate, $app['authentication']->getUser(), AggregateLinkGenerator::FORMAT_RSS, null, $renew);
+            $link = $app['feed.aggregate-link-generator']->generate($aggregate,
+                $app['authentication']->getUser(),
+                AggregateLinkGenerator::FORMAT_RSS,
+                null, $renew
+            );
 
             $output = array(
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')

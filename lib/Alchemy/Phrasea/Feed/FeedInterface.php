@@ -68,10 +68,10 @@ interface FeedInterface
     /**
      * Returns a boolean indicating whether the feed has a given page.
      *
-     * @param integer $page
-     * @param integer $pageSize
+     * @param integer $pageNumber
+     * @param integer $nbEntriesByPage
      *
      * @return \DateTime
      */
-    public function hasPage($page, $pageSize);
+    public function hasPage($pageNumber, $nbEntriesByPage);
 }

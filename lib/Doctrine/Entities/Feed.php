@@ -531,14 +531,13 @@ class Feed implements FeedInterface
      *
      * @return boolean
      */
-    public function hasPage($page, $pageSize)
+    public function hasPage($pageNumber, $nbEntriesByPage)
     {
-        if (0 >= $pageSize) {
+        if (0 >= $nbEntriesByPage) {
             throw new LogicException;
         }
-
         $count = $this->getCountTotalEntries();
-        if (0 > $page && $page <= $count / $pageSize) {
+        if (0 > $pageNumber && $pageNumber <= $count / $nbEntriesByPage) {
             return true;
         }
 

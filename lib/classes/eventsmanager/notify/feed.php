@@ -121,7 +121,6 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                 }
 
                 $this->broker->notify($user_to_notif->get_id(), __CLASS__, $datas, $mailed);
-
             }
             $start += $perLoop;
         } while (count($results) > 0);
