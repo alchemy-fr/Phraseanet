@@ -22,7 +22,8 @@ module.exports = function(grunt) {
                     components: {
                         "jquery.ui": ["npm", {"grunt": "build"}],
                         "bootstrap": ["npm", {"make": "bootstrap"}],
-                        "jquery-mobile": ["npm", {"make": "all"}]
+                        "jquery-mobile": ["npm", {"make": "all"}],
+                        "tinymce": ["npm", "jake"]
                     }
                 }
             }
@@ -222,6 +223,18 @@ module.exports = function(grunt) {
                 "src": "assets/swfobject/swfobject/swfobject.js",
                 "dest": "www/assets/swfobject",
                 "flatten": true
+            },
+            "tinymce": {
+                "expand": true,
+                "cwd": "assets/tinymce/js/tinymce",
+                "src": [
+                    "plugins/**",
+                    "skins/**",
+                    "themes/**",
+                    "tinymce.js",
+                    "license.txt"
+                ],
+                "dest": "www/assets/tinymce"
             },
             "underscore": {
                 "expand": true,

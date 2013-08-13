@@ -15,7 +15,7 @@
 {% block javascript %}
   {% include "common/templates.html.twig" %}
   {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}
-  <script type="text/javascript" src="/include/tinymce/js/tinymce/tinymce.min.js"></script>
+  <script type="text/javascript" src="/assets/tinymce/tinymce.js"></script>
   <script type="text/javascript" src="{{ path('minifier', { 'g' : 'admin' }) }}"></script>
   <script type="text/javascript">
     var p4 = {users:{sel:[]}};
