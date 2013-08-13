@@ -44,7 +44,7 @@ class OrderRepository extends EntityRepository
              ->setFirstResult((int) $offsetStart)
              ->setMaxResults(max(10, (int) $perPage));
 
-         return ($qb->getQuery()->getResult());
+         return $qb->getQuery()->getResult();
     }
 
     /**

@@ -57,7 +57,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         try {
             $repository = $this->app['EM']->getRepository('Entities\OrderElement');
 
-            $results = $repository->findBy(array('order_id' => $order_id));
+            $results = $repository->findBy(array('orderId' => $order_id));
 
             $base_ids = array();
             foreach ($results as $result) {
