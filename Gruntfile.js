@@ -1,5 +1,10 @@
 module.exports = function(grunt) {
     grunt.initConfig({
+        "pkg": grunt.file.readJSON("package.json"),
+        "path": {
+            "bower": "assets",
+            "asset": "www/assets"
+        },
         mocha_phantomjs: {
             all: ['www/scripts/tests/index.html']
         },
@@ -7,7 +12,7 @@ module.exports = function(grunt) {
             all: ['www/include/js/tests/*.html']
         },
         clean: {
-            "assets": ["assets", "www/assets"],
+            "assets": ["<%= path.bower %>", "<%= path.asset %>"]
         },
         bower: {
             install: {
@@ -32,22 +37,22 @@ module.exports = function(grunt) {
             "backbone": {
                 "expand": true,
                 "src": [
-                    "assets/backbone-amd/LICENSE",
-                    "assets/backbone-amd/backbone.js"
+                    "<%= path.bower %>/backbone-amd/LICENSE",
+                    "<%= path.bower %>/backbone-amd/backbone.js"
                 ],
-                "dest": "www/assets/backbone-amd/",
+                "dest": "<%= path.asset %>/backbone-amd/",
                 "flatten": true
             },
             "blueimp": {
                 "expand": true,
                 "src": "js/load-image.js",
-                "dest": "www/assets/blueimp-load-image/",
-                "cwd": "assets/blueimp-load-image",
+                "dest": "<%= path.asset %>/blueimp-load-image/",
+                "cwd": "<%= path.bower %>/blueimp-load-image",
                 "flatten": true
             },
             "bootstrap": {
                 "expand": true,
-                "cwd": "assets/bootstrap",
+                "cwd": "<%= path.bower %>/bootstrap",
                 "src": [
                     "bootstrap/css/*",
                     "bootstrap/js/*",
@@ -57,70 +62,70 @@ module.exports = function(grunt) {
                 "rename": function(dest, src) {
                     return dest + src.replace("bootstrap", "");
                 },
-                "dest": "www/assets/bootstrap/"
+                "dest": "<%= path.asset %>/bootstrap/"
             },
             "bootstrap-multiselect": {
                 "expand": true,
-                "cwd": "assets/bootstrap-multiselect",
+                "cwd": "<%= path.bower %>/bootstrap-multiselect",
                 "src": [
                     "css/bootstrap-multiselect.css",
-                    "js/bootstrap-multiselect.js",
+                    "js/bootstrap-multiselect.js"
                 ],
-                "dest": "www/assets/bootstrap-multiselect/"
+                "dest": "<%= path.asset %>/bootstrap-multiselect/"
             },
             "chai": {
                 "expand": true,
-                "src": "assets/chai/chai.js",
-                "dest": "www/assets/chai/",
+                "src": "<%= path.bower %>/chai/chai.js",
+                "dest": "<%= path.asset %>/chai/",
                 "flatten": true
             },
             "font-awesome": {
                 "expand": true,
-                "cwd": "assets/font-awesome",
+                "cwd": "<%= path.bower %>/font-awesome",
                 "src": ["css/*", "font/*"],
-                "dest": "www/assets/font-awesome/"
+                "dest": "<%= path.asset %>/font-awesome/"
             },
             "geonames-server-jquery-plugin": {
                 "expand": true,
                 "flatten": true,
                 "src": [
-                    "assets/geonames-server-jquery-plugin/LICENSE",
-                    "assets/geonames-server-jquery-plugin/jquery.geonames.js"
+                    "<%= path.bower %>/geonames-server-jquery-plugin/LICENSE",
+                    "<%= path.bower %>/geonames-server-jquery-plugin/jquery.geonames.js"
                 ],
-                "dest": "www/assets/geonames-server-jquery-plugin"
+                "dest": "<%= path.asset %>/geonames-server-jquery-plugin"
             }
             ,
             "humane-js": {
                 "expand": true,
                 "src": ["humane.js", "themes/libnotify.css"],
-                "dest": "www/assets/humane-js/",
-                "cwd": "assets/humane-js/"
+                "dest": "<%= path.asset %>/humane-js/",
+                "cwd": "<%= path.bower %>/humane-js/"
             },
             "i18next": {
                 "expand": true,
-                "src": "assets/i18next/release/i18next.amd-1.6.3.js",
-                "dest": "www/assets/i18next/",
+                "src": "<%= path.bower %>/i18next/release/i18next.amd-1.6.3.js",
+                "dest": "<%= path.asset %>/i18next/",
                 "flatten": true
             },
             "jquery": {
                 "expand": true,
-                "src": "assets/jquery/jquery.js",
-                "dest": "www/assets/jquery/",
+                "src": "<%= path.bower %>/jquery/jquery.js",
+                "dest": "<%= path.asset %>/jquery/",
                 "flatten": true
             },
             "jquery-file-upload": {
                 "expand": true,
                 "src": [
-                    "assets/jquery-file-upload/js/jquery.fileupload.js",
-                    "assets/jquery-file-upload/js/jquery.iframe-transport.js",
-                    "assets/jquery-file-upload/css/jquery.fileupload-ui.css"
+                    "<%= path.bower %>/jquery-file-upload/js/jquery.fileupload.js",
+                    "<%= path.bower %>/jquery-file-upload/js/jquery.iframe-transport.js",
+                    "<%= path.bower %>/jquery-file-upload/css/jquery.fileupload-ui.css"
                 ],
-                "dest": "www/assets/jquery-file-upload/",
+                "dest": "<%= path.asset %>/jquery-file-upload/",
                 "flatten": true
             },
             "jquery-mobile": {
                 "expand": true,
-                "cwd": "assets/jquery-mobile",
+                "cwd": "<%= path.bower %>/jquery-mobile",
                 "src": [
                     "compiled/images/*",
                     "jquery.mobile.css",
@@ -129,11 +134,11 @@ module.exports = function(grunt) {
                 "rename": function(dest, src) {
                     return dest + src.replace("compiled", "");
                 },
-                "dest": "www/assets/jquery-mobile/"
+                "dest": "<%= path.asset %>/jquery-mobile/"
             },
             "jquery-ui": {
                 "expand": true,
-                "cwd": "assets/jquery.ui",
+                "cwd": "<%= path.bower %>/jquery.ui",
                 "src": [
                     "dist/i18n/*",
                     "dist/images/*",
@@ -145,55 +150,55 @@ module.exports = function(grunt) {
                 "rename": function(dest, src) {
                     return dest + src.replace("dist", "");
                 },
-                "dest": "www/assets/jquery.ui/"
+                "dest": "<%= path.asset %>/jquery.ui/"
             },
             "js-fixtures": {
                 "expand": true,
                 "src": [
-                    "assets/js-fixtures/LICENSE",
-                    "assets/js-fixtures/fixtures.js"
+                    "<%= path.bower %>/js-fixtures/LICENSE",
+                    "<%= path.bower %>/js-fixtures/fixtures.js"
                 ],
-                "dest": "www/assets/js-fixtures/",
+                "dest": "<%= path.asset %>/js-fixtures/",
                 "flatten": true
             },
             "json2": {
                 "expand": true,
-                "src": "assets/json2/json2.js",
-                "dest": "www/assets/json2/",
+                "src": "<%= path.bower %>/json2/json2.js",
+                "dest": "<%= path.asset %>/json2/",
                 "flatten": true
             },
             "json3": {
                 "expand": true,
                 "src": [
-                    "assets/json3/LICENSE",
-                    "assets/json3/lib/json3.js"
+                    "<%= path.bower %>/json3/LICENSE",
+                    "<%= path.bower %>/json3/lib/json3.js"
                 ],
-                "dest": "www/assets/json3/",
+                "dest": "<%= path.asset %>/json3/",
                 "flatten": true
             },
             "mocha": {
                 "expand": true,
                 "src": [
-                    "assets/mocha/LICENSE",
-                    "assets/mocha/mocha.js",
-                    "assets/mocha/mocha.css"
+                    "<%= path.bower %>/mocha/LICENSE",
+                    "<%= path.bower %>/mocha/mocha.js",
+                    "<%= path.bower %>/mocha/mocha.css"
                 ],
-                "dest": "www/assets/mocha/",
+                "dest": "<%= path.asset %>/mocha/",
                 "flatten": true
             },
             "modernizr": {
                 "expand": true,
-                "src": "assets/modernizr/modernizr.js",
-                "dest": "www/assets/modernizr/",
+                "src": "<%= path.bower %>/modernizr/modernizr.js",
+                "dest": "<%= path.asset %>/modernizr/",
                 "flatten": true
             },
             "normalize": {
                 "expand": true,
                 "src": [
-                    "assets/normalize-css/normalize.css",
-                    "assets/normalize-css/LICENSE.md"
+                    "<%= path.bower %>/normalize-css/normalize.css",
+                    "<%= path.bower %>/normalize-css/LICENSE.md"
                 ],
-                "dest": "www/assets/normalize-css/",
+                "dest": "<%= path.asset %>/normalize-css/",
                 "flatten": true
             },
             "qunit": {
@@ -203,30 +208,30 @@ module.exports = function(grunt) {
                     "qunit/qunit.js",
                     "addons/phantomjs/*"
                 ],
-                "dest": "www/assets/qunit/",
-                "cwd": "assets/qunit/",
+                "dest": "<%= path.asset %>/qunit/",
+                "cwd": "<%= path.bower %>/qunit/",
                 "rename": function(dest, src) {
                     return dest + src.replace("qunit", "");
-                },
+                }
             },
             "requirejs": {
                 "expand": true,
                 "src": [
-                    "assets/requirejs/LICENSE",
-                    "assets/requirejs/require.js"
+                    "<%= path.bower %>/requirejs/LICENSE",
+                    "<%= path.bower %>/requirejs/require.js"
                 ],
-                "dest": "www/assets/requirejs/",
+                "dest": "<%= path.asset %>/requirejs/",
                 "flatten": true
             },
             "swfobject": {
                 "expand": true,
-                "src": "assets/swfobject/swfobject/swfobject.js",
-                "dest": "www/assets/swfobject",
+                "src": "<%= path.bower %>/swfobject/swfobject/swfobject.js",
+                "dest": "<%= path.asset %>/swfobject",
                 "flatten": true
             },
             "tinymce": {
                 "expand": true,
-                "cwd": "assets/tinymce/js/tinymce",
+                "cwd": "<%= path.bower %>/tinymce/js/tinymce",
                 "src": [
                     "plugins/**",
                     "skins/**",
@@ -234,44 +239,44 @@ module.exports = function(grunt) {
                     "tinymce.js",
                     "license.txt"
                 ],
-                "dest": "www/assets/tinymce"
+                "dest": "<%= path.asset %>/tinymce"
             },
             "underscore": {
                 "expand": true,
                 "src": [
-                    "assets/underscore-amd/LICENSE",
-                    "assets/underscore-amd/underscore.js"
+                    "<%= path.bower %>/underscore-amd/LICENSE",
+                    "<%= path.bower %>/underscore-amd/underscore.js"
                 ],
-                "dest": "www/assets/underscore-amd/",
+                "dest": "<%= path.asset %>/underscore-amd/",
                 "flatten": true
             },
             "zxcvbn": {
                 "expand": true,
                 "src": [
-                    "assets/zxcvbn/LICENSE.txt",
-                    "assets/zxcvbn/zxcvbn-async.js"
+                    "<%= path.bower %>/zxcvbn/LICENSE.txt",
+                    "<%= path.bower %>/zxcvbn/zxcvbn-async.js"
                 ],
-                "dest": "www/assets/zxcvbn",
+                "dest": "<%= path.asset %>/zxcvbn",
                 "flatten": true
             }
         },
         less: {
             login: {
                 options: {
-                    paths: ["www/skins/login/less"],
+                    paths: ["www/skins/login/less"]
                 },
                 files: {
-                    "www/assets/build/login.css": "www/skins/login/less/login.less"
+                    "<%= path.asset %>/build/login.css": "www/skins/login/less/login.less"
                 }
             },
             account: {
                 options: {
-                    paths: ["www/skins/account"],
+                    paths: ["www/skins/account"]
                 },
                 files: {
-                    "www/assets/build/account.css": "www/skins/account/account.less"
+                    "<%= path.asset %>/build/account.css": "www/skins/account/account.less"
                 }
-            },
+            }
         }
     });
 
