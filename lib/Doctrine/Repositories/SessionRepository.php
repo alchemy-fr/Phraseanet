@@ -78,14 +78,16 @@ class SessionRepository extends EntityRepository
      * @param  array      $feed_id
      * @return Collection
      */
-    public function findByIdArray(array $feed_id)
-    {
-        $dql = 'SELECT f FROM Entities\Feed f
-            ORDER BY f.created_on DESC
-            WHERE f.id IN (' . implode(",", $feed_id) . ')';
+public function findByIds(array $feedIds)
+{
+    $qb = $this->createQueryBuilder('f');
 
-        $query = $this->_em->createQuery($dql);
-
-        return $query->getResult();
+    if (!empty($feedIds)) {
+        $qb->Where($qb->expr()->in('f.id', $feedIds));
     }
+
+    $qb->orderBy('f.updated_on', 'DESC');
+
+    return $qb->getQuery()->getResult();
+}
 }

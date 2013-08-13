@@ -25,26 +25,29 @@ class UserSettingRepository extends EntityRepository
      * Returns a collection of FeedEntry from given feeds, limited to $how_many results, starting with $offset_start
      *
      * @param array   $feeds
-     * @param integer $offset_start
-     * @param integer $how_many
+     * @param integer $offsetStart
+     * @param integer $howMany
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function findByFeeds($feeds, $offset_start = null, $how_many = null)
+    public function findByFeeds($feeds, $offsetStart = null, $perPage = null)
     {
-        $dql = 'SELECT f FROM Entities\FeedEntry f
-                WHERE f.feed IN (:feeds) order by f.updated_on DESC';
+        $qb = $this->createQueryBuilder('f');
 
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('feeds', $feeds);
-
-        if (null !== $offset_start && 0 !== $offset_start) {
-            $query->setFirstResult($offset_start);
-        }
-        if (null !== $how_many) {
-            $query->setMaxResults($how_many);
+        if (!empty($feeds)) {
+            $qb->Where($qb->expr()->in('f.feed', $feeds));
         }
 
-        return $query->getResult();
+        $qb->orderBy('f.updated_on', 'DESC');
+
+        if ($offsetStart) {
+            $qb->setFirstResult(max(0, (int) $offsetStart));
+        }
+
+        if ($perPage) {
+            $qb->setMaxResults(max(5, (int) $perPage));
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

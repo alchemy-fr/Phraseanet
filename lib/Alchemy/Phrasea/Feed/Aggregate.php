@@ -92,7 +92,7 @@ class Aggregate implements FeedInterface
      */
     public static function create(Application $app, array $feed_ids)
     {
-        $feeds = $this->em->getRepository('Entities\Feed')->findByIdArray($feed_ids);
+        $feeds = $this->em->getRepository('Entities\Feed')->findByIds($feed_ids);
 
         return new static($app, $feeds);
     }
@@ -114,7 +114,11 @@ class Aggregate implements FeedInterface
             return null;
         }
 
-        return $this->em->getRepository('Entities\FeedEntry')->findByFeeds($this->feeds, $offset_start, $how_many);
+        $feedIds = array();
+        foreach ($this->feeds as $feed) {
+            $feedIds[] = $feed->getId();
+        }
+        return $this->em->getRepository('Entities\FeedEntry')->findByFeeds($feedIds, $offset_start, $how_many);
     }
 
     /**
@@ -195,7 +199,11 @@ class Aggregate implements FeedInterface
     public function getCountTotalEntries()
     {
         if (count($this->feeds) > 0) {
-            return count($this->em->getRepository('Entities\FeedEntry')->findByFeeds($this->feeds));
+            $feedIds = array();
+            foreach ($this->feeds as $feed) {
+                $feedIds[] = $feed->getId();
+            }
+            return count($this->em->getRepository('Entities\FeedEntry')->findByFeeds($feedIds));
         }
 
         return 0;
