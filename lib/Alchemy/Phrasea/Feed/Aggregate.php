@@ -77,7 +77,7 @@ class Aggregate implements FeedInterface
     public static function createFromUser(EntityManager $em, \User_Adapter $user)
     {
         $feeds = $em->getRepository('Entities\Feed')->getAllForUser($user);
-        $token = $em->getRepository('Entities\AggregateToken')->findByUser($user);
+        $token = $em->getRepository('Entities\AggregateToken')->findOneBy(array('usr_id' => $user->get_id()));
 
         return new static($em, $feeds, $token);
     }

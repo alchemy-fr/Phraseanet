@@ -12,8 +12,6 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use Entities\Feed;
-use Entities\FeedToken;
 
 /**
  * FeedTokenRepository
