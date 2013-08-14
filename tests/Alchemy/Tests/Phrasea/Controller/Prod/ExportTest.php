@@ -107,10 +107,10 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testExportFtpNoDocs()
     {
         self::$DI['client']->request('POST', '/prod/export/ftp/',  array(
-            'addr'       => 'test.ftp',
+            'address' => 'test.ftp',
             'login'      => 'login',
-            'destfolder' => 'documents',
-            'NAMMKDFOLD' => 'documents',
+            'dest_folder' => 'documents',
+            'prefix_folder' => 'documents',
             'obj'        => array('preview')
         ));
         $response = self::$DI['client']->getResponse();
@@ -137,10 +137,10 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         return array(
             array(array()),
-            array(array('addr' => '')),
-            array(array('addr'  => '', 'login' => '')),
-            array(array('addr'       => '', 'login'      => '', 'destfolder' => '')),
-            array(array('addr'       => '', 'login'      => '', 'destfolder' => '', 'NAMMKDFOLD' => '')),
+            array(array('address' => '')),
+            array(array('address'  => '', 'login' => '')),
+            array(array('address'       => '', 'login'      => '', 'dest_folder' => '')),
+            array(array('address'       => '', 'login'      => '', 'dest_folder' => '', 'prefix_folder' => '')),
         );
     }
 
@@ -157,10 +157,10 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request('POST', '/prod/export/ftp/', array(
             'lst'        => self::$DI['record_1']->get_serialize_key(),
             'user_dest'  => self::$DI['user']->get_id(),
-            'addr'       => 'local.phrasea.test',
+            'address'    => 'local.phrasea.test',
             'login'      => self::$DI['user']->get_email(),
-            'destfolder' => '/home/test/',
-            'NAMMKDFOLD' => 'test2/',
+            'dest_folder' => '/home/test/',
+            'prefix_folder' => 'test2/',
             'obj'        => array('preview')
         ));
 

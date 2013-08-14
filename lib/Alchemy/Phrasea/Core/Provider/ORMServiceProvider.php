@@ -44,23 +44,10 @@ class ORMServiceProvider implements ServiceProviderInterface
             return new MonologSQLLogger($logger, 'yaml');
         });
 
-        $app['EM'] = $app->share(function(Application $app) {
-
-            $config = new ORMConfiguration();
-
-            if ($app['debug']) {
-                $config->setSQLLogger($app['EM.sql-logger']);
-            }
-
+        $app['EM.driver'] = $app->share(function(Application $app) {
             AnnotationRegistry::registerFile(
                 $app['root.path'].'/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
             );
-
-            $opCodeCacheType = $app['phraseanet.configuration']['main']['opcodecache']['type'];
-            $opCodeCacheOptions = $app['phraseanet.configuration']['main']['opcodecache']['options'];
-
-            $cacheType = $app['phraseanet.configuration']['main']['cache']['type'];
-            $cacheOptions = $app['phraseanet.configuration']['main']['cache']['options'];
 
             $annotationReader = new AnnotationReader();
             $fileCacheReader = new FileCacheReader(
@@ -82,35 +69,68 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             $driverChain->addDriver($annotationDriver, 'Entities');
 
+            return $driverChain;
+        });
+
+        $app['EM.config'] = $app->share(function(Application $app) {
+            $config = new ORMConfiguration();
+
+            if ($app['debug']) {
+                $config->setSQLLogger($app['EM.sql-logger']);
+            }
+
             $config->setMetadataCacheImpl($app['phraseanet.cache-service']->factory(
-                'ORMmetadata', $opCodeCacheType, $opCodeCacheOptions
+                'ORMmetadata', $app['EM.opcode-cache-type'], $app['EM.opcode-cache-options']
             ));
 
             $config->setQueryCacheImpl($app['phraseanet.cache-service']->factory(
-                'ORMquery', $opCodeCacheType, $opCodeCacheOptions
+                'ORMquery', $app['EM.opcode-cache-type'], $app['EM.opcode-cache-options']
             ));
             $config->setResultCacheImpl($app['phraseanet.cache-service']->factory(
-                'ORMresult', $cacheType, $cacheOptions
+                'ORMresult', $app['EM.cache-type'], $app['EM.cache-options']
             ));
 
             $config->setAutoGenerateProxyClasses($app['debug']);
 
-            $config->setMetadataDriverImpl($driverChain);
+            $config->setMetadataDriverImpl($app['EM.driver']);
 
             $config->setProxyDir($app['root.path'] . '/lib/Doctrine/Proxies');
             $config->setProxyNamespace('Proxies');
 
-            if ('test' === $app->getEnvironment()) {
-                $dbalConf = $app['phraseanet.configuration']['main']['database-test'];
-            } else {
-                $dbalConf = $app['phraseanet.configuration']['main']['database'];
-            }
+            return $config;
+        });
 
+        $app['EM.opcode-cache-type'] = $app->share(function(Application $app) {
+            return $app['phraseanet.configuration']['main']['opcodecache']['type'];
+        });
+        $app['EM.opcode-cache-options'] = $app->share(function(Application $app) {
+            return $app['phraseanet.configuration']['main']['opcodecache']['options'];
+        });
+
+        $app['EM.cache-type'] = $app->share(function(Application $app) {
+            return $app['phraseanet.configuration']['main']['cache']['type'];
+        });
+        $app['EM.cache-options'] = $app->share(function(Application $app) {
+            return $app['phraseanet.configuration']['main']['cache']['options'];
+        });
+        $app['EM.events-manager'] = $app->share(function(Application $app) {
             $evm = new EventManager();
             $evm->addEventSubscriber(new TimestampableListener());
 
+            return $evm;
+        });
+
+        $app['EM.dbal-conf'] = $app->share(function(Application $app) {
+            if ('test' === $app->getEnvironment()) {
+                return $app['phraseanet.configuration']['main']['database-test'];
+            }
+
+            return $app['phraseanet.configuration']['main']['database'];
+        });
+
+        $app['EM'] = $app->share(function(Application $app) {
             try {
-                $em = EntityManager::create($dbalConf, $config, $evm);
+                $em = EntityManager::create($app['EM.dbal-conf'], $app['EM.config'], $app['EM.events-manager']);
             } catch (\Exception $e) {
                 throw new RuntimeException("Unable to create database connection", $e->getCode(), $e);
             }

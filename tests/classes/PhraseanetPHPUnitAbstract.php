@@ -60,6 +60,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             self::$time_start = microtime(true);
 
             self::$DI = new \Pimple();
+            self::initializeSqliteDB();
 
             $application = new Application('test');
 
@@ -68,9 +69,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 exit(1);
             }
 
-            self::createSetOfUserTests($application);
-
             self::updateTablesSchema($application);
+
+            self::createSetOfUserTests($application);
 
             self::setCollection($application);
 
@@ -80,6 +81,14 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             self::$updated = true;
         }
+    }
+
+    public static function initializeSqliteDB($path = '/tmp/db.sqlite')
+    {
+        if (is_file($path)) {
+            unlink($path);
+        }
+        copy(__DIR__ . '/../db-ref.sqlite', $path);
     }
 
     public function createApplication()
@@ -129,9 +138,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $app['debug'] = true;
 
-            $app['EM'] = $app->share($app->extend('EM', function($em) {
-                @unlink('/tmp/db.sqlite');
-                copy(__DIR__ . '/../db-ref.sqlite', '/tmp/db.sqlite');
+            $app['EM'] = $app->share($app->extend('EM', function($em) use ($phpunit) {
+                $phpunit::initializeSqliteDB();
 
                 return $em;
             }));
@@ -171,9 +179,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $app['debug'] = true;
 
-            $app['EM'] = $app->share($app->extend('EM', function($em) {
-                @unlink('/tmp/db.sqlite');
-                copy(__DIR__ . '/../db-ref.sqlite', '/tmp/db.sqlite');
+            $app['EM'] = $app->share($app->extend('EM', function ($em) use ($phpunit) {
+                $phpunit::initializeSqliteDb();
 
                 return $em;
             }));

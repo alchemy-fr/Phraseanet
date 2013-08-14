@@ -3,52 +3,52 @@
 {% macro print_ftp_form(datas) %}
     <div class="ftp_form ftp_form_{{datas.usr_id}}">
         <div class="control-group">
-            <label class="control-label" for="addrFTP_{{datas.usr_id}}">{% trans 'phraseanet:: adresse' %}  ftp://</label>
+            <label class="control-label" for="ftp-address-{{datas.usr_id}}">{% trans 'phraseanet:: adresse' %}  ftp://</label>
             <div class="controls">
-                <input type="text" name="addr" id="addrFTP_{{datas.usr_id}}" value="{{datas.addrFTP}}" />
+                <input type="text" name="address" id="ftp-address-{{datas.usr_id}}" value="{{datas.address}}" />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="ftpssl_{{datas.usr_id}}">{% trans 'phraseanet:: utiliser SSL' %}</label>
+            <label class="control-label" for="ftp-ssl-{{datas.usr_id}}">{% trans 'phraseanet:: utiliser SSL' %}</label>
             <div class="controls">
-                <input type="checkbox" name="ssl" id="ftpssl_{{datas.usr_id}}" value="1" />
+                <input type="checkbox" name="ssl" id="ftp-ssl-{{datas.usr_id}}" {% if datas.ssl %}checked{% endif %} />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="loginFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur identifiant' %}</label>
+            <label class="control-label" for="ftp-login-{{datas.usr_id}}">{% trans 'admin::compte-utilisateur identifiant' %}</label>
             <div class="controls">
-                <input type="text" name="login" id="loginFTP_{{datas.usr_id}}" value="{{datas.loginFTP}}" />
+                <input type="text" name="login" id="ftp-login-{{datas.usr_id}}" value="{{datas.login}}" />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="pwdFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur mot de passe' %}</label>
+            <label class="control-label" for="ftp-password-{{datas.usr_id}}">{% trans 'admin::compte-utilisateur mot de passe' %}</label>
             <div class="controls">
-                <input type="password" name="pwd" id="pwdFTP_{{datas.usr_id}}" value="{{datas.pwdFTP}}" />
+                <input type="password" name="password" id="ftp-password-{{datas.usr_id}}" value="{{datas.password}}" />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="passifFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Utiliser le mode passif' %}</label>
+            <label class="control-label" for="ftp-passive-{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Utiliser le mode passif' %}</label>
             <div class="controls">
-                <input value="1" type="checkbox" name="passif" id="passifFTP_{{datas.usr_id}}" {% if datas.passifFTP %}checked="checked"{% endif %}  />
+                <input value="1" type="checkbox" name="passive" id="ftp-passive-{{datas.usr_id}}" {% if datas.passive %}checked{% endif %} />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="retryFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Nombre d\'essais max' %}</label>
+            <label class="control-label" for="ftp-max-retry-{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Nombre d\'essais max' %}</label>
             <div class="controls">
-                <input type="text" name="nbretry" id="retryFTP_{{datas.usr_id}}" value="{{datas.retryFTP}}" />
+                <input type="text" name="max_retry" id="ftp-max-retry-{{datas.usr_id}}" value="{{datas.max_retry}}" />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="destFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp:  repertoire de destination ftp' %}</label>
+            <label class="control-label" for="ftp-dest-folder-{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp:  repertoire de destination ftp' %}</label>
             <div class="controls">
-                <input type="text" name="destfolder" id="destFTP_{{datas.usr_id}}" value="{{datas.destFTP}}" />
+                <input type="text" name="dest_folder" id="ftp-dest-folder-{{datas.usr_id}}" value="{{datas.dest_folder}}" />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="idMKDFOLD_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: creer un dossier' %}</label>
+            <label class="control-label" for="ftp-prefix-folder-{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: creer un dossier' %}</label>
             <div class="controls">
-                <input type="checkbox" class="ftp_folder_check" {% if datas.prefixFTPfolder != '' %}checked="checked"{% endif %} name="MKDFOLD" id="idMKDFOLD_{{datas.usr_id}}" value="MKDFOLD"  />
-                <input type="text" name="NAMMKDFOLD" id="prefixFTPfolder_{{datas.usr_id}}" value="{{datas.prefixFTPfolder}}" {% if datas.prefixFTPfolder == '' %}disabled="disabled"{% endif %} />
+                <input type="checkbox" class="ftp_folder_check" {% if datas.prefix_folder != '' %}checked{% endif %} name="prefix_folder_check" id="ftp-prefix-folder-check-{{datas.usr_id}}" />
+                <input type="text" name="prefix_folder" id="ftp-prefix-folder-{{datas.usr_id}}" value="{{datas.prefix_folder}}" {% if datas.prefix_folder == '' %}disabled{% endif %} />
             </div>
         </div>
         <div class="control-group">

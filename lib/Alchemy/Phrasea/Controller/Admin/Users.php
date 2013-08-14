@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Helper\User as UserHelper;
+use Entities\FtpCredential;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -797,23 +798,23 @@ class Users implements ControllerProviderInterface
                             && false === \User_Adapter::get_usr_id_from_email($app, $curUser['usr_mail'])) {
                         $NewUser = \User_Adapter::create($app, $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
 
-                        if (isset($curUser['defaultftpdatasent'])) {
-                            $NewUser->set_defaultftpdatas($curUser['defaultftpdatasent']);
-                        }
+                        $ftpCredential = new FtpCredential();
+                        $ftpCredential->setUsrId($NewUser->get_id());
+
                         if (isset($curUser['activeFTP'])) {
-                            $NewUser->set_activeftp((int) ($curUser['activeFTP']));
+                            $ftpCredential->setActive((int) $curUser['activeFTP']);
                         }
                         if (isset($curUser['addrFTP'])) {
-                            $NewUser->set_ftp_address($curUser['addrFTP']);
+                            $ftpCredential->setAddress((string) $curUser['addrFTP']);
                         }
                         if (isset($curUser['passifFTP'])) {
-                            $NewUser->set_ftp_passif((int) ($curUser['passifFTP']));
+                            $ftpCredential->setPassive((int) $curUser['passifFTP']);
                         }
                         if (isset($curUser['destFTP'])) {
-                            $NewUser->set_ftp_dir($curUser['destFTP']);
+                            $ftpCredential->setReceptionFolder($curUser['destFTP']);
                         }
                         if (isset($curUser['prefixFTPfolder'])) {
-                            $NewUser->set_ftp_dir_prefix($curUser['prefixFTPfolder']);
+                            $ftpCredential->setRepositoryPrefixName($curUser['prefixFTPfolder']);
                         }
                         if (isset($curUser['usr_prenom'])) {
                             $NewUser->set_firstname($curUser['usr_prenom']);

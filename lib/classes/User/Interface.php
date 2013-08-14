@@ -34,23 +34,7 @@ interface User_Interface
 
     public function get_country();
 
-    public function set_defaultftpdatas($datas);
-
     public function set_mail_notifications($boolean);
-
-    public function set_activeftp($boolean);
-
-    public function set_ftp_address($address);
-
-    public function set_ftp_login($login);
-
-    public function set_ftp_password($password);
-
-    public function set_ftp_passif($boolean);
-
-    public function set_ftp_dir($ftp_dir);
-
-    public function set_ftp_dir_prefix($ftp_dir_prefix);
 
     public function set_firstname($firstname);
 
@@ -78,23 +62,7 @@ interface User_Interface
 
     public function delete();
 
-    public function get_defaultftpdatas();
-
     public function get_mail_notifications();
-
-    public function get_activeftp();
-
-    public function get_ftp_address();
-
-    public function get_ftp_login();
-
-    public function get_ftp_password();
-
-    public function get_ftp_passif();
-
-    public function get_ftp_dir();
-
-    public function get_ftp_dir_prefix();
 
     public function load($id);
 

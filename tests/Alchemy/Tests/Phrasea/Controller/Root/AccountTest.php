@@ -305,7 +305,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'form_company'         => 'NASA',
             'form_activity'        => 'Space',
             'form_geonameid'       => '',
-            'form_addrFTP'         => '',
+            'form_addressFTP'      => '',
             'form_loginFTP'        => '',
             'form_pwdFTP'          => '',
             'form_destFTP'         => '',
