@@ -210,7 +210,7 @@ class Publications implements ControllerProviderInterface
 
                 $app['EM']->flush();
             } catch (\Exception $e) {
-                $error = $e->getMessage();
+                $error = "An error occured";
             }
 
             return $app->redirectPath('admin_feeds_feed', array('id' => $id, 'error' => $error));
@@ -237,7 +237,7 @@ class Publications implements ControllerProviderInterface
                     $app['EM']->flush();
                 }
             } catch (\Exception $e) {
-                $error = $e->getMessage();
+                $error = "An error occured";
             }
 
             return $app->redirectPath('admin_feeds_feed', array('id' => $id, 'error' => $error));
