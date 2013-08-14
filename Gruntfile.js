@@ -277,6 +277,53 @@ module.exports = function(grunt) {
                     "<%= path.asset %>/build/account.css": "www/skins/account/account.less"
                 }
             }
+        },
+        csslint: {
+            options: {
+                // Possible Errors
+                "box-model": false,
+                "duplicate-properties": false,
+                "empty-rules": false,
+                "errors": false,
+                "known-properties": false,
+                "display-property-grouping": false,
+                "non-link-hover": false,
+                // Compatibility
+                "adjoining-classes": false,
+                "box-sizing": false,
+                "compatible-vendor-prefixes": false,
+                "gradients": false,
+                "text-indent": false,
+                "fallback-colors": false,
+                "vendor-prefix": false,
+                "star-property-hack": false,
+                "underscore-property-hack": false,
+                "bulletproof-font-face": false,
+                // Performance
+                "font-faces": false,
+                "regex-selectors": false,
+                "unqualified-attributes": false,
+                "universal-selector": false,
+                "zero-units": false,
+                "overqualified-elements": false,
+                "duplicate-background-images": false,
+                "import": false,
+                // Maintainability & Duplication
+                "important": false,
+                "floats": false,
+                "font-sizes": false,
+                "ids": false,
+                // Accessibility
+                "outline-none": false,
+                // OOCSS
+                "qualified-headings": false,
+                "unique-headings": false,
+                // Others
+                "shorthand": false
+            },
+            all: {
+                src: ['www/skins/**/*.css']
+            }
         }
     });
 
