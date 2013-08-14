@@ -95,7 +95,7 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
         }
         $token = self::$DI['app']['EM']
             ->getRepository('Entities\FeedToken')
-            ->findOneBy(array('usr_id' => $user->get_id(), 'feed' => $feed->getId()));
+            ->findOneBy(array('usrId' => $user->get_id(), 'feed' => $feed->getId()));
         self::$DI['app']['EM']->remove($token);
         self::$DI['app']['EM']->flush();
     }

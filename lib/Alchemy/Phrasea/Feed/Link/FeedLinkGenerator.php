@@ -139,7 +139,7 @@ class FeedLinkGenerator implements LinkGeneratorInterface
     {
         $token = $this->em
             ->getRepository('Entities\FeedToken')
-            ->findOneBy(array('usr_id' => $user->get_id(), 'feed' => $feed->getId()));
+            ->findOneBy(array('usrId' => $user->get_id(), 'feed' => $feed->getId()));
 
         if (null === $token || true === $renew) {
             if (null === $token) {

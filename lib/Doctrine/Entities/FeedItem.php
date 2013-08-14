@@ -31,14 +31,14 @@ class FeedItem
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="record_id")
      */
-    private $record_id;
+    private $recordId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="sbas_id")
      */
-    private $sbas_id;
+    private $sbasId;
 
     /**
      * @ORM\Column(type="integer")
@@ -47,15 +47,15 @@ class FeedItem
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", name="created_on")
      */
-    private $created_on;
+    private $createdOn;
 
     /**
      * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", name="updated_on")
      */
-    private $updated_on;
+    private $updatedOn;
 
     /**
      * @ORM\ManyToOne(targetEntity="FeedEntry", inversedBy="items", cascade={"persist"})
@@ -81,7 +81,7 @@ class FeedItem
      */
     public function setRecordId($recordId)
     {
-        $this->record_id = $recordId;
+        $this->recordId = $recordId;
 
         return $this;
     }
@@ -93,7 +93,7 @@ class FeedItem
      */
     public function getRecordId()
     {
-        return $this->record_id;
+        return $this->recordId;
     }
 
     /**
@@ -104,7 +104,7 @@ class FeedItem
      */
     public function setSbasId($sbasId)
     {
-        $this->sbas_id = $sbasId;
+        $this->sbasId = $sbasId;
 
         return $this;
     }
@@ -116,7 +116,7 @@ class FeedItem
      */
     public function getSbasId()
     {
-        return $this->sbas_id;
+        return $this->sbasId;
     }
 
     /**
@@ -173,7 +173,7 @@ class FeedItem
      */
     public function setCreatedOn($createdOn)
     {
-        $this->created_on = $createdOn;
+        $this->createdOn = $createdOn;
 
         return $this;
     }
@@ -185,7 +185,7 @@ class FeedItem
      */
     public function getCreatedOn()
     {
-        return $this->created_on;
+        return $this->createdOn;
     }
 
     /**
@@ -196,7 +196,7 @@ class FeedItem
      */
     public function setUpdatedOn($updatedOn)
     {
-        $this->updated_on = $updatedOn;
+        $this->updatedOn = $updatedOn;
 
         return $this;
     }
@@ -208,7 +208,7 @@ class FeedItem
      */
     public function getUpdatedOn()
     {
-        return $this->updated_on;
+        return $this->updatedOn;
     }
 
     /**

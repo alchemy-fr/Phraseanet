@@ -38,26 +38,26 @@ class FeedEntry
     private $subtitle;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=128, name="author_name")
      */
-    private $author_name;
+    private $authorName;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=128, name="author_email")
      */
-    private $author_email;
+    private $authorEmail;
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", name="created_on")
      */
-    private $created_on;
+    private $createdOn;
 
     /**
      * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", name="updated_on")
      */
-    private $updated_on;
+    private $updatedOn;
 
     /**
      * @ORM\OneToMany(targetEntity="FeedItem", mappedBy="entry", cascade={"ALL"})
@@ -149,7 +149,7 @@ class FeedEntry
      */
     public function setAuthorName($authorName)
     {
-        $this->author_name = $authorName;
+        $this->authorName = $authorName;
 
         return $this;
     }
@@ -161,7 +161,7 @@ class FeedEntry
      */
     public function getAuthorName()
     {
-        return $this->author_name;
+        return $this->authorName;
     }
 
     /**
@@ -172,7 +172,7 @@ class FeedEntry
      */
     public function setAuthorEmail($authorEmail)
     {
-        $this->author_email = $authorEmail;
+        $this->authorEmail = $authorEmail;
 
         return $this;
     }
@@ -184,7 +184,7 @@ class FeedEntry
      */
     public function getAuthorEmail()
     {
-        return $this->author_email;
+        return $this->authorEmail;
     }
 
     /**
@@ -195,7 +195,7 @@ class FeedEntry
      */
     public function setCreatedOn($createdOn)
     {
-        $this->created_on = $createdOn;
+        $this->createdOn = $createdOn;
 
         return $this;
     }
@@ -207,7 +207,7 @@ class FeedEntry
      */
     public function getCreatedOn()
     {
-        return $this->created_on;
+        return $this->createdOn;
     }
 
     /**
@@ -218,7 +218,7 @@ class FeedEntry
      */
     public function setUpdatedOn($updatedOn)
     {
-        $this->updated_on = $updatedOn;
+        $this->updatedOn = $updatedOn;
 
         return $this;
     }
@@ -230,7 +230,7 @@ class FeedEntry
      */
     public function getUpdatedOn()
     {
-        return $this->updated_on;
+        return $this->updatedOn;
     }
 
     /**

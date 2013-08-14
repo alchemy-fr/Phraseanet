@@ -29,9 +29,9 @@ class FeedPublisher
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
      * @ORM\Column(type="boolean")
@@ -40,9 +40,9 @@ class FeedPublisher
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", name="created_on")
      */
-    private $created_on;
+    private $createdOn;
 
     /**
      * @ORM\ManyToOne(targetEntity="Feed", inversedBy="publishers", cascade={"persist"})
@@ -68,7 +68,7 @@ class FeedPublisher
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
@@ -80,7 +80,7 @@ class FeedPublisher
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**
@@ -149,7 +149,7 @@ class FeedPublisher
      */
     public function setCreatedOn($createdOn)
     {
-        $this->created_on = $createdOn;
+        $this->createdOn = $createdOn;
 
         return $this;
     }
@@ -161,6 +161,6 @@ class FeedPublisher
      */
     public function getCreatedOn()
     {
-        return $this->created_on;
+        return $this->createdOn;
     }
 }

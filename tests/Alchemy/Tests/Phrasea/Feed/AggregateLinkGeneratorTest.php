@@ -100,7 +100,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
         }
         $token = self::$DI['app']['EM']
             ->getRepository('Entities\AggregateToken')
-            ->findOneBy(array('usr_id' => $user->get_id()));
+            ->findOneBy(array('usrId' => $user->get_id()));
         self::$DI['app']['EM']->remove($token);
         self::$DI['app']['EM']->flush();
     }

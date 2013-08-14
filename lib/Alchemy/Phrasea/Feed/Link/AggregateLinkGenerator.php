@@ -123,7 +123,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
     {
         $token = $this->em
             ->getRepository('Entities\AggregateToken')
-            ->findOneBy(array('usr_id' => $user->get_id()));
+            ->findOneBy(array('usrId' => $user->get_id()));
 
         if (null === $token || true === $renew) {
             if (null === $token) {

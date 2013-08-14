@@ -35,14 +35,14 @@ class Feed implements FeedInterface
     private $public = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", name="icon_url")
      */
-    private $icon_url = false;
+    private $iconUrl = false;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true, name="base_id")
      */
-    private $base_id;
+    private $baseId;
 
     /**
      * @ORM\Column(type="string", length=128)
@@ -56,15 +56,15 @@ class Feed implements FeedInterface
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", name="created_on")
      */
-    private $created_on;
+    private $createdOn;
 
     /**
      * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", name="updated_on")
      */
-    private $updated_on;
+    private $updatedOn;
 
     /**
      * @ORM\OneToMany(targetEntity="FeedPublisher", mappedBy="feed", cascade={"ALL"})
@@ -132,7 +132,7 @@ class Feed implements FeedInterface
      */
     public function setIconUrl($iconUrl)
     {
-        $this->icon_url = $iconUrl;
+        $this->iconUrl = $iconUrl;
 
         return $this;
     }
@@ -144,7 +144,7 @@ class Feed implements FeedInterface
      */
     public function getIconUrl()
     {
-        return $this->icon_url;
+        return $this->iconUrl;
     }
 
     /**
@@ -155,7 +155,7 @@ class Feed implements FeedInterface
      */
     public function setBaseId($baseId)
     {
-        $this->base_id = $baseId;
+        $this->baseId = $baseId;
 
         return $this;
     }
@@ -167,7 +167,7 @@ class Feed implements FeedInterface
      */
     public function getBaseId()
     {
-        return $this->base_id;
+        return $this->baseId;
     }
 
     /**
@@ -318,11 +318,11 @@ class Feed implements FeedInterface
     public function setCollection(\collection $collection = null)
     {
         if ($collection === null) {
-            $this->base_id = null;
+            $this->baseId = null;
 
             return;
         }
-        $this->base_id = $collection->get_base_id();
+        $this->baseId = $collection->get_base_id();
     }
 
     /**
@@ -333,7 +333,7 @@ class Feed implements FeedInterface
      */
     public function setCreatedOn($createdOn)
     {
-        $this->created_on = $createdOn;
+        $this->createdOn = $createdOn;
 
         return $this;
     }
@@ -345,7 +345,7 @@ class Feed implements FeedInterface
      */
     public function getCreatedOn()
     {
-        return $this->created_on;
+        return $this->createdOn;
     }
 
     /**
@@ -356,7 +356,7 @@ class Feed implements FeedInterface
      */
     public function setUpdatedOn($updatedOn)
     {
-        $this->updated_on = $updatedOn;
+        $this->updatedOn = $updatedOn;
 
         return $this;
     }
@@ -368,7 +368,7 @@ class Feed implements FeedInterface
      */
     public function getUpdatedOn()
     {
-        return $this->updated_on;
+        return $this->updatedOn;
     }
 
     /**
