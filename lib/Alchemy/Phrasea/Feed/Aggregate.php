@@ -25,10 +25,10 @@ class Aggregate implements FeedInterface
     private $subtitle;
 
     /** @var DateTime */
-    private $created_on;
+    private $createdOn;
 
     /** @var DateTime */
-    private $updated_on;
+    private $updatedOn;
 
     /** @var array */
     private $feeds;
@@ -150,7 +150,7 @@ class Aggregate implements FeedInterface
      */
     public function getCreatedOn()
     {
-        return $this->created_on;
+        return $this->createdOn;
     }
 
     /**
@@ -158,7 +158,7 @@ class Aggregate implements FeedInterface
      */
     public function getUpdatedOn()
     {
-        return $this->updated_on;
+        return $this->updatedOn;
     }
 
     /**
