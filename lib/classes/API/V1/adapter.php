@@ -1517,8 +1517,8 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $feed = $app['EM']->getRepository('Entities\Feed')->find($publication_id);
-        if (!$feed->isAccessible($app['authentication']->getUser(), $this->app)) {
+        $feed = $this->app['EM']->getRepository('Entities\Feed')->find($publication_id);
+        if (!$feed->isAccessible($user, $this->app)) {
             return $result->set_datas(array());
         }
         $offset_start = (int) ($request->get('offset_start') ? : 0);
