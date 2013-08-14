@@ -22,7 +22,7 @@ class AggregateToken
     private $id;
 
     /** @var string */
-    private $usr_id;
+    private $usrId;
 
     /** @var Aggregate */
     private $aggregatedFeed;
@@ -45,7 +45,7 @@ class AggregateToken
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
@@ -57,7 +57,7 @@ class AggregateToken
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**

@@ -142,9 +142,9 @@ class Feed implements ControllerProviderInterface
                 ->setTitle($title)
                 ->setSubtitle($request->request->get('subtitle', ''));
 
-            $current_feed_id = $entry->getFeed()->getId();
-            $new_feed_id = $request->request->get('feed_id', $current_feed_id);
-            if ($current_feed_id !== (int) $new_feed_id) {
+            $currentFeedId = $entry->getFeed()->getId();
+            $new_feed_id = $request->request->get('feed_id', $currentFeedId);
+            if ($currentFeedId !== (int) $new_feed_id) {
 
                 $new_feed = $app['EM']->getRepository('Entities\Feed')->find($new_feed_id);
 
