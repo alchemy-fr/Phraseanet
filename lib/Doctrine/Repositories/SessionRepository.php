@@ -33,20 +33,17 @@ class SessionRepository extends EntityRepository
     {
         $base_ids = array_keys($user->ACL()->get_granted_base());
 
-        $dql = 'SELECT f FROM Entities\Feed f
-            WHERE f.baseId IS NULL ';
+        $qb = $this->createQueryBuilder('f');
+        $qb->where($qb->expr()->isNull('f.baseId'))
+            ->orWhere('f.public = true');
 
-        if (count($base_ids) > 0) {
-            $dql .= ' OR f.baseId
-                IN (' . implode(', ', $base_ids) . ') ';
+        if (!empty($base_ids)) {
+            $qb->orWhere($qb->expr()->in('f.baseId', $base_ids));
         }
 
-        $dql .= ' OR f.public = true
-            ORDER BY f.updatedOn DESC';
+        $qb->orderBy('f.updatedOn', 'DESC');
 
-        $query = $this->_em->createQuery($dql);
-
-        return $query->getResult();
+        return $qb->getQuery()->getResult();
     }
 
     /**
