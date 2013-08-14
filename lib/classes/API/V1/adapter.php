@@ -1519,7 +1519,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $feed = $app['EM']->getRepository('Entities\Feed')->find($publication_id);
         if (!$feed->isAccessible($app['authentication']->getUser(), $this->app)) {
-            return $result->set_datas(array())
+            return $result->set_datas(array());
         }
         $offset_start = (int) ($request->get('offset_start') ? : 0);
         $per_page = (int) ($request->get('per_page') ? : 5);
