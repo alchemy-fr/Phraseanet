@@ -47,29 +47,6 @@ class SessionRepository extends EntityRepository
     }
 
     /**
-     * Returns the given feed if the user can access to it.
-     *
-     * @param  Application   $app
-     * @param  \User_Adapter $user
-     * @param  type          $id
-     * @return Feed
-     */
-    public function loadWithUser(Application $app, \User_Adapter $user, $id)
-    {
-        $feed = $this->find($id);
-        if ($feed) {
-            $coll = $feed->getCollection($app);
-            if ($feed->isPublic()
-                || $coll === null
-                || in_array($coll->get_base_id(), array_keys($user->ACL()->get_granted_base()))) {
-                return $feed;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Returns all the feeds from a given array containing their id.
      *
      * @param  array      $feed_id

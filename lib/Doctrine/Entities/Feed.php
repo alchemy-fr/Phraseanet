@@ -543,4 +543,24 @@ class Feed implements FeedInterface
 
         return false;
     }
+
+    /**
+     *
+     * Returns a boolean indicating whether a given user has access to the feed
+     *
+     * @param \User_Adapter $user
+     * @param \Alchemy\Phrasea\Application $app
+     *
+     * @return boolean
+     */
+    public function isAccessible(\User_Adapter $user, Application $app)
+    {
+        $coll = $this->getCollection($app);
+        if ($this->isPublic()
+            || $coll === null
+            || in_array($coll->get_base_id(), array_keys($user->ACL()->get_granted_base()))) {
+                return true;
+            }
+        return false;
+    }
 }

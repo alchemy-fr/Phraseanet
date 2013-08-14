@@ -228,7 +228,10 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feed = $app['EM']->getRepository('Entities\Feed')->loadWithUser($app, $app['authentication']->getUser(), $id);
+            $feed = $app['EM']->getRepository('Entities\Feed')->find($id);
+            if (!$feed->isAccessible($app['authentication']->getUser(), $app)) {
+                $app->abort(404, 'Feed not found');
+            }
             $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser($app['authentication']->getUser());
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array('feed' => $feed, 'feeds' => $feeds, 'page' => $page));
@@ -262,8 +265,10 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/subscribe/{id}/', function(Application $app, Request $request, $id) {
             $renew = ($request->query->get('renew') === 'true');
 
-            $feed = $app['EM']->getRepository('Entities\Feed')->loadWithUser($app, $app['authentication']->getUser(), $id);
-
+            $feed = $app['EM']->getRepository('Entities\Feed')->find($id);
+            if (!$feed->isAccessible($app['authentication']->getUser(), $app)) {
+                $app->abort(404, 'Feed not found');
+            }
             $link = $app['feed.user-link-generator']->generate($feed, $app['authentication']->getUser(), FeedLinkGenerator::FORMAT_RSS, null, $renew);
 
             $output = array(
