@@ -50,8 +50,8 @@ class Aggregate implements FeedInterface
     {
         $this->title = 'AGGREGATE';
         $this->subtitle = 'AGGREGATE SUBTITLE';
-        $this->created_on = new \DateTime();
-        $this->updated_on = new \DateTime();
+        $this->createdOn = new \DateTime();
+        $this->updatedOn = new \DateTime();
         $this->em = $em;
 
         $tmp_feeds = array();

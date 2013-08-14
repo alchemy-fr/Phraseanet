@@ -73,7 +73,7 @@ class Feed implements FeedInterface
 
     /**
      * @ORM\OneToMany(targetEntity="FeedEntry", mappedBy="feed", cascade={"ALL"})
-     * @ORM\OrderBy({"created_on" = "ASC"})
+     * @ORM\OrderBy({"createdOn" = "ASC"})
      */
     private $entries;
 
