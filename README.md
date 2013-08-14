@@ -25,3 +25,7 @@ And follow the install steps described at https://docs.phraseanet.com/Admin/
 #License
 
 Phraseanet is licensed under GPL-v3 license.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/alchemy-fr/phraseanet/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
