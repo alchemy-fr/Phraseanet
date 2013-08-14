@@ -34,15 +34,15 @@ class SessionRepository extends EntityRepository
         $base_ids = array_keys($user->ACL()->get_granted_base());
 
         $dql = 'SELECT f FROM Entities\Feed f
-            WHERE f.base_id IS NULL ';
+            WHERE f.baseId IS NULL ';
 
         if (count($base_ids) > 0) {
-            $dql .= ' OR f.base_id
+            $dql .= ' OR f.baseId
                 IN (' . implode(', ', $base_ids) . ') ';
         }
 
         $dql .= ' OR f.public = true
-            ORDER BY f.updated_on DESC';
+            ORDER BY f.updatedOn DESC';
 
         $query = $this->_em->createQuery($dql);
 

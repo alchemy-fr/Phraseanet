@@ -38,7 +38,7 @@ class UserSettingRepository extends EntityRepository
             $qb->Where($qb->expr()->in('f.feed', $feeds));
         }
 
-        $qb->orderBy('f.updated_on', 'DESC');
+        $qb->orderBy('f.updatedOn', 'DESC');
 
         if ($offsetStart) {
             $qb->setFirstResult(max(0, (int) $offsetStart));
