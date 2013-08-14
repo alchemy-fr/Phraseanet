@@ -178,7 +178,7 @@ class Publications implements ControllerProviderInterface
                 $app['EM']->flush();
 
                 $app['filesystem']->copy($tmpname, $app['root.path'] . '/config/feed_' . $feed->getId() . '.jpg');
-                $app['filesystem']->copy($tmpname, 'custom/feed_' . $feed->getId() . '.jpg');
+                $app['filesystem']->copy($tmpname, sprintf('%s/www/custom/feed_%d.jpg', $app['root.path'], $feed->getId()));
 
                 $app['filesystem']->remove($tmpname);
 
