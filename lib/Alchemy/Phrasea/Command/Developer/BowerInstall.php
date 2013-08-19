@@ -34,6 +34,8 @@ class BowerInstall extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $grunt = $this->container['driver.grunt'];
+        $grunt->getProcessBuilderFactory()->setTimeout(600);
+
         $bower = $this->container['driver.bower'];
 
         $output->writeln("Using <info>".$grunt->getProcessBuilderFactory()->getBinary()."</info> for driver");
