@@ -29,7 +29,7 @@ module.exports = function(grunt) {
                 options: {
                     components: {
                         "jquery.ui": ["npm", {"grunt": "build"}],
-                        "jquery-mobile": ["npm",{"grunt": "dist"}],
+                        "jquery-mobile": ["npm", {"grunt": "dist"}],
                         "tinymce": ["npm", "jake"],
                         "bootstrap": ["npm", {"make": "bootstrap"}]
                     }
