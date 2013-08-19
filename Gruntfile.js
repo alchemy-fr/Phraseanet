@@ -260,24 +260,6 @@ module.exports = function(grunt) {
                 "flatten": true
             }
         },
-        less: {
-            login: {
-                options: {
-                    paths: ["www/skins/login/less"]
-                },
-                files: {
-                    "<%= path.asset %>/build/login.css": "www/skins/login/less/login.less"
-                }
-            },
-            account: {
-                options: {
-                    paths: ["www/skins/account"]
-                },
-                files: {
-                    "<%= path.asset %>/build/account.css": "www/skins/account/account.less"
-                }
-            }
-        },
         csslint: {
             options: {
                 // Possible Errors
@@ -332,6 +314,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-bower-postinst");
     grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
-    grunt.registerTask("build-assets", ["clean:assets", "bower", "bower_postinst", "copy", "less"]);
+    grunt.registerTask("build-assets", ["clean:assets", "bower", "bower_postinst", "copy"]);
     grunt.registerTask('test', ["qunit", "mocha_phantomjs"]);
 };
