@@ -17,8 +17,8 @@ class InstallAllTest extends \PhraseanetPHPUnitAbstract
 
         $n = 0;
         foreach (array(
-            'dependencies:bower',
-            'dependencies:composer'
+            'dependencies:composer',
+            'dependencies:bower'
         ) as $name) {
             $command = $this->getMockBuilder('Symfony\Component\Console\Command\Command')
                 ->setMethods(array('execute'))

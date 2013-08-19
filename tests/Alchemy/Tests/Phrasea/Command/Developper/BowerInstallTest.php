@@ -17,8 +17,21 @@ class BowerInstallTest extends \PhraseanetPHPUnitAbstract
 
         self::$DI['cli']['driver.bower'] = $this->getMockBuilder('Alchemy\Phrasea\Command\Developer\Utils\BowerDriver')
             ->disableOriginalConstructor()
-
             ->getMock();
+
+        self::$DI['cli']['console'] = $this->getMockBuilder('Symfony\Component\Console\Application')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mockedCommand = $this->getMockBuilder('Symfony\Component\Console\Command\Command')
+            ->setMethods(array('execute'))
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        self::$DI['cli']['console']->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($mockedCommand));
+
         self::$DI['cli']['driver.grunt'] = $this->getMockBuilder('Alchemy\Phrasea\Command\Developer\Utils\GruntDriver')
             ->disableOriginalConstructor()
             ->getMock();
@@ -41,13 +54,17 @@ class BowerInstallTest extends \PhraseanetPHPUnitAbstract
             ->will($this->returnValue($processBuilder));
 
         self::$DI['cli']['driver.grunt']->expects($this->at(1))
+            ->method('getProcessBuilderFactory')
+            ->will($this->returnValue($processBuilder));
+
+        self::$DI['cli']['driver.grunt']->expects($this->at(2))
             ->method('command')
             ->with('--version')
             ->will($this->returnValue('4.0.1'));
 
-        self::$DI['cli']['driver.grunt']->expects($this->at(2))
+        self::$DI['cli']['driver.grunt']->expects($this->at(3))
             ->method('command')
-            ->with('build-assets');
+            ->with('install-assets');
 
         $command = new BowerInstall();
         $command->setContainer(self::$DI['cli']);
