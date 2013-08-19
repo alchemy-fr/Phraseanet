@@ -55,8 +55,7 @@ php:
   - 5.5
 
 script:
-  - bin/developer dependencies:composer --prefer-source
-  - grunt build-assets
+  - bin/developer dependencies:all --prefer-source
   - bin/setup system:upgrade -y -v -f
   - php hudson/cleanupSubdefs.php
   - grunt test
