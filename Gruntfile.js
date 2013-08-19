@@ -314,6 +314,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-bower-postinst");
     grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
-    grunt.registerTask("build-assets", ["clean:assets", "bower", "bower_postinst", "copy"]);
+    grunt.registerTask("install-assets", ["clean:assets", "bower", "bower_postinst", "copy"]);
     grunt.registerTask('test', ["qunit", "mocha_phantomjs"]);
 };

@@ -64,10 +64,12 @@ class BowerInstall extends Command
         $success = false;
 
         try {
-            $output->write("\rInstalling assets...");
-            $grunt->command('build-assets');
+            $output->write("Installing assets...");
+            $grunt->command('install-assets');
+            $output->write(" <info>OK</info>");
+            $output->writeln("");
+            $this->container['console']->get('assets:compile-less')->execute($input, $output);
             $success = true;
-            $output->writeln("<info>OK</info>");
         } catch (ExecutionFailureException $e) {
 
         }
