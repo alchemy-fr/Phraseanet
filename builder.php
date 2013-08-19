@@ -93,7 +93,7 @@ $finder
     ->name('sinon-chai')
     ->name('js-fixtures')
     ->name('node_modules')
-    ->name('assets')
+    ->name('tmp-assets')
     ->ignoreDotFiles(false)
     ->ignoreVCS(false)
     ->in(__DIR__);
