@@ -58,7 +58,7 @@ class BowerInstall extends Command
         if ($input->getOption('clear-cache')) {
             $output->write("Cleaning bower cache... ");
             $bower->command(array('cache', 'clean'));
-            $output->writeln("<info>OK</info>");
+            $output->writeln("<comment>OK</comment>");
         }
 
         $success = false;
@@ -66,7 +66,7 @@ class BowerInstall extends Command
         try {
             $output->write("Installing assets...");
             $grunt->command('install-assets');
-            $output->write(" <info>OK</info>");
+            $output->write(" <comment>OK</comment>");
             $output->writeln("");
             $this->container['console']->get('assets:compile-less')->execute($input, $output);
             $success = true;
