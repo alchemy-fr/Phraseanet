@@ -28,12 +28,7 @@ class BowerInstall extends Command
         $this
             ->setDescription('Installs bower dependencies')
             ->addOption('no-dev', 'd', InputOption::VALUE_NONE, 'Do not install dev dependencies')
-            ->addOption(
-               'prefer-dist',
-               null,
-               InputOption::VALUE_NONE,
-               'If defined forces installation from dist package'
-            );
+            ->addOption('clear-cache', null, InputOption::VALUE_NONE, 'If defined forces to clear the cache before installation');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
@@ -60,7 +55,7 @@ class BowerInstall extends Command
             ));
         }
 
-        if ($input->getOption('prefer-dist')) {
+        if ($input->getOption('clear-cache')) {
             $output->write("Cleaning bower cache... ");
             $bower->command(array('cache', 'clean'));
             $output->writeln("<info>OK</info>");

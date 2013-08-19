@@ -26,12 +26,7 @@ class InstallAll extends Command
             ->setDescription('Installs all dependencies')
             ->addOption('no-dev', 'd', InputOption::VALUE_NONE, 'Do not install dev dependencies')
             ->addOption('prefer-source', 'p', InputOption::VALUE_NONE, 'Use the --prefer-source composer option')
-            ->addOption(
-               'prefer-dist',
-               null,
-               InputOption::VALUE_NONE,
-               'If defined forces installation from bower dist package'
-            );
+            ->addOption('clear-cache', null, InputOption::VALUE_NONE, 'If defined forces to clear the cache before installation');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
