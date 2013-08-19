@@ -38,7 +38,7 @@ abstract class AbstractPluginCommand extends Command
         $this->container['plugins.autoloader-generator']->write($manifests);
         $output->writeln(" <comment>OK</comment>");
 
-        $output->writeln('Building LESS assets...');
+        $output->writeln('Building LESS assets');
         $this->container['phraseanet.less-builder']->build($this->container['phraseanet.less-mapping.customizable'], $output);
     }
 }
