@@ -2,7 +2,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         "pkg": grunt.file.readJSON("package.json"),
         "path": {
-            "bower": "assets",
+            "bower": "tmp-assets",
             "asset": "www/assets"
         },
         mocha_phantomjs: {
