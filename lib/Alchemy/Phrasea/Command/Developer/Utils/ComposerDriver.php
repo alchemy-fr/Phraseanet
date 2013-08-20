@@ -18,11 +18,20 @@ use Psr\Log\LoggerInterface;
 
 class ComposerDriver extends AbstractBinary
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'composer';
     }
 
+    /**
+     * @param array|ConfigurationInterface $conf
+     * @param LoggerInterface              $logger
+     *
+     * @return ComposerDriver
+     */
     public static function create($conf = array(), LoggerInterface $logger = null)
     {
         if (!$conf instanceof ConfigurationInterface) {

@@ -18,6 +18,9 @@ use Psr\Log\LoggerInterface;
 
 class GruntDriver extends AbstractBinary
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'grunt';
@@ -27,7 +30,7 @@ class GruntDriver extends AbstractBinary
      * @param array|ConfigurationInterface $conf
      * @param LoggerInterface              $logger
      *
-     * @return BowerDriver
+     * @return GruntDriver
      */
     public static function create($conf = array(), LoggerInterface $logger = null)
     {
