@@ -4,11 +4,14 @@
     <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="../../../assets/jquery/jquery.js"></script>
-    <script src="../../../assets/qunit/qunit/qunit.js"></script>
+    <script src="../../../assets/qunit/qunit.js"></script>
     <script src="../jquery.Edit.js"></script>
-    <link type="text/css" rel="stylesheet" href="../../../assets/qunit/qunit/qunit.css"/>
+    <link type="text/css" rel="stylesheet" href="../../../assets/qunit/qunit.css"/>
     <script>  $(document).ready(function(){
 
+      // disable log messages in tests
+      console.log = function() {};
+      console.error = function() {};
 
       module("Add datas");
 

@@ -28,16 +28,13 @@ class LessBuilderServiceProvider implements ServiceProviderInterface
         });
 
         $app['phraseanet.less-mapping.base'] = $app->share(function($app) {
-            return array(
-                $app['root.path'] . '/www/assets/bootstrap/less/bootstrap.less' => $app['root.path'] . '/www/skins/build/bootstrap/css/bootstrap.css',
-                $app['root.path'] . '/www/assets/bootstrap/less/responsive.less' => $app['root.path'] . '/www/skins/build/bootstrap/css/bootstrap-responsive.css',
-            );
+            return array();
         });
 
         $app['phraseanet.less-mapping.customizable'] = $app->share(function($app) {
             return array(
-                $app['root.path'] . '/www/skins/login/less/login.less' => $app['root.path'] . '/www/skins/build/login.css',
-                $app['root.path'] . '/www/skins/account/account.less' => $app['root.path'] . '/www/skins/build/account.css',
+                $app['root.path'] . '/www/skins/login/less/login.less' => $app['root.path'] . '/www/assets/build/login.css',
+                $app['root.path'] . '/www/skins/account/account.less' => $app['root.path'] . '/www/assets/build/account.css',
             );
         });
 

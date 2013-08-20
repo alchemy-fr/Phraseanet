@@ -36,7 +36,7 @@ class ComposerInstall extends Command
 
         $output->write("Updating composer... ");
         $composer->command('self-update');
-        $output->writeln("<info>OK</info>");
+        $output->writeln("<comment>OK</comment>");
 
         $commands = array('install', '--optimize-autoloader');
         if ($input->getOption('prefer-source')) {
@@ -47,11 +47,11 @@ class ComposerInstall extends Command
             if ($input->getOption('no-dev')) {
                 $output->write("Installing dependencies <info>without</info> developer packages ");
                 $composer->command(array_merge($commands, array('--no-dev')));
-                $output->writeln("<info>OK</info>");
+                $output->writeln("<comment>OK</comment>");
             } else {
                 $output->write("Installing dependencies <info>with</info> developer packages ");
                 $composer->command(array_merge($commands, array('--dev')));
-                $output->writeln("<info>OK</info>");
+                $output->writeln("<comment>OK</comment>");
             }
         } catch (ExecutionFailureException $e) {
             throw new RuntimeException('Unable to install composer dependencies', $e->getCode(), $e);

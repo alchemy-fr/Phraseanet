@@ -18,6 +18,9 @@ use Psr\Log\LoggerInterface;
 
 class BowerDriver extends AbstractBinary
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'bower';

@@ -65,7 +65,7 @@ ui-tabs-hide{
 	color:#202020;
 	border-bottom: 1px solid #9C9B99;
 	border-top: 1px solid #9C9B99;
-	
+
 }
 #dash .answers{
 	background-color:#555555;
@@ -87,7 +87,7 @@ p.right {
 	border: 1px solid black;
 	text-align:center;
 	font-weight:bolder;
-	padding 0px;
+	padding: 0px;
 }
 .report-table td {
 	border: 1px solid black;
