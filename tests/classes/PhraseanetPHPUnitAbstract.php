@@ -595,16 +595,21 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $application['phraseanet.appbox']->forceUpgrade($upgrader, $application);
             unset($upgrader);
 
-            $command = __DIR__ . '/../../bin/doctrine orm:schema-tool:update --force';
+            $command = __DIR__ . '/../../bin/developer orm:schema-tool:update --force';
 
             try {
                 $process = new Symfony\Component\Process\Process('php ' . $command);
                 $process->run();
-            } catch (Symfony\Component\Process\Exception\RuntimeException $e) {
-                $this->fail('Unable to validate ORM schema');
-            }
 
-            self::$updated = true;
+                if (!$process->isSuccessful()) {
+                    throw new \RuntimeException($process->getErrorOutput());
+                }
+
+                 self::$updated = true;
+            } catch (\RuntimeException $e) {
+                echo "\033[0;31mUnable to validate ORM schema\033[0;37m\n";
+                exit(1);
+            }
         }
 
         set_time_limit(3600);
