@@ -8,14 +8,14 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css,skins/admin/css/fields.css,skins/geonames/geonames.css,assets/jquery-file-upload/css/jquery.fileupload-ui.css' }) }}" />
+    <link type="text/css" rel="stylesheet" href="{{ path('minifier', { 'f' : 'include/jslibs/jquery-treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css,skins/admin/css/fields.css,skins/geonames/geonames.css,assets/jquery-file-upload/jquery.fileupload-ui.css' }) }}" />
 {% endblock %}
 
 
 {% block javascript %}
   {% include "common/templates.html.twig" %}
   {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}
-  <script type="text/javascript" src="/include/tinymce/js/tinymce/tinymce.min.js"></script>
+  <script type="text/javascript" src="/assets/tinymce/tinymce.js"></script>
   <script type="text/javascript" src="{{ path('minifier', { 'g' : 'admin' }) }}"></script>
   <script type="text/javascript">
     var p4 = {users:{sel:[]}};

@@ -284,6 +284,9 @@
 /* Overlays */
 .ui-widget-overlay { background: #aaaaaa url(images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: .30;filter:Alpha(Opacity=30); }
 .ui-widget-shadow { margin: -8px 0 0 -8px; padding: 8px; background: #aaaaaa url(images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: .30;filter:Alpha(Opacity=30); -moz-border-radius: 8px; -webkit-border-radius: 8px; border-radius: 8px; }
+
+
+/* Accordion
 ----------------------------------*/
 .ui-accordion .ui-accordion-header { cursor: pointer; position: relative; margin-top: 1px; zoom: 1; }
 .ui-accordion .ui-accordion-li-fix { display: inline; }
@@ -291,7 +294,9 @@
 .ui-accordion .ui-accordion-header a { display: block; font-size: 1em; padding: .5em .5em .5em 2.2em; }
 .ui-accordion .ui-accordion-header .ui-icon { position: absolute; left: .5em; top: 50%; margin-top: -8px; }
 .ui-accordion .ui-accordion-content { padding: 1em 2.2em; border-top: 0; margin-top: -2px; position: relative; top: 1px; margin-bottom: 2px; overflow: auto; display: none; }
-.ui-accordion .ui-accordion-content-active { display: block; }/* Datepicker
+.ui-accordion .ui-accordion-content-active { display: block; }
+
+/* Datepicker
 ----------------------------------*/
 .ui-datepicker { width: 17em; padding: .2em .2em 0; border:thin solid #212121; }
 .ui-datepicker .ui-datepicker-header { position:relative; padding:.2em 0;color:#202020; }
@@ -305,7 +310,7 @@
 .ui-datepicker .ui-datepicker-title { margin: 0 2.3em; line-height: 1.8em; text-align: center; }
 .ui-datepicker .ui-datepicker-title select { float:left; font-size:1em; margin:1px 0; }
 .ui-datepicker select.ui-datepicker-month-year {width: 100%; color:#FF900;}
-.ui-datepicker select.ui-datepicker-month, 
+.ui-datepicker select.ui-datepicker-month,
 .ui-datepicker select.ui-datepicker-year { width: 49%; color:#FF900;}
 .ui-datepicker .ui-datepicker-title select.ui-datepicker-year { float: right; }
 .ui-datepicker table {width: 100%; font-size: .9em; border-collapse: collapse; margin:0 0 .4em;}
@@ -356,7 +361,7 @@
 ----------------------------------*/
 .ui-dialog { position: relative; padding: .2em; width: 300px; }
 .ui-dialog .ui-dialog-titlebar { padding: .5em .3em .3em 1em; position: relative;  }
-.ui-dialog .ui-dialog-title { float: left; margin: .1em 0 .2em; } 
+.ui-dialog .ui-dialog-title { float: left; margin: .1em 0 .2em; }
 .ui-dialog .ui-dialog-titlebar-close { position: absolute; right: .3em; top: 50%; width: 19px; margin: -10px 0 0 0; padding: 1px; height: 18px; }
 .ui-dialog .ui-dialog-titlebar-close span { display: block; margin: 1px; }
 .ui-dialog .ui-dialog-titlebar-close:hover, .ui-dialog .ui-dialog-titlebar-close:focus { padding: 0; }

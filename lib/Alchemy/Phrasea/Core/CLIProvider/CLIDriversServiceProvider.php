@@ -12,9 +12,10 @@
 namespace Alchemy\Phrasea\Core\CLIProvider;
 
 use Alchemy\Phrasea\Command\Developer\Utils\BowerDriver;
-use Alchemy\Phrasea\Command\Developer\Utils\UglifyJsDriver;
 use Alchemy\Phrasea\Command\Developer\Utils\ComposerDriver;
+use Alchemy\Phrasea\Command\Developer\Utils\GruntDriver;
 use Alchemy\Phrasea\Command\Developer\Utils\RecessDriver;
+use Alchemy\Phrasea\Command\Developer\Utils\UglifyJsDriver;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -84,6 +85,16 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
             }
 
             return UglifyJsDriver::create(array('uglifyjs.binaries' => $uglifyJsBinary), $app['monolog']);
+        });
+
+        $app['driver.grunt'] = $app->share(function (Application $app) {
+            $gruntBinary = $app['driver.binary-finder']('grunt', 'grunt_binary');
+
+            if (null === $gruntBinary) {
+                throw new RuntimeException('Unable to find grunt executable.');
+            }
+
+            return GruntDriver::create(array('grunt.binaries' => $gruntBinary), $app['monolog']);
         });
     }
 

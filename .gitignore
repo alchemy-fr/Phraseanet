@@ -15,4 +15,4 @@ composer.phar
 behat.yml
 /datas
 /www/assets
-/www/skins/build
+/tmp-assets

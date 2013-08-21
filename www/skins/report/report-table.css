@@ -9,23 +9,19 @@
 	width:15px;
 	height: 16px;
 	margin-left:10px;
+	margin-left:5px;
 }
 /*hack tout sauf ie 6-7-8*/
 :root *>.form_csv {
-
 	margin-top:6px;
 }
 
-/*hack tout sauf ie 6-7-8*/
-.form_csv {
-
-	margin-top:-8px\9;
-	margin-left:5px;
+.lt-ie9 .form_csv {
+	margin-top:-8px;
 }
 
-/*hack pour ie 6-7-8*/
-th{
-	height:50px\9;
+.lt-ie9 th{
+	height:50px;
 }
 
 #query{

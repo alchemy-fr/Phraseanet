@@ -12,11 +12,11 @@ require.config({
     baseUrl: "/scripts",
     paths: {
         jquery: "../assets/jquery/jquery",
-        jqueryui: "../include/jslibs/jquery-ui-1.10.3",
+        jqueryui: "../assets/jquery.ui/jquery-ui",
         underscore: "../assets/underscore-amd/underscore",
         backbone: "../assets/backbone-amd/backbone",
-        i18n: "../assets/i18next/release/i18next.amd-1.6.2.min",
-        bootstrap: "../skins/build/bootstrap/js/bootstrap.min"
+        i18n: "../assets/i18next/i18next.amd-1.6.3",
+        bootstrap: "../assets/bootstrap/js/bootstrap.min"
     },
     shim: {
         bootstrap : ["jquery"],

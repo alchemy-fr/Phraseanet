@@ -16,21 +16,21 @@ use Alchemy\BinaryDriver\Configuration;
 use Alchemy\BinaryDriver\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 
-class ComposerDriver extends AbstractBinary
+class GruntDriver extends AbstractBinary
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'composer';
+        return 'grunt';
     }
 
     /**
      * @param array|ConfigurationInterface $conf
      * @param LoggerInterface              $logger
      *
-     * @return ComposerDriver
+     * @return GruntDriver
      */
     public static function create($conf = array(), LoggerInterface $logger = null)
     {
@@ -38,7 +38,7 @@ class ComposerDriver extends AbstractBinary
             $conf = new Configuration($conf);
         }
 
-        $binaries = $conf->get('composer.binaries', array('composer'));
+        $binaries = $conf->get('grunt.binaries', array('grunt'));
 
         return static::load($binaries, $logger, $conf);
     }

@@ -11,7 +11,7 @@
 $groups = array(
     'authentication_css' => array(
         '//assets/normalize-css/normalize.css',
-        '//skins/build/login.css',
+        '//assets/build/login.css',
         '//assets/font-awesome/css/font-awesome.css',
         '//assets/jquery.ui/themes/base/jquery.ui.autocomplete.css'
     ),
@@ -21,11 +21,11 @@ $groups = array(
         '//scripts/apps/login/home/config.js'
     ),
     'client' => array(
-        '//include/jslibs/swfobject/swfobject.js'
-        , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
+        '//assets/swfobject/swfobject.js'
+        , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
-        , '//include/jslibs/json2.js'
+        , '//assets/json2/json2.js'
         , '//include/jslibs/audio-player/audio-player-noswfobject.js'
         , '//include/jslibs/jquery.form.2.49.js'
         , '//skins/prod/jquery.Dialog.js'
@@ -39,19 +39,19 @@ $groups = array(
         , '//assets/underscore-amd/underscore.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery-treeview/jquery.treeview.js'
-        , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
+        , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jquery.kb-event.js'
         , '//skins/admin/users.js'
         , '//skins/admin/editusers.js'
         , '//include/jquery.common.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
-        , '//assets/blueimp-load-image/js/load-image.js'
-        , '//assets/jquery-file-upload/js/jquery.iframe-transport.js'
-        , '//assets/jquery-file-upload/js/jquery.fileupload.js'
+        , '//assets/blueimp-load-image/load-image.js'
+        , '//assets/jquery-file-upload/jquery.iframe-transport.js'
+        , '//assets/jquery-file-upload/jquery.fileupload.js'
     ),
     'report' => array(
-         '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
+         '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//include/jquery.tooltip.js'
@@ -63,22 +63,22 @@ $groups = array(
         , '//skins/report/report.js'
     ),
     'modalBox' => array(
-         '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
+         '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
     ),
     'prod' => array(
-        '//include/jslibs/swfobject/swfobject.js'
+        '//assets/swfobject/swfobject.js'
         , '//assets/underscore-amd/underscore.js'
-        , '//include/jslibs/json2.js'
+        , '//assets/json2/json2.js'
         , '//include/jslibs/colorpicker/js/colorpicker.js'
         , '//include/jslibs/jquery.mousewheel.js'
         , '//include/jslibs/jquery.lazyload/jquery.lazyload.1.8.1.js'
-        , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
+        , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//assets/humane-js/humane.js'
-        , '//assets/blueimp-load-image/js/load-image.js'
-        , '//assets/jquery-file-upload/js/jquery.iframe-transport.js'
-        , '//assets/jquery-file-upload/js/jquery.fileupload.js'
+        , '//assets/blueimp-load-image/load-image.js'
+        , '//assets/jquery-file-upload/jquery.iframe-transport.js'
+        , '//assets/jquery-file-upload/jquery.fileupload.js'
         , '//include/jslibs/jquery.form.2.49.js'
         , '//include/jslibs/jquery.vertical.buttonset.js'
         , '//include/js/jquery.Selection.js'
@@ -117,8 +117,8 @@ $groups = array(
     'lightbox' => array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
-        , '//include/jslibs/swfobject/swfobject.js'
-        , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
+        , '//assets/swfobject/swfobject.js'
+        , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
@@ -129,8 +129,8 @@ $groups = array(
     'lightboxie6' => array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
-        , '//include/jslibs/swfobject/swfobject.js'
-        , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
+        , '//assets/swfobject/swfobject.js'
+        , '//assets/jquery.ui/i18n/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
