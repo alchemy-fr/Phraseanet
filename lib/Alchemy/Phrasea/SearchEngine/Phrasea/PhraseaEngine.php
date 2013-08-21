@@ -18,6 +18,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
+use Entities\UserQuery;
 
 class PhraseaEngine implements SearchEngineInterface
 {
@@ -440,7 +441,7 @@ class PhraseaEngine implements SearchEngineInterface
     private function getSuggestions($query)
     {
         $suggestions = array();
-        
+
         if ($this->qp && isset($this->qp['main'])) {
             $suggestions = array_map(function ($value) use ($query) {
                 return new SearchEngineSuggestion($query, $value['value'], $value['hits']);
@@ -575,8 +576,17 @@ class PhraseaEngine implements SearchEngineInterface
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        if ($this->app['authentication']->getUser()) {
-            \User_Adapter::saveQuery($this->app, $query);
+        if (null !== $user = $this->app['authentication']->getUser()) {
+            $userQuery = new UserQuery();
+            $userQuery->setUsrId($user->get_id());
+            $userQuery->setQuery($query);
+
+            $this->app['EM']->persist($userQuery);
+            $this->app['EM']->flush();
+
+            if ($user->getPrefs('start_page') === 'LAST_QUERY') {
+                $user->setPrefs('start_page_query', $query);
+            }
         }
 
         return $this;

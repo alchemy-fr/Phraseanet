@@ -220,7 +220,7 @@ class Root implements ControllerProviderInterface
             'per_page'             => $perPage,
             'search_engine'        =>  $app['phraseanet.SE'],
             'search_engine_option' => $options->serialize(),
-            'history'              => \queries::history($app['phraseanet.appbox'], $app['authentication']->getUser()->get_id()),
+            'history'              => \queries::history($app, $app['authentication']->getUser()->get_id()),
             'result'               => $result,
             'proposals'            => $currentPage === 1 ? $result->getProposals() : null,
             'help'                 => count($resultData) === 0 ? $this->getHelpStartPage($app) : '',

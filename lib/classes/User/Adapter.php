@@ -415,36 +415,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
 
     /**
-     * Query in the cache
-     *
-     * @param Application $app
-     * @param string      $query
-     *
-     * @return boolean
-     */
-    public static function saveQuery(Application $app, $query)
-    {
-        try {
-            $sql = "INSERT INTO dsel (id, name, usr_id, query)
-        VALUES (null, :name, :usr_id, :query)";
-            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(
-                ':name'   => $query,
-                ':usr_id' => $app['authentication']->getUser()->get_id(),
-                ':query'  => $query
-            ));
-            $stmt->closeCursor();
-
-            if ($app['authentication']->getUser()->getPrefs('start_page') == 'LAST_QUERY')
-                $app['authentication']->getUser()->setPrefs('start_page_query', $query);
-        } catch (Exception $e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      *
      * @return string
      */
