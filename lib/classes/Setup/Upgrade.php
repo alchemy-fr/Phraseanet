@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Setup\Version\MailChecker;
 
 /**
  * UpgradeManager for Phraseanet.
@@ -64,8 +65,9 @@ class Setup_Upgrade
 
         $this->appbox = $app['phraseanet.appbox'];
 
-        if (count(User_Adapter::get_wrong_email_users($app)) > 0) {
-            throw new Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
+        if (version_compare($this->appbox->get_version(), '3.9', '<')
+                && count(MailChecker::getWrongEmailUsers($app)) > 0) {
+            throw new \Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
         }
 
         $this->write_lock();
