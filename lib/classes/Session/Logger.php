@@ -10,13 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Exception\SessionNotFound;
 
-/**
- *
- * @package     Session
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Session_Logger
 {
     /**
@@ -184,5 +179,87 @@ class Session_Logger
             throw new Exception_Session_LoggerNotFound('Logger not found');
 
         return new self($app, $databox, $row['id']);
+    }
+
+    public static function updateClientInfos(Application $app, $appId)
+    {
+        if (!$app['authentication']->isAuthenticated()) {
+            return;
+        }
+
+        $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
+
+        if (!$session) {
+            throw new SessionNotFound('No session found');
+        }
+
+        if (!$session->hasModuleId($appId)) {
+            $module = new \Entities\SessionModule();
+
+            $module->setModuleId($appId);
+            $module->setSession($session);
+            $session->addModule($module);
+
+            $app['EM']->persist($module);
+            $app['EM']->persist($session);
+
+            $app['EM']->flush();
+        }
+
+        $usrId = $app['authentication']->getUser()->get_id();
+
+        $user = User_Adapter::getInstance($usrId, $app);
+
+        $appName = array(
+            '1' => 'Prod',
+            '2' => 'Client',
+            '3' => 'Admin',
+            '4' => 'Report',
+            '5' => 'Thesaurus',
+            '6' => 'Compare',
+            '7' => 'Validate',
+            '8' => 'Upload',
+            '9' => 'API'
+        );
+
+        if (isset($appName[$appId])) {
+            $sbas_ids = array_keys($user->ACL()->get_granted_sbas());
+
+            foreach ($sbas_ids as $sbas_id) {
+                try {
+                    $logger = $app['phraseanet.logger']($app['phraseanet.appbox']->get_databox($sbas_id));
+
+                    $connbas = connection::getPDOConnection($app, $sbas_id);
+                    $sql = 'SELECT appli FROM log WHERE id = :log_id';
+                    $stmt = $connbas->prepare($sql);
+                    $stmt->execute(array(':log_id' => $logger->get_id()));
+                    $row3 = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $stmt->closeCursor();
+
+                    if (!$row3)
+                        throw new Exception('no log');
+                    $applis = unserialize($row3['appli']);
+
+                    if (!in_array($appId, $applis)) {
+                        $applis[] = $appId;
+                    }
+
+                    $sql = 'UPDATE log SET appli = :applis WHERE id = :log_id';
+
+                    $params = array(
+                        ':applis' => serialize($applis)
+                        , ':log_id' => $logger->get_id()
+                    );
+
+                    $stmt = $connbas->prepare($sql);
+                    $stmt->execute($params);
+                    $stmt->closeCursor();
+                } catch (Exception $e) {
+
+                }
+            }
+        }
+
+        return;
     }
 }

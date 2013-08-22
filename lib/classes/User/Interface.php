@@ -150,8 +150,6 @@ interface User_Interface
 
     public function getPrefs($prop);
 
-    public static function updateClientInfos(Application $app, $app_id);
-
     public static function get_sys_admins(Application $app);
 
     public static function set_sys_admins(Application $app, $admins);

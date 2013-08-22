@@ -41,7 +41,7 @@ class Root implements ControllerProviderInterface
 
         $controllers->get('/', function(Application $app) {
             try {
-                \User_Adapter::updateClientInfos($app, 1);
+                \Session_Logger::updateClientInfos($app, 1);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
