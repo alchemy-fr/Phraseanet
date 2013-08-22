@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "684aeefa47272d816be20c930dc3d664",
+    "hash": "e1f4fba95f343d085e8a7d8dc5e21ed2",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -291,6 +291,69 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "time": "2013-07-01 09:47:54"
+        },
+        {
+            "name": "alchemy/task-manager",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/task-manager.git",
+                "reference": "ec0eabcd87407ef95e5f9504adf1893e86649445"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/ec0eabcd87407ef95e5f9504adf1893e86649445",
+                "reference": "ec0eabcd87407ef95e5f9504adf1893e86649445",
+                "shasum": ""
+            },
+            "require": {
+                "ext-zmq": "*",
+                "neutron/process-manager": "~1.0",
+                "neutron/signal-handler": "~1.0",
+                "php": ">=5.3.3",
+                "symfony/event-dispatcher": "~2.0",
+                "symfony/process": "2.4.x-dev@dev"
+            },
+            "require-dev": {
+                "monolog/monolog": "~1.0",
+                "phpunit/phpunit": "~3.7",
+                "symfony/console": "~2.3",
+                "symfony/finder": "~2.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Alchemy": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Neutron",
+                    "email": "imprec@gmail.com",
+                    "homepage": "http://www.lickmychip.com/"
+                },
+                {
+                    "name": "Phraseanet Team",
+                    "email": "info@alchemy.fr",
+                    "homepage": "http://www.phraseanet.com/"
+                }
+            ],
+            "description": "A manager for running parallel PHP processes command line.",
+            "keywords": [
+                "cli",
+                "parallel",
+                "process"
+            ],
+            "time": "2013-10-01 12:54:10"
         },
         {
             "name": "dailymotion/sdk",
@@ -1673,6 +1736,40 @@
             "time": "2013-07-23 19:58:28"
         },
         {
+            "name": "neutron/process-manager",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/romainneutron/ProcessManager.git",
+                "reference": "a867278f6be7b718752c0d1dbd5f4d3b37166dcc"
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/process": "2.4.x-dev@dev"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7",
+                "sami/sami": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Neutron": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Neutron",
+                    "email": "imprec@gmail.com",
+                    "homepage": "http://www.lickmychip.com/"
+                }
+            ],
+            "time": "2013-10-01 09:53:03"
+        },
+        {
             "name": "neutron/recaptcha",
             "version": "0.1.3",
             "source": {
@@ -1715,6 +1812,49 @@
             ],
             "description": "ReCaptcha Client",
             "time": "2013-02-14 13:42:00"
+        },
+        {
+            "name": "neutron/signal-handler",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/romainneutron/signal-handler.git",
+                "reference": "ab63986b82f883d24496bffc63368c50fe3bb795"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/romainneutron/signal-handler/zipball/ab63986b82f883d24496bffc63368c50fe3bb795",
+                "reference": "ab63986b82f883d24496bffc63368c50fe3bb795",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Neutron": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Neutron",
+                    "email": "imprec@gmail.com",
+                    "homepage": "http://www.lickmychip.com/"
+                }
+            ],
+            "description": "A library to ease the use of signal handling.",
+            "keywords": [
+                "signal"
+            ],
+            "time": "2013-09-11 20:35:49"
         },
         {
             "name": "neutron/silex-filesystem-provider",
@@ -2397,16 +2537,16 @@
         },
         {
             "name": "silex/silex",
-            "version": "dev-master",
+            "version": "1.1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Silex.git",
-                "reference": "c60a10bf93f5a91b24672c7f80670d235f19acc3"
+                "reference": "8a870bac112d0b24ec02602dfb33e8eb2028cf23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Silex/zipball/c60a10bf93f5a91b24672c7f80670d235f19acc3",
-                "reference": "c60a10bf93f5a91b24672c7f80670d235f19acc3",
+                "url": "https://api.github.com/repos/fabpot/Silex/zipball/8a870bac112d0b24ec02602dfb33e8eb2028cf23",
+                "reference": "8a870bac112d0b24ec02602dfb33e8eb2028cf23",
                 "shasum": ""
             },
             "require": {
@@ -2449,7 +2589,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -2477,7 +2617,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2013-10-28 09:44:08"
+            "time": "2013-10-26 07:18:45"
         },
         {
             "name": "silex/web-profiler",
@@ -2681,12 +2821,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "d866a5acc45426f3c48c82b7cedb985d9e24568c"
+                "reference": "a9c17c3266b5f62a5e72814c26ed0c12a1935edc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/d866a5acc45426f3c48c82b7cedb985d9e24568c",
-                "reference": "d866a5acc45426f3c48c82b7cedb985d9e24568c",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/a9c17c3266b5f62a5e72814c26ed0c12a1935edc",
+                "reference": "a9c17c3266b5f62a5e72814c26ed0c12a1935edc",
                 "shasum": ""
             },
             "require": {
@@ -2786,7 +2926,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-10-28 14:29:55"
+            "time": "2013-10-28 09:44:48"
         },
         {
             "name": "themattharris/tmhoauth",
@@ -2879,16 +3019,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.13.2",
+            "version": "v1.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "6d6a1009427d1f398c9d40904147bf9f723d5755"
+                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/6d6a1009427d1f398c9d40904147bf9f723d5755",
-                "reference": "6d6a1009427d1f398c9d40904147bf9f723d5755",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8873d7593ad7c120004f177c0fd01459b383c9cb",
+                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb",
                 "shasum": ""
             },
             "require": {
@@ -2897,7 +3037,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.13-dev"
+                    "dev-master": "1.14-dev"
                 }
             },
             "autoload": {
@@ -2924,7 +3064,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-08-03 15:35:31"
+            "time": "2013-10-15 19:17:38"
         },
         {
             "name": "zend/gdata",
@@ -3907,6 +4047,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "alchemy/task-manager": 20,
         "imagine/imagine": 20,
         "silex/silex": 20,
         "symfony/symfony": 20,
