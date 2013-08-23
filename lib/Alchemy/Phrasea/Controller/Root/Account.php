@@ -390,15 +390,7 @@ class Account implements ControllerProviderInterface
                     ->set_geonameid($request->request->get("form_geonameid"))
                     ->set_mail_notifications((bool) $request->request->get("mail_notifications"));
 
-                /* @var $ftpCredential \Entities\FtpCredential */
-                $ftpCredential = $app['EM']->getRepository('Entities\FtpCredential')->findOneBy(array(
-                    'usrId' => $app['authentication']->getUser()->get_id()
-                ));
-
-                if (null === $ftpCredential) {
-                    $ftpCredential = new \Entities\FtpCredential();
-                    $ftpCredential->setUsrId($app['authentication']->getUser()->get_id());
-                }
+                $ftpCredential = $app['authentication']->getUser()->getFtpCredential();
 
                 $ftpCredential->setActive($request->request->get("form_activeFTP"));
                 $ftpCredential->setAddress($request->request->get("form_addressFTP"));

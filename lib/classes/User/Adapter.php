@@ -757,13 +757,20 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * @return FtpCredential
+     */
     public function getFtpCredential()
     {
         if (null === $this->ftpCredential) {
-            /* @var $ftpCredential \Entities\FtpCredential */
             $this->ftpCredential = $this->app['EM']->getRepository('Entities\FtpCredential')->findOneBy(array(
                 'usrId' => $this->get_id()
             ));
+
+            if (null === $this->ftpCredential) {
+                $this->ftpCredential = new FtpCredential();
+                $this->ftpCredential->setUsrId($this->get_id());
+            }
         }
 
         return $this->ftpCredential;

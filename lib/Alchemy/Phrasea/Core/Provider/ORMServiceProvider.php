@@ -31,7 +31,6 @@ use Silex\ServiceProviderInterface;
 
 class ORMServiceProvider implements ServiceProviderInterface
 {
-
     public function register(Application $app)
     {
         $app['EM.sql-logger.file'] = $app['root.path'] . '/logs/doctrine-log.log';
