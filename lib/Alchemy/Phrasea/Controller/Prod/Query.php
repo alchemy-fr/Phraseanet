@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Entities\UserQuery;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -117,6 +118,17 @@ class Query implements ControllerProviderInterface
         }
 
         $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage);
+
+        $userQuery = new UserQuery();
+        $userQuery->setUsrId($app['authentication']->getUser()->get_id());
+        $userQuery->setQuery($result->getQuery());
+
+        $app['EM']->persist($userQuery);
+        $app['EM']->flush();
+
+        if ($app['authentication']->getUser()->getPrefs('start_page') === 'LAST_QUERY') {
+            $app['authentication']->getUser()->setPrefs('start_page_query', $result->getQuery());
+        }
 
         foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function(\collection $collection) {

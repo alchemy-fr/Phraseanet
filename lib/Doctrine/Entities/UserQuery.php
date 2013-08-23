@@ -101,4 +101,12 @@ class UserQuery
     {
         return $this->created;
     }
+
+    /**
+     * @param \DateTime $created
+     */
+    public function setCreated(\DateTime $created)
+    {
+        $this->created = $created;
+    }
 }
