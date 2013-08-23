@@ -168,7 +168,7 @@ class Export implements ControllerProviderInterface
     {
         $download = new \set_exportftp($app, $request->request->get('lst'), $request->request->get('ssttid'));
 
-        $mandatoryParameters = array('addr', 'login', 'destfolder', 'NAMMKDFOLD', 'obj');
+        $mandatoryParameters = array('address', 'login', 'dest_folder', 'prefix_folder', 'obj');
 
         foreach ($mandatoryParameters as $parameter) {
             if (!$request->request->get($parameter)) {
@@ -194,14 +194,14 @@ class Export implements ControllerProviderInterface
 
             $download->export_ftp(
                 $request->request->get('user_dest'),
-                $request->request->get('addr'),
+                $request->request->get('address'),
                 $request->request->get('login'),
-                $request->request->get('pwd', ''),
+                $request->request->get('password', ''),
                 $request->request->get('ssl'),
-                $request->request->get('nbretry'),
-                $request->request->get('passif'),
-                $request->request->get('destfolder'),
-                $request->request->get('NAMMKDFOLD'),
+                $request->request->get('max_retry'),
+                $request->request->get('passive'),
+                $request->request->get('dest_folder'),
+                $request->request->get('prefix_folder'),
                 $request->request->get('logfile')
             );
 

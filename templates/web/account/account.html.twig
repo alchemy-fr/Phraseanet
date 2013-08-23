@@ -167,48 +167,49 @@
 
                         <legend>{% trans "FTP" %}</legend>
 
+                        {% set ftpCredential = app["authentication"].getUser().getFtpCredential() %}
                         <div class="control-group">
                             <div class="controls">
                                 <label class="form_label checkbox" for="form_activeFTP">{% trans "admin::compte-utilisateur:ftp: Activer le compte FTP" %}
-                                    <input class="input_element input-xlarge" type="checkbox" name="form_activeFTP" id="form_activeFTP" {% if app["authentication"].getUser().get_activeftp() %}checked{% endif %} onchange="if(this.checked){$('#ftpinfos').slideDown();}else{$('#ftpinfos').slideUp();}" />
+                                    <input class="input_element input-xlarge" type="checkbox" name="form_activeFTP" id="form_activeFTP" {% if ftpCredential.isActive() %}checked{% endif %} onchange="if(this.checked){$('#ftpinfos').slideDown();}else{$('#ftpinfos').slideUp();}" />
                                 </label>
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
 
-                        <div id="ftpinfos" style="display:{% if app["authentication"].getUser().get_activeftp() %}block{% else %}none{% endif %}">
+                        <div id="ftpinfos" style="display:{% if ftpCredential.isActive() %}block{% else %}none{% endif %}">
                             <div class="control-group">
-                                <label class="form_label control-label" for="form_addrFTP"><strong>{% trans "phraseanet:: adresse" %}</strong></label>
+                                <label class="form_label control-label" for="form_addressFTP"><strong>{% trans "phraseanet:: adresse" %}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_addrFTP" id="form_addrFTP" value="{{ app["authentication"].getUser().get_ftp_address() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_addressFTP" id="form_addressFTP" value="{{ ftpCredential.getAddress() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
                             <div class="control-group">
                                 <label class="form_label control-label" for="form_loginFTP"><strong>{% trans "admin::compte-utilisateur identifiant" %}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_loginFTP" id="form_loginFTP" value="{{ app["authentication"].getUser().get_ftp_login() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_loginFTP" id="form_loginFTP" value="{{ ftpCredential.getLogin() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
                             <div class="control-group">
                                 <label class="form_label control-label" for="form_pwdFTP"><strong>{% trans "admin::compte-utilisateur mot de passe" %}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_pwdFTP" id="form_pwdFTP" value="{{ app["authentication"].getUser().get_ftp_password() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_pwdFTP" id="form_pwdFTP" value="{{ ftpCredential.getPassword() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
                             <div class="control-group">
                                 <label class="form_label control-label" for="form_destFTP"><strong>{% trans "admin::compte-utilisateur:ftp:  repertoire de destination ftp" %}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_destFTP" id="form_destFTP" value="{{ app["authentication"].getUser().get_ftp_dir() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_destFTP" id="form_destFTP" value="{{ ftpCredential.getReceptionFolder() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
                             <div class="control-group">
                                 <label class="form_label control-label" for="form_prefixFTPfolder"><strong>{% trans "admin::compte-utilisateur:ftp: prefixe des noms de dossier ftp" %}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_prefixFTPfolder" id="form_prefixFTPfolder" value="{{ app["authentication"].getUser().get_ftp_dir_prefix() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_prefixFTPfolder" id="form_prefixFTPfolder" value="{{ ftpCredential.getRepositoryPrefixName() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
@@ -216,7 +217,7 @@
                                 <div class="controls">
                                     <label class="form_label checkbox" for="form_passifFTP">
                                         {% trans "admin::compte-utilisateur:ftp: Utiliser le mode passif" %}
-                                        <input class="input_element input-xlarge" type="checkbox" name="form_passifFTP" id="form_passifFTP" {% if app["authentication"].getUser().get_ftp_passif() == "1" %}checked{% endif %} />
+                                        <input class="input_element input-xlarge" type="checkbox" name="form_passifFTP" id="form_passifFTP" {% if ftpCredential.isPassive() %}checked{% endif %} />
                                     </label>
                                     <p class="form_alert help-block"></p>
                                 </div>
@@ -224,7 +225,7 @@
                             <div class="control-group">
                                 <label class="form_label control-label" for="form_retryFTP"><strong>{% trans "admin::compte-utilisateur:ftp: Nombre d\'essais max" %}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_retryFTP" id="form_retryFTP" value="5" />
+                                    <input class="input_element input-xlarge" type="text" name="form_retryFTP" id="form_retryFTP" value="{{ ftpCredential.getMaxRetry() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>

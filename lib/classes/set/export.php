@@ -235,12 +235,12 @@ class set_export extends set_abstract
             $lst_base_id = array_keys($app['authentication']->getUser()->ACL()->get_granted_base());
 
             if ($hasadminright) {
-                $sql = "SELECT usr.usr_id,usr_login,usr.addrFTP,usr.loginFTP,usr.sslFTP,
-                  usr.pwdFTP,usr.destFTP,prefixFTPfolder,usr.passifFTP,
-                  usr.retryFTP,usr.usr_mail
-                  FROM (usr INNER JOIN basusr
-                      ON ( activeFTP=1
-                        AND usr.usr_id=basusr.usr_id
+                $sql = "SELECT usr.usr_id,usr_login,usr.usr_mail, FtpCredential.*
+                  FROM (
+                    FtpCredential INNER JOIN usr ON (
+                        FtpCredential.active = 1 AND FtpCredential.usrId = usr.usr_id
+                    ) INNER JOIN basusr ON (
+                        usr.usr_id=basusr.usr_id
                         AND (basusr.base_id=
                         '" . implode("' OR basusr.base_id='", $lst_base_id) . "'
                             )
@@ -249,12 +249,13 @@ class set_export extends set_abstract
                   GROUP BY usr_id  ";
                 $params = array();
             } elseif ($this->app['phraseanet.registry']->get('GV_ftp_for_user')) {
-                $sql = "SELECT usr.usr_id,usr_login,usr.addrFTP,usr.loginFTP,usr.sslFTP,
-                usr.pwdFTP,usr.destFTP,prefixFTPfolder,
-                usr.passifFTP,usr.retryFTP,usr.usr_mail
-                FROM (usr INNER JOIN basusr
-                    ON ( activeFTP=1 AND usr.usr_id=basusr.usr_id
-                      AND usr.usr_id = :usr_id
+                $sql = "SELECT usr.usr_id,usr_login,usr.usr_mail, FtpCredential.*
+                  FROM (
+                    FtpCredential INNER JOIN usr ON (
+                        FtpCredential.active = 1 AND FtpCredential.usrId = usr.usr_id
+                    ) INNER JOIN basusr ON (
+                        usr.usr_id=basusr.usr_id
+                        AND usr.usr_id = :usr_id
                         AND (basusr.base_id=
                         '" . implode("' OR basusr.base_id='", $lst_base_id) . "'
                           )
@@ -265,18 +266,17 @@ class set_export extends set_abstract
             }
 
             $datas[] = array(
-                'name'            => _('export::ftp: reglages manuels'),
-                'usr_id'          => '0',
-                'addrFTP'         => '',
-                'loginFTP'        => '',
-                'pwdFTP'          => '',
-                'ssl'             => '0',
-                'destFTP'         => '',
-                'prefixFTPfolder' => 'Export_' . date("Y-m-d_H.i.s"),
-                'passifFTP'       => false,
-                'retryFTP'        => 5,
-                'mailFTP'         => '',
-                'sendermail'      => $app['authentication']->getUser()->get_email()
+                'name'              => _('export::ftp: reglages manuels'),
+                'usr_id'            => '0',
+                'address'           => '',
+                'login'             => '',
+                'password'          => '',
+                'ssl'               => false,
+                'dest_folder'       => '',
+                'prefix_folder'     => 'Export_' . date("Y-m-d_H.i.s"),
+                'passive'           => false,
+                'max_retry'         => 5,
+                'sendermail'        => $app['authentication']->getUser()->get_email()
             );
 
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -286,21 +286,21 @@ class set_export extends set_abstract
 
             foreach ($rs as $row) {
                 $datas[] = array(
-                    'name'            => $row["usr_login"],
-                    'usr_id'          => $row['usr_id'],
-                    'addrFTP'         => $row['addrFTP'],
-                    'loginFTP'        => $row['loginFTP'],
-                    'pwdFTP'          => $row['pwdFTP'],
-                    'ssl'             => $row['sslFTP'],
-                    'destFTP'         => $row['destFTP'],
-                    'prefixFTPfolder' =>
-                    (strlen(trim($row['prefixFTPfolder'])) > 0 ?
-                        trim($row['prefixFTPfolder']) :
+                    'name'              => $row["usr_login"],
+                    'usr_id'            => $row['usr_id'],
+                    'address'           => $row['address'],
+                    'login'             => $row['login'],
+                    'password'          => $row['password'],
+                    'ssl'               => !! $row['tls'],
+                    'dest_folder'       => $row['reception_folder'],
+                    'prefix_folder'     =>
+                    (strlen(trim($row['repository_prefix_name'])) > 0 ?
+                        trim($row['repository_prefix_name']) :
                         'Export_' . date("Y-m-d_H.i.s")),
-                    'passifFTP'       => ($row['passifFTP'] > 0),
-                    'retryFTP'        => $row['retryFTP'],
-                    'mailFTP'         => $row['usr_mail'],
-                    'sendermail'      => $app['authentication']->getUser()->get_email()
+                    'passive'           => !! $row['passive'],
+                    'max_retry'         => $row['max_retry'],
+                    'usr_mail'          => $row['usr_mail'],
+                    'sender_mail'       => $app['authentication']->getUser()->get_email()
                 );
             }
 

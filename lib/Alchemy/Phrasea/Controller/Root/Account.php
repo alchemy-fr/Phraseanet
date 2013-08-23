@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
+use Entities\FtpCredential;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -363,7 +364,7 @@ class Account implements ControllerProviderInterface
             'form_company',
             'form_activity',
             'form_geonameid',
-            'form_addrFTP',
+            'form_addressFTP',
             'form_loginFTP',
             'form_pwdFTP',
             'form_destFTP',
@@ -372,26 +373,11 @@ class Account implements ControllerProviderInterface
         );
 
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
-            $defaultDatas = 0;
-
-            if ($datas = (array) $request->request->get("form_defaultdataFTP", array())) {
-                if (in_array('document', $datas)) {
-                    $defaultDatas += 4;
-                }
-
-                if (in_array('preview', $datas)) {
-                    $defaultDatas += 2;
-                }
-
-                if (in_array('caption', $datas)) {
-                    $defaultDatas += 1;
-                }
-            }
-
             try {
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
-                $app['authentication']->getUser()->set_gender($request->request->get("form_gender"))
+                $app['authentication']->getUser()
+                    ->set_gender($request->request->get("form_gender"))
                     ->set_firstname($request->request->get("form_firstname"))
                     ->set_lastname($request->request->get("form_lastname"))
                     ->set_address($request->request->get("form_address"))
@@ -402,18 +388,22 @@ class Account implements ControllerProviderInterface
                     ->set_company($request->request->get("form_company"))
                     ->set_position($request->request->get("form_function"))
                     ->set_geonameid($request->request->get("form_geonameid"))
-                    ->set_mail_notifications((bool) $request->request->get("mail_notifications"))
-                    ->set_activeftp($request->request->get("form_activeFTP"))
-                    ->set_ftp_address($request->request->get("form_addrFTP"))
-                    ->set_ftp_login($request->request->get("form_loginFTP"))
-                    ->set_ftp_password($request->request->get("form_pwdFTP"))
-                    ->set_ftp_passif($request->request->get("form_passifFTP"))
-                    ->set_ftp_dir($request->request->get("form_destFTP"))
-                    ->set_ftp_dir_prefix($request->request->get("form_prefixFTPfolder"))
-                    ->set_defaultftpdatas($defaultDatas);
+                    ->set_mail_notifications((bool) $request->request->get("mail_notifications"));
 
-                $app->addFlash('success', _('login::notification: Changements enregistres'));
+                $ftpCredential = $app['authentication']->getUser()->getFtpCredential();
+
+                $ftpCredential->setActive($request->request->get("form_activeFTP"));
+                $ftpCredential->setAddress($request->request->get("form_addressFTP"));
+                $ftpCredential->setLogin($request->request->get("form_loginFTP"));
+                $ftpCredential->setPassword($request->request->get("form_pwdFTP"));
+                $ftpCredential->setPassive($request->request->get("form_passifFTP"));
+                $ftpCredential->setReceptionFolder($request->request->get("form_destFTP"));
+                $ftpCredential->setRepositoryPrefixName($request->request->get("form_prefixFTPfolder"));
+
                 $app['phraseanet.appbox']->get_connection()->commit();
+                $app['EM']->persist($ftpCredential);
+                $app['EM']->flush();
+                $app->addFlash('success', _('login::notification: Changements enregistres'));
             } catch (Exception $e) {
                 $app->addFlash('error', _('forms::erreurs lors de l\'enregistrement des modifications'));
                 $app['phraseanet.appbox']->get_connection()->rollBack();

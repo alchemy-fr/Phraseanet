@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -33,34 +34,19 @@ class RegenerateSqliteDb extends Command
         $source = __DIR__ . '/../../../../../tests/db-ref.sqlite';
         $target = __DIR__ . '/../../../../../tests/db-ref.sqlite.bkp';
 
-        $fs->rename($source, $target);
+        if (is_file($source)) {
+            $fs->rename($source, $target);
+        }
 
         try {
             $dbParams = $this->container['phraseanet.configuration']->getTestConnectionParameters();
             $dbParams['path'] = $source;
 
-            $config = new ORMConfiguration();
-            AnnotationRegistry::registerFile(
-                $this->container['root.path'].'/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
-            );
+            $this->container->register(new ORMServiceProvider());
+            $this->container['EM.dbal-conf'] = $dbParams;
 
-            $annotationReader = new AnnotationReader();
-            $driverChain = new DriverChain();
-            $annotationDriver = new AnnotationDriver(
-                $annotationReader,
-                array($this->container['root.path'].'/lib/Doctrine/Entities')
-            );
-            $driverChain->addDriver($annotationDriver, 'Entities');
-
-            $config->setAutoGenerateProxyClasses(true);
-            $config->setMetadataDriverImpl($driverChain);
-            $config->setProxyDir($this->container['root.path'] . '/lib/Doctrine/Proxies');
-            $config->setProxyNamespace('Proxies');
-
-            $em = EntityManager::create($dbParams, $config, new EventManager());
-
-            $metadatas = $em->getMetadataFactory()->getAllMetadata();
-            $schemaTool = new SchemaTool($em);
+            $metadatas = $this->container['EM']->getMetadataFactory()->getAllMetadata();
+            $schemaTool = new SchemaTool($this->container['EM']);
             $schemaTool->createSchema($metadatas);
         } catch (\Exception $e) {
             $fs->rename($target, $source);

@@ -3730,107 +3730,6 @@
             <comment></comment>
           </field>
           <field>
-            <name>activeFTP</name>
-            <type>tinyint(1)</type>
-
-            <null></null>
-            <extra></extra>
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>addrFTP</name>
-
-            <type>varchar(128)</type>
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>sslFTP</name>
-
-            <type>tinyint(1) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-
-            <name>loginFTP</name>
-            <type>varchar(128)</type>
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-          </field>
-
-          <field>
-            <name>pwdFTP</name>
-            <type>varchar(128)</type>
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-
-          </field>
-          <field>
-            <name>destFTP</name>
-            <type>varchar(128)</type>
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-
-            <comment></comment>
-          </field>
-          <field>
-            <name>passifFTP</name>
-            <type>tinyint(1) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>retryFTP</name>
-            <type>tinyint(1) unsigned</type>
-            <null></null>
-
-            <extra></extra>
-
-            <default>5</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>defaultftpdatasent</name>
-            <type>int(11) unsigned</type>
-
-            <null></null>
-            <extra></extra>
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>prefixFTPfolder</name>
-
-            <type>varchar(100)</type>
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
             <name>lastModel</name>
             <type>varchar(50)</type>
             <null></null>
@@ -4019,10 +3918,6 @@
             <data key="last_conn">0000-00-00 00:00:00</data>
             <data key="model_of">0</data>
             <data key="create_db">0</data>
-            <data key="activeFTP">0</data>
-            <data key="passifFTP">0</data>
-            <data key="retryFTP">5</data>
-            <data key="defaultftpdatasent">5</data>
             <data key="canchgprofil">0</data>
             <data key="canchgftpprofil">0</data>
             <data key="nonce"></data>
@@ -4038,10 +3933,6 @@
             <data key="last_conn">0000-00-00 00:00:00</data>
             <data key="model_of">0</data>
             <data key="create_db">0</data>
-            <data key="activeFTP">0</data>
-            <data key="passifFTP">0</data>
-            <data key="retryFTP">5</data>
-            <data key="defaultftpdatasent">5</data>
             <data key="canchgprofil">0</data>
             <data key="canchgftpprofil">0</data>
             <data key="nonce"></data>

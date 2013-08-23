@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
+use Entities\FtpCredential;
 
 /**
  *
@@ -246,57 +247,14 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @var string
+     * @var FtpCredential
      */
-    protected $defaultftpdatas;
-
+    protected $ftpCredential;
     /**
      *
      * @var string
      */
     protected $mail_notifications;
-
-    /**
-     *
-     * @var string
-     */
-    protected $activeftp;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_address;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_login;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_password;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_passif;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_dir;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ftp_dir_prefix;
 
     /**
      *
@@ -561,22 +519,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param  int          $datas
-     * @return User_Adapter
-     */
-    public function set_defaultftpdatas($datas)
-    {
-        $sql = 'UPDATE usr SET defaultftpdatasent = :defaultftpdatas WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':defaultftpdatas'     => $datas, ':usr_id'              => $this->get_id()));
-        $stmt->closeCursor();
-        $this->defaultftpdatas = $datas;
-
-        return $this;
-    }
-
-    /**
-     *
      * @param  bollean      $boolean
      * @return User_Adapter
      */
@@ -598,23 +540,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      * @param  boolean      $boolean
      * @return User_Adapter
      */
-    public function set_activeftp($boolean)
-    {
-        $value = $boolean ? '1' : '0';
-        $sql = 'UPDATE usr SET activeftp = :activeftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':activeftp'     => $value, ':usr_id'        => $this->get_id()));
-        $stmt->closeCursor();
-        $this->activeftp = $boolean;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  boolean      $boolean
-     * @return User_Adapter
-     */
     public function set_ldap_created($boolean)
     {
         $value = $boolean ? '1' : '0';
@@ -623,91 +548,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt->execute(array(':ldap_created'     => $value, ':usr_id'           => $this->get_id()));
         $stmt->closeCursor();
         $this->ldap_created = $boolean;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  string       $address
-     * @return User_Adapter
-     */
-    public function set_ftp_address($address)
-    {
-        $sql = 'UPDATE usr SET addrftp = :addrftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':addrftp'         => $address, ':usr_id'          => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_address = $address;
-        $this->delete_data_from_cache();
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  string       $login
-     * @return User_Adapter
-     */
-    public function set_ftp_login($login)
-    {
-        $sql = 'UPDATE usr SET loginftp = :loginftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':loginftp'      => $login, ':usr_id'        => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_login = $login;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  type         $password
-     * @return User_Adapter
-     */
-    public function set_ftp_password($password)
-    {
-        $sql = 'UPDATE usr SET pwdFTP = :passwordftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':passwordftp'      => $password, ':usr_id'           => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_password = $password;
-        $this->delete_data_from_cache();
-
-        return $this;
-    }
-
-    public function set_ftp_passif($boolean)
-    {
-        $value = $boolean ? '1' : '0';
-        $sql = 'UPDATE usr SET passifftp = :passifftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':passifftp'      => $value, ':usr_id'         => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_passif = !!$boolean;
-
-        return $this;
-    }
-
-    public function set_ftp_dir($ftp_dir)
-    {
-        $sql = 'UPDATE usr SET destftp = :destftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':destftp'     => $ftp_dir, ':usr_id'      => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_dir = $ftp_dir;
-        $this->delete_data_from_cache();
-
-        return $this;
-    }
-
-    public function set_ftp_dir_prefix($ftp_dir_prefix)
-    {
-        $sql = 'UPDATE usr SET prefixFTPfolder = :prefixftp WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':prefixftp'          => $ftp_dir_prefix, ':usr_id'             => $this->get_id()));
-        $stmt->closeCursor();
-        $this->ftp_dir_prefix = $ftp_dir_prefix;
 
         return $this;
     }
@@ -891,18 +731,12 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt->execute(array(':owner_id' => $owner->get_id(), ':usr_id'   => $this->get_id()));
         $stmt->closeCursor();
 
-        $this->set_ftp_address('')
-            ->set_activeftp(false)
+        $this
             ->set_city('')
             ->set_company('')
             ->set_email(null)
             ->set_fax('')
             ->set_firstname('')
-            ->set_ftp_dir('')
-            ->set_ftp_dir_prefix('')
-            ->set_ftp_login('')
-            ->set_ftp_passif('')
-            ->set_ftp_password('')
             ->set_gender('')
             ->set_geonameid('')
             ->set_job('')
@@ -913,9 +747,33 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             ->set_zip('')
             ->set_tel('');
 
+        $this->ftpCredential = new FtpCredential();
+        $this->ftpCredential->setUsrId($this->get_id());
+        $this->app['EM']->persist($this->ftpCredential);
+        $this->app['EM']->flush();
+
         $this->delete_data_from_cache();
 
         return $this;
+    }
+
+    /**
+     * @return FtpCredential
+     */
+    public function getFtpCredential()
+    {
+        if (null === $this->ftpCredential) {
+            $this->ftpCredential = $this->app['EM']->getRepository('Entities\FtpCredential')->findOneBy(array(
+                'usrId' => $this->get_id()
+            ));
+
+            if (null === $this->ftpCredential) {
+                $this->ftpCredential = new FtpCredential();
+                $this->ftpCredential->setUsrId($this->get_id());
+            }
+        }
+
+        return $this->ftpCredential;
     }
 
     public function is_template()
@@ -1023,50 +881,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         return;
     }
-
-    public function get_defaultftpdatas()
-    {
-        return $this->defaultftpdatas;
-    }
-
     public function get_mail_notifications()
     {
         return $this->mail_notifications;
-    }
-
-    public function get_activeftp()
-    {
-        return $this->activeftp;
-    }
-
-    public function get_ftp_address()
-    {
-        return $this->ftp_address;
-    }
-
-    public function get_ftp_login()
-    {
-        return $this->ftp_login;
-    }
-
-    public function get_ftp_password()
-    {
-        return $this->ftp_password;
-    }
-
-    public function get_ftp_passif()
-    {
-        return $this->ftp_passif;
-    }
-
-    public function get_ftp_dir()
-    {
-        return $this->ftp_dir;
-    }
-
-    public function get_ftp_dir_prefix()
-    {
-        return $this->ftp_dir_prefix;
     }
 
     /**
@@ -1079,8 +896,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $sql = 'SELECT usr_id, ldap_created, create_db, usr_login, usr_password, usr_nom, activite,
             usr_prenom, usr_sexe as gender, usr_mail, adresse, usr_creationdate, usr_modificationdate,
             ville, cpostal, tel, fax, fonction, societe, geonameid, lastModel, invite,
-            defaultftpdatasent, mail_notifications, activeftp, addrftp, loginftp,
-            pwdFTP, passifftp, destftp, prefixFTPfolder, mail_locked, model_of, locale
+            mail_notifications, mail_locked, model_of, locale
           FROM usr WHERE usr_id= :id ';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -1100,15 +916,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         $this->ldap_created = $row['ldap_created'];
 
-        $this->defaultftpdatas = $row['defaultftpdatasent'];
         $this->mail_notifications = $row['mail_notifications'];
-        $this->activeftp = $row['activeftp'];
-        $this->ftp_address = $row['addrftp'];
-        $this->ftp_login = $row['loginftp'];
-        $this->ftp_password = $row['pwdFTP'];
-        $this->ftp_passif = $row['passifftp'];
-        $this->ftp_dir = $row['destftp'];
-        $this->ftp_dir_prefix = $row['prefixFTPfolder'];
 
         $this->mail_locked = !!$row['mail_locked'];
 
@@ -1724,6 +1532,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt->closeCursor();
 
         $usr_id = $conn->lastInsertId();
+
+        $ftpCredential = new FtpCredential();
+        $ftpCredential->setUsrId($usr_id);
+        $app['EM']->persist($ftpCredential);
+        $app['EM']->flush();
 
         if ($invite) {
             $sql = 'UPDATE usr SET usr_login = "invite' . $usr_id . '" WHERE usr_id="' . $usr_id . '"';
