@@ -219,6 +219,11 @@ class User
     private $updated;
 
     /**
+     * @var \ACL
+     */
+    private $acl;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -791,5 +796,55 @@ class User
     {
 
         $this->updated = $updated;
+    }
+
+    /**
+     * @param Application $app
+     *
+     * @return \ACL
+     */
+    public function ACL(Application $app)
+    {
+        if (!$this->acl instanceof \ACL) {
+            $this->acl = new \ACL($this, $app);
+        }
+
+        return $this->acl;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isTemplate()
+    {
+        return null !== $this->modelOf;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSpecial()
+    {
+        return in_array($this->login, array('invite', 'autoregister'));
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayName()
+    {
+        if ($this->isTemplate()) {
+            return sprintf(_('modele %s'), $this->getLogin());
+        }
+
+        if (trim($this->lastName) !== '' || trim($this->firstName) !== '') {
+           return $this->firstName . ('' !== $this->firstName && '' !== $this->lastName ? ' ' : '') . $this->lastName;
+        }
+
+        if (trim($this->email) !== '') {
+            return $this->email;
+        }
+
+        return _('Unnamed user');
     }
 }
