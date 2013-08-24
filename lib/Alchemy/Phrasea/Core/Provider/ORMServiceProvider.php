@@ -16,10 +16,12 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Doctrine\Common\EventManager;
+Use Doctrine\Events\Listeners\GeonameIdListener;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Configuration as ORMConfiguration;
+use Doctrine\ORM\Events;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\Logger\MonologSQLLogger;
 use Gedmo\DoctrineExtensions;
@@ -115,6 +117,7 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['EM.events-manager'] = $app->share(function(Application $app) {
             $evm = new EventManager();
             $evm->addEventSubscriber(new TimestampableListener());
+            $evm->addEventListener(array(Events::preUpdate), new GeonameIdListener($app));
 
             return $evm;
         });
