@@ -415,35 +415,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  boolean    $renew
-     * @return system_url
-     */
-    public function get_protected_rss_url($renew = false)
-    {
-        $token = $title = false;
-
-        if (!$renew) {
-            $sql = 'SELECT value FROM tokens WHERE usr_id = :usr_id AND type="rss"';
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':usr_id' => $this->get_id()));
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            $token = $row['value'];
-        } else {
-            $sql = 'DELETE FROM tokens WHERE usr_id = :usr_id AND type="rss"';
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':usr_id' => $this->get_id()));
-            $stmt->closeCursor();
-        }
-        if ($token === false) {
-            $token = $this->app['tokens']->getUrlToken(\random::TYPE_RSS, $this->id);
-        }
-
-        return new system_url($this->app['phraseanet.registry']->get('GV_ServerName') . 'atom/' . $token);
-    }
-
-    /**
      * Query in the cache
      *
      * @param Application $app

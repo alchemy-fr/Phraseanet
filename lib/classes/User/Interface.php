@@ -30,8 +30,6 @@ interface User_Interface
 
     public function set_email($email);
 
-    public function get_protected_rss_url($renew = false);
-
     public function get_country();
 
     public function set_mail_notifications($boolean);
