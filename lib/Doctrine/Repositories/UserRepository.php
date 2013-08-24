@@ -12,6 +12,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Entities\User;
 
 /**
  * User
@@ -21,4 +22,89 @@ use Doctrine\ORM\EntityRepository;
  */
 class UserRepository extends EntityRepository
 {
+    /**
+     * Finds admins
+     *
+     * @return array
+     */
+    public function findAdmins()
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        $qb->where($qb->expr()->eq('u.admin', $qb->expr()->literal(true)))
+            ->andWhere($qb->expr()->isNull('u.modelOf'))
+            ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Sets a selection of user
+     *
+     * @param array $users An array of user
+     *
+     * @return integer The number of processed rows
+     */
+    public function setAdmins(array $users)
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        $qb->update('Entities\User', 'u')
+            ->set('u.admin', $qb->expr()->literal(true))
+            ->where($qb->expr()->in('u.id', array_map(function($value) {
+                if ($value instanceof User) {
+                    return $value->getId();
+                }
+
+                return (int) $value;
+            }, $users)));
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * Resets all admins
+     *
+     * @return integer The number of processed rows
+     */
+    public function resetAdmins()
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        $qb->update('Entities\User', 'u')
+            ->set('u.admin', $qb->expr()->literal(false))
+            ->where($qb->expr()->eq('u.admin', $qb->expr()->literal(true)));
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * Finds a user by login
+     *
+     * @param string $login
+     *
+     * @return null|User
+     */
+    public function findByLogin($login)
+    {
+        return $this->findOneBy(array('login' => $login));
+    }
+
+    /**
+     * Finds a user by email
+     *
+     * @param string $email
+     *
+     * @return null|User
+     */
+    public function findByEmail($email)
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        $qb->where($qb->expr()->eq('u.email', $email))
+            ->andWhere($qb->expr()->isNotNull('u.email'))
+            ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }
