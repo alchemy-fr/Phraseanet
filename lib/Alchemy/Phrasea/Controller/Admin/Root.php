@@ -35,7 +35,7 @@ class Root implements ControllerProviderInterface
 
         $controllers->get('/', function(Application $app, Request $request) {
             try {
-                \User_Adapter::updateClientInfos($app, 3);
+                \Session_Logger::updateClientInfos($app, 3);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
@@ -103,7 +103,7 @@ class Root implements ControllerProviderInterface
 
         $controllers->get('/tree/', function(Application $app, Request $request) {
             try {
-                \User_Adapter::updateClientInfos($app, 3);
+                \Session_Logger::updateClientInfos($app, 3);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }

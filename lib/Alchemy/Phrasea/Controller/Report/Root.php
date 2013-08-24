@@ -68,7 +68,7 @@ class Root implements ControllerProviderInterface
         $dashboard = new \module_report_dashboard($app, $app['authentication']->getUser());
 
         if ('json' !== $request->getRequestFormat()) {
-            \User_Adapter::updateClientInfos($app, 4);
+            \Session_Logger::updateClientInfos($app, 4);
 
             $dashboard->execute();
 
