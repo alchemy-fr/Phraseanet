@@ -151,17 +151,15 @@ class Root implements ControllerProviderInterface
 
         $result = $app['phraseanet.SE']->query($query, $currentPage, $perPage);
 
-        if (null !== $user = $app['authentication']->getUser()) {
-            $userQuery = new UserQuery();
-            $userQuery->setUsrId($user->get_id());
-            $userQuery->setQuery($query);
+        $userQuery = new UserQuery();
+        $userQuery->setUsrId($app['authentication']->getUser()->get_id());
+        $userQuery->setQuery($query);
 
-            $app['EM']->persist($userQuery);
-            $app['EM']->flush();
+        $app['EM']->persist($userQuery);
+        $app['EM']->flush();
 
-            if ($user->getPrefs('start_page') === 'LAST_QUERY') {
-                $user->setPrefs('start_page_query', $query);
-            }
+        if ($app['authentication']->getUser()->getPrefs('start_page') === 'LAST_QUERY') {
+            $app['authentication']->getUser()->setPrefs('start_page_query', $query);
         }
 
         foreach ($options->getDataboxes() as $databox) {

@@ -62,10 +62,14 @@ class UserQuery
 
     /**
      * @param integer $usrId
+     *
+     * @return UserQuery
      */
     public function setUsrId($usrId)
     {
         $this->usrId = $usrId;
+
+        return $this;
     }
 
     /**
@@ -79,6 +83,18 @@ class UserQuery
     }
 
     /**
+     * @param \User_Adapter $user
+     *
+     * @return UserQuery
+     */
+    public function setUser(\User_Adapter $user)
+    {
+        $this->setUsrId($user->get_id());
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getQuery()
@@ -88,10 +104,14 @@ class UserQuery
 
     /**
      * @param string $query
+     *
+     * @return UserQuery
      */
     public function setQuery($query)
     {
         $this->query = $query;
+
+        return $this;
     }
 
     /**
@@ -104,9 +124,13 @@ class UserQuery
 
     /**
      * @param \DateTime $created
+     *
+     * @return UserQuery
      */
     public function setCreated(\DateTime $created)
     {
         $this->created = $created;
+
+        return $this;
     }
 }
