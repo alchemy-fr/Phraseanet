@@ -267,4 +267,12 @@ class FtpCredential
     {
         return $this->updated;
     }
+
+    /**
+     * @param \DateTime $updated
+     */
+    public function setUpdated(\DateTime $updated)
+    {
+        $this->updated = $updated;
+    }
 }

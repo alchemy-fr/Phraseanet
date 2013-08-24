@@ -103,7 +103,7 @@ class UsrList
      * @param  \DateTime $created
      * @return UsrList
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
@@ -126,7 +126,7 @@ class UsrList
      * @param  \DateTime $updated
      * @return UsrList
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 

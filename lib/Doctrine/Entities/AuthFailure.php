@@ -133,7 +133,7 @@ class AuthFailure
      * @param  \DateTime   $created
      * @return AuthFailure
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
