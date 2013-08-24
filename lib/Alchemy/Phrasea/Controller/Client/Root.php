@@ -289,7 +289,7 @@ class Root implements ControllerProviderInterface
     public function getClient(Application $app, Request $request)
     {
         try {
-            \User_Adapter::updateClientInfos($app, 2);
+            \Session_Logger::updateClientInfos($app, 2);
         } catch (SessionNotFound $e) {
             return $app->redirectPath('logout');
         }

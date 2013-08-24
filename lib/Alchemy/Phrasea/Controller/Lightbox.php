@@ -64,7 +64,7 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->get('/', function (SilexApplication $app) {
             try {
-                \User_Adapter::updateClientInfos($app, 6);
+                \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
@@ -200,7 +200,7 @@ class Lightbox implements ControllerProviderInterface
         $controllers->get('/validate/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
 
             try {
-                \User_Adapter::updateClientInfos($app, 6);
+                \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
@@ -254,7 +254,7 @@ class Lightbox implements ControllerProviderInterface
         $controllers->get('/compare/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
 
             try {
-                \User_Adapter::updateClientInfos($app, 6);
+                \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
@@ -308,7 +308,7 @@ class Lightbox implements ControllerProviderInterface
         $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
 
             try {
-                \User_Adapter::updateClientInfos($app, 6);
+                \Session_Logger::updateClientInfos($app, 6);
             } catch (SessionNotFound $e) {
                 return $app->redirectPath('logout');
             }
