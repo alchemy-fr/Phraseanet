@@ -1,6 +1,8 @@
 rm -f config/configuration.yml config/services.yml config/connexions.yml config/config.yml config/config.inc config/connexion.inc config/_GV.php config/_GV.php.old || exit 1
 cp -f hudson/connexion.inc config/ || exit 1
 cp -f hudson/_GV.php config/ || exit 1
+npm install -g uglify-js recess grunt-cli jake
+npm install
 if [ "$1" != "--no-dependencies" ]
 then
 ./bin/developer dependencies:all --clear-cache --prefer-source || exit 1
