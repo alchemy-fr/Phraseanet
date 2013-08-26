@@ -17,6 +17,8 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class DoDownload implements ControllerProviderInterface
 {
@@ -161,12 +163,12 @@ class DoDownload implements ControllerProviderInterface
             $app->abort(404, 'Download file not found');
         }
 
-        $app->finish(function ($request, $response) use ($list, $app) {
+        $app['dispatcher']->addListener(KernelEvents::TERMINATE, function (PostResponseEvent $event) use ($list, $app) {
             \set_export::log_download(
                 $app,
                 $list,
-                $request->request->get('type'),
-                (null !== $request->request->get('anonymous') ? true : false),
+                $event->getRequest()->request->get('type'),
+                (null !== $event->getRequest()->request->get('anonymous') ? true : false),
                 (isset($list['email']) ? $list['email'] : '')
             );
         });
