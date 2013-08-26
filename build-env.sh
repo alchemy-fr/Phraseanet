@@ -7,7 +7,7 @@ if [ "$1" != "--no-dependencies" ]
 then
 ./bin/developer dependencies:all --clear-cache --prefer-source || exit 1
 else
-echo "Discard dependencies retrieval ..."
+echo "Dependencies retrieval discarded"
 fi
 sudo mysql -e 'drop database ab_test;drop database db_test; drop database ab_unitTests; drop database db_unitTests;' || exit 1
 sudo mysql -e 'create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;' || exit 1
