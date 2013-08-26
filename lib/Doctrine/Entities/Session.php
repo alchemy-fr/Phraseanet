@@ -362,7 +362,7 @@ class Session
      * @param  \DateTime $created
      * @return Session
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
@@ -385,7 +385,7 @@ class Session
      * @param  \DateTime $updated
      * @return Session
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 

@@ -135,7 +135,7 @@ class UsrListOwner
      * @param  \DateTime    $created
      * @return UsrListOwner
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
@@ -158,7 +158,7 @@ class UsrListOwner
      * @param  \DateTime    $updated
      * @return UsrListOwner
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 

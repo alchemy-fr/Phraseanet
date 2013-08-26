@@ -128,7 +128,7 @@ class ValidationSession
      * @param  \DateTime         $created
      * @return ValidationSession
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
@@ -151,7 +151,7 @@ class ValidationSession
      * @param  \DateTime         $updated
      * @return ValidationSession
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 

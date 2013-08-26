@@ -289,7 +289,7 @@ class LazaretFile
      * @param  \DateTime   $created
      * @return LazaretFile
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
@@ -312,7 +312,7 @@ class LazaretFile
      * @param  \DateTime   $updated
      * @return LazaretFile
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 

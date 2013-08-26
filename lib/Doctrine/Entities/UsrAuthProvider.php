@@ -139,7 +139,7 @@ class UsrAuthProvider
      * @param  \DateTime       $updated
      * @return UsrAuthProvider
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 
@@ -162,7 +162,7 @@ class UsrAuthProvider
      * @param  \DateTime       $created
      * @return UsrAuthProvider
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 

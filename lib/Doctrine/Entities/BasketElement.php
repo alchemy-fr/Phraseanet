@@ -171,7 +171,7 @@ class BasketElement
      * @param  \DateTime     $created
      * @return BasketElement
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
@@ -194,7 +194,7 @@ class BasketElement
      * @param  \DateTime     $updated
      * @return BasketElement
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 
