@@ -581,7 +581,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $this->insertFixtureInDatabase($loader);
 
         } catch (\Exception $e) {
-            $this->fail('Fail load one Basket : ' . $e->getMessage());
+            $this->fail('Fail load one User : ' . $e->getMessage());
         }
     }
 
