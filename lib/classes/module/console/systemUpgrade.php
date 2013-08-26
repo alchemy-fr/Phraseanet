@@ -67,11 +67,11 @@ class module_console_systemUpgrade extends Command
             try {
                 $output->write('<info>Upgrading...</info>', true);
 
-                if (count(User_Adapter::get_wrong_email_users($this->container)) > 0) {
+                try {
+                    $upgrader = new Setup_Upgrade($this->container, $input->getOption('force'));
+                } catch (\Exception_Setup_FixBadEmailAddresses $e) {
                     return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
                 }
-
-                $upgrader = new Setup_Upgrade($this->container, $input->getOption('force'));
 
                 $queries = $this->getService('phraseanet.appbox')->forceUpgrade($upgrader, $this->container);
 

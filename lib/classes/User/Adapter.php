@@ -1172,45 +1172,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return $this;
     }
 
-    public static function get_wrong_email_users(Application $app)
-    {
-
-        $sql = 'SELECT usr_mail, usr_id FROM usr WHERE usr_mail IS NOT NULL';
-
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute();
-
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $stmt->closeCursor();
-
-        $users = array();
-
-        foreach ($rs as $row) {
-            if (!isset($users[$row['usr_mail']])) {
-                $users[$row['usr_mail']] = array();
-            }
-
-            $users[$row['usr_mail']][] = $row['usr_id'];
-        }
-
-        $bad_users = array();
-
-        foreach ($users as $email => $usrs) {
-            if (count($usrs) > 1) {
-                $bad_users[$email] = array();
-                foreach ($usrs as $usr_id) {
-                    $user = User_Adapter::getInstance($usr_id, $app);
-                    $bad_users[$email][$user->get_id()] = $user;
-                }
-            }
-        }
-
-        unset($users);
-
-        return $bad_users;
-    }
-
     public function setPrefs($prop, $value)
     {
         $this->load_preferences();
