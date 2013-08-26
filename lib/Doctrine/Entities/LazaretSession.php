@@ -116,7 +116,7 @@ class LazaretSession
      * @param  \DateTime      $created
      * @return LazaretSession
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
@@ -139,7 +139,7 @@ class LazaretSession
      * @param  \DateTime      $updated
      * @return LazaretSession
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 

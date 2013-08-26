@@ -117,7 +117,7 @@ class LazaretAttribute
      * @param  \DateTime        $created
      * @return LazaretAttribute
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
@@ -140,7 +140,7 @@ class LazaretAttribute
      * @param  \DateTime        $updated
      * @return LazaretAttribute
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 

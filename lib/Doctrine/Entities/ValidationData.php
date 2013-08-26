@@ -117,7 +117,7 @@ class ValidationData
      * @param  \DateTime      $updated
      * @return ValidationData
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 

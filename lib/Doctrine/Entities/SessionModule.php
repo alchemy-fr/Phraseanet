@@ -112,7 +112,7 @@ class SessionModule
      * @param  \DateTime     $updated
      * @return SessionModule
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 

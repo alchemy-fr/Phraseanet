@@ -158,7 +158,7 @@ class StoryWZ
      * @param  \DateTime $created
      * @return StoryWZ
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
