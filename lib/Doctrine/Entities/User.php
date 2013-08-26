@@ -207,6 +207,11 @@ class User
     private $mailLocked = false;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $deleted = false;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
@@ -763,6 +768,26 @@ class User
     public function setMailLocked($mailLocked)
     {
         $this->mailLocked = (Boolean) $mailLocked;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDeleted()
+    {
+        return $this->deleted;
+    }
+
+    /**
+     * @param boolean $deleted
+     *
+     * @return User
+     */
+    public function setDeleted($deleted)
+    {
+        $this->deleted = (Boolean) $deleted;
+
+        return $this;
     }
 
     /**
