@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
+use Entities\UserQuery;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -894,6 +895,13 @@ class API_V1_adapter extends API_V1_Abstract
         $this->app['phraseanet.SE']->resetCache();
 
         $search_result = $this->app['phraseanet.SE']->query($query, $offsetStart, $perPage);
+
+        $userQuery = new UserQuery();
+        $userQuery->setUsrId($this->app['authentication']->getUser()->get_id());
+        $userQuery->setQuery($query);
+
+        $this->app['EM']->persist($userQuery);
+        $this->app['EM']->flush();
 
         foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function(\collection $collection) {

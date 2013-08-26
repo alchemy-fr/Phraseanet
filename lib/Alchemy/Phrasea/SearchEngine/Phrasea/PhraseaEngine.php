@@ -440,7 +440,7 @@ class PhraseaEngine implements SearchEngineInterface
     private function getSuggestions($query)
     {
         $suggestions = array();
-        
+
         if ($this->qp && isset($this->qp['main'])) {
             $suggestions = array_map(function ($value) use ($query) {
                 return new SearchEngineSuggestion($query, $value['value'], $value['hits']);
@@ -574,10 +574,6 @@ class PhraseaEngine implements SearchEngineInterface
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
-
-        if ($this->app['authentication']->getUser()) {
-            \User_Adapter::saveQuery($this->app, $query);
-        }
 
         return $this;
     }

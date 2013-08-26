@@ -9,15 +9,10 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+use Alchemy\Phrasea\Application;
+
 class queries
 {
-
     public static function tree_topics($I18N)
     {
         $out = '';
@@ -188,22 +183,16 @@ class queries
         return $out;
     }
 
-    public static function history(appbox $appbox, $usr_id)
+    public static function history(Application $app, $usrId)
     {
-        $conn = $appbox->get_connection();
-
-        $sql = "SELECT query from dsel where usr_id = :usr_id
-            ORDER BY id DESC LIMIT 0,25";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':usr_id' => $usr_id));
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
         $history = '<ul>';
 
-        foreach ($rs as $row) {
-            $history .= '<li onclick="doSpecialSearch(\'' . str_replace(array("'", '"'), array("\'", '&quot;'), $row["query"]) . '\')">' . $row["query"] . '</li>';
+        $queries = $app['EM']
+            ->getRepository('Entities\UserQuery')
+            ->findBy(array('usrId' => $usrId), array('created' => 'ASC'), 25, 0);
+
+        foreach ($queries as $query) {
+            $history .= '<li onclick="doSpecialSearch(\'' . str_replace(array("'", '"'), array("\'", '&quot;'), $query->getQuery()) . '\')">' . $query->getQuery() . '</li>';
         }
 
         $history .= '<ul>';
