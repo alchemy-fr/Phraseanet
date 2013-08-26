@@ -81,6 +81,42 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $this->user->setGeonameId(-1);
     }
 
+    public function testGetDisplayName()
+    {
+        $this->user->setLogin('login');
+        $this->user->setFirstName('firstname');
+        $this->user->setLastName('lastname');
+        $this->user->setEmail('email@email.com');
+        $this->assertEquals($this->user->getDisplayName(), 'firstname lastname');
+        $this->user->setLastName('');
+        $this->assertEquals($this->user->getDisplayName(), 'firstname');
+        $this->user->setFirstName('');
+        $this->assertEquals($this->user->getDisplayName(), 'email@email.com');
+        $this->user->setEmail(null);
+        $this->assertEquals($this->user->getDisplayName(), 'Unnamed user');
+        $this->user->setLastName('lastname');
+        $this->assertEquals($this->user->getDisplayName(), 'lastname');
+    }
+
+    public function testIsTemplate()
+    {
+        $this->assertFalse($this->user->isTemplate());
+        $this->user->setModelOf(1);
+        $this->assertTrue($this->user->isTemplate());
+    }
+
+    public function testIsSpecial()
+    {
+        $this->user->setLogin('login');
+        $this->assertFalse($this->user->isSpecial());
+        $this->user->setLogin('invite');
+        $this->assertTrue($this->user->isSpecial());
+        $this->user->setLogin('login');
+        $this->assertFalse($this->user->isSpecial());
+        $this->user->setLogin('autoregister');
+        $this->assertTrue($this->user->isSpecial());
+    }
+
     public function genderProvider()
     {
         return array(
