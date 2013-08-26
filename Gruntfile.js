@@ -60,6 +60,7 @@ module.exports = function(grunt) {
                     "bootstrap/css/*",
                     "bootstrap/js/*",
                     "bootstrap/img/*",
+                    "less/*.less",
                     "LICENSE"
                 ],
                 "rename": function(dest, src) {
