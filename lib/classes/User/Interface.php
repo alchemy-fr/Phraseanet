@@ -128,8 +128,6 @@ interface User_Interface
 
     public static function getInstance($id, Application $app);
 
-    public static function saveQuery(Application $app, $query);
-
     public static function get_usr_id_from_login(Application $app, $login);
 
     public static function get_usr_id_from_email(Application $app, $email);

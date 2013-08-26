@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Client;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Entities\UserQuery;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\Finder\Finder;
@@ -150,6 +151,17 @@ class Root implements ControllerProviderInterface
 
         $result = $app['phraseanet.SE']->query($query, $currentPage, $perPage);
 
+        $userQuery = new UserQuery();
+        $userQuery->setUsrId($app['authentication']->getUser()->get_id());
+        $userQuery->setQuery($query);
+
+        $app['EM']->persist($userQuery);
+        $app['EM']->flush();
+
+        if ($app['authentication']->getUser()->getPrefs('start_page') === 'LAST_QUERY') {
+            $app['authentication']->getUser()->setPrefs('start_page_query', $query);
+        }
+
         foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function(\collection $collection) {
                 return $collection->get_coll_id();
@@ -220,7 +232,7 @@ class Root implements ControllerProviderInterface
             'per_page'             => $perPage,
             'search_engine'        =>  $app['phraseanet.SE'],
             'search_engine_option' => $options->serialize(),
-            'history'              => \queries::history($app['phraseanet.appbox'], $app['authentication']->getUser()->get_id()),
+            'history'              => \queries::history($app, $app['authentication']->getUser()->get_id()),
             'result'               => $result,
             'proposals'            => $currentPage === 1 ? $result->getProposals() : null,
             'help'                 => count($resultData) === 0 ? $this->getHelpStartPage($app) : '',
