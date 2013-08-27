@@ -12,4 +12,30 @@ use Doctrine\ORM\EntityRepository;
  */
 class FeedEntryRepository extends EntityRepository
 {
+    /**
+     * Returns a collection of FeedEntry from given feeds, limited to $how_many results, starting with $offset_start
+     *
+     * @param array   $feeds
+     * @param integer $offset_start
+     * @param integer $how_many
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function findByFeeds($feeds, $offset_start = null, $how_many = null)
+    {
+        $dql = 'SELECT f FROM Entities\FeedEntry f
+                WHERE f.feed IN (:feeds) order by f.updatedOn DESC';
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('feeds', $feeds);
+
+        if (null !== $offset_start && 0 !== $offset_start) {
+            $query->setFirstResult($offset_start);
+        }
+        if (null !== $how_many) {
+            $query->setMaxResults($how_many);
+        }
+
+        return $query->getResult();
+    }
 }
