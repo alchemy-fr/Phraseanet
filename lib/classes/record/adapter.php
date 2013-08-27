@@ -1591,15 +1591,19 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 return $collection->get_base_id();
             }, $this->databox->get_collections());
 
-        $sql = "DELETE FROM order_elements WHERE record_id = :record_id AND base_id IN (" . implode(', ', $base_ids) . ")";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':record_id' => $this->get_record_id()));
-        $stmt->closeCursor();
+        $orderElementRepository = $this->app['EM']->getRepository('\Entities\OrderElement');
 
-        $repository = $this->app['EM']->getRepository('\Entities\BasketElement');
+        /* @var $repository \Repositories\OrderElementRepository */
+        foreach ($orderElementRepository->findBy(array('recordId' => $this->get_record_id())) as $order_element) {
+            if ($order_element->getSbasId($this->app) == $this->get_sbas_id()) {
+                $this->app['EM']->remove($order_element);
+            }
+        }
+
+        $basketElementRepository = $this->app['EM']->getRepository('\Entities\BasketElement');
 
         /* @var $repository \Repositories\BasketElementRepository */
-        foreach ($repository->findElementsByRecord($this) as $basket_element) {
+        foreach ($basketElementRepository->findElementsByRecord($this) as $basket_element) {
             $this->app['EM']->remove($basket_element);
         }
 

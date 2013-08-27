@@ -55,18 +55,15 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $users = array();
 
         try {
-            $sql = 'SELECT DISTINCT e.base_id
-          FROM order_elements e
-          WHERE e.order_id = :order_id';
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':order_id' => $order_id));
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $repository = $this->app['EM']->getRepository('Entities\OrderElement');
+
+            $results = $repository->findBy(array('orderId' => $order_id));
 
             $base_ids = array();
-            foreach ($rs as $row) {
-                $base_ids[] = $row['base_id'];
+            foreach ($results as $result) {
+                $base_ids[] = $result->getBaseId();
             }
+            $base_ids = array_unique($base_ids);
 
             $query = new User_Query($this->app);
             $users = $query->on_base_ids($base_ids)
