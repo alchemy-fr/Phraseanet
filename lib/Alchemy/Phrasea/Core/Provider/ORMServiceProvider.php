@@ -16,6 +16,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Doctrine\Common\EventManager;
+use Doctrine\Events\Suscribers\UserSuscriber;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\EntityManager;
@@ -115,6 +116,7 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['EM.events-manager'] = $app->share(function(Application $app) {
             $evm = new EventManager();
             $evm->addEventSubscriber(new TimestampableListener());
+            $evm->addEventSubscriber(new UserSuscriber());
 
             return $evm;
         });
