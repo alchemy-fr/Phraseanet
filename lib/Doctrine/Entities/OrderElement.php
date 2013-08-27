@@ -5,7 +5,6 @@ namespace Entities;
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 use Entities\Order;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="OrderElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_ordercle", columns={"base_id","record_id","order_id"})})
@@ -46,7 +45,6 @@ class OrderElement
      */
     private $order;
 
-
     /**
      * Get id
      *
@@ -60,7 +58,7 @@ class OrderElement
     /**
      * Set order_master_id
      *
-     * @param integer $orderMasterId
+     * @param  integer      $orderMasterId
      * @return OrderElement
      */
     public function setOrderMasterId($orderMasterId)
@@ -84,7 +82,7 @@ class OrderElement
      *
      * Returns the username matching to the order_master_id
      *
-     * @param Application $app
+     * @param  Application $app
      * @return string
      */
     public function getOrderMasterName(Application $app)
@@ -101,7 +99,7 @@ class OrderElement
     /**
      * Set deny
      *
-     * @param boolean $deny
+     * @param  boolean      $deny
      * @return OrderElement
      */
     public function setDeny($deny)
@@ -124,7 +122,7 @@ class OrderElement
     /**
      * Set order
      *
-     * @param Order $order
+     * @param  Order        $order
      * @return OrderElement
      */
     public function setOrder(Order $order = null)
@@ -147,7 +145,7 @@ class OrderElement
     /**
      * Set base_id
      *
-     * @param integer $baseId
+     * @param  integer      $baseId
      * @return OrderElement
      */
     public function setBaseId($baseId)
@@ -170,7 +168,7 @@ class OrderElement
     /**
      * Set record_id
      *
-     * @param integer $recordId
+     * @param  integer      $recordId
      * @return OrderElement
      */
     public function setRecordId($recordId)
@@ -193,7 +191,7 @@ class OrderElement
     /**
      * Returns a record from the element's base_id and record_id
      *
-     * @param Application $app
+     * @param  Application     $app
      * @return \record_adapter
      */
     public function getRecord(Application $app)
@@ -204,7 +202,7 @@ class OrderElement
     /**
      * Returns the matching sbasId
      *
-     * @param Application $app
+     * @param  Application $app
      * @return int
      */
     public function getSbasId(Application $app)

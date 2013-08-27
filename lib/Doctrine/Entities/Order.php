@@ -25,11 +25,6 @@ class Order
     private $usrId;
 
     /**
-     * @ORM\Column(type="integer", nullable=true, name="ssel_id")
-     */
-    private $sselId;
-
-    /**
      * @ORM\Column(type="string", length=2048, name="order_usage")
      */
     private $orderUsage;
@@ -81,7 +76,7 @@ class Order
     /**
      * Set usr_id
      *
-     * @param integer $usrId
+     * @param  integer $usrId
      * @return Order
      */
     public function setUsrId($usrId)
@@ -102,32 +97,9 @@ class Order
     }
 
     /**
-     * Set ssel_id
-     *
-     * @param integer $sselId
-     * @return Order
-     */
-    public function setSselId($sselId)
-    {
-        $this->sselId = $sselId;
-
-        return $this;
-    }
-
-    /**
-     * Get ssel_id
-     *
-     * @return integer
-     */
-    public function getSselId()
-    {
-        return $this->sselId;
-    }
-
-    /**
      * Set deadline
      *
-     * @param \DateTime $deadline
+     * @param  \DateTime $deadline
      * @return Order
      */
     public function setDeadline($deadline)
@@ -150,7 +122,7 @@ class Order
     /**
      * Set created_on
      *
-     * @param \DateTime $createdOn
+     * @param  \DateTime $createdOn
      * @return Order
      */
     public function setCreatedOn($createdOn)
@@ -173,7 +145,7 @@ class Order
     /**
      * Add elements
      *
-     * @param \Entities\OrderElement $elements
+     * @param  \Entities\OrderElement $elements
      * @return Order
      */
     public function addElement(\Entities\OrderElement $elements)
@@ -220,7 +192,7 @@ class Order
     /**
      * Set todo
      *
-     * @param integer $todo
+     * @param  integer $todo
      * @return Order
      */
     public function setTodo($todo)
@@ -253,7 +225,7 @@ class Order
     /**
      * Set order_usage
      *
-     * @param string $orderUsage
+     * @param  string $orderUsage
      * @return Order
      */
     public function setOrderUsage($orderUsage)
@@ -295,5 +267,4 @@ class Order
     {
         return $this->basket;
     }
-
 }
