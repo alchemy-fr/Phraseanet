@@ -29,9 +29,15 @@ class FtpCredential
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $usrId;
+
+    /**
+     * @ORM\OneToOne(targetEntity="User", inversedBy="ftpCredential")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="boolean")
@@ -93,15 +99,7 @@ class FtpCredential
     }
 
     /**
-     * @return \User_Adapter
-     */
-    public function getUser(Application $app)
-    {
-        return \User_Adapter::getInstance($this->usrId, $app);
-    }
-
-    /**
-     * @return \User_Adapter
+     * @return integer
      */
     public function getUsrId()
     {
@@ -117,6 +115,26 @@ class FtpCredential
     }
 
     /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return FtpCredential
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
      * @return boolean
      */
     public function isActive()
@@ -126,10 +144,14 @@ class FtpCredential
 
     /**
      * @param boolean $active
+     *
+     * @return FtpCredential
      */
     public function setActive($active)
     {
         $this->active = (Boolean) $active;
+
+        return $this;
     }
 
     /**
@@ -142,10 +164,14 @@ class FtpCredential
 
     /**
      * @param string $address
+     *
+     * @return FtpCredential
      */
     public function setAddress($address)
     {
         $this->address = $address;
+
+        return $this;
     }
 
     /**
@@ -158,10 +184,14 @@ class FtpCredential
 
     /**
      * @param string $login
+     *
+     * @return FtpCredential
      */
     public function setLogin($login)
     {
         $this->login = $login;
+
+        return $this;
     }
 
     /**
@@ -174,10 +204,14 @@ class FtpCredential
 
     /**
      * @param string $password
+     *
+     * @return FtpCredential
      */
     public function setPassword($password)
     {
         $this->password = $password;
+
+        return $this;
     }
 
     /**
@@ -190,10 +224,14 @@ class FtpCredential
 
     /**
      * @param string $receptionFolder
+     *
+     * @return FtpCredential
      */
     public function setReceptionFolder($receptionFolder)
     {
         $this->receptionFolder = $receptionFolder;
+
+        return $this;
     }
 
     /**
@@ -206,10 +244,14 @@ class FtpCredential
 
     /**
      * @param string $repositoryPrefixName
+     *
+     * @return FtpCredential
      */
     public function setRepositoryPrefixName($repositoryPrefixName)
     {
         $this->repositoryPrefixName = $repositoryPrefixName;
+
+        return $this;
     }
 
     /**
@@ -222,10 +264,14 @@ class FtpCredential
 
     /**
      * @param string $passive
+     *
+     * @return FtpCredential
      */
     public function setPassive($passive)
     {
         $this->passive = (Boolean) $passive;
+
+        return $this;
     }
 
     /**
@@ -238,10 +284,14 @@ class FtpCredential
 
     /**
      * @param string $ssl
+     *
+     * @return FtpCredential
      */
     public function setSsl($ssl)
     {
         $this->ssl = (Boolean) $ssl;
+
+        return $this;
     }
 
     /**
@@ -254,10 +304,14 @@ class FtpCredential
 
     /**
      * @param string $maxRetry
+     *
+     * @return FtpCredential
      */
     public function setMaxRetry($maxRetry)
     {
         $this->maxRetry = $maxRetry;
+
+        return $this;
     }
 
     /**
@@ -270,9 +324,31 @@ class FtpCredential
 
     /**
      * @param \DateTime $updated
+     *
+     * @return FtpCredential
      */
     public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * @return FtpCredential
+     */
+    public function resetCredentials()
+    {
+        $this->active = false;
+        $this->address = '';
+        $this->login = '';
+        $this->maxRetry = 5;
+        $this->passive = false;
+        $this->password = '';
+        $this->receptionFolder = '';
+        $this->repositoryPrefixName = '';
+        $this->ssl = false;
+
+        return $this;
     }
 }

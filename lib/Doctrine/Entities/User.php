@@ -14,6 +14,7 @@ namespace Entities;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -38,6 +39,38 @@ class User
     const GENDER_MR = 'mr';
     const GENDER_MRS = 'mrs';
     const GENDER_MISS = 'miss';
+
+    const USER_GUEST = 'guest';
+    const USER_AUTOREGISTER = 'autoregister';
+
+    /**
+     * The default user setting values.
+     *
+     * @var array
+     */
+    private static $defaultUserSettings = array(
+        'view'                    => 'thumbs',
+        'images_per_page'         => '20',
+        'images_size'             => '120',
+        'editing_images_size'     => '134',
+        'editing_top_box'         => '180px',
+        'editing_right_box'       => '400px',
+        'editing_left_box'        => '710px',
+        'basket_sort_field'       => 'name',
+        'basket_sort_order'       => 'ASC',
+        'warning_on_delete_story' => 'true',
+        'client_basket_status'    => '1',
+        'css'                     => '000000',
+        'start_page_query'        => 'last',
+        'start_page'              => 'QUERY',
+        'rollover_thumbnail'      => 'caption',
+        'technical_display'       => '1',
+        'doctype_display'         => '1',
+        'bask_val_order'          => 'nat',
+        'basket_caption_display'  => '0',
+        'basket_status_display'   => '0',
+        'basket_title_display'    => '0'
+    );
 
     /**
      * @ORM\Column(type="integer")
@@ -144,7 +177,7 @@ class User
     /**
      * @ORM\Column(type="string", length=32)
      */
-    private $fax= '';
+    private $fax = '';
 
     /**
      * @ORM\Column(type="boolean")
@@ -170,11 +203,6 @@ class User
      * @ORM\Column(type="boolean", name="ldap_created")
      */
     private $ldapCreated = false;
-
-    /**
-     * @ORM\Column(type="integer", name="model_of", nullable=true)
-     */
-    private $modelOf;
 
     /**
      * @ORM\Column(type="string", length=64, name="last_model", nullable=true)
@@ -224,9 +252,47 @@ class User
     private $updated;
 
     /**
+     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="model_of", referencedColumnName="id")
+     **/
+    private $modelOf;
+
+     /**
+     * @ORM\OneToOne(targetEntity="FtpCredential", mappedBy="user", cascade={"all"})
+     **/
+    private $ftpCredential;
+
+    /**
+     * @ORM\OneToMany(targetEntity="UserQuery", mappedBy="user", cascade={"all"})
+     **/
+    private $queries;
+
+    /**
+     * @ORM\OneToMany(targetEntity="UserSetting", mappedBy="user", cascade={"all"})
+     **/
+    private $settings;
+
+    /**
+     * @ORM\OneToMany(targetEntity="UserNotificationSetting", mappedBy="user", cascade={"all"})
+     **/
+    private $notificationSettings;
+
+    /**
      * @var \ACL
      */
     private $acl;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->setFtpCredential(new FtpCredential());
+        $this->queries = new ArrayCollection();
+        $this->notificationSettings = new ArrayCollection();
+        $this->setDefaultSettings();
+        $this->nonce = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+    }
 
     /**
      * @return integer
@@ -249,6 +315,10 @@ class User
      */
     public function setLogin($login)
     {
+        if (trim($login) === '') {
+            throw new InvalidArgumentException('Invalid login.');
+        }
+
         $this->login = $login;
     }
 
@@ -265,6 +335,10 @@ class User
      */
     public function setEmail($email)
     {
+        if (null !== $email && !preg_match('/.+@.+\..+/', trim($email))) {
+            throw new InvalidArgumentException('Invalid email.');
+        }
+
         $this->email = $email;
     }
 
@@ -282,6 +356,10 @@ class User
      */
     public function setPassword($password)
     {
+        if (trim($password) === '') {
+            throw new InvalidArgumentException('Invalid password.');
+        }
+
         $this->password = $password;
     }
 
@@ -659,7 +737,7 @@ class User
     }
 
     /**
-     * @return integer
+     * @return User
      */
     public function getModelOf()
     {
@@ -667,11 +745,15 @@ class User
     }
 
     /**
-     * @param integer $modelOf
+     * @param User $user
      */
-    public function setModelOf($modelOf)
+    public function setModelOf(User $user)
     {
-        $this->modelOf = $modelOf;
+        if ($this->isUser($user)) {
+            throw new InvalidArgumentException(sprintf('Can not set same user %s as template.', $this->getLogin()));
+        }
+
+        $this->modelOf = $user;
     }
 
     /**
@@ -819,8 +901,87 @@ class User
      */
     public function setUpdated(\Datetime $updated)
     {
-
         $this->updated = $updated;
+    }
+
+    /**
+     * @return FtpCredential
+     */
+    public function getFtpCredential()
+    {
+        return $this->ftpCredential;
+    }
+
+    /**
+     * @param FtpCredential $ftpCredential
+     *
+     * @return User
+     */
+    public function setFtpCredential(FtpCredential $ftpCredential)
+    {
+        $this->ftpCredential = $ftpCredential;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getQueries()
+    {
+        return $this->queries;
+    }
+
+    /**
+     * @param ArrayCollection $queries
+     *
+     * @return User
+     */
+    public function setQueries(ArrayCollection $queries)
+    {
+        $this->queries = $queries;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    /**
+     * @param ArrayCollection $settings
+     *
+     * @return User
+     */
+    public function setSettings(ArrayCollection $settings)
+    {
+        $this->settings = $settings;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getNotificationSettings()
+    {
+        return $this->notificationSettings;
+    }
+
+    /**
+     * @param ArrayCollection $notificationSettings
+     *
+     * @return User
+     */
+    public function setNotificationSettings(ArrayCollection $notificationSettings)
+    {
+        $this->notificationSettings = $notificationSettings;
+
+        return $this;
     }
 
     /**
@@ -838,6 +999,16 @@ class User
     }
 
     /**
+     * @param User $user
+     *
+     * @return boolean
+     */
+    public function isUser(User $user = null)
+    {
+        return null !== $user && $this->getLogin() === $user->getLogin();
+    }
+
+    /**
      * @return boolean
      */
     public function isTemplate()
@@ -850,7 +1021,7 @@ class User
      */
     public function isSpecial()
     {
-        return in_array($this->login, array('invite', 'autoregister'));
+        return in_array($this->login, array(self::USER_GUEST, self::USER_AUTOREGISTER));
     }
 
     /**
@@ -871,5 +1042,50 @@ class User
         }
 
         return _('Unnamed user');
+    }
+
+    /**
+     * Reset user informations.
+     *
+     * @return User
+     */
+    public function reset()
+    {
+        $this->setCity('');
+        $this->setAddress('');
+        $this->setCountry('');
+        $this->setZipCode('');
+        $this->setTimezone('');
+        $this->setCompany('');
+        $this->setEmail(null);
+        $this->setFax('');
+        $this->setPhone('');
+        $this->setFirstName('');
+        $this->setGender(null);
+        $this->setGeonameId(null);
+        $this->setJob('');
+        $this->setActivity('');
+        $this->setLastName('');
+        $this->setMailNotificationsActivated(false);
+        $this->setRequestNotificationsActivated(false);
+
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    private function setDefaultSettings()
+    {
+        $this->settings = new ArrayCollection();
+
+        foreach(self::$defaultUserSettings as $name => $value) {
+            $setting = new UserSetting();
+            $setting->setName($name);
+            $setting->setValue($value);
+            $this->settings->add($setting);
+        };
+
+        return $this;
     }
 }

@@ -18,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Table(name="UserNotificationSettings",
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="unique_index",columns={"usr_id", "name"})
+ *          @ORM\UniqueConstraint(name="unique_index",columns={"user_id", "name"})
  *      }
  * )
  * @ORM\Entity(repositoryClass="Repositories\UserNotificaionSettingRepository")
@@ -33,9 +33,10 @@ class UserNotificationSetting
     private $id;
 
     /**
-     * @ORM\Column(type="integer", name="usr_id")
-     */
-    private $usrId;
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="notificationSettings")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="string", length=64)
@@ -68,43 +69,21 @@ class UserNotificationSetting
     }
 
     /**
-     * @return integer
+     * @return User
      */
-    public function getUsrId()
+    public function getUser()
     {
-        return $this->usrId;
+        return $this->user;
     }
 
     /**
-     * @param integer $usrId
+     * @param User $user
      *
      * @return UserNotificationSetting
      */
-    public function setUsrId($usrId)
+    public function setUser(User $user = null)
     {
-        $this->usrId = $usrId;
-
-        return $this;
-    }
-
-    /**
-     * @param Application $app
-     *
-     * @return \User_Adapter
-     */
-    public function getUser(Application $app)
-    {
-        return \User_Adapter::getInstance($this->usrId, $app);
-    }
-
-    /**
-     * @param \User_Adapter $user
-     *
-     * @return UserNotificationSetting
-     */
-    public function setUser(\User_Adapter $user)
-    {
-        $this->setUsrId($user->get_id());
+        $this->user = $user;
 
         return $this;
     }

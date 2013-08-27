@@ -29,9 +29,15 @@ class UserQuery
     private $id;
 
     /**
-     * @ORM\Column(type="integer", name="usr_id")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $usrId;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="queries")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="string", length=256)
@@ -62,34 +68,28 @@ class UserQuery
 
     /**
      * @param integer $usrId
-     *
-     * @return UserQuery
      */
     public function setUsrId($usrId)
     {
         $this->usrId = $usrId;
-
-        return $this;
     }
 
     /**
-     * @param Application $app
-     *
-     * @return \User_Adapter
+     * @return User
      */
-    public function getUser(Application $app)
+    public function getUser()
     {
-        return \User_Adapter::getInstance($this->usrId, $app);
+        return $this->user;
     }
 
     /**
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return UserQuery
      */
-    public function setUser(\User_Adapter $user)
+    public function setUser(User $user = null)
     {
-        $this->setUsrId($user->get_id());
+        $this->user = $user;
 
         return $this;
     }

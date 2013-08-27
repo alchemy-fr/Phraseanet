@@ -15,58 +15,54 @@ use Entities\User;
 
 class UserRepositoryTest extends \PhraseanetPHPUnitAbstract
 {
-    public function testFindAdmins()
-    {
-        $this->markTestSkipped('missing deleted field');
-        $user = new User();
-        $user->setLogin('login');
-        $user->setPassword('toto');
-        $this->insertOneUser($user);
-        $users = self::$DI['app']['EM']->getRepository('Entities\User')->findAdmins();
-        $this->assertEquals(0, count($users));
-
-        $user->setAdmin(true);
-        $this->insertOneUser($user);
-        $users = self::$DI['app']['EM']->getRepository('Entities\User')->findAdmins();
-        $this->assertEquals(1, count($users));
-
-        $user->setModelOf(1);
-        $this->insertOneUser($user);
-        $users = self::$DI['app']['EM']->getRepository('Entities\User')->findAdmins();
-        $this->assertEquals(0, count($users));
-
-        $user->setModelOf(null);
-        $user->setModelOf(true);
-        $this->insertOneUser($user);
-        $users = self::$DI['app']['EM']->getRepository('Entities\User')->findAdmins();
-        $this->assertEquals(0, count($users));
-    }
-
-    public function testSetAdmins()
+    public function testFindAdminsWithNoAdmins()
     {
         $user = new User();
         $user->setLogin('login');
         $user->setPassword('toto');
         $this->insertOneUser($user);
-        $this->assertFalse($user->isAdmin());
-        self::$DI['app']['EM']->getRepository('Entities\User')->setAdmins(array($user));
-        $user = self::$DI['app']['EM']->getReference('Entities\User', $user->getId());
-        self::$DI['app']['EM']->refresh($user);
-        $this->assertTrue($user->isAdmin());
+        $users = self::$DI['app']['EM']->getRepository('Entities\User')->findAdmins();
+        $this->assertEquals(0, count($users));
     }
 
-    public function testResetAdmins()
+    public function testFindAdminsWithOneAdmin()
     {
         $user = new User();
         $user->setLogin('login');
         $user->setPassword('toto');
         $user->setAdmin(true);
         $this->insertOneUser($user);
-        $this->assertTrue($user->isAdmin());
-        self::$DI['app']['EM']->getRepository('Entities\User')->resetAdmins();
-        $user = self::$DI['app']['EM']->getReference('Entities\User', $user->getId());
-        self::$DI['app']['EM']->refresh($user);
-        $this->assertFalse($user->isAdmin());
+        $users = self::$DI['app']['EM']->getRepository('Entities\User')->findAdmins();
+        $this->assertEquals(1, count($users));
+    }
+
+    public function testFindAdminsWithOneAdminButTemplate()
+    {
+        $user = new User();
+        $user->setLogin('login');
+        $user->setPassword('toto');
+        $user->setAdmin(true);
+        
+        $template = new User();
+        $template->setLogin('logint');
+        $template->setPassword('totot');
+        
+        $user->setModelOf($template);
+
+        $users = self::$DI['app']['EM']->getRepository('Entities\User')->findAdmins();
+        $this->assertEquals(0, count($users));
+    }
+
+    public function testFindAdminsWithOneAdminButDeleted()
+    {
+        $user = new User();
+        $user->setLogin('login');
+        $user->setPassword('toto');
+        $user->setAdmin(true);
+        $user->setDeleted(true);
+
+        $users = self::$DI['app']['EM']->getRepository('Entities\User')->findAdmins();
+        $this->assertEquals(0, count($users));
     }
 
     public function testFindByLogin()
@@ -80,25 +76,38 @@ class UserRepositoryTest extends \PhraseanetPHPUnitAbstract
         $this->assertNull(self::$DI['app']['EM']->getRepository('Entities\User')->findByLogin('wrong-login'));
     }
 
-    public function testFindByEmail()
+    public function testFindUserByEmail()
     {
-        $this->markTestSkipped('missing deleted field');
         $user = new User();
         $user->setLogin('login');
         $user->setPassword('toto');
         $user->setEmail('toto@toto.to');
         $this->insertOneUser($user);
-        $userFound = self::$DI['app']['EM']->getRepository('Entities\User')->findByEmail('toto@toto.to');
-        $this->assertInstanceOf('Entities\User', $userFound);
+        $user = self::$DI['app']['EM']->getRepository('Entities\User')->findByEmail('toto@toto.to');
+        $this->assertInstanceOf('Entities\User', $user);
+    }
 
+    public function testFindUserByEmailButDeleted()
+    {
+        $user = new User();
+        $user->setLogin('login');
+        $user->setPassword('toto');
+        $user->setEmail('toto@toto.to');
         $user->setDeleted(true);
         $this->insertOneUser($user);
-        $userFound = self::$DI['app']['EM']->getRepository('Entities\User')->findByEmail('toto@toto.to');
-        $this->assertNull($userFound);
+        $user = self::$DI['app']['EM']->getRepository('Entities\User')->findByEmail('toto@toto.to');
+        $this->assertNull($user);
+    }
 
+    public function testFindUserByEmailButNullEmail()
+    {
+        $user = new User();
+        $user->setLogin('login');
+        $user->setPassword('toto');
         $user->setEmail(null);
+        $user->setDeleted(true);
         $this->insertOneUser($user);
-        $userFound = self::$DI['app']['EM']->getRepository('Entities\User')->findByEmail(null);
-        $this->assertNull($userFound);
+        $user = self::$DI['app']['EM']->getRepository('Entities\User')->findByEmail('toto@toto.to');
+        $this->assertNull($user);
     }
 }

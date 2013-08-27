@@ -14,13 +14,25 @@ namespace Doctrine\Tests\Entities;
 use Alchemy\Phrasea\Application;
 use Entities\User;
 
-class UserTest extends \PHPUnit_Framework_TestCase
+class UserTest extends \PhraseanetPHPUnitAbstract
 {
     private $user;
 
     public function setUp()
     {
+        parent::setUp();
         $this->user = new User();
+    }
+
+    public function testConstructor()
+    {
+        $this->assertNotNull($this->user->getNonce());
+        $this->assertInstanceOf('\Entities\FtpCredential', $this->user->getFtpCredential());
+        $this->assertInstanceOf('\Doctrine\Common\Collections\ArrayCollection', $this->user->getQueries());
+        $this->assertInstanceOf('\Doctrine\Common\Collections\ArrayCollection', $this->user->getNotificationSettings());
+        $settings = $this->user->getSettings();
+        $this->assertInstanceOf('\Doctrine\Common\Collections\ArrayCollection', $settings);
+        $this->assertGreaterThan(0, $settings->count());
     }
 
     /**
@@ -81,6 +93,39 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $this->user->setGeonameId(-1);
     }
 
+    public function testInvalidLogin()
+    {
+        $this->setExpectedException(
+            'Alchemy\Phrasea\Exception\InvalidArgumentException',
+            'Invalid login.'
+        );
+        $this->user->setLogin('');
+    }
+
+    public function testInvalidEmail()
+    {
+        $this->setExpectedException(
+            'Alchemy\Phrasea\Exception\InvalidArgumentException',
+            'Invalid email.'
+        );
+        $this->user->setEmail('');
+    }
+
+    public function testValidEmail()
+    {
+        $this->user->setEmail('aa@aa.fr');
+        $this->assertEquals('aa@aa.fr', $this->user->getEmail());
+    }
+
+    public function testInvalidPassword()
+    {
+        $this->setExpectedException(
+            'Alchemy\Phrasea\Exception\InvalidArgumentException',
+            'Invalid password.'
+        );
+        $this->user->setPassword('');
+    }
+
     public function testGetDisplayName()
     {
         $this->user->setLogin('login');
@@ -101,7 +146,11 @@ class UserTest extends \PHPUnit_Framework_TestCase
     public function testIsTemplate()
     {
         $this->assertFalse($this->user->isTemplate());
-        $this->user->setModelOf(1);
+        $template = new User();
+        $template->setLogin('login2');
+        $template->setPassword('toto');
+        $this->insertOneUser($template);
+        $this->user->setModelOf($template);
         $this->assertTrue($this->user->isTemplate());
     }
 
@@ -109,12 +158,83 @@ class UserTest extends \PHPUnit_Framework_TestCase
     {
         $this->user->setLogin('login');
         $this->assertFalse($this->user->isSpecial());
-        $this->user->setLogin('invite');
+        $this->user->setLogin(User::USER_AUTOREGISTER);
         $this->assertTrue($this->user->isSpecial());
         $this->user->setLogin('login');
         $this->assertFalse($this->user->isSpecial());
-        $this->user->setLogin('autoregister');
+        $this->user->setLogin(User::USER_GUEST);
         $this->assertTrue($this->user->isSpecial());
+    }
+
+    public function testIsUSer()
+    {
+        $this->user->setLogin('login');
+        $this->user->setPassword('toto');
+        $this->assertFalse($this->user->isUser(null));
+        $this->insertOneUser($this->user);
+        $user = new User();
+        $user->setLogin('login2');
+        $user->setPassword('toto');
+        $this->insertOneUser($user);
+        $this->assertFalse($user->isUser($this->user));
+        $this->asserttrue($this->user->isUser($this->user));
+    }
+
+    public function testReset()
+    {
+        $this->user->setCity('city');
+        $this->user->setAddress('address');
+        $this->user->setCountry('country');
+        $this->user->setZipCode('zipcode');
+        $this->user->setTimezone('timezone');
+        $this->user->setCompany('company');
+        $this->user->setEmail('email@email.com');
+        $this->user->setFax('fax');
+        $this->user->setPhone('phone');
+        $this->user->setFirstName('firstname');
+        $this->user->setGender(User::GENDER_MR);
+        $this->user->setGeonameId(1);
+        $this->user->setJob('job');
+        $this->user->setActivity('activity');
+        $this->user->setLastName('lastname');
+        $this->user->setMailNotificationsActivated(true);
+        $this->user->setRequestNotificationsActivated(true);
+
+        $this->user->reset();
+
+        $this->assertEmpty($this->user->getCity());
+        $this->assertEmpty($this->user->getAddress());
+        $this->assertEmpty($this->user->getCountry());
+        $this->assertEmpty($this->user->getZipCode());
+        $this->assertEmpty($this->user->getTimezone());
+        $this->assertEmpty($this->user->getCompany());
+        $this->assertEmpty($this->user->getFax());
+        $this->assertEmpty($this->user->getPhone());
+        $this->assertEmpty($this->user->getFirstName());
+        $this->assertEmpty($this->user->getJob());
+        $this->assertEmpty($this->user->getActivity());
+        $this->assertEmpty($this->user->getLastName());
+        $this->assertNull($this->user->getEmail());
+        $this->assertNull($this->user->getGeonameId());
+        $this->assertNull($this->user->getGender());
+        $this->assertFalse($this->user->hasMailNotificationsActivated());
+        $this->assertFalse($this->user->hasRequestNotificationsActivated());
+    }
+
+    public function testSetModelOf()
+    {
+        $this->user->setLogin('login');
+        $this->user->setPassword('toto');
+        $user = new User();
+        $user->setLogin('login2');
+        $user->setPassword('toto');
+        $this->insertOneUser($this->user);
+        $this->insertOneUser($user);
+
+        $this->user->setModelOf($user);
+        $this->assertEquals('login2', $this->user->getModelOf()->getLogin());
+        $this->setExpectedException('Alchemy\Phrasea\Exception\InvalidArgumentException');
+        $this->user->setModelOf($this->user);
     }
 
     public function genderProvider()
