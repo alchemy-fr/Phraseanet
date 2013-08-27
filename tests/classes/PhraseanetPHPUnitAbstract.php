@@ -4,6 +4,7 @@ use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\Common\DataFixtures\Loader;
+use Entities\User;
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
@@ -566,6 +567,22 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         }
 
         return;
+    }
+
+    protected function insertOneUser(User $user)
+    {
+         try {
+            $userFixture = new PhraseaFixture\User\LoadOneUser();
+            $userFixture->setUser($user);
+
+            $loader = new Loader();
+            $loader->addFixture($userFixture);
+
+            $this->insertFixtureInDatabase($loader);
+
+        } catch (\Exception $e) {
+            $this->fail('Fail load one User : ' . $e->getMessage());
+        }
     }
 
     /**
