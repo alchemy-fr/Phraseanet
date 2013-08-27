@@ -24,59 +24,37 @@ class FeedRepository extends EntityRepository
     {
         $base_ids = array_keys($user->ACL()->get_granted_base());
 
-        $dql = 'SELECT f FROM Entities\Feed f
-            WHERE f.baseId IS NULL ';
+        $qb = $this
+            ->createQueryBuilder('f');
+
+        $qb->where($qb->expr()->isNull('f.baseId'))
+            ->orWhere('f.public = true');
 
         if (count($base_ids) > 0) {
-            $dql .= ' OR f.baseId
-                IN (' . implode(', ', $base_ids) . ') ';
+            $qb->orWhere($qb->expr()->in('f.baseId', $base_ids));
         }
 
-        $dql .= ' OR f.public = true
-            ORDER BY f.updatedOn DESC';
+        $qb->orderBy('f.updatedOn', 'DESC');
 
-        $query = $this->_em->createQuery($dql);
-
-        return $query->getResult();
-    }
-
-    /**
-     * Returns the given feed if the user can access to it.
-     *
-     * @param  Application   $app
-     * @param  \User_Adapter $user
-     * @param  type          $id
-     * @return Feed
-     */
-    public function loadWithUser(Application $app, \User_Adapter $user, $id)
-    {
-        $feed = $this->find($id);
-        if ($feed) {
-            $coll = $feed->getCollection($app);
-            if ($feed->isPublic()
-                || $coll === null
-                || in_array($coll->get_base_id(), array_keys($user->ACL()->get_granted_base()))) {
-                return $feed;
-            }
-        }
-
-        return null;
+        return $qb->getQuery()->getResult();
     }
 
     /**
      * Returns all the feeds from a given array containing their id.
      *
-     * @param  array      $feed_id
+     * @param  array      $feedIds
      * @return Collection
      */
-    public function findByIdArray(array $feed_id)
+    public function findByIds(array $feedIds)
     {
-        $dql = 'SELECT f FROM Entities\Feed f
-            ORDER BY f.createdOn DESC
-            WHERE f.id IN (' . implode(",", $feed_id) . ')';
+        $qb = $this->createQueryBuilder('f');
 
-        $query = $this->_em->createQuery($dql);
+        if (!empty($feedIds)) {
+            $qb->Where($qb->expr()->in('f.id', $feedIds));
+        }
 
-        return $query->getResult();
+        $qb->orderBy('f.updatedOn', 'DESC');
+
+        return $qb->getQuery()->getResult();
     }
 }
