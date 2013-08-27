@@ -86,6 +86,11 @@ class Basket
     private $elements;
 
     /**
+     * @ORM\OneToOne(targetEntity="Order", mappedBy="basket", cascade={"ALL"})
+     */
+    private $order;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -355,6 +360,29 @@ class Basket
     public function removeElement(\Entities\BasketElement $elements)
     {
         $this->elements->removeElement($elements);
+    }
+
+    /**
+     * Set order
+     *
+     * @param \Entities\Order $order
+     * @return Basket
+     */
+    public function setOrder(\Entities\Order $order = null)
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * Get order
+     *
+     * @return \Entities\Order
+     */
+    public function getOrder()
+    {
+        return $this->order;
     }
 
     /**

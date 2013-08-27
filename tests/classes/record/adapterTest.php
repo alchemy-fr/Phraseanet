@@ -63,16 +63,20 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         self::$DI['app']['authentication']->getUser()->ACL()->update_rights_to_base(self::$DI['record_1']->get_base_id(), array('order_master' => true));
 
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
+                     ->disableOriginalConstructor()
+                     ->getMock();
 
-        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
-            ->method('deliver')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewOrder'), $this->equalTo(null));
+        $eventManagerStub->expects($this->once())
+             ->method('trigger')
+             ->with($this->equalTo('__NEW_ORDER__'), $this->isType('array'))
+             ->will($this->returnValue(null));
 
-        return new set_order(self::$DI['app'], \set_order::create(
-                self::$DI['app'], new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$DI['user_alt2'], 'I need this photos', new \DateTime('+10 minutes')
+        self::$DI['app']['events-manager'] = $eventManagerStub;
+
+        self::$DI['client']->request('POST', '/prod/order/', array(
+            'lst'      => self::$DI['record_1']->get_serialize_key(),
+            'deadline' => '+10 minutes'
         ));
     }
 

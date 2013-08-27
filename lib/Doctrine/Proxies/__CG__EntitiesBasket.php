@@ -195,6 +195,18 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return parent::removeElement($elements);
     }
 
+    public function setOrder(\Entities\Order $order = NULL)
+    {
+        $this->__load();
+        return parent::setOrder($order);
+    }
+
+    public function getOrder()
+    {
+        $this->__load();
+        return parent::getOrder();
+    }
+
     public function getElements()
     {
         $this->__load();
@@ -222,7 +234,7 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'name', 'description', 'usr_id', 'is_read', 'pusher_id', 'archived', 'created', 'updated', 'validation', 'elements');
+        return array('__isInitialized__', 'id', 'name', 'description', 'usr_id', 'is_read', 'pusher_id', 'archived', 'created', 'updated', 'validation', 'elements', 'order');
     }
 
     public function __clone()

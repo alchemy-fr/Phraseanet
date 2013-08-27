@@ -971,7 +971,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
-
         self::$DI['app']['notification.deliverer']->expects($this->exactly($qty))
             ->method('deliver')
             ->with($this->isInstanceOf($expectedMail), $this->equalTo($receipt));
