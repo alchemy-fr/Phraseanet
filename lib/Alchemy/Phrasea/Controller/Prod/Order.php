@@ -309,10 +309,7 @@ class Order implements ControllerProviderInterface
 
         $dest_user = \User_Adapter::getInstance($order->getUsrId(), $app);
 
-        $basket = null;
-        if ($order->getSselId()) {
-            $basket = $app['EM']->getRepository('\Entities\Basket')->findUserBasket($app, $order->getSselId(), $dest_user, false);
-        }
+        $basket = $order->getBasket();
 
         if (null === $basket) {
             $basket = new Basket();
@@ -322,8 +319,6 @@ class Order implements ControllerProviderInterface
 
             $app['EM']->persist($basket);
             $app['EM']->flush();
-
-            $order->setSselId($basket->getId());
         }
 
         $n = 0;
@@ -353,7 +348,7 @@ class Order implements ControllerProviderInterface
                 $order->setTodo($order->getTodo() - $n);
 
                 $app['events-manager']->trigger('__ORDER_DELIVER__', array(
-                    'ssel_id' => $order->getSselId(),
+                    'ssel_id' => $order->getBasket()->getId(),
                     'from'    => $app['authentication']->getUser()->get_id(),
                     'to'      => $dest_user->get_id(),
                     'n'       => $n
