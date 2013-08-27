@@ -89,6 +89,11 @@ class patch_3902 implements patchInterface
 
             }
             $user->setLogin($row['usr_login']);
+
+            if (substr($row['usr_login'], 0, 10) === '(#deleted_') {
+                $user->setDeleted(true);
+            }
+
             $user->setMailLocked(!!$row['mail_locked']);
             $user->setMailNotificationsActivated(!!$row['mail_notifications']);
             $user->setModelOf($row['model_of']);
