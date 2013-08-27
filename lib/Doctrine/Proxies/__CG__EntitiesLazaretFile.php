@@ -141,7 +141,7 @@ class LazaretFile extends \Entities\LazaretFile implements \Doctrine\ORM\Proxy\P
         return parent::getForced();
     }
 
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->__load();
         return parent::setCreated($created);
@@ -153,7 +153,7 @@ class LazaretFile extends \Entities\LazaretFile implements \Doctrine\ORM\Proxy\P
         return parent::getCreated();
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->__load();
         return parent::setUpdated($updated);

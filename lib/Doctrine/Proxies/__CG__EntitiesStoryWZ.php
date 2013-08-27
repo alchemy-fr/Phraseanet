@@ -111,7 +111,7 @@ class StoryWZ extends \Entities\StoryWZ implements \Doctrine\ORM\Proxy\Proxy
         return parent::getUser($app);
     }
 
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->__load();
         return parent::setCreated($created);

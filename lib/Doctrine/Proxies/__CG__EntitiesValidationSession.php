@@ -81,7 +81,7 @@ class ValidationSession extends \Entities\ValidationSession implements \Doctrine
         return parent::getInitiator($app);
     }
 
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->__load();
         return parent::setCreated($created);
@@ -93,7 +93,7 @@ class ValidationSession extends \Entities\ValidationSession implements \Doctrine
         return parent::getCreated();
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->__load();
         return parent::setUpdated($updated);

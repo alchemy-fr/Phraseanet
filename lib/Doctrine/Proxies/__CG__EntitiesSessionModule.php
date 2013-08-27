@@ -75,7 +75,7 @@ class SessionModule extends \Entities\SessionModule implements \Doctrine\ORM\Pro
         return parent::getCreated();
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->__load();
         return parent::setUpdated($updated);

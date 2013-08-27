@@ -75,7 +75,7 @@ class UsrListEntry extends \Entities\UsrListEntry implements \Doctrine\ORM\Proxy
         return parent::setUser($user);
     }
 
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->__load();
         return parent::setCreated($created);
@@ -87,7 +87,7 @@ class UsrListEntry extends \Entities\UsrListEntry implements \Doctrine\ORM\Proxy
         return parent::getCreated();
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->__load();
         return parent::setUpdated($updated);
