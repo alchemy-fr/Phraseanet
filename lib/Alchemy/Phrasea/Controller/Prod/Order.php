@@ -158,7 +158,7 @@ class Order implements ControllerProviderInterface
         $toRemove = array();
 
         $records = RecordsRequest::fromRequest($app, $request, true, array('cancmd'));
-        $query = new \User_Query($app);
+        $hasOneAdmin = array();
 
         if (!$records->isEmpty()) {
             $order = new OrderEntity();
@@ -172,13 +172,16 @@ class Order implements ControllerProviderInterface
                     }
                 }
 
-                $hasOneAdmin = !!count($query->on_base_ids(array($record->get_base_id()))
-                           ->who_have_right(array('order_master'))
-                           ->execute()->get_results());
+                if (!isset($hasOneAdmin[$record->get_base_id()])) {
+                    $query = new \User_Query($app);
+                    $hasOneAdmin[$record->get_base_id()] = (Boolean) count($query->on_base_ids(array($record->get_base_id()))
+                        ->who_have_right(array('order_master'))
+                        ->execute()->get_results());
+                }
 
-                $collectionHasOrderAdmins->set($record->get_base_id(), $hasOneAdmin);
+                $collectionHasOrderAdmins->set($record->get_base_id(), $hasOneAdmin[$record->get_base_id()]);
 
-                if (!$hasOneAdmin) {
+                if (!$hasOneAdmin[$record->get_base_id()]) {
                     $toRemove[] = $key;
                 } else {
                     $orderElement = new OrderElement();
