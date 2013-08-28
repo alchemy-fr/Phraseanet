@@ -75,7 +75,7 @@ class ValidationData extends \Entities\ValidationData implements \Doctrine\ORM\P
         return parent::getNote();
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->__load();
         return parent::setUpdated($updated);
