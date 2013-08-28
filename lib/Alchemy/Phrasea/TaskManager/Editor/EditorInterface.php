@@ -11,9 +11,10 @@
 
 namespace Alchemy\Phrasea\TaskManager\Editor;
 
-use Alchemy\Phrasea\Core\Configuration\Configuration;
+use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface EditorInterface
 {
@@ -29,6 +30,8 @@ interface EditorInterface
      * @param Request $request
      *
      * @return Response The updated XML wrapped in a response
+     *
+     * @throws BadRequestHttpException In case the XML is invalid.
      */
     public function updateXMLWithRequest(Request $request);
 
@@ -51,7 +54,7 @@ interface EditorInterface
      *
      * @return string An XML string
      */
-    public function getDefaultSettings(Configuration $config = null);
+    public function getDefaultSettings(ConfigurationInterface $config = null);
 
     /**
      * Returns the default period of the job.
