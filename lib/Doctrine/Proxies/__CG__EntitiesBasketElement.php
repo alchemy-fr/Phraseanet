@@ -99,7 +99,7 @@ class BasketElement extends \Entities\BasketElement implements \Doctrine\ORM\Pro
         return parent::getOrd();
     }
 
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->__load();
         return parent::setCreated($created);
@@ -111,7 +111,7 @@ class BasketElement extends \Entities\BasketElement implements \Doctrine\ORM\Pro
         return parent::getCreated();
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->__load();
         return parent::setUpdated($updated);

@@ -87,7 +87,7 @@ class AuthFailure extends \Entities\AuthFailure implements \Doctrine\ORM\Proxy\P
         return parent::getLocked();
     }
 
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->__load();
         return parent::setCreated($created);

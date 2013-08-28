@@ -183,7 +183,7 @@ class Session extends \Entities\Session implements \Doctrine\ORM\Proxy\Proxy
         return parent::getNonce();
     }
 
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->__load();
         return parent::setCreated($created);
@@ -195,7 +195,7 @@ class Session extends \Entities\Session implements \Doctrine\ORM\Proxy\Proxy
         return parent::getCreated();
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->__load();
         return parent::setUpdated($updated);

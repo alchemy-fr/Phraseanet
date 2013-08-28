@@ -75,7 +75,7 @@ class LazaretAttribute extends \Entities\LazaretAttribute implements \Doctrine\O
         return parent::getValue();
     }
 
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->__load();
         return parent::setCreated($created);
@@ -87,7 +87,7 @@ class LazaretAttribute extends \Entities\LazaretAttribute implements \Doctrine\O
         return parent::getCreated();
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->__load();
         return parent::setUpdated($updated);

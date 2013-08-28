@@ -87,7 +87,7 @@ class UsrListOwner extends \Entities\UsrListOwner implements \Doctrine\ORM\Proxy
         return parent::getRole();
     }
 
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->__load();
         return parent::setCreated($created);
@@ -99,7 +99,7 @@ class UsrListOwner extends \Entities\UsrListOwner implements \Doctrine\ORM\Proxy
         return parent::getCreated();
     }
 
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->__load();
         return parent::setUpdated($updated);
