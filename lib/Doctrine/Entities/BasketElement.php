@@ -148,7 +148,7 @@ class BasketElement
      */
     public function setRecord(\record_adapter $record)
     {
-        $this->setRecordId($record->get_recordId());
+        $this->setRecordId($record->get_record_id());
         $this->setSbasId($record->get_sbas_id());
 
         return $this;
