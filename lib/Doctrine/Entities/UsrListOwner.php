@@ -72,8 +72,8 @@ class UsrListOwner
     }
 
     /**
-     * @param  integer      $usrId
-     * 
+     * @param integer $usrId
+     *
      * @return UsrListOwner
      */
     public function setUsrId($usrId)
@@ -93,7 +93,7 @@ class UsrListOwner
 
     /**
      * @param \User_Adapter $user
-     * 
+     *
      * @return UsrListOwner
      */
     public function setUser(\User_Adapter $user)
@@ -103,7 +103,7 @@ class UsrListOwner
 
     /**
      * @param Application $app
-     * 
+     *
      * @return \User_Adapter
      */
     public function getUser(Application $app)
@@ -112,8 +112,8 @@ class UsrListOwner
     }
 
     /**
-     * @param  string       $role
-     * 
+     * @param string $role
+     *
      * @return UsrListOwner
      */
     public function setRole($role)
@@ -136,8 +136,8 @@ class UsrListOwner
     }
 
     /**
-     * @param  \DateTime    $created
-     * 
+     * @param \DateTime $created
+     *
      * @return UsrListOwner
      */
     public function setCreated(\DateTime $created)
@@ -156,8 +156,8 @@ class UsrListOwner
     }
 
     /**
-     * @param  \DateTime    $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return UsrListOwner
      */
     public function setUpdated(\DateTime $updated)
@@ -176,8 +176,8 @@ class UsrListOwner
     }
 
     /**
-     * @param  UsrList $list
-     * 
+     * @param UsrList $list
+     *
      * @return UsrListOwner
      */
     public function setList(UsrList $list = null)

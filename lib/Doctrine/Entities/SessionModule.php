@@ -61,8 +61,8 @@ class SessionModule
     }
 
     /**
-     * @param  integer       $moduleId
-     * 
+     * @param integer $moduleId
+     *
      * @return SessionModule
      */
     public function setModuleId($moduleId)
@@ -81,8 +81,8 @@ class SessionModule
     }
 
     /**
-     * @param  \DateTime     $created
-     * 
+     * @param \DateTime $created
+     *
      * @return SessionModule
      */
     public function setCreated($created)
@@ -101,8 +101,8 @@ class SessionModule
     }
 
     /**
-     * @param  \DateTime     $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return SessionModule
      */
     public function setUpdated(\DateTime $updated)
@@ -121,8 +121,8 @@ class SessionModule
     }
 
     /**
-     * @param  Session $session
-     * 
+     * @param Session $session
+     *
      * @return SessionModule
      */
     public function setSession(Session $session = null)

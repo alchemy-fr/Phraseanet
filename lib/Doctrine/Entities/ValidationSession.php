@@ -80,8 +80,8 @@ class ValidationSession
     }
 
     /**
-     * @param  integer           $initiatorId
-     * 
+     * @param integer $initiatorId
+     *
      * @return ValidationSession
      */
     public function setInitiatorId($initiatorId)
@@ -101,7 +101,7 @@ class ValidationSession
 
     /**
      * @param \User_Adapter $user
-     * 
+     *
      * @return boolean
      */
     public function isInitiator(\User_Adapter $user)
@@ -120,7 +120,7 @@ class ValidationSession
     }
 
     /**
-     * @param Application $app
+     * @param  Application   $app
      * @return \User_Adapter
      */
     public function getInitiator(Application $app)
@@ -131,8 +131,8 @@ class ValidationSession
     }
 
     /**
-     * @param  \DateTime         $created
-     * 
+     * @param \DateTime $created
+     *
      * @return ValidationSession
      */
     public function setCreated(\DateTime $created)
@@ -151,8 +151,8 @@ class ValidationSession
     }
 
     /**
-     * @param  \DateTime         $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return ValidationSession
      */
     public function setUpdated(\DateTime $updated)
@@ -171,8 +171,8 @@ class ValidationSession
     }
 
     /**
-     * @param  \DateTime         $expires
-     * 
+     * @param \DateTime $expires
+     *
      * @return ValidationSession
      */
     public function setExpires($expires)
@@ -191,8 +191,8 @@ class ValidationSession
     }
 
     /**
-     * @param  Basket  $basket
-     * 
+     * @param Basket $basket
+     *
      * @return ValidationSession
      */
     public function setBasket(Basket $basket = null)
@@ -211,8 +211,8 @@ class ValidationSession
     }
 
     /**
-     * @param  ValidationParticipant $participants
-     * 
+     * @param ValidationParticipant $participants
+     *
      * @return ValidationSession
      */
     public function addParticipant(ValidationParticipant $participants)
@@ -254,10 +254,10 @@ class ValidationSession
 
     /**
      * Returns the appropriate validation sentence.
-     * 
-     * @param Application $app
+     *
+     * @param Application   $app
      * @param \User_Adapter $user
-     * 
+     *
      * @return string
      */
     public function getValidationString(Application $app, \User_Adapter $user)
@@ -269,13 +269,13 @@ class ValidationSession
                         , (count($this->getParticipants()) - 1)
                 );
             }
-            
+
             return sprintf(
                     _('Vous avez envoye cette demande a %d utilisateurs')
                     , (count($this->getParticipants()) - 1)
             );
         }
-        
+
         if ($this->getParticipant($user, $app)->canSeeOthers()) {
             return sprintf(
                     _('Processus de validation recu de %s et concernant %d utilisateurs')

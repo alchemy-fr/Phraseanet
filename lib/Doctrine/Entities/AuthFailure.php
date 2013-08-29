@@ -57,8 +57,8 @@ class AuthFailure
     }
 
     /**
-     * @param  string      $username
-     * 
+     * @param string $username
+     *
      * @return AuthFailure
      */
     public function setUsername($username)
@@ -77,8 +77,8 @@ class AuthFailure
     }
 
     /**
-     * @param  string      $ip
-     * 
+     * @param string $ip
+     *
      * @return AuthFailure
      */
     public function setIp($ip)
@@ -118,8 +118,8 @@ class AuthFailure
     }
 
     /**
-     * @param  \DateTime   $created
-     * 
+     * @param \DateTime $created
+     *
      * @return AuthFailure
      */
     public function setCreated(\DateTime $created)

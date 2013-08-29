@@ -61,8 +61,8 @@ class StoryWZ
     }
 
     /**
-     * @param  integer $sbasId
-     * 
+     * @param integer $sbasId
+     *
      * @return StoryWZ
      */
     public function setSbasId($sbasId)
@@ -81,8 +81,8 @@ class StoryWZ
     }
 
     /**
-     * @param  integer $recordId
-     * 
+     * @param integer $recordId
+     *
      * @return StoryWZ
      */
     public function setRecordId($recordId)
@@ -102,7 +102,7 @@ class StoryWZ
 
     /**
      * @param Application $app
-     * 
+     *
      * @return \record_adapter
      */
     public function getRecord(Application $app)
@@ -112,20 +112,20 @@ class StoryWZ
 
     /**
      * @param \record_adapter $record
-     * 
+     *
      * @return StoryWZ
      */
     public function setRecord(\record_adapter $record)
     {
         $this->setRecordId($record->get_record_id());
         $this->setSbasId($record->get_sbas_id());
-        
+
         return $this;
     }
 
     /**
-     * @param  integer $usrId
-     * 
+     * @param integer $usrId
+     *
      * @return StoryWZ
      */
     public function setUsrId($usrId)
@@ -144,9 +144,9 @@ class StoryWZ
     }
 
     /**
-     * 
+     *
      * @param \User_Adapter $user
-     * 
+     *
      * @return StoryWZ
      */
     public function setUser(\User_Adapter $user)
@@ -156,7 +156,7 @@ class StoryWZ
 
     /**
      * @param Application $app
-     * 
+     *
      * @return \User_Adapter|null
      */
     public function getUser(Application $app)
@@ -167,8 +167,8 @@ class StoryWZ
     }
 
     /**
-     * @param  \DateTime $created
-     * 
+     * @param \DateTime $created
+     *
      * @return StoryWZ
      */
     public function setCreated(\DateTime $created)

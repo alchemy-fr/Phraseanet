@@ -108,8 +108,8 @@ class Basket
     }
 
     /**
-     * @param  string $name
-     * 
+     * @param string $name
+     *
      * @return Basket
      */
     public function setName($name)
@@ -128,8 +128,8 @@ class Basket
     }
 
     /**
-     * @param  string $description
-     * 
+     * @param string $description
+     *
      * @return Basket
      */
     public function setDescription($description)
@@ -148,8 +148,8 @@ class Basket
     }
 
     /**
-     * @param  integer $usrId
-     * 
+     * @param integer $usrId
+     *
      * @return Basket
      */
     public function setUsrId($usrId)
@@ -176,8 +176,8 @@ class Basket
     }
 
     /**
-     * @param  Application $app
-     * 
+     * @param Application $app
+     *
      * @return \User_Adapter or null
      */
     public function getOwner(Application $app)
@@ -188,8 +188,8 @@ class Basket
     }
 
     /**
-     * @param  boolean $read
-     * 
+     * @param boolean $read
+     *
      * @return Basket
      */
     public function setRead($read)
@@ -208,8 +208,8 @@ class Basket
     }
 
     /**
-     * @param  integer $pusherId
-     * 
+     * @param integer $pusherId
+     *
      * @return Basket
      */
     public function setPusherId($pusherId)
@@ -229,19 +229,19 @@ class Basket
 
     /**
      * @param \User_Adapter $user
-     * 
+     *
      * @return Basket
      */
     public function setPusher(\User_Adapter $user)
     {
         $this->setPusherId($user->get_id());
-        
+
         return $this;
     }
 
     /**
-     * @param  Application $app
-     * 
+     * @param Application $app
+     *
      * @return \User_Adapter or null
      */
     public function getPusher(Application $app)
@@ -252,8 +252,8 @@ class Basket
     }
 
     /**
-     * @param  boolean $archived
-     * 
+     * @param boolean $archived
+     *
      * @return Basket
      */
     public function setArchived($archived)
@@ -272,8 +272,8 @@ class Basket
     }
 
     /**
-     * @param  \DateTime $created
-     * 
+     * @param \DateTime $created
+     *
      * @return Basket
      */
     public function setCreated(\DateTime $created)
@@ -292,8 +292,8 @@ class Basket
     }
 
     /**
-     * @param  \DateTime $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return Basket
      */
     public function setUpdated(\DateTime $updated)
@@ -312,8 +312,8 @@ class Basket
     }
 
     /**
-     * @param  ValidationSession $validation
-     * 
+     * @param ValidationSession $validation
+     *
      * @return Basket
      */
     public function setValidation(ValidationSession $validation = null)
@@ -351,8 +351,8 @@ class Basket
     }
 
     /**
-     * @param  Order $order
-     * 
+     * @param Order $order
+     *
      * @return Basket
      */
     public function setOrder(Order $order = null)
@@ -380,9 +380,9 @@ class Basket
 
     /**
      * Returns basket elements collections ordered by given sort option.
-     * 
+     *
      * @param type $ordre
-     * 
+     *
      * @return BasketElement[]
      */
     public function getElementsByOrder($ordre)
@@ -416,10 +416,10 @@ class Basket
 
     /**
      * Sort desc algorithme function.
-     * 
+     *
      * @param BasketElement $element1
      * @param BasketElement $element2
-     * 
+     *
      * @return int
      */
     private static function setBEOrderDESC($element1, $element2)
@@ -447,10 +447,10 @@ class Basket
 
     /**
      * Sort asc algorithme function.
-     * 
+     *
      * @param BasketElement $element1
      * @param BasketElement $element2
-     * 
+     *
      * @return int
      */
     private static function setBEOrderASC($element1, $element2)
@@ -478,10 +478,10 @@ class Basket
 
     /**
      * Returns true if basket contains given record.
-     * 
-     * @param Application $app
+     *
+     * @param Application     $app
      * @param \record_adapter $record
-     * 
+     *
      * @return boolean
      */
     public function hasRecord(Application $app, \record_adapter $record)
@@ -500,9 +500,9 @@ class Basket
 
     /**
      * Returns the total document size of basket elements.
-     * 
+     *
      * @param Application $app
-     * 
+     *
      * @return integer
      */
     public function getSize(Application $app)

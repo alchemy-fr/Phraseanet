@@ -65,7 +65,7 @@ class LazaretCheck
     }
 
     /**
-     * @param LazaretFile $lazaretFile
+     * @param  LazaretFile  $lazaretFile
      * @return LazaretCheck
      */
     public function setLazaretFile(LazaretFile $lazaretFile = null)
@@ -85,7 +85,7 @@ class LazaretCheck
 
     /**
      * Returns check message according to checkClassname propertie.
-     * 
+     *
      * @return string
      */
     public function getMessage()
@@ -95,7 +95,7 @@ class LazaretCheck
         if (method_exists($className, "getMessage")) {
             return $className::getMessage();
         }
-        
+
         return '';
     }
 }

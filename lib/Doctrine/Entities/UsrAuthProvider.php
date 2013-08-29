@@ -58,8 +58,8 @@ class UsrAuthProvider
     }
 
     /**
-     * @param  integer         $usrId
-     * 
+     * @param integer $usrId
+     *
      * @return UsrAuthProvider
      */
     public function setUsrId($usrId)
@@ -79,7 +79,7 @@ class UsrAuthProvider
 
     /**
      * @param Application $app
-     * 
+     *
      * @return \User_Adapter
      */
     public function getUser(Application $app)
@@ -88,8 +88,8 @@ class UsrAuthProvider
     }
 
     /**
-     * @param  string          $provider
-     * 
+     * @param string $provider
+     *
      * @return UsrAuthProvider
      */
     public function setProvider($provider)
@@ -127,8 +127,8 @@ class UsrAuthProvider
     }
 
     /**
-     * @param  \DateTime       $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return UsrAuthProvider
      */
     public function setUpdated(\DateTime $updated)
@@ -147,8 +147,8 @@ class UsrAuthProvider
     }
 
     /**
-     * @param  \DateTime       $created
-     * 
+     * @param \DateTime $created
+     *
      * @return UsrAuthProvider
      */
     public function setCreated(\DateTime $created)

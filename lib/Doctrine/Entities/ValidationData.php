@@ -64,8 +64,8 @@ class ValidationData
     }
 
     /**
-     * @param  boolean        $agreement
-     * 
+     * @param boolean $agreement
+     *
      * @return ValidationData
      */
     public function setAgreement($agreement)
@@ -103,8 +103,8 @@ class ValidationData
     }
 
     /**
-     * @param  \DateTime      $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return ValidationData
      */
     public function setUpdated(\DateTime $updated)
@@ -123,8 +123,8 @@ class ValidationData
     }
 
     /**
-     * @param  ValidationParticipant $participant
-     * 
+     * @param ValidationParticipant $participant
+     *
      * @return ValidationData
      */
     public function setParticipant(ValidationParticipant $participant = null)
@@ -143,8 +143,8 @@ class ValidationData
     }
 
     /**
-     * @param  BasketElement $basketElement
-     * 
+     * @param BasketElement $basketElement
+     *
      * @return ValidationData
      */
     public function setBasketElement(BasketElement $basketElement = null)

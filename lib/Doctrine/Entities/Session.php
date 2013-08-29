@@ -115,7 +115,7 @@ class Session
 
     /**
      * @param \User_Adapter $user
-     * 
+     *
      * @return Session
      */
     public function setUser(\User_Adapter $user)
@@ -124,8 +124,8 @@ class Session
     }
 
     /**
-     * @param  integer $usrId
-     * 
+     * @param integer $usrId
+     *
      * @return Session
      */
     public function setUsrId($usrId)
@@ -137,7 +137,7 @@ class Session
 
     /**
      * @param Application $app
-     * 
+     *
      * @return \User_adapter or null
      */
     public function getUser(Application $app)
@@ -156,8 +156,8 @@ class Session
     }
 
     /**
-     * @param  string  $userAgent
-     * 
+     * @param string $userAgent
+     *
      * @return Session
      */
     public function setUserAgent($userAgent)
@@ -176,8 +176,8 @@ class Session
     }
 
     /**
-     * @param  string  $ipAddress
-     * 
+     * @param string $ipAddress
+     *
      * @return Session
      */
     public function setIpAddress($ipAddress)
@@ -196,8 +196,8 @@ class Session
     }
 
     /**
-     * @param  string  $platform
-     * 
+     * @param string $platform
+     *
      * @return Session
      */
     public function setPlatform($platform)
@@ -216,8 +216,8 @@ class Session
     }
 
     /**
-     * @param  string  $browserName
-     * 
+     * @param string $browserName
+     *
      * @return Session
      */
     public function setBrowserName($browserName)
@@ -236,8 +236,8 @@ class Session
     }
 
     /**
-     * @param  string  $browserVersion
-     * 
+     * @param string $browserVersion
+     *
      * @return Session
      */
     public function setBrowserVersion($browserVersion)
@@ -256,8 +256,8 @@ class Session
     }
 
     /**
-     * @param  integer $screenWidth
-     * 
+     * @param integer $screenWidth
+     *
      * @return Session
      */
     public function setScreenWidth($screenWidth)
@@ -276,7 +276,7 @@ class Session
     }
 
     /**
-     * @param  integer $screenHeight
+     * @param integer $screenHeight
 
      * @return Session
      */
@@ -296,8 +296,8 @@ class Session
     }
 
     /**
-     * @param  string  $token
-     * 
+     * @param string $token
+     *
      * @return Session
      */
     public function setToken($token)
@@ -316,8 +316,8 @@ class Session
     }
 
     /**
-     * @param  string  $nonce
-     * 
+     * @param string $nonce
+     *
      * @return Session
      */
     public function setNonce($nonce)
@@ -336,8 +336,8 @@ class Session
     }
 
     /**
-     * @param  \DateTime $created
-     * 
+     * @param \DateTime $created
+     *
      * @return Session
      */
     public function setCreated(\DateTime $created)
@@ -356,8 +356,8 @@ class Session
     }
 
     /**
-     * @param  \DateTime $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return Session
      */
     public function setUpdated(\DateTime $updated)
@@ -376,8 +376,8 @@ class Session
     }
 
     /**
-     * @param  SessionModule $modules
-     * 
+     * @param SessionModule $modules
+     *
      * @return Session
      */
     public function addModule(SessionModule $modules)
@@ -404,7 +404,7 @@ class Session
     }
 
     /**
-     * @param  integer $moduleId
+     * @param  integer            $moduleId
      * @return SessionModule|null
      */
     public function getModuleById($moduleId)
@@ -420,9 +420,9 @@ class Session
 
     /**
      * Returns true if session has given module id.
-     * 
+     *
      * @param integer $moduleId
-     * 
+     *
      * @return boolean
      */
     public function hasModuleId($moduleId)

@@ -112,8 +112,8 @@ class LazaretFile
     }
 
     /**
-     * @param  string      $filename
-     * 
+     * @param string $filename
+     *
      * @return LazaretFile
      */
     public function setFilename($filename)
@@ -132,8 +132,8 @@ class LazaretFile
     }
 
     /**
-     * @param  string      $thumbFilename
-     * 
+     * @param string $thumbFilename
+     *
      * @return LazaretFile
      */
     public function setThumbFilename($thumbFilename)
@@ -152,8 +152,8 @@ class LazaretFile
     }
 
     /**
-     * @param  string      $originalName
-     * 
+     * @param string $originalName
+     *
      * @return LazaretFile
      */
     public function setOriginalName($originalName)
@@ -199,8 +199,8 @@ class LazaretFile
     }
 
     /**
-     * @param  string      $uuid
-     * 
+     * @param string $uuid
+     *
      * @return LazaretFile
      */
     public function setUuid($uuid)
@@ -219,8 +219,8 @@ class LazaretFile
     }
 
     /**
-     * @param  string      $sha256
-     * 
+     * @param string $sha256
+     *
      * @return LazaretFile
      */
     public function setSha256($sha256)
@@ -239,8 +239,8 @@ class LazaretFile
     }
 
     /**
-     * @param  boolean     $forced
-     * 
+     * @param boolean $forced
+     *
      * @return LazaretFile
      */
     public function setForced($forced)
@@ -259,8 +259,8 @@ class LazaretFile
     }
 
     /**
-     * @param  \DateTime   $created
-     * 
+     * @param \DateTime $created
+     *
      * @return LazaretFile
      */
     public function setCreated(\DateTime $created)
@@ -279,8 +279,8 @@ class LazaretFile
     }
 
     /**
-     * @param  \DateTime   $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return LazaretFile
      */
     public function setUpdated(\DateTime $updated)
@@ -299,8 +299,8 @@ class LazaretFile
     }
 
     /**
-     * @param  LazaretAttribute $attributes
-     * 
+     * @param LazaretAttribute $attributes
+     *
      * @return LazaretFile
      */
     public function addAttribute(LazaretAttribute $attributes)
@@ -327,8 +327,8 @@ class LazaretFile
     }
 
     /**
-     * @param  LazaretCheck $checks
-     * 
+     * @param LazaretCheck $checks
+     *
      * @return LazaretFile
      */
     public function addCheck(LazaretCheck $checks)
@@ -355,8 +355,8 @@ class LazaretFile
     }
 
     /**
-     * @param  LazaretSession $session
-     * 
+     * @param LazaretSession $session
+     *
      * @return LazaretFile
      */
     public function setSession(LazaretSession $session = null)
@@ -376,7 +376,7 @@ class LazaretFile
 
     /**
      * Returns the associated record to substitute.
-     * 
+     *
      * @return \record_adapter[]
      */
     public function getRecordsToSubstitute(Application $app)

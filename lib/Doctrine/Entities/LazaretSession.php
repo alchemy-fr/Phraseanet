@@ -69,8 +69,8 @@ class LazaretSession
     }
 
     /**
-     * @param  integer        $usrId
-     * 
+     * @param integer $usrId
+     *
      * @return LazaretSession
      */
     public function setUsrId($usrId)
@@ -105,8 +105,8 @@ class LazaretSession
     }
 
     /**
-     * @param  \DateTime      $created
-     * 
+     * @param \DateTime $created
+     *
      * @return LazaretSession
      */
     public function setCreated(\DateTime $created)
@@ -125,8 +125,8 @@ class LazaretSession
     }
 
     /**
-     * @param  \DateTime      $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return LazaretSession
      */
     public function setUpdated(\DateTime $updated)
@@ -145,7 +145,7 @@ class LazaretSession
     }
 
     /**
-     * @param  LazaretFile $files
+     * @param  LazaretFile    $files
      * @return LazaretSession
      */
     public function addFile(LazaretFile $files)

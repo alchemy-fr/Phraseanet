@@ -74,8 +74,8 @@ class UsrList
     }
 
     /**
-     * @param  string  $name
-     * 
+     * @param string $name
+     *
      * @return UsrList
      */
     public function setName($name)
@@ -94,8 +94,8 @@ class UsrList
     }
 
     /**
-     * @param  \DateTime $created
-     * 
+     * @param \DateTime $created
+     *
      * @return UsrList
      */
     public function setCreated(\DateTime $created)
@@ -114,8 +114,8 @@ class UsrList
     }
 
     /**
-     * @param  \DateTime $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return UsrList
      */
     public function setUpdated(\DateTime $updated)
@@ -134,8 +134,8 @@ class UsrList
     }
 
     /**
-     * @param  UsrListOwner $owners
-     * 
+     * @param UsrListOwner $owners
+     *
      * @return UsrList
      */
     public function addOwner(UsrListOwner $owners)
@@ -162,8 +162,8 @@ class UsrList
     }
 
     /**
-     * @param  UsrListEntry $entries
-     * 
+     * @param UsrListEntry $entries
+     *
      * @return UsrList
      */
     public function addEntrie(UsrListEntry $entries)
@@ -191,10 +191,10 @@ class UsrList
 
     /**
      * Returns true if given user has access to the current list.
-     * 
+     *
      * @param \User_Adapter $user
-     * @param Application $app
-     * 
+     * @param Application   $app
+     *
      * @return boolean
      */
     public function hasAccess(\User_Adapter $user, Application $app)
@@ -209,8 +209,8 @@ class UsrList
     }
 
     /**
-     * @param  \User_Adapter          $user
-     * 
+     * @param \User_Adapter $user
+     *
      * @return UsrListOwner
      */
     public function getOwner(\User_Adapter $user, Application $app)
@@ -227,8 +227,8 @@ class UsrList
     /**
      * Returns true if one of the entry is related to the given user
      *
-     * @param  \User_Adapter $user
-     * 
+     * @param \User_Adapter $user
+     *
      * @return boolean
      */
     public function has(\User_Adapter $user, Application $app)

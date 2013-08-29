@@ -86,8 +86,8 @@ class ValidationParticipant
     }
 
     /**
-     * @param  integer               $usrId
-     * 
+     * @param integer $usrId
+     *
      * @return ValidationParticipant
      */
     public function setUsrId($usrId)
@@ -106,8 +106,8 @@ class ValidationParticipant
     }
 
     /**
-     * @param  \User_Adapter         $user
-     * 
+     * @param \User_Adapter $user
+     *
      * @return ValidationParticipant
      */
     public function setUser(\User_Adapter $user)
@@ -119,7 +119,7 @@ class ValidationParticipant
 
     /**
      * @param Application $app
-     * 
+     *
      * @return \User_Adapter
      */
     public function getUser(Application $app)
@@ -128,8 +128,8 @@ class ValidationParticipant
     }
 
     /**
-     * @param  boolean $aware
-     * 
+     * @param boolean $aware
+     *
      * @return ValidationParticipant
      */
     public function setAware($aware)
@@ -148,8 +148,8 @@ class ValidationParticipant
     }
 
     /**
-     * @param  boolean $confirmed
-     * 
+     * @param boolean $confirmed
+     *
      * @return ValidationParticipant
      */
     public function setConfirmed($confirmed)
@@ -168,8 +168,8 @@ class ValidationParticipant
     }
 
     /**
-     * @param  boolean               $canAgree
-     * 
+     * @param boolean $canAgree
+     *
      * @return ValidationParticipant
      */
     public function setCanAgree($canAgree)
@@ -188,8 +188,8 @@ class ValidationParticipant
     }
 
     /**
-     * @param  boolean               $canSeeOthers
-     * 
+     * @param boolean $canSeeOthers
+     *
      * @return ValidationParticipant
      */
     public function setCanSeeOthers($canSeeOthers)
@@ -210,8 +210,8 @@ class ValidationParticipant
     }
 
     /**
-     * @param  \DateTime $reminded
-     * 
+     * @param \DateTime $reminded
+     *
      * @return ValidationParticipant
      */
     public function setReminded(\DateTime $reminded)
@@ -230,8 +230,8 @@ class ValidationParticipant
     }
 
     /**
-     * @param  ValidationData $datas
-     * 
+     * @param ValidationData $datas
+     *
      * @return ValidationParticipant
      */
     public function addData(ValidationData $datas)
@@ -258,8 +258,8 @@ class ValidationParticipant
     }
 
     /**
-     * @param  ValidationSession $session
-     * 
+     * @param ValidationSession $session
+     *
      * @return ValidationParticipant
      */
     public function setSession(ValidationSession $session = null)
@@ -279,7 +279,7 @@ class ValidationParticipant
 
     /**
      * Returns true if all data have been validated.
-     * 
+     *
      * @return boolean
      */
     public function isReleasable()

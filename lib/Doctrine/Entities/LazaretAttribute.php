@@ -83,8 +83,8 @@ class LazaretAttribute
     }
 
     /**
-     * @param  string           $value
-     * 
+     * @param string $value
+     *
      * @return LazaretAttribute
      */
     public function setValue($value)
@@ -103,8 +103,8 @@ class LazaretAttribute
     }
 
     /**
-     * @param  \DateTime        $created
-     * 
+     * @param \DateTime $created
+     *
      * @return LazaretAttribute
      */
     public function setCreated(\DateTime $created)
@@ -123,8 +123,8 @@ class LazaretAttribute
     }
 
     /**
-     * @param  \DateTime        $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return LazaretAttribute
      */
     public function setUpdated(\DateTime $updated)
@@ -144,7 +144,7 @@ class LazaretAttribute
 
     /**
      * @param LazaretFile $lazaretFile
-     * 
+     *
      * @return LazaretAttribute
      */
     public function setLazaretFile(LazaretFile $lazaretFile = null)

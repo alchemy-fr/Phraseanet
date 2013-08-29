@@ -62,8 +62,8 @@ class UsrListEntry
     }
 
     /**
-     * @param  integer      $usrId
-     * 
+     * @param integer $usrId
+     *
      * @return UsrListEntry
      */
     public function setUsrId($usrId)
@@ -83,7 +83,7 @@ class UsrListEntry
 
     /**
      * @param Application $app
-     * 
+     *
      * @return \User_Adapter
      */
     public function getUser(Application $app)
@@ -93,7 +93,7 @@ class UsrListEntry
 
     /**
      * @param \User_Adapter $user
-     * 
+     *
      * @return UsrListEntry
      */
     public function setUser(\User_Adapter $user)
@@ -102,8 +102,8 @@ class UsrListEntry
     }
 
     /**
-     * @param  \DateTime    $created
-     * 
+     * @param \DateTime $created
+     *
      * @return UsrListEntry
      */
     public function setCreated(\DateTime $created)
@@ -122,8 +122,8 @@ class UsrListEntry
     }
 
     /**
-     * @param  \DateTime    $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return UsrListEntry
      */
     public function setUpdated(\DateTime $updated)
@@ -142,8 +142,8 @@ class UsrListEntry
     }
 
     /**
-     * @param  UsrList $list
-     * 
+     * @param UsrList $list
+     *
      * @return UsrListEntry
      */
     public function setList(UsrList $list = null)

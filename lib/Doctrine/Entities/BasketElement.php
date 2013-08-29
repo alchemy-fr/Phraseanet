@@ -88,8 +88,8 @@ class BasketElement
     }
 
     /**
-     * @param  integer       $recordId
-     * 
+     * @param integer $recordId
+     *
      * @return BasketElement
      */
     public function setRecordId($recordId)
@@ -108,8 +108,8 @@ class BasketElement
     }
 
     /**
-     * @param  integer       $sbasId
-     * 
+     * @param integer $sbasId
+     *
      * @return BasketElement
      */
     public function setSbasId($sbasId)
@@ -129,9 +129,9 @@ class BasketElement
 
     /**
      * Returns the records associated to the basket element.
-     * 
+     *
      * @param Application $app
-     * 
+     *
      * @return \record_adapter
      */
     public function getRecord(Application $app)
@@ -141,22 +141,22 @@ class BasketElement
 
     /**
      * Associates the given record to the current basket element.
-     * 
+     *
      * @param \record_adapter $record
-     * 
+     *
      * @return BasketElement
      */
     public function setRecord(\record_adapter $record)
     {
         $this->setRecordId($record->get_recordId());
         $this->setSbasId($record->get_sbas_id());
-        
+
         return $this;
     }
 
     /**
-     * @param  integer       $ord
-     * 
+     * @param integer $ord
+     *
      * @return BasketElement
      */
     public function setOrd($ord)
@@ -175,8 +175,8 @@ class BasketElement
     }
 
     /**
-     * @param  \DateTime     $created
-     * 
+     * @param \DateTime $created
+     *
      * @return BasketElement
      */
     public function setCreated(\DateTime $created)
@@ -195,8 +195,8 @@ class BasketElement
     }
 
     /**
-     * @param  \DateTime     $updated
-     * 
+     * @param \DateTime $updated
+     *
      * @return BasketElement
      */
     public function setUpdated(\DateTime $updated)
@@ -215,8 +215,8 @@ class BasketElement
     }
 
     /**
-     * @param  ValidationData $validationDatas
-     * 
+     * @param ValidationData $validationDatas
+     *
      * @return BasketElement
      */
     public function addValidationData(ValidationData $validationDatas)
@@ -228,13 +228,13 @@ class BasketElement
 
     /**
      * @param ValidationData $validationDatas
-     * 
+     *
      * @return BasketElement
      */
     public function removeValidationData(ValidationData $validationDatas)
     {
         $this->validationDatas->removeElement($validationDatas);
-        
+
         return $this;
     }
 
@@ -247,8 +247,8 @@ class BasketElement
     }
 
     /**
-     * @param  Basket $basket
-     * 
+     * @param Basket $basket
+     *
      * @return BasketElement
      */
     public function setBasket(Basket $basket = null)
@@ -268,7 +268,7 @@ class BasketElement
 
     /**
      * Prepersist callback sets position of basket.
-     * 
+     *
      * @ORM\PrePersist
      */
     public function setLastInBasket()
@@ -277,10 +277,10 @@ class BasketElement
     }
 
     /**
-     * @param  \User_Adapter            $user
-     * 
+     * @param \User_Adapter $user
+     *
      * @return ValidationData
-     * 
+     *
      * @throws InvalidArgumentException if user is not found
      */
     public function getUserValidationDatas(\User_Adapter $user, Application $app)
