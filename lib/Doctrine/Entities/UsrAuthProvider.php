@@ -50,8 +50,6 @@ class UsrAuthProvider
     private $updated;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -60,9 +58,8 @@ class UsrAuthProvider
     }
 
     /**
-     * Set usr_id
-     *
      * @param  integer         $usrId
+     * 
      * @return UsrAuthProvider
      */
     public function setUsrId($usrId)
@@ -73,8 +70,6 @@ class UsrAuthProvider
     }
 
     /**
-     * Get usr_id
-     *
      * @return integer
      */
     public function getUsrId()
@@ -82,15 +77,19 @@ class UsrAuthProvider
         return $this->usr_id;
     }
 
+    /**
+     * @param Application $app
+     * 
+     * @return \User_Adapter
+     */
     public function getUser(Application $app)
     {
         return \User_Adapter::getInstance($this->usr_id, $app);
     }
 
     /**
-     * Set provider
-     *
      * @param  string          $provider
+     * 
      * @return UsrAuthProvider
      */
     public function setProvider($provider)
@@ -101,8 +100,6 @@ class UsrAuthProvider
     }
 
     /**
-     * Get provider
-     *
      * @return string
      */
     public function getProvider()
@@ -111,8 +108,6 @@ class UsrAuthProvider
     }
 
     /**
-     * Set distant_id
-     *
      * @param  string          $distantId
      * @return UsrAuthProvider
      */
@@ -124,8 +119,6 @@ class UsrAuthProvider
     }
 
     /**
-     * Get distant_id
-     *
      * @return string
      */
     public function getDistantId()
@@ -134,9 +127,8 @@ class UsrAuthProvider
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime       $updated
+     * 
      * @return UsrAuthProvider
      */
     public function setUpdated(\DateTime $updated)
@@ -147,8 +139,6 @@ class UsrAuthProvider
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -157,9 +147,8 @@ class UsrAuthProvider
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime       $created
+     * 
      * @return UsrAuthProvider
      */
     public function setCreated(\DateTime $created)
@@ -170,8 +159,6 @@ class UsrAuthProvider
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()

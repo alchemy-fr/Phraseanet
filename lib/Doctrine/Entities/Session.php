@@ -12,6 +12,7 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -101,12 +102,10 @@ class Session
      */
     public function __construct()
     {
-        $this->modules = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->modules = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -114,15 +113,19 @@ class Session
         return $this->id;
     }
 
+    /**
+     * @param \User_Adapter $user
+     * 
+     * @return Session
+     */
     public function setUser(\User_Adapter $user)
     {
         return $this->setUsrId($user->get_id());
     }
 
     /**
-     * Set usr_id
-     *
      * @param  integer $usrId
+     * 
      * @return Session
      */
     public function setUsrId($usrId)
@@ -132,6 +135,11 @@ class Session
         return $this;
     }
 
+    /**
+     * @param Application $app
+     * 
+     * @return \User_adapter or null
+     */
     public function getUser(Application $app)
     {
         if ($this->getUsrId()) {
@@ -140,8 +148,6 @@ class Session
     }
 
     /**
-     * Get usr_id
-     *
      * @return integer
      */
     public function getUsrId()
@@ -150,9 +156,8 @@ class Session
     }
 
     /**
-     * Set user_agent
-     *
      * @param  string  $userAgent
+     * 
      * @return Session
      */
     public function setUserAgent($userAgent)
@@ -163,8 +168,6 @@ class Session
     }
 
     /**
-     * Get user_agent
-     *
      * @return string
      */
     public function getUserAgent()
@@ -173,9 +176,8 @@ class Session
     }
 
     /**
-     * Set ip_address
-     *
      * @param  string  $ipAddress
+     * 
      * @return Session
      */
     public function setIpAddress($ipAddress)
@@ -186,8 +188,6 @@ class Session
     }
 
     /**
-     * Get ip_address
-     *
      * @return string
      */
     public function getIpAddress()
@@ -196,9 +196,8 @@ class Session
     }
 
     /**
-     * Set platform
-     *
      * @param  string  $platform
+     * 
      * @return Session
      */
     public function setPlatform($platform)
@@ -209,8 +208,6 @@ class Session
     }
 
     /**
-     * Get platform
-     *
      * @return string
      */
     public function getPlatform()
@@ -219,9 +216,8 @@ class Session
     }
 
     /**
-     * Set browser_name
-     *
      * @param  string  $browserName
+     * 
      * @return Session
      */
     public function setBrowserName($browserName)
@@ -232,8 +228,6 @@ class Session
     }
 
     /**
-     * Get browser_name
-     *
      * @return string
      */
     public function getBrowserName()
@@ -242,9 +236,8 @@ class Session
     }
 
     /**
-     * Set browser_version
-     *
      * @param  string  $browserVersion
+     * 
      * @return Session
      */
     public function setBrowserVersion($browserVersion)
@@ -255,8 +248,6 @@ class Session
     }
 
     /**
-     * Get browser_version
-     *
      * @return string
      */
     public function getBrowserVersion()
@@ -265,9 +256,8 @@ class Session
     }
 
     /**
-     * Set screen_width
-     *
      * @param  integer $screenWidth
+     * 
      * @return Session
      */
     public function setScreenWidth($screenWidth)
@@ -278,8 +268,6 @@ class Session
     }
 
     /**
-     * Get screen_width
-     *
      * @return integer
      */
     public function getScreenWidth()
@@ -288,9 +276,8 @@ class Session
     }
 
     /**
-     * Set screen_height
-     *
      * @param  integer $screenHeight
+
      * @return Session
      */
     public function setScreenHeight($screenHeight)
@@ -301,8 +288,6 @@ class Session
     }
 
     /**
-     * Get screen_height
-     *
      * @return integer
      */
     public function getScreenHeight()
@@ -311,9 +296,8 @@ class Session
     }
 
     /**
-     * Set token
-     *
      * @param  string  $token
+     * 
      * @return Session
      */
     public function setToken($token)
@@ -324,8 +308,6 @@ class Session
     }
 
     /**
-     * Get token
-     *
      * @return string
      */
     public function getToken()
@@ -334,9 +316,8 @@ class Session
     }
 
     /**
-     * Set nonce
-     *
      * @param  string  $nonce
+     * 
      * @return Session
      */
     public function setNonce($nonce)
@@ -347,8 +328,6 @@ class Session
     }
 
     /**
-     * Get nonce
-     *
      * @return string
      */
     public function getNonce()
@@ -357,9 +336,8 @@ class Session
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime $created
+     * 
      * @return Session
      */
     public function setCreated(\DateTime $created)
@@ -370,8 +348,6 @@ class Session
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -380,9 +356,8 @@ class Session
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime $updated
+     * 
      * @return Session
      */
     public function setUpdated(\DateTime $updated)
@@ -393,8 +368,6 @@ class Session
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -403,12 +376,11 @@ class Session
     }
 
     /**
-     * Add modules
-     *
-     * @param  \Entities\SessionModule $modules
+     * @param  SessionModule $modules
+     * 
      * @return Session
      */
-    public function addModule(\Entities\SessionModule $modules)
+    public function addModule(SessionModule $modules)
     {
         $this->modules[] = $modules;
 
@@ -416,19 +388,15 @@ class Session
     }
 
     /**
-     * Remove modules
-     *
-     * @param \Entities\SessionModule $modules
+     * @param SessionModule $modules
      */
-    public function removeModule(\Entities\SessionModule $modules)
+    public function removeModule(SessionModule $modules)
     {
         $this->modules->removeElement($modules);
     }
 
     /**
-     * Get modules
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return SessionModule[]
      */
     public function getModules()
     {
@@ -436,10 +404,8 @@ class Session
     }
 
     /**
-     * Get a module by its identifier
-     *
-     * @param  integer                     $moduleId
-     * @return Entities\SessionModule|null
+     * @param  integer $moduleId
+     * @return SessionModule|null
      */
     public function getModuleById($moduleId)
     {
@@ -452,6 +418,13 @@ class Session
         return null;
     }
 
+    /**
+     * Returns true if session has given module id.
+     * 
+     * @param integer $moduleId
+     * 
+     * @return boolean
+     */
     public function hasModuleId($moduleId)
     {
         foreach ($this->getModules() as $module) {

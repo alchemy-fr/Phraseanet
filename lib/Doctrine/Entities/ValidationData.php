@@ -56,8 +56,6 @@ class ValidationData
     private $basket_element;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -66,9 +64,8 @@ class ValidationData
     }
 
     /**
-     * Set agreement
-     *
      * @param  boolean        $agreement
+     * 
      * @return ValidationData
      */
     public function setAgreement($agreement)
@@ -79,8 +76,6 @@ class ValidationData
     }
 
     /**
-     * Get agreement
-     *
      * @return boolean
      */
     public function getAgreement()
@@ -89,8 +84,6 @@ class ValidationData
     }
 
     /**
-     * Set note
-     *
      * @param  string         $note
      * @return ValidationData
      */
@@ -102,8 +95,6 @@ class ValidationData
     }
 
     /**
-     * Get note
-     *
      * @return string
      */
     public function getNote()
@@ -112,9 +103,8 @@ class ValidationData
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime      $updated
+     * 
      * @return ValidationData
      */
     public function setUpdated(\DateTime $updated)
@@ -125,8 +115,6 @@ class ValidationData
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -135,12 +123,11 @@ class ValidationData
     }
 
     /**
-     * Set participant
-     *
-     * @param  \Entities\ValidationParticipant $participant
+     * @param  ValidationParticipant $participant
+     * 
      * @return ValidationData
      */
-    public function setParticipant(\Entities\ValidationParticipant $participant = null)
+    public function setParticipant(ValidationParticipant $participant = null)
     {
         $this->participant = $participant;
 
@@ -148,9 +135,7 @@ class ValidationData
     }
 
     /**
-     * Get participant
-     *
-     * @return \Entities\ValidationParticipant
+     * @return ValidationParticipant
      */
     public function getParticipant()
     {
@@ -158,12 +143,11 @@ class ValidationData
     }
 
     /**
-     * Set basket_element
-     *
-     * @param  \Entities\BasketElement $basketElement
+     * @param  BasketElement $basketElement
+     * 
      * @return ValidationData
      */
-    public function setBasketElement(\Entities\BasketElement $basketElement = null)
+    public function setBasketElement(BasketElement $basketElement = null)
     {
         $this->basket_element = $basketElement;
 
@@ -171,9 +155,7 @@ class ValidationData
     }
 
     /**
-     * Get basket_element
-     *
-     * @return \Entities\BasketElement
+     * @return BasketElement
      */
     public function getBasketElement()
     {

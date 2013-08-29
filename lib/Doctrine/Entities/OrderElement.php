@@ -7,7 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Entities\Order;
 
 /**
- * @ORM\Table(name="OrderElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_ordercle", columns={"base_id","record_id","order_id"})})
+ * @ORM\Table(name="OrderElements", uniqueConstraints={
+ *      @ORM\UniqueConstraint(name="unique_ordercle", columns={"base_id","record_id","order_id"})
+ * })
  * @ORM\Entity(repositoryClass="Repositories\OrderElementRepository")
  */
 class OrderElement
@@ -37,7 +39,7 @@ class OrderElement
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $deny;
+    private $denied;
 
     /**
      * @ORM\ManyToOne(targetEntity="Order", inversedBy="elements", cascade={"persist"})
@@ -46,8 +48,6 @@ class OrderElement
     private $order;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -56,9 +56,8 @@ class OrderElement
     }
 
     /**
-     * Set order_master_id
+     * @param integer $orderMasterId
      *
-     * @param  integer      $orderMasterId
      * @return OrderElement
      */
     public function setOrderMasterId($orderMasterId)
@@ -69,8 +68,6 @@ class OrderElement
     }
 
     /**
-     * Get order_master_id
-     *
      * @return integer
      */
     public function getOrderMasterId()
@@ -79,11 +76,9 @@ class OrderElement
     }
 
     /**
+     * @param Application $app
      *
-     * Returns the username matching to the order_master_id
-     *
-     * @param  Application $app
-     * @return string
+     * @return string or null if order master does not exists
      */
     public function getOrderMasterName(Application $app)
     {
@@ -97,32 +92,28 @@ class OrderElement
     }
 
     /**
-     * Set deny
+     * @param boolean $denied
      *
-     * @param  boolean      $deny
      * @return OrderElement
      */
-    public function setDeny($deny)
+    public function setDenied($denied)
     {
-        $this->deny = $deny;
+        $this->denied = $denied;
 
         return $this;
     }
 
     /**
-     * Get deny
-     *
      * @return boolean
      */
-    public function getDeny()
+    public function isDenied()
     {
-        return $this->deny;
+        return $this->denied;
     }
 
     /**
-     * Set order
+     * @param Order $order
      *
-     * @param  Order        $order
      * @return OrderElement
      */
     public function setOrder(Order $order = null)
@@ -133,8 +124,6 @@ class OrderElement
     }
 
     /**
-     * Get order
-     *
      * @return Order
      */
     public function getOrder()
@@ -143,9 +132,8 @@ class OrderElement
     }
 
     /**
-     * Set base_id
+     * @param integer $baseId
      *
-     * @param  integer      $baseId
      * @return OrderElement
      */
     public function setBaseId($baseId)
@@ -156,8 +144,6 @@ class OrderElement
     }
 
     /**
-     * Get base_id
-     *
      * @return integer
      */
     public function getBaseId()
@@ -166,9 +152,8 @@ class OrderElement
     }
 
     /**
-     * Set record_id
+     * @param integer $recordId
      *
-     * @param  integer      $recordId
      * @return OrderElement
      */
     public function setRecordId($recordId)
@@ -179,8 +164,6 @@ class OrderElement
     }
 
     /**
-     * Get record_id
-     *
      * @return integer
      */
     public function getRecordId()
@@ -189,9 +172,8 @@ class OrderElement
     }
 
     /**
-     * Returns a record from the element's base_id and record_id
+     * @param Application $app
      *
-     * @param  Application     $app
      * @return \record_adapter
      */
     public function getRecord(Application $app)
@@ -200,10 +182,9 @@ class OrderElement
     }
 
     /**
-     * Returns the matching sbasId
+     * @param Application $app
      *
-     * @param  Application $app
-     * @return int
+     * @return integer
      */
     public function getSbasId(Application $app)
     {

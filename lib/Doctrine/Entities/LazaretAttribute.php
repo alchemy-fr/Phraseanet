@@ -56,8 +56,6 @@ class LazaretAttribute
     private $lazaretFile;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -66,8 +64,6 @@ class LazaretAttribute
     }
 
     /**
-     * Set name
-     *
      * @param  string           $name
      * @return LazaretAttribute
      */
@@ -79,8 +75,6 @@ class LazaretAttribute
     }
 
     /**
-     * Get name
-     *
      * @return string
      */
     public function getName()
@@ -89,9 +83,8 @@ class LazaretAttribute
     }
 
     /**
-     * Set value
-     *
      * @param  string           $value
+     * 
      * @return LazaretAttribute
      */
     public function setValue($value)
@@ -102,8 +95,6 @@ class LazaretAttribute
     }
 
     /**
-     * Get value
-     *
      * @return string
      */
     public function getValue()
@@ -112,9 +103,8 @@ class LazaretAttribute
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime        $created
+     * 
      * @return LazaretAttribute
      */
     public function setCreated(\DateTime $created)
@@ -125,8 +115,6 @@ class LazaretAttribute
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -135,9 +123,8 @@ class LazaretAttribute
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime        $updated
+     * 
      * @return LazaretAttribute
      */
     public function setUpdated(\DateTime $updated)
@@ -148,8 +135,6 @@ class LazaretAttribute
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -158,12 +143,11 @@ class LazaretAttribute
     }
 
     /**
-     * Set lazaretFile
-     *
-     * @param  \Entities\LazaretFile $lazaretFile
+     * @param LazaretFile $lazaretFile
+     * 
      * @return LazaretAttribute
      */
-    public function setLazaretFile(\Entities\LazaretFile $lazaretFile = null)
+    public function setLazaretFile(LazaretFile $lazaretFile = null)
     {
         $this->lazaretFile = $lazaretFile;
 
@@ -171,9 +155,7 @@ class LazaretAttribute
     }
 
     /**
-     * Get lazaretFile
-     *
-     * @return \Entities\LazaretFile
+     * @returnLazaretFile
      */
     public function getLazaretFile()
     {

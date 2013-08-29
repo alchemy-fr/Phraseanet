@@ -12,6 +12,7 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -56,12 +57,10 @@ class LazaretSession
      */
     public function __construct()
     {
-        $this->files = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->files = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -70,9 +69,8 @@ class LazaretSession
     }
 
     /**
-     * Set usr_id
-     *
      * @param  integer        $usrId
+     * 
      * @return LazaretSession
      */
     public function setUsrId($usrId)
@@ -83,8 +81,6 @@ class LazaretSession
     }
 
     /**
-     * Get usr_id
-     *
      * @return integer
      */
     public function getUsrId()
@@ -93,8 +89,6 @@ class LazaretSession
     }
 
     /**
-     * Get user
-     *
      * @return \User_Adapter
      */
     public function getUser(Application $app)
@@ -111,9 +105,8 @@ class LazaretSession
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime      $created
+     * 
      * @return LazaretSession
      */
     public function setCreated(\DateTime $created)
@@ -124,8 +117,6 @@ class LazaretSession
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -134,9 +125,8 @@ class LazaretSession
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime      $updated
+     * 
      * @return LazaretSession
      */
     public function setUpdated(\DateTime $updated)
@@ -147,8 +137,6 @@ class LazaretSession
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -157,12 +145,10 @@ class LazaretSession
     }
 
     /**
-     * Add files
-     *
-     * @param  \Entities\LazaretFile $files
+     * @param  LazaretFile $files
      * @return LazaretSession
      */
-    public function addFile(\Entities\LazaretFile $files)
+    public function addFile(LazaretFile $files)
     {
         $this->files[] = $files;
 
@@ -170,19 +156,15 @@ class LazaretSession
     }
 
     /**
-     * Remove files
-     *
-     * @param \Entities\LazaretFile $files
+     * @param LazaretFile $files
      */
-    public function removeFile(\Entities\LazaretFile $files)
+    public function removeFile(LazaretFile $files)
     {
         $this->files->removeElement($files);
     }
 
     /**
-     * Get files
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return LazaretFile[]
      */
     public function getFiles()
     {

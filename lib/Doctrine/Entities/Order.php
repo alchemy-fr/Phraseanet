@@ -3,6 +3,7 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -41,9 +42,9 @@ class Order
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime", name="created_on")
+     * @ORM\Column(type="datetime")
      */
-    private $createdOn;
+    private $created;
 
     /**
      * @ORM\OneToMany(targetEntity="OrderElement", mappedBy="order", cascade={"ALL"})
@@ -60,12 +61,10 @@ class Order
      */
     public function __construct()
     {
-        $this->elements = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->elements = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -74,9 +73,8 @@ class Order
     }
 
     /**
-     * Set usr_id
+     * @param integer $usrId
      *
-     * @param  integer $usrId
      * @return Order
      */
     public function setUsrId($usrId)
@@ -87,8 +85,6 @@ class Order
     }
 
     /**
-     * Get usr_id
-     *
      * @return integer
      */
     public function getUsrId()
@@ -97,12 +93,11 @@ class Order
     }
 
     /**
-     * Set deadline
+     * @param \DateTime $deadline
      *
-     * @param  \DateTime $deadline
      * @return Order
      */
-    public function setDeadline($deadline)
+    public function setDeadline(\DateTime $deadline)
     {
         $this->deadline = $deadline;
 
@@ -110,8 +105,6 @@ class Order
     }
 
     /**
-     * Get deadline
-     *
      * @return \DateTime
      */
     public function getDeadline()
@@ -120,35 +113,31 @@ class Order
     }
 
     /**
-     * Set created_on
+     * @param \DateTime $created
      *
-     * @param  \DateTime $createdOn
      * @return Order
      */
-    public function setCreatedOn($createdOn)
+    public function setCreated(\DateTime $created)
     {
-        $this->createdOn = $createdOn;
+        $this->created = $created;
 
         return $this;
     }
 
     /**
-     * Get created_on
-     *
      * @return \DateTime
      */
-    public function getCreatedOn()
+    public function getCreated()
     {
-        return $this->createdOn;
+        return $this->created;
     }
 
     /**
-     * Add elements
+     * @param OrderElement $elements
      *
-     * @param  \Entities\OrderElement $elements
      * @return Order
      */
-    public function addElement(\Entities\OrderElement $elements)
+    public function addElement(OrderElement $elements)
     {
         $this->elements[] = $elements;
 
@@ -156,19 +145,15 @@ class Order
     }
 
     /**
-     * Remove elements
-     *
-     * @param \Entities\OrderElement $elements
+     * @param OrderElement $elements
      */
-    public function removeElement(\Entities\OrderElement $elements)
+    public function removeElement(OrderElement $elements)
     {
         $this->elements->removeElement($elements);
     }
 
     /**
-     * Get elements
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return OrderElement[]
      */
     public function getElements()
     {
@@ -176,11 +161,9 @@ class Order
     }
 
     /**
-     * Returns the user matching to the usr_id property.
-     *
      * @param Application $app
      *
-     * @return User_Adapter
+     * @return \User_Adapter
      */
     public function getUser(Application $app)
     {
@@ -190,9 +173,6 @@ class Order
     }
 
     /**
-     * Set todo
-     *
-     * @param  integer $todo
      * @return Order
      */
     public function setTodo($todo)
@@ -203,8 +183,6 @@ class Order
     }
 
     /**
-     * Get todo
-     *
      * @return integer
      */
     public function getTodo()
@@ -213,8 +191,6 @@ class Order
     }
 
     /**
-     * Returns the total number of elements.
-     *
      * @return integer
      */
     public function getTotal()
@@ -223,9 +199,8 @@ class Order
     }
 
     /**
-     * Set order_usage
+     * @param string $orderUsage
      *
-     * @param  string $orderUsage
      * @return Order
      */
     public function setOrderUsage($orderUsage)
@@ -236,8 +211,6 @@ class Order
     }
 
     /**
-     * Get order_usage
-     *
      * @return string
      */
     public function getOrderUsage()
@@ -246,12 +219,11 @@ class Order
     }
 
     /**
-     * Set basket
+     * @param Basket $basket
      *
-     * @param  \Entities\Basket $basket
      * @return Order
      */
-    public function setBasket(\Entities\Basket $basket = null)
+    public function setBasket(Basket $basket = null)
     {
         $this->basket = $basket;
 
@@ -259,9 +231,7 @@ class Order
     }
 
     /**
-     * Get basket
-     *
-     * @return \Entities\Basket
+     * @return Basket
      */
     public function getBasket()
     {

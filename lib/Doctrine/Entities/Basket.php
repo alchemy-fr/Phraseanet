@@ -12,6 +12,7 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -95,12 +96,10 @@ class Basket
      */
     public function __construct()
     {
-        $this->elements = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->elements = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -109,9 +108,8 @@ class Basket
     }
 
     /**
-     * Set name
-     *
      * @param  string $name
+     * 
      * @return Basket
      */
     public function setName($name)
@@ -122,8 +120,6 @@ class Basket
     }
 
     /**
-     * Get name
-     *
      * @return string
      */
     public function getName()
@@ -132,9 +128,8 @@ class Basket
     }
 
     /**
-     * Set description
-     *
      * @param  string $description
+     * 
      * @return Basket
      */
     public function setDescription($description)
@@ -145,8 +140,6 @@ class Basket
     }
 
     /**
-     * Get description
-     *
      * @return string
      */
     public function getDescription()
@@ -155,9 +148,8 @@ class Basket
     }
 
     /**
-     * Set usr_id
-     *
      * @param  integer $usrId
+     * 
      * @return Basket
      */
     public function setUsrId($usrId)
@@ -168,8 +160,6 @@ class Basket
     }
 
     /**
-     * Get usr_id
-     *
      * @return integer
      */
     public function getUsrId()
@@ -177,11 +167,19 @@ class Basket
         return $this->usr_id;
     }
 
+    /**
+     * @param \User_Adapter $user
+     */
     public function setOwner(\User_Adapter $user)
     {
         $this->setUsrId($user->get_id());
     }
 
+    /**
+     * @param  Application $app
+     * 
+     * @return \User_Adapter or null
+     */
     public function getOwner(Application $app)
     {
         if ($this->getUsrId()) {
@@ -190,9 +188,8 @@ class Basket
     }
 
     /**
-     * Set is_read
-     *
      * @param  boolean $isRead
+     * 
      * @return Basket
      */
     public function setIsRead($isRead)
@@ -203,8 +200,6 @@ class Basket
     }
 
     /**
-     * Get is_read
-     *
      * @return boolean
      */
     public function getIsRead()
@@ -213,9 +208,8 @@ class Basket
     }
 
     /**
-     * Set pusher_id
-     *
      * @param  integer $pusherId
+     * 
      * @return Basket
      */
     public function setPusherId($pusherId)
@@ -226,8 +220,6 @@ class Basket
     }
 
     /**
-     * Get pusher_id
-     *
      * @return integer
      */
     public function getPusherId()
@@ -235,11 +227,23 @@ class Basket
         return $this->pusher_id;
     }
 
+    /**
+     * @param \User_Adapter $user
+     * 
+     * @return Basket
+     */
     public function setPusher(\User_Adapter $user)
     {
         $this->setPusherId($user->get_id());
+        
+        return $this;
     }
 
+    /**
+     * @param  Application $app
+     * 
+     * @return \User_Adapter or null
+     */
     public function getPusher(Application $app)
     {
         if ($this->getPusherId()) {
@@ -248,9 +252,8 @@ class Basket
     }
 
     /**
-     * Set archived
-     *
      * @param  boolean $archived
+     * 
      * @return Basket
      */
     public function setArchived($archived)
@@ -261,8 +264,6 @@ class Basket
     }
 
     /**
-     * Get archived
-     *
      * @return boolean
      */
     public function getArchived()
@@ -271,9 +272,8 @@ class Basket
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime $created
+     * 
      * @return Basket
      */
     public function setCreated(\DateTime $created)
@@ -284,8 +284,6 @@ class Basket
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -294,9 +292,8 @@ class Basket
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime $updated
+     * 
      * @return Basket
      */
     public function setUpdated(\DateTime $updated)
@@ -307,8 +304,6 @@ class Basket
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -317,12 +312,11 @@ class Basket
     }
 
     /**
-     * Set validation
-     *
-     * @param  \Entities\ValidationSession $validation
+     * @param  ValidationSession $validation
+     * 
      * @return Basket
      */
-    public function setValidation(\Entities\ValidationSession $validation = null)
+    public function setValidation(ValidationSession $validation = null)
     {
         $this->validation = $validation;
 
@@ -330,9 +324,7 @@ class Basket
     }
 
     /**
-     * Get validation
-     *
-     * @return \Entities\ValidationSession
+     * @return ValidationSession
      */
     public function getValidation()
     {
@@ -340,12 +332,10 @@ class Basket
     }
 
     /**
-     * Add elements
-     *
-     * @param  \Entities\BasketElement $elements
+     * @param  BasketElement $elements
      * @return Basket
      */
-    public function addElement(\Entities\BasketElement $elements)
+    public function addElement(BasketElement $elements)
     {
         $this->elements[] = $elements;
 
@@ -353,22 +343,19 @@ class Basket
     }
 
     /**
-     * Remove elements
-     *
-     * @param \Entities\BasketElement $elements
+     * @param BasketElement $elements
      */
-    public function removeElement(\Entities\BasketElement $elements)
+    public function removeElement(BasketElement $elements)
     {
         $this->elements->removeElement($elements);
     }
 
     /**
-     * Set order
-     *
-     * @param \Entities\Order $order
+     * @param  Order $order
+     * 
      * @return Basket
      */
-    public function setOrder(\Entities\Order $order = null)
+    public function setOrder(Order $order = null)
     {
         $this->order = $order;
 
@@ -376,9 +363,7 @@ class Basket
     }
 
     /**
-     * Get order
-     *
-     * @return \Entities\Order
+     * @return Order
      */
     public function getOrder()
     {
@@ -386,19 +371,24 @@ class Basket
     }
 
     /**
-     * Get elements
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return BasketElement[]
      */
     public function getElements()
     {
         return $this->elements;
     }
 
+    /**
+     * Returns basket elements collections ordered by given sort option.
+     * 
+     * @param type $ordre
+     * 
+     * @return BasketElement[]
+     */
     public function getElementsByOrder($ordre)
     {
         if ($ordre === self::ELEMENTSORDER_DESC) {
-            $ret = new \Doctrine\Common\Collections\ArrayCollection();
+            $ret = new ArrayCollection();
             $elements = $this->elements->toArray();
 
             uasort($elements, 'self::setBEOrderDESC');
@@ -409,7 +399,7 @@ class Basket
 
             return $ret;
         } elseif ($ordre === self::ELEMENTSORDER_ASC) {
-            $ret = new \Doctrine\Common\Collections\ArrayCollection();
+            $ret = new ArrayCollection();
             $elements = $this->elements->toArray();
 
             uasort($elements, 'self::setBEOrderASC');
@@ -424,6 +414,14 @@ class Basket
         return $this->elements;
     }
 
+    /**
+     * Sort desc algorithme function.
+     * 
+     * @param BasketElement $element1
+     * @param BasketElement $element2
+     * 
+     * @return int
+     */
     private static function setBEOrderDESC($element1, $element2)
     {
         $total_el1 = 0;
@@ -447,6 +445,14 @@ class Basket
         return $total_el1 < $total_el2 ? 1 : -1;
     }
 
+    /**
+     * Sort asc algorithme function.
+     * 
+     * @param BasketElement $element1
+     * @param BasketElement $element2
+     * 
+     * @return int
+     */
     private static function setBEOrderASC($element1, $element2)
     {
         $total_el1 = 0;
@@ -470,6 +476,14 @@ class Basket
         return $total_el1 < $total_el2 ? 1 : -1;
     }
 
+    /**
+     * Returns true if basket contains given record.
+     * 
+     * @param Application $app
+     * @param \record_adapter $record
+     * 
+     * @return boolean
+     */
     public function hasRecord(Application $app, \record_adapter $record)
     {
         foreach ($this->getElements() as $basket_element) {
@@ -484,13 +498,20 @@ class Basket
         return false;
     }
 
+    /**
+     * Returns the total document size of basket elements.
+     * 
+     * @param Application $app
+     * 
+     * @return integer
+     */
     public function getSize(Application $app)
     {
         $totSize = 0;
 
-        foreach ($this->getElements() as $basket_element) {
+        foreach ($this->getElements() as $basketElement) {
             try {
-                $totSize += $basket_element->getRecord($app)
+                $totSize += $basketElement->getRecord($app)
                     ->get_subdef('document')
                     ->get_size();
             } catch (Exception $e) {
@@ -498,8 +519,6 @@ class Basket
             }
         }
 
-        $totSize = round($totSize / (1024 * 1024), 2);
-
-        return $totSize;
+        return round($totSize / (1024 * 1024), 2);
     }
 }

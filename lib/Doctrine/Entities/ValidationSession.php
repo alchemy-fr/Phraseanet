@@ -12,6 +12,7 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -67,12 +68,10 @@ class ValidationSession
      */
     public function __construct()
     {
-        $this->participants = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -81,9 +80,8 @@ class ValidationSession
     }
 
     /**
-     * Set initiator_id
-     *
      * @param  integer           $initiatorId
+     * 
      * @return ValidationSession
      */
     public function setInitiatorId($initiatorId)
@@ -94,8 +92,6 @@ class ValidationSession
     }
 
     /**
-     * Get initiator_id
-     *
      * @return integer
      */
     public function getInitiatorId()
@@ -103,18 +99,30 @@ class ValidationSession
         return $this->initiator_id;
     }
 
+    /**
+     * @param \User_Adapter $user
+     * 
+     * @return boolean
+     */
     public function isInitiator(\User_Adapter $user)
     {
         return $this->getInitiatorId() == $user->get_id();
     }
 
+    /**
+     * @return ValidationSession
+     */
     public function setInitiator(\User_Adapter $user)
     {
         $this->initiator_id = $user->get_id();
 
-        return;
+        return $this;
     }
 
+    /**
+     * @param Application $app
+     * @return \User_Adapter
+     */
     public function getInitiator(Application $app)
     {
         if ($this->initiator_id) {
@@ -123,9 +131,8 @@ class ValidationSession
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime         $created
+     * 
      * @return ValidationSession
      */
     public function setCreated(\DateTime $created)
@@ -136,8 +143,6 @@ class ValidationSession
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -146,9 +151,8 @@ class ValidationSession
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime         $updated
+     * 
      * @return ValidationSession
      */
     public function setUpdated(\DateTime $updated)
@@ -159,8 +163,6 @@ class ValidationSession
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -169,9 +171,8 @@ class ValidationSession
     }
 
     /**
-     * Set expires
-     *
      * @param  \DateTime         $expires
+     * 
      * @return ValidationSession
      */
     public function setExpires($expires)
@@ -182,8 +183,6 @@ class ValidationSession
     }
 
     /**
-     * Get expires
-     *
      * @return \DateTime
      */
     public function getExpires()
@@ -192,12 +191,11 @@ class ValidationSession
     }
 
     /**
-     * Set basket
-     *
-     * @param  \Entities\Basket  $basket
+     * @param  Basket  $basket
+     * 
      * @return ValidationSession
      */
-    public function setBasket(\Entities\Basket $basket = null)
+    public function setBasket(Basket $basket = null)
     {
         $this->basket = $basket;
 
@@ -205,9 +203,7 @@ class ValidationSession
     }
 
     /**
-     * Get basket
-     *
-     * @return \Entities\Basket
+     * @return Basket
      */
     public function getBasket()
     {
@@ -215,12 +211,11 @@ class ValidationSession
     }
 
     /**
-     * Add participants
-     *
-     * @param  \Entities\ValidationParticipant $participants
+     * @param  ValidationParticipant $participants
+     * 
      * @return ValidationSession
      */
-    public function addParticipant(\Entities\ValidationParticipant $participants)
+    public function addParticipant(ValidationParticipant $participants)
     {
         $this->participants[] = $participants;
 
@@ -228,29 +223,28 @@ class ValidationSession
     }
 
     /**
-     * Remove participants
-     *
-     * @param \Entities\ValidationParticipant $participants
+     * @param ValidationParticipant $participants
      */
-    public function removeParticipant(\Entities\ValidationParticipant $participants)
+    public function removeParticipant(ValidationParticipant $participants)
     {
         $this->participants->removeElement($participants);
     }
 
     /**
-     * Get participants
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ValidationParticipant[]
      */
     public function getParticipants()
     {
         return $this->participants;
     }
 
+    /**
+     * @return boolean
+     */
     public function isFinished()
     {
         if (is_null($this->getExpires())) {
-            return null;
+            return false;
         }
 
         $date_obj = new \DateTime();
@@ -258,34 +252,41 @@ class ValidationSession
         return $date_obj > $this->getExpires();
     }
 
+    /**
+     * Returns the appropriate validation sentence.
+     * 
+     * @param Application $app
+     * @param \User_Adapter $user
+     * 
+     * @return string
+     */
     public function getValidationString(Application $app, \User_Adapter $user)
     {
-
         if ($this->isInitiator($user)) {
             if ($this->isFinished()) {
                 return sprintf(
                         _('Vous aviez envoye cette demande a %d utilisateurs')
                         , (count($this->getParticipants()) - 1)
                 );
-            } else {
-                return sprintf(
-                        _('Vous avez envoye cette demande a %d utilisateurs')
-                        , (count($this->getParticipants()) - 1)
-                );
             }
-        } else {
-            if ($this->getParticipant($user, $app)->getCanSeeOthers()) {
-                return sprintf(
-                        _('Processus de validation recu de %s et concernant %d utilisateurs')
-                        , $this->getInitiator($app)->get_display_name()
-                        , (count($this->getParticipants()) - 1));
-            } else {
-                return sprintf(
-                        _('Processus de validation recu de %s')
-                        , $this->getInitiator($app)->get_display_name()
-                );
-            }
+            
+            return sprintf(
+                    _('Vous avez envoye cette demande a %d utilisateurs')
+                    , (count($this->getParticipants()) - 1)
+            );
         }
+        
+        if ($this->getParticipant($user, $app)->getCanSeeOthers()) {
+            return sprintf(
+                    _('Processus de validation recu de %s et concernant %d utilisateurs')
+                    , $this->getInitiator($app)->get_display_name()
+                    , (count($this->getParticipants()) - 1));
+        }
+
+        return sprintf(
+                _('Processus de validation recu de %s')
+                , $this->getInitiator($app)->get_display_name()
+        );
     }
 
     /**

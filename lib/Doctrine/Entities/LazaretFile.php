@@ -12,6 +12,7 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -98,13 +99,11 @@ class LazaretFile
      */
     public function __construct()
     {
-        $this->attributes = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->checks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->attributes = new ArrayCollection();
+        $this->checks = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -113,9 +112,8 @@ class LazaretFile
     }
 
     /**
-     * Set filename
-     *
      * @param  string      $filename
+     * 
      * @return LazaretFile
      */
     public function setFilename($filename)
@@ -126,8 +124,6 @@ class LazaretFile
     }
 
     /**
-     * Get filename
-     *
      * @return string
      */
     public function getFilename()
@@ -136,9 +132,8 @@ class LazaretFile
     }
 
     /**
-     * Set thumbFilename
-     *
      * @param  string      $thumbFilename
+     * 
      * @return LazaretFile
      */
     public function setThumbFilename($thumbFilename)
@@ -149,8 +144,6 @@ class LazaretFile
     }
 
     /**
-     * Get thumbFilename
-     *
      * @return string
      */
     public function getThumbFilename()
@@ -159,9 +152,8 @@ class LazaretFile
     }
 
     /**
-     * Set originalName
-     *
      * @param  string      $originalName
+     * 
      * @return LazaretFile
      */
     public function setOriginalName($originalName)
@@ -172,8 +164,6 @@ class LazaretFile
     }
 
     /**
-     * Get originalName
-     *
      * @return string
      */
     public function getOriginalName()
@@ -182,8 +172,6 @@ class LazaretFile
     }
 
     /**
-     * Set base_id
-     *
      * @param  integer     $baseId
      * @return LazaretFile
      */
@@ -195,8 +183,6 @@ class LazaretFile
     }
 
     /**
-     * Get base_id
-     *
      * @return integer
      */
     public function getBaseId()
@@ -205,8 +191,6 @@ class LazaretFile
     }
 
     /**
-     * Get the Destination Collection
-     *
      * @return \collection
      */
     public function getCollection(Application $app)
@@ -215,9 +199,8 @@ class LazaretFile
     }
 
     /**
-     * Set uuid
-     *
      * @param  string      $uuid
+     * 
      * @return LazaretFile
      */
     public function setUuid($uuid)
@@ -228,8 +211,6 @@ class LazaretFile
     }
 
     /**
-     * Get uuid
-     *
      * @return string
      */
     public function getUuid()
@@ -238,9 +219,8 @@ class LazaretFile
     }
 
     /**
-     * Set sha256
-     *
      * @param  string      $sha256
+     * 
      * @return LazaretFile
      */
     public function setSha256($sha256)
@@ -251,8 +231,6 @@ class LazaretFile
     }
 
     /**
-     * Get sha256
-     *
      * @return string
      */
     public function getSha256()
@@ -261,9 +239,8 @@ class LazaretFile
     }
 
     /**
-     * Set forced
-     *
      * @param  boolean     $forced
+     * 
      * @return LazaretFile
      */
     public function setForced($forced)
@@ -274,8 +251,6 @@ class LazaretFile
     }
 
     /**
-     * Get forced
-     *
      * @return boolean
      */
     public function getForced()
@@ -284,9 +259,8 @@ class LazaretFile
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime   $created
+     * 
      * @return LazaretFile
      */
     public function setCreated(\DateTime $created)
@@ -297,8 +271,6 @@ class LazaretFile
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -307,9 +279,8 @@ class LazaretFile
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime   $updated
+     * 
      * @return LazaretFile
      */
     public function setUpdated(\DateTime $updated)
@@ -320,8 +291,6 @@ class LazaretFile
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -330,12 +299,11 @@ class LazaretFile
     }
 
     /**
-     * Add attributes
-     *
-     * @param  \Entities\LazaretAttribute $attributes
+     * @param  LazaretAttribute $attributes
+     * 
      * @return LazaretFile
      */
-    public function addAttribute(\Entities\LazaretAttribute $attributes)
+    public function addAttribute(LazaretAttribute $attributes)
     {
         $this->attributes[] = $attributes;
 
@@ -343,19 +311,15 @@ class LazaretFile
     }
 
     /**
-     * Remove attributes
-     *
-     * @param \Entities\LazaretAttribute $attributes
+     * @param LazaretAttribute $attributes
      */
-    public function removeAttribute(\Entities\LazaretAttribute $attributes)
+    public function removeAttribute(LazaretAttribute $attributes)
     {
         $this->attributes->removeElement($attributes);
     }
 
     /**
-     * Get attributes
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return LazaretAttribute[]
      */
     public function getAttributes()
     {
@@ -363,12 +327,11 @@ class LazaretFile
     }
 
     /**
-     * Add checks
-     *
-     * @param  \Entities\LazaretCheck $checks
+     * @param  LazaretCheck $checks
+     * 
      * @return LazaretFile
      */
-    public function addCheck(\Entities\LazaretCheck $checks)
+    public function addCheck(LazaretCheck $checks)
     {
         $this->checks[] = $checks;
 
@@ -376,19 +339,15 @@ class LazaretFile
     }
 
     /**
-     * Remove checks
-     *
-     * @param \Entities\LazaretCheck $checks
+     * @param LazaretCheck $checks
      */
-    public function removeCheck(\Entities\LazaretCheck $checks)
+    public function removeCheck(LazaretCheck $checks)
     {
         $this->checks->removeElement($checks);
     }
 
     /**
-     * Get checks
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getChecks()
     {
@@ -396,12 +355,11 @@ class LazaretFile
     }
 
     /**
-     * Set session
-     *
-     * @param  \Entities\LazaretSession $session
+     * @param  LazaretSession $session
+     * 
      * @return LazaretFile
      */
-    public function setSession(\Entities\LazaretSession $session = null)
+    public function setSession(LazaretSession $session = null)
     {
         $this->session = $session;
 
@@ -409,9 +367,7 @@ class LazaretFile
     }
 
     /**
-     * Get session
-     *
-     * @return \Entities\LazaretSession
+     * @return LazaretSession
      */
     public function getSession()
     {
@@ -419,9 +375,9 @@ class LazaretFile
     }
 
     /**
-     * Get an array of records that can be substitued by the Lazaret file
-     *
-     * @return array
+     * Returns the associated record to substitute.
+     * 
+     * @return \record_adapter[]
      */
     public function getRecordsToSubstitute(Application $app)
     {

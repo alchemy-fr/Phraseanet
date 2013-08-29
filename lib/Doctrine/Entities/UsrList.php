@@ -12,6 +12,7 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -60,13 +61,11 @@ class UsrList
      */
     public function __construct()
     {
-        $this->owners = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->entries = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->owners = new ArrayCollection();
+        $this->entries = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -75,9 +74,8 @@ class UsrList
     }
 
     /**
-     * Set name
-     *
      * @param  string  $name
+     * 
      * @return UsrList
      */
     public function setName($name)
@@ -88,8 +86,6 @@ class UsrList
     }
 
     /**
-     * Get name
-     *
      * @return string
      */
     public function getName()
@@ -98,9 +94,8 @@ class UsrList
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime $created
+     * 
      * @return UsrList
      */
     public function setCreated(\DateTime $created)
@@ -111,8 +106,6 @@ class UsrList
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -121,9 +114,8 @@ class UsrList
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime $updated
+     * 
      * @return UsrList
      */
     public function setUpdated(\DateTime $updated)
@@ -134,8 +126,6 @@ class UsrList
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -144,12 +134,11 @@ class UsrList
     }
 
     /**
-     * Add owners
-     *
-     * @param  \Entities\UsrListOwner $owners
+     * @param  UsrListOwner $owners
+     * 
      * @return UsrList
      */
-    public function addOwner(\Entities\UsrListOwner $owners)
+    public function addOwner(UsrListOwner $owners)
     {
         $this->owners[] = $owners;
 
@@ -157,19 +146,15 @@ class UsrList
     }
 
     /**
-     * Remove owners
-     *
-     * @param \Entities\UsrListOwner $owners
+     * @param UsrListOwner $owners
      */
-    public function removeOwner(\Entities\UsrListOwner $owners)
+    public function removeOwner(UsrListOwner $owners)
     {
         $this->owners->removeElement($owners);
     }
 
     /**
-     * Get owners
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return UsrListOwner[]
      */
     public function getOwners()
     {
@@ -177,12 +162,11 @@ class UsrList
     }
 
     /**
-     * Add entries
-     *
-     * @param  \Entities\UsrListEntry $entries
+     * @param  UsrListEntry $entries
+     * 
      * @return UsrList
      */
-    public function addEntrie(\Entities\UsrListEntry $entries)
+    public function addEntrie(UsrListEntry $entries)
     {
         $this->entries[] = $entries;
 
@@ -190,25 +174,29 @@ class UsrList
     }
 
     /**
-     * Remove entries
-     *
-     * @param \Entities\UsrListEntry $entries
+     * @param UsrListEntry $entries
      */
-    public function removeEntrie(\Entities\UsrListEntry $entries)
+    public function removeEntrie(UsrListEntry $entries)
     {
         $this->entries->removeElement($entries);
     }
 
     /**
-     * Get entries
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return UsrListEntry[]
      */
     public function getEntries()
     {
         return $this->entries;
     }
 
+    /**
+     * Returns true if given user has access to the current list.
+     * 
+     * @param \User_Adapter $user
+     * @param Application $app
+     * 
+     * @return boolean
+     */
     public function hasAccess(\User_Adapter $user, Application $app)
     {
         foreach ($this->getOwners() as $owner) {
@@ -221,9 +209,9 @@ class UsrList
     }
 
     /**
-     *
      * @param  \User_Adapter          $user
-     * @return \Entities\UsrListOwner
+     * 
+     * @return UsrListOwner
      */
     public function getOwner(\User_Adapter $user, Application $app)
     {
@@ -237,9 +225,10 @@ class UsrList
     }
 
     /**
-     * Return true if one of the entry is related to the given user
+     * Returns true if one of the entry is related to the given user
      *
      * @param  \User_Adapter $user
+     * 
      * @return boolean
      */
     public function has(\User_Adapter $user, Application $app)

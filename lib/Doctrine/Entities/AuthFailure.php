@@ -49,8 +49,6 @@ class AuthFailure
     private $created;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -59,9 +57,8 @@ class AuthFailure
     }
 
     /**
-     * Set username
-     *
      * @param  string      $username
+     * 
      * @return AuthFailure
      */
     public function setUsername($username)
@@ -72,8 +69,6 @@ class AuthFailure
     }
 
     /**
-     * Get username
-     *
      * @return string
      */
     public function getUsername()
@@ -82,9 +77,8 @@ class AuthFailure
     }
 
     /**
-     * Set ip
-     *
      * @param  string      $ip
+     * 
      * @return AuthFailure
      */
     public function setIp($ip)
@@ -95,8 +89,6 @@ class AuthFailure
     }
 
     /**
-     * Get ip
-     *
      * @return string
      */
     public function getIp()
@@ -118,8 +110,6 @@ class AuthFailure
     }
 
     /**
-     * Get locked
-     *
      * @return boolean
      */
     public function getLocked()
@@ -128,9 +118,8 @@ class AuthFailure
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime   $created
+     * 
      * @return AuthFailure
      */
     public function setCreated(\DateTime $created)
@@ -141,8 +130,6 @@ class AuthFailure
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()

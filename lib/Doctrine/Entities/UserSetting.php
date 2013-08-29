@@ -88,7 +88,7 @@ class UserSetting
     }
 
     /**
-     * @param \Alchemy\Phrasea\Application $app
+     * @param Application $app
      *
      * @return string
      */
@@ -158,7 +158,7 @@ class UserSetting
     }
 
     /**
-     * @param \DateTime  $created
+     * @param \DateTime $created
      *
      * @return UserSetting
      */

@@ -12,11 +12,15 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="BasketElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_recordcle", columns={"basket_id","sbas_id","record_id"})})
+ * @ORM\Table(name="BasketElements", uniqueConstraints={
+ *      @ORM\UniqueConstraint(name="unique_recordcle", columns={"basket_id","sbas_id","record_id"})
+ * })
  * @ORM\Entity(repositoryClass="Repositories\BasketElementRepository")
  * @ORM\HasLifecycleCallbacks
  */
@@ -72,7 +76,7 @@ class BasketElement
      */
     public function __construct()
     {
-        $this->validation_datas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->validation_datas = new ArrayCollection();
     }
 
     /**
@@ -131,21 +135,36 @@ class BasketElement
         return $this->sbas_id;
     }
 
+    /**
+     * Returns the records associated to the basket element.
+     * 
+     * @param Application $app
+     * 
+     * @return \record_adapter
+     */
     public function getRecord(Application $app)
     {
         return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
     }
 
+    /**
+     * Associates the given record to the current basket element.
+     * 
+     * @param \record_adapter $record
+     * 
+     * @return BasketElement
+     */
     public function setRecord(\record_adapter $record)
     {
         $this->setRecordId($record->get_record_id());
         $this->setSbasId($record->get_sbas_id());
+        
+        return $this;
     }
 
     /**
-     * Set ord
-     *
      * @param  integer       $ord
+     * 
      * @return BasketElement
      */
     public function setOrd($ord)
@@ -156,8 +175,6 @@ class BasketElement
     }
 
     /**
-     * Get ord
-     *
      * @return integer
      */
     public function getOrd()
@@ -166,9 +183,8 @@ class BasketElement
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime     $created
+     * 
      * @return BasketElement
      */
     public function setCreated(\DateTime $created)
@@ -179,8 +195,6 @@ class BasketElement
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -189,9 +203,8 @@ class BasketElement
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime     $updated
+     * 
      * @return BasketElement
      */
     public function setUpdated(\DateTime $updated)
@@ -202,8 +215,6 @@ class BasketElement
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -212,12 +223,11 @@ class BasketElement
     }
 
     /**
-     * Add validation_datas
-     *
-     * @param  \Entities\ValidationData $validationDatas
+     * @param  ValidationData $validationDatas
+     * 
      * @return BasketElement
      */
-    public function addValidationData(\Entities\ValidationData $validationDatas)
+    public function addValidationData(ValidationData $validationDatas)
     {
         $this->validation_datas[] = $validationDatas;
 
@@ -225,19 +235,19 @@ class BasketElement
     }
 
     /**
-     * Remove validation_datas
-     *
-     * @param \Entities\ValidationData $validationDatas
+     * @param ValidationData $validationDatas
+     * 
+     * @return BasketElement
      */
-    public function removeValidationData(\Entities\ValidationData $validationDatas)
+    public function removeValidationData(ValidationData $validationDatas)
     {
         $this->validation_datas->removeElement($validationDatas);
+        
+        return $this;
     }
 
     /**
-     * Get validation_datas
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ValidationData[]
      */
     public function getValidationDatas()
     {
@@ -245,12 +255,11 @@ class BasketElement
     }
 
     /**
-     * Set basket
-     *
-     * @param  \Entities\Basket $basket
+     * @param  Basket $basket
+     * 
      * @return BasketElement
      */
-    public function setBasket(\Entities\Basket $basket = null)
+    public function setBasket(Basket $basket = null)
     {
         $this->basket = $basket;
 
@@ -258,9 +267,7 @@ class BasketElement
     }
 
     /**
-     * Get basket
-     *
-     * @return \Entities\Basket
+     * @return Basket
      */
     public function getBasket()
     {
@@ -268,6 +275,8 @@ class BasketElement
     }
 
     /**
+     * Prepersist callback sets position of basket.
+     * 
      * @ORM\PrePersist
      */
     public function setLastInBasket()
@@ -276,9 +285,11 @@ class BasketElement
     }
 
     /**
-     *
      * @param  \User_Adapter            $user
-     * @return \Entities\ValidationData
+     * 
+     * @return ValidationData
+     * 
+     * @throws InvalidArgumentException if user is not found
      */
     public function getUserValidationDatas(\User_Adapter $user, Application $app)
     {
@@ -288,6 +299,6 @@ class BasketElement
             }
         }
 
-        throw new \Exception('There is no such participant ' . $user->get_email());
+        throw new InvalidArgumentException(sprintf('There is no such participant %s.',  $user->get_email()));
     }
 }

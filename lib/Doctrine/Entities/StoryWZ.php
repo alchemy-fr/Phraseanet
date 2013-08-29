@@ -61,9 +61,8 @@ class StoryWZ
     }
 
     /**
-     * Set sbas_id
-     *
      * @param  integer $sbasId
+     * 
      * @return StoryWZ
      */
     public function setSbasId($sbasId)
@@ -74,8 +73,6 @@ class StoryWZ
     }
 
     /**
-     * Get sbas_id
-     *
      * @return integer
      */
     public function getSbasId()
@@ -84,9 +81,8 @@ class StoryWZ
     }
 
     /**
-     * Set record_id
-     *
      * @param  integer $recordId
+     * 
      * @return StoryWZ
      */
     public function setRecordId($recordId)
@@ -97,8 +93,6 @@ class StoryWZ
     }
 
     /**
-     * Get record_id
-     *
      * @return integer
      */
     public function getRecordId()
@@ -106,21 +100,32 @@ class StoryWZ
         return $this->record_id;
     }
 
+    /**
+     * @param Application $app
+     * 
+     * @return \record_adapter
+     */
     public function getRecord(Application $app)
     {
         return new \record_adapter($app, $this->getSbasId(), $this->getRecordId());
     }
 
+    /**
+     * @param \record_adapter $record
+     * 
+     * @return StoryWZ
+     */
     public function setRecord(\record_adapter $record)
     {
         $this->setRecordId($record->get_record_id());
         $this->setSbasId($record->get_sbas_id());
+        
+        return $this;
     }
 
     /**
-     * Set usr_id
-     *
      * @param  integer $usrId
+     * 
      * @return StoryWZ
      */
     public function setUsrId($usrId)
@@ -131,8 +136,6 @@ class StoryWZ
     }
 
     /**
-     * Get usr_id
-     *
      * @return integer
      */
     public function getUsrId()
@@ -140,11 +143,22 @@ class StoryWZ
         return $this->usr_id;
     }
 
+    /**
+     * 
+     * @param \User_Adapter $user
+     * 
+     * @return StoryWZ
+     */
     public function setUser(\User_Adapter $user)
     {
-        $this->setUsrId($user->get_id());
+        return $this->setUsrId($user->get_id());
     }
 
+    /**
+     * @param Application $app
+     * 
+     * @return \User_Adapter|null
+     */
     public function getUser(Application $app)
     {
         if ($this->getUsrId()) {
@@ -153,9 +167,8 @@ class StoryWZ
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime $created
+     * 
      * @return StoryWZ
      */
     public function setCreated(\DateTime $created)
@@ -166,8 +179,6 @@ class StoryWZ
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()

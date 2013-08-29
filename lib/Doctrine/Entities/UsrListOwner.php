@@ -12,11 +12,14 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="UsrListOwners", uniqueConstraints={@ORM\UniqueConstraint(name="unique_owner", columns={"usr_id", "id"})})
+ * @ORM\Table(name="UsrListOwners", uniqueConstraints={
+ *      @ORM\UniqueConstraint(name="unique_owner", columns={"usr_id", "id"})
+ * })
  * @ORM\Entity(repositoryClass="Repositories\UsrListOwnerRepository")
  */
 class UsrListOwner
@@ -61,8 +64,6 @@ class UsrListOwner
     private $list;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -71,9 +72,8 @@ class UsrListOwner
     }
 
     /**
-     * Set usr_id
-     *
      * @param  integer      $usrId
+     * 
      * @return UsrListOwner
      */
     public function setUsrId($usrId)
@@ -84,8 +84,6 @@ class UsrListOwner
     }
 
     /**
-     * Get usr_id
-     *
      * @return integer
      */
     public function getUsrId()
@@ -93,26 +91,36 @@ class UsrListOwner
         return $this->usr_id;
     }
 
+    /**
+     * @param \User_Adapter $user
+     * 
+     * @return UsrListOwner
+     */
     public function setUser(\User_Adapter $user)
     {
         return $this->setUsrId($user->get_id());
     }
 
+    /**
+     * @param Application $app
+     * 
+     * @return \User_Adapter
+     */
     public function getUser(Application $app)
     {
         return \User_Adapter::getInstance($this->getUsrId(), $app);
     }
 
     /**
-     * Set role
-     *
      * @param  string       $role
+     * 
      * @return UsrListOwner
      */
     public function setRole($role)
     {
-        if ( ! in_array($role, array(self::ROLE_ADMIN, self::ROLE_EDITOR, self::ROLE_USER)))
-            throw new \Exception('Unknown role `' . $role . '`');
+        if (!in_array($role, array(self::ROLE_ADMIN, self::ROLE_EDITOR, self::ROLE_USER))) {
+            throw new InvalidArgumentException(sprintf('Unknown role `%s`.', $role));
+        }
 
         $this->role = $role;
 
@@ -120,8 +128,6 @@ class UsrListOwner
     }
 
     /**
-     * Get role
-     *
      * @return string
      */
     public function getRole()
@@ -130,9 +136,8 @@ class UsrListOwner
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime    $created
+     * 
      * @return UsrListOwner
      */
     public function setCreated(\DateTime $created)
@@ -143,8 +148,6 @@ class UsrListOwner
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -153,9 +156,8 @@ class UsrListOwner
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime    $updated
+     * 
      * @return UsrListOwner
      */
     public function setUpdated(\DateTime $updated)
@@ -166,8 +168,6 @@ class UsrListOwner
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -176,12 +176,11 @@ class UsrListOwner
     }
 
     /**
-     * Set list
-     *
-     * @param  \Entities\UsrList $list
+     * @param  UsrList $list
+     * 
      * @return UsrListOwner
      */
-    public function setList(\Entities\UsrList $list = null)
+    public function setList(UsrList $list = null)
     {
         $this->list = $list;
 
@@ -189,9 +188,7 @@ class UsrListOwner
     }
 
     /**
-     * Get list
-     *
-     * @return \Entities\UsrList
+     * @return UsrList
      */
     public function getList()
     {

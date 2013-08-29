@@ -15,7 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="SessionModules", uniqueConstraints={@ORM\UniqueConstraint(name="unique_module", columns={"session_id", "module_id"})})
+ * @ORM\Table(name="SessionModules", uniqueConstraints={
+ *      @ORM\UniqueConstraint(name="unique_module", columns={"session_id", "module_id"})
+ * })
  * @ORM\Entity(repositoryClass="Repositories\SessionModuleRepository")
  */
 class SessionModule
@@ -51,8 +53,6 @@ class SessionModule
     private $session;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -61,9 +61,8 @@ class SessionModule
     }
 
     /**
-     * Set module_id
-     *
      * @param  integer       $moduleId
+     * 
      * @return SessionModule
      */
     public function setModuleId($moduleId)
@@ -74,8 +73,6 @@ class SessionModule
     }
 
     /**
-     * Get module_id
-     *
      * @return integer
      */
     public function getModuleId()
@@ -84,9 +81,8 @@ class SessionModule
     }
 
     /**
-     * Set created
-     *
      * @param  \DateTime     $created
+     * 
      * @return SessionModule
      */
     public function setCreated($created)
@@ -97,8 +93,6 @@ class SessionModule
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -107,9 +101,8 @@ class SessionModule
     }
 
     /**
-     * Set updated
-     *
      * @param  \DateTime     $updated
+     * 
      * @return SessionModule
      */
     public function setUpdated(\DateTime $updated)
@@ -120,8 +113,6 @@ class SessionModule
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -130,12 +121,11 @@ class SessionModule
     }
 
     /**
-     * Set session
-     *
-     * @param  \Entities\Session $session
+     * @param  Session $session
+     * 
      * @return SessionModule
      */
-    public function setSession(\Entities\Session $session = null)
+    public function setSession(Session $session = null)
     {
         $this->session = $session;
 
@@ -143,9 +133,7 @@ class SessionModule
     }
 
     /**
-     * Get session
-     *
-     * @return \Entities\Session
+     * @return Session
      */
     public function getSession()
     {
