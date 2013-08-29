@@ -114,7 +114,7 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'usr_id', 'created', 'updated', 'files');
+        return array('__isInitialized__', 'id', 'usrId', 'created', 'updated', 'files');
     }
 
     public function __clone()

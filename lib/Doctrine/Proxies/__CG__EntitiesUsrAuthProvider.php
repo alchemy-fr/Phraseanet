@@ -120,7 +120,7 @@ class UsrAuthProvider extends \Entities\UsrAuthProvider implements \Doctrine\ORM
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'usr_id', 'provider', 'distant_id', 'created', 'updated');
+        return array('__isInitialized__', 'id', 'usrId', 'provider', 'distantId', 'created', 'updated');
     }
 
     public function __clone()

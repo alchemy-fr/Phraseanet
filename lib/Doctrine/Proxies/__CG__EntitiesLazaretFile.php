@@ -135,10 +135,10 @@ class LazaretFile extends \Entities\LazaretFile implements \Doctrine\ORM\Proxy\P
         return parent::setForced($forced);
     }
 
-    public function getForced()
+    public function isForced()
     {
         $this->__load();
-        return parent::getForced();
+        return parent::isForced();
     }
 
     public function setCreated(\DateTime $created)
