@@ -12,6 +12,7 @@
         "dailymotion/sdk"                  : "~1.5",
         "data-uri/data-uri"                : "~0.1.0",
         "doctrine/orm"                     : "~2.3.0",
+        "doctrine/migrations"              : "dev-master",	
         "facebook/php-sdk"                 : "~3.0",
         "gedmo/doctrine-extensions"        : "~2.3.0",
         "alchemy/google-plus-api-client"   : "~0.6.2",

@@ -83,6 +83,7 @@ use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
+use Alchemy\Phrasea\Core\Provider\DoctrineMigrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Geonames\GeonamesServiceProvider;
@@ -294,6 +295,7 @@ class Application extends SilexApplication
         $this->register(new ValidatorServiceProvider());
         $this->register(new XPDFServiceProvider());
         $this->register(new FileServeServiceProvider());
+        $this->register(new DoctrineMigrationServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             return PhraseaExceptionHandler::register($app['debug']);
