@@ -9,9 +9,9 @@
         "jake": "latest",
         "grunt-cli": "latest",
         "grunt": "~0.4.1",
-        "grunt-contrib": "latest",
-        "grunt-bower-task": "latest",
-        "grunt-bower-postinst": "latest",
+        "grunt-contrib": "~0.4.0",
+        "grunt-bower-task": "~0.3.0",
+        "grunt-bower-postinst": "~0.2.0",
         "grunt-mocha-phantomjs": "~0.3.0"
     }
 }
