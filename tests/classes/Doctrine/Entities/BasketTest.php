@@ -146,11 +146,6 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertInstanceOf('\Entities\ValidationSession', $this->basket->getValidation());
     }
 
-    public function testGetIsRead()
-    {
-        $this->markTestIncomplete();
-    }
-
     public function testGetSize()
     {
         $this->markTestIncomplete();

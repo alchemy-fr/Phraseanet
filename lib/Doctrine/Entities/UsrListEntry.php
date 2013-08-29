@@ -31,9 +31,9 @@ class UsrListEntry
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -68,7 +68,7 @@ class UsrListEntry
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
@@ -78,7 +78,7 @@ class UsrListEntry
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**

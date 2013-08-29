@@ -34,14 +34,14 @@ class BasketElement
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="record_id")
      */
-    private $record_id;
+    private $recordId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="sbas_id")
      */
-    private $sbas_id;
+    private $sbasId;
 
     /**
      * @ORM\Column(type="integer")
@@ -61,9 +61,9 @@ class BasketElement
     private $updated;
 
     /**
-     * @ORM\OneToMany(targetEntity="ValidationData", mappedBy="basket_element", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="ValidationData", mappedBy="basketElement", cascade={"all"})
      */
-    private $validation_datas;
+    private $validationDatas;
 
     /**
      * @ORM\ManyToOne(targetEntity="Basket", inversedBy="elements", cascade={"persist"})
@@ -76,12 +76,10 @@ class BasketElement
      */
     public function __construct()
     {
-        $this->validation_datas = new ArrayCollection();
+        $this->validationDatas = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -90,49 +88,43 @@ class BasketElement
     }
 
     /**
-     * Set record_id
-     *
      * @param  integer       $recordId
+     * 
      * @return BasketElement
      */
     public function setRecordId($recordId)
     {
-        $this->record_id = $recordId;
+        $this->recordId = $recordId;
 
         return $this;
     }
 
     /**
-     * Get record_id
-     *
      * @return integer
      */
     public function getRecordId()
     {
-        return $this->record_id;
+        return $this->recordId;
     }
 
     /**
-     * Set sbas_id
-     *
      * @param  integer       $sbasId
+     * 
      * @return BasketElement
      */
     public function setSbasId($sbasId)
     {
-        $this->sbas_id = $sbasId;
+        $this->sbasId = $sbasId;
 
         return $this;
     }
 
     /**
-     * Get sbas_id
-     *
      * @return integer
      */
     public function getSbasId()
     {
-        return $this->sbas_id;
+        return $this->sbasId;
     }
 
     /**
@@ -156,7 +148,7 @@ class BasketElement
      */
     public function setRecord(\record_adapter $record)
     {
-        $this->setRecordId($record->get_record_id());
+        $this->setRecordId($record->get_recordId());
         $this->setSbasId($record->get_sbas_id());
         
         return $this;
@@ -229,7 +221,7 @@ class BasketElement
      */
     public function addValidationData(ValidationData $validationDatas)
     {
-        $this->validation_datas[] = $validationDatas;
+        $this->validationDatas[] = $validationDatas;
 
         return $this;
     }
@@ -241,7 +233,7 @@ class BasketElement
      */
     public function removeValidationData(ValidationData $validationDatas)
     {
-        $this->validation_datas->removeElement($validationDatas);
+        $this->validationDatas->removeElement($validationDatas);
         
         return $this;
     }
@@ -251,7 +243,7 @@ class BasketElement
      */
     public function getValidationDatas()
     {
-        return $this->validation_datas;
+        return $this->validationDatas;
     }
 
     /**
@@ -293,7 +285,7 @@ class BasketElement
      */
     public function getUserValidationDatas(\User_Adapter $user, Application $app)
     {
-        foreach ($this->validation_datas as $validationData) {
+        foreach ($this->validationDatas as $validationData) {
             if ($validationData->getParticipant($app)->getUser($app)->get_id() == $user->get_id()) {
                 return $validationData;
             }

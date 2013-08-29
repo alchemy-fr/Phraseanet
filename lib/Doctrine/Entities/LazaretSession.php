@@ -30,9 +30,9 @@ class LazaretSession
     private $id;
 
      /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", name="usr_id", nullable=true)
      */
-    private $usr_id;
+    private $usrId;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -75,7 +75,7 @@ class LazaretSession
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
@@ -85,7 +85,7 @@ class LazaretSession
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**
@@ -96,7 +96,7 @@ class LazaretSession
         $user = null;
 
         try {
-            $user = \User_Adapter::getInstance($this->usr_id, $app);
+            $user = \User_Adapter::getInstance($this->usrId, $app);
         } catch (\Exception $e) {
 
         }

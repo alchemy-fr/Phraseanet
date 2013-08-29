@@ -31,9 +31,9 @@ class ValidationSession
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="initiator_id")
      */
-    private $initiator_id;
+    private $initiatorId;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -86,7 +86,7 @@ class ValidationSession
      */
     public function setInitiatorId($initiatorId)
     {
-        $this->initiator_id = $initiatorId;
+        $this->initiatorId = $initiatorId;
 
         return $this;
     }
@@ -96,7 +96,7 @@ class ValidationSession
      */
     public function getInitiatorId()
     {
-        return $this->initiator_id;
+        return $this->initiatorId;
     }
 
     /**
@@ -114,7 +114,7 @@ class ValidationSession
      */
     public function setInitiator(\User_Adapter $user)
     {
-        $this->initiator_id = $user->get_id();
+        $this->initiatorId = $user->get_id();
 
         return $this;
     }
@@ -125,8 +125,8 @@ class ValidationSession
      */
     public function getInitiator(Application $app)
     {
-        if ($this->initiator_id) {
-            return \User_Adapter::getInstance($this->initiator_id, $app);
+        if ($this->initiatorId) {
+            return \User_Adapter::getInstance($this->initiatorId, $app);
         }
     }
 

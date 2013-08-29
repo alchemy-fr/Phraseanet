@@ -29,29 +29,29 @@ class ValidationParticipant
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_aware = false;
+    private $aware = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_confirmed = false;
+    private $confirmed = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", name="can_agree")
      */
-    private $can_agree = false;
+    private $canAgree = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", name="can_see_others")
      */
-    private $can_see_others = false;
+    private $canSeeOthers = false;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -92,7 +92,7 @@ class ValidationParticipant
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
@@ -102,7 +102,7 @@ class ValidationParticipant
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**
@@ -112,7 +112,7 @@ class ValidationParticipant
      */
     public function setUser(\User_Adapter $user)
     {
-        $this->usr_id = $user->get_id();
+        $this->usrId = $user->get_id();
 
         return $this;
     }
@@ -134,7 +134,7 @@ class ValidationParticipant
      */
     public function setIsAware($isAware)
     {
-        $this->is_aware = $isAware;
+        $this->aware = $isAware;
 
         return $this;
     }
@@ -144,7 +144,7 @@ class ValidationParticipant
      */
     public function getIsAware()
     {
-        return $this->is_aware;
+        return $this->aware;
     }
 
     /**
@@ -154,7 +154,7 @@ class ValidationParticipant
      */
     public function setIsConfirmed($isConfirmed)
     {
-        $this->is_confirmed = $isConfirmed;
+        $this->confirmed = $isConfirmed;
 
         return $this;
     }
@@ -164,7 +164,7 @@ class ValidationParticipant
      */
     public function getIsConfirmed()
     {
-        return $this->is_confirmed;
+        return $this->confirmed;
     }
 
     /**
@@ -174,7 +174,7 @@ class ValidationParticipant
      */
     public function setCanAgree($canAgree)
     {
-        $this->can_agree = $canAgree;
+        $this->canAgree = $canAgree;
 
         return $this;
     }
@@ -184,7 +184,7 @@ class ValidationParticipant
      */
     public function getCanAgree()
     {
-        return $this->can_agree;
+        return $this->canAgree;
     }
 
     /**
@@ -194,19 +194,19 @@ class ValidationParticipant
      */
     public function setCanSeeOthers($canSeeOthers)
     {
-        $this->can_see_others = $canSeeOthers;
+        $this->canSeeOthers = $canSeeOthers;
 
         return $this;
     }
 
     /**
-     * Get can_see_others
+     * Get canSeeOthers
      *
      * @return boolean
      */
     public function getCanSeeOthers()
     {
-        return $this->can_see_others;
+        return $this->canSeeOthers;
     }
 
     /**

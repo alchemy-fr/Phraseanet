@@ -187,7 +187,7 @@ class Push implements ControllerProviderInterface
                     $Basket->setDescription($push_description);
                     $Basket->setOwner($user_receiver);
                     $Basket->setPusher($app['authentication']->getUser());
-                    $Basket->setIsRead(false);
+                    $Basket->setRead(false);
 
                     $app['EM']->persist($Basket);
 
@@ -306,7 +306,7 @@ class Push implements ControllerProviderInterface
                     $Basket->setName($validation_name);
                     $Basket->setDescription($validation_description);
                     $Basket->setOwner($app['authentication']->getUser());
-                    $Basket->setIsRead(false);
+                    $Basket->setRead(false);
 
                     $app['EM']->persist($Basket);
 

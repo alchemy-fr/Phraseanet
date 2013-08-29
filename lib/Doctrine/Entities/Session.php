@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="Sessions", indexes={@ORM\index(name="usr_id", columns={"usr_id"})})
+ * @ORM\Table(name="Sessions", indexes={@ORM\index(name="usrId", columns={"usr_id"})})
  * @ORM\Entity(repositoryClass="Repositories\SessionRepository")
  */
 class Session
@@ -30,19 +30,19 @@ class Session
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
-     * @ORM\Column(type="string", length=512)
+     * @ORM\Column(type="string", name="user_agent", length=512)
      */
-    private $user_agent;
+    private $userAgent;
 
     /**
-     * @ORM\Column(type="string", length=40, nullable=true)
+     * @ORM\Column(type="string", name="ip_address", length=40, nullable=true)
      */
-    private $ip_address;
+    private $ipAddress;
 
     /**
      * @ORM\Column(type="string", length=128, nullable=true)
@@ -50,24 +50,24 @@ class Session
     private $platform;
 
     /**
-     * @ORM\Column(type="string", length=128, nullable=true)
+     * @ORM\Column(type="string", name="browser_name", length=128, nullable=true)
      */
-    private $browser_name;
+    private $browserName;
 
     /**
-     * @ORM\Column(type="string", length=32, nullable=true)
+     * @ORM\Column(type="string", name="browser_version", length=32, nullable=true)
      */
-    private $browser_version;
+    private $browserVersion;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", name="screen_width", nullable=true)
      */
-    private $screen_width;
+    private $screenWidth;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", name="screen_heigh", nullable=true)
      */
-    private $screen_height;
+    private $screenHeight;
 
     /**
      * @ORM\Column(type="string", length=128, nullable=true, unique=true)
@@ -130,7 +130,7 @@ class Session
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
@@ -152,7 +152,7 @@ class Session
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**
@@ -162,7 +162,7 @@ class Session
      */
     public function setUserAgent($userAgent)
     {
-        $this->user_agent = $userAgent;
+        $this->userAgent = $userAgent;
 
         return $this;
     }
@@ -172,7 +172,7 @@ class Session
      */
     public function getUserAgent()
     {
-        return $this->user_agent;
+        return $this->userAgent;
     }
 
     /**
@@ -182,7 +182,7 @@ class Session
      */
     public function setIpAddress($ipAddress)
     {
-        $this->ip_address = $ipAddress;
+        $this->ipAddress = $ipAddress;
 
         return $this;
     }
@@ -192,7 +192,7 @@ class Session
      */
     public function getIpAddress()
     {
-        return $this->ip_address;
+        return $this->ipAddress;
     }
 
     /**
@@ -222,7 +222,7 @@ class Session
      */
     public function setBrowserName($browserName)
     {
-        $this->browser_name = $browserName;
+        $this->browserName = $browserName;
 
         return $this;
     }
@@ -232,7 +232,7 @@ class Session
      */
     public function getBrowserName()
     {
-        return $this->browser_name;
+        return $this->browserName;
     }
 
     /**
@@ -242,7 +242,7 @@ class Session
      */
     public function setBrowserVersion($browserVersion)
     {
-        $this->browser_version = $browserVersion;
+        $this->browserVersion = $browserVersion;
 
         return $this;
     }
@@ -252,7 +252,7 @@ class Session
      */
     public function getBrowserVersion()
     {
-        return $this->browser_version;
+        return $this->browserVersion;
     }
 
     /**
@@ -262,7 +262,7 @@ class Session
      */
     public function setScreenWidth($screenWidth)
     {
-        $this->screen_width = $screenWidth;
+        $this->screenWidth = $screenWidth;
 
         return $this;
     }
@@ -272,7 +272,7 @@ class Session
      */
     public function getScreenWidth()
     {
-        return $this->screen_width;
+        return $this->screenWidth;
     }
 
     /**
@@ -282,7 +282,7 @@ class Session
      */
     public function setScreenHeight($screenHeight)
     {
-        $this->screen_height = $screenHeight;
+        $this->screenHeight = $screenHeight;
 
         return $this;
     }
@@ -292,7 +292,7 @@ class Session
      */
     public function getScreenHeight()
     {
-        return $this->screen_height;
+        return $this->screenHeight;
     }
 
     /**

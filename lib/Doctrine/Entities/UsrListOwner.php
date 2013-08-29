@@ -36,9 +36,9 @@ class UsrListOwner
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
      * @ORM\Column(type="string")
@@ -78,7 +78,7 @@ class UsrListOwner
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
@@ -88,7 +88,7 @@ class UsrListOwner
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**

@@ -44,19 +44,19 @@ class Basket
     private $description;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_read = false;
+    private $read = false;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", name="pusher_id", nullable=true)
      */
-    private $pusher_id;
+    private $pusherId;
 
     /**
      * @ORM\Column(type="boolean")
@@ -154,7 +154,7 @@ class Basket
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
@@ -164,7 +164,7 @@ class Basket
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**
@@ -188,13 +188,13 @@ class Basket
     }
 
     /**
-     * @param  boolean $isRead
+     * @param  boolean $read
      * 
      * @return Basket
      */
-    public function setIsRead($isRead)
+    public function setRead($read)
     {
-        $this->is_read = $isRead;
+        $this->read = (Boolean) $read;
 
         return $this;
     }
@@ -202,9 +202,9 @@ class Basket
     /**
      * @return boolean
      */
-    public function getIsRead()
+    public function isRead()
     {
-        return $this->is_read;
+        return $this->read;
     }
 
     /**
@@ -214,7 +214,7 @@ class Basket
      */
     public function setPusherId($pusherId)
     {
-        $this->pusher_id = $pusherId;
+        $this->pusherId = $pusherId;
 
         return $this;
     }
@@ -224,7 +224,7 @@ class Basket
      */
     public function getPusherId()
     {
-        return $this->pusher_id;
+        return $this->pusherId;
     }
 
     /**

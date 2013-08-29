@@ -142,8 +142,8 @@ class Basket implements ControllerProviderInterface
         $basket = $app['EM']->getRepository('\Entities\Basket')
             ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), false);
 
-        if ($basket->getIsRead() === false) {
-            $basket->setIsRead(true);
+        if ($basket->isRead() === false) {
+            $basket->setRead(true);
             $app['EM']->flush();
         }
 

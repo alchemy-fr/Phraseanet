@@ -30,9 +30,9 @@ class SessionModule
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="module_id")
      */
-    private $module_id;
+    private $moduleId;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -67,7 +67,7 @@ class SessionModule
      */
     public function setModuleId($moduleId)
     {
-        $this->module_id = $moduleId;
+        $this->moduleId = $moduleId;
 
         return $this;
     }
@@ -77,7 +77,7 @@ class SessionModule
      */
     public function getModuleId()
     {
-        return $this->module_id;
+        return $this->moduleId;
     }
 
     /**

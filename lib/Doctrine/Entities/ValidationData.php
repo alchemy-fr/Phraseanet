@@ -50,10 +50,10 @@ class ValidationData
     private $participant;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BasketElement", inversedBy="validation_datas", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="BasketElement", inversedBy="validationDatas", cascade={"persist"})
      * @ORM\JoinColumn(name="basket_element_id", referencedColumnName="id")
      */
-    private $basket_element;
+    private $basketElement;
 
     /**
      * @return integer
@@ -149,7 +149,7 @@ class ValidationData
      */
     public function setBasketElement(BasketElement $basketElement = null)
     {
-        $this->basket_element = $basketElement;
+        $this->basketElement = $basketElement;
 
         return $this;
     }
@@ -159,6 +159,6 @@ class ValidationData
      */
     public function getBasketElement()
     {
-        return $this->basket_element;
+        return $this->basketElement;
     }
 }

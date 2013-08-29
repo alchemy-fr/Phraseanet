@@ -23,9 +23,9 @@ class UsrAuthProvider
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
      * @ORM\Column(type="string", length=32)
@@ -33,9 +33,9 @@ class UsrAuthProvider
     private $provider;
 
     /**
-     * @ORM\Column(type="string", length=192)
+     * @ORM\Column(type="string", name="distant_id" length=192)
      */
-    private $distant_id;
+    private $distantId;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -64,7 +64,7 @@ class UsrAuthProvider
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
@@ -74,7 +74,7 @@ class UsrAuthProvider
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**
@@ -84,7 +84,7 @@ class UsrAuthProvider
      */
     public function getUser(Application $app)
     {
-        return \User_Adapter::getInstance($this->usr_id, $app);
+        return \User_Adapter::getInstance($this->usrId, $app);
     }
 
     /**
@@ -113,7 +113,7 @@ class UsrAuthProvider
      */
     public function setDistantId($distantId)
     {
-        $this->distant_id = $distantId;
+        $this->distantId = $distantId;
 
         return $this;
     }
@@ -123,7 +123,7 @@ class UsrAuthProvider
      */
     public function getDistantId()
     {
-        return $this->distant_id;
+        return $this->distantId;
     }
 
     /**

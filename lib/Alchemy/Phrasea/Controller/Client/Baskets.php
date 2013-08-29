@@ -289,7 +289,7 @@ class Baskets implements ControllerProviderInterface
         $baskets = $repository->findActiveByUser($app['authentication']->getUser());
 
         foreach ($baskets as $basket) {
-            if (!$basket->getIsRead()) {
+            if (!$basket->isRead()) {
                 $noview++;
             }
         }

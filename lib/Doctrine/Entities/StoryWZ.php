@@ -30,19 +30,19 @@ class StoryWZ
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="sbas_id")
      */
-    private $sbas_id;
+    private $sbasId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="record_id")
      */
-    private $record_id;
+    private $recordId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -67,7 +67,7 @@ class StoryWZ
      */
     public function setSbasId($sbasId)
     {
-        $this->sbas_id = $sbasId;
+        $this->sbasId = $sbasId;
 
         return $this;
     }
@@ -77,7 +77,7 @@ class StoryWZ
      */
     public function getSbasId()
     {
-        return $this->sbas_id;
+        return $this->sbasId;
     }
 
     /**
@@ -87,7 +87,7 @@ class StoryWZ
      */
     public function setRecordId($recordId)
     {
-        $this->record_id = $recordId;
+        $this->recordId = $recordId;
 
         return $this;
     }
@@ -97,7 +97,7 @@ class StoryWZ
      */
     public function getRecordId()
     {
-        return $this->record_id;
+        return $this->recordId;
     }
 
     /**
@@ -130,7 +130,7 @@ class StoryWZ
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
@@ -140,7 +140,7 @@ class StoryWZ
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**

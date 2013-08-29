@@ -218,9 +218,9 @@ class Lightbox implements ControllerProviderInterface
                 , false
             );
 
-            if ($basket->getIsRead() === false) {
+            if ($basket->isRead() === false) {
                 $basket = $app['EM']->merge($basket);
-                $basket->setIsRead(true);
+                $basket->setRead(true);
                 $app['EM']->flush();
             }
 
@@ -272,9 +272,9 @@ class Lightbox implements ControllerProviderInterface
                 , false
             );
 
-            if ($basket->getIsRead() === false) {
+            if ($basket->isRead() === false) {
                 $basket = $app['EM']->merge($basket);
-                $basket->setIsRead(true);
+                $basket->setRead(true);
                 $app['EM']->flush();
             }
 
