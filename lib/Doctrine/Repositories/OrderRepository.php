@@ -15,10 +15,10 @@ class OrderRepository extends EntityRepository
     /**
      * Returns an array of all the orders, starting at $offsetStart, limited to $perPage
      *
-     * @param array $baseIds
+     * @param array   $baseIds
      * @param integer $offsetStart
      * @param integer $perPage
-     * @param string $sort
+     * @param string  $sort
      *
      * @return array
      */
@@ -34,7 +34,7 @@ class OrderRepository extends EntityRepository
 
          if ($sort === 'user') {
              $qb->orderBy('o.userId', 'ASC');
-         } else if ($sort === 'usage') {
+         } elseif ($sort === 'usage') {
              $qb->orderBy('o.orderUsage', 'ASC');
          } else {
              $qb->orderBy('o.createdOn', 'ASC');
