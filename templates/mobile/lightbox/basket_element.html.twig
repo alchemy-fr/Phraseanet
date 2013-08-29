@@ -21,7 +21,7 @@
   <div data-role="content">
     {{ thumbnail.format100percent(record.get_preview(),'', record.get_thumbnail()) }}
     {% if basket_element.getBasket().getValidation() %}
-      {% if basket_element.getBasket().getValidation().getParticipant(app['authentication'].getUser(), app).getCanAgree() %}
+      {% if basket_element.getBasket().getValidation().getParticipant(app['authentication'].getUser(), app).canAgree() %}
         <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
           <input {% if basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
             <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.getId()}}">{% trans 'validation:: OUI' %}</label>

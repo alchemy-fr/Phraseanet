@@ -93,7 +93,7 @@ class Session
 
     /**
      * @ORM\OneToMany(targetEntity="SessionModule", mappedBy="session", cascade={"all"})
-     * @ORM\OrderBy({"module_id" = "ASC"})
+     * @ORM\OrderBy({"moduleId" = "ASC"})
      */
     private $modules;
 

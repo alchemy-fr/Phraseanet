@@ -70,7 +70,7 @@ class ValidationData
      */
     public function setAgreement($agreement)
     {
-        $this->agreement = $agreement;
+        $this->agreement = (Boolean) $agreement;
 
         return $this;
     }

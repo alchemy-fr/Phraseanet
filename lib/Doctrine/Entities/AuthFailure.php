@@ -104,7 +104,7 @@ class AuthFailure
      */
     public function setLocked($locked)
     {
-        $this->locked = $locked;
+        $this->locked = (Boolean) $locked;
 
         return $this;
     }
@@ -112,7 +112,7 @@ class AuthFailure
     /**
      * @return boolean
      */
-    public function getLocked()
+    public function isLocked()
     {
         return $this->locked;
     }

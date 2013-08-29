@@ -224,9 +224,9 @@ class Lightbox implements ControllerProviderInterface
                 $app['EM']->flush();
             }
 
-            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->getIsAware() === false) {
+            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->isAware() === false) {
                 $basket = $app['EM']->merge($basket);
-                $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setIsAware(true);
+                $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setAware(true);
                 $app['EM']->flush();
             }
 
@@ -278,9 +278,9 @@ class Lightbox implements ControllerProviderInterface
                 $app['EM']->flush();
             }
 
-            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->getIsAware() === false) {
+            if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->isAware() === false) {
                 $basket = $app['EM']->merge($basket);
-                $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setIsAware(true);
+                $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setAware(true);
                 $app['EM']->flush();
             }
 
@@ -430,7 +430,7 @@ class Lightbox implements ControllerProviderInterface
 
                 if (!$basket_element->getBasket()
                         ->getValidation()
-                        ->getParticipant($app['authentication']->getUser(), $app)->getCanAgree()) {
+                        ->getParticipant($app['authentication']->getUser(), $app)->canAgree()) {
                     throw new ControllerException('You can not agree on this');
                 }
 
@@ -481,7 +481,7 @@ class Lightbox implements ControllerProviderInterface
                     throw new ControllerException('There is no validation session attached to this basket');
                 }
 
-                if (!$basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->getCanAgree()) {
+                if (!$basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->canAgree()) {
                     throw new ControllerException('You have not right to agree');
                 }
 
@@ -518,7 +518,7 @@ class Lightbox implements ControllerProviderInterface
 
                 $app['events-manager']->trigger('__VALIDATION_DONE__', $params);
 
-                $participant->setIsConfirmed(true);
+                $participant->setConfirmed(true);
 
                 $app['EM']->merge($participant);
                 $app['EM']->flush();

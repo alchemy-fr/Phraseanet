@@ -148,8 +148,8 @@ class Basket implements ControllerProviderInterface
         }
 
         if ($basket->getValidation()) {
-            if ($basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->getIsAware() === false) {
-                $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setIsAware(true);
+            if ($basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->isAware() === false) {
+                $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app)->setAware(true);
                 $app['EM']->flush();
             }
         }

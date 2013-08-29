@@ -49,7 +49,7 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
         $manager->saveFailure($username, $request);
 
         $this->assertEquals($ip, $catchFailure->getIp());
-        $this->assertEquals(true, $catchFailure->getLocked());
+        $this->assertEquals(true, $catchFailure->isLocked());
         $this->assertEquals($username, $catchFailure->getUsername());
     }
 

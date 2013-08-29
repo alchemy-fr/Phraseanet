@@ -98,7 +98,7 @@ class OrderElement
      */
     public function setDenied($denied)
     {
-        $this->denied = $denied;
+        $this->denied = (Boolean) $denied;
 
         return $this;
     }

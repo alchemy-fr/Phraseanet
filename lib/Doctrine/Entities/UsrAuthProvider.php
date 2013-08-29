@@ -33,7 +33,7 @@ class UsrAuthProvider
     private $provider;
 
     /**
-     * @ORM\Column(type="string", name="distant_id" length=192)
+     * @ORM\Column(type="string", name="distant_id", length=192)
      */
     private $distantId;
 

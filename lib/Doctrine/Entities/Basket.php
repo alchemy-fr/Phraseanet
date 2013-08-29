@@ -258,7 +258,7 @@ class Basket
      */
     public function setArchived($archived)
     {
-        $this->archived = $archived;
+        $this->archived = (Boolean) $archived;
 
         return $this;
     }
@@ -266,7 +266,7 @@ class Basket
     /**
      * @return boolean
      */
-    public function getArchived()
+    public function isArchived()
     {
         return $this->archived;
     }

@@ -128,13 +128,13 @@ class ValidationParticipant
     }
 
     /**
-     * @param  boolean               $isAware
+     * @param  boolean $aware
      * 
      * @return ValidationParticipant
      */
-    public function setIsAware($isAware)
+    public function setAware($aware)
     {
-        $this->aware = $isAware;
+        $this->aware = (Boolean) $aware;
 
         return $this;
     }
@@ -142,19 +142,19 @@ class ValidationParticipant
     /**
      * @return boolean
      */
-    public function getIsAware()
+    public function isAware()
     {
         return $this->aware;
     }
 
     /**
-     * @param  boolean               $isConfirmed
+     * @param  boolean $confirmed
      * 
      * @return ValidationParticipant
      */
-    public function setIsConfirmed($isConfirmed)
+    public function setConfirmed($confirmed)
     {
-        $this->confirmed = $isConfirmed;
+        $this->confirmed = (Boolean) $confirmed;
 
         return $this;
     }
@@ -162,7 +162,7 @@ class ValidationParticipant
     /**
      * @return boolean
      */
-    public function getIsConfirmed()
+    public function isConfirmed()
     {
         return $this->confirmed;
     }
@@ -174,7 +174,7 @@ class ValidationParticipant
      */
     public function setCanAgree($canAgree)
     {
-        $this->canAgree = $canAgree;
+        $this->canAgree = (Boolean) $canAgree;
 
         return $this;
     }
@@ -182,7 +182,7 @@ class ValidationParticipant
     /**
      * @return boolean
      */
-    public function getCanAgree()
+    public function canAgree()
     {
         return $this->canAgree;
     }
@@ -194,7 +194,7 @@ class ValidationParticipant
      */
     public function setCanSeeOthers($canSeeOthers)
     {
-        $this->canSeeOthers = $canSeeOthers;
+        $this->canSeeOthers = (Boolean) $canSeeOthers;
 
         return $this;
     }
@@ -204,17 +204,17 @@ class ValidationParticipant
      *
      * @return boolean
      */
-    public function getCanSeeOthers()
+    public function canSeeOthers()
     {
         return $this->canSeeOthers;
     }
 
     /**
-     * @param  \DateTime             $reminded
+     * @param  \DateTime $reminded
      * 
      * @return ValidationParticipant
      */
-    public function setReminded($reminded)
+    public function setReminded(\DateTime $reminded)
     {
         $this->reminded = $reminded;
 
@@ -284,7 +284,7 @@ class ValidationParticipant
      */
     public function isReleasable()
     {
-        if ($this->getIsConfirmed()) {
+        if ($this->isConfirmed()) {
             return false;
         }
 

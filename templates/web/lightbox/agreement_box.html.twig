@@ -16,7 +16,7 @@
         <div>{{ basket.getValidation().getValidationString(app, app['authentication'].getUser()) }}</div>
         <ul>
             {% for choice in basket_element.getValidationDatas() %}
-              {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanSeeOthers() or choice.getParticipant().getUser(app) == app['authentication'].getUser() %}
+              {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).canSeeOthers() or choice.getParticipant().getUser(app) == app['authentication'].getUser() %}
                 {% if choice.getAgreement() == true %}
                     {% set classuser = 'agree' %}
                 {% elseif choice.getAgreement() is null %}
@@ -32,7 +32,7 @@
     {% endif %}
 </div>
 <div class="PNB user_infos">
-{% if basket_element and basket_element.getBasket().getValidation() and basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanAgree() %}
+{% if basket_element and basket_element.getBasket().getValidation() and basket.getValidation().getParticipant(app['authentication'].getUser(), app).canAgree() %}
     <div class="PNB choices">
         <div style="height:60px;">
           {% set agreement = basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() %}

@@ -245,7 +245,7 @@ class LazaretFile
      */
     public function setForced($forced)
     {
-        $this->forced = $forced;
+        $this->forced = (Boolean) $forced;
 
         return $this;
     }
@@ -253,7 +253,7 @@ class LazaretFile
     /**
      * @return boolean
      */
-    public function getForced()
+    public function isForced()
     {
         return $this->forced;
     }
