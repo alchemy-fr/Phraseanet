@@ -50,7 +50,7 @@ class FtpExport
     private $addr;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", name="use_ssl")
      */
     private $ssl = false;
 
@@ -145,6 +145,7 @@ class FtpExport
      * Set crash
      *
      * @param  integer   $crash
+     * 
      * @return FtpExport
      */
     public function setCrash($crash)
@@ -180,6 +181,7 @@ class FtpExport
      * Set nbretry
      *
      * @param  integer   $nbretry
+     * 
      * @return FtpExport
      */
     public function setNbretry($nbretry)
@@ -203,6 +205,7 @@ class FtpExport
      * Set mail
      *
      * @param  string    $mail
+     * 
      * @return FtpExport
      */
     public function setMail($mail)
@@ -226,6 +229,7 @@ class FtpExport
      * Set addr
      *
      * @param  string    $addr
+     * 
      * @return FtpExport
      */
     public function setAddr($addr)
@@ -249,11 +253,12 @@ class FtpExport
      * Set ssl
      *
      * @param  boolean   $ssl
+     * 
      * @return FtpExport
      */
     public function setSsl($ssl)
     {
-        $this->ssl = $ssl;
+        $this->ssl = (Boolean) $ssl;
 
         return $this;
     }
@@ -263,7 +268,7 @@ class FtpExport
      *
      * @return boolean
      */
-    public function getSsl()
+    public function isSsl()
     {
         return $this->ssl;
     }
@@ -272,6 +277,7 @@ class FtpExport
      * Set login
      *
      * @param  string    $login
+     * 
      * @return FtpExport
      */
     public function setLogin($login)
@@ -295,6 +301,7 @@ class FtpExport
      * Set pwd
      *
      * @param  string    $pwd
+     * 
      * @return FtpExport
      */
     public function setPwd($pwd)
@@ -318,11 +325,12 @@ class FtpExport
      * Set passif
      *
      * @param  boolean   $passif
+     * 
      * @return FtpExport
      */
     public function setPassif($passif)
     {
-        $this->passif = $passif;
+        $this->passif = (Boolean) $passif;
 
         return $this;
     }
@@ -332,7 +340,7 @@ class FtpExport
      *
      * @return boolean
      */
-    public function getPassif()
+    public function isPassif()
     {
         return $this->passif;
     }
@@ -341,6 +349,7 @@ class FtpExport
      * Set destfolder
      *
      * @param  string    $destfolder
+     * 
      * @return FtpExport
      */
     public function setDestfolder($destfolder)
@@ -364,6 +373,7 @@ class FtpExport
      * Set sendermail
      *
      * @param  string    $sendermail
+     * 
      * @return FtpExport
      */
     public function setSendermail($sendermail)
@@ -387,6 +397,7 @@ class FtpExport
      * Set textMailSender
      *
      * @param  string    $textMailSender
+     * 
      * @return FtpExport
      */
     public function setTextMailSender($textMailSender)
@@ -410,6 +421,7 @@ class FtpExport
      * Set textMailReceiver
      *
      * @param  string    $textMailReceiver
+     * 
      * @return FtpExport
      */
     public function setTextMailReceiver($textMailReceiver)
@@ -433,6 +445,7 @@ class FtpExport
      * Set usrId
      *
      * @param  integer   $usrId
+     * 
      * @return FtpExport
      */
     public function setUsrId($usrId)
@@ -466,6 +479,7 @@ class FtpExport
      * Set user
      *
      * @param  \User_Adapter $user
+     * 
      * @return FtpExport
      */
     public function setUser(\User_Adapter $user)
@@ -479,6 +493,7 @@ class FtpExport
      * Set foldertocreate
      *
      * @param  string    $foldertocreate
+     * 
      * @return FtpExport
      */
     public function setFoldertocreate($foldertocreate)
@@ -502,11 +517,12 @@ class FtpExport
      * Set logfile
      *
      * @param  boolean   $logfile
+     * 
      * @return FtpExport
      */
     public function setLogfile($logfile)
     {
-        $this->logfile = $logfile;
+        $this->logfile = (Boolean) $logfile;
 
         return $this;
     }
@@ -516,7 +532,7 @@ class FtpExport
      *
      * @return boolean
      */
-    public function getLogfile()
+    public function isLogfile()
     {
         return $this->logfile;
     }
@@ -525,9 +541,10 @@ class FtpExport
      * Set created
      *
      * @param  \DateTime $created
+     * 
      * @return FtpExport
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
@@ -548,9 +565,10 @@ class FtpExport
      * Set updated
      *
      * @param  \DateTime $updated
+     * 
      * @return FtpExport
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
 
@@ -570,10 +588,11 @@ class FtpExport
     /**
      * Add elements
      *
-     * @param  \Entities\FtpExportElement $elements
+     * @param  FtpExportElement $elements
+     * 
      * @return FtpExport
      */
-    public function addElement(\Entities\FtpExportElement $elements)
+    public function addElement(FtpExportElement $elements)
     {
         $this->elements[] = $elements;
 
@@ -583,17 +602,21 @@ class FtpExport
     /**
      * Remove elements
      *
-     * @param \Entities\FtpExportElement $elements
+     * @param FtpExportElement $elements
+     * 
+     * @return FtpExport
      */
-    public function removeElement(\Entities\FtpExportElement $elements)
+    public function removeElement(FtpExportElement $elements)
     {
         $this->elements->removeElement($elements);
+        
+        return $this;
     }
 
     /**
      * Get elements
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return FtpExportElement[]
      */
     public function getElements()
     {

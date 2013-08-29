@@ -26,10 +26,10 @@ class FtpExportRepository extends EntityRepository
         $qb->where($qb->expr()->gte('e.crash', 'e.nbretry'));
 
         if (null !== $before) {
-            $qb->where($qb->expr()->lte('e.created', ':created'));
+            $qb->andWhere($qb->expr()->lte('e.created', ':created'));
             $qb->setParameter(':created', $before);
         }
-
+        
         return $qb->getQuery()->getResult();
     }
 

@@ -86,14 +86,16 @@ class FtpExportRepositoryTest extends \PhraseanetPHPUnitAbstract
                 ->setAddr('Good 2')
                 ->setUser(self::$DI['user'])
                 ->setCrash(2)
-                ->setNbretry(3);
+                ->setNbretry(3)
+                ->setCreated(new \DateTime('-9 days'));
         
         $good3 = new FtpExport();
         $good3
                 ->setAddr('Good 3')
                 ->setUser(self::$DI['user'])
                 ->setCrash(12)
-                ->setNbretry(23);
+                ->setNbretry(23)
+                ->setCreated(new \DateTime('-6 days'));
         
         self::$DI['app']['EM']->persist($failure1);
         self::$DI['app']['EM']->persist($failure2);
@@ -181,10 +183,6 @@ class FtpExportRepositoryTest extends \PhraseanetPHPUnitAbstract
         self::$DI['app']['EM']->persist($notDoable2);
         self::$DI['app']['EM']->persist($doable1);
         self::$DI['app']['EM']->persist($doable2);
-        self::$DI['app']['EM']->persist($elem1);
-        self::$DI['app']['EM']->persist($elem2);
-        self::$DI['app']['EM']->persist($elem3);
-        self::$DI['app']['EM']->persist($elem4);
         
         self::$DI['app']['EM']->flush();
         

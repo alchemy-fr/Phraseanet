@@ -141,10 +141,10 @@ class FtpExportElement extends \Entities\FtpExportElement implements \Doctrine\O
         return parent::setBusinessfields($businessfields);
     }
 
-    public function getBusinessfields()
+    public function isBusinessfields()
     {
         $this->__load();
-        return parent::getBusinessfields();
+        return parent::isBusinessfields();
     }
 
     public function setCreated($created)

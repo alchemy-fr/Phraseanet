@@ -111,10 +111,10 @@ class FtpExport extends \Entities\FtpExport implements \Doctrine\ORM\Proxy\Proxy
         return parent::setSsl($ssl);
     }
 
-    public function getSsl()
+    public function isSsl()
     {
         $this->__load();
-        return parent::getSsl();
+        return parent::isSsl();
     }
 
     public function setLogin($login)
@@ -147,10 +147,10 @@ class FtpExport extends \Entities\FtpExport implements \Doctrine\ORM\Proxy\Proxy
         return parent::setPassif($passif);
     }
 
-    public function getPassif()
+    public function isPassif()
     {
         $this->__load();
-        return parent::getPassif();
+        return parent::isPassif();
     }
 
     public function setDestfolder($destfolder)
@@ -243,10 +243,10 @@ class FtpExport extends \Entities\FtpExport implements \Doctrine\ORM\Proxy\Proxy
         return parent::setLogfile($logfile);
     }
 
-    public function getLogfile()
+    public function isLogfile()
     {
         $this->__load();
-        return parent::getLogfile();
+        return parent::isLogfile();
     }
 
     public function setCreated($created)
