@@ -57,7 +57,7 @@ class FtpExportElement
     private $filename;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $folder;
 
@@ -81,7 +81,7 @@ class FtpExportElement
     /**
      * @ORM\Column(type="boolean")
      */
-    private $businessfields;
+    private $businessfields = false;
 
     /**
      * @Gedmo\Timestampable(on="create")

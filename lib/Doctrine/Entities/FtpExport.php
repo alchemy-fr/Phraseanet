@@ -55,12 +55,12 @@ class FtpExport
     private $ssl = false;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $login;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $pwd;
 
@@ -72,20 +72,20 @@ class FtpExport
     /**
      * @ORM\Column(type="text")
      */
-    private $destfolder;
+    private $destfolder = '/';
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $sendermail;
 
     /**
-     * @ORM\Column(type="text", name="text_mail_sender")
+     * @ORM\Column(type="text", name="text_mail_sender", nullable=true)
      */
     private $textMailSender;
 
     /**
-     * @ORM\Column(type="text", name="text_mail_receiver")
+     * @ORM\Column(type="text", name="text_mail_receiver", nullable=true)
      */
     private $textMailReceiver;
 
@@ -95,14 +95,14 @@ class FtpExport
     private $usrId;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $foldertocreate;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $logfile;
+    private $logfile = false;
 
     /**
      * @ORM\OneToMany(targetEntity="FtpExportElement", mappedBy="export", cascade={"ALL"})
@@ -470,7 +470,7 @@ class FtpExport
      */
     public function setUser(\User_Adapter $user)
     {
-        $this->setUsr_id($user->get_id());
+        $this->setUsrId($user->get_id());
 
         return $this;
     }
