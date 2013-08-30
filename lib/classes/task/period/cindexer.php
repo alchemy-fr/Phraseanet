@@ -99,7 +99,7 @@ class task_period_cindexer extends task_abstract
      *
      * @return string
      */
-    public function getName()
+    public static function getName()
     {
         return(_("Indexation task"));
     }

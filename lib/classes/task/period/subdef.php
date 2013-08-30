@@ -53,7 +53,7 @@ class task_period_subdef extends task_databoxAbstract
      *
      * @return string
      */
-    public function getName()
+    public static function getName()
     {
         return(_('task::subdef:creation des sous definitions'));
     }
@@ -278,7 +278,7 @@ class task_period_subdef extends task_databoxAbstract
         return $rs;
     }
 
-    public function processOneContent(databox $databox, Array $row)
+    public function processOneContent(databox $databox, $row)
     {
         $record_id = $row['record_id'];
         $this->log(sprintf(
@@ -310,7 +310,7 @@ class task_period_subdef extends task_databoxAbstract
         return $this;
     }
 
-    protected function postProcessOneContent(databox $databox, Array $row)
+    protected function postProcessOneContent(databox $databox, $row)
     {
         $connbas = $databox->get_connection();
         $sql = 'UPDATE record

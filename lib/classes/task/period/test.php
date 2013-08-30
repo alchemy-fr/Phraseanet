@@ -12,7 +12,7 @@
 class task_period_test extends task_appboxAbstract
 {
 
-    public function getName()
+    public static function getName()
     {
         return "Test";
     }
@@ -29,14 +29,14 @@ class task_period_test extends task_appboxAbstract
         return array(array('hello'), array('world'));
     }
 
-    protected function processOneContent(appbox $appbox, Array $row)
+    protected function processOneContent(appbox $appbox, $row)
     {
         $this->log(sprintf("test class, process content : `%s`", implode(' ', $row)));
 
         return $this;
     }
 
-    protected function postProcessOneContent(appbox $appbox, Array $row)
+    protected function postProcessOneContent(appbox $appbox, $row)
     {
         $this->log(sprintf("test class, post process content, they were %s", count($row)));
 

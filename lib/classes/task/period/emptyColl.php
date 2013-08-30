@@ -17,7 +17,7 @@ class task_period_emptyColl extends task_appboxAbstract
     protected $suicidable = true;
     protected $total_records = 0;
 
-    public function getName()
+    public static function getName()
     {
         return(_("Vidage de collection"));
     }
@@ -68,12 +68,12 @@ class task_period_emptyColl extends task_appboxAbstract
         return array();
     }
 
-    protected function processOneContent(appbox $appbox, Array $row)
+    protected function processOneContent(appbox $appbox, $row)
     {
         return $this;
     }
 
-    protected function postProcessOneContent(appbox $appbox, Array $row)
+    protected function postProcessOneContent(appbox $appbox, $row)
     {
         return $this;
     }

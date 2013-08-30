@@ -393,7 +393,10 @@ abstract class task_abstract
         return $this->completed_percentage;
     }
 
-    abstract public function getName();
+    public static function getName()
+    {
+        throw new \LogicException('This method must be implemented');
+    }
 
     abstract public function help();
 
