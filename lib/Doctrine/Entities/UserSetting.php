@@ -158,7 +158,7 @@ class UserSetting
     }
 
     /**
-     * @param \DateTime  $created
+     * @param \DateTime $created
      *
      * @return UserSetting
      */
