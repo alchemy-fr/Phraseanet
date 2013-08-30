@@ -54,11 +54,20 @@ abstract class AbstractJob extends AbstractTMJob implements JobInterface
     final protected function doRun(JobDataInterface $data = null)
     {
         if (!$data instanceof JobData) {
+            // removes lock files, unregister tick handlers
+            $this->finish();
             throw new InvalidArgumentException('JobData must be passed to a JobInterface::Run command.');
         }
 
         $this->setPauseDuration($data->getTask()->getPeriod());
-        $this->doJob($data);
+
+        try {
+            $this->doJob($data);
+        } catch (\Exception $e) {
+            $this->finish();
+            $this->log('error', sprintf('Error while running %s : %s', $this->getName(), $e->getMessage()));
+            throw $e;
+        }
     }
 
     /**
