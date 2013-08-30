@@ -24,8 +24,10 @@ class RegenerateSqliteDb extends Command
 
         $source = __DIR__ . '/../../../../../tests/db-ref.sqlite';
         $target = __DIR__ . '/../../../../../tests/db-ref.sqlite.bkp';
-
+        $renamed = false;
+        
         if (is_file($source)) {
+            $renamed = true;
             $fs->rename($source, $target);
         }
 
@@ -40,7 +42,9 @@ class RegenerateSqliteDb extends Command
             $schemaTool = new SchemaTool($this->container['EM']);
             $schemaTool->createSchema($metadatas);
         } catch (\Exception $e) {
-            $fs->rename($target, $source);
+            if ($renamed) {
+                $fs->rename($target, $source);
+            }
             throw $e;
         }
 
