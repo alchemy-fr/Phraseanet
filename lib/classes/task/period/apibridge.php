@@ -16,7 +16,7 @@ class task_period_apibridge extends task_appboxAbstract
      * Return the name of the task
      * @return string
      */
-    public function getName()
+    public static function getName()
     {
         return 'API bridge uploader';
     }
@@ -64,7 +64,7 @@ class task_period_apibridge extends task_appboxAbstract
      * @param  array                 $row
      * @return task_period_apibridge
      */
-    protected function processOneContent(appbox $appbox, Array $row)
+    protected function processOneContent(appbox $appbox, $row)
     {
         try {
             $account = Bridge_Account::load_account($this->dependencyContainer, $row['account_id']);
@@ -99,7 +99,7 @@ class task_period_apibridge extends task_appboxAbstract
      * @param  array                 $row
      * @return task_period_apibridge
      */
-    protected function postProcessOneContent(appbox $appbox, Array $row)
+    protected function postProcessOneContent(appbox $appbox, $row)
     {
         return $this;
     }

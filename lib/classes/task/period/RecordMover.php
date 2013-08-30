@@ -16,7 +16,7 @@ class task_period_RecordMover extends task_appboxAbstract
      *
      * @return string
      */
-    public function getName()
+    public static function getName()
     {
         return _("Record Mover");
     }
@@ -402,7 +402,7 @@ class task_period_RecordMover extends task_appboxAbstract
      * @param  array                    $row
      * @return \task_period_RecordMover
      */
-    protected function processOneContent(appbox $appbox, Array $row)
+    protected function processOneContent(appbox $appbox, $row)
     {
         $logsql = (int) ($this->sxTaskSettings->logsql) > 0;
         $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($row['sbas_id']);
@@ -466,7 +466,7 @@ class task_period_RecordMover extends task_appboxAbstract
      * @param  array                    $row
      * @return \task_period_RecordMover
      */
-    protected function postProcessOneContent(appbox $appbox, Array $row)
+    protected function postProcessOneContent(appbox $appbox, $row)
     {
         return $this;
     }

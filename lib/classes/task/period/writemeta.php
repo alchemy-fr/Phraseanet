@@ -30,7 +30,7 @@ class task_period_writemeta extends task_databoxAbstract
         parent::loadSettings($sx_task_settings);
     }
 
-    public function getName()
+    public static function getName()
     {
         return(_('task::writemeta:ecriture des metadatas'));
     }
@@ -233,7 +233,7 @@ class task_period_writemeta extends task_databoxAbstract
         return $rs;
     }
 
-    protected function processOneContent(databox $databox, Array $row)
+    protected function processOneContent(databox $databox, $row)
     {
         $record_id = $row['record_id'];
         $jeton = $row['jeton'];
@@ -324,7 +324,7 @@ class task_period_writemeta extends task_databoxAbstract
         return $this;
     }
 
-    protected function postProcessOneContent(databox $databox, Array $row)
+    protected function postProcessOneContent(databox $databox, $row)
     {
         $connbas = $databox->get_connection();
 

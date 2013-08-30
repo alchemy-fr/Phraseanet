@@ -19,9 +19,9 @@ abstract class task_appboxAbstract extends task_abstract
 
     abstract protected function retrieveContent(appbox $appbox);
 
-    abstract protected function processOneContent(appbox $appbox, Array $row);
+    abstract protected function processOneContent(appbox $appbox, $row);
 
-    abstract protected function postProcessOneContent(appbox $appbox, Array $row);
+    abstract protected function postProcessOneContent(appbox $appbox, $row);
 
     protected function run2()
     {
