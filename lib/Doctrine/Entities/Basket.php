@@ -365,7 +365,7 @@ class Basket
     /**
      * Set order
      *
-     * @param \Entities\Order $order
+     * @param  \Entities\Order $order
      * @return Basket
      */
     public function setOrder(\Entities\Order $order = null)

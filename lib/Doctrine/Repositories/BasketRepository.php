@@ -124,8 +124,8 @@ class BasketRepository extends EntityRepository
      *
      * @throws NotFoundHttpException
      * @throws AccessDeniedHttpException
-     * @param  type                 $basket_id
-     * @param  \User_Adapter        $user
+     * @param  type                      $basket_id
+     * @param  \User_Adapter             $user
      * @return \Entities\Basket
      */
     public function findUserBasket(Application $app, $basket_id, \User_Adapter $user, $requireOwner)
