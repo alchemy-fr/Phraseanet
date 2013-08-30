@@ -14,7 +14,7 @@
         <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket_id' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
-                    ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
+                    ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket_id' : basket.getId() }) }}">
             <span>
@@ -89,7 +89,7 @@
         <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket_id' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
-                    ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
+                    ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket_id' : basket.getId() }) }}" style="">
             <span>
@@ -353,11 +353,11 @@
                   <td style="width:100%;">
                       <table style=width:100%>
                           {% for choice in basket_element.getValidationDatas() %}
-                              {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanSeeOthers() or choice.getParticipant().getUser(app) == app['authentication'].getUser() %}
+                              {% if basket.getValidation().getParticipant(app['authentication'].getUser(), app).canSeeOthers() or choice.getParticipant().getUser(app) == app['authentication'].getUser() %}
                               <tr>
                                   <td> {{ choice.getParticipant().getUser(app).get_display_name() }} </td>
                                   <td>
-                                  {% if choice.getParticipant().getCanAgree() %}
+                                  {% if choice.getParticipant().canAgree() %}
                                         {% if choice.getAgreement() == true %}
                                             <img style="cursor:help;" src='/skins/lightbox/agree.png' title="{% trans "L'utilisateur approuve ce document" %}" />
                                         {% elseif choice.getAgreement() is null %}

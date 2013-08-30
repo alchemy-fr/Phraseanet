@@ -12,6 +12,7 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,29 +29,29 @@ class ValidationParticipant
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_aware = false;
+    private $aware = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_confirmed = false;
+    private $confirmed = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", name="can_agree")
      */
-    private $can_agree = false;
+    private $canAgree = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", name="can_see_others")
      */
-    private $can_see_others = false;
+    private $canSeeOthers = false;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -73,12 +74,10 @@ class ValidationParticipant
      */
     public function __construct()
     {
-        $this->datas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->datas = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -87,144 +86,135 @@ class ValidationParticipant
     }
 
     /**
-     * Set usr_id
+     * @param integer $usrId
      *
-     * @param  integer               $usrId
      * @return ValidationParticipant
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
 
     /**
-     * Get usr_id
-     *
      * @return integer
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**
+     * @param \User_Adapter $user
      *
-     * @param  \User_Adapter         $user
      * @return ValidationParticipant
      */
     public function setUser(\User_Adapter $user)
     {
-        $this->usr_id = $user->get_id();
+        $this->usrId = $user->get_id();
 
         return $this;
     }
 
+    /**
+     * @param Application $app
+     *
+     * @return \User_Adapter
+     */
     public function getUser(Application $app)
     {
         return \User_Adapter::getInstance($this->getUsrId(), $app);
     }
 
     /**
-     * Set is_aware
+     * @param boolean $aware
      *
-     * @param  boolean               $isAware
      * @return ValidationParticipant
      */
-    public function setIsAware($isAware)
+    public function setAware($aware)
     {
-        $this->is_aware = $isAware;
+        $this->aware = (Boolean) $aware;
 
         return $this;
     }
 
     /**
-     * Get is_aware
-     *
      * @return boolean
      */
-    public function getIsAware()
+    public function isAware()
     {
-        return $this->is_aware;
+        return $this->aware;
     }
 
     /**
-     * Set is_confirmed
+     * @param boolean $confirmed
      *
-     * @param  boolean               $isConfirmed
      * @return ValidationParticipant
      */
-    public function setIsConfirmed($isConfirmed)
+    public function setConfirmed($confirmed)
     {
-        $this->is_confirmed = $isConfirmed;
+        $this->confirmed = (Boolean) $confirmed;
 
         return $this;
     }
 
     /**
-     * Get is_confirmed
-     *
      * @return boolean
      */
-    public function getIsConfirmed()
+    public function isConfirmed()
     {
-        return $this->is_confirmed;
+        return $this->confirmed;
     }
 
     /**
-     * Set can_agree
+     * @param boolean $canAgree
      *
-     * @param  boolean               $canAgree
      * @return ValidationParticipant
      */
     public function setCanAgree($canAgree)
     {
-        $this->can_agree = $canAgree;
+        $this->canAgree = (Boolean) $canAgree;
 
         return $this;
     }
 
     /**
-     * Get can_agree
-     *
      * @return boolean
      */
-    public function getCanAgree()
+    public function canAgree()
     {
-        return $this->can_agree;
+        return $this->canAgree;
     }
 
     /**
-     * Set can_see_others
+     * @param boolean $canSeeOthers
      *
-     * @param  boolean               $canSeeOthers
      * @return ValidationParticipant
      */
     public function setCanSeeOthers($canSeeOthers)
     {
-        $this->can_see_others = $canSeeOthers;
+        $this->canSeeOthers = (Boolean) $canSeeOthers;
 
         return $this;
     }
 
     /**
-     * Get can_see_others
+     * Get canSeeOthers
      *
      * @return boolean
      */
-    public function getCanSeeOthers()
+    public function canSeeOthers()
     {
-        return $this->can_see_others;
+        return $this->canSeeOthers;
     }
 
     /**
-     * Set reminded
+     * @param \DateTime $reminded
      *
-     * @param  \DateTime             $reminded
      * @return ValidationParticipant
      */
-    public function setReminded($reminded)
+    public function setReminded(\DateTime $reminded)
     {
         $this->reminded = $reminded;
 
@@ -232,8 +222,6 @@ class ValidationParticipant
     }
 
     /**
-     * Get reminded
-     *
      * @return \DateTime
      */
     public function getReminded()
@@ -242,12 +230,11 @@ class ValidationParticipant
     }
 
     /**
-     * Add datas
+     * @param ValidationData $datas
      *
-     * @param  \Entities\ValidationData $datas
      * @return ValidationParticipant
      */
-    public function addData(\Entities\ValidationData $datas)
+    public function addData(ValidationData $datas)
     {
         $this->datas[] = $datas;
 
@@ -255,19 +242,15 @@ class ValidationParticipant
     }
 
     /**
-     * Remove datas
-     *
-     * @param \Entities\ValidationData $datas
+     * @param ValidationData $datas
      */
-    public function removeData(\Entities\ValidationData $datas)
+    public function removeData(ValidationData $datas)
     {
         $this->datas->removeElement($datas);
     }
 
     /**
-     * Get datas
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ValidationData[]
      */
     public function getDatas()
     {
@@ -275,12 +258,11 @@ class ValidationParticipant
     }
 
     /**
-     * Set session
+     * @param ValidationSession $session
      *
-     * @param  \Entities\ValidationSession $session
      * @return ValidationParticipant
      */
-    public function setSession(\Entities\ValidationSession $session = null)
+    public function setSession(ValidationSession $session = null)
     {
         $this->session = $session;
 
@@ -288,24 +270,26 @@ class ValidationParticipant
     }
 
     /**
-     * Get session
-     *
-     * @return \Entities\ValidationSession
+     * @return ValidationSession
      */
     public function getSession()
     {
         return $this->session;
     }
 
+    /**
+     * Returns true if all data have been validated.
+     *
+     * @return boolean
+     */
     public function isReleasable()
     {
-
-        if ($this->getIsConfirmed()) {
+        if ($this->isConfirmed()) {
             return false;
         }
 
         foreach ($this->getDatas() as $validation_data) {
-            /* @var $validation_data \Entities\ValidationData */
+            /* @var $validation_data ValidationData */
             if ($validation_data->getAgreement() === null) {
                 return false;
             }

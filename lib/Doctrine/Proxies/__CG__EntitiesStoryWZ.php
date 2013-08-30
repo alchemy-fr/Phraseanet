@@ -126,7 +126,7 @@ class StoryWZ extends \Entities\StoryWZ implements \Doctrine\ORM\Proxy\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'sbas_id', 'record_id', 'usr_id', 'created');
+        return array('__isInitialized__', 'id', 'sbasId', 'recordId', 'usrId', 'created');
     }
 
     public function __clone()

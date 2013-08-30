@@ -30,7 +30,7 @@
     <ul class="image_set">
     {% for basket_element in basket.getElements() %}
       <li class="image_box" id="sselcontid_{{basket_element.getId()}}">
-        {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app['authentication'].getUser(), app).getCanAgree() %}
+        {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app['authentication'].getUser(), app).canAgree() %}
           <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() == false and basket_element.getUserValidationDatas(app['authentication'].getUser(), app).getAgreement() is not null %}disagree{% endif %}">
           </div>
         {% endif %}
@@ -43,7 +43,7 @@
     </ul>
   </div>
     <div data-role="footer">
-        {% if basket.getValidation() and basket.getValidation().getParticipant(app['authentication'].getUser(), app).getCanAgree() %}
+        {% if basket.getValidation() and basket.getValidation().getParticipant(app['authentication'].getUser(), app).canAgree() %}
             <button class="confirm_report" style="width:100%;" title="{% trans 'validation::envoyer mon rapport'%}">
                 {% trans 'validation::envoyer mon rapport'%}
                 <img src="/skins/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>

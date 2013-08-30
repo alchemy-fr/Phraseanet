@@ -818,8 +818,8 @@ class API_V1_adapter extends API_V1_Abstract
             'original_name'      => $file->getOriginalName(),
             'sha256'             => $file->getSha256(),
             'uuid'               => $file->getUuid(),
-            'forced'             => $file->getForced(),
-            'checks'             => $file->getForced() ? array() : $checks,
+            'forced'             => $file->isForced(),
+            'checks'             => $file->isForced() ? array() : $checks,
             'created_on' => $file->getCreated()->format(DATE_ATOM),
             'updated_on' => $file->getUpdated()->format(DATE_ATOM),
         );
@@ -1387,9 +1387,9 @@ class API_V1_adapter extends API_V1_Abstract
                     'validation_user' => array(
                         'usr_id'         => $user->get_id(),
                         'usr_name'       => $user->get_display_name(),
-                        'confirmed'      => $participant->getIsConfirmed(),
-                        'can_agree'      => $participant->getCanAgree(),
-                        'can_see_others' => $participant->getCanSeeOthers(),
+                        'confirmed'      => $participant->isConfirmed(),
+                        'can_agree'      => $participant->canAgree(),
+                        'can_see_others' => $participant->canSeeOthers(),
                         'readonly'       => $user->get_id() != $this->app['authentication']->getUser()->get_id(),
                     ),
                     'agreement'      => $validation_datas->getAgreement(),
@@ -1814,7 +1814,7 @@ class API_V1_adapter extends API_V1_Abstract
             'name'              => $basket->getName(),
             'pusher_usr_id'     => $basket->getPusherId(),
             'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
-            'unread'            => !$basket->getIsRead(),
+            'unread'            => !$basket->isRead(),
             'validation_basket' => !!$basket->getValidation()
         );
 
@@ -1828,9 +1828,9 @@ class API_V1_adapter extends API_V1_Abstract
                 $users[] = array(
                     'usr_id'         => $user->get_id(),
                     'usr_name'       => $user->get_display_name(),
-                    'confirmed'      => $participant->getIsConfirmed(),
-                    'can_agree'      => $participant->getCanAgree(),
-                    'can_see_others' => $participant->getCanSeeOthers(),
+                    'confirmed'      => $participant->isConfirmed(),
+                    'can_agree'      => $participant->canAgree(),
+                    'can_see_others' => $participant->canSeeOthers(),
                     'readonly'       => $user->get_id() != $this->app['authentication']->getUser()->get_id(),
                 );
             }
@@ -1846,7 +1846,7 @@ class API_V1_adapter extends API_V1_Abstract
                 'validation_users'     => $users,
                 'expires_on'           => $expires_on_atom,
                 'validation_infos'     => $basket->getValidation()->getValidationString($this->app, $this->app['authentication']->getUser()),
-                'validation_confirmed' => $basket->getValidation()->getParticipant($this->app['authentication']->getUser(), $this->app)->getIsConfirmed(),
+                'validation_confirmed' => $basket->getValidation()->getParticipant($this->app['authentication']->getUser(), $this->app)->isConfirmed(),
                 'validation_initiator' => $basket->getValidation()->isInitiator($this->app['authentication']->getUser()),
                     ), $ret
             );

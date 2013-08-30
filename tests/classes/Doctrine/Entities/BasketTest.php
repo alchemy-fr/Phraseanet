@@ -60,16 +60,16 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals(1, $this->basket->getPusherId());
     }
 
-    public function testGetArchived()
+    public function testisArchived()
     {
         $this->basket->setArchived(true);
         $this->em->persist($this->basket);
         $this->em->flush();
-        $this->assertTrue($this->basket->GetArchived());
+        $this->assertTrue($this->basket->isArchived());
         $this->basket->setArchived(false);
         $this->em->persist($this->basket);
         $this->em->flush();
-        $this->assertFalse($this->basket->GetArchived());
+        $this->assertFalse($this->basket->isArchived());
     }
 
     public function testGetCreated()
@@ -144,11 +144,6 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->em->refresh($this->basket);
 
         $this->assertInstanceOf('\Entities\ValidationSession', $this->basket->getValidation());
-    }
-
-    public function testGetIsRead()
-    {
-        $this->markTestIncomplete();
     }
 
     public function testGetSize()

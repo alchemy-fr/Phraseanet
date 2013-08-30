@@ -75,28 +75,28 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
         return parent::getUser($app);
     }
 
-    public function setIsAware($isAware)
+    public function setAware($aware)
     {
         $this->__load();
-        return parent::setIsAware($isAware);
+        return parent::setAware($aware);
     }
 
-    public function getIsAware()
+    public function isAware()
     {
         $this->__load();
-        return parent::getIsAware();
+        return parent::isAware();
     }
 
-    public function setIsConfirmed($isConfirmed)
+    public function setConfirmed($confirmed)
     {
         $this->__load();
-        return parent::setIsConfirmed($isConfirmed);
+        return parent::setConfirmed($confirmed);
     }
 
-    public function getIsConfirmed()
+    public function isConfirmed()
     {
         $this->__load();
-        return parent::getIsConfirmed();
+        return parent::isConfirmed();
     }
 
     public function setCanAgree($canAgree)
@@ -105,10 +105,10 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
         return parent::setCanAgree($canAgree);
     }
 
-    public function getCanAgree()
+    public function canAgree()
     {
         $this->__load();
-        return parent::getCanAgree();
+        return parent::canAgree();
     }
 
     public function setCanSeeOthers($canSeeOthers)
@@ -117,13 +117,13 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
         return parent::setCanSeeOthers($canSeeOthers);
     }
 
-    public function getCanSeeOthers()
+    public function canSeeOthers()
     {
         $this->__load();
-        return parent::getCanSeeOthers();
+        return parent::canSeeOthers();
     }
 
-    public function setReminded($reminded)
+    public function setReminded(\DateTime $reminded)
     {
         $this->__load();
         return parent::setReminded($reminded);
@@ -174,7 +174,7 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'usr_id', 'is_aware', 'is_confirmed', 'can_agree', 'can_see_others', 'reminded', 'datas', 'session');
+        return array('__isInitialized__', 'id', 'usrId', 'aware', 'confirmed', 'canAgree', 'canSeeOthers', 'reminded', 'datas', 'session');
     }
 
     public function __clone()

@@ -50,14 +50,12 @@ class ValidationData
     private $participant;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BasketElement", inversedBy="validation_datas", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="BasketElement", inversedBy="validationDatas", cascade={"persist"})
      * @ORM\JoinColumn(name="basket_element_id", referencedColumnName="id")
      */
-    private $basket_element;
+    private $basketElement;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -66,21 +64,18 @@ class ValidationData
     }
 
     /**
-     * Set agreement
+     * @param boolean $agreement
      *
-     * @param  boolean        $agreement
      * @return ValidationData
      */
     public function setAgreement($agreement)
     {
-        $this->agreement = $agreement;
+        $this->agreement = (Boolean) $agreement;
 
         return $this;
     }
 
     /**
-     * Get agreement
-     *
      * @return boolean
      */
     public function getAgreement()
@@ -89,8 +84,6 @@ class ValidationData
     }
 
     /**
-     * Set note
-     *
      * @param  string         $note
      * @return ValidationData
      */
@@ -102,8 +95,6 @@ class ValidationData
     }
 
     /**
-     * Get note
-     *
      * @return string
      */
     public function getNote()
@@ -112,9 +103,8 @@ class ValidationData
     }
 
     /**
-     * Set updated
+     * @param \DateTime $updated
      *
-     * @param  \DateTime      $updated
      * @return ValidationData
      */
     public function setUpdated(\DateTime $updated)
@@ -125,8 +115,6 @@ class ValidationData
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -135,12 +123,11 @@ class ValidationData
     }
 
     /**
-     * Set participant
+     * @param ValidationParticipant $participant
      *
-     * @param  \Entities\ValidationParticipant $participant
      * @return ValidationData
      */
-    public function setParticipant(\Entities\ValidationParticipant $participant = null)
+    public function setParticipant(ValidationParticipant $participant = null)
     {
         $this->participant = $participant;
 
@@ -148,9 +135,7 @@ class ValidationData
     }
 
     /**
-     * Get participant
-     *
-     * @return \Entities\ValidationParticipant
+     * @return ValidationParticipant
      */
     public function getParticipant()
     {
@@ -158,25 +143,22 @@ class ValidationData
     }
 
     /**
-     * Set basket_element
+     * @param BasketElement $basketElement
      *
-     * @param  \Entities\BasketElement $basketElement
      * @return ValidationData
      */
-    public function setBasketElement(\Entities\BasketElement $basketElement = null)
+    public function setBasketElement(BasketElement $basketElement = null)
     {
-        $this->basket_element = $basketElement;
+        $this->basketElement = $basketElement;
 
         return $this;
     }
 
     /**
-     * Get basket_element
-     *
-     * @return \Entities\BasketElement
+     * @return BasketElement
      */
     public function getBasketElement()
     {
-        return $this->basket_element;
+        return $this->basketElement;
     }
 }

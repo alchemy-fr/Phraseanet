@@ -38,8 +38,6 @@ class LazaretCheck
     private $lazaretFile;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -48,8 +46,6 @@ class LazaretCheck
     }
 
     /**
-     * Set checkClassname
-     *
      * @param  string       $checkClassname
      * @return LazaretCheck
      */
@@ -61,8 +57,6 @@ class LazaretCheck
     }
 
     /**
-     * Get checkClassname
-     *
      * @return string
      */
     public function getCheckClassname()
@@ -71,12 +65,10 @@ class LazaretCheck
     }
 
     /**
-     * Set lazaretFile
-     *
-     * @param  \Entities\LazaretFile $lazaretFile
+     * @param  LazaretFile  $lazaretFile
      * @return LazaretCheck
      */
-    public function setLazaretFile(\Entities\LazaretFile $lazaretFile = null)
+    public function setLazaretFile(LazaretFile $lazaretFile = null)
     {
         $this->lazaretFile = $lazaretFile;
 
@@ -84,9 +76,7 @@ class LazaretCheck
     }
 
     /**
-     * Get lazaretFile
-     *
-     * @return \Entities\LazaretFile
+     * @return LazaretFile
      */
     public function getLazaretFile()
     {
@@ -94,7 +84,7 @@ class LazaretCheck
     }
 
     /**
-     * Get checker message
+     * Returns check message according to checkClassname propertie.
      *
      * @return string
      */
@@ -104,8 +94,8 @@ class LazaretCheck
 
         if (method_exists($className, "getMessage")) {
             return $className::getMessage();
-        } else {
-            return '';
         }
+
+        return '';
     }
 }

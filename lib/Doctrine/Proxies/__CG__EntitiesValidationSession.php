@@ -168,7 +168,7 @@ class ValidationSession extends \Entities\ValidationSession implements \Doctrine
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'initiator_id', 'created', 'updated', 'expires', 'basket', 'participants');
+        return array('__isInitialized__', 'id', 'initiatorId', 'created', 'updated', 'expires', 'basket', 'participants');
     }
 
     public function __clone()

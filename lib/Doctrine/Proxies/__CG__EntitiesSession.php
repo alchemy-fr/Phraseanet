@@ -240,7 +240,7 @@ class Session extends \Entities\Session implements \Doctrine\ORM\Proxy\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'usr_id', 'user_agent', 'ip_address', 'platform', 'browser_name', 'browser_version', 'screen_width', 'screen_height', 'token', 'nonce', 'created', 'updated', 'modules');
+        return array('__isInitialized__', 'id', 'usrId', 'userAgent', 'ipAddress', 'platform', 'browserName', 'browserVersion', 'screenWidth', 'screenHeight', 'token', 'nonce', 'created', 'updated', 'modules');
     }
 
     public function __clone()

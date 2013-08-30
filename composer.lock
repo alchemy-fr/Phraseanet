@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "4391de29b63987d1af7989cffc365ae4",
+    "hash": "fda9ce23dd6f5863d44262d79ca82993",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -698,6 +698,60 @@
             "time": "2013-01-12 18:59:04"
         },
         {
+            "name": "doctrine/migrations",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/migrations.git",
+                "reference": "ced3b419252af47f29d6680f9ec74df00ee0c58e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/ced3b419252af47f29d6680f9ec74df00ee0c58e",
+                "reference": "ced3b419252af47f29d6680f9ec74df00ee0c58e",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": ">=2.0,<2.5.x-dev",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "symfony/console": "2.*",
+                "symfony/yaml": "2.*"
+            },
+            "suggest": {
+                "symfony/console": "to run the migration from the console"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\DBAL\\Migrations": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com",
+                    "homepage": "http://www.jwage.com/"
+                },
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                }
+            ],
+            "description": "Database Schema migrations using Doctrine DBAL",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "database",
+                "migrations"
+            ],
+            "time": "2013-06-27 19:46:00"
+        },
+        {
             "name": "doctrine/orm",
             "version": "2.3.4",
             "source": {
@@ -1028,12 +1082,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/avalanche123/Imagine.git",
-                "reference": "45aba323391fc079e25382b83561919db117ff51"
+                "reference": "d7a4ee663a32db80d8c9eeede5f7bcbfaa6dbbf8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/45aba323391fc079e25382b83561919db117ff51",
-                "reference": "45aba323391fc079e25382b83561919db117ff51",
+                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/d7a4ee663a32db80d8c9eeede5f7bcbfaa6dbbf8",
+                "reference": "d7a4ee663a32db80d8c9eeede5f7bcbfaa6dbbf8",
                 "shasum": ""
             },
             "require": {
@@ -1077,20 +1131,20 @@
                 "image manipulation",
                 "image processing"
             ],
-            "time": "2013-08-15 23:32:14"
+            "time": "2013-08-27 09:13:52"
         },
         {
             "name": "jms/metadata",
-            "version": "1.4.0",
+            "version": "1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/metadata.git",
-                "reference": "2b95de3ff995996cf068314bd4299dbfca2ca668"
+                "reference": "0af8423dc23dfeed1592426106d2ffbc69f68057"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/metadata/zipball/2b95de3ff995996cf068314bd4299dbfca2ca668",
-                "reference": "2b95de3ff995996cf068314bd4299dbfca2ca668",
+                "url": "https://api.github.com/repos/schmittjoh/metadata/zipball/0af8423dc23dfeed1592426106d2ffbc69f68057",
+                "reference": "0af8423dc23dfeed1592426106d2ffbc69f68057",
                 "shasum": ""
             },
             "require": {
@@ -1129,7 +1183,7 @@
                 "xml",
                 "yaml"
             ],
-            "time": "2013-08-25 08:44:36"
+            "time": "2013-08-27 18:10:33"
         },
         {
             "name": "jms/parser-lib",
@@ -2264,12 +2318,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Silex.git",
-                "reference": "d6fe48eaf37e511eef606446012ebf50c68735d2"
+                "reference": "e7d4a2fdedee2f55d1581659865ebb764f5cadad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Silex/zipball/d6fe48eaf37e511eef606446012ebf50c68735d2",
-                "reference": "d6fe48eaf37e511eef606446012ebf50c68735d2",
+                "url": "https://api.github.com/repos/fabpot/Silex/zipball/e7d4a2fdedee2f55d1581659865ebb764f5cadad",
+                "reference": "e7d4a2fdedee2f55d1581659865ebb764f5cadad",
                 "shasum": ""
             },
             "require": {
@@ -2339,7 +2393,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2013-08-23 16:12:49"
+            "time": "2013-08-29 05:11:19"
         },
         {
             "name": "silex/web-profiler",
@@ -2543,12 +2597,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "32947b2fc8c199b7aab4475473136ed651c097a0"
+                "reference": "feff411dfc83282488e8ebf02160a2ee899706a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/32947b2fc8c199b7aab4475473136ed651c097a0",
-                "reference": "32947b2fc8c199b7aab4475473136ed651c097a0",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/feff411dfc83282488e8ebf02160a2ee899706a4",
+                "reference": "feff411dfc83282488e8ebf02160a2ee899706a4",
                 "shasum": ""
             },
             "require": {
@@ -2643,7 +2697,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-08-25 08:03:30"
+            "time": "2013-08-29 06:54:01"
         },
         {
             "name": "tecnick.com/tcpdf",
@@ -3826,6 +3880,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "doctrine/migrations": 20,
         "imagine/imagine": 20,
         "silex/silex": 20,
         "symfony/symfony": 20,

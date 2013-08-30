@@ -99,16 +99,16 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return parent::getOwner($app);
     }
 
-    public function setIsRead($isRead)
+    public function setRead($read)
     {
         $this->__load();
-        return parent::setIsRead($isRead);
+        return parent::setRead($read);
     }
 
-    public function getIsRead()
+    public function isRead()
     {
         $this->__load();
-        return parent::getIsRead();
+        return parent::isRead();
     }
 
     public function setPusherId($pusherId)
@@ -141,10 +141,10 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return parent::setArchived($archived);
     }
 
-    public function getArchived()
+    public function isArchived()
     {
         $this->__load();
-        return parent::getArchived();
+        return parent::isArchived();
     }
 
     public function setCreated(\DateTime $created)
@@ -234,7 +234,7 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'name', 'description', 'usr_id', 'is_read', 'pusher_id', 'archived', 'created', 'updated', 'validation', 'elements', 'order');
+        return array('__isInitialized__', 'id', 'name', 'description', 'usrId', 'read', 'pusherId', 'archived', 'created', 'updated', 'validation', 'elements', 'order');
     }
 
     public function __clone()

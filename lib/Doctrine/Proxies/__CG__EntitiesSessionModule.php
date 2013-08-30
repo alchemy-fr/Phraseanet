@@ -102,7 +102,7 @@ class SessionModule extends \Entities\SessionModule implements \Doctrine\ORM\Pro
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'module_id', 'created', 'updated', 'session');
+        return array('__isInitialized__', 'id', 'moduleId', 'created', 'updated', 'session');
     }
 
     public function __clone()

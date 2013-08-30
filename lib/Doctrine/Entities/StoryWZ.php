@@ -30,19 +30,19 @@ class StoryWZ
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="sbas_id")
      */
-    private $sbas_id;
+    private $sbasId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="record_id")
      */
-    private $record_id;
+    private $recordId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -61,90 +61,104 @@ class StoryWZ
     }
 
     /**
-     * Set sbas_id
+     * @param integer $sbasId
      *
-     * @param  integer $sbasId
      * @return StoryWZ
      */
     public function setSbasId($sbasId)
     {
-        $this->sbas_id = $sbasId;
+        $this->sbasId = $sbasId;
 
         return $this;
     }
 
     /**
-     * Get sbas_id
-     *
      * @return integer
      */
     public function getSbasId()
     {
-        return $this->sbas_id;
+        return $this->sbasId;
     }
 
     /**
-     * Set record_id
+     * @param integer $recordId
      *
-     * @param  integer $recordId
      * @return StoryWZ
      */
     public function setRecordId($recordId)
     {
-        $this->record_id = $recordId;
+        $this->recordId = $recordId;
 
         return $this;
     }
 
     /**
-     * Get record_id
-     *
      * @return integer
      */
     public function getRecordId()
     {
-        return $this->record_id;
+        return $this->recordId;
     }
 
+    /**
+     * @param Application $app
+     *
+     * @return \record_adapter
+     */
     public function getRecord(Application $app)
     {
         return new \record_adapter($app, $this->getSbasId(), $this->getRecordId());
     }
 
+    /**
+     * @param \record_adapter $record
+     *
+     * @return StoryWZ
+     */
     public function setRecord(\record_adapter $record)
     {
         $this->setRecordId($record->get_record_id());
         $this->setSbasId($record->get_sbas_id());
-    }
-
-    /**
-     * Set usr_id
-     *
-     * @param  integer $usrId
-     * @return StoryWZ
-     */
-    public function setUsrId($usrId)
-    {
-        $this->usr_id = $usrId;
 
         return $this;
     }
 
     /**
-     * Get usr_id
+     * @param integer $usrId
      *
+     * @return StoryWZ
+     */
+    public function setUsrId($usrId)
+    {
+        $this->usrId = $usrId;
+
+        return $this;
+    }
+
+    /**
      * @return integer
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
+    /**
+     *
+     * @param \User_Adapter $user
+     *
+     * @return StoryWZ
+     */
     public function setUser(\User_Adapter $user)
     {
-        $this->setUsrId($user->get_id());
+        return $this->setUsrId($user->get_id());
     }
 
+    /**
+     * @param Application $app
+     *
+     * @return \User_Adapter|null
+     */
     public function getUser(Application $app)
     {
         if ($this->getUsrId()) {
@@ -153,9 +167,8 @@ class StoryWZ
     }
 
     /**
-     * Set created
+     * @param \DateTime $created
      *
-     * @param  \DateTime $created
      * @return StoryWZ
      */
     public function setCreated(\DateTime $created)
@@ -166,8 +179,6 @@ class StoryWZ
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()

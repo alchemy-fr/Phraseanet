@@ -61,7 +61,7 @@
                         {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
                         {% if element.getOrderMasterId() %}
                             {% set name = element.getOrderMasterName(app) %}
-                            {% if element.getDeny() == true %}
+                            {% if element.isDenied() %}
                                 {% set title %}
                                      {% trans %}Document refuse par {{name}} {% endtrans %}
                                 {% endset %}

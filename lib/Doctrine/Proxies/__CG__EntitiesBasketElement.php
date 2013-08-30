@@ -168,7 +168,7 @@ class BasketElement extends \Entities\BasketElement implements \Doctrine\ORM\Pro
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'record_id', 'sbas_id', 'ord', 'created', 'updated', 'validation_datas', 'basket');
+        return array('__isInitialized__', 'id', 'recordId', 'sbasId', 'ord', 'created', 'updated', 'validationDatas', 'basket');
     }
 
     public function __clone()

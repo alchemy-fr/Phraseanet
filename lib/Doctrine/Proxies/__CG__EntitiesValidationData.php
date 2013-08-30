@@ -114,7 +114,7 @@ class ValidationData extends \Entities\ValidationData implements \Doctrine\ORM\P
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'agreement', 'note', 'updated', 'participant', 'basket_element');
+        return array('__isInitialized__', 'id', 'agreement', 'note', 'updated', 'participant', 'basketElement');
     }
 
     public function __clone()

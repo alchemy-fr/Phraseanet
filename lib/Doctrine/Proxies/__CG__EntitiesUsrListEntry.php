@@ -114,7 +114,7 @@ class UsrListEntry extends \Entities\UsrListEntry implements \Doctrine\ORM\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'usr_id', 'created', 'updated', 'list');
+        return array('__isInitialized__', 'id', 'usrId', 'created', 'updated', 'list');
     }
 
     public function __clone()

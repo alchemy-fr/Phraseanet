@@ -12,11 +12,12 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="Sessions", indexes={@ORM\index(name="usr_id", columns={"usr_id"})})
+ * @ORM\Table(name="Sessions", indexes={@ORM\index(name="usrId", columns={"usr_id"})})
  * @ORM\Entity(repositoryClass="Repositories\SessionRepository")
  */
 class Session
@@ -29,19 +30,19 @@ class Session
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
-     * @ORM\Column(type="string", length=512)
+     * @ORM\Column(type="string", name="user_agent", length=512)
      */
-    private $user_agent;
+    private $userAgent;
 
     /**
-     * @ORM\Column(type="string", length=40, nullable=true)
+     * @ORM\Column(type="string", name="ip_address", length=40, nullable=true)
      */
-    private $ip_address;
+    private $ipAddress;
 
     /**
      * @ORM\Column(type="string", length=128, nullable=true)
@@ -49,24 +50,24 @@ class Session
     private $platform;
 
     /**
-     * @ORM\Column(type="string", length=128, nullable=true)
+     * @ORM\Column(type="string", name="browser_name", length=128, nullable=true)
      */
-    private $browser_name;
+    private $browserName;
 
     /**
-     * @ORM\Column(type="string", length=32, nullable=true)
+     * @ORM\Column(type="string", name="browser_version", length=32, nullable=true)
      */
-    private $browser_version;
+    private $browserVersion;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", name="screen_width", nullable=true)
      */
-    private $screen_width;
+    private $screenWidth;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", name="screen_heigh", nullable=true)
      */
-    private $screen_height;
+    private $screenHeight;
 
     /**
      * @ORM\Column(type="string", length=128, nullable=true, unique=true)
@@ -92,7 +93,7 @@ class Session
 
     /**
      * @ORM\OneToMany(targetEntity="SessionModule", mappedBy="session", cascade={"all"})
-     * @ORM\OrderBy({"module_id" = "ASC"})
+     * @ORM\OrderBy({"moduleId" = "ASC"})
      */
     private $modules;
 
@@ -101,12 +102,10 @@ class Session
      */
     public function __construct()
     {
-        $this->modules = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->modules = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -114,24 +113,33 @@ class Session
         return $this->id;
     }
 
+    /**
+     * @param \User_Adapter $user
+     *
+     * @return Session
+     */
     public function setUser(\User_Adapter $user)
     {
         return $this->setUsrId($user->get_id());
     }
 
     /**
-     * Set usr_id
+     * @param integer $usrId
      *
-     * @param  integer $usrId
      * @return Session
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
 
+    /**
+     * @param Application $app
+     *
+     * @return \User_adapter or null
+     */
     public function getUser(Application $app)
     {
         if ($this->getUsrId()) {
@@ -140,65 +148,56 @@ class Session
     }
 
     /**
-     * Get usr_id
-     *
      * @return integer
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
     /**
-     * Set user_agent
+     * @param string $userAgent
      *
-     * @param  string  $userAgent
      * @return Session
      */
     public function setUserAgent($userAgent)
     {
-        $this->user_agent = $userAgent;
+        $this->userAgent = $userAgent;
 
         return $this;
     }
 
     /**
-     * Get user_agent
-     *
      * @return string
      */
     public function getUserAgent()
     {
-        return $this->user_agent;
+        return $this->userAgent;
     }
 
     /**
-     * Set ip_address
+     * @param string $ipAddress
      *
-     * @param  string  $ipAddress
      * @return Session
      */
     public function setIpAddress($ipAddress)
     {
-        $this->ip_address = $ipAddress;
+        $this->ipAddress = $ipAddress;
 
         return $this;
     }
 
     /**
-     * Get ip_address
-     *
      * @return string
      */
     public function getIpAddress()
     {
-        return $this->ip_address;
+        return $this->ipAddress;
     }
 
     /**
-     * Set platform
+     * @param string $platform
      *
-     * @param  string  $platform
      * @return Session
      */
     public function setPlatform($platform)
@@ -209,8 +208,6 @@ class Session
     }
 
     /**
-     * Get platform
-     *
      * @return string
      */
     public function getPlatform()
@@ -219,101 +216,88 @@ class Session
     }
 
     /**
-     * Set browser_name
+     * @param string $browserName
      *
-     * @param  string  $browserName
      * @return Session
      */
     public function setBrowserName($browserName)
     {
-        $this->browser_name = $browserName;
+        $this->browserName = $browserName;
 
         return $this;
     }
 
     /**
-     * Get browser_name
-     *
      * @return string
      */
     public function getBrowserName()
     {
-        return $this->browser_name;
+        return $this->browserName;
     }
 
     /**
-     * Set browser_version
+     * @param string $browserVersion
      *
-     * @param  string  $browserVersion
      * @return Session
      */
     public function setBrowserVersion($browserVersion)
     {
-        $this->browser_version = $browserVersion;
+        $this->browserVersion = $browserVersion;
 
         return $this;
     }
 
     /**
-     * Get browser_version
-     *
      * @return string
      */
     public function getBrowserVersion()
     {
-        return $this->browser_version;
+        return $this->browserVersion;
     }
 
     /**
-     * Set screen_width
+     * @param integer $screenWidth
      *
-     * @param  integer $screenWidth
      * @return Session
      */
     public function setScreenWidth($screenWidth)
     {
-        $this->screen_width = $screenWidth;
+        $this->screenWidth = $screenWidth;
 
         return $this;
     }
 
     /**
-     * Get screen_width
-     *
      * @return integer
      */
     public function getScreenWidth()
     {
-        return $this->screen_width;
+        return $this->screenWidth;
     }
 
     /**
-     * Set screen_height
-     *
-     * @param  integer $screenHeight
+     * @param integer $screenHeight
+
      * @return Session
      */
     public function setScreenHeight($screenHeight)
     {
-        $this->screen_height = $screenHeight;
+        $this->screenHeight = $screenHeight;
 
         return $this;
     }
 
     /**
-     * Get screen_height
-     *
      * @return integer
      */
     public function getScreenHeight()
     {
-        return $this->screen_height;
+        return $this->screenHeight;
     }
 
     /**
-     * Set token
+     * @param string $token
      *
-     * @param  string  $token
      * @return Session
      */
     public function setToken($token)
@@ -324,8 +308,6 @@ class Session
     }
 
     /**
-     * Get token
-     *
      * @return string
      */
     public function getToken()
@@ -334,9 +316,8 @@ class Session
     }
 
     /**
-     * Set nonce
+     * @param string $nonce
      *
-     * @param  string  $nonce
      * @return Session
      */
     public function setNonce($nonce)
@@ -347,8 +328,6 @@ class Session
     }
 
     /**
-     * Get nonce
-     *
      * @return string
      */
     public function getNonce()
@@ -357,9 +336,8 @@ class Session
     }
 
     /**
-     * Set created
+     * @param \DateTime $created
      *
-     * @param  \DateTime $created
      * @return Session
      */
     public function setCreated(\DateTime $created)
@@ -370,8 +348,6 @@ class Session
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -380,9 +356,8 @@ class Session
     }
 
     /**
-     * Set updated
+     * @param \DateTime $updated
      *
-     * @param  \DateTime $updated
      * @return Session
      */
     public function setUpdated(\DateTime $updated)
@@ -393,8 +368,6 @@ class Session
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -403,12 +376,11 @@ class Session
     }
 
     /**
-     * Add modules
+     * @param SessionModule $modules
      *
-     * @param  \Entities\SessionModule $modules
      * @return Session
      */
-    public function addModule(\Entities\SessionModule $modules)
+    public function addModule(SessionModule $modules)
     {
         $this->modules[] = $modules;
 
@@ -416,19 +388,15 @@ class Session
     }
 
     /**
-     * Remove modules
-     *
-     * @param \Entities\SessionModule $modules
+     * @param SessionModule $modules
      */
-    public function removeModule(\Entities\SessionModule $modules)
+    public function removeModule(SessionModule $modules)
     {
         $this->modules->removeElement($modules);
     }
 
     /**
-     * Get modules
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return SessionModule[]
      */
     public function getModules()
     {
@@ -436,10 +404,8 @@ class Session
     }
 
     /**
-     * Get a module by its identifier
-     *
-     * @param  integer                     $moduleId
-     * @return Entities\SessionModule|null
+     * @param  integer            $moduleId
+     * @return SessionModule|null
      */
     public function getModuleById($moduleId)
     {
@@ -452,6 +418,13 @@ class Session
         return null;
     }
 
+    /**
+     * Returns true if session has given module id.
+     *
+     * @param integer $moduleId
+     *
+     * @return boolean
+     */
     public function hasModuleId($moduleId)
     {
         foreach ($this->getModules() as $module) {

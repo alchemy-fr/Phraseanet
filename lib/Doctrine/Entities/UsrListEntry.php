@@ -16,7 +16,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="UsrListsContent", uniqueConstraints={@ORM\UniqueConstraint(name="unique_usr_per_list", columns={"usr_id", "list_id"})})
+ * @ORM\Table(name="UsrListsContent", uniqueConstraints={
+ *      @ORM\UniqueConstraint(name="unique_usr_per_list", columns={"usr_id", "list_id"})
+ * })
  * @ORM\Entity(repositoryClass="Repositories\UsrListEntryRepository")
  */
 class UsrListEntry
@@ -29,9 +31,9 @@ class UsrListEntry
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="usr_id")
      */
-    private $usr_id;
+    private $usrId;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -52,8 +54,6 @@ class UsrListEntry
     private $list;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -62,42 +62,48 @@ class UsrListEntry
     }
 
     /**
-     * Set usr_id
+     * @param integer $usrId
      *
-     * @param  integer      $usrId
      * @return UsrListEntry
      */
     public function setUsrId($usrId)
     {
-        $this->usr_id = $usrId;
+        $this->usrId = $usrId;
 
         return $this;
     }
 
     /**
-     * Get usr_id
-     *
      * @return integer
      */
     public function getUsrId()
     {
-        return $this->usr_id;
+        return $this->usrId;
     }
 
+    /**
+     * @param Application $app
+     *
+     * @return \User_Adapter
+     */
     public function getUser(Application $app)
     {
         return \User_Adapter::getInstance($this->getUsrId(), $app);
     }
 
+    /**
+     * @param \User_Adapter $user
+     *
+     * @return UsrListEntry
+     */
     public function setUser(\User_Adapter $user)
     {
         return $this->setUsrId($user->get_id());
     }
 
     /**
-     * Set created
+     * @param \DateTime $created
      *
-     * @param  \DateTime    $created
      * @return UsrListEntry
      */
     public function setCreated(\DateTime $created)
@@ -108,8 +114,6 @@ class UsrListEntry
     }
 
     /**
-     * Get created
-     *
      * @return \DateTime
      */
     public function getCreated()
@@ -118,9 +122,8 @@ class UsrListEntry
     }
 
     /**
-     * Set updated
+     * @param \DateTime $updated
      *
-     * @param  \DateTime    $updated
      * @return UsrListEntry
      */
     public function setUpdated(\DateTime $updated)
@@ -131,8 +134,6 @@ class UsrListEntry
     }
 
     /**
-     * Get updated
-     *
      * @return \DateTime
      */
     public function getUpdated()
@@ -141,12 +142,11 @@ class UsrListEntry
     }
 
     /**
-     * Set list
+     * @param UsrList $list
      *
-     * @param  \Entities\UsrList $list
      * @return UsrListEntry
      */
-    public function setList(\Entities\UsrList $list = null)
+    public function setList(UsrList $list = null)
     {
         $this->list = $list;
 
@@ -154,9 +154,7 @@ class UsrListEntry
     }
 
     /**
-     * Get list
-     *
-     * @return \Entities\UsrList
+     * @return UsrList
      */
     public function getList()
     {

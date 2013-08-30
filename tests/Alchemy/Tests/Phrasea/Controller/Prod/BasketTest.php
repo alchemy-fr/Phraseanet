@@ -336,7 +336,7 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $basket = self::$DI['app']['EM']->getRepository('Entities\Basket')->find($basket->getId());
 
-        $this->assertTrue($basket->getArchived());
+        $this->assertTrue($basket->isArchived());
 
         $route = sprintf('/prod/baskets/%s/archive/?archive=0', $basket->getId());
         $crawler = self::$DI['client']->request('POST', $route);
@@ -345,7 +345,7 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['app']['EM']->refresh($basket);
 
-        $this->assertFalse($basket->getArchived());
+        $this->assertFalse($basket->isArchived());
 
         $this->assertEquals(302, $response->getStatusCode());
     }
@@ -366,7 +366,7 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $basket = self::$DI['app']['EM']->getRepository('Entities\Basket')->find($basket->getId());
 
-        $this->assertTrue($basket->getArchived());
+        $this->assertTrue($basket->isArchived());
 
         $route = sprintf('/prod/baskets/%s/archive/?archive=0', $basket->getId());
         $crawler = self::$DI['client']->request(
@@ -379,7 +379,7 @@ class ControllerBasketTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['app']['EM']->refresh($basket);
 
-        $this->assertFalse($basket->getArchived());
+        $this->assertFalse($basket->isArchived());
 
         $this->assertEquals(200, $response->getStatusCode());
     }
