@@ -770,10 +770,10 @@
                         var options = {
                           size : 'Alert',
                           closeButton: true,
-                          title : '{% trans "Warning !" %}'
+                          title : data.success ? '{% trans "Success" %}' : '{% trans "Warning !" %}'
                         };
 
-                        p4.Dialog.Create(options, 2).setContent(data);
+                        p4.Dialog.Create(options, 2).setContent(data.message);
 
                         $this.removeAttr('disabled');
 

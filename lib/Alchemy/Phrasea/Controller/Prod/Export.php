@@ -143,8 +143,8 @@ class Export implements ControllerProviderInterface
 
         $success = false;
         try {
-            $ftpClient = $app['phraseanet.ftp.client']($request->request->get('addr', ''), 21, 90, !!$request->request->get('ssl'));
-            $ftpClient->login($request->request->get('login', ''), $request->request->get('pwd', ''));
+            $ftpClient = $app['phraseanet.ftp.client']($request->request->get('address', ''), 21, 90, !!$request->request->get('ssl'));
+            $ftpClient->login($request->request->get('login', 'anonymous'), $request->request->get('password', 'anonymous'));
             $ftpClient->close();
             $msg = _('Connection to FTP succeed');
             $success = true;
