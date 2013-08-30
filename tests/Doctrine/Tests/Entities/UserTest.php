@@ -46,7 +46,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
 
     public function testSetLocale()
     {
-        foreach(array_keys(Application::getAvailableLanguages()) as $locale) {
+        foreach (array_keys(Application::getAvailableLanguages()) as $locale) {
             $this->user->setLocale($locale);
             $this->assertEquals($this->user->getLocale(), $locale);
         }

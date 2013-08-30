@@ -103,8 +103,7 @@ class patch_3902 implements patchInterface
             $user->setRequestNotificationsActivated(!!$row['request_notifications']);
             $user->setSaltedPassword(!!$row['salted_password']);
 
-            switch ($row['usr_sexe'])
-            {
+            switch ($row['usr_sexe']) {
                 case 0:
                     $gender = User::GENDER_MISS;
                     break;

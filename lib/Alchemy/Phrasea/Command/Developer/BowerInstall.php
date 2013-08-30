@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\BinaryDriver\Exception\ExecutionFailureException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;

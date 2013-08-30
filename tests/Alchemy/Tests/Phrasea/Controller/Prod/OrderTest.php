@@ -2,8 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Controller\RecordsRequest;
-use Doctrine\Common\Collections\ArrayCollection;
 use Entities\Order;
 use Entities\OrderElement;
 

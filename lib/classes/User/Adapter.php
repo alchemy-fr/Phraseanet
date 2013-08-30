@@ -11,7 +11,6 @@
 
 use Alchemy\Phrasea\Application;
 
-use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Entities\FtpCredential;
 

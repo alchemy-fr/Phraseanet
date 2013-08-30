@@ -4,16 +4,7 @@ namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\EntityManager;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\FileCacheReader;
-use Doctrine\Common\EventManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;

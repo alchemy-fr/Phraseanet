@@ -1091,7 +1091,7 @@ class Databox implements ControllerProviderInterface
                 'medias' => array()
             );
 
-            foreach($colDetails as $subdefName => $subdefDetails) {
+            foreach ($colDetails as $subdefName => $subdefDetails) {
                 $details[$collName]['total_subdefs'] += $subdefDetails['n'];
                 $total['total_subdefs'] += $subdefDetails['n'];
                 $details[$collName]['total_size'] += $subdefDetails['siz'];

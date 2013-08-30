@@ -917,8 +917,8 @@ abstract class task_abstract
     }
 
     /**
-     * @param Configuration $config
-     * @param array         $params
+     * @param  Configuration $config
+     * @param  array         $params
      * @return string
      */
     public static function getDefaultSettings(Configuration $config, array $params = array())

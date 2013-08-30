@@ -1,8 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Controller\RecordsRequest;
-use Doctrine\Common\Collections\ArrayCollection;
-
 class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     /**

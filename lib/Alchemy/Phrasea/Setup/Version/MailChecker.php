@@ -24,7 +24,7 @@ class MailChecker
      * Returns users with duplicated emails
      *
      * @param \Application $app
-     * @param string    $table The table name where to look
+     * @param string       $table The table name where to look
      *
      * @return array An array of User_Adapter
      */
