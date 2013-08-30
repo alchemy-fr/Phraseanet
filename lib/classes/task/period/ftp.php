@@ -22,7 +22,7 @@ class task_period_ftp extends task_appboxAbstract
      *
      * @return string
      */
-    public function getName()
+    public static function getName()
     {
         return(_("task::ftp:FTP Push"));
     }
@@ -317,7 +317,7 @@ class task_period_ftp extends task_appboxAbstract
         return $ftp_exports;
     }
 
-    protected function processOneContent(appbox $appbox, Array $ftp_export)
+    protected function processOneContent(appbox $appbox, $ftp_export)
     {
         $conn = $appbox->get_connection();
 
@@ -548,7 +548,7 @@ class task_period_ftp extends task_appboxAbstract
         $this->finalize($appbox, $id);
     }
 
-    protected function postProcessOneContent(appbox $appbox, Array $row)
+    protected function postProcessOneContent(appbox $appbox, $row)
     {
         return $this;
     }

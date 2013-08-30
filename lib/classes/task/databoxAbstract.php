@@ -20,11 +20,11 @@ abstract class task_databoxAbstract extends task_abstract
 
     abstract protected function retrieveSbasContent(databox $databox);
 
-    abstract protected function processOneContent(databox $databox, Array $row);
+    abstract protected function processOneContent(databox $databox, $row);
 
     abstract protected function flushRecordsSbas();
 
-    abstract protected function postProcessOneContent(databox $databox, Array $row);
+    abstract protected function postProcessOneContent(databox $databox, $row);
 
     protected function run2()
     {

@@ -64,7 +64,7 @@ class task_period_archive extends task_abstract
      *
      * @return string
      */
-    public function getName()
+    public static function getName()
     {
         return _('task::archive:Archivage');
     }
