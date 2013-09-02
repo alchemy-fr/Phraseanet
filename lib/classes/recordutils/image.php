@@ -308,7 +308,7 @@ class recordutils_image extends recordutils
                 $font = $app['imagine']->font(__DIR__ . '/arial.ttf', $block['fontsize'], $block['fontcolor']);
                 foreach ($block['lines'] as $line) {
                     if ($line['t'] != '') {
-                        $draw->text($line['t'], $font, new Point(0, $txt_ypos), 0);
+                        $draw->text($line['t'], $font, new Point($logo_reswidth, $txt_ypos), 0);
                     }
                     $txt_ypos += $line['h'];
                 }
