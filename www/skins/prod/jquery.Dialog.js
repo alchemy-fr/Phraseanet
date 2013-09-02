@@ -140,8 +140,10 @@ var p4 = p4 || {};
       modal:true,
       width:width,
       height:height,
-      close:CloseCallback,
-      zIndex:zIndex
+      open: function() {
+          $(this).dialog("widget").css("z-index", zIndex);
+      },
+      close:CloseCallback
     })
     .dialog('open').addClass('dialog-' + this.options.size);
 
