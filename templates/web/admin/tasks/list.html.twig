@@ -262,6 +262,10 @@
 
 
         $(".taskMenuItem").bind("click", function() {
+            if ($(this).hasClass('disabled')) {
+                return false;
+            }
+
             var action = $(this).attr("id").split('_');
 
             switch(action[0])
