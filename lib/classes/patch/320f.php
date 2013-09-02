@@ -81,6 +81,7 @@ class patch_320f implements patchInterface
         $stmt->closeCursor();
 
         $date_ref = new DateTime();
+        $n = 0;
 
         foreach ($rs as $row) {
             $user = User_Adapter::getInstance($row['usr_id'], $app);
@@ -141,9 +142,15 @@ class patch_320f implements patchInterface
             $stmt->execute(array(':ssel_id' => $row['ssel_id']));
             $stmt->closeCursor();
             $app['EM']->persist($feed);
+            $n++;
+            if ($n % 1000 == 0) {
+                $app['EM']->flush();
+                $app['EM']->clear();
+            }
         }
         $this->set_feed_dates($date_ref);
         $app['EM']->flush();
+        $app['EM']->clear();
 
         return true;
     }
