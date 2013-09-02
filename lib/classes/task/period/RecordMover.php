@@ -16,7 +16,7 @@ class task_period_RecordMover extends task_appboxAbstract
      *
      * @return string
      */
-    public function getName()
+    public static function getName()
     {
         return _("Record Mover");
     }
@@ -25,7 +25,7 @@ class task_period_RecordMover extends task_appboxAbstract
      *
      * @return string
      */
-    public function help()
+    public static function help()
     {
         return '';
     }
