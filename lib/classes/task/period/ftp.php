@@ -33,7 +33,7 @@ class task_period_ftp extends task_appboxAbstract
      *
      * @return string
      */
-    public function help()
+    public static function help()
     {
         return '';
     }

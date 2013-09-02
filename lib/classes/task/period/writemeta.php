@@ -19,7 +19,7 @@ class task_period_writemeta extends task_databoxAbstract
     protected $clear_doc;
     protected $metasubdefs = array();
 
-    public function help()
+    public static function help()
     {
         return(_("task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs concernees)"));
     }

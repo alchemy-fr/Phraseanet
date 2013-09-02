@@ -2075,8 +2075,7 @@ $('#EDIT_MID_R')
 
   };
 
-  $("#Edit_copyPreset_dlg", p4.edit.editBox).dialog( {
-    zIndex:5000,
+  $("#Edit_copyPreset_dlg", p4.edit.editBox).dialog({
     stack:true,
     closeOnEscape:true,
     resizable:false,
@@ -2085,8 +2084,11 @@ $('#EDIT_MID_R')
     modal:true,
     width:600,
     title:language.newPreset,
-    open:function(event, ui)
-    {
+    close: function(event,ui) {
+        $(this).dialog("widget").css("z-index", "auto");
+    },
+    open:function(event, ui) {
+      $(this).dialog("widget").css("z-index", "5000");
       $(".EDIT_presetTitle")[0].focus();
     },
     buttons:buttons

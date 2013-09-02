@@ -28,7 +28,7 @@ class task_period_ftpPull extends task_appboxAbstract
         return(_("task::ftp:FTP Pull"));
     }
 
-    public function help()
+    public static function help()
     {
         return '';
     }

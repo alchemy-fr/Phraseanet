@@ -122,10 +122,6 @@ class module_console_taskrun extends Command
             $logger->pushHandler($handler);
         }
 
-        $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
-        $handler = new RotatingFileHandler($logfile, 10);
-        $logger->pushHandler($handler);
-
         $this->task = $task_manager->getTask($task_id, $logger);
 
         register_tick_function(array($this, 'tick_handler'), true);

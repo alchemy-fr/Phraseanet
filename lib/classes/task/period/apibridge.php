@@ -25,7 +25,7 @@ class task_period_apibridge extends task_appboxAbstract
      * Get help
      * @return string
      */
-    public function help()
+    public static function help()
     {
         return '';
     }

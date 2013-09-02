@@ -398,7 +398,10 @@ abstract class task_abstract
         throw new \LogicException('This method must be implemented');
     }
 
-    abstract public function help();
+    public static function help()
+    {
+        throw new \LogicException('This method must be implemented');
+    }
 
     /**
      *

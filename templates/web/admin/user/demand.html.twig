@@ -220,10 +220,10 @@
                                         <button type="button" name="watermark[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkAdd(this)" id="{{  'watermark_' ~ row['usr_id'] ~ '_' ~ basId }}" class="btn {{ 'disabler_' ~  row['usr_id'] ~ '_' ~ basId }} watermark_checker tipInfoUsr {{ 'checker_' ~ row['usr_id'] }}" title="{% trans 'admin:: watermarquer les documents' %}" style="height:30px;">
                                             <span class="tipInfoUsr" title="{% trans 'admin:: watermarquer les documents' %}">W</span>
                                         </button>
-                                        <button class="btn btn-warning" disabled style="height:30px;">
-                                            {{ basId| bas_labels(app) }}
-                                        </button>
                                     </div>
+                                    <h1 style="word-wrap: break-word;">
+                                        {{ basId| bas_labels(app) }}
+                                    </h1>
                                 {% endfor %}
                             </td>
                             <td>

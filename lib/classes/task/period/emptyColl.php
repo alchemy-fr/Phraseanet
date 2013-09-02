@@ -27,7 +27,7 @@ class task_period_emptyColl extends task_appboxAbstract
         return false;
     }
 
-    public function help()
+    public static function help()
     {
         return("Vide une collection");
     }

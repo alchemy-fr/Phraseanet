@@ -17,7 +17,7 @@ class task_period_test extends task_appboxAbstract
         return "Test";
     }
 
-    public function help()
+    public static function help()
     {
         return "just saying what i'm doing";
     }

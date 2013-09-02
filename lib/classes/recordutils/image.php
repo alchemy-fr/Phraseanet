@@ -34,19 +34,12 @@ class recordutils_image extends recordutils
             $palette = new RGB();
         }
 
-        $xmlToColor = function($attr, $ret = array(255, 255, 255, 0)) use ($palette) {
-            foreach (explode(',', $attr) as $i => $v) {
-                if ($i > 3) {
-                    break;
-                }
-                $v = (int) (trim($v));
-                if ($v >= 0 && ($v <= 100 || ($i < 3 && $v < 256))) {
-                    $ret[$i] = $v;
-                }
+        $xmlToColor = function($attr, $ret = array(255, 255, 255)) use ($palette) {
+            try {
+                return $palette->color($attr, 0);
+            } catch (ImagineException $e) {
+                return $palette->color($ret);
             }
-            $alpha = array_pop($ret);
-
-            return $palette->color($ret, $alpha);
         };
 
         $base_id = $subdef->get_record()->get_base_id();
@@ -151,8 +144,8 @@ class recordutils_image extends recordutils
         for ($istamp = 0; $istamp < $stampNodes->length; $istamp++) {
             $stamp = $stampNodes->item($istamp);
 
-            $stamp_background = $xmlToColor($stamp->getAttribute('background'), array(255, 255, 255, 0));
-
+            $stamp_background = $xmlToColor($stamp->getAttribute('background'), array(255, 255, 255));
+            
             $stamp_position = strtoupper(trim($stamp->getAttribute('position')));
             if (!in_array($stamp_position, array('TOP', 'TOP-OVER', 'BOTTOM-OVER', 'BOTTOM'))) {
                 $stamp_position = 'BOTTOM';
@@ -267,7 +260,7 @@ class recordutils_image extends recordutils
                     $wrap = static::wrap($app['imagine'], $fontsize, 0, __DIR__ . '/arial.ttf', $txtline, $text_width);
                     $txtblock[] = array(
                         'fontsize'  => $fontsize,
-                        'fontcolor' => $xmlToColor($texts->item($i)->getAttribute('color'), array(0, 0, 0, 0)),
+                        'fontcolor' => $xmlToColor($texts->item($i)->getAttribute('color'), array(0, 0, 0)),
                         'h'     => $wrap['toth'],
                         'lines' => $wrap['l']
                     );
@@ -308,7 +301,7 @@ class recordutils_image extends recordutils
                 $font = $app['imagine']->font(__DIR__ . '/arial.ttf', $block['fontsize'], $block['fontcolor']);
                 foreach ($block['lines'] as $line) {
                     if ($line['t'] != '') {
-                        $draw->text($line['t'], $font, new Point(0, $txt_ypos), 0);
+                        $draw->text($line['t'], $font, new Point($logo_reswidth, $txt_ypos), 0);
                     }
                     $txt_ypos += $line['h'];
                 }
