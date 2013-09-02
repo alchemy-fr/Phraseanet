@@ -41,7 +41,7 @@ class task_period_subdef extends task_databoxAbstract
      *
      * @return <type>
      */
-    public function help()
+    public static function help()
     {
         return(
             _("task::subdef:creation des sous definitions des documents d'origine")
@@ -53,7 +53,7 @@ class task_period_subdef extends task_databoxAbstract
      *
      * @return string
      */
-    public function getName()
+    public static function getName()
     {
         return(_('task::subdef:creation des sous definitions'));
     }
