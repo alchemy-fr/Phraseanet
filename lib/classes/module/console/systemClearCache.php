@@ -41,7 +41,10 @@ class module_console_systemClearCache extends Command
             ->exclude('.svn')
             ->in(array(
                 $this->container['root.path'] . '/tmp/cache_minify/',
-                $this->container['root.path'] . '/tmp/cache_twig/'
+                $this->container['root.path'] . '/tmp/cache_twig/',
+                $this->container['root.path'] . '/tmp/cache/profiler/',
+                $this->container['root.path'] . '/tmp/doctrine/',
+                $this->container['root.path'] . '/tmp/serializer/',
             ));
 
         $filesystem = new Filesystem();
