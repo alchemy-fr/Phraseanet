@@ -230,7 +230,7 @@ class Publications implements ControllerProviderInterface
                 }
 
                 $user = $publisher->getUser($app);
-                if ($feed->isPublisher($user) && false === $feed->isOwner($user)) {
+                if ($feed->isPublisher($user) && !$feed->isOwner($user)) {
                     $feed->removePublisher($publisher);
 
                     $app['EM']->remove($publisher);
