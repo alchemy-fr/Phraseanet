@@ -692,13 +692,15 @@ function triggerShortcuts()
         modal:true,
         width:600,
         height:400,
-        zIndex:1400,
         overlay: {
             backgroundColor: '#000',
             opacity: 0.7
         },
+        open: function(event, ui) {
+            $(this).dialog("widget").css("z-index", "1400");
+        },
         close : function(){
-
+            $(this).dialog("widget").css("z-index", "auto");
             if($('#keyboard-stop').get(0).checked) {
                 var dialog = $('#keyboard-dialog');
                 if (dialog.data("ui-dialog")) {
@@ -2382,7 +2384,12 @@ function printThis(value)
         modal:true,
         width:'800',
         height:'500',
-        zIndex: 1999
+        open: function(event, ui) {
+            $(this).dialog("widget").css("z-index", "1999");
+        },
+        close: function(event, ui) {
+            $(this).dialog("widget").css("z-index", "auto");
+        }
     })
     .dialog('open');
 
