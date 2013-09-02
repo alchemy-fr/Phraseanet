@@ -759,9 +759,13 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public function delete()
     {
         $repo = $this->app['EM']->getRepository('Entities\UsrAuthProvider');
-
         foreach ($repo->findByUser($this) as $provider) {
             $this->app['EM']->remove($provider);
+        }
+        
+        $repo = $this->app['EM']->getRepository('Entities\FtpExport');
+        foreach ($repo->findByUser($this) as $export) {
+            $this->app['EM']->remove($export);
         }
 
         $this->app['EM']->flush();
@@ -788,11 +792,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM edit_presets WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
-        $stmt->closeCursor();
-
-        $sql = 'DELETE FROM ftp_export WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $this->get_id()));
         $stmt->closeCursor();

@@ -12,6 +12,8 @@ use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
 use Alchemy\Phrasea\Notification\Receiver;
+use Entities\FtpExport;
+use Entities\FtpExportElement;
 
 class task_period_ftp extends task_appboxAbstract
 {
@@ -258,88 +260,39 @@ class task_period_ftp extends task_appboxAbstract
 
     protected function retrieveContent(appbox $appbox)
     {
-        $conn = $appbox->get_connection();
-
-        $time2sleep = null;
-        $ftp_exports = array();
-
-        $period = $this->period;
-        $time2sleep = (int) ($period);
-
-        $sql = "SELECT id FROM ftp_export WHERE crash>=nbretry
-            AND date < :date";
-
-        $params = array(':date' => $this->dependencyContainer['date-formatter']->format_mysql(new DateTime('-30 days')));
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $rowtask) {
-            $sql = "DELETE FROM ftp_export WHERE id = :export_id";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':export_id' => $rowtask['id']));
-            $stmt->closeCursor();
-
-            $sql = "DELETE FROM ftp_export_elements WHERE ftp_export_id = :export_id";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':export_id' => $rowtask['id']));
-            $stmt->closeCursor();
+        foreach ($this->dependencyContainer['EM']
+                ->getRepository('Entities\FtpExport')
+                ->findCrashedExports(new \DateTime('-1 month')) as $export) {
+            $this->dependencyContainer['EM']->remove($export);
         }
-
-        $sql = "SELECT * FROM ftp_export WHERE crash<nbretry ORDER BY id";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $row) {
-            $ftp_exports[$row["id"]] = array_merge(array('files' => array()), $row);
-        }
-
-        $sql = "SELECT e.* from ftp_export f
-                    INNER JOIN ftp_export_elements e
-            ON (f.id=e.ftp_export_id AND f.crash<f.nbretry
-              AND (e.done = 0 or error=1))
-                    ORDER BY f.id";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $rowtask) {
-            if (isset($ftp_exports[$rowtask["ftp_export_id"]])) {
-                $ftp_exports[$rowtask["ftp_export_id"]]["files"][] = $rowtask;
-            }
-        }
-
-        return $ftp_exports;
+        $this->dependencyContainer['EM']->flush();
+        
+        return $this->dependencyContainer['EM']
+                ->getRepository('Entities\FtpExport')
+                ->findDoableExports();
     }
 
-    protected function processOneContent(appbox $appbox, $ftp_export)
+    protected function processOneContent(appbox $appbox, $export)
     {
         $conn = $appbox->get_connection();
 
-        $id = $ftp_export['id'];
-        $ftp_export[$id]["crash"] = $ftp_export["crash"];
-        $ftp_export[$id]["nbretry"] = $ftp_export["nbretry"] < 1 ? 3 : (int) $ftp_export["nbretry"];
+        $id = $export->getId();
 
         $state = "";
-        $ftp_server = $ftp_export["addr"];
-        $ftp_user_name = $ftp_export["login"];
-        $ftp_user_pass = $ftp_export["pwd"];
-        $usr_id = (int) $ftp_export["usr_id"];
+        $ftp_server = $export->getAddr();
+        $ftp_user_name = $export->getLogin();
+        $ftp_user_pass = $export->getPwd();
+        $usr_id = $export->getUsrId();
 
-        $ftpLog = $ftp_user_name . "@" . p4string::addEndSlash($ftp_server) . $ftp_export["destfolder"];
+        $ftpLog = $ftp_user_name . "@" . p4string::addEndSlash($ftp_server) . $export->getDestfolder();
 
-        if ($ftp_export["crash"] == 0) {
+        if ($export->getCrash() == 0) {
             $line = sprintf(
                 _('task::ftp:Etat d\'envoi FTP vers le serveur' .
                     ' "%1$s" avec le compte "%2$s" et pour destination le dossier : "%3$s"') . PHP_EOL
                 , $ftp_server
                 , $ftp_user_name
-                , $ftp_export["destfolder"]
+                , $export->getDestfolder()
             );
             $state .= $line;
             $this->logger->addDebug($line);
@@ -347,18 +300,18 @@ class task_period_ftp extends task_appboxAbstract
 
         $state .= $line = sprintf(
                 _("task::ftp:TENTATIVE no %s, %s")
-                , $ftp_export["crash"] + 1
+                , $export->getCrash() + 1
                 , "  (" . date('r') . ")"
             ) . PHP_EOL;
 
         $this->logger->addDebug($line);
 
         try {
-            $ssl = ($ftp_export['ssl'] == '1');
+            $ssl = $export->isSsl();
             $ftp_client = $this->dependencyContainer['phraseanet.ftp.client']($ftp_server, 21, 300, $ssl, $this->proxy, $this->proxyport);
             $ftp_client->login($ftp_user_name, $ftp_user_pass);
 
-            if ($ftp_export["passif"] == "1") {
+            if ($export->isPassif()) {
                 try {
                     $ftp_client->passive(true);
                 } catch (Exception $e) {
@@ -366,26 +319,26 @@ class task_period_ftp extends task_appboxAbstract
                 }
             }
 
-            if (trim($ftp_export["destfolder"]) != '') {
+            if (trim($export->getDestfolder()) != '') {
                 try {
-                    $ftp_client->chdir($ftp_export["destfolder"]);
-                    $ftp_export["destfolder"] = '/' . $ftp_export["destfolder"];
+                    $ftp_client->chdir($export->getDestFolder());
+                    $export->setDestfolder('/' . $export->getDestfolder());
                 } catch (Exception $e) {
                     $this->logger->addDebug($e->getMessage());
                 }
             } else {
-                $ftp_export["destfolder"] = '/';
+                $export->setDestfolder('/');
             }
 
-            if (trim($ftp_export["foldertocreate"]) != '') {
+            if (trim($export->getFoldertocreate()) != '') {
                 try {
-                    $ftp_client->mkdir($ftp_export["foldertocreate"]);
+                    $ftp_client->mkdir($export->getFoldertocreate());
                 } catch (Exception $e) {
                     $this->logger->addDebug($e->getMessage());
                 }
                 try {
-                    $new_dir = $ftp_client->add_end_slash($ftp_export["destfolder"])
-                        . $ftp_export["foldertocreate"];
+                    $new_dir = $ftp_client->add_end_slash($export->getDestfolder())
+                        . $export->getFoldertocreate();
                     $ftp_client->chdir($new_dir);
                 } catch (Exception $e) {
                     $this->logger->addDebug($e->getMessage());
@@ -395,38 +348,43 @@ class task_period_ftp extends task_appboxAbstract
             $obj = array();
 
             $basefolder = '';
-            if (!in_array(trim($ftp_export["destfolder"]), array('.', './', ''))) {
-                $basefolder = p4string::addEndSlash($ftp_export["destfolder"]);
+            if (!in_array(trim($export->getDestfolder()), array('.', './', ''))) {
+                $basefolder = p4string::addEndSlash($export->getDestfolder());
             }
 
-            $basefolder .= $ftp_export["foldertocreate"];
+            $basefolder .= $export->getFoldertocreate();
 
             if (in_array(trim($basefolder), array('.', './', ''))) {
                 $basefolder = '/';
             }
 
-            foreach ($ftp_export['files'] as $fileid => $file) {
-                $base_id = $file["base_id"];
-                $record_id = $file["record_id"];
-                $subdef = $file['subdef'];
-
+            foreach ($export->getElements() as $exportElement) {
+                if ($exportElement->isDone()) {
+                    continue;
+                }
+                
+                $base_id = $exportElement->getBaseId();
+                $record_id = $exportElement->getRecordId();
+                $subdef = $exportElement->getSubdef();
+                $localfile = null;
+                
                 try {
                     $sbas_id = phrasea::sbasFromBas($this->dependencyContainer, $base_id);
                     $record = new record_adapter($this->dependencyContainer, $sbas_id, $record_id);
 
-                    $sdcaption = $record->get_caption()->serialize(caption_record::SERIALIZE_XML, $ftp_export["businessfields"]);
+                    $sdcaption = $record->get_caption()->serialize(caption_record::SERIALIZE_XML, $exportElement->isBusinessfields());
 
-                    $remotefile = $file["filename"];
+                    $remotefile = $exportElement->getFilename();
 
                     if ($subdef == 'caption') {
-                        $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_XML, $ftp_export["businessfields"]);
+                        $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_XML, $exportElement->isBusinessfields());
 
                         $localfile = $this->dependencyContainer['root.path'] . '/tmp/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
                             throw new Exception('Impossible de creer un fichier temporaire');
                         }
                     } elseif ($subdef == 'caption-yaml') {
-                        $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $ftp_export["businessfields"]);
+                        $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $exportElement->isBusinessfields());
 
                         $localfile = $this->dependencyContainer['root.path'] . '/tmp/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
@@ -445,7 +403,7 @@ class task_period_ftp extends task_appboxAbstract
                         }
                     }
 
-                    $current_folder = p4string::delEndSlash(str_replace('//', '/', $basefolder . $file['folder']));
+                    $current_folder = p4string::delEndSlash(str_replace('//', '/', $basefolder . $exportElement->getFolder()));
 
                     if ($ftp_client->pwd() != $current_folder) {
                         try {
@@ -466,11 +424,11 @@ class task_period_ftp extends task_appboxAbstract
                         unlink($localfile);
                     }
 
-                    $sql = "UPDATE ftp_export_elements"
-                        . " SET done='1', error='0' WHERE id = :file_id";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute(array(':file_id' => $file['id']));
-                    $stmt->closeCursor();
+                    $exportElement
+                            ->setDone(true)
+                            ->setError(false);
+                    $this->dependencyContainer['EM']->persist($exportElement);
+                    $this->dependencyContainer['EM']->flush();
                     $this->logexport($record, $obj, $ftpLog);
                 } catch (Exception $e) {
                     $state .= $line = sprintf(_('task::ftp:File "%1$s" (record %2$s) de la base "%3$s"' .
@@ -480,39 +438,28 @@ class task_period_ftp extends task_appboxAbstract
 
                     $this->logger->addDebug($line);
 
-                    $done = $file['error'];
-
-                    $sql = "UPDATE ftp_export_elements"
-                        . " SET done = :done, error='1' WHERE id = :file_id";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute(array(':done'    => $done, ':file_id' => $file['id']));
-                    $stmt->closeCursor();
+                    // One failure max
+                    $exportElement
+                            ->setDone($exportElement->isError())
+                            ->setError(true);
+                    $this->dependencyContainer['EM']->persist($exportElement);
+                    $this->dependencyContainer['EM']->flush();
                 }
             }
 
-            if ($ftp_export['logfile']) {
+            if ($export->isLogfile()) {
                 $this->logger->addDebug("logfile ");
 
                 $date = new DateTime();
-                $remote_file = $date->format('U');
-
-                $sql = 'SELECT filename, folder'
-                    . ' FROM ftp_export_elements'
-                    . ' WHERE ftp_export_id = :ftp_export_id'
-                    . ' AND error = "0" AND done="1"';
-
-                $stmt = $conn->prepare($sql);
-                $stmt->execute(array(':ftp_export_id' => $id));
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
                 $buffer = '#transfert finished ' . $date->format(DATE_ATOM) . "\n\n";
 
-                foreach ($rs as $row) {
-                    $filename = $row['filename'];
-                    $folder = $row['folder'];
-
-                    $root = $ftp_export['foldertocreate'];
+                foreach ($export->getElements() as $exportElement) {
+                    if (!$exportElement->isDone() || $exportElement->isError()) {
+                        continue;
+                    }
+                    $filename = $exportElement->getFilename();
+                    $folder = $exportElement->getFilename();
+                    $root = $export->getFoldertocreate();
 
                     $buffer .= $root . '/' . $folder . $filename . "\n";
                 }
@@ -522,11 +469,8 @@ class task_period_ftp extends task_appboxAbstract
                 file_put_contents($tmpfile, $buffer);
 
                 $remotefile = $date->format('U') . '-transfert.log';
-
-                $ftp_client->chdir($ftp_export["destfolder"]);
-
+                $ftp_client->chdir($export->getDestFolder());
                 $ftp_client->put($remotefile, $tmpfile);
-
                 unlink($tmpfile);
             }
 
@@ -537,15 +481,14 @@ class task_period_ftp extends task_appboxAbstract
 
             $this->logger->addDebug($line);
 
-            $sql = "UPDATE ftp_export SET crash=crash+1,date=now()"
-                . " WHERE id = :export_id";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':export_id' => $ftp_export['id']));
-            $stmt->closeCursor();
+            $export->incrementCrash();
+            $this->dependencyContainer['EM']->persist($export);
+            $this->dependencyContainer['EM']->flush();
 
             unset($ftp_client);
         }
-        $this->finalize($appbox, $id);
+        
+        $this->finalize($appbox, $export);
     }
 
     protected function postProcessOneContent(appbox $appbox, $row)
@@ -553,111 +496,77 @@ class task_period_ftp extends task_appboxAbstract
         return $this;
     }
 
-    public function finalize(appbox $appbox, $id)
+    public function finalize(appbox $appbox, FtpExport $export)
     {
         $conn = $appbox->get_connection();
 
-        $sql = 'SELECT crash, nbretry FROM ftp_export WHERE id = :export_id';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':export_id' => $id));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row && $row['crash'] >= $row['nbretry']) {
-            $this->send_mails($appbox, $id);
+        if ($export->getCrash() >= $export->getNbretry()) {
+            $this->send_mails($appbox, $export);
 
             return $this;
         }
+        
+        $total = count($export->getElements());
+        $done = count($export->getElements()->filter(function (FtpExportElement $element) { 
+            return $element->isDone();
+        }));
+        $error = count($export->getElements()->filter(function (FtpExportElement $element) { 
+            return $element->isError();
+        }));
 
-        $sql = 'SELECT count(id) as total, sum(error) as errors, sum(done) as done'
-            . ' FROM ftp_export_elements WHERE ftp_export_id = :export_id';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':export_id' => $id));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        if ($done === $total) {
+            $this->send_mails($appbox, $export);
 
-        if ($row && $row['done'] == (int) $row['total']) {
-            $this->send_mails($appbox, $id);
-
-            if ((int) $row['errors'] === 0) {
-                $sql = 'DELETE FROM ftp_export WHERE id = :export_id';
-                $stmt = $conn->prepare($sql);
-                $stmt->execute(array(':export_id' => $id));
-                $stmt->closeCursor();
-                $sql = 'DELETE FROM ftp_export_elements WHERE ftp_export_id = :export_id';
-                $stmt = $conn->prepare($sql);
-                $stmt->execute(array(':export_id' => $id));
-                $stmt->closeCursor();
+            if ((int) $error === 0) {
+                $this->dependencyContainer['EM']->remove($export);
+                $this->dependencyContainer['EM']->flush();
             } else {
-                $sql = 'UPDATE ftp_export SET crash = nbretry';
-                $stmt = $conn->prepare($sql);
-                $stmt->execute();
-                $stmt->closeCursor();
-                $sql = 'DELETE FROM ftp_export_elements WHERE ftp_export_id = :export_id AND error="0"';
-                $stmt = $conn->prepare($sql);
-                $stmt->execute(array(':export_id' => $id));
-                $stmt->closeCursor();
+                $export->setCrash($export->getNbretry());
+                foreach ($export->getElements() as $element) {
+                    if (!$element->isError()) {
+                        $this->dependencyContainer['EM']->remove($export);
+                    }
+                }
+                $this->dependencyContainer['EM']->flush();
             }
 
             return $this;
         }
     }
 
-    public function send_mails(appbox $appbox, $id)
+    public function send_mails(appbox $appbox, FtpExport $export)
     {
-        $conn = $appbox->get_connection();
-
-        $sql = 'SELECT filename, base_id, record_id, subdef, error, done'
-            . ' FROM ftp_export_elements WHERE ftp_export_id = :export_id';
-
         $transferts = array();
-
         $transfert_status = _('task::ftp:Tous les documents ont ete transferes avec succes');
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':export_id' => $id));
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $row) {
-            if ($row['error'] == '0' && $row['done'] == '1') {
+        foreach ($export->getElements() as $element) {
+            if (!$element->isError() && $element->isDone()) {
                 $transferts[] =
                     '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
-                        , $row["record_id"], $row["filename"]
-                        , phrasea::sbas_labels(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $this->dependencyContainer)
-                        , phrasea::bas_labels($row['base_id'], $this->dependencyContainer), $row['subdef']) . ' : ' . _('Transfert OK') . '</li>';
+                        , $element->getRecordId(), $element->getFilename()
+                        , phrasea::sbas_labels(phrasea::sbasFromBas($this->dependencyContainer, $element->getBaseId()), $this->dependencyContainer)
+                        , phrasea::bas_labels($element->getBaseId(), $this->dependencyContainer), $element->getSubdef()) . ' : ' . _('Transfert OK') . '</li>';
             } else {
                 $transferts[] =
                     '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
-                        , $row["record_id"], $row["filename"]
-                        , phrasea::sbas_labels(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $this->dependencyContainer), phrasea::bas_labels($row['base_id'], $this->dependencyContainer)
-                        , $row['subdef']) . ' : ' . _('Transfert Annule') . '</li>';
+                        , $element->getRecordId(), $element->getFilename()
+                        , phrasea::sbas_labels(phrasea::sbasFromBas($this->dependencyContainer, $element->getBaseId()), $this->dependencyContainer), phrasea::bas_labels($element->getBaseId(), $this->dependencyContainer)
+                        , $element->getSubdef()) . ' : ' . _('Transfert Annule') . '</li>';
                 $transfert_status = _('task::ftp:Certains documents n\'ont pas pu etre tranferes');
             }
         }
 
-        $sql = 'SELECT addr, crash, nbretry, sendermail, mail, text_mail_sender, text_mail_receiver'
-            . ' FROM ftp_export WHERE id = :export_id';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':export_id' => $id));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row) {
-            if ($row['crash'] >= $row['nbretry']) {
-                $connection_status = _('Des difficultes ont ete rencontres a la connection au serveur distant');
-            } else {
-                $connection_status = _('La connection vers le serveur distant est OK');
-            }
-
-            $text_mail_sender = $row['text_mail_sender'];
-            $text_mail_receiver = $row['text_mail_receiver'];
-            $mail = $row['mail'];
-            $sendermail = $row['sendermail'];
-            $ftp_server = $row['addr'];
+        if ($export->getCrash() >= $export->getNbretry()) {
+            $connection_status = _('Des difficultes ont ete rencontres a la connection au serveur distant');
+        } else {
+            $connection_status = _('La connection vers le serveur distant est OK');
         }
+
+        $text_mail_sender = $export->getTextMailSender();
+        $text_mail_receiver = $export->getTextMailReceiver();
+        $mail = $export->getMail();
+        $sendermail = $export->getSendermail();
+        $ftp_server = $export->getAddr();
 
         $message = "\n\n----------------------------------------\n\n";
         $message =  $connection_status . "\n";
@@ -669,11 +578,10 @@ class task_period_ftp extends task_appboxAbstract
         $sender_message = $text_mail_sender . $message;
         $receiver_message = $text_mail_receiver . $message;
 
-        $receiver = null;
         try {
             $receiver = new Receiver(null, $sendermail);
         } catch (InvalidArgumentException $e) {
-
+            $receiver = null;
         }
 
         if ($receiver) {
@@ -682,24 +590,20 @@ class task_period_ftp extends task_appboxAbstract
             $this->dependencyContainer['notification.deliverer']->deliver($mail);
         }
 
-        $receiver = null;
         try {
             $receiver = new Receiver(null, $mail);
-        } catch (InvalidArgumentException $e) {
-
-        }
-
-        if ($receiver) {
-            $mail = MailSuccessFTP::create($this->dependencyContainer, $receiver, null, $receiver_message);
+            $mail = MailSuccessFTPSender::create($this->dependencyContainer, $receiver, null, $receiver_message);
             $mail->setServer($ftp_server);
             $this->dependencyContainer['notification.deliverer']->deliver($mail);
+        } catch (\Exception $e) {
+            $this->log('Unable to deliver success message');
         }
     }
 
     public function logexport(record_adapter $record, $obj, $ftpLog)
     {
         foreach ($obj as $oneObj) {
-            $this->app['phraseanet.logger']($record->get_databox())
+            $this->dependencyContainer['phraseanet.logger']($record->get_databox())
                 ->log($record, Session_Logger::EVENT_EXPORTFTP, $ftpLog, '');
         }
 
