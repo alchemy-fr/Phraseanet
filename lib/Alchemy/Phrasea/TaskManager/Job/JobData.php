@@ -26,11 +26,17 @@ class JobData implements JobDataInterface
         $this->task = $task;
     }
 
+    /**
+     * @return Application
+     */
     public function getApplication()
     {
         return $this->app;
     }
 
+    /**
+     * @return Task
+     */
     public function getTask()
     {
         return $this->task;
