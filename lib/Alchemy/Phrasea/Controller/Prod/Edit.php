@@ -270,7 +270,7 @@ class Edit implements ControllerProviderInterface
 
         $controllers->post('/apply/', function(Application $app, Request $request) {
 
-            $records = RecordsRequest::fromRequest($app, $request, true, array('canmodifrecord'));
+            $records = RecordsRequest::fromRequest($app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, array('canmodifrecord'));
 
             if (count($records->databoxes()) !== 1) {
                 throw new \Exception('Unable to edit on multiple databoxes');
