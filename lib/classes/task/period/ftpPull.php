@@ -23,12 +23,12 @@ class task_period_ftpPull extends task_appboxAbstract
     protected $ftppath;
     protected $localpath;
 
-    public function getName()
+    public static function getName()
     {
         return(_("task::ftp:FTP Pull"));
     }
 
-    public function help()
+    public static function help()
     {
         return '';
     }

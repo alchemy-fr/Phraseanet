@@ -64,7 +64,7 @@ class task_period_archive extends task_abstract
      *
      * @return string
      */
-    public function getName()
+    public static function getName()
     {
         return _('task::archive:Archivage');
     }
@@ -284,7 +284,7 @@ class task_period_archive extends task_abstract
      *
      * @return string
      */
-    public function help()
+    public static function help()
     {
         return _("task::archive:Archiving files found into a 'hotfolder'");
     }

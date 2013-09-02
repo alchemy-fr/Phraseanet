@@ -17,7 +17,7 @@ class task_period_emptyColl extends task_appboxAbstract
     protected $suicidable = true;
     protected $total_records = 0;
 
-    public function getName()
+    public static function getName()
     {
         return(_("Vidage de collection"));
     }
@@ -27,7 +27,7 @@ class task_period_emptyColl extends task_appboxAbstract
         return false;
     }
 
-    public function help()
+    public static function help()
     {
         return("Vide une collection");
     }

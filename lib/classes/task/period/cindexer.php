@@ -99,7 +99,7 @@ class task_period_cindexer extends task_abstract
      *
      * @return string
      */
-    public function getName()
+    public static function getName()
     {
         return(_("Indexation task"));
     }
@@ -108,7 +108,7 @@ class task_period_cindexer extends task_abstract
      *
      * @return string
      */
-    public function help()
+    public static function help()
     {
         return(_("This task is used to index records for Phrasea engine."));
     }
