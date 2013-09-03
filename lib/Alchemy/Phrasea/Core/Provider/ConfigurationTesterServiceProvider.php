@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Setup\ConfigurationTester;
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\PreSchemaUpgradeCollection;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
 
@@ -23,6 +24,10 @@ class ConfigurationTesterServiceProvider implements ServiceProviderInterface
     {
         $app['phraseanet.configuration-tester'] = $app->share(function (Application $app) {
             return new ConfigurationTester($app);
+        });
+
+        $app['phraseanet.pre-schema-upgrader'] = $app->share(function () {
+            return new PreSchemaUpgradeCollection();
         });
     }
 
