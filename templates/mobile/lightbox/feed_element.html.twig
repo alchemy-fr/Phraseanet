@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block stylesheet %}
-  <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.css' }) }}" />
+    <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.css' }) }}" />
 {% endblock %}
 
 {% block content %}
@@ -19,10 +19,16 @@
     <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
   </div>
   <div data-role="content">
-    {{ thumbnail.format100percent(record.get_preview(),'', record.get_thumbnail()) }}
+    {{ thumbnail.format100percent(record.get_preview()) }}
   </div>
   <div data-role="footer">
 
   </div>
+    <script type="text/javascript">
+        $( window ).on( "orientationchange", function( event ) {
+            $("#map").height($(window).height() - 50);
+        });
+        $( window ).orientationchange();
+    </script>
 </div>
 {% endblock %}

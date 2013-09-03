@@ -39,7 +39,7 @@
     <a href="#about" class="ui-btn-right">{% trans 'a propos'%}</a>
   </div>
     <div data-role="content">
-    <ul data-role="listview">
+    <ul data-role="listview" style="width:100%;margin: 0;">
       <li>
         <a href="#validation">{% trans 'Validations'%}</a>
         <span class="ui-li-count">{{_self.valid_baskets_length(baskets_collection)}}</span>
@@ -86,7 +86,7 @@
     <p>
       {% trans 'Voici vos validations en cours' %}
     </p>
-    <ul data-role="listview">
+    <ul data-role="listview"  style="width:100%;margin: 0;">
             {% for basket in baskets_collection %}
               {% if basket.getValidation() %}
                 {% set basket_length = basket.getElements().count() %}
@@ -115,7 +115,7 @@
     <p>
       {% trans 'Voici vos paniers' %}
     </p>
-    <ul data-role="listview">
+    <ul data-role="listview"  style="width:100%;margin: 0;">
             {% for basket in baskets_collection %}
               {% if basket.getValidation() is empty %}
                 {% set basket_length = basket.getElements().count() %}
