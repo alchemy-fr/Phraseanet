@@ -266,7 +266,7 @@ class Thesaurus implements ControllerProviderInterface
         }
     }
 
-    private function exportNode(&$node, &$tnodes, &$thits, $depth)
+    private function exportNode(\DOMNode $node, &$tnodes, &$thits, $depth)
     {
         if ($node->nodeType == XML_ELEMENT_NODE) {
             if (($nname = $node->nodeName) == "thesaurus" || $nname == "cterms") {
@@ -460,13 +460,13 @@ class Thesaurus implements ControllerProviderInterface
         ));
     }
 
-    private function export0Topics($znode, &$dom, &$root, $lng, $srt, $sth, $sand, $opened_display, $obr)
+    private function export0Topics($znode, \DOMDocument $dom, \DOMNode $root, $lng, $srt, $sth, $sand, $opened_display, $obr)
     {
         $topics = $root->appendChild($dom->createElement('topics'));
         $this->doExportTopics($znode, $dom, $topics, '', $lng, $srt, $sth, $sand, $opened_display, $obr, 0);
     }
 
-    private function doExportTopics($node, &$dom, &$topics, $prevQuery, $lng, $srt, $sth, $sand, $opened_display, $obr, $depth = 0)
+    private function doExportTopics($node, \DOMDocument $dom, \DOMNode $topics, $prevQuery, $lng, $srt, $sth, $sand, $opened_display, $obr, $depth = 0)
     {
         $ntopics = 0;
         if ($node->nodeType == XML_ELEMENT_NODE) {
@@ -1025,7 +1025,7 @@ class Thesaurus implements ControllerProviderInterface
         ));
     }
 
-    private function fixThesaurus($app, &$domct, &$domth, &$connbas)
+    private function fixThesaurus($app, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas)
     {
         $version = $domth->documentElement->getAttribute("version");
 
@@ -1280,7 +1280,7 @@ class Thesaurus implements ControllerProviderInterface
         return new Response($ret->saveXML(), 200, array('Content-Type' => 'text/xml'));
     }
 
-    private function acceptBranch(Application $app, $sbas_id, &$node)
+    private function acceptBranch(Application $app, $sbas_id, \DOMElement $node)
     {
         if (strlen($oldid = $node->getAttribute("id")) > 1) {
             $node->setAttribute("id", $newid = ("C" . substr($oldid, 1)));
@@ -1950,7 +1950,7 @@ class Thesaurus implements ControllerProviderInterface
 
         $html = $root->appendChild($ret->createElement("html"));
 
-        if (null === $bid = $request->get("bid")) {
+        if (null === $request->get("bid")) {
             return new Response('Missing bid parameter', 400);
         }
 
@@ -2891,7 +2891,7 @@ class Thesaurus implements ControllerProviderInterface
         return new Response($ret->saveXML(), 200, array('Content-Type' => 'text/xml'));
     }
 
-    private function doRejectBranch(\connection_pdo $connbas, &$node)
+    private function doRejectBranch(\connection_pdo $connbas, \DOMElement $node)
     {
         if (strlen($oldid = $node->getAttribute("id")) > 1) {
             $node->setAttribute("id", $newid = ("R" . substr($oldid, 1)));
