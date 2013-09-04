@@ -55,6 +55,23 @@ class patch_3907 implements patchInterface
     public function apply(base $appbox, Application $app)
     {
         $conn = $app['phraseanet.appbox']->get_connection();
+
+        $sql = 'SHOW TABLE STATUS;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $found = false;
+        foreach ($rs as $row) {
+            if ('feeds_backup' === $row['Name']) {
+                $found = true;
+                break;
+            }
+        }
+        if (!$found) {
+            return;
+        }
+
         $sql = 'SELECT id, title, subtitle, public, created_on, updated_on, base_id FROM feeds_backup;';
         $stmt = $conn->prepare($sql);
         $stmt->execute();

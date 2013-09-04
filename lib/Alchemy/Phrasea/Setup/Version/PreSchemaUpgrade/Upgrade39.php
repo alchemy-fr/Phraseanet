@@ -29,7 +29,7 @@ class Upgrade39 implements PreSchemaUpgradeInterface
      */
     public function isApplyable(Application $app)
     {
-        $rs = $app['EM']->getConnection()->fetchAll('SHOW TABLE STATUS');
+        $rs = $app['phraseanet.appbox']->get_connection()->query('SHOW TABLE STATUS');
         $found = false;
 
         foreach ($rs as $row) {

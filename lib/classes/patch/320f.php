@@ -14,6 +14,7 @@ use Entities\Feed;
 use Entities\FeedEntry;
 use Entities\FeedItem;
 use Entities\FeedPublisher;
+use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
