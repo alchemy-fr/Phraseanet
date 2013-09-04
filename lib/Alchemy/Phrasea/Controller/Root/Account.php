@@ -17,7 +17,6 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
-use Entities\FtpCredential;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

@@ -3,7 +3,6 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use Entities;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**

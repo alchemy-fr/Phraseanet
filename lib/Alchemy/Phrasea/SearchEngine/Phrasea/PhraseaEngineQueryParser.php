@@ -1653,7 +1653,7 @@ class PhraseaEngineQueryParser
     {
         $nok = 0;
         $w = $t["VALUE"];
-        if ($w != "?" && $w != "*") {  
+        if ($w != "?" && $w != "*") {
             // on laisse passer les 'isolés' pour les traiter plus tard comme des mots vides
             $length = strlen($w);
             for ($i = 0; $i < $length; $i++) {
