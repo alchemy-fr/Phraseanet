@@ -152,6 +152,11 @@ class patch_3907 implements patchInterface
             }
         }
 
+        $fiStmt->closeCursor();
+        $feStmt->closeCursor();
+        $fpStmt->closeCursor();
+        $ftStmt->closeCursor();
+
         $faStmt->execute();
         $faRes = $faStmt->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -163,6 +168,7 @@ class patch_3907 implements patchInterface
 
             $em->persist($token);
         }
+        $faStmt->closeCursor();
 
         $em->flush();
         $em->clear();
