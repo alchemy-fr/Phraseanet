@@ -542,13 +542,14 @@ abstract class task_abstract
         if ($this->running) {       // && $this->records_done == 0)
             $when_started = time() - $when_started;
             if ($when_started < $this->period) {
-                for ($t = $this->period - $when_started; $this->running && $t > 0; $t --) { // DON'T do sleep($this->period - $when_started) because it prevents ticks !
+                for ($t = $this->period - $when_started; $this->running && $t > 0; $t --) { 
+                    // DON'T do sleep($this->period - $when_started) because it prevents ticks !
                     $s = $this->getState();
                     if ($s == self::STATE_TOSTOP) {
                         $this->setState(self::STATE_STOPPED);
                         $this->running = FALSE;
                     } else {
-                        sleep(1);
+                        $this->sleep(1);
                     }
                 }
             }
@@ -568,8 +569,9 @@ abstract class task_abstract
             throw new \InvalidArgumentException(sprintf("(%s) is not > 0"));
         }
 
-        while ($this->running && $nsec -- > 0) {
-            sleep(1);
+        $end = microtime(true) + $nsec;
+        while ($this->running && microtime(true) < $end) {
+            usleep(10000);
         }
     }
 

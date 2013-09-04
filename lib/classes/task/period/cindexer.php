@@ -508,7 +508,7 @@ class task_period_cindexer extends task_abstract
                         socket_write($sock, 'Q', 1);
                         socket_write($sock, "\r\n", strlen("\r\n"));
                         for ($i = 0; $this->running && $i < 5; $i ++) {
-                            sleep(1);
+                            $this->sleep(1);
                         }
                         $qsent = 'Q';
                         $timetokill = time() + 10;
@@ -546,7 +546,7 @@ class task_period_cindexer extends task_abstract
                 }
             }
             for ($i = 0; $this->running && $i < 5; $i ++) {
-                sleep(1);
+                $this->sleep(1);
             }
         }
 
@@ -578,7 +578,7 @@ class task_period_cindexer extends task_abstract
             } else {
                 chdir(dirname(__FILE__));
                 pcntl_exec($cmd, $args);
-                sleep(2);
+                $this->sleep(2);
             }
         } else {
             // parent
@@ -601,7 +601,7 @@ class task_period_cindexer extends task_abstract
                 if ($this->getState() == self::STATE_TOSTOP) {
                     posix_kill($pid, ($sigsent = SIGINT));
                     $timetokill = time() + 10;
-                    sleep(2);
+                    $this->sleep(2);
                 }
 
                 $status = NULL;
@@ -625,7 +625,7 @@ class task_period_cindexer extends task_abstract
                         $this->log('Kill signal sent to Phrasea indexer');
                         posix_kill($pid, ($sigsent = SIGKILL));
                     }
-                    sleep(2);
+                    $this->sleep(2);
                 }
             } // while running
         }
@@ -634,7 +634,7 @@ class task_period_cindexer extends task_abstract
     private function run_with_exec($cmd, $args, $args_nopwd)
     {
         pcntl_exec($cmd, $args);
-        sleep(2);
+        $this->sleep(2);
     }
 
     /**
