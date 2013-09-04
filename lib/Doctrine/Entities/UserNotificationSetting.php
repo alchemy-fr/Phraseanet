@@ -33,6 +33,11 @@ class UserNotificationSetting
     private $id;
 
     /**
+     * @ORM\Column(type="integer", nullable=true, name="usr_id")
+     */
+    private $usrId;
+
+    /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="notificationSettings")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      **/
@@ -84,6 +89,26 @@ class UserNotificationSetting
     public function setUser(User $user = null)
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getUsrId()
+    {
+        return $this->usrId;
+    }
+
+    /**
+     * @param integer $usrId
+     *
+     * @return UserSetting
+     */
+    public function setUsrId($usrId)
+    {
+        $this->usrId = $usrId;
 
         return $this;
     }

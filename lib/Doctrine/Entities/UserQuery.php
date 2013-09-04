@@ -29,7 +29,7 @@ class UserQuery
     private $id;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true, name="usr_id")
      */
     private $usrId;
 
