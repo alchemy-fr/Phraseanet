@@ -75,11 +75,8 @@ class Migration31 implements MigrationInterface
 
         foreach ($GV as $section => $datas_section) {
             foreach ($datas_section['vars'] as $datas) {
-
-                eval('$test = defined("' . $datas["name"] . '");');
-
-                if ($test) {
-                    eval('$val = ' . $datas["name"] . ';');
+                if (defined($datas["name"])) {
+                    $val = constant($datas["name"]);
                 } elseif (isset($datas['default'])) {
                     $val = $datas['default'];
                 } else {
