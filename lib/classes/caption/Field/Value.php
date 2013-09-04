@@ -191,7 +191,6 @@ class caption_Field_Value implements cache_cacheableInterface
         $this->delete_data_from_cache();
         $this->databox_field->delete_data_from_cache();
 
-        $sbas_id = $this->record->get_sbas_id();
         $this->record->get_caption()->delete_data_from_cache();
 
         return $this;
@@ -247,7 +246,6 @@ class caption_Field_Value implements cache_cacheableInterface
     {
         $this->value = $value;
 
-        $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
         $connbas = $this->databox_field->get_connection();
 
         $params = array(
@@ -491,7 +489,6 @@ class caption_Field_Value implements cache_cacheableInterface
      */
     public function delete_data_from_cache($option = null)
     {
-        $databox = $this->record->get_databox();
         $this->value = $this->VocabularyId = $this->VocabularyType = null;
         $this->record->delete_data_from_cache(record_adapter::CACHE_TITLE);
 

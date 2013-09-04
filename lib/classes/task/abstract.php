@@ -99,8 +99,6 @@ abstract class task_abstract
      */
     protected $maxmegs;
     protected $runner;
-    private $input;
-    private $output;
 
     /**
      * delay between two loops
@@ -794,22 +792,6 @@ abstract class task_abstract
         }
     }
 
-    public function traceRam($msg = '')
-    {
-        static $lastt = null;
-        $t = explode(' ', ($ut = microtime()));
-        if ($lastt === null) {
-            $lastt = $t;
-        }
-        $dt = ($t[0] - $lastt[0]) + ($t[1] - $lastt[1]);
-
-        $m = memory_get_usage() >> 10;
-        $d = debug_backtrace(false);
-
-        $lastt = $t;
-        $this->logger->addDebug(memory_get_usage() . " -- " . memory_get_usage(true));
-    }
-
     public function log($message, $level=self::LOG_INFO)
     {
         // nb : self::log_levels ARE standard log levels, ok with monolog
@@ -873,17 +855,6 @@ abstract class task_abstract
         $task->setTitle($task->getName());
 
         return $task;
-    }
-
-    public function getUsage()
-    {
-        global $argc, $argv;
-        $t = "usage: " . $argv[0] . " [options]\noptions:\n";
-        foreach ($this->argt as $n => $v) {
-            $t .= "\t" . $n . $v["usage"] . "\n";
-        }
-
-        return $t;
     }
 
     /**

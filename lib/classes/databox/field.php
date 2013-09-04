@@ -434,7 +434,6 @@ class databox_field implements cache_cacheableInterface
         } else {
             $meta = $nodes->item(0);
 
-            $current_name = $meta->nodeName;
             if ($this->name != $meta->nodeName) {
                 $old_meta = $meta;
                 $meta = $dom_struct->createElement($this->name);

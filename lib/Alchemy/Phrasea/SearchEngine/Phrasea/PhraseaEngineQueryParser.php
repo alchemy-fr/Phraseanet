@@ -454,8 +454,6 @@ class PhraseaEngineQueryParser
 
     public function _extendThesaurusOnTerms(&$tree, &$copy, $useFullText, $useThesaurus, $keepfuzzy, $depth, $path)
     {
-        if ($depth == 0)
-            $ret = $tree;
         if (!$useThesaurus) {
             return;  // full-text only : inchangé
         }
@@ -586,7 +584,7 @@ class PhraseaEngineQueryParser
 
         $ambigus = 0;
         if ($tree["CLASS"] == "OPK" && $tree["NODETYPE"] == PHRASEA_OP_COLON) {
-            $ambigus = $this->setTids($tree, $bid, $domthe, $searchsynonyms);
+            $ambigus = $this->setTids($tree, $bid, $domthe);
         } elseif ($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK") {
             $ambigus += $this->thesaurus2($tree["LB"], $bid, $name, $domthe, $searchsynonyms, $depth + 1);
             $ambigus += $this->thesaurus2($tree["RB"], $bid, $name, $domthe, $searchsynonyms, $depth + 1);
@@ -597,7 +595,6 @@ class PhraseaEngineQueryParser
 
     public function propAsHTML(&$node, &$html, $path, $depth = 0)
     {
-        global $parm;
         if ($depth > 0) {
             $tsy = array();
             $lngfound = "?";
@@ -676,9 +673,6 @@ class PhraseaEngineQueryParser
 
     public function _queryAsHTML($tree, $depth = 0)
     {
-        if ($depth == 0) {
-            $ambiguites = array("n"    => 0, "refs" => array());
-        }
         switch ($tree["CLASS"]) {
             case "SIMPLE":
             case "QSIMPLE":
@@ -720,7 +714,7 @@ class PhraseaEngineQueryParser
         }
     }
 
-    public function setTids(&$tree, $bid, &$domthe, $searchsynonyms)
+    public function setTids(&$tree, $bid, &$domthe)
     {
         if ($this->debug)
             print("============================ setTids:\n\$tree=" . var_export($tree, true) . "\n");
@@ -761,7 +755,6 @@ class PhraseaEngineQueryParser
                 // $this->thesaurusDOMNodes[] = $nodes->item(0);
             } else {
                 // on cherche plusieurs id's, on utilisera la syntaxe 'regexp' (l'extension repérera elle meme la syntaxe car la value finira par '$')
-                $val = "";
                 foreach ($nodes as $node) {
                     if (!isset($tree["CONTEXT"]))
                         $ambigus++;
@@ -865,7 +858,6 @@ class PhraseaEngineQueryParser
         switch ($tree["CLASS"]) {
             case "SIMPLE":
             case "QSIMPLE":
-                $prelink = $postlink = "";
                 $w = is_array($tree["VALUE"]) ? implode(" ", $tree["VALUE"]) : $tree["VALUE"];
                 $tab = "\n" . str_repeat("\t", $depth);
                 if (isset($tree["TIDS"]) && count($tree["TIDS"]) > 1) {

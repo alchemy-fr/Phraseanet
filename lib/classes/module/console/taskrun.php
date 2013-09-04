@@ -109,7 +109,6 @@ class module_console_taskrun extends Command
         );
 
         $tmpTask = $task_manager->getTask($task_id, null);
-        $taskname = $tmpTask->getName();
         unset($tmpTask);
 
         if (($ttyloglevel = strtoupper($input->getOption('ttyloglevel'))) != '') {

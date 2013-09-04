@@ -118,8 +118,6 @@ class Databoxes implements ControllerProviderInterface
      */
     public function getDatabases(Application $app, Request $request)
     {
-        $createBase = $mountBase = false;
-
         $sbasIds = array_merge(
             array_keys($app['authentication']->getUser()->ACL()->get_granted_sbas(array('bas_manage')))
             , array_keys($app['authentication']->getUser()->ACL()->get_granted_sbas(array('bas_modify_struct')))

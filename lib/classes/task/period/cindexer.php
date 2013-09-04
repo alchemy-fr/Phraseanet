@@ -128,7 +128,6 @@ class task_period_cindexer extends task_abstract
         $dom = new DOMDocument();
         $dom->formatOutput = true;
         if ($dom->loadXML($oldxml)) {
-            $xmlchanged = false;
             foreach (array("str:host", "str:port", "str:base", "str:user", "str:password", "str:socket", "boo:nolog", "str:clng", "boo:winsvc_run", "str:charset", 'str:debugmask', 'str:stem', 'str:sortempty') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -151,7 +150,6 @@ class task_period_cindexer extends task_abstract
                         $ns->appendChild($dom->createTextNode($pvalue ? '1' : '0'));
                         break;
                 }
-                $xmlchanged = true;
             }
         }
 
@@ -389,12 +387,7 @@ class task_period_cindexer extends task_abstract
     {
         $cmd = $this->getIndexer();
 
-        $nullfile = '/dev/null';
         $this->method = self::METHOD_PROC_OPEN;
-
-        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $nullfile = '/dev/null';
-        }
 
         if ( ! file_exists($cmd) || ! is_executable($cmd)) {
             $this->setState(self::STATE_STOPPED);
@@ -459,8 +452,6 @@ class task_period_cindexer extends task_abstract
             $args_nopwd[] = '--run';
         }
 
-        $logdir = $this->dependencyContainer['root.path'] . '/logs/';
-
         $this->new_status = NULL; // new status to set at the end
         $this->exception = NULL; // exception to throw at the end
 
@@ -503,13 +494,6 @@ class task_period_cindexer extends task_abstract
 
         $process = proc_open($execmd, $descriptors, $pipes, dirname($cmd), null, array('bypass_shell' => true));
 
-        $pid = NULL;
-        if (is_resource($process)) {
-            $proc_status = proc_get_status($process);
-            if ($proc_status['running']) {
-                $pid = $proc_status['pid'];
-            }
-        }
         $qsent = '';
         $timetokill = NULL;
         $sock = NULL;

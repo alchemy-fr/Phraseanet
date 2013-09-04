@@ -79,11 +79,6 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
         $start = 0;
         $perLoop = 100;
 
-        $from = array(
-            'email' => $entry->get_author_email(),
-            'name'  => $entry->get_author_name()
-        );
-
         do {
             $results = $Query->limit($start, $perLoop)->execute()->get_results();
 

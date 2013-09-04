@@ -564,7 +564,6 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
             }
 
             if ($error = $this->parse_xml_error($response->getBody())) {
-                $type = $error['type'];
                 $code = $error['code'];
 
                 if ($code == "too_many_recent_calls") {

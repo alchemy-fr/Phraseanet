@@ -562,7 +562,6 @@ class Thesaurus implements ControllerProviderInterface
     {
         set_time_limit(300);
 
-        $imported = false;
         $err = '';
 
         if (null === $bid = $request->get("bid")) {
@@ -595,7 +594,6 @@ class Thesaurus implements ControllerProviderInterface
                     if (($fp = fopen($file, 'rb'))) {
                         $iline = 0;
                         $curdepth = -1;
-                        $tid = array(-1    => -1, 0     => -1);
                         while ( ! $err && ! feof($fp) && ($line = fgets($fp)) !== FALSE) {
                             $iline ++;
                             if (trim($line) == '') {
@@ -629,7 +627,6 @@ class Thesaurus implements ControllerProviderInterface
                             $curdepth = $depth;
 
                             $nid = (int) ($node->getAttribute('nextid'));
-                            $id = $node->getAttribute('id') . '.' . $nid;
                             $pid = $node->getAttribute('id');
 
                             $te_id = ($pid ? ($pid . '.') : 'T') . $nid;
@@ -645,7 +642,6 @@ class Thesaurus implements ControllerProviderInterface
                             $nsy = 0;
                             foreach ($tsy as $syn) {
                                 $lng = $request->get('piv');
-                                $hit = '';
                                 $kon = '';
 
                                 if (($ob = strpos($syn, '[')) !== false) {
@@ -659,10 +655,8 @@ class Thesaurus implements ControllerProviderInterface
 
                                     if (($ob = strpos($syn, '[')) !== false) {
                                         if (($cb = strpos($syn, ']', $ob)) !== false) {
-                                            $hit = trim(substr($syn, $ob + 1, $cb - $ob - 1));
                                             $syn = substr($syn, 0, $ob) . substr($syn, $cb + 1);
                                         } else {
-                                            $hit = trim(substr($syn, $ob + 1));
                                             $syn = substr($syn, 0, $ob);
                                         }
                                     }
@@ -707,7 +701,6 @@ class Thesaurus implements ControllerProviderInterface
                 }
 
                 if (! $err) {
-                    $imported = true;
                     $databox->saveThesaurus($dom);
                 }
             }
@@ -784,7 +777,7 @@ class Thesaurus implements ControllerProviderInterface
 
         foreach ($rs as $row) {
             try {
-                $connbas = \connection::getPDOConnection($app, $row['sbas_id']);
+                \connection::getPDOConnection($app, $row['sbas_id']);
             } catch (\Exception $e) {
                 continue;
             }
@@ -966,7 +959,6 @@ class Thesaurus implements ControllerProviderInterface
 
             if ($domct && $domst) {
                 $xpathct = new \DOMXPath($domct);
-                $xpathst = new \DOMXPath($domst);
                 $ctchanged = false;
 
                 $candidates2del = array();
@@ -1035,7 +1027,7 @@ class Thesaurus implements ControllerProviderInterface
 
     private function fixThesaurus($app, &$domct, &$domth, &$connbas)
     {
-        $oldversion = $version = $domth->documentElement->getAttribute("version");
+        $version = $domth->documentElement->getAttribute("version");
 
         if ('' === trim($version)) {
             $version = '1.0.0';
@@ -1057,7 +1049,7 @@ class Thesaurus implements ControllerProviderInterface
 
     public function loadThesaurus(Application $app, Request $request)
     {
-        if (null === $bid = $request->get("bid")) {
+        if (null === $request->get("bid")) {
             return new Response('Missing bid parameter', 400);
         }
 
@@ -1090,7 +1082,7 @@ class Thesaurus implements ControllerProviderInterface
             if ($domct && $domth) {
 
                 $oldversion = $domth->documentElement->getAttribute("version");
-                if (($version = $this->fixThesaurus($app, $domct, $domth, $connbas)) != $oldversion) {
+                if ($this->fixThesaurus($app, $domct, $domth, $connbas) != $oldversion) {
                     $updated = true;
                     $databox->saveCterms($domct);
                     $databox->saveThesaurus($domth);
@@ -1266,7 +1258,7 @@ class Thesaurus implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $bid);
-            $connbas = \connection::getPDOConnection($app, $bid);
+            \connection::getPDOConnection($app, $bid);
 
             $dom = $databox->get_dom_cterms();
             $xpath = new \DOMXPath($dom);
@@ -1884,9 +1876,6 @@ class Thesaurus implements ControllerProviderInterface
                             $r->setAttribute("id", "C");
                         }
                     } else {
-                        $xmlct = str_replace(array("\r", "\n", "\t"), array("", "", ""), $domct->saveXML());
-                        $xmlte = str_replace(array("\r", "\n", "\t"), array("", "", ""), $dom->saveXML());
-
                         $databox->saveThesaurus($dom);
 
                         $r = $refresh_list->appendChild($ret->createElement("refresh"));
@@ -1902,11 +1891,9 @@ class Thesaurus implements ControllerProviderInterface
 
                     if ($sl = $ret2->getElementsByTagName("sy_list")->item(0)) {
                         $sl = $ret->importNode($sl, true);
-                        $sy_list = $root->appendChild($sl);
                     }
 
                     if ($request->get('debug')) {
-                        printf("url: %s<br/>\n", $url);
                         printf("<pre>" . $ret2->saveXML() . "</pre>");
                     }
                 }
@@ -2651,7 +2638,6 @@ class Thesaurus implements ControllerProviderInterface
 
                     if ($sl = $ret2->getElementsByTagName("sy_list")->item(0)) {
                         $sl = $ret->importNode($sl, true);
-                        $sy_list = $root->appendChild($sl);
                     }
 
                     if ($request->get('debug')) {
@@ -3018,9 +3004,6 @@ class Thesaurus implements ControllerProviderInterface
                     }
                 } elseif ($n->nodeName == "sy") {
                     $t = $n->getAttribute("v");
-                    if ($k = $n->getAttribute("k")) {
-                        //        $t .= " ($k)";
-                    }
                     $allsy .= ( $allsy ? " ; " : "") . $t;
                 }
             }
@@ -3113,7 +3096,7 @@ class Thesaurus implements ControllerProviderInterface
 
     public function searchCandidateXml(Application $app, Request $request)
     {
-        if (null === $bid = $request->get("bid")) {
+        if (null === $request->get("bid")) {
             return new Response('Missing bid parameter', 400);
         }
 

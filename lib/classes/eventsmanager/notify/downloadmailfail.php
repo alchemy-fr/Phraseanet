@@ -82,16 +82,6 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
         $mailed = false;
 
         if ($this->shouldSendNotificationFor($params['usr_id'])) {
-            $user = User_Adapter::getInstance($params['usr_id'], $this->app);
-            $name = $user->get_display_name();
-
-            $to = array('email' => $user->get_email(), 'name'  => $name);
-
-            $from = array(
-                'email' => $this->app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
-                'name'  => $this->app['phraseanet.registry']->get('GV_homeTitle')
-            );
-
             if (parent::email())
                 $mailed = true;
         }
@@ -110,10 +100,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
     public function datas($datas, $unread)
     {
         $sx = simplexml_load_string($datas);
-        $usr_id = (int) $sx->usr_id;
         $reason = (int) $sx->reason;
-        $lst = (string) $sx->lst;
-        $ssttid = (int) $sx->ssttid;
         $dest = (string) $sx->dest;
 
         if ($reason == self::MAIL_NO_VALID) {

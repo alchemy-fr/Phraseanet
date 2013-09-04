@@ -152,14 +152,4 @@ class PhraseaRegisterForm extends AbstractType
     {
         return $this->available[$name]['type'];
     }
-
-    private function getLabel($name)
-    {
-        return $this->available[$name]['label'];
-    }
-
-    private function getConstraints($name, array $constraints = array())
-    {
-        return isset($this->available[$name]['constraints']) ? $this->available[$name]['constraints'] : array();
-    }
 }

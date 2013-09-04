@@ -137,7 +137,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $ssel_id = (string) $sx->ssel_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($from, $this->app);
+            User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
             return array();
         }

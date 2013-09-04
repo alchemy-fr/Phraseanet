@@ -157,7 +157,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
+            User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
             return array();
         }

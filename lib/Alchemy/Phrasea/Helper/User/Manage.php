@@ -81,8 +81,6 @@ class Manage extends Helper
 
     public function search()
     {
-        $request = $this->request;
-
         $offset_start = (int) $this->request->get('offset_start');
         $offset_start = $offset_start < 0 ? 0 : $offset_start;
         $results_quantity = (int) $this->request->get('per_page');

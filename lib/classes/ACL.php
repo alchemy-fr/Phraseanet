@@ -687,7 +687,6 @@ class ACL implements cache_cacheableInterface
                 }
 
                 $base_id = $collection->get_base_id();
-                $datas = $this->_rights_bas[$base_id];
 
                 foreach ($rights as $right) {
                     if (!$this->has_right_on_base($base_id, $right)) {

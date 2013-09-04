@@ -19,7 +19,6 @@ class patchthesaurus_203
 
     public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
     {
-        global $debug;
         global $ctchanged, $thchanged, $needreindex;
         $unicode = new unicode();
 
@@ -106,8 +105,6 @@ class patchthesaurus_203
 
     public function fixRejected(connection_pdo &$connbas, &$node, $rejected)
     {
-        global $debug;
-
         if ($node->nodeType != XML_ELEMENT_NODE) {
             return;
         }
@@ -138,8 +135,6 @@ class patchthesaurus_203
 
     public function fixIds(connection_pdo &$connbas, &$node)
     {
-        global $debug;
-
         if ($node->nodeType != XML_ELEMENT_NODE) {
             return;
         }

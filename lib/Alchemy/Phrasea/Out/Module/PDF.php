@@ -219,15 +219,12 @@ class PDF
         $this->pdf->AddPage();
         $oldMargins = $this->pdf->getMargins();
 
-        $tmargin = $oldMargins['top'];
         $lmargin = $oldMargins['left'];
-        $bmargin = $oldMargins['bottom'];
         $rmargin = $oldMargins['right'];
 
         $this->pdf->SetLeftMargin($lmargin + 55);
 
         $ndoc = 0;
-        $lastpage = $this->pdf->PageNo();
         foreach ($this->records as $rec) {
             /* @var $rec record_adapter */
             $subdef = $rec->get_subdef('thumbnail');
@@ -324,7 +321,6 @@ class PDF
                     $rec->set_number($this->pdf->PageNo());
             }
             $lmargin = $this->pdf->GetX();
-            $tmargin = $this->pdf->GetY();
             $himg = 0;
             $y = 0;
             $miniConv = NULL;

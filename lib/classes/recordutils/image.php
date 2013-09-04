@@ -145,7 +145,7 @@ class recordutils_image extends recordutils
             $stamp = $stampNodes->item($istamp);
 
             $stamp_background = $xmlToColor($stamp->getAttribute('background'), array(255, 255, 255));
-            
+
             $stamp_position = strtoupper(trim($stamp->getAttribute('position')));
             if (!in_array($stamp_position, array('TOP', 'TOP-OVER', 'BOTTOM-OVER', 'BOTTOM'))) {
                 $stamp_position = 'BOTTOM';
@@ -191,7 +191,6 @@ class recordutils_image extends recordutils
 
             $domprefs->normalizeDocument();
 
-            $text_xpos = 0;
             $text_width = $image_width;
 
             $logopos = null;
@@ -224,9 +223,7 @@ class recordutils_image extends recordutils
                         $text_width -= $logo_reswidth;
                         if ($logopos == 'LEFT') {
                             $logo_xpos = 0;
-                            $text_xpos = $logo_reswidth;
                         } else {
-                            $text_xpos = 0;
                             $logo_xpos = ($image_width - $logo_reswidth);
                         }
                     }

@@ -64,14 +64,12 @@ class patch_370a8 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $taskManager = $app['task-manager'];
-
         $ttasks = array();
         $conn = $appbox->get_connection();
         $sql = 'SELECT task_id, active, name, class, settings FROM task2 WHERE class=\'task_period_workflow01\' OR class=\'task_period_ftv\'';
         if (($stmt = $conn->prepare($sql)) !== FALSE) {
             $stmt->execute();
-            $ttasks = $row = $stmt->fetchAll();
+            $ttasks = $stmt->fetchAll();
             $stmt->closeCursor();
         }
 

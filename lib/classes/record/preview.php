@@ -127,7 +127,6 @@ class record_preview extends record_adapter
                 $this->original_item = $this->container;
                 if ($pos == 0) {
                     $number = 0;
-                    $title = _('preview:: regroupement ');
                 } else {
                     $children = $this->container->get_children();
                     foreach ($children as $child) {
@@ -219,7 +218,6 @@ class record_preview extends record_adapter
             case 'RESULT':
                 $perPage = 56;
                 $index = ($pos - 3) < 0 ? 0 : ($pos - 3);
-                $page = (int) ceil($pos / $perPage);
                 $results = $search_engine->query($query, $index, $perPage);
 
                 $this->train = $results->getResults()->toArray();
@@ -593,8 +591,6 @@ class record_preview extends record_adapter
         $views = $dwnls = array();
         $top = 1;
         $day = 30;
-        $min = 0;
-        $average = 0;
 
         while ($day >= 0) {
 
