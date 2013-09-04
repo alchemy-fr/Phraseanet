@@ -13,7 +13,6 @@ namespace Repositories;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
-use Entities;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
