@@ -1498,9 +1498,9 @@ class PhraseaEngineQueryParser
                 default:
                     $tree = $this->addtotree($tree, $t, $depth, $inquote);
                     if ($this->debug) {
-                        print("---- après addtotree ----\n");
-                        var_dump($tree);
-                        print("-------------------------\n");
+//                        print("---- après addtotree ----\n");
+//                        var_dump($tree);
+//                        print("-------------------------\n");
                     }
                     if (!$tree) {
                         return(null);
@@ -1521,10 +1521,10 @@ class PhraseaEngineQueryParser
     public function addtotree($tree, $t, $depth, $inquote)
     {
         if ($this->debug) {
-            printf("addtotree({tree}, \$t[CLASS]='%s', \$t[VALUE]='%s', \$depth=%d, inquote=%s)\n", $t["CLASS"], $t["VALUE"], $depth, $inquote ? "true" : "false");
-            print("---- avant addtotree ----\n");
-            var_dump($tree);
-            print("-------------------------\n");
+//            printf("addtotree({tree}, \$t[CLASS]='%s', \$t[VALUE]='%s', \$depth=%d, inquote=%s)\n", $t["CLASS"], $t["VALUE"], $depth, $inquote ? "true" : "false");
+//            print("---- avant addtotree ----\n");
+//            var_dump($tree);
+//            print("-------------------------\n");
         }
 
         if (!$t) {

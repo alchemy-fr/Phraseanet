@@ -177,7 +177,6 @@ class task_period_ftp extends task_appboxAbstract
             , 'proxy'
             , 'proxyport'
             , 'period'
-            , 'debug'
         );
 
         if ($parm["xml"] === null) {
