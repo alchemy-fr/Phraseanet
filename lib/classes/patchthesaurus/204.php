@@ -22,7 +22,6 @@ class patchthesaurus_204
         global $ctchanged, $thchanged, $needreindex;
 
         $unicode = new unicode();
-        // $debug = true;
         if ($version == "2.0.4") {
             $xp = new DOMXPath($domth);
             $sy = $xp->query("//sy");

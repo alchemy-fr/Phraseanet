@@ -252,7 +252,6 @@ class task_period_ftpPull extends task_appboxAbstract
             , 'password'
             , 'passive'
             , 'ssl'
-            , 'debug'
         );
 
         if ($parm["xml"] === null) {

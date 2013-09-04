@@ -13,7 +13,6 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\Media\MediaInterface;
-use MediaVorus\MediaVorus;
 
 /**
  *

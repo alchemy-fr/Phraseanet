@@ -492,7 +492,8 @@ class recordutils_image extends recordutils
                 $twords = array();
                 $iword = -1;
                 $lastc = '';
-                for ($i = 0; $i < strlen($lig); $i++) {
+                $length = strlen($lig);
+                for ($i = 0; $i < $length; $i++) {
                     $c = $lig[$i];
                     if ($iword == -1 || (ctype_space($c) && !ctype_space($lastc))) {
                         $twords[++$iword] = array(($part = 0) => '', 1           => '');
