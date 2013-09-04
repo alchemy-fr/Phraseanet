@@ -34,10 +34,7 @@ abstract class task_appboxAbstract extends task_abstract
                 if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                     $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
-                    // DON'T do sleep(600) because it prevents ticks !
-                    for ($t = 60 * 10; $this->running && $t; $t --) {
-                        sleep(1);
-                    }
+                    $this->sleep(60 * 10);
                     // because connection is lost we cannot change status to 'torestart'
                     // anyway the current status 'running' with no pid
                     // will enforce the scheduler to restart the task

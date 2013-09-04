@@ -47,6 +47,18 @@ class task_Scheduler
 
         return $this;
     }
+    protected function sleep($nsec)
+    {
+        $nsec = (integer) $nsec;
+        if ($nsec < 0) {
+            throw new \InvalidArgumentException(sprintf("(%s) is not > 0"));
+        }
+
+        $end = microtime(true) + $nsec;
+        while (microtime(true) < $end) {
+            usleep(10000);
+        }
+    }
 
     /**
      * @throws Exception if scheduler is already running
@@ -106,7 +118,7 @@ class task_Scheduler
 
                         return;
                     } else {
-                        sleep(2);
+                        $this->sleep(2);
                     }
                 } else {
                     // locked
@@ -167,9 +179,7 @@ class task_Scheduler
                 if (! $connwaslost) {
                     $this->log(sprintf("Warning : abox connection lost, restarting in 10 min."));
                 }
-                for ($i = 0; $i < 60 * 10; $i ++) {
-                    sleep(1);
-                }
+                $this->sleep(60 * 10);
                 try {
                     $conn = $this->dependencyContainer['phraseanet.appbox']->get_connection();
                 } catch (ErrorException $e) {
@@ -362,7 +372,7 @@ class task_Scheduler
                                 );
 
                                 if (is_resource($taskPoll[$tkey]["process"])) {
-                                    sleep(2); // let the process lock and write it's pid
+                                    $this->sleep(2);
                                 }
 
                                 if (is_resource($taskPoll[$tkey]["process"]) && ($pid = $taskPoll[$tkey]['task']->getPID()) !== null) {
@@ -568,9 +578,7 @@ class task_Scheduler
                 }
             }
 
-            for ($i = 0; $i < $sleeptime; $i ++) {
-                sleep(1);
-            }
+            $this->sleep($sleeptime);
         }
 
         $sql = "UPDATE sitepreff SET schedstatus='stopped', schedpid='0'";
