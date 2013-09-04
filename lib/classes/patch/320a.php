@@ -77,8 +77,6 @@ class patch_320a implements patchInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $tasks = array();
-
         $sql = 'UPDATE task2 SET `class` = :class WHERE task_id = :task_id';
         $stmt = $appbox->get_connection()->prepare($sql);
         foreach ($rs as $row) {

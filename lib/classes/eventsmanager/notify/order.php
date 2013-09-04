@@ -145,7 +145,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $order_id = (string) $sx->order_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
+            User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
             return array();
         }

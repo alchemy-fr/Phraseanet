@@ -27,7 +27,7 @@ class PhraseaPDF extends \TCPDF
 
     public function Footer()
     {
-        $ml = $this->SetLeftMargin(0);
+        $this->SetLeftMargin(0);
         $mr = $this->SetRightMargin(0);
 
         $this->SetY(-15);

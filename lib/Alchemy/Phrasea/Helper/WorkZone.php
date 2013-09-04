@@ -78,6 +78,5 @@ class WorkZone extends Helper
 
     protected function sortBaskets(array $baskets)
     {
-        $tmp_baskets = array();
     }
 }

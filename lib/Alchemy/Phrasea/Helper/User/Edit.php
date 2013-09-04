@@ -229,8 +229,6 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $msk_and = null;
-        $msk_xor = null;
         $tbits_and = array();
         $tbits_xor = array();
 

@@ -1239,7 +1239,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $usr_id = $session = $this->app['authentication']->getUser()->get_id();
+        $usr_id = $this->app['authentication']->getUser()->get_id();
 
         $result->set_datas(array('baskets' => $this->list_baskets($usr_id)));
 

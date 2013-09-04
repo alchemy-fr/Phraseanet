@@ -110,10 +110,8 @@ function giveMeBases(Application $app, $usr = null)
             $cguColl = false;
 
             $collInscript = $baseInscript;
-            $defined = false;
             $cguSpec = false;
             if (false !== $xml = simplexml_load_string($collection->get_prefs())) {
-                $defined = true;
                 foreach ($xml->xpath('/baseprefs/caninscript') as $caninscript) {
                     $tmp = (string) $caninscript;
                     if ($tmp === "1")
@@ -170,7 +168,7 @@ function giveMeBases(Application $app, $usr = null)
     return $inscriptions;
 }
 
-function giveMeBaseUsr(Application $app, $usr, $lng)
+function giveMeBaseUsr(Application $app, $usr)
 {
     $noDemand = true;
 
@@ -308,7 +306,7 @@ function giveModInscript($usr, $lng)
         '<form id="conf_mod" target="_self" action="mod_inscript.php" method="post">' .
         '<div style="width:400px;center;margin:0 100px;">';
 
-    $demandes = giveMeBaseUsr($app, $usr, $lng);
+    $demandes = giveMeBaseUsr($app, $usr);
 
     $out .= $demandes['tab'];
 
@@ -328,78 +326,6 @@ function giveModInscript($usr, $lng)
     $out .= '</div>' .
         '</body>' .
         '</html>';
-
-    return $out;
-}
-
-function giveInscript(Application $app, $lng, $demandes = null)
-{
-    $out = '<table  border="0" style="table-layout:fixed" cellspacing=0 width="590">' .
-        '<tr>' .
-        '<td  style="width:240px; text-align:right">&nbsp;</td>' .
-        '<td  width="25px" style="width:25px">&nbsp;</td>' .
-        '<td  style="width:325px;">&nbsp;</td>' .
-        '</tr>';
-
-    $inscriptions = giveMeBases($app);
-
-    foreach ($inscriptions as $sbasId => $baseInsc) {
-
-        if (($baseInsc['CollsCGU'] || $baseInsc['Colls']) && $baseInsc['inscript']) {// il y a des coll ou s'inscrire !
-            //je pr�sente la base
-            $out .= '<tr><td colspan="3" style="text-align:center;"><h3 style="margin: 15px 0pt 2px;" class="inscriptbase">' . phrasea::sbas_labels($sbasId, $app) . '</h3></td></tr>';
-
-            if ($baseInsc['Colls']) {//des coll ou on peut s'inscrire sans cgu specifiques
-                //je check si ya des cgu pour la base
-                if ($baseInsc['CGU']) {
-                    $out .= '<tr><td colspan="3" style="text-align:center;">' . _('login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes') . '<br/><a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '">' . _('login::register::CGU: ouvrir dans une nouvelle fenetre') . '</a></td></tr>';
-                    //$out .= '<tr><td colspan="3" style="text-align:center;"><div id="CGUTXT'.$sbasId.'" style="width:90%;height:120px;text-align:left;overflow:auto;">'.(string) $baseInsc['CGU'].'</div></td></tr>';
-                }
-                foreach ($baseInsc['Colls'] as $collId => $collName) {
-
-                    $baseId = phrasea::baseFromColl($sbasId, $collId, $app);
-                    $ch = "checked";
-                    if (( ! is_null($demandes) && ! isset($demandes[$baseId])))
-                        $ch = "";
-                    $out .= '<tr>' .
-                        '<td style="text-align:right;">' . $collName . '</td>' .
-                        '<td></td>' .
-                        '<td class="TD_R" style="width:200px;">' .
-                        '<input style="width:15px;" class="checkbox" type="checkbox" ' . $ch . ' name="demand[]" value="' . $baseId . '" >' .
-                        '<span>' . _('login::register: Faire une demande d\'acces') . '</span>' .
-                        '</td>' .
-                        '</tr>';
-                }
-            }
-            if ($baseInsc['CollsCGU']) {
-                foreach ($baseInsc['CollsCGU'] as $collId => $collDesc) {
-
-                    $baseId = phrasea::baseFromColl($sbasId, $collId, $app);
-
-                    $ch = "checked";
-                    if ( ! is_null($demandes) && ! isset($demandes[$baseId]))
-                        $ch = "";
-                    $out .= '<tr><td colspan="3" style="text-align:center;"><hr style="width:80%"/></td></tr>' .
-                        '<tr><td colspan="3" style="text-align:center;">' . _('login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes') .
-                        '<br/><a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '&col=' . $collId . '">' . _('login::register::CGU: ouvrir dans une nouvelle fenetre') . '</a></td></tr>' .
-                        //  '<tr >' .
-                        //  '<td colspan="3" style="text-align:center;"><div style="height:120px;text-align:left;overflow:auto;">' .
-                        //  ''.(string) $collDesc['CGU'].'' .
-                        //  '</div></td>' .
-                        //  '</tr>' .
-                        '<tr >' .
-                        '<td style="text-align:right;">' . $collDesc['name'] . '</td>' .
-                        '<td></td>' .
-                        '<td class="TD_R" style="width:200px;">' .
-                        '<input style="width:15px;" class="checkbox" type="checkbox" ' . $ch . ' name="demand[]" value="' . $baseId . '" >' .
-                        '<span>' . _('login::register: Faire une demande d\'acces') . '</span>' .
-                        '</td>' .
-                        '</tr>';
-                }
-            }
-        }
-    }
-    $out .= '</table>';
 
     return $out;
 }

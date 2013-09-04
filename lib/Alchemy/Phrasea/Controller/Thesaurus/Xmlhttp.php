@@ -933,13 +933,9 @@ class Xmlhttp implements ControllerProviderInterface
             }
 
             if ($dom) {
-                $term0 = '';
-                $firstTerm0 = '';
-
                 $xpath = new \DOMXPath($dom);
                 if ($thid == 'T' || $thid == 'C') {
                     $q = '/' . $xqroot;
-                    $term0 = $dbname;
                 } else {
                     $q = '/' . $xqroot . '//te[@id=\'' . $thid . '\']';
                 }
@@ -1454,7 +1450,7 @@ class Xmlhttp implements ControllerProviderInterface
                 $xp = '//te[@id="' . $tid . '"]/sy';
                 $nodes = $xpathct->query($xp);
                 if ($nodes->length == 1) {
-                    $sy = $term = $nodes->item(0);
+                    $sy = $nodes->item(0);
                     $syid = str_replace('.', 'd', $sy->getAttribute('id')) . 'd';
                     $lid .= ( $lid ? ',' : '') . "'" . $syid . "'";
                     $field = $sy->parentNode->parentNode->getAttribute('field');
@@ -1625,7 +1621,6 @@ class Xmlhttp implements ControllerProviderInterface
 
         $html = '';
         $sbid = (int) $request->get('sbid');
-        $dbname = '';
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox($sbid);

@@ -131,7 +131,7 @@ class module_report_activity extends module_report
 
         $this->result[] = $res;
         //calculate prev and next page
-        $this->calculatePages($rs);
+        $this->calculatePages();
         //display navigator
         $this->setDisplayNav();
         //set report
@@ -251,7 +251,7 @@ class module_report_activity extends module_report
 
         $this->total = sizeof($this->result);
         //calculate prev and next page
-        $this->calculatePages($rs);
+        $this->calculatePages();
         //do we display navigator ?
         $this->setDisplayNav();
         //set report
@@ -357,7 +357,6 @@ class module_report_activity extends module_report
 
         $this->setChamp($rs);
         $this->setDisplay($tab);
-        $save_date = "";
         $total = array('tot_doc'  => 0, 'tot_prev' => 0, 'tot_dl'   => 0);
         $i = -1;
 
@@ -398,7 +397,7 @@ class module_report_activity extends module_report
             $this->result[$nb_row]['preview'] = '<b>' . $total['tot_prev'] . '</b>';
             $this->result[$nb_row]['total'] = '<b>' . $total['tot_dl'] . '</b>';
         }
-        $this->calculatePages($rs);
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 
@@ -482,7 +481,7 @@ class module_report_activity extends module_report
             $this->result[$i][$on] = '<b>TOTAL</b>';
         }
         //calculate prev and next page
-        $this->calculatePages($rs);
+        $this->calculatePages();
         //do we display navigator ?
         $this->setDisplayNav();
         //set report
@@ -609,7 +608,7 @@ class module_report_activity extends module_report
                 '<b>' . p4string::format_octets($total['poidprev']) . '</b>';
         }
         $this->total = sizeof($this->result);
-        $this->calculatePages($rs);
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 
@@ -653,7 +652,6 @@ class module_report_activity extends module_report
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $save_id = "";
         foreach ($rs as $row) {
             $kttd = 'top_ten_doc';
             $kttp = 'top_ten_poiddoc';
@@ -692,7 +690,6 @@ class module_report_activity extends module_report
                     $result[$kttpp][$id]['id'] = $id;
                 }
             }
-            $save_id = $id;
         }
 
         return $result;

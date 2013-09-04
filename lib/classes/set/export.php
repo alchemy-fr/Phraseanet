@@ -431,8 +431,6 @@ class set_export extends set_abstract
                 'subdefs'       => array()
             );
 
-            $rename_done = false;
-
             $BF = false;
 
             if ($includeBusinessFields && $user->ACL()->has_right_on_base($download_element->get_base_id(), 'canmodifrecord')) {
@@ -457,7 +455,6 @@ class set_export extends set_abstract
                 $title = strip_tags($download_element->get_title(null, null, true));
 
                 $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true);
-                $rename_done = true;
             } else {
                 $files[$id]["export_name"] = $infos['filename'];
             }
@@ -803,12 +800,6 @@ class set_export extends set_abstract
                 unset($record_object);
             }
         }
-
-        $export_types = array(
-            'download'    => 0,
-            'mail-export' => 2,
-            'ftp'         => 4
-        );
 
         $list_base = array_unique(array_keys($tmplog));
 

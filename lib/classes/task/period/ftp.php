@@ -52,7 +52,6 @@ class task_period_ftp extends task_appboxAbstract
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         if ((@$dom->loadXML($oldxml)) != FALSE) {
-            $xmlchanged = false;
             foreach (array('str:proxy', 'str:proxyport', 'str:period', 'pop:syslog') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -76,7 +75,6 @@ class task_period_ftp extends task_appboxAbstract
                         $ns->appendChild($dom->createTextNode($pvalue ? '1' : '0'));
                         break;
                 }
-                $xmlchanged = true;
             }
         }
 
@@ -266,7 +264,7 @@ class task_period_ftp extends task_appboxAbstract
             $this->dependencyContainer['EM']->remove($export);
         }
         $this->dependencyContainer['EM']->flush();
-        
+
         return $this->dependencyContainer['EM']
                 ->getRepository('Entities\FtpExport')
                 ->findDoableExports();
@@ -274,15 +272,10 @@ class task_period_ftp extends task_appboxAbstract
 
     protected function processOneContent(appbox $appbox, $export)
     {
-        $conn = $appbox->get_connection();
-
-        $id = $export->getId();
-
         $state = "";
         $ftp_server = $export->getAddr();
         $ftp_user_name = $export->getLogin();
         $ftp_user_pass = $export->getPwd();
-        $usr_id = $export->getUsrId();
 
         $ftpLog = $ftp_user_name . "@" . p4string::addEndSlash($ftp_server) . $export->getDestfolder();
 
@@ -362,12 +355,12 @@ class task_period_ftp extends task_appboxAbstract
                 if ($exportElement->isDone()) {
                     continue;
                 }
-                
+
                 $base_id = $exportElement->getBaseId();
                 $record_id = $exportElement->getRecordId();
                 $subdef = $exportElement->getSubdef();
                 $localfile = null;
-                
+
                 try {
                     $sbas_id = phrasea::sbasFromBas($this->dependencyContainer, $base_id);
                     $record = new record_adapter($this->dependencyContainer, $sbas_id, $record_id);
@@ -487,7 +480,7 @@ class task_period_ftp extends task_appboxAbstract
 
             unset($ftp_client);
         }
-        
+
         $this->finalize($appbox, $export);
     }
 
@@ -498,19 +491,17 @@ class task_period_ftp extends task_appboxAbstract
 
     public function finalize(appbox $appbox, FtpExport $export)
     {
-        $conn = $appbox->get_connection();
-
         if ($export->getCrash() >= $export->getNbretry()) {
             $this->send_mails($appbox, $export);
 
             return $this;
         }
-        
+
         $total = count($export->getElements());
-        $done = count($export->getElements()->filter(function (FtpExportElement $element) { 
+        $done = count($export->getElements()->filter(function (FtpExportElement $element) {
             return $element->isDone();
         }));
-        $error = count($export->getElements()->filter(function (FtpExportElement $element) { 
+        $error = count($export->getElements()->filter(function (FtpExportElement $element) {
             return $element->isError();
         }));
 

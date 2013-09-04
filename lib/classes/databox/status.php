@@ -260,7 +260,7 @@ class databox_status
             $doc = $databox->get_dom_structure();
             if ($doc) {
                 $xpath = $databox->get_xpath_structure();
-                $entries = $xpath->query($q = "/record/statbits/bit[@n=" . $bit . "]");
+                $entries = $xpath->query("/record/statbits/bit[@n=" . $bit . "]");
 
                 foreach ($entries as $sbit) {
                     if ($p = $sbit->previousSibling) {

@@ -84,7 +84,6 @@ class module_report_question extends module_report
 
     protected function buildResult(Application $app, $rs)
     {
-        $tab = array();
         $i = 0;
         foreach ($rs as $row) {
             if ($this->enable_limit && ($i > $this->nb_record))

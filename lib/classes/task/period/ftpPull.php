@@ -100,7 +100,6 @@ class task_period_ftpPull extends task_appboxAbstract
 
     public function printInterfaceJS()
     {
-        global $parm;
         ?>
         <script type="text/javascript">
 
@@ -156,7 +155,6 @@ class task_period_ftpPull extends task_appboxAbstract
 
     public function getInterfaceHTML()
     {
-        global $parm;
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">

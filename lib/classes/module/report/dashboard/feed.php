@@ -96,7 +96,6 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
     public function __construct(Application $app, $sbasid, $sbas_collection, $dmin, $dmax)
     {
         $this->app = $app;
-        $conn = connection::getPDOConnection($app, $sbasid);
         $this->dmin = $dmin;
         $this->dmax = $dmax;
         $this->dminsql = $this->dateToSqlDate('dmin');

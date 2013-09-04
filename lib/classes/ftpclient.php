@@ -12,7 +12,7 @@ class ftpclient
     {
         $host = mb_substr($host, -1, 1) == '/' ? mb_substr($host, 0, (mb_strlen($host) - 1)) : $host;
 
-        if (($p = mb_strpos($host, 'ftp://')) !== false)
+        if (mb_strpos($host, 'ftp://') !== false)
             $host = mb_substr($host, 6);
 
         $host = $proxy ? $proxy : $host;

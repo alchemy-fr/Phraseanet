@@ -29,7 +29,7 @@ class LoadFiveBaskets extends \PhraseaFixture\AbstractWZ implements FixtureInter
 
     public function load(ObjectManager $manager)
     {
-        for ($i = 0; $i < 5; $i ++ ) {
+        for ($i = 0; $i < 5; $i ++) {
             $basket = new \Entities\Basket();
 
             $basket->setName('test ' . $i);
