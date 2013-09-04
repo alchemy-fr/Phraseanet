@@ -4,7 +4,6 @@ use Alchemy\Phrasea\Application;
 
 class eventsmanager_broker
 {
-    private static $_instance = false;
     protected $events = array();
     protected $notifications = array();
     protected $pool_classes = array();
@@ -113,7 +112,6 @@ class eventsmanager_broker
 
     public function get_notifications_as_array($page = 0)
     {
-        $unread = 0;
         $total = 0;
 
         $sql = 'SELECT count(id) as total, sum(unread) as unread
@@ -125,7 +123,6 @@ class eventsmanager_broker
         $stmt->closeCursor();
 
         if ($row) {
-            $unread = $row['unread'];
             $total = $row['total'];
         }
 
@@ -203,7 +200,6 @@ class eventsmanager_broker
     public function get_notifications()
     {
         $unread = 0;
-        $total = 0;
 
         $sql = 'SELECT count(id) as total, sum(unread) as unread
             FROM notifications WHERE usr_id = :usr_id';
@@ -215,7 +211,6 @@ class eventsmanager_broker
 
         if ($row) {
             $unread = $row['unread'];
-            $total = $row['total'];
         }
 
         if ($unread < 3) {
@@ -226,7 +221,7 @@ class eventsmanager_broker
               WHERE usr_id = :usr_id AND unread="1" ORDER BY created_on DESC';
         }
 
-        $ret = $bloc = array();
+        $ret = array();
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $this->app['authentication']->getUser()->get_id()));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -258,8 +253,6 @@ class eventsmanager_broker
             );
         }
 
-        $html = '';
-
         return $ret;
     }
 
@@ -280,21 +273,8 @@ class eventsmanager_broker
         return $this;
     }
 
-    public function mailed($notification, $usr_id)
+    public function list_notifications_available()
     {
-        $sql = 'UPDATE notifications SET mailed="0"
-            WHERE usr_id = :usr_id AND id = :notif_id';
-
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id'   => $usr_id, ':notif_id' => $notifications));
-        $stmt->closeCursor();
-
-        return;
-    }
-
-    public function list_notifications_available($usr_id)
-    {
-
         $personnal_notifications = array();
 
         foreach ($this->notifications as $notification) {

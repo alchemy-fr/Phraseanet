@@ -231,7 +231,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
 
         foreach ($labels as $code => $label) {
             $child = $dom_struct->createElement('label');
-            $labelElement = $child->appendChild($dom_struct->createTextNode($label));
+            $child->appendChild($dom_struct->createTextNode($label));
             $lang = $child->appendChild($dom_struct->createAttribute('lang'));
             $lang->value = $code;
             $subdef->appendChild($child);

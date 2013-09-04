@@ -248,7 +248,7 @@ class Lazaret implements ControllerProviderInterface
         $attributesToKeep = $request->request->get('attributes', array());
 
         //Mandatory parameter
-        if (null === $baseId = $request->request->get('bas_id')) {
+        if (null === $request->request->get('bas_id')) {
             $ret['message'] = _('You must give a destination collection');
 
             return $app->json($ret);

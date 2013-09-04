@@ -9,7 +9,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class API_V1_Timer implements ServiceProviderInterface
 {
-    private $app;
     private $starting;
 
     public function __construct()

@@ -31,8 +31,6 @@ class set_exportftp extends set_export
      */
     public function export_ftp($usr_to, $host, $login, $password, $ssl, $retry, $passif, $destfolder, $makedirectory, $logfile)
     {
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-
         $email_dest = '';
         if ($usr_to) {
             $user_t = User_Adapter::getInstance($usr_to, $this->app);

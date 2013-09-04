@@ -727,7 +727,7 @@ class module_report
      * effectue le mechanism de pagination
      * @param resultset $rs
      */
-    protected function calculatePages($rs)
+    protected function calculatePages()
     {
         if ($this->nb_record && $this->total > $this->nb_record) {
             $this->previous_page = $this->nb_page - 1;
@@ -843,7 +843,7 @@ class module_report
             //construct results
             $this->buildResult($this->app, $rs);
             //calculate prev and next page
-            $this->calculatePages($rs);
+            $this->calculatePages();
             //do we display navigator ?
             $this->setDisplayNav();
             //assign all variables

@@ -142,7 +142,7 @@ class module_report_nav extends module_report
         }
 
         $this->total = sizeof($this->result);
-        $this->calculatePages($rs);
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 
@@ -200,7 +200,7 @@ class module_report_nav extends module_report
             $this->report['legend'][] = $row['os'];
         }
         $this->total = sizeof($this->result);
-        $this->calculatePages($rs);
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 
@@ -261,7 +261,7 @@ class module_report_nav extends module_report
         }
 
         $this->total = sizeof($this->result);
-        $this->calculatePages($rs);
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 
@@ -320,7 +320,7 @@ class module_report_nav extends module_report
             $this->report['legend'][] = $row['combo'];
         }
         $this->total = sizeof($this->result);
-        $this->calculatePages($rs);
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 
@@ -401,7 +401,7 @@ class module_report_nav extends module_report
             $this->report['legend'][] = $appli;
         }
         $this->total = sizeof($this->result);
-        $this->calculatePages($rs);
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 
@@ -475,7 +475,7 @@ class module_report_nav extends module_report
                 _('report:: Information sur l\'utilisateur %s'), $login
             );
         }
-        $this->calculatePages($rs);
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 
@@ -566,7 +566,7 @@ class module_report_nav extends module_report
 
         $this->result = $rs;
         $this->total = sizeof($this->result);
-        $this->calculatePages($rs);
+        $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
 

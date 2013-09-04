@@ -80,8 +80,6 @@ class task_period_subdef extends task_databoxAbstract
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         if (@$dom->loadXML($oldxml)) {
-            $xmlchanged = false;
-
             foreach (array('str:period', 'str:flush', 'str:maxrecs', 'str:maxmegs', 'boo:embedded') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -102,7 +100,6 @@ class task_period_subdef extends task_databoxAbstract
                         $ns->appendChild($dom->createTextNode($pvalue ? '1' : '0'));
                         break;
                 }
-                $xmlchanged = true;
             }
         }
 

@@ -23,7 +23,7 @@ abstract class AbstractPluginCommand extends Command
 
         $output->write("Validating plugins...");
         foreach ($this->container['plugins.explorer'] as $directory) {
-            $manifests[] = $manifest = $this->container['plugins.plugins-validator']->validatePlugin($directory);
+            $manifests[] = $this->container['plugins.plugins-validator']->validatePlugin($directory);
         }
         $output->writeln(" <comment>OK</comment>");
 

@@ -21,12 +21,10 @@ use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use MediaVorus\Exception\FileNotFoundException;
-use PHPExiftool\Writer;
 use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
-use PHPExiftool\Exiftool;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 
 /**
@@ -148,8 +146,6 @@ class File
 
             }
         }
-
-        $reader = $metadatas = null;
 
         return $this->uuid;
     }

@@ -586,7 +586,7 @@ class databox extends base
      */
     public static function mount(Application $app, $host, $port, $user, $password, $dbname, registry $registry)
     {
-        $connection = new connection_pdo('test', $host, $port, $user, $password, $dbname, array(), $app['debug']);
+        new connection_pdo('test', $host, $port, $user, $password, $dbname, array(), $app['debug']);
 
         $conn = $app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT MAX(ord) as ord FROM sbas';
@@ -837,9 +837,6 @@ class databox extends base
         $stmt->closeCursor();
 
         $this->_sxml_structure = $this->_dom_structure = $this->_xpath_structure = null;
-
-        $com_struct = $this->get_dom_structure();
-        $xp_struct = $this->get_xpath_structure();
 
         $this->meta_struct = null;
 
@@ -1139,7 +1136,6 @@ class databox extends base
             unset($e);
         }
 
-        $thesaurus = false;
         try {
             $sql = 'SELECT value AS thesaurus FROM pref WHERE prop="thesaurus" LIMIT 1;';
             $stmt = $this->get_connection()->prepare($sql);
@@ -1418,7 +1414,6 @@ class databox extends base
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute(array(':terms'    => $terms, ':locale'   => $locale));
         $stmt->closeCursor();
-        $update = true;
         $this->cgus = null;
         $this->delete_data_from_cache(self::CACHE_CGUS);
 

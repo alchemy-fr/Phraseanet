@@ -52,7 +52,6 @@ class task_period_ftp extends task_appboxAbstract
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         if ((@$dom->loadXML($oldxml)) != FALSE) {
-            $xmlchanged = false;
             foreach (array('str:proxy', 'str:proxyport', 'str:period', 'pop:syslog') as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
@@ -76,7 +75,6 @@ class task_period_ftp extends task_appboxAbstract
                         $ns->appendChild($dom->createTextNode($pvalue ? '1' : '0'));
                         break;
                 }
-                $xmlchanged = true;
             }
         }
 
@@ -274,15 +272,10 @@ class task_period_ftp extends task_appboxAbstract
 
     protected function processOneContent(appbox $appbox, $export)
     {
-        $conn = $appbox->get_connection();
-
-        $id = $export->getId();
-
         $state = "";
         $ftp_server = $export->getAddr();
         $ftp_user_name = $export->getLogin();
         $ftp_user_pass = $export->getPwd();
-        $usr_id = $export->getUsrId();
 
         $ftpLog = $ftp_user_name . "@" . p4string::addEndSlash($ftp_server) . $export->getDestfolder();
 
@@ -498,8 +491,6 @@ class task_period_ftp extends task_appboxAbstract
 
     public function finalize(appbox $appbox, FtpExport $export)
     {
-        $conn = $appbox->get_connection();
-
         if ($export->getCrash() >= $export->getNbretry()) {
             $this->send_mails($appbox, $export);
 

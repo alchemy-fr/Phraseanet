@@ -96,7 +96,7 @@ class StoryWZRepository extends EntityRepository
 
         if ($story) {
             try {
-                $record = $story->getRecord($app);
+                $story->getRecord($app);
             } catch (NotFoundHttpException $e) {
                 $this->getEntityManager()->remove($story);
                 $this->getEntityManager()->flush();
@@ -122,7 +122,7 @@ class StoryWZRepository extends EntityRepository
 
         foreach ($stories as $key => $story) {
             try {
-                $record = $story->getRecord($app);
+                $story->getRecord($app);
             } catch (NotFoundHttpException $e) {
                 $this->getEntityManager()->remove($story);
                 $this->getEntityManager()->flush();
@@ -146,7 +146,7 @@ class StoryWZRepository extends EntityRepository
 
         foreach ($stories as $key => $story) {
             try {
-                $record = $story->getRecord($app);
+                $story->getRecord($app);
             } catch (NotFoundHttpException $e) {
                 $this->getEntityManager()->remove($story);
                 $this->getEntityManager()->flush();

@@ -28,11 +28,8 @@ class setup
     {
         $GV = require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
-        $debug = $log_errors = false;
         $vars = array();
-
         $error = false;
-        $extra_conf = '';
 
         foreach ($GV as $section) {
             foreach ($section['vars'] as $variable) {
@@ -93,11 +90,6 @@ class setup
                         $datas[$variable['name']] = trim($datas[$variable['name']]) !== '' ? p4string::delEndSlash($datas[$variable['name']]) : '';
                     }
                 }
-
-                if ($variable['name'] === 'GV_debug' && $datas[$variable['name']] === '1')
-                    $debug = true;
-                if ($variable['name'] === 'GV_log_errors' && $datas[$variable['name']] === '1')
-                    $log_errors = true;
 
                 if ($variable['type'] !== 'integer' && $variable['type'] !== 'boolean')
                     $datas[$variable['name']] = $datas[$variable['name']];

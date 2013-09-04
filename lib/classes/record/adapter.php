@@ -973,8 +973,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         $newfilename = $this->record_id . '_0_' . $name . '.' . $media->getFile()->getExtension();
 
-        $base_url = '';
-
         $subdef_def = false;
 
         if ($name == 'document') {
@@ -1351,7 +1349,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $app['filesystem']->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
 
         $media = $app['mediavorus']->guess($pathhd . $newname);
-        $subdef = media_subdef::create($app, $record, 'document', $media);
+        media_subdef::create($app, $record, 'document', $media);
 
         $record->delete_data_from_cache(\record_adapter::CACHE_SUBDEFS);
 
@@ -1500,8 +1498,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     public function delete()
     {
         $connbas = $this->get_databox()->get_connection();
-        $sbas_id = $this->get_databox()->get_sbas_id();
-        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $ftodel = array();
         foreach ($this->get_subdefs() as $subdef) {
@@ -1527,12 +1523,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $sql = "DELETE FROM record WHERE record_id = :record_id";
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':record_id' => $this->get_record_id()));
-        $stmt->closeCursor();
-
-        $sql = 'SELECT id FROM metadatas WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $this->get_record_id()));
-        $rs = $stmt->fetchAll();
         $stmt->closeCursor();
 
         $sql = "DELETE FROM metadatas WHERE record_id = :record_id";
@@ -1581,10 +1571,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':record_id' => $this->get_record_id()));
         $stmt->closeCursor();
-
-        $base_ids = array_map(function($collection) {
-                return $collection->get_base_id();
-            }, $this->databox->get_collections());
 
         $orderElementRepository = $this->app['EM']->getRepository('\Entities\OrderElement');
 

@@ -1079,7 +1079,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     protected function load_notifications_preferences(Application $app)
     {
-        $notifications = $app['events-manager']->list_notifications_available($this->id);
+        $notifications = $app['events-manager']->list_notifications_available();
 
         foreach ($notifications as $notification_group => $nots) {
             foreach ($nots as $notification) {

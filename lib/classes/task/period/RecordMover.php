@@ -46,7 +46,6 @@ class task_period_RecordMover extends task_appboxAbstract
         $dom->formatOutput = true;
 
         if ($dom->loadXML($oldxml)) {
-            $xmlchanged = false;
             foreach (array(
             'str:period'
             , 'boo:logsql'
@@ -72,7 +71,6 @@ class task_period_RecordMover extends task_appboxAbstract
                         $ns->appendChild($dom->createTextNode($pvalue ? '1' : '0'));
                         break;
                 }
-                $xmlchanged = true;
             }
         }
 

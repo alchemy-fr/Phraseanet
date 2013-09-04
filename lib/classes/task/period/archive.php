@@ -92,7 +92,6 @@ class task_period_archive extends task_abstract
         $dom->formatOutput = true;
         $dom->preserveWhiteSpace = false;
         if ($dom->loadXML($oldxml)) {
-            $xmlchanged = false;
             foreach (array(
             'str:base_id'
             , 'str:hotfolder'
@@ -125,7 +124,6 @@ class task_period_archive extends task_abstract
                         $ns->appendChild($dom->createTextNode($pvalue ? '1' : '0'));
                         break;
                 }
-                $xmlchanged = true;
             }
         }
 
@@ -296,7 +294,8 @@ class task_period_archive extends task_abstract
     {
         $this->debug = false;
 
-        $conn = $this->dependencyContainer['phraseanet.appbox']->get_connection();
+        // test if connection is available
+        $this->dependencyContainer['phraseanet.appbox']->get_connection();
 
         $this->sxTaskSettings = simplexml_load_string($this->settings);
 
@@ -378,7 +377,7 @@ class task_period_archive extends task_abstract
             $loop = 0;
             while ($this->running) {
                 try {
-                    $conn = connection::getPDOConnection($this->dependencyContainer);
+                    connection::getPDOConnection($this->dependencyContainer);
                 } catch (Exception $e) {
                     $this->log($e->getMessage());
                     if ($this->getRunner() == self::RUNNER_SCHEDULER) {
@@ -1184,7 +1183,7 @@ class task_period_archive extends task_abstract
             if ($n->getAttribute('isdir') == '1') {
                 if ($n->getAttribute('grp')) {
                     // a grp folder : special work
-                    $this->ArchiveGrp($dom, $n, $path, $path_archived, $path_error, $nodesToDel);
+                    $this->archiveGrp($dom, $n, $path, $path_archived, $path_error, $nodesToDel);
                 } else {
                     // ...normal subfolder : recurse
                     $name = $n->getAttribute('name');
@@ -1807,7 +1806,6 @@ class task_period_archive extends task_abstract
         }
 
         $file = $node->getAttribute('name');
-        $cid = $node->getAttribute('cid');
         $captionFileNode = null;
 
         $rootpath = p4string::delEndSlash(trim((string) ($this->sxTaskSettings->hotfolder)));
@@ -1857,8 +1855,6 @@ class task_period_archive extends task_abstract
      */
     private function archiveFileAndCaption(\DOMDocument $dom, \DOMElement $node, \DOMElement $captionFileNode = null, $path, $path_archived, $path_error, $grp_rid, array &$nodesToDel)
     {
-        $ret = false;
-
         $file = $node->getAttribute('name');
         $cid = $node->getAttribute('cid');
         $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : null;
@@ -1893,9 +1889,9 @@ class task_period_archive extends task_abstract
             $collection = collection::get_from_coll_id($this->dependencyContainer, $databox, (int) $cid);
 
             if ($captionFileName === null) {
-                $record = $this->createRecord($collection, $path . '/' . $file, null, $grp_rid);
+                $this->createRecord($collection, $path . '/' . $file, null, $grp_rid);
             } else {
-                $record = $this->createRecord($collection, $path . '/' . $file, $path . '/' . $captionFileName, $grp_rid);
+                $this->createRecord($collection, $path . '/' . $file, $path . '/' . $captionFileName, $grp_rid);
             }
 
             $node->setAttribute('archived', '1');
@@ -1940,8 +1936,6 @@ class task_period_archive extends task_abstract
                     $this->log($e->getMessage());
                 }
             }
-            if (!$node->getAttribute('keep')) // do not count copy of special files as a real event
-                $ret = true;
         }
 
         if ($node->getAttribute('error') && $this->move_error) {
@@ -1967,10 +1961,6 @@ class task_period_archive extends task_abstract
                 } catch (IOException $e) {
                     $this->log($e->getMessage());
                 }
-            }
-            // do not count copy of special files as a real event
-            if (!$node->getAttribute('keep')) {
-                $ret = true;
             }
         }
 

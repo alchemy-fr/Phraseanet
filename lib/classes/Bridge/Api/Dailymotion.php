@@ -375,7 +375,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
         switch ($object) {
             case self::ELEMENT_TYPE_VIDEO :
                 $url = sprintf("POST /video/%s", $object_id);
-                $result = $this->_api->call($url, $params, $this->oauth_token);
+                $this->_api->call($url, $params, $this->oauth_token);
                 break;
             default:
                 throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
@@ -432,7 +432,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
                         $url = sprintf('POST /%s/%s/%ss', $destination, $container_id, $element_type);
 
-                        $result = $this->_api->call($url, array('ids' => implode(",", $array)), $this->oauth_token);
+                        $this->_api->call($url, array('ids' => implode(",", $array)), $this->oauth_token);
 
                         return $this->get_container_from_id(self::CONTAINER_TYPE_PLAYLIST, $container_id);
                         break;
@@ -458,10 +458,10 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
         $url = sprintf("DELETE /%s/%s", $object, $object_id);
         switch ($object) {
             case self::ELEMENT_TYPE_VIDEO:
-                $result = $this->_api->call($url, array(), $this->oauth_token);
+                $this->_api->call($url, array(), $this->oauth_token);
                 break;
             case self::CONTAINER_TYPE_PLAYLIST:
-                $result = $this->_api->call($url, array(), $this->oauth_token);
+                $this->_api->call($url, array(), $this->oauth_token);
                 break;
             default:
                 throw new Bridge_Exception_ObjectUnknown('Unknown object ' . $object);

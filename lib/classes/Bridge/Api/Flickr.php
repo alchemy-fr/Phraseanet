@@ -837,7 +837,6 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
         $xml = $response->getXml();
         $complete = isset($xml->uploader->ticket["complete"]) ? (string) $xml->uploader->ticket["complete"] : null;
-        $invalid = isset($xml->uploader->ticket["invalid"]) ? (string) $xml->uploader->ticket["invalid"] : null;
 
         if ($complete) {
             if ((int) $complete == 0)

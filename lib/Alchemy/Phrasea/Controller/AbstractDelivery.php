@@ -28,7 +28,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
     {
         $file = $record->get_subdef($subdef);
 
-        $pathIn = $pathOut = $file->get_pathfile();
+        $pathOut = $file->get_pathfile();
 
         if ($watermark === true && $file->get_type() === \media_subdef::TYPE_IMAGE) {
             $pathOut = \recordutils_image::watermark($app, $file);

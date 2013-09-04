@@ -266,8 +266,6 @@ class User_Query implements User_QueryInterface
             $sql .= $this->generate_field_constraints('lastModel', $this->templates);
         }
 
-        $baslist = array();
-
         if (count($this->base_ids) == 0) {
             if ($this->bases_restrictions)
                 throw new Exception('No base available for you, not enough rights');
