@@ -28,7 +28,8 @@ class uuid
         $nstr = '';
 
         // Convert Namespace UUID to bits
-        for ($i = 0; $i < strlen($nhex); $i+=2) {
+        $length = strlen($nhex);
+        for ($i = 0; $i < $length; $i+=2) {
             $nstr .= chr(hexdec($nhex[$i] . $nhex[$i + 1]));
         }
 
@@ -94,7 +95,8 @@ class uuid
         $nstr = '';
 
         // Convert Namespace UUID to bits
-        for ($i = 0; $i < strlen($nhex); $i+=2) {
+        $length = strlen($nhex);
+        for ($i = 0; $i < $length; $i+=2) {
             $nstr .= chr(hexdec($nhex[$i] . $nhex[$i + 1]));
         }
 

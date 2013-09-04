@@ -239,13 +239,16 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         foreach ($rs as $row) {
             $sta_xor = strrev($row["mask_xor"]);
-            for ($bit = 0; $bit < strlen($sta_xor); $bit++)
+            $length = strlen($sta_xor);
+            for ($bit = 0; $bit < $length; $bit++) {
                 $tbits_xor[$bit]["nset"] += substr($sta_xor, $bit, 1) != "0" ? 1 : 0;
-
+            }
+            
             $sta_and = strrev($row["mask_and"]);
-            for ($bit = 0; $bit < strlen($sta_and); $bit++)
+            $length = strlen($sta_and);
+            for ($bit = 0; $bit < $length; $bit++) {
                 $tbits_and[$bit]["nset"] += substr($sta_and, $bit, 1) != "0" ? 1 : 0;
-
+            }
             $nrows++;
         }
 

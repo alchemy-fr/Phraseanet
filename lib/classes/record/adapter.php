@@ -1222,7 +1222,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt = $connbas->prepare($sql);
 
         $status = strrev($status);
-        for ($i = 4; $i < strlen($status); $i++) {
+        $length = strlen($status);
+        for ($i = 4; $i < $length; $i++) {
             $stmt->execute(array(
                 ':record_id' => $this->get_record_id(),
                 ':name'      => $i,

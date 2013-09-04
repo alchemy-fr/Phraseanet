@@ -114,7 +114,8 @@ class PhraseaEngineQueryParser
     public function parsequery($phq)
     {
         if ($this->debug) {
-            for ($i = 0; $i < mb_strlen($phq, 'UTF-8'); $i++) {
+            $length = mb_strlen($phq, 'UTF-8');
+            for ($i = 0; $i < $length; $i++) {
                 $c = mb_substr($phq, $i, 1, 'UTF-8');
                 printf("// %s : '%s' (%d octets)\n", $i, $c, strlen($c));
             }
@@ -975,7 +976,8 @@ class PhraseaEngineQueryParser
                 if (is_array($tree["VALUE"])) {
                     $treetmp = null;
                     $pnum = 0;
-                    for ($i = 0; $i < count($tree["VALUE"]); $i++) {
+                    $length = count($tree["VALUE"]);
+                    for ($i = 0; $i < $length; $i++) {
                         // gestion mot vide
                         if (isset($emptyw[$tree["VALUE"][$i]]) || $tree["VALUE"][$i] == "?" || $tree["VALUE"][$i] == "*") {
                             // on a forcé les '?' ou '*' isolés comme des mots vides
@@ -1651,8 +1653,10 @@ class PhraseaEngineQueryParser
     {
         $nok = 0;
         $w = $t["VALUE"];
-        if ($w != "?" && $w != "*") {  // on laisse passer les 'isolés' pour les traiter plus tard comme des mots vides
-            for ($i = 0; $i < strlen($w); $i++) {
+        if ($w != "?" && $w != "*") {  
+            // on laisse passer les 'isolés' pour les traiter plus tard comme des mots vides
+            $length = strlen($w);
+            for ($i = 0; $i < $length; $i++) {
                 $c = substr($w, $i, 1);
                 if ($c == "?" || $c == "*") {
                     if ($nok < $this->app['phraseanet.registry']->get('GV_min_letters_truncation')) {
