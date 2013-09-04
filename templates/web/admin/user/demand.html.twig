@@ -19,92 +19,163 @@
     $(document).ready(function(){
 
         resize();
+
         $(window).resize(function(){
             resize();
         });
 
-    });
+        var $form = $("form#accept-demand");
+        var $mainBtnAction = $(".btn-all-action", $form);
+        var $basesBtnAction = $(".btn-single-action", $form);
 
-    function checkDeny(el)
-    {
-        if(!$(el).hasClass('active'))
-        {
-            $('.disabler_'+$(el).attr('id').substring(5)).removeClass('active');
-        }
-        else
-        {
-        }
-    }
+        $(".btn-all-action, .btn-single-action").on("uncheck-all", function(event) {
+            $("button", $(event.currentTarget)).removeClass("active");
+        }).on("uncheck-deny", function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $denyButton = $(".deny-checker", $btnGroup);
+            
+            if ($denyButton.hasClass("active")) {
+                $denyButton.removeClass("active");
+                $(".deny-checker", $mainBtnAction).removeClass("active");
+            }
+        }).on("check-deny", function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $denyButton = $(".deny-checker", $btnGroup);
 
-    function checkAdd(el)
-    {
-        if(!$(el).hasClass('active'))
-        {
-            $('#accept_'+$(el).attr('id').substring(10)).addClass('active');
-            $('#deny_'+$(el).attr('id').substring(10)).removeClass('active');
-        }
-    }
+            if (false === $denyButton.hasClass("active")) {
+                $btnGroup.trigger("uncheck-all");
+                $denyButton.addClass("active");
 
-    function checkRemove(el)
-    {
-        if($(el).hasClass('active'))
-        {
-            $('.disabler_'+$(el).attr('id').substring(7)).each(function(){
-                $(this).removeClass('active');
-            });
-            $(el).addClass('active');
-        }
-        else
-        {
-            $('#deny_'+$(el).attr('id').substring(7)).removeClass('active');
-        }
-    }
+                var nbActiveButton = $(".deny-checker.active", $basesBtnAction).length;
+                var totalBtn = $(".deny-checker", $basesBtnAction).length;
+                
+                if (nbActiveButton === totalBtn) {
+                    $(".deny-checker", $mainBtnAction).addClass("active");
+                }
+            }
+        }).on("check-accept", function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $acceptBtn = $(".accept-checker", $btnGroup);
 
-    function modelChecker(usr)
-    {
-        var val = $('#model_'+usr)[0].value;
+            if (false === $acceptBtn.hasClass("active"))  {
+                $btnGroup.trigger('uncheck-deny');
+                $acceptBtn.addClass("active");
 
-        var bool = false;
-        if(!isNaN(val) && val!== '')
-            bool = true;
+                var nbActiveButton = $(".accept-checker.active", $basesBtnAction).length;
+                var totalBtn = $(".accept-checker", $basesBtnAction).length;
 
-        if(bool)
-            $('#sub_usr_'+usr).slideToggle('slow');
-        else
-            $('#sub_usr_'+usr).slideToggle('slow');
+                if (nbActiveButton === totalBtn) {
+                    $(".accept-checker", $mainBtnAction).addClass("active");
+                }
+            }
+        }).on("uncheck-accept", function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $acceptBtn = $(".accept-checker", $btnGroup);
 
-        if(bool)
-            $('.checker_'+usr).attr('disabled','disabled');
-        else
-            $('.checker_'+usr).removeAttr('disabled');
+            if ($acceptBtn.hasClass("active")) {
+                $acceptBtn.removeClass("active");
+                $(".accept-checker", $mainBtnAction).removeClass("active");
+                
+                $btnGroup.trigger("uncheck-hd");
+                $btnGroup.trigger("uncheck-watermark");
+            }
+        }).on('check-hd', function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $hdBtn = $(".accept-hd-checker", $btnGroup);
 
-    }
+            if (false === $hdBtn.hasClass("active")) {
+                $hdBtn.addClass('active');
 
-    function checkAll(that)
-    {
-        var bool = true;
-        var first = true;
-        $('.'+that+'_checker:not(.active)').each(function(){
-            //        if(!$(this)[0].disabled)
-            //        {
-            if(first && !$(this).hasClass('active'))
-                bool = false;
-            if (bool === false)
-                $(this).removeClass('active');
-            else
-                $(this).addClass('active');
-            first = false;
-            if(that === 'deny')
-                checkDeny($(this));
-            if(that === 'accept_hd')
-                checkAdd(this);
-            if(that === 'watermark')
-                checkAdd(this);
-            if(that === 'accept')
-                checkRemove(this);
-            //        }
+                var nbActiveButton = $(".accept-hd-checker.active", $basesBtnAction).length;
+                var totalBtn = $(".accept-hd-checker", $basesBtnAction).length;
+
+                if (nbActiveButton === totalBtn) {
+                    $(".accept-hd-checker", $mainBtnAction).addClass("active");
+                }
+                
+                $btnGroup.trigger('uncheck-deny').trigger('check-accept');
+            }
+        }).on('uncheck-hd', function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $hdBtn = $(".accept-hd-checker", $btnGroup);
+
+            if ($hdBtn.hasClass("active")) {
+                $hdBtn.removeClass("active");
+                $(".accept-hd-checker", $mainBtnAction).removeClass("active");
+            }
+        }).on('check-watermark', function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $watermarkBtn = $(".accept-watermark-checker", $btnGroup);
+
+            if (false === $watermarkBtn.hasClass("active")) {
+                $watermarkBtn.addClass('active');
+
+                var nbActiveButton = $(".accept-watermark-checker.active", $basesBtnAction).length;
+                var totalBtn = $(".accept-watermark-checker", $basesBtnAction).length;
+
+                if (nbActiveButton === totalBtn) {
+                    $(".accept-watermark-checker", $mainBtnAction).addClass("active");
+                }
+                
+                $btnGroup.trigger('uncheck-deny').trigger('check-accept');
+            }
+        }).on('uncheck-watermark', function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $watermarkBtn = $(".accept-watermark-checker", $btnGroup);
+
+            if ($watermarkBtn.hasClass("active")) {
+                $watermarkBtn.removeClass('active');
+                $(".accept-watermark-checker", $mainBtnAction).removeClass("active");
+            }
         });
-    }
+        
+        $.each([
+            $('.deny-checker', $basesBtnAction),
+            $('.accept-checker', $basesBtnAction),
+            $('.accept-hd-checker', $basesBtnAction),
+            $('.accept-watermark-checker', $basesBtnAction)
+        ], function(i, buttons) {
+            buttons.bind("click", function(event) {
+                var $this = $(this);
+                var $btnGroup = $this.closest('.btn-group');
+                var event = $this.data('event');
+
+                if ($this.hasClass("active")) {
+                    $btnGroup.trigger("uncheck-"+ event);
+                } else {
+                    $btnGroup.trigger('check-' + event);
+                }
+            });
+        });
+
+        $.each([
+            $('.deny-checker', $mainBtnAction),
+            $('.accept-checker', $mainBtnAction),
+            $('.accept-hd-checker', $mainBtnAction),
+            $('.accept-watermark-checker', $mainBtnAction)
+        ], function(i, buttons) {
+            buttons.bind("click", function(event) {
+                var $this = $(this);
+                var event = $this.data('event');
+
+                if ($this.hasClass("active")) {
+                    $mainBtnAction.trigger("uncheck-"+ event);
+                    $basesBtnAction.trigger("uncheck-"+ event);
+                } else {
+                    $mainBtnAction.trigger('check-' + event);
+                    $basesBtnAction.trigger('check-' + event);
+                }
+            });
+        });
+        
+        $(".submit", $form).bind("click", function (event) {
+            $(".btn.active", $basesBtnAction).each(function() {
+                $("<input>").attr("type", "hidden").attr("name", this.name).val(this.value).appendTo($form);
+            });
+
+            $form.submit();
+        });
+    });
 </script>
 
 <div class="page-header">
@@ -119,19 +190,19 @@
 {% endif %}
 
 {% if table['user'] | length > 0 %}
-    <form action="{{ path('users_submit_demands') }}" method="post">
-        <div class="btn-group">
-            <button class="btn" type="button" onclick="checkAll('deny')" style="height:30px;">
-                <img class="tipInfoUsr" title="{% trans 'admin:: refuser l\'acces' %}" src="/skins/icons/delete.gif"/>
+    <form id="accept-demand" action="{{ path('users_submit_demands') }}" method="post">
+        <div class="btn-group btn-all-action">
+            <button data-event="deny" class="btn deny-checker" type="button">
+                <img title="{% trans 'admin:: refuser l\'acces' %}" src="/skins/icons/delete.gif"/>
             </button>
-            <button class="btn" type="button" onclick="checkAll('accept')" style="height:30px;">
-                <img class="tipInfoUsr" title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}" src="/skins/icons/cmdok.gif"/>
+            <button data-event="accept" class="btn accept-checker" type="button">
+                <img title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}" src="/skins/icons/cmdok.gif"/>
             </button>
-            <button class="btn" type="button" onclick="checkAll('accept_hd')" style="height:30px;">
-                <span class="tipInfoUsr" title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}">HD</span>
+            <button data-event="hd" class="btn accept-hd-checker" type="button">
+                <span title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}">HD</span>
             </button>
-            <button class="btn" type="button" onclick="checkAll('watermark')" style="height:30px;">
-                <span class="tipInfoUsr" title="{% trans 'admin:: watermarquer les documents' %}">W</span>
+            <button data-event="watermark" class="btn accept-watermark-checker" type="button">
+                <span title="{% trans 'admin:: watermarquer les documents' %}">W</span>
             </button></td>
         </div>
 
@@ -139,7 +210,6 @@
             <thead>
                 <tr>
                     <th>{% trans 'Informations' %}</th>
-                    <th>{% trans 'admin::compte-utilisateur date d\'inscription' %}</th>
                     <th>{% trans 'admin::collection' %}</th>
                     <th>{% trans 'Models' %}</th>
                 </tr>
@@ -152,7 +222,9 @@
                 <div class="well well-small">
                     <table class="table" style="table-layout: fixed;">
                         <tr>
-                            <span class="badge badge-warning">{{ loop.index }} </span>
+                            <span>
+                                {{ app['date-formatter'].getPrettyString(row["date_modif"]) }}
+                            </span>
                         </tr>
                         <tr>
                             <td>
@@ -179,51 +251,26 @@
                                     <dd>{{ row['pays'] }}</dd>
                                 </dl>
                             </td>
-                             <td>
-                                {{ app['date-formatter'].getPrettyString(row["date_modif"]) }}
-                            </td>
                             <td>
-                                {# Delete this when the JS 'll be updated --
-                                <table class='table-bordered' cellspacing="0" cellpading="0" >
-                                    {% for basId in colls %}
-                                        <tr>
-                                            <td>
-                                                <input name="deny[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkDeny(this)" id="{{ 'deny_' ~ row['usr_id']  ~ '_' ~ basId }}" class="deny_checker tipInfoUsr {{ 'checker_' ~ row['usr_id'] }}" title="{% trans 'admin:: refuser l\'acces' %}" type="checkbox"/>
-                                            </td>
-                                            <td>
-                                                <input name="accept[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkRemove(this)" id="{{ 'accept_' ~ row['usr_id'] ~ '_' ~ basId }}" class="{{ 'disabler_' ~ row['usr_id'] ~ '_' ~ basId }} accept_checker tipInfoUsr {{ 'checker_' ~ row['usr_id'] }}" title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}" type="checkbox"/>
-                                            </td>
-                                            <td>
-                                                <input name="accept_hd[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkAdd(this)" id="{{ 'accept_hd_' ~ row['usr_id'] ~ '_' ~ basId }}" class="{{ 'disabler_' ~ row['usr_id'] ~ '_' ~ basId }} accept_hd_checker tipInfoUsr {{ 'checker_' ~ row['usr_id'] }}" title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}" type="checkbox"/>
-                                            </td>
-                                            <td>
-                                                <input name="watermark[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkAdd(this)" id="{{  'watermark_' ~ row['usr_id'] ~ '_' ~ basId }}" class="{{ 'disabler_' ~  row['usr_id'] ~ '_' ~ basId }} watermark_checker tipInfoUsr {{ 'checker_' ~ row['usr_id'] }}" title="{% trans 'admin:: watermarquer les documents' %}" type="checkbox"/>
-                                            </td>
-                                            <td>
-                                                {{ basId| bas_labels(app) }}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                                {#-- End of delete #}
                                 {% for basId in colls %}
-                                    <div class="btn-group" data-toggle="buttons-checkbox" style="margin:auto auto 5px 0;">
-                                        <button type="button" name="deny[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkDeny(this)" id="{{ 'deny_' ~ row['usr_id']  ~ '_' ~ basId }}" class="btn deny_checker tipInfoUsr {{ 'checker_' ~ row['usr_id'] }}" title="{% trans 'admin:: refuser l\'acces' %}" style="height:30px;">
-                                            <img class="tipInfoUsr" title="{% trans 'admin:: refuser l\'acces' %}" src='/skins/icons/delete.gif' />
-                                        </button>
-                                        <button type="button" name="accept[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkRemove(this)" id="{{ 'accept_' ~ row['usr_id'] ~ '_' ~ basId }}" class="btn {{ 'disabler_' ~ row['usr_id'] ~ '_' ~ basId }} accept_checker tipInfoUsr {{ 'checker_' ~ row['usr_id'] }}" title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}" style="height:30px;">
-                                            <img class="tipInfoUsr" title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}" src='/skins/icons/cmdok.gif' />
-                                        </button>
-                                        <button type="button" name="accept_hd[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkAdd(this)" id="{{ 'accept_hd_' ~ row['usr_id'] ~ '_' ~ basId }}" class="btn {{ 'disabler_' ~ row['usr_id'] ~ '_' ~ basId }} accept_hd_checker tipInfoUsr {{ 'checker_' ~ row['usr_id'] }}" title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}" style="height:30px;">
-                                            <span class="tipInfoUsr" title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}">HD</span>
-                                        </button>
-                                        <button type="button" name="watermark[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkAdd(this)" id="{{  'watermark_' ~ row['usr_id'] ~ '_' ~ basId }}" class="btn {{ 'disabler_' ~  row['usr_id'] ~ '_' ~ basId }} watermark_checker tipInfoUsr {{ 'checker_' ~ row['usr_id'] }}" title="{% trans 'admin:: watermarquer les documents' %}" style="height:30px;">
-                                            <span class="tipInfoUsr" title="{% trans 'admin:: watermarquer les documents' %}">W</span>
-                                        </button>
-                                    </div>
                                     <h1 style="word-wrap: break-word;">
                                         {{ basId| bas_labels(app) }}
                                     </h1>
+                                    {% set btn_value = row['usr_id'] ~ "_" ~  basId %}
+                                    <div class="btn-group btn-single-action" style="margin:auto auto 5px 0;">
+                                        <button data-event="deny" value="{{ btn_value }}" type="button" name="deny[]" class="btn deny-checker" title="{% trans 'admin:: refuser l\'acces' %}">
+                                            <img title="{% trans 'admin:: refuser l\'acces' %}" src='/skins/icons/delete.gif' />
+                                        </button>
+                                        <button data-event="accept" value="{{ btn_value }}" type="button" name="accept[]" class="btn accept-checker" title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}">
+                                            <img title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}" src='/skins/icons/cmdok.gif' />
+                                        </button>
+                                        <button data-event="hd" value="{{ btn_value }}" type="button" name="accept_hd[]" class="btn accept-hd-checker" title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}">
+                                            <span title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}">HD</span>
+                                        </button>
+                                        <button data-event="watermark" value="{{ btn_value }}" type="button" name="watermark[]" class="btn accept-watermark-checker" title="{% trans 'admin:: watermarquer les documents' %}">
+                                            <span title="{% trans 'admin:: watermarquer les documents' %}">W</span>
+                                        </button>
+                                    </div>
                                 {% endfor %}
                             </td>
                             <td>
@@ -242,7 +289,7 @@
         </div>
 
         <div class="form-actions">
-            <button class="btn btn-primary">{% trans 'boutton::valider' %}</button>
+            <button type="button" class="btn btn-primary submit">{% trans 'boutton::valider' %}</button>
         </div>
     </form>
  {% else %}
