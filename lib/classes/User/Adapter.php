@@ -762,7 +762,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         foreach ($repo->findByUser($this) as $provider) {
             $this->app['EM']->remove($provider);
         }
-        
+
         $repo = $this->app['EM']->getRepository('Entities\FtpExport');
         foreach ($repo->findByUser($this) as $export) {
             $this->app['EM']->remove($export);

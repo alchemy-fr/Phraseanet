@@ -264,7 +264,7 @@ class task_period_ftp extends task_appboxAbstract
             $this->dependencyContainer['EM']->remove($export);
         }
         $this->dependencyContainer['EM']->flush();
-        
+
         return $this->dependencyContainer['EM']
                 ->getRepository('Entities\FtpExport')
                 ->findDoableExports();
@@ -355,12 +355,12 @@ class task_period_ftp extends task_appboxAbstract
                 if ($exportElement->isDone()) {
                     continue;
                 }
-                
+
                 $base_id = $exportElement->getBaseId();
                 $record_id = $exportElement->getRecordId();
                 $subdef = $exportElement->getSubdef();
                 $localfile = null;
-                
+
                 try {
                     $sbas_id = phrasea::sbasFromBas($this->dependencyContainer, $base_id);
                     $record = new record_adapter($this->dependencyContainer, $sbas_id, $record_id);
@@ -480,7 +480,7 @@ class task_period_ftp extends task_appboxAbstract
 
             unset($ftp_client);
         }
-        
+
         $this->finalize($appbox, $export);
     }
 
@@ -496,12 +496,12 @@ class task_period_ftp extends task_appboxAbstract
 
             return $this;
         }
-        
+
         $total = count($export->getElements());
-        $done = count($export->getElements()->filter(function (FtpExportElement $element) { 
+        $done = count($export->getElements()->filter(function (FtpExportElement $element) {
             return $element->isDone();
         }));
-        $error = count($export->getElements()->filter(function (FtpExportElement $element) { 
+        $error = count($export->getElements()->filter(function (FtpExportElement $element) {
             return $element->isError();
         }));
 

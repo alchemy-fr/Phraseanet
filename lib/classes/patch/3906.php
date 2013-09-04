@@ -55,11 +55,11 @@ class patch_3906 implements patchInterface
 
         $em = $app['EM'];
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
-        
-        $sql = 'SELECT `id`, `crash`, `nbretry`, `mail`, `addr`, `ssl`, 
-                    `login`, `pwd`, `passif`, 
-                    `destfolder`, `sendermail`, `text_mail_sender`, 
-                    `text_mail_receiver`, `usr_id`, `date`, `foldertocreate`, 
+
+        $sql = 'SELECT `id`, `crash`, `nbretry`, `mail`, `addr`, `ssl`,
+                    `login`, `pwd`, `passif`,
+                    `destfolder`, `sendermail`, `text_mail_sender`,
+                    `text_mail_receiver`, `usr_id`, `date`, `foldertocreate`,
                     `logfile`
                 FROM ftp_export';
         $stmt = $conn->prepare($sql);
@@ -67,12 +67,12 @@ class patch_3906 implements patchInterface
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sql = 'SELECT base_id, record_id, subdef, filename, folder, error, 
+        $sql = 'SELECT base_id, record_id, subdef, filename, folder, error,
                     done, businessfields
-                FROM ftp_export_elements 
+                FROM ftp_export_elements
                 WHERE ftp_export_id = :export_id';
         $stmt = $conn->prepare($sql);
-        
+
         $n = 0;
 
         foreach ($rs as $row) {
@@ -81,7 +81,7 @@ class patch_3906 implements patchInterface
             } catch (\Exception $e) {
                 continue;
             }
-            
+
             $export = new FtpExport();
             $export
                 ->setAddr($row['addr'])
@@ -106,7 +106,7 @@ class patch_3906 implements patchInterface
 
             $stmt->execute(array('export_id' => $row['id']));
             $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             foreach ($rs as $element) {
                 $element = new FtpExportElement();
                 $element->setBaseId($row['base_id'])
@@ -120,7 +120,7 @@ class patch_3906 implements patchInterface
                     ->setFolder($row['folder'])
                     ->setSubdef($row['subdef'])
                     ->setExport($export);
-                
+
                 $export->addElement($element);
 
                 $em->persist($element);
@@ -134,10 +134,10 @@ class patch_3906 implements patchInterface
             }
         }
         $stmt->closeCursor();
-        
+
         $em->flush();
         $em->clear();
-        
+
         $em->getEventManager()->addEventSubscriber(new TimestampableListener());
     }
 }
