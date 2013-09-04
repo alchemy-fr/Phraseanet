@@ -54,11 +54,11 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="taskMenuItem" id="taskEdit_{{ task.getID() }}"><a href="#">edit</a></li>
-                        <li class="taskMenuItem" id="taskStart_{{ task.getID() }}"><a href="#">start</a></li>
-                        <li class="taskMenuItem" id="taskStop_{{ task.getID() }}"><a href="#">stop</a></li>
-                        <li class="taskMenuItem" id="taskDelete_{{ task.getID() }}"><a href="#">delete</a></li>
-                        <li class="taskMenuItem" id="taskLog_{{ task.getID() }}"><a href="#">log</a></li>
+                        <li class="taskMenuItem" id="taskEdit_{{ task.getID() }}"><a href="#">{% trans 'Edit' %}</a></li>
+                        <li class="taskMenuItem" id="taskStart_{{ task.getID() }}"><a href="#">{% trans 'Start' %}</a></li>
+                        <li class="taskMenuItem" id="taskStop_{{ task.getID() }}"><a href="#">{% trans 'Stop' %}</a></li>
+                        <li class="taskMenuItem" id="taskDelete_{{ task.getID() }}"><a href="#">{% trans 'Delete' %}</a></li>
+                        <li class="taskMenuItem" id="taskLog_{{ task.getID() }}"><a href="#">{% trans 'Logs' %}</a></li>
                     </ul>
                 </div>
             </td>
