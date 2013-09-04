@@ -322,6 +322,9 @@ class appbox extends base
         $finder->in(array(
             $this->app['root.path'] . '/tmp/cache_minify/',
             $this->app['root.path'] . '/tmp/cache_twig/',
+            $this->app['root.path'] . '/tmp/cache/profiler/',
+            $this->app['root.path'] . '/tmp/doctrine/',
+            $this->app['root.path'] . '/tmp/serializer/',
         ))
             ->depth(0)
             ->ignoreVCS(true)
