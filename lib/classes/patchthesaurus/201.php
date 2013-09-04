@@ -17,7 +17,7 @@
 class patchthesaurus_201
 {
 
-    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas)
     {
         if ($version == "2.0.1") {
             $th = $domth->documentElement;

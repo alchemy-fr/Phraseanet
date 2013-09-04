@@ -17,7 +17,7 @@
 class patchthesaurus_203
 {
 
-    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, \DOMDocument $domct, \DOMDocument $domth, \connection_interface $connbas)
     {
         global $ctchanged, $thchanged, $needreindex;
         $unicode = new unicode();
