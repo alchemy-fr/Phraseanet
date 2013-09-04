@@ -117,7 +117,7 @@ class Minifier implements ControllerProviderInterface
                 $min_serveOptions['minApp']['allowDirs'][] = $target;
             }
 
-            if (isset($_GET['g'])) {
+            if (null !== $request->query->get('g')) {
                 // well need groups config
                 $min_serveOptions['minApp']['groups'] = require __DIR__ . '/../../../conf.d/minifyGroupsConfig.php';
             }
