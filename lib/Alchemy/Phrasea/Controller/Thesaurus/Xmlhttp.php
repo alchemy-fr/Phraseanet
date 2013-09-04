@@ -1531,7 +1531,7 @@ class Xmlhttp implements ControllerProviderInterface
         ), 'html' => $html));
     }
 
-    private function buildTermLabel($language, $n, &$key0, &$nts0)
+    private function buildTermLabel($language, \DOMNode $n, &$key0, &$nts0)
     {
         $lngfound = false; // true when wet met a first synonym in the current language
         $key0 = null;  // key of the sy in the current language (or key of the first sy if we can't find good lng)
