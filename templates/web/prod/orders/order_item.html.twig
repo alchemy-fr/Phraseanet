@@ -91,8 +91,8 @@
 
     <div class="form-actions" style="color:#333;">
         {% trans 'Selectionnez des documents et ' %}
-        <button class="btn btn-primary send">Envoyer</button>
-        <button class="btn deny">Refuser</button>
+        <button class="btn btn-primary send">{% trans 'Send' %}</button>
+        <button class="btn deny">{% trans 'Deny' %}</button>
         <button class="order_launcher btn">{% trans 'Retour aux commandes' %}</button>
         <img src="/skins/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
         <input name="order_id" type="hidden" value="{{ order.getId() }}" />
