@@ -1617,7 +1617,7 @@ function toggleRemoveReg(el)
 function deleteThis(lst)
 {
     if(lst.split(';').length === 0 ) {
-        alert(langage.nodocselected);
+        alert(language.nodocselected);
         return false;
     }
 
@@ -1643,7 +1643,7 @@ function chgCollThis(datas)
 {
     $dialog = p4.Dialog.Create({
         size:'Small',
-        title:'Move',
+        title: language.move,
         closeButton:true
     });
     $.ajax({
@@ -1660,7 +1660,7 @@ function pushThis(sstt_id, lst, story)
 {
     $dialog = p4.Dialog.Create({
         size:'Full',
-        title:'Push'
+        title:language.push
     });
 
     $.post("../prod/push/sendform/", {
@@ -1678,7 +1678,7 @@ function feedbackThis(sstt_id, lst, story)
     /* disable push closeonescape as an over dialog may exist (add user) */
     $dialog = p4.Dialog.Create({
         size:'Full',
-        title:'Feedback'
+        title:language.feedback
     });
 
     $.post("../prod/push/validateform/", {
@@ -1695,7 +1695,7 @@ function toolREFACTOR(datas){
 
     var dialog = p4.Dialog.Create({
         size:'Medium',
-        title:'Tool box',
+        title:language.toolbox,
         loading: true
     });
 
@@ -2345,7 +2345,7 @@ function checkDeleteThis(type, el)
                 deleteBasket(el);
             };
 
-            $('#DIALOG').empty().append(language.confirmDel).attr('title','Attention !').dialog({
+            $('#DIALOG').empty().append(language.confirmDel).attr('title', language.attention).dialog({
                 autoOpen:false,
                 resizable:false,
                 modal:true,
@@ -2376,7 +2376,7 @@ function printThis(value)
     if ($("#DIALOG").data("ui-dialog")) {
         $("#DIALOG").dialog('destroy');
     }
-    $('#DIALOG').attr('title', 'Print')
+    $('#DIALOG').attr('title', language.print)
     .empty().addClass('loading')
     .dialog({
         resizable:false,

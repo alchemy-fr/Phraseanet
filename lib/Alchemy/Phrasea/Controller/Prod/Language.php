@@ -104,6 +104,12 @@ class Language implements ControllerProviderInterface
             $out['forceSendDocument'] = _('Force sending of the document ?');
             $out['export'] = _('Export');
             $out['share'] = _('Share');
+            $out['move'] = _('Move');
+            $out['push'] = _('Push');
+            $out['feedback'] = _('Feedback');
+            $out['toolbox'] = _('Tool box');
+            $out['print'] = _('Print');
+            $out['attention'] = _('Attention !');
 
             return $app->json($out);
         });
