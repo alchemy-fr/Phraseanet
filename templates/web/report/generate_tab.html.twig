@@ -30,8 +30,19 @@
                 <div style="clear:both;height:2px;"></div>
                 <div class="right" style="font-weight:lighter;font-size:10px;">
                     {% set total_count = result.total %}
-                    {% if result.total > 0 and result.total != 0 %}
-                        <i>{% trans %} Number of result {% plural total_count %} Number of results {% endtrans %} : {{ result.total }}</i>
+                    {% if total_count > 0 and total_count != 0 %}
+                        <i>
+                            {% if total_count == 1 %}
+                                {% trans %}
+                                    1 result
+                                {% endtrans %}
+                            {% else %}
+                                {% trans %}
+                                    {{ total_count }} results
+                                {% endtrans %}
+                            {% endif %}
+                            
+                        </i>
                     {% endif %}
                 </div>
                 <div class="spacer"></div>

@@ -7,11 +7,15 @@
     <div class="alert alert-success">
     <button class="close" data-dismiss="alert" type="button">×</button>
     {% set user_count = app['request'].get('user-updated') %}
+    {% if user_count == 1 %}
         {% trans %}
-            {{ user_count }} user has been created
-        {% plural user_count %}
-           {{ user_count }} users have been created
+            The user has been created.
         {% endtrans %}
+    {% else %}     
+        {% trans %}
+           {{ user_count }} users have been created.
+        {% endtrans %}
+    {% endif %}
     </div>
 {% endif %}
 

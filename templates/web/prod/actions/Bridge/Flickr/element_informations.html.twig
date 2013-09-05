@@ -1,14 +1,12 @@
 <ul>
   <li>
     {% set nb_view = element.get_view_count|default(0) %}
-    {% if nb_view == 0 %}
+    {% if nb_view <= 1 %}
       {% trans %}
         {{ nb_view }} vue
       {% endtrans %}
     {% else %}
       {% trans %}
-        {{ nb_view }} vue
-      {% plural nb_view %}
         {{ nb_view }} vues
       {% endtrans %}
     {% endif %}
