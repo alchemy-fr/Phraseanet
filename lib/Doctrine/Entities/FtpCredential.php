@@ -29,7 +29,7 @@ class FtpCredential
     private $id;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer")
      */
     private $usrId;
 

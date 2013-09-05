@@ -13,8 +13,11 @@ namespace Alchemy\Phrasea\Model\Manager;
 
 use Alchemy\Geonames\Connector as GeonamesConnector;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\Common\Persistence\ObjectManager;
+use Entities\EntityInterface;
 use Entities\User;
+use Entities\UserSetting;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class UserManager implements ManagerInterface
@@ -29,13 +32,34 @@ class UserManager implements ManagerInterface
     private $geonamesConnector;
 
     /**
-     * Constructor
+     * The default user setting values.
      *
-     * @param PasswordEncoderInterface $passwordEncoder
-     * @param GeonamesConnector $connector
-     * @param ObjectManager $om
-     * @param \appbox $appbox
+     * @var array
      */
+    private static $defaultUserSettings = array(
+        'view'                    => 'thumbs',
+        'images_per_page'         => '20',
+        'images_size'             => '120',
+        'editing_images_size'     => '134',
+        'editing_top_box'         => '180px',
+        'editing_right_box'       => '400px',
+        'editing_left_box'        => '710px',
+        'basket_sort_field'       => 'name',
+        'basket_sort_order'       => 'ASC',
+        'warning_on_delete_story' => 'true',
+        'client_basket_status'    => '1',
+        'css'                     => '000000',
+        'start_page_query'        => 'last',
+        'start_page'              => 'QUERY',
+        'rollover_thumbnail'      => 'caption',
+        'technical_display'       => '1',
+        'doctype_display'         => '1',
+        'bask_val_order'          => 'nat',
+        'basket_caption_display'  => '0',
+        'basket_status_display'   => '0',
+        'basket_title_display'    => '0'
+    );
+
     public function __construct(PasswordEncoderInterface $passwordEncoder, GeonamesConnector $connector, ObjectManager $om, \appbox $appbox)
     {
         $this->appbox = $appbox;
@@ -45,18 +69,29 @@ class UserManager implements ManagerInterface
     }
     
     /**
-     * @{inheritdoc}
+     * @return User
      */
     public function create()
     {
-        return new User();
+        $user = new User();
+
+        foreach(self::$defaultUserSettings as $name => $value) {
+            $setting = new UserSetting();
+            $setting->setName($name);
+            $setting->setValue($value);
+            $user->getSettings()->add($setting);
+        };
+
+        return $user;
     }
     
     /**
      * @{inheritdoc}
      */
-    public function delete($user, $flush = true)
+    public function delete(EntityInterface $user, $flush = true)
     {
+        $this->checkEntity($user);
+
         $user->setDeleted(true);
         $user->setEmail(null);
         $user->setLogin(sprintf('(#deleted_%s', $user->getLogin()));
@@ -72,8 +107,10 @@ class UserManager implements ManagerInterface
     /**
      * @{inheritdoc}
      */
-    public function update($user, $flush = true)
+    public function update(EntityInterface $user, $flush = true)
     {
+        $this->checkEntity($user);
+        
         $this->objectManager->persist($user);
         if ($flush) {
             $this->objectManager->flush();
@@ -84,23 +121,28 @@ class UserManager implements ManagerInterface
      * Updates the modelOf field from the template field value.
      *
      * @param UserInterface $user
+     * @param UserInterface $template
      */
-    public function onUpdateModel(User $user)
+    public function onUpdateModel(User $user, User $template)
     {
-        $user->getFtpCredential()->resetCredentials();
+        $user->setModelOf($template);
+        if (null !== $credential = $user->getFtpCredential()) {
+            $credential->resetCredentials();
+        }
         $this->cleanSettings($user);
         $user->reset();
     }
 
     /**
-     * Updates the password field from the plain password field value.
+     * Sets the given password.
      *
      * @param UserInterface $user
+     * @param password $password
      */
-    public function onUpdatePassword(User $user)
+    public function onUpdatePassword(User $user, $password)
     {
         $user->setNonce(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
-        $user->setPassword($this->passwordEncoder->encodePassword($user->getPassword(), $user->getNonce()));
+        $user->setPassword($this->passwordEncoder->encodePassword($password, $user->getNonce()));
     }
 
     /**
@@ -110,18 +152,20 @@ class UserManager implements ManagerInterface
      */
     public function onUpdateGeonameId(User $user)
     {
-        if (null !== $user->getGeonameId()) {
-            try {
-                $country = $this->geonamesConnector
-                    ->geoname($user->getGeonameId())
-                    ->get('country');
+        if (null === $user->getGeonameId()) {
+            return;
+        }
 
-                if (isset($country['name'])) {
-                    $user->setCountry($country['name']);
-                }
-            } catch (GeonamesExceptionInterface $e) {
+        try {
+            $country = $this->geonamesConnector
+                ->geoname($user->getGeonameId())
+                ->get('country');
 
+            if (isset($country['code'])) {
+                $user->setCountry($country['code']);
             }
+        } catch (GeonamesExceptionInterface $e) {
+
         }
     }
 
@@ -186,5 +230,19 @@ class UserManager implements ManagerInterface
 
         $this->cleanSettings($user);
         $this->cleanQueries($user);
+    }
+
+    /**
+     * Checks whether given entity is an User one.
+     *
+     * @param EntityInterface $entity
+     *
+     * @throws InvalidArgumentException If provided entity is not an User one.
+     */
+    private function checkEntity(EntityInterface $entity)
+    {
+        if (!$entity instanceof User) {
+            throw new InvalidArgumentException(sprintf('Entity of type `%s` should be a `Entities\User` entity.', get_class($entity)));
+        }
     }
 }

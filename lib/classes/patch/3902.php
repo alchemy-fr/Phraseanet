@@ -172,15 +172,11 @@ class patch_3902 implements patchInterface
         $repository = $em->getRepository('Entities\User');
         
         foreach ($rows as $row) {
-            $user = $repository->findOneByLogin($row['usr_login']);
-            
-            if (null === $user) {
+            if (null === $user = $repository->findOneByLogin($row['usr_login'])) {
                 continue;
             }
             
-            $template = $repository->find($row['model_of']);
-            
-            if (null === $template) {
+            if (null === $template = $repository->find($row['model_of'])) {
                 continue;
             }
             

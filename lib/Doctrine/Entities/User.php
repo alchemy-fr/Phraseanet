@@ -44,35 +44,6 @@ class User
     const USER_AUTOREGISTER = 'autoregister';
 
     /**
-     * The default user setting values.
-     *
-     * @var array
-     */
-    private static $defaultUserSettings = array(
-        'view'                    => 'thumbs',
-        'images_per_page'         => '20',
-        'images_size'             => '120',
-        'editing_images_size'     => '134',
-        'editing_top_box'         => '180px',
-        'editing_right_box'       => '400px',
-        'editing_left_box'        => '710px',
-        'basket_sort_field'       => 'name',
-        'basket_sort_order'       => 'ASC',
-        'warning_on_delete_story' => 'true',
-        'client_basket_status'    => '1',
-        'css'                     => '000000',
-        'start_page_query'        => 'last',
-        'start_page'              => 'QUERY',
-        'rollover_thumbnail'      => 'caption',
-        'technical_display'       => '1',
-        'doctype_display'         => '1',
-        'bask_val_order'          => 'nat',
-        'basket_caption_display'  => '0',
-        'basket_status_display'   => '0',
-        'basket_title_display'    => '0'
-    );
-
-    /**
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -287,11 +258,9 @@ class User
      */
     public function __construct()
     {
-        $this->setFtpCredential(new FtpCredential());
         $this->queries = new ArrayCollection();
         $this->notificationSettings = new ArrayCollection();
-        $this->setDefaultSettings();
-        $this->nonce = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $this->settings = new ArrayCollection();
     }
 
     /**
@@ -315,10 +284,6 @@ class User
      */
     public function setLogin($login)
     {
-        if (trim($login) === '') {
-            throw new InvalidArgumentException('Invalid login.');
-        }
-
         $this->login = $login;
     }
 
@@ -335,10 +300,6 @@ class User
      */
     public function setEmail($email)
     {
-        if (null !== $email && !preg_match('/.+@.+\..+/', trim($email))) {
-            throw new InvalidArgumentException('Invalid email.');
-        }
-
         $this->email = $email;
     }
 
@@ -356,10 +317,6 @@ class User
      */
     public function setPassword($password)
     {
-        if (trim($password) === '') {
-            throw new InvalidArgumentException('Invalid password.');
-        }
-
         $this->password = $password;
     }
 
@@ -749,10 +706,6 @@ class User
      */
     public function setModelOf(User $user)
     {
-        if ($this->isUser($user)) {
-            throw new InvalidArgumentException(sprintf('Can not set same user %s as template.', $this->getLogin()));
-        }
-
         $this->modelOf = $user;
     }
 
@@ -999,16 +952,6 @@ class User
     }
 
     /**
-     * @param User $user
-     *
-     * @return boolean
-     */
-    public function isUser(User $user = null)
-    {
-        return null !== $user && $this->getLogin() === $user->getLogin();
-    }
-
-    /**
      * @return boolean
      */
     public function isTemplate()
@@ -1068,23 +1011,6 @@ class User
         $this->setLastName('');
         $this->setMailNotificationsActivated(false);
         $this->setRequestNotificationsActivated(false);
-
-        return $this;
-    }
-
-    /**
-     * @return User
-     */
-    private function setDefaultSettings()
-    {
-        $this->settings = new ArrayCollection();
-
-        foreach(self::$defaultUserSettings as $name => $value) {
-            $setting = new UserSetting();
-            $setting->setName($name);
-            $setting->setValue($value);
-            $this->settings->add($setting);
-        };
 
         return $this;
     }

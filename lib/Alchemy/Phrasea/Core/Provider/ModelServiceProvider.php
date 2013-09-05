@@ -16,15 +16,15 @@ use Alchemy\Phrasea\Model\Manager\UserManager;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
-class ManipulatorServiceProvider implements ServiceProviderInterface
+class ModelServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['user.manipulator'] = $app->share(function($app) {
-            return new UserManipulator($app['user.manager'], $app['EM']);
+        $app['model.user-manipulator'] = $app->share(function($app) {
+            return new UserManipulator($app['model.user-mananager'], $app['EM']);
         });
 
-        $app['user.manager'] = $app->share(function($app) {
+        $app['model.user-mananager'] = $app->share(function($app) {
             return new UserManager($app['auth.password-encoder'], $app['geonames.connector'], $app['EM'], $app['phraseanet.appbox']);
         });
     }

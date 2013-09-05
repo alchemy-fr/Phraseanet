@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 use Alchemy\Geonames\Connector as GeonamesConnector;
 use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\Common\Persistence\ObjectManager;
 use Entities\User;
 use Repositories\UserRepository;
@@ -31,14 +32,6 @@ class UserManipulator implements ManipulatorInterface
     /** @var ObjectManager */
     private $om;
 
-    /**
-     * Constructor
-     *
-     * @param PasswordEncoderInterface $passwordEncoder
-     * @param GeonamesConnector $connector
-     * @param ObjectManager $om
-     * @param \appbox $appbox
-     */
     public function __construct(UserManager $manager, ObjectManager $om)
     {
         $this->manager = $manager;
@@ -60,13 +53,11 @@ class UserManipulator implements ManipulatorInterface
      * @param string  $login
      * @param string  $password
      * @param string  $email
-     * @param Boolean $active
-     * @param Boolean $login
-     * @param Boolean $template
+     * @param Boolean $admin
      *
      * @return User
      *
-     * @throws InvalidArgument if login, email or password is not valid.
+     * @throws InvalidArgumentException if login, email or password is not valid.
      * @throws RuntimeException if login or email already exists.
      */
     public function createUser($login, $password, $email = null, $admin = false)
@@ -123,7 +114,7 @@ class UserManipulator implements ManipulatorInterface
      *
      * @return User
      *
-     * @throws InvalidArgument if name is not valid.
+     * @throws InvalidArgumentException if name is not valid.
      * @throws RuntimeException if name already exists.
      */
     public function createTemplate($name, User $template)
@@ -143,12 +134,15 @@ class UserManipulator implements ManipulatorInterface
      * @param user $user
      * @param string $password
      *
-     * @throws InvalidArgument if password is not valid.
+     * @throws InvalidArgumentException if password is not valid.
      */
     public function setPassword(User $user, $password)
     {
-        $user->setPassword($password);
-        $this->manager->onUpdatePassword($user);
+        if (trim($password) === '') {
+            throw new InvalidArgumentException('Invalid password.');
+        }
+
+        $this->manager->onUpdatePassword($user, $password);
     }
 
     /**
@@ -157,12 +151,15 @@ class UserManipulator implements ManipulatorInterface
      * @param User $user
      * @param User $template
      *
-     * @throws InvalidArgument if user and template are the same.
+     * @throws InvalidArgumentException if user and template are the same.
      */
     public function setModelOf(User $user, User $template)
     {
-        $user->setModelOf($template);
-        $this->manager->onUpdateModel($user);
+        if ($user->getLogin() === $template->getLogin()) {
+            throw new InvalidArgumentException(sprintf('Can not set same user %s as template.', $user->getLogin()));
+        }
+
+        $this->manager->onUpdateModel($user, $template);
     }
 
     /**
@@ -171,7 +168,7 @@ class UserManipulator implements ManipulatorInterface
      * @param User $user
      * @param integer $geonameid
      *
-     * @throws InvalidArgument if geonameid is not valid.
+     * @throws InvalidArgumentException if geonameid is not valid.
      */
     public function setGeonameId(User $user, $geonameid)
     {
@@ -185,11 +182,15 @@ class UserManipulator implements ManipulatorInterface
      * @param User $user
      * @param sring $login
      *
-     * @throws InvalidArgument if login is not valid.
+     * @throws InvalidArgumentException if login is not valid.
      * @throws RuntimeException if login already exists.
      */
     public function setLogin(User $user, $login)
     {
+        if (trim($login) === '') {
+            throw new InvalidArgumentException('Invalid login.');
+        }
+
         if (null !== $this->repository->findByLogin($login)) {
             throw new RuntimeException(sprintf('User with login %s already exists.', $login));
         }
@@ -203,11 +204,15 @@ class UserManipulator implements ManipulatorInterface
      * @param User $user
      * @param string $email
      *
-     * @throws InvalidArgument if email is not valid or already exists.
+     * @throws InvalidArgumentException if email is not valid or already exists.
      * @throws RuntimeException if email already exists.
      */
     public function setEmail(User $user, $email)
     {
+        if (null !== $email && !preg_match('/.+@.+\..+/', trim($email))) {
+            throw new InvalidArgumentException('Invalid email.');
+        }
+
         if (null !== $this->repository->findByEmail($email)) {
             throw new RuntimeException(sprintf('User with email %s already exists.', $email));
         }

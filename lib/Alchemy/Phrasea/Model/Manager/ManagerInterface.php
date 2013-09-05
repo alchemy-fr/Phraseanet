@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Model\Manager;
 
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Entities\EntityInterface;
+
 /**
  * This class is responsible of handling logic and complex stuff before the 
  * entity is persisted by the ORM.
@@ -19,22 +22,28 @@ interface ManagerInterface
 {
     /**
      * Returns an empty instance of the managed entity.
+     * 
+     * @return EntityInterface
      */
     public function create();
     
     /**
      * Updates the given entity.
      *
-     * @param $entity
+     * @param EntityInterface $entity
      * @param boolean $flush Whether to flush the changes or not (default true).
+     * 
+     * @throws InvalidArgumentException if provided entity is not the good type.
      */
-    public function update($entity, $flush = true);
+    public function update(EntityInterface $entity, $flush = true);
 
     /**
      * Deletes the given entity.
      *
-     * @param User $entity
+     * @param EntityInterface $entity
      * @param boolean $flush Whether to flush the changes or not (default true).
+     * 
+     * @throws InvalidArgumentException if provided entity is not the good type.
      */
-    public function delete($entity, $flush = true);
+    public function delete(EntityInterface $entity, $flush = true);
 }
