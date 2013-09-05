@@ -880,12 +880,12 @@
                 </div>
             </div>
             <div id="look_box_settings">
-                <div class="box">
-                    <div class="" style="float:left;width:100%;">
+                <div class="row-fluid">
+                    <div class="box">
                         <h1>{% trans 'Affichage au demarrage' %}</h1>
-                        {% set start_page_pref = app['authentication'].getUser().getPrefs('start_page') %}
-                        <div class="box" >
-                            <select class="span2" name="start_page" onchange="start_page_selector();">
+                        <form class="form-inline">
+                            {% set start_page_pref = app['authentication'].getUser().getPrefs('start_page') %}
+                            <select class="span4" name="start_page" onchange="start_page_selector();">
                                 <option value="LAST_QUERY" {% if start_page_pref == 'LAST_QUERY' %}selected="selected"{% endif %} >
                                     {% trans 'Ma derniere question' %}
                                 </option>
@@ -899,9 +899,9 @@
                                     {% trans 'Aide' %}
                                 </option>
                             </select>
-                            <input type="text" class="input-small" name="start_page_value" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
+                            <input type="text" class="span4" name="start_page_value" value="{{app['authentication'].getUser().getPrefs('start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
                             <input type="button" class="btn btn-inverse" value="{% trans 'boutton::valider' %}" onclick="set_start_page();" />
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
