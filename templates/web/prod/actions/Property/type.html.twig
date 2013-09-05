@@ -11,7 +11,7 @@
 
 <form style="padding:15px;" name="change-records-type" action="{{ path('change_type') }}" method="POST">
     <div class="well-small" style="text-align:center;">
-        <select name="force_types" style="width:250px">
+        <select name="force_types" class="input-xxlarge">
             <option value="">{% trans "Apply to all selected documents" %}</option>
             {% for option in typesEnum %}
                 <option value="{{ option }}">{{ option }}</option>

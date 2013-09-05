@@ -414,7 +414,7 @@ class Account implements ControllerProviderInterface
         foreach ($app['events-manager']->list_notifications_available() as $notifications) {
             foreach ($notifications as $notification) {
                 $notifId = $notification['id'];
-                $notifName = sprintf('notification_%d', $notifId);
+                $notifName = sprintf('notification_%s', $notifId);
 
                 if (isset($requestedNotifications[$notifId])) {
                     $app['authentication']->getUser()->setPrefs($notifName, '1');

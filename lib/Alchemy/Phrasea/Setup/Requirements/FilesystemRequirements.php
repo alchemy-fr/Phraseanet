@@ -34,6 +34,8 @@ class FilesystemRequirements extends RequirementCollection implements Requiremen
             $baseDir . '/www/custom',
             $baseDir . '/tmp/locks',
             $baseDir . '/tmp/cache_twig',
+            $baseDir . '/tmp/serializer',
+            $baseDir . '/tmp/doctrine',
             $baseDir . '/tmp/cache_minify',
             $baseDir . '/tmp/lazaret',
             $baseDir . '/tmp/desc_tmp',
