@@ -1028,12 +1028,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/avalanche123/Imagine.git",
-                "reference": "0a3cb3c7a6839f7f29fbff9fb76e31700a2692e2"
+                "reference": "64ed228095ec1f99e1124debf87b4b8ebd83070b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/0a3cb3c7a6839f7f29fbff9fb76e31700a2692e2",
-                "reference": "0a3cb3c7a6839f7f29fbff9fb76e31700a2692e2",
+                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/64ed228095ec1f99e1124debf87b4b8ebd83070b",
+                "reference": "64ed228095ec1f99e1124debf87b4b8ebd83070b",
                 "shasum": ""
             },
             "require": {
@@ -1077,7 +1077,7 @@
                 "image manipulation",
                 "image processing"
             ],
-            "time": "2013-08-30 12:28:56"
+            "time": "2013-09-02 21:53:44"
         },
         {
             "name": "jms/metadata",
@@ -1302,16 +1302,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.3.4",
+            "version": "0.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "3d10c9d3fde4c6e77434b883ed14f08e60b0734b"
+                "reference": "da4dc484cff946a5a2bb1966c538e7132b542b8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/3d10c9d3fde4c6e77434b883ed14f08e60b0734b",
-                "reference": "3d10c9d3fde4c6e77434b883ed14f08e60b0734b",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/da4dc484cff946a5a2bb1966c538e7132b542b8c",
+                "reference": "da4dc484cff946a5a2bb1966c538e7132b542b8c",
                 "shasum": ""
             },
             "require": {
@@ -1321,7 +1321,7 @@
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "~2.1",
                 "php": ">=5.3.3",
-                "php-ffmpeg/php-ffmpeg": "~0.3.1",
+                "php-ffmpeg/php-ffmpeg": "~0.3.4",
                 "php-mp4box/php-mp4box": "~0.3.0",
                 "php-unoconv/php-unoconv": "~0.3.0",
                 "pimple/pimple": "~1.0",
@@ -1371,7 +1371,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-08-08 10:18:56"
+            "time": "2013-09-05 10:26:38"
         },
         {
             "name": "mediavorus/mediavorus",
@@ -1755,16 +1755,16 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.3.2",
+            "version": "0.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
-                "reference": "9fcb485d497872e674cb14eb3df1386dbda9169b"
+                "reference": "c7226654828600e0c44ac6689a07e741b32147dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/9fcb485d497872e674cb14eb3df1386dbda9169b",
-                "reference": "9fcb485d497872e674cb14eb3df1386dbda9169b",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/c7226654828600e0c44ac6689a07e741b32147dd",
+                "reference": "c7226654828600e0c44ac6689a07e741b32147dd",
                 "shasum": ""
             },
             "require": {
@@ -1819,7 +1819,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-08-08 10:15:15"
+            "time": "2013-09-05 10:09:39"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -2646,11 +2646,11 @@
         },
         {
             "name": "tecnick.com/tcpdf",
-            "version": "6.0.023",
+            "version": "6.0.025",
             "source": {
                 "type": "git",
                 "url": "http://git.code.sf.net/p/tcpdf/code",
-                "reference": "3ebcb4d8d952ffdcb0fb95db8855da46a8590a26"
+                "reference": "a8ec5fe7efc5a18d64ad95a760e2626a52674d43"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -2699,7 +2699,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2013-08-05 19:34:06"
+            "time": "2013-09-04 18:32:13"
         },
         {
             "name": "themattharris/tmhoauth",
