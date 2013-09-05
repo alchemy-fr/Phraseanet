@@ -256,10 +256,18 @@
                     {% if values.available > 0 %}
                         <div class='well-small'>
                             {% set docs_orderable = values.available %}
-                                {% trans %}{{docs_orderable}} documents commandes{% endtrans %}
+                                {% if docs_orderable <= 1 %}
+                                    {% trans %}Un document commande{% endtrans %}
+                                {% else %}
+                                    {% trans %}{{docs_orderable}} documents commandes{% endtrans %}
+                                {% endif %}
                             {% set docs_not_orderable = values.total - values.available %}
                             {% if docs_not_orderable > 0%}
-                                {% trans %}{{docs_not_orderable}} documents ne peuvent pas etre commandes{% endtrans %}
+                                {% if docs_not_orderable == 1 %}
+                                    {% trans %}Un document ne peut etre commande{% endtrans %}
+                                {% else %}
+                                    {% trans %}{{docs_not_orderable}} documents ne peuvent pas etre commandes{% endtrans %}
+                                {% endif %}
                             {% endif %}
                             {% if values.refused|length > 0 %}
                                 {% set title%}

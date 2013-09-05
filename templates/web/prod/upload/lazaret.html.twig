@@ -306,11 +306,15 @@
     {% if record_count  > 0 %}
         <div class="lazaret-proposals span8">
             <h5>
-            {% trans %}
-                {{ record_count }} record match the unique identifier :
-            {% plural record_count %}
-                {{ record_count }} records match the unique identifier :
-            {% endtrans %}
+            {% if record_count <= 1 %}
+                {% trans %}
+                    A record matches the unique identifier :
+                {% endtrans %}
+            {% else %}
+                {% trans %}
+                    {{ record_count }} records match the unique identifier :
+                {% endtrans %}
+            {% endif %}
             </h5>
             <ul class="thumbnails">
                 {% for record in records %}

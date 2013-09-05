@@ -16,21 +16,29 @@
     <div id='property-statut'>
         <p class="header">
             <h4 style='text-align:center;'>
-                {% trans %}
-                    You have selected one record.
-                {% plural nbReceivedDocuments %}
-                    You have selected {{ nbReceivedDocuments }} records.
-                {% endtrans %}
+                {% if nbReceivedDocuments == 1 %}
+                    {% trans %}
+                        You have selected one record.
+                    {% endtrans %}
+                {% else %}
+                    {% trans %}
+                        You have selected {{ nbReceivedDocuments }} records.
+                    {% endtrans %}
+                {% endif %}
 
                   {% if nbEditableDocuments == 0 %}
                     {% trans %}None of the records can be modified.{% endtrans %}
                   {% else %}
                     {% if nbEditableDocuments < nbReceivedDocuments %}
-                        {% trans %}
-                            Only one record can be modified.
-                        {% plural nbEditableDocuments %}
-                            Only {{ nbEditableDocuments }} records can be modified.
-                        {% endtrans %}
+                        {% if nbEditableDocuments == 1 %}
+                            {% trans %}
+                                Only one record can be modified.
+                            {% endtrans %}
+                        {% else %}
+                            {% trans %}
+                                Only {{ nbEditableDocuments }} records can be modified.
+                            {% endtrans %}
+                        {% endif %}
                   {% endif %}
                 {% endif %}
             </h4>
