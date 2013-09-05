@@ -80,7 +80,7 @@
                     var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
                         content:datas.msg
                     });
-                    $('#table-order').before(html);
+                    $('#table-order').insertBefore(html);
                 },
                 complete : function() {
                     $this.attr('disabled', false);
@@ -91,13 +91,13 @@
 
     function moveUpItem(select){
         select.find('option:selected').each(function(){
-            $(this).before($(this).prev());
+            $(this).insertBefore($(this).prev());
         });
     }
 
     function moveDownItem(select){
         select.find('option:selected').each(function(){
-            $(this).after($(this).next());
+            $(this).insertAfter($(this).next());
         });
     }
 
