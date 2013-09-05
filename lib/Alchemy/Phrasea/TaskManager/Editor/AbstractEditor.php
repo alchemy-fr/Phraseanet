@@ -30,7 +30,7 @@ abstract class AbstractEditor implements EditorInterface
         }
 
         foreach ($this->getFormProperties() as $name => $type) {
-            $value = $request->request->get($name, '');
+            $value = $request->request->get($name);
             if (null !== $node = $dom->getElementsByTagName($name)->item(0)) {
                 // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
                 while ($child = $node->firstChild) {
@@ -48,6 +48,9 @@ abstract class AbstractEditor implements EditorInterface
                     break;
                 case static::FORM_TYPE_BOOLEAN:
                     $node->appendChild($dom->createTextNode($value ? '1' : '0'));
+                    break;
+                case static::FORM_TYPE_INTEGER:
+                    $node->appendChild($dom->createTextNode(null !== $value ? (int) $value : ''));
                     break;
             }
         }

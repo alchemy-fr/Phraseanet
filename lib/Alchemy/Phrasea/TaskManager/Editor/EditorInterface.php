@@ -20,6 +20,7 @@ interface EditorInterface
 {
     const FORM_TYPE_STRING = 'string';
     const FORM_TYPE_BOOLEAN = 'boolean';
+    const FORM_TYPE_INTEGER = 'integer';
 
     /**
      * Receives a request containing the XML task setting and the value of
