@@ -135,7 +135,7 @@ define([
             var fieldTagId = fieldTag.attr("id");
             var fieldTagValue = fieldTag.val();
 
-            var notValid = "" !== fieldTagValue && false === /[a-z]+:[a-z0-9]+/i.test(fieldTagValue);
+            var notValid = "" !== fieldTagValue;
             // check for format tag
             if (notValid) {
                 fieldTag
