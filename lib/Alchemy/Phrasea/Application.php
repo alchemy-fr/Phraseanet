@@ -32,6 +32,7 @@ use Alchemy\Phrasea\Controller\Client\Root as ClientRoot;
 use Alchemy\Phrasea\Controller\Minifier;
 use Alchemy\Phrasea\Controller\Prod\Basket;
 use Alchemy\Phrasea\Controller\Prod\Bridge;
+use Alchemy\Phrasea\Controller\Prod\Category;
 use Alchemy\Phrasea\Controller\Prod\Download;
 use Alchemy\Phrasea\Controller\Prod\DoDownload;
 use Alchemy\Phrasea\Controller\Prod\Edit;
@@ -771,6 +772,7 @@ class Application extends SilexApplication
 
         $this->mount('/prod/query/', new Query());
         $this->mount('/prod/order/', new Order());
+        $this->mount('/prod/category/', new Category());
         $this->mount('/prod/baskets', new Basket());
         $this->mount('/prod/download', new Download());
         $this->mount('/prod/story', new Story());
