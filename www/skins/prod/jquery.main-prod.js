@@ -1412,6 +1412,9 @@ $(document).ready(function(){
 
     $('#idFrameC .tabs').tabs({
         activate: function(event, ui){
+            if(ui.newTab.context.hash == "#thesaurus_tab") {
+                thesau_show();
+            }
             p4.WorkZone.open();
         }
     });
