@@ -474,7 +474,7 @@ function T_search(menuItem, menu, cmenu, e, label)
   v = '*:"' + term.replace("(", "[").replace(")", "]") + '"';
 
   var nck = 0;
-  $('#adv_search :checkbox[name=bas\[\]]').each(function(a)
+  $('#searchForm .adv_options :checkbox[name="bases[]"]').each(function(a)
   {
     bas2sbas["b"+this.value].ckobj = this;
     bas2sbas["b"+this.value].waschecked = this.checked;
@@ -776,7 +776,7 @@ function CXdblClick(e)
 function doThesSearch(type, sbid, term, field)
 {
   var nck = 0;
-  $('#adv_search input[name="bases[]"]').each(
+  $('#searchForm .adv_options :checkbox[name="bases[]"]').each(
   function(i,n)
   {
       var base_id = $(n).val();
