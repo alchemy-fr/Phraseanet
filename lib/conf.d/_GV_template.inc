@@ -11,7 +11,7 @@ return call_user_func_array(function(Application $app) {
     $dashboard_youtube = '<a href="https://code.google.com/apis/youtube/dashboard/" target="_blank">https://code.google.com/apis/youtube/dashboard/</a>';
     $create_api_flickr = '<a href="https://secure.flickr.com/services/apps/create/" target="_blank">https://secure.flickr.com/services/apps/create/</a>';
     $create_api_dailymotion = '<a href="http://www.dailymotion.com/profile/developer" target="_blank">http://www.dailymotion.com/profile/developer</a>';
-    
+
     try {
         $youtube_callback = $app->url('prod_bridge_callback', array('api_name' => 'youtube'));
     } catch (RouteNotFoundException $e) {
@@ -203,9 +203,16 @@ return call_user_func_array(function(Application $app) {
                     'name'     => 'GV_client_navigator',
                     'comment'  => _('Authorize *Phraseanet Navigator*'),
                     'help'     => _('*Phraseanet Navigator* is a smartphone application that allow user to connect on this instance'),
-                    'default'  => false,
+                    'default'  => true,
                     'required' => true
-                )
+                ),
+                array(
+                    'type'     => \registry::TYPE_BOOLEAN,
+                    'name'     => 'GV_client_officeplugin',
+                    'comment'  => _('Authorize Microsoft Office Plugin to connect.'),
+                    'default'  => true,
+                    'required' => true
+                ),
             )
         ), array(
             'section' => _('Documents storage'),
