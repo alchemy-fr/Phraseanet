@@ -29,6 +29,9 @@ use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\DBAL\Types\Type;
 use Gedmo\DoctrineExtensions;
 use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\Translatable\TranslatableListener;
+use Gedmo\Tree\TreeListener;
+use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -137,6 +140,8 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['EM.events-manager'] = $app->share(function (Application $app) {
             $evm = new EventManager();
             $evm->addEventSubscriber(new TimestampableListener());
+            $evm->addEventSubscriber(new TranslatableListener());
+            $evm->addEventSubscriber(new TreeListener());
 
             return $evm;
         });
