@@ -246,6 +246,13 @@ $GV = array(
                 'default'  => true,
                 'required' => true
             ),
+            array(
+                'type'     => \registry::TYPE_BOOLEAN,
+                'name'     => 'GV_client_officeplugin',
+                'comment'  => _('Authorize Microsoft Office Plugin to connect.'),
+                'default'  => true,
+                'required' => true
+            ),
         )
     ), array(
         'section' => _('GV::section:: Gestionnaire d\'evenements'),
