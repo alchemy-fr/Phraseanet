@@ -837,12 +837,6 @@ class Xmlhttp implements ControllerProviderInterface
             $t_nrec = array();
             $lthid = strlen($thid);
 
-
-//            if ($request->get('debug')) {
-//                printf("/*\n  thid=%s\n  %s \n */\n", $thid, $sql);
-//            }
-
-
             // count occurences
             if ($lthid == 1) {
                 $dthid = str_replace('.', 'd', $thid);
