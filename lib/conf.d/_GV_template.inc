@@ -243,9 +243,9 @@ $GV = array(
                 'type'     => \registry::TYPE_BOOLEAN,
                 'name'     => 'GV_client_navigator',
                 'comment'  => _('reglages:: Authoriser l\'application smartphone *Phraseanet Navigator* à se connecter sur cette instance'),
-                'default'  => false,
+                'default'  => true,
                 'required' => true
-            )
+            ),
         )
     ), array(
         'section' => _('GV::section:: Gestionnaire d\'evenements'),
