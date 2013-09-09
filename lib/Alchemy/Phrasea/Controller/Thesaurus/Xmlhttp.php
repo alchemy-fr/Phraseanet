@@ -837,6 +837,12 @@ class Xmlhttp implements ControllerProviderInterface
             $t_nrec = array();
             $lthid = strlen($thid);
 
+
+//            if ($request->get('debug')) {
+//                printf("/*\n  thid=%s\n  %s \n */\n", $thid, $sql);
+//            }
+
+
             // count occurences
             if ($lthid == 1) {
                 $dthid = str_replace('.', 'd', $thid);
@@ -978,7 +984,7 @@ class Xmlhttp implements ControllerProviderInterface
                     $nts = 0;
                     $tts = array();
                     for ($n = $node0->firstChild; $n; $n = $n->nextSibling) {
-                        if ($n->nodeName == 'te' && !$n->getAttribute('delbranch')) {
+                        if ($n->nodeName == 'te' && !$n->getAttribute('delbranch') && substr($n->getAttribute('id'), 0, 1) != 'R') {
                             $nts++;
 
                             $key0 = null; // key of the sy in the current language (or key of the first sy if we can't find good lng)
