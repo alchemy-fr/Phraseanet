@@ -21,6 +21,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="categories")
  * @ORM\Entity(repositoryClass="Repositories\CategoryRepository")
  * @Gedmo\TranslationEntity(class="Entities\CategoryTranslation")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 class Category
 {
@@ -100,10 +101,10 @@ class Category
         return $this->translations;
     }
 
-    public function getTranslation($locale)
+    public function getTranslation($locale, $field)
     {
         foreach ($this->translations as $translation) {
-            if ($translation->getLocale() == $locale)
+            if ($translation->getLocale() === $locale && $translation->getField() === $field)
                 return $translation;
         }
         return NULL;

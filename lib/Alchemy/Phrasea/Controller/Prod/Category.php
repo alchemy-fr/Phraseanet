@@ -38,7 +38,7 @@ class Category implements ControllerProviderInterface
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireAuthentication()
-                ->requireRight('category');
+                ;
         });
 
 
@@ -123,6 +123,8 @@ class Category implements ControllerProviderInterface
          */
         $controllers->post('/remove/', $this->call('removeCategories'))
             ->bind('prod_category_remove');
+
+        return $controllers;
     }
 
     /**
@@ -135,42 +137,45 @@ class Category implements ControllerProviderInterface
      */
     public function createCategory(Application $app, Request $request)
     {
-        if (null === $title = $request->request->get('title')) {
+        $data = json_decode($request->getContent());
+
+        if (!isset($data->title)
+            || null !== $app['EM']->getRepository('Entities\Category')->findOneBy(array('title' => $data->title))) {
             $app->abort(400, 'Bad Request');
         }
 
-        if (null !== $parent_id = $request->request->get('parent_id')) {
-            $parent = $app['EM']->getRepository('Entities\Category')->find($parent_id);
+        if (isset($data->parent_id)) {
+            $parent = $app['EM']->getRepository('Entities\Category')->find($data->parent_id);
             if (null === $parent) {
                 $app->abort(400, 'Bad Request');
             }
         }
 
         $category = new CategoryEntity();
-        $category->setTitle($title);
+        $category->setTitle($data->title);
 
-        if (null !== $parent_id) {
+        if (isset($data->parent_id)) {
             $category->setParent($parent);
         }
 
-        if (null !== $subtitle = $request->request->get('subtitle')) {
-            $category->setSubtitle($subtitle);
+        if (isset($data->subtitle)) {
+            $category->setSubtitle($data->subtitle);
         }
 
-        if (null !== $translationArray = $request->request->get('translation_title')) {
+        if (isset($data->translation_title)) {
             $translationTitle = new CategoryTranslation();
             $translationTitle->setField('title');
-            $translationTitle->setLocale($translationArray['locale']);
-            $translationTitle->setContent($translationArray['value']);
+            $translationTitle->setLocale($data->translation_title->locale);
+            $translationTitle->setContent($data->translation_title->value);
             $category->addTranslation($translationTitle);
             $app['EM']->persist($translationTitle);
         }
 
-        if (null !== $translationArray = $request->request->get('translation_subtitle')) {
+        if (isset($data->translation_subtitle)) {
             $translationSubtitle = new CategoryTranslation();
             $translationSubtitle->setField('subtitle');
-            $translationSubtitle->setLocale($translationArray['locale']);
-            $translationSubtitle->setContent($translationArray['value']);
+            $translationSubtitle->setLocale($data->translation_subtitle->locale);
+            $translationSubtitle->setContent($data->translation_subtitle->value);
             $category->addTranslation($translationSubtitle);
             $app['EM']->persist($translationSubtitle);
         }
@@ -178,19 +183,13 @@ class Category implements ControllerProviderInterface
         $app['EM']->persist($category);
         $app['EM']->flush();
 
-        if ($request->getRequestFormat() == 'json') {
-            $data = array(
-                'success' => true
-                , 'message' => _('Category created')
-                , 'basket'  => array(
-                    'id' => $category->getId()
-                )
-            );
+        $data = array(
+            'success' => true
+            , 'message' => _('Category created')
+            , 'category'  => json_decode($app['serializer']->serialize($category, 'json'))
+        );
 
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_categories', array('category_id' => $category->getId()));
-        }
+        return $app->json($data);
     }
 
     /**
@@ -204,62 +203,61 @@ class Category implements ControllerProviderInterface
      */
     public function updateCategory(Application $app, Request $request, $category_id)
     {
+        $data = json_decode($request->getContent());
+
         $category = $app['EM']->getRepository('Entities\Category')->find($category_id);
         if (null == $category) {
             $app->abort(404, 'Category not found');
         }
 
-        if (null !== $parent_id = $request->request->get('parent_id')) {
-            $parent = $app['EM']->getRepository('Entities\Category')->find($parent_id);
+        if (isset($data->parent_id)) {
+            $parent = $app['EM']->getRepository('Entities\Category')->find($data->parent_id);
             if (null === $parent) {
                 $app->abort(400, 'Bad Request');
             }
-        }
-
-        if (null !== $title = $request->request->get('title')) {
-            $category->setTitle($title);
-        }
-
-        if (null !== $parent_id) {
             $category->setParent($parent);
         }
 
-        if (null !== $subtitle = $request->request->get('subtitle')) {
-            $category->setSubtitle($subtitle);
+        if (isset($data->title)) {
+            $category->setTitle($data->title);
         }
 
-        if (null !== $translationArray = $request->request->get('translation_title')) {
+        if (isset($data->subtitle)) {
+            $category->setSubtitle($data->subtitle);
+        }
+
+        if (isset($data->translation_title)) {
             foreach ($category->getTranslations() as $translation) {
-                if ($translation->getLocale() ===  $translationArray['locale']) {
+                if ($translation->getLocale() === $data->translation_title->locale) {
                     $translationTitle = $translation;
                 }
             }
-            if (null === $translationTitle) {
+            if (!isset($translationTitle)) {
                 $translationTitle = new CategoryTranslation();
                 $translationTitle->setField('title');
-                $translationTitle->setLocale($translationArray['locale']);
-                $translationTitle->setContent($translationArray['value']);
+                $translationTitle->setLocale($data->translation_title->locale);
+                $translationTitle->setContent($data->translation_title->value);
                 $category->addTranslation($translationTitle);
             } else {
-                $translationTitle->setContent($translationArray['value']);
+                $translationTitle->setContent($data->translation_title->value);
             }
             $app['EM']->persist($translationTitle);
         }
 
-        if (null !== $translationArray = $request->request->get('translation_subtitle')) {
+        if (isset($data->translation_subtitle)) {
             foreach ($category->getTranslations() as $translation) {
-                if ($translation->getLocale() ===  $translationArray['locale']) {
+                if ($translation->getLocale() === $data->translation_title->locale) {
                     $translationSubtitle = $translation;
                 }
             }
-            if (null === $translationTitle) {
+            if (!isset($translationSubtitle)) {
                 $translationSubtitle = new CategoryTranslation();
                 $translationSubtitle->setField('subtitle');
-                $translationSubtitle->setLocale($translationArray['locale']);
-                $translationSubtitle->setContent($translationArray['value']);
+                $translationSubtitle->setLocale($data->translation_title->locale);
+                $translationSubtitle->setContent($data->translation_title->value);
                 $category->addTranslation($translationSubtitle);
             } else {
-               $translationSubtitle->setContent($translationArray['value']);
+               $translationSubtitle->setContent($data->translation_title->value);
             }
             $app['EM']->persist($translationSubtitle);
         }
@@ -267,19 +265,13 @@ class Category implements ControllerProviderInterface
         $app['EM']->persist($category);
         $app['EM']->flush();
 
-        if ($request->getRequestFormat() == 'json') {
-            $data = array(
-                'success' => true
-                , 'message' => _('Category updated')
-                , 'basket'  => array(
-                    'id' => $category->getId()
-                )
-            );
+        $data = array(
+            'success' => true
+            , 'message' => _('Category updated')
+            , 'category'  => json_decode($app['serializer']->serialize($category, 'json')),
+        );
 
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_categories', array('category_id' => $category->getId()));
-        }
+        return $app->json($data);
     }
 
     /**
@@ -306,11 +298,7 @@ class Category implements ControllerProviderInterface
             , 'message' => _('Category has been deleted')
         );
 
-        if ($request->getRequestFormat() == 'json') {
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_categories');
-        }
+        return $app->json($data);
     }
 
     /**
@@ -323,7 +311,9 @@ class Category implements ControllerProviderInterface
      */
     public function addCategories(Application $app, Request $request)
     {
-        $categories = $request->request->get('category_ids');
+        $data = json_decode($request->getContent());
+
+        $categories = $data->category_ids;
         $records = RecordsRequest::fromRequest($app, $request, true);
         foreach ($records as $record) {
             foreach ($categories as $category_id) {
@@ -348,11 +338,7 @@ class Category implements ControllerProviderInterface
             , 'message' => _('Categories added')
         );
 
-        if ($request->getRequestFormat() == 'json') {
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_categories');
-        }
+        return $app->json($data);
     }
 
     /**
@@ -365,7 +351,9 @@ class Category implements ControllerProviderInterface
      */
     public function removeCategories(Application $app, Request $request)
     {
-        $categories = $request->request->get('category_ids');
+        $data = json_decode($request->getContent());
+
+        $categories = $data->category_ids;
         $records = RecordsRequest::fromRequest($app, $request, true);
         foreach ($records as $record) {
             foreach ($categories as $category_id) {
@@ -390,11 +378,7 @@ class Category implements ControllerProviderInterface
             , 'message' => _('Categories removed')
         );
 
-        if ($request->getRequestFormat() == 'json') {
-            return $app->json($data);
-        } else {
-            return $app->redirectPath('prod_categories');
-        }
+        return $app->json($data);
     }
 
     /**

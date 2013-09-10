@@ -750,4 +750,68 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         return $mock;
     }
+
+    protected function insertOneCategory($title = 'title test', $parent = null)
+    {
+        try {
+            $category = new \Entities\Category();
+            $category->setTitle($title);
+            $category->setSubtitle('subtitle test');
+
+            if (null != $parent) {
+                $category->setParent($parent);
+            }
+
+            $this->insertOneCategoryElement($category);
+            $this->insertOneCategoryTranslation($category);
+
+            self::$DI['app']['EM']->persist($category);
+
+            self::$DI['app']['EM']->flush();
+        } catch (\Exception $e) {
+            $this->fail('Fail to load one CategoryElement : ' . $e->getMessage());
+        }
+
+        return $category;
+    }
+
+    protected function insertOneCategoryTranslation(Category $category, $field = 'title', $locale = 'en')
+    {
+        try {
+            $translation = new \Entities\CategoryTranslation();
+            $translation->setField($field);
+            $translation->setLocale($locale);
+            $translation->setContent('content test');
+            $category->addTranslation($translation);
+
+            self::$DI['app']['EM']->persist($translation);
+            self::$DI['app']['EM']->persist($category);
+
+            self::$DI['app']['EM']->flush();
+        } catch (\Exception $e) {
+            $this->fail('Fail to load one CategoryElement : ' . $e->getMessage());
+        }
+
+        return $translation;
+    }
+
+    protected function insertOneCategoryElement(Category $category)
+    {
+        try {
+            $element = new \Entities\CategoryElement();
+            $element->setRecordId(self::$DI['record_1']->get_record_id());
+            $element->setSbasId(self::$DI['record_1']->get_sbas_id());
+            $category->addElement($element);
+            $element->setCategory($category);
+
+            self::$DI['app']['EM']->persist($category);
+            self::$DI['app']['EM']->persist($element);
+
+            self::$DI['app']['EM']->flush();
+        } catch (\Exception $e) {
+            $this->fail('Fail to load one CategoryElement : ' . $e->getMessage());
+        }
+
+        return $element;
+    }
 }
