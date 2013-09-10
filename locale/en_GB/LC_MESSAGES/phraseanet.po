@@ -2,15 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-04 14:47+0100\n"
-"PO-Revision-Date: 2013-07-10 11:38+0100\n"
+"POT-Creation-Date: 2013-09-05 14:36+0100\n"
+"PO-Revision-Date: 2013-09-10 20:12+0100\n"
 "Last-Translator: Romain Neutron <imprec@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-07-10 09:21+0000\n"
+"X-Launchpad-Export-Date: 2013-09-10 17:56+0000\n"
 "X-Generator: Poedit 1.5.7\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
@@ -25,7 +24,7 @@ msgstr ""
 "X-Poedit-SearchPath-6: lib/Doctrine\n"
 "X-Poedit-SearchPath-7: bin\n"
 
-#: lib/classes/appbox.php:299 lib/classes/appbox.php:381
+#: lib/classes/appbox.php:299 lib/classes/appbox.php:384
 msgid "Flushing cache"
 msgstr "Flushing cache"
 
@@ -37,30 +36,30 @@ msgstr "Creating new tables"
 msgid "Purging directories"
 msgstr "Purging directories"
 
-#: lib/classes/appbox.php:339
+#: lib/classes/appbox.php:342
 msgid "Copying files"
 msgstr "Copying files"
 
-#: lib/classes/appbox.php:358
+#: lib/classes/appbox.php:361
 msgid "Upgrading appbox"
 msgstr "Upgrading appbox"
 
-#: lib/classes/appbox.php:366
+#: lib/classes/appbox.php:369
 #, php-format
 msgid "Upgrading %s"
 msgstr "Upgrading %s"
 
-#: lib/classes/appbox.php:374
+#: lib/classes/appbox.php:377
 msgid "Post upgrade"
 msgstr "Post upgrade"
 
-#: lib/classes/appbox.php:388 lib/classes/appbox.php:390
+#: lib/classes/appbox.php:391 lib/classes/appbox.php:393
 msgid ""
 "Your install requires data migration, please execute the following command"
 msgstr ""
 "Your install requires data migration, please execute the following command"
 
-#: lib/classes/appbox.php:394 lib/classes/appbox.php:395
+#: lib/classes/appbox.php:397 lib/classes/appbox.php:398
 msgid "Your install might need to re-read technical datas"
 msgstr "Your install might need to re-read technical datas"
 
@@ -106,58 +105,58 @@ msgstr ""
 "Error : Attribute \"class\" from node \"subdef\" is required and must be  "
 "\"thumbnail\" or \"preview\" or \"document\""
 
-#: lib/classes/phrasea.php:123 lib/classes/record/preview.php:540
+#: lib/classes/phrasea.php:112 lib/classes/record/preview.php:540
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:30
-#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:117
+#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:121
 msgid "admin::monitor: module production"
 msgstr "Production"
 
-#: lib/classes/phrasea.php:124 lib/classes/record/preview.php:542
+#: lib/classes/phrasea.php:113 lib/classes/record/preview.php:542
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:40
-#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:118
+#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:122
 msgid "admin::monitor: module client"
 msgstr "Client"
 
-#: lib/classes/phrasea.php:125
+#: lib/classes/phrasea.php:114
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:50
 #: tmp/cache_twig/89/69/3419e8324ba01f7e10a999d5e211.php:139
-#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:119
+#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:123
 msgid "admin::monitor: module admin"
 msgstr "Admin"
 
-#: lib/classes/phrasea.php:126
+#: lib/classes/phrasea.php:115
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:60
 #: tmp/cache_twig/89/69/3419e8324ba01f7e10a999d5e211.php:166
-#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:120
+#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:124
 msgid "admin::monitor: module report"
 msgstr "Report"
 
-#: lib/classes/phrasea.php:127
+#: lib/classes/phrasea.php:116
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:70
 #: tmp/cache_twig/89/69/3419e8324ba01f7e10a999d5e211.php:111
-#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:121
+#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:125
 msgid "admin::monitor: module thesaurus"
 msgstr "Thesaurus"
 
-#: lib/classes/phrasea.php:128
+#: lib/classes/phrasea.php:117
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:80
-#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:122
+#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:126
 msgid "admin::monitor: module comparateur"
 msgstr "Lightbox"
 
-#: lib/classes/phrasea.php:129
+#: lib/classes/phrasea.php:118
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:90
 #: tmp/cache_twig/89/69/3419e8324ba01f7e10a999d5e211.php:185
 #: lib/Alchemy/Phrasea/Controller/Lightbox.php:244
 #: lib/Alchemy/Phrasea/Controller/Lightbox.php:298
 #: lib/Alchemy/Phrasea/Controller/Lightbox.php:331
-#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:123
+#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:127
 msgid "admin::monitor: module validation"
 msgstr "Lightbox"
 
-#: lib/classes/phrasea.php:130
+#: lib/classes/phrasea.php:119
 #: tmp/cache_twig/89/69/3419e8324ba01f7e10a999d5e211.php:225
-#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:124
+#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:128
 msgid "admin::monitor: module upload"
 msgstr "Upload"
 
@@ -190,7 +189,7 @@ msgstr "Yesterday"
 #: lib/classes/queries.php:168 lib/classes/queries.php:181
 #: tmp/cache_twig/01/e2/866da83d51d90405f333f4d52156.php:202
 #: tmp/cache_twig/1c/65/d2ed8ab46a78263f0810164b22f3.php:104
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:185
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:198
 #: tmp/cache_twig/cd/52/49abe653b79251910b076e041dee.php:1402
 msgid "boutton::chercher"
 msgstr "Search"
@@ -212,22 +211,24 @@ msgstr "Url is not valid"
 #: lib/classes/API/V1/adapter.php:1098 lib/classes/API/V1/adapter.php:1144
 #: lib/classes/API/V1/adapter.php:1194 lib/classes/API/V1/adapter.php:1218
 #: tmp/cache_twig/1b/30/753738c0c4f81bf7a9aba183affd.php:58
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:35
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:46
 #: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:53
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:65
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:848
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:546
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:581
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:616
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:652
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:872
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:942
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:980
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1018
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1057
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1091
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1125
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1224
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:861
+#: tmp/cache_twig/b8/ec/453b197e82c6c1695c8bf49b2a73.php:228
+#: tmp/cache_twig/b8/ec/453b197e82c6c1695c8bf49b2a73.php:331
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:548
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:583
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:618
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:654
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:874
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:944
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:982
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1020
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1059
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1093
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1127
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1226
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:466
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:530
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:559
@@ -236,20 +237,20 @@ msgstr "Url is not valid"
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:780
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:817
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:852
-#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:928
-#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:1004
+#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:930
+#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:1007
 #: lib/Alchemy/Phrasea/Controller/Admin/Databoxes.php:159
 #: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:318
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:70
 #: lib/Alchemy/Phrasea/Controller/Prod/Lazaret.php:341
 #: lib/Alchemy/Phrasea/Controller/Prod/Lazaret.php:425
-#: lib/Alchemy/Phrasea/Controller/Prod/Lazaret.php:493
+#: lib/Alchemy/Phrasea/Controller/Prod/Lazaret.php:499
 #: lib/Alchemy/Phrasea/Controller/Prod/MoveCollection.php:112
 #: lib/Alchemy/Phrasea/Controller/Prod/Order.php:199
 #: lib/Alchemy/Phrasea/Controller/Prod/Order.php:205
 #: lib/Alchemy/Phrasea/Controller/Prod/Story.php:201
 #: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:117
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:172
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:178
 msgid "An error occured"
 msgstr "An error occurred"
 
@@ -459,7 +460,7 @@ msgstr ""
 msgid "Service youtube introuvable."
 msgstr "Youtube Service cannot be found."
 
-#: lib/classes/caption/record.php:278
+#: lib/classes/caption/record.php:279
 msgid "Open the URL in a new window"
 msgstr "Open the link in a new window"
 
@@ -593,33 +594,33 @@ msgid ""
 msgstr "User registration"
 
 #: lib/classes/eventsmanager/notify/autoregister.php:195
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:255
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:311
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:843
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:290
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:647
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:140
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:671
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:163
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:287
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:62
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:72
 msgid "admin::compte-utilisateur nom"
 msgstr "Last name"
 
 #: lib/classes/eventsmanager/notify/autoregister.php:196
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:257
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:313
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:829
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:660
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:153
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:684
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:176
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:288
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:55
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:65
 msgid "admin::compte-utilisateur prenom"
 msgstr "First name"
 
 #: lib/classes/eventsmanager/notify/autoregister.php:197
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:267
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:323
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:857
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:314
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:673
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:315
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:166
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:697
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:328
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:189
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:289
 msgid "admin::compte-utilisateur email"
 msgstr "E-mail"
@@ -667,9 +668,8 @@ msgid "Feeds"
 msgstr "Feeds"
 
 #: lib/classes/eventsmanager/notify/feed.php:174
-#: lib/classes/eventsmanager/notify/push.php:161
-msgid "Recevoir des notifications lorsqu'on me push quelque chose"
-msgstr "Receive e-mails notifications"
+msgid "Receive notification when a publication is available"
+msgstr "Receive notification when a publication is available"
 
 #: lib/classes/eventsmanager/notify/order.php:159
 #, php-format
@@ -723,8 +723,13 @@ msgid "%1$s vous a envoye un %2$spanier%3$s"
 msgstr "%1$s has sent you a %2$s basket%3$s"
 
 #: lib/classes/eventsmanager/notify/push.php:152
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:108
 msgid "Push"
 msgstr "Push"
+
+#: lib/classes/eventsmanager/notify/push.php:161
+msgid "Receive notification when I receive a push"
+msgstr "Receive notification when I receive a push"
 
 #: lib/classes/eventsmanager/notify/register.php:169
 #, php-format
@@ -762,16 +767,16 @@ msgstr "Be notified when a document is moved in quarantine"
 #: lib/classes/eventsmanager/notify/validate.php:31
 #: lib/classes/eventsmanager/notify/validate.php:179
 #: lib/classes/eventsmanager/notify/validationdone.php:31
-#: lib/classes/eventsmanager/notify/validationreminder.php:30
-#: lib/classes/eventsmanager/notify/validationreminder.php:176
+#: lib/classes/eventsmanager/notify/validationreminder.php:31
+#: lib/classes/eventsmanager/notify/validationreminder.php:177
 #: tmp/cache_twig/0b/5a/a4b9585489c871b0e0bad98ec91f.php:179
 msgid "Validation"
 msgstr "Feedback"
 
 #: lib/classes/eventsmanager/notify/validate.php:152
 #: lib/classes/eventsmanager/notify/validate.php:154
-#: lib/classes/eventsmanager/notify/validationreminder.php:151
-#: lib/classes/eventsmanager/notify/validationreminder.php:153
+#: lib/classes/eventsmanager/notify/validationreminder.php:152
+#: lib/classes/eventsmanager/notify/validationreminder.php:154
 msgid "Une selection"
 msgstr "an untitled selection"
 
@@ -797,12 +802,12 @@ msgstr "Validation report"
 msgid "Reception d'un rapport de validation"
 msgstr "Incoming validation report"
 
-#: lib/classes/eventsmanager/notify/validationreminder.php:162
+#: lib/classes/eventsmanager/notify/validationreminder.php:163
 #, php-format
 msgid "Rappel : Il vous reste %1$d jours pour valider %2$s de %3$s"
 msgstr "Reminder : You have %1$d days left to validate %2$s from  %3$s"
 
-#: lib/classes/eventsmanager/notify/validationreminder.php:185
+#: lib/classes/eventsmanager/notify/validationreminder.php:186
 msgid "Rappel pour une demande de validation"
 msgstr "Reminder for a feedback"
 
@@ -1142,7 +1147,7 @@ msgstr "Modules"
 msgid "report:: Information sur les utilisateurs correspondant a %s"
 msgstr "Users information corresponding to %s"
 
-#: lib/classes/module/report/nav.php:471 lib/classes/User/Adapter.php:1372
+#: lib/classes/module/report/nav.php:471 lib/classes/User/Adapter.php:1375
 msgid "phraseanet::utilisateur inconnu"
 msgstr "Unknown user"
 
@@ -1221,158 +1226,158 @@ msgstr "Manual settings"
 msgid "Commande du %s"
 msgstr "Order done %s"
 
-#: lib/classes/task/period/archive.php:73
+#: lib/classes/task/period/archive.php:69
 msgid "task::archive:Archivage"
 msgstr "Archive in collection"
 
-#: lib/classes/task/period/archive.php:215
+#: lib/classes/task/period/archive.php:211
 msgid "task::archive:archivage sur base/collection/"
 msgstr "Archive to database/collection"
 
-#: lib/classes/task/period/archive.php:230
+#: lib/classes/task/period/archive.php:226
 msgid "task::_common_:hotfolder"
 msgstr "Hot Folder"
 
-#: lib/classes/task/period/archive.php:236 lib/classes/task/period/ftp.php:156
-#: lib/classes/task/period/ftpPull.php:229
-#: lib/classes/task/period/RecordMover.php:292
-#: lib/classes/task/period/subdef.php:211
-#: lib/classes/task/period/writemeta.php:176
+#: lib/classes/task/period/archive.php:232 lib/classes/task/period/ftp.php:157
+#: lib/classes/task/period/ftpPull.php:226
+#: lib/classes/task/period/RecordMover.php:288
+#: lib/classes/task/period/subdef.php:226
+#: lib/classes/task/period/writemeta.php:172
 msgid "task::_common_:periodicite de la tache"
 msgstr "Frequency"
 
-#: lib/classes/task/period/archive.php:239
-#: lib/classes/task/period/archive.php:246 lib/classes/task/period/ftp.php:159
-#: lib/classes/task/period/ftpPull.php:232
-#: lib/classes/task/period/RecordMover.php:295
-#: lib/classes/task/period/subdef.php:214
-#: lib/classes/task/period/writemeta.php:179
+#: lib/classes/task/period/archive.php:235
+#: lib/classes/task/period/archive.php:242 lib/classes/task/period/ftp.php:160
+#: lib/classes/task/period/ftpPull.php:229
+#: lib/classes/task/period/RecordMover.php:291
+#: lib/classes/task/period/subdef.php:229
+#: lib/classes/task/period/writemeta.php:175
 msgid "task::_common_:secondes (unite temporelle)"
 msgstr "seconds"
 
-#: lib/classes/task/period/archive.php:243
+#: lib/classes/task/period/archive.php:239
 msgid "task::archive:delai de 'repos' avant traitement"
 msgstr "Delay"
 
-#: lib/classes/task/period/archive.php:253
+#: lib/classes/task/period/archive.php:249
 msgid "task::archive:deplacer les fichiers archives dans _archived"
 msgstr "Move archived documents to _archived"
 
-#: lib/classes/task/period/archive.php:261
+#: lib/classes/task/period/archive.php:257
 msgid "task::archive:deplacer les fichiers non-archives dans _error"
 msgstr "Move unarchived file to _error"
 
-#: lib/classes/task/period/archive.php:269
+#: lib/classes/task/period/archive.php:265
 msgid ""
 "task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans "
 "_archived"
 msgstr "Copy '.phrasea.xml' and 'groupin.xml' files to _archive"
 
-#: lib/classes/task/period/archive.php:277
+#: lib/classes/task/period/archive.php:273
 msgid "task::archive:supprimer les repertoires apres archivage"
 msgstr "Delete repositories when archiving is done"
 
-#: lib/classes/task/period/archive.php:293
+#: lib/classes/task/period/archive.php:289
 msgid "task::archive:Archiving files found into a 'hotfolder'"
 msgstr "Archiving file(s) from hotfolder"
 
-#: lib/classes/task/period/cindexer.php:108
+#: lib/classes/task/period/cindexer.php:104
 msgid "Indexation task"
 msgstr "Indexation task"
 
-#: lib/classes/task/period/cindexer.php:117
+#: lib/classes/task/period/cindexer.php:113
 msgid "This task is used to index records for Phrasea engine."
 msgstr "This task is used to index records for Phrasea engine."
 
-#: lib/classes/task/period/cindexer.php:264
+#: lib/classes/task/period/cindexer.php:260
 msgid "MySQL Host"
 msgstr "MySQL Host"
 
-#: lib/classes/task/period/cindexer.php:270
+#: lib/classes/task/period/cindexer.php:264
 msgid "MySQL Port"
 msgstr "MySQL Port"
 
-#: lib/classes/task/period/cindexer.php:276
+#: lib/classes/task/period/cindexer.php:268
 msgid "MySQL Database"
 msgstr "MySQL Database"
 
-#: lib/classes/task/period/cindexer.php:282
+#: lib/classes/task/period/cindexer.php:272
 msgid "MySQL Login"
 msgstr "MySQL Login"
 
-#: lib/classes/task/period/cindexer.php:288
+#: lib/classes/task/period/cindexer.php:276
 msgid "MySQL password"
 msgstr "MySQL password"
 
-#: lib/classes/task/period/cindexer.php:294
-msgid "MySQL charset"
-msgstr "MySQL charset"
+#: lib/classes/task/period/cindexer.php:280
+msgid "MySQL connection charset"
+msgstr "MySQL connection charset"
 
-#: lib/classes/task/period/cindexer.php:300
+#: lib/classes/task/period/cindexer.php:286
 msgid "Socket port"
 msgstr "Socket port"
 
-#: lib/classes/task/period/cindexer.php:306
+#: lib/classes/task/period/cindexer.php:292
 msgid "Debug binary mask"
 msgstr "Debug binary mask"
 
-#: lib/classes/task/period/cindexer.php:312
+#: lib/classes/task/period/cindexer.php:298
 msgid "Default language for thesaurus candidates"
 msgstr "Default language for thesaurus candidates"
 
-#: lib/classes/task/period/cindexer.php:318
+#: lib/classes/task/period/cindexer.php:304
 msgid "Enable stemming languages"
 msgstr "Enable stemming languages"
 
-#: lib/classes/task/period/cindexer.php:321
+#: lib/classes/task/period/cindexer.php:307
 msgid "example : fr,en"
 msgstr "example : fr,en"
 
-#: lib/classes/task/period/cindexer.php:325
+#: lib/classes/task/period/cindexer.php:311
 msgid "Sort records with an empty field"
 msgstr "Sort records with an empty field"
 
-#: lib/classes/task/period/cindexer.php:328
+#: lib/classes/task/period/cindexer.php:314
 msgid "Hide records"
 msgstr "Hide records"
 
-#: lib/classes/task/period/cindexer.php:329
+#: lib/classes/task/period/cindexer.php:315
 msgid "At the beginning"
 msgstr "At the beginning"
 
-#: lib/classes/task/period/cindexer.php:330
+#: lib/classes/task/period/cindexer.php:316
 msgid "At the end"
 msgstr "At the end"
 
-#: lib/classes/task/period/cindexer.php:338
-msgid "Do not (sys)log, output to console)"
-msgstr "Do not (sys)log; output to console"
+#: lib/classes/task/period/cindexer.php:324
+msgid "Do not log, output to console"
+msgstr "Do not log, output to console"
 
-#: lib/classes/task/period/cindexer.php:346
-msgid "Windows specific"
-msgstr "Windows specific"
-
-#: lib/classes/task/period/cindexer.php:348
+#: lib/classes/task/period/cindexer.php:332
 msgid "Run as application, not as service"
 msgstr "Run as application, not as service"
 
-#: lib/classes/task/period/emptyColl.php:25
+#: lib/classes/task/period/cindexer.php:333
+msgid "Windows specific"
+msgstr "Windows specific"
+
+#: lib/classes/task/period/emptyColl.php:22
 msgid "Vidage de collection"
 msgstr "Empty collection"
 
-#: lib/classes/task/period/ftp.php:26
+#: lib/classes/task/period/ftp.php:27
 msgid "task::ftp:FTP Push"
 msgstr "FTP Push"
 
-#: lib/classes/task/period/ftp.php:144 lib/classes/task/period/ftpPull.php:167
+#: lib/classes/task/period/ftp.php:145 lib/classes/task/period/ftpPull.php:164
 msgid "task::ftp:proxy"
 msgstr "Proxy"
 
-#: lib/classes/task/period/ftp.php:150 lib/classes/task/period/ftpPull.php:173
+#: lib/classes/task/period/ftp.php:151 lib/classes/task/period/ftpPull.php:170
 msgid "task::ftp:proxy port"
 msgstr "Port"
 
-#: lib/classes/task/period/ftp.php:337
+#: lib/classes/task/period/ftp.php:338
 #, php-format
 msgid ""
 "task::ftp:Etat d'envoi FTP vers le serveur \"%1$s\" avec le compte \"%2$s\" "
@@ -1380,12 +1385,12 @@ msgid ""
 msgstr ""
 "Transfer status to %1$s server to %3$s recipient folder using %2$s account"
 
-#: lib/classes/task/period/ftp.php:348
+#: lib/classes/task/period/ftp.php:349
 #, php-format
 msgid "task::ftp:TENTATIVE no %s, %s"
 msgstr "Attempt N° %s, %s"
 
-#: lib/classes/task/period/ftp.php:475
+#: lib/classes/task/period/ftp.php:476
 #, php-format
 msgid ""
 "task::ftp:File \"%1$s\" (record %2$s) de la base \"%3$s\" (Export du "
@@ -1394,97 +1399,101 @@ msgstr ""
 "File \"%1$s\" (record %2$s) from database \"%3$s\" (Preview dowload) : "
 "Transfer cancelled (document deleted)"
 
-#: lib/classes/task/period/ftp.php:615
+#: lib/classes/task/period/ftp.php:616
 msgid "task::ftp:Tous les documents ont ete transferes avec succes"
 msgstr "All files transferred"
 
-#: lib/classes/task/period/ftp.php:625 lib/classes/task/period/ftp.php:631
+#: lib/classes/task/period/ftp.php:626 lib/classes/task/period/ftp.php:632
 #, php-format
 msgid "task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s"
 msgstr "Record %1$s - %2$s from database (%3$s - %4$s) - %5$s"
 
-#: lib/classes/task/period/ftp.php:628
+#: lib/classes/task/period/ftp.php:629
 msgid "Transfert OK"
 msgstr "Upload done"
 
-#: lib/classes/task/period/ftp.php:634
+#: lib/classes/task/period/ftp.php:635
 msgid "Transfert Annule"
 msgstr "Upload aborted"
 
-#: lib/classes/task/period/ftp.php:635
+#: lib/classes/task/period/ftp.php:636
 msgid "task::ftp:Certains documents n'ont pas pu etre tranferes"
 msgstr "Some files could not be transfered"
 
-#: lib/classes/task/period/ftp.php:649
+#: lib/classes/task/period/ftp.php:650
 msgid "Des difficultes ont ete rencontres a la connection au serveur distant"
 msgstr "Some difficulties encountered when connecting to distant server"
 
-#: lib/classes/task/period/ftp.php:651
+#: lib/classes/task/period/ftp.php:652
 msgid "La connection vers le serveur distant est OK"
 msgstr "Successful connection  to distant server"
 
-#: lib/classes/task/period/ftp.php:664
+#: lib/classes/task/period/ftp.php:665
 msgid "task::ftp:Details des fichiers"
 msgstr "Details for file(s)"
 
-#: lib/classes/task/period/ftpPull.php:31
+#: lib/classes/task/period/ftpPull.php:28
 msgid "task::ftp:FTP Pull"
 msgstr "FTP Pull"
 
-#: lib/classes/task/period/ftpPull.php:215
+#: lib/classes/task/period/ftpPull.php:212
 msgid "task::ftp:mode passif"
 msgstr "Passive mode"
 
-#: lib/classes/task/period/ftpPull.php:224
+#: lib/classes/task/period/ftpPull.php:221
 msgid "task::ftp:utiliser SSL"
 msgstr "SSL"
 
-#: lib/classes/task/period/RecordMover.php:25
+#: lib/classes/task/period/RecordMover.php:21
 msgid "Record Mover"
 msgstr "Record Mover"
 
-#: lib/classes/task/period/RecordMover.php:301
+#: lib/classes/task/period/RecordMover.php:297
 msgid "Log changes"
 msgstr "Log changes"
 
-#: lib/classes/task/period/subdef.php:41
+#: lib/classes/task/period/subdef.php:47
 msgid "task::subdef:creation des sous definitions des documents d'origine"
 msgstr "Subviews creation"
 
-#: lib/classes/task/period/subdef.php:52
+#: lib/classes/task/period/subdef.php:58
 msgid "task::subdef:creation des sous definitions"
 msgstr "Subviews creation"
 
-#: lib/classes/task/period/subdef.php:218
+#: lib/classes/task/period/subdef.php:233
 #, php-format
-msgid "Number of records before proceeding the next step"
-msgstr "Number of records before proceeding the next step"
+msgid "Number of records to process per batch"
+msgstr "Number of records to process per batch"
 
-#: lib/classes/task/period/subdef.php:224
-#: lib/classes/task/period/writemeta.php:191
+#: lib/classes/task/period/subdef.php:239
+#: lib/classes/task/period/writemeta.php:187
 msgid "Restart the task every X records"
 msgstr "Restart the task every X records"
 
-#: lib/classes/task/period/subdef.php:230
+#: lib/classes/task/period/subdef.php:245
 msgid "Restart the task if memory reaches"
 msgstr "Restart the task if memory reaches"
 
-#: lib/classes/task/period/writemeta.php:28
+#: lib/classes/task/period/subdef.php:252
+msgid "Try to extract embedded thumbnails"
+msgstr "Try to extract embedded thumbnails"
+
+#: lib/classes/task/period/writemeta.php:24
 msgid ""
 "task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs "
 "concernees)"
-msgstr "Rewrite meta-datas from documents and subviews"
+msgstr "Rewrite metadatas from documents and subviews."
 
-#: lib/classes/task/period/writemeta.php:39
+#: lib/classes/task/period/writemeta.php:35
 msgid "task::writemeta:ecriture des metadatas"
 msgstr "Write metadatas"
 
-#: lib/classes/task/period/writemeta.php:186
+#: lib/classes/task/period/writemeta.php:182
 msgid "task::writemeta:effacer les metadatas non presentes dans la structure"
 msgstr ""
 "Delete metadatas from documents if not compliant with Database structure"
 
-#: lib/classes/task/period/writemeta.php:197
+#: lib/classes/task/period/writemeta.php:193
 msgid "task::_common_:records, ou si la memoire depasse"
 msgstr "records, or if memory reaches"
 
@@ -1493,481 +1502,482 @@ msgstr "records, or if memory reaches"
 msgid "A user already exists with email addres %s"
 msgstr "A user with e-mail address %s already exists"
 
-#: lib/classes/User/Adapter.php:1366
+#: lib/classes/User/Adapter.php:1369
 #, php-format
 msgid "modele %s"
 msgstr "Template %s"
 
-#: lib/conf.d/gvtemplate.php:26
+#: lib/conf.d/_GV_template.inc.php:38
 msgid "HTTP Server"
 msgstr "HTTP Server"
 
-#: lib/conf.d/gvtemplate.php:31
+#: lib/conf.d/_GV_template.inc.php:43
 msgid "Default language"
 msgstr "Default language"
 
-#: lib/conf.d/gvtemplate.php:40
+#: lib/conf.d/_GV_template.inc.php:52
 msgid "Static URL"
 msgstr "Static URL"
 
-#: lib/conf.d/gvtemplate.php:41
+#: lib/conf.d/_GV_template.inc.php:53
 msgid "optional"
 msgstr "optional"
 
-#: lib/conf.d/gvtemplate.php:46
+#: lib/conf.d/_GV_template.inc.php:58
 msgid "Maintenance state"
 msgstr "Maintenance state"
 
-#: lib/conf.d/gvtemplate.php:52
+#: lib/conf.d/_GV_template.inc.php:64
 msgid "Maintenance message"
 msgstr "Maintenance message"
 
-#: lib/conf.d/gvtemplate.php:58
+#: lib/conf.d/_GV_template.inc.php:70
 msgid "Enable maintenance message broadcast"
 msgstr "Enable maintenance message broadcast"
 
-#: lib/conf.d/gvtemplate.php:64
+#: lib/conf.d/_GV_template.inc.php:76
 msgid "Log errors"
 msgstr "Log errors"
 
-#: lib/conf.d/gvtemplate.php:69
+#: lib/conf.d/_GV_template.inc.php:81
 msgid "Webservices connectivity"
 msgstr "Webservices connectivity"
 
-#: lib/conf.d/gvtemplate.php:74
+#: lib/conf.d/_GV_template.inc.php:86
 msgid "Use Google API"
 msgstr "Use Google API"
 
-#: lib/conf.d/gvtemplate.php:81
+#: lib/conf.d/_GV_template.inc.php:93
 msgid "Geonames server address"
 msgstr "Geonames server address"
 
-#: lib/conf.d/gvtemplate.php:89
+#: lib/conf.d/_GV_template.inc.php:101
 msgid "Use recaptcha API"
 msgstr "Use recaptcha API"
 
-#: lib/conf.d/gvtemplate.php:97
+#: lib/conf.d/_GV_template.inc.php:109
 msgid "Recaptcha public key"
 msgstr "Recaptcha public key"
 
-#: lib/conf.d/gvtemplate.php:103
+#: lib/conf.d/_GV_template.inc.php:115
 msgid "Recaptcha private key"
 msgstr "Recaptcha private key"
 
-#: lib/conf.d/gvtemplate.php:108
+#: lib/conf.d/_GV_template.inc.php:120
 msgid "Youtube connectivity"
 msgstr "Youtube connectivity"
 
-#: lib/conf.d/gvtemplate.php:113
+#: lib/conf.d/_GV_template.inc.php:125
 msgid "Use youtube API"
 msgstr "Use youtube API"
 
-#: lib/conf.d/gvtemplate.php:114 lib/conf.d/gvtemplate.php:145
-#: lib/conf.d/gvtemplate.php:169
+#: lib/conf.d/_GV_template.inc.php:126 lib/conf.d/_GV_template.inc.php:157
+#: lib/conf.d/_GV_template.inc.php:181
 #, php-format
 msgid "Create API account at %s, then use %s as callback URL value"
-msgstr "Create API account at %s, then use %s as callback URL value"
+msgstr "Create API account at %s, then use %s as callback URL value."
 
-#: lib/conf.d/gvtemplate.php:121
+#: lib/conf.d/_GV_template.inc.php:133
 msgid "Youtube public key"
 msgstr "Youtube public key"
 
-#: lib/conf.d/gvtemplate.php:127
+#: lib/conf.d/_GV_template.inc.php:139
 msgid "Youtube secret key"
 msgstr "Youtube secret key"
 
-#: lib/conf.d/gvtemplate.php:133
+#: lib/conf.d/_GV_template.inc.php:145
 msgid "Youtube developer key"
 msgstr "Youtube developer key"
 
-#: lib/conf.d/gvtemplate.php:134
+#: lib/conf.d/_GV_template.inc.php:146
 #, php-format
 msgid "See %s"
 msgstr "See %s"
 
-#: lib/conf.d/gvtemplate.php:139
+#: lib/conf.d/_GV_template.inc.php:151
 msgid "FlickR connectivity"
 msgstr "FlickR connectivity"
 
-#: lib/conf.d/gvtemplate.php:144
+#: lib/conf.d/_GV_template.inc.php:156
 msgid "Use Flickr API"
 msgstr "Use Flickr API"
 
-#: lib/conf.d/gvtemplate.php:152
+#: lib/conf.d/_GV_template.inc.php:164
 msgid "Flickr public key"
 msgstr "Flickr public key"
 
-#: lib/conf.d/gvtemplate.php:158
+#: lib/conf.d/_GV_template.inc.php:170
 msgid "Flickr secret key"
 msgstr "Flickr secret key"
 
-#: lib/conf.d/gvtemplate.php:163
+#: lib/conf.d/_GV_template.inc.php:175
 msgid "Dailymotion connectivity"
 msgstr "Dailymotion connectivity"
 
-#: lib/conf.d/gvtemplate.php:168
+#: lib/conf.d/_GV_template.inc.php:180
 msgid "Use Dailymotion API"
 msgstr "Use Dailymotion API"
 
-#: lib/conf.d/gvtemplate.php:176
+#: lib/conf.d/_GV_template.inc.php:188
 msgid "Dailymotion public key"
 msgstr "Dailymotion public key"
 
-#: lib/conf.d/gvtemplate.php:182
+#: lib/conf.d/_GV_template.inc.php:194
 msgid "Dailymotion secret key"
 msgstr "Dailymotion secret key"
 
-#: lib/conf.d/gvtemplate.php:187
+#: lib/conf.d/_GV_template.inc.php:199
 msgid "Phraseanet client API"
 msgstr "Phraseanet client API"
 
-#: lib/conf.d/gvtemplate.php:192
+#: lib/conf.d/_GV_template.inc.php:204
 msgid "Authorize *Phraseanet Navigator*"
 msgstr "Authorise *Phraseanet Navigator*"
 
-#: lib/conf.d/gvtemplate.php:193
+#: lib/conf.d/_GV_template.inc.php:205
 msgid ""
 "*Phraseanet Navigator* is a smartphone application that allow user to "
 "connect on this instance"
 msgstr ""
 "*Phraseanet Navigator* is a smartphone application that allow user to "
-"connect on this instance"
+"connect on this instance."
 
-#: lib/conf.d/gvtemplate.php:199
+#: lib/conf.d/_GV_template.inc.php:211
 msgid "Documents storage"
 msgstr "Documents storage"
 
-#: lib/conf.d/gvtemplate.php:205
+#: lib/conf.d/_GV_template.inc.php:217
 msgid "Default path for datas"
 msgstr "Default path for datas"
 
-#: lib/conf.d/gvtemplate.php:211
+#: lib/conf.d/_GV_template.inc.php:223
 msgid "Executables settings"
 msgstr "Executables settings"
 
-#: lib/conf.d/gvtemplate.php:216
+#: lib/conf.d/_GV_template.inc.php:228
 msgid "Enable H264 stream mode"
 msgstr "Enable H264 stream mode"
 
-#: lib/conf.d/gvtemplate.php:217
+#: lib/conf.d/_GV_template.inc.php:229
 msgid ""
 "Use with mod_token. Attention requires the apache modules and "
 "mod_h264_streaming mod_auth_token"
 msgstr ""
 "Use with mod_token. Attention requires the apache modules and "
-"mod_h264_streaming mod_auth_token"
+"mod_h264_streaming mod_auth_token."
 
-#: lib/conf.d/gvtemplate.php:224
+#: lib/conf.d/_GV_template.inc.php:236
 msgid "Auth_token mount point"
 msgstr "Auth_token mount point"
 
-#: lib/conf.d/gvtemplate.php:231
+#: lib/conf.d/_GV_template.inc.php:243
 msgid "Auth_token directory path"
 msgstr "Auth_token directory path"
 
-#: lib/conf.d/gvtemplate.php:237
+#: lib/conf.d/_GV_template.inc.php:249
 msgid "Auth_token passphrase"
 msgstr "Auth_token passphrase"
 
-#: lib/conf.d/gvtemplate.php:238
+#: lib/conf.d/_GV_template.inc.php:250
 msgid "Defined in Apache configuration"
-msgstr "Defined in Apache configuration"
+msgstr "Defined in Apache configuration."
 
-#: lib/conf.d/gvtemplate.php:244
+#: lib/conf.d/_GV_template.inc.php:256
 msgid "php.ini path"
 msgstr "php.ini path"
 
-#: lib/conf.d/gvtemplate.php:245
+#: lib/conf.d/_GV_template.inc.php:257
 msgid "Empty if not used"
-msgstr "Empty if not used"
+msgstr "Empty if not used."
 
-#: lib/conf.d/gvtemplate.php:252
+#: lib/conf.d/_GV_template.inc.php:264
 msgid "Imagine driver"
 msgstr "Imagine driver"
 
-#: lib/conf.d/gvtemplate.php:264
+#: lib/conf.d/_GV_template.inc.php:276
 msgid "Number of threads to use for FFMpeg"
 msgstr "Number of threads to use for FFMpeg"
 
-#: lib/conf.d/gvtemplate.php:270
+#: lib/conf.d/_GV_template.inc.php:282
 msgid "Maximum number of pages to be extracted from PDF"
 msgstr "Maximum number of pages to be extracted from PDF"
 
-#: lib/conf.d/gvtemplate.php:275
+#: lib/conf.d/_GV_template.inc.php:287
 msgid "Main configuration"
 msgstr "Main configuration"
 
-#: lib/conf.d/gvtemplate.php:280
+#: lib/conf.d/_GV_template.inc.php:292
 msgid "Admin email"
 msgstr "Admin e-mail"
 
-#: lib/conf.d/gvtemplate.php:286
+#: lib/conf.d/_GV_template.inc.php:298
 msgid "Display the name of databases and collections"
 msgstr "Display the name of databases and collections"
 
-#: lib/conf.d/gvtemplate.php:293
+#: lib/conf.d/_GV_template.inc.php:305
 msgid "Choose the title of the document to export"
 msgstr "Choose the title of the document to export"
 
-#: lib/conf.d/gvtemplate.php:300
+#: lib/conf.d/_GV_template.inc.php:312
 msgid "Default export title"
 msgstr "Default export title"
 
-#: lib/conf.d/gvtemplate.php:303
+#: lib/conf.d/_GV_template.inc.php:315
 msgid "Document title"
 msgstr "Document title"
 
-#: lib/conf.d/gvtemplate.php:304
+#: lib/conf.d/_GV_template.inc.php:316
 msgid "Original name"
 msgstr "Original name"
 
-#: lib/conf.d/gvtemplate.php:310
+#: lib/conf.d/_GV_template.inc.php:322
 msgid "Enable this setting to share on Facebook and Twitter"
 msgstr "Enable this setting to share on Facebook and Twitter"
 
-#: lib/conf.d/gvtemplate.php:312
+#: lib/conf.d/_GV_template.inc.php:324
 msgid "Disabled"
 msgstr "Disabled"
 
-#: lib/conf.d/gvtemplate.php:313
+#: lib/conf.d/_GV_template.inc.php:325
 msgid "Publishers"
 msgstr "Publishers"
 
-#: lib/conf.d/gvtemplate.php:314
+#: lib/conf.d/_GV_template.inc.php:326
 msgid "Enabled"
 msgstr "Enabled"
 
-#: lib/conf.d/gvtemplate.php:321
+#: lib/conf.d/_GV_template.inc.php:333
 msgid "Homepage"
 msgstr "Homepage"
 
-#: lib/conf.d/gvtemplate.php:327
+#: lib/conf.d/_GV_template.inc.php:339
 msgid "Homepage slideshow"
-msgstr "Homepage slideshow"
+msgstr "Homepage slideshow setting"
 
-#: lib/conf.d/gvtemplate.php:330
+#: lib/conf.d/_GV_template.inc.php:342
 msgid "Single image"
 msgstr "Single image"
 
-#: lib/conf.d/gvtemplate.php:331
+#: lib/conf.d/_GV_template.inc.php:343
 msgid "Slide show"
 msgstr "Slideshow"
 
-#: lib/conf.d/gvtemplate.php:338
+#: lib/conf.d/_GV_template.inc.php:350
 msgid "Search engine"
 msgstr "Search engine"
 
-#: lib/conf.d/gvtemplate.php:344
+#: lib/conf.d/_GV_template.inc.php:356
 msgid "Minimum number of letters before truncation"
 msgstr "Minimum number of letters before truncation"
 
-#: lib/conf.d/gvtemplate.php:345
+#: lib/conf.d/_GV_template.inc.php:357
 msgid "Used in search engine"
-msgstr "Used in search engine"
+msgstr "Used in search engine."
 
-#: lib/conf.d/gvtemplate.php:351
+#: lib/conf.d/_GV_template.inc.php:363
 msgid "Default query"
 msgstr "Default query"
 
-#: lib/conf.d/gvtemplate.php:357
+#: lib/conf.d/_GV_template.inc.php:369
 msgid "Default searched type"
 msgstr "Default searched type"
 
-#: lib/conf.d/gvtemplate.php:358
+#: lib/conf.d/_GV_template.inc.php:370
 msgid "Used when opening the application"
-msgstr "Used when opening the application"
+msgstr "Used when opening the application."
 
-#: lib/conf.d/gvtemplate.php:360
+#: lib/conf.d/_GV_template.inc.php:372
 msgid "Documents"
 msgstr "Documents"
 
-#: lib/conf.d/gvtemplate.php:361
+#: lib/conf.d/_GV_template.inc.php:373
 msgid "Stories"
 msgstr "Stories"
 
-#: lib/conf.d/gvtemplate.php:367
+#: lib/conf.d/_GV_template.inc.php:379
 #: tmp/cache_twig/de/85/dcc2bacfb8cb7d5c27a964d9a960.php:312
 msgid "Report"
 msgstr "Report"
 
-#: lib/conf.d/gvtemplate.php:373
+#: lib/conf.d/_GV_template.inc.php:385
 msgid "Anonymous report"
 msgstr "Anonymous report"
 
-#: lib/conf.d/gvtemplate.php:374
+#: lib/conf.d/_GV_template.inc.php:386
 msgid "Hide information about users"
-msgstr "Hide information about users"
+msgstr "Hide information about users."
 
-#: lib/conf.d/gvtemplate.php:380
+#: lib/conf.d/_GV_template.inc.php:392
 msgid "Additionnal modules"
 msgstr "Additional modules"
 
-#: lib/conf.d/gvtemplate.php:386
+#: lib/conf.d/_GV_template.inc.php:398
 msgid "Enable thesaurus"
 msgstr "Enable thesaurus"
 
-#: lib/conf.d/gvtemplate.php:391
+#: lib/conf.d/_GV_template.inc.php:403
 msgid "Enable multi-doc mode"
 msgstr "Enable multi-doc mode"
 
-#: lib/conf.d/gvtemplate.php:396
+#: lib/conf.d/_GV_template.inc.php:408
 msgid "Enable HD substitution"
-msgstr "Enable HD substitution"
+msgstr "Enable source document substitution"
 
-#: lib/conf.d/gvtemplate.php:401
+#: lib/conf.d/_GV_template.inc.php:413
 msgid "Enable thumbnail substitution"
 msgstr "Enable thumbnail substitution"
 
-#: lib/conf.d/gvtemplate.php:407
+#: lib/conf.d/_GV_template.inc.php:419
 msgid "Emails"
 msgstr "E-mails"
 
-#: lib/conf.d/gvtemplate.php:412
+#: lib/conf.d/_GV_template.inc.php:424
 msgid "Default mail sender address"
 msgstr "Default mail sender address"
 
-#: lib/conf.d/gvtemplate.php:418
+#: lib/conf.d/_GV_template.inc.php:430
 msgid "Prefix for notification emails"
 msgstr "Prefix for e-mail notifications"
 
-#: lib/conf.d/gvtemplate.php:424
+#: lib/conf.d/_GV_template.inc.php:436
 msgid "Use a SMTP server"
 msgstr "Use a SMTP server"
 
-#: lib/conf.d/gvtemplate.php:430
+#: lib/conf.d/_GV_template.inc.php:442
 msgid "Enable SMTP authentication"
 msgstr "Enable SMTP authentication"
 
-#: lib/conf.d/gvtemplate.php:436
+#: lib/conf.d/_GV_template.inc.php:448
 msgid "SMTP host"
 msgstr "SMTP host"
 
-#: lib/conf.d/gvtemplate.php:442
+#: lib/conf.d/_GV_template.inc.php:454
 msgid "SMTP port"
 msgstr "SMTP port"
 
-#: lib/conf.d/gvtemplate.php:448
+#: lib/conf.d/_GV_template.inc.php:460
 msgid "SMTP encryption"
 msgstr "SMTP encryption"
 
-#: lib/conf.d/gvtemplate.php:451
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:443
+#: lib/conf.d/_GV_template.inc.php:463
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:466
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:172
 msgid "None"
 msgstr "None"
 
-#: lib/conf.d/gvtemplate.php:459
+#: lib/conf.d/_GV_template.inc.php:471
 msgid "SMTP user"
 msgstr "SMTP user"
 
-#: lib/conf.d/gvtemplate.php:465
+#: lib/conf.d/_GV_template.inc.php:477
 msgid "SMTP password"
 msgstr "SMTP password"
 
-#: lib/conf.d/gvtemplate.php:470
+#: lib/conf.d/_GV_template.inc.php:482
 msgid "FTP Export"
 msgstr "FTP Export"
 
-#: lib/conf.d/gvtemplate.php:475
+#: lib/conf.d/_GV_template.inc.php:487
 msgid "Enable FTP export"
 msgstr "Enable FTP export"
 
-#: lib/conf.d/gvtemplate.php:476
+#: lib/conf.d/_GV_template.inc.php:488
 msgid "Available in multi-export tab"
-msgstr "Available in multi-export tab"
+msgstr "Available in multi-export tab."
 
-#: lib/conf.d/gvtemplate.php:482
+#: lib/conf.d/_GV_template.inc.php:494
 msgid "Enable FTP for users"
 msgstr "Enable FTP for users"
 
-#: lib/conf.d/gvtemplate.php:483
+#: lib/conf.d/_GV_template.inc.php:495
 msgid "By default it is available for admins"
-msgstr "By default it is available for admins"
+msgstr "By default it is available for admins."
 
-#: lib/conf.d/gvtemplate.php:488
+#: lib/conf.d/_GV_template.inc.php:500
 msgid "Client"
 msgstr "Client"
 
-#: lib/conf.d/gvtemplate.php:493
+#: lib/conf.d/_GV_template.inc.php:505
 msgid "Maximum megabytes allowed for download"
 msgstr "Maximum megabytes allowed for download"
 
-#: lib/conf.d/gvtemplate.php:494
+#: lib/conf.d/_GV_template.inc.php:506
 msgid "If request is bigger, then mail is still available"
-msgstr "If request is bigger, then mail is still available"
+msgstr "If request is bigger, then mail is still available."
 
-#: lib/conf.d/gvtemplate.php:500
+#: lib/conf.d/_GV_template.inc.php:512
 msgid "Search tab position"
 msgstr "Search tab position"
 
-#: lib/conf.d/gvtemplate.php:506
+#: lib/conf.d/_GV_template.inc.php:518
 msgid "Advanced search tab position"
 msgstr "Advanced search tab position"
 
-#: lib/conf.d/gvtemplate.php:512
+#: lib/conf.d/_GV_template.inc.php:524
 msgid "Topics tab position"
 msgstr "Topics tab position"
 
-#: lib/conf.d/gvtemplate.php:518
+#: lib/conf.d/_GV_template.inc.php:530
 msgid "Active tab position"
 msgstr "Active tab position"
 
-#: lib/conf.d/gvtemplate.php:524
+#: lib/conf.d/_GV_template.inc.php:536
 msgid "Topics display mode"
 msgstr "Topics display mode"
 
-#: lib/conf.d/gvtemplate.php:526
+#: lib/conf.d/_GV_template.inc.php:538
 msgid "Trees"
 msgstr "Trees"
 
-#: lib/conf.d/gvtemplate.php:527 lib/conf.d/gvtemplate.php:549
+#: lib/conf.d/_GV_template.inc.php:539 lib/conf.d/_GV_template.inc.php:561
 msgid "Drop-down"
 msgstr "Drop-down"
 
-#: lib/conf.d/gvtemplate.php:534
+#: lib/conf.d/_GV_template.inc.php:546
 msgid "Enable roll-over on stories"
 msgstr "Enable roll-over on stories"
 
-#: lib/conf.d/gvtemplate.php:540
+#: lib/conf.d/_GV_template.inc.php:552
 msgid "Enable roll-over on basket elements"
 msgstr "Enable roll-over on basket elements"
 
-#: lib/conf.d/gvtemplate.php:546
+#: lib/conf.d/_GV_template.inc.php:558
 msgid "Collections display mode"
 msgstr "Collections display mode"
 
-#: lib/conf.d/gvtemplate.php:550
+#: lib/conf.d/_GV_template.inc.php:562
 msgid "Check-box"
 msgstr "Check-box"
 
-#: lib/conf.d/gvtemplate.php:556
+#: lib/conf.d/_GV_template.inc.php:568
 msgid "Display the total size of the document basket"
 msgstr "Display the total size of the document basket"
 
-#: lib/conf.d/gvtemplate.php:562
+#: lib/conf.d/_GV_template.inc.php:574
 msgid "Display proposals tab"
 msgstr "Display proposals tab"
 
-#: lib/conf.d/gvtemplate.php:568
+#: lib/conf.d/_GV_template.inc.php:580
 msgid "Require authentication to download documents"
 msgstr "Require authentication to download documents"
 
-#: lib/conf.d/gvtemplate.php:569
+#: lib/conf.d/_GV_template.inc.php:581
 msgid "Used for guest account"
-msgstr "Used for guest account"
+msgstr "Used for guest account."
 
-#: lib/conf.d/gvtemplate.php:575
+#: lib/conf.d/_GV_template.inc.php:587
 msgid "Users must accept Terms of Use for each export"
 msgstr "Terms of Use must be accepted by users for each export"
 
-#: lib/conf.d/gvtemplate.php:580
+#: lib/conf.d/_GV_template.inc.php:592
 msgid "Registration"
 msgstr "Registration"
 
-#: lib/conf.d/gvtemplate.php:585
+#: lib/conf.d/_GV_template.inc.php:597
 msgid "Auto select databases"
 msgstr "Auto select databases"
 
-#: lib/conf.d/gvtemplate.php:586
+#: lib/conf.d/_GV_template.inc.php:598
 msgid ""
 "This option disables the selecting of the databases on which a user can "
 "register himself, and registration is made on all granted databases."
@@ -1975,53 +1985,53 @@ msgstr ""
 "This option disables the selecting of the databases on which a user can "
 "register himself, and registration is made on all granted databases."
 
-#: lib/conf.d/gvtemplate.php:592
+#: lib/conf.d/_GV_template.inc.php:604
 msgid "Enable auto registration"
 msgstr "Enable auto registration"
 
-#: lib/conf.d/gvtemplate.php:597
+#: lib/conf.d/_GV_template.inc.php:609
 msgid "Push configuration"
 msgstr "Push configuration"
 
-#: lib/conf.d/gvtemplate.php:602
+#: lib/conf.d/_GV_template.inc.php:614
 msgid ""
 "Number of days before the end of the validation to send a reminder email"
 msgstr ""
 "Number of days before the end of the validation to send a reminder e-mail"
 
-#: lib/conf.d/gvtemplate.php:608
+#: lib/conf.d/_GV_template.inc.php:620
 msgid "Default validation links duration"
 msgstr "Default validation links duration"
 
-#: lib/conf.d/gvtemplate.php:609
+#: lib/conf.d/_GV_template.inc.php:621
 msgid "If set to 0, duration is permanent"
-msgstr "If set to 0, duration is permanent"
+msgstr "If set to 0, duration is permanent."
 
-#: lib/conf.d/gvtemplate.php:614
+#: lib/conf.d/_GV_template.inc.php:626
 msgid "Robot indexing"
 msgstr "Robot indexing"
 
-#: lib/conf.d/gvtemplate.php:619
+#: lib/conf.d/_GV_template.inc.php:631
 msgid "Application title"
 msgstr "Application title"
 
-#: lib/conf.d/gvtemplate.php:625
+#: lib/conf.d/_GV_template.inc.php:637
 msgid "Keywords used for indexing purposes by search engines robots"
 msgstr "Keywords used for indexing purposes by search engines robots"
 
-#: lib/conf.d/gvtemplate.php:631
+#: lib/conf.d/_GV_template.inc.php:643
 msgid "Application description"
 msgstr "Application description"
 
-#: lib/conf.d/gvtemplate.php:637
+#: lib/conf.d/_GV_template.inc.php:649
 msgid "Google Analytics identifier"
 msgstr "Google Analytics identifier"
 
-#: lib/conf.d/gvtemplate.php:643
+#: lib/conf.d/_GV_template.inc.php:655
 msgid "Allow the website to be indexed by search engines like Google"
 msgstr "Allow search engines (such as Google) indexation"
 
-#: lib/conf.d/gvtemplate.php:649
+#: lib/conf.d/_GV_template.inc.php:661
 msgid "Enable Google Chrome frame"
 msgstr "Enable Google Chrome frame"
 
@@ -2064,6 +2074,7 @@ msgstr "Set sharing permission"
 #: tmp/cache_twig/16/0c/dc1f9e2458390ebae91faddb2857.php:72
 #: tmp/cache_twig/2e/0a/9c25d3c1de90fbf0567ed2c42573.php:415
 #: tmp/cache_twig/2e/0a/9c25d3c1de90fbf0567ed2c42573.php:419
+#: tmp/cache_twig/eb/d5/30360bacfc70e40ba0934fff6501.php:147
 msgid "Delete"
 msgstr "Delete"
 
@@ -2073,6 +2084,7 @@ msgid "%length% peoples"
 msgstr "%length% people"
 
 #: tmp/cache_twig/01/e2/866da83d51d90405f333f4d52156.php:113
+#: tmp/cache_twig/eb/d5/30360bacfc70e40ba0934fff6501.php:129
 msgid "Edit"
 msgstr "Edit"
 
@@ -2081,27 +2093,26 @@ msgid "View"
 msgstr "View"
 
 #: tmp/cache_twig/01/e2/866da83d51d90405f333f4d52156.php:161
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:109
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:122
 msgid "Push::filter on login"
 msgstr "Login"
 
 #: tmp/cache_twig/01/e2/866da83d51d90405f333f4d52156.php:167
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:117
 msgid "Push::filter on name"
 msgstr "Last name/First name"
 
 #: tmp/cache_twig/01/e2/866da83d51d90405f333f4d52156.php:173
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:125
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:138
 msgid "Push::filter on countries"
 msgstr "Country"
 
 #: tmp/cache_twig/01/e2/866da83d51d90405f333f4d52156.php:179
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:133
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:146
 msgid "Push::filter on companies"
 msgstr "Company"
 
 #: tmp/cache_twig/01/e2/866da83d51d90405f333f4d52156.php:185
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:141
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:154
 msgid "Push::filter on emails"
 msgstr "E-mail"
 
@@ -2110,7 +2121,7 @@ msgid "Push::filter on templates"
 msgstr "Last template"
 
 #: tmp/cache_twig/01/e2/866da83d51d90405f333f4d52156.php:197
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:146
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:159
 msgid "Push::filter starts"
 msgstr "Starts with"
 
@@ -2210,21 +2221,36 @@ msgstr "Previous"
 msgid "Next"
 msgstr "Next"
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:228
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:228
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:215
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:215
+msgid "You are using an outdated browser."
+msgstr "You are using an outdated browser."
+
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:219
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:219
+msgid ""
+"Please upgrade %browserLink% or activate %GCFLink% to improve your "
+"experience."
+msgstr ""
+"Please upgrade %browserLink% or activate %GCFLink% to improve your "
+"experience."
+
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:285
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:285
 #: tmp/cache_twig/d1/ea/9cba922417b2c8b6f151de26f77d.php:95
+#: tmp/cache_twig/dc/a5/78b2174457540345b2ac826652fe.php:25
 #: tmp/cache_twig/e2/ab/044b174593da583734b27aa1445d.php:65
 msgid "Home"
 msgstr "Home"
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:234
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:234
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:291
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:291
 msgid "Help"
 msgstr "Help"
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:268
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:325
 #: tmp/cache_twig/20/2a/cf1743e1bb55096c5575ff1c651a.php:34
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:268
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:325
 #: lib/Alchemy/Phrasea/Controller/Prod/TOU.php:128
 msgid "Terms of use"
 msgstr "Terms of use"
@@ -2245,23 +2271,23 @@ msgstr "In which photoset do you want to add your %number% photos ?"
 
 #: tmp/cache_twig/03/25/7dbb6ae036a4ec0201b66f629de8.php:103
 #: tmp/cache_twig/06/95/054c36ceb514c44a8429173ba322.php:103
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:488
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:503
 #: tmp/cache_twig/0b/44/eb09dc6220f5b9b1a0f7549a0c81.php:74
 #: tmp/cache_twig/10/90/0f86d56b208a1a1b9d032c6d72d5.php:74
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:990
 #: tmp/cache_twig/15/9a/b78610d119198577b503228f50ca.php:81
-#: tmp/cache_twig/1a/5b/03b46967fb31de5cc63654182091.php:65
+#: tmp/cache_twig/1a/5b/03b46967fb31de5cc63654182091.php:75
 #: tmp/cache_twig/1b/30/753738c0c4f81bf7a9aba183affd.php:221
 #: tmp/cache_twig/29/8d/9325235728f604d30512a6772066.php:233
 #: tmp/cache_twig/2c/1c/804f9f3b79218edbd018e6ec0609.php:480
 #: tmp/cache_twig/33/3d/90131b33a90f6725d7d6e3b3e014.php:74
 #: tmp/cache_twig/35/34/f6dd881337003adfb8c6a2aa2955.php:113
 #: tmp/cache_twig/36/7b/75184cf268ca2e6d1261fa36aeae.php:74
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:299
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:315
 #: tmp/cache_twig/36/98/d86d23f16fdf5e4e0efd14df579e.php:67
 #: tmp/cache_twig/40/e3/491959f190743d7ae676add2ba17.php:109
 #: tmp/cache_twig/42/f4/c1a64461c9d4399f811220cdc847.php:78
-#: tmp/cache_twig/44/df/c1fbe2cfe292312b2a352083f51a.php:730
+#: tmp/cache_twig/44/df/c1fbe2cfe292312b2a352083f51a.php:734
 #: tmp/cache_twig/45/fc/ad5b8eb1b4a2d9a634a7e5757d83.php:67
 #: tmp/cache_twig/46/cf/84fcd6e6d0142196cf67e7150061.php:195
 #: tmp/cache_twig/5a/1c/22c648764c06aa4717454c211a73.php:63
@@ -2285,6 +2311,7 @@ msgstr "In which photoset do you want to add your %number% photos ?"
 #: tmp/cache_twig/b8/ec/453b197e82c6c1695c8bf49b2a73.php:152
 #: tmp/cache_twig/bc/dc/79261dd8d83c16a51bdcc19a695c.php:305
 #: tmp/cache_twig/c5/f0/e10507b1b1da15c5f8dd70dd94b0.php:160
+#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:129
 #: tmp/cache_twig/cf/54/5df1aa52892a0a5d8dc3e6731756.php:180
 #: tmp/cache_twig/d5/4a/7d295223f798bb96c47772c97e52.php:120
 #: tmp/cache_twig/d9/05/b2c53e59d917b029caed87cf02de.php:103
@@ -2296,7 +2323,7 @@ msgstr "In which photoset do you want to add your %number% photos ?"
 #: tmp/cache_twig/f9/a1/b353838bc56869bf92a7e455d17d.php:134
 #: tmp/cache_twig/fa/bd/e1efca70b5fe3cbd7a0da43824ed.php:94
 #: tmp/cache_twig/fd/2d/efdc6903cabe0e9244bd196ad77a.php:137
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:486
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:509
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:47
 msgid "boutton::valider"
 msgstr "Validate"
@@ -2306,10 +2333,10 @@ msgstr "Validate"
 #: tmp/cache_twig/0b/44/eb09dc6220f5b9b1a0f7549a0c81.php:78
 #: tmp/cache_twig/10/90/0f86d56b208a1a1b9d032c6d72d5.php:78
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:996
-#: tmp/cache_twig/22/cd/c1915a824fdb6dfc1849ba3a219a.php:151
+#: tmp/cache_twig/22/cd/c1915a824fdb6dfc1849ba3a219a.php:213
 #: tmp/cache_twig/33/3d/90131b33a90f6725d7d6e3b3e014.php:78
 #: tmp/cache_twig/36/7b/75184cf268ca2e6d1261fa36aeae.php:78
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:308
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:324
 #: tmp/cache_twig/3e/8a/2ec77779fbe28cfbd32895b8a085.php:223
 #: tmp/cache_twig/42/f4/c1a64461c9d4399f811220cdc847.php:82
 #: tmp/cache_twig/5a/1c/22c648764c06aa4717454c211a73.php:67
@@ -2320,7 +2347,7 @@ msgstr "Validate"
 #: tmp/cache_twig/d4/46/323cc237efb87a3f924c57ff84a8.php:142
 #: tmp/cache_twig/d9/05/b2c53e59d917b029caed87cf02de.php:107
 #: tmp/cache_twig/d9/c0/b8270ed2ef479a11209ec2bae5f4.php:188
-#: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:125
+#: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:131
 msgid "boutton::retour"
 msgstr "Back"
 
@@ -2336,7 +2363,7 @@ msgstr "Back"
 #: tmp/cache_twig/7b/dc/8fe6c71478ad63fbc116ed63ca55.php:144
 #: tmp/cache_twig/7b/dc/8fe6c71478ad63fbc116ed63ca55.php:335
 #: tmp/cache_twig/95/d9/07d569ecca0909112e1c4240627c.php:83
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:1028
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:1024
 #: tmp/cache_twig/de/bb/21c5bedae9d3c32735f514b04e17.php:88
 msgid "action : exporter"
 msgstr "Export"
@@ -2381,6 +2408,7 @@ msgstr "Push"
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1334
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1379
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:97
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:109
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -2447,7 +2475,7 @@ msgstr "YES"
 
 #: tmp/cache_twig/05/71/7b0e8262b3e07506f688261c2b03.php:144
 #: tmp/cache_twig/a1/51/962e8f450036575bab788d3ba9f3.php:138
-#: tmp/cache_twig/a8/24/ab8649165be87bb56f906b5336a5.php:115
+#: tmp/cache_twig/a8/24/ab8649165be87bb56f906b5336a5.php:114
 msgid "validation:: NON"
 msgstr "NO"
 
@@ -2456,140 +2484,139 @@ msgstr "NO"
 msgid "Which playlist you want to put you %number% elements into ?"
 msgstr "Select a Playlist to add the %number% documents"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:131
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:202
 msgid "admin:: demandes en cours"
 msgstr "Pending registration"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:143
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:214
 msgid "Requests for the application registrations were recorded successfully"
 msgstr "Requests for application registrations were successfully recorded."
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:161
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:352
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:356
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:232
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:405
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:409
 msgid "admin:: refuser l'acces"
 msgstr "Deny access"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:167
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:371
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:375
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:238
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:416
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:420
 msgid "admin:: donner les droits de telechargement et consultation de previews"
 msgstr "Allow Display and download for previews"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:173
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:390
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:394
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:244
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:427
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:431
 msgid "admin:: donner les droits de telechargements de preview et hd"
 msgstr "Allow previews and documents download"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:179
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:409
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:413
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:250
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:438
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:442
 msgid "admin:: watermarquer les documents"
 msgstr "Apply watermark on previews"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:189
-#: tmp/cache_twig/0f/ac/e0096612d06e1c6f9e34fa6ef8f7.php:119
-#: tmp/cache_twig/21/b6/d0b018bc82ce40b057648f63df94.php:119
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:260
+#: tmp/cache_twig/0f/ac/e0096612d06e1c6f9e34fa6ef8f7.php:116
+#: tmp/cache_twig/21/b6/d0b018bc82ce40b057648f63df94.php:116
 #: tmp/cache_twig/f9/a1/b353838bc56869bf92a7e455d17d.php:358
 msgid "Informations"
 msgstr "Infos"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:193
-msgid "admin::compte-utilisateur date d'inscription"
-msgstr "Register"
-
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:197
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:264
 msgid "admin::collection"
 msgstr "Collection"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:201
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:268
 msgid "Models"
 msgstr "Templates"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:247
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:303
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:779
 #: tmp/cache_twig/1c/fe/06ae4748f1b9884407a4d6c6427c.php:112
 #: tmp/cache_twig/40/e3/491959f190743d7ae676add2ba17.php:67
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1520
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:267
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1554
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:280
 #: tmp/cache_twig/ae/a7/6e84d8e1b53bc92e183f2cc3fc0c.php:112
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:83
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:406
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:36
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:105
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:429
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:46
 msgid "admin::compte-utilisateur identifiant"
 msgstr "Login"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:275
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:331
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:927
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:298
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:699
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:299
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:249
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:723
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:312
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:272
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:299
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:97
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:107
 msgid "admin::compte-utilisateur societe"
 msgstr "Company"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:283
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:339
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:913
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:712
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:236
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:736
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:259
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:298
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:90
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:100
 msgid "admin::compte-utilisateur poste"
 msgstr "Job"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:291
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:347
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:941
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:262
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:285
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:300
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:104
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:114
 msgid "admin::compte-utilisateur activite"
 msgstr "Activity"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:299
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:355
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:956
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:306
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:686
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:275
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:710
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:298
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:296
 msgid "admin::compte-utilisateur telephone"
 msgstr "Phone"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:307
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:363
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:871
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:725
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:197
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:749
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:220
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:292
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:69
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:79
 msgid "admin::compte-utilisateur adresse"
 msgstr "Address"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:433
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:456
 msgid "admin:: appliquer le modele"
 msgstr "Apply template"
 
-#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:496
+#: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:511
 msgid "No application for registration has been recorded"
 msgstr "No application registration recorded"
 
 #: tmp/cache_twig/09/26/061226e9a43de9ff125800077639.php:29
-#: tmp/cache_twig/09/26/061226e9a43de9ff125800077639.php:35
 #: tmp/cache_twig/28/45/cab46c7ff23963e50d925a53e4f1.php:29
-#: tmp/cache_twig/28/45/cab46c7ff23963e50d925a53e4f1.php:35
 #: tmp/cache_twig/9e/30/e82b55706e68988f0eda6d41286f.php:29
-#: tmp/cache_twig/9e/30/e82b55706e68988f0eda6d41286f.php:35
 msgid "%nb_view% vue"
-msgid_plural "%nb_view% vues"
-msgstr[0] "%nb_view% view"
-msgstr[1] "%nb_view% views"
+msgstr "%nb_view% vue"
 
-#: tmp/cache_twig/09/26/061226e9a43de9ff125800077639.php:54
+#: tmp/cache_twig/09/26/061226e9a43de9ff125800077639.php:35
+#: tmp/cache_twig/28/45/cab46c7ff23963e50d925a53e4f1.php:35
+#: tmp/cache_twig/9e/30/e82b55706e68988f0eda6d41286f.php:35
+msgid "%nb_view% vues"
+msgstr "%nb_view% vues"
+
+#: tmp/cache_twig/09/26/061226e9a43de9ff125800077639.php:57
 msgid "%nb_rating% like"
-msgid_plural "%nb_rating% likes"
-msgstr[0] "%nb_rating% like"
-msgstr[1] "%nb_rating% likes"
+msgstr "%nb_rating% like"
+
+#: tmp/cache_twig/09/26/061226e9a43de9ff125800077639.php:63
+msgid "%nb_rating% likes"
+msgstr "%nb_rating% likes"
 
 #: tmp/cache_twig/09/e0/50b063e8242ffca115d00e377a9a.php:195
 #: tmp/cache_twig/0b/5a/a4b9585489c871b0e0bad98ec91f.php:168
@@ -2691,9 +2718,9 @@ msgstr "Edit"
 #: tmp/cache_twig/44/df/c1fbe2cfe292312b2a352083f51a.php:314
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:344
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:378
-#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:427
-#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:476
-#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:525
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:434
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:490
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:546
 #: tmp/cache_twig/81/cf/2dad00c9ad0614896cb709fdfacb.php:53
 #: tmp/cache_twig/a1/3e/0eda43a1005f858d70e63056da57.php:328
 #: tmp/cache_twig/a8/78/de763e0f3935755ff9545380dfb3.php:53
@@ -2794,23 +2821,23 @@ msgstr ""
 "The required API connector has a bad configuration, please contact your "
 "Application administrator"
 
-#: tmp/cache_twig/0f/ac/e0096612d06e1c6f9e34fa6ef8f7.php:129
-#: tmp/cache_twig/21/b6/d0b018bc82ce40b057648f63df94.php:129
+#: tmp/cache_twig/0f/ac/e0096612d06e1c6f9e34fa6ef8f7.php:126
+#: tmp/cache_twig/21/b6/d0b018bc82ce40b057648f63df94.php:126
 msgid "Acces"
 msgstr "Access"
 
-#: tmp/cache_twig/0f/ac/e0096612d06e1c6f9e34fa6ef8f7.php:139
-#: tmp/cache_twig/21/b6/d0b018bc82ce40b057648f63df94.php:139
+#: tmp/cache_twig/0f/ac/e0096612d06e1c6f9e34fa6ef8f7.php:136
+#: tmp/cache_twig/21/b6/d0b018bc82ce40b057648f63df94.php:136
 msgid "Sessions"
 msgstr "Sessions"
 
-#: tmp/cache_twig/0f/ac/e0096612d06e1c6f9e34fa6ef8f7.php:149
-#: tmp/cache_twig/21/b6/d0b018bc82ce40b057648f63df94.php:149
+#: tmp/cache_twig/0f/ac/e0096612d06e1c6f9e34fa6ef8f7.php:146
+#: tmp/cache_twig/21/b6/d0b018bc82ce40b057648f63df94.php:146
 msgid "Applications"
 msgstr "Applications"
 
-#: tmp/cache_twig/0f/ac/e0096612d06e1c6f9e34fa6ef8f7.php:159
-#: tmp/cache_twig/21/b6/d0b018bc82ce40b057648f63df94.php:159
+#: tmp/cache_twig/0f/ac/e0096612d06e1c6f9e34fa6ef8f7.php:156
+#: tmp/cache_twig/21/b6/d0b018bc82ce40b057648f63df94.php:156
 msgid "Developpeur"
 msgstr "Developer"
 
@@ -2824,101 +2851,101 @@ msgstr "Deleting %n_element% videos"
 msgid "Etes vous sur de supprimer %number% videos ?"
 msgstr "Confirm delete of %number% videos ?"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:75
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:69
 msgid "Rights"
 msgstr "Rights"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:85
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:79
 msgid "Infos"
 msgstr "Infos"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:117
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:77
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:111
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:90
 msgid "Reglages:: reglages d acces guest"
-msgstr "Guest access set up"
+msgstr "Guest access setup"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:123
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:85
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:117
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:98
 msgid "Reglages:: reglages d inscitpition automatisee"
-msgstr "Auto register set up"
+msgstr "Auto register setup"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:135
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:129
 msgid "Edition des droits de %display_name%"
 msgstr "%display_name% user right edition"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:147
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:141
 msgid "Edition des droits de %number% utilisateurs"
 msgstr "User rights edition of %number% users"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:156
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:197
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:150
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:210
 msgid "Apply a template"
 msgstr "Apply a template"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:161
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:202
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:155
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:215
 msgid "boutton::choisir"
 msgstr "Choose"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:183
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:237
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:177
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:250
 msgid "Delete all users rights"
 msgstr "Delete all users rights"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:467
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:461
 msgid "Allowed to publish"
 msgstr "Allow to publish"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:476
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:470
 msgid "Manage Thesaurus"
 msgstr "Manage Thesaurus"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:485
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:479
 msgid "Manage Database"
 msgstr "Manage Database"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:494
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:488
 msgid "Manage DB fields"
 msgstr "Manage documentary fields of database"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:515
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:509
 #: tmp/cache_twig/c4/55/f52a9e49661d7d55726b8756576d.php:113
 msgid "Access"
 msgstr "Access"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:524
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:518
 msgid "Active"
 msgstr "Active"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:533
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:527
 msgid "Allowed to add in basket"
 msgstr "Allow to add document to basket"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:542
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:536
 msgid "Access to preview"
 msgstr "Access to preview"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:551
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:545
 msgid "Remove watermark"
 msgstr "Remove watermark"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:560
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:554
 msgid "Access to HD"
 msgstr "Access to Documents"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:569
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:563
 msgid "Allowed to order"
 msgstr "Allow to order"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:578
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:572
 msgid "Set download quotas"
 msgstr "Set downloads quotas"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:603
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:599
 msgid "Set time restrictions"
 msgstr "Set time restriction"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:628
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:626
 msgid "Set statuses restrictions"
 msgstr "Set status restrictions"
 
@@ -2963,59 +2990,59 @@ msgid "Manage values lists"
 msgstr "Manage values lists"
 
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:793
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:96
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:44
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:118
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:54
 msgid "admin::compte-utilisateur sexe"
 msgstr "Gender"
 
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:804
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:622
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:108
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:49
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:646
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:131
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:59
 msgid "admin::compte-utilisateur:sexe: mademoiselle"
 msgstr "Miss"
 
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:812
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:630
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:119
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:50
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:654
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:142
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:60
 msgid "admin::compte-utilisateur:sexe: madame"
 msgstr "Mrs."
 
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:820
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:638
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:130
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:51
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:662
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:153
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:61
 msgid "admin::compte-utilisateur:sexe: monsieur"
 msgstr "Mr."
 
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:885
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:738
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:210
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:762
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:233
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:294
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:76
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:86
 msgid "admin::compte-utilisateur code postal"
 msgstr "Zip code"
 
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:899
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:751
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:223
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:775
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:246
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:293
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:83
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:93
 msgid "admin::compte-utilisateur ville"
 msgstr "City"
 
 #: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:970
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:764
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:288
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:788
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:311
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:297
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:118
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:128
 msgid "admin::compte-utilisateur fax"
 msgstr "Fax"
 
-#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:1005
-msgid "are you sure you want reset rights ?"
-msgstr "Do you really want to reset rights ?"
+#: tmp/cache_twig/12/80/35667ec1fcb35fe4ea1777c210d3.php:1022
+msgid "Are you sure you want to reset rights?"
+msgstr "Are you sure you want to reset rights?"
 
 #: tmp/cache_twig/14/bf/9c01aa0715b96773c0e7996927f2.php:31
 #: tmp/cache_twig/14/bf/9c01aa0715b96773c0e7996927f2.php:282
@@ -3024,6 +3051,7 @@ msgstr "No results"
 
 #: tmp/cache_twig/14/bf/9c01aa0715b96773c0e7996927f2.php:37
 #: tmp/cache_twig/14/bf/9c01aa0715b96773c0e7996927f2.php:288
+#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:121
 msgid "1 result"
 msgstr "1 result"
 
@@ -3077,8 +3105,8 @@ msgid "Save this list"
 msgstr "Save this list"
 
 #: tmp/cache_twig/15/fd/f2d9b199f00a42485f03d55dfddc.php:151
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:51
-#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:26
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:64
+#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:91
 #: lib/Alchemy/Phrasea/Vocabulary/ControlProvider/UserProvider.php:48
 msgid "Users"
 msgstr "Users"
@@ -3155,7 +3183,8 @@ msgid "Deselect all"
 msgstr "Deselect all"
 
 #: tmp/cache_twig/15/fd/f2d9b199f00a42485f03d55dfddc.php:419
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:309
+#: tmp/cache_twig/4f/62/d5c7ff2f7bbb0c742f22dfc936d6.php:262
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:312
 #: tmp/cache_twig/59/de/7c02fb51e3480557084dc4687fb9.php:107
 #: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:307
 #: tmp/cache_twig/f9/a1/b353838bc56869bf92a7e455d17d.php:175
@@ -3198,7 +3227,8 @@ msgstr "Also delete records that rely on stories."
 #: tmp/cache_twig/16/0c/dc1f9e2458390ebae91faddb2857.php:78
 #: tmp/cache_twig/30/72/2930c8c05372eb3a7c0286ccfb00.php:102
 #: tmp/cache_twig/8c/38/516eeca13b148530c0d1cf3e553b.php:151
-#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:295
+#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:328
+#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:135
 #: tmp/cache_twig/de/85/dcc2bacfb8cb7d5c27a964d9a960.php:117
 msgid "Cancel"
 msgstr "Cancel"
@@ -3262,14 +3292,14 @@ msgstr "Comments"
 #: tmp/cache_twig/49/2b/191d44280d45c2b367004a0cff19.php:86
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2019
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:54
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:972
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:968
 #: tmp/cache_twig/b0/74/5c4f8cb2093973ee3556bffe1851.php:135
 #: tmp/cache_twig/bc/dc/79261dd8d83c16a51bdcc19a695c.php:196
 #: tmp/cache_twig/bc/dc/79261dd8d83c16a51bdcc19a695c.php:225
 #: tmp/cache_twig/ea/5d/1a1d164264d851d3f35d38bd6620.php:283
 #: tmp/cache_twig/f5/8b/722fe9c2f9f12433d3100c930965.php:516
 #: tmp/cache_twig/f5/8b/722fe9c2f9f12433d3100c930965.php:524
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:275
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:274
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:56
 msgid "boutton::fermer"
 msgstr "Close"
@@ -3278,17 +3308,21 @@ msgstr "Close"
 msgid "boutton::enregistrer"
 msgstr "Save"
 
-#: tmp/cache_twig/1a/5b/03b46967fb31de5cc63654182091.php:46
+#: tmp/cache_twig/1a/5b/03b46967fb31de5cc63654182091.php:22
+msgid "Reorder collections"
+msgstr "Reorder collections"
+
+#: tmp/cache_twig/1a/5b/03b46967fb31de5cc63654182091.php:53
 #: tmp/cache_twig/1b/30/753738c0c4f81bf7a9aba183affd.php:164
 msgid "admin::base:collorder: monter"
 msgstr "Move Up"
 
-#: tmp/cache_twig/1a/5b/03b46967fb31de5cc63654182091.php:50
+#: tmp/cache_twig/1a/5b/03b46967fb31de5cc63654182091.php:57
 #: tmp/cache_twig/1b/30/753738c0c4f81bf7a9aba183affd.php:168
 msgid "admin::base:collorder: descendre"
 msgstr "Move Down"
 
-#: tmp/cache_twig/1a/5b/03b46967fb31de5cc63654182091.php:54
+#: tmp/cache_twig/1a/5b/03b46967fb31de5cc63654182091.php:61
 #: tmp/cache_twig/1b/30/753738c0c4f81bf7a9aba183affd.php:176
 msgid "admin::base:collorder: reinitialiser en ordre alphabetique"
 msgstr "Alphabetical order"
@@ -3303,21 +3337,21 @@ msgid "Suggested values"
 msgstr "Suggested values"
 
 #: tmp/cache_twig/1b/30/753738c0c4f81bf7a9aba183affd.php:48
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:25
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:36
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:55
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:980
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1018
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1057
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1091
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1125
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1224
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:982
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1020
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1059
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1093
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1127
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1226
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:530
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:559
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:592
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:780
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:817
-#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:954
-#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:1004
+#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:956
+#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:1007
 msgid "Successful update"
 msgstr "Successful update"
 
@@ -3333,12 +3367,12 @@ msgid "admin::sugval: Valeurs suggerees/Preferences de la collection"
 msgstr "Suggested values - collection settings"
 
 #: tmp/cache_twig/1b/30/753738c0c4f81bf7a9aba183affd.php:111
-#: tmp/cache_twig/b8/ec/453b197e82c6c1695c8bf49b2a73.php:108
+#: tmp/cache_twig/b8/ec/453b197e82c6c1695c8bf49b2a73.php:104
 msgid "boutton::vue xml"
 msgstr "XML view"
 
 #: tmp/cache_twig/1b/30/753738c0c4f81bf7a9aba183affd.php:115
-#: tmp/cache_twig/b8/ec/453b197e82c6c1695c8bf49b2a73.php:104
+#: tmp/cache_twig/b8/ec/453b197e82c6c1695c8bf49b2a73.php:108
 msgid "boutton::vue graphique"
 msgstr "Graphic view"
 
@@ -3414,19 +3448,19 @@ msgstr "Databases"
 
 #: tmp/cache_twig/1b/77/414e4c8e792d6e03335779186359.php:288
 msgid "admin::structure: reglage de la structure"
-msgstr "Structure set up"
+msgstr "Structure setup"
 
 #: tmp/cache_twig/1b/77/414e4c8e792d6e03335779186359.php:300
 msgid "CHAMPS"
-msgstr "FIELDS"
+msgstr "Fields Setup"
 
 #: tmp/cache_twig/1b/77/414e4c8e792d6e03335779186359.php:312
 msgid "SUBDEFS"
-msgstr "SUBVIEWS"
+msgstr "Subviews setup"
 
 #: tmp/cache_twig/1b/77/414e4c8e792d6e03335779186359.php:324
 msgid "admin::status: reglage des status"
-msgstr "Status set up"
+msgstr "Status setup"
 
 #: tmp/cache_twig/1b/77/414e4c8e792d6e03335779186359.php:335
 msgid "admin:: CGUs"
@@ -3470,13 +3504,10 @@ msgstr "contains"
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:324
 #: tmp/cache_twig/6d/65/1532a96b132583505bf8e4e8bab9.php:47
 #: tmp/cache_twig/6d/65/1532a96b132583505bf8e4e8bab9.php:107
-#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:35
-#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:49
-#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:63
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:270
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:486
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:805
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1032
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:829
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1056
 #: tmp/cache_twig/85/b5/dc2fef68f3159d0d089de2c61eb5.php:163
 #: tmp/cache_twig/85/b5/dc2fef68f3159d0d089de2c61eb5.php:240
 #: tmp/cache_twig/8e/02/bb9643d72d636512b0dd7273cc08.php:47
@@ -3491,12 +3522,12 @@ msgstr "contains"
 #: tmp/cache_twig/cf/54/5df1aa52892a0a5d8dc3e6731756.php:47
 #: tmp/cache_twig/cf/54/5df1aa52892a0a5d8dc3e6731756.php:184
 #: tmp/cache_twig/d1/9d/01e349c894b434d79490f52ac9da.php:188
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:104
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:107
 #: tmp/cache_twig/f5/8b/722fe9c2f9f12433d3100c930965.php:250
 #: tmp/cache_twig/f5/8b/722fe9c2f9f12433d3100c930965.php:489
 #: tmp/cache_twig/fb/4a/4b7a727bdb22076158e1e12190d2.php:207
 #: tmp/cache_twig/fd/2d/efdc6903cabe0e9244bd196ad77a.php:132
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:274
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:273
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:41
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:48
 msgid "boutton::annuler"
@@ -3515,9 +3546,9 @@ msgstr "Hi, please identify on %home_title% :"
 #: tmp/cache_twig/1c/fe/06ae4748f1b9884407a4d6c6427c.php:116
 #: tmp/cache_twig/40/e3/491959f190743d7ae676add2ba17.php:79
 #: tmp/cache_twig/59/46/9072e2f8e9240ff52020a0c05c65.php:845
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1536
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1570
 #: tmp/cache_twig/ae/a7/6e84d8e1b53bc92e183f2cc3fc0c.php:116
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:419
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:442
 msgid "admin::compte-utilisateur mot de passe"
 msgstr "Password"
 
@@ -3625,30 +3656,31 @@ msgid "Details"
 msgstr "Details"
 
 #: tmp/cache_twig/22/cd/c1915a824fdb6dfc1849ba3a219a.php:41
-#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:40
-msgid "phraseanet:: collection"
+#: tmp/cache_twig/2e/0a/9c25d3c1de90fbf0567ed2c42573.php:381
+#: tmp/cache_twig/9b/ba/47d2bc434142d2378f100fdb6184.php:25
+msgid "Collection"
 msgstr "Collection"
 
 #: tmp/cache_twig/22/cd/c1915a824fdb6dfc1849ba3a219a.php:55
-#: tmp/cache_twig/d4/46/323cc237efb87a3f924c57ff84a8.php:33
-msgid "admin::base: objet"
-msgstr "Object"
+msgid "Subdef"
+msgstr "Subdef"
 
 #: tmp/cache_twig/22/cd/c1915a824fdb6dfc1849ba3a219a.php:61
-#: tmp/cache_twig/d4/46/323cc237efb87a3f924c57ff84a8.php:37
-msgid "admin::base: nombre"
+msgid "Number"
 msgstr "Number"
 
 #: tmp/cache_twig/22/cd/c1915a824fdb6dfc1849ba3a219a.php:65
-#: tmp/cache_twig/22/cd/c1915a824fdb6dfc1849ba3a219a.php:69
-#: tmp/cache_twig/d4/46/323cc237efb87a3f924c57ff84a8.php:41
-#: tmp/cache_twig/d4/46/323cc237efb87a3f924c57ff84a8.php:45
-msgid "admin::base: poids"
-msgstr "Size"
+msgid "Weight"
+msgstr "Weight"
 
-#: tmp/cache_twig/22/cd/c1915a824fdb6dfc1849ba3a219a.php:127
-msgid "report:: total"
-msgstr "Sum"
+#: tmp/cache_twig/22/cd/c1915a824fdb6dfc1849ba3a219a.php:163
+#: tmp/cache_twig/d4/46/323cc237efb87a3f924c57ff84a8.php:111
+msgid "Total"
+msgstr "Total"
+
+#: tmp/cache_twig/22/cd/c1915a824fdb6dfc1849ba3a219a.php:194
+msgid "Cumulative total"
+msgstr "Cumulative total"
 
 #: tmp/cache_twig/25/b9/b11a6409fff81c542efc686af7cd.php:70
 #: tmp/cache_twig/25/b9/b11a6409fff81c542efc686af7cd.php:114
@@ -3676,11 +3708,13 @@ msgstr "Validations in progress"
 msgid "Voici vos paniers"
 msgstr "Your Basket(s)"
 
-#: tmp/cache_twig/28/45/cab46c7ff23963e50d925a53e4f1.php:51
+#: tmp/cache_twig/28/45/cab46c7ff23963e50d925a53e4f1.php:54
 msgid "%value% like"
-msgid_plural "%value% likes"
-msgstr[0] "%value% like"
-msgstr[1] "%value% likes"
+msgstr "%value% like"
+
+#: tmp/cache_twig/28/45/cab46c7ff23963e50d925a53e4f1.php:60
+msgid "%value% likes"
+msgstr "%value% likes"
 
 #: tmp/cache_twig/29/8d/9325235728f604d30512a6772066.php:27
 #: tmp/cache_twig/49/2b/191d44280d45c2b367004a0cff19.php:27
@@ -3764,8 +3798,8 @@ msgstr "Modules"
 #: tmp/cache_twig/29/a8/576bbda2b5d009a2179bb6743568.php:133
 #: tmp/cache_twig/59/46/9072e2f8e9240ff52020a0c05c65.php:831
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:85
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1490
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:393
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1524
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:416
 msgid "phraseanet:: adresse"
 msgstr "Address"
 
@@ -3825,21 +3859,18 @@ msgstr "Date"
 msgid "Uploaded by : %username%"
 msgstr "Uploaded by : %username%"
 
-#: tmp/cache_twig/2e/0a/9c25d3c1de90fbf0567ed2c42573.php:381
-#: tmp/cache_twig/9b/ba/47d2bc434142d2378f100fdb6184.php:25
-msgid "Collection"
-msgstr "Collection"
-
 #: tmp/cache_twig/2e/0a/9c25d3c1de90fbf0567ed2c42573.php:427
 #: tmp/cache_twig/2e/0a/9c25d3c1de90fbf0567ed2c42573.php:431
 msgid "Substitute"
 msgstr "Substitute"
 
-#: tmp/cache_twig/2e/0a/9c25d3c1de90fbf0567ed2c42573.php:463
-msgid "%record_count% record match the unique identifier :"
-msgid_plural "%record_count% records match the unique identifier :"
-msgstr[0] "%record_count% record matches the unique identifier :"
-msgstr[1] "%record_count% records match the unique identifier :"
+#: tmp/cache_twig/2e/0a/9c25d3c1de90fbf0567ed2c42573.php:466
+msgid "A record matches the unique identifier :"
+msgstr "A record matches the unique identifier:"
+
+#: tmp/cache_twig/2e/0a/9c25d3c1de90fbf0567ed2c42573.php:472
+msgid "%record_count% records match the unique identifier :"
+msgstr "%record_count% records match the unique identifier:"
 
 #: tmp/cache_twig/2e/3b/80316458148f2a1e7f4387e76ba5.php:26
 msgid "No account yet?"
@@ -4080,45 +4111,57 @@ msgid "admin::status: case A"
 msgstr "Off"
 
 #: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:55
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:167
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:175
 msgid "admin::status: texte a afficher"
 msgstr "Text displayed"
 
 #: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:93
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:205
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:213
 msgid "Labels"
 msgstr "Labels"
 
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:123
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:235
-msgid "admin::status: symboliser par"
-msgstr "illustrated with (16*16px max)"
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:124
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:244
+msgid "Symbolized by"
+msgstr "Symbolised by"
 
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:146
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:258
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:132
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:252
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:69
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:399
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:455
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:511
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:567
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:412
+#: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:123
+msgid "Select files..."
+msgstr "Select files..."
+
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:154
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:274
 msgid "admin::status:: aucun symbole"
 msgstr "Delete Icon"
 
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:161
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:169
 msgid "admin::status: case B"
 msgstr "On"
 
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:278
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:294
 msgid ""
 "status:: Afficher le status dans les feuilles de reponses pour tous les "
 "utilisateurs"
 msgstr ""
 "Enable Status illustrations display in thumbnails frame (if unchecked, only "
-"visible for users with Status edit rights)"
+"visible for users with Status edit rights)."
 
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:288
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:304
 msgid "status:: retrouver sous forme de filtre dans la recherche"
-msgstr "Enable status search in advanced search"
+msgstr "Enable status search in advanced search."
 
-#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:334
-#: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:702
-#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:649
-#: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:140
+#: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:350
+#: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:697
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:594
+#: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:146
 msgid ""
 "Invalid file type, only (%supported_file_types%) file formats are supported"
 msgstr ""
@@ -4400,7 +4443,7 @@ msgstr "Technical Informations"
 #: tmp/cache_twig/44/a7/587e734704a47080eddd1a16d5b2.php:22
 #: tmp/cache_twig/64/da/953da7fe66f1c5da37a090a32e34.php:22
 #: tmp/cache_twig/83/fd/a6760447b59ebe5a4e901f8e030b.php:22
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:653
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:666
 msgid "boutton::modifier"
 msgstr "Modify"
 
@@ -4456,19 +4499,22 @@ msgid "mediatype"
 msgstr "Media type"
 
 #: tmp/cache_twig/44/df/c1fbe2cfe292312b2a352083f51a.php:475
-#: tmp/cache_twig/44/df/c1fbe2cfe292312b2a352083f51a.php:601
+#: tmp/cache_twig/44/df/c1fbe2cfe292312b2a352083f51a.php:605
 #: tmp/cache_twig/74/d5/be3c51602bdff8e3c0512f97a222.php:30
 #: tmp/cache_twig/94/7a/b324e1169f7c835b91d3339f5a24.php:29
 msgid "Choisir"
 msgstr "Choose"
 
-#: tmp/cache_twig/44/df/c1fbe2cfe292312b2a352083f51a.php:635
+#: tmp/cache_twig/44/df/c1fbe2cfe292312b2a352083f51a.php:639
 #: tmp/cache_twig/50/4f/d9797dda91c90533fa9a3b2d1b61.php:207
+#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:172
 msgid "yes"
 msgstr "Yes"
 
-#: tmp/cache_twig/44/df/c1fbe2cfe292312b2a352083f51a.php:644
+#: tmp/cache_twig/44/df/c1fbe2cfe292312b2a352083f51a.php:648
 #: tmp/cache_twig/50/4f/d9797dda91c90533fa9a3b2d1b61.php:213
+#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:168
+#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:61
 msgid "no"
 msgstr "No"
 
@@ -4479,7 +4525,7 @@ msgstr "Fail"
 
 #: tmp/cache_twig/46/20/9ef3a249eba1a0d11257a9757176.php:35
 #: tmp/cache_twig/4a/28/29ec180571494dad97554966352f.php:35
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1326
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1360
 msgid "Success"
 msgstr "Success"
 
@@ -4540,89 +4586,89 @@ msgstr "Include language"
 msgid "thesaurus:: export : inclure les hits"
 msgstr "Include hits"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:60
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:71
 msgid "Do not forget to restart the tasks scheduler"
 msgstr "Don't forget to restart the Tasks manager scheduler."
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:90
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:101
 msgid "version"
 msgstr "Build version"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:121
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:132
 msgid "admin::base: Version"
 msgstr "Version"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:129
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:140
 msgid "update::Votre application necessite une mise a jour vers : "
 msgstr "Your application needs an update to : "
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:137
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:148
 msgid "update::Votre version est a jour : "
 msgstr "Your version is up to date "
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:178
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:189
 msgid "Propositions de modifications des tables"
 msgstr "Proposals for tables modifications"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:206
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:217
 msgid "update::Verifier els tables"
 msgstr "Repair table"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:214
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:225
 msgid "admin::base: creer une base"
 msgstr "Create new database"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:225
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:236
 msgid ""
 "phraseanet:: Creer une base sur un serveur different de l'application box"
 msgstr "Create a new database on another server"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:231
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:312
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:242
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:323
 msgid "phraseanet:: hostname"
 msgstr "Host name"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:236
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:317
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:247
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:328
 #: tmp/cache_twig/59/46/9072e2f8e9240ff52020a0c05c65.php:852
 msgid "phraseanet:: port"
 msgstr "Port"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:241
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:322
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:252
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:333
 msgid "phraseanet:: user"
 msgstr "User"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:246
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:327
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:257
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:338
 msgid "phraseanet:: password"
 msgstr "Password"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:252
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:333
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:263
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:344
 msgid "phraseanet:: dbname"
 msgstr "Database Name"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:257
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:268
 msgid "phraseanet:: Modele de donnees"
 msgstr "XML structure template"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:286
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:297
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:49
 msgid "boutton::creer"
 msgstr "Create"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:295
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:306
 msgid "admin::base: Monter une base"
 msgstr "Mount database"
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:306
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:317
 msgid ""
 "phraseanet:: Monter une base provenant d'un serveur different de "
 "l'application box"
 msgstr "Mount Database from a distant host."
 
-#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:339
+#: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:350
 msgid "boutton::monter"
 msgstr "Mount"
 
@@ -4636,22 +4682,13 @@ msgid "Create an account manually"
 msgstr "Create an account manually"
 
 #: tmp/cache_twig/49/1e/9da2b6cbdec8fbb3e9416154a9b2.php:82
-#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:231
+#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:233
 #: tmp/cache_twig/7d/1f/dcfa5707551f8a8f0dc190a05319.php:177
 msgid "Or login with"
 msgstr "Or login with"
 
-#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:40
-#: tmp/cache_twig/61/87/22f0522ef94c39c79c7cfdeb82dd.php:38
-#: tmp/cache_twig/7d/1f/dcfa5707551f8a8f0dc190a05319.php:40
-#: tmp/cache_twig/93/c0/d257ccd42b0af16549afd152737d.php:53
-#: tmp/cache_twig/b6/95/2179e074bd091df7f02b3f962659.php:38
-#: lib/Alchemy/Phrasea/Form/Login/PhraseaAuthenticationForm.php:23
-msgid "Login"
-msgstr "Login"
-
-#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:90
-#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:201
+#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:92
+#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:203
 #: tmp/cache_twig/61/87/22f0522ef94c39c79c7cfdeb82dd.php:51
 #: tmp/cache_twig/61/87/22f0522ef94c39c79c7cfdeb82dd.php:178
 #: tmp/cache_twig/7d/1f/dcfa5707551f8a8f0dc190a05319.php:151
@@ -4660,15 +4697,15 @@ msgstr "Login"
 msgid "Connection"
 msgstr "Login"
 
-#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:111
+#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:113
 msgid "Your account is locked, please follow the following link to unlock it"
 msgstr "Your account is locked. Please follow the following link to unlock it."
 
-#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:119
+#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:121
 msgid "login:: Envoyer a nouveau le mail de confirmation"
 msgstr "Send me a new confirmation e-mail"
 
-#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:176
+#: tmp/cache_twig/4c/f2/79acdb2dbb5126fbeec130e8a38c.php:178
 #: tmp/cache_twig/61/87/22f0522ef94c39c79c7cfdeb82dd.php:149
 #: tmp/cache_twig/7d/1f/dcfa5707551f8a8f0dc190a05319.php:121
 #: tmp/cache_twig/b6/95/2179e074bd091df7f02b3f962659.php:125
@@ -4693,8 +4730,8 @@ msgstr "User can see other user's choices"
 
 #: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:133
 #: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:137
-#: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:244
-#: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:248
+#: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:279
+#: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:283
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:101
 msgid "User can download HD"
 msgstr "User can download HD"
@@ -4714,7 +4751,7 @@ msgstr "Are you sure you want to delete this list ?"
 msgid "Time for feedback (days)"
 msgstr "Time for feedback (in days)"
 
-#: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:192
+#: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:227
 #: tmp/cache_twig/5a/1c/22c648764c06aa4717454c211a73.php:49
 #: tmp/cache_twig/60/9e/08e5cd324575093580f38cce0603.php:99
 #: tmp/cache_twig/de/85/dcc2bacfb8cb7d5c27a964d9a960.php:86
@@ -4722,12 +4759,12 @@ msgstr "Time for feedback (in days)"
 msgid "Name"
 msgstr "Name"
 
-#: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:199
+#: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:234
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:86
 msgid "Message"
 msgstr "Message"
 
-#: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:208
+#: tmp/cache_twig/4d/2a/0abbdb1c83a151aebb422790d82d.php:243
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:89
 msgid "Accuse de reception"
 msgstr "Acknowledge receipt"
@@ -4781,7 +4818,12 @@ msgstr "Document sent by"
 msgid "Selectionnez des documents et "
 msgstr "Select documents and "
 
-#: tmp/cache_twig/4f/62/d5c7ff2f7bbb0c742f22dfc936d6.php:265
+#: tmp/cache_twig/4f/62/d5c7ff2f7bbb0c742f22dfc936d6.php:266
+#: tmp/cache_twig/f4/80/e2901a0c5a2d60f8ef7a84d6d038.php:95
+msgid "Deny"
+msgstr "Deny"
+
+#: tmp/cache_twig/4f/62/d5c7ff2f7bbb0c742f22dfc936d6.php:270
 msgid "Retour aux commandes"
 msgstr "Back to orders"
 
@@ -4904,11 +4946,6 @@ msgstr "Terms of service"
 msgid "Quarantine"
 msgstr "Quarantine"
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:69
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:412
-msgid "Select files..."
-msgstr "Select files..."
-
 #: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:77
 #: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:70
 msgid "maximum : %maxFileSizeReadable%"
@@ -4937,27 +4974,26 @@ msgstr "Collection"
 msgid "upload:: Status :"
 msgstr "Apply status"
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:301
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:299
-msgid "Selected files"
-msgstr "Selected files"
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:304
+msgid "%quantity%selected files"
+msgstr "%quantity%selected files"
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:305
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:308
 #: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:303
 msgid "Clear list"
 msgstr "Clear list"
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:321
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:324
 #: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:318
 msgid "Transmited files"
 msgstr "Transmitted files"
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:333
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:336
 #: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:324
 msgid "Cancel all"
 msgstr "Cancel all"
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:351
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:354
 #: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:287
 msgid "You can not upload files"
 msgstr "You are not allowed to upload files"
@@ -5029,7 +5065,7 @@ msgstr "Database name is incorrect"
 
 #: tmp/cache_twig/59/46/9072e2f8e9240ff52020a0c05c65.php:101
 msgid "Il y a des erreurs, merci de les corriger avant de continuer"
-msgstr "Existing errors, please correct them  to continue"
+msgstr "Existing errors, please correct them  to continue."
 
 #: tmp/cache_twig/59/46/9072e2f8e9240ff52020a0c05c65.php:108
 msgid "forms::le mot de passe est trop similaire a l'identifiant"
@@ -5248,7 +5284,7 @@ msgid ""
 "in these directories."
 msgstr ""
 "Media and their subviews (such as previews, thumbnails...) will be stored in "
-"the following directories"
+"the following directories:"
 
 #: tmp/cache_twig/59/46/9072e2f8e9240ff52020a0c05c65.php:1004
 msgid ""
@@ -5295,7 +5331,7 @@ msgstr "Create a task to write metadatas"
 
 #: tmp/cache_twig/59/46/9072e2f8e9240ff52020a0c05c65.php:1151
 msgid "Creer la tache de creation des sous-definitions"
-msgstr "Create a task to make subviews"
+msgstr "Create a task to generate subviews"
 
 #: tmp/cache_twig/59/46/9072e2f8e9240ff52020a0c05c65.php:1160
 msgid "Creer la tache d'indexation"
@@ -5441,7 +5477,7 @@ msgid ""
 msgstr "returns answers for documents containing Paris in caption field Title"
 
 #: tmp/cache_twig/59/d0/175a8ecfde6e10981fb604ad016a.php:197
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:116
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:119
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:98
 msgid "Attention"
 msgstr "Warning"
@@ -5489,34 +5525,32 @@ msgstr "Setup table"
 msgid "report :: imprimer le tableau"
 msgstr "Print table"
 
-#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:116
-msgid "Number of result"
-msgid_plural "Number of results"
-msgstr[0] "Number of results"
-msgstr[1] "Number of results"
+#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:127
+msgid "%total_count% results"
+msgstr "%total_count% results."
 
-#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:159
-#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:163
+#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:173
+#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:177
 msgid "Trier"
 msgstr "Sort"
 
-#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:190
+#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:204
 msgid "Filtrer"
 msgstr "Filter"
 
-#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:194
+#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:208
 msgid "report :: filtrer"
 msgstr "Filter"
 
-#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:205
+#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:219
 msgid "Grouper"
 msgstr "Regroup"
 
-#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:209
+#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:223
 msgid "report :: grouper"
 msgstr "Group"
 
-#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:375
+#: tmp/cache_twig/5a/21/afcf75d33b47be375cb124fe7895.php:389
 msgid "report :: aucun resultat trouve"
 msgstr "No Result"
 
@@ -5526,7 +5560,7 @@ msgstr "Loading..."
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:235
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:239
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:456
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:452
 msgid "phraseanet:: propositions"
 msgstr "Proposals"
 
@@ -5552,7 +5586,7 @@ msgstr "Replace with term ?"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:320
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:588
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:423
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:419
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:50
 msgid "boutton::rechercher"
 msgstr "Search"
@@ -5597,12 +5631,12 @@ msgstr "Advanced Search"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:606
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1049
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:401
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:397
 msgid "phraseanet::type:: documents"
 msgstr "Documents"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:618
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:409
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:405
 msgid "phraseanet::type:: reportages"
 msgstr "Story"
 
@@ -5627,12 +5661,12 @@ msgid "Document"
 msgstr "Document"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:668
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:482
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:478
 msgid "boutton:: selectionner toutes les bases"
 msgstr "All"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:673
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:486
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:482
 msgid "boutton:: selectionner aucune base"
 msgstr "None"
 
@@ -5668,12 +5702,12 @@ msgid "Rechercher dans un champ date"
 msgstr "In a date field"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:950
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:707
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:703
 msgid "phraseanet::time:: de"
 msgstr "From"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:960
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:713
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:709
 msgid "phraseanet::time:: a"
 msgstr "To"
 
@@ -5866,17 +5900,17 @@ msgid "Aide"
 msgstr "Help"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1977
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:991
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:987
 msgid "preview:: Description"
 msgstr "Caption"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1981
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:995
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:991
 msgid "preview:: Historique"
 msgstr "Timeline"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1988
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:999
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:995
 msgid "preview:: Popularite"
 msgstr "Statistics"
 
@@ -5947,7 +5981,7 @@ msgstr "Unique words : "
 
 #: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:142
 msgid "admin::base: nombre de mots indexes sur la base"
-msgstr "indexed words :"
+msgstr "Indexed words:"
 
 #: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:155
 msgid "admin::base: nombre de termes de Thesaurus indexes :"
@@ -5976,7 +6010,7 @@ msgstr "Delete complete log of database ?"
 
 #: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:301
 msgid "admin::base: supprimer tous les logs"
-msgstr "Delete all Logs"
+msgstr "Delete all logs"
 
 #: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:312
 msgid "admin::base: Confirmer vous l'arret de la publication de la base"
@@ -6035,9 +6069,9 @@ msgstr "Delete logo"
 
 #: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:536
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:389
-#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:438
-#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:487
-#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:536
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:445
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:501
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:557
 msgid "admin::base:collection: aucun fichier (minilogo, watermark ...)"
 msgstr "No file"
 
@@ -6046,7 +6080,7 @@ msgid "admin::base: envoyer un logo (jpeg 35px de hauteur max)"
 msgstr "Upload Logo (Height 35px max., jpeg)"
 
 #: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:569
-#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:943
+#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:945
 msgid "admin::base: aucun alias"
 msgstr "No aliases"
 
@@ -6085,6 +6119,14 @@ msgstr "Subviews"
 #: tmp/cache_twig/60/9e/08e5cd324575093580f38cce0603.php:111
 msgid "Thumbnail"
 msgstr "Thumbnail"
+
+#: tmp/cache_twig/61/87/22f0522ef94c39c79c7cfdeb82dd.php:38
+#: tmp/cache_twig/7d/1f/dcfa5707551f8a8f0dc190a05319.php:40
+#: tmp/cache_twig/93/c0/d257ccd42b0af16549afd152737d.php:53
+#: tmp/cache_twig/b6/95/2179e074bd091df7f02b3f962659.php:38
+#: lib/Alchemy/Phrasea/Form/Login/PhraseaAuthenticationForm.php:23
+msgid "Login"
+msgstr "Login"
 
 #: tmp/cache_twig/61/87/22f0522ef94c39c79c7cfdeb82dd.php:60
 msgid "Your %provider_name% account matchs a Phraseanet account"
@@ -6390,6 +6432,10 @@ msgstr "Deleting %n_element% photos"
 msgid "Etes vous sur de supprimer %number% photos ?"
 msgstr "Do you really want to delete %number% photos ?"
 
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:40
+msgid "phraseanet:: collection"
+msgstr "Collection"
+
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:91
 msgid "admin::base:collection: numero de collection distante"
 msgstr "Distant collection ID"
@@ -6401,7 +6447,7 @@ msgstr "Collection Status"
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:99
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:312
 msgid "admin::base:collection: activer la collection"
-msgstr "Enable collection"
+msgstr "Enabled collection"
 
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:99
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:312
@@ -6464,17 +6510,22 @@ msgstr "Confirm collection delete ?"
 msgid "admin::base:collection: minilogo actuel"
 msgstr "Current minilogo"
 
-#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:407
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:414
 msgid "Watermark"
 msgstr "Watermark"
 
-#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:456
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:470
 msgid "Stamp logo"
 msgstr "Stamp logo"
 
-#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:505
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:526
 msgid "admin::base:collection: image de presentation : "
 msgstr "Collection introduction banner "
+
+#: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:584
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:480
+msgid "Invalid file type"
+msgstr "Invalid file type"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:118
 msgid "regeneration of sub-definitions"
@@ -6486,7 +6537,7 @@ msgstr "Video Tools"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:161
 msgid "image tool"
-msgstr "Image Tools"
+msgstr "Rotate"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:175
 msgid "substitution"
@@ -6502,7 +6553,7 @@ msgstr "Recreate subviews"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:217
 msgid "Attention, certain documents ont des sous-definitions substituees"
-msgstr "Warning, some documents have substituted subviews"
+msgstr "Caution! Some documents have substituted subviews."
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:224
 msgid ""
@@ -6600,7 +6651,7 @@ msgid "processing"
 msgstr "Processing..."
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:1070
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:230
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:242
 msgid "an error occured"
 msgstr "an error occured"
 
@@ -6639,32 +6690,39 @@ msgstr "Set order"
 msgid "Inverser"
 msgstr "Reverse"
 
-#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:30
+#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:33
 msgid ""
 "prod::Les enregistrements ne provienent pas tous de la meme base et ne "
 "peuvent donc etre traites ensemble"
 msgstr ""
 "Unable to perform action, selected documents come from different databases"
 
-#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:44
+#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:42
 msgid "prod::Vous n'avez le droit d'effectuer l'operation sur aucun document"
 msgstr "You do not have the required permissions on selected documents"
 
-#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:58
+#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:51
 msgid "erreur : Vous n'avez pas les droits"
 msgstr "You do not have the required permissions."
 
-#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:79
-#, php-format
-msgid "prod::collection %countable% documents ne pouvant etres mofiies"
-msgstr "%countable% document(s) can not be modified"
+#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:74
+msgid "One document can not be modified."
+msgstr "One document can not be modified."
 
-#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:91
+#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:80
 #, php-format
-msgid "prod::collection %countable% documents a deplacer"
-msgstr "%countable% document(s) to move"
+msgid "%countable% documents can not be modified."
+msgstr "%countable% documents can not be modified."
 
-#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:128
+#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:99
+msgid "Move one record to the chosen collection in the list."
+msgstr "Move one record to the chosen collection in the list."
+
+#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:105
+msgid "Move %countable% records to the chosen collection in the list."
+msgstr "Move %countable% records to the chosen collection in the list."
+
+#: tmp/cache_twig/75/75/d2760c154b682efc3567d3377d33.php:142
 msgid ""
 "prod::collection deplacer egalement les documents rattaches a ce(s) "
 "regroupement(s)"
@@ -6713,12 +6771,10 @@ msgstr ""
 "video content you are about to put online is compliant to service the Terms "
 "of Use"
 
-#: tmp/cache_twig/79/0e/4f5d1bbed28162b27c12114a2a16.php:28
 #: tmp/cache_twig/79/42/534d64903c47aaa38ba389558bfb.php:28
 msgid "Aucune notification"
 msgstr "No notification"
 
-#: tmp/cache_twig/79/0e/4f5d1bbed28162b27c12114a2a16.php:37
 #: tmp/cache_twig/79/42/534d64903c47aaa38ba389558bfb.php:37
 msgid "toutes les notifications"
 msgstr "All Notifications"
@@ -6902,27 +6958,27 @@ msgid "export:: commande"
 msgstr "Order"
 
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:90
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:820
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:844
 msgid "export:: FTP"
 msgstr "FTP"
 
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:172
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:385
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:536
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:929
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:560
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:953
 msgid "Documents indisponibles"
 msgstr "Document(s) unavailable"
 
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:230
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:445
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:989
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1013
 msgid "Include Business-fields in caption"
 msgstr "Include Business-fields in caption"
 
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:256
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:471
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:789
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1012
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:813
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1036
 msgid ""
 "By checking this box, you accept %beginning_link% Terms of Use %end_link%"
 msgstr ""
@@ -6951,82 +7007,90 @@ msgid "export::mail: contenu du mail"
 msgstr "Content"
 
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:341
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:885
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:909
 msgid "export::mail: fichiers joint"
 msgstr "Attachment(s)"
 
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:404
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:547
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:948
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:571
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:972
 msgid "La sous resolution n'est pas disponible pour les documents suivants"
 msgstr "Subviews unavailable for the following document(s)"
 
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:481
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1027
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1051
 msgid "boutton::envoyer"
 msgstr "Send"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:515
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:518
+msgid "Un document commande"
+msgstr "One document ordered."
+
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:524
 #, php-format
 msgid "%docs_orderable% documents commandes"
 msgstr "%docs_orderable% ordered document(s)"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:524
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:539
+msgid "Un document ne peut etre commande"
+msgstr "One document can not be ordered."
+
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:545
 #, php-format
 msgid "%docs_not_orderable% documents ne peuvent pas etre commandes"
 msgstr "%docs_not_orderable% document(s) can't be ordered"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:592
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:616
 msgid "commande::utilisation prevue"
 msgstr "Intended use"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:602
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:626
 msgid "commande::deadline"
 msgstr "Deadline"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:612
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:636
 msgid "Civility"
 msgstr "Title"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:800
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:824
 msgid "boutton::commander"
 msgstr "Order"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:838
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:862
 msgid "phraseanet:: prereglages"
 msgstr "Presets"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1022
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1046
 msgid "boutton::essayer"
 msgstr "Try"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1071
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1099
 msgid "You must agree to the Terms of Use to continue."
 msgstr "You must accept the Terms of Use to continue."
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1083
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1139
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1169
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1331
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1388
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1415
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1111
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1167
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1197
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1365
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1422
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1449
 msgid "Warning !"
 msgstr "Warning !"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1127
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1155
 msgid "Certains champs sont obligatoires, veuillez les remplir"
 msgstr "Some fields must be completed"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1157
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1185
 msgid "Vous devez selectionner un type de sous definitions"
 msgstr "Select type of subviews"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1189
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1217
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRegisterForm.php:62
 msgid "Terms of Use"
 msgstr "Terms of Use"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1252
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1286
 msgid ""
 "You can not directly download more than %max_download% Mo ; time to package "
 "all documents is too long"
@@ -7034,50 +7098,50 @@ msgstr ""
 "You can't directly download more than %max_download% Mo ; time to package "
 "all documents would be too long."
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1261
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1295
 msgid "You can alternatively receive an email when the download is ready."
 msgstr "Alternatively, you can receive an e-mail when the download is ready."
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1270
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1304
 msgid "Would you like to receive an e-mail when your download is ready ?"
 msgstr "Would you like to receive an e-mail when your download is ready ?"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1506
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1540
 msgid "phraseanet:: utiliser SSL"
 msgstr "SSL"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1552
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:460
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1586
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:483
 msgid "admin::compte-utilisateur:ftp: Utiliser le mode passif"
 msgstr "Use passive mode"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1570
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:474
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1604
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:497
 msgid "admin::compte-utilisateur:ftp: Nombre d'essais max"
 msgstr "Max. retry"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1586
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:432
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1620
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:455
 msgid "admin::compte-utilisateur:ftp:  repertoire de destination ftp"
 msgstr "Ftp reception folder"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1602
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1636
 msgid "admin::compte-utilisateur:ftp: creer un dossier"
 msgstr "Create directory"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1630
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1664
 msgid "admin::compte-utilisateur:ftp: ecrire un fichier de log"
 msgstr "Write a log file"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1672
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1706
 msgid "Nom des fichiers a l'export"
 msgstr "FIles name to use for Download"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1689
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1723
 msgid "export::titre: titre du documument"
 msgstr "Title"
 
-#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1706
+#: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:1740
 msgid "export::titre: nom original du document"
 msgstr "Original name"
 
@@ -7158,7 +7222,7 @@ msgid "Guest"
 msgstr "Guest"
 
 #: tmp/cache_twig/89/69/3419e8324ba01f7e10a999d5e211.php:343
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:56
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:78
 msgid "login:: Mon compte"
 msgstr "My account"
 
@@ -7184,7 +7248,7 @@ msgid "Apply to all selected documents"
 msgstr "Apply to all selected documents"
 
 #: tmp/cache_twig/8c/38/516eeca13b148530c0d1cf3e553b.php:147
-#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:291
+#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:322
 msgid "Apply changes"
 msgstr "Apply changes"
 
@@ -7216,8 +7280,10 @@ msgid "validation::envoyer mon rapport"
 msgstr "Send my report"
 
 #: tmp/cache_twig/93/c0/d257ccd42b0af16549afd152737d.php:71
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:130
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:296
 msgid "First/Last Name"
-msgstr "First/Last Name"
+msgstr "First/Last name"
 
 #: tmp/cache_twig/93/c0/d257ccd42b0af16549afd152737d.php:107
 msgid "E-Mail"
@@ -7231,8 +7297,8 @@ msgstr "Last Template"
 msgid "Creation date"
 msgstr "Creation date"
 
-#: tmp/cache_twig/94/a8/1814850160e0659ca296eec889d8.php:118
-#: tmp/cache_twig/a4/e6/37b7b0242481fdeee31af26924ea.php:118
+#: tmp/cache_twig/94/a8/1814850160e0659ca296eec889d8.php:122
+#: tmp/cache_twig/a4/e6/37b7b0242481fdeee31af26924ea.php:122
 msgid "More"
 msgstr "More"
 
@@ -7261,6 +7327,7 @@ msgid "No"
 msgstr "No"
 
 #: tmp/cache_twig/97/85/c00855af5ba3b6d08f4b430272b0.php:113
+#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:55
 msgid "Yes"
 msgstr "Yes"
 
@@ -7328,7 +7395,7 @@ msgstr "No Database access"
 
 #: tmp/cache_twig/9f/67/4359144b39664d30c38e26517164.php:38
 #: tmp/cache_twig/c7/a8/881040e8d2b25f1bd6bed6314f01.php:36
-#: lib/Alchemy/Phrasea/Notification/Mail/MailRequestPasswordUpdate.php:39
+#: lib/Alchemy/Phrasea/Notification/Mail/MailRequestPasswordUpdate.php:58
 msgid "Renew password"
 msgstr "Renew password"
 
@@ -7399,92 +7466,92 @@ msgstr "Name or E-mail"
 msgid "You are not the feed owner"
 msgstr "You are not the feed owner"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:150
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:146
 msgid "client:: recherche"
 msgstr "Search"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:169
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:165
 msgid "client:: recherche avancee"
 msgstr "Advanced Search"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:188
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:184
 msgid "client:: topics"
 msgstr "Topics"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:223
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:225
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:246
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:248
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:219
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:221
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:242
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:244
 #: lib/Alchemy/Phrasea/Controller/Thesaurus/Thesaurus.php:534
 msgid "phraseanet::technique:: et"
 msgstr "And"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:229
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:231
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:252
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:254
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:225
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:227
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:248
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:250
 msgid "phraseanet::technique:: or"
 msgstr "Or"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:235
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:237
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:258
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:260
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:231
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:233
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:254
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:256
 msgid "phraseanet::technique:: except"
 msgstr "Except"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:273
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:269
 msgid "client::recherche: rechercher dans les bases :"
 msgstr "Search"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:283
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:279
 msgid "client::recherche: rechercher dans toutes les bases"
 msgstr "All databases"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:347
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:343
 msgid "phraseanet:: presentation des resultats"
 msgstr "Display settings"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:438
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:434
 msgid "phraseanet:: collections"
 msgstr "Collections"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:440
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:436
 msgid ""
 "client::recherche: cliquez ici pour desactiver tous les filtres de toutes "
 "base"
 msgstr "Click here to reset all filters"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:467
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:463
 msgid "phraseanet:: historique"
 msgstr "Timeline"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:525
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:521
 msgid ""
 "client::recherche: cliquez ici pour desactiver tous les filtres de cette base"
 msgstr "Reset all filters"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:797
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:793
 msgid "client::recherche: filter sur"
 msgstr "Filter"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:810
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:806
 msgid "client::recherche: filtrer par dates"
 msgstr "By Date"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:823
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:819
 msgid "client::recherche: filtrer par status"
 msgstr "By Status"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:836
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:832
 msgid "client::recherche: filtrer par champs"
 msgstr "By Field"
 
-#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:845
+#: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:841
 msgid "client::recherche: filtrer par champs : tous les champs"
 msgstr "All fields"
 
-#: tmp/cache_twig/a8/24/ab8649165be87bb56f906b5336a5.php:128
+#: tmp/cache_twig/a8/24/ab8649165be87bb56f906b5336a5.php:127
 msgid "validation:: editer ma note"
 msgstr "Modify my notes"
 
@@ -7496,97 +7563,91 @@ msgstr "Last Publications"
 msgid "publications:: derniere mise a jour"
 msgstr "Last update"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:41
-#, php-format
-msgid "%user_count% user has been crreated"
-msgid_plural "%user_count% users have been created"
-msgstr[0] "%user_count% user has been created"
-msgstr[1] "%user_count% users have been created"
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:44
+msgid "The user has been created."
+msgstr "The user has been created."
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:59
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:51
+#, php-format
+msgid "%user_count% users have been created."
+msgstr "%user_count% users have been created."
+
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:72
 msgid "admin::user: nouvel utilisateur"
 msgstr "New User"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:63
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:76
 msgid "admin::user: nouveau template"
 msgstr "New template"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:69
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:82
 msgid "admin::user: import d'utilisateurs"
 msgstr "Import"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:73
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:86
 msgid "admin::user: export d'utilisateurs"
 msgstr "Export"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:100
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:113
 msgid "Filter"
 msgstr "Filter"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:154
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:167
 msgid "Last applied template"
 msgstr "Last applied template"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:159
-msgid "Any template"
-msgstr "Any templates"
-
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:224
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:237
 msgid "boutton::appliquer"
 msgstr "Apply"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:253
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:266
 msgid "admin::compte-utilisateur id utilisateur"
 msgstr "id"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:283
-msgid "admin::compte-utilisateur nom/prenom"
-msgstr "Name / First name"
-
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:331
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:344
 #: lib/Alchemy/Phrasea/Controller/Admin/Users.php:295
 msgid "admin::compte-utilisateur pays"
 msgstr "Country"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:347
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:360
 msgid "admin::compte-utilisateur dernier modele applique"
 msgstr "Last applied template"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:363
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:376
 msgid "admin::compte-utilisateur date de creation"
 msgstr "Creation date"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:408
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:421
 msgid "This is a template"
 msgstr "This is a template user"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:417
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:430
 msgid "This user has no rights"
 msgstr "This user has no rights"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:626
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:637
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:648
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:639
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:650
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:661
 msgid "%n_par_page% par page"
 msgstr "%n_par_page% per page"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:657
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:670
 msgid "Supprimer"
 msgstr "Delete"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:795
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:808
 msgid "boutton::exporter"
 msgstr "Export"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:819
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:832
 msgid "select at least one user"
 msgstr "One user at least must be selected"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:831
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:844
 msgid "Are you sure you want delete users rights ?"
 msgstr "Are you sure you want to remove existing users rights?"
 
-#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:855
+#: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:868
 msgid "users rights have been reseted"
 msgstr "Users rights have been reseted"
 
@@ -7722,6 +7783,10 @@ msgstr ""
 msgid "Use the HTML5 uploader"
 msgstr "Switch to HTML5 uploader"
 
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:299
+msgid "Selected files"
+msgstr "Selected files"
+
 #: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:457
 msgid "You have attempted to queue too many files"
 msgstr "You have attempted to queue too many files"
@@ -7733,10 +7798,6 @@ msgstr "Unknown error"
 #: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:474
 msgid "Cannot upload Zero Byte files"
 msgstr "Cannot upload Zero Byte files"
-
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:480
-msgid "Invalid file type"
-msgstr "Invalid file type"
 
 #: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:487
 msgid "Unhandled Error"
@@ -7933,27 +7994,35 @@ msgstr "Records statut"
 msgid "Records type"
 msgstr "Type d'enregistrements"
 
-#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:54
-msgid "You have selected one document."
-msgid_plural "You have selected %nbReceivedDocuments% documents."
-msgstr[0] "You have selected one document."
-msgstr[1] "You have selected %nbReceivedDocuments% documents."
+#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:57
+msgid "You have selected one record."
+msgstr "You have selected one record."
 
-#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:62
-msgid "Only one document is editable."
-msgid_plural "Only %nbEditableDocuments% documents are editable."
-msgstr[0] "Only one document is editable."
-msgstr[1] "Only %nbEditableDocuments% documents are editable."
+#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:63
+msgid "You have selected %nbReceivedDocuments% records."
+msgstr "You have selected %nbReceivedDocuments% records."
 
-#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:115
-msgid "Status edition of stories"
-msgstr "Status edition of stories"
+#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:74
+msgid "None of the records can be modified."
+msgstr "None of the records can be modified."
 
-#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:121
-msgid "Status edition of documents"
-msgstr "Status edition of documents"
+#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:86
+msgid "Only one record can be modified."
+msgstr "Only one record can be modified."
 
-#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:325
+#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:92
+msgid "Only %nbEditableDocuments% records can be modified."
+msgstr "Only %nbEditableDocuments% records can be modified."
+
+#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:151
+msgid "Stories status edition"
+msgstr "Stories status edition"
+
+#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:157
+msgid "Records status edition"
+msgstr "Records status edition"
+
+#: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:358
 #: tmp/cache_twig/c7/84/6dcf2718be10567a18997fe25f67.php:463
 msgid "Loading"
 msgstr "Loading"
@@ -7962,29 +8031,42 @@ msgstr "Loading"
 msgid "Access history"
 msgstr "Access history"
 
-#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:51
+#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:47
+msgid ""
+"If you notice any unfamiliar devices or locations, click 'End Activity' to "
+"end the session."
+msgstr ""
+"If you notice any unfamiliar devices or locations, click 'End Activity' to "
+"end the session."
+
+#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:57
 msgid "Date de connexion"
 msgstr "Login date"
 
-#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:57
+#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:63
 msgid "Dernier access"
 msgstr "Last access"
 
-#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:63
+#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:69
 msgid "IP"
 msgstr "IP"
 
-#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:69
+#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:75
 msgid "Browser"
 msgstr "Browser"
 
-#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:75
-msgid "ecran"
-msgstr "Screen resolution"
+#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:101
+#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:103
+msgid "End Activity"
+msgstr "End Activity"
 
-#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:81
-msgid "Session persistante"
-msgstr "Persistent session"
+#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:156
+msgid "End session activity"
+msgstr "End session activity"
+
+#: tmp/cache_twig/c5/a8/6ec7dba884066100469c9e910311.php:162
+msgid "Do you really want to end the activity of this session?"
+msgstr "Do you really want to end the activity of this session?"
 
 #: tmp/cache_twig/c5/f0/e10507b1b1da15c5f8dd70dd94b0.php:22
 msgid "thesaurus:: Nouveau terme"
@@ -8006,13 +8088,25 @@ msgstr "Context"
 msgid "phraseanet:: language"
 msgstr "Language"
 
-#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:22
+#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:29
+msgid "The following errors have been detected"
+msgstr "The following errors have been detected"
+
+#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:50
+msgid "Would you like to continue ?"
+msgstr "Would you like to continue?"
+
+#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:87
 msgid "Apply a model"
 msgstr "Apply a template"
 
-#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:71
+#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:146
 msgid "You need define a model before importing a list of users"
 msgstr "You need to define a template before importing a list of users."
+
+#: tmp/cache_twig/c6/3b/afe1f5197924bfabc3d6b0dd8a3d.php:155
+msgid "There is no user to add."
+msgstr "There is no user to add."
 
 #: tmp/cache_twig/c6/b9/1b91719fd89374b630478b0471b9.php:25
 #: tmp/cache_twig/d1/7c/c1133a34a49e0ed89541149a4844.php:25
@@ -8034,7 +8128,7 @@ msgstr "There is no Bridge Available . Please contact Administrator."
 
 #: tmp/cache_twig/c7/84/6dcf2718be10567a18997fe25f67.php:320
 msgid "You are about to delete this account. Would you like to continue ?"
-msgstr "You are about to delete this account. Would you like to continue ?"
+msgstr "You are about to delete this account. Would you like to continue?"
 
 #: tmp/cache_twig/c7/84/6dcf2718be10567a18997fe25f67.php:567
 msgid "Vous n'avez pas assez de droits sur les elements selectionnes"
@@ -8166,9 +8260,18 @@ msgstr "You are about to change the  representation thumbnail of your video"
 msgid "do you want to validate"
 msgstr "Do you want to validate"
 
-#: tmp/cache_twig/d4/46/323cc237efb87a3f924c57ff84a8.php:111
-msgid "Total"
-msgstr "Total"
+#: tmp/cache_twig/d4/46/323cc237efb87a3f924c57ff84a8.php:33
+msgid "admin::base: objet"
+msgstr "Object"
+
+#: tmp/cache_twig/d4/46/323cc237efb87a3f924c57ff84a8.php:37
+msgid "admin::base: nombre"
+msgstr "Number"
+
+#: tmp/cache_twig/d4/46/323cc237efb87a3f924c57ff84a8.php:41
+#: tmp/cache_twig/d4/46/323cc237efb87a3f924c57ff84a8.php:45
+msgid "admin::base: poids"
+msgstr "Size"
 
 #: tmp/cache_twig/d5/4a/7d295223f798bb96c47772c97e52.php:25
 msgid "Updated structure"
@@ -8228,7 +8331,7 @@ msgstr "Select all"
 msgid "tout decocher"
 msgstr "Unselect all"
 
-#: tmp/cache_twig/dc/a5/78b2174457540345b2ac826652fe.php:41
+#: tmp/cache_twig/dc/a5/78b2174457540345b2ac826652fe.php:62
 msgid "language"
 msgstr "Language"
 
@@ -8312,7 +8415,7 @@ msgstr "Read-only"
 
 #: tmp/cache_twig/de/85/dcc2bacfb8cb7d5c27a964d9a960.php:320
 msgid "Display thumbnails"
-msgstr "Display thumbnails"
+msgstr "Display as title"
 
 #: tmp/cache_twig/de/85/dcc2bacfb8cb7d5c27a964d9a960.php:326
 msgid "Tous"
@@ -8356,20 +8459,20 @@ msgid "Row password is missing, script has stopped"
 msgstr "Row Password is missing. Script has stopped."
 
 #: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:58
+msgid "Row mail is missing, script has stopped"
+msgstr "Row mail is missing, script has stopped"
+
+#: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:64
 msgid "The file does not contains any user to add"
 msgstr "The file doesn't contains any user to add."
 
-#: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:102
+#: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:108
 msgid "You can  download an example by clicking here"
 msgstr "Download an example file"
 
-#: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:110
+#: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:116
 msgid "You can download the documentation here"
 msgstr "Download a short documentation"
-
-#: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:117
-msgid "Select a file"
-msgstr "Select a file"
 
 #: tmp/cache_twig/e8/54/9fc68d04fcb636875f80ea4bca8f.php:39
 msgid "Ajouter une publication"
@@ -8485,11 +8588,23 @@ msgstr "Process_id"
 msgid "admin::tasks: etat de progression de la tache"
 msgstr "Progression"
 
-#: tmp/cache_twig/eb/d5/30360bacfc70e40ba0934fff6501.php:206
+#: tmp/cache_twig/eb/d5/30360bacfc70e40ba0934fff6501.php:135
+msgid "Start"
+msgstr "Start"
+
+#: tmp/cache_twig/eb/d5/30360bacfc70e40ba0934fff6501.php:141
+msgid "Stop"
+msgstr "Stop"
+
+#: tmp/cache_twig/eb/d5/30360bacfc70e40ba0934fff6501.php:153
+msgid "Logs"
+msgstr "Logs"
+
+#: tmp/cache_twig/eb/d5/30360bacfc70e40ba0934fff6501.php:216
 msgid "admin::tasks: Nouvelle tache"
 msgstr "New task"
 
-#: tmp/cache_twig/eb/d5/30360bacfc70e40ba0934fff6501.php:454
+#: tmp/cache_twig/eb/d5/30360bacfc70e40ba0934fff6501.php:468
 msgid "admin::tasks: supprimer la tache ?"
 msgstr "Delete Task ?"
 
@@ -8521,13 +8636,13 @@ msgstr "No"
 
 #: tmp/cache_twig/ed/8d/23e15e5a3513dcf68efe56ea753a.php:184
 #: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:489
-#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:874
+#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:872
 #: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:282
 msgid "An error occurred"
 msgstr "An error occurred"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:76
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:270
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:79
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:269
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:34
 msgid ""
 "phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, "
@@ -8536,71 +8651,71 @@ msgstr ""
 "An error occurred. If this problem happens again, please contact technical "
 "support"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:80
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:271
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:83
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:270
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:36
 msgid ""
 "phraseanet::erreur: La connection au serveur Phraseanet semble etre "
 "indisponible"
 msgstr "Server connection is not available"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:84
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:272
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:87
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:271
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:37
 msgid ""
 "phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier"
 msgstr "Your session is closed, please re-authentificate"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:88
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:91
 msgid "Cocher toute la colonne"
 msgstr "Check all boxes from column"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:92
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:95
 msgid "Decocher toute la colonne"
 msgstr "Uncheck all boxes from column"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:96
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:99
 msgid "Creer un model"
 msgstr "Create a template user"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:100
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:103
 msgid "Creer un utilisateur"
 msgstr "Create a new user"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:108
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:111
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:93
 msgid "This file is too big"
 msgstr "This file is too big"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:112
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:115
 msgid "This field is required"
 msgstr "This field is required"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:302
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:299
 msgid "Successful install"
 msgstr "Successful installation"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:320
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:317
 msgid "Ajouter un nouvel utilisateur"
 msgstr "Add a new user"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:325
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:322
 msgid "Adresse email du nouvel utilisateur"
 msgstr "New user e-mail address"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:332
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:329
 msgid "Send an email to the user to setup his password"
 msgstr "Send user an e-mail for password setup"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:339
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:336
 msgid "Require email validation to activate the account"
 msgstr "Require e-mail validation to activate the account"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:347
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:344
 msgid "Creer un modele"
 msgstr "Create a template"
 
-#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:352
+#: tmp/cache_twig/ed/ca/949b07cdcbc076496c22ecc77843.php:349
 msgid "Nom du nouveau modele"
 msgstr "New template name"
 
@@ -8622,7 +8737,7 @@ msgid "Mandatory fields"
 msgstr "Mandatory fields"
 
 #: tmp/cache_twig/f3/8b/672747b38db21d07d44145513cc7.php:149
-#: tmp/cache_twig/fe/b1/a6b88a5fb8c0e9e8dc010e184ff3.php:149
+#: tmp/cache_twig/fe/b1/a6b88a5fb8c0e9e8dc010e184ff3.php:153
 msgid "I have read the terms of use"
 msgstr "I have read the terms of use"
 
@@ -8650,10 +8765,6 @@ msgstr ""
 #: tmp/cache_twig/f4/80/e2901a0c5a2d60f8ef7a84d6d038.php:89
 msgid "Authorize"
 msgstr "Authorize"
-
-#: tmp/cache_twig/f4/80/e2901a0c5a2d60f8ef7a84d6d038.php:95
-msgid "Deny"
-msgstr "Deny"
 
 #: tmp/cache_twig/f5/6d/8805aeae939f704732ddf23046ab.php:56
 msgid "validation:: note"
@@ -8961,45 +9072,45 @@ msgstr "Delete existing link(s) between thesaurus branch(s) and field(s)"
 msgid "thesaurus:: reindexer la base apres l'import"
 msgstr "Re-index after import"
 
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:78
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:100
 msgid "Informations personnelles"
 msgstr "Your informations"
 
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:175
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:198
 msgid "login:: Changer mon adresse email"
 msgstr "Change my e-mail"
 
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:183
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:206
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaAuthenticationForm.php:32
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRegisterForm.php:53
 msgid "Password"
 msgstr "Password"
 
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:190
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:213
 msgid "admin::compte-utilisateur changer mon mot de passe"
 msgstr "Change password"
 
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:301
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:324
 msgid "Notification par email"
 msgstr "E-mail notifications"
 
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:363
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:386
 msgid "FTP"
 msgstr "FTP"
 
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:370
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:393
 msgid "admin::compte-utilisateur:ftp: Activer le compte FTP"
 msgstr "Enable FTP fonction"
 
-#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:445
+#: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:468
 msgid "admin::compte-utilisateur:ftp: prefixe des noms de dossier ftp"
 msgstr "Repository prefix name"
 
 #: tmp/cache_twig/fe/b1/a6b88a5fb8c0e9e8dc010e184ff3.php:57
-msgid "Complete the fields below to register on %home_title%!"
-msgstr "Complete the fields below to register on %home_title%."
+msgid "Complete the fields below to register on %instance_title%!"
+msgstr "Complete the fields below to register on %instance_title%!"
 
-#: tmp/cache_twig/fe/b1/a6b88a5fb8c0e9e8dc010e184ff3.php:198
+#: tmp/cache_twig/fe/b1/a6b88a5fb8c0e9e8dc010e184ff3.php:202
 msgid "Request access"
 msgstr "Access request"
 
@@ -9092,7 +9203,7 @@ msgstr "Appbox can't be reached"
 msgid "Databox is unreachable"
 msgstr "Databox can't be reached"
 
-#: lib/Alchemy/Phrasea/Controller/Setup.php:176
+#: lib/Alchemy/Phrasea/Controller/Setup.php:175
 #, php-format
 msgid "an error occured : %s"
 msgstr "an error occurred : %s"
@@ -9113,7 +9224,7 @@ msgid "The file is too big"
 msgstr "The file is too large."
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:413
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:878
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:880
 msgid "Empty the collection before removing"
 msgstr "Empty the collection before deleting."
 
@@ -9121,45 +9232,40 @@ msgstr "Empty the collection before deleting."
 msgid "Collection empty successful"
 msgstr "Collection  successfully emptied"
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:500
-#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:887
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:502
 msgid "A task has been creted, please run it to complete empty collection"
 msgstr "A task has been created, please run it to  empty collection"
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:546
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:581
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:616
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:652
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:883
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:548
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:583
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:618
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:654
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:885
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:477
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:747
 msgid "Successful removal"
 msgstr "Successful removal."
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:942
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:944
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:852
 msgid "The publication has been stopped"
 msgstr "The publication has been stopped."
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:963
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:965
 msgid "Missing name parameter"
 msgstr "Missing name parameter"
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:994
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:996
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:506
 msgid "Missing labels parameter"
 msgstr "Labels missing parameter"
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:997
+#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:999
 #: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:509
 msgid "Invalid labels parameter"
 msgstr "Invalid labels parameter"
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Collection.php:1040
-msgid "Missing pub_wm format"
-msgstr "Missing pub_wm format"
-
-#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:116
+#: lib/Alchemy/Phrasea/Controller/Admin/ConnectedUsers.php:120
 msgid "admin::monitor: module inconnu"
 msgstr "Unknown"
 
@@ -9179,13 +9285,17 @@ msgstr "Empty database before delete"
 msgid "Missing view name parameter"
 msgstr "Missing name in view parameter"
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:883
+#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:888
 msgid "Base empty successful"
 msgstr "Dabase succesfully emptied"
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:921
+#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:892
+msgid "A task has been created, please run it to complete empty collection"
+msgstr "A task has been created, please run it to complete empty collection"
+
+#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:923
 #: lib/Alchemy/Phrasea/Controller/Admin/Root.php:167
-#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:299
+#: lib/Alchemy/Phrasea/Controller/Admin/Root.php:319
 #: lib/Alchemy/Phrasea/Controller/Root/Account.php:213
 #: lib/Alchemy/Phrasea/Controller/Root/Developers.php:185
 #: lib/Alchemy/Phrasea/Controller/Root/Developers.php:211
@@ -9193,10 +9303,6 @@ msgstr "Dabase succesfully emptied"
 #: lib/Alchemy/Phrasea/Controller/Root/Developers.php:279
 msgid "Bad request format, only JSON is allowed"
 msgstr "Bad request format. Only JSON is allowed."
-
-#: lib/Alchemy/Phrasea/Controller/Admin/Databox.php:1103
-msgid "admin::base: enregistrements orphelins"
-msgstr "Orphans documents"
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Databoxes.php:134
 msgid "Unreachable server"
@@ -9285,7 +9391,7 @@ msgid "You are not the owner of this feed, you can not edit it"
 msgstr "You are not the owner of this feed, you can not edit it"
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Publications.php:157
-#: lib/Alchemy/Phrasea/Controller/Prod/Upload.php:265
+#: lib/Alchemy/Phrasea/Controller/Prod/Upload.php:290
 msgid "Unable to add file to Phraseanet"
 msgstr "Unable to add file to Phraseanet"
 
@@ -9329,8 +9435,8 @@ msgstr "Update succeeded"
 msgid "Update failed"
 msgstr "Update failed"
 
-#: lib/Alchemy/Phrasea/Controller/Admin/TaskManager.php:104
-#: lib/Alchemy/Phrasea/Controller/Admin/TaskManager.php:144
+#: lib/Alchemy/Phrasea/Controller/Admin/TaskManager.php:109
+#: lib/Alchemy/Phrasea/Controller/Admin/TaskManager.php:149
 msgid "Clear"
 msgstr "Clear"
 
@@ -9344,28 +9450,38 @@ msgid ""
 "login::register:email: Vous avez ete refuse sur les collections suivantes : "
 msgstr "Your access has been rejected on the following collections : "
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:634
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:652
 #, php-format
 msgid "Login line %d is empty"
 msgstr "Login line %d is empty."
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:636
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:654
 #, php-format
 msgid "Login %s is already defined in the file at line %d"
 msgstr "The login %s is already defined in the file at line %d."
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:639
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:657
 #, php-format
 msgid "Login %s already exists in database"
 msgstr "Login %s already exists in database."
 
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:651
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:668
+#, php-format
+msgid "Mail line %d is empty"
+msgstr "Mail line %d is empty"
+
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:670
+#, php-format
+msgid "Email '%s' for login '%s' already exists in database"
+msgstr "Email '%s' for login '%s' already exists in database"
+
+#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:680
 #, php-format
 msgid "Password is empty at line %d"
 msgstr "Password is empty at line %d."
 
 #: lib/Alchemy/Phrasea/Controller/Api/Oauth2.php:82
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:973
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1011
 msgid "login::erreur: Erreur d'authentification"
 msgstr "Authentication error"
 
@@ -9373,23 +9489,23 @@ msgstr "Authentication error"
 msgid "The use of phraseanet Navigator is not allowed"
 msgstr "Phraseanet Navigator use is not allowed"
 
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:264
 #: lib/Alchemy/Phrasea/Controller/Client/Root.php:265
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:266
 msgid "paniers:: Quel nom souhaitez vous donner a votre panier ?"
 msgstr "Basket name"
 
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:267
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:266
 msgid "export:: aucun document n'est disponible au telechargement"
 msgstr "There are no available documents for download"
 
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:268
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:267
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:74
 msgid ""
 "invite:: Redirection vers la zone d'authentification, cliquez sur OK pour "
 "continuer ou annulez"
-msgstr "Redirection to the login page, click OK to continue or cancel"
+msgstr "Redirection to the login page, click OK to continue or cancel."
 
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:273
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:272
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:33
 msgid ""
 "paniers::Vous etes sur le point de supprimer ce panier. Cette action est "
@@ -9397,16 +9513,17 @@ msgid ""
 msgstr ""
 "You are about to delete a basket. This action can not be undone, continue ?"
 
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:276
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:275
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:51
 msgid "boutton::renouveller"
 msgstr "Renew"
 
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:277
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:276
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:111
 msgid "Print"
 msgstr "Print"
 
-#: lib/Alchemy/Phrasea/Controller/Client/Root.php:278
+#: lib/Alchemy/Phrasea/Controller/Client/Root.php:277
 msgid "Please create a basket before adding an element"
 msgstr "Please create a basket before adding an element."
 
@@ -9485,9 +9602,6 @@ msgid "%d elements en attente"
 msgstr "%d documents pending"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/DoDownload.php:120
-msgid "Export download"
-msgstr "Export download"
-
 #: lib/Alchemy/Phrasea/Controller/Prod/DoDownload.php:121
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:105
 msgid "Export"
@@ -9771,6 +9885,18 @@ msgstr "Force sending of documents?"
 msgid "Share"
 msgstr "Share"
 
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:107
+msgid "Move"
+msgstr "Move"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:110
+msgid "Tool box"
+msgstr "Media Tool box"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:112
+msgid "Attention !"
+msgstr "Warning!"
+
 #: lib/Alchemy/Phrasea/Controller/Prod/Lazaret.php:212
 #: lib/Alchemy/Phrasea/Controller/Prod/Lazaret.php:261
 #: lib/Alchemy/Phrasea/Controller/Prod/Lazaret.php:369
@@ -9951,26 +10077,26 @@ msgstr "You can not edit this story"
 msgid "Story updated"
 msgstr "Story updated"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:153
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:159
 msgid "Document has been successfully substitued"
 msgstr "Document has been successfully substituted"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:155
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:158
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:203
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:206
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:161
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:164
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:215
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:218
 msgid "file is not valid"
 msgstr "file is not valid"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:201
+#: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:213
 msgid "Thumbnail has been successfully substitued"
 msgstr "Thumbnail has been successfully substituted"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Upload.php:244
+#: lib/Alchemy/Phrasea/Controller/Prod/Upload.php:246
 msgid "The record was successfully created"
 msgstr "The record was successfully created"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Upload.php:253
+#: lib/Alchemy/Phrasea/Controller/Prod/Upload.php:278
 msgid "The file was moved to the quarantine"
 msgstr "The file was moved to the quarantine"
 
@@ -10217,7 +10343,7 @@ msgid "report:: module"
 msgstr "Modules"
 
 #: lib/Alchemy/Phrasea/Controller/Root/Account.php:100
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:552
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:592
 msgid "login::notification: Mise a jour du mot de passe avec succes"
 msgstr "Password update done"
 
@@ -10271,163 +10397,159 @@ msgstr "Changes saved"
 msgid "forms::erreurs lors de l'enregistrement des modifications"
 msgstr "Error when saving modifications"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:177
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:205
 msgid "Please provide a value."
 msgstr "Please provide a value."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:178
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:206
 #, php-format
 msgid "Please select at least %s choice."
 msgstr "Please select at least %s choice(s)."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:179
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:207
 msgid "Please provide a valid email address."
 msgstr "Please provide a valid e-mail address."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:180
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:208
 msgid "Please provide a valid IP address."
 msgstr "Please provide a valid IP address."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:181
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:209
 #, php-format
 msgid "Please provide a longer value. It should have %s character or more."
 msgstr "Please provide a longer value. It must have %s characters or more."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:182
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:210
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRecoverPasswordForm.php:44
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRegisterForm.php:50
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRenewPasswordForm.php:36
 msgid "Please provide the same passwords."
 msgstr "Please provide the same passwords."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:183
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:211
 msgid "Please provide the same emails."
 msgstr "Please provide the same e-mails."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:184
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:212
 msgid "Please accept the terms of use to register."
 msgstr "Please accept the terms of use to register."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:185
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:213
 msgid "No collection selected"
 msgstr "No collection selected"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:186
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:214
 #, php-format
 msgid "%d collection selected"
 msgstr "%d collection selected"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:187
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:215
 #, php-format
 msgid "%d collections selected"
 msgstr "%d collections selected"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:188
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:216
 msgid "Select all collections"
 msgstr "Select all collections"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:190
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:218
 msgid "Weak"
 msgstr "Weak"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:191
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:219
 msgid "Ordinary"
 msgstr "Ordinary"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:192
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:220
 msgid "Good"
 msgstr "Good"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:193
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:221
 msgid "Great"
 msgstr "Great"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:220
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:228
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:256
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:264
 msgid "You tried to register with an unknown provider"
 msgstr "You tried to register with an unknown provider."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:255
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:291
 msgid "Invalid captcha answer."
 msgstr "Invalid CAPTCHA answer."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:356
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:427
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:396
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:467
 msgid "login::notification: demande de confirmation par mail envoyee"
 msgstr "E-mail confirmation sent"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:359
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:430
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:399
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:470
 msgid "Unable to send your account unlock email."
 msgstr "Unable to send e-mail to unlock your account."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:420
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:460
 msgid "Invalid link."
 msgstr "Invalid link."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:469
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:477
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:485
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:509
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:517
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:525
 msgid "Invalid unlock link."
 msgstr "Invalid unlock link."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:491
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:531
 msgid "Account is already unlocked, you can login."
 msgstr "Account is already unlocked. You can login."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:502
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:513
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:542
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:553
 msgid "Account has been unlocked, you can now login."
 msgstr "Account has been unlocked. You can now login."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:518
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:558
 msgid "Account has been unlocked, you still have to wait for admin approval."
 msgstr ""
 "Account has been unlocked. But you still have to wait for an administration "
 "approval."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:588
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:628
 msgid "phraseanet::erreur: Le compte n'a pas ete trouve"
 msgstr "Account does not exist"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:594
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:634
 msgid "Invalid email address"
 msgstr "Invalid e-mail address"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:609
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:650
 msgid "phraseanet:: Un email vient de vous etre envoye"
 msgstr "E-mail has been sent"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:658
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:698
 msgid "Vous etes maintenant deconnecte. A bientot."
 msgstr "You are now disconnected. See you soon."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:685
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:725
 msgid "login::erreur: No available connection - Please contact sys-admin"
 msgstr "No available connection.  Please contact system administrator"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:696
-msgid "Accueil"
-msgstr "Home"
-
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:731
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:770
 msgid "Phraseanet guest-access is disabled"
 msgstr "Phraseanet guest-access is disabled."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:852
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:890
 #, php-format
 msgid "Unable to authenticate with %s"
 msgstr "Unable to authenticate with %s."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:876
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:914
 msgid "Unable to retrieve provider identity"
 msgstr "Unable to retrieve provider identity."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:915
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:953
 msgid "Your identity is not recognized."
 msgstr "Your identity is not recognized."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:947
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:985
 msgid ""
 "An unexpected error occured during authentication process, please contact an "
 "admin"
@@ -10435,15 +10557,15 @@ msgstr ""
 "An unexpected error occurred during authentication process. Please contact "
 "an administrator."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:962
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1000
 msgid "Please fill the captcha"
 msgstr "Please fill the captcha field."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:966
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1004
 msgid "login::erreur: Vous n'avez pas confirme votre email"
 msgstr "Access denied, you have not confirmed your e-mail address"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Session.php:116
+#: lib/Alchemy/Phrasea/Controller/Root/Session.php:124
 msgid "The application is going down for maintenance, please logout."
 msgstr "You will be disconnected for maintenance, please quit Phraseanet"
 
@@ -10498,7 +10620,7 @@ msgid "Error while saving preference"
 msgstr "Error while saving preferences"
 
 #: lib/Alchemy/Phrasea/Controller/User/Preferences.php:89
-#: lib/Alchemy/Phrasea/Controller/User/Preferences.php:115
+#: lib/Alchemy/Phrasea/Controller/User/Preferences.php:116
 msgid "Preference saved !"
 msgstr "Preferences saved !"
 
@@ -10519,7 +10641,7 @@ msgstr "Whoops, looks like something went wrong."
 msgid "Sorry, site is currently undergoing maintenance, come back soon."
 msgstr "Sorry, site is currently undergoing maintenance, come back soon."
 
-#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:111
+#: lib/Alchemy/Phrasea/Core/Provider/RegistrationServiceProvider.php:121
 msgid "admin::compte-utilisateur tel"
 msgstr "Telephone"
 
@@ -10572,7 +10694,7 @@ msgstr "Password (confirmation)"
 msgid "Please accept the Terms and conditions in order to register."
 msgstr "Please accept Terms and conditions in order to register."
 
-#: lib/Alchemy/Phrasea/Form/Login/PhraseaRegisterForm.php:115
+#: lib/Alchemy/Phrasea/Form/Login/PhraseaRegisterForm.php:116
 #, php-format
 msgid "You must select at least %s collection."
 msgstr "You must select at least %s collection."
@@ -10877,23 +10999,22 @@ msgstr "Your account with the login %s as been created"
 
 #: lib/Alchemy/Phrasea/Notification/Mail/MailRequestPasswordSetup.php:50
 msgid "You now have to set up your pasword"
-msgstr "You now have to set up your password."
+msgstr "You now have to set your password."
 
 #: lib/Alchemy/Phrasea/Notification/Mail/MailRequestPasswordSetup.php:58
 msgid "Setup my password"
 msgstr "Set my password"
 
-#: lib/Alchemy/Phrasea/Notification/Mail/MailRequestPasswordUpdate.php:21
+#: lib/Alchemy/Phrasea/Notification/Mail/MailRequestPasswordUpdate.php:36
 msgid "login:: Forgot your password"
 msgstr "Forgotten password ?"
 
-#: lib/Alchemy/Phrasea/Notification/Mail/MailRequestPasswordUpdate.php:29
-msgid ""
-"login:: Quelqu'un a demande a reinitialiser le mode passe correspondant au "
-"login suivant : "
-msgstr "Someone has asked to reset password for the following login : "
+#: lib/Alchemy/Phrasea/Notification/Mail/MailRequestPasswordUpdate.php:48
+#, php-format
+msgid "Password renewal for login \"%s\" has been requested"
+msgstr "Password renewal for login \"%s\" has been requested"
 
-#: lib/Alchemy/Phrasea/Notification/Mail/MailRequestPasswordUpdate.php:31
+#: lib/Alchemy/Phrasea/Notification/Mail/MailRequestPasswordUpdate.php:50
 msgid ""
 "login:: Visitez le lien suivant et suivez les instructions pour continuer, "
 "sinon ignorez cet email et il ne se passera rien"
@@ -10923,7 +11044,7 @@ msgstr "E-mail successfully confirmed."
 #: lib/Alchemy/Phrasea/Notification/Mail/MailSuccessEmailConfirmationRegistered.php:29
 #: lib/Alchemy/Phrasea/Notification/Mail/MailSuccessEmailConfirmationUnregistered.php:29
 msgid "login::register: merci d'avoir confirme votre adresse email"
-msgstr "Thank you for confirming your e-mail"
+msgstr "Thank you for confirming your e-mail."
 
 #: lib/Alchemy/Phrasea/Notification/Mail/MailSuccessEmailConfirmationRegistered.php:37
 #, php-format
@@ -10962,30 +11083,30 @@ msgstr "E-mail send Test"
 msgid "Ce mail est un test d'envoi de mail depuis %s"
 msgstr "This e-mail is a send test from %s"
 
-#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:109
+#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:111
 msgid "No sort"
 msgstr "No sort"
 
-#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:124
+#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:126
 #: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:130
 msgid "descendant"
 msgstr "descending"
 
-#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:125
+#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:127
 #: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:131
 msgid "ascendant"
 msgstr "ascending"
 
-#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:403
+#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:405
 msgid "Unable to execute query"
 msgstr "Unable to execute query."
 
-#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:480
+#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:485
 #, php-format
 msgid "reponses::propositions pour la base %s"
 msgstr "Proposals for database %s"
 
-#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:486
+#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:491
 #, php-format
 msgid "reponses::propositions pour le terme %s"
 msgstr "Proposals for term \"%s\""
