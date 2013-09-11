@@ -56,7 +56,7 @@ class patch_3805 implements patchInterface
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $n = 0;
+        $n = 1;
 
         foreach ($rs as $row) {
             $date = Datetime::createFromFormat('Y-m-d h:i:s', $row['date']);
