@@ -314,21 +314,29 @@ class Category implements ControllerProviderInterface
         $data = json_decode($request->getContent());
 
         $categories = $data->category_ids;
-        $records = RecordsRequest::fromRequest($app, $request, true);
-        foreach ($records as $record) {
-            foreach ($categories as $category_id) {
-                $category = $app['EM']->getRepository('Entities\Category')->find($category_id);
-                if (null === $category) {
+        $records = $data->records;
+        foreach ($categories as $category_id) {
+            $category = $app['EM']->getRepository('Entities\Category')->find($category_id);
+            if (null === $category) {
                     $app->abort(404, 'Category not found');
                 }
+            foreach ($records as $record) {
+                if (null !== $app['EM']->getRepository('Entities\CategoryElement')->findOneBy(array(
+                    'category' => $category,
+                    'sbasId' => $record->sbas_id,
+                    'recordId' => $record->record_id
+                ))) {
+                    $app->abort(400, 'Bad Request');
+                }
                 $element = new CategoryElement();
-                $element->setRecord($record);
+                $element->setSbasId($record->sbas_id);
+                $element->setRecordId($record->record_id);
                 $element->setCategory($category);
                 $category->addElement($element);
 
-                $app['EM']->persist($category);
                 $app['EM']->persist($element);
             }
+            $app['EM']->persist($category);
         }
 
         $app['EM']->flush();
