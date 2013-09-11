@@ -278,4 +278,6 @@ class ControllerCategoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
         $this->assertEquals(404, $response->getStatusCode());
     }
+
+
 }
