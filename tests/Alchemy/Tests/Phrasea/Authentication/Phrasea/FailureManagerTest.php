@@ -3,9 +3,11 @@
 namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
+use Entities\AuthFailure;
+use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\HttpFoundation\Request;
 
-class FailureManagerTest extends \PHPUnit_Framework_TestCase
+class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 {
     /**
      * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::saveFailure
@@ -239,6 +241,54 @@ class FailureManagerTest extends \PHPUnit_Framework_TestCase
 
         $manager = new FailureManager($em, $recaptcha, 2);
         $manager->checkFailures($username, $request);
+    }
+
+    public function testFailureOlderThan2MonthsAreRemovedOnFailure()
+    {
+        self::$DI['app']['EM']->getEventManager()->removeEventSubscriber(new TimestampableListener());
+        $recaptcha = $this->getReCaptchaMock(null);
+
+        $ip = '192.168.16.178';
+        $username = 'romainneutron';
+
+        $request = $this->getRequestMock();
+        $request->expects($this->any())
+            ->method('getClientIp')
+            ->will($this->returnValue($ip));
+
+        for ($i = 0; $i < 10; $i++) {
+            $failure = new AuthFailure();
+            $failure->setIp($ip);
+            $failure->setUsername($username);
+            $failure->setLocked(false);
+            $failure->setCreated(new \DateTime('-3 months'));
+            self::$DI['app']['EM']->persist($failure);
+        }
+        for ($i = 0; $i < 2; $i++) {
+            $failure = new AuthFailure();
+            $failure->setIp($ip);
+            $failure->setUsername($username);
+            $failure->setLocked(false);
+            $failure->setCreated(new \DateTime('-1 months'));
+            self::$DI['app']['EM']->persist($failure);
+        }
+
+        self::$DI['app']['EM']->flush();
+
+        $this->assertCount(10, self::$DI['app']['EM']->getRepository('Entities\AuthFailure')
+                ->findOldFailures());
+        $this->assertCount(12, self::$DI['app']['EM']->getRepository('Entities\AuthFailure')
+                ->findAll());
+
+        $manager = new FailureManager(self::$DI['app']['EM'], $recaptcha, 9);
+        $manager->saveFailure($username, $request);
+
+        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Entities\AuthFailure')
+                ->findOldFailures());
+        $this->assertCount(3, self::$DI['app']['EM']->getRepository('Entities\AuthFailure')
+                ->findAll());
+
+        self::$DI['app']['EM']->getEventManager()->addEventSubscriber(new TimestampableListener());
     }
 
     private function ArrayIze($failure, $n)

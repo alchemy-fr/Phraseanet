@@ -113,18 +113,9 @@ class FailureManager
             ->findOldFailures('-2 months');
 
         if (0 < count($failures)) {
-            $n = 0;
             foreach ($failures as $failure) {
                 $this->em->remove($failure);
-
-                if (0 === $n++ % 1000) {
-                    $this->em->flush();
-                    $this->em->clear();
-                }
             }
-
-            $this->em->flush();
-            $this->em->clear();
         }
     }
 }
