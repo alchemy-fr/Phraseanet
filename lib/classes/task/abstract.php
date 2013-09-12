@@ -542,7 +542,7 @@ abstract class task_abstract
         if ($this->running) {       // && $this->records_done == 0)
             $when_started = time() - $when_started;
             if ($when_started < $this->period) {
-                for ($t = $this->period - $when_started; $this->running && $t > 0; $t --) { 
+                for ($t = $this->period - $when_started; $this->running && $t > 0; $t --) {
                     // DON'T do sleep($this->period - $when_started) because it prevents ticks !
                     $s = $this->getState();
                     if ($s == self::STATE_TOSTOP) {

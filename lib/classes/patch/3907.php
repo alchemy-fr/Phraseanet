@@ -149,8 +149,7 @@ class patch_3907 implements patchInterface
             $ftStmt->execute(array(':feed_id' => $row['id']));
             $ftRes = $ftStmt->fetchAll(\PDO::FETCH_ASSOC);
 
-            foreach ($ftRes as $ftRow)
-            {
+            foreach ($ftRes as $ftRow) {
                 $token = new FeedToken();
                 $token->setFeed($feed);
                 $feed->addToken($token);
@@ -177,8 +176,7 @@ class patch_3907 implements patchInterface
         $faStmt->execute();
         $faRes = $faStmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        foreach ($faRes as $faRow)
-        {
+        foreach ($faRes as $faRow) {
             $token = new AggregateToken();
             $token->setUsrId($faRow['usr_id']);
             $token->setValue($faRow['token']);

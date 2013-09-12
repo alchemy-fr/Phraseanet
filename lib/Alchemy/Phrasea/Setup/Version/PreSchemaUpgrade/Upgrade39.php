@@ -42,4 +42,3 @@ class Upgrade39 implements PreSchemaUpgradeInterface
         return $found;
     }
 }
-

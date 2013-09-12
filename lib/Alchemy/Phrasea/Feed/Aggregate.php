@@ -118,6 +118,7 @@ class Aggregate implements FeedInterface
         foreach ($this->feeds as $feed) {
             $feedIds[] = $feed->getId();
         }
+
         return $this->em->getRepository('Entities\FeedEntry')->findByFeeds($feedIds, $offset_start, $how_many);
     }
 
@@ -203,6 +204,7 @@ class Aggregate implements FeedInterface
             foreach ($this->feeds as $feed) {
                 $feedIds[] = $feed->getId();
             }
+
             return count($this->em->getRepository('Entities\FeedEntry')->findByFeeds($feedIds));
         }
 
