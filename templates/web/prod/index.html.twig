@@ -53,11 +53,15 @@
 
 {% block rss %}
     {% for feed in feeds %}
-        {% set link = feed.get_user_link(app['phraseanet.registry'], app['authentication'].getUser(), 'rss') %}
-        <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
-        {% set link = feed.get_user_link(app['phraseanet.registry'], app['authentication'].getUser(), 'atom') %}
-        <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
+        {% set link = app['feed.user-link-generator'].generate(feed, app['authentication'].getUser(), 'rss') %}
+        <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
+        {% set link = app['feed.user-link-generator'].generate(feed, app['authentication'].getUser(), 'atom') %}
+        <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
     {% endfor %}
+    {% set link = app['feed.aggregate-link-generator'].generate(aggregate, app['authentication'].getUser(), 'rss') %}
+        <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
+    {% set link = app['feed.aggregate-link-generator'].generate(aggregate, app['authentication'].getUser(), 'atom') %}
+        <link rel="alternate" type="{{ link.getMimetype() }}" title="{{ link.getTitle() }}" href="{{ link.getURI() }}" />
 {% endblock %}
 
 {% block stylesheet %}

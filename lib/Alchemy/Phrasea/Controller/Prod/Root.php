@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\Feed\Aggregate;
 use Silex\Application as SilexApplication;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,8 +73,8 @@ class Root implements ControllerProviderInterface
                 $cssfile = '000000';
             }
 
-            $user_feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
-            $feeds = array_merge(array($user_feeds->get_aggregate()), $user_feeds->get_feeds());
+            $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser($app['authentication']->getUser());
+            $aggregate = Aggregate::createFromUser($app['EM'], $app['authentication']->getUser());
 
             $thjslist = "";
 
@@ -116,6 +117,7 @@ class Root implements ControllerProviderInterface
                 'cgus_agreement'       => \databox_cgu::askAgreement($app),
                 'css'                  => $css,
                 'feeds'                => $feeds,
+                'aggregate'            => $aggregate,
                 'GV_google_api'        => $app['phraseanet.registry']->get('GV_google_api'),
                 'queries_topics'       => $queries_topics,
                 'search_status'        => \databox_status::getSearchStatus($app),

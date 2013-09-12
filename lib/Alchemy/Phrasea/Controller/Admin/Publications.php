@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Entities\Feed;
+use Entities\FeedPublisher;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,9 +37,8 @@ class Publications implements ControllerProviderInterface
         });
 
         $controllers->get('/list/', function(PhraseaApplication $app) {
-
-            $feeds = \Feed_Collection::load_all(
-                    $app, $app['authentication']->getUser()
+            $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser(
+                $app['authentication']->getUser()
             );
 
             return $app['twig']
@@ -45,22 +46,40 @@ class Publications implements ControllerProviderInterface
         })->bind('admin_feeds_list');
 
         $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
+            if ('' === $title = trim($request->request->get('title', ''))) {
+                $app->abort(400, "Bad request");
+            }
 
-            $feed = \Feed_Adapter::create(
-                    $app, $app['authentication']->getUser(), $request->request->get('title'), $request->request->get('subtitle')
-            );
+            $publisher = new FeedPublisher();
+
+            $feed = new Feed();
+
+            $publisher->setFeed($feed);
+            $publisher->setUsrId($app['authentication']->getUser()->get_id());
+            $publisher->setIsOwner(true);
+
+            $feed->addPublisher($publisher);
+            $feed->setTitle($title);
+            $feed->setSubtitle($request->request->get('subtitle', ''));
 
             if ($request->request->get('public') == '1') {
-                $feed->set_public(true);
+                $feed->setIsPublic(true);
             } elseif ($request->request->get('base_id')) {
-                $feed->set_collection(\collection::get_from_base_id($app, $request->request->get('base_id')));
+                $feed->setCollection(\collection::get_from_base_id($app, $request->request->get('base_id')));
             }
+
+            $publisher->setFeed($feed);
+
+            $app['EM']->persist($feed);
+            $app['EM']->persist($publisher);
+
+            $app['EM']->flush();
 
             return $app->redirectPath('admin_feeds_list');
         })->bind('admin_feeds_create');
 
         $controllers->get('/feed/{id}/', function(PhraseaApplication $app, Request $request, $id) {
-            $feed = new \Feed_Adapter($app, $id);
+            $feed = $app["EM"]->find('Entities\Feed', $id);
 
             return $app['twig']
                     ->render('admin/publications/fiche.html.twig', array('feed'  => $feed, 'error' => $app['request']->query->get('error')));
@@ -70,24 +89,29 @@ class Publications implements ControllerProviderInterface
 
         $controllers->post('/feed/{id}/update/', function(PhraseaApplication $app, Request $request, $id) {
 
-            $feed = new \Feed_Adapter($app, $id);
+           if ('' === $title = trim($request->request->get('title', ''))) {
+                $app->abort(400, "Bad request");
+            }
+
+            $feed = $app["EM"]->find('Entities\Feed', $id);
 
             try {
                 $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
             } catch (\Exception $e) {
                 $collection = null;
             }
-
-            $feed->set_title($request->request->get('title'));
-            $feed->set_subtitle($request->request->get('subtitle'));
-            $feed->set_collection($collection);
-            $feed->set_public($request->request->get('public'));
+            $feed->setTitle($title);
+            $feed->setSubtitle($request->request->get('subtitle', ''));
+            $feed->setCollection($collection);
+            $feed->setIsPublic('1' === $request->request->get('public'));
+            $app['EM']->persist($feed);
+            $app['EM']->flush();
 
             return $app->redirectPath('admin_feeds_list');
         })->before(function(Request $request) use ($app) {
-            $feed = new \Feed_Adapter($app, $request->attributes->get('id'));
+            $feed = $app["EM"]->find('Entities\Feed', $request->attributes->get('id'));
 
-            if (!$feed->is_owner($app['authentication']->getUser())) {
+            if (!$feed->isOwner($app['authentication']->getUser())) {
                 return $app->redirectPath('admin_feeds_feed', array('id' => $request->attributes->get('id'), 'error' =>  _('You are not the owner of this feed, you can not edit it')));
             }
         })
@@ -99,15 +123,16 @@ class Publications implements ControllerProviderInterface
                 'success' => false,
                 'message' => '',
             );
+            $feed = $app["EM"]->find('Entities\Feed', $id);
 
-            $feed = new \Feed_Adapter($app, $id);
+            if (null === $feed) {
+                $app->abort(404, "Feed not found");
+            }
 
             $request = $app["request"];
 
-            if (!$feed->is_owner($app['authentication']->getUser())) {
-                $datas['message'] = 'You are not allowed to do that';
-
-                return $app->json($datas);
+            if (!$feed->isOwner($app['authentication']->getUser())) {
+                $app->abort(403, "Access Forbidden");
             }
 
             try {
@@ -146,9 +171,14 @@ class Publications implements ControllerProviderInterface
                     throw new \Exception_InternalServerError('Error while resizing');
                 }
 
-                $feed->set_icon($tmpname);
-
                 unset($media);
+
+                $feed->setIconUrl(true);
+                $app['EM']->persist($feed);
+                $app['EM']->flush();
+
+                $app['filesystem']->copy($tmpname, $app['root.path'] . '/config/feed_' . $feed->getId() . '.jpg');
+                $app['filesystem']->copy($tmpname, sprintf('%s/www/custom/feed_%d.jpg', $app['root.path'], $feed->getId()));
 
                 $app['filesystem']->remove($tmpname);
 
@@ -167,10 +197,20 @@ class Publications implements ControllerProviderInterface
             try {
                 $request = $app['request'];
                 $user = \User_Adapter::getInstance($request->request->get('usr_id'), $app);
-                $feed = new \Feed_Adapter($app, $id);
-                $feed->add_publisher($user);
+                $feed = $app["EM"]->find('Entities\Feed', $id);
+
+                $publisher = new FeedPublisher();
+                $publisher->setUsrId($user->get_id());
+                $publisher->setFeed($feed);
+
+                $feed->addPublisher($publisher);
+
+                $app['EM']->persist($feed);
+                $app['EM']->persist($publisher);
+
+                $app['EM']->flush();
             } catch (\Exception $e) {
-                $error = $e->getMessage();
+                $error = "An error occured";
             }
 
             return $app->redirectPath('admin_feeds_feed', array('id' => $id, 'error' => $error));
@@ -182,13 +222,22 @@ class Publications implements ControllerProviderInterface
             try {
                 $request = $app['request'];
 
-                $feed = new \Feed_Adapter($app, $id);
-                $publisher = new \Feed_Publisher_Adapter($app, $request->request->get('publisher_id'));
-                $user = $publisher->get_user();
-                if ($feed->is_publisher($user) === true && $feed->is_owner($user) === false)
-                    $publisher->delete();
+                $feed = $app["EM"]->find('Entities\Feed', $id);
+
+                $publisher = $app["EM"]->find('Entities\FeedPublisher', $request->request->get('publisher_id'));
+                if (null === $publisher) {
+                    $app->abort(404, "Feed Publisher not found");
+                }
+
+                $user = $publisher->getUser($app);
+                if ($feed->isPublisher($user) && !$feed->isOwner($user)) {
+                    $feed->removePublisher($publisher);
+
+                    $app['EM']->remove($publisher);
+                    $app['EM']->flush();
+                }
             } catch (\Exception $e) {
-                $error = $e->getMessage();
+                $error = "An error occured";
             }
 
             return $app->redirectPath('admin_feeds_feed', array('id' => $id, 'error' => $error));
@@ -197,8 +246,19 @@ class Publications implements ControllerProviderInterface
             ->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/delete/', function(PhraseaApplication $app, $id) {
-            $feed = new \Feed_Adapter($app, $id);
-            $feed->delete();
+            $feed = $app["EM"]->find('Entities\Feed', $id);
+
+            if (null === $feed) {
+                $app->abort(404);
+            }
+
+            if (true === $feed->getIconURL()) {
+                unlink($app['root.path'] . '/config/feed_' . $feed->getId() . '.jpg');
+                unlink('custom/feed_' . $feed->getId() . '.jpg');
+            }
+
+            $app['EM']->remove($feed);
+            $app['EM']->flush();
 
             return $app->redirectPath('admin_feeds_list');
         })

@@ -160,13 +160,13 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(SilexApplication $app, $entry_id, $item_id) {
 
-            $entry = \Feed_Entry_Adapter::load_from_id($app, $entry_id);
-            $item = new \Feed_Entry_Item($app['phraseanet.appbox'], $entry, $item_id);
+            $entry = $app['EM']->getRepository('Entities\FeedEntry')->find($entry_id);
+            $item = $entry->getItem($item_id);
 
             if ($app['browser']->isMobile()) {
                 $output = $app['twig']->render('lightbox/feed_element.html.twig', array(
                     'feed_element' => $item,
-                    'module_name'  => $item->get_record()->get_title()
+                    'module_name'  => $item->getRecord($app)->get_title()
                     )
                 );
 
@@ -181,12 +181,12 @@ class Lightbox implements ControllerProviderInterface
                 }
 
                 $ret = array();
-                $ret['number'] = $item->get_record()->get_number();
-                $ret['title'] = $item->get_record()->get_title();
+                $ret['number'] = $item->getRecord($app)->get_number();
+                $ret['title'] = $item->getRecord($app)->get_title();
 
-                $ret['preview'] = $app['twig']->render($template_preview, array('record'             => $item->get_record(), 'not_wrapped'        => true));
+                $ret['preview'] = $app['twig']->render($template_preview, array('record'             => $item->getRecord($app), 'not_wrapped'        => true));
                 $ret['options_html'] = $app['twig']->render($template_options, array('feed_element'  => $item));
-                $ret['caption'] = $app['twig']->render($template_caption, array('view'   => 'preview', 'record' => $item->get_record()));
+                $ret['caption'] = $app['twig']->render($template_caption, array('view'   => 'preview', 'record' => $item->getRecord($app)));
 
                 $ret['agreement_html'] = $ret['selector_html'] = $ret['note_html'] = '';
 
@@ -313,7 +313,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $feed_entry = \Feed_Entry_Adapter::load_from_id($app, $entry_id);
+            $feed_entry = $app['EM']->getRepository('Entities\FeedEntry')->find($entry_id);
 
             $template = 'lightbox/feed.html.twig';
 
@@ -321,12 +321,13 @@ class Lightbox implements ControllerProviderInterface
                 $template = 'lightbox/IE6/feed.html.twig';
             }
 
-            $content = $feed_entry->get_content();
+            $content = $feed_entry->getItems();
+            $first = $content->first();
 
             $output = $app['twig']->render($template, array(
                 'feed_entry'  => $feed_entry,
-                'first_item'  => array_shift($content),
-                'local_title' => $feed_entry->get_title(),
+                'first_item'  => $first,
+                'local_title' => $feed_entry->getTitle(),
                 'module'      => 'lightbox',
                 'module_name' => _('admin::monitor: module validation')
                 )

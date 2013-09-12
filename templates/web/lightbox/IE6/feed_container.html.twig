@@ -1,16 +1,16 @@
 
 {% block basket %}
 <div id="sc_container">
-    {% for element in feed_entry.get_content() %}
+    {% for element in feed_entry.getItems() %}
         <div class="basket_element_wrapper">
-      <a href="{{ path('lightbox_ajax_load_feeditem', { 'entry_id' : feed_entry.get_id(), 'item_id' : element.get_id()}) }}">
-        <div id="scid_{{element.get_id()}}" class="basket_element ui-corner-all {% if first_item and first_item.get_id() == element.get_id() %}selected{% endif %}">
-          <div class="display_id">{{element.get_ord()}}</div>
-          {{thumbnail.format(element.get_record().get_thumbnail() ,114,85, '', true, false)}}
+      <a href="{{ path('lightbox_ajax_load_feeditem', { 'entry_id' : feed_entry.getId(), 'item_id' : element.getId()}) }}">
+        <div id="scid_{{element.getId()}}" class="basket_element ui-corner-all {% if first_item and first_item.getId() == element.getId() %}selected{% endif %}">
+          <div class="display_id">{{element.getOrd()}}</div>
+          {{thumbnail.format(element.getRecord(app).get_thumbnail() ,114,85, '', true, false)}}
           <form name="download_form" class="download_form" style="display:none;">
-            <input type="hidden" name="basrec" value="{{element.get_record().get_serialize_key()}}"/>
+            <input type="hidden" name="basrec" value="{{element.getRecord(app).get_serialize_key()}}"/>
           </form>
-          <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.get_record().get_sbas_id(), 'record_id' : element.get_record().get_record_id() }) }}" class="previewTips"></div>
+          <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getRecord(app).get_sbas_id(), 'record_id' : element.getRecord(app).get_record_id() }) }}" class="previewTips"></div>
         </div>
       </a>
         </div>

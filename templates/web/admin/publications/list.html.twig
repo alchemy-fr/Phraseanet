@@ -59,35 +59,39 @@
         </tr>
     </thead>
     <tbody>
-        {% for feed in feeds.get_feeds %}
+        {% for feed in feeds %}
             <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
                 <td>
                     <div style="border:1px solid #ccc; width:22px; height:22px; margin:2px;">
-                        <a href="{{ path('admin_feeds_feed', { 'id' : feed.get_id() }) }}">
-                            <img src="{{feed.get_icon_url() ~ '?' ~ random(1000) }}" id="pub_icon" style="margin:3px; width:16px; height:16px;"/>
+                        <a href="{{ path('admin_feeds_feed', { 'id' : feed.getId() }) }}">
+                            <img src="{% if feed.getIconUrl() == false %}
+                                 /skins/icons/rss32.gif
+                                 {% else %}
+                                 /custom/feed_{{ feed.getId() }}.jpg
+                                 {% endif %}" id="pub_icon" style="margin:3px; width:16px; height:16px;"/>
                         </a>
                     </div>
                 </td>
                 <td valign="center" align="left">
-                    <a href="{{ path('admin_feeds_feed', { 'id' : feed.get_id() }) }}" style="display:block;">{{ feed.get_title() }}</a>
+                    <a href="{{ path('admin_feeds_feed', { 'id' : feed.getId() }) }}" style="display:block;">{{ feed.getTitle() }}</a>
                 </td>
                 <td style="text-align: center;">
-                    {{ app['date-formatter'].getDate(feed.get_created_on()) }}
+                    {{ app['date-formatter'].getDate(feed.getCreatedOn()) }}
                 </td>
                 <td valign="center" align="center">
-                    {% if feed.get_collection() != null %}
-                        {{ feed.get_collection().get_databox().get_label(app['locale.I18n']) }} /
-                        {{ feed.get_collection().get_name() }}
+                    {% if feed.getCollection() != null %}
+                        {{ feed.getCollection().get_databox().get_label(app['locale.I18n']) }} /
+                        {{ feed.getCollection().get_name() }}
                     {% endif %}
                 </td>
                 <td valign="center" align="center">
-                    {% if feed.is_public() %}
+                    {% if feed.isPublic() %}
                         <img src="/skins/icons/ligth-on.png" title="{% trans 'This feed is public' %}"/>
                     {% endif %}
                 </td>
                 <td valign="center" align="center">
-                    {% if feed.is_owner(app['authentication'].getUser()) %}
-                        <form class="no-ajax form_publication" action="{{ path('admin_feeds_feed_delete', { 'id' : feed.get_id() }) }}" method="post" style="margin:0;">
+                    {% if feed.isOwner(app['authentication'].getUser()) %}
+                        <form class="no-ajax form_publication" action="{{ path('admin_feeds_feed_delete', { 'id' : feed.getId() }) }}" method="post" style="margin:0;">
                             <button class="feed_remover btn btn-mini">{% trans 'boutton::supprimer' %}</button>
                         </form>
                     {% endif %}

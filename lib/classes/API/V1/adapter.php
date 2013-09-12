@@ -9,11 +9,16 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Feed\Aggregate;
+use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
+use Entities\Feed;
+use Entities\FeedEntry;
+use Entities\FeedItem;
 use Entities\UserQuery;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -1479,10 +1484,10 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $coll = Feed_Collection::load_all($this->app, $user);
+        $coll = $this->app['EM']->getRepository('Entities\Feed')->getAllForUser($user);
 
         $datas = array();
-        foreach ($coll->get_feeds() as $feed) {
+        foreach ($coll as $feed) {
             $datas[] = $this->list_publication($feed, $user);
         }
 
@@ -1512,8 +1517,10 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $feed = Feed_Adapter::load_with_user($this->app, $user, $publication_id);
-
+        $feed = $this->app['EM']->getRepository('Entities\Feed')->find($publication_id);
+        if (!$feed->isAccessible($user, $this->app)) {
+            return $result->set_datas(array());
+        }
         $offset_start = (int) ($request->get('offset_start') ? : 0);
         $per_page = (int) ($request->get('per_page') ? : 5);
 
@@ -1535,7 +1542,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $feed = Feed_Aggregate::load_with_user($this->app, $user);
+        $feed = Aggregate::createFromUser($this->app['EM'], $user);
 
         $offset_start = (int) ($request->get('offset_start') ? : 0);
         $per_page = (int) ($request->get('per_page') ? : 5);
@@ -1543,7 +1550,7 @@ class API_V1_adapter extends API_V1_Abstract
         $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 5;
 
         $datas = array(
-            'total_entries' => $feed->get_count_total_entries(),
+            'total_entries' => $feed->getCountTotalEntries(),
             'offset_start'  => $offset_start,
             'per_page'      => $per_page,
             'entries'       => $this->list_publications_entries($feed, $offset_start, $per_page),
@@ -1558,9 +1565,9 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $entry = Feed_Entry_Adapter::load_from_id($this->app, $entry_id);
+        $entry = $this->app['EM']->getRepository('Entities\FeedEntry')->find($entry_id);
 
-        $collection = $entry->get_feed()->get_collection();
+        $collection = $entry->getFeed()->getCollection($this->app);
 
         if (null !== $collection && !$user->ACL()->has_access_to_base($collection->get_base_id())) {
             throw new \API_V1_exception_forbidden('You have not access to the parent feed');
@@ -1578,38 +1585,38 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled informations about one feed
      *
-     * @param  Feed_Adapter $feed
-     * @param  type         $user
+     * @param  Feed  $feed
+     * @param  type  $user
      * @return array
      */
-    protected function list_publication(Feed_Adapter $feed, $user)
+    protected function list_publication(Feed $feed, $user)
     {
         return array(
-            'id'            => $feed->get_id(),
-            'title'         => $feed->get_title(),
-            'subtitle'      => $feed->get_subtitle(),
-            'total_entries' => $feed->get_count_total_entries(),
-            'icon'          => $feed->get_icon_url(),
-            'public'        => $feed->is_public(),
-            'readonly'      => !$feed->is_publisher($user),
-            'deletable'     => $feed->is_owner($user),
-            'created_on'    => $feed->get_created_on()->format(DATE_ATOM),
-            'updated_on'    => $feed->get_updated_on()->format(DATE_ATOM),
+            'id'            => $feed->getId(),
+            'title'         => $feed->getTitle(),
+            'subtitle'      => $feed->getSubtitle(),
+            'total_entries' => $feed->getCountTotalEntries(),
+            'icon'          => $feed->getIconUrl(),
+            'public'        => $feed->isPublic(),
+            'readonly'      => !$feed->isPublisher($user),
+            'deletable'     => $feed->isOwner($user),
+            'created_on'    => $feed->getCreatedOn()->format(DATE_ATOM),
+            'updated_on'    => $feed->getUpdatedOn()->format(DATE_ATOM),
         );
     }
 
     /**
      * Retrieve all entries of one feed
      *
-     * @param  Feed_Adapter $feed
-     * @param  int          $offset_start
-     * @param  int          $how_many
+     * @param  FeedInterface $feed
+     * @param  int           $offset_start
+     * @param  int           $how_many
      * @return array
      */
-    protected function list_publications_entries(Feed_Abstract $feed, $offset_start = 0, $how_many = 5)
+    protected function list_publications_entries(FeedInterface $feed, $offset_start = 0, $how_many = 5)
     {
 
-        $entries = $feed->get_entries($offset_start, $how_many)->get_entries();
+        $entries = $feed->getEntries($offset_start, $how_many);
 
         $out = array();
         foreach ($entries as $entry) {
@@ -1622,42 +1629,42 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled information about one feed entry
      *
-     * @param  Feed_Entry_Adapter $entry
+     * @param  FeedEntry $entry
      * @return array
      */
-    protected function list_publication_entry(Feed_Entry_Adapter $entry)
+    protected function list_publication_entry(FeedEntry $entry)
     {
         $items = array();
-        foreach ($entry->get_content() as $item) {
+        foreach ($entry->getItems() as $item) {
             $items[] = $this->list_publication_entry_item($item);
         }
 
         return array(
-            'id'           => $entry->get_id(),
-            'author_email' => $entry->get_author_email(),
-            'author_name'  => $entry->get_author_name(),
-            'created_on'   => $entry->get_created_on()->format(DATE_ATOM),
-            'updated_on'   => $entry->get_updated_on()->format(DATE_ATOM),
-            'title'        => $entry->get_title(),
-            'subtitle'     => $entry->get_subtitle(),
+            'id'           => $entry->getId(),
+            'author_email' => $entry->getAuthorEmail(),
+            'author_name'  => $entry->getAuthorName(),
+            'created_on'   => $entry->getCreatedOn()->format(DATE_ATOM),
+            'updated_on'   => $entry->getUpdatedOn()->format(DATE_ATOM),
+            'title'        => $entry->getTitle(),
+            'subtitle'     => $entry->getSubtitle(),
             'items'        => $items,
-            'feed_id'      => $entry->get_feed()->get_id(),
-            'feed_url'     => '/feeds/' . $entry->get_feed()->get_id() . '/content/',
-            'url'          => '/feeds/entry/' . $entry->get_id() . '/',
+            'feed_id'      => $entry->getFeed()->getId(),
+            'feed_url'     => '/feeds/' . $entry->getFeed()->getId() . '/content/',
+            'url'          => '/feeds/entry/' . $entry->getId() . '/',
         );
     }
 
     /**
      * Retrieve detailled informations about one feed  entry item
      *
-     * @param  Feed_Entry_Item $item
+     * @param  FeedItem $item
      * @return array
      */
-    protected function list_publication_entry_item(Feed_Entry_Item $item)
+    protected function list_publication_entry_item(FeedItem $item)
     {
         $datas = array(
-            'item_id' => $item->get_id()
-            , 'record'  => $this->list_record($item->get_record())
+            'item_id' => $item->getId()
+            , 'record'  => $this->list_record($item->getRecord($this->app))
         );
 
         return $datas;

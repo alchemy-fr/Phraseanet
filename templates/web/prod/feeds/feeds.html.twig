@@ -6,23 +6,26 @@
             <tr>
                 <td style="width:600px;">
                     <h1>
-                        <img src="{{feed.get_icon_url()}}" style="height:32px;"/>
-                        {% if feed.is_aggregated %}
+                        <img src="{% if feed.getIconUrl() == false %}
+                                 /skins/icons/rss32.gif
+                                 {% else %}
+                                 /custom/feed_{{ feed.getId() }}.jpg
+                                 {% endif %}" style="height:32px;"/>
+                        {% if feed.isAggregated %}
                             {% trans 'Toutes les publications' %}
                             <a class="feed_reload ajax_answers no_scroll" href="{{ path('prod_feeds') }}" >
                                 <img src="/skins/icons/reload.png" title="{% trans 'rafraichir' %}" />
                             </a>
                         {% else %}
-                            {{ feed.get_title() }}
-                            <a class="feed_reload ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : feed.get_id() }) }}" >
+                            {{ feed.getTitle() }}
+                            <a class="feed_reload ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : feed.getId() }) }}" >
                                 <img src="/skins/icons/reload.png" title="{% trans 'rafraichir' %}" />
                             </a>
                         {% endif %}
-
-                        {% if feed.is_aggregated %}
+                        {% if feed.isAggregated %}
                             <a class="subscribe_rss" href="{{ path('prod_feeds_subscribe_aggregated') }}">{% trans 'publications:: s\'abonner aux publications' %}</a>
                         {% else %}
-                            <a class="subscribe_rss" href="{{ path('prod_feeds_subscribe_feed', { 'id' : feed.get_id() }) }}">{% trans 'publications:: s\'abonner aux publications' %}</a>
+                            <a class="subscribe_rss" href="{{ path('prod_feeds_subscribe_feed', { 'id' : feed.getId() }) }}">{% trans 'publications:: s\'abonner aux publications' %}</a>
                         {% endif %}
                     </h1>
                 </td>
@@ -34,10 +37,14 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="submenu dropdown-menu">
-                                {% for aval_feed in feeds.get_feeds() %}
+                                {% for aval_feed in feeds %}
                                     <li>
-                                        <a class="ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : aval_feed.get_id() }) }}">
-                                            <img src="{{aval_feed.get_icon_url()}}" style="height:16px;"/> {{ aval_feed.get_title() }}
+                                        <a class="ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : aval_feed.getId() }) }}">
+                                            <img src="{% if aval_feed.getIconUrl() == false %}
+                                 /skins/icons/rss32.gif
+                                 {% else %}
+                                 /custom/feed_{{ aval_feed.getId() }}.jpg
+                                 {% endif %}" style="height:16px;"/> {{ aval_feed.getTitle() }}
                                         </a>
                                     </li>
                                 {% endfor %}
@@ -51,7 +58,7 @@
     {% endif %}
 
     {% set offset_start = ((page - 1) * 5 )%}
-    {% set entries = feed.get_entries(offset_start,5).get_entries() %}
+    {% set entries = feed.getEntries(offset_start,5) %}
 
     {% for entry in entries %}
         {{ _entry.format(feed, entry) }}
@@ -60,15 +67,15 @@
         <p>{% trans 'Aucune entree pour le moment' %}</p>
     {% endif %}
 
-    {% if feed.get_count_total_entries() > (page*5) %}
+    {% if feed.getCountTotalEntries() > (page*5) %}
         {% set next_page = page + 1 %}
         <div class="see_more">
-            {% if feed.is_aggregated() %}
+            {% if feed.isAggregated() %}
                 <a href="{{ path('prod_feeds', { page : next_page }) }}" class="ajax_answers append">
                     {% trans 'charger d\'avantage de publications' %}
                 </a>
             {% else %}
-                <a href="{{ path('prod_feeds_feed', { 'id' : feed.get_id(), 'page' : next_page }) }}" class="ajax_answers append">
+                <a href="{{ path('prod_feeds_feed', { 'id' : feed.getId(), 'page' : next_page }) }}" class="ajax_answers append">
                     {% trans 'charger d\'avantage de publications' %}
                 </a>
             {% endif %}

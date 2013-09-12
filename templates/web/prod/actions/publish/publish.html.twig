@@ -53,14 +53,14 @@
             <div class="PNB10 feeds">
                 <h1>{% trans 'Fils disponibles' %}</h1>
                 <div class="list">
-                    {% for feed in feeds.get_feeds() %}
-                        {% if feed.is_publisher(app['authentication'].getUser()) %}
+                    {% for feed in feeds %}
+                        {% if feed.isPublisher(app['authentication'].getUser()) %}
                             <div class="feed {% if loop.index is odd%}odd{% endif %}">
-                                <span>{{ feed.get_title() }}</span>
-                                {% if feed.is_public() %}
+                                <span>{{ feed.getTitle() }}</span>
+                                {% if feed.isPublic() %}
                                     <img src="/skins/icons/ligth-on.png" title="{% trans 'This feed is public' %}"/>
                                 {% endif %}
-                                <input type="hidden" value="{{ feed.get_id() }}"/>
+                                <input type="hidden" value="{{ feed.getId() }}"/>
                             </div>
                         {% endif %}
                     {% endfor %}
