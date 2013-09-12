@@ -46,7 +46,6 @@ abstract class JobTestCase extends \PhraseanetPHPUnitAbstract
     public function testRunningTheJobWithWrongValueThrowsAnException()
     {
         $job = $this->getJob();
-        $job->setId('id');
         $job->run(new WrongJobDataTest());
     }
 
