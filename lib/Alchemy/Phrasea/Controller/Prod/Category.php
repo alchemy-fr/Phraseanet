@@ -362,7 +362,7 @@ class Category implements ControllerProviderInterface
         $data = json_decode($request->getContent());
 
         $categories = $data->category_ids;
-        $records = RecordsRequest::fromRequest($app, $request, true);
+        $records = $data->records;
         foreach ($records as $record) {
             foreach ($categories as $category_id) {
                 $category = $app['EM']->getRepository('Entities\Category')->find($category_id);
@@ -371,8 +371,8 @@ class Category implements ControllerProviderInterface
                 }
                 $element = $app['EM']->getRepository('Entities\CategoryElement')
                             ->findBy(array('category' => $category,
-                                           'recordId' => $record->get_id(),
-                                           'sbasId' => $record->get_sbas_id()));
+                                           'recordId' => $record->record_id,
+                                           'sbasId' => $record->sbas_id));
                 if (null !== $element) {
                     $app['EM']->remove($element);
                 }
