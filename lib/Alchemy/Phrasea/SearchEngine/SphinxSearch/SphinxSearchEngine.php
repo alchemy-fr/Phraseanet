@@ -18,6 +18,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
+use Entities\FeedEntry;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
@@ -387,7 +388,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function addFeedEntry(\Feed_Entry_Adapter $entry)
+    public function addFeedEntry(FeedEntry $entry)
     {
         throw new RuntimeException('Feed Entry indexing not supported by Sphinx Search Engine');
     }
@@ -395,7 +396,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function removeFeedEntry(\Feed_Entry_Adapter $entry)
+    public function removeFeedEntry(FeedEntry $entry)
     {
         throw new RuntimeException('Feed Entry indexing not supported by Sphinx Search Engine');
     }
@@ -403,7 +404,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function updateFeedEntry(\Feed_Entry_Adapter $entry)
+    public function updateFeedEntry(FeedEntry $entry)
     {
         throw new RuntimeException('Feed Entry indexing not supported by Sphinx Search Engine');
     }

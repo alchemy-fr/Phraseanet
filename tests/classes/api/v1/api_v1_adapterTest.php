@@ -653,10 +653,9 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSearch_publications()
     {
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "hello", "salut");
+        $feed = $this->insertOneFeed(self::$DI['user']);
         $result = $this->object->search_publications($request, self::$DI['user']);
         $this->checkResponseField($result, "feeds", 'array');
-        $feed->delete();
     }
 
     public function testRemove_publications()
@@ -673,25 +672,19 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
-            ->method('deliver')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication'), $this->equalTo(null));
-
         $date = new DateTime();
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept'    => 'application/json'));
-        $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "hello", "salut");
-        $feed_publisher = Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $feed, self::$DI['user']);
-        $feed_entry = Feed_Entry_Adapter::create(self::$DI['app'], $feed, $feed_publisher, "coucou", "hello", "me", "my@email.com");
-        $feed_entry_item = Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $feed_entry, self::$DI['record_1']);
-        $coll = Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
-        foreach ($coll->get_feeds() as $feed) {
-            $result = $this->object->get_publication($request, $feed->get_id(), self::$DI['user']);
+        $feedItem = $this->insertOneFeedItem(self::$DI['user']);
+        $feed = $feedItem->getEntry()->getFeed();
+
+        $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
+        foreach ($feeds as $feed) {
+            $result = $this->object->get_publication($request, $feed->getId(), self::$DI['user']);
             $this->checkResponseField($result, "feed", 'array');
             $this->checkResponseField($result, "entries", 'array');
             $this->checkResponseField($result, "offset_start", 'integer');
             $this->checkResponseField($result, "per_page", 'integer');
         }
-        $feed->delete();
     }
 
     protected function checkResponseField(API_V1_result $result, $field, $type)

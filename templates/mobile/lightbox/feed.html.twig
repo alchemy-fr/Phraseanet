@@ -12,26 +12,26 @@
 {% block content %}
 <div id="home" data-role="page">
     <div data-role="header">
-    <h1>{{feed_entry.get_title()}}</h1>
+    <h1>{{feed_entry.getTitle()}}</h1>
     <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{% trans 'Home' %}</a>
   </div>
     <div data-role="content">
     <p>
-      {{feed_entry.get_subtitle()|nl2br|raw}}
+      {{feed_entry.getSubtitle()|nl2br|raw}}
     </p>
     <p>
-      {% set author = feed_entry.get_author_name() %}
+      {% set author = feed_entry.getAuthorName() %}
       <span class="author">{% trans %}Par {{ author }}{% endtrans %}</span>
-      {% set entry_length = feed_entry.get_content()|length %}
+      {% set entry_length = feed_entry.getItems()|length %}
       {% trans %}{{entry_length}} documents{% endtrans %}
     </p>
     <ul class="image_set">
-    {% for item in feed_entry.get_content() %}
-      <li class="image_box" id="item_{{item.get_id()}}">
-        <a href="{{ path('lightbox_ajax_load_feeditem', { 'entry_id' : feed_entry.get_id(), 'item_id' : item.get_id()}) }}">
-          {{thumbnail.format(item.get_record().get_thumbnail(), 80, 80, '', true, false)}}
+    {% for item in feed_entry.getItems() %}
+      <li class="image_box" id="item_{{item.getId()}}">
+        <a href="{{ path('lightbox_ajax_load_feeditem', { 'entry_id' : feed_entry.getId(), 'item_id' : item.getId()}) }}">
+          {{thumbnail.format(item.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
           </a>
-          <input type="hidden" class="display_id" name="display_id" value="{{item.get_ord()}}" />
+          <input type="hidden" class="display_id" name="display_id" value="{{item.getOrd()}}" />
       </li>
     {% endfor %}
     </ul>

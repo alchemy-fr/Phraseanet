@@ -305,6 +305,8 @@ class appbox extends base
         $upgrader->set_current_message(_('Creating new tables'));
         //create schema
 
+        $app['phraseanet.pre-schema-upgrader']->apply($app);
+
         if ($app['EM']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
             $tool = new \Doctrine\ORM\Tools\SchemaTool($app['EM']);
             $metas = $app['EM']->getMetadataFactory()->getAllMetadata();

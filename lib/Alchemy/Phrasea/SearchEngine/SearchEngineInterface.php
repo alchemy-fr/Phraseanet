@@ -16,6 +16,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
+use Entities\FeedEntry;
 
 interface SearchEngineInterface
 {
@@ -131,29 +132,29 @@ interface SearchEngineInterface
     /**
      * Add an entry to index
      *
-     * @param  \Feed_Entry_Adapter   $entry
+     * @param  FeedEntry             $entry
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
-    public function addFeedEntry(\Feed_Entry_Adapter $entry);
+    public function addFeedEntry(FeedEntry $entry);
 
     /**
      * Remove an entry to index
      *
-     * @param  \Feed_Entry_Adapter   $entry
+     * @param  FeedEntry             $entry
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
-    public function removeFeedEntry(\Feed_Entry_Adapter $entry);
+    public function removeFeedEntry(FeedEntry $entry);
 
     /**
      * Update an entry in the index
      *
-     * @param  \Feed_Entry_Adapter   $entry
+     * @param  FeedEntry             $entry
      * @return SearchEngineInterface
      * @throws RuntimeException
      */
-    public function updateFeedEntry(\Feed_Entry_Adapter $entry);
+    public function updateFeedEntry(FeedEntry $entry);
 
     /**
      * Set options to search-engine

@@ -84,6 +84,7 @@ use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
+use Alchemy\Phrasea\Core\Provider\FeedServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Geonames\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\InstallerServiceProvider;
@@ -200,6 +201,7 @@ class Application extends SilexApplication
         $this->register(new ImagineServiceProvider());
         $this->register(new JMSSerializerServiceProvider());
         $this->register(new FFMpegServiceProvider());
+        $this->register(new FeedServiceProvider());
         $this->register(new FilesystemServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());

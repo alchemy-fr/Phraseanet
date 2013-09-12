@@ -175,30 +175,30 @@ class record_preview extends record_adapter
                 }
                 break;
             case "FEED":
-                $entry = Feed_Entry_Adapter::load_from_id($app, $contId);
+                $entry = $app['EM']->getRepository('Entities\FeedEntry')->find($contId);
 
                 $this->container = $entry;
-                $this->total = count($entry->get_content());
+                $this->total = count($entry->getItems());
                 $i = 0;
                 $first = true;
 
-                foreach ($entry->get_content() as $element) {
+                foreach ($entry->getItems() as $element) {
                     $i ++;
                     if ($first) {
-                        $sbas_id = $element->get_record()->get_sbas_id();
-                        $record_id = $element->get_record()->get_record_id();
+                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
+                        $record_id = $element->getRecord($this->app)->get_record_id();
+                        $this->name = $entry->getTitle();
                         $this->original_item = $element;
-                        $this->name = $entry->get_title();
-                        $number = $element->get_ord();
+                        $number = $element->getOrd();
                     }
                     $first = false;
 
-                    if ($element->get_ord() == $pos) {
-                        $sbas_id = $element->get_record()->get_sbas_id();
-                        $record_id = $element->get_record()->get_record_id();
+                    if ($element->getOrd() == $pos) {
+                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
+                        $record_id = $element->getRecord($this->app)->get_record_id();
+                        $this->name = $entry->getTitle();
                         $this->original_item = $element;
-                        $this->name = $entry->get_title();
-                        $number = $element->get_ord();
+                        $number = $element->getOrd();
                     }
                 }
                 break;

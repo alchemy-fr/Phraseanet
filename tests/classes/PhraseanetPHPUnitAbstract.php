@@ -4,6 +4,9 @@ use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\Common\DataFixtures\Loader;
+use Entities\AggregateToken;
+use Entities\Feed;
+use Entities\FeedToken;
 use Entities\User;
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -321,6 +324,138 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         } catch (\Exception $e) {
             $this->fail('Fail load one Basket : ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Insert one feed
+     *
+     * @return \Entities\Feed
+     */
+    protected function insertOneFeed(\User_Adapter $user, $title = null, $public = null)
+    {
+        try {
+            $feedFixture = new PhraseaFixture\Feed\LoadOneFeed();
+            $feedFixture->setUser($user);
+
+            if ($title !== null) {
+                $feedFixture->setTitle($title);
+            }
+
+            if ($public !== null) {
+                $feedFixture->setPublic($public);
+            }
+
+            $loader = new Loader();
+            $loader->addFixture($feedFixture);
+
+            $this->insertFixtureInDatabase($loader);
+
+            return $feedFixture->feed;
+        } catch (\Exception $e) {
+            $this->fail('Fail to load one Feed : ' . $e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @return \Entities\FeedEntry
+     */
+    protected function insertOneFeedEntry(\User_Adapter $user)
+    {
+        try {
+            $feed = $this->insertOneFeed($user);
+
+            $em = self::$DI['app']['EM'];
+
+            $entry = new \Entities\FeedEntry();
+            $entry->setFeed($feed);
+            $entry->setTitle("test");
+            $entry->setSubtitle("description");
+            $entry->setAuthorName('user');
+            $entry->setAuthorEmail('user@email.com');
+
+            $publisher = $feed->getPublisher($user);
+
+            if ($publisher !== null) {
+                $entry->setPublisher($publisher);
+            }
+
+            $feed->addEntry($entry);
+
+            $em->persist($entry);
+            $em->persist($feed);
+
+            $em->flush();
+
+            return $entry;
+        } catch (\Exception $e) {
+            $this->fail('Fail to load one FeedEntry : ' . $e->getMessage());
+        }
+    }
+
+    protected function insertOneFeedToken(Feed $feed, \User_Adapter $user)
+    {
+        try {
+            $token = new FeedToken();
+            $token->setValue(self::$DI['app']['tokens']->generatePassword(12));
+            $token->setFeed($feed);
+            $token->setUsrId($user->get_id());
+
+            $feed->addToken($token);
+
+            self::$DI['app']['EM']->persist($token);
+            self::$DI['app']['EM']->persist($feed);
+            self::$DI['app']['EM']->flush();
+        } catch (\Exception $e) {
+            $this->fail('Fail to load one FeedToken : ' . $e->getMessage());
+        }
+
+        return $token;
+    }
+
+    protected function insertOneAggregateToken(\User_Adapter $user)
+    {
+        try {
+            $token = new AggregateToken();
+            $token->setValue(self::$DI['app']['tokens']->generatePassword(12));
+            $token->setUsrId($user->get_id());
+
+            self::$DI['app']['EM']->persist($token);
+            self::$DI['app']['EM']->flush();
+        } catch (\Exception $e) {
+            $this->fail('Fail to load one AggregateToken : ' . $e->getMessage());
+        }
+
+        return $token;
+    }
+
+    /**
+     *
+     * @return \Entities\FeedItem
+     */
+    protected function insertOneFeedItem(\User_Adapter $user)
+    {
+        try {
+            $entry = $this->insertOneFeedEntry($user);
+
+            $item = new \Entities\FeedItem();
+            $item->setEntry($entry);
+            $item->setRecordId(self::$DI['record_1']->get_record_id());
+            $item->setSbasId(self::$DI['record_1']->get_sbas_id());
+
+            $entry->addItem($item);
+
+            $em = self::$DI['app']['EM'];
+
+            $em->persist($entry);
+            $em->persist($item);
+
+            $em->flush();
+        } catch (\Exception $e) {
+            $this->fail('Fail to load one FeedEntry : ' . $e->getMessage());
+        }
+
+        return $item;
     }
 
     /**
