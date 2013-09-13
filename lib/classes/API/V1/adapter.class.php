@@ -406,6 +406,9 @@ class API_V1_adapter extends API_V1_Abstract
                 'navigator'    => array(
                     'active'   => $registry->get('GV_client_navigator'),
                 ),
+                'office-plugin' => array(
+                    'active'    => $registry->get('GV_client_navigator'),
+                ),
                 'homepage' => array(
                     'viewType' => $registry->get('GV_home_publi'),
                 ),
