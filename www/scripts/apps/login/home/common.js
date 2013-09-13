@@ -28,6 +28,7 @@ define([
             buttonClass: 'btn btn-inverse',
             maxHeight: 185,
             includeSelectAllOption: true,
+            selectAllValue: 'all',
             selectAllText: i18n.t("all_collections"),
             buttonText: function(options, select) {
                 if (options.length === 0) {
@@ -40,6 +41,10 @@ define([
                     }) + ' <b class="caret"></b>';
                 }
             }
+        });
+        $('form[name="registerForm"]').on('submit', function () {
+            // must deselect the "select all" checkbox for server side validation.
+            $("select[multiple='multiple']").multiselect('deselect', 'all');
         });
     };
 
