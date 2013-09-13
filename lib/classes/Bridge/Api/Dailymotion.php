@@ -582,7 +582,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     {
         switch ($record->get_type()) {
             case self::ELEMENT_TYPE_VIDEO :
-                $url_file = $this->_api->uploadFile($record->get_hd_file()->getRealPath(), $this->oauth_token);
+                $url_file = $this->_api->uploadFileWithToken($record->get_hd_file()->getRealPath(), $this->oauth_token);
                 $options = array_merge(array('url'  => $url_file), $options);
                 $video = $this->_api->call('POST /me/videos', $options, $this->oauth_token);
 
