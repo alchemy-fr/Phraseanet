@@ -35,7 +35,7 @@ abstract class EditorTestCase extends \PhraseanetPHPUnitAbstract
     public function testThatFacilityThrowsANotFoundInCaseOfFailure()
     {
         $editor = $this->getEditor();
-        $editor->facility(new Request());
+        $editor->facility(self::$DI['app'], new Request());
     }
 
     public function testGetDefaultSettingsWithConfiguration()
