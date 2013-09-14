@@ -311,6 +311,22 @@
             <data key="activated">1</data>
             <data key="grant_password">1</data>
           </default>
+          <default>
+            <data key="application_id">null</data>
+            <data key="creator">null</data>
+            <data key="type">desktop</data>
+            <data key="name">office-plugin</data>
+            <data key="description"></data>
+            <data key="website">http://www.phraseanet.com</data>
+            <data key="created_on">NOW()</data>
+            <data key="last_modified">NOW()</data>
+            <data key="client_id">\alchemy\phraseanet\id\999585175b5fbb6e140efbdfea86c561</data>
+            <data key="client_secret">\alchemy\phraseanet\secret\6d53d0bc74e6c8c1a325541f71da1ea5</data>
+            <data key="nonce">AfCF61</data>
+            <data key="redirect_uri">urn:ietf:wg:oauth:2.0:oob</data>
+            <data key="activated">1</data>
+            <data key="grant_password">1</data>
+          </default>
         </defaults>
         <engine>InnoDB</engine>
       </table>
