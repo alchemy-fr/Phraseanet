@@ -45,6 +45,10 @@
         host configuration depending on Phraseanet configuration
   - Phraseanet enabled languages is now configurable.
 
+* 3.7.15 (2013-09-14)
+
+  - Add Office Plugin client id and secret.
+
 * 3.7.14 (2013-07-23)
 
   - BugFix : Multi layered images are not rendered properly.
