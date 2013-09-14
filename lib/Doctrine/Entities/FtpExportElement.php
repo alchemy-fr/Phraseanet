@@ -18,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(
  *      name="FtpExportElements",
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="unique_ftp_export", columns={"export_id","base_id","record_id"})
+ *          @ORM\UniqueConstraint(name="unique_ftp_export", columns={"export_id","base_id","record_id", "subdef"})
  *      },
  *      indexes={
  *          @ORM\index(name="done", columns={"done"}),
@@ -109,7 +109,7 @@ class FtpExportElement
      * Set recordId
      *
      * @param  integer          $recordId
-     * 
+     *
      * @return FtpExportElement
      */
     public function setRecordId($recordId)
@@ -133,7 +133,7 @@ class FtpExportElement
      * Set baseId
      *
      * @param  integer          $baseId
-     * 
+     *
      * @return FtpExportElement
      */
     public function setBaseId($baseId)
@@ -157,7 +157,7 @@ class FtpExportElement
      * Set subdef
      *
      * @param  string           $subdef
-     * 
+     *
      * @return FtpExportElement
      */
     public function setSubdef($subdef)
@@ -181,7 +181,7 @@ class FtpExportElement
      * Set filename
      *
      * @param  string           $filename
-     * 
+     *
      * @return FtpExportElement
      */
     public function setFilename($filename)
@@ -205,7 +205,7 @@ class FtpExportElement
      * Set folder
      *
      * @param  string           $folder
-     * 
+     *
      * @return FtpExportElement
      */
     public function setFolder($folder)
@@ -229,7 +229,7 @@ class FtpExportElement
      * Set error
      *
      * @param  boolean          $error
-     * 
+     *
      * @return FtpExportElement
      */
     public function setError($error)
@@ -253,7 +253,7 @@ class FtpExportElement
      * Set done
      *
      * @param  boolean          $done
-     * 
+     *
      * @return FtpExportElement
      */
     public function setDone($done)
@@ -277,7 +277,7 @@ class FtpExportElement
      * Set businessfields
      *
      * @param  boolean          $businessfields
-     * 
+     *
      * @return FtpExportElement
      */
     public function setBusinessfields($businessfields)
@@ -301,7 +301,7 @@ class FtpExportElement
      * Set created
      *
      * @param  \DateTime        $created
-     * 
+     *
      * @return FtpExportElement
      */
     public function setCreated(\DateTime $created)
@@ -325,7 +325,7 @@ class FtpExportElement
      * Set updated
      *
      * @param  \DateTime        $updated
-     * 
+     *
      * @return FtpExportElement
      */
     public function setUpdated(\DateTime $updated)
@@ -349,7 +349,7 @@ class FtpExportElement
      * Set export
      *
      * @param  FtpExport $export
-     * 
+     *
      * @return FtpExportElement
      */
     public function setExport(FtpExport $export = null)
