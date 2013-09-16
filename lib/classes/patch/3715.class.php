@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 class patch_3715 implements patchInterface
 {
     /**
@@ -48,14 +50,12 @@ class patch_3715 implements patchInterface
     /**
      * @param base $databox
      */
-    public function apply(base &$appbox)
+    public function apply(base $appbox, Application $app)
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-
         try {
-            \API_OAuth2_Application::load_from_client_id($appbox, \API_OAuth2_Application_OfficePlugin::CLIENT_ID);
+            \API_OAuth2_Application::load_from_client_id($app, \API_OAuth2_Application_OfficePlugin::CLIENT_ID);
         } catch (\Exception_NotFound $e) {
-            $client = \API_OAuth2_Application::create($appbox, null, \API_OAuth2_Application_OfficePlugin::CLIENT_NAME);
+            $client = \API_OAuth2_Application::create($app, null, \API_OAuth2_Application_OfficePlugin::CLIENT_NAME);
 
             $client->set_activated(true);
             $client->set_grant_password(true);
