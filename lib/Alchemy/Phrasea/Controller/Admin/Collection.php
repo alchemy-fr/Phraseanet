@@ -1163,7 +1163,7 @@ class Collection implements ControllerProviderInterface
                     if ($vi && isset($structFields[$ki])) {
                         foreach ($vi->value as $oneValue) {
                             $suggestedValues[] = array(
-                                'key'   => $ki, 'value' => $f, 'name'  => $oneValue
+                                'key'   => $ki, 'value' => $f, 'name'  => (string) $oneValue
                             );
                             $f++;
                         }
