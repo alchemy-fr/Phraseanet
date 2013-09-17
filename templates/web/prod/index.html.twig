@@ -335,7 +335,7 @@
                                             <span>{% trans 'Trier par ' %}</span>
                                             <select name="sort" class="input-small">
                                                 {% for sort, sort_name in app['phraseanet.SE'].getAvailableSort() %}
-                                                <option value="{{ sort }}" {% if sort == app['phraseanet.SE'].getDefaultSort() %}selected="selected"{% endif %}>{{ sort_name }}</option>
+                                                <option value="{{ sort }}" {% if sort == app['phraseanet.SE'].getDefaultSort() %}selected="selected" class="default-selection"{% endif %}>{{ sort_name }}</option>
                                                 {% endfor %}
                                             </select>
                                             <select name="ord" class="input-medium">
