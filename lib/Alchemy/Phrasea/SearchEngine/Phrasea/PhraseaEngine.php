@@ -120,6 +120,16 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
+    public function isStemmingEnabled()
+    {
+        $configuration = $this->getConfiguration();
+
+        return (Boolean) $configuration['stemming_enabled'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getAvailableOrder()
     {
         return array(
@@ -440,7 +450,7 @@ class PhraseaEngine implements SearchEngineInterface
     private function getSuggestions($query)
     {
         $suggestions = array();
-        
+
         if ($this->qp && isset($this->qp['main'])) {
             $suggestions = array_map(function ($value) use ($query) {
                 return new SearchEngineSuggestion($query, $value['value'], $value['hits']);
