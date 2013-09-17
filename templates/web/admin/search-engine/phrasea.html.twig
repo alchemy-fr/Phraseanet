@@ -4,6 +4,10 @@
 
 <form method="post" action="{{ path('admin_searchengine_post') }}">
     <fieldset>
+        <legend>{% trans 'Stemming' %}</legend>
+        {% trans 'Enable stemming' %} <input type="checkbox" name="stemming_enabled" value="1" {% if configuration['stemming_enabled'] %}checked="checked"{% endif %} />
+    </fieldset>
+    <fieldset>
         <legend>{% trans 'Default sort' %}</legend>
         <select name="default_sort">
             {% for sort, sort_name in available_sort %}
