@@ -1165,11 +1165,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function reindex()
     {
-        $connbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
-        $sql = 'UPDATE record SET status=(status & ~7 | 4)
-            WHERE record_id= :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $this->record_id));
+        $this->app['phraseanet.SE']->updateRecord($this);
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
         return $this;
