@@ -346,7 +346,7 @@
                                             {% if app['phraseanet.SE'].hasStemming() %}
                                             <div>
                                                 <label class="checkbox">
-                                                     <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
+                                                     <input type="checkbox" {% if app['phraseanet.SE'].isStemmingEnabled() %} checked="checked" {% endif %} name="stemme" /> {% trans 'rechercher par stemme' %}
                                                 </label>
                                             </div>
                                             {% endif %}
