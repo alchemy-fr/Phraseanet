@@ -31,7 +31,13 @@ return call_user_func(function($environment = PhraseaApplication::ENV_PROD) {
 
     $app->before(function (Request $request) use ($app) {
         if (0 === strpos($request->getPathInfo(), '/setup')) {
-            if (!$app['phraseanet.configuration-tester']->isBlank()) {
+            if (!$app['phraseanet.configuration-tester']->isInstalled()) {
+                if (!$app['phraseanet.configuration-tester']->isBlank()) {
+                    if ('setup_upgrade_instructions' !== $app['request']->attributes->get('_route')) {
+                        return $app->redirectPath('setup_upgrade_instructions');
+                    }
+                }
+            } elseif (!$app['phraseanet.configuration-tester']->isBlank()) {
                 return $app->redirectPath('homepage');
             }
         } else {

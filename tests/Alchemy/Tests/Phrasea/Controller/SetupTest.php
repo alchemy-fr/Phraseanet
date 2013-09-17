@@ -40,6 +40,9 @@ class SetupTest extends \Silex\WebTestCase
     public function testRouteSlashWhenInstalled()
     {
         $this->app['phraseanet.configuration-tester']->expects($this->once())
+            ->method('isInstalled')
+            ->will($this->returnValue(true));
+        $this->app['phraseanet.configuration-tester']->expects($this->once())
             ->method('isBlank')
             ->will($this->returnValue(false));
 
@@ -48,6 +51,22 @@ class SetupTest extends \Silex\WebTestCase
         $response = $client->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/login/', $response->headers->get('location'));
+    }
+
+    public function testRouteInstructionsWhenUpgradeRequired()
+    {
+        $this->app['phraseanet.configuration-tester']->expects($this->once())
+            ->method('isInstalled')
+            ->will($this->returnValue(false));
+        $this->app['phraseanet.configuration-tester']->expects($this->once())
+            ->method('isBlank')
+            ->will($this->returnValue(false));
+
+        $client = $this->createClient();
+        $crawler = $client->request('GET', '/setup/');
+        $response = $client->getResponse();
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('/setup/upgrade-instructions/', $response->headers->get('location'));
     }
 
     public function testRouteSetupInstaller()

@@ -37,6 +37,9 @@ class Setup implements ControllerProviderInterface
         $controllers->get('/installer/', 'controller.setup:rootInstaller')
             ->bind('install_root');
 
+        $controllers->get('/upgrade-instructions/', 'controller.setup:displayUpgradeInstructions')
+            ->bind('setup_upgrade_instructions');
+
         $controllers->get('/installer/step2/', 'controller.setup:getInstallForm')
             ->bind('install_step2');
 
@@ -68,6 +71,14 @@ class Setup implements ControllerProviderInterface
             new PhraseaRequirements(),
             new SystemRequirements(),
         );
+    }
+
+    public function displayUpgradeInstructions(Application $app, Request $request)
+    {
+        return $app['twig']->render('/setup/upgrade-instructions.html.twig', array(
+            'locale'              => $app['locale'],
+            'available_locales'   => Application::getAvailableLanguages(),
+        ));
     }
 
     public function getInstallForm(Application $app, Request $request)
