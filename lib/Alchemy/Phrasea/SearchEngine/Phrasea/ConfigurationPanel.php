@@ -44,7 +44,6 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
         $params = array(
             'configuration' => $configuration,
-            'date_fields'   => $this->getAvailableDateFields($app['phraseanet.appbox']->get_databoxes()),
             'available_sort'=> $this->searchEngine->getAvailableSort(),
         );
 

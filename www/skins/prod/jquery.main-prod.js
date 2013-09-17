@@ -197,7 +197,7 @@ function checkFilters(save)
 
     switches.filter('option:selected, input:checked').addClass('was');
 
-    $('#sbasfiltercont select option:selected').removeAttr('selected').selected(false);
+    $('#sbasfiltercont select option:selected:not(".default-selection")').removeAttr('selected').selected(false);
 
     $('#sbasfiltercont select option.field_switch').hide();
 
