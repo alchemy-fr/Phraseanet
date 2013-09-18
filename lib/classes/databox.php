@@ -148,7 +148,7 @@ class databox extends base
         }
 
         if (!$row) {
-            throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
+            throw new NotFoundHttpException(sprintf('databox %d not found', $this->id));
         }
 
         $this->ord = $row['ord'];
