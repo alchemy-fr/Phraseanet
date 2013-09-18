@@ -223,16 +223,16 @@ function pquit(){
 
 function resize(){
 
-	var h = bodySize.y = $(window).height() - $('#mainMenu').outerHeight();
-	var w = bodySize.x = $(window).width();
+	var h = bodySize.y = $(document).height() - $('#mainMenu').outerHeight();
+	var w = bodySize.x = $(document).width();
 
 
 	controlPubliSize();
 	var rightw = w - 265;
 	rightw = ((rightw) > 0) ? rightw : 0;
 
-	$('#container').height($(window).height());
-	$('#container').width($(window).width());
+	$('#container').height($(document).height());
+	$('#container').width($(document).width());
 	$('#right').width(rightw);
 
 	$('#answers').height(h - $('#nb_answersEXT').outerHeight() - $('#navigation').outerHeight() - 20);
