@@ -60,6 +60,11 @@ interface SearchEngineInterface
     public function getDefaultSort();
 
     /**
+     * @return string The default sort
+     */
+    public function isStemmingEnabled();
+
+    /**
      * @return array an array containing sort order values as key and sort order names as value
      */
     public function getAvailableOrder();

@@ -2190,6 +2190,7 @@ DIV.thesaurus DIV.c {
     BACKGROUND-COLOR: #F0F0F0;
     cursor: pointer;
     color: black;
+    line-height:10px;
 }
 
 #idFrameE DIV.thesaurus B {

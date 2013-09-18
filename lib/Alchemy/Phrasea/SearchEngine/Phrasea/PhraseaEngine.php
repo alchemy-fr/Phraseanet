@@ -121,6 +121,16 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
+    public function isStemmingEnabled()
+    {
+        $configuration = $this->getConfiguration();
+
+        return (Boolean) $configuration['stemming_enabled'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getAvailableOrder()
     {
         return array(

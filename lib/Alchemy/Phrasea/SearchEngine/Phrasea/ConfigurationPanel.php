@@ -44,7 +44,6 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
         $params = array(
             'configuration' => $configuration,
-            'date_fields'   => $this->getAvailableDateFields($app['phraseanet.appbox']->get_databoxes()),
             'available_sort'=> $this->searchEngine->getAvailableSort(),
         );
 
@@ -64,6 +63,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
         }
 
         $configuration['default_sort'] = $request->request->get('default_sort');
+        $configuration['stemming_enabled'] = (int) (Boolean) $request->request->get('stemming_enabled');
 
         $this->saveConfiguration($configuration);
 
@@ -87,6 +87,10 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
         if (!isset($configuration['default_sort'])) {
             $configuration['default_sort'] = null;
+        }
+
+        if (!isset($configuration['stemming_enabled'])) {
+            $configuration['stemming_enabled'] = false;
         }
 
         return $configuration;

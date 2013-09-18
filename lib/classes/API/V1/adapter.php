@@ -400,7 +400,7 @@ class API_V1_adapter extends API_V1_Abstract
                     'active'   => $app['phraseanet.registry']->get('GV_client_navigator'),
                 ),
                 'office-plugin' => array(
-                    'active'    => $registry->get('GV_client_navigator'),
+                    'active'    => $app['phraseanet.registry']->get('GV_client_navigator'),
                 ),
                 'homepage' => array(
                     'viewType' => $app['phraseanet.registry']->get('GV_home_publi'),

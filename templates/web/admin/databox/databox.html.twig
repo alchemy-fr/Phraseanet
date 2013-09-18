@@ -286,6 +286,7 @@
                 }
             }
         });
+        setTimeout("refreshDatabaseInformations();", 10000);
     }
 
     $(document).ready(function(){
@@ -364,8 +365,6 @@
                 }
             });
         }
-
-        setTimeout("refreshDatabaseInformations();", 6000);
 
         $('#fileupload').fileupload({
             dataType: 'html',

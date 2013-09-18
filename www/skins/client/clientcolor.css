@@ -7,7 +7,7 @@
 
 *{
 margin:0;
-padding:0;	
+padding:0;
 }
 img{
 	border:none;
@@ -28,7 +28,7 @@ img{
 
 .ui-tabs .ui-tabs-nav li a
 {
-	padding:3px 5px 0;	
+	padding:3px 5px 0;
 }
 
 
@@ -90,7 +90,7 @@ img{
 }
 .ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a
 {
-	cursor: pointer; 
+	cursor: pointer;
 }
 .ui-tabs .ui-tabs-panel
 {
@@ -99,14 +99,14 @@ img{
 	display: block;
 	border-width:0;
 	padding:0px;
-	background-color:#404040;	
+	background-color:#404040;
 }
 .ui-tabs .ui-tabs-panel.tabBox{
 	height:310px;
 	overflow:auto;
-	position:relative;	
+	position:relative;
 	padding:10px;
-	
+
 }
 .ui-tabs .ui-tabs-hide
 {
@@ -114,9 +114,9 @@ img{
 }
 .ui-state-default, .ui-widget-content .ui-state-default
 {
-	background:none;	
+	background:none;
 }
-.ui-tabs li.ui-state-active a, .ui-state-active a:link, .ui-state-active a 
+.ui-tabs li.ui-state-active a, .ui-state-active a:link, .ui-state-active a
 {
 	color:#b2b2b2;
 	font-weight:bold;
@@ -124,21 +124,21 @@ img{
 }
 .ui-state-active, .ui-widget-content .ui-state-active
 {
-	background:none;	
+	background:none;
 }
 
 .ui-widget-content
 {
-	background-image:none;	
+	background-image:none;
 	background-color:transparent;
 }
 .ui-dialog.ui-widget-content
-{	
+{
 	background-color:#111111;
 }
 .ui-accordion .ui-accordion-content
 {
-	padding:0;	
+	padding:0;
 }
 .ui-accordion .ui-accordion-header, .ui-accordion .ui-accordion-content
 {
@@ -148,7 +148,7 @@ img{
 {
 	border:none;
 	background-image:url(../../icons/bask_back.png);
-	background-repeat:repeat-x;	
+	background-repeat:repeat-x;
 	margin-bottom:0;
 	height:20px;
 }
@@ -228,7 +228,7 @@ DIV.onglets SPAN
     padding:4px 2px;
     MARGIN-RIGHT: 2px;
     BACKGROUND-COLOR: #C9C9C9;
-    
+
     FONT-WEIGHT: normal;
 		COLOR: #FFFFFF;
     TEXT-DECORATION: none;
@@ -240,7 +240,7 @@ DIV.onglets SPAN.hover{
 }
 DIV.onglets SPAN.actif
 {
-    
+
     Z-INDEX: 3;
     BACKGROUND-COLOR: #FFFFFF;
     -moz-border-radius-topleft:3px;
@@ -344,12 +344,12 @@ DIV.onglets SPAN.inactif A
 #idongTopic LI A.opened
 {
 	display:inline-block;
-	background-image: url(../icons/tri_minus.gif); 
+	background-image: url(../icons/tri_minus.gif);
 }
 #idongTopic LI A.closed
 {
 	display:inline-block;
-	background-image: url(../icons/tri_plus.gif); 
+	background-image: url(../icons/tri_plus.gif);
 }
 #idongTopic LI SPAN
 {
@@ -361,16 +361,16 @@ DIV.onglets SPAN.inactif A
 #idongTopic LI SPAN.static
 {
 	display:inline-block;
-	background-image: url(../icons/tri_static.gif); 
+	background-image: url(../icons/tri_static.gif);
 }
 #idongTopic LI SPAN.none
 {
 	display:inline-block;
-	background-image: none; 
+	background-image: none;
 }
 
 #idongTopic div.searchZonePop{
-	
+
 	background-color:#E9E9E9;
 }
 #idongTopic div.searchZone
@@ -420,7 +420,7 @@ DIV.onglets SPAN.inactif A
 .basTitle{
 	font-weight:bold;
 	text-align:center;
-	cursor:pointer;	
+	cursor:pointer;
 	}
 .basContTitle{
 	background-color:#C9C9C9;
@@ -431,7 +431,7 @@ input.datepicker{
 }
 img.ui-datepicker-trigger{
 	margin:2px 0;
-	vertical-align:bottom;	
+	vertical-align:bottom;
 	cursor:pointer;
 }
 .base_filter{
@@ -470,7 +470,7 @@ img.ui-datepicker-trigger{
 
 }
 .basesGrp input{
-	border:none;	
+	border:none;
 }
 .basGrp div{
 	padding:2px;
@@ -493,7 +493,7 @@ img.ui-datepicker-trigger{
 .bodynochu
 {
 	BACKGROUND-COLOR: #E9E9E9;
-	OVERFLOW : hidden; 
+	OVERFLOW : hidden;
 }
 .txtPushClient
 {
@@ -520,7 +520,7 @@ img.ui-datepicker-trigger{
 .diapochu .tools
 {
 	FONT-SIZE:8px;
-	TEXT-ALIGN: right; 
+	TEXT-ALIGN: right;
 	height:16px;
 }
 .flechenochu			/*** page  ***/
@@ -534,7 +534,7 @@ img.ui-datepicker-trigger{
 	width:19px;
 	height:14px;
 	float:left;
-	
+
 }
 #flechechu{
 	background-image:url(../icons/light_haut.gif);
@@ -607,6 +607,7 @@ img.ui-datepicker-trigger{
 
 #grid,#grid tr, #grid td{
 	z-index:50;
+        text-align:center;
 }
 .diapo
 {
@@ -932,7 +933,7 @@ span.sel
 
 #PREVIEWBOX A.bounce
 {
-	BORDER-BOTTOM:#ffe000 1px dashed;	
+	BORDER-BOTTOM:#ffe000 1px dashed;
 }
 .PREVIEW_PIC,.PREVIEW_HD{
 

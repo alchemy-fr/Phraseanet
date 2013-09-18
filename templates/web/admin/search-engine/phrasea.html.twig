@@ -4,13 +4,8 @@
 
 <form method="post" action="{{ path('admin_searchengine_post') }}">
     <fieldset>
-        <legend>{% trans 'Date fields available for search' %}</legend>
-        {% for field in date_fields %}
-            <label class="checkbox">
-                <input type="checkbox" name="date_fields[]" value="{{ field }}" {% if field in configuration['date_fields'] %}checked="checked"{% endif %} >
-                {{ field }}
-            </label>
-        {% endfor %}
+        <legend>{% trans 'Stemming' %}</legend>
+        {% trans 'Enable stemming' %} <input type="checkbox" name="stemming_enabled" value="1" {% if configuration['stemming_enabled'] %}checked="checked"{% endif %} />
     </fieldset>
     <fieldset>
         <legend>{% trans 'Default sort' %}</legend>

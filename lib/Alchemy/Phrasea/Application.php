@@ -606,6 +606,14 @@ class Application extends SilexApplication
                 $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
                 $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
                 $twig->addFilter('AppName', new \Twig_Filter_Function('Alchemy\Phrasea\Controller\Admin\ConnectedUsers::appName'));
+                $twig->addFilter(new \Twig_SimpleFilter('escapeSimpleQuote', function ($value) {
+                    $ret = str_replace("'", "\'", $value);
+
+                    return $ret;
+                }));
+                $twig->addFilter(new \Twig_SimpleFilter('escapeDoubleQuote', function ($value) {
+                    return str_replace('"', '\"', $value);
+                }));
 
                 return $twig;
             })

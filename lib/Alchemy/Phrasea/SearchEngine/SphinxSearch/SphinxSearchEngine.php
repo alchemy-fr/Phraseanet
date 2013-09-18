@@ -113,6 +113,14 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
+    public function isStemmingEnabled()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getAvailableSort()
     {
         return array(

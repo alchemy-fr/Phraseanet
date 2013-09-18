@@ -38,7 +38,7 @@ class ComposerInstall extends Command
         $composer->command('self-update');
         $output->writeln("<comment>OK</comment>");
 
-        $commands = array('install', '--optimize-autoloader');
+        $commands = array('install', '--optimize-autoloader', '--quiet', '--no-interaction');
         if ($input->getOption('prefer-source')) {
             $commands[] = '--prefer-source';
         }
