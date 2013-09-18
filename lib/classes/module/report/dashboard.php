@@ -54,7 +54,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
      * @desc la periode par defaut d'affichage du dashboard
      * @var <string>
      */
-    public $periode = '-1 month';
+    public $periode = '-5 days';
 
     /**
      * @desc le sbasid de la base ou on effectue le report
@@ -168,7 +168,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
     {
         return $this->dashboard;
     }
-
+    
     /**
      * @desc construct the legend for charts
      * if dmax  === false dmax = now();
@@ -276,7 +276,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
                 $listeColl[] = (int) $value['coll_id'];
             }
 
-            $this->authorizedCollection[] = array(
+            $this->authorizedCollection[(int) $sbas] = array(
                 'sbas_id' => (int) $sbas,
                 'coll'    => implode(',', $listeColl),
                 'name'    => phrasea::sbas_labels($sbas, $this->app)
