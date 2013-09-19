@@ -19,6 +19,8 @@ class MailInfoValidationRequest extends AbstractMailWithLink
     private $title;
     /** @var \User_Adapter */
     private $user;
+    /** @var integer */
+    private $duration;
 
     /**
      * Sets the title of the validation
@@ -38,6 +40,11 @@ class MailInfoValidationRequest extends AbstractMailWithLink
     public function setUser($user)
     {
         $this->user = $user;
+    }
+
+    public function setDuration($duration)
+    {
+        $this->duration = (int) $duration;
     }
 
     /**
@@ -60,6 +67,14 @@ class MailInfoValidationRequest extends AbstractMailWithLink
      */
     public function getMessage()
     {
+        if (0 < $this->duration) {
+            if (1 < $this->duration) {
+                return $this->message . "\n\n" . "You have 1 day to validate the selection.";
+            } else {
+                return $this->message . "\n\n" . sprintf(_("You have %d days to validate the selection.", $this->duration));
+            }
+        }
+
         return $this->message;
     }
 
@@ -68,7 +83,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return _('Validate');
+        return _('Start validation');
     }
 
     /**
