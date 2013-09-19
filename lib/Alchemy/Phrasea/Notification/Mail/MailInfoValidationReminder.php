@@ -56,7 +56,7 @@ class MailInfoValidationReminder extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return _('Validate');
+        return _('Start validation');
     }
 
     /**

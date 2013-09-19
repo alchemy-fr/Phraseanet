@@ -433,15 +433,16 @@ class Push implements ControllerProviderInterface
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
 
                     $params = array(
-                        'from'       => $app['authentication']->getUser()->get_id()
-                        , 'from_email' => $app['authentication']->getUser()->get_email()
-                        , 'to'         => $participant_user->get_id()
-                        , 'to_email'   => $participant_user->get_email()
-                        , 'to_name'    => $participant_user->get_display_name()
-                        , 'url'        => $url
-                        , 'accuse'     => $receipt
-                        , 'message'    => $request->request->get('message')
-                        , 'ssel_id'    => $Basket->getId()
+                        'from'       => $app['authentication']->getUser()->get_id(),
+                        'from_email' => $app['authentication']->getUser()->get_email(),
+                        'to'         => $participant_user->get_id(),
+                        'to_email'   => $participant_user->get_email(),
+                        'to_name'    => $participant_user->get_display_name(),
+                        'url'        => $url,
+                        'accuse'     => $receipt,
+                        'message'    => $request->request->get('message'),
+                        'ssel_id'    => $Basket->getId(),
+                        'duration'   => (int) $request->request->get('duration'),
                     );
 
                     $app['events-manager']->trigger('__PUSH_VALIDATION__', $params);
