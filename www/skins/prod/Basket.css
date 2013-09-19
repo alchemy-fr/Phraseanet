@@ -1,3 +1,9 @@
+#BasketBrowser h1 {
+    font-size: 14px;
+    line-height: 20px;
+    margin: 0;
+    padding: 0;
+}
 #BasketBrowser .Browser{
   background-color: #111111;
 }
@@ -12,6 +18,9 @@
 #BasketBrowser .result{
   position:relative;
   height:100px;
+}
+#BasketBrowser .result .PNB10 {
+    overflow: hidden;
 }
 
 #BasketBrowser .results .datas{
@@ -49,6 +58,7 @@
     box-shadow: none;
     line-height: 18px;
     text-align: center;
+    vertical-align:top;
 }
 
 #BasketBrowser .result td.thumbnail .counter{
