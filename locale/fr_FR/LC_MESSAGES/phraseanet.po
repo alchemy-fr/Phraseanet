@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-05 14:36+0100\n"
-"PO-Revision-Date: 2013-09-10 20:12+0100\n"
+"POT-Creation-Date: 2013-09-18 13:38+0100\n"
+"PO-Revision-Date: 2013-09-19 14:42+0100\n"
 "Last-Translator: Romain Neutron <imprec@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-09-10 17:56+0000\n"
+"X-Launchpad-Export-Date: 2013-09-18 18:02+0000\n"
 "X-Generator: Poedit 1.5.7\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
@@ -213,8 +213,8 @@ msgstr "Cette valeur ne peut être vide"
 msgid "Url non valide"
 msgstr "Url non valide"
 
-#: lib/classes/API/V1/adapter.php:1098 lib/classes/API/V1/adapter.php:1144
-#: lib/classes/API/V1/adapter.php:1194 lib/classes/API/V1/adapter.php:1218
+#: lib/classes/API/V1/adapter.php:1101 lib/classes/API/V1/adapter.php:1147
+#: lib/classes/API/V1/adapter.php:1197 lib/classes/API/V1/adapter.php:1221
 #: tmp/cache_twig/1b/30/753738c0c4f81bf7a9aba183affd.php:58
 #: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:46
 #: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:53
@@ -259,11 +259,11 @@ msgstr "Url non valide"
 msgid "An error occured"
 msgstr "Une erreur est survenue."
 
-#: lib/classes/API/V1/adapter.php:1192
+#: lib/classes/API/V1/adapter.php:1195
 msgid "Record Not Found"
 msgstr "Enregistrement non trouvé"
 
-#: lib/classes/API/V1/adapter.php:1216
+#: lib/classes/API/V1/adapter.php:1219
 msgid "Story Not Found"
 msgstr "Reportage inconnu"
 
@@ -1656,23 +1656,27 @@ msgstr ""
 "*Phraseanet Navigator* est une application mobile permettant à des "
 "utilisateurs de se connecter sur cette instance Phraseanet."
 
-#: lib/conf.d/_GV_template.inc.php:211
+#: lib/conf.d/_GV_template.inc.php:212
+msgid "Authorize Microsoft Office Plugin to connect."
+msgstr "Autoriser la connexion d'un plugin Microsoft Office"
+
+#: lib/conf.d/_GV_template.inc.php:218
 msgid "Documents storage"
 msgstr "Stockage de documents"
 
-#: lib/conf.d/_GV_template.inc.php:217
+#: lib/conf.d/_GV_template.inc.php:224
 msgid "Default path for datas"
 msgstr "Chemin par défaut pour les données"
 
-#: lib/conf.d/_GV_template.inc.php:223
+#: lib/conf.d/_GV_template.inc.php:230
 msgid "Executables settings"
 msgstr "Paramètres d'exécutables"
 
-#: lib/conf.d/_GV_template.inc.php:228
+#: lib/conf.d/_GV_template.inc.php:235
 msgid "Enable H264 stream mode"
 msgstr "Activer H264 en mode flux continu (lecture en streaming)"
 
-#: lib/conf.d/_GV_template.inc.php:229
+#: lib/conf.d/_GV_template.inc.php:236
 msgid ""
 "Use with mod_token. Attention requires the apache modules and "
 "mod_h264_streaming mod_auth_token"
@@ -1680,320 +1684,320 @@ msgstr ""
 "Utiliser avec mod_token (requiert les modules Apache mod_token, "
 "mod_auth_token et mod_h264_streaming)."
 
-#: lib/conf.d/_GV_template.inc.php:236
+#: lib/conf.d/_GV_template.inc.php:243
 msgid "Auth_token mount point"
 msgstr "Point de montage Auth_token"
 
-#: lib/conf.d/_GV_template.inc.php:243
+#: lib/conf.d/_GV_template.inc.php:250
 msgid "Auth_token directory path"
 msgstr "Chemin du répertoire Auth_token"
 
-#: lib/conf.d/_GV_template.inc.php:249
+#: lib/conf.d/_GV_template.inc.php:256
 msgid "Auth_token passphrase"
 msgstr "Passphrase Auth_token"
 
-#: lib/conf.d/_GV_template.inc.php:250
+#: lib/conf.d/_GV_template.inc.php:257
 msgid "Defined in Apache configuration"
 msgstr "Définie dans la configuration de Apache."
 
-#: lib/conf.d/_GV_template.inc.php:256
+#: lib/conf.d/_GV_template.inc.php:263
 msgid "php.ini path"
 msgstr "Chemin du répertoire de fichier php.ini"
 
-#: lib/conf.d/_GV_template.inc.php:257
+#: lib/conf.d/_GV_template.inc.php:264
 msgid "Empty if not used"
 msgstr "Vider si non utilisé."
 
-#: lib/conf.d/_GV_template.inc.php:264
+#: lib/conf.d/_GV_template.inc.php:271
 msgid "Imagine driver"
 msgstr "\"Imagine Driver\""
 
-#: lib/conf.d/_GV_template.inc.php:276
+#: lib/conf.d/_GV_template.inc.php:283
 msgid "Number of threads to use for FFMpeg"
 msgstr "Nombre de threads réservés à FFmpeg"
 
-#: lib/conf.d/_GV_template.inc.php:282
+#: lib/conf.d/_GV_template.inc.php:289
 msgid "Maximum number of pages to be extracted from PDF"
 msgstr "Nombre maximum de pages à extraire depuis les documents PDF"
 
-#: lib/conf.d/_GV_template.inc.php:287
+#: lib/conf.d/_GV_template.inc.php:294
 msgid "Main configuration"
 msgstr "Configuration principale"
 
-#: lib/conf.d/_GV_template.inc.php:292
+#: lib/conf.d/_GV_template.inc.php:299
 msgid "Admin email"
 msgstr "Adresse e-mail de l'administrateur"
 
-#: lib/conf.d/_GV_template.inc.php:298
+#: lib/conf.d/_GV_template.inc.php:305
 msgid "Display the name of databases and collections"
 msgstr "Afficher le nom des bases et collections"
 
-#: lib/conf.d/_GV_template.inc.php:305
+#: lib/conf.d/_GV_template.inc.php:312
 msgid "Choose the title of the document to export"
 msgstr "Choix du nom de fichier à l'export du document"
 
-#: lib/conf.d/_GV_template.inc.php:312
+#: lib/conf.d/_GV_template.inc.php:319
 msgid "Default export title"
 msgstr "Nom de fichier attribué par défaut"
 
-#: lib/conf.d/_GV_template.inc.php:315
+#: lib/conf.d/_GV_template.inc.php:322
 msgid "Document title"
 msgstr "Le titre du document"
 
-#: lib/conf.d/_GV_template.inc.php:316
+#: lib/conf.d/_GV_template.inc.php:323
 msgid "Original name"
 msgstr "Le nom de fichier original"
 
-#: lib/conf.d/_GV_template.inc.php:322
+#: lib/conf.d/_GV_template.inc.php:329
 msgid "Enable this setting to share on Facebook and Twitter"
 msgstr "Activer le partage sur Facebook et Twitter"
 
-#: lib/conf.d/_GV_template.inc.php:324
+#: lib/conf.d/_GV_template.inc.php:331
 msgid "Disabled"
 msgstr "Désactivé"
 
-#: lib/conf.d/_GV_template.inc.php:325
+#: lib/conf.d/_GV_template.inc.php:332
 msgid "Publishers"
 msgstr "Editeurs"
 
-#: lib/conf.d/_GV_template.inc.php:326
+#: lib/conf.d/_GV_template.inc.php:333
 msgid "Enabled"
 msgstr "Activé"
 
-#: lib/conf.d/_GV_template.inc.php:333
+#: lib/conf.d/_GV_template.inc.php:340
 msgid "Homepage"
 msgstr "Page d'acceuil"
 
-#: lib/conf.d/_GV_template.inc.php:339
+#: lib/conf.d/_GV_template.inc.php:346
 msgid "Homepage slideshow"
 msgstr "Diaporama de page d'accueil"
 
-#: lib/conf.d/_GV_template.inc.php:342
+#: lib/conf.d/_GV_template.inc.php:349
 msgid "Single image"
 msgstr "Image seule"
 
-#: lib/conf.d/_GV_template.inc.php:343
+#: lib/conf.d/_GV_template.inc.php:350
 msgid "Slide show"
 msgstr "Diaporama"
 
-#: lib/conf.d/_GV_template.inc.php:350
+#: lib/conf.d/_GV_template.inc.php:357
 msgid "Search engine"
 msgstr "Moteur de recherche"
 
-#: lib/conf.d/_GV_template.inc.php:356
+#: lib/conf.d/_GV_template.inc.php:363
 msgid "Minimum number of letters before truncation"
 msgstr "Nombre minimal de caractères avant la troncature"
 
-#: lib/conf.d/_GV_template.inc.php:357
+#: lib/conf.d/_GV_template.inc.php:364
 msgid "Used in search engine"
 msgstr "Utilisé dans le moteur de recherche."
 
-#: lib/conf.d/_GV_template.inc.php:363
+#: lib/conf.d/_GV_template.inc.php:370
 msgid "Default query"
 msgstr "Requête par défaut"
 
-#: lib/conf.d/_GV_template.inc.php:369
+#: lib/conf.d/_GV_template.inc.php:376
 msgid "Default searched type"
 msgstr "Type de média recherchés par défaut"
 
-#: lib/conf.d/_GV_template.inc.php:370
+#: lib/conf.d/_GV_template.inc.php:377
 msgid "Used when opening the application"
 msgstr "Utilisé à l'ouverture de l'application."
 
-#: lib/conf.d/_GV_template.inc.php:372
+#: lib/conf.d/_GV_template.inc.php:379
 msgid "Documents"
 msgstr "Documents"
 
-#: lib/conf.d/_GV_template.inc.php:373
+#: lib/conf.d/_GV_template.inc.php:380
 msgid "Stories"
 msgstr "Reportages"
 
-#: lib/conf.d/_GV_template.inc.php:379
+#: lib/conf.d/_GV_template.inc.php:386
 #: tmp/cache_twig/de/85/dcc2bacfb8cb7d5c27a964d9a960.php:312
 msgid "Report"
 msgstr "Afficher dans Phraseanet Report"
 
-#: lib/conf.d/_GV_template.inc.php:385
+#: lib/conf.d/_GV_template.inc.php:392
 msgid "Anonymous report"
 msgstr "Report anonyme"
 
-#: lib/conf.d/_GV_template.inc.php:386
+#: lib/conf.d/_GV_template.inc.php:393
 msgid "Hide information about users"
 msgstr "Masquer les informations à propos des utilisateurs."
 
-#: lib/conf.d/_GV_template.inc.php:392
+#: lib/conf.d/_GV_template.inc.php:399
 msgid "Additionnal modules"
 msgstr "Modules additionnels"
 
-#: lib/conf.d/_GV_template.inc.php:398
+#: lib/conf.d/_GV_template.inc.php:405
 msgid "Enable thesaurus"
 msgstr "Activer le thésaurus"
 
-#: lib/conf.d/_GV_template.inc.php:403
+#: lib/conf.d/_GV_template.inc.php:410
 msgid "Enable multi-doc mode"
 msgstr "Activer le mode multi-doc"
 
-#: lib/conf.d/_GV_template.inc.php:408
+#: lib/conf.d/_GV_template.inc.php:415
 msgid "Enable HD substitution"
 msgstr "Activer la substitution de documents sources"
 
-#: lib/conf.d/_GV_template.inc.php:413
+#: lib/conf.d/_GV_template.inc.php:420
 msgid "Enable thumbnail substitution"
 msgstr "Activer la substitution de vignettes"
 
-#: lib/conf.d/_GV_template.inc.php:419
+#: lib/conf.d/_GV_template.inc.php:426
 msgid "Emails"
 msgstr "E-mails"
 
-#: lib/conf.d/_GV_template.inc.php:424
+#: lib/conf.d/_GV_template.inc.php:431
 msgid "Default mail sender address"
 msgstr "Adresse par défaut de l'expéditeur"
 
-#: lib/conf.d/_GV_template.inc.php:430
+#: lib/conf.d/_GV_template.inc.php:437
 msgid "Prefix for notification emails"
 msgstr "Préfixe pour les notifications adressées par email"
 
-#: lib/conf.d/_GV_template.inc.php:436
+#: lib/conf.d/_GV_template.inc.php:443
 msgid "Use a SMTP server"
 msgstr "Utiliser un serveur SMTP"
 
-#: lib/conf.d/_GV_template.inc.php:442
+#: lib/conf.d/_GV_template.inc.php:449
 msgid "Enable SMTP authentication"
 msgstr "Activer l'authentification SMTP"
 
-#: lib/conf.d/_GV_template.inc.php:448
+#: lib/conf.d/_GV_template.inc.php:455
 msgid "SMTP host"
 msgstr "Serveur hôte SMTP"
 
-#: lib/conf.d/_GV_template.inc.php:454
+#: lib/conf.d/_GV_template.inc.php:461
 msgid "SMTP port"
 msgstr "Port SMTP"
 
-#: lib/conf.d/_GV_template.inc.php:460
+#: lib/conf.d/_GV_template.inc.php:467
 msgid "SMTP encryption"
 msgstr "Chiffrement SMTP (SMTP encryption)"
 
-#: lib/conf.d/_GV_template.inc.php:463
+#: lib/conf.d/_GV_template.inc.php:470
 #: tmp/cache_twig/07/8f/d0c3fa64680c453cdf6bd01444b7.php:466
 #: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:172
 msgid "None"
 msgstr "Aucun"
 
-#: lib/conf.d/_GV_template.inc.php:471
+#: lib/conf.d/_GV_template.inc.php:478
 msgid "SMTP user"
 msgstr "Utilisateur ou identifiant SMTP"
 
-#: lib/conf.d/_GV_template.inc.php:477
+#: lib/conf.d/_GV_template.inc.php:484
 msgid "SMTP password"
 msgstr "Mot de passe SMTP"
 
-#: lib/conf.d/_GV_template.inc.php:482
+#: lib/conf.d/_GV_template.inc.php:489
 msgid "FTP Export"
 msgstr "Export FTP"
 
-#: lib/conf.d/_GV_template.inc.php:487
+#: lib/conf.d/_GV_template.inc.php:494
 msgid "Enable FTP export"
 msgstr "Activer l'export FTP"
 
-#: lib/conf.d/_GV_template.inc.php:488
+#: lib/conf.d/_GV_template.inc.php:495
 msgid "Available in multi-export tab"
 msgstr "Rendre disponible dans les onglets de la fenêtre d'export."
 
-#: lib/conf.d/_GV_template.inc.php:494
+#: lib/conf.d/_GV_template.inc.php:501
 msgid "Enable FTP for users"
 msgstr "Activer l'export FTP pour les utilisateurs"
 
-#: lib/conf.d/_GV_template.inc.php:495
+#: lib/conf.d/_GV_template.inc.php:502
 msgid "By default it is available for admins"
 msgstr "Par défaut cette option est disponible pour les administrateurs."
 
-#: lib/conf.d/_GV_template.inc.php:500
+#: lib/conf.d/_GV_template.inc.php:507
 msgid "Client"
 msgstr "Client"
 
-#: lib/conf.d/_GV_template.inc.php:505
+#: lib/conf.d/_GV_template.inc.php:512
 msgid "Maximum megabytes allowed for download"
 msgstr "Limite maximale autorisée par téléchargement en Megaoctet (Mo)"
 
-#: lib/conf.d/_GV_template.inc.php:506
+#: lib/conf.d/_GV_template.inc.php:513
 msgid "If request is bigger, then mail is still available"
 msgstr "Au-delà le téléchargement par E-mail reste disponible."
 
-#: lib/conf.d/_GV_template.inc.php:512
+#: lib/conf.d/_GV_template.inc.php:519
 msgid "Search tab position"
 msgstr "Position de l'onglet de recherche"
 
-#: lib/conf.d/_GV_template.inc.php:518
+#: lib/conf.d/_GV_template.inc.php:525
 msgid "Advanced search tab position"
 msgstr "Postion de l'onglet de recherche avancée"
 
-#: lib/conf.d/_GV_template.inc.php:524
+#: lib/conf.d/_GV_template.inc.php:531
 msgid "Topics tab position"
 msgstr "Position de l'onglet des thèmes"
 
-#: lib/conf.d/_GV_template.inc.php:530
+#: lib/conf.d/_GV_template.inc.php:537
 msgid "Active tab position"
 msgstr "Activer le positionnement des onglets"
 
-#: lib/conf.d/_GV_template.inc.php:536
+#: lib/conf.d/_GV_template.inc.php:543
 msgid "Topics display mode"
 msgstr "Mode d'affichage des thèmes"
 
-#: lib/conf.d/_GV_template.inc.php:538
+#: lib/conf.d/_GV_template.inc.php:545
 msgid "Trees"
 msgstr "Arborescence thématique"
 
-#: lib/conf.d/_GV_template.inc.php:539 lib/conf.d/_GV_template.inc.php:561
+#: lib/conf.d/_GV_template.inc.php:546 lib/conf.d/_GV_template.inc.php:568
 msgid "Drop-down"
 msgstr "Liste déroulante"
 
-#: lib/conf.d/_GV_template.inc.php:546
+#: lib/conf.d/_GV_template.inc.php:553
 msgid "Enable roll-over on stories"
 msgstr "Activer le roll-over sur les reportages"
 
-#: lib/conf.d/_GV_template.inc.php:552
+#: lib/conf.d/_GV_template.inc.php:559
 msgid "Enable roll-over on basket elements"
 msgstr "Activer le roll-over sur les paniers"
 
-#: lib/conf.d/_GV_template.inc.php:558
+#: lib/conf.d/_GV_template.inc.php:565
 msgid "Collections display mode"
 msgstr "Mode d'affichage des collections"
 
-#: lib/conf.d/_GV_template.inc.php:562
+#: lib/conf.d/_GV_template.inc.php:569
 msgid "Check-box"
 msgstr "Case à cocher"
 
-#: lib/conf.d/_GV_template.inc.php:568
+#: lib/conf.d/_GV_template.inc.php:575
 msgid "Display the total size of the document basket"
 msgstr "Afficher la taille des paniers"
 
-#: lib/conf.d/_GV_template.inc.php:574
+#: lib/conf.d/_GV_template.inc.php:581
 msgid "Display proposals tab"
 msgstr "Affichage de l'onglet des propositions de thésaurus"
 
-#: lib/conf.d/_GV_template.inc.php:580
+#: lib/conf.d/_GV_template.inc.php:587
 msgid "Require authentication to download documents"
 msgstr "Exiger de s'authentifier pour télécharger des documents"
 
-#: lib/conf.d/_GV_template.inc.php:581
+#: lib/conf.d/_GV_template.inc.php:588
 msgid "Used for guest account"
 msgstr "Utilisé pour le compte invité."
 
-#: lib/conf.d/_GV_template.inc.php:587
+#: lib/conf.d/_GV_template.inc.php:594
 msgid "Users must accept Terms of Use for each export"
 msgstr ""
 "Les utilisateurs doivent accepter les conditions générales d'utilisation à "
 "chaque export"
 
-#: lib/conf.d/_GV_template.inc.php:592
+#: lib/conf.d/_GV_template.inc.php:599
 msgid "Registration"
 msgstr "Inscription"
 
-#: lib/conf.d/_GV_template.inc.php:597
+#: lib/conf.d/_GV_template.inc.php:604
 msgid "Auto select databases"
 msgstr "Sélection automatique des bases de données"
 
-#: lib/conf.d/_GV_template.inc.php:598
+#: lib/conf.d/_GV_template.inc.php:605
 msgid ""
 "This option disables the selecting of the databases on which a user can "
 "register himself, and registration is made on all granted databases."
@@ -2002,57 +2006,57 @@ msgstr ""
 "l'utilisateur fait une demande d'inscription. L'inscription est alors "
 "effectuée d'office sur toutes les bases et collections rendues disponibles."
 
-#: lib/conf.d/_GV_template.inc.php:604
+#: lib/conf.d/_GV_template.inc.php:611
 msgid "Enable auto registration"
 msgstr "Activer l'inscription automatique"
 
-#: lib/conf.d/_GV_template.inc.php:609
+#: lib/conf.d/_GV_template.inc.php:616
 msgid "Push configuration"
 msgstr "Configuration de la Validation (Push de validation)"
 
-#: lib/conf.d/_GV_template.inc.php:614
+#: lib/conf.d/_GV_template.inc.php:621
 msgid ""
 "Number of days before the end of the validation to send a reminder email"
 msgstr ""
 "Nombre de jours avant la fin de la validation pour l'envoi d'un rappel par e-"
 "mail"
 
-#: lib/conf.d/_GV_template.inc.php:620
+#: lib/conf.d/_GV_template.inc.php:627
 msgid "Default validation links duration"
 msgstr ""
 "Durée de validité (en jours) des liens générés pour les process de Push et "
 "de Validation"
 
-#: lib/conf.d/_GV_template.inc.php:621
+#: lib/conf.d/_GV_template.inc.php:628
 msgid "If set to 0, duration is permanent"
 msgstr "Indiquer 0 pour une durée de validité permanente."
 
-#: lib/conf.d/_GV_template.inc.php:626
+#: lib/conf.d/_GV_template.inc.php:633
 msgid "Robot indexing"
 msgstr "Optimisations destinées aux robots d'indexation"
 
-#: lib/conf.d/_GV_template.inc.php:631
+#: lib/conf.d/_GV_template.inc.php:638
 msgid "Application title"
 msgstr "Titre donné à l'instance Phraseanet"
 
-#: lib/conf.d/_GV_template.inc.php:637
+#: lib/conf.d/_GV_template.inc.php:644
 msgid "Keywords used for indexing purposes by search engines robots"
 msgstr "Contenu de la balise <Meta> Keywords"
 
-#: lib/conf.d/_GV_template.inc.php:643
+#: lib/conf.d/_GV_template.inc.php:650
 msgid "Application description"
 msgstr "Contenu de la balise <META> Description"
 
-#: lib/conf.d/_GV_template.inc.php:649
+#: lib/conf.d/_GV_template.inc.php:656
 msgid "Google Analytics identifier"
 msgstr "Identifiant Google Analytics"
 
-#: lib/conf.d/_GV_template.inc.php:655
+#: lib/conf.d/_GV_template.inc.php:662
 msgid "Allow the website to be indexed by search engines like Google"
 msgstr ""
 "Permettre l'indexation du site par des moteurs de recherche (comme Google)"
 
-#: lib/conf.d/_GV_template.inc.php:661
+#: lib/conf.d/_GV_template.inc.php:668
 msgid "Enable Google Chrome frame"
 msgstr "Proposer Google Chrome Frame aux utilisateurs d'Internet Explorer"
 
@@ -2312,7 +2316,7 @@ msgstr "A quel Photoset souhaitez vous ajouter les %number% photos ?"
 #: tmp/cache_twig/45/fc/ad5b8eb1b4a2d9a634a7e5757d83.php:67
 #: tmp/cache_twig/46/cf/84fcd6e6d0142196cf67e7150061.php:195
 #: tmp/cache_twig/5a/1c/22c648764c06aa4717454c211a73.php:63
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1946
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1950
 #: tmp/cache_twig/64/04/6c72ca87230da615bdfc47580c03.php:74
 #: tmp/cache_twig/66/3c/c10b3bbc30c7bd401877feb88aca.php:111
 #: tmp/cache_twig/6d/65/1532a96b132583505bf8e4e8bab9.php:103
@@ -2342,7 +2346,7 @@ msgstr "A quel Photoset souhaitez vous ajouter les %number% photos ?"
 #: tmp/cache_twig/f5/8b/722fe9c2f9f12433d3100c930965.php:462
 #: tmp/cache_twig/f5/8b/722fe9c2f9f12433d3100c930965.php:485
 #: tmp/cache_twig/f9/a1/b353838bc56869bf92a7e455d17d.php:134
-#: tmp/cache_twig/fa/bd/e1efca70b5fe3cbd7a0da43824ed.php:94
+#: tmp/cache_twig/fa/bd/e1efca70b5fe3cbd7a0da43824ed.php:76
 #: tmp/cache_twig/fd/2d/efdc6903cabe0e9244bd196ad77a.php:137
 #: tmp/cache_twig/fd/d0/f21a99a74cac4146d2ba1e6b9aa4.php:509
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:47
@@ -2377,8 +2381,8 @@ msgstr "Retour"
 #: tmp/cache_twig/0b/5a/a4b9585489c871b0e0bad98ec91f.php:343
 #: tmp/cache_twig/32/d6/cb628ba1205d4bf84a1f69575641.php:231
 #: tmp/cache_twig/3a/ba/8f1ddbe33d83bf16f3431e103d32.php:488
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1080
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2113
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1084
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2117
 #: tmp/cache_twig/67/b7/e2062f697eeee5a56a35f0685357.php:228
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:29
 #: tmp/cache_twig/7b/dc/8fe6c71478ad63fbc116ed63ca55.php:144
@@ -2391,7 +2395,7 @@ msgstr "Exporter"
 
 #: tmp/cache_twig/03/35/35c03b00866173dfbd01540bf60d.php:34
 #: tmp/cache_twig/3a/ba/8f1ddbe33d83bf16f3431e103d32.php:498
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1090
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1094
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:35
 #: tmp/cache_twig/7b/dc/8fe6c71478ad63fbc116ed63ca55.php:155
 #: tmp/cache_twig/95/d9/07d569ecca0909112e1c4240627c.php:69
@@ -2401,62 +2405,62 @@ msgstr "Imprimer"
 
 #: tmp/cache_twig/03/35/35c03b00866173dfbd01540bf60d.php:44
 #: tmp/cache_twig/1c/0e/1c4c1db9f7e963f3095b45cf970e.php:34
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1109
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1113
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:45
 msgid "action : editer"
 msgstr "Editer"
 
 #: tmp/cache_twig/03/35/35c03b00866173dfbd01540bf60d.php:57
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1127
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1131
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:58
 msgid "action : status"
 msgstr "Propriétés"
 
 #: tmp/cache_twig/03/35/35c03b00866173dfbd01540bf60d.php:70
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1145
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1149
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:71
 msgid "action : collection"
 msgstr "Déplacer"
 
 #: tmp/cache_twig/03/35/35c03b00866173dfbd01540bf60d.php:83
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1324
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1369
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1328
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1373
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:84
 msgid "action : push"
 msgstr "Push"
 
 #: tmp/cache_twig/03/35/35c03b00866173dfbd01540bf60d.php:96
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1334
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1379
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1338
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1383
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:97
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:109
 msgid "Feedback"
 msgstr "Validation"
 
 #: tmp/cache_twig/03/35/35c03b00866173dfbd01540bf60d.php:107
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1344
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1394
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2104
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1348
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1398
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2108
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:108
 msgid "action : bridge"
 msgstr "Bridge"
 
 #: tmp/cache_twig/03/35/35c03b00866173dfbd01540bf60d.php:113
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1354
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1404
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2109
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1358
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1408
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2113
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:114
 msgid "action : publier"
 msgstr "Publier"
 
 #: tmp/cache_twig/03/35/35c03b00866173dfbd01540bf60d.php:126
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1424
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1428
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:127
 msgid "action : outils"
 msgstr "Outils"
 
 #: tmp/cache_twig/03/35/35c03b00866173dfbd01540bf60d.php:134
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1440
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1444
 #: tmp/cache_twig/72/66/13ba9da9e0f41b7ad7bd948ddbc5.php:135
 #: tmp/cache_twig/7b/dc/8fe6c71478ad63fbc116ed63ca55.php:129
 #: tmp/cache_twig/7b/dc/8fe6c71478ad63fbc116ed63ca55.php:325
@@ -3320,7 +3324,7 @@ msgstr "Annotation"
 #: tmp/cache_twig/36/98/d86d23f16fdf5e4e0efd14df579e.php:79
 #: tmp/cache_twig/45/fc/ad5b8eb1b4a2d9a634a7e5757d83.php:79
 #: tmp/cache_twig/49/2b/191d44280d45c2b367004a0cff19.php:86
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2019
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2023
 #: tmp/cache_twig/85/6c/5840584a8a831733294f96ab8ed4.php:54
 #: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:968
 #: tmp/cache_twig/b0/74/5c4f8cb2093973ee3556bffe1851.php:135
@@ -3461,7 +3465,7 @@ msgid "admin::utilisateurs: demandes en cours"
 msgstr "Demandes"
 
 #: tmp/cache_twig/1b/77/414e4c8e792d6e03335779186359.php:153
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1919
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1923
 #: tmp/cache_twig/89/69/3419e8324ba01f7e10a999d5e211.php:247
 #: tmp/cache_twig/91/10/8fd4c4648bb481da6b76539ce814.php:23
 #: tmp/cache_twig/fe/69/f30994e5ae0571c27f749684eff6.php:23
@@ -4107,7 +4111,7 @@ msgid ""
 msgstr "Copier les droits utilisateur de la collection : "
 
 #: tmp/cache_twig/35/34/f6dd881337003adfb8c6a2aa2955.php:85
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1871
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1875
 #: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:411
 msgid "choisir"
 msgstr "Choisir"
@@ -4197,7 +4201,7 @@ msgid "status:: retrouver sous forme de filtre dans la recherche"
 msgstr "Activer les recherches sur ce status dans la recherche avancée."
 
 #: tmp/cache_twig/36/7d/f1589e8a4f15369785f096984430.php:350
-#: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:697
+#: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:696
 #: tmp/cache_twig/6e/03/096a0850c1efe4871b2d8449c6bc.php:594
 #: tmp/cache_twig/e7/df/2d980edd0f7e0db33b999ad500e1.php:146
 msgid ""
@@ -5685,8 +5689,8 @@ msgid "phraseanet:: tri par nom"
 msgstr "Tri alphabétique"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:557
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1477
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1658
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1481
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1662
 msgid "Preferences"
 msgstr "Préférences"
 
@@ -5695,7 +5699,7 @@ msgid "Advanced Search"
 msgstr "Recherche avancée"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:606
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1049
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1053
 #: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:397
 msgid "phraseanet::type:: documents"
 msgstr "Documents"
@@ -5745,255 +5749,255 @@ msgstr "Ré-initialiser"
 msgid "Trier par "
 msgstr "Trier par "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:745
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:749
 msgid "rechercher par stemme"
 msgstr "Rechercher par Stemme"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:755
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:759
 msgid "Les termes apparaissent dans le(s) champs"
 msgstr "Le(s) mot(s) contenu(s) dans le(s) champ(s)"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:760
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:941
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:764
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:945
 msgid "rechercher dans tous les champs"
 msgstr "Tous les champs"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:801
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:805
 msgid "Status des documents a rechercher"
 msgstr "Status des documents pour la recherche"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:913
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:917
 msgid "Rechercher dans un champ date"
 msgstr "Dans un champ date"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:950
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:954
 #: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:703
 msgid "phraseanet::time:: de"
 msgstr "De"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:960
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:964
 #: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:709
 msgid "phraseanet::time:: a"
 msgstr "A"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1022
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1026
 msgid "reponses:: selectionner tout"
 msgstr "Tout"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1031
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1035
 msgid "reponses:: selectionner rien"
 msgstr "Aucun"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1040
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1044
 msgid "phraseanet::type:: images"
 msgstr "Images"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1058
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1062
 msgid "phraseanet::type:: videos"
 msgstr "Vidéos"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1067
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1071
 msgid "phraseanet::type:: audios"
 msgstr "Audios"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1538
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1542
 msgid "raccourci :: a propos des raccourcis claviers"
 msgstr "A propos des raccourcis clavier"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1543
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1547
 msgid "Raccourcis claviers en cours de recherche : "
 msgstr "Raccourcis de la fenêtre principale "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1548
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1584
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1552
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1588
 msgid "Raccourcis:: ctrl-a : tout selectionner "
 msgstr "ctrl-a : sélectionner tout "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1552
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1588
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1556
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1592
 msgid "Raccourcis:: ctrl-p : imprimer la selection "
 msgstr "ctrl-p :  imprimer la sélection "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1556
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1592
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1560
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1596
 msgid "Raccourcis:: ctrl-e : editer la selection "
 msgstr "ctrl-e : éditer la sélection "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1560
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1564
 msgid "Raccourcis::fleche gauche : page precedente "
 msgstr "flèche gauche : page précédente "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1564
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1568
 msgid "Raccourcis::fleche droite : page suivante "
 msgstr "flèche droite : page suivante "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1568
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1572
 msgid "Raccourcis::fleche haut : scroll vertical "
 msgstr "flèche haute : défilement vers le haut "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1572
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1576
 msgid "Raccourcis::fleche bas : scroll vertical "
 msgstr "flèche basse : défilement vers le bas "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1579
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1583
 msgid "Raccourcis claviers de la zone des paniers : "
 msgstr "Raccourcis de la zone des paniers & reportages "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1599
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1603
 msgid "Raccourcis claviers en cours de editing : "
 msgstr "Raccourci de la fenêtre d'édition "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1604
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1608
 msgid "Raccourcis::tab/shift-tab se ballade dans les champs "
 msgstr "Tab/shift-tab : Changer de champs "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1611
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1615
 msgid "Raccourcis claviers en cours de preview : "
 msgstr "Raccourcis de la fenêtre vue détaillée "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1616
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1620
 msgid "Raccourcis::fleche gauche : en avant "
 msgstr "flèche droite : document suivant "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1620
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1624
 msgid "Raccourcis::fleche gauche : en arriere "
 msgstr "flèche gauche : document précédent "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1624
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1628
 msgid "Raccourcis::espace : arreter/demarrer le diaporama "
 msgstr "espace : démarrer/arrêter le diaporama "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1632
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1636
 msgid ""
 "Vous pouvez quitter la plupart des fenetres survolantes via la touche echap "
 msgstr ""
 "Vous pouvez fermer la plupart des fênetres en sur impression avec la touche "
 "echap "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1643
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1647
 msgid "raccourcis :: ne plus montrer cette aide"
 msgstr "Ne plus montrer cette aide"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1664
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1668
 msgid "Affichage"
 msgstr "Affichage"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1668
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1672
 msgid "Configuration"
 msgstr "Configuration"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1676
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1680
 msgid "Mode de presentation"
 msgstr "Mode de présentation"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1691
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1695
 msgid "reponses:: mode vignettes"
 msgstr "Vignettes"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1703
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1707
 msgid "reponses:: mode liste"
 msgstr "Liste"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1710
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1714
 msgid "Theme"
 msgstr "Thème"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1719
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1723
 msgid "Selecteur de theme"
 msgstr "Sélecteur de thème"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1741
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1745
 msgid "Presentation de vignettes"
 msgstr "Présentation de vignettes"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1752
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1756
 msgid "Iconographe (description au rollover)"
 msgstr "Iconographe (description au rollover)"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1764
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1768
 msgid "Graphiste (preview au rollover)"
 msgstr "Graphiste (prévisualisation au rollover)"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1774
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1778
 msgid "Informations techniques"
 msgstr "Informations techniques"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1785
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1789
 msgid "Afficher"
 msgstr "Afficher"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1797
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1801
 msgid "Afficher dans la notice"
 msgstr "Afficher dans la notice"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1809
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1813
 msgid "Ne pas afficher"
 msgstr "Ne pas afficher"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1819
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1823
 msgid "Type de documents"
 msgstr "Type de document"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1830
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1834
 msgid "Afficher une icone"
 msgstr "Afficher une icône"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1839
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1843
 msgid "reponses:: images par pages : "
 msgstr "Résultats par page "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1852
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1856
 msgid "reponses:: taille des images : "
 msgstr "Taille des vignettes "
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1866
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1870
 msgid "Couleur de selection"
 msgstr "Couleur de sélection"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1881
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1885
 msgid "Affichage au demarrage"
 msgstr "Afficher au démarrage"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1897
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1901
 msgid "Ma derniere question"
 msgstr "Ma dernière question"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1908
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1912
 msgid "Une question personnelle"
 msgstr "La question"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1930
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1934
 msgid "Aide"
 msgstr "Aide"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1977
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1981
 #: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:987
 msgid "preview:: Description"
 msgstr "Notice"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1981
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1985
 #: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:991
 msgid "preview:: Historique"
 msgstr "Historique"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1988
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:1992
 #: tmp/cache_twig/a8/10/e776db7a92763dc7d301748547e2.php:995
 msgid "preview:: Popularite"
 msgstr "Popularité"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2037
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2041
 msgid "Presentation de vignettes de panier"
 msgstr "Présentation des vignettes de panier"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2055
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2059
 msgid "Afficher les status"
 msgstr "Afficher les Status"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2075
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2079
 msgid "Afficher la fiche descriptive"
 msgstr "Afficher la notice"
 
-#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2095
+#: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2099
 msgid "Afficher le titre"
 msgstr "Afficher le titre"
 
@@ -6434,7 +6438,6 @@ msgid "Charset to use for indexation"
 msgstr "Jeu de caractères  à utiliser pour l'indexation"
 
 #: tmp/cache_twig/66/3c/c10b3bbc30c7bd401877feb88aca.php:85
-#: tmp/cache_twig/fa/bd/e1efca70b5fe3cbd7a0da43824ed.php:33
 msgid "Date fields available for search"
 msgstr "Champs de type date disponibles pour la recherche"
 
@@ -6848,10 +6851,12 @@ msgstr ""
 "contenu de la vidéo que vous allez mettre en ligne est conforme aux "
 "conditions générales d'utilisation."
 
+#: tmp/cache_twig/79/0e/4f5d1bbed28162b27c12114a2a16.php:28
 #: tmp/cache_twig/79/42/534d64903c47aaa38ba389558bfb.php:28
 msgid "Aucune notification"
 msgstr "Aucune notification"
 
+#: tmp/cache_twig/79/0e/4f5d1bbed28162b27c12114a2a16.php:37
 #: tmp/cache_twig/79/42/534d64903c47aaa38ba389558bfb.php:37
 msgid "toutes les notifications"
 msgstr "Toutes les notifications"
@@ -9146,7 +9151,15 @@ msgstr "Recommandation"
 msgid "Phrasea search-engine configuration"
 msgstr "Configuration du moteur de recherche Phrasea"
 
-#: tmp/cache_twig/fa/bd/e1efca70b5fe3cbd7a0da43824ed.php:65
+#: tmp/cache_twig/fa/bd/e1efca70b5fe3cbd7a0da43824ed.php:33
+msgid "Stemming"
+msgstr "Stemmes"
+
+#: tmp/cache_twig/fa/bd/e1efca70b5fe3cbd7a0da43824ed.php:37
+msgid "Enable stemming"
+msgstr "Activiter les Stemmes"
+
+#: tmp/cache_twig/fa/bd/e1efca70b5fe3cbd7a0da43824ed.php:47
 msgid "Default sort"
 msgstr "Tri par défaut"
 
@@ -9299,19 +9312,19 @@ msgstr "Vous devez donner au moins un avis pour envoyer un report"
 msgid "Envoie avec succes"
 msgstr "Envoi avec succès"
 
-#: lib/Alchemy/Phrasea/Controller/Setup.php:88
+#: lib/Alchemy/Phrasea/Controller/Setup.php:99
 msgid "It is not recommended to install Phraseanet without HTTPS support"
 msgstr "Il n'est pas recommandé d'installer Phraseanet sans protocole HTTPS"
 
-#: lib/Alchemy/Phrasea/Controller/Setup.php:123
+#: lib/Alchemy/Phrasea/Controller/Setup.php:134
 msgid "Appbox is unreachable"
 msgstr "L'ApplicationBox est inaccessible"
 
-#: lib/Alchemy/Phrasea/Controller/Setup.php:133
+#: lib/Alchemy/Phrasea/Controller/Setup.php:144
 msgid "Databox is unreachable"
 msgstr "La Databox est inaccessible"
 
-#: lib/Alchemy/Phrasea/Controller/Setup.php:175
+#: lib/Alchemy/Phrasea/Controller/Setup.php:186
 #, php-format
 msgid "an error occured : %s"
 msgstr "L'erreur %s est survenue"
@@ -11012,7 +11025,7 @@ msgstr ""
 #: lib/Alchemy/Phrasea/Notification/Mail/MailInfoPushReceived.php:48
 #, php-format
 msgid "Reception of %s"
-msgstr "Reçu de %s"
+msgstr "Réception d'un Push : %s"
 
 #: lib/Alchemy/Phrasea/Notification/Mail/MailInfoPushReceived.php:64
 #, php-format
@@ -11244,26 +11257,26 @@ msgstr "Ce mail est un test d'envoi d'e-mail depuis %s"
 msgid "No sort"
 msgstr "Pas de tri"
 
-#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:126
-#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:130
+#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:136
+#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:138
 msgid "descendant"
 msgstr "Descendant"
 
-#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:127
-#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:131
+#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:137
+#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:139
 msgid "ascendant"
 msgstr "Ascendant"
 
-#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:405
+#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:415
 msgid "Unable to execute query"
 msgstr "Impossible d'exécuter la requête"
 
-#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:485
+#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:495
 #, php-format
 msgid "reponses::propositions pour la base %s"
 msgstr "Proposition pour la base %s"
 
-#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:491
+#: lib/Alchemy/Phrasea/SearchEngine/Phrasea/PhraseaEngine.php:501
 #, php-format
 msgid "reponses::propositions pour le terme %s"
 msgstr "pour le terme \"%s\""
@@ -11322,21 +11335,21 @@ msgstr ""
 "Formulation de la question incorrecte, question trop courte (nécessite plus "
 "de caractères). "
 
-#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:118
+#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:126
 msgid "pertinence"
 msgstr "Pertinence"
 
-#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:119
+#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:127
 msgid "date dajout"
 msgstr "Date d'ajout"
 
-#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:120
+#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:128
 msgid "aleatoire"
 msgstr "Aléatoire"
 
-#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:149
-#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:153
-#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:469
+#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:157
+#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:161
+#: lib/Alchemy/Phrasea/SearchEngine/SphinxSearch/SphinxSearchEngine.php:477
 msgid "Sphinx server is offline"
 msgstr "Serveur Sphinx inaccessible"
 
@@ -11347,12 +11360,12 @@ msgstr "test"
 #: lib/Doctrine/Entities/ValidationSession.php:259
 #, php-format
 msgid "Vous aviez envoye cette demande a %d utilisateurs"
-msgstr "Vous avez envoyé cette demande à %d utilisateurs"
+msgstr "Vous avez envoyé cette demande à %d utilisateurs."
 
 #: lib/Doctrine/Entities/ValidationSession.php:264
 #, php-format
 msgid "Vous avez envoye cette demande a %d utilisateurs"
-msgstr "Vous avez envoyé cette demande à %d utilisateurs"
+msgstr "Vous avez envoyé cette demande auprès de %d utilisateurs."
 
 #: lib/Doctrine/Entities/ValidationSession.php:271
 #, php-format

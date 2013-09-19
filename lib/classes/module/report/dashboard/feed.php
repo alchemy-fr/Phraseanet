@@ -72,7 +72,10 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
         $cache_id = 'feed_' . md5($sbasid . '_' . $sbas_coll . '_' . $dmin . '_' . $dmax);
 
         try {
-            return $app['phraseanet.appbox']->get_data_from_cache($cache_id);
+            $result = $app['phraseanet.appbox']->get_data_from_cache($cache_id);
+            $result->setApplication($app);
+
+            return $result;
         } catch (Exception $e) {
 
         }
@@ -230,5 +233,22 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
         } else {
             return false;
         }
+    }
+
+    private function setApplication(Application $app)
+    {
+        $this->app = $app;
+    }
+
+    public function __sleep()
+    {
+        $vars = array();
+        foreach ($this as $key => $value) {
+            if (in_array($key, array('app')))
+                continue;
+            $vars[] = $key;
+        }
+
+        return $vars;
     }
 }
