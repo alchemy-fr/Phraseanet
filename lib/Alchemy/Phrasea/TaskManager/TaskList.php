@@ -41,7 +41,7 @@ class TaskList implements TaskListInterface
 
     public function entityToTask(TaskEntity $task)
     {
-        $name = 'task #' . $task->getId() . ' ' . $task->getClassname();
+        $name = $task->getId() ;
         $arguments = array($this->phpExec);
 
         if ($this->phpConf) {
@@ -62,7 +62,8 @@ class TaskList implements TaskListInterface
         $arguments[] = 128 << 20;
 
         $builder = ProcessBuilder::create($arguments);
+        $builder->setTimeout(0);
 
-        return new Task($name, $task->isSingleRun() ? 1 : INF, $builder->getProcess());
+        return new Task($task, $name, $task->isSingleRun() ? 1 : INF, $builder->getProcess());
     }
 }

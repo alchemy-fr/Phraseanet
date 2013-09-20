@@ -11,17 +11,20 @@
 
 namespace Alchemy\Phrasea\TaskManager;
 
+use Entities\Task as TaskEntity;
 use Alchemy\TaskManager\TaskInterface;
 use Symfony\Component\Process\ProcessableInterface;
 
 class Task implements TaskInterface
 {
+    private $entity;
     private $name;
     private $iterations;
     private $process;
 
-    public function __construct($name, $iterations, ProcessableInterface $process)
+    public function __construct(TaskEntity $entity, $name, $iterations, ProcessableInterface $process)
     {
+        $this->entity = $entity;
         $this->name = $name;
         $this->iterations = $iterations;
         $this->process = $process;
@@ -49,5 +52,13 @@ class Task implements TaskInterface
     public function createProcess()
     {
         return clone $this->process;
+    }
+
+    /**
+     * @return TaskEntity
+     */
+    public function getEntity()
+    {
+        return $this->entity;
     }
 }
