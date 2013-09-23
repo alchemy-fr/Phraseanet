@@ -48,16 +48,14 @@
     </head>
     <body>
         {% block google_chrome_frame %}
-            {% if display_google_chrome_frame %}
-                <!--[if lt IE 7]>
-                    {% set browserLink = "<a href='http://browsehappy.com/'>" ~ browser_name ~ "</a>"|raw %}
-                    {% set GCFLink = "<a href='http://www.google.com/chromeframe/?redirect=true'>Google Chrome Frame</a>"|raw %}
-                    <p class="alert alert-warning text-center">
-                        <strong>{% trans %}You are using an outdated browser.{% endtrans %}</strong>
-                        {% trans %}Please upgrade {{ browserLink }} or activate {{ GCFLink }} to improve your experience.{% endtrans %}
-                    </p>
-                <![endif]-->
-            {% endif %}
+        <!--[if lt IE 7]>
+            {% set browserLink = "<a href='http://browsehappy.com/'>" ~ browser_name ~ "</a>"|raw %}
+            {% set GCFLink = "<a href='http://www.google.com/chromeframe/?redirect=true'>Google Chrome Frame</a>"|raw %}
+            <p class="alert alert-warning text-center">
+                <strong>{% trans %}You are using an outdated browser.{% endtrans %}</strong>
+                {% trans %}Please upgrade {{ browserLink }} or activate {{ GCFLink }} to improve your experience.{% endtrans %}
+            </p>
+        <![endif]-->
         {% endblock google_chrome_frame %}
 
         <div class="container full-height">
