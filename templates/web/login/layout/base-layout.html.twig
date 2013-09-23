@@ -55,6 +55,36 @@
                 <strong>{% trans %}You are using an outdated browser.{% endtrans %}</strong>
                 {% trans %}Please upgrade {{ browserLink }} or activate {{ GCFLink }} to improve your experience.{% endtrans %}
             </p>
+            <div class="ie6-special">
+                <div class="ie6-container">
+                    <table>
+                        <tr>
+                            <td style="width:350px;">
+                                <img src="/skins/login/img/ie6dead.png" />
+                            </td>
+                            <td>
+                                <h1>
+                                    {% block main_title %}{% endblock %}
+                                </h1>
+                                <p>
+                                    Mettez à jour votre navigateur ou téléchargez un navigateur plus récent.
+                                </p>
+                                <p>
+                                    Si vous ne pouvez pas installer un autre navigateur, utilisez Google Chrome Frame.
+                                </p>
+                                <p class="links">
+                                    <a href="https://www.google.com/chrome">
+                                        Installer Google Chrome
+                                    </a><br/>
+                                    <a href="https://www.google.com/chromeframe">
+                                        Installer Google Chrome Frame
+                                    </a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         <![endif]-->
         {% endblock google_chrome_frame %}
 
