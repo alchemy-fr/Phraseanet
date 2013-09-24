@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: phraseanettranslation\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2013-09-18 13:38+0100\n"
-"PO-Revision-Date: 2013-09-19 14:42+0100\n"
+"POT-Creation-Date: 2013-09-24 11:11+0100\n"
+"PO-Revision-Date: 2013-09-24 15:56+0100\n"
 "Last-Translator: Romain Neutron <imprec@gmail.com>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-09-18 18:02+0000\n"
+"X-Launchpad-Export-Date: 2013-09-24 13:42+0000\n"
 "X-Generator: Poedit 1.5.7\n"
 
 #: lib/classes/appbox.php:299 lib/classes/appbox.php:384
@@ -200,8 +200,8 @@ msgstr "Deze waarde mag leeg zijn"
 msgid "Url non valide"
 msgstr "Geen geldig url"
 
-#: lib/classes/API/V1/adapter.php:1101 lib/classes/API/V1/adapter.php:1147
-#: lib/classes/API/V1/adapter.php:1197 lib/classes/API/V1/adapter.php:1221
+#: lib/classes/API/V1/adapter.php:1100 lib/classes/API/V1/adapter.php:1146
+#: lib/classes/API/V1/adapter.php:1196 lib/classes/API/V1/adapter.php:1220
 #: tmp/cache_twig/1b/30/753738c0c4f81bf7a9aba183affd.php:58
 #: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:46
 #: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:53
@@ -246,11 +246,11 @@ msgstr "Geen geldig url"
 msgid "An error occured"
 msgstr "Er is een fout opgetreden"
 
-#: lib/classes/API/V1/adapter.php:1195
+#: lib/classes/API/V1/adapter.php:1194
 msgid "Record Not Found"
 msgstr "Document niet gevonden"
 
-#: lib/classes/API/V1/adapter.php:1219
+#: lib/classes/API/V1/adapter.php:1218
 msgid "Story Not Found"
 msgstr "Artikel niet gevonden"
 
@@ -768,7 +768,7 @@ msgid "be notified when a document is placed in quarantine"
 msgstr "wordt gemeld wanneer een document in quarantaine wordt geplaatst"
 
 #: lib/classes/eventsmanager/notify/validate.php:31
-#: lib/classes/eventsmanager/notify/validate.php:179
+#: lib/classes/eventsmanager/notify/validate.php:180
 #: lib/classes/eventsmanager/notify/validationdone.php:31
 #: lib/classes/eventsmanager/notify/validationreminder.php:31
 #: lib/classes/eventsmanager/notify/validationreminder.php:177
@@ -776,19 +776,19 @@ msgstr "wordt gemeld wanneer een document in quarantaine wordt geplaatst"
 msgid "Validation"
 msgstr "Goedkeuring"
 
-#: lib/classes/eventsmanager/notify/validate.php:152
-#: lib/classes/eventsmanager/notify/validate.php:154
+#: lib/classes/eventsmanager/notify/validate.php:153
+#: lib/classes/eventsmanager/notify/validate.php:155
 #: lib/classes/eventsmanager/notify/validationreminder.php:152
 #: lib/classes/eventsmanager/notify/validationreminder.php:154
 msgid "Une selection"
 msgstr "Een selectie"
 
-#: lib/classes/eventsmanager/notify/validate.php:164
+#: lib/classes/eventsmanager/notify/validate.php:165
 #, php-format
 msgid "%1$s vous demande de valider %2$s"
 msgstr "%1$s vraagt u om goedkeuring %2$s"
 
-#: lib/classes/eventsmanager/notify/validate.php:188
+#: lib/classes/eventsmanager/notify/validate.php:189
 msgid "Recevoir des notifications lorsqu'on me demande une validation"
 msgstr ""
 "Meldingen ontvangen wanneer mij een aanvraag tot goedkeuring wordt gevraagd"
@@ -2044,10 +2044,6 @@ msgstr "Google Analytics-id"
 msgid "Allow the website to be indexed by search engines like Google"
 msgstr "Sta toe om de website te indexeren voor zoek robots zoals Google"
 
-#: lib/conf.d/_GV_template.inc.php:668
-msgid "Enable Google Chrome frame"
-msgstr "Schakel Google Chrome frame in"
-
 #: tmp/cache_twig/00/19/dbdcbe9e5b58e7afb06d68cb13ac.php:192
 #: tmp/cache_twig/12/b7/fc0743532044238ae4105fba51cd.php:118
 #: tmp/cache_twig/44/f6/d98144b04cf4782cc85d391b3ddb.php:120
@@ -2234,13 +2230,13 @@ msgstr "Vorige"
 msgid "Next"
 msgstr "Volgende"
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:215
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:215
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:213
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:213
 msgid "You are using an outdated browser."
 msgstr "U gebruikt een verouderde browser"
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:219
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:219
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:217
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:217
 msgid ""
 "Please upgrade %browserLink% or activate %GCFLink% to improve your "
 "experience."
@@ -2248,22 +2244,46 @@ msgstr ""
 "Gelieve uw %browserLink% te vernieuwen of activeer %GCFLink% om uw ervaring "
 "te verbeteren."
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:285
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:285
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:237
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:237
+msgid ""
+"Mettez à jour votre navigateur ou téléchargez un navigateur plus récent."
+msgstr "Vernieuw uw browser of download een meer recentere browser."
+
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:243
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:243
+msgid ""
+"Si vous ne pouvez pas installer un autre navigateur, utilisez Google Chrome "
+"Frame."
+msgstr ""
+"Als u geen andere browser kunt installeren, gebruik dan Google Chrome Frame."
+
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:250
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:250
+msgid "Installer Google Chrome"
+msgstr "Installeer Google Chrome"
+
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:256
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:256
+msgid "Installer Google Chrome Frame"
+msgstr "Installeer Google Chrome Frame"
+
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:330
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:330
 #: tmp/cache_twig/d1/ea/9cba922417b2c8b6f151de26f77d.php:95
 #: tmp/cache_twig/dc/a5/78b2174457540345b2ac826652fe.php:25
 #: tmp/cache_twig/e2/ab/044b174593da583734b27aa1445d.php:65
 msgid "Home"
 msgstr "Startpagina"
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:291
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:291
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:336
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:336
 msgid "Help"
 msgstr "Help"
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:325
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:370
 #: tmp/cache_twig/20/2a/cf1743e1bb55096c5575ff1c651a.php:34
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:325
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:370
 #: lib/Alchemy/Phrasea/Controller/Prod/TOU.php:128
 msgid "Terms of use"
 msgstr "Gebruikersvoorwaarden"
@@ -6809,12 +6829,10 @@ msgstr ""
 "Wij herinneren er u aan dat het uw verantwoordelijkheid is dat de inhoud van "
 "deze video die u online zult plaatsen conform is met de gebruikersvoorwaarden"
 
-#: tmp/cache_twig/79/0e/4f5d1bbed28162b27c12114a2a16.php:28
 #: tmp/cache_twig/79/42/534d64903c47aaa38ba389558bfb.php:28
 msgid "Aucune notification"
 msgstr "Geen enkele melding"
 
-#: tmp/cache_twig/79/0e/4f5d1bbed28162b27c12114a2a16.php:37
 #: tmp/cache_twig/79/42/534d64903c47aaa38ba389558bfb.php:37
 msgid "toutes les notifications"
 msgstr "Alle meldingen"
@@ -9562,7 +9580,7 @@ msgid "Password is empty at line %d"
 msgstr "Wachtwoor is leeg op lijn %d"
 
 #: lib/Alchemy/Phrasea/Controller/Api/Oauth2.php:82
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1011
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1010
 msgid "login::erreur: Erreur d'authentification"
 msgstr "Verificatiefout"
 
@@ -10100,40 +10118,40 @@ msgstr "Geen te valideren elementen"
 msgid "Missing mandatory parameter %s"
 msgstr "Mandatory parameter %s ontbreekt"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:456
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:457
 #, php-format
 msgid "%1$d records have been sent for validation to %2$d users"
 msgstr "%1$d records werden ter goedkeuring naar %2$d gebruikder gestuurd"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:520
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:521
 msgid "You are not allowed to add users"
 msgstr "U hebt geen toestemming om gebruikers toe te voegen"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:523
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:524
 msgid "First name is required"
 msgstr "Voornaam is verplicht"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:526
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:527
 msgid "Last name is required"
 msgstr "Achternaam is verplicht"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:529
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:530
 msgid "Email is required"
 msgstr "Email is verplicth"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:532
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:533
 msgid "Email is invalid"
 msgstr "Email is niet correct"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:546
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:547
 msgid "User already exists"
 msgstr "Gebruiker bestaat reeds"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:569
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:570
 msgid "User successfully created"
 msgstr "Gebruiker met succes aangemaakt"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:573
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:574
 msgid "Error while creating user"
 msgstr "Fout tijdens het aanmaken van gebruiker"
 
@@ -10439,7 +10457,7 @@ msgid "report:: module"
 msgstr "Module"
 
 #: lib/Alchemy/Phrasea/Controller/Root/Account.php:100
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:592
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:591
 msgid "login::notification: Mise a jour du mot de passe avec succes"
 msgstr "Update van het paswoord met succes uitgevoerd"
 
@@ -10497,159 +10515,159 @@ msgstr "Veranderingen zijn bewaard"
 msgid "forms::erreurs lors de l'enregistrement des modifications"
 msgstr "Fouten bij het opslaan van de wijzigingen"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:205
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:204
 msgid "Please provide a value."
 msgstr "Geef een waarde"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:206
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:205
 #, php-format
 msgid "Please select at least %s choice."
 msgstr "Gelieve tenminste één %s keuze."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:207
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:206
 msgid "Please provide a valid email address."
 msgstr "Gelieve een geldig email adres op te geven"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:208
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:207
 msgid "Please provide a valid IP address."
 msgstr "Gelieve een geldig IP adres op te geven"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:209
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:208
 #, php-format
 msgid "Please provide a longer value. It should have %s character or more."
 msgstr "Gelieve een langere waarde op te geven. Tenminste %s of meer tekens."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:210
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:209
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRecoverPasswordForm.php:44
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRegisterForm.php:50
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRenewPasswordForm.php:36
 msgid "Please provide the same passwords."
 msgstr "Gelieve dezelfde wachtwoorden op te geven"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:211
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:210
 msgid "Please provide the same emails."
 msgstr "Gelieve dezelfde emails op te geven."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:212
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:211
 msgid "Please accept the terms of use to register."
 msgstr "Gelieve de gebruiksvoorwaarden te aanvaarden alvorens te registreren."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:213
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:212
 msgid "No collection selected"
 msgstr "Geen collectie geselecteerd"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:214
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:213
 #, php-format
 msgid "%d collection selected"
 msgstr "%d collectie geselecteerd"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:215
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:214
 #, php-format
 msgid "%d collections selected"
 msgstr "%d collecties geselecteerd"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:216
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:215
 msgid "Select all collections"
 msgstr "Alle collecties selecteren"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:218
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:217
 msgid "Weak"
 msgstr "Matig"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:219
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:218
 msgid "Ordinary"
 msgstr "Gewoon"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:220
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:219
 msgid "Good"
 msgstr "Goed"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:221
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:220
 msgid "Great"
 msgstr "Uitstekend"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:256
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:264
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:255
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:263
 msgid "You tried to register with an unknown provider"
 msgstr "U probeerde met een ongekende provider te registreren"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:291
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:290
 msgid "Invalid captcha answer."
 msgstr "Ongeldig captcha antwoord"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:396
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:467
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:395
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:466
 msgid "login::notification: demande de confirmation par mail envoyee"
 msgstr "Aanvraag tot goedkeuring per mail verstuurd"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:399
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:470
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:398
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:469
 msgid "Unable to send your account unlock email."
 msgstr "Het was niet mogelijk om uw ontgrendelings-email te versturen"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:460
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:459
 msgid "Invalid link."
 msgstr "Ongeldige link"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:509
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:517
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:525
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:508
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:516
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:524
 msgid "Invalid unlock link."
 msgstr "Ongeldige ontgrendelings-link"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:531
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:530
 msgid "Account is already unlocked, you can login."
 msgstr "Deze gebruiker is reeds ontgrendeld, u kunt zich aanmelden."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:542
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:553
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:541
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:552
 msgid "Account has been unlocked, you can now login."
 msgstr "Gebruiker is ontgrendeld, u kunt zich aanmelden."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:558
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:557
 msgid "Account has been unlocked, you still have to wait for admin approval."
 msgstr ""
 "Gebruiker is ontgrendeld, u dient nog te wachten op goedkeuring van een "
 "beheerder."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:628
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:627
 msgid "phraseanet::erreur: Le compte n'a pas ete trouve"
 msgstr "De account werd niet gevonden"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:634
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:633
 msgid "Invalid email address"
 msgstr "Ongeldig emailadres"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:650
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:649
 msgid "phraseanet:: Un email vient de vous etre envoye"
 msgstr "Een email werd u toegestuurd"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:698
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:697
 msgid "Vous etes maintenant deconnecte. A bientot."
 msgstr "U bent nu uitgelogd. Tot later."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:725
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:724
 msgid "login::erreur: No available connection - Please contact sys-admin"
 msgstr "Geen beschikbare verbinding - Neem contact op met sys-admin"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:770
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:769
 msgid "Phraseanet guest-access is disabled"
 msgstr "Gast toegang voor Phraseanet is niet actief"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:890
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:889
 #, php-format
 msgid "Unable to authenticate with %s"
 msgstr "Het is niet mogelijk om zich aan te melden met %s"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:914
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:913
 msgid "Unable to retrieve provider identity"
 msgstr "Het is niet mogelijk om de identiteit van de provider te ontvangen"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:953
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:952
 msgid "Your identity is not recognized."
 msgstr "Uw identiteit werd niet herkend"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:985
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:984
 msgid ""
 "An unexpected error occured during authentication process, please contact an "
 "admin"
@@ -10657,11 +10675,11 @@ msgstr ""
 "Er heeft zich een onverwachte fout voor gedaan bij het aanmelden, gelieve "
 "een beheerder te contacteren"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1000
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:999
 msgid "Please fill the captcha"
 msgstr "Gelieve de captcha in te vullen"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1004
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1003
 msgid "login::erreur: Vous n'avez pas confirme votre email"
 msgstr "U hebt uw email adres niet bevestigd"
 
@@ -11037,14 +11055,19 @@ msgid "Il ne vous reste plus que %d jours pour terminer votre validation"
 msgstr "Er rest u nog %d om uw goedkeuring te beïndigen"
 
 #: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationReminder.php:59
-#: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationRequest.php:71
-msgid "Validate"
-msgstr "Bevestig"
+#: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationRequest.php:86
+msgid "Start validation"
+msgstr "Start validatie"
 
-#: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationRequest.php:55
+#: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationRequest.php:62
 #, php-format
 msgid "Validation request from %s : '%s'"
 msgstr "Bevestigingsaanvraag van %s : '%s'"
+
+#: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationRequest.php:74
+#, php-format
+msgid "You have %d days to validate the selection."
+msgstr "U hebt %d dagen om de selectie te valideren."
 
 #: lib/Alchemy/Phrasea/Notification/Mail/MailRecordsExport.php:21
 msgid "Vous avez recu des documents"
@@ -11331,3 +11354,6 @@ msgstr "Lijst werd niet gevonden"
 #: lib/Doctrine/Repositories/UsrListRepository.php:57
 msgid "You have not access to this list"
 msgstr "U hebt geen toegang tot deze lijst"
+
+#~ msgid "Enable Google Chrome frame"
+#~ msgstr "Schakel Google Chrome frame in"
