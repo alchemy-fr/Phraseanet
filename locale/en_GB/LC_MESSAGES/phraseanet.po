@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-18 13:38+0100\n"
-"PO-Revision-Date: 2013-09-19 14:42+0100\n"
+"POT-Creation-Date: 2013-09-24 11:11+0100\n"
+"PO-Revision-Date: 2013-09-24 15:56+0100\n"
 "Last-Translator: Romain Neutron <imprec@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-09-18 18:02+0000\n"
+"X-Launchpad-Export-Date: 2013-09-24 13:42+0000\n"
 "X-Generator: Poedit 1.5.7\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
@@ -208,8 +208,8 @@ msgstr "This value can't be empty"
 msgid "Url non valide"
 msgstr "Url is not valid"
 
-#: lib/classes/API/V1/adapter.php:1101 lib/classes/API/V1/adapter.php:1147
-#: lib/classes/API/V1/adapter.php:1197 lib/classes/API/V1/adapter.php:1221
+#: lib/classes/API/V1/adapter.php:1100 lib/classes/API/V1/adapter.php:1146
+#: lib/classes/API/V1/adapter.php:1196 lib/classes/API/V1/adapter.php:1220
 #: tmp/cache_twig/1b/30/753738c0c4f81bf7a9aba183affd.php:58
 #: tmp/cache_twig/49/1b/d8e8861bb8887118509951ea955f.php:46
 #: tmp/cache_twig/5d/bc/c63b23805fe23f5982fed816065d.php:53
@@ -254,11 +254,11 @@ msgstr "Url is not valid"
 msgid "An error occured"
 msgstr "An error occurred"
 
-#: lib/classes/API/V1/adapter.php:1195
+#: lib/classes/API/V1/adapter.php:1194
 msgid "Record Not Found"
 msgstr "Record Not Found"
 
-#: lib/classes/API/V1/adapter.php:1219
+#: lib/classes/API/V1/adapter.php:1218
 msgid "Story Not Found"
 msgstr "Story not found"
 
@@ -765,7 +765,7 @@ msgid "be notified when a document is placed in quarantine"
 msgstr "Be notified when a document is moved in quarantine"
 
 #: lib/classes/eventsmanager/notify/validate.php:31
-#: lib/classes/eventsmanager/notify/validate.php:179
+#: lib/classes/eventsmanager/notify/validate.php:180
 #: lib/classes/eventsmanager/notify/validationdone.php:31
 #: lib/classes/eventsmanager/notify/validationreminder.php:31
 #: lib/classes/eventsmanager/notify/validationreminder.php:177
@@ -773,34 +773,34 @@ msgstr "Be notified when a document is moved in quarantine"
 msgid "Validation"
 msgstr "Feedback"
 
-#: lib/classes/eventsmanager/notify/validate.php:152
-#: lib/classes/eventsmanager/notify/validate.php:154
+#: lib/classes/eventsmanager/notify/validate.php:153
+#: lib/classes/eventsmanager/notify/validate.php:155
 #: lib/classes/eventsmanager/notify/validationreminder.php:152
 #: lib/classes/eventsmanager/notify/validationreminder.php:154
 msgid "Une selection"
 msgstr "an untitled selection"
 
-#: lib/classes/eventsmanager/notify/validate.php:164
+#: lib/classes/eventsmanager/notify/validate.php:165
 #, php-format
 msgid "%1$s vous demande de valider %2$s"
 msgstr "%1$s asks you to validate %2$s"
 
-#: lib/classes/eventsmanager/notify/validate.php:188
+#: lib/classes/eventsmanager/notify/validate.php:189
 msgid "Recevoir des notifications lorsqu'on me demande une validation"
-msgstr "Receive notifications by e-mail"
+msgstr "Receive Feedback notifications by e-mail"
 
 #: lib/classes/eventsmanager/notify/validationdone.php:152
 #, php-format
 msgid "%1$s a envoye son rapport de validation de %2$s"
-msgstr "%1$s has sent his validation report for %2$s"
+msgstr "%1$s has sent his feedback report for %2$s"
 
 #: lib/classes/eventsmanager/notify/validationdone.php:168
 msgid "Rapport de Validation"
-msgstr "Validation report"
+msgstr "Feedback report"
 
 #: lib/classes/eventsmanager/notify/validationdone.php:177
 msgid "Reception d'un rapport de validation"
-msgstr "Incoming validation report"
+msgstr "Incoming feedback report"
 
 #: lib/classes/eventsmanager/notify/validationreminder.php:163
 #, php-format
@@ -2005,7 +2005,7 @@ msgstr ""
 
 #: lib/conf.d/_GV_template.inc.php:627
 msgid "Default validation links duration"
-msgstr "Default validation links duration"
+msgstr "Default feedback links duration"
 
 #: lib/conf.d/_GV_template.inc.php:628
 msgid "If set to 0, duration is permanent"
@@ -2034,10 +2034,6 @@ msgstr "Google Analytics identifier"
 #: lib/conf.d/_GV_template.inc.php:662
 msgid "Allow the website to be indexed by search engines like Google"
 msgstr "Allow search engines (such as Google) indexation"
-
-#: lib/conf.d/_GV_template.inc.php:668
-msgid "Enable Google Chrome frame"
-msgstr "Enable Google Chrome frame"
 
 #: tmp/cache_twig/00/19/dbdcbe9e5b58e7afb06d68cb13ac.php:192
 #: tmp/cache_twig/12/b7/fc0743532044238ae4105fba51cd.php:118
@@ -2225,13 +2221,13 @@ msgstr "Previous"
 msgid "Next"
 msgstr "Next"
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:215
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:215
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:213
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:213
 msgid "You are using an outdated browser."
 msgstr "You are using an outdated browser."
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:219
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:219
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:217
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:217
 msgid ""
 "Please upgrade %browserLink% or activate %GCFLink% to improve your "
 "experience."
@@ -2239,22 +2235,47 @@ msgstr ""
 "Please upgrade %browserLink% or activate %GCFLink% to improve your "
 "experience."
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:285
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:285
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:237
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:237
+msgid ""
+"Mettez à jour votre navigateur ou téléchargez un navigateur plus récent."
+msgstr "Upgrade your current browser or download a newer one."
+
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:243
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:243
+msgid ""
+"Si vous ne pouvez pas installer un autre navigateur, utilisez Google Chrome "
+"Frame."
+msgstr ""
+"Internet Explorer users: If you cannot use or install another browser, we "
+"recommend to use Google Chrome Frame."
+
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:250
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:250
+msgid "Installer Google Chrome"
+msgstr "Install Google Chrome"
+
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:256
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:256
+msgid "Installer Google Chrome Frame"
+msgstr "Install Google Chrome Frame for Internet Explorer"
+
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:330
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:330
 #: tmp/cache_twig/d1/ea/9cba922417b2c8b6f151de26f77d.php:95
 #: tmp/cache_twig/dc/a5/78b2174457540345b2ac826652fe.php:25
 #: tmp/cache_twig/e2/ab/044b174593da583734b27aa1445d.php:65
 msgid "Home"
 msgstr "Home"
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:291
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:291
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:336
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:336
 msgid "Help"
 msgstr "Help"
 
-#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:325
+#: tmp/cache_twig/02/96/a8203479b71f81db4bb020cb62b2.php:370
 #: tmp/cache_twig/20/2a/cf1743e1bb55096c5575ff1c651a.php:34
-#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:325
+#: tmp/cache_twig/2b/f1/2b4c8d3aa6aa9fd1d06f190e14d8.php:370
 #: lib/Alchemy/Phrasea/Controller/Prod/TOU.php:128
 msgid "Terms of use"
 msgstr "Terms of use"
@@ -2463,7 +2484,7 @@ msgstr "Refresh"
 #: tmp/cache_twig/09/e0/50b063e8242ffca115d00e377a9a.php:238
 #: tmp/cache_twig/a1/51/962e8f450036575bab788d3ba9f3.php:26
 msgid "VALIDATION"
-msgstr "VALIDATION"
+msgstr "Feedback"
 
 #: tmp/cache_twig/05/71/7b0e8262b3e07506f688261c2b03.php:33
 #: tmp/cache_twig/09/e0/50b063e8242ffca115d00e377a9a.php:265
@@ -2636,7 +2657,7 @@ msgstr "Caption"
 #: tmp/cache_twig/c4/25/3d83cc10f0a070ab4edc497f7e99.php:73
 #: tmp/cache_twig/d3/f5/6514cccadf5afe3bb041585a94aa.php:71
 msgid "Validations"
-msgstr "Validations"
+msgstr "Feedbacks"
 
 #: tmp/cache_twig/09/e0/50b063e8242ffca115d00e377a9a.php:308
 #: tmp/cache_twig/0b/5a/a4b9585489c871b0e0bad98ec91f.php:284
@@ -2763,7 +2784,7 @@ msgstr "Push to %link% ici %endlink% users from application box %appbox%"
 msgid ""
 "report::Demande de validation vers %n_user% utilisateurs depuis lapplication "
 "box %appbox%"
-msgstr "Validation demand toward %n_user% user from application box %appbox%"
+msgstr "Feedback demand toward %n_user% user from application box %appbox%"
 
 #: tmp/cache_twig/0c/1c/0c9464ed9e2ccb76556c944bfc1f.php:87
 msgid "report::Edition des meta-donnees"
@@ -3076,7 +3097,7 @@ msgstr "Received from %user_name%"
 #: tmp/cache_twig/14/bf/9c01aa0715b96773c0e7996927f2.php:242
 #: tmp/cache_twig/51/66/df4d169b3c7bc56e58d0f63945e5.php:144
 msgid "Sent for validation to %list_participants%"
-msgstr "Sent for validation to %list_participants%"
+msgstr "Sent for feedback to %list_participants%"
 
 #: tmp/cache_twig/15/fd/f2d9b199f00a42485f03d55dfddc.php:40
 msgid "Grant rights"
@@ -3142,7 +3163,7 @@ msgid ""
 "Please consider send this validation to the following users : %recommendation"
 "%"
 msgstr ""
-"Please consider you can send this validation to the following users : "
+"Please consider you can send this feedback request to the following users: "
 "%recommendation%"
 
 #: tmp/cache_twig/15/fd/f2d9b199f00a42485f03d55dfddc.php:293
@@ -3171,12 +3192,13 @@ msgstr ""
 msgid ""
 "Push::une validation est une demande d'appreciation a d'autres personnes"
 msgstr ""
-"Click to send a request for feedback on a selection of documents to "
-"recipients.\r\n"
-"Recipients will receive a mail with a link, that will launch Phraseanet "
-"Lightbox, display documents and ask user(s) for feedback and/or download.\r\n"
-"Feedback is available as a validation Basket within Phraseanet for "
-"registered users"
+"Click on the Send buton to forward a feedback request on a selection of "
+"documents to recipients. \r\n"
+"They will receive an email with a link to launch Phraseanet Lightbox, a "
+"dedicated interface for displaying documents, leave feedbacks and possibly "
+"download them. \r\n"
+"Feedbacks are also available as a Feedback request basket within Phraseanet "
+"Production for registered users."
 
 #: tmp/cache_twig/15/fd/f2d9b199f00a42485f03d55dfddc.php:367
 msgid "Select all"
@@ -3704,7 +3726,7 @@ msgstr "Previous"
 #: tmp/cache_twig/c4/25/3d83cc10f0a070ab4edc497f7e99.php:79
 #: tmp/cache_twig/d3/f5/6514cccadf5afe3bb041585a94aa.php:77
 msgid "Voici vos validations en cours"
-msgstr "Validations in progress"
+msgstr "Your feedbacks in progress"
 
 #: tmp/cache_twig/25/b9/b11a6409fff81c542efc686af7cd.php:223
 #: tmp/cache_twig/c4/25/3d83cc10f0a070ab4edc497f7e99.php:205
@@ -4033,7 +4055,7 @@ msgstr "Caption Edited"
 
 #: tmp/cache_twig/31/73/1487758ec5a3e4c137a2986f489e.php:493
 msgid "report:: valide"
-msgstr "Validations"
+msgstr "Leave feedback"
 
 #: tmp/cache_twig/31/73/1487758ec5a3e4c137a2986f489e.php:499
 msgid "Sent"
@@ -5605,7 +5627,7 @@ msgstr "Loading"
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:487
 #: tmp/cache_twig/7b/dc/8fe6c71478ad63fbc116ed63ca55.php:135
 msgid "action:: nouveau panier"
-msgstr "New"
+msgstr "New basket"
 
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:494
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:500
@@ -6391,11 +6413,11 @@ msgstr "Received baskets"
 
 #: tmp/cache_twig/67/56/912746c50bff3da02ed0a795feb5.php:78
 msgid "Validations sent"
-msgstr "Validations sent"
+msgstr "Feedback requests sent"
 
 #: tmp/cache_twig/67/56/912746c50bff3da02ed0a795feb5.php:90
 msgid "Validations received"
-msgstr "Validations received"
+msgstr "Feedback requests received"
 
 #: tmp/cache_twig/67/56/912746c50bff3da02ed0a795feb5.php:97
 msgid "When"
@@ -6639,7 +6661,7 @@ msgstr "Update the filename"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:641
 msgid "substitution SD"
-msgstr "SD substitution"
+msgstr "Thumbnail substitution"
 
 #: tmp/cache_twig/6e/47/fa57c2115503350503b01c881d2f.php:988
 msgid "alert"
@@ -6774,12 +6796,10 @@ msgstr ""
 "video content you are about to put online is compliant to service the Terms "
 "of Use"
 
-#: tmp/cache_twig/79/0e/4f5d1bbed28162b27c12114a2a16.php:28
 #: tmp/cache_twig/79/42/534d64903c47aaa38ba389558bfb.php:28
 msgid "Aucune notification"
 msgstr "No notification"
 
-#: tmp/cache_twig/79/0e/4f5d1bbed28162b27c12114a2a16.php:37
 #: tmp/cache_twig/79/42/534d64903c47aaa38ba389558bfb.php:37
 msgid "toutes les notifications"
 msgstr "All Notifications"
@@ -7282,7 +7302,7 @@ msgstr "You must fill in required fields"
 #: tmp/cache_twig/d1/ea/9cba922417b2c8b6f151de26f77d.php:166
 #: tmp/cache_twig/d1/ea/9cba922417b2c8b6f151de26f77d.php:170
 msgid "validation::envoyer mon rapport"
-msgstr "Send my report"
+msgstr "Send my feedback"
 
 #: tmp/cache_twig/93/c0/d257ccd42b0af16549afd152737d.php:71
 #: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:130
@@ -7599,7 +7619,7 @@ msgstr "Filter"
 
 #: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:167
 msgid "Last applied template"
-msgstr "Last applied template"
+msgstr "Applied user template"
 
 #: tmp/cache_twig/ab/35/251193e0619e9e973b99cc7a568b.php:237
 msgid "boutton::appliquer"
@@ -7915,17 +7935,17 @@ msgstr ""
 #: tmp/cache_twig/c4/25/3d83cc10f0a070ab4edc497f7e99.php:133
 #: tmp/cache_twig/d3/f5/6514cccadf5afe3bb041585a94aa.php:131
 msgid "(validation) session terminee"
-msgstr "Session ended"
+msgstr "Feedback session ended"
 
 #: tmp/cache_twig/c4/25/3d83cc10f0a070ab4edc497f7e99.php:139
 #: tmp/cache_twig/d3/f5/6514cccadf5afe3bb041585a94aa.php:137
 msgid "(validation) envoyee"
-msgstr "Sent"
+msgstr "Feedback request sent."
 
 #: tmp/cache_twig/c4/25/3d83cc10f0a070ab4edc497f7e99.php:145
 #: tmp/cache_twig/d3/f5/6514cccadf5afe3bb041585a94aa.php:143
 msgid "(validation) a envoyer"
-msgstr "To send"
+msgstr "Feedback request to send"
 
 #: tmp/cache_twig/c4/25/3d83cc10f0a070ab4edc497f7e99.php:154
 #: tmp/cache_twig/c4/25/3d83cc10f0a070ab4edc497f7e99.php:256
@@ -7997,7 +8017,7 @@ msgstr "Records statut"
 
 #: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:45
 msgid "Records type"
-msgstr "Type d'enregistrements"
+msgstr "Records type"
 
 #: tmp/cache_twig/c5/19/3069cbda7450140db2d1d9422b11.php:57
 msgid "You have selected one record."
@@ -8922,7 +8942,7 @@ msgstr "You have a new basket available"
 
 #: tmp/cache_twig/f8/85/9157487f457f3f2277b96a073cdf.php:111
 msgid "Vous avez recu une demande de validation de document sur ce panier"
-msgstr "You have received a feedback demand for documents from this basket"
+msgstr "You have received a feedback demand for documents from this basket."
 
 #: tmp/cache_twig/f8/85/9157487f457f3f2277b96a073cdf.php:134
 #: tmp/cache_twig/f8/85/9157487f457f3f2277b96a073cdf.php:301
@@ -8942,7 +8962,7 @@ msgstr "Validate"
 
 #: tmp/cache_twig/f8/85/9157487f457f3f2277b96a073cdf.php:253
 msgid "Vous avez envoye une demande de validation de document sur ce panier"
-msgstr "You have pushed this basket for feedback"
+msgstr "You have pushed this basket for a feedback request"
 
 #: tmp/cache_twig/f8/85/9157487f457f3f2277b96a073cdf.php:274
 msgid "paniers:: panier recu de %pusher%"
@@ -8991,7 +9011,8 @@ msgstr "User disapproves this document"
 
 #: tmp/cache_twig/f8/85/9157487f457f3f2277b96a073cdf.php:894
 msgid "This user does not participate to the validation but is only viewer."
-msgstr "This user does not participate to the validation but is only viewer."
+msgstr ""
+"This user does not participate to the feedback request but is only viewer."
 
 #: tmp/cache_twig/f9/a1/b353838bc56869bf92a7e455d17d.php:66
 msgid "General settings"
@@ -9494,7 +9515,7 @@ msgid "Password is empty at line %d"
 msgstr "Password is empty at line %d."
 
 #: lib/Alchemy/Phrasea/Controller/Api/Oauth2.php:82
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1011
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1010
 msgid "login::erreur: Erreur d'authentification"
 msgstr "Authentication error"
 
@@ -10002,7 +10023,7 @@ msgstr "%1$d records have been sent to %2$d users"
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:287
 #, php-format
 msgid "Validation from %s"
-msgstr "Validation from %s"
+msgstr "Feedback request from %s"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:295
 msgid "No participants specified"
@@ -10017,40 +10038,40 @@ msgstr "No documents to validate"
 msgid "Missing mandatory parameter %s"
 msgstr "Missing mandatory parameter %s"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:456
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:457
 #, php-format
 msgid "%1$d records have been sent for validation to %2$d users"
-msgstr "%1$d records have been sent for validation to %2$d users"
+msgstr "%1$d records have been sent for feedback request to %2$d users"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:520
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:521
 msgid "You are not allowed to add users"
 msgstr "You are not allowed to create users"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:523
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:524
 msgid "First name is required"
 msgstr "First name is required"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:526
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:527
 msgid "Last name is required"
 msgstr "Last name is required"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:529
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:530
 msgid "Email is required"
 msgstr "E-mail address required"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:532
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:533
 msgid "Email is invalid"
 msgstr "E-mail is invalid"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:546
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:547
 msgid "User already exists"
 msgstr "User already exists"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:569
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:570
 msgid "User successfully created"
 msgstr "User successfully created"
 
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:573
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:574
 msgid "Error while creating user"
 msgstr "Error while creating user"
 
@@ -10356,7 +10377,7 @@ msgid "report:: module"
 msgstr "Modules"
 
 #: lib/Alchemy/Phrasea/Controller/Root/Account.php:100
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:592
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:591
 msgid "login::notification: Mise a jour du mot de passe avec succes"
 msgstr "Password update done"
 
@@ -10410,159 +10431,159 @@ msgstr "Changes saved"
 msgid "forms::erreurs lors de l'enregistrement des modifications"
 msgstr "Error when saving modifications"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:205
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:204
 msgid "Please provide a value."
 msgstr "Please provide a value."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:206
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:205
 #, php-format
 msgid "Please select at least %s choice."
 msgstr "Please select at least %s choice(s)."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:207
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:206
 msgid "Please provide a valid email address."
 msgstr "Please provide a valid e-mail address."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:208
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:207
 msgid "Please provide a valid IP address."
 msgstr "Please provide a valid IP address."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:209
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:208
 #, php-format
 msgid "Please provide a longer value. It should have %s character or more."
 msgstr "Please provide a longer value. It must have %s characters or more."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:210
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:209
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRecoverPasswordForm.php:44
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRegisterForm.php:50
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRenewPasswordForm.php:36
 msgid "Please provide the same passwords."
 msgstr "Please provide the same passwords."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:211
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:210
 msgid "Please provide the same emails."
 msgstr "Please provide the same e-mails."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:212
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:211
 msgid "Please accept the terms of use to register."
 msgstr "Please accept the terms of use to register."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:213
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:212
 msgid "No collection selected"
 msgstr "No collection selected"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:214
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:213
 #, php-format
 msgid "%d collection selected"
 msgstr "%d collection selected"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:215
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:214
 #, php-format
 msgid "%d collections selected"
 msgstr "%d collections selected"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:216
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:215
 msgid "Select all collections"
 msgstr "Select all collections"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:218
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:217
 msgid "Weak"
 msgstr "Weak"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:219
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:218
 msgid "Ordinary"
 msgstr "Ordinary"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:220
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:219
 msgid "Good"
 msgstr "Good"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:221
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:220
 msgid "Great"
 msgstr "Great"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:256
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:264
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:255
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:263
 msgid "You tried to register with an unknown provider"
 msgstr "You tried to register with an unknown provider."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:291
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:290
 msgid "Invalid captcha answer."
 msgstr "Invalid CAPTCHA answer."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:396
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:467
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:395
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:466
 msgid "login::notification: demande de confirmation par mail envoyee"
 msgstr "E-mail confirmation sent"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:399
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:470
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:398
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:469
 msgid "Unable to send your account unlock email."
 msgstr "Unable to send e-mail to unlock your account."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:460
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:459
 msgid "Invalid link."
 msgstr "Invalid link."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:509
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:517
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:525
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:508
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:516
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:524
 msgid "Invalid unlock link."
 msgstr "Invalid unlock link."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:531
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:530
 msgid "Account is already unlocked, you can login."
 msgstr "Account is already unlocked. You can login."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:542
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:553
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:541
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:552
 msgid "Account has been unlocked, you can now login."
 msgstr "Account has been unlocked. You can now login."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:558
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:557
 msgid "Account has been unlocked, you still have to wait for admin approval."
 msgstr ""
 "Account has been unlocked. But you still have to wait for an administration "
 "approval."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:628
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:627
 msgid "phraseanet::erreur: Le compte n'a pas ete trouve"
 msgstr "Account does not exist"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:634
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:633
 msgid "Invalid email address"
 msgstr "Invalid e-mail address"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:650
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:649
 msgid "phraseanet:: Un email vient de vous etre envoye"
 msgstr "E-mail has been sent"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:698
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:697
 msgid "Vous etes maintenant deconnecte. A bientot."
 msgstr "You are now disconnected. See you soon."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:725
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:724
 msgid "login::erreur: No available connection - Please contact sys-admin"
 msgstr "No available connection.  Please contact system administrator"
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:770
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:769
 msgid "Phraseanet guest-access is disabled"
 msgstr "Phraseanet guest-access is disabled."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:890
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:889
 #, php-format
 msgid "Unable to authenticate with %s"
 msgstr "Unable to authenticate with %s."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:914
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:913
 msgid "Unable to retrieve provider identity"
 msgstr "Unable to retrieve provider identity."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:953
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:952
 msgid "Your identity is not recognized."
 msgstr "Your identity is not recognized."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:985
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:984
 msgid ""
 "An unexpected error occured during authentication process, please contact an "
 "admin"
@@ -10570,11 +10591,11 @@ msgstr ""
 "An unexpected error occurred during authentication process. Please contact "
 "an administrator."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1000
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:999
 msgid "Please fill the captcha"
 msgstr "Please fill the captcha field."
 
-#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1004
+#: lib/Alchemy/Phrasea/Controller/Root/Login.php:1003
 msgid "login::erreur: Vous n'avez pas confirme votre email"
 msgstr "Access denied, you have not confirmed your e-mail address"
 
@@ -10928,7 +10949,7 @@ msgstr "Process the registration"
 #: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationDone.php:56
 #, php-format
 msgid "push::mail:: Rapport de validation de %1$s pour %2$s"
-msgstr "Validation report from %1$s for %2$s"
+msgstr "Feedback request report from %1$s for %2$s."
 
 #: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationDone.php:72
 #, php-format
@@ -10947,17 +10968,22 @@ msgstr "Reminder : Feedback '%s'"
 #: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationReminder.php:49
 #, php-format
 msgid "Il ne vous reste plus que %d jours pour terminer votre validation"
-msgstr "%d days left to send your feedback"
+msgstr "%d days left to send your feedback."
 
 #: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationReminder.php:59
-#: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationRequest.php:71
-msgid "Validate"
-msgstr "Validate"
+#: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationRequest.php:86
+msgid "Start validation"
+msgstr "Start feedback"
 
-#: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationRequest.php:55
+#: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationRequest.php:62
 #, php-format
 msgid "Validation request from %s : '%s'"
-msgstr "Feedback request from %s : '%s'."
+msgstr "Feedback request from %s : %s."
+
+#: lib/Alchemy/Phrasea/Notification/Mail/MailInfoValidationRequest.php:74
+#, php-format
+msgid "You have %d days to validate the selection."
+msgstr "You have %d days to give your feedback for the selected documents."
 
 #: lib/Alchemy/Phrasea/Notification/Mail/MailRecordsExport.php:21
 msgid "Vous avez recu des documents"
@@ -11205,12 +11231,12 @@ msgstr "You have asked for feedback to %d users"
 #: lib/Doctrine/Entities/ValidationSession.php:271
 #, php-format
 msgid "Processus de validation recu de %s et concernant %d utilisateurs"
-msgstr "Feedback requested from %s and sent to %d other users"
+msgstr "Feedback requested from %s and sent to %d other users."
 
 #: lib/Doctrine/Entities/ValidationSession.php:276
 #, php-format
 msgid "Processus de validation recu de %s"
-msgstr "Feedback requested from %s"
+msgstr "Feedback requested from %s."
 
 #: lib/Doctrine/Repositories/BasketElementRepository.php:42
 msgid "Element is not found"
@@ -11240,3 +11266,6 @@ msgstr "List is not found"
 #: lib/Doctrine/Repositories/UsrListRepository.php:57
 msgid "You have not access to this list"
 msgstr "You do not have access to this list"
+
+#~ msgid "Enable Google Chrome frame"
+#~ msgstr "Enable Google Chrome frame"
