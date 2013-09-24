@@ -263,8 +263,19 @@ abstract class base implements cache_cacheableInterface
 
         $ORMTables = array(
             'AuthFailures',
+            'AggregateTokens',
             'BasketElements',
             'Baskets',
+            'FeedEntries',
+            'FeedItems',
+            'FeedPublishers',
+            'FeedTokens',
+            'Feeds',
+            'FtpCredential',
+            'FtpExportElements',
+            'FtpExports',
+            'OrderElements',
+            'Orders',
             'StoryWZ',
             'UsrListOwners',
             'UsrLists',
@@ -279,6 +290,10 @@ abstract class base implements cache_cacheableInterface
             'SessionModules',
             'Sessions',
             'UsrAuthProviders',
+            'UserQueries',
+            'UserSettings',
+            'Users',
+            'UserNotificationSettings',
         );
 
         foreach ($rs as $row) {
