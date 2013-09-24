@@ -372,7 +372,6 @@ class API_V1_adapter extends API_V1_Abstract
                 'webServices'    => array(
                     'googleApi'                   => $app['phraseanet.registry']->get('GV_google_api'),
                     'googleAnalyticsId'           => $app['phraseanet.registry']->get('GV_googleAnalytics'),
-                    'googleChromeFrameDisclaimer' => $app['phraseanet.registry']->get('GV_display_gcf'),
                     'i18nWebService'              => $app['phraseanet.registry']->get('GV_i18n_service'),
                     'recaptacha'                  => array(
                         'active'     => $app['phraseanet.registry']->get('GV_captchas'),

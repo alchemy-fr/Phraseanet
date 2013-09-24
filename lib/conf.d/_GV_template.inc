@@ -662,12 +662,6 @@ return call_user_func_array(function(Application $app) {
                     'comment' => _('Allow the website to be indexed by search engines like Google'),
                     'default' => true
                 ),
-                array(
-                    'type'    => \registry::TYPE_BOOLEAN,
-                    'name'    => 'GV_display_gcf',
-                    'comment' => _('Enable Google Chrome frame'),
-                    'default' => true
-                )
             )
         )
     );

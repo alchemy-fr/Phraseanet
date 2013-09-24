@@ -52,7 +52,6 @@ class Login implements ControllerProviderInterface
         return array(
             'instance_title' => $app['phraseanet.registry']->get('GV_homeTitle'),
             'has_terms_of_use' => $app->hasTermsOfUse(),
-            'display_google_chrome_frame' => $app['phraseanet.registry']->get('GV_display_gcf'),
             'meta_description' =>  $app['phraseanet.registry']->get('GV_metaDescription'),
             'meta_keywords' => $app['phraseanet.registry']->get('GV_metakeywords'),
             'browser_name' => $app['browser']->getBrowser(),

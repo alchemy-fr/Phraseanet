@@ -48,16 +48,44 @@
     </head>
     <body>
         {% block google_chrome_frame %}
-            {% if display_google_chrome_frame %}
-                <!--[if lt IE 7]>
-                    {% set browserLink = "<a href='http://browsehappy.com/'>" ~ browser_name ~ "</a>"|raw %}
-                    {% set GCFLink = "<a href='http://www.google.com/chromeframe/?redirect=true'>Google Chrome Frame</a>"|raw %}
-                    <p class="alert alert-warning text-center">
-                        <strong>{% trans %}You are using an outdated browser.{% endtrans %}</strong>
-                        {% trans %}Please upgrade {{ browserLink }} or activate {{ GCFLink }} to improve your experience.{% endtrans %}
-                    </p>
-                <![endif]-->
-            {% endif %}
+        <!--[if lt IE 7]>
+            {% set browserLink = "<a href='http://browsehappy.com/'>" ~ browser_name ~ "</a>"|raw %}
+            {% set GCFLink = "<a href='http://www.google.com/chromeframe/?redirect=true'>Google Chrome Frame</a>"|raw %}
+            <p class="alert alert-warning text-center">
+                <strong>{% trans %}You are using an outdated browser.{% endtrans %}</strong>
+                {% trans %}Please upgrade {{ browserLink }} or activate {{ GCFLink }} to improve your experience.{% endtrans %}
+            </p>
+            <div class="ie6-special">
+                <div class="ie6-container">
+                    <table>
+                        <tr>
+                            <td style="width:350px;">
+                                <img src="/skins/login/img/ie6dead.png" />
+                            </td>
+                            <td>
+                                <h1>
+                                    {% block main_title %}{% endblock %}
+                                </h1>
+                                <p>
+                                    {% trans %}Mettez à jour votre navigateur ou téléchargez un navigateur plus récent.{% endtrans %}
+                                </p>
+                                <p>
+                                    {% trans %}Si vous ne pouvez pas installer un autre navigateur, utilisez Google Chrome Frame.{% endtrans %}
+                                </p>
+                                <p class="links">
+                                    <a href="https://www.google.com/chrome">
+                                        {% trans %}Installer Google Chrome{% endtrans %}
+                                    </a><br/>
+                                    <a href="https://www.google.com/chromeframe">
+                                        {% trans %}Installer Google Chrome Frame{% endtrans %}
+                                    </a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        <![endif]-->
         {% endblock google_chrome_frame %}
 
         <div class="container full-height">
