@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class patch_3715 implements patchInterface
 {
@@ -54,7 +55,7 @@ class patch_3715 implements patchInterface
     {
         try {
             \API_OAuth2_Application::load_from_client_id($app, \API_OAuth2_Application_OfficePlugin::CLIENT_ID);
-        } catch (\Exception_NotFound $e) {
+        } catch (NotFoundHttpException $e) {
             $client = \API_OAuth2_Application::create($app, null, \API_OAuth2_Application_OfficePlugin::CLIENT_NAME);
 
             $client->set_activated(true);
