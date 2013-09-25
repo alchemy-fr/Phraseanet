@@ -28,17 +28,13 @@ $finder
     ->name('.gitmodules')
     ->name('.gitignore')
     ->name('check_cs.php')
-    ->name('bin/behat')
-    ->name('bin/developer')
-    ->name('bin/doctrine.php')
-    ->name('bin/doctrine')
-    ->name('bin/phpunit')
     ->name('cleaner.php')
     ->name('build-env.sh')
     ->name('phpunit.xml.dist')
     ->name('launchpadToLocales.php')
     ->name('localesToLaunchPad.php')
     ->name('pom.xml')
+    ->name('bower.json')
     ->name('composer.json')
     ->name('composer.lock')
     ->name('composer.phar')
@@ -55,7 +51,30 @@ $finder
 $files = array();
 
 foreach ($finder as $file) {
-    $files[] = $file->getPathname();
+    $files[$file->getRealpath()] = $file->getRealpath();
+}
+
+foreach (array(
+    __DIR__ . '/bin/behat',
+    __DIR__ . '/bin/developer',
+    __DIR__ . '/bin/doctrine.php',
+    __DIR__ . '/bin/doctrine',
+    __DIR__ . '/bin/phpunit',
+    __DIR__ . '/bin/validate-json',
+) as $binary) {
+    if (is_file($binary)) {
+        $files[$binary] = $binary;
+    }
+}
+
+$finder = new Finder();
+$finder
+    ->ignoreDotFiles(false)
+    ->ignoreVCS(false)
+    ->in(array('logs'));
+
+foreach ($finder as $file) {
+    $files[$file->getRealpath()] = $file->getRealpath();
 }
 
 foreach ($files as $file) {
@@ -100,7 +119,7 @@ $finder
 $dirs = array();
 
 foreach ($finder as $dir) {
-    $dirs[] = $dir->getPathname();
+    $dirs[] = $dir->getRealpath();
 }
 
 foreach ($dirs as $dir) {
