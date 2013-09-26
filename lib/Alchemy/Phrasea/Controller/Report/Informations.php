@@ -380,7 +380,7 @@ class Informations implements ControllerProviderInterface
             ));
         }
 
-        if ('DASH' === $from) {
+        if ('DASH' !== $from && 'PUSHDOC' !== $from) {
             $download = new \module_report_download(
                 $app,
                 $request->request->get('dmin'),
@@ -438,7 +438,7 @@ class Informations implements ControllerProviderInterface
                 return $app->json(array('rs' => $csv));
             }
 
-            $html = $app['twig']->render('report/ajax_data_content.html.twig', array(
+            $html .= $app['twig']->render('report/ajax_data_content.html.twig', array(
                 'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                 'is_infouser' => false,
                 'is_nav'      => false,
@@ -489,7 +489,7 @@ class Informations implements ControllerProviderInterface
                 return $app->json(array('rs' => $csv));
             }
 
-            $html = $app['twig']->render('report/ajax_data_content.html.twig', array(
+            $html .= $app['twig']->render('report/ajax_data_content.html.twig', array(
                 'result'      => isset($reportArray['report']) ? $reportArray['report'] : $reportArray,
                 'is_infouser' => false,
                 'is_nav'      => false,
