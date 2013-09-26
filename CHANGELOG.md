@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 3.8.1 (2013-xx-xx)
+ 
+  - Fix IE6 message display on homepage.
+
 * 3.8.0 (2013-09-26)
 
   - BC Break : Removed `bin/console check:system` command, replaced by `bin/setup check:system`.
