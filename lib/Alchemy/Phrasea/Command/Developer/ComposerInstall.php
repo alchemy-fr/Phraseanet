@@ -34,9 +34,13 @@ class ComposerInstall extends Command
     {
         $composer = $this->container['driver.composer'];
 
-        $output->write("Updating composer... ");
-        $composer->command('self-update');
-        $output->writeln("<comment>OK</comment>");
+        try {
+            $output->write("Updating composer... ");
+            $composer->command('self-update');
+            $output->writeln("<info>OK</info>");
+        } catch (ExecutionFailureException $e) {
+            $output->writeln("<error>ERROR</error> Failed to update composer, bypassing");
+        }
 
         $commands = array('install', '--optimize-autoloader', '--quiet', '--no-interaction');
         if ($input->getOption('prefer-source')) {

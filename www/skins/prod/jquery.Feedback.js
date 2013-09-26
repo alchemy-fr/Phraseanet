@@ -35,36 +35,22 @@
         url: $this.attr('href'),
         dataType: 'html',
         beforeSend:function(){
-          if($('#user_adder_dialog').length === 0)
-          {
-            $('body').append('<div id="user_adder_dialog" title="' + $this.html() + '" style="display:none;"></div>');
-          }
-          $('#user_adder_dialog').addClass('loading').empty().dialog({
-            buttons:{},
-            draggable:false,
-            resizable:false,
-            closeOnEscape:true,
-            modal:true,
-            width:'400',
-            height:'400'
-          }).dialog( "moveToTop" );
+          var options = {
+            size : 'Medium',
+            title : $this.html()
+          };
+          p4.Dialog.Create(options, 2).getDomElement().addClass('loading');
         },
         success: function(data){
-          $('#user_adder_dialog').removeClass('loading').empty().append(data);
+          p4.Dialog.get(2).getDomElement().removeClass('loading').empty().append(data);
           return;
         },
         error: function(){
-          if ($('#user_adder_dialog').data("ui-dialog")) {
-            $('#user_adder_dialog').dialog('destroy');
-          }
-          $('#user_adder_dialog').remove();
+          p4.Dialog.get(2).Close();
           return;
         },
         timeout: function(){
-          if ($('#user_adder_dialog').data("ui-dialog")) {
-            $('#user_adder_dialog').dialog('destroy');
-          }
-          $('#user_adder_dialog').remove();
+          p4.Dialog.get(2).Close();
           return;
         }
       });
@@ -469,36 +455,21 @@
         url: $this.attr('href'),
         dataType: 'html',
         beforeSend:function(){
-          if($('#user_adder_dialog').length === 0)
-          {
-            $('body').append('<div id="user_adder_dialog" style="display:none;"></div>');
-          }
-          $('#user_adder_dialog').addClass('loading').empty().dialog({
-            buttons:{},
-            draggable:false,
-            resizable:false,
-            closeOnEscape:true,
-            modal:true,
-            width:'400',
-            height:'400'
-          }).dialog( "moveToTop" );
-        },
+          var options = {
+            size : 'Medium',
+            title : $this.html()
+          };
+          p4.Dialog.Create(options, 2).getDomElement().addClass('loading');        },
         success: function(data){
-          $('#user_adder_dialog').removeClass('loading').empty().append(data);
+          p4.Dialog.get(2).getDomElement().removeClass('loading').empty().append(data);
           return;
         },
         error: function(){
-          if ($('#user_adder_dialog').data("ui-dialog")) {
-            $('#user_adder_dialog').dialog('destroy');
-          }
-          $('#user_adder_dialog').remove();
+          p4.Dialog.get(2).Close();
           return;
         },
         timeout: function(){
-          if ($('#user_adder_dialog').data("ui-dialog")) {
-            $('#user_adder_dialog').dialog('destroy');
-          }
-          $('#user_adder_dialog').remove();
+          p4.Dialog.get(2).Close();
           return;
         }
       });

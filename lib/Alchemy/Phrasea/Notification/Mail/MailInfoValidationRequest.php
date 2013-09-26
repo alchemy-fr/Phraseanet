@@ -69,9 +69,9 @@ class MailInfoValidationRequest extends AbstractMailWithLink
     {
         if (0 < $this->duration) {
             if (1 < $this->duration) {
-                return $this->message . "\n\n" . "You have 1 day to validate the selection.";
+                return $this->message . "\n\n" . sprintf(_("You have %d days to validate the selection."), $this->duration);
             } else {
-                return $this->message . "\n\n" . sprintf(_("You have %d days to validate the selection.", $this->duration));
+                return $this->message . "\n\n" . _("You have 1 day to validate the selection.");
             }
         }
 
