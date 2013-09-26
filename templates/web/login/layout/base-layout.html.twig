@@ -29,7 +29,7 @@
             {% block header_stylesheet %}
                 <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/geonames/geonames.css' }) }}">
                 <link rel="stylesheet" href="{{ path('minifier', { 'g' : 'authentication_css' }) }}">
-                <!--[if lte IE 8]>
+                <!--[if IE 7]>
                     <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'assets/font-awesome/css/font-awesome-ie7.min.css' }) }}">
                 <![endif]-->
             {% endblock header_stylesheet %}
@@ -49,12 +49,6 @@
     <body>
         {% block google_chrome_frame %}
         <!--[if lt IE 7]>
-            {% set browserLink = "<a href='http://browsehappy.com/'>" ~ browser_name ~ "</a>"|raw %}
-            {% set GCFLink = "<a href='http://www.google.com/chromeframe/?redirect=true'>Google Chrome Frame</a>"|raw %}
-            <p class="alert alert-warning text-center">
-                <strong>{% trans %}You are using an outdated browser.{% endtrans %}</strong>
-                {% trans %}Please upgrade {{ browserLink }} or activate {{ GCFLink }} to improve your experience.{% endtrans %}
-            </p>
             <div class="ie6-special">
                 <div class="ie6-container">
                     <table>
