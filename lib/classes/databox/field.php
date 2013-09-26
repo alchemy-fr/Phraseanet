@@ -500,7 +500,7 @@ class databox_field implements cache_cacheableInterface
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
 
-        return isset($this->labels[$code]) ? $this->labels[$code] : $this->name;
+        return isset($this->labels[$code]) && '' !== $this->labels[$code] ? $this->labels[$code] : $this->name;
     }
 
     /**
