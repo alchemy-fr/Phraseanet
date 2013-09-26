@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Converter;
 
+use Alchemy\Phrasea\Controller\Converter\Exception\NotFoundException;
+
 interface ConverterInterface
 {
     /**
