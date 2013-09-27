@@ -18,6 +18,7 @@ define([
         className: "field-row",
         initialize: function() {
             // destroy view is model is deleted
+            this.model.on("change", this.onChange, this);
             this.model.on("destroy", this.remove, this);
         },
         events : {
@@ -44,6 +45,11 @@ define([
             this.$el.trigger("update-sort", [this.model, ui]);
 
             return this;
+        },
+        onChange: function() {
+            if (this.model.hasChanged("tag")) {
+                this.render();
+            }
         },
         render: function() {
             var template = _.template($("#list_row_template").html(), {
