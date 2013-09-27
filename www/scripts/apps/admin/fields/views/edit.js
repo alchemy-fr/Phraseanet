@@ -89,7 +89,7 @@ define([
             "blur input#tbranch": "fieldChangedAction",
             "blur input#separator": "fieldChangedAction",
             "blur input#tag": "tagFieldChangedAction",
-            "blur input.input-label": "labelChangedAction",
+            "keyup input.input-label": "labelChangedAction",
             "change input[type=checkbox]": "fieldChangedAction",
             "change select": "selectionChangedAction",
             "click .lng-label a": "_toggleLabels"
@@ -194,8 +194,7 @@ define([
         },
         _onModelChange: function() {
             AdminFieldApp.fieldListView.collection.remove(this.model, {silent: true});
-            AdminFieldApp.fieldListView.collection.add(this.model);
-
+            AdminFieldApp.fieldListView.collection.add(this.model, {silent: true});
             AdminFieldApp.saveView.updateStateButton();
         },
         // select temView by index in itemList
