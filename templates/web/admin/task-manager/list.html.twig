@@ -1,0 +1,205 @@
+<div class="page-header">
+    <h1>{% trans 'admin::tasks: planificateur de taches' %}
+    <small style="font-size:16px;">
+        {% trans 'Last update at' %} <span id="pingTime"></span>
+    </small>
+</h1>
+</div>
+
+<form id="taskManagerForm" method="get" name="taskManager" action="{{ path('admin_tasks_list') }}"></form>
+
+<form id="createTask" method="post"  name="createTask" action="{{ path('admin_tasks_task_create') }}">
+    <input type="hidden" name="tcl" value="" />
+    <input type="hidden" name="view" value="GRAPHIC" />
+</form>
+
+<table id="task-manager" class="admintable task_manager" cellpadding="0" cellSpacing="0">
+    <thead>
+        <tr>
+            <th></th>
+            <th style="text-align:center; width:40px;">ID</th>
+            <th style="text-align:center; width:30px;">Informations</th>
+            <th style="text-align:center; width:80px;">{% trans 'admin::tasks: statut de la tache' %}</th>
+            <th style="text-align:center; width:60px;">{% trans 'admin::tasks: process_id de la tache' %}</th>
+            <th style="width:auto;">{% trans 'admin::tasks: nom de la tache' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="TR_SCHED" class="sched even">
+            <td>
+                <div class="btn-group">
+                    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="schedMenuItem" id="schedulerStart"><a href="#">start</a></li>
+                        <li class="schedMenuItem" id="schedulerStop"><a href="#">stop</a></li>
+                        <li class="schedMenuItem" id="schedulerLog"><a href="#">log</a></li>
+                    </ul>
+                </div>
+            </td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="text-align:center" id="STATUS_SCHED"></td>
+            <td id="PID_SCHED" style="text-align:center;">&nbsp;</td>
+            <td style="font-weight:900" class="taskname">TaskManager</td>
+        </tr>
+{% for task in tasks %}
+        <tr id="task_{{ task.getID() }}" class="task {% if loop.index is odd %}odd{% else %}even{% endif %}">
+            <td>
+                <div class="btn-group">
+                    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="taskMenuItem" id="taskEdit_{{ task.getID() }}"><a href="#">edit</a></li>
+                        <li class="taskMenuItem" id="taskStart_{{ task.getID() }}"><a href="#">start</a></li>
+                        <li class="taskMenuItem" id="taskStop_{{ task.getID() }}"><a href="#">stop</a></li>
+                        <li class="taskMenuItem" id="taskDelete_{{ task.getID() }}"><a href="#">delete</a></li>
+                        <li class="taskMenuItem" id="taskLog_{{ task.getID() }}"><a href="#">log</a></li>
+                    </ul>
+                </div>
+            </td>
+            <td style="text-align:center; font-weight:900">{{ task.getID() }}</td>
+            <td style="text-align:center" class="information"></td>
+            <td style="text-align:center" class="status">{{ task.getStatus() }}</td>
+            <td style="text-align:center" class="pid"></td>
+            <td class="taskname">{{ task.getName() }} [{{ task.getName() }}]</td>
+        </tr>
+{% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="7">
+                <select id="newTaskMenu" style="margin:20px 0;">
+                    <option value="">{% trans 'admin::tasks: Nouvelle tache' %}...</option>
+                    {% for job in available_jobs %}
+                        <option value="{{ job.getClassname() }}">{{ job.getName() }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+
+<script type="text/javascript">
+
+
+
+    $(document).ready(function(){
+        $(".schedMenuItem").bind("click", function() {
+            var action = $(this).attr("id");
+
+            switch(action)
+            {
+                case "schedulerStart":
+                   $.ajax({
+                        url: "../admin/task-manager/scheduler/start",
+                        type:"GET",
+                        dataType:"json",
+                        data : {},
+                        success: function(data)
+                        {
+                        }
+                    });
+                    break;
+                  break;
+
+                case "schedulerStop":
+                    $.ajax({
+                        url: "../admin/task-manager/scheduler/stop",
+                        type:"GET",
+                        dataType:"json",
+                        data : {},
+                        success: function(data)
+                        {
+                        }
+                    });
+                    break;
+
+                case "schedulerLog":
+                    window.open("../admin/task-manager/scheduler/log", "scheduler_log");
+                    break;
+
+            }
+
+        });
+
+
+        $(".taskMenuItem").bind("click", function() {
+            var action = $(this).attr("id").split('_');
+
+            switch(action[0])
+            {
+                case "taskEdit":
+                     var a = "../admin/task-manager/task/"+action[1]+"";
+                     $("#taskManagerForm").attr("action", a);
+                     $("#taskManagerForm").submit();
+                     break;
+
+                case "taskStart":
+                    // first reset the crash counter, then set to 'tostart'
+                    $.ajax({
+                            url: "../admin/task-manager/task/"+action[1]+"/resetcrashcounter",
+                            type:"GET",
+                            dataType:"json",
+                            data : {},
+                            success: function(data)
+                            {
+                                $.ajax({
+                                        url: "../admin/task-manager/task/"+action[1]+"/tostart",
+                                        type:"GET",
+                                        dataType:"json",
+                                        data : {},
+                                        success: function(data)
+                                        {
+
+                                        }
+                                    });
+                            }
+                        });
+                    break;
+
+                case "taskStop":
+                    $.ajax({
+                            url: "../admin/task-manager/task/"+action[1]+"/tostop",
+                            type:"GET",
+                            dataType:"json",
+                            data : {signal:15},
+                            success: function(data)
+                            {
+
+                            }
+                        });
+                    break;
+
+                case "taskDelete":
+                    if(confirm("{% trans 'admin::tasks: supprimer la tache ?' %}"))
+                    {
+                        var a = "../admin/task-manager/task/"+action[1]+"/delete";
+                        $("#taskManagerForm").attr("action", a);
+                        $("#taskManagerForm").submit();
+                    }
+                    break;
+
+                case "taskLog":
+                    window.open("../admin/task-manager/task/"+action[1]+"/log", "task"+action[1]+"_log");
+                    break;
+            }
+
+        });
+
+
+        $("#newTaskMenu").bind("change", function() {
+            var task_class = $(this).children("option:selected").attr("value");
+
+            $("#createTask INPUT[name=\"tcl\"]").attr("value", task_class);
+            $("#createTask").submit();
+
+            $(this).children("option:first").attr("selected", "selected");
+        });
+    }
+)
+</script>
+

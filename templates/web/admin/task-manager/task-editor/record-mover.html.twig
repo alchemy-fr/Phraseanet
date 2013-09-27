@@ -85,7 +85,7 @@
             data["taskid"]={{ task.getId() }};
             data["cls"]="RecordMover";
             data["xml"] = xml;
-            $.ajax({ url: "{{ path('admin_tasks_task_facility2', { 'id' : task.getID() }) }}"
+            $.ajax({ url: "{{ path('admin_tasks_task_facility', { 'task' : task.getID() }) }}"
                 , data: data
                 , dataType:'json'
                 , type:"POST"
@@ -127,7 +127,7 @@
                     data["taskid"]={{ task.getId() }};
                     data["cls"]="RecordMover";
                     data["xml"] = xml;
-                    $.ajax({ url: "{{ path('admin_tasks_task_facility2', { 'id' : task.getID() }) }}"
+                    $.ajax({ url: "{{ path('admin_tasks_task_facility', { 'task' : task.getID() }) }}"
                         , data: data
                         , dataType:'json'
                         , type:"POST"

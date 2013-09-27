@@ -2,11 +2,10 @@
     {% block css %}{% endblock %}
     <div>
         <form
-            name="passwordRenewForm"
+            name="task-edit"
             method="POST"
-            action="{{ path('admin_tasks_task_save2', {'id' : task.getId()}) }}"
-            onsubmit="return(false);"
-            class="form-inline"
+            action="{{ path('admin_tasks_task_save', {'task' : task.getId()}) }}"
+            class="form-inline no-ajax"
         >
             {% if form.vars.errors|length > 0 %}
                 {{ form_errors(form) }}
@@ -14,7 +13,7 @@
 
             {{ form_rest(form) }}
 
-            <a href="{{ path('admin_tasks_list2') }}">{% trans 'Cancel' %}</a>
+            <a href="{{ path('admin_tasks_list') }}">{% trans 'Cancel' %}</a>
             <button type="submit" class="btn btn-success btn-trigger " id="taskSaveButton">
                 {% trans "Save" %}
             </button>
@@ -113,7 +112,7 @@
         $("#taskResetCrashCounterButton").click(function()
         {
             $.ajax({
-                "url" : "{{ path('admin_tasks_task_reset2', {'id' : task.getId()}) }}",
+                "url" : "{{ path('admin_tasks_task_reset', {'task' : task.getId()}) }}",
                 "dataType" : "json",
                 "type" : "POST",
                 success:function(data) {
@@ -129,7 +128,7 @@
         function xmlFromForm(callback) {
             var data = $("#graphicForm").serializeJSON();
             data["xml"] = $("#txtareaxml").val();
-            $.ajax({ url: "{{ path('admin_tasks_xml_from_form', {'id' : task.getId()}) }}"
+            $.ajax({ url: "{{ path('admin_tasks_xml_from_form', {'task' : task.getId()}) }}"
                 , data: data
                 , dataType:'text'
                 , type:"POST"
@@ -146,26 +145,25 @@
             });
         }
 
-        $("#taskSaveButton").click(function()
+        $("form[name='task-edit']").on('submit', function()
         {
-            xmlFromForm(function () {
-                $.ajax({ url: "../admin/task-manager2/task/{{task.getID()}}/save/"
-                    , data: {
-                        title:$("#taskTaskname").val(),
-                        active:!!$("#taskTaskActive").attr("checked"),
-                        xml:data
-                    }
+            xmlFromForm(function (data) {
+                $("form[name='task-edit'] input[name='settings']").val(data);
+                formData = $("form[name='task-edit']").serializeArray();
+                $.ajax({
+                    url: "{{ path('admin_tasks_task_save', { 'task' : task.getID() }) }}"
+                    , data: formData
                     , dataType:'json'
                     , type:"POST"
                     , async:false
                     , success:function(data) {
                         if (data.success) {
-                            $("#taskFormByeBye").submit();
+                            loadRightAjax("{{ path('admin_tasks_list') }}");
                         } else {
                             if (window.console) {
                                 console.log(data.message);
                             }
-                            alert("{% trans %}An error occured{% endtrans %}");
+                            alert("{% trans %}An error occured{% endtrans %} "+data.message);
                         }
                     }
                     , error:function(jqXHR, textStatus, errorThrown) {
@@ -173,6 +171,8 @@
                     }
                 });
             });
+
+            return false;
         });
     });
 </script>
