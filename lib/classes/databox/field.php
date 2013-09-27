@@ -141,6 +141,7 @@ class databox_field implements cache_cacheableInterface
     protected static $_instance = array();
     protected $dces_element;
     protected $Vocabulary;
+    protected $VocabularyType;
     protected $VocabularyRestriction = false;
     protected $on_error = false;
     protected $original_src;
@@ -222,13 +223,8 @@ class databox_field implements cache_cacheableInterface
         $this->position = (Int) $row['sorter'];
         $this->type = $row['type'] ? : self::TYPE_STRING;
         $this->tbranch = $row['tbranch'];
-
-        try {
-            $this->Vocabulary = Vocabulary\Controller::get($this->app, $row['VocabularyControlType']);
-            $this->VocabularyRestriction = ! ! $row['RestrictToVocabularyControl'];
-        } catch (\InvalidArgumentException $e) {
-
-        }
+        $this->VocabularyType = $row['VocabularyControlType'];
+        $this->VocabularyRestriction = !!$row['RestrictToVocabularyControl'];
 
         if ($row['dces_element']) {
             $dc_class = 'databox_Field_DCES_' . $row['dces_element'];
@@ -297,6 +293,7 @@ class databox_field implements cache_cacheableInterface
     {
         $this->app = $app;
         $this->set_databox($this->app['phraseanet.appbox']->get_databox($this->sbas_id));
+        $this->loadVocabulary();
     }
 
     /**
@@ -1016,7 +1013,7 @@ class databox_field implements cache_cacheableInterface
     {
         $vars = array();
         foreach ($this as $key => $value) {
-            if (in_array($key, array('databox', 'app')))
+            if (in_array($key, array('databox', 'app', 'Vocabulary')))
                 continue;
             $vars[] = $key;
         }
@@ -1068,5 +1065,14 @@ class databox_field implements cache_cacheableInterface
     public function delete_data_from_cache($option = null)
     {
         return $this->databox->delete_data_from_cache($this->get_cache_key($option));
+    }
+
+    private function loadVocabulary()
+    {
+        try {
+            $this->Vocabulary = Vocabulary\Controller::get($this->app, $this->VocabularyType);
+        } catch (\InvalidArgumentException $e) {
+
+        }
     }
 }
