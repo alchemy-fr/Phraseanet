@@ -20,6 +20,11 @@ class TasksServiceProviderTest extends ServiceProviderTestCase
                 'task-manager.status',
                 'Alchemy\Phrasea\TaskManager\TaskManagerStatus'
             ),
+            array(
+                'Alchemy\Phrasea\Core\Provider\TasksServiceProvider',
+                'task-manager.log-file.factory',
+                'Alchemy\Phrasea\TaskManager\Log\LogFileFactory'
+            ),
         );
     }
 

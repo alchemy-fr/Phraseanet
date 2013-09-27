@@ -21,6 +21,7 @@ use Alchemy\Phrasea\TaskManager\Job\SubdefsJob;
 use Alchemy\Phrasea\TaskManager\Job\WriteMetadataJob;
 use Alchemy\Phrasea\TaskManager\Job\Factory as JobFactory;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
+use Alchemy\Phrasea\TaskManager\Log\LogFileFactory;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -34,6 +35,14 @@ class TasksServiceProvider implements ServiceProviderInterface
 
         $app['task-manager.status'] = $app->share(function(Application $app) {
             return new TaskManagerStatus($app['phraseanet.configuration']);
+        });
+
+        $app['task-manager.log-file.root'] = $app->share(function (Application $app) {
+            return $app['root.path'].'/logs';
+        });
+
+        $app['task-manager.log-file.factory'] = $app->share(function(Application $app) {
+            return new LogFileFactory($app['task-manager.log-file.root']);
         });
 
         $app['task-manager.available-jobs'] = $app->share(function(Application $app) {
