@@ -1,0 +1,13 @@
+{% extends 'common/index_bootstrap.html.twig' %}
+
+{% block content %}
+    <h4>
+        {{ logname }}
+        <a href="{{ path('admin_tasks_scheduler_log', { 'clr' : logfile.getPath() }) }} ">
+            {% trans 'Clear' %}
+        </a>
+    </h4>
+    <pre>
+        {{ logfile.getContent() }}
+    </pre>
+{% endblock %}
