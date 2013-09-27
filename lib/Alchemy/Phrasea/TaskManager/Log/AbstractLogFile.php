@@ -36,7 +36,12 @@ abstract class AbstractLogFile implements LogFileInterface
      */
     public function getContent()
     {
-        return file_get_contents($this->getPath());
+        $path = $this->getPath();
+        if (is_file($path)) {
+            return file_get_contents($this->getPath());
+        }
+
+        return '';
     }
 
     /**

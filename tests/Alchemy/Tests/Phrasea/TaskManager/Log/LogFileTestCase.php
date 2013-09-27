@@ -43,6 +43,12 @@ abstract class LogFileTestCase extends \PhraseanetPHPUnitAbstract
         $this->assertSame('hello world', $log->getContent());
     }
 
+    public function testGetEmptyContent()
+    {
+        $log = $this->getLogFile($this->root);
+        $this->assertSame('', $log->getContent());
+    }
+
     public function testGetContentStream()
     {
         $log = $this->getLogFile($this->root);
