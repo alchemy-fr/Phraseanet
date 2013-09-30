@@ -168,7 +168,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
     {
         return $this->dashboard;
     }
-    
+
     /**
      * @desc construct the legend for charts
      * if dmax  === false dmax = now();
