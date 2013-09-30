@@ -62,21 +62,14 @@ class BowerInstall extends Command
             $output->writeln("<comment>OK</comment>");
         }
 
-        $success = false;
-
         try {
             $output->write("Installing assets...");
             $grunt->command('install-assets');
             $output->write(" <comment>OK</comment>");
             $output->writeln("");
             $this->container['console']->get('assets:compile-less')->execute($input, $output);
-            $success = true;
         } catch (ExecutionFailureException $e) {
-
-        }
-
-        if (!$success) {
-            throw new RuntimeException('Unable to install bower dependencies');
+            throw new RuntimeException('Unable to install bower dependencies', $e->getCode(), $e);
         }
 
         return 0;
