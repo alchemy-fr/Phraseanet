@@ -145,7 +145,7 @@ class WriteMetadataJob extends AbstractJob
                 }
 
                 foreach ($tsub as $name => $file) {
-                    $app['exiftool.writer']->erase($name != 'document' || $clearDoc);
+                    $app['exiftool.writer']->erase($name != 'document' || $clearDoc, true);
 
                     try {
                         $app['exiftool.writer']->write($file, $metadatas);
