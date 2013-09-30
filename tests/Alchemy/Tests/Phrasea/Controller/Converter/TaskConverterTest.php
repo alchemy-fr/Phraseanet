@@ -12,7 +12,7 @@ class TaskConverterTest extends \PhraseanetPHPUnitAbstract
         $task = new Task();
         $task
             ->setName('task 1')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
 
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();

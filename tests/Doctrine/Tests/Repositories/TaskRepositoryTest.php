@@ -12,12 +12,12 @@ class TaskRepositoryTest extends \PhraseanetPHPUnitAbstract
         $task1
             ->setName('task 1')
             ->setStatus(Task::STATUS_STOPPED)
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
 
         $task2 = new Task();
         $task2
             ->setName('task 2')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
 
         self::$DI['app']['EM']->persist($task1);
         self::$DI['app']['EM']->persist($task2);

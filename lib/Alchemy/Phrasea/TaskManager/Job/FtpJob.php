@@ -33,6 +33,14 @@ class FtpJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
+    public function getJobId()
+    {
+        return 'Ftp';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
         return 'Use this task to enable FTP push.';

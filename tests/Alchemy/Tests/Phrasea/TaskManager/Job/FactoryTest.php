@@ -15,12 +15,30 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf($fqn, $factory->create($fqn));
     }
 
+    /**
+     * @dataProvider provideValidIds
+     */
+    public function testWithValidId($id, $fqn)
+    {
+        $factory = new Factory($this->createDispatcherMock(), $this->createLoggerMock());
+        $this->assertInstanceOf($fqn, $factory->create($id));
+    }
+
     public function provideValidClasses()
     {
         return array(
             array('Alchemy\Phrasea\TaskManager\Job\ArchiveJob'),
             array('Alchemy\Phrasea\TaskManager\Job\BridgeJob'),
             array('Alchemy\Phrasea\TaskManager\Job\NullJob'),
+        );
+    }
+
+    public function provideValidIds()
+    {
+        return array(
+            array('Archive', 'Alchemy\Phrasea\TaskManager\Job\ArchiveJob'),
+            array('Bridge', 'Alchemy\Phrasea\TaskManager\Job\BridgeJob'),
+            array('Null', 'Alchemy\Phrasea\TaskManager\Job\NullJob'),
         );
     }
 

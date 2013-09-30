@@ -27,6 +27,14 @@ class RecordMoverJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
+    public function getJobId()
+    {
+        return 'RecordMover';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
         return _("Moves records");

@@ -28,6 +28,14 @@ class EmptyCollectionJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
+    public function getJobId()
+    {
+        return 'EmptyCollection';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
         return _("Empty a collection");

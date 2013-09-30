@@ -27,6 +27,14 @@ class SubdefsJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
+    public function getJobId()
+    {
+        return 'Subdefs';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
         return _("task::subdef:creation des sous definitions des documents d'origine");

@@ -27,6 +27,14 @@ class FtpPullJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
+    public function getJobId()
+    {
+        return 'FtpPull';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
         return _('Periodically fetches an FTP repository content locally');

@@ -24,18 +24,18 @@ class TaskListTest extends \PhraseanetPHPUnitAbstract
         $task1 = new Task();
         $task1
             ->setName('task 1')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
 
         $task2 = new Task();
         $task2
             ->setName('task 2')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
 
         $task3 = new Task();
         $task3
             ->setName('task 3')
             ->setStatus(Task::STATUS_STOPPED)
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
 
         self::$DI['app']['EM']->persist($task3);
         self::$DI['app']['EM']->persist($task1);

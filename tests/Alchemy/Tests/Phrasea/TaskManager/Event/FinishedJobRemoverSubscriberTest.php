@@ -13,7 +13,7 @@ class FinishedJobRemoverSubscriberTest extends \PhraseanetPHPUnitAbstract
         $task = new Task();
         $task
             ->setName('task')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();
         $taskId = $task->getId();

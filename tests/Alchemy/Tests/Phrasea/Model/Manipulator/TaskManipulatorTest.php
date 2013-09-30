@@ -17,7 +17,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
         $task = new Task();
         $task
             ->setName('test')
-            ->setClassname('SuperSpace');
+            ->setJobId('SuperSpace');
 
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();
@@ -31,7 +31,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
         $this->assertCount(0, $this->findAllTasks());
         $task = $manipulator->create('prout', 'bla bla', 'super settings', 0);
         $this->assertEquals('prout', $task->getName());
-        $this->assertEquals('bla bla', $task->getClassname());
+        $this->assertEquals('bla bla', $task->getJobId());
         $this->assertEquals('super settings', $task->getSettings());
         $this->assertEquals(0, $task->getPeriod());
         $this->assertSame(array($task), $this->findAllTasks());

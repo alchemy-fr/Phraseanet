@@ -22,7 +22,7 @@ class TaskLogFileTest extends LogFileTestCase
         $task = new Task();
         $task
             ->setName('task')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
 
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();

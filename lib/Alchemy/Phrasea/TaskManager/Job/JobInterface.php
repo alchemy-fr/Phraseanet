@@ -17,13 +17,11 @@ use Alchemy\TaskManager\JobInterface as JobTMInterface;
 interface JobInterface extends JobTMInterface
 {
     /**
-     * Returns the fully qualified classname of the Job.
-     *
-     * It's a convenient method for the rendering engine.
+     * Returns an Id for the Job.
      *
      * @return string
      */
-    public function getClassname();
+    public function getJobId();
 
     /**
      * Returns the editor related to this Job.

@@ -129,7 +129,7 @@
             {% trans 'admin::tasks: Nouvelle tache' %}
         </option>
         {% for job in available_jobs %}
-            <option value="{{ job.getClassname() }}">{{ job.getName() }}</option>
+            <option value="{{ job.getJobId() }}">{{ job.getName() }}</option>
         {% endfor %}
     </select>
 </form>

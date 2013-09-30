@@ -19,7 +19,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $task = new Task();
             $task
                 ->setName('task')
-                ->setClassname(get_class($job));
+                ->setJobId(get_class($job));
             self::$DI['app']['EM']->persist($task);
         }
         self::$DI['app']['EM']->flush();
@@ -87,7 +87,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $task = new Task();
         $task
             ->setName('task')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();
 
@@ -100,7 +100,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $task = new Task();
         $task
             ->setName('task')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();
         $taskId = $task->getId();
@@ -118,7 +118,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $task
             ->setName('task')
             ->setStatus(Task::STATUS_STOPPED)
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();
 
@@ -135,7 +135,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $task
             ->setName('task')
             ->setStatus(Task::STATUS_STARTED)
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();
 
@@ -152,7 +152,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $task
             ->setName('task')
             ->setCrashed(30)
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();
 
@@ -168,7 +168,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $task = new Task();
         $task
             ->setName('task')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();
 
@@ -201,7 +201,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $task = new Task();
         $task
             ->setName('task')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();
 
@@ -237,7 +237,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $task = new Task();
         $task
             ->setName('task')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();
 
@@ -266,7 +266,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $task = new Task();
         $task
             ->setName('task')
-            ->setClassname('Alchemy\Phrasea\TaskManager\Job\NullJob');
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
         self::$DI['app']['EM']->persist($task);
         self::$DI['app']['EM']->flush();
 

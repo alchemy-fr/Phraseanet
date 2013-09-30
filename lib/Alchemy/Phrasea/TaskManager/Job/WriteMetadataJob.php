@@ -30,6 +30,14 @@ class WriteMetadataJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
+    public function getJobId()
+    {
+        return 'WriteMetadata';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
         return _("task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs concernees)");

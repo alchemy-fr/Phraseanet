@@ -26,6 +26,14 @@ class NullJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
+    public function getJobId()
+    {
+        return 'Null';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
         return 'This is a implementation example';

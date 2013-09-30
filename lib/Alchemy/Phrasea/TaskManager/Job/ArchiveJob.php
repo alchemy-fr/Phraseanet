@@ -39,6 +39,14 @@ class ArchiveJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
+    public function getJobId()
+    {
+        return 'Archive';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
         return _("task::archive:Archiving files found into a 'hotfolder'");

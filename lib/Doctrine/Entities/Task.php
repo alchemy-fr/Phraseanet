@@ -39,7 +39,7 @@ class Task
     /**
      * @ORM\Column(type="string")
      */
-    private $classname;
+    private $jobId;
 
     /**
      * @ORM\Column(type="text")
@@ -122,26 +122,26 @@ class Task
     }
 
     /**
-     * Set classname
+     * Set JobId
      *
-     * @param string $classname
+     * @param string $jobId
      * @return Task
      */
-    public function setClassname($classname)
+    public function setJobId($jobId)
     {
-        $this->classname = $classname;
+        $this->jobId = $jobId;
 
         return $this;
     }
 
     /**
-     * Get classname
+     * Get JobId
      *
      * @return string
      */
-    public function getClassname()
+    public function getJobId()
     {
-        return $this->classname;
+        return $this->jobId;
     }
 
     /**

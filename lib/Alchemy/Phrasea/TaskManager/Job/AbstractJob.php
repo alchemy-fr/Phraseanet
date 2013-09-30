@@ -23,14 +23,6 @@ abstract class AbstractJob extends AbstractTMJob implements JobInterface
     /**
      * {@inheritdoc}
      */
-    public function getClassname()
-    {
-        return get_class($this);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setPauseDuration($period)
     {
         $this->period = $period;

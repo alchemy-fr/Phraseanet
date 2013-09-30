@@ -28,17 +28,17 @@ class TaskManipulator implements ManipulatorInterface
      * Creates a Task.
      *
      * @param string $name
-     * @param string $jobFqn
+     * @param string $jobId
      * @param string $settings
      * @param integer $period
      *
      * @return Task
      */
-    public function create($name, $jobFqn, $settings, $period)
+    public function create($name, $jobId, $settings, $period)
     {
         $task = new Task();
         $task->setName($name)
-            ->setClassname($jobFqn)
+            ->setJobId($jobId)
             ->setSettings($settings)
             ->setPeriod($period);
 

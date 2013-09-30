@@ -27,6 +27,14 @@ class BridgeJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
+    public function getJobId()
+    {
+        return 'Bridge';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
         return _('Keep synchronization between bridge and client APIs.');

@@ -31,6 +31,14 @@ class PhraseanetIndexerJob extends AbstractJob
     /**
      * {@inheritdoc}
      */
+    public function getJobId()
+    {
+        return 'PhraseanetIndexer';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
         return _("This task is used to index records for Phrasea engine.");

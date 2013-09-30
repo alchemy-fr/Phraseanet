@@ -29,7 +29,11 @@ class Factory
     public function create($fqn)
     {
         if (!class_exists($fqn)) {
-            throw new InvalidArgumentException(sprintf('Job `%s` not found.', $fqn));
+            $tryFqn = __NAMESPACE__ . '\\' . $fqn . 'Job';
+            if (!class_exists($tryFqn)) {
+                throw new InvalidArgumentException(sprintf('Job `%s` not found.', $fqn));
+            }
+            $fqn = $tryFqn;
         }
 
         if (!in_array('Alchemy\Phrasea\TaskManager\Job\JobInterface', class_implements($fqn))) {

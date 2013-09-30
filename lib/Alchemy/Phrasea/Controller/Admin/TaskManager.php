@@ -143,7 +143,7 @@ class TaskManager implements ControllerProviderInterface
 
         $task = $app['manipulator.task']->create(
             $job->getName(),
-            $job->getClassname(),
+            $job->getJobId(),
             $job->getEditor()->getDefaultSettings($app['phraseanet.configuration']),
             $job->getEditor()->getDefaultPeriod()
         );
@@ -230,7 +230,7 @@ class TaskManager implements ControllerProviderInterface
     public function postTaskFacility(Application $app, Request $request, Task $task)
     {
         return $app['task-manager.job-factory']
-            ->create($task->getClassname())
+            ->create($task->getJobId())
             ->getEditor()
             ->facility($app, $request);
     }
@@ -238,7 +238,7 @@ class TaskManager implements ControllerProviderInterface
     public function postXMLFromForm(Application $app, Request $request, Task $task)
     {
         return $app['task-manager.job-factory']
-            ->create($task->getClassname())
+            ->create($task->getJobId())
             ->getEditor()
             ->updateXMLWithRequest($request);
     }
@@ -246,7 +246,7 @@ class TaskManager implements ControllerProviderInterface
     public function getTask(Application $app, Request $request, Task $task)
     {
         $editor = $app['task-manager.job-factory']
-            ->create($task->getClassname())
+            ->create($task->getJobId())
             ->getEditor();
 
         $form = $app->form(new TaskForm());

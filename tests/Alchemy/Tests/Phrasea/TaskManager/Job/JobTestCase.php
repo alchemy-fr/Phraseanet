@@ -4,13 +4,18 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\TaskManager\Job\JobInterface;
 use Alchemy\TaskManager\JobDataInterface;
+use Alchemy\Phrasea\TaskManager\Job\Factory;
 
 abstract class JobTestCase extends \PhraseanetPHPUnitAbstract
 {
-    public function testGetClassnameReturnsTheClassname()
+    public function testGetJobIdReturnsAvalidId()
     {
+        $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $logger = $this->getMock('Psr\Log\LoggerInterface');
+
+        $factory = new Factory($dispatcher, $logger);
         $job = $this->getJob();
-        $this->assertSame(get_class($job), $job->getClassname());
+        $this->assertEquals(get_class($job), get_class($factory->create($job->getJobId())));
     }
 
     public function testGetSetPauseDuration()
