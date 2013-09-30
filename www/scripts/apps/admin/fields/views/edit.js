@@ -84,7 +84,6 @@ define([
             return this;
         },
         events: {
-            "click": "focusAction",
             "click .delete-field": "deleteAction",
             "blur input#tbranch": "fieldChangedAction",
             "blur input#separator": "fieldChangedAction",
@@ -93,14 +92,6 @@ define([
             "change input[type=checkbox]": "fieldChangedAction",
             "change select": "selectionChangedAction",
             "click .lng-label a": "_toggleLabels"
-        },
-        focusAction: function() {
-            var index = AdminFieldApp.fieldListView.collection.indexOf(this.model);
-            if (index >= 0) {
-                AdminFieldApp.fieldListView.itemViews[index].animate();
-            }
-
-            return this;
         },
         selectionChangedAction: function(e) {
             var field = $(e.target);
