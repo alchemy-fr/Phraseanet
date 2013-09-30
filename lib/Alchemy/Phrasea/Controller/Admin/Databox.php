@@ -880,8 +880,7 @@ class Databox implements ControllerProviderInterface
                 if ($collection->get_record_amount() <= 500) {
                     $collection->empty_collection(500);
                 } else {
-                    $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
-                    \task_period_emptyColl::create($app, $settings);
+                    $app['manipulator.task']->createEmptyCollectionJob($collection);
                 }
             }
 

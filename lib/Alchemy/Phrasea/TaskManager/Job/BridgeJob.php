@@ -104,11 +104,10 @@ class BridgeJob extends AbstractJob
         }
     }
 
-
     /**
-     *
      * @param  Bridge_Element        $element
-     * @return task_period_apibridge
+     *
+     * @return BridgeJob
      */
     private function upload_element(\Bridge_Element $element)
     {
@@ -128,9 +127,9 @@ class BridgeJob extends AbstractJob
     }
 
     /**
-     *
      * @param  Bridge_Element        $element
-     * @return task_period_apibridge
+     * 
+     * @return BridgeJob
      */
     protected function update_element(Application $app, \Bridge_Element $element)
     {
