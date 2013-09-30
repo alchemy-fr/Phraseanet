@@ -127,6 +127,8 @@ registration-fields:
     -
         name: geonameid
         required: true
+task-manager:
+    status: started
 xsendfile:
     enabled: false
     type: nginx

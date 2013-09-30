@@ -134,4 +134,6 @@ xsendfile:
     enabled: false
     type: nginx
     mapping: []
+task-manager:
+    status: started
 plugins: []
