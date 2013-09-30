@@ -22,7 +22,7 @@ class TaskConverterTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @expectedException Alchemy\Phrasea\Exception\NotFoundException
+     * @expectedException Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @expectedExceptionMessage Task prout not found.
      */
     public function testConvertFailure()

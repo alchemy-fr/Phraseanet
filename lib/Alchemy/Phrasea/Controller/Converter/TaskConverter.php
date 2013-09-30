@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Converter;
 
-use Alchemy\Phrasea\Exception\NotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Doctrine\Common\Persistence\ObjectManager;
 use Entities\Task;
 
@@ -32,7 +32,7 @@ class TaskConverter
     public function convert($id)
     {
         if (null === $task = $this->om->find('Entities\Task', $id)) {
-            throw new NotFoundException(sprintf('Task %s not found.', $id));
+            throw new NotFoundHttpException(sprintf('Task %s not found.', $id));
         }
 
         return $task;

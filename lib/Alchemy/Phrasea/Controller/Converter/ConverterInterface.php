@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Converter;
 
-use Alchemy\Phrasea\Controller\Converter\Exception\NotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 interface ConverterInterface
 {
@@ -20,7 +20,7 @@ interface ConverterInterface
      *
      * @param integer $id
      *
-     * @throws NotFoundException
+     * @throws NotFoundHttpException
      */
     public function convert($id);
 }
