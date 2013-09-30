@@ -91,4 +91,23 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
         $manipulator = new TaskManipulator(self::$DI['app']['EM']);
         $this->assertSame(self::$DI['app']['EM']->getRepository('Entities\Task'), $manipulator->getRepository());
     }
+
+    public function testCreateEmptyCollection()
+    {
+        $collection = $this->getMockBuilder('collection')
+                ->disableOriginalConstructor()
+                ->getMock();
+        $collection->expects($this->once())
+                ->method('get_base_id')
+                ->will($this->returnValue(42));
+
+        $manipulator = new TaskManipulator(self::$DI['app']['EM']);
+        $task = $manipulator->createEmptyCollectionJob($collection);
+
+        $tasks = self::$DI['app']['EM']->getRepository('Entities\Task')->findAll();
+        $this->assertSame('EmptyCollection', $task->getJobId());
+        $this->assertSame(array($task), $tasks);
+        $settings = simplexml_load_string($task->getSettings());
+        $this->assertEquals(42, (int) $settings->bas_id);
+    }
 }

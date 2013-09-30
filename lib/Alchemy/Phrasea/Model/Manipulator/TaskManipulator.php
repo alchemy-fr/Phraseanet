@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
+use Alchemy\Phrasea\TaskManager\Job\EmptyCollectionJob;
 use Doctrine\Common\Persistence\ObjectManager;
 use Entities\Task;
 
@@ -41,6 +42,31 @@ class TaskManipulator implements ManipulatorInterface
             ->setJobId($jobId)
             ->setSettings($settings)
             ->setPeriod($period);
+
+        $this->om->persist($task);
+        $this->om->flush();
+
+        return $task;
+    }
+
+    /**
+     * Creates a EmptyCollection task given a collection
+     *
+     * @param \collection $collection
+     *
+     * @return Task
+     */
+    public function createEmptyCollectionJob(\collection $collection)
+    {
+        $job = new EmptyCollectionJob();
+        $settings = simplexml_load_string($job->getEditor()->getDefaultSettings());
+        $settings->bas_id = $collection->get_base_id();
+
+        $task = new Task();
+        $task->setName($job->getName())
+            ->setJobId($job->getJobId())
+            ->setSettings($settings->asXML())
+            ->setPeriod($job->getEditor()->getDefaultPeriod());
 
         $this->om->persist($task);
         $this->om->flush();
