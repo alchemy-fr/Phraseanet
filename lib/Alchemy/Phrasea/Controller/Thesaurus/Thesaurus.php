@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Thesaurus;
 
-use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;

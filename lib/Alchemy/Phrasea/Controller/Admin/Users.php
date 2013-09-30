@@ -600,13 +600,14 @@ class Users implements ControllerProviderInterface
             $columns = array_filter($columnsSanitized, function ($columnName) use (&$out, $equivalenceToMysqlField) {
                 if (!isset($equivalenceToMysqlField[$columnName])) {
                     $out['ignored_row'][] = $columnName;
+
                     return false;
                 }
 
                 return true;
             });
 
-            foreach($columns as $columnName) {
+            foreach ($columns as $columnName) {
                 if ($equivalenceToMysqlField[$columnName] === 'usr_login') {
                     $loginDefined = true;
                 }
@@ -666,7 +667,7 @@ class Users implements ControllerProviderInterface
 
                         if ($mailToAdd === "") {
                             $out['errors'][] = sprintf(_("Mail line %d is empty"), $nbLine + 1);
-                        } else if (false !== \User_Adapter::get_usr_id_from_email($app, $mailToAdd)) {
+                        } elseif (false !== \User_Adapter::get_usr_id_from_email($app, $mailToAdd)) {
                             $out['errors'][] = sprintf(_("Email '%s' for login '%s' already exists in database"), $mailToAdd, $loginToAdd);
                         } else {
                             $mailValid = true;

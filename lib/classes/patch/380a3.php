@@ -117,11 +117,10 @@ class patch_380a3 implements patchInterface
         $stmt->execute();
         $stmt->closeCursor();
 
-
         $stmt = $conn->prepare($removeProc);
         $stmt->execute();
         $stmt->closeCursor();
-            
+
         return true;
     }
 }

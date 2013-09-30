@@ -378,7 +378,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         foreach (Application::getAvailableLanguages() as $languageCode => $name) {
             $data = explode('_', $languageCode);
             $code = $data[0];
-            
+
             if (!isset($examples[$code])) {
                 $this->fail(sprintf('Missing stemm examples for language %s', $code));
             }

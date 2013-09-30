@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Silex\Application;
-use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;

@@ -136,8 +136,8 @@ class Session implements ControllerProviderInterface
      * Deletes identified session
      *
      * @param Application $app
-     * @param Request $request
-     * @param integer $id
+     * @param Request     $request
+     * @param integer     $id
      *
      * @return RedirectResponse|JsonResponse
      */

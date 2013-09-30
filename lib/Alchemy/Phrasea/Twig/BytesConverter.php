@@ -65,6 +65,7 @@ class BytesConverter extends \Twig_Extension
                 return round($bytes / pow(1024, ($i = floor(log($bytes, 1024)))), $precision) . ' ' . $unit[$i];
             default:
                 $i = array_search($suffix, $unit);
+
                 return round($bytes / pow(1024, $i), $precision) . ' ' . $unit[$i];
         }
     }

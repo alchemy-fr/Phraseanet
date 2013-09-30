@@ -108,7 +108,6 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         }
     }
 
-
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
      * @covers Alchemy\Phrasea\Controller\Prod\Upload::getJsonResponse

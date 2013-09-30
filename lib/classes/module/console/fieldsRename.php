@@ -85,7 +85,7 @@ class module_console_fieldsRename extends Command
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        
+
         $total = $data['total'];
         $start = 0;
         $quantity = 100;
