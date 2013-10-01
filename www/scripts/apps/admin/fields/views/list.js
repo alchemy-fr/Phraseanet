@@ -27,6 +27,13 @@ define([
             // store all single rendered views
             this.itemViews = [];
 
+            // force base 1 indexed
+            if (this.collection.first().get("sorter") === 0) {
+                this.collection.each(function (model) {
+                    model.set({'sorter': model.get("sorter") + 1}, {silent: true});
+                });
+            }
+
             // rerender whenever there is a change on the collection
             this.collection.bind("reset", this.render, this);
             this.collection.bind("add", this.render, this);
