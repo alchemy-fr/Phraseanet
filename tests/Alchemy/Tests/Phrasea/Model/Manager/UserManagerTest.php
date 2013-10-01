@@ -19,15 +19,15 @@ class UserManagerTest extends \PhraseanetPHPUnitAbstract
 {
     public function testNewUser()
     {
-        $user = self::$DI['app']['model.user-mananager']->create();
+        $user = self::$DI['app']['model.user-manager']->create();
         $this->assertInstanceOf('\Entities\User', $user);
     }
 
     public function testDeleteUser()
     {
         $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
-        self::$DI['app']['model.user-mananager']->update($user);
-        self::$DI['app']['model.user-mananager']->delete($user);
+        self::$DI['app']['model.user-manager']->update($user);
+        self::$DI['app']['model.user-manager']->delete($user);
         $this->assertTrue($user->isDeleted());
         $this->assertNull($user->getEmail());
         $this->assertEquals('(#deleted_', substr($user->getLogin(), 0, 10));
@@ -41,16 +41,16 @@ class UserManagerTest extends \PhraseanetPHPUnitAbstract
         );
         
         $wrongEntity = new UserQuery();
-        self::$DI['app']['model.user-mananager']->delete($wrongEntity);
+        self::$DI['app']['model.user-manager']->delete($wrongEntity);
     }
 
     public function testUpdateUser()
     {
         $template = self::$DI['app']['model.user-manipulator']->createUser('template', 'password');
-        self::$DI['app']['model.user-mananager']->update($template);
+        self::$DI['app']['model.user-manager']->update($template);
         $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
         $user->setModelOf($template);
-        self::$DI['app']['model.user-mananager']->update($user);
+        self::$DI['app']['model.user-manager']->update($user);
         $this->assertNotNull($user->getPassword());
         $this->assertNotNull($user->getModelOf());
     }
@@ -63,7 +63,7 @@ class UserManagerTest extends \PhraseanetPHPUnitAbstract
         );
         
         $wrongEntity = new UserQuery();
-        self::$DI['app']['model.user-mananager']->update($wrongEntity);
+        self::$DI['app']['model.user-manager']->update($wrongEntity);
     }
 
     public function testUpdateTemplate()
@@ -90,13 +90,13 @@ class UserManagerTest extends \PhraseanetPHPUnitAbstract
         $template->expects($this->any())->method('getId')->will($this->returnValue(2));
 
         $user->expects($this->once())->method('reset');
-        self::$DI['app']['model.user-mananager']->onUpdateModel($user, $template);
+        self::$DI['app']['model.user-manager']->onUpdateModel($user, $template);
     }
 
     public function testUpdatePassword()
     {
-        $user = self::$DI['app']['model.user-mananager']->create();
-        self::$DI['app']['model.user-mananager']->onUpdatePassword($user, $hashPass = uniqid());
+        $user = self::$DI['app']['model.user-manager']->create();
+        self::$DI['app']['model.user-manager']->onUpdatePassword($user, $hashPass = uniqid());
         $this->assertNotNull($user->getPassword());
         $this->assertNotEquals($hashPass, $user->getPassword());
         $this->assertNotNull($user->getNonce());
@@ -128,7 +128,7 @@ class UserManagerTest extends \PhraseanetPHPUnitAbstract
             self::$DI['app']['phraseanet.appbox']
         );
 
-        $user = self::$DI['app']['model.user-mananager']->create();
+        $user = self::$DI['app']['model.user-manager']->create();
         $user->setGeonameId(4);
         $userManager->onUpdateGeonameId($user);
         $this->assertEquals('fr', $user->getCountry());
@@ -139,8 +139,8 @@ class UserManagerTest extends \PhraseanetPHPUnitAbstract
         self::$DI['app']['model.user-manipulator']->createUser('login', 'toto');
         $user = self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin('login');
         $this->assertGreaterThan(0, $user->getSettings()->count());
-        self::$DI['app']['model.user-mananager']->cleanSettings($user);
-        self::$DI['app']['model.user-mananager']->update($user);
+        self::$DI['app']['model.user-manager']->cleanSettings($user);
+        self::$DI['app']['model.user-manager']->update($user);
         $user = self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin('login');
         $this->assertEquals(0, $user->getSettings()->count());
     }
@@ -152,11 +152,11 @@ class UserManagerTest extends \PhraseanetPHPUnitAbstract
         $userQuery->setUser($user);
         $userQuery->setQuery('blabla');
         $user->setQueries(new ArrayCollection(array($userQuery)));
-        self::$DI['app']['model.user-mananager']->update($user);
+        self::$DI['app']['model.user-manager']->update($user);
         $user = self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin('login');
         $this->assertGreaterThan(0, $user->getQueries()->count());
-        self::$DI['app']['model.user-mananager']->cleanQueries($user);
-        self::$DI['app']['model.user-mananager']->update($user);
+        self::$DI['app']['model.user-manager']->cleanQueries($user);
+        self::$DI['app']['model.user-manager']->update($user);
         $user = self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin('login');
         $this->assertEquals(0, $user->getQueries()->count());
     }

@@ -102,24 +102,76 @@ class UserManipulatorTest extends \PhraseanetPHPUnitAbstract
     public function testSetLogin()
     {
         self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
-        $user2 = self::$DI['app']['model.user-manipulator']->createUser('login2', 'password');
+        $user = self::$DI['app']['model.user-manipulator']->createUser('login2', 'password');
 
         $this->setExpectedException(
             'Alchemy\Phrasea\Exception\RuntimeException',
             'User with login login already exists.'
         );
-        self::$DI['app']['model.user-manipulator']->setLogin($user2, 'login');
+        self::$DI['app']['model.user-manipulator']->setLogin($user, 'login');
     }
 
     public function testSetEmail()
     {
         self::$DI['app']['model.user-manipulator']->createUser('login', 'password', 'test@test.fr');
-        $user2 = self::$DI['app']['model.user-manipulator']->createUser('login2', 'password', 'test2@test.fr');
-
+        $user = self::$DI['app']['model.user-manipulator']->createUser('login2', 'password', 'test2@test.fr');
         $this->setExpectedException(
             'Alchemy\Phrasea\Exception\RuntimeException',
             'User with email test@test.fr already exists.'
         );
-        self::$DI['app']['model.user-manipulator']->setEmail($user2, 'test@test.fr');
+        self::$DI['app']['model.user-manipulator']->setEmail($user, 'test@test.fr');
+    }
+    
+    public function testInvalidGeonamedId()
+    {
+        $manager = $this->getMockBuilder('Alchemy\Phrasea\Model\Manager\UserManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
+        $manipulator = new UserManipulator($manager, self::$DI['app']['EM']);
+        $this->setExpectedException(
+            'Alchemy\Phrasea\Exception\InvalidArgumentException',
+            'Invalid geonameid -1.'
+        );
+        $manipulator->setGeonameId($user, -1);
+    }
+
+    public function testInvalidLogin()
+    {
+        self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
+        $user = self::$DI['app']['model.user-manipulator']->createUser('login2', 'password');
+        $this->setExpectedException(
+            'Alchemy\Phrasea\Exception\InvalidArgumentException',
+            'Invalid login.'
+        );
+        self::$DI['app']['model.user-manipulator']->setLogin($user, '');
+    }
+
+    public function testInvalidEmail()
+    {
+        self::$DI['app']['model.user-manipulator']->createUser('login', 'password', 'test@test.fr');
+        $user = self::$DI['app']['model.user-manipulator']->createUser('login2', 'password', 'test2@test.fr');
+        $this->setExpectedException(
+            'Alchemy\Phrasea\Exception\InvalidArgumentException',
+            'Invalid email.'
+        );
+        self::$DI['app']['model.user-manipulator']->setEmail($user, 'testtest.fr');
+    }
+    
+    public function testInvalidPassword()
+    {
+        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
+        $this->setExpectedException(
+            'Alchemy\Phrasea\Exception\InvalidArgumentException',
+            'Invalid password.'
+        );
+        self::$DI['app']['model.user-manipulator']->setPassword($user, '');
+    }
+    
+    public function testInvalidSetModelOf()
+    {
+        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
+        $this->setExpectedException('Alchemy\Phrasea\Exception\InvalidArgumentException');
+        self::$DI['app']['model.user-manipulator']->setModelOf($user, $user);
     }
 }

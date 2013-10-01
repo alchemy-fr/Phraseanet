@@ -4,15 +4,8 @@ namespace Alchemy\Tests\Phrasea\Controller;
 
 use Symfony\Component\Yaml\Yaml;
 
-class SetupTest extends \Silex\WebTestCase
+class SetupTest extends \PhraseanetWebTestCaseAbstract
 {
-    protected $app;
-
-    public function createApplication()
-    {
-        return $this->app;
-    }
-
     public function setUp()
     {
         // set test environment
@@ -111,7 +104,7 @@ class SetupTest extends \Silex\WebTestCase
 
         $user->expects($this->exactly(2))
             ->method('get_id')
-            ->will($this->returnValue(4));
+            ->will($this->returnValue(self::$DI['user']->get_id()));
 
         $acl = $this->getMockBuilder('ACL')
             ->disableOriginalConstructor()
