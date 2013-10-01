@@ -104,7 +104,7 @@ class Installer
             $this->app['manipulator.task']->create(
                 $job->getName(),
                 $job->getJobId(),
-                $job->getEditor()->getDefaultSettings($app['phraseanet.configuration']),
+                $job->getEditor()->getDefaultSettings($this->app['phraseanet.configuration']),
                 $job->getEditor()->getDefaultPeriod()
             );
         }

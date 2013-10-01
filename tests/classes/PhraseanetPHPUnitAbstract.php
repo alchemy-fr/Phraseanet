@@ -10,6 +10,7 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
+use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -262,6 +263,23 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertTrue(false !== stripos($response->getContent(), 'Sorry, the page you are looking for could not be found'));
+    }
+
+    public function insertTwoTasks()
+    {
+        $task1 = new Task();
+        $task1
+            ->setName('task 1')
+            ->setJobId('Null');
+
+        $task2 = new Task();
+        $task2
+            ->setName('task 2')
+            ->setJobId('Null');
+
+        self::$DI['app']['EM']->persist($task1);
+        self::$DI['app']['EM']->persist($task2);
+        self::$DI['app']['EM']->flush();
     }
 
     /**

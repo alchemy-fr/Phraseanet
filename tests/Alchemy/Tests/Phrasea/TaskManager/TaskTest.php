@@ -9,7 +9,9 @@ class TaskTest extends TaskTestCase
 {
     public function testThatCreatedProcessAreDifferents()
     {
-        $process = $this->getMock('Symfony\Component\Process\ProcessableInterface');
+        $process = $this->getMockBuilder('Symfony\Component\Process\Process')
+            ->disableOriginalConstructor()
+            ->getMock();
         $taskEntity = $this->getMock('Entities\Task');
         $task = new Task($taskEntity, 'task number', 42, $process);
 
@@ -27,7 +29,9 @@ class TaskTest extends TaskTestCase
 
     protected function getTask()
     {
-        $process = $this->getMock('Symfony\Component\Process\ProcessableInterface');
+        $process = $this->getMockBuilder('Symfony\Component\Process\Process')
+            ->disableOriginalConstructor()
+            ->getMock();
         $taskEntity = $this->getMock('Entities\Task');
 
         return new Task($taskEntity, 'task number', 42, $process);

@@ -15,6 +15,7 @@ use Alchemy\Phrasea\TaskManager\Editor\WriteMetadataEditor;
 use PHPExiftool\Driver\Metadata;
 use PHPExiftool\Driver\Value;
 use PHPExiftool\Driver\Tag;
+use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 use PHPExiftool\Writer;
 
 class WriteMetadataJob extends AbstractJob
@@ -158,8 +159,8 @@ class WriteMetadataJob extends AbstractJob
                     try {
                         $app['exiftool.writer']->write($file, $metadatas);
                         $this->log('debug', sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name));
-                    } catch (\PHPExiftool\Exception\Exception $e) {
-                        $this->log('debug', sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%s"', $databox->get_sbas_id(), $record_id, $name, $e->getMessage()));
+                    } catch (PHPExiftoolException $e) {
+                        $this->log('error', sprintf('meta was not written for sbasid=%d - recordid=%d (%s) because "%s"', $databox->get_sbas_id(), $record_id, $name, $e->getMessage()));
                     }
                 }
 

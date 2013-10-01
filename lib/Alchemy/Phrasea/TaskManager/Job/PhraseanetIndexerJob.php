@@ -65,7 +65,9 @@ class PhraseanetIndexerJob extends AbstractJob
         $indexerPath = $this->getPhraseanetIndexerPath($app);
 
         $builder = new ProcessBuilder($this->getCommandline($indexerPath, $app, $task));
-        $builder->setWorkingDirectory(dirname($indexerPath));
+        $builder
+            ->setWorkingDirectory(dirname($indexerPath))
+            ->setTimeout(0);
         $process = $builder->getProcess();
 
         if (0 < $socketPort) {

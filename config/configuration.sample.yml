@@ -129,6 +129,10 @@ registration-fields:
         required: true
 task-manager:
     status: started
+    listener:
+        protocol: tcp
+        host: 127.0.0.1
+        port: 6700
 xsendfile:
     enabled: false
     type: nginx

@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
+use Entities\Task;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -289,7 +290,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateMeta200($content);
         $response = $content['response'];
 
-        $tasks = self::$DI['app']['task-manager']->getTasks();
+        $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
         $this->assertEquals(count($tasks), count($response['tasks']));
 
         foreach ($response['tasks'] as $task) {
@@ -323,8 +324,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('state', $response['scheduler']);
         $this->assertArrayHasKey('pid', $response['scheduler']);
         $this->assertArrayHasKey('updated_on', $response['scheduler']);
+        $this->assertArrayHasKey('status', $response['scheduler']);
+        $this->assertArrayHasKey('configuration', $response['scheduler']);
+        $this->assertArrayHasKey('process-id', $response['scheduler']);
 
-        $this->assertEquals(3, count($response['scheduler']));
+        $this->assertEquals(6, count($response['scheduler']));
 
         if (null !== $response['scheduler']['updated_on']) {
             $this->assertDateAtom($response['scheduler']['updated_on']);
@@ -341,9 +345,19 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('id', $task);
         $this->assertArrayHasKey('name', $task);
         $this->assertArrayHasKey('state', $task);
+        $this->assertArrayHasKey('status', $task);
+        $this->assertArrayHasKey('actual-status', $task);
         $this->assertArrayHasKey('pid', $task);
+        $this->assertArrayHasKey('process-id', $task);
         $this->assertArrayHasKey('title', $task);
+        $this->assertArrayHasKey('crashed', $task);
+        $this->assertArrayHasKey('auto_start', $task);
         $this->assertArrayHasKey('last_exec_time', $task);
+        $this->assertArrayHasKey('last_execution', $task);
+        $this->assertArrayHasKey('updated', $task);
+        $this->assertArrayHasKey('created', $task);
+        $this->assertArrayHasKey('period', $task);
+        $this->assertArrayHasKey('jobId', $task);
 
         $this->assertInternalType('integer', $task['id']);
 
@@ -352,13 +366,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
 
         $av_states = array(
-            \task_abstract::STATE_STARTED,
-            \task_abstract::STATE_STOPPED,
-            \task_abstract::STATE_OK,
-            \task_abstract::STATE_TODELETE,
-            \task_abstract::STATE_TORESTART,
-            \task_abstract::STATE_TOSTOP,
-            \task_abstract::STATE_TOSTART,
+            Task::STATUS_STARTED,
+            Task::STATUS_STOPPED,
         );
 
         $this->assertContains($task['state'], $av_states);
@@ -377,7 +386,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testGetMonitorTaskById()
     {
-        $tasks = self::$DI['app']['task-manager']->getTasks();
+        $this->insertTwoTasks();
+        $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -388,8 +398,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
 
         $this->setToken(self::$adminToken);
-        reset($tasks);
-        $idTask = key($tasks);
+        $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/';
         $this->evaluateMethodNotAllowedRoute($route, array('PUT', 'DELETE'));
@@ -409,7 +418,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testPostMonitorTaskById()
     {
-        $tasks = self::$DI['app']['task-manager']->getTasks();
+        $this->insertTwoTasks();
+        $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -420,8 +430,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
 
         $this->setToken(self::$adminToken);
-        reset($tasks);
-        $idTask = key($tasks);
+        $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/';
         $this->evaluateMethodNotAllowedRoute($route, array('PUT', 'DELETE'));
@@ -464,15 +473,15 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->markTestSkipped('there is no user with admin rights');
         }
 
-        $tasks = self::$DI['app']['task-manager']->getTasks();
+        $this->insertTwoTasks();
+        $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
 
         if (!count($tasks)) {
             $this->markTestSkipped('no tasks created for the current instance');
         }
 
         $this->setToken(self::$adminToken);
-        reset($tasks);
-        $idTask = key($tasks);
+        $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/start/';
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
@@ -485,8 +494,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('task', $content['response']);
         $this->evaluateGoodTask($content['response']['task']);
 
-        $task = self::$DI['app']['task-manager']->getTask($idTask);
-        $this->assertContains($task->getState(), array(\task_abstract::STATE_TOSTART, \task_abstract::STATE_STARTED));
+        $task = self::$DI['app']['manipulator.task']->getRepository()->find($idTask);
+        $this->assertEquals(Task::STATUS_STARTED, $task->getStatus());
     }
 
     /**
@@ -495,7 +504,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testPostMonitorStopTask()
     {
-        $tasks = self::$DI['app']['task-manager']->getTasks();
+        $this->insertTwoTasks();
+        $tasks = self::$DI['app']['manipulator.task']->getRepository()->findAll();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -506,8 +516,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
 
         $this->setToken(self::$adminToken);
-        reset($tasks);
-        $idTask = key($tasks);
+        $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/stop/';
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
@@ -520,8 +529,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('task', $content['response']);
         $this->evaluateGoodTask($content['response']['task']);
 
-        $task = self::$DI['app']['task-manager']->getTask($idTask);
-        $this->assertContains($task->getState(), array(\task_abstract::STATE_TOSTOP, \task_abstract::STATE_STOPPED));
+        $task = self::$DI['app']['manipulator.task']->getRepository()->find($idTask);
+        $this->assertEquals(Task::STATUS_STOPPED, $task->getStatus());
     }
 
     /**

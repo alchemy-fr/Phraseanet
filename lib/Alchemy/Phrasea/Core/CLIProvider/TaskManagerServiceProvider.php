@@ -31,13 +31,18 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['task-manager'] = $app->share(function(Application $app) {
-            $options = array(
-                'listener_protocol'  => 'tcp',
-                'listener_host'      => '127.0.0.1',
-                'listener_port'      => 6660,
-            );
+            $options = $app['task-manager.listener.options'];
 
-            return TaskManager::create($app['dispatcher'], $app['task-manager.logger'], $app['task-manager.task-list'], $options);
+            return TaskManager::create(
+                $app['dispatcher'],
+                $app['task-manager.logger'],
+                $app['task-manager.task-list'],
+                array(
+                    'listener_protocol' => $options['protocol'],
+                    'listener_host'     => $options['host'],
+                    'listener_port'     => $options['port'],
+                )
+            );
         });
 
         $app['task-manager.task-list'] = $app->share(function(Application $app) {

@@ -1607,9 +1607,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     public function generate_subdefs(databox $databox, Application $app, Array $wanted_subdefs = null)
     {
         $subdefs = $databox->get_subdef_structure()->getSubdefGroup($this->get_type());
+        $logger = isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['monolog'];
 
         if (!$subdefs) {
-            $app['task-manager.logger']->addInfo(sprintf('Nothing to do for %s', $this->get_type()));
+            $logger->addInfo(sprintf('Nothing to do for %s', $this->get_type()));
 
             return;
         }
@@ -1626,14 +1627,14 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             if ($this->has_subdef($subdefname) && $this->get_subdef($subdefname)->is_physically_present()) {
                 $pathdest = $this->get_subdef($subdefname)->get_pathfile();
                 $this->get_subdef($subdefname)->remove_file();
-                $app['task-manager.logger']->addInfo(sprintf('Removed old file for %s', $subdefname));
+                $logger->addInfo(sprintf('Removed old file for %s', $subdefname));
                 $this->clearSubdefCache($subdefname);
             }
 
             $pathdest = $this->generateSubdefPathname($subdef, $app['filesystem'], $pathdest);
 
-            $app['task-manager.logger']->addInfo(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
-            $this->generate_subdef($app['media-alchemyst'], $subdef, $pathdest, $app['task-manager.logger']);
+            $logger->addInfo(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
+            $this->generate_subdef($app['media-alchemyst'], $subdef, $pathdest, $logger);
 
             if (file_exists($pathdest)) {
                 $media = $app['mediavorus']->guess($pathdest);

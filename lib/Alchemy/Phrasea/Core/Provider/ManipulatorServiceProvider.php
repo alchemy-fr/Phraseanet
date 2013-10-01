@@ -22,7 +22,7 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
     public function register(SilexApplication $app)
     {
         $app['manipulator.task'] = $app->share(function(SilexApplication $app) {
-            return new TaskManipulator($app['EM']);
+            return new TaskManipulator($app['EM'], $app['task-manager.notifier']);
         });
 
         $app['manipulator.user'] = $app->share(function($app) {

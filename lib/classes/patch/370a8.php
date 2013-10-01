@@ -11,6 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 
+use Entities\Task;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -66,7 +68,7 @@ class patch_370a8 implements patchInterface
     {
         $ttasks = array();
         $conn = $appbox->get_connection();
-        $sql = 'SELECT task_id, active, name, class, settings FROM task2 WHERE class=\'task_period_workflow01\' OR class=\'task_period_ftv\'';
+        $sql = 'SELECT task_id, active, name, class, settings FROM task2 WHERE class=\'task_period_workflow01\'';
         if (($stmt = $conn->prepare($sql)) !== FALSE) {
             $stmt->execute();
             $ttasks = $stmt->fetchAll();
@@ -80,7 +82,7 @@ class patch_370a8 implements patchInterface
             $warning = array();
 
             /*
-             * migrating task 'workflow01' or 'task_period_ftv'
+             * migrating task 'workflow01'
              */
             $x = $task['settings'];
             if (false !== $sx = simplexml_load_string($x)) {
@@ -193,58 +195,6 @@ class patch_370a8 implements patchInterface
 
                     $taskstodel[] = $task['task_id'];
                 }
-
-                /*
-                 * migrating task 'task_period_ftv'
-                 */
-                if ($task['class'] === 'task_period_ftv') {
-                    foreach ($sx->tasks->task as $sxt) {
-                        $active = true;
-                        $warning = array();
-
-                        $t = $dom->importNode(dom_import_simplexml($sxt), true);
-                        $t->setAttribute('active', '0');
-//                            $t->setAttribute('name', 'imported from \'' . $task->getTitle() . '\'');
-                        $t->setAttribute('name', 'imported from \'' . $task['name'] . '\'');
-                        $t->setAttribute('action', 'update');
-
-                        if ($sx->sbas_id) {
-                            $sbas_id = trim($sx->sbas_id);
-                            if ($sbas_id != '' && is_numeric($sbas_id)) {
-                                $t->setAttribute('sbas_id', $sx->sbas_id);
-                            } else {
-                                $warning[] = sprintf("Bad sbas_id '%s'", $sbas_id);
-                                $active = false;
-                            }
-                        } else {
-                            $warning[] = sprintf("missing sbas_id");
-                            $active = false;
-                        }
-
-                        if ($active && $task['active'] == '1') {
-                            $t->setAttribute('active', '1');
-                        }
-                        foreach ($warning as $w) {
-                            $t->appendChild($dom->createComment($w));
-                        }
-
-                        $x = new DOMXPath($dom);
-                        $nlfrom = $x->query('from', $t);
-                        if ($nlfrom->length == 1) {
-                            $nlcoll = $x->query('colls', $nlfrom->item(0));
-                            if ($nlcoll->length > 0) {
-                                $nn = $dom->createElement('coll');
-                                $nn->setAttribute('compare', '=');
-                                $nn->setAttribute('id', $nlcoll->item(0)->getAttribute('id'));
-                                $nlfrom->item(0)->replaceChild($nn, $nlcoll->item(0));
-                            }
-
-                            $tasks->appendChild($t);
-                        }
-                    }
-
-                    $taskstodel[] = $task['task_id'];
-                }
             }
 
             if (count($taskstodel) > 0) {
@@ -256,8 +206,20 @@ class patch_370a8 implements patchInterface
          * save new tasks
          */
         foreach ($tdom as $newtask) {
-            $task = task_abstract::create($app, 'task_period_RecordMover', $newtask['dom']->saveXML());
+            $settings = $newtask['dom']->saveXML();
+            $sxml = simplexml_load_string($settings);
+            $period = $sxml->period ? (int) $sxml->period : 300;
+
+            $task = new Task();
+            $task
+                ->setName('Record mover')
+                ->setJobId('RecordMover')
+                ->setSettings($settings)
+                ->setPeriod($period)
+                ->setStatus(Task::STATUS_STARTED);
+            $app['EM']->persist($task);
         }
+        $app['EM']->flush();
 
         return true;
     }
