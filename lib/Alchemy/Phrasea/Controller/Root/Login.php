@@ -795,7 +795,7 @@ class Login implements ControllerProviderInterface
         return $response;
     }
 
-    private function generateAuthResponse(Application $app, \Browser $browser, $redirect)
+    public function generateAuthResponse(Application $app, \Browser $browser, $redirect)
     {
         if ($browser->isMobile()) {
             $response = $app->redirectPath('lightbox');
@@ -814,7 +814,7 @@ class Login implements ControllerProviderInterface
     }
 
     // move this in an event
-    private function postAuthProcess(PhraseaApplication $app, \User_Adapter $user)
+    public function postAuthProcess(PhraseaApplication $app, \User_Adapter $user)
     {
         $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
 
@@ -1017,7 +1017,7 @@ class Login implements ControllerProviderInterface
         $session = $this->postAuthProcess($app, $user);
 
         $response = $this->generateAuthResponse($app, $app['browser'], $request->request->get('redirect'));
-        $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
+        $response->headers->clearCookie('invite-usr-id');
 
         $user->ACL()->inject_rights();
 
