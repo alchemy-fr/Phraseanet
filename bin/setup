@@ -25,8 +25,7 @@ use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-try {
-    $app = new CLI("
+$app = new CLI("
   _____  _    _ _____            _____ ______          _   _ ______ _______
  |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
  | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |
@@ -46,29 +45,23 @@ try {
  under certain conditions; type `about:license' for details.\n\n"
             . ' SETUP', Version::getName() . ' ' . Version::getNumber());
 
-    $app->command(new \module_console_aboutAuthors('about:authors'));
-    $app->command(new \module_console_aboutLicense('about:license'));
+$app->command(new \module_console_aboutAuthors('about:authors'));
+$app->command(new \module_console_aboutLicense('about:license'));
 
-    if(
-        $app['phraseanet.configuration-tester']->isMigrable()
-        || $app['phraseanet.configuration-tester']->isUpgradable()
-        || $app['phraseanet.configuration-tester']->isInstalled()
-        ) {
-        $app->command(new \module_console_systemUpgrade('system:upgrade'));
-    }
-
-    if ($app['phraseanet.configuration-tester']->isInstalled()) {
-        $app->command(new UpgradeDBDatas('system:upgrade-datas'));
-    }
-
-    $app->command(new PluginsReset());
-    $app->command(new CheckEnvironment('check:system'));
-    $app->command(new Install('system:install'));
-
-    $result_code = is_int($app->run()) ? : 1;
-} catch (\Exception $e) {
-    $result_code = 1;
-    echo sprintf("\nAn error occured :\n\n\t\033[0;31m%s\033[0;37m\n\n", $e->getMessage());
+if(
+    $app['phraseanet.configuration-tester']->isMigrable()
+    || $app['phraseanet.configuration-tester']->isUpgradable()
+    || $app['phraseanet.configuration-tester']->isInstalled()
+    ) {
+    $app->command(new \module_console_systemUpgrade('system:upgrade'));
 }
 
-exit($result_code);
+if ($app['phraseanet.configuration-tester']->isInstalled()) {
+    $app->command(new UpgradeDBDatas('system:upgrade-datas'));
+}
+
+$app->command(new PluginsReset());
+$app->command(new CheckEnvironment('check:system'));
+$app->command(new Install('system:install'));
+
+exit(is_int($app->run()) ? : 1);
