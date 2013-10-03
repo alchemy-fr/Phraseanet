@@ -64,43 +64,38 @@ class module_console_systemUpgrade extends Command
         }
 
         if ($continue == 'y') {
-            try {
-                $output->write('<info>Upgrading...</info>', true);
+            $output->write('<info>Upgrading...</info>', true);
 
-                if (count(User_Adapter::get_wrong_email_users($this->container)) > 0) {
-                    return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
-                }
+            if (count(User_Adapter::get_wrong_email_users($this->container)) > 0) {
+                return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
+            }
 
-                $upgrader = new Setup_Upgrade($this->container, $input->getOption('force'));
+            $upgrader = new Setup_Upgrade($this->container, $input->getOption('force'));
 
-                $queries = $this->getService('phraseanet.appbox')->forceUpgrade($upgrader, $this->container);
+            $queries = $this->getService('phraseanet.appbox')->forceUpgrade($upgrader, $this->container);
 
-                if ($input->getOption('dump')) {
-                    if (0 < count($queries)) {
-                        $output->writeln("Some SQL queries can be executed to optimize\n");
+            if ($input->getOption('dump')) {
+                if (0 < count($queries)) {
+                    $output->writeln("Some SQL queries can be executed to optimize\n");
 
-                        foreach ($queries as $query) {
-                            $output->writeln(" ".$query['sql']);
-                        }
-
-                        $output->writeln("\n");
-                    } else {
-                        $output->writeln("No SQL queries to execute to optimize\n");
+                    foreach ($queries as $query) {
+                        $output->writeln(" ".$query['sql']);
                     }
+
+                    $output->writeln("\n");
+                } else {
+                    $output->writeln("No SQL queries to execute to optimize\n");
                 }
+            }
 
-                foreach ($upgrader->getRecommendations() as $recommendation) {
-                    list($message, $command) = $recommendation;
+            foreach ($upgrader->getRecommendations() as $recommendation) {
+                list($message, $command) = $recommendation;
 
-                    $output->writeln(sprintf('<info>%s</info>', $message));
-                    $output->writeln("");
-                    $output->writeln(sprintf("\t\t%s", $command));
-                    $output->writeln("");
-                    $output->writeln("");
-                }
-            } catch (\Exception $e) {
-
-                $output->writeln(sprintf('<error>An error occured while upgrading : %s </error>', $e->getMessage()));
+                $output->writeln(sprintf('<info>%s</info>', $message));
+                $output->writeln("");
+                $output->writeln(sprintf("\t\t%s", $command));
+                $output->writeln("");
+                $output->writeln("");
             }
         } else {
             $output->write('<info>Canceled</info>', true);
