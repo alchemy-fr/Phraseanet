@@ -25,6 +25,16 @@ class TasksServiceProviderTest extends ServiceProviderTestCase
                 'task-manager.log-file.factory',
                 'Alchemy\Phrasea\TaskManager\Log\LogFileFactory'
             ),
+            array(
+                'Alchemy\Phrasea\Core\Provider\TasksServiceProvider',
+                'task-manager.notifier',
+                'Alchemy\Phrasea\TaskManager\Notifier'
+            ),
+            array(
+                'Alchemy\Phrasea\Core\Provider\TasksServiceProvider',
+                'task-manager.live-information',
+                'Alchemy\Phrasea\TaskManager\LiveInformation'
+            ),
         );
     }
 
