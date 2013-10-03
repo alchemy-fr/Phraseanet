@@ -12,17 +12,21 @@
 namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\TaskManager\Job\EmptyCollectionJob;
+use Alchemy\Phrasea\TaskManager\Notifier;
 use Doctrine\Common\Persistence\ObjectManager;
 use Entities\Task;
 
 class TaskManipulator implements ManipulatorInterface
 {
+    /** @var Notifier */
+    private $notifier;
     /** @var Objectmanager */
     private $om;
 
-    public function __construct(ObjectManager $om)
+    public function __construct(ObjectManager $om, Notifier $notifier)
     {
         $this->om = $om;
+        $this->notifier = $notifier;
     }
 
     /**
@@ -46,6 +50,8 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->persist($task);
         $this->om->flush();
 
+        $this->notifier->notify(Notifier::MESSAGE_CREATE);
+
         return $task;
     }
 
@@ -68,6 +74,8 @@ class TaskManipulator implements ManipulatorInterface
             ->setSettings($settings->asXML())
             ->setPeriod($job->getEditor()->getDefaultPeriod());
 
+        $this->notifier->notify(Notifier::MESSAGE_CREATE);
+
         $this->om->persist($task);
         $this->om->flush();
 
@@ -86,6 +94,8 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->persist($task);
         $this->om->flush();
 
+        $this->notifier->notify(Notifier::MESSAGE_UPDATE);
+
         return $task;
     }
 
@@ -98,6 +108,8 @@ class TaskManipulator implements ManipulatorInterface
     {
         $this->om->remove($task);
         $this->om->flush();
+
+        $this->notifier->notify(Notifier::MESSAGE_DELETE);
     }
 
     /**
@@ -114,7 +126,7 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->persist($task);
         $this->om->flush();
 
-        // send ZMQ message
+        $this->notifier->notify(Notifier::MESSAGE_UPDATE);
 
         return $task;
     }
@@ -133,7 +145,7 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->persist($task);
         $this->om->flush();
 
-        // send ZMQ message
+        $this->notifier->notify(Notifier::MESSAGE_UPDATE);
 
         return $task;
     }
@@ -152,7 +164,7 @@ class TaskManipulator implements ManipulatorInterface
         $this->om->persist($task);
         $this->om->flush();
 
-        // send ZMQ message
+        $this->notifier->notify(Notifier::MESSAGE_UPDATE);
 
         return $task;
     }
