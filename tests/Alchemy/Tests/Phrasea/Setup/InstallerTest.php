@@ -66,6 +66,11 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($app['phraseanet.configuration']->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
+
+        $databoxes = $app['phraseanet.appbox']->get_databoxes();
+        $databox = array_pop($databoxes);
+        $this->assertContains('<path>'.realpath($dataPath).'/db_unitTests/subdefs</path>', $databox->get_structure());
+
         $conf = $app['phraseanet.configuration']->getConfig();
         $this->assertArrayHasKey('main', $conf);
         $this->assertArrayHasKey('key', $conf['main']);
