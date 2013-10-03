@@ -90,9 +90,9 @@ class Oauth2 implements ControllerProviderInterface
                     }
 
                     $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
-                } else {
-                    return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
                 }
+
+                return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
             }
 
             //check if current client is already authorized by current user
@@ -128,9 +128,13 @@ class Oauth2 implements ControllerProviderInterface
                 $params = $oauth2_adapter->finishNativeClientAuthorization($app_authorized, $params);
 
                 return new Response($app['twig']->render("api/auth/native_app_access_token.html.twig", $params));
-            } else {
-                $oauth2_adapter->finishClientAuthorization($app_authorized, $params);
             }
+
+            $oauth2_adapter->finishClientAuthorization($app_authorized, $params);
+
+            // As OAuth2 library already outputs response content, we need to send an empty
+            // response to avoid breaking silex controller
+            return '';
         };
 
         $controllers->match('/authorize', $authorize_func)
@@ -150,7 +154,9 @@ class Oauth2 implements ControllerProviderInterface
             ob_flush();
             flush();
 
-            return;
+            // As OAuth2 library already outputs response content, we need to send an empty
+            // response to avoid breaking silex controller
+            return '';
         });
 
         return $controllers;
