@@ -566,6 +566,10 @@ var p4 = p4 || {};
 
                 if (!frame.hasClass('closed'))
                 {
+                    // hide tabs content
+                    var activeTabIdx = $('#idFrameC .tabs').tabs("option", "active");
+                    $('#idFrameC .tabs > div:eq('+activeTabIdx+')').hide();
+
                     frame.data('openwidth', frame.width());
                     frame.animate({width: 100},
                     300,
@@ -595,6 +599,9 @@ var p4 = p4 || {};
                     frame.removeClass('closed');
                     $('.escamote', frame).show();
                     frame.unbind('click.escamote');
+                    // show tabs content
+                    var activeTabIdx = $('#idFrameC .tabs').tabs("option", "active");
+                    $('#idFrameC .tabs > div:eq('+activeTabIdx+')').show();
                 }
             }
         };
