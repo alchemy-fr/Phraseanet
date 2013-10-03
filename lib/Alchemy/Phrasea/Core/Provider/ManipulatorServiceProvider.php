@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Model\Manager\UserManager;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
-class ModelServiceProvider implements ServiceProviderInterface
+class ManipulatorServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
