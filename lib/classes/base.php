@@ -289,6 +289,7 @@ abstract class base implements cache_cacheableInterface
             'LazaretSessions',
             'SessionModules',
             'Sessions',
+            'Tasks',
             'UsrAuthProviders',
             'UserQueries',
             'UserSettings',
