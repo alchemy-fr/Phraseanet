@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\Common\Persistence\ObjectManager;
 use Entities\User;
 use Repositories\UserRepository;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 /**
  * Manages common operations for the users.
@@ -38,7 +37,7 @@ class UserManipulator implements ManipulatorInterface
         $this->om = $om;
         $this->repository = $om->getRepository('Entities\User');
     }
-    
+
     /**
      * @{inheritdoc}
      */
@@ -46,7 +45,7 @@ class UserManipulator implements ManipulatorInterface
     {
         return $this->repository;
     }
-    
+
     /**
      * Creates a user and returns it.
      *
@@ -246,15 +245,15 @@ class UserManipulator implements ManipulatorInterface
         if (!is_array($users)) {
             $users = array($users);
         }
-        
+
         foreach ($users as $user) {
             $this->doDemoteUser($user);
         }
     }
-    
+
     /**
      * Promove given user.
-     * 
+     *
      * @param User $user
      */
     private function doDemoteUser(User $user)
@@ -262,10 +261,10 @@ class UserManipulator implements ManipulatorInterface
         $user->setAdmin(false);
         $this->manager->update($user);
     }
-    
+
     /**
      * Demotes given user.
-     * 
+     *
      * @param User $user
      */
     private function doPromoteUser(User $user)

@@ -20,7 +20,7 @@ use Entities\User;
 use Entities\UserSetting;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
-class UserManager implements ManagerInterface
+class UserManager
 {
     /** @var \appbox */
     protected $appbox;
@@ -67,7 +67,7 @@ class UserManager implements ManagerInterface
         $this->passwordEncoder = $passwordEncoder;
         $this->geonamesConnector = $connector;
     }
-    
+
     /**
      * @return User
      */
@@ -84,7 +84,7 @@ class UserManager implements ManagerInterface
 
         return $user;
     }
-    
+
     /**
      * @{inheritdoc}
      */
@@ -110,7 +110,7 @@ class UserManager implements ManagerInterface
     public function update(EntityInterface $user, $flush = true)
     {
         $this->checkEntity($user);
-        
+
         $this->objectManager->persist($user);
         if ($flush) {
             $this->objectManager->flush();
@@ -205,7 +205,7 @@ class UserManager implements ManagerInterface
 
     /**
      * Removes all user's relations.
-     * 
+     *
      * @todo Removes order relationship, it is now a doctrine entity.
      *
      * @param User $user
