@@ -30,24 +30,6 @@ class phrasea
     const CACHE_SBAS_FROM_BAS = 'sbas_from_bas';
     const CACHE_SBAS_PARAMS = 'sbas_params';
 
-    public static function is_scheduler_started(Application $app)
-    {
-        $retval = false;
-        $conn = connection::getPDOConnection($app);
-        $sql = 'SELECT schedstatus FROM sitepreff';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row && $row['schedstatus'] != 'stopped') {
-            $retval = true;
-        }
-
-        return $retval;
-    }
-
     public static function clear_sbas_params(Application $app)
     {
         self::$_sbas_params = null;
@@ -285,33 +267,5 @@ class phrasea
         }
 
         return 'Unknown collection';
-    }
-
-    public static function scheduler_key(Application $app, $renew = false)
-    {
-        $conn = connection::getPDOConnection($app);
-
-        $schedulerkey = false;
-
-        $sql = 'SELECT schedulerkey FROM sitepreff';
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row) {
-            $schedulerkey = trim($row['schedulerkey']);
-        }
-
-        if ($renew === true || $schedulerkey == '') {
-            $schedulerkey = random::generatePassword(20);
-            $sql = 'UPDATE sitepreff SET schedulerkey = :scheduler_key';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':scheduler_key' => $schedulerkey));
-            $stmt->closeCursor();
-        }
-
-        return $schedulerkey;
     }
 }

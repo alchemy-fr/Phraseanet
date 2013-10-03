@@ -2293,43 +2293,6 @@
             <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
-          <field>
-            <name>schedstatus</name>
-
-            <type>enum('stopped','stopping','started','tostop')</type>
-            <null></null>
-            <extra></extra>
-
-            <default>stopped</default>
-            <comment></comment>
-            <collation>ascii_bin</collation>
-          </field>
-          <field>
-            <name>schedqtime</name>
-            <type>datetime</type>
-            <null></null>
-            <extra></extra>
-            <default>0000-00-00 00:00:00</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>schedpid</name>
-            <type>int(11)</type>
-            <null>YES</null>
-            <extra></extra>
-
-
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>schedulerkey</name>
-            <type>char(20)</type>
-            <null>YES</null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
         </fields>
         <indexes>
           <index>
@@ -2355,9 +2318,6 @@
             </data>
             <data key="version"></data>
             <data key="maj">0000-00-00</data>
-            <data key="schedstatus">stopped</data>
-            <data key="schedqtime"></data>
-            <data key="schedpid"></data>
           </default>
         </defaults>
         <engine>InnoDB</engine>
