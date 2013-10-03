@@ -115,7 +115,14 @@
                     <tfoot>
                         {% if nbStories > 0 %}
                             <tr>
-                                <td colspan="6"><input type="checkbox" name="apply_to_children[{{ sbasId }}]"/></td>
+                                <td colspan="6">
+                                    <input type="checkbox" name="apply_to_children[{{ sbasId }}]"/>
+                                    {% if nbStories == 1 %}
+                                        {% trans %}Apply status on stories children. {% endtrans %}
+                                    {% elseif nbStories > 0 %}
+                                        {% trans %}Apply status on story children.{% endtrans %}
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endif %}
                     </tfoot>

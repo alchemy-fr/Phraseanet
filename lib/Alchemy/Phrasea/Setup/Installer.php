@@ -52,9 +52,6 @@ class Installer
 
     private function populateRegistryData($serverName, $dataPath)
     {
-        $this->app['phraseanet.registry']->set('GV_base_datapath_noweb', $dataPath, \registry::TYPE_STRING);
-        $this->app['phraseanet.registry']->set('GV_ServerName', $serverName, \registry::TYPE_STRING);
-
         // required to load GV template
         $app = $this->app;
         $GV = require __DIR__ . '/../../../../lib/conf.d/_GV_template.inc';
@@ -66,6 +63,15 @@ class Installer
                 }
             }
         }
+
+        if (null === realpath($dataPath)) {
+            throw new \InvalidArgumentException(sprintf('Path %s does not exist.', $dataPath));
+        }
+
+        $dataPath = realpath($dataPath) . DIRECTORY_SEPARATOR;
+
+        $this->app['phraseanet.registry']->set('GV_base_datapath_noweb', $dataPath, \registry::TYPE_STRING);
+        $this->app['phraseanet.registry']->set('GV_ServerName', $serverName, \registry::TYPE_STRING);
     }
 
     private function createDB(\connection_interface $dbConn = null, $template)

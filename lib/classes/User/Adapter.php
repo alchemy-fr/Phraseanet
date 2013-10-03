@@ -1326,6 +1326,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             throw new \InvalidArgumentException('Invalid username');
         }
 
+        if (strlen($login) > 100) {
+            throw new \InvalidArgumentException('Username is too long');
+        }
+
         if (trim($password) == '') {
             throw new \InvalidArgumentException('Invalid password');
         }

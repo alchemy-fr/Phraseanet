@@ -43,8 +43,7 @@ use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
-try {
-    $cli = new CLI("
+$cli = new CLI("
  ___  ___  _  _  ___  __    __  ___  ___  ___     ____  __    __  __    ___
 (   \(  _)( )( )(  _)(  )  /  \(  ,\(  _)(  ,)   (_  _)/  \  /  \(  )  / __)
  ) ) )) _) \\//  ) _) )(__( () )) _/ ) _) )  \     )( ( () )( () ))(__ \__ \
@@ -56,53 +55,48 @@ try {
  under certain conditions; type `about:license' for details.\n\n"
             . ' Phraseanet Developer Tools ', Version::getName() . ' ' . Version::getNumber());
 
-    if ($cli['phraseanet.configuration']->isSetup()) {
-        $helpers = array(
-            'db' => new ConnectionHelper($cli['EM']->getConnection()),
-            'em' => new EntityManagerHelper($cli['EM'])
-        );
+if ($cli['phraseanet.configuration']->isSetup()) {
+    $helpers = array(
+        'db' => new ConnectionHelper($cli['EM']->getConnection()),
+        'em' => new EntityManagerHelper($cli['EM'])
+    );
 
-        $helperSet = $cli['console']->getHelperSet();
-        foreach ($helpers as $name => $helper) {
-            $helperSet->set($helper, $name);
-        }
+    $helperSet = $cli['console']->getHelperSet();
+    foreach ($helpers as $name => $helper) {
+        $helperSet->set($helper, $name);
     }
-
-    $cli->command(new InstallAll());
-    $cli->command(new BowerInstall());
-    $cli->command(new ComposerInstall());
-    $cli->command(new LessCompiler());
-    $cli->command(new RegenerateSqliteDb());
-    $cli->command(new APIRoutesDumper());
-    $cli->command(new RoutesDumper());
-    $cli->command(new Behat());
-    $cli->command(new \module_console_systemTemplateGenerator('system:generate-templates'));
-
-    $cli['console']->addCommands(array(
-        // DBAL Commands
-        new RunSqlCommand(),
-        new ImportCommand(),
-        // ORM Commands
-        new MetadataCommand(),
-        new ResultCommand(),
-        new QueryCommand(),
-        new CreateCommand(),
-        new UpdateCommand(),
-        new DropCommand(),
-        new EnsureProductionSettingsCommand(),
-        new ConvertDoctrine1SchemaCommand(),
-        new GenerateRepositoriesCommand(),
-        new GenerateEntitiesCommand(),
-        new GenerateProxiesCommand(),
-        new ConvertMappingCommand(),
-        new RunDqlCommand(),
-        new ValidateSchemaCommand(),
-    ));
-
-    $cli->runCLI();
-} catch (Exception $e) {
-    echo "an error occured : " . $e->getMessage();
-    exit(1);
 }
 
-exit(0);
+$cli->command(new InstallAll());
+$cli->command(new BowerInstall());
+$cli->command(new ComposerInstall());
+$cli->command(new RegenerateSqliteDb());
+$cli->command(new APIRoutesDumper());
+$cli->command(new RoutesDumper());
+$cli->command(new Behat());
+$cli->command(new LessCompiler());
+$cli->command(new \module_console_systemTemplateGenerator('system:generate-templates'));
+
+
+$cli['console']->addCommands(array(
+    // DBAL Commands
+    new RunSqlCommand(),
+    new ImportCommand(),
+    // ORM Commands
+    new MetadataCommand(),
+    new ResultCommand(),
+    new QueryCommand(),
+    new CreateCommand(),
+    new UpdateCommand(),
+    new DropCommand(),
+    new EnsureProductionSettingsCommand(),
+    new ConvertDoctrine1SchemaCommand(),
+    new GenerateRepositoriesCommand(),
+    new GenerateEntitiesCommand(),
+    new GenerateProxiesCommand(),
+    new ConvertMappingCommand(),
+    new RunDqlCommand(),
+    new ValidateSchemaCommand(),
+));
+
+exit($cli->runCLI());

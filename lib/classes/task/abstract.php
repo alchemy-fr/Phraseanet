@@ -26,8 +26,10 @@ abstract class task_abstract
     const MINRECS = 10;
     const MAXRECS = 100;
     // default min/max values for the 'overflow memory (Mo)' setting on tasks
-    const MINMEGS = 20;
+    const MINMEGS = 64;
     const MAXMEGS = 256;
+    // default memory value
+    const DEFMEGS = 92;
     // default min/max values for the 'period (seconds)' setting on tasks
     const MINPERIOD = 10;
     const MAXPERIOD = 3600;
@@ -775,7 +777,7 @@ abstract class task_abstract
 
         $this->maxmegs = (integer) $sx_task_settings->maxmegs;
         if ($sx_task_settings->maxmegs < self::MINMEGS || $sx_task_settings->maxmegs > self::MAXMEGS) {
-            $this->maxmegs = self::MINMEGS;
+            $this->maxmegs = self::DEFMEGS;
         }
 
         $this->record_buffer_size = (integer) $sx_task_settings->flush;

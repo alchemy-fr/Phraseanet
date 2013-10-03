@@ -342,7 +342,7 @@ class task_period_writemeta extends task_databoxAbstract
     {
         $period = isset($params['period']) ? $params['period'] : self::MINPERIOD;
         $maxrecs = isset($params['maxrecs']) ? $params['maxrecs'] : self::MINRECS;
-        $maxmegs = isset($params['maxmegs']) ? $params['maxmegs'] : self::MINMEGS;
+        $maxmegs = isset($params['maxmegs']) ? $params['maxmegs'] : self::DEFMEGS;
 
         return sprintf('<?xml version="1.0" encoding="UTF-8"?>
             <tasksettings>

@@ -2658,7 +2658,7 @@
           <field>
 
             <name>usr_login</name>
-            <type>varchar(50)</type>
+            <type>varchar(128)</type>
             <null></null>
             <extra></extra>
 

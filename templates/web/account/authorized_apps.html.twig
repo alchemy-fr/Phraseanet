@@ -17,8 +17,8 @@
                             <li id="app_{{ application.get_id() }}">
                                 <div>
                                     {% set account = application.get_user_account(app["authentication"].getUser()) %}
-                                    <a href="{{ path("grant_app_access", {"application_id" : application.get_id()}) }}" class="revoke app-btn btn btn-small pull-right {% if account.is_revoked() is empty %}hidden{% endif %}" value="{{application.get_id()}}">{% trans "Revoquer l\'access" %}</a>
-                                    <a href="{{ path("grant_app_access", {"application_id" : application.get_id()}) }}"  class="authorize app-btn btn btn-small pull-right {% if account.is_revoked() is not empty %}hidden{% endif %}" value="{{application.get_id()}}">{% trans "Authoriser l\'access" %}</a>
+                                    <a href="{{ path("grant_app_access", {"application_id" : application.get_id()}) }}" class="revoke app-btn btn btn-small pull-right {% if account.is_revoked() %}hidden{% endif %}" value="{{application.get_id()}}">{% trans "Revoquer l\'access" %}</a>
+                                    <a href="{{ path("grant_app_access", {"application_id" : application.get_id()}) }}"  class="authorize app-btn btn btn-small pull-right {% if not account.is_revoked() %}hidden{% endif %}" value="{{application.get_id()}}">{% trans "Authoriser l\'access" %}</a>
                                     <p class="app-row">
                                         <a href="{{ application.get_website() }}" target="_blank">
                                             <strong>{{ application.get_name() }}</strong>
@@ -33,8 +33,8 @@
                                         {% endif%}
                                     </p>
                                     <p class="app-row">
-                                        <span class="status text-error {% if account.is_revoked() is not empty %}hidden{% endif %}">{% trans "Not Allowed"%}</span>
-                                        <span class="status text-success {% if account.is_revoked() is empty %}hidden{% endif %}">{% trans "Allowed"%}</span>
+                                        <span class="status text-error {% if account.is_revoked() == false %}hidden{% endif %}">{% trans "Not Allowed"%}</span>
+                                        <span class="status text-success {% if account.is_revoked() == true %}hidden{% endif %}">{% trans "Allowed"%}</span>
                                     </p>
                                     <p class="app-row">{{ application.get_description()|truncate(120, true, "...") }}</p>
                                 </div>
