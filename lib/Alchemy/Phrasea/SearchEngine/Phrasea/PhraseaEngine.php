@@ -625,7 +625,7 @@ class PhraseaEngine implements SearchEngineInterface
             return array();
         }
 
-        $sxe = simplexml_load_string($res['xml']);
+        $sxe = @simplexml_load_string($res['xml']);
 
         foreach ($fields as $name => $field) {
             if ($sxe && $sxe->description && $sxe->description->$name) {
