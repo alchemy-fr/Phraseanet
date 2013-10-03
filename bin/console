@@ -33,8 +33,7 @@ use Alchemy\Phrasea\Command\Setup\XSendFileConfigurationDumper;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
-try {
-    $cli = new CLI("
+$cli = new CLI("
   _____  _    _ _____            _____ ______          _   _ ______ _______
  |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
  | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |
@@ -52,60 +51,54 @@ try {
  under certain conditions; type `about:license' for details.\n\n"
             . ' KONSOLE KOMMANDER', Version::getName() . ' ' . Version::getNumber());
 
-    if (!$cli['phraseanet.configuration-tester']->isInstalled()) {
-        throw new \RuntimeException('Phraseanet is not installed, use setup command instead');
-    }
-    if (!$cli['phraseanet.configuration-tester']->isUpToDate()) {
-        throw new \RuntimeException('Phraseanet is not up-to-date, use setup command instead');
-    }
-
-    $cli->command(new \module_console_aboutAuthors('about:authors'));
-    $cli->command(new \module_console_aboutLicense('about:license'));
-
-    $cli->command(new CheckConfig('check:config'));
-    $cli->command(new \module_console_checkExtension('check:extension'));
-
-    $cli->command(new UpgradeDBDatas('system:upgrade-datas'));
-
-    $cli->command(new \module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
-
-    $cli->command(new \module_console_systemMailCheck('system:mail-check'));
-    $cli->command(new \module_console_systemBackupDB('system:backup-db'));
-    $cli->command(new \module_console_systemClearCache('system:clear-cache'));
-    $cli->command(new \module_console_systemExport('system:export'));
-
-    $cli->command(new \module_console_taskrun('task:run'));
-    $cli->command(new \module_console_tasklist('task:list'));
-    $cli->command(new \module_console_taskState('task:state'));
-    $cli->command(new \module_console_schedulerState('scheduler:state'));
-    $cli->command(new \module_console_schedulerStop('scheduler:stop'));
-    $cli->command(new \module_console_schedulerStart('scheduler:start'));
-
-    $cli->command(new MailTest('mail:test'));
-
-    $cli->command(new \module_console_fieldsList('fields:list'));
-    $cli->command(new \module_console_fieldsDelete('fields:delete'));
-    $cli->command(new \module_console_fieldsRename('fields:rename'));
-    $cli->command(new \module_console_fieldsMerge('fields:merge'));
-
-    $cli->command(new CreateCollection('collection:create'));
-
-    $cli->command(new RecordAdd('records:add'));
-    $cli->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
-    $cli->command(new BuildMissingSubdefs('records:build-missing-subdefs'));
-
-    $cli->command(new AddPlugin());
-    $cli->command(new RemovePlugin());
-    $cli->command(new Configuration());
-    $cli->command(new XSendFileConfigurationDumper());
-    $cli->command(new XSendFileMappingGenerator());
-
-    $cli->loadPlugins();
-
-    $result_code = is_int($cli->run()) ? : 1;
-} catch (\Exception $e) {
-    $result_code = 1;
-    echo sprintf("\nAn error occured :\n\n\t\033[0;31m%s\033[0;37m\n\n", $e->getMessage());
+if (!$cli['phraseanet.configuration-tester']->isInstalled()) {
+    throw new \RuntimeException('Phraseanet is not installed, use setup command instead');
+}
+if (!$cli['phraseanet.configuration-tester']->isUpToDate()) {
+    throw new \RuntimeException('Phraseanet is not up-to-date, use setup command instead');
 }
 
-exit($result_code);
+$cli->command(new \module_console_aboutAuthors('about:authors'));
+$cli->command(new \module_console_aboutLicense('about:license'));
+
+$cli->command(new CheckConfig('check:config'));
+$cli->command(new \module_console_checkExtension('check:extension'));
+
+$cli->command(new UpgradeDBDatas('system:upgrade-datas'));
+
+$cli->command(new \module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
+
+$cli->command(new \module_console_systemMailCheck('system:mail-check'));
+$cli->command(new \module_console_systemBackupDB('system:backup-db'));
+$cli->command(new \module_console_systemClearCache('system:clear-cache'));
+$cli->command(new \module_console_systemExport('system:export'));
+
+$cli->command(new \module_console_taskrun('task:run'));
+$cli->command(new \module_console_tasklist('task:list'));
+$cli->command(new \module_console_taskState('task:state'));
+$cli->command(new \module_console_schedulerState('scheduler:state'));
+$cli->command(new \module_console_schedulerStop('scheduler:stop'));
+$cli->command(new \module_console_schedulerStart('scheduler:start'));
+
+$cli->command(new MailTest('mail:test'));
+
+$cli->command(new \module_console_fieldsList('fields:list'));
+$cli->command(new \module_console_fieldsDelete('fields:delete'));
+$cli->command(new \module_console_fieldsRename('fields:rename'));
+$cli->command(new \module_console_fieldsMerge('fields:merge'));
+
+$cli->command(new CreateCollection('collection:create'));
+
+$cli->command(new RecordAdd('records:add'));
+$cli->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
+$cli->command(new BuildMissingSubdefs('records:build-missing-subdefs'));
+
+$cli->command(new AddPlugin());
+$cli->command(new RemovePlugin());
+$cli->command(new Configuration());
+$cli->command(new XSendFileConfigurationDumper());
+$cli->command(new XSendFileMappingGenerator());
+
+$cli->loadPlugins();
+
+exit(is_int($cli->run()) ? : 1);
