@@ -1,4 +1,6 @@
-rm -f config/configuration.yml config/services.yml config/connexions.yml config/config.yml config/config.inc config/connexion.inc config/_GV.php config/_GV.php.old || exit 1
+composer install --dev
+./bin/developer dependencies:all || exit 1
+./bin/developer system:uninstall || exit 1
 cp -f hudson/connexion.inc config/ || exit 1
 cp -f hudson/_GV.php config/ || exit 1
 npm install -g uglify-js recess grunt-cli jake

@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Command\Developer\InstallAll;
 use Alchemy\Phrasea\Command\Developer\LessCompiler;
 use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
 use Alchemy\Phrasea\Command\Developer\RoutesDumper;
+use Alchemy\Phrasea\Command\Developer\Uninstaller;
 
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
@@ -75,6 +76,7 @@ $cli->command(new APIRoutesDumper());
 $cli->command(new RoutesDumper());
 $cli->command(new Behat());
 $cli->command(new LessCompiler());
+$cli->command(new Uninstaller());
 $cli->command(new \module_console_systemTemplateGenerator('system:generate-templates'));
 
 
