@@ -21,6 +21,8 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
+        // initialize record so that it already exist
+        $record = self::$DI['record_1'];
         $this->object = new Filename(self::$DI['app']);
         $this->filename = __DIR__ . '/../../../../../../tmp/test001.jpg';
         copy(__DIR__ . '/../../../../../files/test001.jpg', $this->filename);
