@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     public static $demands;
+    public static $collections;
     public static $login;
     public static $email;
 
@@ -25,6 +26,16 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         if (null === self::$demands) {
             self::$demands = array(self::$DI['collection']->get_coll_id());
+        }
+        if (null === self::$collections) {
+            self::$collections = array(self::$DI['collection']->get_base_id());
+
+            $sxml = simplexml_load_string(self::$DI['collection']->get_prefs());
+            $sxml->caninscript = 1;
+            $dom = new \DOMDocument();
+            $dom->loadXML($sxml->asXML());
+
+            self::$DI['collection']->set_prefs($dom);
         }
         if (null === self::$login) {
             self::$login = self::$DI['user']->get_login();
@@ -417,6 +428,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetRegister($type, $message)
     {
+        self::$DI['app']['registration.enabled'] = true;
         self::$DI['app']['authentication']->closeAccount();
         self::$DI['app']->addFlash($type, $message);
         $crawler = self::$DI['client']->request('GET', '/login/register-classic/');
@@ -429,6 +441,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testGetRegisterWithRegisterIdBindDataToForm()
     {
+        self::$DI['app']['registration.enabled'] = true;
         self::$DI['app']['authentication']->closeAccount();
 
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
@@ -485,6 +498,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostRegisterbadArguments($parameters, $extraParameters, $errors)
     {
+        self::$DI['app']['registration.enabled'] = true;
         self::$DI['app']['registration.fields'] = $extraParameters;
 
         self::$DI['app']['authentication']->closeAccount();
