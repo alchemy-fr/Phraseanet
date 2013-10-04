@@ -18,6 +18,9 @@ before_script:
   - sh -c 'if [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then pecl install redis; fi;'
   - echo 'extension="memcache.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcache.ini
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
+  - git clone https://github.com/mkoppanen/php-zmq.git
+  - sh -c "cd php-zmq && phpize && ./configure && make --silent && sudo make install"
+  - echo "extension=zmq.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - composer self-update
   - composer install --dev --prefer-source
   - bin/developer system:uninstall
