@@ -1,13 +1,15 @@
 language: php
 
+env:
+  - SETUP_MODE=update
+  - SETUP_MODE=install
+
 services:
   - mysql
   - redis
 
 before_script:
   - rm -f config/services.yml config/connexions.yml config/config.yml config/config.inc config/connexion.inc config/_GV.php config/_GV.php.old
-  - cp -f hudson/connexion.inc config/
-  - cp -f hudson/_GV.php config/
   - node --version
   - npm --version
   - npm install bower-canary mocha-phantomjs@">=2.0 <3.0" recess@">=1.1.0 <1.1.7" uglify-js -g
@@ -26,7 +28,6 @@ before_script:
   - mysql -e 'create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;'
   - sudo mysql -e "GRANT ALL PRIVILEGES ON ab_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - sudo mysql -e "GRANT ALL PRIVILEGES ON db_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
-  - mysql -e "source `pwd`/hudson/fixtures.sql"
   - mysql -e 'SET @@global.sql_mode= "";'
   - mysql -e 'SET @@global.wait_timeout= 999999;'
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
@@ -55,7 +56,15 @@ php:
 
 script:
   - bin/developer dependencies:all --prefer-source
-  - bin/setup system:upgrade -y -v -f
+  - sh -c " if [ '$SETUP_MODE' = 'update' ]; then
+              cp hudson/connexion.inc config/;
+              cp hudson/_GV.php config/;
+              mysql -e 'source `pwd`/hudson/fixtures.sql';
+              bin/setup system:upgrade -y -v -f;
+            fi"
+  - sh -c " if [ '$SETUP_MODE' = 'install' ]; then
+              bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
+            fi"
   - php hudson/cleanupSubdefs.php
   - bin/developer assets:compile-less
   - bin/developer assets:build-javascript

@@ -99,8 +99,13 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
     {
         $othercollection = $collection = null;
         $app = new Application('test');
+        $databoxes = $app['phraseanet.appbox']->get_databoxes();
+        if (count($databoxes) === 0) {
+            $this->fail('Unable to find collections');
+        }
+        $databox = array_pop($databoxes);
 
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
+        foreach ($databoxes as $db) {
             if (! $collection) {
                 foreach ($db->get_collections() as $coll) {
                     $collection = $coll;
@@ -116,6 +121,13 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
                     }
                 }
             }
+        }
+
+        if (null === $othercollection) {
+            $othercollection = \collection::create($app, $databox, $app['phraseanet.appbox'], 'other coll');
+        }
+        if (null === $collection) {
+            $collection = \collection::create($app, $databox, $app['phraseanet.appbox'], 'other coll');
         }
 
         return array(
