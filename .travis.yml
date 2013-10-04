@@ -9,7 +9,6 @@ services:
   - redis
 
 before_script:
-  - rm -f config/services.yml config/connexions.yml config/config.yml config/config.inc config/connexion.inc config/_GV.php config/_GV.php.old
   - node --version
   - npm --version
   - npm install bower-canary mocha-phantomjs@">=2.0 <3.0" recess@">=1.1.0 <1.1.7" uglify-js -g
@@ -20,6 +19,7 @@ before_script:
   - echo 'extension="memcached.so"' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/memcached.ini
   - composer self-update
   - composer install --dev --prefer-source
+  - bin/developer system:uninstall
   - wget http://sphinxsearch.com/files/sphinx-2.0.6-release.tar.gz
   - tar xzf sphinx-2.0.6-release.tar.gz
   - sh -c "cd sphinx-2.0.6-release && wget http://snowball.tartarus.org/dist/libstemmer_c.tgz && tar xzf libstemmer_c.tgz && ./configure --with-libstemmer --with-iconv --with-mysql --enable-id64 --quiet && make -j --quiet && sudo make install"
