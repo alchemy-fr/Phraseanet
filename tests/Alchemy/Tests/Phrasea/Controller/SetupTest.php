@@ -39,7 +39,7 @@ class SetupTest extends \Silex\WebTestCase
 
     public function testRouteSlashWhenInstalled()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->once())
+        $this->app['phraseanet.configuration-tester']->expects($this->exactly(2))
             ->method('isInstalled')
             ->will($this->returnValue(true));
         $this->app['phraseanet.configuration-tester']->expects($this->once())
@@ -55,7 +55,7 @@ class SetupTest extends \Silex\WebTestCase
 
     public function testRouteInstructionsWhenUpgradeRequired()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->once())
+        $this->app['phraseanet.configuration-tester']->expects($this->exactly(2))
             ->method('isInstalled')
             ->will($this->returnValue(false));
         $this->app['phraseanet.configuration-tester']->expects($this->once())
