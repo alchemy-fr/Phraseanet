@@ -258,7 +258,7 @@ class API_OAuth2_Adapter extends OAuth2
     protected function setAccessToken($oauth_token, $account_id, $expires, $scope = NULL)
     {
         $account = new API_OAuth2_Account($this->app, $account_id);
-        $token = API_OAuth2_Token::create($this->app, $account, $scope);
+        $token = API_OAuth2_Token::create($this->app['phraseanet.appbox'], $account, $scope);
         $token->set_value($oauth_token)->set_expires($expires);
 
         return $this;
@@ -800,7 +800,7 @@ class API_OAuth2_Adapter extends OAuth2
         try {
             $application = API_OAuth2_Application::load_from_client_id($this->app, $client_id);
 
-            $usr_id = $this->app['auth']->isValid($username, $password, Request::createFromGlobals());
+            $usr_id = $this->app['auth.native']->getUsrId($username, $password, Request::createFromGlobals());
 
             if (!$usr_id) {
                 return false;
