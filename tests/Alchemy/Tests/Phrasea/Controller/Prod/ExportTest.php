@@ -21,28 +21,6 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * Delete inserted rows from FTP export
-     */
-    public static function tearDownAfterClass()
-    {
-        $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
-
-        $sql = 'DELETE FROM ftp_export WHERE mail = :email_dest';
-        $sql2 = 'DELETE FROM ftp_export_elements WHERE (base_id = :base_id AND record_id = :record_id)';
-
-        $stmtFtp = $conn->prepare($sql);
-        $stmtFtp->execute(array(':email_dest' => self::$DI['user']->get_email()));
-        $stmtFtp->closeCursor();
-
-        $stmtElements = $conn->prepare($sql2);
-        $stmtElements->execute(array(':base_id'   => self::$DI['record_1']->get_base_id(), ':record_id' => self::$DI['record_1']->get_record_id()));
-        $stmtElements->closeCursor();
-
-        unset($conn, $stmtFtp, $stmtElements);
-        parent::tearDownAfterClass();
-    }
-
-    /**
      * @covers Alchemy\Phrasea\Controller\Prod\Export::displayMultiExport
      */
     public function testDisplayMultiExport()
