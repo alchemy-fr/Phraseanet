@@ -82,52 +82,54 @@
         <![endif]-->
         {% endblock google_chrome_frame %}
 
-        <div class="container full-height">
-            {% block content_scaffholding %}{% endblock %}
-            {% block footer_scaffholding %}
-                <div class="row-fluid">
-                   <div class="span12">
-                       <div class="footer well-small">
-                           {% block footer %}
-                               <div class="row-fluid">
-                                   <div class="span9" >
-                                       {% block footer_content %}
-                                           <div class="footer-block">
-                                               <ul class="inline footer-list unstyled">
-                                                   <li class="item-first" >
-                                                      <a href="{{ path("homepage") }}">{% trans "Home" %}</a>
-                                                   </li>
-                                                   <li>
-                                                      <a href="#">{% trans "Help" %}</a>
-                                                   </li>
-                                                   {% if has_terms_of_use %}
-                                                       <li>
-                                                           {% block tou_link %}
-                                                               <a href="{{ path("login_cgus") }}">{% trans "Terms of use" %}</a>
-                                                           {% endblock tou_link %}
+        {% block container %}
+            <div class="container">
+                {% block content_scaffholding %}{% endblock %}
+                {% block footer_scaffholding %}
+                    <div class="row-fluid">
+                       <div class="span12">
+                           <div class="footer well-small">
+                               {% block footer %}
+                                   <div class="row-fluid">
+                                       <div class="span9" >
+                                           {% block footer_content %}
+                                               <div class="footer-block">
+                                                   <ul class="inline footer-list unstyled">
+                                                       <li class="item-first" >
+                                                          <a href="{{ path("homepage") }}">{% trans "Home" %}</a>
                                                        </li>
-                                                   {% endif %}
-                                                   <li>
-                                                       {% block copyright %}
-                                                          &copy; Copyright <a href="http://www.alchemy.fr" target="_blank">Alchemy</a> 2005-{{ "now"|date("Y") }}
-                                                       {% endblock copyright %}
-                                                   </li>
-                                               </ul>
+                                                       <li>
+                                                          <a href="#">{% trans "Help" %}</a>
+                                                       </li>
+                                                       {% if has_terms_of_use %}
+                                                           <li>
+                                                               {% block tou_link %}
+                                                                   <a href="{{ path("login_cgus") }}">{% trans "Terms of use" %}</a>
+                                                               {% endblock tou_link %}
+                                                           </li>
+                                                       {% endif %}
+                                                       <li>
+                                                           {% block copyright %}
+                                                              &copy; Copyright <a href="http://www.alchemy.fr" target="_blank">Alchemy</a> 2005-{{ "now"|date("Y") }}
+                                                           {% endblock copyright %}
+                                                       </li>
+                                                   </ul>
+                                               </div>
+                                           {% endblock footer_content %}
+                                       </div>
+                                       <div class="span3">
+                                           <div class="footer-block text-right">
+                                               {% block footer_logo %}<a href="https://www.phraseanet.com" target="_blank">Phraseanet</a>{% endblock footer_logo %}
                                            </div>
-                                       {% endblock footer_content %}
-                                   </div>
-                                   <div class="span3">
-                                       <div class="footer-block text-right">
-                                           {% block footer_logo %}<a href="https://www.phraseanet.com" target="_blank">Phraseanet</a>{% endblock footer_logo %}
                                        </div>
                                    </div>
-                               </div>
-                           {% endblock footer %}
+                               {% endblock footer %}
+                           </div>
                        </div>
                    </div>
-               </div>
-            {% endblock footer_scaffholding %}
-        </div><!--/.fluid-container-->
+                {% endblock footer_scaffholding %}
+            </div><!--/.fluid-container-->
+        {% endblock %}
         {% block analytics %}
             {% include 'common/analytics.html.twig' %}
         {% endblock analytics %}
