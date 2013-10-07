@@ -13,6 +13,18 @@ use Doctrine\ORM\EntityRepository;
 class OrderRepository extends EntityRepository
 {
     /**
+     * Returns the orders initiated by a given user.
+     *
+     * @param \User_Adapter $user
+     *
+     * @return array
+     */
+    public function findByUser(\User_Adapter $user)
+    {
+        return $this->findBy(array('usrId' => $user->get_id()));
+    }
+
+    /**
      * Returns an array of all the orders, starting at $offsetStart, limited to $perPage
      *
      * @param array   $baseIds

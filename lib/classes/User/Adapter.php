@@ -768,6 +768,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $this->app['EM']->remove($export);
         }
 
+        $repo = $this->app['EM']->getRepository('Entities\Order');
+        foreach ($repo->findByUser($this) as $order) {
+            $this->app['EM']->remove($order);
+        }
+
         $this->app['EM']->flush();
 
         $sql = 'UPDATE usr SET usr_login = :usr_login , usr_mail = null
@@ -792,11 +797,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM edit_presets WHERE usr_id = :usr_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
-        $stmt->closeCursor();
-
-        $sql = 'DELETE FROM `order` WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $this->get_id()));
         $stmt->closeCursor();
