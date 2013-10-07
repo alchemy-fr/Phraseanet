@@ -1,5 +1,4 @@
 composer install --dev
-./bin/developer dependencies:all || exit 1
 ./bin/developer system:uninstall || exit 1
 cp -f hudson/connexion.inc config/ || exit 1
 cp -f hudson/_GV.php config/ || exit 1
