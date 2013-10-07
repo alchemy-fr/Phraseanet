@@ -30,6 +30,10 @@ class TaskManager implements ControllerProviderInterface
             $app['firewall']->requireRight('taskmanager');
         });
 
+        $converter = function ($id) use ($app) {
+            return $app['converter.task']->convert($id);
+        };
+
         $controllers
             ->get('/', 'controller.admin.task:getRoot')
             ->bind('admin_tasks');
@@ -56,47 +60,47 @@ class TaskManager implements ControllerProviderInterface
 
         $controllers
             ->get('/task/{task}/log', 'controller.admin.task:getTaskLog')
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', $converter)
             ->bind('admin_tasks_task_log');
 
         $controllers
             ->post('/task/{task}/delete', 'controller.admin.task:postTaskDelete')
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', $converter)
             ->bind('admin_tasks_task_delete');
 
         $controllers
             ->post('/task/{task}/start', 'controller.admin.task:postStartTask')
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', $converter)
             ->bind('admin_tasks_task_start');
 
         $controllers
             ->post('/task/{task}/stop', 'controller.admin.task:postStopTask')
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', $converter)
             ->bind('admin_tasks_task_stop');
 
         $controllers
             ->post('/task/{task}/resetcrashcounter', 'controller.admin.task:postResetCrashes')
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', $converter)
             ->bind('admin_tasks_task_reset');
 
         $controllers
             ->post('/task/{task}/save', 'controller.admin.task:postSaveTask')
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', $converter)
             ->bind('admin_tasks_task_save');
 
         $controllers
             ->post('/task/{task}/facility', 'controller.admin.task:postTaskFacility')
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', $converter)
             ->bind('admin_tasks_task_facility');
 
         $controllers
             ->post('/task/{task}/xml-from-form', 'controller.admin.task:postXMLFromForm')
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', $converter)
             ->bind('admin_tasks_xml_from_form');
 
         $controllers
             ->get('/task/{task}', 'controller.admin.task:getTask')
-            ->convert('task', array($app['converter.task'], 'convert'))
+            ->convert('task', $converter)
             ->bind('admin_tasks_task_show');
 
         $controllers
