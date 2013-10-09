@@ -44,6 +44,35 @@ class User
     const USER_AUTOREGISTER = 'autoregister';
 
     /**
+     * The default user setting values.
+     *
+     * @var array
+     */
+    private static $defaultUserSettings = array(
+        'view'                    => 'thumbs',
+        'images_per_page'         => '20',
+        'images_size'             => '120',
+        'editing_images_size'     => '134',
+        'editing_top_box'         => '180px',
+        'editing_right_box'       => '400px',
+        'editing_left_box'        => '710px',
+        'basket_sort_field'       => 'name',
+        'basket_sort_order'       => 'ASC',
+        'warning_on_delete_story' => 'true',
+        'client_basket_status'    => '1',
+        'css'                     => '000000',
+        'start_page_query'        => 'last',
+        'start_page'              => 'QUERY',
+        'rollover_thumbnail'      => 'caption',
+        'technical_display'       => '1',
+        'doctype_display'         => '1',
+        'bask_val_order'          => 'nat',
+        'basket_caption_display'  => '0',
+        'basket_status_display'   => '0',
+        'basket_title_display'    => '0'
+    );
+
+    /**
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -61,7 +90,7 @@ class User
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $password;
 
@@ -225,26 +254,36 @@ class User
     /**
      * @ORM\OneToOne(targetEntity="User")
      * @ORM\JoinColumn(name="model_of", referencedColumnName="id")
+     *
+     * @var User
      **/
     private $modelOf;
 
      /**
      * @ORM\OneToOne(targetEntity="FtpCredential", mappedBy="user", cascade={"all"})
+      *
+      * @var FtpCredential
      **/
     private $ftpCredential;
 
     /**
      * @ORM\OneToMany(targetEntity="UserQuery", mappedBy="user", cascade={"all"})
+     *
+     * @var UserQuery[]
      **/
     private $queries;
 
     /**
      * @ORM\OneToMany(targetEntity="UserSetting", mappedBy="user", cascade={"all"})
+     *
+     * @var UserSetting[]
      **/
     private $settings;
 
     /**
      * @ORM\OneToMany(targetEntity="UserNotificationSetting", mappedBy="user", cascade={"all"})
+     *
+     * @var UserNotificationSetting[]
      **/
     private $notificationSettings;
 
@@ -252,6 +291,11 @@ class User
      * @var \ACL
      */
     private $acl;
+
+    /**
+     * @var ArrayCollection
+     */
+    private $cachedSettings;
 
     /**
      * Constructor
@@ -702,11 +746,11 @@ class User
     }
 
     /**
-     * @param User $user
+     * @param User $owner
      */
-    public function setModelOf(User $user)
+    public function setModelOf(User $owner)
     {
-        $this->modelOf = $user;
+        $this->modelOf = $owner;
     }
 
     /**
@@ -870,7 +914,7 @@ class User
      *
      * @return User
      */
-    public function setFtpCredential(FtpCredential $ftpCredential)
+    public function setFtpCredential(FtpCredential $ftpCredential = null)
     {
         $this->ftpCredential = $ftpCredential;
 
@@ -886,13 +930,13 @@ class User
     }
 
     /**
-     * @param ArrayCollection $queries
+     * @param UserQuery $query
      *
      * @return User
      */
-    public function setQueries(ArrayCollection $queries)
+    public function AddQuery(UserQuery $query)
     {
-        $this->queries = $queries;
+        $this->queries->add($query);
 
         return $this;
     }
@@ -906,13 +950,42 @@ class User
     }
 
     /**
-     * @param ArrayCollection $settings
+     * Retrieves user setting value.
+     *
+     * @param string $name
+     * @param mixed $default
+     *
+     * @return string
+     */
+    public function getSettingValue($name, $default = null)
+    {
+        if (null === $this->cachedSettings) {
+            $settings = self::$defaultUserSettings;
+
+            foreach ($this->settings as $setting) {
+                $settings[$setting->getName()] = $setting->getValue();
+            }
+
+            $this->cachedSettings = $settings;
+        }
+
+        // checks for stored settings
+        if (array_key_exists($name, $this->cachedSettings)) {
+            return $this->cachedSettings[$name];
+        }
+
+        return $default;
+    }
+
+    /**
+     * @param UserSetting $setting
      *
      * @return User
      */
-    public function setSettings(ArrayCollection $settings)
+    public function addSetting(UserSetting $setting)
     {
-        $this->settings = $settings;
+        $this->cachedSettings = null;
+        $this->settings->add($setting);
 
         return $this;
     }
@@ -926,13 +999,13 @@ class User
     }
 
     /**
-     * @param ArrayCollection $notificationSettings
+     * @param UserNotificationSetting $notificationSetting
      *
      * @return User
      */
-    public function setNotificationSettings(ArrayCollection $notificationSettings)
+    public function addNotificationSettings(UserNotificationSetting $notificationSetting)
     {
-        $this->notificationSettings = $notificationSettings;
+        $this->notificationSettings->add($notificationSetting);
 
         return $this;
     }
@@ -985,33 +1058,5 @@ class User
         }
 
         return _('Unnamed user');
-    }
-
-    /**
-     * Reset user informations.
-     *
-     * @return User
-     */
-    public function reset()
-    {
-        $this->setCity('');
-        $this->setAddress('');
-        $this->setCountry('');
-        $this->setZipCode('');
-        $this->setTimezone('');
-        $this->setCompany('');
-        $this->setEmail(null);
-        $this->setFax('');
-        $this->setPhone('');
-        $this->setFirstName('');
-        $this->setGender(null);
-        $this->setGeonameId(null);
-        $this->setJob('');
-        $this->setActivity('');
-        $this->setLastName('');
-        $this->setMailNotificationsActivated(false);
-        $this->setRequestNotificationsActivated(false);
-
-        return $this;
     }
 }

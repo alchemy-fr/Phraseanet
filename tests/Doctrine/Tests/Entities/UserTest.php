@@ -13,6 +13,7 @@ namespace Doctrine\Tests\Entities;
 
 use Alchemy\Phrasea\Application;
 use Entities\User;
+use Entities\UserSetting;
 
 class UserTest extends \PhraseanetPHPUnitAbstract
 {
@@ -126,47 +127,6 @@ class UserTest extends \PhraseanetPHPUnitAbstract
         $this->assertTrue($this->user->isSpecial());
     }
 
-    public function testReset()
-    {
-        $this->user->setCity('city');
-        $this->user->setAddress('address');
-        $this->user->setCountry('country');
-        $this->user->setZipCode('zipcode');
-        $this->user->setTimezone('timezone');
-        $this->user->setCompany('company');
-        $this->user->setEmail('email@email.com');
-        $this->user->setFax('fax');
-        $this->user->setPhone('phone');
-        $this->user->setFirstName('firstname');
-        $this->user->setGender(User::GENDER_MR);
-        $this->user->setGeonameId(1);
-        $this->user->setJob('job');
-        $this->user->setActivity('activity');
-        $this->user->setLastName('lastname');
-        $this->user->setMailNotificationsActivated(true);
-        $this->user->setRequestNotificationsActivated(true);
-
-        $this->user->reset();
-
-        $this->assertEmpty($this->user->getCity());
-        $this->assertEmpty($this->user->getAddress());
-        $this->assertEmpty($this->user->getCountry());
-        $this->assertEmpty($this->user->getZipCode());
-        $this->assertEmpty($this->user->getTimezone());
-        $this->assertEmpty($this->user->getCompany());
-        $this->assertEmpty($this->user->getFax());
-        $this->assertEmpty($this->user->getPhone());
-        $this->assertEmpty($this->user->getFirstName());
-        $this->assertEmpty($this->user->getJob());
-        $this->assertEmpty($this->user->getActivity());
-        $this->assertEmpty($this->user->getLastName());
-        $this->assertNull($this->user->getEmail());
-        $this->assertNull($this->user->getGeonameId());
-        $this->assertNull($this->user->getGender());
-        $this->assertFalse($this->user->hasMailNotificationsActivated());
-        $this->assertFalse($this->user->hasRequestNotificationsActivated());
-    }
-
     public function testSetModelOf()
     {
         $this->user->setLogin('login');
@@ -198,5 +158,17 @@ class UserTest extends \PhraseanetPHPUnitAbstract
             array(1),
             array('madame')
         );
+    }
+
+    public function testGetSettingValue()
+    {
+        $setting = new UserSetting();
+        $setting->setName('titi');
+        $setting->setValue('a_value');
+        $this->user->addSetting($setting);
+
+        $this->assertEquals('a_value', $this->user->getSettingValue('titi'));
+        $this->assertEquals('000000', $this->user->getSettingValue('css'));
+        $this->assertEquals('toto', $this->user->getSettingValue('not_found', 'toto'));
     }
 }

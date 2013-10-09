@@ -333,22 +333,4 @@ class FtpCredential
 
         return $this;
     }
-
-    /**
-     * @return FtpCredential
-     */
-    public function resetCredentials()
-    {
-        $this->active = false;
-        $this->address = '';
-        $this->login = '';
-        $this->maxRetry = 5;
-        $this->passive = false;
-        $this->password = '';
-        $this->receptionFolder = '';
-        $this->repositoryPrefixName = '';
-        $this->ssl = false;
-
-        return $this;
-    }
 }

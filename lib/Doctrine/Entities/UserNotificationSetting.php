@@ -33,7 +33,7 @@ class UserNotificationSetting
     private $id;
 
     /**
-     * @ORM\Column(type="integer", nullable=true, name="usr_id")
+     * @ORM\Column(type="integer", name="usr_id")
      */
     private $usrId;
 

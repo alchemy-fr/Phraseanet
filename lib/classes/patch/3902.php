@@ -58,21 +58,25 @@ class patch_3902 implements patchInterface
 
         $conn = $app['phraseanet.appbox']->get_connection();
         $em = $app['EM'];
-        
+
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
 
         $this->updateUsers($em, $conn);
         $this->updateModels($em, $conn);
-        
+
         $em->getEventManager()->addEventSubscriber(new TimestampableListener());
     }
-    
+
     /**
      * Sets user entity from usr table.
      */
     private function updateUsers(EntityManager $em, $conn)
     {
-        $sql = 'SELECT * FROM usr';
+        $sql = 'SELECT activite, adresse, create_db, canchgftpprofil, canchgprofil, ville,
+            societe, pays, usr_mail, fax, usr_prenom, geonameid, invite, fonction, last_conn, lastModel,
+            usr_nom, ldap_created, locale, usr_login, mail_locked, mail_notifications, nonce, usr_password, push_list,
+            request_notifications, salted_password, usr_sexe, tel, timezone, cpostal, usr_creationdate, usr_modificationdate
+            FROM usr WHERE model_of = 0';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -155,34 +159,33 @@ class patch_3902 implements patchInterface
         $em->flush();
         $em->clear();
     }
-    
+
     /**
      * Sets model from usr table.
      */
     private function updateModels(EntityManager $em, $conn)
     {
-        $sql = 'SELECT model_of, usr_login FROM usr WHERE model_of > 0 AND usr_login IS NOT NULL';
+        $sql = "SELECT model_of, usr_login
+                FROM usr
+                WHERE model_of > 0";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $n = 0;
-        
+
         $repository = $em->getRepository('Entities\User');
-        
+
         foreach ($rows as $row) {
-            if (null === $user = $repository->findOneByLogin($row['usr_login'])) {
-                continue;
-            }
-            
+            $user = $repository->findOneByLogin($row['usr_login']);
+
             if (null === $template = $repository->find($row['model_of'])) {
-                continue;
+                $em->remove($user);
+            } else {
+                $user->setModelOf($template);
+                $em->persist($user);
             }
-            
-            $user->setModelOf($template);
-            
-            $em->persist($user);
 
             $n++;
 

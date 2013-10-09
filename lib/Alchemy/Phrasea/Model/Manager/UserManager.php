@@ -11,92 +11,48 @@
 
 namespace Alchemy\Phrasea\Model\Manager;
 
-use Alchemy\Geonames\Connector as GeonamesConnector;
-use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\Common\Persistence\ObjectManager;
-use Entities\EntityInterface;
 use Entities\User;
 use Entities\UserSetting;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class UserManager
 {
-    /** @var \appbox */
-    protected $appbox;
     /** @var ObjectManager */
     protected $objectManager;
-    /** @var PasswordEncoderInterface */
-    protected $passwordEncoder;
-    /** @var GeonamesConnector */
-    private $geonamesConnector;
+    /** @var \PDO */
+    protected $appboxConnection;
 
-    /**
-     * The default user setting values.
-     *
-     * @var array
-     */
-    private static $defaultUserSettings = array(
-        'view'                    => 'thumbs',
-        'images_per_page'         => '20',
-        'images_size'             => '120',
-        'editing_images_size'     => '134',
-        'editing_top_box'         => '180px',
-        'editing_right_box'       => '400px',
-        'editing_left_box'        => '710px',
-        'basket_sort_field'       => 'name',
-        'basket_sort_order'       => 'ASC',
-        'warning_on_delete_story' => 'true',
-        'client_basket_status'    => '1',
-        'css'                     => '000000',
-        'start_page_query'        => 'last',
-        'start_page'              => 'QUERY',
-        'rollover_thumbnail'      => 'caption',
-        'technical_display'       => '1',
-        'doctype_display'         => '1',
-        'bask_val_order'          => 'nat',
-        'basket_caption_display'  => '0',
-        'basket_status_display'   => '0',
-        'basket_title_display'    => '0'
-    );
-
-    public function __construct(PasswordEncoderInterface $passwordEncoder, GeonamesConnector $connector, ObjectManager $om, \appbox $appbox)
+    public function __construct(ObjectManager $om, \PDO $appboxConnection)
     {
-        $this->appbox = $appbox;
         $this->objectManager = $om;
-        $this->passwordEncoder = $passwordEncoder;
-        $this->geonamesConnector = $connector;
+        $this->appboxConnection = $appboxConnection;
     }
 
     /**
+     * Creates a new user.
+     *
      * @return User
      */
     public function create()
     {
-        $user = new User();
-
-        foreach(self::$defaultUserSettings as $name => $value) {
-            $setting = new UserSetting();
-            $setting->setName($name);
-            $setting->setValue($value);
-            $user->getSettings()->add($setting);
-        };
-
-        return $user;
+        return new User();
     }
 
     /**
-     * @{inheritdoc}
+     * Deletes an user.
+     *
+     * @param User $user
+     * @param type $flush
      */
-    public function delete(EntityInterface $user, $flush = true)
+    public function delete(User $user, $flush = true)
     {
-        $this->checkEntity($user);
-
         $user->setDeleted(true);
         $user->setEmail(null);
         $user->setLogin(sprintf('(#deleted_%s', $user->getLogin()));
 
-        $this->cleanRelations($user);
+        $this->cleanProperties($user);
+        $this->cleanRights($user);
 
         $this->objectManager->persist($user);
         if ($flush) {
@@ -105,68 +61,27 @@ class UserManager
     }
 
     /**
-     * @{inheritdoc}
-     */
-    public function update(EntityInterface $user, $flush = true)
-    {
-        $this->checkEntity($user);
-
-        $this->objectManager->persist($user);
-        if ($flush) {
-            $this->objectManager->flush();
-        }
-    }
-
-    /**
-     * Updates the modelOf field from the template field value.
-     *
-     * @param UserInterface $user
-     * @param UserInterface $template
-     */
-    public function onUpdateModel(User $user, User $template)
-    {
-        $user->setModelOf($template);
-        if (null !== $credential = $user->getFtpCredential()) {
-            $credential->resetCredentials();
-        }
-        $this->cleanSettings($user);
-        $user->reset();
-    }
-
-    /**
-     * Sets the given password.
-     *
-     * @param UserInterface $user
-     * @param password $password
-     */
-    public function onUpdatePassword(User $user, $password)
-    {
-        $user->setNonce(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
-        $user->setPassword($this->passwordEncoder->encodePassword($password, $user->getNonce()));
-    }
-
-    /**
-     * Updates the country fields for a user according to the current geoname id field value.
+     * Updates an user.
      *
      * @param User $user
+     * @param type $flush
      */
-    public function onUpdateGeonameId(User $user)
+    public function update(User $user, $flush = true)
     {
-        if (null === $user->getGeonameId()) {
-            return;
+        $this->objectManager->persist($user);
+        if ($flush) {
+            $this->objectManager->flush();
         }
+    }
 
-        try {
-            $country = $this->geonamesConnector
-                ->geoname($user->getGeonameId())
-                ->get('country');
-
-            if (isset($country['code'])) {
-                $user->setCountry($country['code']);
-            }
-        } catch (GeonamesExceptionInterface $e) {
-
-        }
+    /**
+     * Gets the object manager.
+     *
+     * @return ObjectManager
+     */
+    public function getObjectManager()
+    {
+        return $this->objectManager;
     }
 
     /**
@@ -174,16 +89,16 @@ class UserManager
      *
      * @param User $user
      */
-    public function cleanSettings(User $user)
+    private function cleanSettings(User $user)
     {
-        foreach($user->getNotificationSettings() as $userNotificatonSetting) {
-            $userNotificatonSetting->setUser(null);
+        foreach($user->getNotificationSettings() as $userNotificationSetting) {
+            $this->objectManager->remove($userNotificationSetting);
         }
 
         $user->getNotificationSettings()->clear();
 
         foreach($user->getSettings() as $userSetting) {
-            $userSetting->setUser(null);
+            $this->objectManager->remove($userSetting);
         }
 
         $user->getSettings()->clear();
@@ -194,55 +109,95 @@ class UserManager
      *
      * @param User $user
      */
-    public function cleanQueries(User $user)
+    private function cleanQueries(User $user)
     {
         foreach($user->getQueries() as $userQuery) {
-            $userQuery->setUser(null);
+            $this->objectManager->remove($userQuery);
         }
 
         $user->getQueries()->clear();
     }
 
     /**
-     * Removes all user's relations.
-     *
-     * @todo Removes order relationship, it is now a doctrine entity.
+     * Removes user ftp credentials.
      *
      * @param User $user
      */
-    private function cleanRelations(User $user)
+    private function cleanFtpCredentials(User $user)
     {
-        $conn = $this->appbox->get_connection();
-        foreach(array(
-            'basusr',
-            'sbasusr',
-            'edit_presets',
-            'ftp_export',
-            'order',
-            'sselnew',
-            'tokens',
-        ) as $table) {
-            $stmt = $conn->prepare('DELETE FROM `' .$table. '` WHERE usr_id = :usr_id');
-            $stmt->execute(array(':usr_id' => $user->getId()));
-            $stmt->closeCursor();
+        if (null !== $credential = $user->getFtpCredential()) {
+            $this->objectManager->remove($credential);
         }
-        unset($stmt);
-
-        $this->cleanSettings($user);
-        $this->cleanQueries($user);
     }
 
     /**
-     * Checks whether given entity is an User one.
+     * Removes user ftp export.
      *
-     * @param EntityInterface $entity
-     *
-     * @throws InvalidArgumentException If provided entity is not an User one.
+     * @param User $user
      */
-    private function checkEntity(EntityInterface $entity)
+    private function cleanFtpExports(User $user)
     {
-        if (!$entity instanceof User) {
-            throw new InvalidArgumentException(sprintf('Entity of type `%s` should be a `Entities\User` entity.', get_class($entity)));
+       $elements = $this->objectManager->getRepository('Entities\FtpExport')
+               ->findBy(array('usrId' => $user->getId()));
+
+       foreach($elements as $element) {
+           $this->objectManager->remove($element);
+       }
+    }
+
+    /**
+     * Removes user orders.
+     *
+     * @param User $user
+     */
+    private function cleanOrders(User $user)
+    {
+       $orders = $this->objectManager->getRepository('Entities\Order')
+               ->findBy(array('usrId' => $user->getId()));
+
+       foreach($orders as $order) {
+           $this->objectManager->remove($order);
+       }
+    }
+
+    /**
+     * Removes all user's properties.
+     *
+     * @param User $user
+     */
+    private function cleanProperties(User $user)
+    {
+        foreach(array(
+            'edit_presets',
+            'sselnew',
+            'tokens',
+        ) as $table) {
+            $stmt = $this->appboxConnection->prepare('DELETE FROM `' .$table. '` WHERE usr_id = :usr_id');
+            $stmt->execute(array(':usr_id' => $user->getId()));
+            $stmt->closeCursor();
+        }
+
+        $this->cleanSettings($user);
+        $this->cleanQueries($user);
+        $this->cleanFtpCredentials($user);
+        $this->cleanOrders($user);
+        $this->cleanFtpExports($user);
+    }
+
+    /**
+     * Removes all user's rights.
+     *
+     * @param User $user
+     */
+    private function cleanRights(User $user)
+    {
+        foreach(array(
+            'basusr',
+            'sbasusr',
+        ) as $table) {
+            $stmt = $this->appboxConnection->prepare('DELETE FROM `' .$table. '` WHERE usr_id = :usr_id');
+            $stmt->execute(array(':usr_id' => $user->getId()));
+            $stmt->closeCursor();
         }
     }
 }

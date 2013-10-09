@@ -12,12 +12,14 @@
 namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Geonames\Connector as GeonamesConnector;
+use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\Common\Persistence\ObjectManager;
 use Entities\User;
 use Repositories\UserRepository;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 /**
  * Manages common operations for the users.
@@ -26,16 +28,16 @@ class UserManipulator implements ManipulatorInterface
 {
     /** @var UserManager */
     private $manager;
-    /** @var UserRepository */
-    private $repository;
-    /** @var ObjectManager */
-    private $om;
+    /** @var PasswordEncoderInterface */
+    protected $passwordEncoder;
+    /** @var GeonamesConnector */
+    private $geonamesConnector;
 
-    public function __construct(UserManager $manager, ObjectManager $om)
+    public function __construct(UserManager $manager, PasswordEncoderInterface $passwordEncoder, GeonamesConnector $connector)
     {
         $this->manager = $manager;
-        $this->om = $om;
-        $this->repository = $om->getRepository('Entities\User');
+        $this->passwordEncoder = $passwordEncoder;
+        $this->geonamesConnector = $connector;
     }
 
     /**
@@ -43,7 +45,7 @@ class UserManipulator implements ManipulatorInterface
      */
     public function getRepository()
     {
-        return $this->repository;
+        return $this->manager->getObjectManager()->getRepository('Entities\User');
     }
 
     /**
@@ -56,50 +58,16 @@ class UserManipulator implements ManipulatorInterface
      *
      * @return User
      *
-     * @throws InvalidArgumentException if login, email or password is not valid.
+     * @throws InvalidArgumentException if login or email is not valid.
      * @throws RuntimeException if login or email already exists.
      */
     public function createUser($login, $password, $email = null, $admin = false)
     {
         $user = $this->manager->create();
-        $this->setLogin($user, $login);
-        $this->setEmail($user, $email);
-        $this->setPassword($user, $password);
+        $this->doSetLogin($user, $login);
+        $this->doSetEmail($user, $email);
+        $this->doSetPassword($user, $password);
         $user->setAdmin($admin);
-        $this->manager->update($user);
-
-        return $user;
-    }
-
-    /**
-     * Creates a guest user and returns it.
-     *
-     * @return User
-     *
-     * @throws RuntimeException if guest already exists.
-     */
-    public function createGuest()
-    {
-        $user = $this->manager->create();
-        $this->setLogin($user, User::USER_GUEST);
-        $this->setPassword($user, substr(uniqid ('', true), -6));
-        $this->manager->update($user);
-
-        return $user;
-    }
-
-    /**
-     * Creates an auto register user and returns it.
-     *
-     * @return User
-     *
-     * @throws RuntimeException if autoregister already exists.
-     */
-    public function createAutoRegister()
-    {
-        $user = $this->manager->create();
-        $this->setLogin($user, User::USER_AUTOREGISTER);
-        $this->setPassword($user, substr(uniqid ('', true), -6));
         $this->manager->update($user);
 
         return $user;
@@ -108,99 +76,69 @@ class UserManipulator implements ManipulatorInterface
     /**
      * Creates a template user and returns it.
      *
-     * @param string $name
-     * @param User $template
+     * @param string $login
+     * @param User   $owner
      *
-     * @return User
+     * @return User The template
      *
-     * @throws InvalidArgumentException if name is not valid.
-     * @throws RuntimeException if name already exists.
+     * @throws InvalidArgumentException if login is not valid.
+     * @throws RuntimeException if login already exists.
      */
-    public function createTemplate($name, User $template)
+    public function createTemplate($login, User $owner)
     {
         $user = $this->manager->create();
-        $this->setLogin($user, $name);
-        $this->setPassword($user, substr(uniqid ('', true), -6));
-        $this->setModelOf($user, $template);
+        $this->doSetLogin($user, $login);
+        $user->setModelOf($owner);
         $this->manager->update($user);
 
         return $user;
     }
 
     /**
-     * Sets the password for the given user.
+     * Sets the password for an user.
      *
-     * @param user $user
+     * @param user   $user
      * @param string $password
-     *
-     * @throws InvalidArgumentException if password is not valid.
      */
     public function setPassword(User $user, $password)
     {
-        if (trim($password) === '') {
-            throw new InvalidArgumentException('Invalid password.');
-        }
-
-        $this->manager->onUpdatePassword($user, $password);
+        $this->doSetPassword($user, $password);
+        $this->manager->update($user);
     }
 
     /**
-     * Sets the template for the given user.
+     * Sets the geonameid for an user.
      *
-     * @param User $user
-     * @param User $template
-     *
-     * @throws InvalidArgumentException if user and template are the same.
-     */
-    public function setModelOf(User $user, User $template)
-    {
-        if ($user->getLogin() === $template->getLogin()) {
-            throw new InvalidArgumentException(sprintf('Can not set same user %s as template.', $user->getLogin()));
-        }
-
-        $this->manager->onUpdateModel($user, $template);
-    }
-
-    /**
-     * Sets the geonameid for the given user.
-     *
-     * @param User $user
+     * @param User    $user
      * @param integer $geonameid
      *
      * @throws InvalidArgumentException if geonameid is not valid.
      */
     public function setGeonameId(User $user, $geonameid)
     {
-        $user->setGeonameId($geonameid);
-        $this->manager->onUpdateGeonameId($user);
+        if (null === $geonameid) {
+            return;
+        }
+
+        try {
+            $country = $this->geonamesConnector->geoname($geonameid)->get('country');
+
+            $user->setGeonameId($geonameid);
+
+            if (isset($country['code'])) {
+                $user->setCountry($country['code']);
+            }
+        } catch (GeonamesExceptionInterface $e) {
+            $user->setCountry(null);
+        }
+
+        $this->manager->update($user);
     }
 
     /**
-     * Sets the login for the given user.
+     * Sets email for an user.
      *
-     * @param User $user
-     * @param sring $login
-     *
-     * @throws InvalidArgumentException if login is not valid.
-     * @throws RuntimeException if login already exists.
-     */
-    public function setLogin(User $user, $login)
-    {
-        if (trim($login) === '') {
-            throw new InvalidArgumentException('Invalid login.');
-        }
-
-        if (null !== $this->repository->findByLogin($login)) {
-            throw new RuntimeException(sprintf('User with login %s already exists.', $login));
-        }
-
-        $user->setLogin($login);
-    }
-
-    /**
-     * Sets email for given user.
-     *
-     * @param User $user
+     * @param User   $user
      * @param string $email
      *
      * @throws InvalidArgumentException if email is not valid or already exists.
@@ -208,11 +146,82 @@ class UserManipulator implements ManipulatorInterface
      */
     public function setEmail(User $user, $email)
     {
-        if (null !== $email && !preg_match('/.+@.+\..+/', trim($email))) {
-            throw new InvalidArgumentException('Invalid email.');
+        $this->doSetEmail($user, $email);
+        $this->manager->update($user);
+    }
+
+    /**
+     * Promotes users.
+     *
+     * @param User|User[] $users
+     */
+    public function promote($users)
+    {
+        foreach ($this->makeTraversable($users) as $user) {
+            $user->setAdmin(true);
+            $this->manager->update($user);
+        }
+    }
+
+    /**
+     * Demotes users.
+     *
+     * @param User|User[] $users
+     */
+    public function demote($users)
+    {
+        foreach ($this->makeTraversable($users) as $user) {
+            $user->setAdmin(false);
+            $this->manager->update($user);
+        }
+    }
+
+    /**
+     * Sets the password for an user.
+     *
+     * @param user   $user
+     * @param string $password
+     */
+    private function doSetPassword(User $user, $password)
+    {
+        $user->setNonce(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
+        $user->setPassword($this->passwordEncoder->encodePassword($password, $user->getNonce()));
+    }
+
+    /**
+     * Sets the login for an user.
+     *
+     * @param User  $user
+     * @param sring $login
+     *
+     * @throws InvalidArgumentException if login is not valid.
+     * @throws RuntimeException if login already exists.
+     */
+    private function doSetLogin(User $user, $login)
+    {
+        if (null !== $this->getRepository()->findByLogin($login)) {
+            throw new RuntimeException(sprintf('User with login %s already exists.', $login));
         }
 
-        if (null !== $this->repository->findByEmail($email)) {
+        $user->setLogin($login);
+    }
+
+    /**
+     * Sets email for an user.
+     *
+     * @param User   $user
+     * @param string $email
+     *
+     * @throws InvalidArgumentException if email is not valid or already exists.
+     * @throws RuntimeException if email already exists.
+     */
+    private function doSetEmail(User $user, $email)
+    {
+        if (null !== $email && false === (Boolean) \Swift_Validate::email($email)) {
+            throw new InvalidArgumentException(sprintf('Email %s is not legal.', $email));
+        }
+
+        if (null !== $this->getRepository()->findByEmail($email)) {
             throw new RuntimeException(sprintf('User with email %s already exists.', $email));
         }
 
@@ -220,56 +229,18 @@ class UserManipulator implements ManipulatorInterface
     }
 
     /**
-     * Promotes the given users.
+     * Makes given variable traversable.
      *
-     * @param User|array $user
+     * @param mixed $var
+     *
+     * @return array
      */
-    public function promote($users)
+    private function makeTraversable($var)
     {
-        if (!is_array($users)) {
-            $users = array($users);
+        if (!is_array($var) && !$var instanceof \Traversable) {
+            return array($var);
         }
 
-        foreach ($users as $user) {
-            $this->doPromoteUser($user);
-        }
-    }
-
-    /**
-     * Demotes the given users.
-     *
-     * @param User|array $users
-     */
-    public function demote($users)
-    {
-        if (!is_array($users)) {
-            $users = array($users);
-        }
-
-        foreach ($users as $user) {
-            $this->doDemoteUser($user);
-        }
-    }
-
-    /**
-     * Promove given user.
-     *
-     * @param User $user
-     */
-    private function doDemoteUser(User $user)
-    {
-        $user->setAdmin(false);
-        $this->manager->update($user);
-    }
-
-    /**
-     * Demotes given user.
-     *
-     * @param User $user
-     */
-    private function doPromoteUser(User $user)
-    {
-        $user->setAdmin(true);
-        $this->manager->update($user);
+        return $var;
     }
 }

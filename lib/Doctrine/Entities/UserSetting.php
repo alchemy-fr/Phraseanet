@@ -33,7 +33,7 @@ class UserSetting
     private $id;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", name="usr_id")
      */
     private $usrId;
 

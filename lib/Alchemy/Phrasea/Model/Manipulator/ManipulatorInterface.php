@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityRepository;
 interface ManipulatorInterface
 {
     /**
-     * Returns the entitiy repository.
+     * Returns the entity repository.
      * 
      * @return EntityRepository
      */

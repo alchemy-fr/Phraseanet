@@ -20,12 +20,12 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['model.user-manipulator'] = $app->share(function($app) {
-            return new UserManipulator($app['model.user-manager'], $app['EM']);
+        $app['manipulator.user'] = $app->share(function($app) {
+            return new UserManipulator($app['model.user-manager'], $app['auth.password-encoder'], $app['geonames.connector']);
         });
 
         $app['model.user-manager'] = $app->share(function($app) {
-            return new UserManager($app['auth.password-encoder'], $app['geonames.connector'], $app['EM'], $app['phraseanet.appbox']);
+            return new UserManager($app['EM'], $app['phraseanet.appbox']->get_connection());
         });
     }
 

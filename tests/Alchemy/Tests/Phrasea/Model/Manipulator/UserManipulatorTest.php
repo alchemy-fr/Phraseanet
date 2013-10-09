@@ -13,51 +13,38 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Entities\User;
 
 class UserManipulatorTest extends \PhraseanetPHPUnitAbstract
 {
     public function testCreateUser()
     {
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'pass');
-        $this->assertInstanceOf('\Entities\User', self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin('login'));
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'pass');
+        $this->assertInstanceOf('\Entities\User', self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login'));
     }
-    
+
     public function testCreateAdminUser()
     {
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'pass', 'admin@admin.com', true);
-        $user = self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin('login');
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'pass', 'admin@admin.com', true);
+        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
         $this->assertTrue($user->isAdmin());
         $this->assertNotNull($user->getEmail());
     }
-    
-    public function testCreateGuest()
-    {
-        $user = self::$DI['app']['model.user-manipulator']->createGuest();
-        $user = self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin(User::USER_GUEST);
-        $this->assertTrue($user->isSpecial());
-    }
-    
-    public function testCreateAutoRegister()
-    {
-        $user = self::$DI['app']['model.user-manipulator']->createAutoRegister();
-        $user = self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin(User::USER_AUTOREGISTER);
-        $this->assertTrue($user->isSpecial());
-    }
-    
+
     public function testCreateTemplate()
     {
-        $template = self::$DI['app']['model.user-manipulator']->createUser('login', 'pass');
-        $user = self::$DI['app']['model.user-manipulator']->createTemplate('test', $template);
-        $user = self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin('test');
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'pass');
+        $template = self::$DI['app']['manipulator.user']->createTemplate('test', $user);
+        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('test');
         $this->assertTrue($user->isTemplate());
     }
-    
+
     public function testSetPassword()
     {
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
         $curPassword = $user->getPassword();
-        self::$DI['app']['model.user-manipulator']->setPassword($user, 'toto');
+        self::$DI['app']['manipulator.user']->setPassword($user, 'toto');
         $this->assertNotEquals($curPassword, $user->getPassword());
     }
 
@@ -67,11 +54,29 @@ class UserManipulatorTest extends \PhraseanetPHPUnitAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        $manager->expects($this->once())
-                ->method('onUpdateGeonameId');
+        $geoname = $this->getMockBuilder('Alchemy\Geonames\Geoname')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
-        $manipulator = new UserManipulator($manager, self::$DI['app']['EM']);
+        $geoname->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('country'))
+            ->will($this->returnValue(array('code' => 'fr')));
+
+        $geonamesConnector = $this->getMockBuilder('Alchemy\Geonames\Connector')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $geonamesConnector->expects($this->once())
+            ->method('geoname')
+            ->with($this->equalTo(4))
+            ->will($this->returnValue($geoname));
+
+        $passwordInterface = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface')
+            ->getMock();
+
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
+        $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector);
 
         $manipulator->setGeonameId($user, 4);
         $this->assertEquals(4, $user->getGeonameId());
@@ -79,56 +84,65 @@ class UserManipulatorTest extends \PhraseanetPHPUnitAbstract
 
     public function testPromote()
     {
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'toto');
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'toto');
         $this->assertFalse($user->isAdmin());
-        $user2 = self::$DI['app']['model.user-manipulator']->createUser('login2', 'toto');
+        $user2 = self::$DI['app']['manipulator.user']->createUser('login2', 'toto');
         $this->assertFalse($user2->isAdmin());
-        self::$DI['app']['model.user-manipulator']->promote(array($user, $user2));
-        $user = self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin('login');
+        self::$DI['app']['manipulator.user']->promote(array($user, $user2));
+        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
         $this->assertTrue($user->isAdmin());
-        $user2 = self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin('login');
+        $user2 = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
         $this->assertTrue($user2->isAdmin());
     }
 
     public function testDemote()
     {
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'toto', null, true);
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'toto', null, true);
         $this->assertTrue($user->isAdmin());
-        self::$DI['app']['model.user-manipulator']->demote($user);
-        $user = self::$DI['app']['model.user-manipulator']->getRepository()->findOneByLogin('login');
+        self::$DI['app']['manipulator.user']->demote($user);
+        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
         $this->assertFalse($user->isAdmin());
-    }
-
-    public function testSetLogin()
-    {
-        self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login2', 'password');
-
-        $this->setExpectedException(
-            'Alchemy\Phrasea\Exception\RuntimeException',
-            'User with login login already exists.'
-        );
-        self::$DI['app']['model.user-manipulator']->setLogin($user, 'login');
     }
 
     public function testSetEmail()
     {
-        self::$DI['app']['model.user-manipulator']->createUser('login', 'password', 'test@test.fr');
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login2', 'password', 'test2@test.fr');
+        self::$DI['app']['manipulator.user']->createUser('login', 'password', 'test@test.fr');
+        $user = self::$DI['app']['manipulator.user']->createUser('login2', 'password', 'test2@test.fr');
         $this->setExpectedException(
             'Alchemy\Phrasea\Exception\RuntimeException',
             'User with email test@test.fr already exists.'
         );
-        self::$DI['app']['model.user-manipulator']->setEmail($user, 'test@test.fr');
+        self::$DI['app']['manipulator.user']->setEmail($user, 'test@test.fr');
     }
-    
+
     public function testInvalidGeonamedId()
     {
         $manager = $this->getMockBuilder('Alchemy\Phrasea\Model\Manager\UserManager')
             ->disableOriginalConstructor()
             ->getMock();
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
-        $manipulator = new UserManipulator($manager, self::$DI['app']['EM']);
+
+        $geoname = $this->getMockBuilder('Alchemy\Geonames\Geoname')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $geoname->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('country'))
+            ->will($this->returnValue(array('code' => 'fr')));
+
+        $geonamesConnector = $this->getMockBuilder('Alchemy\Geonames\Connector')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $geonamesConnector->expects($this->once())
+            ->method('geoname')
+            ->with($this->equalTo(-1))
+            ->will($this->returnValue($geoname));
+
+        $passwordInterface = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface')
+            ->getMock();
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
+        $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector);
         $this->setExpectedException(
             'Alchemy\Phrasea\Exception\InvalidArgumentException',
             'Invalid geonameid -1.'
@@ -136,42 +150,24 @@ class UserManipulatorTest extends \PhraseanetPHPUnitAbstract
         $manipulator->setGeonameId($user, -1);
     }
 
-    public function testInvalidLogin()
-    {
-        self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login2', 'password');
-        $this->setExpectedException(
-            'Alchemy\Phrasea\Exception\InvalidArgumentException',
-            'Invalid login.'
-        );
-        self::$DI['app']['model.user-manipulator']->setLogin($user, '');
-    }
-
     public function testInvalidEmail()
     {
-        self::$DI['app']['model.user-manipulator']->createUser('login', 'password', 'test@test.fr');
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login2', 'password', 'test2@test.fr');
+        self::$DI['app']['manipulator.user']->createUser('login', 'password', 'test@test.fr');
+        $user = self::$DI['app']['manipulator.user']->createUser('login2', 'password', 'test2@test.fr');
         $this->setExpectedException(
             'Alchemy\Phrasea\Exception\InvalidArgumentException',
-            'Invalid email.'
+            'Email testtest.fr is not legal.'
         );
-        self::$DI['app']['model.user-manipulator']->setEmail($user, 'testtest.fr');
+        self::$DI['app']['manipulator.user']->setEmail($user, 'testtest.fr');
     }
-    
-    public function testInvalidPassword()
-    {
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
-        $this->setExpectedException(
-            'Alchemy\Phrasea\Exception\InvalidArgumentException',
-            'Invalid password.'
-        );
-        self::$DI['app']['model.user-manipulator']->setPassword($user, '');
-    }
-    
+
     public function testInvalidSetModelOf()
     {
-        $user = self::$DI['app']['model.user-manipulator']->createUser('login', 'password');
-        $this->setExpectedException('Alchemy\Phrasea\Exception\InvalidArgumentException');
-        self::$DI['app']['model.user-manipulator']->setModelOf($user, $user);
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
+        $this->setExpectedException(
+            'Alchemy\Phrasea\Exception\RuntimeException',
+            'User with login login already exists.'
+        );
+        self::$DI['app']['manipulator.user']->createTemplate('login', $user);
     }
 }
