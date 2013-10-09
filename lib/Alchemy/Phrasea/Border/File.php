@@ -143,6 +143,7 @@ class File
              * PHPExiftool throws exception on some files not supported
              */
             try {
+                $this->app['exiftool.writer']->reset();
                 $this->app['exiftool.writer']->write($this->getFile()->getRealPath(), $metadatas);
             } catch (PHPExiftoolException $e) {
 
