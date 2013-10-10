@@ -925,6 +925,29 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     }
 
     /**
+     * @dataProvider provideAvailableSearchMethods
+     */
+    public function testRecordsSearchRouteWithQuery($method)
+    {
+        $this->setToken(self::$token);
+        self::$DI['app']['phraseanet.SE'] = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
+        self::$DI['app']['phraseanet.SE']->expects($this->once())
+                ->method('query')
+                ->with('koala', 0, 10)
+                ->will($this->returnValue(
+                    $this->getMockBuilder('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
+                        ->disableOriginalConstructor()
+                        ->getMock()
+                ));
+        $crawler = self::$DI['client']->request($method, '/api/v1/records/search/', $this->getParameters(array('query' => 'koala')), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+    }
+
+    public function provideAvailableSearchMethods()
+    {
+        return array(array('POST'), array('GET'));
+    }
+
+    /**
      * @covers \API_V1_adapter::caption_records
      */
     public function testRecordsCaptionRoute()

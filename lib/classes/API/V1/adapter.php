@@ -890,7 +890,7 @@ class API_V1_adapter extends API_V1_Abstract
         $offsetStart = (int) ($request->get('offset_start') ? : 0);
         $perPage = (int) $request->get('per_page') ? : 10;
 
-        $query = (string) $request->request->get('query');
+        $query = (string) $request->get('query');
 
         $this->app['phraseanet.SE']->setOptions($options);
         $this->app['phraseanet.SE']->resetCache();
