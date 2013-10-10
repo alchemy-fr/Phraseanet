@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8f2b9cc38d641ce5a30b779388b27465",
+    "hash": "124ab6242ad1fcd84b9f3c991bc8b079",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -2614,16 +2614,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.3.5",
+            "version": "2.3.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "aa5626cd2a359567c948ebdeeca68d948640302f"
+                "reference": "e01461df62d4abdb0a44859e91e98ee7416420a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/aa5626cd2a359567c948ebdeeca68d948640302f",
-                "reference": "aa5626cd2a359567c948ebdeeca68d948640302f",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/e01461df62d4abdb0a44859e91e98ee7416420a2",
+                "reference": "e01461df62d4abdb0a44859e91e98ee7416420a2",
                 "shasum": ""
             },
             "require": {
@@ -2718,7 +2718,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-09-27 07:31:40"
+            "time": "2013-10-10 06:15:46"
         },
         {
             "name": "tecnick.com/tcpdf",
@@ -3902,6 +3902,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "imagine/imagine": 20,
+        "symfony/symfony": 20,
         "doctrine/data-fixtures": 20
     },
     "platform": {
