@@ -33,7 +33,7 @@ class SearchEngineSuggestion
     {
         $this->query = $query;
         $this->suggestion = $suggestion;
-        $this->hits = (int) $hits;
+        $this->hits = null !== $hits ? (int) $hits : null;
     }
 
     /**
@@ -66,4 +66,16 @@ class SearchEngineSuggestion
         return $this->hits;
     }
 
+    /**
+     * Returns the suggestion as an array representation.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return array(
+            'query' => $this->getSuggestion(),
+            'hits'  => $this->getHits(),
+        );
+    }
 }

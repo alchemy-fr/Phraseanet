@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
@@ -916,7 +917,9 @@ class API_V1_adapter extends API_V1_Abstract
             'warning'           => $search_result->getWarning(),
             'query_time'        => $search_result->getDuration(),
             'search_indexes'    => $search_result->getIndexes(),
-            'suggestions'       => $search_result->getSuggestions()->toArray(),
+            'suggestions'       => array_map(function (SearchEngineSuggestion $suggestion) {
+                return $suggestion->toArray();
+            }, $search_result->getSuggestions()->toArray()),
             'results'           => array(),
             'query'             => $search_result->getQuery(),
         );
