@@ -229,12 +229,9 @@ class ArchiveJob extends AbstractJob
         }
     }
 
-
     private function listFilesPhase1(Application $app, \DOMDocument $dom, \DomElement $node, $path, $server_coll_id, $depth, &$TColls)
     {
         $nnew = 0;
-
-        $listFolder = new CListFolder($path);
 
         if (false !== $sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) {
 
@@ -260,7 +257,7 @@ class ArchiveJob extends AbstractJob
             $node->setAttribute('pxml', '1');
         }
 
-        while (null !== $file = $listFolder->read()) {
+        foreach ($this->listFolder($path) as $file) {
             if (!$this->isStarted()) {
                 break;
             }
@@ -299,8 +296,6 @@ class ArchiveJob extends AbstractJob
     {
         $nnew = 0;
 
-        $listFolder = new CListFolder($path);
-
         $xp = new \DOMXPath($dom);
 
         if (false !== $sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) {
@@ -315,7 +310,7 @@ class ArchiveJob extends AbstractJob
             }
         }
 
-        while (null !== $file = $listFolder->read()) {
+        foreach ($this->listFolder($path) as $file) {
             if (!$this->isStarted()) {
                 break;
             }
@@ -360,7 +355,6 @@ class ArchiveJob extends AbstractJob
 
         return $nnew;
     }
-
 
     private function makePairs(\DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, $inGrp, $depth, &$tmask, $tmaskgrp)
     {
@@ -486,8 +480,6 @@ class ArchiveJob extends AbstractJob
         }
     }
 
-
-
     private function removeBadGroups(Application $app, \DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, $depth, $moveError)
     {
         $ret = false;
@@ -555,9 +547,6 @@ class ArchiveJob extends AbstractJob
             $n->parentNode->removeChild($n);
         }
     }
-
-
-
 
     private function archive(Application $app, \databox $databox, \DOMDOcument $dom, \DOMElement $node, $path, $path_archived, $path_error, $depth, $moveError, $moveArchived, $stat0, $stat1)
     {
@@ -792,7 +781,6 @@ class ArchiveJob extends AbstractJob
         return;
     }
 
-
     protected function isIgnoredFile($f)
     {
         $f = strtolower($f);
@@ -977,15 +965,6 @@ class ArchiveJob extends AbstractJob
 
         return;
     }
-
-
-
-
-
-
-
-
-
 
     public function createStory(Application $app, \collection $collection, $pathfile, $captionFile, $stat0, $stat1)
     {
@@ -1446,52 +1425,18 @@ class ArchiveJob extends AbstractJob
 
         return null;
     }
-}
 
-
-class CListFolder
-{
-    /**
-     *
-     * @var Array
-     */
-    protected $list;
-
-    /**
-     *
-     * @param string  $path
-     * @param boolean $sorted
-     */
-    public function __construct($path, $sorted = true)
+    private function listFolder($path)
     {
-        $this->list = array();
+        $list = array();
         if ($hdir = opendir($path)) {
             while (false !== $file = readdir($hdir)) {
-                $this->list[] = $file;
+                $list[] = $file;
             }
             closedir($hdir);
-            if ($sorted) {
-                natcasesort($this->list);
-            }
+            natcasesort($list);
         }
-    }
 
-    /**
-     * Destructor
-     *
-     */
-    public function __destruct()
-    {
-        unset($this->list);
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function read()
-    {
-        return array_shift($this->list);
+        return $list;
     }
 }
-

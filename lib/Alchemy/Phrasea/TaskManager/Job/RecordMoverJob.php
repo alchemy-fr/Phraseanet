@@ -227,11 +227,6 @@ class RecordMoverJob extends AbstractJob
         return $ret;
     }
 
-
-
-
-
-
     private function calcUPDATE(Application $app, $sbas_id, &$sxtask, $playTest)
     {
         $tws = array(); // NEGATION of updates, used to build the 'test' sql
@@ -350,7 +345,6 @@ class RecordMoverJob extends AbstractJob
 
         return $result;
     }
-
 
     private function calcWhere(Application $app, $sbas_id, &$sxtask)
     {

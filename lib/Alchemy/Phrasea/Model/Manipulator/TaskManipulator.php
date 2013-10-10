@@ -74,10 +74,10 @@ class TaskManipulator implements ManipulatorInterface
             ->setSettings($settings->asXML())
             ->setPeriod($job->getEditor()->getDefaultPeriod());
 
-        $this->notifier->notify(Notifier::MESSAGE_CREATE);
-
         $this->om->persist($task);
         $this->om->flush();
+
+        $this->notifier->notify(Notifier::MESSAGE_CREATE);
 
         return $task;
     }

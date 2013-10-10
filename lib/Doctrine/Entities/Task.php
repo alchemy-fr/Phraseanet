@@ -241,7 +241,7 @@ class Task
     }
 
     /**
-     * Set task whter single run or not (run once and die).
+     * Set task whether single run or not (run once and die).
      *
      * @param $singleRun
      * @return Task

@@ -99,8 +99,8 @@ class patch_3908 implements patchInterface
             case 'cindexer':
                 $name = 'PhraseanetIndexer';
                 break;
-            case 'task_period_emptyColl':
-            case 'emptyColl':
+            case 'task_period_emptycoll':
+            case 'emptycoll':
                 $name = 'EmptyCollection';
                 break;
             case 'task_period_ftp':
