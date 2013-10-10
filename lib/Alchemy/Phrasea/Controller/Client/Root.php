@@ -148,7 +148,7 @@ class Root implements ControllerProviderInterface
             $currentPage = 1;
         }
 
-        $result = $app['phraseanet.SE']->query($query, $currentPage, $perPage);
+        $result = $app['phraseanet.SE']->query($query, ($currentPage - 1) * $perPage, $perPage);
 
         foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function(\collection $collection) {
