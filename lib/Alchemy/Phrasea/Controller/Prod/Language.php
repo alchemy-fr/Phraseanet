@@ -85,6 +85,7 @@ class Language implements ControllerProviderInterface
             $out['FeedBackName'] = _('Name');
             $out['FeedBackMessage'] = _('Message');
             $out['FeedBackDuration'] = _('Time for feedback (days)');
+            $out['FeedBackNameMandatory'] = _('Please provide a name for this selection.');
             $out['send'] = _('Send');
             $out['Recept'] = _('Accuse de reception');
             $out['nFieldsChanged'] = _('%d fields have been updated');
