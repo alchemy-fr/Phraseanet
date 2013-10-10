@@ -217,6 +217,14 @@ define([
                 it("should render as a DIV element", function() {
                     this.view.render().el.nodeName.should.equal("DIV");
                 });
+
+                it("should render an error message if provided tag is empty", function() {
+                   var view =  this.view.render();
+
+                    view.$('input#tag').val("").blur();
+
+                    assert.isTrue(view.$('input#tag').closest(".control-group").hasClass("error"));
+                });
             });
 
             describe("FieldError Views", function() {
