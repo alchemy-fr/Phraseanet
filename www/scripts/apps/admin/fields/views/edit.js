@@ -125,8 +125,8 @@ define([
             var fieldTag = $(e.target);
             var fieldTagId = fieldTag.attr("id");
             var fieldTagValue = fieldTag.val();
+            var notValid = "" === fieldTagValue;
 
-            var notValid = "" !== fieldTagValue;
             // check for format tag
             if (notValid) {
                 fieldTag
