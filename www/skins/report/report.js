@@ -962,8 +962,6 @@ function arrow(form) {
 function page(form, lim, array_val) {
     var current_lim = form.find("input[name=limit]").val();
 
-    console.log(form);
-
     if (current_lim < 1 || Math.floor(current_lim).toString() != current_lim.toString()) {
         current_lim = 30;
         form.find("input[name=limit]").attr("value", current_lim);
