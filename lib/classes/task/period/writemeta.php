@@ -301,9 +301,10 @@ class task_period_writemeta extends task_databoxAbstract
             );
         }
 
+        $this->dependencyContainer['exiftool.writer']->reset();
         foreach ($tsub as $name => $file) {
 
-            $this->dependencyContainer['exiftool.writer']->erase($name != 'document' || $this->clear_doc);
+            $this->dependencyContainer['exiftool.writer']->erase($name != 'document' || $this->clear_doc, true);
 
             try {
                 $this->dependencyContainer['exiftool.writer']->write($file, $metadatas);

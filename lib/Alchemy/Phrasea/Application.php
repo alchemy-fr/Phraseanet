@@ -560,10 +560,14 @@ class Application extends SilexApplication
                 if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
                     $paths[] = $app['root.path'] . '/config/templates/mobile';
                     $paths[] = $app['root.path'] . '/templates/mobile';
+                    $paths['phraseanet'] = $app['root.path'] . '/config/templates/mobile';
+                    $paths['phraseanet'] = $app['root.path'] . '/templates/mobile';
                 }
 
                 $paths[] = $app['root.path'] . '/config/templates/web';
                 $paths[] = $app['root.path'] . '/templates/web';
+                $paths['phraseanet'] = $app['root.path'] . '/config/templates/web';
+                $paths['phraseanet'] = $app['root.path'] . '/templates/web';
 
                 foreach ($paths as $namespace => $path) {
                     if (!is_int($namespace)) {
