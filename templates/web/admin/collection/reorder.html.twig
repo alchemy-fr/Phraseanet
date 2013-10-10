@@ -6,7 +6,7 @@
     <tr>
         <td valign="center" align="center">
              <select size=16 name="coll-order" id="coll-order" style="width:140px;">
-                 {% for collection in databox.get_collections() %}
+                 {% for collection in collections %}
                      <option value="{{ collection.get_base_id() }}"> {{ collection.get_name() }}</option>
                  {% endfor %}
              </select>
@@ -35,6 +35,11 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+        var offsets = [
+            {% for collection in collections %}
+                {% if not loop.first %},{% endif %} {{ collection.get_ord() }}
+            {% endfor %}
+        ];
         var select =  $("#coll-order");
         var upButton = $('#upbutton');
         var downButton = $('#downbutton');
@@ -63,9 +68,11 @@
         applyButton.bind('click', function() {
             var $this = $(this);
             var order = [];
+            // clone the array
+            var appliedoffsets = offsets.slice(0);
 
             select.find('option').each(function(i, option){
-                order[i] = {id: $(this).val(), name: $(this).text()};
+                order.push({id: $(this).val(), offset: appliedoffsets.shift()});
             });
 
             $.ajax({
