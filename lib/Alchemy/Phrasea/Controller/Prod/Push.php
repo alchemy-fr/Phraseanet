@@ -157,12 +157,7 @@ class Push implements ControllerProviderInterface
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $push_name = $request->request->get('name');
-
-                if (trim($push_name) === '') {
-                    $push_name = sprintf(_('Push from %s'), $app['authentication']->getUser()->get_display_name());
-                }
-
+                $push_name = $request->request->get('name', sprintf(_('Push from %s'), $app['authentication']->getUser()->get_display_name()));
                 $push_description = $request->request->get('push_description');
 
                 $receivers = $request->request->get('participants');
@@ -281,12 +276,7 @@ class Push implements ControllerProviderInterface
 
                 $repository = $app['EM']->getRepository('\Entities\Basket');
 
-                $validation_name = $request->request->get('name');
-
-                if (trim($validation_name) === '') {
-                    $validation_name = sprintf(_('Validation from %s'), $app['authentication']->getUser()->get_display_name());
-                }
-
+                $validation_name = $request->request->get('name', sprintf(_('Validation from %s'), $app['authentication']->getUser()->get_display_name()));
                 $validation_description = $request->request->get('validation_description');
 
                 $participants = $request->request->get('participants');
