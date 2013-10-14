@@ -161,6 +161,13 @@ class task_manager
         if (!in_array($status, $av_status))
             throw new Exception(sprintf('unknown status `%s` ', $status));
 
+        if ($status == self::STATE_TOSTOP && function_exists('posix_kill')) {
+            $gs = $this->getSchedulerState();
+            if ($gs['pid'] !== NULL) {
+                @posix_kill($gs['pid'], 2);     // 2 = SIGINT
+            }
+        }
+
         $sql = "UPDATE sitepreff SET schedstatus = :schedstatus, schedqtime=NOW()";
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':schedstatus' => $status));

@@ -34,11 +34,15 @@ class task_Scheduler
     private $method;
     private $dependencyContainer;
 
+    private $schedstatus;
+
     public function __construct(Application $application, Logger $logger)
     {
         declare(ticks = 1);
         $this->dependencyContainer = $application;
         $this->logger = $logger;
+
+        $this->schedstatus = '';
     }
 
     protected function log($message)
@@ -54,10 +58,21 @@ class task_Scheduler
      */
     public function sigHandler($signal)
     {
-        $status = null;
-        $pid = pcntl_wait($status);
-        $exitstatus = pcntl_wexitstatus($status);
-        $this->log(sprintf("sigchild %s received from pid=%s, status=%s, exitstatus=%s\n", $signal, $pid, var_export($status, true), $exitstatus));
+        switch ($signal) {
+            case SIGCHLD:
+                $status = null;
+                $pid = pcntl_wait($status);
+                $exitstatus = pcntl_wexitstatus($status);
+                $this->log(sprintf("SIGCHLD (%s) received from pid=%s, status=%s, exitstatus=%s", $signal, $pid, var_export($status, true), $exitstatus));
+                break;
+            case SIGINT:  // ctrl C
+                $this->log(sprintf("SIGINT (%s) Ctrl-C received, schedstatus='tostop'", $signal));
+                $this->schedstatus = 'tostop';
+                break;
+            case SIGTERM:
+                $this->log(sprintf("SIGTERM (%s) received but ignored, http timeout ?", $signal));
+                break;
+        }
     }
 
     public function run()
@@ -87,6 +102,8 @@ class task_Scheduler
             //  pcntl_signal(SIGCHLD, SIG_IGN);     // no zombies but no returnValue
             //  pcntl_signal(SIGCHLD, SIG_DFL);     // with "declare(ticks=1)" returnValue ok but zombies
             pcntl_signal(SIGCHLD, array($this, 'sigHandler'));    // ok
+            pcntl_signal(SIGINT, array($this, 'sigHandler'));
+            pcntl_signal(SIGTERM, array($this, 'sigHandler'));
 
             $this->method = self::METHOD_FORK;
         }
@@ -147,11 +164,11 @@ class task_Scheduler
             }
         }
 
-        $schedstatus = 'started';
+        $this->schedstatus = 'started';
         $runningtask = 0;
         $connwaslost = false;
 
-        while ($schedstatus == 'started' || $runningtask > 0) {
+        while ($this->schedstatus == 'started' || $runningtask > 0) {
             while (1) {
                 try {
                     assert(is_object($conn));
@@ -189,23 +206,25 @@ class task_Scheduler
                 $connwaslost = false;
             }
 
-            $schedstatus = '';
-            $row = NULL;
-            try {
-                $sql = "SELECT schedstatus FROM sitepreff";
-                $stmt = $conn->prepare($sql);
-                $stmt->execute();
-                $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-            } catch (ErrorException $e) {
-                continue;
+            if ($this->schedstatus == "started") {
+                $this->schedstatus = '';
+                $row = NULL;
+                try {
+                    $sql = "SELECT schedstatus FROM sitepreff";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute();
+                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $stmt->closeCursor();
+                } catch (ErrorException $e) {
+                    continue;
+                }
+
+                if ($row) {
+                    $this->schedstatus = $row["schedstatus"];
+                }
             }
 
-            if ($row) {
-                $schedstatus = $row["schedstatus"];
-            }
-
-            if ($schedstatus == 'tostop') {
+            if ($this->schedstatus == 'tostop') {
                 $sql = 'UPDATE sitepreff SET schedstatus = "stopping"';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
@@ -327,7 +346,7 @@ class task_Scheduler
                                 }
                             }
 
-                            if ($schedstatus == 'started') {
+                            if ($this->schedstatus == 'started') {
                                 $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_TOSTART);
                             }
                             // trick to start the task immediatly : DON'T break if ending with 'tostart'
@@ -338,7 +357,7 @@ class task_Scheduler
 
                     case task_abstract::STATE_TOSTART:
                         // if scheduler is 'tostop', don't launch a new task !
-                        if ($schedstatus != 'started') {
+                        if ($this->schedstatus != 'started') {
                             break;
                         }
 
@@ -567,9 +586,15 @@ class task_Scheduler
                         break;
                 }
             }
-
-            for ($i = 0; $i < $sleeptime; $i ++) {
+            if(function_exists('pcntl_sigprocmask')) {
+                @pcntl_sigprocmask(SIG_BLOCK, array(SIGCHLD));
+            }
+            sleep(1);
+            for ($i = 0; $this->schedstatus=='started' && $i < $sleeptime; $i++) {
                 sleep(1);
+            }
+            if(function_exists('pcntl_sigprocmask')) {
+                @pcntl_sigprocmask(SIG_UNBLOCK, array(SIGCHLD));
             }
         }
 
