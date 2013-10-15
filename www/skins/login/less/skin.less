@@ -99,29 +99,6 @@ ul {
 
 /** Button style */
 
-.btn {
-    @glow: inset 0 1px 0 rgba(255, 255, 255, 0.2),  0 1px 7px rgba(0, 0, 0, 1);
-    .glow(@glow);
-    .border-radius(@borderRadiusSmall);
-    text-shadow : 0 -1px 0 rgba(0, 0, 0, 0.5);
-}
-
-.btn-success {
-    .gradient (@btnSuccessBackground, 0.7);
-}
-
-.btn-info {
-    .gradient (@btnInfoBackground, 0.7);
-}
-
-.btn-success:hover {
-    .gradient (@btnSuccessBackgroundHighlight, 0.7);
-}
-
-.btn-info:hover {
-    .gradient (@btnInfoBackgroundHighlight, 0.7);
-}
-
 .btn-flat {
     filter:progid:DXImageTransform.Microsoft.Gradient(enabled='false');
     -webkit-box-shadow: none;
@@ -195,6 +172,14 @@ ul {
     width: 100% !important;
 }
 
+.footer a {
+    color: @footerLinkColor;
+}
+
+.footer a:hover {
+    color: @footerLinkColorHover;
+}
+
 /** Alert style */
 
 .alert {
@@ -208,7 +193,7 @@ ul {
 .alert .alert-block-close {
     width:45px;
     text-align: center;
-    font-size:36px
+    font-size:36px;
 }
 
 .alert table {
@@ -233,12 +218,20 @@ ul {
     border-left: 1px solid darken(@successBackground, 20%);
 }
 
+.alert.alert-success .alert-block-close a {
+  color: @successText;
+}
+
 .alert.alert-error .alert-block-content {
     border-right: 1px solid lighten(@errorBackground, 10%);
 }
 
 .alert.alert-error .alert-block-close {
     border-left: 1px solid darken(@errorBackground, 20%);
+}
+
+.alert.alert-error .alert-block-close a {
+  color: @errorText;
 }
 
 .alert.alert-info .alert-block-content {
@@ -249,12 +242,20 @@ ul {
     border-left: 1px solid darken(@infoBackground, 20%);
 }
 
+.alert.alert-info .alert-block-close a {
+    color: @infoText;
+}
+
 .alert.alert-warning .alert-block-content {
     border-right: 1px solid lighten(@warningBackground, 10%);
 }
 
 .alert.alert-warning .alert-block-close {
     border-left: 1px solid darken(@warningBackground, 20%);
+}
+
+.alert.alert-warning .alert-block-close a {
+    color: @warningText;
 }
 
 .alert .close {

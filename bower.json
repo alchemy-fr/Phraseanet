@@ -18,7 +18,7 @@
         "backbone-amd": "~1.0",
         "underscore-amd": "~1.4",
         "i18next": "~1.6",
-        "bootstrap-multiselect": "https://github.com/davidstutz/bootstrap-multiselect.git",
+        "bootstrap-multiselect": "https://github.com/davidstutz/bootstrap-multiselect.git#bootstrap-2-3",
         "zxcvbn": "https://github.com/lowe/zxcvbn.git",
         "geonames-server-jquery-plugin": "~0.2",
         "swfobject": "latest",

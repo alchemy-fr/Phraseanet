@@ -57,7 +57,6 @@ $groups = array(
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jslibs/jquery.print.js'
-        , '//include/jslibs/jquery.multiselect.js'
         , '//include/jslibs/jquery.cluetip.js'
         , '//include/jquery.nicoslider.js'
         , '//skins/report/report.js'

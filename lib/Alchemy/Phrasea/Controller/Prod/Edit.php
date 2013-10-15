@@ -40,15 +40,14 @@ class Edit implements ControllerProviderInterface
 
             $records = RecordsRequest::fromRequest($app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, array('canmodifrecord'));
 
-            $thesaurus = $multipleDataboxes = false;
+            $thesaurus = false;
             $status = $ids = $elements = $suggValues =
                 $fields = $JSFields = array();
-
             $databox = null;
 
             $multipleDataboxes = count($records->databoxes()) > 1;
 
-            if (!$multipleDataboxes) {
+            if (1 === count($records->databoxes())) {
                 $databoxes = $records->databoxes();
                 $databox = array_pop($databoxes);
 

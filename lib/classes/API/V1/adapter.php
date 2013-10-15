@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
@@ -896,7 +897,7 @@ class API_V1_adapter extends API_V1_Abstract
         $offsetStart = (int) ($request->get('offset_start') ? : 0);
         $perPage = (int) $request->get('per_page') ? : 10;
 
-        $query = (string) $request->request->get('query');
+        $query = (string) $request->get('query');
 
         $this->app['phraseanet.SE']->setOptions($options);
         $this->app['phraseanet.SE']->resetCache();
@@ -929,7 +930,9 @@ class API_V1_adapter extends API_V1_Abstract
             'warning'           => $search_result->getWarning(),
             'query_time'        => $search_result->getDuration(),
             'search_indexes'    => $search_result->getIndexes(),
-            'suggestions'       => $search_result->getSuggestions()->toArray(),
+            'suggestions'       => array_map(function (SearchEngineSuggestion $suggestion) {
+                return $suggestion->toArray();
+            }, $search_result->getSuggestions()->toArray()),
             'results'           => array(),
             'query'             => $search_result->getQuery(),
         );
