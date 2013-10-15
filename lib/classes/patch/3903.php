@@ -49,6 +49,11 @@ class patch_3903 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
+        $sql = 'DELETE FROM UserQueries';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
         $conn = $app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT * FROM dsel';
         $stmt = $conn->prepare($sql);
