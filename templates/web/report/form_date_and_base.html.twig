@@ -15,25 +15,36 @@
             </div>
         </div>
     </div>
+ {% set all_coll = dashboard.getAllColl() %}
     <div class="form2">
         <div class="form_titre">{% trans "report:: 2 - Bases" %}</div>
         <div id="select_one">
-        {% block base_selector %}
-            {% set all_coll = dashboard.getAllColl() %}
-            <select name="popbases[]" class="multiselect" multiple="multiple" id="popbases">
-            {% for the_base_coll in all_coll %}
-                <optgroup label="{{ the_base_coll.name_sbas }}">
-                {% for a_coll in the_base_coll.sbas_collections %}
-                    <option value="{{ a_coll.sbas_id}}_{{ a_coll.coll_id }}">{{ a_coll.name }}</option>
+            <ul class="multiselect" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
+                <li>
+                    <a href="javascript:void(0);" class="select-all">
+                        {% trans %}Select all{% endtrans %}
+                    </a>
+                    <a href="javascript:void(0);" class="deselect-all">
+                        {% trans %}Deselect all{% endtrans %}
+                    </a>
+                </li>
+                {% for the_base_coll in all_coll %}
+                    <li><label data-group-id="{{ loop.index }}" class="multiselect-group"><b>{{ the_base_coll.name_sbas }}</b></label></li>
+                    {% for a_coll in the_base_coll.sbas_collections %}
+                        <li>
+                            <a href="javascript:void(0);">
+                                <label class="checkbox">
+                                    <input name="popbases[]" checked="checked" type="checkbox" class="coll-checkbox checkbox-{{ loop.parent.loop.index }}" value="{{ a_coll.sbas_id}}_{{ a_coll.coll_id }}">
+                                    {{ a_coll.name }}
+                                </label>
+                            </a>
+                        </li>
+                    {% endfor %}
                 {% endfor %}
-                </optgroup>
-            {% endfor %}
-            </select>
-        {% endblock base_selector %}
+            </ul>
         </div>
     </div>
 {% endblock form_date_and_base %}
-
 
 
 
