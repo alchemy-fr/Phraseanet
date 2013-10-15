@@ -49,6 +49,11 @@ class patch_3908 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
+        $sql = 'DELETE FROM Tasks';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
         $sql = 'SELECT task_id, active, crashed, name, class, settings FROM task2';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
