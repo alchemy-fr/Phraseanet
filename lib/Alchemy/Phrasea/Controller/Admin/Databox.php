@@ -972,7 +972,7 @@ class Databox implements ControllerProviderInterface
     public function getReorder(Application $app, Request $request, $databox_id)
     {
         return $app['twig']->render('admin/collection/reorder.html.twig', array(
-            'databox' => $app['phraseanet.appbox']->get_databox($databox_id),
+            'collections' => $app['authentication']->getUser()->ACL()->get_granted_base(array(), array($databox_id)),
         ));
     }
 
@@ -986,19 +986,14 @@ class Databox implements ControllerProviderInterface
      */
     public function setReorder(Application $app, Request $request, $databox_id)
     {
-        $success = false;
-
         try {
-            foreach ($request->request->get('order', array()) as $order => $data) {
-                $baseId = $data['id'];
-                $collection = \collection::get_from_base_id($app, $baseId);
-                $app['phraseanet.appbox']->set_collection_order($collection, $order);
-                unset($collection);
+            foreach ($request->request->get('order', array()) as $data) {
+                $collection = \collection::get_from_base_id($app, $data['id']);
+                $collection->set_ord($data['offset']);
             }
-
             $success = true;
         } catch (\Exception $e) {
-
+            $success = false;
         }
 
         if ('json' === $app['request']->getRequestFormat()) {

@@ -36,6 +36,7 @@ class collection implements cache_cacheableInterface
     protected $databox;
     protected $is_active;
     protected $binary_logo;
+    protected $ord;
     protected $app;
 
     const PIC_LOGO = 'minilogos';
@@ -63,6 +64,7 @@ class collection implements cache_cacheableInterface
             $this->available = $datas['available'];
             $this->pub_wm = $datas['pub_wm'];
             $this->name = $datas['name'];
+            $this->ord = $datas['ord'];
             $this->prefs = $datas['prefs'];
             $this->labels = $datas['labels'];
 
@@ -96,7 +98,7 @@ class collection implements cache_cacheableInterface
 
         $conn = connection::getPDOConnection($this->app);
 
-        $sql = 'SELECT server_coll_id, sbas_id, base_id, active FROM bas
+        $sql = 'SELECT server_coll_id, sbas_id, base_id, active, ord FROM bas
             WHERE server_coll_id = :coll_id AND sbas_id = :sbas_id';
 
         $stmt = $conn->prepare($sql);
@@ -109,6 +111,7 @@ class collection implements cache_cacheableInterface
         if ($row) {
             $this->is_active = ! ! $row['active'];
             $this->base_id = (int) $row['base_id'];
+            $this->ord = (int) $row['ord'];
         }
 
         $stmt->closeCursor();
@@ -119,6 +122,7 @@ class collection implements cache_cacheableInterface
             , 'available' => $this->available
             , 'pub_wm'    => $this->pub_wm
             , 'name'      => $this->name
+            , 'ord'       => $this->ord
             , 'prefs'     => $this->prefs
             , 'labels'    => $this->labels
         );
@@ -140,6 +144,20 @@ class collection implements cache_cacheableInterface
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
+
+        return $this;
+    }
+
+    public function get_ord()
+    {
+        return $this->ord;
+    }
+
+    public function set_ord($ord)
+    {
+        $this->app['phraseanet.appbox']->set_collection_order($this, $ord);
+        $this->delete_data_from_cache();
+        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         return $this;
     }
