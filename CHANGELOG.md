@@ -2,6 +2,12 @@
 
 * 3.9.0 (xxxx-xx-xx)
 
+  - Convert Orders custom adapter to Doctrine entity.
+  - Convert Feeds custom adapter to Doctrine entity.
+  - Convert Users custom adapter to Doctrine entity.
+  - Convert Ftp Export custom adapter to Doctrine entity.
+  - Convert Ftp Export custom adapter to Doctrine entity.
+
 * 3.8.1 (2013-xx-xx)
 
   - Fix IE6 message display on homepage.
