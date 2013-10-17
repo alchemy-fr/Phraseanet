@@ -309,7 +309,7 @@
                                                             <div class="basGrp">
                                                                 {% for collId, collection in storage_access['collections'] %}
                                                                     <div>
-                                                                        <input type="checkbox" class="checkbox basItem basItem{{ sbasId }}" checked name="bas[]"  id="basChk{{ collId}}" value="{{ collId }}">
+                                                                        <input type="checkbox" class="checkbox basItem basItem{{ sbasId }}" checked name="bases[]"  id="basChk{{ collId}}" value="{{ collId }}">
                                                                         <label for="basChk{{ collId }}">{{ collection.get_name() }}</label>
                                                                     </div>
                                                                 {% endfor %}
