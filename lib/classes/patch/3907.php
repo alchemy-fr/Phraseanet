@@ -54,6 +54,36 @@ class patch_3907 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
+        $sql = 'DELETE FROM Feeds';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $sql = 'DELETE FROM FeedEntries';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $sql = 'DELETE FROM FeedPublishers';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $sql = 'DELETE FROM FeedItems';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $sql = 'DELETE FROM FeedTokens';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $sql = 'DELETE FROM AggregateTokens';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
         $conn = $app['phraseanet.appbox']->get_connection();
 
         $sql = 'SHOW TABLE STATUS;';

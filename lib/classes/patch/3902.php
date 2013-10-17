@@ -50,6 +50,11 @@ class patch_3902 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
+        $sql = 'DELETE FROM Users';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
         $conn = $app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT * FROM usr';
         $stmt = $conn->prepare($sql);
