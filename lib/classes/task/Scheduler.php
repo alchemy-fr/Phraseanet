@@ -362,7 +362,14 @@ class task_Scheduler
                                 );
 
                                 if (is_resource($taskPoll[$tkey]["process"])) {
-                                    sleep(2); // let the process lock and write it's pid
+                                    // let the process lock and write it's pid
+                                    $sleepTimeout = microtime(true) + 10;
+                                    do {
+                                        usleep(500000);
+                                        if (null !== $taskPoll[$tkey]['task']->getPID()) {
+                                            break;
+                                        }
+                                    } while (microtime(true) < $sleepTimeout);
                                 }
 
                                 if (is_resource($taskPoll[$tkey]["process"]) && ($pid = $taskPoll[$tkey]['task']->getPID()) !== null) {
