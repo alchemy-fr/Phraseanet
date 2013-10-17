@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "124ab6242ad1fcd84b9f3c991bc8b079",
+    "hash": "3d1785e1916b3d0cf47c0eb8ec7ac591",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -1104,12 +1104,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/avalanche123/Imagine.git",
-                "reference": "d345ea78e813d32c0e54ec73ec75e2d783461766"
+                "reference": "bae39d07a8f56ff21ca773a6b4e1ed2ab13b1c03"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/d345ea78e813d32c0e54ec73ec75e2d783461766",
-                "reference": "d345ea78e813d32c0e54ec73ec75e2d783461766",
+                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/bae39d07a8f56ff21ca773a6b4e1ed2ab13b1c03",
+                "reference": "bae39d07a8f56ff21ca773a6b4e1ed2ab13b1c03",
                 "shasum": ""
             },
             "require": {
@@ -1153,7 +1153,7 @@
                 "image manipulation",
                 "image processing"
             ],
-            "time": "2013-10-03 13:30:07"
+            "time": "2013-10-10 08:13:00"
         },
         {
             "name": "jms/metadata",
@@ -1791,16 +1791,16 @@
         },
         {
             "name": "neutron/temporary-filesystem",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Temporary-Filesystem.git",
-                "reference": "3b06c337e347fde7d0a7e3cee24133ccf4950ae9"
+                "reference": "6b21fa99fd452efea16b9a7adb7304ccfff854d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/Temporary-Filesystem/zipball/3b06c337e347fde7d0a7e3cee24133ccf4950ae9",
-                "reference": "3b06c337e347fde7d0a7e3cee24133ccf4950ae9",
+                "url": "https://api.github.com/repos/romainneutron/Temporary-Filesystem/zipball/6b21fa99fd452efea16b9a7adb7304ccfff854d0",
+                "reference": "6b21fa99fd452efea16b9a7adb7304ccfff854d0",
                 "shasum": ""
             },
             "require": {
@@ -1827,7 +1827,7 @@
                 }
             ],
             "description": "Symfony filesystem extension to handle temporary files",
-            "time": "2013-08-06 14:38:12"
+            "time": "2013-10-10 10:58:09"
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
@@ -2614,16 +2614,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "2.3.x-dev",
+            "version": "v2.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "e01461df62d4abdb0a44859e91e98ee7416420a2"
+                "reference": "17aefe6c8ec9462dbfb3ef092f54c4e853861810"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/e01461df62d4abdb0a44859e91e98ee7416420a2",
-                "reference": "e01461df62d4abdb0a44859e91e98ee7416420a2",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/17aefe6c8ec9462dbfb3ef092f54c4e853861810",
+                "reference": "17aefe6c8ec9462dbfb3ef092f54c4e853861810",
                 "shasum": ""
             },
             "require": {
@@ -2718,15 +2718,15 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-10-10 06:15:46"
+            "time": "2013-08-07 17:11:16"
         },
         {
             "name": "tecnick.com/tcpdf",
-            "version": "6.0.037",
+            "version": "6.0.039",
             "source": {
                 "type": "git",
-                "url": "http://git.code.sf.net/p/tcpdf/code",
-                "reference": "df410b084d63a23acf694365bf8ff0c8ccb2fc2b"
+                "url": "git://git.code.sf.net/p/tcpdf/code",
+                "reference": "2ba0248a7187f1626df6c128750650416267f0e7"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -2775,7 +2775,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2013-09-30 20:58:11"
+            "time": "2013-10-13 16:11:17"
         },
         {
             "name": "themattharris/tmhoauth",
@@ -2868,16 +2868,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.14.0",
+            "version": "v1.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "224fc55635d544a2ec8edb3592be18db5a093f59"
+                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/224fc55635d544a2ec8edb3592be18db5a093f59",
-                "reference": "224fc55635d544a2ec8edb3592be18db5a093f59",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8873d7593ad7c120004f177c0fd01459b383c9cb",
+                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb",
                 "shasum": ""
             },
             "require": {
@@ -2913,7 +2913,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-10-03 06:41:20"
+            "time": "2013-10-15 19:17:38"
         },
         {
             "name": "zend/gdata",
@@ -3365,12 +3365,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "b1e7d5a991ca891cd66c143a618f5ce1e679ba9f"
+                "reference": "dfc0dc9a3f6258c878768218fe49cc092ea8a8d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/b1e7d5a991ca891cd66c143a618f5ce1e679ba9f",
-                "reference": "b1e7d5a991ca891cd66c143a618f5ce1e679ba9f",
+                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/dfc0dc9a3f6258c878768218fe49cc092ea8a8d1",
+                "reference": "dfc0dc9a3f6258c878768218fe49cc092ea8a8d1",
                 "shasum": ""
             },
             "require": {
@@ -3412,7 +3412,7 @@
             "keywords": [
                 "database"
             ],
-            "time": "2013-09-16 23:31:59"
+            "time": "2013-10-16 14:26:38"
         },
         {
             "name": "fabpot/goutte",
@@ -3472,16 +3472,16 @@
         },
         {
             "name": "instaclick/php-webdriver",
-            "version": "1.0.16",
+            "version": "1.0.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/instaclick/php-webdriver.git",
-                "reference": "10dcea308e5cf4c182c8fd0ca7f8381aefc4a416"
+                "reference": "47a6019553a7a5b42d35493276ffc2c9252c53d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/instaclick/php-webdriver/zipball/10dcea308e5cf4c182c8fd0ca7f8381aefc4a416",
-                "reference": "10dcea308e5cf4c182c8fd0ca7f8381aefc4a416",
+                "url": "https://api.github.com/repos/instaclick/php-webdriver/zipball/47a6019553a7a5b42d35493276ffc2c9252c53d5",
+                "reference": "47a6019553a7a5b42d35493276ffc2c9252c53d5",
                 "shasum": ""
             },
             "require": {
@@ -3526,7 +3526,7 @@
                 "webdriver",
                 "webtest"
             ],
-            "time": "2013-08-08 13:56:39"
+            "time": "2013-10-04 15:03:51"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -3591,16 +3591,16 @@
         },
         {
             "name": "phpunit/php-file-iterator",
-            "version": "1.3.3",
+            "version": "1.3.4",
             "source": {
                 "type": "git",
-                "url": "git://github.com/sebastianbergmann/php-file-iterator.git",
-                "reference": "1.3.3"
+                "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
+                "reference": "acd690379117b042d1c8af1fafd61bde001bf6bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/sebastianbergmann/php-file-iterator/zipball/1.3.3",
-                "reference": "1.3.3",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/acd690379117b042d1c8af1fafd61bde001bf6bb",
+                "reference": "acd690379117b042d1c8af1fafd61bde001bf6bb",
                 "shasum": ""
             },
             "require": {
@@ -3627,12 +3627,12 @@
                 }
             ],
             "description": "FilterIterator implementation that filters files based on a list of suffixes.",
-            "homepage": "http://www.phpunit.de/",
+            "homepage": "https://github.com/sebastianbergmann/php-file-iterator/",
             "keywords": [
                 "filesystem",
                 "iterator"
             ],
-            "time": "2012-10-11 04:44:38"
+            "time": "2013-10-10 15:34:57"
         },
         {
             "name": "phpunit/php-text-template",
@@ -3774,16 +3774,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "3.7.27",
+            "version": "3.7.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "4b024e753e3421837afbcca962c8724c58b39376"
+                "reference": "3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4b024e753e3421837afbcca962c8724c58b39376",
-                "reference": "4b024e753e3421837afbcca962c8724c58b39376",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d",
+                "reference": "3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d",
                 "shasum": ""
             },
             "require": {
@@ -3844,7 +3844,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2013-09-16 03:09:52"
+            "time": "2013-10-17 07:27:40"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -3902,7 +3902,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "imagine/imagine": 20,
-        "symfony/symfony": 20,
         "doctrine/data-fixtures": 20
     },
     "platform": {
