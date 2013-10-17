@@ -140,7 +140,7 @@ class patch_3907 implements patchInterface
                 $feedPublisher->setFeed($feed);
                 $feed->addPublisher($feedPublisher);
                 $feedPublisher->setCreatedOn(new \DateTime($fpRow['created_on']));
-                $feedPublisher->setIsOwner($fpRow['owner']);
+                $feedPublisher->setIsOwner((Boolean) $fpRow['owner']);
                 $feedPublisher->setUsrId($fpRow['usr_id']);
 
                 $feStmt->execute(array(':feed_id' => $row['id'], ':publisher_id' => $fpRow['id']));
