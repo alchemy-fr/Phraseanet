@@ -72,7 +72,6 @@
 
 {% macro format100percent(thumbnail, extraclass)%}
     {% set record_type = thumbnail.get_type() %}
-    <div id="map">
         {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
           {% set random = thumbnail.get_random() %}
           <div class="record record_video imgTips">
@@ -102,8 +101,7 @@
             "{{thumbnail.get_width()}}", "{{thumbnail.get_height()}}", "9.0.0", false, false,
             {menu: "false",flashvars: "playerID=2&autostart=yes&noinfo=yes&animation=no&remaining=yes&soundFile={{thumbnail.get_url()}}", movie: "/include/jslibs/audio-player/player.swf",  allowFullScreen :"true",wmode: "transparent"}, false);</script>
         {% else %}
-          <img style="height:100%;" class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
-               src="{{thumbnail.get_url()}}" ondragstart="return false;">
+          <img style="max-height: 100%;max-width:100%" class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+               src="{{thumbnail.get_url()}}" ondragstart="return false;" />
         {% endif %}
-    </div>
 {% endmacro %}
