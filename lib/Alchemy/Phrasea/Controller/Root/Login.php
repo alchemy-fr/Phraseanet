@@ -50,6 +50,7 @@ class Login implements ControllerProviderInterface
     public static function getDefaultTemplateVariables(Application $app)
     {
         return array(
+            'last_publication_items' => \Feed_Entry_Item::loadLatest($app, 20),
             'instance_title' => $app['phraseanet.registry']->get('GV_homeTitle'),
             'has_terms_of_use' => $app->hasTermsOfUse(),
             'meta_description' =>  $app['phraseanet.registry']->get('GV_metaDescription'),

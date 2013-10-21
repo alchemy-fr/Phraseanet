@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Feeds
@@ -205,6 +207,73 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
         $entry->delete_data_from_cache(Feed_Entry_Adapter::CACHE_ELEMENTS);
 
         return new self($appbox, $entry, $item_id);
+    }
+
+    public static function loadLatest(Application $app, $nbItems = 20)
+    {
+        $execution = 0;
+        $items = array();
+
+        do {
+            $feeds = $entries = array();
+
+            $sql = 'SELECT en.id AS entry, f.id AS feed
+            FROM feed_entry_elements AS el
+            INNER JOIN feed_entries AS en ON (el.entry_id = en.id)
+            INNER JOIN feeds AS f ON (f.id = en.feed_id)
+            WHERE f.public = 1 AND f.base_id IS null
+            ORDER BY en.updated_on DESC
+            LIMIT ' . ($nbItems * $execution) .','. $nbItems;
+
+            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            foreach($rows as $row) {
+                if (!isset($feeds[$row['feed']])) {
+                    $feeds[$row['feed']] = new Feed_Adapter($app, $row['feed']);
+                }
+
+                if (!isset($entries[$row['entry']])) {
+                    $entries[$row['entry']] = new Feed_Entry_Adapter($app, $feeds[$row['feed']], $row['entry']);
+                }
+            }
+
+            foreach($entries as $entry) {
+                foreach ($entry->get_content() as $item) {
+                    if (null !== $preview = $item->get_record()->get_subdef('preview')) {
+                        if (null !== $permalink = $preview->get_permalink()) {
+                            if (!isset($items[$item->get_id()])) {
+                                $items[$item->get_id()] = array(
+                                    'entry' => $entry,
+                                    'record' => $item->get_record(),
+                                    'preview' => $preview,
+                                    'permalink' => $permalink
+                                );
+
+                                if (count($items) >= $nbItems) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (count($items) > $nbItems) {
+                    break;
+                }
+            }
+
+            if (count($rows) <= $nbItems) {
+                break;
+            }
+
+            $execution++;
+        }
+        while (count($items) < $nbItems);
+
+        return $items;
     }
 
     public function get_cache_key($option = null)
