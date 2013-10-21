@@ -8,6 +8,21 @@
 
 {% block stylesheet %}
     <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.css' }) }}" />
+
+    <style type="text/css">
+        div[data-role="page"] {
+            position: relative;
+        }
+
+        #content {
+            position:absolute;
+            top:50px;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            text-align: center;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -22,13 +37,5 @@
     {{ thumbnail.format100percent(record.get_preview()) }}
   </div>
   <div data-role="footer">
-
-  </div>
-    <script type="text/javascript">
-        $( window ).on( "orientationchange", function( event ) {
-            $("#map").height($(window).height() - 50);
-        });
-        $( window ).orientationchange();
-    </script>
 </div>
 {% endblock %}

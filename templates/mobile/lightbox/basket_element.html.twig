@@ -8,17 +8,32 @@
 
 {% block stylesheet %}
     <link rel="stylesheet" href="{{ path('minifier', { 'f' : 'skins/lightbox/jquery.validator.mobile.css' }) }}" />
+
+    <style type="text/css">
+        div[data-role="page"] {
+            position: relative;
+        }
+
+        #content {
+            position:absolute;
+            top:50px;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            text-align: center;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
   {% set record = basket_element.getRecord(app) %}
-<div data-role="page">
+<div data-role="page" id="page">
   <div data-role="header">
     <a href="{{ path('lightbox_validation', { 'ssel_id' : basket_element.getBasket().getId() }) }}" data-rel="back" data-icon="arrow-l">Back</a>
     <h1>{{basket_element.getOrd()}} - {{record.get_title()}}</h1>
     <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
   </div>
-  <div data-role="content">
+  <div id="content" data-role="content">
     {{ thumbnail.format100percent(record.get_preview()) }}
     {% if basket_element.getBasket().getValidation() %}
       {% if basket_element.getBasket().getValidation().getParticipant(app['authentication'].getUser(), app).getCanAgree() %}
@@ -44,11 +59,5 @@
   <div data-role="footer">
 
   </div>
-    <script type="text/javascript">
-        $( window ).on( "orientationchange", function( event ) {
-            $("#map").height($(window).height() - 50);
-        });
-        $( window ).orientationchange();
-    </script>
 </div>
 {% endblock %}
