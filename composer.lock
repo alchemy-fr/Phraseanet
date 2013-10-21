@@ -1434,16 +1434,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.3.5",
+            "version": "0.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "da4dc484cff946a5a2bb1966c538e7132b542b8c"
+                "reference": "86a16aab82b6e31d2e70050f61fa815a98037253"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/da4dc484cff946a5a2bb1966c538e7132b542b8c",
-                "reference": "da4dc484cff946a5a2bb1966c538e7132b542b8c",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/86a16aab82b6e31d2e70050f61fa815a98037253",
+                "reference": "86a16aab82b6e31d2e70050f61fa815a98037253",
                 "shasum": ""
             },
             "require": {
@@ -1453,7 +1453,7 @@
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "~2.1",
                 "php": ">=5.3.3",
-                "php-ffmpeg/php-ffmpeg": "~0.3.4",
+                "php-ffmpeg/php-ffmpeg": "~0.3, >=0.3.4",
                 "php-mp4box/php-mp4box": "~0.3.0",
                 "php-unoconv/php-unoconv": "~0.3.0",
                 "pimple/pimple": "~1.0",
@@ -1470,7 +1470,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3-dev"
+                    "dev-master": "0.4-dev"
                 }
             },
             "autoload": {
@@ -1503,27 +1503,27 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-09-05 10:26:38"
+            "time": "2013-10-21 12:41:18"
         },
         {
             "name": "mediavorus/mediavorus",
-            "version": "0.4.0",
+            "version": "0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/MediaVorus.git",
-                "reference": "0102f4e73f9184ff7861f89b6c1189a83fb19bac"
+                "reference": "5d5c416353f48192f2202dd4be5c21d95f46b08d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/0102f4e73f9184ff7861f89b6c1189a83fb19bac",
-                "reference": "0102f4e73f9184ff7861f89b6c1189a83fb19bac",
+                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/5d5c416353f48192f2202dd4be5c21d95f46b08d",
+                "reference": "5d5c416353f48192f2202dd4be5c21d95f46b08d",
                 "shasum": ""
             },
             "require": {
                 "doctrine/collections": "~1.0",
                 "monolog/monolog": "~1.0",
                 "php": ">=5.3.0",
-                "php-ffmpeg/php-ffmpeg": "~0.3.0",
+                "php-ffmpeg/php-ffmpeg": "~0.3",
                 "phpexiftool/phpexiftool": "~0.1",
                 "symfony/console": "~2.0",
                 "symfony/http-foundation": "~2.0"
@@ -1541,7 +1541,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -1564,7 +1564,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2013-07-04 10:19:13"
+            "time": "2013-10-21 12:36:49"
         },
         {
             "name": "monolog/monolog",
@@ -1887,22 +1887,23 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.3.4",
+            "version": "0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
-                "reference": "c7226654828600e0c44ac6689a07e741b32147dd"
+                "reference": "0d82e5ad3cb50fd78882b5e15aaf57b39a274103"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/c7226654828600e0c44ac6689a07e741b32147dd",
-                "reference": "c7226654828600e0c44ac6689a07e741b32147dd",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0d82e5ad3cb50fd78882b5e15aaf57b39a274103",
+                "reference": "0d82e5ad3cb50fd78882b5e15aaf57b39a274103",
                 "shasum": ""
             },
             "require": {
                 "alchemy/binary-driver": "~1.5",
                 "doctrine/cache": "~1.0",
                 "evenement/evenement": "~1.0",
+                "neutron/temporary-filesystem": "~2.1, >=2.1.1",
                 "php": ">=5.3.3"
             },
             "require-dev": {
@@ -1951,7 +1952,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-09-05 10:09:39"
+            "time": "2013-10-21 12:16:28"
         },
         {
             "name": "php-mp4box/php-mp4box",
