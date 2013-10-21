@@ -49,8 +49,22 @@ class Login implements ControllerProviderInterface
 {
     public static function getDefaultTemplateVariables(Application $app)
     {
+        $items = array();
+
+        foreach(\Feed_Entry_Item::loadLatest($app, 20) as $item) {
+            $record = $item->get_record();
+            $preview = $record->get_subdef('preview');
+            $permalink = $preview->get_permalink();
+
+            $items[] = array(
+                'record' => $record,
+                'preview' => $preview,
+                'permalink' => $permalink
+            );
+        }
+
         return array(
-            'last_publication_items' => \Feed_Entry_Item::loadLatest($app, 20),
+            'last_publication_items' => $items,
             'instance_title' => $app['phraseanet.registry']->get('GV_homeTitle'),
             'has_terms_of_use' => $app->hasTermsOfUse(),
             'meta_description' =>  $app['phraseanet.registry']->get('GV_metaDescription'),

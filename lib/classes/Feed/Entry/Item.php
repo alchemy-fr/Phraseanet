@@ -209,21 +209,27 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
         return new self($appbox, $entry, $item_id);
     }
 
+    /**
+     * Gets latest items from public feeds.
+     *
+     * @param Application $app
+     * @param integer     $nbItems
+     *
+     * @return Feed_Entry_Item[] An array of Feed_Entry_Item
+     */
     public static function loadLatest(Application $app, $nbItems = 20)
     {
         $execution = 0;
-        $items = array();
+        $items = $feeds = $entries = array();
 
         do {
-            $feeds = $entries = array();
-
-            $sql = 'SELECT en.id AS entry, f.id AS feed
-            FROM feed_entry_elements AS el
-            INNER JOIN feed_entries AS en ON (el.entry_id = en.id)
-            INNER JOIN feeds AS f ON (f.id = en.feed_id)
-            WHERE f.public = 1 AND f.base_id IS null
-            ORDER BY en.updated_on DESC
-            LIMIT ' . ($nbItems * $execution) .','. $nbItems;
+            $sql = 'SELECT el.id AS item, en.id AS entry, f.id AS feed
+                FROM feed_entry_elements AS el
+                INNER JOIN feed_entries AS en ON (el.entry_id = en.id)
+                INNER JOIN feeds AS f ON (f.id = en.feed_id)
+                WHERE f.public = 1 AND f.base_id IS null
+                ORDER BY en.updated_on DESC
+                LIMIT ' . ((integer) $nbItems * $execution) .','. (integer) $nbItems;
 
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute();
@@ -238,40 +244,24 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
                 if (!isset($entries[$row['entry']])) {
                     $entries[$row['entry']] = new Feed_Entry_Adapter($app, $feeds[$row['feed']], $row['entry']);
                 }
-            }
 
-            foreach($entries as $entry) {
-                foreach ($entry->get_content() as $item) {
-                    if (null !== $preview = $item->get_record()->get_subdef('preview')) {
-                        if (null !== $permalink = $preview->get_permalink()) {
-                            if (!isset($items[$item->get_id()])) {
-                                $items[$item->get_id()] = array(
-                                    'entry' => $entry,
-                                    'record' => $item->get_record(),
-                                    'preview' => $preview,
-                                    'permalink' => $permalink
-                                );
+                if (!isset($items[$row['item']])) {
+                    $item = new self($app['phraseanet.appbox'], $entries[$row['entry']], $row['item']);
 
-                                if (count($items) >= $nbItems) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                     if (null !== $preview = $item->get_record()->get_subdef('preview')) {
+                         if (null !== $permalink = $preview->get_permalink()) {
+                            $items[$row['item']] = $item;
+
+                             if (count($items) >= $nbItems) {
+                                 break;
+                             }
+                         }
+                     }
                 }
-
-                if (count($items) > $nbItems) {
-                    break;
-                }
-            }
-
-            if (count($rows) <= $nbItems) {
-                break;
             }
 
             $execution++;
-        }
-        while (count($items) < $nbItems);
+        } while (count($items) < $nbItems && count($rows) !== 0);
 
         return $items;
     }

@@ -66,4 +66,51 @@ class Feed_Entry_ItemTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertInstanceOf('Feed_Entry_Adapter', self::$object->get_entry());
         $this->assertEquals(self::$entry->get_id(), self::$object->get_entry()->get_id());
     }
+
+    public function testLoadLatestItems()
+    {
+        $this->deleteEntries();
+
+        self::$feed->set_public(true);
+
+        foreach(range(1, 2) as $i) {
+            Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], self::$entry, self::$DI['record_'.$i]);
+        }
+
+        $this->assertCount(2, Feed_Entry_Item::loadLatest(self::$DI['app'], 20));
+    }
+
+    public function testLoadLatestItemsLessItems()
+    {
+        $this->deleteEntries();
+
+        self::$feed->set_public(true);
+
+        foreach(range(1, 2) as $i) {
+            Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], self::$entry, self::$DI['record_'.$i]);
+        }
+
+        $this->assertCount(1, Feed_Entry_Item::loadLatest(self::$DI['app'], 1));
+    }
+
+    public function testLoadLatestItemsNoPublic()
+    {
+        $this->deleteEntries();
+
+        self::$feed->set_public(false);
+
+        foreach(range(1, 2) as $i) {
+            Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], self::$entry, self::$DI['record_'.$i]);
+        }
+
+        $this->assertCount(0, Feed_Entry_Item::loadLatest(self::$DI['app'], 20));
+    }
+
+    private function deleteEntries()
+    {
+        $sql = "TRUNCATE feed_entry_elements";
+        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+    }
 }
