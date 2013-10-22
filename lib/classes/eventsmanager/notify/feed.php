@@ -45,7 +45,8 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
     public function fire($event, $params, &$entry)
     {
         $params = array(
-            'entry_id' => $entry->get_id()
+            'entry_id' => $entry->get_id(),
+            'notify_email' => $params['notify_email'],
         );
 
         $dom_xml = new DOMDocument('1.0', 'UTF-8');
@@ -91,7 +92,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                 /* @var $user_to_notif \User_Adapter */
                 $mailed = false;
 
-                if ($this->shouldSendNotificationFor($user_to_notif->get_id())) {
+                if ($params['notify_email'] && $this->shouldSendNotificationFor($user_to_notif->get_id())) {
                     $readyToSend = false;
                     try {
                         $token = $this->app['tokens']->getUrlToken(
