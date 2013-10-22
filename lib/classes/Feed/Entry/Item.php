@@ -169,6 +169,33 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
     }
 
     /**
+     * Checks if a record is published in a public feed.
+     *
+     * @param Application $app
+     * @param integer     $sbas_id
+     * @param integer     $record_id
+     *
+     * @return Boolean
+     */
+    public static function is_record_in_public_feed(Application $app, $sbas_id, $record_id)
+    {
+        $sql = 'SELECT count(i.id) as total
+                FROM feed_entry_elements as i, feed_entries e, feeds f
+                WHERE i.sbas_id = :sbas_id
+                    AND i.record_id = :record_id
+                    AND i.entry_id = e.id
+                    AND e.feed_id = f.id
+                    AND f.public = 1';
+
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':sbas_id' => $sbas_id, ':record_id' => $record_id));
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        return $row['total'] > 0;
+    }
+
+    /**
      *
      * @param  appbox             $appbox
      * @param  Feed_Entry_Adapter $entry

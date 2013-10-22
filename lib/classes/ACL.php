@@ -253,6 +253,10 @@ class ACL implements cache_cacheableInterface
             $granted = true;
         }
 
+        if (false === $granted && \Feed_Entry_Item::is_record_in_public_feed($this->app, $record->get_sbas_id(), $record->get_record_id())) {
+            $granted = true;
+        }
+
         return $granted;
     }
 

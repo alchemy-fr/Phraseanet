@@ -31,14 +31,26 @@ class Permalink extends AbstractDelivery
 
         $that = $this;
 
-        $deliverPermaview = function($sbas_id, $record_id, $token, $subdef, PhraseaApplication $app) {
+        $retrieveRecord = function ($app, $databox, $token, $record_id, $subdef) {
+            if (\databox_subdef::CLASS_THUMBNAIL === $subdef) {
+                $record = $databox->get_record($record_id);
+            } elseif (\databox_subdef::CLASS_PREVIEW === $subdef && \Feed_Entry_Item::is_record_in_public_feed($app, $databox->get_sbas_id(), $record_id)) {
+                $record = $databox->get_record($record_id);
+            } else {
+                $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
+
+                if (!($record instanceof \record_adapter)) {
+                    throw new NotFoundHttpException('Wrong token.');
+                }
+            }
+
+            return $record;
+        };
+
+        $deliverPermaview = function($sbas_id, $record_id, $token, $subdef, PhraseaApplication $app) use ($retrieveRecord) {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
-            $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
-
-            if (!$record instanceof \record_adapter) {
-                throw new NotFoundHttpException('bad luck');
-            }
+            $record = $retrieveRecord($app, $databox, $token, $record_id, $subdef);
 
             $params = array(
                 'subdef_name' => $subdef
@@ -51,13 +63,10 @@ class Permalink extends AbstractDelivery
             return $app['twig']->render('overview.html.twig', $params);
         };
 
-        $deliverPermalink = function(PhraseaApplication $app, $sbas_id, $record_id, $token, $subdef) use ($that) {
+        $deliverPermalink = function(PhraseaApplication $app, $sbas_id, $record_id, $token, $subdef) use ($that, $retrieveRecord) {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-            $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
 
-            if (!($record instanceof \record_adapter)) {
-                throw new NotFoundHttpException('bad luck');
-            }
+            $record = $retrieveRecord($app, $databox, $token, $record_id, $subdef);
 
             $watermark = $stamp = false;
 
