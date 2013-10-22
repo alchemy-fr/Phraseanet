@@ -508,7 +508,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
     }
 
     public static function create(Application $app, Feed_Adapter $feed
-    , Feed_Publisher_Adapter $publisher, $title, $subtitle, $author_name, $author_mail)
+    , Feed_Publisher_Adapter $publisher, $title, $subtitle, $author_name, $author_mail, $notify = true)
     {
         if ( ! $feed->is_publisher($publisher->get_user())) {
             throw new Exception_Feed_PublisherNotFound("Publisher not found");
@@ -544,7 +544,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
         $entry = new self($app, $feed, $entry_id);
 
-        $app['events-manager']->trigger('__FEED_ENTRY_CREATE__', array('entry_id' => $entry_id), $entry);
+        $app['events-manager']->trigger('__FEED_ENTRY_CREATE__', array('entry_id' => $entry_id, 'notify_email' => (Boolean) $notify), $entry);
 
         return $entry;
     }

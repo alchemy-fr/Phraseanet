@@ -58,7 +58,7 @@ class Feed implements ControllerProviderInterface
                 $author_name = $request->request->get('author_name');
                 $author_mail = $request->request->get('author_mail');
 
-                $entry = \Feed_Entry_Adapter::create($app, $feed, $publisher, $title, $subtitle, $author_name, $author_mail);
+                $entry = \Feed_Entry_Adapter::create($app, $feed, $publisher, $title, $subtitle, $author_name, $author_mail, $request->request->get('notify'));
 
                 $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
 

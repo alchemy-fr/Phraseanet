@@ -3203,6 +3203,14 @@ dans l'onglet thesaurus : arbres, menus contextuels
     margin: 3px 0 10px 0;
 }
 
+#modal_feed form label {
+    display:inline;
+}
+
+#modal_feed form input.checkbox {
+    width: 20px;
+}
+
 #modal_feed form textarea {
     height: 60px;
     resize: none;
