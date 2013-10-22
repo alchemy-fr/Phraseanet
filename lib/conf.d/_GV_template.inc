@@ -348,7 +348,9 @@ return call_user_func_array(function(Application $app) {
                     'available' => array(
                         'DISPLAYx1' => _('Single image'),
                         'SCROLL'    => _('Slide show'),
-                        'COOLIRIS'  => 'Cooliris'
+                        'COOLIRIS'  => 'Cooliris',
+                        'CAROUSEL'  => _('Carousel'),
+                        'GALLERIA'  => _('Gallery')
                     ),
                     'required'  => true
                 )

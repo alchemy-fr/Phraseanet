@@ -25,6 +25,7 @@
     "js-fixtures": "https://github.com/badunk/js-fixtures/archive/master.zip",
     "bootstrap-multiselect": "https://github.com/davidstutz/bootstrap-multiselect.git#bootstrap-2-3",
     "zxcvbn" : "https://github.com/lowe/zxcvbn.git",
-    "geonames-server-jquery-plugin" : "~0.2"
+    "geonames-server-jquery-plugin" : "~0.2",
+    "jquery-galleria": "1.2.9"
   }
 }

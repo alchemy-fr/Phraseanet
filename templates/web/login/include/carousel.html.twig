@@ -1,0 +1,16 @@
+<div id="carousel" class="carousel slide" style="height: 400px;">
+    {%  set firstItem = true %}
+    <div class="carousel-inner">
+        {%  for item in last_publication_items %}
+                <div class="{% if loop.first %}active {% endif %}item text-center">
+                    <img src="{{ item['permalink'].get_url() }}" />
+                </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script type="text/javascript">
+    require(["bootstrap"], function() {
+        $("#carousel").carousel();
+    });
+</script>
