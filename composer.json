@@ -35,7 +35,7 @@
         "silex/web-profiler"               : "~1.0.0",
         "swiftmailer/swiftmailer"          : "~4.3.0",
         "symfony/symfony"                  : "2.4.x-dev@dev",
-        "alchemy-fr/tcpdf"                 : "~6.0",
+        "alchemy-fr/tcpdf-clone"           : "~6.0",
         "themattharris/tmhoauth"           : "~0.7",
         "twig/twig"                        : "~1.12",
         "twig/extensions"                  : "~1.0",

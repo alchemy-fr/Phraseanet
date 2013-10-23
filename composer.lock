@@ -3,8 +3,64 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8b1ae1302b2bc3c9c80bf189f74ff36b",
+    "hash": "5e87a9e3f046e1b4ee9795d6b213d1a5",
     "packages": [
+        {
+            "name": "alchemy-fr/tcpdf-clone",
+            "version": "6.0.039",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/tcpdf-clone",
+                "reference": "2ba0248a7187f1626df6c128750650416267f0e7"
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "fonts",
+                    "config",
+                    "include",
+                    "tcpdf.php",
+                    "tcpdf_parser.php",
+                    "tcpdf_import.php",
+                    "tcpdf_barcodes_1d.php",
+                    "tcpdf_barcodes_2d.php",
+                    "include/tcpdf_colors.php",
+                    "include/tcpdf_filters.php",
+                    "include/tcpdf_font_data.php",
+                    "include/tcpdf_fonts.php",
+                    "include/tcpdf_images.php",
+                    "include/tcpdf_static.php",
+                    "include/barcodes/datamatrix.php",
+                    "include/barcodes/pdf417.php",
+                    "include/barcodes/qrcode.php"
+                ]
+            },
+            "license": [
+                "LGPLv3"
+            ],
+            "authors": [
+                {
+                    "name": "Nicola Asuni",
+                    "email": "info@tecnick.com",
+                    "homepage": "http://nicolaasuni.tecnick.com"
+                }
+            ],
+            "description": "TCPDF is a PHP class for generating PDF documents.",
+            "homepage": "http://www.tcpdf.org/",
+            "keywords": [
+                "PDF",
+                "PDFD32000-2008",
+                "barcodes",
+                "datamatrix",
+                "pdf417",
+                "qrcode",
+                "tcpdf"
+            ],
+            "time": "2013-10-13 16:11:17"
+        },
         {
             "name": "alchemy/binary-driver",
             "version": "1.5.0",
@@ -1378,16 +1434,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.3.5",
+            "version": "0.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "da4dc484cff946a5a2bb1966c538e7132b542b8c"
+                "reference": "86a16aab82b6e31d2e70050f61fa815a98037253"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/da4dc484cff946a5a2bb1966c538e7132b542b8c",
-                "reference": "da4dc484cff946a5a2bb1966c538e7132b542b8c",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/86a16aab82b6e31d2e70050f61fa815a98037253",
+                "reference": "86a16aab82b6e31d2e70050f61fa815a98037253",
                 "shasum": ""
             },
             "require": {
@@ -1397,7 +1453,7 @@
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "~2.1",
                 "php": ">=5.3.3",
-                "php-ffmpeg/php-ffmpeg": "~0.3.4",
+                "php-ffmpeg/php-ffmpeg": "~0.3, >=0.3.4",
                 "php-mp4box/php-mp4box": "~0.3.0",
                 "php-unoconv/php-unoconv": "~0.3.0",
                 "pimple/pimple": "~1.0",
@@ -1414,7 +1470,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3-dev"
+                    "dev-master": "0.4-dev"
                 }
             },
             "autoload": {
@@ -1447,27 +1503,27 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-09-05 10:26:38"
+            "time": "2013-10-21 12:41:18"
         },
         {
             "name": "mediavorus/mediavorus",
-            "version": "0.4.0",
+            "version": "0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/MediaVorus.git",
-                "reference": "0102f4e73f9184ff7861f89b6c1189a83fb19bac"
+                "reference": "5d5c416353f48192f2202dd4be5c21d95f46b08d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/0102f4e73f9184ff7861f89b6c1189a83fb19bac",
-                "reference": "0102f4e73f9184ff7861f89b6c1189a83fb19bac",
+                "url": "https://api.github.com/repos/romainneutron/MediaVorus/zipball/5d5c416353f48192f2202dd4be5c21d95f46b08d",
+                "reference": "5d5c416353f48192f2202dd4be5c21d95f46b08d",
                 "shasum": ""
             },
             "require": {
                 "doctrine/collections": "~1.0",
                 "monolog/monolog": "~1.0",
                 "php": ">=5.3.0",
-                "php-ffmpeg/php-ffmpeg": "~0.3.0",
+                "php-ffmpeg/php-ffmpeg": "~0.3",
                 "phpexiftool/phpexiftool": "~0.1",
                 "symfony/console": "~2.0",
                 "symfony/http-foundation": "~2.0"
@@ -1485,7 +1541,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -1508,7 +1564,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2013-07-04 10:19:13"
+            "time": "2013-10-21 12:36:49"
         },
         {
             "name": "monolog/monolog",
@@ -1831,22 +1887,23 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.3.4",
+            "version": "0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg.git",
-                "reference": "c7226654828600e0c44ac6689a07e741b32147dd"
+                "reference": "0d82e5ad3cb50fd78882b5e15aaf57b39a274103"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/c7226654828600e0c44ac6689a07e741b32147dd",
-                "reference": "c7226654828600e0c44ac6689a07e741b32147dd",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-FFmpeg/zipball/0d82e5ad3cb50fd78882b5e15aaf57b39a274103",
+                "reference": "0d82e5ad3cb50fd78882b5e15aaf57b39a274103",
                 "shasum": ""
             },
             "require": {
                 "alchemy/binary-driver": "~1.5",
                 "doctrine/cache": "~1.0",
                 "evenement/evenement": "~1.0",
+                "neutron/temporary-filesystem": "~2.1, >=2.1.1",
                 "php": ">=5.3.3"
             },
             "require-dev": {
@@ -1895,7 +1952,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2013-09-05 10:09:39"
+            "time": "2013-10-21 12:16:28"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -2620,12 +2677,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "4c164ca0ca04371e8af825ffd80c8173fbf97940"
+                "reference": "1206176fc40eb22b00cb2419de3f832c9afecb76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/4c164ca0ca04371e8af825ffd80c8173fbf97940",
-                "reference": "4c164ca0ca04371e8af825ffd80c8173fbf97940",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/1206176fc40eb22b00cb2419de3f832c9afecb76",
+                "reference": "1206176fc40eb22b00cb2419de3f832c9afecb76",
                 "shasum": ""
             },
             "require": {
@@ -2725,64 +2782,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-10-16 16:16:10"
-        },
-        {
-            "name": "tecnick.com/tcpdf",
-            "version": "6.0.039",
-            "source": {
-                "type": "git",
-                "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "2ba0248a7187f1626df6c128750650416267f0e7"
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "fonts",
-                    "config",
-                    "include",
-                    "tcpdf.php",
-                    "tcpdf_parser.php",
-                    "tcpdf_import.php",
-                    "tcpdf_barcodes_1d.php",
-                    "tcpdf_barcodes_2d.php",
-                    "include/tcpdf_colors.php",
-                    "include/tcpdf_filters.php",
-                    "include/tcpdf_font_data.php",
-                    "include/tcpdf_fonts.php",
-                    "include/tcpdf_images.php",
-                    "include/tcpdf_static.php",
-                    "include/barcodes/datamatrix.php",
-                    "include/barcodes/pdf417.php",
-                    "include/barcodes/qrcode.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPLv3"
-            ],
-            "authors": [
-                {
-                    "name": "Nicola Asuni",
-                    "email": "info@tecnick.com",
-                    "homepage": "http://nicolaasuni.tecnick.com"
-                }
-            ],
-            "description": "TCPDF is a PHP class for generating PDF documents.",
-            "homepage": "http://www.tcpdf.org/",
-            "keywords": [
-                "PDFD32000-2008",
-                "TCPDF",
-                "barcodes",
-                "datamatrix",
-                "pdf",
-                "pdf417",
-                "qrcode"
-            ],
-            "time": "2013-10-13 16:11:17"
+            "time": "2013-10-18 15:01:47"
         },
         {
             "name": "themattharris/tmhoauth",
