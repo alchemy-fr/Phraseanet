@@ -22,7 +22,8 @@
         "zxcvbn": "https://github.com/lowe/zxcvbn.git",
         "geonames-server-jquery-plugin": "~0.2",
         "swfobject": "latest",
-        "tinymce": "~4.0"
+        "tinymce": "~4.0",
+        "jquery-galleria": "1.2.9"
     },
     "devDependencies": {
         "mocha": "latest",

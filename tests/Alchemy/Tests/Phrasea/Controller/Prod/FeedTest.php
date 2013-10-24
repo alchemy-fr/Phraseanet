@@ -24,11 +24,12 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $feed = $this->insertOneFeed(self::$DI['user']);
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/requestavailable/');
+//        print(self::$DI['client']->getResponse());exit;
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
         foreach ($feeds as $one_feed) {
             if ($one_feed->isPublisher(self::$DI['user'])) {
-                $this->assertEquals(1, $crawler->filterXPath("//input[@value='" . $one_feed->getId() . "']")->count());
+                $this->assertEquals(1, $crawler->filterXPath("//input[@value='" . $one_feed->getId() . "' and @name='feed_proposal[]']")->count());
             }
         }
     }
@@ -46,6 +47,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $feed = $this->insertOneFeed(self::$DI['user']);
         $params = array(
             "feed_id"        => $feed->getId()
+            , "notify"        => 1
             , "title"        => "salut"
             , "subtitle"     => "coucou"
             , "author_name"  => "robert"

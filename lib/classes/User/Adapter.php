@@ -1074,6 +1074,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             }
         }
 
+        $this->load_notifications_preferences($this->app);
+
         return $this;
     }
 
@@ -1097,7 +1099,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public function get_notifications_preference(Application $app, $notification_id)
     {
         if (!$this->notifications_preferences_loaded)
-            $this->load_notifications_preferences($app);
+            $this->load_preferences($app);
 
         return $this->_prefs['notification_' . $notification_id];
     }
@@ -1105,7 +1107,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public function set_notification_preference(Application $app, $notification_id, $value)
     {
         if (!$this->notifications_preferences_loaded)
-            $this->load_notifications_preferences($app);
+            $this->load_preferences($app);
 
         return $this->_prefs['notification_' . $notification_id] = $value ? '1' : '0';
     }

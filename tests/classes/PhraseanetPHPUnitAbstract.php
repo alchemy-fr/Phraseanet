@@ -6,6 +6,9 @@ use Alchemy\Phrasea\Border\File;
 use Doctrine\Common\DataFixtures\Loader;
 use Entities\AggregateToken;
 use Entities\Feed;
+use Entities\FeedEntry;
+use Entities\FeedItem;
+use Entities\FeedPublisher;
 use Entities\FeedToken;
 use Entities\User;
 use Silex\WebTestCase;
@@ -1140,6 +1143,70 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         return $this->getMockBuilder('appbox')
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    protected function createFeed()
+    {
+        $feed = new Feed();
+        $feed->setTitle('Feed')
+             ->setSubtitle('subtitle');
+
+        self::$DI['app']['EM']->persist($feed);
+        self::$DI['app']['EM']->flush();
+
+        return $feed;
+    }
+
+    protected function createEntry(Feed $feed)
+    {
+        $publisher = new FeedPublisher();
+        $publisher->setFeed($feed)
+                  ->setIsOwner(true)
+                  ->setUsrId(self::$DI['user']->get_id());
+
+        $feed->addPublisher($publisher);
+
+        $entry = new FeedEntry();
+        $entry->setTitle('entry')
+              ->setSubtitle('subtitle')
+              ->setAuthorEmail('email')
+              ->setAuthorName('name')
+              ->setFeed($feed)
+              ->setPublisher($publisher);
+
+        $feed->addEntry($entry);
+
+        self::$DI['app']['EM']->persist($publisher);
+        self::$DI['app']['EM']->persist($feed);
+        self::$DI['app']['EM']->persist($entry);
+        self::$DI['app']['EM']->flush();
+
+        return $entry;
+    }
+
+    protected function addItem(FeedEntry $entry, \record_adapter $record)
+    {
+        $item = new FeedItem();
+        $item->setEntry($entry)
+             ->setRecordId($record->get_record_id())
+             ->setSbasId($record->get_sbas_id());
+
+        $entry->addItem($item);
+
+        self::$DI['app']['EM']->persist($item);
+        self::$DI['app']['EM']->persist($entry);
+        self::$DI['app']['EM']->flush();
+
+        return $item;
+    }
+
+    protected function setFeedIsPublic(Feed $feed, $public)
+    {
+        $feed->setIsPublic($public);
+        self::$DI['app']['EM']->persist($feed);
+        self::$DI['app']['EM']->flush();
+
+        return $feed;
     }
 }
 
