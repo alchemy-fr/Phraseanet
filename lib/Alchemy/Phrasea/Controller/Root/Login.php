@@ -52,7 +52,7 @@ class Login implements ControllerProviderInterface
         $items = array();
 
         foreach($app['EM']->getRepository('Entities\FeedItem')->loadLatest($app, 20) as $item) {
-            $record = $item->get_record();
+            $record = $item->getRecord($app);
             $preview = $record->get_subdef('preview');
             $permalink = $preview->get_permalink();
 

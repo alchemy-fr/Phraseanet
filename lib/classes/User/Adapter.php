@@ -327,6 +327,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                 self::$_instance[$id] = new self($id, $app);
                 $app['phraseanet.appbox']->set_data_to_cache(self::$_instance[$id], '_user_' . $id);
             }
+        } else {
+            self::$_instance[$id]->set_app($app);
         }
 
         return array_key_exists($id, self::$_instance) ? self::$_instance[$id] : false;
@@ -349,6 +351,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     protected function set_app(Application $app)
     {
         $this->app = $app;
+        if (null !== $this->ACL) {
+            $this->ACL->set_app($app);
+        }
     }
 
     /**
@@ -1092,22 +1097,18 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                 }
             }
         }
-        $this->notification_preferences_loaded = true;
     }
-    protected $notifications_preferences_loaded = false;
 
     public function get_notifications_preference(Application $app, $notification_id)
     {
-        if (!$this->notifications_preferences_loaded)
-            $this->load_preferences($app);
+        $this->load_preferences($app);
 
-        return $this->_prefs['notification_' . $notification_id];
+        return isset($this->_prefs['notification_' . $notification_id]) ? $this->_prefs['notification_' . $notification_id] : null;
     }
 
     public function set_notification_preference(Application $app, $notification_id, $value)
     {
-        if (!$this->notifications_preferences_loaded)
-            $this->load_preferences($app);
+        $this->load_preferences($app);
 
         return $this->_prefs['notification_' . $notification_id] = $value ? '1' : '0';
     }

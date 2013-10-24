@@ -32,9 +32,7 @@ class Permalink extends AbstractDelivery
         $that = $this;
 
         $retrieveRecord = function ($app, $databox, $token, $record_id, $subdef) {
-            if (\databox_subdef::CLASS_THUMBNAIL === $subdef) {
-                $record = $databox->get_record($record_id);
-            } elseif (\databox_subdef::CLASS_PREVIEW === $subdef && $app['EM']->getRepository('Entities\FeedItem')->isRecordInPublicFeed($app, $databox->get_sbas_id(), $record_id)) {
+            if (in_array($subdef, array(\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL)) && $app['EM']->getRepository('Entities\FeedItem')->isRecordInPublicFeed($app, $databox->get_sbas_id(), $record_id)) {
                 $record = $databox->get_record($record_id);
             } else {
                 $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
@@ -119,7 +117,7 @@ class Permalink extends AbstractDelivery
             $token = $request->query->get('token');
 
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-            $record = $retrieveRecord($app, $databox, $token, $record_id, 'caption');
+            $record = $retrieveRecord($app, $databox, $token, $record_id, \databox_subdef::CLASS_THUMBNAIL);
             $caption = $record->get_caption();
 
             return new Response($caption->serialize(\caption_record::SERIALIZE_JSON), 200, array("Content-Type" => 'application/json'));

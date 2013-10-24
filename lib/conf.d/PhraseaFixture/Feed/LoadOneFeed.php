@@ -47,9 +47,7 @@ class LoadOneFeed extends AbstractFixture implements FixtureInterface
             $feed->setTitle("test");
         }
 
-        if (isset($this->public) && $this->public !== null) {
-            $feed->setIsPublic($this->public);
-        }
+        $feed->setIsPublic((Boolean) $this->public);
 
         $feed->setSubtitle("description");
 

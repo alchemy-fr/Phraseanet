@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
-class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class LightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
     protected $client;
@@ -311,11 +311,9 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->assertObjectHasAttribute('error', $datas);
     }
 
-    public function testAjaxSetRelease()
+    public function testAjaxSetReleaseWithRegularBasket()
     {
         $basket = $this->insertOneBasket();
-
-        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone');
 
         $crawler = self::$DI['client']->request('POST', '/lightbox/ajax/SET_RELEASE/' . $basket->getId() . '/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
@@ -323,8 +321,13 @@ class ApplicationLightboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue(is_object($datas), 'asserting good json datas');
         $this->assertTrue($datas->error);
+    }
 
+    public function testAjaxSetReleaseWithRegularBasketWithValidation()
+    {
         $validationBasket = $this->insertOneValidationBasket();
+
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone');
 
         foreach ($validationBasket->getElements() as $element) {
             $element->getUserValidationDatas(self::$DI['app']['authentication']->getUser(), self::$DI['app'])->setAgreement(true);

@@ -363,10 +363,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return \Entities\FeedEntry
      */
-    protected function insertOneFeedEntry(\User_Adapter $user)
+    protected function insertOneFeedEntry(\User_Adapter $user, $public = false)
     {
         try {
-            $feed = $this->insertOneFeed($user);
+            $feed = $this->insertOneFeed($user, '', $public);
 
             $em = self::$DI['app']['EM'];
 
@@ -436,22 +436,31 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return \Entities\FeedItem
      */
-    protected function insertOneFeedItem(\User_Adapter $user)
+    protected function insertOneFeedItem(\User_Adapter $user, $public = false, $qty = 1, \record_adapter $record = null)
     {
         try {
-            $entry = $this->insertOneFeedEntry($user);
-
-            $item = new \Entities\FeedItem();
-            $item->setEntry($entry);
-            $item->setRecordId(self::$DI['record_1']->get_record_id());
-            $item->setSbasId(self::$DI['record_1']->get_sbas_id());
-
-            $entry->addItem($item);
-
             $em = self::$DI['app']['EM'];
+            $entry = $this->insertOneFeedEntry($user, $public);
+
+            for ($i = 0; $i < $qty; $i++) {
+                $item = new \Entities\FeedItem();
+                $item->setEntry($entry);
+
+                if (null === $record) {
+                    $actual = self::$DI['record_'.($i+1)];
+                } else {
+                    $actual = $record;
+                }
+
+                $item->setRecordId($actual->get_record_id());
+                $item->setSbasId($actual->get_sbas_id());
+                $item->setEntry($entry);
+
+                $entry->addItem($item);
+                $em->persist($item);
+            }
 
             $em->persist($entry);
-            $em->persist($item);
 
             $em->flush();
         } catch (\Exception $e) {
@@ -1143,70 +1152,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         return $this->getMockBuilder('appbox')
             ->disableOriginalConstructor()
             ->getMock();
-    }
-
-    protected function createFeed()
-    {
-        $feed = new Feed();
-        $feed->setTitle('Feed')
-             ->setSubtitle('subtitle');
-
-        self::$DI['app']['EM']->persist($feed);
-        self::$DI['app']['EM']->flush();
-
-        return $feed;
-    }
-
-    protected function createEntry(Feed $feed)
-    {
-        $publisher = new FeedPublisher();
-        $publisher->setFeed($feed)
-                  ->setIsOwner(true)
-                  ->setUsrId(self::$DI['user']->get_id());
-
-        $feed->addPublisher($publisher);
-
-        $entry = new FeedEntry();
-        $entry->setTitle('entry')
-              ->setSubtitle('subtitle')
-              ->setAuthorEmail('email')
-              ->setAuthorName('name')
-              ->setFeed($feed)
-              ->setPublisher($publisher);
-
-        $feed->addEntry($entry);
-
-        self::$DI['app']['EM']->persist($publisher);
-        self::$DI['app']['EM']->persist($feed);
-        self::$DI['app']['EM']->persist($entry);
-        self::$DI['app']['EM']->flush();
-
-        return $entry;
-    }
-
-    protected function addItem(FeedEntry $entry, \record_adapter $record)
-    {
-        $item = new FeedItem();
-        $item->setEntry($entry)
-             ->setRecordId($record->get_record_id())
-             ->setSbasId($record->get_sbas_id());
-
-        $entry->addItem($item);
-
-        self::$DI['app']['EM']->persist($item);
-        self::$DI['app']['EM']->persist($entry);
-        self::$DI['app']['EM']->flush();
-
-        return $item;
-    }
-
-    protected function setFeedIsPublic(Feed $feed, $public)
-    {
-        $feed->setIsPublic($public);
-        self::$DI['app']['EM']->persist($feed);
-        self::$DI['app']['EM']->flush();
-
-        return $feed;
     }
 }
 

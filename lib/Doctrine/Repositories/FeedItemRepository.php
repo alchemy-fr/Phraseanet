@@ -34,7 +34,6 @@ class FeedItemRepository extends EntityRepository
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters(array('sbas_id' => $sbas_id, 'record_id' => $record_id));
-        $query->useResultCache(false);
 
         return count($query->getResult()) > 0;
     }

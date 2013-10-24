@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     public function testDatafilesRouteAuthenticated()
     {
@@ -61,58 +61,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    public function testIs_record_in_public_feed()
-    {
-        $feed = $this->createFeed();
-        $this->setFeedIsPublic($feed, true);
-        $entry = $this->createEntry($feed);
-
-        $this->addItem($entry, self::$DI['record_1']);
-
-        $this->assertTrue(self::$DI['app']['EM']->getRepository('Entities\FeedItem')->isRecordInPublicFeed(self::$DI['app'], self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id()));
-        $this->setFeedIsPublic($feed, false);
-        $this->assertFalse(self::$DI['app']['EM']->getRepository('Entities\FeedItem')->isRecordInPublicFeed(self::$DI['app'], self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id()));
-    }
-
-    public function testLoadLatestItems()
-    {
-        $feed = $this->createFeed();
-        $this->setFeedIsPublic($feed, true);
-        $entry = $this->createEntry($feed);
-
-        foreach(range(1, 2) as $i) {
-            $this->addItem($entry, self::$DI['record_'.$i]);
-        }
-
-        $this->assertCount(2, self::$DI['app']['EM']->getRepository('Entities\FeedItem')->loadLatest(self::$DI['app'], 20));
-    }
-
-    public function testLoadLatestItemsLessItems()
-    {
-        $feed = $this->createFeed();
-        $this->setFeedIsPublic($feed, true);
-        $entry = $this->createEntry($feed);
-
-        foreach(range(1, 2) as $i) {
-            $this->addItem($entry, self::$DI['record_'.$i]);
-        }
-
-        $this->assertCount(1, self::$DI['app']['EM']->getRepository('Entities\FeedItem')->loadLatest(self::$DI['app'], 1));
-    }
-
-    public function testLoadLatestItemsNoPublic()
-    {
-        $feed = $this->createFeed();
-        $entry = $this->createEntry($feed);
-
-        foreach(range(1, 2) as $i) {
-            $this->addItem($entry, self::$DI['record_'.$i]);
-        }
-
-        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Entities\FeedItem')->loadLatest(self::$DI['app'], 20));
-    }
-
-    public function testDatafilesRouteNotAuthenticatedIsOkInPublicFeed()
+    public function testDatafilesRouteOnUnaccessibleRecordIsOkInPublicFeed()
     {
         $tmp = tempnam(sys_get_temp_dir(), 'testEtag');
         copy(__DIR__ . '/../../../../files/cestlafete.jpg', $tmp);
@@ -121,20 +70,12 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
         $file = new File(self::$DI['app'], $media, self::$DI['collection_no_access']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
-
         $record->generate_subdefs($record->get_databox(), self::$DI['app']);
 
-        $feed = $this->createFeed();
-        $this->setFeedIsPublic($feed, true);
-        $entry = $this->createEntry($feed);
-        $this->addItem($entry, $record);
-
-        self::$DI['record_1']->move_to_collection(self::$DI['collection_no_access'], self::$DI['app']['phraseanet.appbox']);
+        $item = $this->insertOneFeedItem(self::$DI['user'], true, 1, $record);
 
         self::$DI['client']->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
-
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
-        self::$DI['record_1']->move_to_collection(self::$DI['collection'], self::$DI['app']['phraseanet.appbox']);
 
         unlink($tmp);
     }
@@ -269,13 +210,10 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     public function testPermalinkRouteNotAuthenticatedIsOkInPublicFeed()
     {
-        $feed = $this->createFeed();
-        $this->setFeedIsPublic($feed, true);
-        $entry = $this->createEntry($feed);
-        $this->addItem($entry, self::$DI['record_1']);
+        $record = $this->insertOneFeedItem(self::$DI['user'], true)->getRecord(self::$DI['app']);
 
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('GET', '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
+        self::$DI['client']->request('GET', '/permalink/v1/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
     }

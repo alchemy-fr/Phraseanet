@@ -24,7 +24,6 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $feed = $this->insertOneFeed(self::$DI['user']);
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/requestavailable/');
-//        print(self::$DI['client']->getResponse());exit;
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
         foreach ($feeds as $one_feed) {

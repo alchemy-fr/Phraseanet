@@ -119,6 +119,11 @@ class ACL implements cache_cacheableInterface
         return $this;
     }
 
+    public function set_app(Application $app)
+    {
+        $this->app = $app;
+    }
+
     /**
      * Check if a hd grant has been received for a record
      *
