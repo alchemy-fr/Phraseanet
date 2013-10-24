@@ -856,6 +856,9 @@ form[name=registerForm] .multiselect-group {
 .lt-ie9 .input-table input,
 .lt-ie9 .input-table .input {
    background-color: @inputIEBackground !important;
+   color: contrast(@inputIEBackground) !important;
+  /** If font family is issued front google fonts hidden dot characters will always be white */
+   font-family: Arial !important;
 }
 
 
