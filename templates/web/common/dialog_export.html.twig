@@ -246,7 +246,6 @@
                             <button type="button" class="close_button btn btn-inverse">{% trans 'boutton::annuler'%}</button>
                         </div>
                     </form>
-                    <iframe style="display:none;" name="sendmail_target"></iframe>
                 </div>
             </div>
         {% endif %}
@@ -798,8 +797,13 @@
                 if (!check_TOU($('#sendmail'))) {
                     return false;
                 }
-                dialog.Close();
+
+                if ($('iframe[name=""]').length === 0) {
+                    $('body').append('<iframe style="display:none;" name="sendmail_target"></iframe>');
+                }
+
                 $('#sendmail form').submit();
+                dialog.Close();
             });
 
             $('.datepicker', dialog.getDomElement()).datepicker({
