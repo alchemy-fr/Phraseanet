@@ -23,7 +23,7 @@ $groups = array(
     'client' => array(
         '//include/jslibs/swfobject/swfobject.js'
         , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
-        , '//include/jslibs/jquery.cookie.js'
+        , '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//include/jslibs/json2.js'
         , '//include/jslibs/audio-player/audio-player-noswfobject.js'
@@ -37,7 +37,7 @@ $groups = array(
     'admin' => array(
         '//assets/modernizr/modernizr.js'
         , '//assets/underscore-amd/underscore.js'
-        , '//include/jslibs/jquery.cookie.js'
+        , '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jslibs/jquery-treeview/jquery.treeview.js'
         , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
         , '//include/jquery.kb-event.js'
@@ -52,7 +52,7 @@ $groups = array(
     ),
     'report' => array(
          '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
-        , '//include/jslibs/jquery.cookie.js'
+        , '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
@@ -72,7 +72,7 @@ $groups = array(
         , '//include/jslibs/jquery.mousewheel.js'
         , '//include/jslibs/jquery.lazyload/jquery.lazyload.1.8.1.js'
         , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
-        , '//include/jslibs/jquery.cookie.js'
+        , '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//assets/humane-js/humane.js'
         , '//assets/blueimp-load-image/js/load-image.js'
@@ -105,7 +105,7 @@ $groups = array(
         , '//include/jslibs/jquery-treeview/jquery.treeview.js'
         , '//include/jslibs/jquery-treeview/jquery.treeview.async.js'),
     'thesaurus' => array(
-         '//include/jslibs/jquery.cookie.js'
+         '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
         , '//skins/thesaurus/win.js'
@@ -118,7 +118,7 @@ $groups = array(
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
         , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
-        , '//include/jslibs/jquery.cookie.js'
+        , '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
         , '//skins/prod/jquery.Dialog.js'
@@ -130,7 +130,7 @@ $groups = array(
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
         , '//include/jslibs/jquery-ui-1.10.3/jquery-ui-i18n.js'
-        , '//include/jslibs/jquery.cookie.js'
+        , '//assets/jquery.cookie/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
         , '//skins/prod/jquery.Dialog.js'

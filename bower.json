@@ -26,6 +26,7 @@
     "bootstrap-multiselect": "https://github.com/davidstutz/bootstrap-multiselect.git#bootstrap-2-3",
     "zxcvbn" : "https://github.com/lowe/zxcvbn.git",
     "geonames-server-jquery-plugin" : "~0.2",
-    "jquery-galleria": "1.2.9"
+    "jquery-galleria": "1.2.9",
+    "jquery.cookie": "~1.4"
   }
 }
