@@ -5,9 +5,10 @@ $(document).ready(function(){
 			function(){$(this).addClass('hover');},
 			function(){$(this).removeClass('hover');}
 	);
+
 	var locale = $.cookie('locale');
 
-	var jq_date = p4.lng = locale !== null ? locale.split('_').reverse().pop() : 'en';
+	var jq_date = p4.lng = typeof locale !== "undefined" ? locale.split('_').reverse().pop() : 'en';
 
   if(jq_date == 'en')
   {
