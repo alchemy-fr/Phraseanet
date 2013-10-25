@@ -12,6 +12,9 @@
 namespace Alchemy\Phrasea\Command;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Command\Upgrade\Step31;
+use Alchemy\Phrasea\Command\Upgrade\Step35;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -43,19 +46,19 @@ Steps are
 EOF
         );
 
-        $this->addOption('from', 'f', null, 'The version where to start upgrade');
-        $this->addOption('at-version', null, null, 'The version step to upgrade');
+        $this->addOption('from', 'f', InputOption::VALUE_REQUIRED, 'The version where to start upgrade');
+        $this->addOption('at-version', null, InputOption::VALUE_REQUIRED, 'The version step to upgrade');
 
         return $this;
     }
 
     protected function generateUpgradesFromOption(InputInterface $input)
     {
-        if (false === $input->getOption('from') && false === $input->getOption('at-version')) {
+        if (null === $input->getOption('from') && null === $input->getOption('at-version')) {
             throw new \Exception('You MUST provide a `from` or `at-version` option');
         }
 
-        if (false !== $input->getOption('from') && false !== $input->getOption('at-version')) {
+        if (null !== $input->getOption('from') && null !== $input->getOption('at-version')) {
             throw new \Exception('You CAN NOT provide a `from` AND `at-version` option at the same time');
         }
 
@@ -72,6 +75,15 @@ EOF
 
                 $classname = __NAMESPACE__ . '\\' . $classname;
                 $this->upgrades[] = new $classname($this->container);
+            }
+        }
+
+        if (null !== $input->getOption('at-version')) {
+            if ('3.1' === $input->getOption('at-version')) {
+                $this->upgrades[] = new Step31($this->container);
+            }
+            if ('3.5' === $input->getOption('at-version')) {
+                $this->upgrades[] = new Step35($this->container);
             }
         }
     }

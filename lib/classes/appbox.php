@@ -397,7 +397,7 @@ class appbox extends base
 
         if (version_compare($from_version, '3.7') < 0) {
             $upgrader->addRecommendation(_('Your install might need to re-read technical datas'), 'bin/console records:rescan-technical-datas');
-            $upgrader->addRecommendation(_('Your install might need to re-read technical datas'), 'bin/console records:build-missing-subdefs');
+            $upgrader->addRecommendation(_('Your install might need to build some sub-definitions'), 'bin/console records:build-missing-subdefs');
         }
 
         return $advices;

@@ -113,7 +113,7 @@ class Permalink extends AbstractDelivery
             return $response;
         };
 
-        $controllers->get('/v1/{sbas_id}/{record_id}/caption/', function(PhraseaApplication $app, Request $request, $sbas_id, $record_id) use ($retrieveRecord) {
+        $controllers->get('/v1/{sbas_id}/{record_id}/caption/', function(PhraseaApplication $app, Request $request, $sbas_id, $record_id) {
             $token = $request->query->get('token');
 
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
