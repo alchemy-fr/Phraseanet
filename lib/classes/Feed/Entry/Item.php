@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -273,9 +274,26 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
                 }
 
                 if (!isset($items[$row['item']])) {
-                    $item = new self($app['phraseanet.appbox'], $entries[$row['entry']], $row['item']);
+                     try {
+                         $item = new self($app['phraseanet.appbox'], $entries[$row['entry']], $row['item']);
+                         $record = $item->get_record();
+                     } catch (NotFoundHttpException $e) {
+                         $sql = 'DELETE FROM feed_entry_elements WHERE id = :id';
+                         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+                         $stmt->execute(array(':id' => $row['item']));
+                         $stmt->closeCursor();
 
-                     if (null !== $preview = $item->get_record()->get_subdef('preview')) {
+                         continue;
+                     } catch (\Exception_Record_AdapterNotFound $e) {
+                         $sql = 'DELETE FROM feed_entry_elements WHERE id = :id';
+                         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+                         $stmt->execute(array(':id' => $row['item']));
+                         $stmt->closeCursor();
+
+                         continue;
+                     }
+
+                     if (null !== $preview = $record->get_subdef('preview')) {
                          if (null !== $permalink = $preview->get_permalink()) {
                             $items[$row['item']] = $item;
 

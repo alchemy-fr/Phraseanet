@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Border\File;
+
 class Feed_Entry_ItemTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     /**
@@ -32,7 +34,7 @@ class Feed_Entry_ItemTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         self::$feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_title, self::$feed_subtitle);
         $publisher = Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], self::$feed, self::$DI['user']);
-        self::$entry = Feed_Entry_Adapter::create(self::$DI['app'], self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email);
+        self::$entry = Feed_Entry_Adapter::create(self::$DI['app'], self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email, false);
 
         self::$object = Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], self::$entry, self::$DI['record_1']);
     }
@@ -106,6 +108,38 @@ class Feed_Entry_ItemTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertCount(0, Feed_Entry_Item::loadLatest(self::$DI['app'], 20));
     }
 
+    public function testLoadLatestWithDeletedDatabox()
+    {
+        $this->deleteEntries();
+        self::$feed->set_public(true);
+
+        $sql = 'INSERT INTO feed_entry_elements
+            (id, entry_id, sbas_id, record_id)
+            VALUES (null, :entry_id, :sbas_id, :record_id)';
+
+        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':entry_id' => self::$entry->get_id(), ':sbas_id' => self::$DI['record_1']->get_databox()->get_sbas_id(), ':record_id' => 0));
+        $stmt->closeCursor();
+
+        $this->assertCount(0, Feed_Entry_Item::loadLatest(self::$DI['app'], 20));
+    }
+
+    public function testLoadLatestWithDeletedRecord()
+    {
+        $this->deleteEntries();
+        self::$feed->set_public(true);
+
+        $sql = 'INSERT INTO feed_entry_elements
+            (id, entry_id, sbas_id, record_id)
+            VALUES (null, :entry_id, :sbas_id, :record_id)';
+
+        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':entry_id' => self::$entry->get_id(), ':sbas_id' => -24, ':record_id' => 0));
+        $stmt->closeCursor();
+
+        $this->assertCount(0, Feed_Entry_Item::loadLatest(self::$DI['app'], 20));
+    }
+
     public function testIs_record_in_public_feed()
     {
         $this->deleteEntries();
@@ -123,7 +157,7 @@ class Feed_Entry_ItemTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     private function deleteEntries()
     {
-        $sql = "TRUNCATE feed_entry_elements";
+        $sql = "DELETE FROM feed_entry_elements";
         $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
