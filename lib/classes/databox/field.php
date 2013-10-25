@@ -285,6 +285,7 @@ class databox_field implements cache_cacheableInterface
                 $databox->set_data_to_cache(self::$_instance[$instance_id], $cache_key);
             }
         }
+        self::$_instance[$instance_id]->app = $app;
 
         return self::$_instance[$instance_id];
     }

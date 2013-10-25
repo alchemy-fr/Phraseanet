@@ -119,6 +119,11 @@ class ACL implements cache_cacheableInterface
         return $this;
     }
 
+    public function set_app(Application $app)
+    {
+        $this->app = $app;
+    }
+
     /**
      * Check if a hd grant has been received for a record
      *
@@ -250,6 +255,10 @@ class ACL implements cache_cacheableInterface
         } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_right_on_base($record->get_base_id(), 'candwnldhd')) {
             $granted = true;
         } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_hd_grant($record)) {
+            $granted = true;
+        }
+
+        if (false === $granted && $this->app['EM']->getRepository('Entities\FeedItem')->isRecordInPublicFeed($this->app, $record->get_sbas_id(), $record->get_record_id())) {
             $granted = true;
         }
 

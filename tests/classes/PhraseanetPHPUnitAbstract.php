@@ -6,6 +6,9 @@ use Alchemy\Phrasea\Border\File;
 use Doctrine\Common\DataFixtures\Loader;
 use Entities\AggregateToken;
 use Entities\Feed;
+use Entities\FeedEntry;
+use Entities\FeedItem;
+use Entities\FeedPublisher;
 use Entities\FeedToken;
 use Entities\User;
 use Silex\WebTestCase;
@@ -360,10 +363,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return \Entities\FeedEntry
      */
-    protected function insertOneFeedEntry(\User_Adapter $user)
+    protected function insertOneFeedEntry(\User_Adapter $user, $public = false)
     {
         try {
-            $feed = $this->insertOneFeed($user);
+            $feed = $this->insertOneFeed($user, '', $public);
 
             $em = self::$DI['app']['EM'];
 
@@ -433,22 +436,31 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return \Entities\FeedItem
      */
-    protected function insertOneFeedItem(\User_Adapter $user)
+    protected function insertOneFeedItem(\User_Adapter $user, $public = false, $qty = 1, \record_adapter $record = null)
     {
         try {
-            $entry = $this->insertOneFeedEntry($user);
-
-            $item = new \Entities\FeedItem();
-            $item->setEntry($entry);
-            $item->setRecordId(self::$DI['record_1']->get_record_id());
-            $item->setSbasId(self::$DI['record_1']->get_sbas_id());
-
-            $entry->addItem($item);
-
             $em = self::$DI['app']['EM'];
+            $entry = $this->insertOneFeedEntry($user, $public);
+
+            for ($i = 0; $i < $qty; $i++) {
+                $item = new \Entities\FeedItem();
+                $item->setEntry($entry);
+
+                if (null === $record) {
+                    $actual = self::$DI['record_'.($i+1)];
+                } else {
+                    $actual = $record;
+                }
+
+                $item->setRecordId($actual->get_record_id());
+                $item->setSbasId($actual->get_sbas_id());
+                $item->setEntry($entry);
+
+                $entry->addItem($item);
+                $em->persist($item);
+            }
 
             $em->persist($entry);
-            $em->persist($item);
 
             $em->flush();
         } catch (\Exception $e) {

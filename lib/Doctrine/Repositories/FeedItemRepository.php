@@ -2,6 +2,7 @@
 
 namespace Repositories;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,4 +13,73 @@ use Doctrine\ORM\EntityRepository;
  */
 class FeedItemRepository extends EntityRepository
 {
+    /**
+     * Checks if a record is published in a public feed.
+     *
+     * @param Application $app
+     * @param integer     $sbas_id
+     * @param integer     $record_id
+     *
+     * @return Boolean
+     */
+    public function isRecordInPublicFeed(Application $app, $sbas_id, $record_id)
+    {
+        $dql = 'SELECT i
+            FROM Entities\FeedItem i
+            JOIN i.entry e
+            JOIN e.feed f
+            WHERE i.sbasId = :sbas_id
+                AND i.recordId = :record_id
+                AND f.public = true';
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters(array('sbas_id' => $sbas_id, 'record_id' => $record_id));
+
+        return count($query->getResult()) > 0;
+    }
+
+    /**
+     * Gets latest items from public feeds.
+     *
+     * @param Application $app
+     * @param integer     $nbItems
+     *
+     * @return FeedItem[] An array of FeedItem
+     */
+    public function loadLatest(Application $app, $nbItems = 20)
+    {
+        $execution = 0;
+        $items = array();
+
+        do {
+            $dql = 'SELECT i
+                FROM Entities\FeedItem i
+                JOIN i.entry e
+                JOIN e.feed f
+                WHERE f.public = true ORDER BY i.createdOn DESC';
+
+            $query = $this->_em->createQuery($dql);
+            $query
+                ->setFirstResult((integer) $nbItems * $execution)
+                ->setMaxResults((integer) $nbItems);
+
+            $result = $query->getResult();
+
+            foreach($result as $item) {
+                if (null !== $preview = $item->getRecord($app)->get_subdef('preview')) {
+                    if (null !== $permalink = $preview->get_permalink()) {
+                        $items[] = $item;
+
+                        if (count($items) >= $nbItems) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            $execution++;
+        } while (count($items) < $nbItems && count($result) !== 0);
+
+        return $items;
+    }
 }

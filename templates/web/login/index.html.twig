@@ -123,7 +123,33 @@
         {% include 'login/include/cooliris-content.html.twig' %}
     {% elseif display_layout == "SCROLL" %}
         {% include 'login/include/scroll-content.html.twig' %}
+    {% elseif display_layout == "CAROUSEL" %}
+        {% include 'login/include/carousel.html.twig' %}
+    {% elseif display_layout == "GALLERIA" %}
+        {% include 'login/include/galleria.html.twig' %}
     {% endif %}
+{% endblock %}
+
+{% block header_stylesheet %}
+    {{  parent() }}
+
+    {% if display_layout == "CAROUSEL" %}
+        <style type="text/css">
+            #carousel {
+               height: 400px;
+            }
+
+            #carousel .item img {
+               margin: 0 auto;
+               max-height: 400px;
+            }
+        </style>
+    {% elseif display_layout == "GALLERIA" %}
+        <style type="text/css">
+            #galleria {
+                height: 400px;
+        </style>
+    {%  endif %}
 {% endblock %}
 
 {% block scripts %}

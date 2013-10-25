@@ -1,0 +1,25 @@
+<div id="galleria" class="hidden">
+    {%  for item in last_publication_items %}
+        <img src="{{ item['permalink'].get_url() }}" />
+    {% endfor %}
+</div>
+
+<script type="text/javascript">
+    requirejs.config({
+        paths: {
+            'galleria' : '../assets/jquery-galleria/src/galleria'
+        },
+        shim: {
+            'galleria': {
+                deps: ['jquery'],
+                exports: 'Galleria'
+            }
+        }
+    });
+
+    require(["jquery", "galleria"], function($, Galleria) {
+        Galleria.loadTheme('/assets/jquery-galleria/src/themes/classic/galleria.classic.js');
+        Galleria.run("#galleria");
+        $("#galleria").removeClass("hidden");
+    });
+</script>

@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     public function testDatafilesRouteAuthenticated()
     {
@@ -59,6 +59,25 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
 
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
+    }
+
+    public function testDatafilesRouteOnUnaccessibleRecordIsOkInPublicFeed()
+    {
+        $tmp = tempnam(sys_get_temp_dir(), 'testEtag');
+        copy(__DIR__ . '/../../../../files/cestlafete.jpg', $tmp);
+
+        $media = self::$DI['app']['mediavorus']->guess($tmp);
+
+        $file = new File(self::$DI['app'], $media, self::$DI['collection_no_access']);
+        $record = \record_adapter::createFromFile($file, self::$DI['app']);
+        $record->generate_subdefs($record->get_databox(), self::$DI['app']);
+
+        $item = $this->insertOneFeedItem(self::$DI['user'], true, 1, $record);
+
+        self::$DI['client']->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+
+        unlink($tmp);
     }
 
     public function testDatafilesRouteNotAuthenticatedUnknownSubdef()
@@ -187,6 +206,16 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
         $this->assertEquals(rtrim(self::$DI['app']['phraseanet.configuration']['main']['servername'], '/') . "/permalink/v1/1/". self::$DI['record_1']->get_record_id()."/caption/?token=".$token, $response->headers->get("Link"));
         $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testPermalinkRouteNotAuthenticatedIsOkInPublicFeed()
+    {
+        $record = $this->insertOneFeedItem(self::$DI['user'], true)->getRecord(self::$DI['app']);
+
+        self::$DI['app']['authentication']->closeAccount();
+        self::$DI['client']->request('GET', '/permalink/v1/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
+
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
     }
 
     protected function get_a_permaviewBCcompatibility(array $headers = array())

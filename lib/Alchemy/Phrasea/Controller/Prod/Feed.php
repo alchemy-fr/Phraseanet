@@ -93,7 +93,7 @@ class Feed implements ControllerProviderInterface
             $app['EM']->persist($feed);
             $app['EM']->flush();
 
-            $app['events-manager']->trigger('__FEED_ENTRY_CREATE__', array('entry_id' => $entry->getId()), $entry);
+            $app['events-manager']->trigger('__FEED_ENTRY_CREATE__', array('entry_id' => $entry->getId(), 'notify_email' => (Boolean) $request->request->get('notify')), $entry);
 
             $datas = array('error' => false, 'message' => false);
 
