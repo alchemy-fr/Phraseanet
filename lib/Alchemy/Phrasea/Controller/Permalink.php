@@ -32,9 +32,7 @@ class Permalink extends AbstractDelivery
         $that = $this;
 
         $retrieveRecord = function ($app, $databox, $token, $record_id, $subdef) {
-            if (\databox_subdef::CLASS_THUMBNAIL === $subdef) {
-                $record = $databox->get_record($record_id);
-            } elseif (\databox_subdef::CLASS_PREVIEW === $subdef && \Feed_Entry_Item::is_record_in_public_feed($app, $databox->get_sbas_id(), $record_id)) {
+            if (in_array($subdef, array(\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL)) && \Feed_Entry_Item::is_record_in_public_feed($app, $databox->get_sbas_id(), $record_id)) {
                 $record = $databox->get_record($record_id);
             } else {
                 $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
