@@ -1,3 +1,17 @@
+{%  if push.get_count_actionable() == 0 %}
+<div class="PNB">
+    <div style="text-align:center;margin-top:150px;">
+    {%  if 'Push' == context %}
+        {%  trans %}None of the selected records can be pushed.{% endtrans %}
+    {%  else %}
+        {%  trans %}None of the selected records can be sent for feedback.{% endtrans %}
+    {%  endif %}
+    </div>
+    <div style="text-align:center;margin-top:15px;">
+        <button class="btn btn-inverse" onclick="p4.Dialog.Close(1)">{% trans "boutton::fermer" %}</button>
+    </div>
+</div>
+{%  else  %}
 <div class="PNB PushBox" id="PushBox" >
     <div class="PNB" style="width:205px;">
         <div class="PNB10 LeftColumn">
@@ -162,6 +176,23 @@
                     <table style="table-layout:auto;">
                         <tr>
                             <td>
+                                {% if 'Push' == context %}
+                                    {% set nb_push_items = push.get_count_actionable() %}
+                                    {% if push.get_count_not_actionable() == 0 %}
+                                        {% trans %}You are about to push {{ nb_push_items }} records.{% endtrans %}
+                                    {% else %}
+                                        {% set nb_not_available = push.get_count_not_actionable() %}
+                                        {% trans %}You are about to push {{ nb_push_items }} records, {{ nb_not_available }} records can not be processed.{% endtrans %}
+                                    {% endif %}
+                                {% else %}
+                                    {% set nb_push_items = push.get_count_actionable() %}
+                                    {% if push.get_count_not_actionable() == 0 %}
+                                        {% trans %}You are about to ask for feedback for {{ nb_push_items }} records.{% endtrans %}
+                                    {% else %}
+                                        {% set nb_not_available = push.get_count_not_actionable() %}
+                                        {% trans %}You are about to ask for feedback for {{ nb_push_items }} records, {{ nb_not_available }} records can not be processed.{% endtrans %}
+                                    {% endif %}
+                                {% endif %}
                             </td>
                             <td class="options">
                                 <button class="select-all btn btn-inverse">{% trans 'Select all' %}</button>
@@ -244,3 +275,4 @@
         p4.ListManager = new ListManager($('#ListManager'));
     });
 </script>
+{%  endif %}
