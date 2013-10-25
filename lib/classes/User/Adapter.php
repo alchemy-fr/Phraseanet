@@ -370,6 +370,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                 self::$_instance[$id] = new self($id, $app);
                 $app['phraseanet.appbox']->set_data_to_cache(self::$_instance[$id], '_user_' . $id);
             }
+        } else {
+            self::$_instance[$id]->set_app($app);
         }
 
         return array_key_exists($id, self::$_instance) ? self::$_instance[$id] : false;
@@ -392,6 +394,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     protected function set_app(Application $app)
     {
         $this->app = $app;
+        if (null !== $this->ACL) {
+            $this->ACL->set_app($app);
+        }
     }
 
     /**
