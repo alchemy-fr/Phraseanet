@@ -104,12 +104,12 @@ class caption_record implements caption_interface, cache_cacheableInterface
                 $buffer[$field->get_name()] = array();
                 foreach ($vi as $value) {
                     $val = $value->getValue();
-                    $buffer[$field->get_name()][] = ctype_digit($val) ? (int) $val : $val;
+                    $buffer[$field->get_name()][] = ctype_digit($val) ? (int) $val : $this->sanitizeSerializedValue($val);
                 }
             } else {
                 $value = array_pop($vi);
                 $val = $value->getValue();
-                $buffer[$field->get_name()] = ctype_digit($val) ? (int) $val : $val;
+                $buffer[$field->get_name()] = ctype_digit($val) ? (int) $val : $this->sanitizeSerializedValue($val);
             }
         }
 
@@ -133,7 +133,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
             foreach ($values as $value) {
                 $elem = $dom_doc->createElement($field->get_name());
-                $elem->appendChild($dom_doc->createTextNode($value->getValue()));
+                $elem->appendChild($dom_doc->createTextNode($this->sanitizeSerializedValue($value->getValue())));
                 $elem->setAttribute('meta_id', $value->getId());
                 $elem->setAttribute('meta_struct_id', $field->get_meta_struct_id());
                 $description->appendChild($elem);
@@ -151,6 +151,40 @@ class caption_record implements caption_interface, cache_cacheableInterface
         $record->appendChild($doc);
 
         return $dom_doc->saveXML();
+    }
+
+    private function sanitizeSerializedValue($value)
+    {
+        return str_replace(array(
+            "\x00", //null
+            "\x01", //start heading
+            "\x02", //start text
+            "\x03", //end of text
+            "\x04", //end of transmission
+            "\x05", //enquiry
+            "\x06", //acknowledge
+            "\x07", //bell
+            "\x08", //backspace
+            "\x0C", //new page
+            "\x0E", //shift out
+            "\x0F", //shift in
+            "\x10", //data link escape
+            "\x11", //dc 1
+            "\x12", //dc 2
+            "\x13", //dc 3
+            "\x14", //dc 4
+            "\x15", //negative ack
+            "\x16", //synchronous idle
+            "\x17", //end of trans block
+            "\x18", //cancel
+            "\x19", //end of medium
+            "\x1A", //substitute
+            "\x1B", //escape
+            "\x1C", //file separator
+            "\x1D", //group sep
+            "\x1E", //record sep
+            "\x1F", //unit sep
+        ), '', $value);
     }
 
     protected function retrieve_fields()
