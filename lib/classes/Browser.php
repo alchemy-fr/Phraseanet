@@ -737,6 +737,16 @@ class Browser
             }
 
             return true;
+        } else if(stripos($this->_agent, 'trident') !== false) {
+            // >= IE 11
+            $this->setBrowser(self::BROWSER_IE);
+
+            // version
+            $result = explode("rv:", $this->_agent);
+            $this->setVersion(preg_replace("/[^0-9.]+/", "", $result[1]));
+
+            // remove Gecko out of the user-agent, otherwise the mozilla check will success
+            $this->_agent = str_replace(array("Mozilla", "Gecko"), "MSIE", $this->_agent);
         }
 
         return false;
