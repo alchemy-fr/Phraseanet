@@ -1057,10 +1057,10 @@ class Login implements ControllerProviderInterface
 
             $token = $app['auth.password-encoder']->encodePassword($string, $nonce);
 
-            $session->setToken($token)
-                ->setNonce($nonce);
-            $cookie = new Cookie('persistent', $token);
-            $response->headers->setCookie($cookie);
+            $session->setToken($token)->setNonce($nonce);
+
+            $response->headers->setCookie(new Cookie('persistent', $token));
+            $response->headers->setCookie(new Cookie('locale', $app['locale'], 0,  '/',  null, false, false));
 
             $app['EM']->persist($session);
             $app['EM']->flush();
