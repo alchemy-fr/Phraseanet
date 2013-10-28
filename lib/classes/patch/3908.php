@@ -82,7 +82,10 @@ class patch_3908 implements patchInterface
                 ->setPeriod($period)
                 ->setSettings($row['settings'])
                 ->setStatus($row['active'] ? Task::STATUS_STARTED : Task::STATUS_STOPPED);
+
+            $app['EM']->persist($task);
         }
+        $app['EM']->flush();
     }
 
     private function createJob(Application $app, $class)
