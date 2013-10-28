@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "a14a0ffad5deded719e024d7f75894ec",
+    "hash": "0575cac6a86c3e87914f1e95d083b7ae",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -2821,12 +2821,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "a9c17c3266b5f62a5e72814c26ed0c12a1935edc"
+                "reference": "d866a5acc45426f3c48c82b7cedb985d9e24568c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/a9c17c3266b5f62a5e72814c26ed0c12a1935edc",
-                "reference": "a9c17c3266b5f62a5e72814c26ed0c12a1935edc",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/d866a5acc45426f3c48c82b7cedb985d9e24568c",
+                "reference": "d866a5acc45426f3c48c82b7cedb985d9e24568c",
                 "shasum": ""
             },
             "require": {
@@ -2926,7 +2926,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-10-28 09:44:48"
+            "time": "2013-10-28 14:29:55"
         },
         {
             "name": "themattharris/tmhoauth",
@@ -3019,16 +3019,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.14.1",
+            "version": "v1.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb"
+                "reference": "6d6a1009427d1f398c9d40904147bf9f723d5755"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8873d7593ad7c120004f177c0fd01459b383c9cb",
-                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/6d6a1009427d1f398c9d40904147bf9f723d5755",
+                "reference": "6d6a1009427d1f398c9d40904147bf9f723d5755",
                 "shasum": ""
             },
             "require": {
@@ -3037,7 +3037,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.14-dev"
+                    "dev-master": "1.13-dev"
                 }
             },
             "autoload": {
@@ -3064,7 +3064,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-10-15 19:17:38"
+            "time": "2013-08-03 15:35:31"
         },
         {
             "name": "zend/gdata",
