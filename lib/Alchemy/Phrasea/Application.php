@@ -94,6 +94,7 @@ use Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
@@ -202,7 +203,6 @@ class Application extends SilexApplication
         $this->register(new ImagineServiceProvider());
         $this->register(new JMSSerializerServiceProvider());
         $this->register(new FFMpegServiceProvider());
-        $this->register(new FeedServiceProvider());
         $this->register(new FilesystemServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
@@ -298,6 +298,7 @@ class Application extends SilexApplication
         $this->register(new XPDFServiceProvider());
         $this->register(new FileServeServiceProvider());
         $this->register(new ManipulatorServiceProvider());
+        $this->register(new PluginServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             return PhraseaExceptionHandler::register($app['debug']);

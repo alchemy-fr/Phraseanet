@@ -4,6 +4,7 @@ namespace Repositories;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * FeedItemRepository
@@ -66,7 +67,17 @@ class FeedItemRepository extends EntityRepository
             $result = $query->getResult();
 
             foreach($result as $item) {
-                if (null !== $preview = $item->getRecord($app)->get_subdef('preview')) {
+                try {
+                    $record = $item->getRecord($app);
+                } catch (NotFoundHttpException $e) {
+                    $app['EM']->remove($item);
+                    continue;
+                } catch (\Exception_Record_AdapterNotFound $e) {
+                    $app['EM']->remove($item);
+                    continue;
+                }
+
+                if (null !== $preview = $record->get_subdef('preview')) {
                     if (null !== $permalink = $preview->get_permalink()) {
                         $items[] = $item;
 
@@ -77,6 +88,7 @@ class FeedItemRepository extends EntityRepository
                 }
             }
 
+            $app['EM']->flush();
             $execution++;
         } while (count($items) < $nbItems && count($result) !== 0);
 

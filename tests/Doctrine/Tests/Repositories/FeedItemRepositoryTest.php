@@ -38,4 +38,36 @@ class FeedItemRepositoryTest extends \PhraseanetPHPUnitAbstract
         $this->insertOneFeedItem(self::$DI['user'], false, 2);
         $this->assertCount(0, self::$DI['app']['EM']->getRepository('Entities\FeedItem')->loadLatest(self::$DI['app'], 20));
     }
+
+    public function testLoadLatestWithDeletedDatabox()
+    {
+        $record = $this->getMockBuilder('record_adapter')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $record->expects($this->any())
+            ->method('get_sbas_id')
+            ->will($this->returnValue(0));
+        $record->expects($this->any())
+            ->method('get_record_id')
+            ->will($this->returnValue(self::$DI['record_1']->get_record_id()));
+
+        $this->insertOneFeedItem(self::$DI['user'], true, 1, $record);
+        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Entities\FeedItem')->loadLatest(self::$DI['app'], 20));
+    }
+
+    public function testLoadLatestWithDeletedRecord()
+    {
+        $record = $this->getMockBuilder('record_adapter')
+                  ->disableOriginalConstructor()
+                  ->getMock();
+        $record->expects($this->any())
+            ->method('get_sbas_id')
+            ->will($this->returnValue(self::$DI['record_1']->get_sbas_id()));
+        $record->expects($this->any())
+            ->method('get_record_id')
+            ->will($this->returnValue(0));
+
+        $this->insertOneFeedItem(self::$DI['user'], true, 1, $record);
+        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Entities\FeedItem')->loadLatest(self::$DI['app'], 20));
+    }
 }

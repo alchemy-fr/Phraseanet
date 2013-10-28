@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5e87a9e3f046e1b4ee9795d6b213d1a5",
+    "hash": "684aeefa47272d816be20c930dc3d664",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -443,16 +443,16 @@
         },
         {
             "name": "doctrine/cache",
-            "version": "v1.2.0",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "d0e4447707a064a5814b18cb0dcc2f24185f6179"
+                "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/d0e4447707a064a5814b18cb0dcc2f24185f6179",
-                "reference": "d0e4447707a064a5814b18cb0dcc2f24185f6179",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/e16d7adf45664a50fa86f515b6d5e7f670130449",
+                "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449",
                 "shasum": ""
             },
             "require": {
@@ -460,6 +460,10 @@
             },
             "conflict": {
                 "doctrine/common": ">2.2,<2.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=3.7",
+                "satooshi/php-coveralls": "~0.6"
             },
             "type": "library",
             "extra": {
@@ -508,7 +512,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2013-09-26 19:23:25"
+            "time": "2013-10-25 19:04:14"
         },
         {
             "name": "doctrine/collections",
@@ -1160,12 +1164,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/avalanche123/Imagine.git",
-                "reference": "bae39d07a8f56ff21ca773a6b4e1ed2ab13b1c03"
+                "reference": "237ccf205dd5ece7a00a574b4f18bd118aa08a5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/bae39d07a8f56ff21ca773a6b4e1ed2ab13b1c03",
-                "reference": "bae39d07a8f56ff21ca773a6b4e1ed2ab13b1c03",
+                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/237ccf205dd5ece7a00a574b4f18bd118aa08a5d",
+                "reference": "237ccf205dd5ece7a00a574b4f18bd118aa08a5d",
                 "shasum": ""
             },
             "require": {
@@ -1209,7 +1213,7 @@
                 "image manipulation",
                 "image processing"
             ],
-            "time": "2013-10-10 08:13:00"
+            "time": "2013-10-26 10:53:02"
         },
         {
             "name": "jms/metadata",
@@ -2397,12 +2401,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Silex.git",
-                "reference": "bc673b478ec276217305f6a81c8aeafb0f9ffe63"
+                "reference": "c60a10bf93f5a91b24672c7f80670d235f19acc3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Silex/zipball/bc673b478ec276217305f6a81c8aeafb0f9ffe63",
-                "reference": "bc673b478ec276217305f6a81c8aeafb0f9ffe63",
+                "url": "https://api.github.com/repos/fabpot/Silex/zipball/c60a10bf93f5a91b24672c7f80670d235f19acc3",
+                "reference": "c60a10bf93f5a91b24672c7f80670d235f19acc3",
                 "shasum": ""
             },
             "require": {
@@ -2473,7 +2477,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2013-10-16 17:53:18"
+            "time": "2013-10-28 09:44:08"
         },
         {
             "name": "silex/web-profiler",
@@ -2677,12 +2681,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "1206176fc40eb22b00cb2419de3f832c9afecb76"
+                "reference": "d866a5acc45426f3c48c82b7cedb985d9e24568c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/1206176fc40eb22b00cb2419de3f832c9afecb76",
-                "reference": "1206176fc40eb22b00cb2419de3f832c9afecb76",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/d866a5acc45426f3c48c82b7cedb985d9e24568c",
+                "reference": "d866a5acc45426f3c48c82b7cedb985d9e24568c",
                 "shasum": ""
             },
             "require": {
@@ -2782,7 +2786,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-10-18 15:01:47"
+            "time": "2013-10-28 14:29:55"
         },
         {
             "name": "themattharris/tmhoauth",
@@ -2875,16 +2879,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.14.1",
+            "version": "v1.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb"
+                "reference": "6d6a1009427d1f398c9d40904147bf9f723d5755"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8873d7593ad7c120004f177c0fd01459b383c9cb",
-                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/6d6a1009427d1f398c9d40904147bf9f723d5755",
+                "reference": "6d6a1009427d1f398c9d40904147bf9f723d5755",
                 "shasum": ""
             },
             "require": {
@@ -2893,7 +2897,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.14-dev"
+                    "dev-master": "1.13-dev"
                 }
             },
             "autoload": {
@@ -2920,7 +2924,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-10-15 19:17:38"
+            "time": "2013-08-03 15:35:31"
         },
         {
             "name": "zend/gdata",
