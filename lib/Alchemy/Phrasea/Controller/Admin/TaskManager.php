@@ -218,8 +218,7 @@ class TaskManager implements ControllerProviderInterface
         $form = $app->form(new TaskForm());
         $form->setData($task);
         $form->bind($request);
-        if ($form->isValid())
-        {
+        if ($form->isValid()) {
             $app['manipulator.task']->update($task);
 
             return $app->json(array('success' => true));
@@ -265,17 +264,7 @@ class TaskManager implements ControllerProviderInterface
 
     public function validateXML(Application $app, Request $request)
     {
-        $ret = array(
-            'success' => true,
-        );
-
-        if (!$this->doValidateXML($request->getContent())) {
-            $ret = array(
-                'success' => false,
-            );
-        }
-
-        return $app->json($ret);
+        return $app->json(array('success' => $this->doValidateXML($request->getContent())));
     }
 
     private function doValidateXML($string)

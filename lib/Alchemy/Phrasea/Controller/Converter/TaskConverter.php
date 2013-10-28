@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Doctrine\Common\Persistence\ObjectManager;
 use Entities\Task;
 
-class TaskConverter
+class TaskConverter implements ConverterInterface
 {
     private $om;
 
@@ -31,7 +31,7 @@ class TaskConverter
      */
     public function convert($id)
     {
-        if (null === $task = $this->om->find('Entities\Task', $id)) {
+        if (null === $task = $this->om->find('Entities\Task', (int) $id)) {
             throw new NotFoundHttpException(sprintf('Task %s not found.', $id));
         }
 

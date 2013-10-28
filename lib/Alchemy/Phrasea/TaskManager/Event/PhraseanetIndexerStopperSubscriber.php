@@ -24,6 +24,9 @@ class PhraseanetIndexerStopperSubscriber implements EventSubscriberInterface
         $this->port = $port;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return array(

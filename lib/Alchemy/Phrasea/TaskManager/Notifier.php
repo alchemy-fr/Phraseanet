@@ -80,9 +80,7 @@ class Notifier
             case static::MESSAGE_INFORMATIONS:
                 return TaskManager::MESSAGE_STATE;
             default:
-                throw new InvalidArgumentException(sprintf(
-                    'Unable to understand %s message notification'
-                ));
+                throw new InvalidArgumentException(sprintf('Unable to understand %s message notification', $message));
         }
     }
 

@@ -93,7 +93,7 @@ class PhraseanetIndexerJob extends AbstractJob
         }
 
         if (!is_executable($path)) {
-            throw new RuntimeException(sprintf('Phraseanet Indexer path `%s` does not seem to be executable. Please update configuration.'));
+            throw new RuntimeException(sprintf('Phraseanet Indexer path `%s` does not seem to be executable. Please update configuration.', $path));
         }
 
         return $path;

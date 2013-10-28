@@ -27,7 +27,7 @@ interface EditorInterface
      * Receives a request containing the XML task setting and the value of
      * a form.
      *
-     * This method validates and merge form data in the XML.
+     * This method validates and merges form data in the XML.
      *
      * @param Request $request
      *

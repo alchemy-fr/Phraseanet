@@ -19,8 +19,10 @@ use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
 use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
 use Alchemy\Phrasea\Border\MetadataBag;
 use Alchemy\Phrasea\Border\MetaFieldsBag;
+use Entities\LazaretSession;
 use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Metadata\Metadata;
+use PHPExiftool\Driver\Value\Mono as MonoValue;
 use Symfony\Component\Filesystem\Exception\IOException;
 
 class ArchiveJob extends AbstractJob
@@ -300,11 +302,12 @@ class ArchiveJob extends AbstractJob
 
         if (false !== $sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) {
             // test magicfile
-            if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
+            if ('' !== $magicfile = trim((string) ($sxDotPhrasea->magicfile))) {
                 $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
                 if ($magicmethod == 'LOCK' && true === $app['filesystem']->exists($path . '/' . $magicfile)) {
                     return 0;
-                } elseif ($magicmethod == 'UNLOCK' && false === $app['filesystem']->exists($path . '/' . $magicfile)) {
+                }
+                if ($magicmethod == 'UNLOCK' && false === $app['filesystem']->exists($path . '/' . $magicfile)) {
                     return 0;
                 }
             }
@@ -336,7 +339,6 @@ class ArchiveJob extends AbstractJob
                 }
                 $this->setBranchHot($dom, $n);
             } elseif ($dnl && $dnl->length == 1) {
-
                 $dnl->item(0)->setAttribute('temperature', 'cold');
 
                 if (is_dir($path . '/' . $file)) {
@@ -1038,12 +1040,12 @@ class ArchiveJob extends AbstractJob
 
         $file->addAttribute(new BorderAttribute\Status($app, $status));
 
-        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfFilepath(), new \PHPExiftool\Driver\Value\Mono($media->getFile()->getRealPath()))));
-        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfDirname(), new \PHPExiftool\Driver\Value\Mono(dirname($media->getFile()->getRealPath())))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfFilepath(), new MonoValue($media->getFile()->getRealPath()))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfDirname(), new MonoValue(dirname($media->getFile()->getRealPath())))));
 
-        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfAtime(), new \PHPExiftool\Driver\Value\Mono($media->getFile()->getATime()))));
-        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfMtime(), new \PHPExiftool\Driver\Value\Mono($media->getFile()->getMTime()))));
-        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfCtime(), new \PHPExiftool\Driver\Value\Mono($media->getFile()->getCTime()))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfAtime(), new MonoValue($media->getFile()->getATime()))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfMtime(), new MonoValue($media->getFile()->getMTime()))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfCtime(), new MonoValue($media->getFile()->getCTime()))));
 
         foreach ($metadatas as $meta) {
             $file->addAttribute(new BorderAttribute\Metadata($meta));
@@ -1128,13 +1130,15 @@ class ArchiveJob extends AbstractJob
             $node->setAttribute('error', '1');
 
             return;
-        } elseif ($match == '?') {
+        }
+        if ($match == '?') {
             // the caption file is missing
             $this->log('debug', sprintf("Caption of file '%s' is missing", $path . '/' . $file));
             $node->setAttribute('error', '1');
 
             return;
-        } elseif ($match != '.') {  // match='.' : the file does not have a separate caption
+        }
+        if ($match != '.') {  // match='.' : the file does not have a separate caption
             $xpath = new \DOMXPath($dom);
             $dnl = $xpath->query('./file[@name="' . $match . '"]', $node->parentNode);
             // in fact, xquery has been done in checkMatch, setting match='?' if caption does not exists...
@@ -1192,9 +1196,7 @@ class ArchiveJob extends AbstractJob
                 $captionFileNode->setAttribute('archived', '1');
             }
         } catch (\Exception $e) {
-
             $this->log('debug', "Error : can't insert record : " . $e->getMessage());
-
             $node->setAttribute('error', '1');
 
             if ($captionFileNode) {
@@ -1340,7 +1342,7 @@ class ArchiveJob extends AbstractJob
      */
     protected function getLazaretSession(Application $app)
     {
-        $lazaretSession = new \Entities\LazaretSession();
+        $lazaretSession = new LazaretSession();
 
         $app['EM']->persist($lazaretSession);
         $app['EM']->flush();

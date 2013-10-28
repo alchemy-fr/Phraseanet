@@ -43,7 +43,7 @@ class FtpJob extends AbstractJob
      */
     public function getDescription()
     {
-        return 'Use this task to enable FTP push.';
+        return _('Periodically push data to FTP servers.');
     }
 
     /**

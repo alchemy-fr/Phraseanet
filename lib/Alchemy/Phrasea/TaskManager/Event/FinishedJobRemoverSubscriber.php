@@ -26,6 +26,9 @@ class FinishedJobRemoverSubscriber implements EventSubscriberInterface
         $this->om = $om;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return array(
