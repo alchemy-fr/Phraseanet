@@ -14,6 +14,7 @@ namespace Entities;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -39,6 +40,38 @@ class User
     const GENDER_MRS = 'mrs';
     const GENDER_MISS = 'miss';
 
+    const USER_GUEST = 'guest';
+    const USER_AUTOREGISTER = 'autoregister';
+
+    /**
+     * The default user setting values.
+     *
+     * @var array
+     */
+    private static $defaultUserSettings = array(
+        'view'                    => 'thumbs',
+        'images_per_page'         => '20',
+        'images_size'             => '120',
+        'editing_images_size'     => '134',
+        'editing_top_box'         => '180px',
+        'editing_right_box'       => '400px',
+        'editing_left_box'        => '710px',
+        'basket_sort_field'       => 'name',
+        'basket_sort_order'       => 'ASC',
+        'warning_on_delete_story' => 'true',
+        'client_basket_status'    => '1',
+        'css'                     => '000000',
+        'start_page_query'        => 'last',
+        'start_page'              => 'QUERY',
+        'rollover_thumbnail'      => 'caption',
+        'technical_display'       => '1',
+        'doctype_display'         => '1',
+        'bask_val_order'          => 'nat',
+        'basket_caption_display'  => '0',
+        'basket_status_display'   => '0',
+        'basket_title_display'    => '0'
+    );
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -57,7 +90,7 @@ class User
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $password;
 
@@ -144,7 +177,7 @@ class User
     /**
      * @ORM\Column(type="string", length=32)
      */
-    private $fax= '';
+    private $fax = '';
 
     /**
      * @ORM\Column(type="boolean")
@@ -170,11 +203,6 @@ class User
      * @ORM\Column(type="boolean", name="ldap_created")
      */
     private $ldapCreated = false;
-
-    /**
-     * @ORM\Column(type="integer", name="model_of", nullable=true)
-     */
-    private $modelOf;
 
     /**
      * @ORM\Column(type="string", length=64, name="last_model", nullable=true)
@@ -224,9 +252,60 @@ class User
     private $updated;
 
     /**
+     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="model_of", referencedColumnName="id")
+     *
+     * @var User
+     **/
+    private $modelOf;
+
+     /**
+     * @ORM\OneToOne(targetEntity="FtpCredential", mappedBy="user", cascade={"all"})
+      *
+      * @var FtpCredential
+     **/
+    private $ftpCredential;
+
+    /**
+     * @ORM\OneToMany(targetEntity="UserQuery", mappedBy="user", cascade={"all"})
+     *
+     * @var UserQuery[]
+     **/
+    private $queries;
+
+    /**
+     * @ORM\OneToMany(targetEntity="UserSetting", mappedBy="user", cascade={"all"})
+     *
+     * @var UserSetting[]
+     **/
+    private $settings;
+
+    /**
+     * @ORM\OneToMany(targetEntity="UserNotificationSetting", mappedBy="user", cascade={"all"})
+     *
+     * @var UserNotificationSetting[]
+     **/
+    private $notificationSettings;
+
+    /**
      * @var \ACL
      */
     private $acl;
+
+    /**
+     * @var ArrayCollection
+     */
+    private $cachedSettings;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->queries = new ArrayCollection();
+        $this->notificationSettings = new ArrayCollection();
+        $this->settings = new ArrayCollection();
+    }
 
     /**
      * @return integer
@@ -659,7 +738,7 @@ class User
     }
 
     /**
-     * @return integer
+     * @return User
      */
     public function getModelOf()
     {
@@ -667,11 +746,11 @@ class User
     }
 
     /**
-     * @param integer $modelOf
+     * @param User $owner
      */
-    public function setModelOf($modelOf)
+    public function setModelOf(User $owner)
     {
-        $this->modelOf = $modelOf;
+        $this->modelOf = $owner;
     }
 
     /**
@@ -819,8 +898,116 @@ class User
      */
     public function setUpdated(\Datetime $updated)
     {
-
         $this->updated = $updated;
+    }
+
+    /**
+     * @return FtpCredential
+     */
+    public function getFtpCredential()
+    {
+        return $this->ftpCredential;
+    }
+
+    /**
+     * @param FtpCredential $ftpCredential
+     *
+     * @return User
+     */
+    public function setFtpCredential(FtpCredential $ftpCredential = null)
+    {
+        $this->ftpCredential = $ftpCredential;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getQueries()
+    {
+        return $this->queries;
+    }
+
+    /**
+     * @param UserQuery $query
+     *
+     * @return User
+     */
+    public function AddQuery(UserQuery $query)
+    {
+        $this->queries->add($query);
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    /**
+     * Retrieves user setting value.
+     *
+     * @param string $name
+     * @param mixed $default
+     *
+     * @return string
+     */
+    public function getSettingValue($name, $default = null)
+    {
+        if (null === $this->cachedSettings) {
+            $settings = self::$defaultUserSettings;
+
+            foreach ($this->settings as $setting) {
+                $settings[$setting->getName()] = $setting->getValue();
+            }
+
+            $this->cachedSettings = $settings;
+        }
+
+        // checks for stored settings
+        if (array_key_exists($name, $this->cachedSettings)) {
+            return $this->cachedSettings[$name];
+        }
+
+        return $default;
+    }
+
+    /**
+     * @param UserSetting $setting
+     *
+     * @return User
+     */
+    public function addSetting(UserSetting $setting)
+    {
+        $this->cachedSettings = null;
+        $this->settings->add($setting);
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getNotificationSettings()
+    {
+        return $this->notificationSettings;
+    }
+
+    /**
+     * @param UserNotificationSetting $notificationSetting
+     *
+     * @return User
+     */
+    public function addNotificationSettings(UserNotificationSetting $notificationSetting)
+    {
+        $this->notificationSettings->add($notificationSetting);
+
+        return $this;
     }
 
     /**
@@ -850,7 +1037,7 @@ class User
      */
     public function isSpecial()
     {
-        return in_array($this->login, array('invite', 'autoregister'));
+        return in_array($this->login, array(self::USER_GUEST, self::USER_AUTOREGISTER));
     }
 
     /**

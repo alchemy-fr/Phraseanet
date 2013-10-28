@@ -18,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Table(name="UserSettings",
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="unique_setting",columns={"usr_id", "name"})
+ *          @ORM\UniqueConstraint(name="unique_setting",columns={"user_id", "name"})
  *      }
  * )
  * @ORM\Entity(repositoryClass="Repositories\UserSettingRepository")
@@ -36,6 +36,12 @@ class UserSetting
      * @ORM\Column(type="integer", name="usr_id")
      */
     private $usrId;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="settings")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     **/
+    private $user;
 
     /**
      * @ORM\Column(type="string", length=64)
@@ -68,6 +74,26 @@ class UserSetting
     }
 
     /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return UserSetting
+     */
+    public function setUser(User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
      * @return integer
      */
     public function getUsrId()
@@ -83,28 +109,6 @@ class UserSetting
     public function setUsrId($usrId)
     {
         $this->usrId = $usrId;
-
-        return $this;
-    }
-
-    /**
-     * @param \Alchemy\Phrasea\Application $app
-     *
-     * @return string
-     */
-    public function getUser(Application $app)
-    {
-        return \User_Adapter::getInstance($this->usrId, $app);
-    }
-
-    /**
-     * @param \User_Adapter $user
-     *
-     * @return UserSetting
-     */
-    public function setUser(\User_Adapter $user)
-    {
-        $this->setUsrId($user->get_id());
 
         return $this;
     }

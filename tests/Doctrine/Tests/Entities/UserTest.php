@@ -13,14 +13,23 @@ namespace Doctrine\Tests\Entities;
 
 use Alchemy\Phrasea\Application;
 use Entities\User;
+use Entities\UserSetting;
 
-class UserTest extends \PHPUnit_Framework_TestCase
+class UserTest extends \PhraseanetPHPUnitAbstract
 {
     private $user;
 
     public function setUp()
     {
+        parent::setUp();
         $this->user = new User();
+    }
+
+    public function testConstructor()
+    {
+        $this->assertInstanceOf('\Doctrine\Common\Collections\ArrayCollection', $this->user->getQueries());
+        $this->assertInstanceOf('\Doctrine\Common\Collections\ArrayCollection', $this->user->getNotificationSettings());
+        $this->assertInstanceOf('\Doctrine\Common\Collections\ArrayCollection', $this->user->getSettings());
     }
 
     /**
@@ -72,13 +81,10 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->user->getGeonameId(), null);
     }
 
-    public function testInvalidGeonamedId()
+    public function testValidEmail()
     {
-        $this->setExpectedException(
-            'Alchemy\Phrasea\Exception\InvalidArgumentException',
-            'Invalid geonameid -1.'
-        );
-        $this->user->setGeonameId(-1);
+        $this->user->setEmail('aa@aa.fr');
+        $this->assertEquals('aa@aa.fr', $this->user->getEmail());
     }
 
     public function testGetDisplayName()
@@ -101,7 +107,11 @@ class UserTest extends \PHPUnit_Framework_TestCase
     public function testIsTemplate()
     {
         $this->assertFalse($this->user->isTemplate());
-        $this->user->setModelOf(1);
+        $template = new User();
+        $template->setLogin('login2');
+        $template->setPassword('toto');
+        $this->insertOneUser($template);
+        $this->user->setModelOf($template);
         $this->assertTrue($this->user->isTemplate());
     }
 
@@ -109,12 +119,25 @@ class UserTest extends \PHPUnit_Framework_TestCase
     {
         $this->user->setLogin('login');
         $this->assertFalse($this->user->isSpecial());
-        $this->user->setLogin('invite');
+        $this->user->setLogin(User::USER_AUTOREGISTER);
         $this->assertTrue($this->user->isSpecial());
         $this->user->setLogin('login');
         $this->assertFalse($this->user->isSpecial());
-        $this->user->setLogin('autoregister');
+        $this->user->setLogin(User::USER_GUEST);
         $this->assertTrue($this->user->isSpecial());
+    }
+
+    public function testSetModelOf()
+    {
+        $this->user->setLogin('login');
+        $this->user->setPassword('toto');
+        $user = new User();
+        $user->setLogin('login2');
+        $user->setPassword('toto');
+        $this->insertOneUser($this->user);
+        $this->insertOneUser($user);
+        $this->user->setModelOf($user);
+        $this->assertEquals('login2', $this->user->getModelOf()->getLogin());
     }
 
     public function genderProvider()
@@ -135,5 +158,17 @@ class UserTest extends \PHPUnit_Framework_TestCase
             array(1),
             array('madame')
         );
+    }
+
+    public function testGetSettingValue()
+    {
+        $setting = new UserSetting();
+        $setting->setName('titi');
+        $setting->setValue('a_value');
+        $this->user->addSetting($setting);
+
+        $this->assertEquals('a_value', $this->user->getSettingValue('titi'));
+        $this->assertEquals('000000', $this->user->getSettingValue('css'));
+        $this->assertEquals('toto', $this->user->getSettingValue('not_found', 'toto'));
     }
 }

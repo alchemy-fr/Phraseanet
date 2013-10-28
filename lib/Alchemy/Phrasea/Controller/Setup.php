@@ -179,11 +179,9 @@ class Setup implements ControllerProviderInterface
                 'notice'  => 'install_success',
             ));
         } catch (\Exception $e) {
-
+            return $app->redirectPath('install_step2', array(
+                'error' => sprintf(_('an error occured : %s'), $e->getMessage()),
+            ));
         }
-
-        return $app->redirectPath('install_step2', array(
-            'error' => sprintf(_('an error occured : %s'), $e->getMessage()),
-        ));
     }
 }

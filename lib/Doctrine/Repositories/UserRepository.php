@@ -23,7 +23,7 @@ use Entities\User;
 class UserRepository extends EntityRepository
 {
     /**
-     * Finds admins
+     * Finds admins.
      *
      * @return array
      */
@@ -39,47 +39,7 @@ class UserRepository extends EntityRepository
     }
 
     /**
-     * Sets a selection of user
-     *
-     * @param array $users An array of user
-     *
-     * @return integer The number of processed rows
-     */
-    public function setAdmins(array $users)
-    {
-        $qb = $this->createQueryBuilder('u');
-
-        $qb->update('Entities\User', 'u')
-            ->set('u.admin', $qb->expr()->literal(true))
-            ->where($qb->expr()->in('u.id', array_map(function($value) {
-                if ($value instanceof User) {
-                    return $value->getId();
-                }
-
-                return (int) $value;
-            }, $users)));
-
-        return $qb->getQuery()->execute();
-    }
-
-    /**
-     * Resets all admins
-     *
-     * @return integer The number of processed rows
-     */
-    public function resetAdmins()
-    {
-        $qb = $this->createQueryBuilder('u');
-
-        $qb->update('Entities\User', 'u')
-            ->set('u.admin', $qb->expr()->literal(false))
-            ->where($qb->expr()->eq('u.admin', $qb->expr()->literal(true)));
-
-        return $qb->getQuery()->execute();
-    }
-
-    /**
-     * Finds a user by login
+     * Finds a user by login.
      *
      * @param string $login
      *
@@ -91,7 +51,7 @@ class UserRepository extends EntityRepository
     }
 
     /**
-     * Finds a user by email
+     * Finds a user by email.
      *
      * @param string $email
      *
@@ -101,7 +61,7 @@ class UserRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('u');
 
-        $qb->where($qb->expr()->eq('u.email', $email))
+        $qb->where($qb->expr()->eq('u.email', $qb->expr()->literal($email)))
             ->andWhere($qb->expr()->isNotNull('u.email'))
             ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
 

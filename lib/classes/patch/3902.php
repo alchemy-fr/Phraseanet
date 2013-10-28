@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\EntityManager;
 use Entities\User;
 use Gedmo\Timestampable\TimestampableListener;
 
@@ -56,17 +57,34 @@ class patch_3902 implements patchInterface
         $stmt->closeCursor();
 
         $conn = $app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT * FROM usr';
+        $em = $app['EM'];
+
+        $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
+
+        $this->updateUsers($em, $conn);
+        $this->updateModels($em, $conn);
+
+        $em->getEventManager()->addEventSubscriber(new TimestampableListener());
+    }
+
+    /**
+     * Sets user entity from usr table.
+     */
+    private function updateUsers(EntityManager $em, $conn)
+    {
+        $sql = 'SELECT activite, adresse, create_db, canchgftpprofil, canchgprofil, ville,
+            societe, pays, usr_mail, fax, usr_prenom, geonameid, invite, fonction, last_conn, lastModel,
+            usr_nom, ldap_created, locale, usr_login, mail_locked, mail_notifications, nonce, usr_password, push_list,
+            request_notifications, salted_password, usr_sexe, tel, timezone, cpostal, usr_creationdate, usr_modificationdate
+            FROM usr WHERE model_of = 0';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $n = 0;
-        $em = $app['EM'];
-        $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
 
-        foreach ($rs as $row) {
+        foreach ($rows as $row) {
             $user = new User();
             $user->setActivity($row['activite']);
             $user->setAddress($row['adresse']);
@@ -101,7 +119,6 @@ class patch_3902 implements patchInterface
 
             $user->setMailLocked(!!$row['mail_locked']);
             $user->setMailNotificationsActivated(!!$row['mail_notifications']);
-            $user->setModelOf($row['model_of']);
             $user->setNonce($row['nonce']);
             $user->setPassword($row['usr_password']);
             $user->setPushList($row['push_list']);
@@ -141,7 +158,44 @@ class patch_3902 implements patchInterface
 
         $em->flush();
         $em->clear();
+    }
 
-        $em->getEventManager()->addEventSubscriber(new TimestampableListener());
+    /**
+     * Sets model from usr table.
+     */
+    private function updateModels(EntityManager $em, $conn)
+    {
+        $sql = "SELECT model_of, usr_login
+                FROM usr
+                WHERE model_of > 0";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $n = 0;
+
+        $repository = $em->getRepository('Entities\User');
+
+        foreach ($rows as $row) {
+            $user = $repository->findOneByLogin($row['usr_login']);
+
+            if (null === $template = $repository->find($row['model_of'])) {
+                $em->remove($user);
+            } else {
+                $user->setModelOf($template);
+                $em->persist($user);
+            }
+
+            $n++;
+
+            if ($n % 100 === 0) {
+                $em->flush();
+                $em->clear();
+            }
+        }
+
+        $em->flush();
+        $em->clear();
     }
 }
