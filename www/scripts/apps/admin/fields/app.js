@@ -31,7 +31,9 @@ define([
             $leftBlock      : $(".left-block", this.$bottom),
             $rightBlock     : $(".right-block", this.$bottom),
             fieldsToDelete  : [],
-            lng             : window.p4.lng || "en",
+            lng             : function() {
+                return typeof p4 === "undefined" ? "en" : (p4.lng || "en");
+            },
             resizeListBlock: function () {
                 var listBlock = $(".list-block", AdminFieldApp.$leftBlock);
                 listBlock.height(AdminFieldApp.$window.height() - listBlock.offset().top - 10);

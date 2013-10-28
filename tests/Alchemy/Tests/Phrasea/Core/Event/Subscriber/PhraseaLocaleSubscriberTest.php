@@ -57,6 +57,23 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals('fr_FR', $client->getResponse()->getContent());
     }
 
+    public function testCookieIsSet()
+    {
+        $client = new Client(self::$DI['app']);
+        $client->request('GET', '/', array(), array(), array('HTTP_ACCEPT_LANGUAGE' => 'fr-FR,fr;q=0.9'));
+
+        $settedCookie = null;
+        foreach($client->getResponse()->headers->getCookies() as $cookie) {
+            if($cookie->getName() === 'locale') {
+                $settedCookie = $cookie;
+                break;
+            }
+        }
+
+        $this->assertNotNull($settedCookie);
+        $this->assertEquals('fr_FR', $settedCookie->getValue());
+    }
+
     /**
      * @covers Alchemy\Phrasea\Application
      */
