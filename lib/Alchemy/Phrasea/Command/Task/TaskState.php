@@ -21,7 +21,7 @@ class TaskState extends Command
 {
     public function __construct()
     {
-        parent::__construct('task:state');
+        parent::__construct('task-manager:task:state');
 
         $this
             ->addArgument('task_id', InputArgument::REQUIRED, 'The task_id to test')

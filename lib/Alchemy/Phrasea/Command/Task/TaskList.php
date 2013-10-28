@@ -20,7 +20,7 @@ class TaskList extends Command
 {
     public function __construct()
     {
-        parent::__construct('task:list');
+        parent::__construct('task-manager:task:list');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)

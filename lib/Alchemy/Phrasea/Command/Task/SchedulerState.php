@@ -21,9 +21,9 @@ class SchedulerState extends Command
 {
     public function __construct()
     {
-        parent::__construct('scheduler:state');
+        parent::__construct('task-manager:scheduler:state');
         $this
-            ->setDescription('Returns Phraseanet scheduler status')
+            ->setDescription('Returns Task-Manager scheduler state')
             ->addOption('short', null, InputOption::VALUE_NONE, 'print short result, ie: <info>stopped()</info> | <info>started(12345)</info> | <info>tostop(12345)</info> | <info>stopping(12345)</info>');
     }
 

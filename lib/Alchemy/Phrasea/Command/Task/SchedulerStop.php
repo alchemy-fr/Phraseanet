@@ -20,8 +20,8 @@ class SchedulerStop extends Command
 {
     public function __construct()
     {
-        parent::__construct('scheduler:stop');
-        $this->setDescription('Starts Phraseanet scheduler');
+        parent::__construct('task-manager:scheduler:stop');
+        $this->setDescription('Starts Task-Manager scheduler. It updates the scheduler configuration.');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)

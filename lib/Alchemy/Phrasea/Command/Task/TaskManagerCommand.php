@@ -22,7 +22,7 @@ class TaskManagerCommand extends Command
 {
     public function __construct()
     {
-        parent::__construct('task-manager:run');
+        parent::__construct('task-manager:scheduler:run');
     }
 
     public function signalHandler($signal)

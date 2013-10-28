@@ -29,7 +29,7 @@ class TaskRun extends Command
 {
     public function __construct()
     {
-        parent::__construct('task:run');
+        parent::__construct('task-manager:task:run');
 
         $this->addArgument('task_id', InputArgument::REQUIRED, 'The id of the task to run', null)
             ->addOption('max-memory', null, InputOption::VALUE_REQUIRED, '')
