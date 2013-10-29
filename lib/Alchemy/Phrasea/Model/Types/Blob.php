@@ -15,22 +15,22 @@
  * @link        www.phraseanet.com
  */
 
-namespace Types;
+namespace Alchemy\Phrasea\Model\Types;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
-class Enum extends Type
+class Blob extends Type
 {
-    const ENUM = 'enum';
+    const BLOB = 'blob';
 
     public function getName()
     {
-        return static::ENUM;
+        return static::BLOB;
     }
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return $platform->getDoctrineTypeMapping('ENUM');
+        return $platform->getDoctrineTypeMapping('BLOB');
     }
 }

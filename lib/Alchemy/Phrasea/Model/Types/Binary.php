@@ -15,22 +15,22 @@
  * @link        www.phraseanet.com
  */
 
-namespace Types;
+namespace Alchemy\Phrasea\Model\Types;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
-class VarBinary extends Type
+class Binary extends Type
 {
-    const VARBINARY = 'varbinary';
+    const BINARY = 'binary';
 
     public function getName()
     {
-        return static::VARBINARY;
+        return static::BINARY;
     }
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return $platform->getDoctrineTypeMapping('VARBINARY');
+        return $platform->getDoctrineTypeMapping('BINARY');
     }
 }

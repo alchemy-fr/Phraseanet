@@ -15,22 +15,22 @@
  * @link        www.phraseanet.com
  */
 
-namespace Types;
+namespace Alchemy\Phrasea\Model\Types;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
-class Binary extends Type
+class LongBlob extends Type
 {
-    const BINARY = 'binary';
+    const LONGBLOB = 'longblob';
 
     public function getName()
     {
-        return static::BINARY;
+        return static::LONGBLOB;
     }
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return $platform->getDoctrineTypeMapping('BINARY');
+        return $platform->getDoctrineTypeMapping('LONGBLOB');
     }
 }

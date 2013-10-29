@@ -137,11 +137,11 @@ class ORMServiceProvider implements ServiceProviderInterface
             $platform = $em->getConnection()->getDatabasePlatform();
 
             $types = array(
-                'blob' => 'Types\Blob',
-                'enum' => 'Types\Blob',
-                'longblob' => 'Types\LongBlob',
-                'varbinary' => 'Types\VarBinary',
-                'binary' => 'Types\Binary',
+                'blob' => 'Alchemy\Phrasea\Model\Types\Blob',
+                'enum' => 'Alchemy\Phrasea\Model\Types\Blob',
+                'longblob' => 'Alchemy\Phrasea\Model\Types\LongBlob',
+                'varbinary' => 'Alchemy\Phrasea\Model\Types\VarBinary',
+                'binary' => 'Alchemy\Phrasea\Model\Types\Binary',
             );
 
             foreach ($types as $type => $class) {
