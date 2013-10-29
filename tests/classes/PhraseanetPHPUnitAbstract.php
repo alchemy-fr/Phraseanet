@@ -601,7 +601,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 $process = new Symfony\Component\Process\Process('php ' . $command);
                 $process->run();
             } catch (Symfony\Component\Process\Exception\RuntimeException $e) {
-                $this->fail('Unable to validate ORM schema');
+                exit('Unable to validate ORM schema');
             }
 
             self::$updated = true;
