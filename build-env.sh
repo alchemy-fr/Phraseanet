@@ -2,7 +2,7 @@ composer install --dev
 ./bin/developer system:uninstall || exit 1
 cp -f hudson/connexion.inc config/ || exit 1
 cp -f hudson/_GV.php config/ || exit 1
-npm install -g uglify-js recess grunt-cli jake
+sudo npm install -g uglify-js recess grunt-cli jake
 npm install
 if [ "$1" != "--no-dependencies" ]
 then
