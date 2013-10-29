@@ -515,6 +515,11 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $parameters[$key] = self::$email;
             }
         }
+
+        if (self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+            unset($parameters['collections']);
+        }
+
         $crawler = self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
 
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
@@ -527,7 +532,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request('POST', '/login/register-classic/');
 
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertFormOrFlashError($crawler, 8);
+        $this->assertFormOrFlashError($crawler, self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB') ? 7 : 8);
     }
 
     public function provideInvalidRegistrationData()
@@ -613,15 +618,6 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     ),
                     "email"           => $this->generateEmail(),
                     "collections"     => null
-                ), array(), 1),
-            array(array(//no demands
-                    "password" => array(
-                        'password' => 'password',
-                        'confirm'  => 'password'
-                    ),
-                    "email"           => $this->generateEmail(),
-                    "accept-tou"      => '1',
-                    "collections"     => array()
                 ), array(), 1)
         );
     }
@@ -955,6 +951,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
         }
 
+        if ( self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+            unset($parameters['collections']);
+        }
+
         self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
 
         if (false === $userId = \User_Adapter::get_usr_id_from_email(self::$DI['app'], $parameters['email'])) {
@@ -1004,6 +1004,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             if ('email' === $key && null === $parameter) {
                 $parameters[$key] = self::$email;
             }
+        }
+
+        if ( self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+            unset($parameters['collections']);
         }
 
         self::$DI['client']->request('POST', '/login/register-classic/', $parameters);

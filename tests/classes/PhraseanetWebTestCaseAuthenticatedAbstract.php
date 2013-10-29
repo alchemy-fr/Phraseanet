@@ -166,7 +166,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
     protected function assertFormOrFlashError(Crawler $crawler, $quantity)
     {
-        $total = $crawler->filter('form div:not(div[ng-show]) > div.popover.field-error')->count();
+        $total = $crawler->filter('.field-error')->count();
         $total += $crawler->filter('.alert')->count();
 
         $this->assertEquals($quantity, $total);
@@ -174,7 +174,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
     protected function assertFormError(Crawler $crawler, $quantity)
     {
-        $this->assertEquals($quantity, $crawler->filter('form div:not(div[ng-show]) > div.popover.field-error')->count());
+        $this->assertEquals($quantity, $crawler->filter('.field-error')->count());
     }
 
     protected function assertFlashMessage(Crawler $crawler, $flashType, $quantity, $message = null, $offset = 0)

@@ -384,8 +384,8 @@ class Login implements ControllerProviderInterface
 
                     $appbox_register = new \appbox_register($app['phraseanet.appbox']);
 
-                    foreach ($selected as $base_id) {
-                        if (false === $inscOK[$base_id] || $user->ACL()->has_access_to_base($base_id)) {
+                    foreach ($inscOK as $base_id => $autorisation) {
+                        if (false === $autorisation || $user->ACL()->has_access_to_base($base_id)) {
                             continue;
                         }
 

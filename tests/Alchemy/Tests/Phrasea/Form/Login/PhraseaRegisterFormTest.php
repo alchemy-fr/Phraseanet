@@ -51,7 +51,7 @@ class PhraseaRegisterFormTest extends FormTestCase
 
         $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params, new Camelizer());
 
-        $this->assertCount(8, self::$DI['app']->form($form)->createView()->vars['form']->children);
+        $this->assertCount(self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB') ? 7 : 8, self::$DI['app']->form($form)->createView()->vars['form']->children);
     }
 
     public function testFormDoesNotRegisterNonValidFields()
@@ -75,6 +75,6 @@ class PhraseaRegisterFormTest extends FormTestCase
 
         $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params, new Camelizer());
 
-        $this->assertCount(7, self::$DI['app']->form($form)->createView()->vars['form']->children);
+        $this->assertCount(self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB') ? 6 : 7, self::$DI['app']->form($form)->createView()->vars['form']->children);
     }
 }
