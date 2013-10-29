@@ -19,6 +19,7 @@ class Configuration implements ConfigurationInterface
 {
     const CONFIG_REF = '/../../../../../lib/conf.d/configuration.yml';
 
+    private $cache;
     private $parser;
     private $compiler;
     private $config;
@@ -114,6 +115,10 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfig()
     {
+        if (null !== $this->cache) {
+            return $this->cache;
+        }
+
         if (!is_file($this->compiled) || ($this->isAutoReload() && !$this->isConfigFresh())) {
             if (!$this->isSetup()) {
                 throw new RuntimeException('Configuration is not set up');
@@ -123,7 +128,7 @@ class Configuration implements ConfigurationInterface
             ));
         }
 
-        return require $this->compiled;
+        return $this->cache = require $this->compiled;
     }
 
     /**
@@ -131,6 +136,7 @@ class Configuration implements ConfigurationInterface
      */
     public function setConfig(array $config)
     {
+        $this->cache = $config;
         $this->dumpFile($this->config, $this->parser->dump($config, 7));
         $this->writeCacheConfig($this->compiler->compile($config));
 
@@ -142,6 +148,7 @@ class Configuration implements ConfigurationInterface
      */
     public function compileAndWrite()
     {
+        $this->cache = null;
         $this->writeCacheConfig($this->compiler->compile(
             $this->parser->parse($this->loadFile($this->config))
         ));
@@ -154,6 +161,7 @@ class Configuration implements ConfigurationInterface
      */
     public function delete()
     {
+        $this->cache = null;
         foreach (array(
             $this->config,
             $this->compiled,
