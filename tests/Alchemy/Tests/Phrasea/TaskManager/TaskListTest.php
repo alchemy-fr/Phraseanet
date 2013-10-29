@@ -70,7 +70,7 @@ class TaskListTest extends \PhraseanetPHPUnitAbstract
         $list = $this->getTaskList();
         $n = 2; // task 3 is the first to be registered
         foreach ($list->refresh() as $task) {
-            $this->assertEquals("'/path/to/php' '-c' '/path/to/php-conf' '-f' '".self::$DI['app']['root.path']."/bin/console' '--' '-q' 'task:run' '".$n."' '--listen-signal' '--max-duration' '1800' '--max-memory' '134217728'", $task->createProcess()->getCommandLine());
+            $this->assertEquals("'/path/to/php' '-c' '/path/to/php-conf' '-f' '".self::$DI['app']['root.path']."/bin/console' '--' '-q' 'task-manager:task:run' '".$n."' '--listen-signal' '--max-duration' '1800' '--max-memory' '134217728'", $task->createProcess()->getCommandLine());
             $n++;
         }
     }
