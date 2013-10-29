@@ -72,7 +72,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
 
-        $this->assertEquals(2, count($cookies['']['/']));
+        $this->assertEquals(3, count($cookies['']['/']));
     }
 
     /**
@@ -111,10 +111,8 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCookieLocale()
     {
-        $app = $this->getAppThatReturnLocale();
-
         foreach (array('fr_FR', 'en_GB', 'de_DE') as $locale) {
-            $client = $this->getClientWithCookie($app, $locale);
+            $client = $this->getClientWithCookie( $this->getAppThatReturnLocale(), $locale);
             $client->request('GET', '/');
 
             $this->assertEquals($locale, $client->getResponse()->getContent());

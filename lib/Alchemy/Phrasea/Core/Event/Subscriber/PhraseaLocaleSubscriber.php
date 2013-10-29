@@ -38,9 +38,17 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
                 array('addLocale', 15),
             ),
             KernelEvents::RESPONSE => array(
-                array('addLocaleCookie', 8)
+                array('addLocaleCookie', 8),
+            ),
+            KernelEvents::TERMINATE => array(
+                array('unsetLocale', -255),
             )
         );
+    }
+
+    public function unsetLocale()
+    {
+        $this->locale = null;
     }
 
     public function addLocale(GetResponseEvent $event)
