@@ -48,7 +48,7 @@ class TaskRun extends Command
             throw new RuntimeException('Invalid task_id');
         }
 
-        $job = $factory = $this->container['task-manager.job-factory']->create($task->getJobId());
+        $job = $this->container['task-manager.job-factory']->create($task->getJobId());
         $logger = $this->container['task-manager.logger'];
 
         $job->addSubscriber(new LockFileSubscriber('task-'.$task->getId(), $logger, $this->container['root.path'].'/tmp/locks'));
