@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "0575cac6a86c3e87914f1e95d083b7ae",
+    "hash": "97403dc6569983cb1fe5b4ecafd95448",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -294,16 +294,16 @@
         },
         {
             "name": "alchemy/task-manager",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/task-manager.git",
-                "reference": "ec0eabcd87407ef95e5f9504adf1893e86649445"
+                "reference": "3f8c8cf07668575c26b8c9e8370132f6d1fd6687"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/ec0eabcd87407ef95e5f9504adf1893e86649445",
-                "reference": "ec0eabcd87407ef95e5f9504adf1893e86649445",
+                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/3f8c8cf07668575c26b8c9e8370132f6d1fd6687",
+                "reference": "3f8c8cf07668575c26b8c9e8370132f6d1fd6687",
                 "shasum": ""
             },
             "require": {
@@ -353,7 +353,7 @@
                 "parallel",
                 "process"
             ],
-            "time": "2013-10-01 12:54:10"
+            "time": "2013-10-29 11:33:12"
         },
         {
             "name": "dailymotion/sdk",
@@ -4047,7 +4047,6 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "alchemy/task-manager": 20,
         "imagine/imagine": 20,
         "silex/silex": 20,
         "symfony/symfony": 20,
