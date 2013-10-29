@@ -26,13 +26,13 @@ class TaskManager implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
-            $app['firewall']->requireRight('taskmanager');
-        });
-
-        $converter = function ($id) use ($app) {
-            return $app['converter.task']->convert($id);
-        };
+        $controllers
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireRight('taskmanager');
+            })
+            ->convert('task', function ($id) use ($app) {
+                return $app['converter.task']->convert($id);
+            });
 
         $controllers
             ->get('/', 'controller.admin.task:getRoot')
@@ -60,47 +60,38 @@ class TaskManager implements ControllerProviderInterface
 
         $controllers
             ->get('/task/{task}/log', 'controller.admin.task:getTaskLog')
-            ->convert('task', $converter)
             ->bind('admin_tasks_task_log');
 
         $controllers
             ->post('/task/{task}/delete', 'controller.admin.task:postTaskDelete')
-            ->convert('task', $converter)
             ->bind('admin_tasks_task_delete');
 
         $controllers
             ->post('/task/{task}/start', 'controller.admin.task:postStartTask')
-            ->convert('task', $converter)
             ->bind('admin_tasks_task_start');
 
         $controllers
             ->post('/task/{task}/stop', 'controller.admin.task:postStopTask')
-            ->convert('task', $converter)
             ->bind('admin_tasks_task_stop');
 
         $controllers
             ->post('/task/{task}/resetcrashcounter', 'controller.admin.task:postResetCrashes')
-            ->convert('task', $converter)
             ->bind('admin_tasks_task_reset');
 
         $controllers
             ->post('/task/{task}/save', 'controller.admin.task:postSaveTask')
-            ->convert('task', $converter)
             ->bind('admin_tasks_task_save');
 
         $controllers
             ->post('/task/{task}/facility', 'controller.admin.task:postTaskFacility')
-            ->convert('task', $converter)
             ->bind('admin_tasks_task_facility');
 
         $controllers
             ->post('/task/{task}/xml-from-form', 'controller.admin.task:postXMLFromForm')
-            ->convert('task', $converter)
             ->bind('admin_tasks_xml_from_form');
 
         $controllers
             ->get('/task/{task}', 'controller.admin.task:getTask')
-            ->convert('task', $converter)
             ->bind('admin_tasks_task_show');
 
         $controllers
