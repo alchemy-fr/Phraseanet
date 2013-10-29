@@ -17,7 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="UserQueries")
- * @ORM\Entity(repositoryClass="Repositories\UserQueryRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UserQueryRepository")
  */
 class UserQuery
 {

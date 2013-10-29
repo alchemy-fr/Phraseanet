@@ -18,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="FtpExports")
- * @ORM\Entity(repositoryClass="Repositories\FtpExportRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FtpExportRepository")
  */
 class FtpExport
 {

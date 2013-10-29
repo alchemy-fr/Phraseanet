@@ -559,7 +559,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $em = self::$DI['app']['EM'];
         $repo = $em->getRepository('\Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repo \Repositories\BasketRepository */
+        /* @var $repo Alchemy\Phrasea\Model\Repositories\BasketRepository */
         $basket = $repo->findUserBasket(self::$DI['app'], $response['response']['basket']['basket_id'], self::$DI['app']['authentication']->getUser(), true);
 
         $this->assertTrue($basket instanceof \Alchemy\Phrasea\Model\Entities\Basket);

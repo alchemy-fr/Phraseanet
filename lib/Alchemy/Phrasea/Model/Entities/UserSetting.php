@@ -21,7 +21,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *          @ORM\UniqueConstraint(name="unique_setting",columns={"user_id", "name"})
  *      }
  * )
- * @ORM\Entity(repositoryClass="Repositories\UserSettingRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UserSettingRepository")
  */
 class UserSetting
 {

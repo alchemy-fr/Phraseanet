@@ -1269,7 +1269,7 @@ class API_V1_adapter extends API_V1_Abstract
     protected function list_baskets($usr_id)
     {
         $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-        /* @var $repo \Repositories\BasketRepository */
+        /* @var $repo Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
         $baskets = $repo->findActiveByUser($this->app['authentication']->getUser());
 
@@ -1320,7 +1320,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repository \Repositories\BasketRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
         $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
         $this->app['EM']->remove($Basket);
@@ -1342,7 +1342,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repository \Repositories\BasketRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
         $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), false);
 
@@ -1441,7 +1441,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repository \Repositories\BasketRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
         $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
         $Basket->setName($name);
@@ -1469,7 +1469,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repository \Repositories\BasketRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
         $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
         $Basket->setDescription($desc);

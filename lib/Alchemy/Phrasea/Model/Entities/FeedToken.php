@@ -16,7 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="FeedTokens")
- * @ORM\Entity(repositoryClass="Repositories\FeedTokenRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FeedTokenRepository")
  */
 class FeedToken
 {

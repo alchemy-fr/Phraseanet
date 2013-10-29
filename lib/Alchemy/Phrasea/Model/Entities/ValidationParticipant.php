@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="ValidationParticipants")
- * @ORM\Entity(repositoryClass="Repositories\ValidationParticipantRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository")
  */
 class ValidationParticipant
 {

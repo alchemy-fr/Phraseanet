@@ -8,7 +8,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="Orders")
- * @ORM\Entity(repositoryClass="Repositories\OrderRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\OrderRepository")
  */
 class Order
 {

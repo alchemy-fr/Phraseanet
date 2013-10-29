@@ -17,7 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="FeedPublishers")
- * @ORM\Entity(repositoryClass="Repositories\FeedPublisherRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FeedPublisherRepository")
  */
 class FeedPublisher
 {

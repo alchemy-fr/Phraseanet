@@ -17,7 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="UsrListsContent", uniqueConstraints={@ORM\UniqueConstraint(name="unique_usr_per_list", columns={"usr_id", "list_id"})})
- * @ORM\Entity(repositoryClass="Repositories\UsrListEntryRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UsrListEntryRepository")
  */
 class UsrListEntry
 {

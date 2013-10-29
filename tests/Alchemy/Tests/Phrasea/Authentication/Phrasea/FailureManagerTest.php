@@ -355,7 +355,7 @@ class FailureManagerTest extends \PhraseanetPHPUnitAbstract
 
     private function getRepo()
     {
-        return $this->getMockBuilder('Repositories\AuthFailureRepository')
+        return $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\AuthFailureRepository')
             ->disableOriginalConstructor()
             ->getMock();
     }

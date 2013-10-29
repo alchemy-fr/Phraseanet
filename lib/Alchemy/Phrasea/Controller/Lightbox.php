@@ -73,7 +73,7 @@ class Lightbox implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-            /* @var $repository \Repositories\BasketRepository */
+            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
             $basket_collection = array_merge(
                 $repository->findActiveByUser($app['authentication']->getUser())
@@ -115,7 +115,7 @@ class Lightbox implements ControllerProviderInterface
             ->assert('sselcont_id', '\d+');
 
         $controllers->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
-            /* @var $repository \Repositories\BasketElementRepository */
+            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
             $BasketElement = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
@@ -209,7 +209,7 @@ class Lightbox implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-            /* @var $repository \Repositories\BasketRepository */
+            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
                 $app['authentication']->getUser()
             );
@@ -263,7 +263,7 @@ class Lightbox implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-            /* @var $repository \Repositories\BasketRepository */
+            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
                 $app['authentication']->getUser()
             );
@@ -348,7 +348,7 @@ class Lightbox implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-            /* @var $repository \Repositories\BasketRepository */
+            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
             $basket = $repository->findUserBasket(
                 $app, $ssel_id
                 , $app['authentication']->getUser()
@@ -373,7 +373,7 @@ class Lightbox implements ControllerProviderInterface
                 Return new Response('You must provide a note value', 400);
             }
 
-            /* @var $repository \Repositories\BasketElementRepository */
+            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
             $basket_element = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
@@ -423,7 +423,7 @@ class Lightbox implements ControllerProviderInterface
 
                 $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
-                /* @var $repository \Repositories\BasketElementRepository */
+                /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
                 $basket_element = $repository->findUserElement(
                     $sselcont_id
                     , $app['authentication']->getUser()
@@ -473,7 +473,7 @@ class Lightbox implements ControllerProviderInterface
             $datas = array('error' => true, 'datas' => '');
 
             try {
-                /* @var $repository \Repositories\BasketRepository */
+                /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
                 $basket = $repository->findUserBasket(
                     $app, $ssel_id
                     , $app['authentication']->getUser()

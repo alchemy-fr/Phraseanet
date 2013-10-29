@@ -18,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="StoryWZ", uniqueConstraints={@ORM\UniqueConstraint(name="user_story", columns={"usr_id", "sbas_id", "record_id"})})
- * @ORM\Entity(repositoryClass="Repositories\StoryWZRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\StoryWZRepository")
  */
 class StoryWZ
 {

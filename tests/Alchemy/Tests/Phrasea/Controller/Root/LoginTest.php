@@ -1707,7 +1707,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->will($this->returnValue($repo));
 
         if ($participants) {
-            $repo = $this->getMockBuilder('Repositories\ValidationParticipantRepository')
+            $repo = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository')
                 ->disableOriginalConstructor()
                 ->getMock();
 

@@ -11,7 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *          @ORM\UniqueConstraint(name="unique_provider_per_user", columns={"usr_id", "provider"}),
  *          @ORM\UniqueConstraint(name="provider_ids", columns={"provider", "distant_id"})
  * })
- * @ORM\Entity(repositoryClass="Repositories\UsrAuthProviderRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository")
  */
 class UsrAuthProvider
 {

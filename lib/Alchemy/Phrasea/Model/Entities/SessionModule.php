@@ -16,7 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="SessionModules", uniqueConstraints={@ORM\UniqueConstraint(name="unique_module", columns={"session_id", "module_id"})})
- * @ORM\Entity(repositoryClass="Repositories\SessionModuleRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\SessionModuleRepository")
  */
 class SessionModule
 {

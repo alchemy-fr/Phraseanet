@@ -17,7 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="Baskets")
- * @ORM\Entity(repositoryClass="Repositories\BasketRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\BasketRepository")
  */
 class Basket
 {

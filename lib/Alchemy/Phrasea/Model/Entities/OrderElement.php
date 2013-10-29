@@ -8,7 +8,7 @@ use Alchemy\Phrasea\Model\Entities\Order;
 
 /**
  * @ORM\Table(name="OrderElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_ordercle", columns={"base_id","record_id","order_id"})})
- * @ORM\Entity(repositoryClass="Repositories\OrderElementRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\OrderElementRepository")
  */
 class OrderElement
 {

@@ -46,8 +46,8 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('getCollection')
             ->will($this->returnValue(self::$DI['collection']));
 
-        //mock one Repositories\LazaretFile::getFiles
-        $repo = $this->getMock('Repositories\LazaretFile', array('findPerPage'), array(), '', false);
+        //mock one Alchemy\Phrasea\Model\Repositories\LazaretFile::getFiles
+        $repo = $this->getMock('Alchemy\Phrasea\Model\Repositories\LazaretFile', array('findPerPage'), array(), '', false);
 
         $repo->expects($this->once())
             ->method('findPerPage')

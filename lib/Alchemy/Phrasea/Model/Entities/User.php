@@ -32,7 +32,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *          @ORM\index(name="guest", columns={"guest"})
  *      }
  * )
- * @ORM\Entity(repositoryClass="Repositories\UserRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UserRepository")
  */
 class User
 {

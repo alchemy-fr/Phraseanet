@@ -163,7 +163,7 @@ class Baskets implements ControllerProviderInterface
     {
         try {
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-            /* @var $repository \Repositories\BasketRepository */
+            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
             $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['authentication']->getUser(), true);
 
             $app['EM']->remove($basket);
@@ -214,7 +214,7 @@ class Baskets implements ControllerProviderInterface
     public function addElementToBasket(Application $app, Request $request)
     {
         $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-        /* @var $repository \Repositories\BasketRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
         $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['authentication']->getUser(), true);
 
         if ($basket) {
@@ -285,7 +285,7 @@ class Baskets implements ControllerProviderInterface
         $noview = 0;
         $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repository \Repositories\BasketRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
         $baskets = $repository->findActiveByUser($app['authentication']->getUser());
 
         foreach ($baskets as $basket) {

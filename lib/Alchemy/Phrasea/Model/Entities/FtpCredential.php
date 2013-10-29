@@ -17,7 +17,7 @@ use Alchemy\Phrasea\Application;
 
 /**
  * @ORM\Table(name="FtpCredential")
- * @ORM\Entity(repositoryClass="Repositories\FtpCredentialRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FtpCredentialRepository")
  */
 class FtpCredential
 {

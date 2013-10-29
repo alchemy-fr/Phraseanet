@@ -17,7 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="LazaretFiles")
- * @ORM\Entity(repositoryClass="Repositories\LazaretFileRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\LazaretFileRepository")
  */
 class LazaretFile
 {

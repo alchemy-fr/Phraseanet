@@ -25,7 +25,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *          @ORM\index(name="error", columns={"error"})
  *      }
  * )
- * @ORM\Entity(repositoryClass="Repositories\FtpExportElementRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FtpExportElementRepository")
  */
 class FtpExportElement
 {

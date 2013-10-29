@@ -17,7 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="BasketElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_recordcle", columns={"basket_id","sbas_id","record_id"})})
- * @ORM\Entity(repositoryClass="Repositories\BasketElementRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\BasketElementRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class BasketElement

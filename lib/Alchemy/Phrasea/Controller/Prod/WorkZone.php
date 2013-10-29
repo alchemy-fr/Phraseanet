@@ -204,7 +204,7 @@ class WorkZone implements ControllerProviderInterface
 
         $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
-        /* @var $repository \Repositories\StoryWZRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\StoryWZRepository */
         $StoryWZ = $repository->findUserStory($app, $app['authentication']->getUser(), $Story);
 
         if (!$StoryWZ) {

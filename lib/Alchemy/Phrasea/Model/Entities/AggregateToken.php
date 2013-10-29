@@ -16,7 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="AggregateTokens")
- * @ORM\Entity(repositoryClass="Repositories\AggregateTokenRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\AggregateTokenRepository")
  */
 class AggregateToken
 {

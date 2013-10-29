@@ -21,7 +21,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *          @ORM\UniqueConstraint(name="unique_index",columns={"user_id", "name"})
  *      }
  * )
- * @ORM\Entity(repositoryClass="Repositories\UserNotificaionSettingRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UserNotificaionSettingRepository")
  */
 class UserNotificationSetting
 {

@@ -1571,7 +1571,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $orderElementRepository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\OrderElement');
 
-        /* @var $repository \Repositories\OrderElementRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\OrderElementRepository */
         foreach ($orderElementRepository->findBy(array('recordId' => $this->get_record_id())) as $order_element) {
             if ($order_element->getSbasId($this->app) == $this->get_sbas_id()) {
                 $this->app['EM']->remove($order_element);
@@ -1580,7 +1580,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $basketElementRepository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
-        /* @var $repository \Repositories\BasketElementRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
         foreach ($basketElementRepository->findElementsByRecord($this) as $basket_element) {
             $this->app['EM']->remove($basket_element);
         }
