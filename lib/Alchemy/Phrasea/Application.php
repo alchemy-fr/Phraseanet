@@ -83,6 +83,7 @@ use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
+use Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FeedServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
@@ -98,7 +99,7 @@ use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
-use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TemporaryFilesystemServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
@@ -198,6 +199,7 @@ class Application extends SilexApplication
         $this->register(new BrowserServiceProvider());
         $this->register(new ConfigurationServiceProvider());
         $this->register(new ConfigurationTesterServiceProvider);
+        $this->register(new ConvertersServiceProvider());
         $this->register(new RegistrationServiceProvider());
         $this->register(new CacheServiceProvider());
         $this->register(new ImagineServiceProvider());
@@ -256,6 +258,7 @@ class Application extends SilexApplication
         $this->register(new MP4BoxServiceProvider());
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new ORMServiceProvider());
+        $this->register(new ManipulatorServiceProvider());
         $this->register(new InstallerServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
@@ -279,7 +282,7 @@ class Application extends SilexApplication
         ));
         $this->register(new ServiceControllerServiceProvider());
         $this->register(new SwiftmailerServiceProvider());
-        $this->register(new TaskManagerServiceProvider());
+        $this->register(new TasksServiceProvider());
         $this->register(new TemporaryFilesystemServiceProvider());
         $this->register(new TokensServiceProvider());
         $this->register(new TwigServiceProvider(), array(

@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -331,7 +332,8 @@ class Databoxes implements ControllerProviderInterface
      */
     public function databasesUpgrade(Application $app, Request $request)
     {
-        if (\phrasea::is_scheduler_started($app)) {
+        $info = $app['task-manager.live-information']->getManager();
+        if (TaskManagerStatus::STATUS_STARTED === $info['actual']) {
             return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'scheduler-started'));
         }
 

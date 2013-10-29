@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use DataURI;
+use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +50,7 @@ class Tools implements ControllerProviderInterface
                         $metadatas = $app['exiftool.reader']
                                 ->files($record->get_subdef('document')->get_pathfile())
                                 ->first()->getMetadatas();
-                    } catch (\PHPExiftool\Exception\Exception $e) {
+                    } catch (PHPExiftoolException $e) {
 
                     } catch (\Exception_Media_SubdefNotFound $e) {
 

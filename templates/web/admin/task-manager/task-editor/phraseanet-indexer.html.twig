@@ -1,0 +1,162 @@
+{% extends 'admin/task-manager/task-editor/task.html.twig' %}
+
+{% block form %}
+<div class="control-group">
+    <label class="control-label">{% trans 'MySQL Host' %}</label>
+    <div class="controls">
+        <input type="text" name="host" value="">
+    </div>
+    <label class="control-label">{% trans 'MySQL Port' %}</label>
+    <div class="controls">
+        <input type="text" name="port" value="">
+    </div>
+    <label class="control-label">{% trans 'MySQL Database' %}</label>
+    <div class="controls">
+        <input type="text" name="base" value="">
+    </div>
+    <label class="control-label">{% trans 'MySQL Login' %}</label>
+    <div class="controls">
+        <input type="text" name="user" value="">
+    </div>
+    <label class="control-label">{% trans 'MySQL password' %}</label>
+    <div class="controls">
+        <input type="password" name="password" value="">
+    </div>
+    <label class="control-label">{% trans 'MySQL connection charset' %}</label>
+    <div class="controls">
+        <input type="text" name="charset" class="input-small" value="">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{% trans 'Socket port' %}</label>
+    <div class="controls">
+        <input type="text" name="socket" class="input-small" value="">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{% trans 'Debug binary mask' %}</label>
+    <div class="controls">
+        <input type="text" name="debugmask" class="input-small" value="">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{% trans 'Default language for thesaurus candidates' %}</label>
+    <div class="controls">
+        <input type="text" name="clng" class="input-small" value="">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{% trans 'Enable stemming languages' %}</label>
+    <div class="controls">
+        <input type="text" name="stem" class="input-small" value="">
+        <span class="help-inline">{% trans 'example : fr,en' %}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{% trans 'Sort records with an empty field' %}</label>
+    <div class="controls">
+        <select name="sortempty">
+            <option value="">{% trans 'Hide records' %}</option>
+            <option value="A">{% trans 'At the beginning' %}</option>
+            <option value="Z">{% trans 'At the end' %}</option>
+        </select>
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input type="checkbox" name="nolog">
+            {% trans 'Do not log, output to console' %}
+        </label>
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input type="checkbox" name="winsvc_run">
+            {% trans 'Run as application, not as service' %}
+        <span class="help-inline">({% trans 'Windows specific' %})</span>
+        </label>
+    </div>
+</div>
+<center>
+<div style="margin:10px; padding:5px; border:1px #000000 solid; font-family:monospace; font-size:14px; text-align:left; color:#00e000; background-color:#404040" id="cmd">cmd</div>
+</center>
+
+{% endblock %}
+
+
+{% block javascript %}
+    function taskFillGraphic(xml)
+    {
+        if (xml) {
+            xml = $.parseXML(xml);
+            xml = $(xml);
+
+            var isyes = function(v) {
+                v = v.toUpperCase().trim();
+
+                return v=='O' || v=='Y' || v=='OUI' || v=='YES' || v=='1';
+            }
+
+            with(document.forms['graphicForm'])
+            {
+                host.value         = xml.find("host").text();
+                port.value         = xml.find("port").text();
+                base.value         = xml.find("base").text();
+                user.value         = xml.find("user").text();
+                socket.value       = xml.find("socket").text();
+                password.value     = xml.find("password").text();
+                clng.value         = xml.find("clng").text();
+                nolog.checked      = isyes(xml.find("nolog").text());
+                winsvc_run.checked = isyes(xml.find("winsvc_run").text());
+                charset.value      = xml.find("charset").text();
+                stem.value         = xml.find("stem").text();
+                sortempty.value    = xml.find("sortempty").text();
+                debugmask.value    = 0|xml.find("debugmask").text();
+            }
+
+
+            var cmd = '';
+            with(document.forms['graphicForm'])
+            {
+                cmd += "/path/to/indexer";
+                if(host.value)
+                    cmd += " -h=" + host.value;
+                if(port.value)
+                    cmd += " -P=" + port.value;
+                if(base.value)
+                    cmd += " -b=" + base.value;
+                if(user.value)
+                    cmd += " -u=" + user.value;
+                if(password.value)
+                    cmd += " -p=xxxxxx"; // + password.value;
+                if(socket.value)
+                    cmd += " --socket=" + socket.value;
+                if(charset.value)
+                    cmd += " --default-character-set=" + charset.value;
+
+                cmd += " -o";
+
+                if(nolog.checked)
+                    cmd += " -n";
+                if(clng.value)
+                    cmd += " -c=" + clng.value;
+                if(stem.value)
+                    cmd += " --stem=" + stem.value;
+                if(sortempty.value)
+                    cmd += " --sort-empty=" + sortempty.value;
+                if(debugmask.value)
+                    cmd += " -d=" + debugmask.value;
+                if(winsvc_run.checked)
+                    cmd += " --run";
+            }
+            $('#cmd').html(cmd);
+        }
+    }
+    $(document).ready(function(){
+        $("#graphicForm *").change(function(){
+            taskFillGraphic(null);
+        });
+    });
+{% endblock %}

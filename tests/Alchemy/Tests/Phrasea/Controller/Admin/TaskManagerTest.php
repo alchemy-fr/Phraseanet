@@ -2,81 +2,291 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Model\Entities\Task;
+use Symfony\Component\HttpFoundation\Response;
+
 class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
-    public function testRouteTaskManager()
+    public function testRouteTaskManagerRoot()
     {
-        /**
-         * get /admin/task-manager/ should redirect to /admin/task-manager/tasks
-         */
-        self::$DI['client']->request(
-                'GET', '/admin/task-manager/', array()
-        );
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect('/admin/task-manager/tasks/'));
-    }
-
-    public function testRouteTaskManager_tasks()
-    {
-        $task_manager = self::$DI['app']['task-manager'];
-
-        $crawler = self::$DI['client']->request(
-                'GET', '/admin/task-manager/tasks/', array()
-        );
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertCount(1, $crawler->filter('form#taskManagerForm'));
-
-        $crawler = self::$DI['client']->request(
-                'GET', '/admin/task-manager/tasks/', array(), array(), array('CONTENT_TYPE' => 'application/json')
-        );
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertTrue(self::$DI['client']->getResponse()->headers->contains('Content-Type', 'application/json'));
-
-        $raw = self::$DI['client']->getResponse()->getContent();
-        $json = json_decode($raw);
-
-        $this->assertEquals(count($task_manager->getTasks()), count(get_object_vars($json->tasks)));
-    }
-
-    public function testRouteTaskManager_task_create()
-    {
-        $task_manager = self::$DI['app']['task-manager'];
-
-        $nTasks0 = count($task_manager->getTasks());
-
-        self::$DI['client']->request(
-                'POST', '/admin/task-manager/tasks/create/', array('tcl' => 'task_period_test')
-        );
-
-        $nTasks1 = count($task_manager->getTasks(true));  // true: force refresh
-        $this->assertEquals($nTasks1, $nTasks0 + 1);
+        self::$DI['client']->request('GET', '/admin/task-manager/');
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-
-        $location = self::$DI['client']->getResponse()->headers->get('location');
-        $data = explode('/', $location);
-        $tid = array_pop($data);
-
-        self::$DI['client']->request(
-                'GET', '/admin/task-manager/task/' . $tid . '/log', array()
-        );
-
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-
-        self::$DI['client']->request(
-                'GET', '/admin/task-manager/task/' . $tid . '/delete', array()
-        );
-
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect('/admin/task-manager/tasks/'));
-        $nTasks2 = count($task_manager->getTasks(true));   // true: force refresh
-        $this->assertEquals($nTasks2, $nTasks0);
     }
 
-    public function testRouteTaskManager_scheduler_log()
+    public function testRootListTasks()
+    {
+        foreach (self::$DI['app']['task-manager.available-jobs'] as $job) {
+            $task = new Task();
+            $task
+                ->setName('task')
+                ->setJobId(get_class($job));
+            self::$DI['app']['EM']->persist($task);
+        }
+        self::$DI['app']['EM']->flush();
+
+        self::$DI['client']->request('GET', '/admin/task-manager/tasks');
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+    }
+
+    public function testRootPostCreateTask()
+    {
+        $parameters = array(
+            'job-name' => 'Alchemy\Phrasea\TaskManager\Job\NullJob',
+            '_token' => 'token',
+        );
+
+        self::$DI['client']->request('POST', '/admin/task-manager/tasks/create', $parameters);
+        $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertRegExp('/\/admin\/task-manager\/task\/\d+/', self::$DI['client']->getResponse()->headers->get('location'));
+    }
+
+    public function testPostCreateTaskWithWrongName()
+    {
+        $parameters = array(
+            'job-name' => 'NoJob',
+            '_token' => 'token',
+        );
+
+        self::$DI['client']->request('POST', '/admin/task-manager/tasks/create', $parameters);
+        $this->assertFalse(self::$DI['client']->getResponse()->isOk());
+        $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
+    }
+
+    public function testPostStartScheduler()
+    {
+        self::$DI['app']['task-manager.status'] = $this->getMockBuilder('Alchemy\Phrasea\TaskManager\TaskManagerStatus')
+                ->disableOriginalConstructor()
+                ->getMock();
+        self::$DI['app']['task-manager.status']->expects($this->once())
+               ->method('start');
+        self::$DI['client']->request('POST', '/admin/task-manager/scheduler/start');
+        $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('/admin/task-manager/tasks', self::$DI['client']->getResponse()->headers->get('location'));
+    }
+
+    public function testPostStopScheduler()
+    {
+        self::$DI['app']['task-manager.status'] = $this->getMockBuilder('Alchemy\Phrasea\TaskManager\TaskManagerStatus')
+                ->disableOriginalConstructor()
+                ->getMock();
+        self::$DI['app']['task-manager.status']->expects($this->once())
+               ->method('stop');
+        self::$DI['client']->request('POST', '/admin/task-manager/scheduler/stop');
+        $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('/admin/task-manager/tasks', self::$DI['client']->getResponse()->headers->get('location'));
+    }
+
+    public function testGetSchedulerLog()
     {
         self::$DI['client']->request('GET', '/admin/task-manager/scheduler/log');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+    }
 
-        $response = self::$DI['client']->getResponse();
+    public function testGetTaskLog()
+    {
+        $task = new Task();
+        $task
+            ->setName('task')
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
+        self::$DI['app']['EM']->persist($task);
+        self::$DI['app']['EM']->flush();
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $response);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        self::$DI['client']->request('GET', '/admin/task-manager/task/'.$task->getId().'/log');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+    }
+
+    public function testPostTaskDelete()
+    {
+        $task = new Task();
+        $task
+            ->setName('task')
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
+        self::$DI['app']['EM']->persist($task);
+        self::$DI['app']['EM']->flush();
+        $taskId = $task->getId();
+
+        self::$DI['client']->request('POST', '/admin/task-manager/task/'.$taskId.'/delete');
+        $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('/admin/task-manager/tasks', self::$DI['client']->getResponse()->headers->get('location'));
+
+        $this->assertNull(self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', $taskId));
+    }
+
+    public function testPostTaskStart()
+    {
+        $task = new Task();
+        $task
+            ->setName('task')
+            ->setStatus(Task::STATUS_STOPPED)
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
+        self::$DI['app']['EM']->persist($task);
+        self::$DI['app']['EM']->flush();
+
+        self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/start');
+        $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('/admin/task-manager/tasks', self::$DI['client']->getResponse()->headers->get('location'));
+
+        $this->assertEquals(Task::STATUS_STARTED, $task->getStatus());
+    }
+
+    public function testPostTaskStop()
+    {
+        $task = new Task();
+        $task
+            ->setName('task')
+            ->setStatus(Task::STATUS_STARTED)
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
+        self::$DI['app']['EM']->persist($task);
+        self::$DI['app']['EM']->flush();
+
+        self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/stop');
+        $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('/admin/task-manager/tasks', self::$DI['client']->getResponse()->headers->get('location'));
+
+        $this->assertEquals(Task::STATUS_STOPPED, $task->getStatus());
+    }
+
+    public function testPostResetCrashes()
+    {
+        $task = new Task();
+        $task
+            ->setName('task')
+            ->setCrashed(30)
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
+        self::$DI['app']['EM']->persist($task);
+        self::$DI['app']['EM']->flush();
+
+        self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/resetcrashcounter');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('content-type'));
+
+        $this->assertEquals(0, $task->getCrashed());
+    }
+
+    public function testPostSaveTask()
+    {
+        $task = new Task();
+        $task
+            ->setName('task')
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
+        self::$DI['app']['EM']->persist($task);
+        self::$DI['app']['EM']->flush();
+
+        $name = 'renamed';
+        $period = 366;
+        $status = Task::STATUS_STOPPED;
+        $settings = '<?xml version="1.0" encoding="UTF-8"?><tasksettings><neutron></neutron></tasksettings>';
+
+        $parameters = array(
+            '_token'   => 'token',
+            'name'     => $name,
+            'period'   => $period,
+            'status'   => $status,
+            'settings' => $settings,
+        );
+
+        self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/save', $parameters);
+
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('content-type'));
+
+        $this->assertEquals($name, $task->getName());
+        $this->assertEquals($period, $task->getPeriod());
+        $this->assertEquals($status, $task->getStatus());
+        $this->assertEquals($settings, $task->getSettings());
+    }
+
+    public function testGetTask()
+    {
+        $task = new Task();
+        $task
+            ->setName('task')
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
+        self::$DI['app']['EM']->persist($task);
+        self::$DI['app']['EM']->flush();
+
+        self::$DI['client']->request('GET', '/admin/task-manager/task/'.$task->getId());
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+    }
+
+    public function testGetInvalidTask()
+    {
+        self::$DI['client']->request('GET', '/admin/task-manager/task/50');
+        $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
+    }
+
+    public function testValidateInvalidXML()
+    {
+        self::$DI['client']->request('POST', '/admin/task-manager/task/validate-xml', array(), array(), array(), 'Invalid XML');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('content-type'));
+        $this->assertEquals(array('success' => false), json_decode(self::$DI['client']->getResponse()->getContent(), true));
+    }
+
+    public function testValidateXML()
+    {
+        self::$DI['client']->request('POST', '/admin/task-manager/task/validate-xml', array(), array(), array(),
+           '<?xml version="1.0" encoding="UTF-8"?><tasksettings><neutron></neutron></tasksettings>');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('content-type'));
+        $this->assertEquals(array('success' => true), json_decode(self::$DI['client']->getResponse()->getContent(), true));
+    }
+
+    public function testPostTaskFacility()
+    {
+        $task = new Task();
+        $task
+            ->setName('task')
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
+        self::$DI['app']['EM']->persist($task);
+        self::$DI['app']['EM']->flush();
+
+        $job = $this->getMock('Alchemy\Phrasea\TaskManager\Job\JobInterface');
+        $editor = $this->getMock('Alchemy\Phrasea\TaskManager\Editor\EditorInterface');
+
+        $job->expects($this->once())
+                ->method('getEditor')
+                ->will($this->returnValue($editor));
+        $editor->expects($this->once())
+                ->method('facility')
+                ->will($this->returnValue(new Response('Hello')));
+
+        self::$DI['app']['task-manager.job-factory'] = $this->getMockBuilder('Alchemy\Phrasea\TaskManager\Job\Factory')
+                ->disableOriginalConstructor()->getMock();
+        self::$DI['app']['task-manager.job-factory']->expects($this->once())
+                ->method('create')
+                ->will($this->returnValue($job));
+
+        self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/facility');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+    }
+
+    public function testPostTaskXmlFromForm()
+    {
+        $task = new Task();
+        $task
+            ->setName('task')
+            ->setJobId('Alchemy\Phrasea\TaskManager\Job\NullJob');
+        self::$DI['app']['EM']->persist($task);
+        self::$DI['app']['EM']->flush();
+
+        $job = $this->getMock('Alchemy\Phrasea\TaskManager\Job\JobInterface');
+        $editor = $this->getMock('Alchemy\Phrasea\TaskManager\Editor\EditorInterface');
+
+        $job->expects($this->once())
+                ->method('getEditor')
+                ->will($this->returnValue($editor));
+        $editor->expects($this->once())
+                ->method('updateXMLWithRequest')
+                ->will($this->returnValue(new Response('Hello')));
+
+        self::$DI['app']['task-manager.job-factory'] = $this->getMockBuilder('Alchemy\Phrasea\TaskManager\Job\Factory')
+                ->disableOriginalConstructor()->getMock();
+        self::$DI['app']['task-manager.job-factory']->expects($this->once())
+                ->method('create')
+                ->will($this->returnValue($job));
+
+        self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/xml-from-form');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
     }
 }

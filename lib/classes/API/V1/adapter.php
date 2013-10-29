@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\UserQuery;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Symfony\Component\HttpFoundation\Request;
@@ -115,19 +116,17 @@ class API_V1_adapter extends API_V1_Abstract
     public function get_scheduler(Application $app)
     {
         $result = new \API_V1_result($app, $app['request'], $this);
+        $date = new \DateTime();
+        $data = $app['task-manager.live-information']->getManager();
 
-        $taskManager = $app['task-manager'];
-        $ret = $taskManager->getSchedulerState();
-
-        $ret['state'] = $ret['status'];
-
-        unset($ret['qdelay'], $ret['status']);
-
-        if (null !== $ret['updated_on']) {
-            $ret['updated_on'] = $ret['updated_on']->format(DATE_ATOM);
-        }
-
-        $result->set_datas(array('scheduler' => $ret));
+        $result->set_datas(array('scheduler' => array(
+            'configuration' => $data['configuration'],
+            'state'         => $data['actual'],
+            'status'        => $data['actual'],
+            'pid'           => $data['process-id'],
+            'process-id'    => $data['process-id'],
+            'updated_on'    => $date->format(DATE_ATOM),
+        )));
 
         return $result;
     }
@@ -143,12 +142,9 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new \API_V1_result($app, $app['request'], $this);
 
-        $taskManager = $app['task-manager'];
-        $tasks = $taskManager->getTasks();
-
         $ret = array();
-        foreach ($tasks as $task) {
-            $ret[] = $this->list_task($task);
+        foreach ($app['manipulator.task']->getRepository()->findAll() as $task) {
+            $ret[] = $this->list_task($app, $task);
         }
 
         $result->set_datas(array('tasks' => $ret));
@@ -156,18 +152,28 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    protected function list_task(\task_abstract $task)
+    protected function list_task(Application $app, Task $task)
     {
+        $data = $app['task-manager.live-information']->getTask($task);
+
         return array(
-            'id'             => $task->getID(),
+            'id'             => $task->getId(),
+            'title'          => $task->getName(),
             'name'           => $task->getName(),
-            'state'          => $task->getState(),
-            'pid'            => $task->getPID(),
-            'title'          => $task->getTitle(),
-            'last_exec_time' => $task->getLastExecTime() ? $task->getLastExecTime()->format(DATE_ATOM) : null,
-            'auto_start'     => !!$task->isActive(),
-            'runner'         => $task->getRunner(),
-            'crash_counter'  => $task->getCrashCounter()
+            'state'          => $task->getStatus(),
+            'status'         => $task->getStatus(),
+            'actual-status'  => $data['actual'],
+            'process-id'     => $data['process-id'],
+            'pid'            => $data['process-id'],
+            'jobId'          => $task->getJobId(),
+            'period'         => $task->getPeriod(),
+            'last_exec_time' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null,
+            'last_execution' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null,
+            'updated'        => $task->getUpdated() ? $task->getUpdated()->format(DATE_ATOM) : null,
+            'created'        => $task->getCreated() ? $task->getCreated()->format(DATE_ATOM) : null,
+            'auto_start'     => $task->getStatus() === Task::STATUS_STARTED,
+            'crashed'        => $task->getCrashed(),
+            'status'         => $task->getStatus(),
         );
     }
 
@@ -175,19 +181,13 @@ class API_V1_adapter extends API_V1_Abstract
      * Get informations about an identified task
      *
      * @param  \Silex\Application $app    The API silex application
-     * @param  integer            $taskId
+     * @param  Task               $task
      * @return \API_V1_result
      */
-    public function get_task(Application $app, $taskId)
+    public function get_task(Application $app, Task $task)
     {
         $result = new \API_V1_result($app, $app['request'], $this);
-
-        $taskManager = $app['task-manager'];
-
-        $ret = array(
-            'task' => $this->list_task($taskManager->getTask($taskId))
-        );
-
+        $ret = array('task' => $this->list_task($app, $task));
         $result->set_datas($ret);
 
         return $result;
@@ -197,21 +197,15 @@ class API_V1_adapter extends API_V1_Abstract
      * Start a specified task
      *
      * @param  \Silex\Application $app    The API silex application
-     * @param  integer            $taskId The task id
+     * @param  Task            $task The task to start
      * @return \API_V1_result
      */
-    public function start_task(Application $app, $taskId)
+    public function start_task(Application $app, Task $task)
     {
         $result = new \API_V1_result($app, $app['request'], $this);
 
-        $taskManager = $app['task-manager'];
-
-        $task = $taskManager->getTask($taskId);
-        if (!in_array($task->getState(), array(\task_abstract::STATE_TOSTART, \task_abstract::STATE_STARTED))) {
-            $task->setState(\task_abstract::STATE_TOSTART);
-        }
-
-        $result->set_datas(array('task' => $this->list_task($task)));
+        $app['manipulator.task']->start($task);
+        $result->set_datas(array('task' => $this->list_task($app, $task)));
 
         return $result;
     }
@@ -220,20 +214,15 @@ class API_V1_adapter extends API_V1_Abstract
      * Stop a specified task
      *
      * @param  \Silex\Application $app    The API silex application
-     * @param  integer            $taskId The task id
+     * @param  Task            $task The task to stop
      * @return \API_V1_result
      */
-    public function stop_task(Application $app, $taskId)
+    public function stop_task(Application $app, Task $task)
     {
         $result = new API_V1_result($app, $app['request'], $this);
 
-        $taskManager = $app['task-manager'];
-
-        $task = $taskManager->getTask($taskId);
-        if (!in_array($task->getState(), array(\task_abstract::STATE_TOSTOP, \task_abstract::STATE_STOPPED))) {
-            $task->setState(\task_abstract::STATE_TOSTOP);
-        }
-        $result->set_datas(array('task' => $this->list_task($task)));
+        $app['manipulator.task']->stop($task);
+        $result->set_datas(array('task' => $this->list_task($app, $task)));
 
         return $result;
     }
@@ -244,11 +233,11 @@ class API_V1_adapter extends API_V1_Abstract
      *  - autostart
      *
      * @param  \Silex\Application           $app    Silex application
-     * @param  integer                      $taskId the task id
+     * @param  Task                         $task   The task
      * @return \API_V1_result
      * @throws \API_V1_exception_badrequest
      */
-    public function set_task_property(Application $app, $taskId)
+    public function set_task_property(Application $app, $task)
     {
         $result = new API_V1_result($app, $app['request'], $this);
 
@@ -259,19 +248,14 @@ class API_V1_adapter extends API_V1_Abstract
             throw new \API_V1_exception_badrequest();
         }
 
-        $taskManager = $app['task-manager'];
-
-        $task = $taskManager->getTask($taskId);
-
         if ($title) {
-            $task->setTitle($title);
+            $task->setName($title);
         }
-
         if ($autostart) {
-            $task->setActive(!!$autostart);
+            $task->setStatus(Task::STATUS_STARTED);
         }
 
-        $result->set_datas(array('task' => $this->list_task($task)));
+        $result->set_datas(array('task' => $this->list_task($app, $task)));
 
         return $result;
     }

@@ -99,14 +99,14 @@ class Installer
             )
         );
 
-        foreach (array('cindexer', 'subdef', 'writemeta') as $task) {
-            $className = sprintf('task_period_%s', $task);
-
-            if (!class_exists($className)) {
-                throw new \InvalidArgumentException('Unknown task class "' . $className.'"');
-            }
-
-            $className::create($this->app);
+        foreach (array('PhraseanetIndexer', 'Subdefs', 'WriteMetadata') as $jobName) {
+            $job = $this->app['task-manager.job-factory']->create($jobName);
+            $this->app['manipulator.task']->create(
+                $job->getName(),
+                $job->getJobId(),
+                $job->getEditor()->getDefaultSettings($this->app['phraseanet.configuration']),
+                $job->getEditor()->getDefaultPeriod()
+            );
         }
     }
 

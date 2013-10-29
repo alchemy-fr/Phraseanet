@@ -1,0 +1,12 @@
+<h4>
+    <a href="{{ path('admin_tasks_list') }} ">
+        < {% trans 'Return' %}
+    </a>
+    {{ logname }}
+    <a href="{{ path('admin_tasks_scheduler_log', { 'clr' : logfile.getPath() }) }} ">
+        {% trans 'Clear' %}
+    </a>
+</h4>
+<pre>
+    {{ logfile.getContent() }}
+</pre>

@@ -18,7 +18,10 @@
   <script type="text/javascript" src="/assets/tinymce/tinymce.js"></script>
   <script type="text/javascript" src="{{ path('minifier', { 'g' : 'admin' }) }}"></script>
   <script type="text/javascript">
-    var p4 = {users:{sel:[]}};
+    var p4 = p4 || {};
+    p4.users = {
+        sel:[]
+    };
     var bodySize = {x:0,y:0};
 
     var language = {
@@ -104,14 +107,18 @@
             var dest = link.attr('href');
 
             if(dest && dest.indexOf('#') !== 0) {
-                $('#right-ajax').empty().addClass('loading').parent().show();
-
-                $.get(dest, function(data) {
-                    enableFormsCallback(data);
-                });
+                loadRightAjax(dest);
                 return false;
             }
 
+        });
+    }
+
+    function loadRightAjax(url)
+    {
+        $('#right-ajax').empty().addClass('loading').parent().show();
+        $.get(url, function(data) {
+            enableFormsCallback(data);
         });
     }
 
@@ -126,11 +133,8 @@
         var dest = $(this).attr('href');
 
         $(this).bind('click',function(){
-            $('#right-ajax').empty().addClass('loading').parent().show();
 
-            $.get(dest, function(data) {
-                enableFormsCallback(data);
-            });
+            loadRightAjax(dest);
             $('#tree .selected').removeClass('selected');
             $(this).parent().addClass('selected');
 

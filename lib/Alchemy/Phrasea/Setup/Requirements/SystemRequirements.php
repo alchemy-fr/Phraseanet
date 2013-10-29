@@ -260,6 +260,12 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
             'Install and enable the <strong>twig</strong> extension.'
         );
 
+        $this->addRequirement(
+            extension_loaded('zmq'),
+            'ZMQ extension is required.',
+            'Install and enable the <strong>ZMQ</strong> extension.'
+        );
+
         $this->addRecommendation(
             class_exists('Imagick') || class_exists('Gmagick'),
             'Imagick or Gmagick extension is strongly recommended for image processing',

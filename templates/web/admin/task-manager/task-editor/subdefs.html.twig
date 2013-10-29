@@ -1,0 +1,28 @@
+{% extends 'admin/task-manager/task-editor/task.html.twig' %}
+
+{% block form %}
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input class="formElem" type="checkbox" name="embedded" value="1">
+            {% trans 'Try to extract embedded thumbnails' %}
+        </label>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+    function taskFillGraphic(xml)
+    {
+        if (xml) {
+            xml = $.parseXML(xml);
+            xml = $(xml);
+
+            with(document.forms['graphicForm'])
+            {
+                embedded.checked = !!parseInt(xml.find("embedded").text());
+            }
+        }
+    }
+{% endblock %}

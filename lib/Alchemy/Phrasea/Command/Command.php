@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command;
 
 use Alchemy\Phrasea\Application;
 use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Symfony\Component\Console\Command\Command as SymfoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,8 +36,23 @@ abstract class Command extends SymfoCommand implements CommandInterface
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('verbose')) {
-            $handler = new StreamHandler('php://stdout');
+        if ($output->getVerbosity() >= OutputInterface::VERBOSITY_QUIET) {
+            switch ($output->getVerbosity()) {
+                default:
+                case OutputInterface::VERBOSITY_NORMAL:
+                    $level = Logger::WARNING;
+                    break;
+                case OutputInterface::VERBOSITY_VERBOSE:
+                    $level = Logger::NOTICE;
+                    break;
+                case OutputInterface::VERBOSITY_VERY_VERBOSE:
+                    $level = Logger::INFO;
+                    break;
+                case OutputInterface::VERBOSITY_DEBUG:
+                    $level = Logger::DEBUG;
+                    break;
+            }
+            $handler = new StreamHandler('php://stdout', $level);
 
             $this->container['monolog'] = $this->container->share(
                 $this->container->extend('monolog', function($logger, $app) use ($handler) {

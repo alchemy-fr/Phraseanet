@@ -210,21 +210,23 @@ class V1 implements ControllerProviderInterface
         /**
          * Get task informations
          *
-         * Route : /monitor/task/{task_id}/
+         * Route : /monitor/task/{task}/
          *
          * Method : GET
          *
          * Parameters :
          *
          */
-        $controllers->get('/monitor/task/{task_id}/', function(SilexApplication $app, Request $request, $task_id) {
-            return $app['api']->get_task($app, $task_id)->get_response();
-        })->before($mustBeAdmin)->assert('task_id', '\d+');
+        $controllers->get('/monitor/task/{task}/', function(SilexApplication $app, Request $request, $task) {
+            return $app['api']->get_task($app, $task)->get_response();
+        })
+            ->convert('task', array($app['converter.task'], 'convert'))
+            ->before($mustBeAdmin)->assert('task', '\d+');
 
         /**
          * Start task
          *
-         * Route : /monitor/task/{task_id}/
+         * Route : /monitor/task/{task}/
          *
          * Method : POST
          *
@@ -232,37 +234,43 @@ class V1 implements ControllerProviderInterface
          * - name (string) change the name of the task
          * - autostart (boolean) start task when scheduler starts
          */
-        $controllers->post('/monitor/task/{task_id}/', function(SilexApplication $app, Request $request, $task_id) {
-            return $app['api']->set_task_property($app, $task_id)->get_response();
-        })->before($mustBeAdmin)->assert('task_id', '\d+');
+        $controllers->post('/monitor/task/{task}/', function(SilexApplication $app, Request $request, $task) {
+            return $app['api']->set_task_property($app, $task)->get_response();
+        })
+            ->convert('task', array($app['converter.task'], 'convert'))
+            ->before($mustBeAdmin)->assert('task', '\d+');
 
         /**
          * Start task
          *
-         * Route : /monitor/task/{task_id}/start/
+         * Route : /monitor/task/{task}/start/
          *
          * Method : POST
          *
          * Parameters :
          *
          */
-        $controllers->post('/monitor/task/{task_id}/start/', function(SilexApplication $app, Request $request, $task_id) {
-            return $app['api']->start_task($app, $task_id)->get_response();
-        })->before($mustBeAdmin);
+        $controllers->post('/monitor/task/{task}/start/', function(SilexApplication $app, Request $request, $task) {
+            return $app['api']->start_task($app, $task)->get_response();
+        })
+            ->convert('task', array($app['converter.task'], 'convert'))
+            ->before($mustBeAdmin);
 
         /**
          * Stop task
          *
-         * Route : /monitor/task/{task_id}/stop/
+         * Route : /monitor/task/{task}/stop/
          *
          * Method : POST
          *
          * Parameters :
          *
          */
-        $controllers->post('/monitor/task/{task_id}/stop/', function(SilexApplication $app, Request $request, $task_id) {
-            return $app['api']->stop_task($app, $task_id)->get_response();
-        })->before($mustBeAdmin);
+        $controllers->post('/monitor/task/{task}/stop/', function(SilexApplication $app, Request $request, $task) {
+            return $app['api']->stop_task($app, $task)->get_response();
+        })
+            ->convert('task', array($app['converter.task'], 'convert'))
+            ->before($mustBeAdmin);
 
         /**
          * Get some information about phraseanet

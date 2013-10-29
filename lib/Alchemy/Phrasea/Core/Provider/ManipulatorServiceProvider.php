@@ -11,25 +11,29 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Manager\UserManager;
-use Silex\Application;
+use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
 
 class ManipulatorServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(SilexApplication $app)
     {
+        $app['manipulator.task'] = $app->share(function(SilexApplication $app) {
+            return new TaskManipulator($app['EM'], $app['task-manager.notifier']);
+        });
+
         $app['manipulator.user'] = $app->share(function($app) {
             return new UserManipulator($app['model.user-manager'], $app['auth.password-encoder'], $app['geonames.connector']);
         });
-
         $app['model.user-manager'] = $app->share(function($app) {
             return new UserManager($app['EM'], $app['phraseanet.appbox']->get_connection());
         });
     }
 
-    public function boot(Application $app)
+    public function boot(SilexApplication $app)
     {
     }
 }
