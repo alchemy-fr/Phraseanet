@@ -203,6 +203,7 @@ class Application extends SilexApplication
         $this->register(new ImagineServiceProvider());
         $this->register(new JMSSerializerServiceProvider());
         $this->register(new FFMpegServiceProvider());
+        $this->register(new FeedServiceProvider());
         $this->register(new FilesystemServiceProvider());
         $this->register(new FtpServiceProvider());
         $this->register(new GeonamesServiceProvider());
