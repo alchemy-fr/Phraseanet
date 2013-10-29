@@ -16,12 +16,12 @@ use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SchedulerStart extends Command
+class SchedulerResumeTasks extends Command
 {
     public function __construct()
     {
-        parent::__construct('task-manager:scheduler:start');
-        $this->setDescription('Starts Task-Manager scheduler');
+        parent::__construct('task-manager:scheduler:resume-tasks');
+        $this->setDescription('Resume scheduler started tasks jobs');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)

@@ -18,11 +18,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TaskManagerCommand extends Command
+class SchedulerRun extends Command
 {
     public function __construct()
     {
         parent::__construct('task-manager:scheduler:run');
+        $this->setDescription('Run the scheduler');
     }
 
     public function signalHandler($signal)

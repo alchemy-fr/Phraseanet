@@ -16,12 +16,12 @@ use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SchedulerStop extends Command
+class SchedulerPauseTasks extends Command
 {
     public function __construct()
     {
-        parent::__construct('task-manager:scheduler:stop');
-        $this->setDescription('Starts Task-Manager scheduler. It updates the scheduler configuration.');
+        parent::__construct('task-manager:scheduler:pause-tasks');
+        $this->setDescription('Pause scheduler started tasks jobs');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)

@@ -21,6 +21,7 @@ class TaskList extends Command
     public function __construct()
     {
         parent::__construct('task-manager:task:list');
+        $this->setDescription('Lists tasks');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
@@ -30,7 +31,7 @@ class TaskList extends Command
 
         $rows = array_map(function (Task $task) use ($probe, &$errors) {
             $info = $probe->getTask($task);
-            $error = $info['actual'] !== $info['configuration'];
+            $error = $info['actual'] !== $task->getStatus();
             if ($error) {
                 $errors ++;
             }
@@ -38,8 +39,8 @@ class TaskList extends Command
             return array(
                 $task->getId(),
                 $task->getName(),
-                $task->getStatus(),
-                $error ? "<error>" . $info['actual'] . "</error>" : $info['actual'],
+                $task->getStatus() !== 'started' ? $task->getStatus() . " (warning)" : $task->getStatus(),
+                $error ? $info['actual'] . " (error)" : $info['actual'],
                 $info['process-id'],
             );
         }, $this->container['manipulator.task']->getRepository()->findAll());

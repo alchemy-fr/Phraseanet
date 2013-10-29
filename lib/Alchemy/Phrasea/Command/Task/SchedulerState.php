@@ -23,7 +23,7 @@ class SchedulerState extends Command
     {
         parent::__construct('task-manager:scheduler:state');
         $this
-            ->setDescription('Returns Task-Manager scheduler state')
+            ->setDescription('Returns scheduler state')
             ->addOption('short', null, InputOption::VALUE_NONE, 'print short result, ie: <info>stopped()</info> | <info>started(12345)</info> | <info>tostop(12345)</info> | <info>stopping(12345)</info>');
     }
 

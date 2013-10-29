@@ -25,7 +25,7 @@ class TaskState extends Command
 
         $this
             ->addArgument('task_id', InputArgument::REQUIRED, 'The task_id to test')
-            ->setDescription('Returns a Phraseanet task state given its id')
+            ->setDescription('Returns the state of a task')
             ->addOption('short', null, InputOption::VALUE_NONE, 'print short result, ie: <info>stopped()</info> | <info>started(12345)</info> | <info>tostop(12345)</info> | <info>...</info>');
     }
 

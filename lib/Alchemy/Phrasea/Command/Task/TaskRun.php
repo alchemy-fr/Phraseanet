@@ -31,7 +31,9 @@ class TaskRun extends Command
     {
         parent::__construct('task-manager:task:run');
 
-        $this->addArgument('task_id', InputArgument::REQUIRED, 'The id of the task to run', null)
+        $this
+            ->setDescription('Runs a task')
+            ->addArgument('task_id', InputArgument::REQUIRED, 'The id of the task to run', null)
             ->addOption('max-memory', null, InputOption::VALUE_REQUIRED, '')
             ->addOption('max-duration', null, InputOption::VALUE_REQUIRED, '')
             ->addOption('listen-signal', null, InputOption::VALUE_NONE, '')

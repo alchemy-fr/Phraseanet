@@ -53,7 +53,7 @@ class TaskList implements TaskListInterface
         $arguments[] = $this->root . '/bin/console';
         $arguments[] = '--';
         $arguments[] = '-q';
-        $arguments[] = 'task:run';
+        $arguments[] = 'task-manager:task:run';
         $arguments[] = $task->getId();
         $arguments[] = '--listen-signal';
         $arguments[] = '--max-duration';
