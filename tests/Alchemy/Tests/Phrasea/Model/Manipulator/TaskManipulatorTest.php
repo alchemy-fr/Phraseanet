@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\TaskManager\Notifier;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
 {
@@ -104,7 +104,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
     public function testGetRepository()
     {
         $manipulator = new TaskManipulator(self::$DI['app']['EM'], $this->createNotifierMock());
-        $this->assertSame(self::$DI['app']['EM']->getRepository('Entities\Task'), $manipulator->getRepository());
+        $this->assertSame(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task'), $manipulator->getRepository());
     }
 
     public function testCreateEmptyCollection()
@@ -119,7 +119,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
         $manipulator = new TaskManipulator(self::$DI['app']['EM'], $this->createNotifierMock());
         $task = $manipulator->createEmptyCollectionJob($collection);
 
-        $tasks = self::$DI['app']['EM']->getRepository('Entities\Task')->findAll();
+        $tasks = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task')->findAll();
         $this->assertSame('EmptyCollection', $task->getJobId());
         $this->assertSame(array($task), $tasks);
         $settings = simplexml_load_string($task->getSettings());
@@ -127,7 +127,7 @@ class TaskManipulatorTest extends \PhraseanetPHPUnitAbstract
     }
     private function findAllTasks()
     {
-        return self::$DI['app']['EM']->getRepository('Entities\Task')->findAll();
+        return self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task')->findAll();
     }
 
     private function loadTask()

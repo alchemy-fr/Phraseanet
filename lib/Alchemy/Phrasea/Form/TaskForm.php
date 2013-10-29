@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Form;
 
+use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -38,8 +39,8 @@ class TaskForm extends AbstractType
         $builder->add('status', 'choice', array(
             'label'       => _('The task status'),
             'choices'   => array(
-                \Entities\Task::STATUS_STARTED   => 'Started',
-                \Entities\Task::STATUS_STOPPED   => 'Stopped',
+                Task::STATUS_STARTED   => 'Started',
+                Task::STATUS_STOPPED   => 'Stopped',
             ),
         ));
         $builder->add('settings', 'hidden');
@@ -48,7 +49,7 @@ class TaskForm extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Entities\Task',
+            'data_class' => 'Alchemy\Phrasea\Model\Entities\Task',
         ));
     }
 

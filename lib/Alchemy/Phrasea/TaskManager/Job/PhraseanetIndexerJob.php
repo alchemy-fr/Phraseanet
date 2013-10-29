@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\TaskManager\Editor\PhraseanetIndexerEditor;
 use Alchemy\Phrasea\TaskManager\Event\PhraseanetIndexerStopperSubscriber;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\Process\ProcessBuilder;
 
 class PhraseanetIndexerJob extends AbstractJob

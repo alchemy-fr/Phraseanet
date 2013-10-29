@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\TaskManager\Log;
 
 use Alchemy\Phrasea\TaskManager\Log\TaskLogFile;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class TaskLogFileTest extends LogFileTestCase
 {

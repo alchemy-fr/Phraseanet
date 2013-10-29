@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\TaskManager\Job\EmptyCollectionJob;
 use Alchemy\Phrasea\TaskManager\Notifier;
 use Doctrine\Common\Persistence\ObjectManager;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class TaskManipulator implements ManipulatorInterface
 {
@@ -174,6 +174,6 @@ class TaskManipulator implements ManipulatorInterface
      */
     public function getRepository()
     {
-        return $this->om->getRepository('Entities\Task');
+        return $this->om->getRepository('Alchemy\Phrasea\Model\Entities\Task');
     }
 }

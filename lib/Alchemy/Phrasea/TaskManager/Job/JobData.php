@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\TaskManager\JobDataInterface;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class JobData implements JobDataInterface
 {

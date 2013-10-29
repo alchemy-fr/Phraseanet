@@ -8,7 +8,7 @@ class JobFinishedEventTest extends \PHPUnit_Framework_TestCase
 {
     public function testEvent()
     {
-        $task = $this->getMock('Entities\Task');
+        $task = $this->getMock('Alchemy\Phrasea\Model\Entities\Task');
         $event = new JobFinishedEvent($task);
         $this->assertSame($task, $event->getTask());
     }

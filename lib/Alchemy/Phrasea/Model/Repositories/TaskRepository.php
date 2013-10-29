@@ -1,9 +1,9 @@
 <?php
 
-namespace Repositories;
+namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\Task;
 use Doctrine\ORM\EntityRepository;
-use Entities\Task;
 
 /**
  * TaskRepository
@@ -17,9 +17,9 @@ class TaskRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('t');
         $qb->where('t.status = :status');
-        
+
         $qb->setParameter(':status', Task::STATUS_STARTED);
-        
+
         return $qb->getQuery()->getResult();
     }
 }

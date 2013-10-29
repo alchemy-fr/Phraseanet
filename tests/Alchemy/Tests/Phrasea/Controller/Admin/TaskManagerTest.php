@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\HttpFoundation\Response;
 
 class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -109,7 +109,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('/admin/task-manager/tasks', self::$DI['client']->getResponse()->headers->get('location'));
 
-        $this->assertNull(self::$DI['app']['EM']->find('Entities\Task', $taskId));
+        $this->assertNull(self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Task', $taskId));
     }
 
     public function testPostTaskStart()

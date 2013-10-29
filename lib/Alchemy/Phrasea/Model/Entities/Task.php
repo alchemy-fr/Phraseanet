@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Entities;
+namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,7 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="Tasks")
- * @ORM\Entity(repositoryClass="Repositories\TaskRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\TaskRepository")
  */
 class Task
 {

@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager\Event;
 
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\EventDispatcher\Event;
 
 class JobFinishedEvent extends Event

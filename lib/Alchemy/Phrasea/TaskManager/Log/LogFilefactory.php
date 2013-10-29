@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager\Log;
 
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class LogFileFactory
 {

@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\TaskManager;
 
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\TaskManager\TaskList;
 
 class TaskListTest extends \PhraseanetPHPUnitAbstract
@@ -42,7 +42,7 @@ class TaskListTest extends \PhraseanetPHPUnitAbstract
         self::$DI['app']['EM']->persist($task2);
         self::$DI['app']['EM']->flush();
 
-        return new TaskList(self::$DI['app']['EM']->getRepository('Entities\Task'), self::$DI['app']['root.path'], '/path/to/php', '/path/to/php-conf');
+        return new TaskList(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task'), self::$DI['app']['root.path'], '/path/to/php', '/path/to/php-conf');
     }
 
     public function testThatProcessHaveNoTimeout()

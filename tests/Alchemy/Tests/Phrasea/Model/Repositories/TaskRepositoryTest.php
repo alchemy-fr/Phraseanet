@@ -1,8 +1,8 @@
 <?php
 
-namespace Doctrine\Tests\Repositories;
+namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class TaskRepositoryTest extends \PhraseanetPHPUnitAbstract
 {
@@ -23,7 +23,7 @@ class TaskRepositoryTest extends \PhraseanetPHPUnitAbstract
         self::$DI['app']['EM']->persist($task2);
         self::$DI['app']['EM']->flush();
 
-        $repository = self::$DI['app']['EM']->getRepository('Entities\Task');
+        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task');
         $this->assertSame(array($task2), $repository->findActiveTasks());
 
         $task1->setStatus(Task::STATUS_STARTED);

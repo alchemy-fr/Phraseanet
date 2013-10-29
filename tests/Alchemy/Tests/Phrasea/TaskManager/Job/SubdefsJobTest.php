@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\TaskManager\Job\SubdefsJob;
 use Alchemy\Phrasea\TaskManager\Job\JobData;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class SubdefsJobTest extends JobTestCase
 {
@@ -12,7 +12,7 @@ class SubdefsJobTest extends JobTestCase
     {
         return new SubdefsJob();
     }
-    
+
     public function doTestRun()
     {
         $job = $this->getJob();

@@ -16,7 +16,7 @@ use Alchemy\Phrasea\TaskManager\Editor\FtpEditor;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
 use Alchemy\Phrasea\Notification\Receiver;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 use Entities\FtpExport;
 use Entities\FtpExportElement;
 

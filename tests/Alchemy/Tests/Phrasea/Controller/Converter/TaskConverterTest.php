@@ -3,7 +3,7 @@
 namespace Alchemy\Phrasea\Controller\Converter;
 
 use Alchemy\Phrasea\Controller\Converter\TaskConverter;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class TaskConverterTest extends \PhraseanetPHPUnitAbstract
 {

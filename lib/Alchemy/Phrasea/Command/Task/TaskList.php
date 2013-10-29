@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Command\Task;
 
 use Alchemy\Phrasea\Command\Command;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

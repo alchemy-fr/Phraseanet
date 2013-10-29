@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\TaskManager\Log;
 
 use Alchemy\Phrasea\TaskManager\Log\LogFileFactory;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class LogFilefactorytest extends \PhraseanetPHPUnitAbstract
 {

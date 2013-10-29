@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Command\Task;
 
 use Alchemy\Phrasea\Command\Task\TaskRun;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class TaskRunTest extends \PhraseanetPHPUnitAbstract
 {

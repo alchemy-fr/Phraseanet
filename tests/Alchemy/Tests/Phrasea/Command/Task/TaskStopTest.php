@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Command\Task;
 
 use Alchemy\Phrasea\Command\Task\TaskStop;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class TaskStopTest extends \PhraseanetPHPUnitAbstract
 {

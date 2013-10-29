@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager;
 
-use Entities\Task as TaskEntity;
+use Alchemy\Phrasea\Model\Entities\Task as TaskEntity;
 use Alchemy\TaskManager\TaskInterface;
 use Symfony\Component\Process\Process;
 

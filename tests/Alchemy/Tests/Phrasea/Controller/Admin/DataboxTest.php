@@ -682,7 +682,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
 
-        if (count(self::$DI['app']['EM']->getRepository('Entities\Task')->findAll()) === 0) {
+        if (count(self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Task')->findAll()) === 0) {
             $this->fail('Task for empty collection has not been created');
         }
 

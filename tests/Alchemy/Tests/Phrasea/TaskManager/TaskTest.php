@@ -12,7 +12,7 @@ class TaskTest extends TaskTestCase
         $process = $this->getMockBuilder('Symfony\Component\Process\Process')
             ->disableOriginalConstructor()
             ->getMock();
-        $taskEntity = $this->getMock('Entities\Task');
+        $taskEntity = $this->getMock('Alchemy\Phrasea\Model\Entities\Task');
         $task = new Task($taskEntity, 'task number', 42, $process);
 
         $created1 = $task->createProcess();
@@ -32,7 +32,7 @@ class TaskTest extends TaskTestCase
         $process = $this->getMockBuilder('Symfony\Component\Process\Process')
             ->disableOriginalConstructor()
             ->getMock();
-        $taskEntity = $this->getMock('Entities\Task');
+        $taskEntity = $this->getMock('Alchemy\Phrasea\Model\Entities\Task');
 
         return new Task($taskEntity, 'task number', 42, $process);
     }

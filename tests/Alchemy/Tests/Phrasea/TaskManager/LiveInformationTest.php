@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\TaskManager;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\TaskManager\Notifier;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
-use Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task;
 
 class LiveInformationTest extends \PhraseanetPHPUnitAbstract
 {

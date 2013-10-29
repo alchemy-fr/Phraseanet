@@ -11,7 +11,7 @@ class JobDataTest extends \PHPUnit_Framework_TestCase
         $app = $this->getMockBuilder('Alchemy\Phrasea\Application')
             ->disableOriginalConstructor()
             ->getMock();
-        $task = $this->getMockBuilder('Entities\Task')
+        $task = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\Task')
             ->disableOriginalConstructor()
             ->getMock();
         $data = new JobData($app, $task);

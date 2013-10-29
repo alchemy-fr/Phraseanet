@@ -11,10 +11,10 @@
 
 namespace Alchemy\Phrasea\TaskManager;
 
+use Alchemy\Phrasea\Model\Entities\Task as TaskEntity;
+use Alchemy\Phrasea\Model\Repositories\TaskRepository;
 use Alchemy\TaskManager\TaskListInterface;
 use Symfony\Component\Process\ProcessBuilder;
-use Entities\Task as TaskEntity;
-use Repositories\TaskRepository;
 
 class TaskList implements TaskListInterface
 {
