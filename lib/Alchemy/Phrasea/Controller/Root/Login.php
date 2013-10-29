@@ -307,7 +307,7 @@ class Login implements ControllerProviderInterface
 
                     require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
-                    if ($app['phraseanet.registry']->get('GV_autoSelectDb')) {
+                    if ($app['phraseanet.registry']->get('GV_autoselectDB')) {
                         $selected = null;
                     } else {
                         $selected = isset($data['collections']) ? $data['collections'] : null;
