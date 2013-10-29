@@ -18,8 +18,8 @@ class TaskListTest extends \PhraseanetPHPUnitAbstract
 
         $application = new \Symfony\Component\Console\Application();
         $application->add($command);
-        
-        $setupCommand = $application->find('task:list');
+
+        $setupCommand = $application->find('task-manager:task:list');
         $setupCommand->execute($input, $output);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Command\Task;
 
-use Alchemy\Phrasea\Command\Task\TaskManagerCommand;
+use Alchemy\Phrasea\Command\Task\SchedulerRun;
 
-class TaskManagerCommandTest extends \PhraseanetPHPUnitAbstract
+class SchedulerRunTest extends \PhraseanetPHPUnitAbstract
 {
     public function testRunWithoutProblems()
     {
@@ -20,7 +20,7 @@ class TaskManagerCommandTest extends \PhraseanetPHPUnitAbstract
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
 
-        $command = new TaskManagerCommand();
+        $command = new SchedulerRun();
         $command->setContainer(self::$DI['cli']);
         $command->execute($input, $output);
     }

@@ -2,9 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Command\Task;
 
-use Alchemy\Phrasea\Command\Task\SchedulerStop;
+use Alchemy\Phrasea\Command\Task\SchedulerResumeTasks;
 
-class SchedulerStopTest extends \PhraseanetPHPUnitAbstract
+class SchedulerResumeTasksTest extends \PhraseanetPHPUnitAbstract
 {
     public function testRunWithoutProblems()
     {
@@ -12,12 +12,12 @@ class SchedulerStopTest extends \PhraseanetPHPUnitAbstract
             ->disableOriginalConstructor()
             ->getMock();
         self::$DI['cli']['task-manager.status']->expects($this->once())
-            ->method('stop');
+            ->method('start');
 
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
 
-        $command = new SchedulerStop();
+        $command = new SchedulerResumeTasks();
         $command->setContainer(self::$DI['cli']);
         $command->execute($input, $output);
     }
