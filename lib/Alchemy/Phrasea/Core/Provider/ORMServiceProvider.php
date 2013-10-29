@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\MonologSQLLogger;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\FileCacheReader;
@@ -21,7 +22,6 @@ use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\Logger\MonologSQLLogger;
 use Gedmo\DoctrineExtensions;
 use Gedmo\Timestampable\TimestampableListener;
 use Monolog\Logger;

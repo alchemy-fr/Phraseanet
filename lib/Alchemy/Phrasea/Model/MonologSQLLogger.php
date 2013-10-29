@@ -9,25 +9,25 @@
  * file that was distributed with this source code.
  */
 
-namespace Doctrine\Logger;
+namespace Alchemy\Phrasea\Model;
 
-use Monolog\Logger;
+use Doctrine\DBAL\Logging\SQLLogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Log doctrine sql request with monolog
  *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
+ * Please move this to a service provider as follow
+ * http://srcmvn.com/blog/2011/11/10/doctrine-dbal-query-logging-with-monolog-in-silex/
  */
-class MonologSQLLogger implements \Doctrine\DBAL\Logging\SQLLogger
+class MonologSQLLogger implements SQLLogger
 {
     const JSON = 'json';
     const YAML = 'yaml';
     const VDUMP = 'vdump';
 
     /**
-     *
-     * @var \Monolog\Logger
+     * @var LoggerInterface
      */
     private $logger;
     private $start;
@@ -37,10 +37,10 @@ class MonologSQLLogger implements \Doctrine\DBAL\Logging\SQLLogger
     /**
      * Tell which monolog user to use and which format to output
      *
-     * @param \Monolog\Logger $logger A monolog logger instance
-     * @param type            $type   the output format
+     * @param LoggerInterface   $logger A monolog logger instance
+     * @param string            $type   the output format
      */
-    public function __construct(\Monolog\Logger $logger, $type = self::YAML)
+    public function __construct(LoggerInterface $logger, $type = self::YAML)
     {
         $this->logger = $logger;
         $this->outputType = $type;
