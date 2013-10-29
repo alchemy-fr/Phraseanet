@@ -2,8 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-use Entities\Order;
-use Entities\OrderElement;
+use Alchemy\Phrasea\Model\Entities\Order;
+use Alchemy\Phrasea\Model\Entities\OrderElement;
 
 class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
@@ -197,7 +197,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         }
         self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', array('elements' => $parameters));
 
-        $testOrder = self::$DI['app']['EM']->getRepository('Entities\Order')->find($order->getId());
+        $testOrder = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
         $this->assertEquals(0, $testOrder->getTodo());
     }
 
@@ -218,13 +218,13 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $parameters = array($order->getElements()->first()->getId());
         self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/send/', array('elements' => $parameters));
-        $testOrder = self::$DI['app']['EM']->getRepository('Entities\Order')->find($order->getId());
+        $testOrder = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
         $this->assertEquals(1, $testOrder->getTodo());
 
         $parameters = array($orderElement->getId());
         self::$DI['client']->request('POST', '/prod/order/' . $order->getId() . '/deny/', array('elements' => $parameters));
 
-        $testOrder = self::$DI['app']['EM']->getRepository('Entities\Order')->find($order->getId());
+        $testOrder = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
         $this->assertEquals(0, $testOrder->getTodo());
     }
 

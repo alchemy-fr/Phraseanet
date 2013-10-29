@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Browser;
 use Doctrine\ORM\EntityManager;
-use Entities\Session;
+use Alchemy\Phrasea\Model\Entities\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -88,7 +88,7 @@ class Authenticator
 
     public function refreshAccount(Session $session)
     {
-        if (!$this->em->getRepository('Entities\Session')->findOneBy(array('id' => $session->getId()))) {
+        if (!$this->em->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findOneBy(array('id' => $session->getId()))) {
             throw new RuntimeException('Unable to refresh the session, it does not exist anymore');
         }
 

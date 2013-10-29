@@ -10,8 +10,8 @@ class ValidationParticipantRepositoryTest extends PhraseanetPHPUnitAuthenticated
         ));
 
         $em = self::$DI['app']['EM'];
-        $repo = $em->getRepository('\Entities\ValidationParticipant');
-        /* @var $repo \Repositories\ValidationParticipantRepository */
+        $repo = $em->getRepository('\Alchemy\Phrasea\Model\Entities\ValidationParticipant');
+        /* @var $repo Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository */
         $expireDate = new \DateTime('+2 days');
         $participants = $repo->findNotConfirmedAndNotRemindedParticipantsByExpireDate($expireDate);
         $this->assertEquals(1, count($participants));

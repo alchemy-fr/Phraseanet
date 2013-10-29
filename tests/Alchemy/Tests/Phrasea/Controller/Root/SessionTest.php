@@ -89,7 +89,7 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $originalEm = self::$DI['app']['EM'];
 
-        $session = $this->getMock('Entities\Session');
+        $session = $this->getMock('Alchemy\Phrasea\Model\Entities\Session');
 
         $session->expects($this->once())
             ->method('getUsrId')
@@ -123,7 +123,7 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $originalEm = self::$DI['app']['EM'];
 
-        $session = $this->getMock('Entities\Session');
+        $session = $this->getMock('Alchemy\Phrasea\Model\Entities\Session');
 
         $session->expects($this->once())
             ->method('getUsrId')

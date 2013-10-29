@@ -11,6 +11,10 @@
 
 namespace PhraseaFixture\Basket;
 
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\ValidationSession;
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -23,19 +27,16 @@ use Doctrine\Common\Persistence\ObjectManager;
 class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInterface
 {
     /**
-     *
-     * @var \Entities\Basket
+     * @var Basket
      */
     public $basket;
 
     /**
-     *
      * @var Array
      */
     protected $participants = array();
 
     /**
-     *
      * @var Array
      */
     protected $basketElements = array();
@@ -52,7 +53,7 @@ class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInte
 
     public function load(ObjectManager $manager)
     {
-        $basket = new \Entities\Basket();
+        $basket = new Basket();
 
         $basket->setName('test');
         $basket->setDescription('description');
@@ -65,7 +66,7 @@ class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInte
 
         $this->addElementToBasket($manager, $basket);
 
-        $validationSession = new \Entities\ValidationSession();
+        $validationSession = new ValidationSession();
         $validationSession->setBasket($basket);
 
         $expires = new \DateTime();
@@ -84,14 +85,14 @@ class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInte
         $this->basket = $basket;
     }
 
-    private function addParticipantsToSession(\Doctrine\ORM\EntityManager $manager, \Entities\ValidationSession $validationSession)
+    private function addParticipantsToSession(EntityManager $manager, ValidationSession $validationSession)
     {
         if (0 === count($this->participants)) {
             throw new \LogicException('Add new participants to validation session');
         }
 
         foreach ($this->participants as $participant) {
-            $validationParticipant = new \Entities\ValidationParticipant();
+            $validationParticipant = new ValidationParticipant();
 
             $validationParticipant->setUser($participant);
 
@@ -103,14 +104,14 @@ class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInte
         $manager->flush();
     }
 
-    private function addElementToBasket(\Doctrine\ORM\EntityManager $manager, \Entities\Basket $basket)
+    private function addElementToBasket(EntityManager $manager, Basket $basket)
     {
         if (0 === count($this->basketElements)) {
             throw new \LogicException('Add new elements to basket');
         }
 
         foreach ($this->basketElements as $record) {
-            $basketElement = new \Entities\BasketElement();
+            $basketElement = new BasketElement();
 
             $basketElement->setRecord($record);
 

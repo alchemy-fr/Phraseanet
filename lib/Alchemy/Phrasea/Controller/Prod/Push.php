@@ -11,6 +11,13 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\UsrList;
+use Alchemy\Phrasea\Model\Entities\UsrListEntry;
+use Alchemy\Phrasea\Model\Entities\ValidationSession;
+use Alchemy\Phrasea\Model\Entities\ValidationData;
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
@@ -48,11 +55,11 @@ class Push implements ControllerProviderInterface
     {
         $userFormatter = $this->getUserFormatter();
 
-        return function(\Entities\UsrList $List) use ($userFormatter, $app) {
+        return function(UsrList $List) use ($userFormatter, $app) {
             $entries = array();
 
             foreach ($List->getEntries() as $entry) {
-                /* @var $entry \Entities\UsrListEntry */
+                /* @var $entry UsrListEntry */
                 $entries[] = array(
                     'Id'   => $entry->getId(),
                     'User' => $userFormatter($entry->getUser($app))
@@ -113,7 +120,7 @@ class Push implements ControllerProviderInterface
         $controllers->post('/sendform/', function(Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $RecommendedUsers = $userSelection($push->get_elements());
 
@@ -131,7 +138,7 @@ class Push implements ControllerProviderInterface
         $controllers->post('/validateform/', function(Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $RecommendedUsers = $userSelection($push->get_elements());
 
@@ -177,7 +184,7 @@ class Push implements ControllerProviderInterface
                         throw new ControllerException(sprintf(_('Unknown user %d'), $receiver['usr_id']));
                     }
 
-                    $Basket = new \Entities\Basket();
+                    $Basket = new Basket();
                     $Basket->setName($push_name);
                     $Basket->setDescription($push_description);
                     $Basket->setOwner($user_receiver);
@@ -187,7 +194,7 @@ class Push implements ControllerProviderInterface
                     $app['EM']->persist($Basket);
 
                     foreach ($pusher->get_elements() as $element) {
-                        $BasketElement = new \Entities\BasketElement();
+                        $BasketElement = new BasketElement();
                         $BasketElement->setRecord($element);
                         $BasketElement->setBasket($Basket);
 
@@ -274,7 +281,7 @@ class Push implements ControllerProviderInterface
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $repository = $app['EM']->getRepository('\Entities\Basket');
+                $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
                 $validation_name = $request->request->get('name', sprintf(_('Validation from %s'), $app['authentication']->getUser()->get_display_name()));
                 $validation_description = $request->request->get('validation_description');
@@ -292,7 +299,7 @@ class Push implements ControllerProviderInterface
                 if ($pusher->is_basket()) {
                     $Basket = $pusher->get_original_basket();
                 } else {
-                    $Basket = new \Entities\Basket();
+                    $Basket = new Basket();
                     $Basket->setName($validation_name);
                     $Basket->setDescription($validation_description);
                     $Basket->setOwner($app['authentication']->getUser());
@@ -301,7 +308,7 @@ class Push implements ControllerProviderInterface
                     $app['EM']->persist($Basket);
 
                     foreach ($pusher->get_elements() as $element) {
-                        $BasketElement = new \Entities\BasketElement();
+                        $BasketElement = new BasketElement();
                         $BasketElement->setRecord($element);
                         $BasketElement->setBasket($Basket);
 
@@ -315,7 +322,7 @@ class Push implements ControllerProviderInterface
                 $app['EM']->refresh($Basket);
 
                 if (!$Basket->getValidation()) {
-                    $Validation = new \Entities\ValidationSession();
+                    $Validation = new ValidationSession();
                     $Validation->setInitiator($app['authentication']->getUser());
                     $Validation->setBasket($Basket);
 
@@ -368,7 +375,7 @@ class Push implements ControllerProviderInterface
 
                     }
 
-                    $Participant = new \Entities\ValidationParticipant();
+                    $Participant = new ValidationParticipant();
                     $Participant->setUser($participant_user);
                     $Participant->setSession($Validation);
 
@@ -378,7 +385,7 @@ class Push implements ControllerProviderInterface
                     $app['EM']->persist($Participant);
 
                     foreach ($Basket->getElements() as $BasketElement) {
-                        $ValidationData = new \Entities\ValidationData();
+                        $ValidationData = new ValidationData();
                         $ValidationData->setParticipant($Participant);
                         $ValidationData->setBasketElement($BasketElement);
                         $BasketElement->addValidationData($ValidationData);
@@ -490,7 +497,7 @@ class Push implements ControllerProviderInterface
         $controllers->get('/list/{list_id}/', function(Application $app, $list_id) use ($listFormatter) {
             $datas = null;
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
@@ -590,7 +597,7 @@ class Push implements ControllerProviderInterface
                     ->limit(0, 50)
                     ->execute()->get_results();
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $lists = $repository->findUserListLike($app['authentication']->getUser(), $request->query->get('query'));
 
@@ -613,7 +620,7 @@ class Push implements ControllerProviderInterface
 
         $controllers->match('/edit-list/{list_id}/', function(Application $app, Request $request, $list_id) {
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 

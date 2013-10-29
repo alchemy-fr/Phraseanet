@@ -38,7 +38,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $session = new \Entities\LazaretSession();
+        $session = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
         self::$DI['app']['EM']->persist($session);
 
         self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, Manager::FORCE_RECORD);

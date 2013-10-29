@@ -118,7 +118,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $app['browser'] = $browser;
 
-        $session = new \Entities\Session();
+        $session = new \Alchemy\Phrasea\Model\Entities\Session();
         $session->setUser(self::$DI['user'])
             ->setBrowserName($browser->getBrowser())
             ->setBrowserVersion($browser->getVersion())

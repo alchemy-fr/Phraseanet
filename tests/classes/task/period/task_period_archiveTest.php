@@ -405,7 +405,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
     public function testGetLazaretSession()
     {
         $session = self::$object->getLazaretSessionTester();
-        $this->assertInstanceOf('\\Entities\\LazaretSession', $session);
+        $this->assertInstanceOf('\\Alchemy\Phrasea\Model\Entities\\LazaretSession', $session);
 
         $session_id = self::$object->getLazaretSessionTester()->getId();
 

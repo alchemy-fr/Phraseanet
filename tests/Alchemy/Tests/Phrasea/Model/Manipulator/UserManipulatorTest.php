@@ -14,14 +14,14 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
-use Entities\User;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class UserManipulatorTest extends \PhraseanetPHPUnitAbstract
 {
     public function testCreateUser()
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'pass');
-        $this->assertInstanceOf('\Entities\User', self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login'));
+        $this->assertInstanceOf('\Alchemy\Phrasea\Model\Entities\User', self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login'));
     }
 
     public function testCreateAdminUser()

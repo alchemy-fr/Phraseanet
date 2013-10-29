@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -79,7 +80,7 @@ class Story implements ControllerProviderInterface
 
             $Story->set_metadatas($metadatas)->rebuild_subdefs();
 
-            $StoryWZ = new \Entities\StoryWZ();
+            $StoryWZ = new StoryWZ();
             $StoryWZ->setUser($app['authentication']->getUser());
             $StoryWZ->setRecord($Story);
 

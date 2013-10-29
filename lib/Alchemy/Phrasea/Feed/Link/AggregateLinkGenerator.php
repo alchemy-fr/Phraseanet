@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Feed\Link\FeedLink;
-use Entities\AggregateToken;
+use Alchemy\Phrasea\Model\Entities\AggregateToken;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
@@ -122,7 +122,7 @@ class AggregateLinkGenerator implements LinkGeneratorInterface
     private function getAggregateToken(\User_Adapter $user, $renew = false)
     {
         $token = $this->em
-            ->getRepository('Entities\AggregateToken')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
             ->findOneBy(array('usrId' => $user->get_id()));
 
         if (null === $token || true === $renew) {

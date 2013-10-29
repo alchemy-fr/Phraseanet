@@ -11,16 +11,17 @@
 
 namespace PhraseaFixture\Feed;
 
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Entities\Feed;
 
 class LoadOneFeed extends AbstractFixture implements FixtureInterface
 {
     /**
      *
-     * @var \Entities\Feed
+     * @var Feed
      */
     public $feed;
     public $user;
@@ -35,7 +36,7 @@ class LoadOneFeed extends AbstractFixture implements FixtureInterface
 
         $feed = new Feed();
 
-        $publisher = new \Entities\FeedPublisher();
+        $publisher = new FeedPublisher();
         $publisher->setUsrId($this->user->get_id());
         $publisher->setIsOwner(true);
         $publisher->setFeed($feed);

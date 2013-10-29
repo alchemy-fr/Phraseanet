@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller;
 
-use Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -206,7 +206,7 @@ class RecordsRequest extends ArrayCollection
         $basket = null;
 
         if ($request->get('ssel')) {
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
             $basket = $repository->findUserBasket($app, $request->get('ssel'), $app['authentication']->getUser(), false);
 
@@ -214,7 +214,7 @@ class RecordsRequest extends ArrayCollection
                 $received[$basket_element->getRecord($app)->get_serialize_key()] = $basket_element->getRecord($app);
             }
         } elseif ($request->get('story')) {
-            $repository = $app['EM']->getRepository('\Entities\StoryWZ');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
             $storyWZ = $repository->findByUserAndId(
                 $app, $app['authentication']->getUser()

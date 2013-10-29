@@ -10,6 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 
@@ -60,7 +62,7 @@ class patch_370a7 implements patchInterface
         $conn = $appbox->get_connection();
 
         try {
-            //get all old lazaret file & transform them to \Entities\LazaretFile object
+            //get all old lazaret file & transform them to LazaretFile object
             $sql = 'SELECT * FROM lazaret';
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -76,10 +78,10 @@ class patch_370a7 implements patchInterface
 
         //order matters for foreign keys constraints
         //truncate all altered tables
-        $this->truncateTable($app['EM'], 'Entities\\LazaretAttribute');
-        $this->truncateTable($app['EM'], 'Entities\\LazaretCheck');
-        $this->truncateTable($app['EM'], 'Entities\\LazaretFile');
-        $this->truncateTable($app['EM'], 'Entities\\LazaretSession');
+        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretAttribute');
+        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretCheck');
+        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretFile');
+        $this->truncateTable($app['EM'], 'Alchemy\\Phrasea\\Model\\Entities\\LazaretSession');
 
         $i = 0;
 
@@ -108,10 +110,10 @@ class patch_370a7 implements patchInterface
 
                 $borderFile = new \Alchemy\Phrasea\Border\File($app, $media, $collection);
 
-                $lazaretSession = new \Entities\LazaretSession();
+                $lazaretSession = new LazaretSession();
                 $lazaretSession->setUsrId($row['usr_id']);
 
-                $lazaretFile = new \Entities\LazaretFile();
+                $lazaretFile = new LazaretFile();
                 $lazaretFile->setBaseId($row['base_id']);
 
                 if (null === $row['uuid']) {

@@ -12,16 +12,16 @@
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Manager\UserManager;
-use Entities\UserNotificationSetting;
-use Entities\UserQuery;
-use Entities\UserSetting;
+use Alchemy\Phrasea\Model\Entities\UserNotificationSetting;
+use Alchemy\Phrasea\Model\Entities\UserQuery;
+use Alchemy\Phrasea\Model\Entities\UserSetting;
 
 class UserManagerTest extends \PhraseanetPHPUnitAbstract
 {
     public function testNewUser()
     {
         $user = self::$DI['app']['model.user-manager']->create();
-        $this->assertInstanceOf('\Entities\User', $user);
+        $this->assertInstanceOf('\Alchemy\Phrasea\Model\Entities\User', $user);
     }
 
     public function testDeleteUser()

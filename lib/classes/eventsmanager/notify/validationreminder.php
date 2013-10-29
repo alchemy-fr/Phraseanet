@@ -98,7 +98,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
             $readyToSend = false;
             try {
                 $basket = $this->app['EM']
-                    ->getRepository('\Entities\Basket')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
                     ->find($params['ssel_id']);
                 $title = $basket->getName();
 
@@ -145,7 +145,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         try {
-            $repository = $this->app['EM']->getRepository('\Entities\Basket');
+            $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
             $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
 

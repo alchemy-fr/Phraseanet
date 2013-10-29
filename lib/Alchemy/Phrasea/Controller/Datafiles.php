@@ -85,9 +85,9 @@ class Datafiles extends AbstractDelivery
 
                 if ($watermark && !$all_access) {
 
-                    $repository = $app['EM']->getRepository('\Entities\BasketElement');
+                    $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
-                    /* @var $repository \Repositories\BasketElementRepository */
+                    /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
 
                     $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $app['authentication']->getUser());
                     $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $app['authentication']->getUser());

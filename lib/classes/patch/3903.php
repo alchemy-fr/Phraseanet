@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\UserQuery;
+use Alchemy\Phrasea\Model\Entities\UserQuery;
 
 class patch_3903 implements patchInterface
 {

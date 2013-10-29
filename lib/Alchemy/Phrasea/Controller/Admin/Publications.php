@@ -12,8 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Entities\Feed;
-use Entities\FeedPublisher;
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +37,7 @@ class Publications implements ControllerProviderInterface
         });
 
         $controllers->get('/list/', function(PhraseaApplication $app) {
-            $feeds = $app['EM']->getRepository('Entities\Feed')->getAllForUser(
+            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(
                 $app['authentication']->getUser()
             );
 
@@ -79,7 +79,7 @@ class Publications implements ControllerProviderInterface
         })->bind('admin_feeds_create');
 
         $controllers->get('/feed/{id}/', function(PhraseaApplication $app, Request $request, $id) {
-            $feed = $app["EM"]->find('Entities\Feed', $id);
+            $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $id);
 
             return $app['twig']
                     ->render('admin/publications/fiche.html.twig', array('feed'  => $feed, 'error' => $app['request']->query->get('error')));
@@ -93,7 +93,7 @@ class Publications implements ControllerProviderInterface
                 $app->abort(400, "Bad request");
             }
 
-            $feed = $app["EM"]->find('Entities\Feed', $id);
+            $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $id);
 
             try {
                 $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
@@ -109,7 +109,7 @@ class Publications implements ControllerProviderInterface
 
             return $app->redirectPath('admin_feeds_list');
         })->before(function(Request $request) use ($app) {
-            $feed = $app["EM"]->find('Entities\Feed', $request->attributes->get('id'));
+            $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $request->attributes->get('id'));
 
             if (!$feed->isOwner($app['authentication']->getUser())) {
                 return $app->redirectPath('admin_feeds_feed', array('id' => $request->attributes->get('id'), 'error' =>  _('You are not the owner of this feed, you can not edit it')));
@@ -123,7 +123,7 @@ class Publications implements ControllerProviderInterface
                 'success' => false,
                 'message' => '',
             );
-            $feed = $app["EM"]->find('Entities\Feed', $id);
+            $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $id);
 
             if (null === $feed) {
                 $app->abort(404, "Feed not found");
@@ -197,7 +197,7 @@ class Publications implements ControllerProviderInterface
             try {
                 $request = $app['request'];
                 $user = \User_Adapter::getInstance($request->request->get('usr_id'), $app);
-                $feed = $app["EM"]->find('Entities\Feed', $id);
+                $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $id);
 
                 $publisher = new FeedPublisher();
                 $publisher->setUsrId($user->get_id());
@@ -222,9 +222,9 @@ class Publications implements ControllerProviderInterface
             try {
                 $request = $app['request'];
 
-                $feed = $app["EM"]->find('Entities\Feed', $id);
+                $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $id);
 
-                $publisher = $app["EM"]->find('Entities\FeedPublisher', $request->request->get('publisher_id'));
+                $publisher = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\FeedPublisher', $request->request->get('publisher_id'));
                 if (null === $publisher) {
                     $app->abort(404, "Feed Publisher not found");
                 }
@@ -246,7 +246,7 @@ class Publications implements ControllerProviderInterface
             ->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/delete/', function(PhraseaApplication $app, $id) {
-            $feed = $app["EM"]->find('Entities\Feed', $id);
+            $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $id);
 
             if (null === $feed) {
                 $app->abort(404);

@@ -11,6 +11,8 @@
 
 namespace PhraseaFixture\Lazaret;
 
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -22,8 +24,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 class LoadOneFile extends \PhraseaFixture\AbstractWZ implements FixtureInterface
 {
     /**
-     *
-     * @var \Entities\LazaretFile
+     * @var LazaretFile
      */
     public $file;
     public $collectionId;
@@ -34,12 +35,12 @@ class LoadOneFile extends \PhraseaFixture\AbstractWZ implements FixtureInterface
             throw new \LogicException('Fill a user to store a new basket');
         }
 
-        $lazaretSession = new \Entities\LazaretSession();
+        $lazaretSession = new LazaretSession();
         $lazaretSession->setUsrId($this->user->get_id());
         $lazaretSession->setUpdated(new \DateTime('now'));
         $lazaretSession->setCreated(new \DateTime('-1 day'));
 
-        $lazaretFile = new \Entities\LazaretFile();
+        $lazaretFile = new LazaretFile();
         $lazaretFile->setOriginalName('test');
         $lazaretFile->setFilename('test.jpg');
         $lazaretFile->setThumbFilename('thumb_test.jpg');

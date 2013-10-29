@@ -11,6 +11,7 @@
 
 namespace PhraseaFixture\UsrLists;
 
+use Alchemy\Phrasea\Model\Entities\UsrList;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 
 /**
@@ -38,7 +39,7 @@ abstract class ListAbstract extends AbstractFixture
         return $this->list;
     }
 
-    public function setList(\Entities\UsrList $list)
+    public function setList(UsrList $list)
     {
         $this->list = $list;
     }

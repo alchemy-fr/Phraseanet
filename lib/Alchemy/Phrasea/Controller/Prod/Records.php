@@ -204,8 +204,8 @@ class Records implements ControllerProviderInterface
             'candeleterecord'
         ));
 
-        $basketElementsRepository = $app['EM']->getRepository('\Entities\BasketElement');
-        $StoryWZRepository = $app['EM']->getRepository('\Entities\StoryWZ');
+        $basketElementsRepository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
+        $StoryWZRepository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
         $deleted = array();
 

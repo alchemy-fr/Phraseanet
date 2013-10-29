@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
-use Entities\FtpCredential;
+use Alchemy\Phrasea\Model\Entities\FtpCredential;
 
 /**
  *
@@ -708,7 +708,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public function getFtpCredential()
     {
         if (null === $this->ftpCredential) {
-            $this->ftpCredential = $this->app['EM']->getRepository('Entities\FtpCredential')->findOneBy(array(
+            $this->ftpCredential = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FtpCredential')->findOneBy(array(
                 'usrId' => $this->get_id()
             ));
 
@@ -763,17 +763,17 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      */
     public function delete()
     {
-        $repo = $this->app['EM']->getRepository('Entities\UsrAuthProvider');
+        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
         foreach ($repo->findByUser($this) as $provider) {
             $this->app['EM']->remove($provider);
         }
 
-        $repo = $this->app['EM']->getRepository('Entities\FtpExport');
+        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport');
         foreach ($repo->findByUser($this) as $export) {
             $this->app['EM']->remove($export);
         }
 
-        $repo = $this->app['EM']->getRepository('Entities\Order');
+        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order');
         foreach ($repo->findByUser($this) as $order) {
             $this->app['EM']->remove($order);
         }

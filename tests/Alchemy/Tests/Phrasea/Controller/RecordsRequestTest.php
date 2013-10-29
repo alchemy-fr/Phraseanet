@@ -199,7 +199,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
             self::$DI['record_no_access_by_status'],
         );
 
-        $basket = new \Entities\Basket();
+        $basket = new \Alchemy\Phrasea\Model\Entities\Basket();
         $basket->setName('test');
         $basket->setOwner(self::$DI['app']['authentication']->getUser());
 
@@ -207,7 +207,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         self::$DI['app']['EM']->flush();
 
         foreach ($elements as $element) {
-            $basket_element = new \Entities\BasketElement();
+            $basket_element = new \Alchemy\Phrasea\Model\Entities\BasketElement();
             $basket_element->setRecord($element);
             $basket_element->setBasket($basket);
             $basket->addElement($basket_element);
@@ -282,7 +282,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
     protected function getStoryWZ()
     {
-        $story = new \Entities\StoryWZ();
+        $story = new \Alchemy\Phrasea\Model\Entities\StoryWZ();
         $story->setRecord(self::$DI['record_story_2']);
         $story->setUser(self::$DI['app']['authentication']->getUser());
 

@@ -10,12 +10,12 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\AggregateToken;
-use Entities\Feed;
-use Entities\FeedEntry;
-use Entities\FeedItem;
-use Entities\FeedPublisher;
-use Entities\FeedToken;
+use Alchemy\Phrasea\Model\Entities\AggregateToken;
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\FeedPublisher;
+use Alchemy\Phrasea\Model\Entities\FeedToken;
 
 class patch_3907 implements patchInterface
 {

@@ -28,9 +28,10 @@ use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 use Alchemy\Phrasea\Metadata\Tag\TfSize;
 use Alchemy\Phrasea\Metadata\Tag\TfWidth;
 use Alchemy\Phrasea\Border\Attribute\Metadata as MetadataAttr;
-use Entities\LazaretAttribute;
-use Entities\LazaretFile;
-use Entities\LazaretSession;
+use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
+use Alchemy\Phrasea\Model\Entities\LazaretCheck;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 use PHPExiftool\Driver\Metadata\Metadata;
@@ -428,7 +429,8 @@ class Manager
      * @param  Visa                  $visa    The visa related to the package file
      * @param  LazaretSession        $session The current LazaretSession
      * @param  Boolean               $forced  True if the file has been forced to quarantine
-     * @return \Entities\LazaretFile
+     *
+     * @return LazaretFile
      */
     protected function createLazaret(File $file, Visa $visa, LazaretSession $session, $forced)
     {
@@ -486,7 +488,7 @@ class Manager
         foreach ($visa->getResponses() as $response) {
             if ( ! $response->isOk()) {
 
-                $check = new \Entities\LazaretCheck();
+                $check = new LazaretCheck();
                 $check->setCheckClassname(get_class($response->getChecker()));
                 $check->setLazaretFile($lazaretFile);
 

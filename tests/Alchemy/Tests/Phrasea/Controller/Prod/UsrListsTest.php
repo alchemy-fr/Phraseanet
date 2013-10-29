@@ -166,7 +166,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $this->assertNull($repository->find($list_id));
     }
@@ -194,7 +194,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrListEntry');
+        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrListEntry');
 
         $this->assertNull($repository->find($entry_id));
     }
@@ -221,7 +221,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -254,7 +254,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        self::$DI['client']->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
+        self::$DI['client']->request('POST', $route, array('role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN));
 
         $response = self::$DI['client']->getResponse();
 
@@ -268,7 +268,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -284,7 +284,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        self::$DI['client']->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
+        self::$DI['client']->request('POST', $route, array('role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN));
 
         $response = self::$DI['client']->getResponse();
 
@@ -298,7 +298,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -317,7 +317,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -335,7 +335,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        self::$DI['client']->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
+        self::$DI['client']->request('POST', $route, array('role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_ADMIN));
 
         $response = self::$DI['client']->getResponse();
 
@@ -351,7 +351,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user']->get_id() . '/';
 
-        self::$DI['client']->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_USER));
+        self::$DI['client']->request('POST', $route, array('role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_USER));
 
         $response = self::$DI['client']->getResponse();
 
@@ -367,7 +367,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        self::$DI['client']->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_USER));
+        self::$DI['client']->request('POST', $route, array('role' => \Alchemy\Phrasea\Model\Entities\UsrListOwner::ROLE_USER));
 
         $response = self::$DI['client']->getResponse();
 
@@ -381,7 +381,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $list = $repository->find($list->getId());
 

@@ -12,8 +12,8 @@ use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
 use Alchemy\Phrasea\Notification\Receiver;
-use Entities\FtpExport;
-use Entities\FtpExportElement;
+use Alchemy\Phrasea\Model\Entities\FtpExport;
+use Alchemy\Phrasea\Model\Entities\FtpExportElement;
 
 class task_period_ftp extends task_appboxAbstract
 {
@@ -258,14 +258,14 @@ class task_period_ftp extends task_appboxAbstract
     protected function retrieveContent(appbox $appbox)
     {
         foreach ($this->dependencyContainer['EM']
-                ->getRepository('Entities\FtpExport')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
                 ->findCrashedExports(new \DateTime('-1 month')) as $export) {
             $this->dependencyContainer['EM']->remove($export);
         }
         $this->dependencyContainer['EM']->flush();
 
         return $this->dependencyContainer['EM']
-                ->getRepository('Entities\FtpExport')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
                 ->findDoableExports();
     }
 

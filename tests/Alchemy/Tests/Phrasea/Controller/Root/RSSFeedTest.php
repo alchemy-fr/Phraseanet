@@ -5,9 +5,9 @@ namespace Alchemy\Tests\Phrasea\Controller\Root;
 require_once __DIR__ . '/../../../../../classes/FeedValidator.inc';
 
 use Alchemy\Phrasea\Application;
-use Entities\Feed;
-use Entities\FeedEntry;
-use Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Symfony\Component\HttpFoundation\Response;
 
 class RssFeedTest extends \PhraseanetWebTestCaseAbstract
@@ -173,7 +173,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->insertOneFeed(self::$DI['user'], "test1", true);
         $this->insertOneFeed(self::$DI['user'], "test2", true);
 
-        $all_feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC'));
+        $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC'));
 
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->isPublic());
@@ -190,7 +190,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->insertOneFeed(self::$DI['user'], "test1", true);
         $this->insertOneFeed(self::$DI['user'], "test2", true);
 
-        $all_feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC'));
+        $all_feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC'));
 
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->isPublic());

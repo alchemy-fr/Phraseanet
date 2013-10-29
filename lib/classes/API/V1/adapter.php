@@ -17,10 +17,14 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
-use Entities\Feed;
-use Entities\FeedEntry;
-use Entities\FeedItem;
-use Entities\UserQuery;
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Entities\UserQuery;
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -684,7 +688,7 @@ class API_V1_adapter extends API_V1_Abstract
             $Package->addAttribute(new Status($app, $request->get('status')));
         }
 
-        $session = new Entities\LazaretSession();
+        $session = new Alchemy\Phrasea\Model\Entities\LazaretSession();
         $session->setUsrId($app['authentication']->getUser()->get_id());
 
         $app['EM']->persist($session);
@@ -730,7 +734,7 @@ class API_V1_adapter extends API_V1_Abstract
             $ret['url'] = '/records/' . $output->get_sbas_id() . '/' . $output->get_record_id() . '/';
             $app['phraseanet.SE']->addRecord($output);
         }
-        if ($output instanceof \Entities\LazaretFile) {
+        if ($output instanceof LazaretFile) {
             $ret['entity'] = '1';
             $ret['url'] = '/quarantine/item/' . $output->getId() . '/';
         }
@@ -752,7 +756,7 @@ class API_V1_adapter extends API_V1_Abstract
         $lazaretFiles = array();
 
         if (count($baseIds) > 0) {
-            $lazaretRepository = $app['EM']->getRepository('Entities\LazaretFile');
+            $lazaretRepository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\LazaretFile');
 
             $lazaretFiles = $lazaretRepository->findPerPage(
                     $baseIds, $offset_start, $per_page
@@ -778,9 +782,9 @@ class API_V1_adapter extends API_V1_Abstract
 
     public function list_quarantine_item($lazaret_id, Application $app, Request $request)
     {
-        $lazaretFile = $app['EM']->find('Entities\LazaretFile', $lazaret_id);
+        $lazaretFile = $app['EM']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', $lazaret_id);
 
-        /* @var $lazaretFile \Entities\LazaretFile */
+        /* @var $lazaretFile LazaretFile */
         if (null === $lazaretFile) {
             throw new \API_V1_exception_notfound(sprintf('Lazaret file id %d not found', $lazaret_id));
         }
@@ -798,7 +802,7 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    protected function list_lazaret_file(\Entities\LazaretFile $file)
+    protected function list_lazaret_file(LazaretFile $file)
     {
         $checks = array();
 
@@ -1264,8 +1268,8 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_baskets($usr_id)
     {
-        $repo = $this->app['EM']->getRepository('\Entities\Basket');
-        /* @var $repo \Repositories\BasketRepository */
+        $repo = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+        /* @var $repo Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
         $baskets = $repo->findActiveByUser($this->app['authentication']->getUser());
 
@@ -1293,7 +1297,7 @@ class API_V1_adapter extends API_V1_Abstract
             throw new API_V1_exception_badrequest('Missing basket name parameter');
         }
 
-        $Basket = new \Entities\Basket();
+        $Basket = new Basket();
         $Basket->setOwner($this->app['authentication']->getUser());
         $Basket->setName($name);
 
@@ -1314,9 +1318,9 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function delete_basket(Request $request, $basket_id)
     {
-        $repository = $this->app['EM']->getRepository('\Entities\Basket');
+        $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repository \Repositories\BasketRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
         $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
         $this->app['EM']->remove($Basket);
@@ -1336,9 +1340,9 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $repository = $this->app['EM']->getRepository('\Entities\Basket');
+        $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repository \Repositories\BasketRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
         $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), false);
 
@@ -1355,10 +1359,10 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve elements of one basket
      *
-     * @param  \Entities\Basket $Basket
+     * @param  Basket $Basket
      * @return type
      */
-    protected function list_basket_content(\Entities\Basket $Basket)
+    protected function list_basket_content(Basket $Basket)
     {
         $ret = array();
 
@@ -1372,10 +1376,10 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled informations about a basket element
      *
-     * @param  \Entities\BasketElement $basket_element
+     * @param  BasketElement $basket_element
      * @return type
      */
-    protected function list_basket_element(\Entities\BasketElement $basket_element)
+    protected function list_basket_element(BasketElement $basket_element)
     {
         $ret = array(
             'basket_element_id' => $basket_element->getId(),
@@ -1392,7 +1396,7 @@ class API_V1_adapter extends API_V1_Abstract
             foreach ($basket_element->getValidationDatas() as $validation_datas) {
                 $participant = $validation_datas->getParticipant();
                 $user = $participant->getUser($this->app);
-                /* @var $validation_datas Entities\ValidationData */
+                /* @var $validation_datas Alchemy\Phrasea\Model\Entities\ValidationData */
                 $choices[] = array(
                     'validation_user' => array(
                         'usr_id'         => $user->get_id(),
@@ -1435,9 +1439,9 @@ class API_V1_adapter extends API_V1_Abstract
 
         $name = $request->get('name');
 
-        $repository = $this->app['EM']->getRepository('\Entities\Basket');
+        $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repository \Repositories\BasketRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
         $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
         $Basket->setName($name);
@@ -1463,9 +1467,9 @@ class API_V1_adapter extends API_V1_Abstract
 
         $desc = $request->get('description');
 
-        $repository = $this->app['EM']->getRepository('\Entities\Basket');
+        $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-        /* @var $repository \Repositories\BasketRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
         $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['authentication']->getUser(), true);
         $Basket->setDescription($desc);
@@ -1489,7 +1493,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $coll = $this->app['EM']->getRepository('Entities\Feed')->getAllForUser($user);
+        $coll = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($user);
 
         $datas = array();
         foreach ($coll as $feed) {
@@ -1522,7 +1526,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $feed = $this->app['EM']->getRepository('Entities\Feed')->find($publication_id);
+        $feed = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->find($publication_id);
         if (!$feed->isAccessible($user, $this->app)) {
             return $result->set_datas(array());
         }
@@ -1570,7 +1574,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $entry = $this->app['EM']->getRepository('Entities\FeedEntry')->find($entry_id);
+        $entry = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry_id);
 
         $collection = $entry->getFeed()->getCollection($this->app);
 
@@ -1814,10 +1818,10 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retirve information about one basket
      *
-     * @param  \Entities\Basket $basket
+     * @param  Basket $basket
      * @return array
      */
-    public function list_basket(\Entities\Basket $basket)
+    public function list_basket(Basket $basket)
     {
         $ret = array(
             'basket_id'         => $basket->getId(),
@@ -1834,7 +1838,7 @@ class API_V1_adapter extends API_V1_Abstract
             $users = array();
 
             foreach ($basket->getValidation()->getParticipants() as $participant) {
-                /* @var $participant \Entities\ValidationParticipant */
+                /* @var $participant ValidationParticipant */
                 $user = $participant->getUser($this->app);
 
                 $users[] = array(

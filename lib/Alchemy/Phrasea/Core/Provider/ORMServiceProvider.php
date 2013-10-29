@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\MonologSQLLogger;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\FileCacheReader;
@@ -21,7 +22,6 @@ use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\Logger\MonologSQLLogger;
 use Gedmo\DoctrineExtensions;
 use Gedmo\Timestampable\TimestampableListener;
 use Monolog\Logger;
@@ -63,10 +63,10 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             $annotationDriver = new AnnotationDriver(
                 $annotationReader,
-                array($app['root.path'].'/lib/Doctrine/Entities')
+                array($app['root.path'].'/lib/Alchemy/Phrasea/Model/Entities')
             );
 
-            $driverChain->addDriver($annotationDriver, 'Entities');
+            $driverChain->addDriver($annotationDriver, 'Alchemy\Phrasea\Model\Entities');
 
             return $driverChain;
         });
@@ -93,8 +93,8 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             $config->setMetadataDriverImpl($app['EM.driver']);
 
-            $config->setProxyDir($app['root.path'] . '/lib/Doctrine/Proxies');
-            $config->setProxyNamespace('Proxies');
+            $config->setProxyDir($app['root.path'] . '/lib/Alchemy/Phrasea/Model/Proxies');
+            $config->setProxyNamespace('Alchemy\Phrasea\Model\Proxies');
 
             return $config;
         });
@@ -137,11 +137,11 @@ class ORMServiceProvider implements ServiceProviderInterface
             $platform = $em->getConnection()->getDatabasePlatform();
 
             $types = array(
-                'blob' => 'Types\Blob',
-                'enum' => 'Types\Blob',
-                'longblob' => 'Types\LongBlob',
-                'varbinary' => 'Types\VarBinary',
-                'binary' => 'Types\Binary',
+                'blob' => 'Alchemy\Phrasea\Model\Types\Blob',
+                'enum' => 'Alchemy\Phrasea\Model\Types\Blob',
+                'longblob' => 'Alchemy\Phrasea\Model\Types\LongBlob',
+                'varbinary' => 'Alchemy\Phrasea\Model\Types\VarBinary',
+                'binary' => 'Alchemy\Phrasea\Model\Types\Binary',
             );
 
             foreach ($types as $type => $class) {

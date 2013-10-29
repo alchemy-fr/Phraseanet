@@ -43,7 +43,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $em = self::$DI['app']['EM'];
         /* @var $em \Doctrine\ORM\EntityManager */
         $query = $em->createQuery(
-                'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
+                'SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
         );
 
         $count = $query->getSingleScalarResult();
@@ -67,7 +67,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $em = self::$DI['app']['EM'];
         /* @var $em \Doctrine\ORM\EntityManager */
         $query = $em->createQuery(
-                'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
+                'SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
         );
 
         $count = $query->getSingleScalarResult();
@@ -75,7 +75,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(2, $count);
 
         $query = $em->createQuery(
-                'SELECT w FROM \Entities\StoryWZ w'
+                'SELECT w FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
         );
 
         $storyWZ = $query->getResult();
@@ -89,7 +89,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $story = self::$DI['record_story_1'];
         $route = sprintf("/prod/WorkZone/attachStories/");
 
-        $StoryWZ = new \Entities\StoryWZ();
+        $StoryWZ = new \Alchemy\Phrasea\Model\Entities\StoryWZ();
         $StoryWZ->setUser(self::$DI['app']['authentication']->getUser());
         $StoryWZ->setRecord($story);
 
@@ -104,7 +104,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $em = self::$DI['app']['EM'];
         /* @var $em \Doctrine\ORM\EntityManager */
         $query = $em->createQuery(
-                'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
+                'SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
         );
 
         $count = $query->getSingleScalarResult();
@@ -152,7 +152,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request('POST', $attachRoute, array('stories' => array($story->get_serialize_key())));
 
         $query = self::$DI['app']['EM']->createQuery(
-                'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
+                'SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
         );
 
         $count = $query->getSingleScalarResult();
@@ -165,7 +165,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(302, $response->getStatusCode());
 
         $query = self::$DI['app']['EM']->createQuery(
-                'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
+                'SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
         );
 
         $count = $query->getSingleScalarResult();

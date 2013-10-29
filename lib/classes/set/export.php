@@ -58,14 +58,13 @@ class set_export extends set_abstract
         }
 
         if ($sstid != "") {
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-            /* @var $repository \Repositories\BasketRepository */
+            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
             $Basket = $repository->findUserBasket($this->app, $sstid, $app['authentication']->getUser(), false);
             $this->exportName = str_replace(array(' ', '\\', '/'), '_', $Basket->getName()) . "_" . date("Y-n-d");
 
             foreach ($Basket->getElements() as $basket_element) {
-                /* @var $basket_element \Entities\BasketElement */
                 $base_id = $basket_element->getRecord($this->app)->get_base_id();
                 $record_id = $basket_element->getRecord($this->app)->get_record_id();
 

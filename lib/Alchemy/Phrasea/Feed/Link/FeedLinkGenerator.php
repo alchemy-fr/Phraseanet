@@ -14,8 +14,8 @@ namespace Alchemy\Phrasea\Feed\Link;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Doctrine\ORM\EntityManager;
-use Entities\Feed;
-use Entities\FeedToken;
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedToken;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class FeedLinkGenerator implements LinkGeneratorInterface
@@ -138,7 +138,7 @@ class FeedLinkGenerator implements LinkGeneratorInterface
     private function getFeedToken(Feed $feed, \User_Adapter $user, $renew = false)
     {
         $token = $this->em
-            ->getRepository('Entities\FeedToken')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
             ->findOneBy(array('usrId' => $user->get_id(), 'feed' => $feed->getId()));
 
         if (null === $token || true === $renew) {

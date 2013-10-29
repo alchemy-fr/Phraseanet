@@ -34,19 +34,19 @@
             </td>
             <td style="padding-right:10px;min-width:100px;">
               {% if app['authentication'].getUser().get_id() == owner.getUser(app).get_id() %}
-                {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                   {% trans 'You are Admin' %}
                 {% endif %}
               {% else %}
               <label>{% trans 'Role' %}</label>
               <select name="role">
-                <option {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_USER') %}selected {% endif %} value="{{ constant('\\Entities\\UsrListOwner::ROLE_USER') }}">
+                <option {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_USER') %}selected {% endif %} value="{{ constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_USER') }}">
                   {% trans 'Access' %}
                 </option>
-                <option {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}selected {% endif %} value="{{ constant('\\Entities\\UsrListOwner::ROLE_EDITOR') }}">
+                <option {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}selected {% endif %} value="{{ constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') }}">
                   {% trans 'Editor' %}
                 </option>
-                <option {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}selected {% endif %} value="{{ constant('\\Entities\\UsrListOwner::ROLE_ADMIN') }}">
+                <option {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}selected {% endif %} value="{{ constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') }}">
                   {% trans 'Admin' %}
                 </option>
               </select>

@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Controller\Client;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Exception\SessionNotFound;
-use Entities\UserQuery;
+use Alchemy\Phrasea\Model\Entities\UserQuery;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\Finder\Finder;

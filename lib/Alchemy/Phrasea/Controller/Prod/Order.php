@@ -13,10 +13,10 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Doctrine\Common\Collections\ArrayCollection;
-use Entities\Basket;
-use Entities\BasketElement;
-use Entities\Order as OrderEntity;
-use Entities\OrderElement;
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\Order as OrderEntity;
+use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -261,8 +261,8 @@ class Order implements ControllerProviderInterface
 
         $baseIds = array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('order_master')));
 
-        $ordersList = $app['EM']->getRepository('Entities\Order')->listOrders($baseIds, $offsetStart, $perPage, $sort);
-        $total = $app['EM']->getRepository('Entities\Order')->countTotalOrders($baseIds);
+        $ordersList = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->listOrders($baseIds, $offsetStart, $perPage, $sort);
+        $total = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->countTotalOrders($baseIds);
 
         return $app['twig']->render('prod/orders/order_box.html.twig', array(
             'page'         => $page,
@@ -284,7 +284,7 @@ class Order implements ControllerProviderInterface
      */
     public function displayOneOrder(Application $app, Request $request, $order_id)
     {
-        $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
+        $order = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order_id);
         if (null === $order) {
             throw new NotFoundHttpException('Order not found');
         }
@@ -305,7 +305,7 @@ class Order implements ControllerProviderInterface
     public function sendOrder(Application $app, Request $request, $order_id)
     {
         $success = false;
-        $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
+        $order = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order_id);
         if (null === $order) {
             throw new NotFoundHttpException('Order not found');
         }
@@ -392,7 +392,7 @@ class Order implements ControllerProviderInterface
     public function denyOrder(Application $app, Request $request, $order_id)
     {
         $success = false;
-        $order = $app['EM']->getRepository('Entities\Order')->find($order_id);
+        $order = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order_id);
         if (null === $order) {
             throw new NotFoundHttpException('Order not found');
         }

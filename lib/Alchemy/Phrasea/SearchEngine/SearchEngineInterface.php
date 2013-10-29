@@ -16,7 +16,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
-use Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
 
 interface SearchEngineInterface
 {

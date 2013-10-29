@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Entities\StoryWZ;
+use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,7 +80,7 @@ class WorkZone implements ControllerProviderInterface
     {
         $request = $app['request'];
 
-        $BasketRepo = $app['EM']->getRepository('\Entities\Basket');
+        $BasketRepo = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
         $Page = (int) $request->query->get('Page', 0);
 
@@ -115,7 +115,7 @@ class WorkZone implements ControllerProviderInterface
     public function browseBasket(Application $app, Request $request, $basket_id)
     {
         $basket = $app['EM']
-            ->getRepository('\Entities\Basket')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
             ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), false);
 
         return $app['twig']->render('prod/WorkZone/Browser/Basket.html.twig', array('Basket' => $basket));
@@ -127,7 +127,7 @@ class WorkZone implements ControllerProviderInterface
             throw new BadRequestHttpException('Missing parameters stories');
         }
 
-        $StoryWZRepo = $app['EM']->getRepository('\Entities\StoryWZ');
+        $StoryWZRepo = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
         $alreadyFixed = $done = 0;
 
@@ -202,9 +202,9 @@ class WorkZone implements ControllerProviderInterface
     {
         $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-        $repository = $app['EM']->getRepository('\Entities\StoryWZ');
+        $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
-        /* @var $repository \Repositories\StoryWZRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\StoryWZRepository */
         $StoryWZ = $repository->findUserStory($app, $app['authentication']->getUser(), $Story);
 
         if (!$StoryWZ) {

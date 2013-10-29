@@ -1569,18 +1569,18 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->execute(array(':record_id' => $this->get_record_id()));
         $stmt->closeCursor();
 
-        $orderElementRepository = $this->app['EM']->getRepository('\Entities\OrderElement');
+        $orderElementRepository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\OrderElement');
 
-        /* @var $repository \Repositories\OrderElementRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\OrderElementRepository */
         foreach ($orderElementRepository->findBy(array('recordId' => $this->get_record_id())) as $order_element) {
             if ($order_element->getSbasId($this->app) == $this->get_sbas_id()) {
                 $this->app['EM']->remove($order_element);
             }
         }
 
-        $basketElementRepository = $this->app['EM']->getRepository('\Entities\BasketElement');
+        $basketElementRepository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
-        /* @var $repository \Repositories\BasketElementRepository */
+        /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
         foreach ($basketElementRepository->findElementsByRecord($this) as $basket_element) {
             $this->app['EM']->remove($basket_element);
         }
@@ -1858,7 +1858,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     public function get_container_baskets(EntityManager $em, User_Adapter $user)
     {
         return $em
-                ->getRepository('\Entities\Basket')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
                 ->findContainingRecordForUser($this, $user);
     }
 

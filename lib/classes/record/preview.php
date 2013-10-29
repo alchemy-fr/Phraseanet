@@ -10,6 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
 /**
@@ -142,19 +144,19 @@ class record_preview extends record_adapter
 
                 break;
             case "BASK":
-                $repository = $app['EM']->getRepository('\Entities\Basket');
+                $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-                /* @var $repository \Repositories\BasketRepository */
+                /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
                 $Basket = $repository->findUserBasket($app, $contId, $app['authentication']->getUser(), false);
 
-                /* @var $Basket \Entities\Basket */
+                /* @var $Basket Basket */
                 $this->container = $Basket;
                 $this->total = $Basket->getElements()->count();
                 $i = 0;
                 $first = true;
 
                 foreach ($Basket->getElements() as $element) {
-                    /* @var $element \Entities\BasketElement */
+                    /* @var $element BasketElement */
                     $i ++;
                     if ($first) {
                         $this->original_item = $element;
@@ -175,7 +177,7 @@ class record_preview extends record_adapter
                 }
                 break;
             case "FEED":
-                $entry = $app['EM']->getRepository('Entities\FeedEntry')->find($contId);
+                $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($contId);
 
                 $this->container = $entry;
                 $this->total = count($entry->getItems());

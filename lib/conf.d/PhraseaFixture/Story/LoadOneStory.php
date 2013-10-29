@@ -11,6 +11,7 @@
 
 namespace PhraseaFixture\Story;
 
+use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -23,13 +24,13 @@ class LoadOneStory extends \PhraseaFixture\AbstractWZ implements FixtureInterfac
 {
     /**
      *
-     * @var \Entities\StoryWZ
+     * @var StoryWZ
      */
     public $story;
 
     public function load(ObjectManager $manager)
     {
-        $story = new \Entities\StoryWZ();
+        $story = new StoryWZ();
 
         if (null === $this->record) {
             throw new \LogicException('Fill a record to store a new story');

@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Feed;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\LogicException;
 use Doctrine\ORM\EntityManager;
-use Entities\AggregateToken;
+use Alchemy\Phrasea\Model\Entities\AggregateToken;
 
 class Aggregate implements FeedInterface
 {
@@ -76,8 +76,8 @@ class Aggregate implements FeedInterface
      */
     public static function createFromUser(EntityManager $em, \User_Adapter $user)
     {
-        $feeds = $em->getRepository('Entities\Feed')->getAllForUser($user);
-        $token = $em->getRepository('Entities\AggregateToken')->findOneBy(array('usrId' => $user->get_id()));
+        $feeds = $em->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($user);
+        $token = $em->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(array('usrId' => $user->get_id()));
 
         return new static($em, $feeds, $token);
     }
@@ -92,7 +92,7 @@ class Aggregate implements FeedInterface
      */
     public static function create(Application $app, array $feed_ids)
     {
-        $feeds = $this->em->getRepository('Entities\Feed')->findByIds($feed_ids);
+        $feeds = $this->em->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findByIds($feed_ids);
 
         return new static($app, $feeds);
     }
@@ -119,7 +119,7 @@ class Aggregate implements FeedInterface
             $feedIds[] = $feed->getId();
         }
 
-        return $this->em->getRepository('Entities\FeedEntry')->findByFeeds($feedIds, $offset_start, $how_many);
+        return $this->em->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->findByFeeds($feedIds, $offset_start, $how_many);
     }
 
     /**
@@ -205,7 +205,7 @@ class Aggregate implements FeedInterface
                 $feedIds[] = $feed->getId();
             }
 
-            return count($this->em->getRepository('Entities\FeedEntry')->findByFeeds($feedIds));
+            return count($this->em->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->findByFeeds($feedIds));
         }
 
         return 0;
@@ -237,6 +237,6 @@ class Aggregate implements FeedInterface
      */
     public static function getPublic(Application $app)
     {
-        return new static($app['EM'], $app['EM']->getRepository('Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC')));
+        return new static($app['EM'], $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC')));
     }
 }

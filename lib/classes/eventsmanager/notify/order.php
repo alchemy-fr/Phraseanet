@@ -55,7 +55,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $users = array();
 
         try {
-            $repository = $this->app['EM']->getRepository('Entities\OrderElement');
+            $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\OrderElement');
 
             $results = $repository->findBy(array('orderId' => $order_id));
 

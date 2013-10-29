@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
-use Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Symfony\Component\CssSelector\CssSelector;
 
 class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -25,7 +25,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/requestavailable/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['user']);
         foreach ($feeds as $one_feed) {
             if ($one_feed->isPublisher(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath("//input[@value='" . $one_feed->getId() . "' and @name='feed_proposal[]']")->count());
@@ -174,7 +174,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(is_string($pageContent->datas));
         $this->assertRegExp("/entry_" . $entry->getId() . "/", $pageContent->datas);
 
-        $retrievedentry = self::$DI['app']['EM']->getRepository('Entities\FeedEntry')->find($entry->getId());
+        $retrievedentry = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry->getId());
         $this->assertEquals($newfeed->getId(), $retrievedentry->getFeed()->getId());
     }
 
@@ -309,8 +309,8 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        $newItem1 = self::$DI['app']['EM']->getRepository('Entities\FeedItem')->find($item1->getId());
-        $newItem2 = self::$DI['app']['EM']->getRepository('Entities\FeedItem')->find($item2->getId());
+        $newItem1 = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->find($item1->getId());
+        $newItem2 = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->find($item2->getId());
 
         $this->assertEquals($ord1, (int) $newItem2->getOrd());
         $this->assertEquals($ord2, (int) $newItem1->getOrd());
@@ -332,7 +332,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(is_string($pageContent->message));
 
         try {
-            self::$DI["app"]['EM']->getRepository('Entities\FeedEntry')->find($entry->getId());
+            self::$DI["app"]['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry->getId());
             $this->fail("Failed to delete entry");
         } catch (\Exception $e) {
 
@@ -376,7 +376,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['user']);
 
         foreach ($feeds as $one_feed) {
 
@@ -396,7 +396,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $feed = $this->insertOneFeed(self::$DI['user']);
 
-        $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['user']);
 
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/feed/' . $feed->getId() . "/");
         $pageContent = self::$DI['client']->getResponse()->getContent();
@@ -462,7 +462,7 @@ class FeedTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->will($this->returnValue('http://user-link/'));
         self::$DI['app']['feed.user-link-generator']->expects($this->once())
             ->method('generate')
-            ->with($this->isInstanceOf('\Entities\Feed'), $this->isInstanceOf('\User_Adapter'), 'rss', null, false)
+            ->with($this->isInstanceOf('\Alchemy\Phrasea\Model\Entities\Feed'), $this->isInstanceOf('\User_Adapter'), 'rss', null, false)
             ->will($this->returnValue($link));
 
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/subscribe/' . $feed->getId() . '/');
