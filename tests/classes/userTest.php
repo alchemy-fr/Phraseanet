@@ -35,7 +35,7 @@ class userTest extends PhraseanetPHPUnitAbstract
             $user = \User_Adapter::create(self::$DI['app'], 'test_phpunit_providers', 'any', null, false);
         }
 
-        $provider = new Entities\UsrAuthProvider();
+        $provider = new Alchemy\Phrasea\Model\Entities\UsrAuthProvider();
         $provider->setDistantId(12345);
         $provider->setProvider('custom-one');
         $provider->setUsrId($user->get_id());
@@ -45,7 +45,7 @@ class userTest extends PhraseanetPHPUnitAbstract
 
         $user->delete();
 
-        $repo = self::$DI['app']['EM']->getRepository('Entities\UsrAuthProvider');
+        $repo = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
         $this->assertNull($repo->findWithProviderAndId('custom-one', 12345));
     }
 }

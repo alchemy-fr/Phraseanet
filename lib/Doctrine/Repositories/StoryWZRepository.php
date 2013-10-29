@@ -18,7 +18,7 @@ class StoryWZRepository extends EntityRepository
 
     public function findByUser(Application $app, \User_Adapter $user, $sort)
     {
-        $dql = 'SELECT s FROM Entities\StoryWZ s WHERE s.usr_id = :usr_id ';
+        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\StoryWZ s WHERE s.usr_id = :usr_id ';
 
         if ($sort == 'date') {
             $dql .= ' ORDER BY s.created DESC';
@@ -109,7 +109,7 @@ class StoryWZRepository extends EntityRepository
 
     public function findByRecord(Application $app, \record_adapter $Story)
     {
-        $dql = 'SELECT s FROM Entities\StoryWZ s WHERE s.sbas_id = :sbas_id
+        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\StoryWZ s WHERE s.sbas_id = :sbas_id
                 AND s.record_id = :record_id';
 
         $query = $this->_em->createQuery($dql);
@@ -135,7 +135,7 @@ class StoryWZRepository extends EntityRepository
 
     public function findByDatabox(Application $app, \databox $databox)
     {
-        $dql = 'SELECT s FROM Entities\StoryWZ s WHERE s.sbas_id = :sbas_id';
+        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\StoryWZ s WHERE s.sbas_id = :sbas_id';
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters(array(

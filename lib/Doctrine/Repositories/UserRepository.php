@@ -12,7 +12,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use Entities\User;
+use Alchemy\Phrasea\Model\Entities\User;
 
 /**
  * User

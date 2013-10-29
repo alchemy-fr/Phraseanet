@@ -139,7 +139,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
     {
         $sx = simplexml_load_string($datas);
 
-        $entry = $this->app['EM']->getRepository('Entities\FeedEntry')->find((int) $sx->entry_id);
+        $entry = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find((int) $sx->entry_id);
 
         if (null === $entry) {
             return array();

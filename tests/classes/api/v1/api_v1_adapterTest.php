@@ -557,12 +557,12 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertArrayHasKey('basket', $response['response']);
 
         $em = self::$DI['app']['EM'];
-        $repo = $em->getRepository('\Entities\Basket');
+        $repo = $em->getRepository('\Alchemy\Phrasea\Model\Entities\Basket');
 
         /* @var $repo \Repositories\BasketRepository */
         $basket = $repo->findUserBasket(self::$DI['app'], $response['response']['basket']['basket_id'], self::$DI['app']['authentication']->getUser(), true);
 
-        $this->assertTrue($basket instanceof \Entities\Basket);
+        $this->assertTrue($basket instanceof \Alchemy\Phrasea\Model\Entities\Basket);
         $em->remove($basket);
         $em->flush();
     }
@@ -574,7 +574,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $em = self::$DI['app']['EM'];
 
-        $Basket = new Entities\Basket();
+        $Basket = new Alchemy\Phrasea\Model\Entities\Basket();
         $Basket->setName('Delete test');
         $Basket->setOwner($user);
 
@@ -589,7 +589,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
 
-        $repo = $em->getRepository('\Entities\Basket');
+        $repo = $em->getRepository('\Alchemy\Phrasea\Model\Entities\Basket');
 
         try {
             $repo->findUserBasket(self::$DI['app'], $ssel_id, $user, true);
@@ -624,7 +624,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
 
-        $repository = self::$DI['app']['EM']->getRepository('\Entities\Basket');
+        $repository = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\Basket');
 
         $ret_bask = $repository->find($basket->getId());
 
@@ -643,7 +643,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_array(json_decode($result->format(), true)));
 
-        $repository = self::$DI['app']['EM']->getRepository('\Entities\Basket');
+        $repository = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\Basket');
 
         $ret_bask = $repository->find($basket->getId());
 
@@ -677,7 +677,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $feedItem = $this->insertOneFeedItem(self::$DI['user']);
         $feed = $feedItem->getEntry()->getFeed();
 
-        $feeds = self::$DI['app']['EM']->getRepository('Entities\Feed')->getAllForUser(self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['user']);
         foreach ($feeds as $feed) {
             $result = $this->object->get_publication($request, $feed->getId(), self::$DI['user']);
             $this->checkResponseField($result, "feed", 'array');

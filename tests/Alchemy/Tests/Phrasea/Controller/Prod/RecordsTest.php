@@ -148,7 +148,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $basket = $this->insertOneBasket();
         $record = self::$DI['record_1'];
 
-        $basketElement = new \Entities\BasketElement();
+        $basketElement = new \Alchemy\Phrasea\Model\Entities\BasketElement();
         $basketElement->setBasket($basket);
         $basketElement->setRecord($record);
         $basketElement->setLastInBasket();

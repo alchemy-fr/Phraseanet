@@ -11,6 +11,8 @@
 
 namespace PhraseaFixture\ValidationParticipant;
 
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
+use Alchemy\Phrasea\Model\Entities\ValidationSession;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -22,20 +24,19 @@ use Doctrine\Common\Persistence\ObjectManager;
 class LoadParticipantWithSession extends \PhraseaFixture\AbstractWZ implements FixtureInterface
 {
     /**
-     *
-     * @var \Entities\ValidationParticipant
+     * @var Participant
      */
     public $validationParticipant;
 
     /**
      *
-     * @var \Entities\ValidationSession
+     * @var ValidationSession
      */
     private $session;
 
     public function load(ObjectManager $manager)
     {
-        $validationParticipant = new \Entities\ValidationParticipant();
+        $validationParticipant = new ValidationParticipant();
 
         if (null === $this->user) {
             throw new \LogicException('Fill a user to store a new validation Session');
@@ -53,7 +54,7 @@ class LoadParticipantWithSession extends \PhraseaFixture\AbstractWZ implements F
         $this->validationParticipant = $validationParticipant;
     }
 
-    public function setSession(\Entities\ValidationSession $session)
+    public function setSession(ValidationSession $session)
     {
         $this->session = $session;
     }

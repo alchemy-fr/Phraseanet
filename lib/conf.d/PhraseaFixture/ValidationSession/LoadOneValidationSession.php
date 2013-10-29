@@ -11,6 +11,7 @@
 
 namespace PhraseaFixture\ValidationSession;
 
+use Alchemy\Phrasea\Model\Entities\ValidationSession as ValidationSessionEntity;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -23,13 +24,13 @@ class LoadOneValidationSession extends \PhraseaFixture\AbstractWZ implements Fix
 {
     /**
      *
-     * @var \Entities\ValidationSession
+     * @var ValidationSessionEntity
      */
     public $validationSession;
 
     public function load(ObjectManager $manager)
     {
-        $validationSession = new \Entities\ValidationSession();
+        $validationSession = new ValidationSessionEntity();
 
         $validationSession->setBasket(
             $this->getReference('one-basket') // load the one-basket stored reference

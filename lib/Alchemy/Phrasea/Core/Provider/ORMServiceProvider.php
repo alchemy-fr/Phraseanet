@@ -63,10 +63,10 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             $annotationDriver = new AnnotationDriver(
                 $annotationReader,
-                array($app['root.path'].'/lib/Doctrine/Entities')
+                array($app['root.path'].'/lib/Alchemy/Phrasea/Model/Entities')
             );
 
-            $driverChain->addDriver($annotationDriver, 'Entities');
+            $driverChain->addDriver($annotationDriver, 'Alchemy\Phrasea\Model\Entities');
 
             return $driverChain;
         });

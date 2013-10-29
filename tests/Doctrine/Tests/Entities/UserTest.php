@@ -12,8 +12,8 @@
 namespace Doctrine\Tests\Entities;
 
 use Alchemy\Phrasea\Application;
-use Entities\User;
-use Entities\UserSetting;
+use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\UserSetting;
 
 class UserTest extends \PhraseanetPHPUnitAbstract
 {

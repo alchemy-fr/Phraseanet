@@ -10,10 +10,10 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\Feed;
-use Entities\FeedEntry;
-use Entities\FeedItem;
-use Entities\FeedPublisher;
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

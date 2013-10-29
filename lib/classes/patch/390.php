@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\FtpCredential;
+use Alchemy\Phrasea\Model\Entities\FtpCredential;
 
 class patch_390 implements patchInterface
 {

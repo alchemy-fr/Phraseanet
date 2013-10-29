@@ -2,6 +2,8 @@
 
 namespace Repositories;
 
+use Alchemy\Phrasea\Model\Entities\UsrList;
+use Alchemy\Phrasea\Model\Entities\UsrListEntry;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -23,7 +25,7 @@ class UsrListEntryRepository extends EntityRepository
      */
     public function findUserList(\User_Adapter $user)
     {
-        $dql = 'SELECT e FROM Entities\UsrListEntry e
+        $dql = 'SELECT e FROM Alchemy\Phrasea\Model\Entities\UsrListEntry e
             WHERE e.usr_id = :usr_id';
 
         $params = array(
@@ -36,7 +38,7 @@ class UsrListEntryRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function findEntryByListAndEntryId(\Entities\UsrList $list, $entry_id)
+    public function findEntryByListAndEntryId(UsrList $list, $entry_id)
     {
         $entry = $this->find($entry_id);
 
@@ -44,7 +46,7 @@ class UsrListEntryRepository extends EntityRepository
             throw new NotFoundHttpException('Entry not found');
         }
 
-        /* @var $entry \Entities\UsrListEntry */
+        /* @var $entry UsrListEntry */
         if ($entry->getList()->getId() != $list->getId()) {
             throw new AccessDeniedHttpException('Entry mismatch list');
         }
@@ -52,9 +54,9 @@ class UsrListEntryRepository extends EntityRepository
         return $entry;
     }
 
-    public function findEntryByListAndUsrId(\Entities\UsrList $list, $usr_id)
+    public function findEntryByListAndUsrId(UsrList $list, $usr_id)
     {
-        $dql = 'SELECT e FROM Entities\UsrListEntry e
+        $dql = 'SELECT e FROM Alchemy\Phrasea\Model\Entities\UsrListEntry e
               JOIN e.list l
             WHERE e.usr_id = :usr_id AND l.id = :list_id';
 

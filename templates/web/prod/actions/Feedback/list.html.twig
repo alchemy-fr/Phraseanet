@@ -5,7 +5,7 @@
         <table style="height: 40px;">
             <tr>
                 <td style="white-space:nowrap;">
-                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                         <form class="form-inline" method="POST" name="SaveName" action="{{ path('prod_lists_list_update', { 'list_id' : list.getId() }) }}">
                             <label>{% trans 'List Name' %}</label>
                             <input type="text" name="name" style="margin: 0 5px;" value="{{ list.getName() }}"/>
@@ -16,14 +16,14 @@
                     {% endif %}
                 </td>
                 <td style="text-align:right;white-space:nowrap;">
-                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                         <a href="{{ path('prod_lists_list_share', { 'list_id' : list.getId() }) }}" title="{% trans 'Share the list' %}" class="list_sharer">
                             <img src="/skins/prod/Push/list-icon.png" />
                             {% trans "Set sharing permission" %}
                         </a>
                     {% endif %}
                 </td>
-                {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                     <td style="text-align:right;white-space:nowrap;width:150px;">
                         <button class="deleter btn btn-inverse">
                             {% trans 'Delete' %}
@@ -40,7 +40,7 @@
                 <p>
                     {% set length = '<span class="counter current">' ~ list.getEntries().count() ~ '</span>' %}
                     {% trans %}{{ length }} peoples{% endtrans %}
-                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                         <button class="EditToggle btn btn-inverse">{% trans 'Edit' %}</button>
                     {% endif %}
                 </p>
@@ -53,7 +53,7 @@
             </div>
         </div>
     </div>
-    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+    {% if list.getOwner(app['authentication'].getUser(), app).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
         <div class="PNB content readwrite grey-bg" style="display:none;top:40px;">
             <form name="list-editor-search" method="POST" action="{{ path('prod_push_list_edit', { 'list_id' : list.getId() }) }}">
                 <div class="PNB10" style="height:160px;">

@@ -12,6 +12,7 @@
 namespace Repositories;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -37,7 +38,7 @@ class BasketRepository extends EntityRepository
     public function findActiveByUser(\User_Adapter $user, $sort = null)
     {
         $dql = 'SELECT b
-            FROM Entities\Basket b
+            FROM Alchemy\Phrasea\Model\Entities\Basket b
             LEFT JOIN b.elements e
             WHERE b.usr_id = :usr_id
             AND b.archived = false';
@@ -63,7 +64,7 @@ class BasketRepository extends EntityRepository
     public function findUnreadActiveByUser(\User_Adapter $user)
     {
         $dql = 'SELECT b
-            FROM Entities\Basket b
+            FROM Alchemy\Phrasea\Model\Entities\Basket b
             JOIN b.elements e
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
@@ -98,7 +99,7 @@ class BasketRepository extends EntityRepository
     public function findActiveValidationByUser(\User_Adapter $user, $sort = null)
     {
         $dql = 'SELECT b
-            FROM Entities\Basket b
+            FROM Alchemy\Phrasea\Model\Entities\Basket b
             JOIN b.elements e
             JOIN e.validation_datas v
             JOIN b.validation s
@@ -125,12 +126,12 @@ class BasketRepository extends EntityRepository
      * @throws AccessDeniedHttpException
      * @param  type                      $basket_id
      * @param  \User_Adapter             $user
-     * @return \Entities\Basket
+     * @return Basket
      */
     public function findUserBasket(Application $app, $basket_id, \User_Adapter $user, $requireOwner)
     {
         $dql = 'SELECT b
-            FROM Entities\Basket b
+            FROM Alchemy\Phrasea\Model\Entities\Basket b
             LEFT JOIN b.elements e
             WHERE b.id = :basket_id';
 
@@ -139,7 +140,7 @@ class BasketRepository extends EntityRepository
 
         $basket = $query->getOneOrNullResult();
 
-        /* @var $basket \Entities\Basket */
+        /* @var $basket Basket */
         if (null === $basket) {
             throw new NotFoundHttpException(_('Basket is not found'));
         }
@@ -167,7 +168,7 @@ class BasketRepository extends EntityRepository
     {
 
         $dql = 'SELECT b
-            FROM Entities\Basket b
+            FROM Alchemy\Phrasea\Model\Entities\Basket b
             JOIN b.elements e
             WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id
               AND b.usr_id = :usr_id';
@@ -190,7 +191,7 @@ class BasketRepository extends EntityRepository
         switch ($type) {
             case self::RECEIVED:
                 $dql = 'SELECT b
-                FROM Entities\Basket b
+                FROM Alchemy\Phrasea\Model\Entities\Basket b
                 JOIN b.elements e
                 WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL';
                 $params = array(
@@ -199,7 +200,7 @@ class BasketRepository extends EntityRepository
                 break;
             case self::VALIDATION_DONE:
                 $dql = 'SELECT b
-                FROM Entities\Basket b
+                FROM Alchemy\Phrasea\Model\Entities\Basket b
                 JOIN b.elements e
                 JOIN b.validation s
                 JOIN s.participants p
@@ -211,7 +212,7 @@ class BasketRepository extends EntityRepository
                 break;
             case self::VALIDATION_SENT:
                 $dql = 'SELECT b
-                FROM Entities\Basket b
+                FROM Alchemy\Phrasea\Model\Entities\Basket b
                 JOIN b.elements e
                 JOIN b.validation v
                 WHERE b.usr_id = :usr_id';
@@ -221,7 +222,7 @@ class BasketRepository extends EntityRepository
                 break;
             default:
                 $dql = 'SELECT b
-                FROM Entities\Basket b
+                FROM Alchemy\Phrasea\Model\Entities\Basket b
                 LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
@@ -233,7 +234,7 @@ class BasketRepository extends EntityRepository
                 break;
             case self::MYBASKETS:
                 $dql = 'SELECT b
-                FROM Entities\Basket b
+                FROM Alchemy\Phrasea\Model\Entities\Basket b
                 LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
@@ -280,7 +281,7 @@ class BasketRepository extends EntityRepository
     public function findActiveValidationAndBasketByUser(\User_Adapter $user, $sort = null)
     {
         $dql = 'SELECT b
-            FROM Entities\Basket b
+            FROM Alchemy\Phrasea\Model\Entities\Basket b
             LEFT JOIN b.elements e
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p

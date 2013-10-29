@@ -11,6 +11,7 @@
 
 namespace PhraseaFixture\Basket;
 
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -30,7 +31,7 @@ class LoadFiveBaskets extends \PhraseaFixture\AbstractWZ implements FixtureInter
     public function load(ObjectManager $manager)
     {
         for ($i = 0; $i < 5; $i ++) {
-            $basket = new \Entities\Basket();
+            $basket = new Basket();
 
             $basket->setName('test ' . $i);
             $basket->setDescription('description');

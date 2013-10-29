@@ -13,11 +13,11 @@ use Doctrine\ORM\EntityRepository;
 class FtpExportRepository extends EntityRepository
 {
     /**
-     * Returns exports that crashed. If a date is provided, only exports created 
+     * Returns exports that crashed. If a date is provided, only exports created
      * before this date are returned.
-     * 
+     *
      * @param \DateTime $before An optional date to search
-     * 
+     *
      * @return array
      */
     public function findCrashedExports(\DateTime $before = null)
@@ -29,19 +29,19 @@ class FtpExportRepository extends EntityRepository
             $qb->andWhere($qb->expr()->lte('e.created', ':created'));
             $qb->setParameter(':created', $before);
         }
-        
+
         return $qb->getQuery()->getResult();
     }
 
     /**
      * Returns a list of exports that can be achieved.
-     * 
+     *
      * @return array
      */
     public function findDoableExports()
     {
         $dql = 'SELECT f
-            FROM Entities\FtpExport f
+            FROM Alchemy\Phrasea\Model\Entities\FtpExport f
                 INNER JOIN f.elements e
             WHERE e.done = false';
 
@@ -52,9 +52,9 @@ class FtpExportRepository extends EntityRepository
 
     /**
      * Returns the exports initiated by a given user.
-     * 
+     *
      * @param \User_Adapter $user
-     * 
+     *
      * @return array
      */
     public function findByUser(\User_Adapter $user)

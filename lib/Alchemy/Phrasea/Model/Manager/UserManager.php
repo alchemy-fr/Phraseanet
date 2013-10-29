@@ -13,8 +13,8 @@ namespace Alchemy\Phrasea\Model\Manager;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\Common\Persistence\ObjectManager;
-use Entities\User;
-use Entities\UserSetting;
+use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\UserSetting;
 
 class UserManager
 {
@@ -137,7 +137,7 @@ class UserManager
      */
     private function cleanFtpExports(User $user)
     {
-       $elements = $this->objectManager->getRepository('Entities\FtpExport')
+       $elements = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
                ->findBy(array('usrId' => $user->getId()));
 
        foreach($elements as $element) {
@@ -152,7 +152,7 @@ class UserManager
      */
     private function cleanOrders(User $user)
     {
-       $orders = $this->objectManager->getRepository('Entities\Order')
+       $orders = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\Order')
                ->findBy(array('usrId' => $user->getId()));
 
        foreach($orders as $order) {

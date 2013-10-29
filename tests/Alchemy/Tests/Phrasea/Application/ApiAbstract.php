@@ -1979,7 +1979,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     protected function getQuarantineItem()
     {
-        $lazaretSession = new \Entities\LazaretSession();
+        $lazaretSession = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
         self::$DI['app']['EM']->persist($lazaretSession);
 
         $quarantineItem;

@@ -10,8 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\FtpExport;
-use Entities\FtpExportElement;
+use Alchemy\Phrasea\Model\Entities\FtpExport;
+use Alchemy\Phrasea\Model\Entities\FtpExportElement;
 use Gedmo\Timestampable\TimestampableListener;
 
 class patch_3906 implements patchInterface

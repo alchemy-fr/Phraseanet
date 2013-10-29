@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller;
 
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Silex\ControllerProviderInterface;
@@ -69,7 +71,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
             /* @var $repository \Repositories\BasketRepository */
 
@@ -99,7 +101,7 @@ class Lightbox implements ControllerProviderInterface
             }
 
             $basketElement = $app['EM']
-                ->getRepository('\Entities\BasketElement')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement')
                 ->findUserElement($sselcont_id, $app['authentication']->getUser());
 
             $parameters = array(
@@ -114,7 +116,7 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
             /* @var $repository \Repositories\BasketElementRepository */
-            $repository = $app['EM']->getRepository('\Entities\BasketElement');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
             $BasketElement = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
@@ -160,7 +162,7 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(SilexApplication $app, $entry_id, $item_id) {
 
-            $entry = $app['EM']->getRepository('Entities\FeedEntry')->find($entry_id);
+            $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry_id);
             $item = $entry->getItem($item_id);
 
             if ($app['browser']->isMobile()) {
@@ -205,7 +207,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
             /* @var $repository \Repositories\BasketRepository */
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
@@ -259,7 +261,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
             /* @var $repository \Repositories\BasketRepository */
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
@@ -313,7 +315,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('logout');
             }
 
-            $feed_entry = $app['EM']->getRepository('Entities\FeedEntry')->find($entry_id);
+            $feed_entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry_id);
 
             $template = 'lightbox/feed.html.twig';
 
@@ -344,7 +346,7 @@ class Lightbox implements ControllerProviderInterface
 
             $template = 'lightbox/basket_content_report.html.twig';
 
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
             /* @var $repository \Repositories\BasketRepository */
             $basket = $repository->findUserBasket(
@@ -372,7 +374,7 @@ class Lightbox implements ControllerProviderInterface
             }
 
             /* @var $repository \Repositories\BasketElementRepository */
-            $repository = $app['EM']->getRepository('\Entities\BasketElement');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
             $basket_element = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
 
@@ -419,14 +421,14 @@ class Lightbox implements ControllerProviderInterface
                     'datas'      => _('Erreur lors de la mise a jour des donnes ')
                 );
 
-                $repository = $app['EM']->getRepository('\Entities\BasketElement');
+                $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
                 /* @var $repository \Repositories\BasketElementRepository */
                 $basket_element = $repository->findUserElement(
                     $sselcont_id
                     , $app['authentication']->getUser()
                 );
-                /* @var $basket_element \Entities\BasketElement */
+                /* @var $basket_element BasketElement */
                 $validationDatas = $basket_element->getUserValidationDatas($app['authentication']->getUser(), $app);
 
                 if (!$basket_element->getBasket()
@@ -466,7 +468,7 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->post('/ajax/SET_RELEASE/{ssel_id}/', function(SilexApplication $app, $ssel_id) {
 
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
             $datas = array('error' => true, 'datas' => '');
 
@@ -487,7 +489,7 @@ class Lightbox implements ControllerProviderInterface
                 }
 
                 $agreed = false;
-                /* @var $basket \Entities\Basket */
+                /* @var $basket Basket */
                 foreach ($basket->getElements() as $element) {
                     if (null !== $element->getUserValidationDatas($app['authentication']->getUser(), $app)->getAgreement()) {
                         $agreed = true;
@@ -498,7 +500,7 @@ class Lightbox implements ControllerProviderInterface
                     throw new ControllerException(_('You have to give your feedback at least on one document to send a report'));
                 }
 
-                /* @var $basket \Entities\Basket */
+                /* @var $basket Basket */
                 $participant = $basket->getValidation()->getParticipant($app['authentication']->getUser(), $app);
 
                 $expires = new \DateTime('+10 days');

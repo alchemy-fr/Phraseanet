@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\AuthFailure;
+use Alchemy\Phrasea\Model\Entities\AuthFailure;
 
 class patch_3805 implements patchInterface
 {

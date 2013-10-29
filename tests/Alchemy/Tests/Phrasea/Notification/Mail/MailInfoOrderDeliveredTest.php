@@ -29,7 +29,7 @@ class MailInfoOrderDeliveredTest extends MailTestCase
             $this->getMessage()
         );
 
-        $basket = $this->getMock('Entities\Basket');
+        $basket = $this->getMock('Alchemy\Phrasea\Model\Entities\Basket');
         $basket->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('Hello basket'));
@@ -80,7 +80,7 @@ class MailInfoOrderDeliveredTest extends MailTestCase
             $this->getMessage()
         );
 
-        $basket = $this->getMock('Entities\Basket');
+        $basket = $this->getMock('Alchemy\Phrasea\Model\Entities\Basket');
         $basket->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('Hello basket'));

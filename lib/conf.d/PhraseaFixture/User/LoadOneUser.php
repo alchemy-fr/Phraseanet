@@ -14,7 +14,7 @@ namespace PhraseaFixture\User;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Entities\User;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class LoadOneUser extends AbstractFixture implements FixtureInterface
 {

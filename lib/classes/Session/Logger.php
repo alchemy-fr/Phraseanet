@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\Model\Entities\SessionModule;
 
 class Session_Logger
 {
@@ -187,14 +188,14 @@ class Session_Logger
             return;
         }
 
-        $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
+        $session = $app['EM']->find('Alchemy\Phrasea\Model\Entities\Session', $app['session']->get('session_id'));
 
         if (!$session) {
             throw new SessionNotFound('No session found');
         }
 
         if (!$session->hasModuleId($appId)) {
-            $module = new \Entities\SessionModule();
+            $module = new SessionModule();
 
             $module->setModuleId($appId);
             $module->setSession($session);

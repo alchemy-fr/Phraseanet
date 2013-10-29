@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
 use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
 use Alchemy\Phrasea\Border\MetadataBag;
 use Alchemy\Phrasea\Border\MetaFieldsBag;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -56,7 +57,7 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @var \Entities\LazaretSession
+     * @var LazaretSession
      */
     protected $lazaretSession;
 
@@ -2051,7 +2052,7 @@ class task_period_archive extends task_abstract
     /**
      * Return a LazaretSession
      *
-     * @return \Entities\LazaretSession
+     * @return LazaretSession
      */
     protected function getLazaretSession()
     {
@@ -2059,7 +2060,7 @@ class task_period_archive extends task_abstract
             return $this->lazaretSession;
         }
 
-        $lazaretSession = new \Entities\LazaretSession();
+        $lazaretSession = new LazaretSession();
 
         $this->dependencyContainer['EM']->persist($lazaretSession);
         $this->dependencyContainer['EM']->flush();

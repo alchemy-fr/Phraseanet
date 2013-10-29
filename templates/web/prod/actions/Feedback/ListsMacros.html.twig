@@ -179,7 +179,7 @@
 {% macro badgeReadonly(entry, role) %}
   <div class="badge">
     <input type="hidden" value="{{ entry.getUser(app).get_id() }}" name="id">
-    {% if role >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+    {% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
       <a class="deleter" href="#">
         <img src="/skins/prod/Push/close_badge.png">
       </a>

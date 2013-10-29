@@ -23,7 +23,7 @@ class FeedEntryRepository extends EntityRepository
      */
     public function findByFeeds($feeds, $offset_start = null, $how_many = null)
     {
-        $dql = 'SELECT f FROM Entities\FeedEntry f
+        $dql = 'SELECT f FROM Alchemy\Phrasea\Model\Entities\FeedEntry f
                 WHERE f.feed IN (:feeds) order by f.updatedOn DESC';
 
         $query = $this->_em->createQuery($dql);

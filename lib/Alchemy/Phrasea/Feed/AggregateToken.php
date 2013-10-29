@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Feed;
 
 use Alchemy\Phrasea\Feed\Aggregate;
+use Alchemy\Phrasea\Model\Entities\Feed;
 
 /**
  * AggregateToken
@@ -63,10 +64,10 @@ class AggregateToken
     /**
      * Set feed
      *
-     * @param  Aggregate      $feed
+     * @param  Feed           $feed
      * @return AggregateToken
      */
-    public function setFeed(\Entities\Feed $feed = null)
+    public function setFeed(Feed $feed = null)
     {
         $this->aggregatedFeed = $feed;
 

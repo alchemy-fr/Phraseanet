@@ -32,7 +32,7 @@ class Permalink extends AbstractDelivery
         $that = $this;
 
         $retrieveRecord = function ($app, $databox, $token, $record_id, $subdef) {
-            if (in_array($subdef, array(\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL)) && $app['EM']->getRepository('Entities\FeedItem')->isRecordInPublicFeed($app, $databox->get_sbas_id(), $record_id)) {
+            if (in_array($subdef, array(\databox_subdef::CLASS_PREVIEW, \databox_subdef::CLASS_THUMBNAIL)) && $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->isRecordInPublicFeed($app, $databox->get_sbas_id(), $record_id)) {
                 $record = $databox->get_record($record_id);
             } else {
                 $record = \media_Permalink_Adapter::challenge_token($app, $databox, $token, $record_id, $subdef);
@@ -75,7 +75,7 @@ class Permalink extends AbstractDelivery
 
                 if ($watermark) {
 
-                    $repository = $app['EM']->getRepository('\Entities\BasketElement');
+                    $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
                     if (count($repository->findReceivedValidationElementsByRecord($record, $user)) > 0) {
                         $watermark = false;

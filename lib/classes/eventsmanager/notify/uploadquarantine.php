@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Model\Entities\LazaretCheck;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoRecordQuarantined;
 
@@ -43,8 +45,8 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        if (isset($params['lazaret_file']) && $params['lazaret_file'] instanceof \Entities\LazaretFile) {
-            /* @var $lazaretFile \Entities\LazaretFile */
+        if (isset($params['lazaret_file']) && $params['lazaret_file'] instanceof LazaretFile) {
+            /* @var $lazaretFile LazaretFile */
             $lazaretFile = $params['lazaret_file'];
 
             $domXML = new DOMDocument('1.0', 'UTF-8');
@@ -62,7 +64,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             $reasons = $domXML->createElement('reasons');
 
             foreach ($lazaretFile->getChecks() as $check) {
-                /* @var $check \Entities\LazaretCheck */
+                /* @var $check LazaretCheck */
                 $reason = $domXML->createElement('checkClassName');
                 $reason->appendChild($domXML->createTextNode($check->getCheckClassname()));
                 $reasons->appendChild($reason);

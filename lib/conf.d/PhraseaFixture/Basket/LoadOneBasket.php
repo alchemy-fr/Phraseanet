@@ -11,6 +11,7 @@
 
 namespace PhraseaFixture\Basket;
 
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -22,14 +23,13 @@ use Doctrine\Common\Persistence\ObjectManager;
 class LoadOneBasket extends \PhraseaFixture\AbstractWZ implements FixtureInterface
 {
     /**
-     *
-     * @var \Entities\Basket
+     * @var Basket
      */
     public $basket;
 
     public function load(ObjectManager $manager)
     {
-        $basket = new \Entities\Basket();
+        $basket = new Basket();
 
         $basket->setName('test');
         $basket->setDescription('description');

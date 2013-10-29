@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Notification\Mail;
 
-use Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoOrderDelivered extends AbstractMail

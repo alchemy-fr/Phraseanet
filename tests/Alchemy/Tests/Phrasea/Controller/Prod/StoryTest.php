@@ -28,7 +28,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(302, $response->getStatusCode());
 
         $query = self::$DI['app']['EM']->createQuery(
-            'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
+            'SELECT COUNT(w.id) FROM \Alchemy\Phrasea\Model\Entities\StoryWZ w'
         );
 
         $count = $query->getSingleScalarResult();

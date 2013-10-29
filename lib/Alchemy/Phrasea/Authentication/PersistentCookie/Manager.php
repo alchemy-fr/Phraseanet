@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Authentication\PersistentCookie;
 
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Doctrine\ORM\EntityManager;
-use Entities\Session;
+use Alchemy\Phrasea\Model\Entities\Session;
 
 class Manager
 {
@@ -38,7 +38,7 @@ class Manager
     public function getSession($cookieValue)
     {
         $session = $this->em
-            ->getRepository('Entities\Session')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\Session')
             ->findOneBy(array('token' => $cookieValue));
 
         if (!$session) {

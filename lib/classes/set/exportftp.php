@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-use Entities\FtpExport;
-use Entities\FtpExportElement;
+use Alchemy\Phrasea\Model\Entities\FtpExport;
+use Alchemy\Phrasea\Model\Entities\FtpExportElement;
 
 class set_exportftp extends set_export
 {

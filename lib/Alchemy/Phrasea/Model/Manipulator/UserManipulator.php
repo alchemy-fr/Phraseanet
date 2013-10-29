@@ -17,7 +17,7 @@ use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\Common\Persistence\ObjectManager;
-use Entities\User;
+use Alchemy\Phrasea\Model\Entities\User;
 use Repositories\UserRepository;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
@@ -45,7 +45,7 @@ class UserManipulator implements ManipulatorInterface
      */
     public function getRepository()
     {
-        return $this->manager->getObjectManager()->getRepository('Entities\User');
+        return $this->manager->getObjectManager()->getRepository('Alchemy\Phrasea\Model\Entities\User');
     }
 
     /**

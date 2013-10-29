@@ -11,7 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityManager;
-use Entities\User;
+use Alchemy\Phrasea\Model\Entities\User;
 use Gedmo\Timestampable\TimestampableListener;
 
 class patch_3902 implements patchInterface
@@ -175,7 +175,7 @@ class patch_3902 implements patchInterface
 
         $n = 0;
 
-        $repository = $em->getRepository('Entities\User');
+        $repository = $em->getRepository('Alchemy\Phrasea\Model\Entities\User');
 
         foreach ($rows as $row) {
             $user = $repository->findOneByLogin($row['usr_login']);

@@ -36,7 +36,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testSetExport()
     {
-        $basket = new \Entities\Basket();
+        $basket = new \Alchemy\Phrasea\Model\Entities\Basket();
 
         $basket->setName('hello');
         $basket->setOwner(self::$DI['user']);
@@ -44,7 +44,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $em = self::$DI['app']['EM'];
 
-        $basketElement = new \Entities\BasketElement();
+        $basketElement = new \Alchemy\Phrasea\Model\Entities\BasketElement();
 
         $basketElement->setRecord(self::$DI['record_1']);
         $basketElement->setBasket($basket);
@@ -497,10 +497,10 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_container_baskets()
     {
         $basket = $this->insertOneBasket();
-        $this->assertInstanceOf('\Entities\Basket', $basket);
+        $this->assertInstanceOf('\Alchemy\Phrasea\Model\Entities\Basket', $basket);
 
-        /* @var $basket \Entities\Basket */
-        $basket_element = new \Entities\BasketElement();
+        /* @var $basket \Alchemy\Phrasea\Model\Entities\Basket */
+        $basket_element = new \Alchemy\Phrasea\Model\Entities\BasketElement();
         $basket_element->setRecord(self::$DI['record_1']);
         $basket_element->setBasket($basket);
 

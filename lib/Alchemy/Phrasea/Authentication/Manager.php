@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Authentication;
 
-use Entities\Session;
+use Alchemy\Phrasea\Model\Entities\Session;
 
 class Manager
 {

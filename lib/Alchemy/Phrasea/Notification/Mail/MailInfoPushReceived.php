@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Notification\Mail;
 
-use Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Exception\LogicException;
 
 class MailInfoPushReceived extends AbstractMailWithLink
@@ -24,7 +24,7 @@ class MailInfoPushReceived extends AbstractMailWithLink
     /**
      * Sets the basket
      *
-     * @param \Entities\Basket $basket
+     * @param Basket $basket
      */
     public function setBasket(Basket $basket)
     {

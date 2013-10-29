@@ -54,7 +54,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         parent::setUp();
         $this->object = new Manager(self::$DI['app']);
-        $this->session = new \Entities\LazaretSession();
+        $this->session = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
 
         self::$DI['app']['EM']->persist($this->session);
     }
@@ -88,7 +88,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $phpunit = $this;
 
         $postProcess = function($element, $visa, $code) use ($phpunit, &$records) {
-                $phpunit->assertInstanceOf('\\Entities\\LazaretFile', $element);
+                $phpunit->assertInstanceOf('\\Alchemy\Phrasea\Model\Entities\\LazaretFile', $element);
                 $phpunit->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
                 $phpunit->assertEquals(Manager::LAZARET_CREATED, $code);
                 $records[] = $element;
@@ -310,7 +310,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $foundMeta = $foundField = array();
 
-        /* @var $lazaret \Entities\LazaretFile */
+        /* @var $lazaret \Alchemy\Phrasea\Model\Entities\LazaretFile */
         foreach ($lazaret->getAttributes() as $attr) {
             $attribute = Factory::getFileAttribute(self::$DI['app'], $attr->getName(), $attr->getValue());
 
@@ -385,9 +385,9 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $application = self::$DI['app'];
 
         $postProcess = function($element, $visa, $code) use ($phpunit, $application) {
-                $phpunit->assertInstanceOf('\\Entities\\LazaretFile', $element);
+                $phpunit->assertInstanceOf('\\Alchemy\Phrasea\Model\Entities\\LazaretFile', $element);
 
-                /* @var $element \Entities\LazaretFile */
+                /* @var $element \Alchemy\Phrasea\Model\Entities\LazaretFile */
                 foreach ($element->getAttributes() as $attribute) {
                     $phpunit->assertEquals('metadata', $attribute->getName());
                     $value = Factory::getFileAttribute($application, $attribute->getName(), $attribute->getValue());

@@ -3,6 +3,7 @@
 namespace Repositories;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\UsrList;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -24,7 +25,7 @@ class UsrListRepository extends EntityRepository
      */
     public function findUserLists(\User_Adapter $user)
     {
-        $dql = 'SELECT l FROM Entities\UsrList l
+        $dql = 'SELECT l FROM Alchemy\Phrasea\Model\Entities\UsrList l
               JOIN l.owners o
             WHERE o.usr_id = :usr_id';
 
@@ -42,13 +43,13 @@ class UsrListRepository extends EntityRepository
      *
      * @param  \User_Adapter     $user
      * @param  type              $list_id
-     * @return \Entities\UsrList
+     * @return UsrList
      */
     public function findUserListByUserAndId(Application $app, \User_Adapter $user, $list_id)
     {
         $list = $this->find($list_id);
 
-        /* @var $basket \Entities\UsrList */
+        /* @var $list UsrList */
         if (null === $list) {
             throw new NotFoundHttpException(_('List is not found'));
         }
@@ -69,7 +70,7 @@ class UsrListRepository extends EntityRepository
      */
     public function findUserListLike(\User_Adapter $user, $name)
     {
-        $dql = 'SELECT l FROM Entities\UsrList l
+        $dql = 'SELECT l FROM Alchemy\Phrasea\Model\Entities\UsrList l
               JOIN l.owners o
             WHERE o.usr_id = :usr_id AND l.name LIKE :name';
 

@@ -59,10 +59,10 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
                 }
 
                 $this->assertCount(0, self::$DI['app']['EM']
-                    ->getRepository('Entities\FeedToken')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
                     ->findBy(array('value' => $tokenValue)));
                 $this->assertCount(1, self::$DI['app']['EM']
-                    ->getRepository('Entities\FeedToken')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
                     ->findBy(array('value' => $capture['token'])));
             } else {
                 $expectedParams = array(
@@ -78,7 +78,7 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
                 $this->assertEquals($expectedParams, $capture);
 
                 $this->assertCount(1, self::$DI['app']['EM']
-                    ->getRepository('Entities\FeedToken')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
                     ->findBy(array('value' => $tokenValue)));
             }
         } else {
@@ -90,11 +90,11 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
             $this->assertEquals(12, strlen($capture['token']));
 
             $this->assertCount(1, self::$DI['app']['EM']
-                ->getRepository('Entities\FeedToken')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
                 ->findBy(array('value' => $capture['token'])));
         }
         $token = self::$DI['app']['EM']
-            ->getRepository('Entities\FeedToken')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
             ->findOneBy(array('usrId' => $user->get_id(), 'feed' => $feed->getId()));
         self::$DI['app']['EM']->remove($token);
         self::$DI['app']['EM']->flush();
@@ -154,7 +154,7 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
             ->method('get_id')
             ->will($this->returnValue(42));
 
-        $feed = new \Entities\Feed();
+        $feed = new \Alchemy\Phrasea\Model\Entities\Feed();
         $feed->setTitle('Title');
 
         return array(
@@ -179,7 +179,7 @@ class FeedLinkGeneratorTest extends \PhraseanetPHPUnitAbstract
 
     public function provideGenerationDataPublic()
     {
-        $feed = new \Entities\Feed();
+        $feed = new \Alchemy\Phrasea\Model\Entities\Feed();
         $feed->setTitle('Title');
 
         return array(

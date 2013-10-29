@@ -80,7 +80,7 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayBasket(Application $app, $basket_id)
     {
-        $basket = $app['EM']->getRepository('\Entities\Basket')
+        $basket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
             ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), false);
 
         return $app['twig']->render('prod/Tooltip/Basket.html.twig', array('basket' => $basket));

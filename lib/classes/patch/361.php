@@ -87,7 +87,7 @@ class patch_361 implements patchInterface
             }
         }
 
-        $dql = "SELECT b FROM Entities\Basket b WHERE b.description != ''";
+        $dql = "SELECT b FROM Alchemy\Phrasea\Model\Entities\Basket b WHERE b.description != ''";
 
         $n = 0;
         $perPage = 100;

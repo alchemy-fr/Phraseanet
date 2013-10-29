@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\UserNotificationSetting;
+use Alchemy\Phrasea\Model\Entities\UserNotificationSetting;
 
 class patch_3905 implements patchInterface
 {

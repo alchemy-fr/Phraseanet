@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use DataURI\Parser;
 use DataURI\Exception\Exception as DataUriException;
-use Entities\LazaretSession;
+use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;

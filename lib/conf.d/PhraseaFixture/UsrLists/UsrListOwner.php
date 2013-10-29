@@ -11,6 +11,8 @@
 
 namespace PhraseaFixture\UsrLists;
 
+use Alchemy\Phrasea\Model\Entities\UsrListOwner as UsrListOwnerEntity;
+use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -22,16 +24,15 @@ use Doctrine\Common\Persistence\ObjectManager;
 class UsrListOwner extends ListAbstract implements FixtureInterface
 {
     /**
-     *
-     * @var \Entities\StoryWZ
+     * @var StoryWZ
      */
     public $owner;
 
     public function load(ObjectManager $manager)
     {
-        $owner = new \Entities\UsrListOwner();
+        $owner = new UsrListOwnerEntity();
 
-        $owner->setRole(\Entities\UsrListOwner::ROLE_ADMIN);
+        $owner->setRole(UsrListOwnerEntity::ROLE_ADMIN);
 
         if (null === $this->user) {
             throw new \LogicException('Fill a user to store a new basket');

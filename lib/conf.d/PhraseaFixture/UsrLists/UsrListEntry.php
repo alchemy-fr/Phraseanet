@@ -17,6 +17,8 @@
 
 namespace PhraseaFixture\UsrLists;
 
+use Alchemy\Phrasea\Model\Entities\UsrList as UsrListEntity;
+use Alchemy\Phrasea\Model\Entities\UsrListEntry as UsrListEntryEntity;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -28,14 +30,13 @@ use Doctrine\Common\Persistence\ObjectManager;
 class UsrListEntry extends ListAbstract implements FixtureInterface
 {
     /**
-     *
-     * @var \Entities\UsrListEntry
+     * @var UsrListEntry
      */
     public $entry;
 
     public function load(ObjectManager $manager)
     {
-        $entry = new \Entities\UsrListEntry();
+        $entry = new UsrListEntryEntity();
 
         if (null === $this->user) {
             throw new \LogicException('Fill a user to store a new basket');
@@ -46,7 +47,7 @@ class UsrListEntry extends ListAbstract implements FixtureInterface
         $entry->setUser($this->user);
         $entry->setList($list);
 
-        /* @var $list \Entities\UsrList */
+        /* @var $list UsrListEntity */
         $list->addEntrie($entry);
 
         $manager->persist($entry);

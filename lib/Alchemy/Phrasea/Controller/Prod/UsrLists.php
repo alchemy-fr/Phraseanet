@@ -11,9 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Entities\UsrList;
-use Entities\UsrListEntry;
-use Entities\UsrListOwner;
+use Alchemy\Phrasea\Model\Entities\UsrList;
+use Alchemy\Phrasea\Model\Entities\UsrListEntry;
+use Alchemy\Phrasea\Model\Entities\UsrListOwner;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
@@ -110,7 +110,7 @@ class UsrLists implements ControllerProviderInterface
         $lists = new ArrayCollection();
 
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $lists = $repository->findUserLists($app['authentication']->getUser());
 
@@ -142,7 +142,7 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                /* @var $list \Entities\UsrList */
+                /* @var $list UsrList */
                 $result[] = array(
                     'name'    => $list->getName(),
                     'created' => $list->getCreated()->format(DATE_ATOM),
@@ -223,7 +223,7 @@ class UsrLists implements ControllerProviderInterface
 
     public function displayList(Application $app, Request $request, $list_id)
     {
-        $repository = $app['EM']->getRepository('\Entities\UsrList');
+        $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
@@ -281,7 +281,7 @@ class UsrLists implements ControllerProviderInterface
                 throw new ControllerException(_('List name is required'));
             }
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
@@ -312,7 +312,7 @@ class UsrLists implements ControllerProviderInterface
     public function removeList(Application $app, $list_id)
     {
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
 
@@ -346,16 +346,16 @@ class UsrLists implements ControllerProviderInterface
     public function removeUser(Application $app, $list_id, $usr_id)
     {
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
-            /* @var $list \Entities\UsrList */
+            /* @var $list UsrList */
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
-            $entry_repository = $app['EM']->getRepository('\Entities\UsrListEntry');
+            $entry_repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrListEntry');
 
             $user_entry = $entry_repository->findEntryByListAndUsrId($list, $usr_id);
 
@@ -389,10 +389,10 @@ class UsrLists implements ControllerProviderInterface
                 throw new ControllerException('Invalid or missing parameter usr_ids');
             }
 
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
-            /* @var $list \Entities\UsrList */
+            /* @var $list UsrList */
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException(_('You are not authorized to do this'));
@@ -453,10 +453,10 @@ class UsrLists implements ControllerProviderInterface
         $list = null;
 
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
-            /* @var $list \Entities\UsrList */
+            /* @var $list UsrList */
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
                 $list = null;
@@ -483,10 +483,10 @@ class UsrLists implements ControllerProviderInterface
             throw new BadRequestHttpException('Role is invalid');
 
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
-            /* @var $list \Entities\UsrList */
+            /* @var $list UsrList */
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException(_('You are not authorized to do this'));
@@ -539,16 +539,16 @@ class UsrLists implements ControllerProviderInterface
     public function unshareWithUser(Application $app, $list_id, $usr_id)
     {
         try {
-            $repository = $app['EM']->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
             $list = $repository->findUserListByUserAndId($app, $app['authentication']->getUser(), $list_id);
-            /* @var $list \Entities\UsrList */
+            /* @var $list UsrList */
 
             if ($list->getOwner($app['authentication']->getUser(), $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
                 throw new \Exception(_('You are not authorized to do this'));
             }
 
-            $owners_repository = $app['EM']->getRepository('\Entities\UsrListOwner');
+            $owners_repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrListOwner');
 
             $owner = $owners_repository->findByListAndUsrId($list, $usr_id);
 

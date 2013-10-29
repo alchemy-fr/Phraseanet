@@ -11,8 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Client;
 
-use Entities\Basket;
-use Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Doctrine\Common\Collections\ArrayCollection;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -139,7 +139,7 @@ class Baskets implements ControllerProviderInterface
     public function deleteBasketElement(Application $app, Request $request)
     {
         try {
-            $repository = $app['EM']->getRepository('\Entities\BasketElement');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
             $basketElement = $repository->findUserElement($request->request->get('p0'), $app['authentication']->getUser());
             $app['EM']->remove($basketElement);
             $app['EM']->flush();
@@ -162,7 +162,7 @@ class Baskets implements ControllerProviderInterface
     public function deleteBasket(Application $app, Request $request)
     {
         try {
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
             /* @var $repository \Repositories\BasketRepository */
             $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['authentication']->getUser(), true);
 
@@ -213,7 +213,7 @@ class Baskets implements ControllerProviderInterface
      */
     public function addElementToBasket(Application $app, Request $request)
     {
-        $repository = $app['EM']->getRepository('\Entities\Basket');
+        $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
         /* @var $repository \Repositories\BasketRepository */
         $basket = $repository->findUserBasket($app, $request->request->get('courChuId'), $app['authentication']->getUser(), true);
 
@@ -249,7 +249,7 @@ class Baskets implements ControllerProviderInterface
     public function getBaskets(Application $app, Request $request)
     {
         $selectedBasketId = trim($request->get('courChuId', ''));
-        $baskets = new ArrayCollection($app['EM']->getRepository('\Entities\Basket')->findActiveByUser($app['authentication']->getUser()));
+        $baskets = new ArrayCollection($app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->findActiveByUser($app['authentication']->getUser()));
         $selectedBasket = null;
 
         if ('' === $selectedBasketId && $baskets->count() > 0) {
@@ -257,7 +257,7 @@ class Baskets implements ControllerProviderInterface
         }
 
         if ('' !== $selectedBasketId) {
-            $selectedBasket = $app['EM']->getRepository('\Entities\Basket')->findUserBasket($app, $selectedBasketId, $app['authentication']->getUser(), true);
+            $selectedBasket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->findUserBasket($app, $selectedBasketId, $app['authentication']->getUser(), true);
         }
 
         $basketCollections = $baskets->partition(function($key, $basket) {
@@ -283,7 +283,7 @@ class Baskets implements ControllerProviderInterface
     public function checkBaskets(Application $app, Request $request)
     {
         $noview = 0;
-        $repository = $app['EM']->getRepository('\Entities\Basket');
+        $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
         /* @var $repository \Repositories\BasketRepository */
         $baskets = $repository->findActiveByUser($app['authentication']->getUser());

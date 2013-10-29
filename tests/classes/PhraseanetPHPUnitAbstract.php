@@ -4,13 +4,13 @@ use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\Common\DataFixtures\Loader;
-use Entities\AggregateToken;
-use Entities\Feed;
-use Entities\FeedEntry;
-use Entities\FeedItem;
-use Entities\FeedPublisher;
-use Entities\FeedToken;
-use Entities\User;
+use Alchemy\Phrasea\Model\Entities\AggregateToken;
+use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\FeedPublisher;
+use Alchemy\Phrasea\Model\Entities\FeedToken;
+use Alchemy\Phrasea\Model\Entities\User;
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
@@ -309,7 +309,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     /**
      * Insert one basket entry ans set current authenticated user as owner
      *
-     * @return \Entities\Basket
+     * @return \Alchemy\Phrasea\Model\Entities\Basket
      */
     protected function insertOneBasket()
     {
@@ -332,7 +332,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     /**
      * Insert one feed
      *
-     * @return \Entities\Feed
+     * @return \Alchemy\Phrasea\Model\Entities\Feed
      */
     protected function insertOneFeed(\User_Adapter $user, $title = null, $public = null)
     {
@@ -361,7 +361,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     /**
      *
-     * @return \Entities\FeedEntry
+     * @return \Alchemy\Phrasea\Model\Entities\FeedEntry
      */
     protected function insertOneFeedEntry(\User_Adapter $user, $public = false)
     {
@@ -370,7 +370,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $em = self::$DI['app']['EM'];
 
-            $entry = new \Entities\FeedEntry();
+            $entry = new \Alchemy\Phrasea\Model\Entities\FeedEntry();
             $entry->setFeed($feed);
             $entry->setTitle("test");
             $entry->setSubtitle("description");
@@ -434,7 +434,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     /**
      *
-     * @return \Entities\FeedItem
+     * @return \Alchemy\Phrasea\Model\Entities\FeedItem
      */
     protected function insertOneFeedItem(\User_Adapter $user, $public = false, $qty = 1, \record_adapter $record = null)
     {
@@ -443,7 +443,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $entry = $this->insertOneFeedEntry($user, $public);
 
             for ($i = 0; $i < $qty; $i++) {
-                $item = new \Entities\FeedItem();
+                $item = new \Alchemy\Phrasea\Model\Entities\FeedItem();
                 $item->setEntry($entry);
 
                 if (null === $record) {
@@ -473,7 +473,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     /**
      * Insert one basket entry ans set current authenticated user as owner
      *
-     * @return \Entities\Basket
+     * @return \Alchemy\Phrasea\Model\Entities\Basket
      */
     protected function insertOneLazaretFile()
     {
@@ -518,8 +518,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     /**
      *
-     * @param  \Entities\UsrList      $UsrList
-     * @return \Entities\UsrListEntry
+     * @param  \Alchemy\Phrasea\Model\Entities\UsrList      $UsrList
+     * @return \Alchemy\Phrasea\Model\Entities\UsrListEntry
      */
     protected function insertOneUsrListEntry(\User_adapter $owner, \User_adapter $user)
     {
@@ -552,7 +552,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     /**
      * Insert five baskets and set current authenticated user as owner
      *
-     * @return \Entities\Basket
+     * @return \Alchemy\Phrasea\Model\Entities\Basket
      */
     protected function insertFiveBasket()
     {
@@ -574,13 +574,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     /**
      *
-     * @return \Entities\BasketElement
+     * @return \Alchemy\Phrasea\Model\Entities\BasketElement
      */
     protected function insertOneBasketElement()
     {
         $basket = $this->insertOneBasket();
 
-        $basketElement = new \Entities\BasketElement();
+        $basketElement = new \Alchemy\Phrasea\Model\Entities\BasketElement();
         $basketElement->setRecord(self::$DI['record_1']);
         $basketElement->setBasket($basket);
 
@@ -599,7 +599,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     /**
      *
-     * @return \Entities\Basket
+     * @return \Alchemy\Phrasea\Model\Entities\Basket
      */
     protected function insertOneValidationBasket(array $parameters = array())
     {
@@ -608,7 +608,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $basketElement = $this->insertOneBasketElement();
         $basket = $basketElement->getBasket();
 
-        $Validation = new Entities\ValidationSession();
+        $Validation = new Alchemy\Phrasea\Model\Entities\ValidationSession();
         $Validation->setBasket($basket);
         $Validation->setInitiator(self::$DI['user']);
 
@@ -620,7 +620,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $em->persist($Validation);
         $em->merge($basket);
 
-        $Participant = new Entities\ValidationParticipant();
+        $Participant = new Alchemy\Phrasea\Model\Entities\ValidationParticipant();
         $Participant->setUser(self::$DI['user']);
         $Participant->setCanAgree(true);
         $Participant->setCanSeeOthers(true);
@@ -631,7 +631,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $em->persist($Participant);
         $em->merge($Validation);
 
-        $Data = new Entities\ValidationData();
+        $Data = new Alchemy\Phrasea\Model\Entities\ValidationData();
         $Data->setBasketElement($basketElement);
         $Data->setParticipant($Participant);
         $basketElement->addValidationData($Data);
@@ -651,7 +651,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * Add 2 records as elments of the newly created basket
      * Add 2 participants to the newly created sessionValidation
      *
-     * @return \Entities\Basket
+     * @return \Alchemy\Phrasea\Model\Entities\Basket
      */
     protected function insertOneBasketEnv()
     {

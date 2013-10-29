@@ -21,7 +21,7 @@ class LazaretFileRepository extends EntityRepository
 
         $dql = '
             SELECT f
-            FROM Entities\LazaretFile f'
+            FROM Alchemy\Phrasea\Model\Entities\LazaretFile f'
             . ('' === $base_ids ? '' : ' WHERE f.base_id IN  (' . $base_ids . ')')
             . ' ORDER BY f.id DESC';
 

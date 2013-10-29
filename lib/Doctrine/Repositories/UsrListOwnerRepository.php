@@ -2,6 +2,8 @@
 
 namespace Repositories;
 
+use Alchemy\Phrasea\Model\Entities\UsrListOwner;
+use Alchemy\Phrasea\Model\Entities\UsrList;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,15 +20,15 @@ class UsrListOwnerRepository extends EntityRepository
     /**
      *
      *
-     * @param  \Entities\UsrList $list
+     * @param  UsrList $list
      * @param  type              $owner_id
-     * @return \Entities\UsrList
+     * @return UsrList
      */
-    public function findByListAndOwner(\Entities\UsrList $list, $owner_id)
+    public function findByListAndOwner(UsrList $list, $owner_id)
     {
         $owner = $this->find($owner_id);
 
-        /* @var $owner \Entities\UsrListOwner */
+        /* @var $owner UsrListOwner */
         if (null === $owner) {
             throw new NotFoundHttpException(_('Owner is not found'));
         }
@@ -41,13 +43,13 @@ class UsrListOwnerRepository extends EntityRepository
     /**
      *
      *
-     * @param  \Entities\UsrList $list
+     * @param  UsrList $list
      * @param  type              $usr_id
-     * @return \Entities\UsrList
+     * @return UsrList
      */
-    public function findByListAndUsrId(\Entities\UsrList $list, $usr_id)
+    public function findByListAndUsrId(UsrList $list, $usr_id)
     {
-        $dql = 'SELECT o FROM Entities\UsrListOwner o
+        $dql = 'SELECT o FROM Alchemy\Phrasea\Model\Entities\UsrListOwner o
               JOIN o.list l
             WHERE l.id = :list_id AND o.usr_id = :usr_id';
 
@@ -61,7 +63,7 @@ class UsrListOwnerRepository extends EntityRepository
 
         $owner = $query->getSingleResult();
 
-        /* @var $owner \Entities\UsrListOwner */
+        /* @var $owner UsrListOwner */
         if (null === $owner) {
             throw new NotFoundHttpException(_('Owner is not found'));
         }

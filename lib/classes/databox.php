@@ -452,11 +452,11 @@ class databox extends base
             $n+=50;
         }
 
-        foreach ($this->app['EM']->getRepository('\Entities\StoryWZ')->findByDatabox($this->app, $this) as $story) {
+        foreach ($this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ')->findByDatabox($this->app, $this) as $story) {
             $this->app['EM']->remove($story);
         }
 
-        foreach ($this->app['EM']->getRepository('\Entities\BasketElement')->findElementsByDatabox($this) as $element) {
+        foreach ($this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement')->findElementsByDatabox($this) as $element) {
             $this->app['EM']->remove($element);
         }
 

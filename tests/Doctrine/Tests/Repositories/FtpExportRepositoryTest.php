@@ -2,8 +2,8 @@
 
 namespace Doctrine\Tests\Repositories;
 
-use Entities\FtpExport;
-use Entities\FtpExportElement;
+use Alchemy\Phrasea\Model\Entities\FtpExport;
+use Alchemy\Phrasea\Model\Entities\FtpExportElement;
 use Gedmo\Timestampable\TimestampableListener;
 
 class FtpExportRepositoryTest extends \PhraseanetPHPUnitAbstract
@@ -45,7 +45,7 @@ class FtpExportRepositoryTest extends \PhraseanetPHPUnitAbstract
         self::$DI['app']['EM']->flush();
 
         $crashed = self::$DI['app']['EM']
-                ->getRepository('Entities\FtpExport')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
                 ->findCrashedExports();
 
         $this->assertCount(2, $crashed);
@@ -105,7 +105,7 @@ class FtpExportRepositoryTest extends \PhraseanetPHPUnitAbstract
         self::$DI['app']['EM']->flush();
 
         $crashed = self::$DI['app']['EM']
-                ->getRepository('Entities\FtpExport')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
                 ->findCrashedExports(new \DateTime('-6 days'));
 
         $this->assertCount(2, $crashed);
@@ -187,7 +187,7 @@ class FtpExportRepositoryTest extends \PhraseanetPHPUnitAbstract
         self::$DI['app']['EM']->flush();
 
         $doables = self::$DI['app']['EM']
-                ->getRepository('Entities\FtpExport')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
                 ->findDoableExports();
 
         $this->assertCount(2, $doables);
@@ -219,7 +219,7 @@ class FtpExportRepositoryTest extends \PhraseanetPHPUnitAbstract
         self::$DI['app']['EM']->flush();
 
         $exports = self::$DI['app']['EM']
-                ->getRepository('Entities\FtpExport')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
                 ->findByUser(self::$DI['user']);
 
         $this->assertCount(2, $exports);

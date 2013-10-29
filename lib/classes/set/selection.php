@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\Basket;
 
 /**
  *

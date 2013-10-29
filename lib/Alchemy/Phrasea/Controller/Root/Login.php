@@ -23,6 +23,8 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\FormProcessingException;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
+use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
@@ -35,7 +37,6 @@ use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
 use Doctrine\ORM\EntityManager;
-use Entities\UsrAuthProvider;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -51,7 +52,7 @@ class Login implements ControllerProviderInterface
     {
         $items = array();
 
-        foreach($app['EM']->getRepository('Entities\FeedItem')->loadLatest($app, 20) as $item) {
+        foreach($app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->loadLatest($app, 20) as $item) {
             $record = $item->getRecord($app);
             $preview = $record->get_subdef('preview');
             $permalink = $preview->get_permalink();
@@ -281,7 +282,7 @@ class Login implements ControllerProviderInterface
                 }
 
                 $userAuthProvider = $app['EM']
-                    ->getRepository('Entities\UsrAuthProvider')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
                     ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
                 if (null !== $userAuthProvider) {
@@ -739,7 +740,7 @@ class Login implements ControllerProviderInterface
             $app->addFlash('error', _('login::erreur: No available connection - Please contact sys-admin'));
         }
 
-        $feeds = $app['EM']->getRepository('Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC'));
+        $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC'));
 
         $form = $app->form(new PhraseaAuthenticationForm());
         $form->setData(array(
@@ -831,10 +832,10 @@ class Login implements ControllerProviderInterface
         $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
 
         foreach ($app['EM']
-            ->getRepository('Entities\ValidationParticipant')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\ValidationParticipant')
             ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
 
-            /* @var $participant \Entities\ValidationParticipant */
+            /* @var $participant ValidationParticipant */
 
             $validationSession = $participant->getSession();
             $participantId = $participant->getUsrId();
@@ -904,7 +905,7 @@ class Login implements ControllerProviderInterface
         }
 
         $userAuthProvider = $app['EM']
-            ->getRepository('Entities\UsrAuthProvider')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
             ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
         if (null !== $userAuthProvider) {
@@ -1037,7 +1038,7 @@ class Login implements ControllerProviderInterface
             if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
                 if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
 
-                    $repo = $app['EM']->getRepository('Entities\Basket');
+                    $repo = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
                     $baskets = $repo->findBy(array('usr_id' => $inviteUsrId));
 
                     foreach ($baskets as $basket) {

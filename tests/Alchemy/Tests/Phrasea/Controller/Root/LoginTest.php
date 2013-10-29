@@ -791,7 +791,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
 
-        $entity = $this->getMock('Entities\UsrAuthProvider');
+        $entity = $this->getMock('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
         $entity->expects($this->any())
             ->method('getUser')
             ->with(self::$DI['app'])
@@ -963,7 +963,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $user = new \User_Adapter((int) $userId, self::$DI['app']);
 
-        $ret = self::$DI['app']['EM']->getRepository('\Entities\UsrAuthProvider')
+        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
             ->findBy(array('usr_id' => $userId, 'provider' => 'provider-test'));
         $this->assertCount(1, $ret);
 
@@ -1411,7 +1411,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $provider->expects($this->once())
             ->method('onCallback');
 
-        $entity = $this->getMock('Entities\UsrAuthProvider');
+        $entity = $this->getMock('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
         $entity->expects($this->any())
             ->method('getUser')
             ->with(self::$DI['app'])
@@ -1463,7 +1463,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
-        $ret = self::$DI['app']['EM']->getRepository('\Entities\UsrAuthProvider')
+        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
             ->findBy(array('usr_id' => self::$DI['user']->get_id(), 'provider' => 'provider-test'));
 
         $this->assertCount(1, $ret);
@@ -1538,7 +1538,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
 
-        $ret = self::$DI['app']['EM']->getRepository('\Entities\UsrAuthProvider')
+        $ret = self::$DI['app']['EM']->getRepository('\Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
             ->findBy(array('usr_id' => $createdUser->get_id(), 'provider' => 'provider-test'));
 
         $this->assertCount(1, $ret);
@@ -1703,7 +1703,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['app']['EM']->expects($this->at(0))
             ->method('getRepository')
-            ->with('Entities\UsrAuthProvider')
+            ->with('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
             ->will($this->returnValue($repo));
 
         if ($participants) {
@@ -1717,7 +1717,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
             self::$DI['app']['EM']->expects($this->at(1))
                 ->method('getRepository')
-                ->with('Entities\ValidationParticipant')
+                ->with('Alchemy\Phrasea\Model\Entities\ValidationParticipant')
                 ->will($this->returnValue($repo));
         }
     }

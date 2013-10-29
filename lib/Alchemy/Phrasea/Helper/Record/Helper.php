@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Helper\Record;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -94,8 +95,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     protected $is_basket = false;
 
     /**
-     *
-     * @var \Entities\Basket
+     * @var Basket
      */
     protected $original_basket;
 
@@ -113,7 +113,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
         $this->selection = new \set_selection($app);
 
         if (trim($Request->get('ssel')) !== '') {
-            $repository = $app['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
             /* @var $$repository \Repositories\BasketRepository */
             $Basket = $repository->findUserBasket($this->app, $Request->get('ssel'), $app['authentication']->getUser(), false);
@@ -123,7 +123,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
             $this->is_basket = true;
             $this->original_basket = $Basket;
         } elseif (trim($Request->get('story')) !== '') {
-            $repository = $app['EM']->getRepository('\Entities\StoryWZ');
+            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
 
             $storyWZ = $repository->findByUserAndId($app, $app['authentication']->getUser(), $Request->get('story'));
 
@@ -154,7 +154,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     /**
      * If the original selection was a basket, returns the basket object
      *
-     * @return \Entities\Basket
+     * @return Basket
      */
     public function get_original_basket()
     {

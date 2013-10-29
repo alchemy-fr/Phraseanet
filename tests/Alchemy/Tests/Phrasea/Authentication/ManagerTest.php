@@ -18,7 +18,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $session = $this->getMock('Entities\Session');
+        $session = $this->getMock('Alchemy\Phrasea\Model\Entities\Session');
 
         $authenticator->expects($this->once())
             ->method('openAccount')

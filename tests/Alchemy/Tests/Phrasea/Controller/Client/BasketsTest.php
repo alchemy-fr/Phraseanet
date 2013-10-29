@@ -31,10 +31,10 @@ class BasketsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testCreateBasket()
     {
-       $nbBasketsBefore = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Entities\Basket b')->getSingleScalarResult();
+       $nbBasketsBefore = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b')->getSingleScalarResult();
        self::$DI['client']->request("POST", "/client/baskets/new/", array('p0' => 'hello'));
        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-       $nbBasketsAfter = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Entities\Basket b')->getSingleScalarResult();
+       $nbBasketsAfter = self::$DI['app']['EM']->createQuery('SELECT COUNT(b.id) FROM \Alchemy\Phrasea\Model\Entities\Basket b')->getSingleScalarResult();
        $this->assertGreaterThan($nbBasketsBefore,$nbBasketsAfter);
     }
 
@@ -50,7 +50,7 @@ class BasketsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'p0'         => self::$DI['record_1']->get_record_id()
         ));
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $basket = self::$DI['app']['EM']->getRepository('Entities\Basket')->find($basket->getId());
+        $basket = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->find($basket->getId());
         $this->assertGreaterThan(0, $basket->getElements()->count());
     }
 
@@ -65,7 +65,7 @@ class BasketsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         ));
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         try {
-            $basket = self::$DI['app']['EM']->getRepository('Entities\Basket')->find($basket->getId());
+            $basket = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')->find($basket->getId());
             $this->fail('Basket is not deleted');
         } catch (\exception $e) {
 
@@ -81,7 +81,7 @@ class BasketsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $record = self::$DI['record_1'];
 
-        $basketElement = new \Entities\BasketElement();
+        $basketElement = new \Alchemy\Phrasea\Model\Entities\BasketElement();
         $basketElement->setBasket($basket);
         $basketElement->setRecord($record);
         $basketElement->setLastInBasket();

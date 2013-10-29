@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Helper\User as UserHelper;
-use Entities\FtpCredential;
+use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
