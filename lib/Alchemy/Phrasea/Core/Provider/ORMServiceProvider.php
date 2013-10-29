@@ -93,8 +93,8 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             $config->setMetadataDriverImpl($app['EM.driver']);
 
-            $config->setProxyDir($app['root.path'] . '/lib/Doctrine/Proxies');
-            $config->setProxyNamespace('Proxies');
+            $config->setProxyDir($app['root.path'] . '/lib/Alchemy/Phrasea/Model/Proxies');
+            $config->setProxyNamespace('Alchemy\Phrasea\Model\Proxies');
 
             return $config;
         });
