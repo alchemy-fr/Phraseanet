@@ -96,6 +96,12 @@ class task_manager
 
             $classname = $row['class'];
             if (!class_exists($classname)) {
+                if(substr($classname, 0, 12) == "task_period_") {
+                    $classfile = substr($classname, 12) . ".php";
+                    @require_once(__DIR__ . "/../../../config/classes/task/period/" . $classfile);
+                }
+            }
+            if (!class_exists($classname)) {
                 continue;
             }
             try {
@@ -241,6 +247,9 @@ class task_manager
             $classname = 'task_period_' . $file->getBasename('.php');
 
             try {
+                if (!class_exists($classname)) {
+                    @require_once($file->getRealPath());
+                }
                 if (class_exists($classname) && $classname::interfaceAvailable()) {
                     $tasks[] = array(
                         "class" => $classname,
