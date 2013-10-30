@@ -31,100 +31,22 @@ class Baskets implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Gets client baskets
-         *
-         * name         : get_client_baskets
-         *
-         * description  : fetch current user baskets
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->match('/', 'controller.client.baskets:getBaskets')
             ->method('POST|GET')
             ->bind('get_client_baskets');
 
-        /**
-         * Creates a new basket
-         *
-         * name         : client_new_basket
-         *
-         * description  : Create a new basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
         $controllers->post('/new/', 'controller.client.baskets:createBasket')
             ->bind('client_new_basket');
 
-        /**
-         * Deletes a basket
-         *
-         * name         : client_delete_basket
-         *
-         * description  : Delete a basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
         $controllers->post('/delete/', 'controller.client.baskets:deleteBasket')
             ->bind('client_delete_basket');
 
-       /**
-         * Checks if client basket should be updated
-         *
-         * name         : client_basket_check
-         *
-         * description  : Update basket client
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/check/', 'controller.client.baskets:checkBaskets')
             ->bind('client_basket_check');
 
-       /**
-         * Adds an element to a basket
-         *
-         * name         : client_basket_add_element
-         *
-         * description  : Add an element to a basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
         $controllers->post('/add-element/', 'controller.client.baskets:addElementToBasket')
             ->bind('client_basket_add_element');
 
-        /**
-         * Deletes an element from a basket
-         *
-         * name         : client_basket_delete_element
-         *
-         * description  : Delete an element from a basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
         $controllers->post('/delete-element/', 'controller.client.baskets:deleteBasketElement')
             ->bind('client_basket_delete_element');
 

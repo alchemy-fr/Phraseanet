@@ -37,83 +37,18 @@ class Root implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Get client main page
-         *
-         * name         : get_client
-         *
-         * description  : Get client homepage
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/', 'controller.client:getClient')
             ->bind('get_client');
 
-         /**
-         * Get client language
-         *
-         * name         : get_client_language
-         *
-         * description  : Get client language
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->get('/language/', 'controller.client:getClientLanguage')
             ->bind('get_client_language');
 
-         /**
-         * Get client publication page
-         *
-         * name         : client_publications_start_page
-         *
-         * description  : Get client language
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->get('/publications/', 'controller.client:getClientPublications')
             ->bind('client_publications_start_page');
 
-         /**
-         * Get client help page
-         *
-         * name         : client_help_start_page
-         *
-         * description  : Get client help
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/help/', 'controller.client:getClientHelp')
             ->bind('client_help_start_page');
 
-         /**
-         * Query client for documents
-         *
-         * name         : client_query
-         *
-         * description  : Query client for documents
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/query/', 'controller.client:query')
             ->bind('client_query');
 
