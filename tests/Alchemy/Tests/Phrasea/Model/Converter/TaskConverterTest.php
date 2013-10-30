@@ -1,8 +1,8 @@
 <?php
 
-namespace Alchemy\Phrasea\Controller\Converter;
+namespace Alchemy\Phrasea\Model\Converter;
 
-use Alchemy\Phrasea\Controller\Converter\TaskConverter;
+use Alchemy\Phrasea\Model\Converter\TaskConverter;
 use Alchemy\Phrasea\Model\Entities\Task;
 
 class TaskConverterTest extends \PhraseanetPHPUnitAbstract

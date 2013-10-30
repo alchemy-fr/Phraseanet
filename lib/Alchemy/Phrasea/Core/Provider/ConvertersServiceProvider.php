@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Controller\Converter\TaskConverter;
+use Alchemy\Phrasea\Model\Converter\TaskConverter;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 

@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Controller\Converter;
+namespace Alchemy\Phrasea\Model\Converter;
 
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Doctrine\Common\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TaskConverter implements ConverterInterface
 {
