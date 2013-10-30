@@ -29,11 +29,11 @@ class Root implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin');
         });
 
-        $controllers->get('/', function(Application $app, Request $request) {
+        $controllers->get('/', function (Application $app, Request $request) {
             try {
                 \User_Adapter::updateClientInfos($app, 3);
             } catch (SessionNotFound $e) {
@@ -101,7 +101,7 @@ class Root implements ControllerProviderInterface
             ));
         })->bind('admin');
 
-        $controllers->get('/tree/', function(Application $app, Request $request) {
+        $controllers->get('/tree/', function (Application $app, Request $request) {
             try {
                 \User_Adapter::updateClientInfos($app, 3);
             } catch (SessionNotFound $e) {
@@ -161,7 +161,7 @@ class Root implements ControllerProviderInterface
             return $app['twig']->render('admin/tree.html.twig', $params);
         })->bind('admin_display_tree');
 
-        $controllers->get('/test-paths/', function(Application $app, Request $request) {
+        $controllers->get('/test-paths/', function (Application $app, Request $request) {
 
             if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
                 $app->abort(400, _('Bad request format, only JSON is allowed'));
@@ -195,7 +195,7 @@ class Root implements ControllerProviderInterface
         })
             ->bind('admin_test_paths');
 
-        $controllers->get('/structure/{databox_id}/', function(Application $app, Request $request, $databox_id) {
+        $controllers->get('/structure/{databox_id}/', function (Application $app, Request $request, $databox_id) {
             if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
@@ -222,7 +222,7 @@ class Root implements ControllerProviderInterface
         })->assert('databox_id', '\d+')
           ->bind('database_display_stucture');
 
-        $controllers->post('/structure/{databox_id}/', function(Application $app, Request $request, $databox_id) {
+        $controllers->post('/structure/{databox_id}/', function (Application $app, Request $request, $databox_id) {
             if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
@@ -248,7 +248,7 @@ class Root implements ControllerProviderInterface
         })->assert('databox_id', '\d+')
           ->bind('database_submit_stucture');
 
-        $controllers->get('/statusbit/{databox_id}/', function(Application $app, Request $request, $databox_id) {
+        $controllers->get('/statusbit/{databox_id}/', function (Application $app, Request $request, $databox_id) {
             if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
@@ -259,7 +259,7 @@ class Root implements ControllerProviderInterface
         })->assert('databox_id', '\d+')
           ->bind('database_display_statusbit');
 
-        $controllers->get('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {
+        $controllers->get('/statusbit/{databox_id}/status/{bit}/', function (Application $app, Request $request, $databox_id, $bit) {
             if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }
@@ -314,7 +314,7 @@ class Root implements ControllerProviderInterface
           ->assert('bit', '\d+')
           ->bind('database_display_statusbit_form');
 
-        $controllers->post('/statusbit/{databox_id}/status/{bit}/delete/', function(Application $app, Request $request, $databox_id, $bit) {
+        $controllers->post('/statusbit/{databox_id}/status/{bit}/delete/', function (Application $app, Request $request, $databox_id, $bit) {
             if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
                 $app->abort(400, _('Bad request format, only JSON is allowed'));
             }
@@ -337,7 +337,7 @@ class Root implements ControllerProviderInterface
             ->assert('databox_id', '\d+')
             ->assert('bit', '\d+');
 
-        $controllers->post('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {
+        $controllers->post('/statusbit/{databox_id}/status/{bit}/', function (Application $app, Request $request, $databox_id, $bit) {
             if (!$app['authentication']->getUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                 $app->abort(403);
             }

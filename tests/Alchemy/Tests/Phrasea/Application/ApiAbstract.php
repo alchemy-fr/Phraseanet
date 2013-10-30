@@ -66,14 +66,14 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         parent::setUp();
 
-        self::$DI['app'] = self::$DI->share(function() {
+        self::$DI['app'] = self::$DI->share(function () {
 
             $environment = 'test';
             $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
 
             $app['debug'] = true;
 
-            $app['EM'] = $app->share($app->extend('EM', function($em) {
+            $app['EM'] = $app->share($app->extend('EM', function ($em) {
                 @unlink('/tmp/db.sqlite');
                 copy(__DIR__ . '/../../../../db-ref.sqlite', '/tmp/db.sqlite');
 

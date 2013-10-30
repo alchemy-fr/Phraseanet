@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Border\File;
-
 class Feed_Entry_ItemTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     /**
@@ -75,7 +73,7 @@ class Feed_Entry_ItemTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         self::$feed->set_public(true);
 
-        foreach(range(1, 2) as $i) {
+        foreach (range(1, 2) as $i) {
             Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], self::$entry, self::$DI['record_'.$i]);
         }
 
@@ -88,7 +86,7 @@ class Feed_Entry_ItemTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         self::$feed->set_public(true);
 
-        foreach(range(1, 2) as $i) {
+        foreach (range(1, 2) as $i) {
             Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], self::$entry, self::$DI['record_'.$i]);
         }
 
@@ -101,7 +99,7 @@ class Feed_Entry_ItemTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         self::$feed->set_public(false);
 
-        foreach(range(1, 2) as $i) {
+        foreach (range(1, 2) as $i) {
             Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], self::$entry, self::$DI['record_'.$i]);
         }
 

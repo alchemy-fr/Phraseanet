@@ -593,14 +593,14 @@ class task_Scheduler
                         break;
                 }
             }
-            if(function_exists('pcntl_sigprocmask')) {
+            if (function_exists('pcntl_sigprocmask')) {
                 @pcntl_sigprocmask(SIG_BLOCK, array(SIGCHLD));
             }
             sleep(1);
             for ($i = 0; $this->schedstatus=='started' && $i < $sleeptime; $i++) {
                 sleep(1);
             }
-            if(function_exists('pcntl_sigprocmask')) {
+            if (function_exists('pcntl_sigprocmask')) {
                 @pcntl_sigprocmask(SIG_UNBLOCK, array(SIGCHLD));
             }
         }

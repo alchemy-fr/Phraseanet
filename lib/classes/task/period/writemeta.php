@@ -133,13 +133,13 @@ class task_period_writemeta extends task_databoxAbstract
                 }
             }
 
-            $(document).ready(function(){
+            $(document).ready(function () {
                 var limits = {
                     'period':{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
                     'maxrecs':{'min':<?php echo self::MINRECS; ?>, 'max':<?php echo self::MAXRECS; ?>},
                     'maxmegs':{'min':<?php echo self::MINMEGS; ?>, 'max':<?php echo self::MAXMEGS; ?>}
                 } ;
-                $(".formElem").change(function(){
+                $(".formElem").change(function () {
                     fieldname = $(this).attr("name");
                     switch ((this.nodeName+$(this).attr("type")).toLowerCase()) {
                         case "inputtext":

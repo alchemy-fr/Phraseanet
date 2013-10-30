@@ -29,7 +29,7 @@ class Databoxes implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin');
         });
 
@@ -64,7 +64,7 @@ class Databoxes implements ControllerProviderInterface
          */
         $controllers->post('/', $this->call('createDatabase'))
             ->bind('admin_database_new')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireAdmin();
             });
 
@@ -83,7 +83,7 @@ class Databoxes implements ControllerProviderInterface
          */
         $controllers->post('/mount/', $this->call('databaseMount'))
             ->bind('admin_database_mount')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireAdmin();
             });
 
@@ -102,7 +102,7 @@ class Databoxes implements ControllerProviderInterface
          */
         $controllers->post('/upgrade/', $this->call('databasesUpgrade'))
             ->bind('admin_databases_upgrade')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireAdmin();
             });
 

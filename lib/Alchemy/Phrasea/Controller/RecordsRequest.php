@@ -141,7 +141,7 @@ class RecordsRequest extends ArrayCollection
     public function stories()
     {
         return new ArrayCollection(
-                array_filter($this->toArray(), function(\record_adapter $record) {
+                array_filter($this->toArray(), function (\record_adapter $record) {
                         return $record->is_grouping();
                     })
         );

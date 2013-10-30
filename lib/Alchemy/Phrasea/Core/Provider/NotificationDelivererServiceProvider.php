@@ -22,7 +22,7 @@ class NotificationDelivererServiceProvider implements ServiceProviderInterface
             return $app['phraseanet.registry']->get('GV_email_prefix');
         });
 
-        $app['notification.deliverer'] = $app->share(function($app) {
+        $app['notification.deliverer'] = $app->share(function ($app) {
             return new Deliverer(
                 $app['mailer'],
                 $app['dispatcher'],

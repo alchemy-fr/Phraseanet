@@ -170,12 +170,12 @@ class task_period_archive extends task_abstract
 
 
 
-            $(document).ready(function(){
+            $(document).ready(function () {
                 var limits = {
                     'period':{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
                     'cold':{'min':<?php echo self::MINCOLD; ?>, 'max':<?php echo self::MAXCOLD; ?>}
                 } ;
-                $(".formElem").change(function(){
+                $(".formElem").change(function () {
                     fieldname = $(this).attr("name");
                     switch ((this.nodeName+$(this).attr("type")).toLowerCase()) {
                         case "inputtext":
@@ -1746,7 +1746,7 @@ class task_period_archive extends task_abstract
 
         $record = null;
 
-        $postProcess = function($element, $visa, $code) use (&$record) {
+        $postProcess = function ($element, $visa, $code) use (&$record) {
                 $record = $element;
             };
 

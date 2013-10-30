@@ -30,7 +30,7 @@ class Setup implements ControllerProviderInterface
 
         $app['controller.setup'] = $this;
 
-        $controllers->get('/', function(Application $app) {
+        $controllers->get('/', function (Application $app) {
             return $app->redirectPath('install_root');
         })->bind('setup');
 

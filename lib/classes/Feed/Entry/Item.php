@@ -264,7 +264,7 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
             $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            foreach($rows as $row) {
+            foreach ($rows as $row) {
                 if (!isset($feeds[$row['feed']])) {
                     $feeds[$row['feed']] = new Feed_Adapter($app, $row['feed']);
                 }

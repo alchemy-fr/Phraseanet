@@ -182,7 +182,7 @@ class Application extends SilexApplication
 
         $this['charset'] = 'UTF-8';
 
-        $this['debug'] = $this->share(function(Application $app) {
+        $this['debug'] = $this->share(function (Application $app) {
             return Application::ENV_PROD !== $app->getEnvironment();
         });
 
@@ -209,7 +209,7 @@ class Application extends SilexApplication
         });
 
         $this->register(new MediaAlchemystServiceProvider());
-        $this['media-alchemyst.configuration'] = $this->share(function(Application $app) {
+        $this['media-alchemyst.configuration'] = $this->share(function (Application $app) {
             $configuration = array();
 
             foreach (array(
@@ -240,7 +240,7 @@ class Application extends SilexApplication
 
             return $configuration;
         });
-        $this['media-alchemyst.logger'] = $this->share(function(Application $app) {
+        $this['media-alchemyst.logger'] = $this->share(function (Application $app) {
             return $app['monolog'];
         });
 
@@ -344,7 +344,7 @@ class Application extends SilexApplication
             return $transport;
         });
 
-        $this['imagine.factory'] = $this->share(function(Application $app) {
+        $this['imagine.factory'] = $this->share(function (Application $app) {
             if ($app['phraseanet.registry']->get('GV_imagine_driver') != '') {
                 return $app['phraseanet.registry']->get('GV_imagine_driver');
             }
@@ -362,7 +362,7 @@ class Application extends SilexApplication
         });
 
         $app = $this;
-        $this['phraseanet.logger'] = $this->protect(function($databox) use ($app) {
+        $this['phraseanet.logger'] = $this->protect(function ($databox) use ($app) {
             try {
                 return \Session_Logger::load($app, $databox);
             } catch (\Exception_Session_LoggerNotFound $e) {
@@ -370,12 +370,12 @@ class Application extends SilexApplication
             }
         });
 
-        $this['date-formatter'] = $this->share(function(Application $app) {
+        $this['date-formatter'] = $this->share(function (Application $app) {
             return new \phraseadate($app);
         });
 
         $this['xpdf.pdftotext'] = $this->share(
-            $this->extend('xpdf.pdftotext', function(PdfToText $pdftotext, Application $app){
+            $this->extend('xpdf.pdftotext', function (PdfToText $pdftotext, Application $app) {
                 if ($app['phraseanet.registry']->get('GV_pdfmaxpages')) {
                     $pdftotext->setPageQuantity($app['phraseanet.registry']->get('GV_pdfmaxpages'));
                 }
@@ -385,7 +385,7 @@ class Application extends SilexApplication
         );
 
         $this['dispatcher'] = $this->share(
-            $this->extend('dispatcher', function($dispatcher, Application $app){
+            $this->extend('dispatcher', function ($dispatcher, Application $app) {
                 $dispatcher->addListener(KernelEvents::REQUEST, array($app, 'initSession'), 254);
                 $dispatcher->addListener(KernelEvents::RESPONSE, array($app, 'addUTF8Charset'), -128);
                 $dispatcher->addSubscriber(new LogoutSubscriber());
@@ -535,7 +535,7 @@ class Application extends SilexApplication
 
     private function setupUrlGenerator()
     {
-        $this['url_generator'] = $this->share($this->extend('url_generator', function($urlGenerator, $app) {
+        $this['url_generator'] = $this->share($this->extend('url_generator', function ($urlGenerator, $app) {
             if ($app['phraseanet.configuration']->isSetup()) {
                 $data = parse_url($app['phraseanet.configuration']['main']['servername']);
 

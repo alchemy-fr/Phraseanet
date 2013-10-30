@@ -29,12 +29,12 @@ class Publications implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin')
                 ->requireRight('bas_chupub');
         });
 
-        $controllers->get('/list/', function(PhraseaApplication $app) {
+        $controllers->get('/list/', function (PhraseaApplication $app) {
 
             $feeds = \Feed_Collection::load_all(
                     $app, $app['authentication']->getUser()
@@ -44,7 +44,7 @@ class Publications implements ControllerProviderInterface
                     ->render('admin/publications/list.html.twig', array('feeds' => $feeds));
         })->bind('admin_feeds_list');
 
-        $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
+        $controllers->post('/create/', function (PhraseaApplication $app, Request $request) {
 
             $feed = \Feed_Adapter::create(
                     $app, $app['authentication']->getUser(), $request->request->get('title'), $request->request->get('subtitle')
@@ -59,7 +59,7 @@ class Publications implements ControllerProviderInterface
             return $app->redirectPath('admin_feeds_list');
         })->bind('admin_feeds_create');
 
-        $controllers->get('/feed/{id}/', function(PhraseaApplication $app, Request $request, $id) {
+        $controllers->get('/feed/{id}/', function (PhraseaApplication $app, Request $request, $id) {
             $feed = new \Feed_Adapter($app, $id);
 
             return $app['twig']
@@ -68,7 +68,7 @@ class Publications implements ControllerProviderInterface
             ->bind('admin_feeds_feed')
             ->assert('id', '\d+');
 
-        $controllers->post('/feed/{id}/update/', function(PhraseaApplication $app, Request $request, $id) {
+        $controllers->post('/feed/{id}/update/', function (PhraseaApplication $app, Request $request, $id) {
 
             $feed = new \Feed_Adapter($app, $id);
 
@@ -84,7 +84,7 @@ class Publications implements ControllerProviderInterface
             $feed->set_public($request->request->get('public'));
 
             return $app->redirectPath('admin_feeds_list');
-        })->before(function(Request $request) use ($app) {
+        })->before(function (Request $request) use ($app) {
             $feed = new \Feed_Adapter($app, $request->attributes->get('id'));
 
             if (!$feed->is_owner($app['authentication']->getUser())) {
@@ -94,7 +94,7 @@ class Publications implements ControllerProviderInterface
             ->bind('admin_feeds_feed_update')
             ->assert('id', '\d+');
 
-        $controllers->post('/feed/{id}/iconupload/', function(PhraseaApplication $app, Request $request, $id) {
+        $controllers->post('/feed/{id}/iconupload/', function (PhraseaApplication $app, Request $request, $id) {
             $datas = array(
                 'success' => false,
                 'message' => '',
@@ -162,7 +162,7 @@ class Publications implements ControllerProviderInterface
             ->bind('admin_feeds_feed_icon')
             ->assert('id', '\d+');
 
-        $controllers->post('/feed/{id}/addpublisher/', function(PhraseaApplication $app, $id) {
+        $controllers->post('/feed/{id}/addpublisher/', function (PhraseaApplication $app, $id) {
             $error = '';
             try {
                 $request = $app['request'];
@@ -178,7 +178,7 @@ class Publications implements ControllerProviderInterface
             ->bind('admin_feeds_feed_add_publisher')
             ->assert('id', '\d+');
 
-        $controllers->post('/feed/{id}/removepublisher/', function(PhraseaApplication $app, $id) {
+        $controllers->post('/feed/{id}/removepublisher/', function (PhraseaApplication $app, $id) {
             try {
                 $request = $app['request'];
 
@@ -196,7 +196,7 @@ class Publications implements ControllerProviderInterface
             ->bind('admin_feeds_feed_remove_publisher')
             ->assert('id', '\d+');
 
-        $controllers->post('/feed/{id}/delete/', function(PhraseaApplication $app, $id) {
+        $controllers->post('/feed/{id}/delete/', function (PhraseaApplication $app, $id) {
             $feed = new \Feed_Adapter($app, $id);
             $feed->delete();
 

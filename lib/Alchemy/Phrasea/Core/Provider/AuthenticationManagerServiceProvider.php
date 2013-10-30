@@ -32,15 +32,15 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['authentication'] = $app->share(function (Application $app){
+        $app['authentication'] = $app->share(function (Application $app) {
             return new Authenticator($app, $app['browser'], $app['session'], $app['EM']);
         });
 
-        $app['authentication.token-validator'] = $app->share(function (Application $app){
+        $app['authentication.token-validator'] = $app->share(function (Application $app) {
             return new TokenValidator($app);
         });
 
-        $app['authentication.persistent-manager'] = $app->share(function (Application $app){
+        $app['authentication.persistent-manager'] = $app->share(function (Application $app) {
             return new CookieManager($app['auth.password-encoder'], $app['EM'], $app['browser']);
         });
 
@@ -128,7 +128,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
     public function boot(Application $app)
     {
         $app['dispatcher'] = $app->share(
-            $app->extend('dispatcher', function($dispatcher, Application $app){
+            $app->extend('dispatcher', function ($dispatcher, Application $app) {
                 $dispatcher->addSubscriber(new PersistentCookieSubscriber($app));
 
                 return $dispatcher;

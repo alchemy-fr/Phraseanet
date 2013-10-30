@@ -50,7 +50,7 @@ class V1 implements ControllerProviderInterface
          * @ throws \API_V1_exception_unauthorized
          * @ throws \API_V1_exception_forbidden
          */
-        $controllers->before(function($request) use ($app) {
+        $controllers->before(function ($request) use ($app) {
             $context = new Context(Context::CONTEXT_OAUTH2_TOKEN);
             $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
@@ -165,7 +165,7 @@ class V1 implements ControllerProviderInterface
         /**
          * Method Not Allowed Closure
          */
-        $bad_request_exception = function() {
+        $bad_request_exception = function () {
             throw new \API_V1_exception_badrequest();
         };
 
@@ -189,7 +189,7 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *
          */
-        $controllers->get('/monitor/scheduler/', function(SilexApplication $app, Request $request) {
+        $controllers->get('/monitor/scheduler/', function (SilexApplication $app, Request $request) {
             return $app['api']->get_scheduler($app)->get_response();
         })->before($mustBeAdmin);
 
@@ -203,7 +203,7 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *
          */
-        $controllers->get('/monitor/tasks/', function(SilexApplication $app, Request $request) {
+        $controllers->get('/monitor/tasks/', function (SilexApplication $app, Request $request) {
             return $app['api']->get_task_list($app)->get_response();
         })->before($mustBeAdmin);
 
@@ -217,7 +217,7 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *
          */
-        $controllers->get('/monitor/task/{task_id}/', function(SilexApplication $app, Request $request, $task_id) {
+        $controllers->get('/monitor/task/{task_id}/', function (SilexApplication $app, Request $request, $task_id) {
             return $app['api']->get_task($app, $task_id)->get_response();
         })->before($mustBeAdmin)->assert('task_id', '\d+');
 
@@ -232,7 +232,7 @@ class V1 implements ControllerProviderInterface
          * - name (string) change the name of the task
          * - autostart (boolean) start task when scheduler starts
          */
-        $controllers->post('/monitor/task/{task_id}/', function(SilexApplication $app, Request $request, $task_id) {
+        $controllers->post('/monitor/task/{task_id}/', function (SilexApplication $app, Request $request, $task_id) {
             return $app['api']->set_task_property($app, $task_id)->get_response();
         })->before($mustBeAdmin)->assert('task_id', '\d+');
 
@@ -246,7 +246,7 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *
          */
-        $controllers->post('/monitor/task/{task_id}/start/', function(SilexApplication $app, Request $request, $task_id) {
+        $controllers->post('/monitor/task/{task_id}/start/', function (SilexApplication $app, Request $request, $task_id) {
             return $app['api']->start_task($app, $task_id)->get_response();
         })->before($mustBeAdmin);
 
@@ -260,7 +260,7 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *
          */
-        $controllers->post('/monitor/task/{task_id}/stop/', function(SilexApplication $app, Request $request, $task_id) {
+        $controllers->post('/monitor/task/{task_id}/stop/', function (SilexApplication $app, Request $request, $task_id) {
             return $app['api']->stop_task($app, $task_id)->get_response();
         })->before($mustBeAdmin);
 
@@ -274,7 +274,7 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *
          */
-        $controllers->get('/monitor/phraseanet/', function(SilexApplication $app, Request $request) {
+        $controllers->get('/monitor/phraseanet/', function (SilexApplication $app, Request $request) {
             return $app['api']->get_phraseanet_monitor($app)->get_response();
         })->before($mustBeAdmin);
 
@@ -286,7 +286,7 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *
          */
-        $controllers->get('/databoxes/list/', function(SilexApplication $app, Request $request) {
+        $controllers->get('/databoxes/list/', function (SilexApplication $app, Request $request) {
             return $app['api']->get_databoxes($request)->get_response();
         });
 
@@ -298,7 +298,7 @@ class V1 implements ControllerProviderInterface
          * Parameters ;
          *    DATABOX_ID : required INT
          */
-        $controllers->get('/databoxes/{databox_id}/collections/', function(SilexApplication $app, $databox_id) {
+        $controllers->get('/databoxes/{databox_id}/collections/', function (SilexApplication $app, $databox_id) {
             return $app['api']
                     ->get_databox_collections($app['request'], $databox_id)
                     ->get_response();
@@ -315,7 +315,7 @@ class V1 implements ControllerProviderInterface
          *    DATABOX_ID : required INT
          *
          */
-        $controllers->get('/databoxes/{databox_id}/status/', function(SilexApplication $app, $databox_id) {
+        $controllers->get('/databoxes/{databox_id}/status/', function (SilexApplication $app, $databox_id) {
             return $app['api']
                     ->get_databox_status($app['request'], $databox_id)
                     ->get_response();
@@ -331,7 +331,7 @@ class V1 implements ControllerProviderInterface
          * Parameters ;
          *    DATABOX_ID : required INT
          */
-        $controllers->get('/databoxes/{databox_id}/metadatas/', function(SilexApplication $app, $databox_id) {
+        $controllers->get('/databoxes/{databox_id}/metadatas/', function (SilexApplication $app, $databox_id) {
             return $app['api']
                     ->get_databox_metadatas($app['request'], $databox_id)
                     ->get_response();
@@ -347,7 +347,7 @@ class V1 implements ControllerProviderInterface
          * Parameters ;
          *    DATABOX_ID : required INT
          */
-        $controllers->get('/databoxes/{databox_id}/termsOfUse/', function(SilexApplication $app, $databox_id) {
+        $controllers->get('/databoxes/{databox_id}/termsOfUse/', function (SilexApplication $app, $databox_id) {
             return $app['api']
                     ->get_databox_terms($app['request'], $databox_id)
                     ->get_response();
@@ -355,11 +355,11 @@ class V1 implements ControllerProviderInterface
 
         $controllers->get('/databoxes/{any_id}/termsOfUse/', $bad_request_exception);
 
-        $controllers->get('/quarantine/list/', function(SilexApplication $app, Request $request) {
+        $controllers->get('/quarantine/list/', function (SilexApplication $app, Request $request) {
             return $app['api']->list_quarantine($app, $request)->get_response();
         });
 
-        $controllers->get('/quarantine/item/{lazaret_id}/', function($lazaret_id, SilexApplication $app, Request $request) {
+        $controllers->get('/quarantine/item/{lazaret_id}/', function ($lazaret_id, SilexApplication $app, Request $request) {
             return $app['api']->list_quarantine_item($lazaret_id, $app, $request)->get_response();
         });
 
@@ -371,7 +371,7 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *
          */
-        $controllers->post('/records/add/', function(SilexApplication $app, Request $request) {
+        $controllers->post('/records/add/', function (SilexApplication $app, Request $request) {
             return $app['api']->add_record($app, $request)->get_response();
         });
 
@@ -391,7 +391,7 @@ class V1 implements ControllerProviderInterface
          *    Array containing an array of records and stories collection
          *
          */
-        $controllers->match('/search/', function() use ($app) {
+        $controllers->match('/search/', function () use ($app) {
             return $app['api']->search($app['request'])->get_response();
         });
 
@@ -411,11 +411,11 @@ class V1 implements ControllerProviderInterface
          *    Array of record objects
          *
          */
-        $controllers->match('/records/search/', function(SilexApplication $app) {
+        $controllers->match('/records/search/', function (SilexApplication $app) {
             return $app['api']->search_records($app['request'])->get_response();
         });
 
-        $controllers->get('/records/{databox_id}/{record_id}/caption/', function(SilexApplication $app, $databox_id, $record_id) {
+        $controllers->get('/records/{databox_id}/{record_id}/caption/', function (SilexApplication $app, $databox_id, $record_id) {
             return $app['api']
                     ->caption_records($app['request'], $databox_id, $record_id)
                     ->get_response();
@@ -433,7 +433,7 @@ class V1 implements ControllerProviderInterface
          *    RECORD_ID : required INT
          *
          */
-        $controllers->get('/records/{databox_id}/{record_id}/metadatas/', function(SilexApplication $app, $databox_id, $record_id) {
+        $controllers->get('/records/{databox_id}/{record_id}/metadatas/', function (SilexApplication $app, $databox_id, $record_id) {
             return $app['api']
                     ->get_record_metadatas($app['request'], $databox_id, $record_id)
                     ->get_response();
@@ -451,7 +451,7 @@ class V1 implements ControllerProviderInterface
          *    RECORD_ID : required INT
          *
          */
-        $controllers->get('/records/{databox_id}/{record_id}/status/', function(SilexApplication $app, $databox_id, $record_id) {
+        $controllers->get('/records/{databox_id}/{record_id}/status/', function (SilexApplication $app, $databox_id, $record_id) {
             return $app['api']
                     ->get_record_status($app['request'], $databox_id, $record_id)
                     ->get_response();
@@ -469,7 +469,7 @@ class V1 implements ControllerProviderInterface
          *    RECORD_ID : required INT
          *
          */
-        $controllers->get('/records/{databox_id}/{record_id}/related/', function(SilexApplication $app, $databox_id, $record_id) {
+        $controllers->get('/records/{databox_id}/{record_id}/related/', function (SilexApplication $app, $databox_id, $record_id) {
             return $app['api']
                     ->get_record_related($app['request'], $databox_id, $record_id)
                     ->get_response();
@@ -487,7 +487,7 @@ class V1 implements ControllerProviderInterface
          *    RECORD_ID : required INT
          *
          */
-        $controllers->get('/records/{databox_id}/{record_id}/embed/', function(SilexApplication $app, $databox_id, $record_id) {
+        $controllers->get('/records/{databox_id}/{record_id}/embed/', function (SilexApplication $app, $databox_id, $record_id) {
             return $app['api']
                     ->get_record_embed($app['request'], $databox_id, $record_id)
                     ->get_response();
@@ -505,7 +505,7 @@ class V1 implements ControllerProviderInterface
          *    RECORD_ID : required INT
          *
          */
-        $controllers->post('/records/{databox_id}/{record_id}/setmetadatas/', function(SilexApplication $app, $databox_id, $record_id) {
+        $controllers->post('/records/{databox_id}/{record_id}/setmetadatas/', function (SilexApplication $app, $databox_id, $record_id) {
             return $app['api']
                     ->set_record_metadatas($app['request'], $databox_id, $record_id)
                     ->get_response();
@@ -523,7 +523,7 @@ class V1 implements ControllerProviderInterface
          *    RECORD_ID : required INT
          *
          */
-        $controllers->post('/records/{databox_id}/{record_id}/setstatus/', function(SilexApplication $app, $databox_id, $record_id) {
+        $controllers->post('/records/{databox_id}/{record_id}/setstatus/', function (SilexApplication $app, $databox_id, $record_id) {
             return $app['api']
                     ->set_record_status($app['request'], $databox_id, $record_id)
                     ->get_response();
@@ -541,7 +541,7 @@ class V1 implements ControllerProviderInterface
          *    RECORD_ID : required INT
          *
          */
-        $controllers->post('/records/{databox_id}/{record_id}/setcollection/', function(SilexApplication $app, $databox_id, $record_id) {
+        $controllers->post('/records/{databox_id}/{record_id}/setcollection/', function (SilexApplication $app, $databox_id, $record_id) {
             return $app['api']
                     ->set_record_collection($app['request'], $databox_id, $record_id)
                     ->get_response();
@@ -549,7 +549,7 @@ class V1 implements ControllerProviderInterface
 
         $controllers->post('/records/{wrong_databox_id}/{wrong_record_id}/setcollection/', $bad_request_exception);
 
-        $controllers->get('/records/{databox_id}/{record_id}/', function(SilexApplication $app, $databox_id, $record_id) {
+        $controllers->get('/records/{databox_id}/{record_id}/', function (SilexApplication $app, $databox_id, $record_id) {
             return $app['api']
                     ->get_record($app['request'], $databox_id, $record_id)
                     ->get_response();
@@ -565,7 +565,7 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *
          */
-        $controllers->get('/baskets/list/', function(SilexApplication $app) {
+        $controllers->get('/baskets/list/', function (SilexApplication $app) {
             return $app['api']->search_baskets($app['request'])->get_response();
         });
 
@@ -577,7 +577,7 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *
          */
-        $controllers->post('/baskets/add/', function(SilexApplication $app) {
+        $controllers->post('/baskets/add/', function (SilexApplication $app) {
             return $app['api']->create_basket($app['request'])->get_response();
         });
 
@@ -590,7 +590,7 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->get('/baskets/{basket_id}/content/', function(SilexApplication $app, $basket_id) {
+        $controllers->get('/baskets/{basket_id}/content/', function (SilexApplication $app, $basket_id) {
             return $app['api']->get_basket($app['request'], $basket_id)->get_response();
         })->assert('basket_id', '\d+');
 
@@ -605,7 +605,7 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->post('/baskets/{basket_id}/setname/', function(SilexApplication $app, $basket_id) {
+        $controllers->post('/baskets/{basket_id}/setname/', function (SilexApplication $app, $basket_id) {
             return $app['api']
                     ->set_basket_title($app['request'], $basket_id)
                     ->get_response();
@@ -622,7 +622,7 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->post('/baskets/{basket_id}/setdescription/', function(SilexApplication $app, $basket_id) {
+        $controllers->post('/baskets/{basket_id}/setdescription/', function (SilexApplication $app, $basket_id) {
             return $app['api']
                     ->set_basket_description($app['request'], $basket_id)
                     ->get_response();
@@ -639,7 +639,7 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->post('/baskets/{basket_id}/delete/', function(SilexApplication $app, $basket_id) {
+        $controllers->post('/baskets/{basket_id}/delete/', function (SilexApplication $app, $basket_id) {
             return $app['api']->delete_basket($app['request'], $basket_id)->get_response();
         })->assert('basket_id', '\d+');
 
@@ -653,19 +653,19 @@ class V1 implements ControllerProviderInterface
          * Parameters :
          *
          */
-        $controllers->get('/feeds/list/', function(SilexApplication $app) {
+        $controllers->get('/feeds/list/', function (SilexApplication $app) {
             return $app['api']
                     ->search_publications($app['request'], $app['authentication']->getUser())
                     ->get_response();
         });
 
-        $controllers->get('/feeds/content/', function(SilexApplication $app) {
+        $controllers->get('/feeds/content/', function (SilexApplication $app) {
             return $app['api']
                     ->get_publications($app['request'], $app['authentication']->getUser())
                     ->get_response();
         });
 
-        $controllers->get('/feeds/entry/{entry_id}/', function(SilexApplication $app, $entry_id) {
+        $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
             return $app['api']
                     ->get_feed_entry($app['request'], $entry_id, $app['authentication']->getUser())
                     ->get_response();
@@ -682,7 +682,7 @@ class V1 implements ControllerProviderInterface
          *    PUBLICATION_ID : required INT
          *
          */
-        $controllers->get('/feeds/{feed_id}/content/', function(SilexApplication $app, $feed_id) {
+        $controllers->get('/feeds/{feed_id}/content/', function (SilexApplication $app, $feed_id) {
             return $app['api']
                     ->get_publication($app['request'], $feed_id, $app['authentication']->getUser())
                     ->get_response();
@@ -700,7 +700,7 @@ class V1 implements ControllerProviderInterface
          *    RECORD_ID : required INT
          *
          */
-        $controllers->get('/stories/{databox_id}/{story_id}/embed/', function($databox_id, $story_id) use ($app) {
+        $controllers->get('/stories/{databox_id}/{story_id}/embed/', function ($databox_id, $story_id) use ($app) {
                 $result = $app['api']->get_story_embed($app['request'], $databox_id, $story_id);
 
                 return $result->get_response();
@@ -709,7 +709,7 @@ class V1 implements ControllerProviderInterface
 
         $controllers->get('/stories/{any_id}/{anyother_id}/embed/', $bad_request_exception);
 
-        $controllers->get('/stories/{databox_id}/{story_id}/', function($databox_id, $story_id) use ($app) {
+        $controllers->get('/stories/{databox_id}/{story_id}/', function ($databox_id, $story_id) use ($app) {
             $result = $app['api']->get_story($app['request'], $databox_id, $story_id);
 
             return $result->get_response();
@@ -717,7 +717,7 @@ class V1 implements ControllerProviderInterface
 
         $controllers->get('/stories/{any_id}/{anyother_id}/', $bad_request_exception);
 
-        $controllers->get('/stories/{databox_id}/{story_id}/', function($databox_id, $story_id) use ($app) {
+        $controllers->get('/stories/{databox_id}/{story_id}/', function ($databox_id, $story_id) use ($app) {
             $result = $app['api']->get_story($app['request'], $databox_id, $story_id);
 
             return $result->get_response();

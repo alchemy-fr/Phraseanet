@@ -31,14 +31,14 @@ class Feed implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
         /**
          * I got a selection of docs, which publications are available forthese docs ?
          */
-        $controllers->post('/requestavailable/', function(Application $app, Request $request) {
+        $controllers->post('/requestavailable/', function (Application $app, Request $request) {
             $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
             $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
 
@@ -48,7 +48,7 @@ class Feed implements ControllerProviderInterface
         /**
          * I've selected a publication for my docs, let's publish them
          */
-        $controllers->post('/entry/create/', function(Application $app, Request $request) {
+        $controllers->post('/entry/create/', function (Application $app, Request $request) {
             try {
                 $feed = new \Feed_Adapter($app, $request->request->get('feed_id'));
                 $publisher = \Feed_Publisher_Adapter::getPublisher($app['phraseanet.appbox'], $feed, $app['authentication']->getUser());
@@ -73,11 +73,11 @@ class Feed implements ControllerProviderInterface
             return $app->json($datas);
         })
             ->bind('prod_feeds_entry_create')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');
             });
 
-        $controllers->get('/entry/{id}/edit/', function(Application $app, Request $request, $id) {
+        $controllers->get('/entry/{id}/edit/', function (Application $app, Request $request, $id) {
             $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
 
             if (!$entry->is_publisher($app['authentication']->getUser())) {
@@ -92,11 +92,11 @@ class Feed implements ControllerProviderInterface
         })
             ->bind('feed_entry_edit')
             ->assert('id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');
             });
 
-        $controllers->post('/entry/{id}/update/', function(Application $app, Request $request, $id) {
+        $controllers->post('/entry/{id}/update/', function (Application $app, Request $request, $id) {
             $datas = array('error'   => true, 'message' => '', 'datas'   => '');
             try {
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
@@ -167,11 +167,11 @@ class Feed implements ControllerProviderInterface
             return $app->json($datas);
         })
             ->bind('prod_feeds_entry_update')
-            ->assert('id', '\d+')->before(function(Request $request) use ($app) {
+            ->assert('id', '\d+')->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');
             });
 
-        $controllers->post('/entry/{id}/delete/', function(Application $app, Request $request, $id) {
+        $controllers->post('/entry/{id}/delete/', function (Application $app, Request $request, $id) {
             $datas = array('error'   => true, 'message' => '');
             try {
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
@@ -198,11 +198,11 @@ class Feed implements ControllerProviderInterface
             return $app->json($datas);
         })
             ->bind('feed_entry_delete')
-            ->assert('id', '\d+')->before(function(Request $request) use ($app) {
+            ->assert('id', '\d+')->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');
             });
 
-        $controllers->get('/', function(Application $app, Request $request) {
+        $controllers->get('/', function (Application $app, Request $request) {
             $request = $app['request'];
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
@@ -220,7 +220,7 @@ class Feed implements ControllerProviderInterface
             return new Response($datas);
         })->bind('prod_feeds');
 
-        $controllers->get('/feed/{id}/', function(Application $app, Request $request, $id) {
+        $controllers->get('/feed/{id}/', function (Application $app, Request $request, $id) {
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
@@ -234,7 +234,7 @@ class Feed implements ControllerProviderInterface
             ->bind('prod_feeds_feed')
             ->assert('id', '\d+');
 
-        $controllers->get('/subscribe/aggregated/', function(Application $app, Request $request) {
+        $controllers->get('/subscribe/aggregated/', function (Application $app, Request $request) {
             $renew = ($request->query->get('renew') === 'true');
 
             $feeds = \Feed_Collection::load_all($app, $app['authentication']->getUser());
@@ -249,7 +249,7 @@ class Feed implements ControllerProviderInterface
             return $app->json($output);
         })->bind('prod_feeds_subscribe_aggregated');
 
-        $controllers->get('/subscribe/{id}/', function(Application $app, Request $request, $id) {
+        $controllers->get('/subscribe/{id}/', function (Application $app, Request $request, $id) {
             $renew = ($request->query->get('renew') === 'true');
             $feed = \Feed_Adapter::load_with_user($app, $app['authentication']->getUser(), $id);
 

@@ -25,7 +25,7 @@ class Baskets implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function() use ($app) {
+        $controllers->before(function () use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
@@ -260,7 +260,7 @@ class Baskets implements ControllerProviderInterface
             $selectedBasket = $app['EM']->getRepository('\Entities\Basket')->findUserBasket($app, $selectedBasketId, $app['authentication']->getUser(), true);
         }
 
-        $basketCollections = $baskets->partition(function($key, $basket) {
+        $basketCollections = $baskets->partition(function ($key, $basket) {
             return (Boolean) $basket->getPusherId();
         });
 

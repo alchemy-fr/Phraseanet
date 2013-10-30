@@ -21,7 +21,7 @@ abstract class AbstractSetupTester extends \PHPUnit_Framework_TestCase
     {
         rename(__DIR__ . '/../../../../../config/configuration.yml', __DIR__ . '/../../../../../config/configuration.yml.test');
 
-        $this->tearDownHandlers[] = function() {
+        $this->tearDownHandlers[] = function () {
             rename(__DIR__ . '/../../../../../config/configuration.yml.test', __DIR__ . '/../../../../../config/configuration.yml');
         };
     }
@@ -45,7 +45,7 @@ abstract class AbstractSetupTester extends \PHPUnit_Framework_TestCase
 \$dbname = 'ab_unitTests';
             ");
 
-        $this->tearDownHandlers[] = function() {
+        $this->tearDownHandlers[] = function () {
             @unlink(__DIR__ . '/../../../../../config/_GV.php');
             @unlink(__DIR__ . '/../../../../../config/connexion.inc');
         };
@@ -67,7 +67,7 @@ abstract class AbstractSetupTester extends \PHPUnit_Framework_TestCase
 \$dbname = '".$credentials['dbname']."';
             ");
 
-        $this->tearDownHandlers[] = function() {
+        $this->tearDownHandlers[] = function () {
                 @unlink(__DIR__ . '/../../../../../config/config.inc');
                 @unlink(__DIR__ . '/../../../../../config/connexion.inc');
             };

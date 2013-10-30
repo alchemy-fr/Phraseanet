@@ -105,11 +105,11 @@ class task_period_ftp extends task_appboxAbstract
                 }
             }
 
-            $(document).ready(function(){
+            $(document).ready(function () {
                 var limits = {
                     'period' :{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>}
                 } ;
-                $(".formElem").change(function(){
+                $(".formElem").change(function () {
                     fieldname = $(this).attr("name");
                     switch ((this.nodeName+$(this).attr("type")).toLowerCase()) {
                         case "inputtext":

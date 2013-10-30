@@ -30,7 +30,7 @@ class PathFileTest implements ControllerProviderInterface
         /**
          * @todo : check this as it would lead to a security issue
          */
-        $controllers->get('/path/', function(Application $app, Request $request) {
+        $controllers->get('/path/', function (Application $app, Request $request) {
             return $app->json(array(
                     'exists'     => file_exists($request->query->get('path'))
                     , 'file'       => is_file($request->query->get('path'))
@@ -41,7 +41,7 @@ class PathFileTest implements ControllerProviderInterface
                 ));
         });
 
-        $controllers->get('/url/', function(Application $app, Request $request) {
+        $controllers->get('/url/', function (Application $app, Request $request) {
             return $app->json(array('code' => \http_query::getHttpCodeFromUrl($request->query->get('url'))));
         });
 

@@ -697,16 +697,16 @@ class PhraseaEngine implements SearchEngineInterface
                 }
             }
             if ($this->options->getFields()) {
-                $this->queries[$sbas] .= ' IN (' . implode(' OR ', array_map(function(\databox_field $field) {
+                $this->queries[$sbas] .= ' IN (' . implode(' OR ', array_map(function (\databox_field $field) {
                                             return $field->get_name();
                                         }, $this->options->getFields())) . ')';
             }
             if (($this->options->getMinDate() || $this->options->getMaxDate()) && $this->options->getDateFields()) {
                 if ($this->options->getMinDate()) {
-                    $this->queries[$sbas] .= ' AND ( ' . implode(' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' OR  ', array_map(function(\databox_field $field){ return $field->get_name(); }, $this->options->getDateFields())) . ' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' ) ';
+                    $this->queries[$sbas] .= ' AND ( ' . implode(' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $this->options->getDateFields())) . ' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' ) ';
                 }
                 if ($this->options->getMaxDate()) {
-                    $this->queries[$sbas] .= ' AND ( ' . implode(' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' OR  ', array_map(function(\databox_field $field){ return $field->get_name(); }, $this->options->getDateFields())) . ' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' ) ';
+                    $this->queries[$sbas] .= ' AND ( ' . implode(' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' OR  ', array_map(function (\databox_field $field) { return $field->get_name(); }, $this->options->getDateFields())) . ' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' ) ';
                 }
             }
         }
@@ -717,7 +717,7 @@ class PhraseaEngine implements SearchEngineInterface
             $this->singleParse($sbas, $this->queries[$sbas]);
         }
 
-        $base_ids = array_map(function(\collection $collection) {
+        $base_ids = array_map(function (\collection $collection) {
                         return $collection->get_base_id();
                     }, $this->options->getCollections());
 

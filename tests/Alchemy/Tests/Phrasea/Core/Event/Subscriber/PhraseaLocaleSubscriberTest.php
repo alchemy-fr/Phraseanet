@@ -63,8 +63,8 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
         $client->request('GET', '/', array(), array(), array('HTTP_ACCEPT_LANGUAGE' => 'fr-FR,fr;q=0.9'));
 
         $settedCookie = null;
-        foreach($client->getResponse()->headers->getCookies() as $cookie) {
-            if($cookie->getName() === 'locale') {
+        foreach ($client->getResponse()->headers->getCookies() as $cookie) {
+            if ($cookie->getName() === 'locale') {
                 $settedCookie = $cookie;
                 break;
             }
@@ -114,7 +114,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetPHPUnitAbstract
 
         $app['dispatcher']->addSubscriber(new PhraseaLocaleSubscriber($app));
 
-        $app->get('/', function(Application $app, Request $request) {
+        $app->get('/', function (Application $app, Request $request) {
             return $app['locale'] ? $app['locale'] : '';
         });
 

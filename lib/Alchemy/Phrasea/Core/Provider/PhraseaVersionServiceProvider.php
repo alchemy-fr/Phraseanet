@@ -19,7 +19,7 @@ class PhraseaVersionServiceProvider implements ServiceProviderInterface
 {
     public function register(SilexApplication $app)
     {
-        $app['phraseanet.version'] = $app->share(function(SilexApplication $app) {
+        $app['phraseanet.version'] = $app->share(function (SilexApplication $app) {
             return new Version();
         });
     }

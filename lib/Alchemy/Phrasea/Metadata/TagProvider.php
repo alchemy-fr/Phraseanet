@@ -19,7 +19,7 @@ class TagProvider extends ExiftoolTagProvider
     {
         parent::__construct();
 
-        $this['Phraseanet'] = $this->share(function(){
+        $this['Phraseanet'] = $this->share(function () {
             return array(
                 'PdfText'       => new \Alchemy\Phrasea\Metadata\Tag\PdfText(),
                 'TfArchivedate' => new \Alchemy\Phrasea\Metadata\Tag\TfArchivedate(),

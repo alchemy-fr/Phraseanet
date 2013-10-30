@@ -46,7 +46,7 @@ class CLI extends Application
             return new Console\Application($name, $version);
         });
 
-        $this['dispatcher']->addListener('phraseanet.notification.sent', function() use ($app) {
+        $this['dispatcher']->addListener('phraseanet.notification.sent', function () use ($app) {
             $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
         });
 

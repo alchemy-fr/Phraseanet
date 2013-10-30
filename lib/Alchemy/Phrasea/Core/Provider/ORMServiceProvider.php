@@ -40,7 +40,7 @@ class ORMServiceProvider implements ServiceProviderInterface
             return new MonologSQLLogger($logger, 'yaml');
         });
 
-        $app['EM'] = $app->share(function(Application $app) {
+        $app['EM'] = $app->share(function (Application $app) {
 
             $config = new ORMConfiguration();
 

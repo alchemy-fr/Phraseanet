@@ -59,7 +59,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testTestFtpConnexion()
     {
         $framework = $this;
-        self::$DI['app']['phraseanet.ftp.client'] = self::$DI['app']->protect(function($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false) use ($framework) {
+        self::$DI['app']['phraseanet.ftp.client'] = self::$DI['app']->protect(function ($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false) use ($framework) {
             return $framework->getMockBuilder('\ftpclient')
                     ->setMethods(array('login', 'close'))
                     ->disableOriginalConstructor()
@@ -81,7 +81,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testFtpConnexionNoXMLHTTPRequests()
     {
         $framework = $this;
-        self::$DI['app']['phraseanet.ftp.client'] = self::$DI['app']->protect(function($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false) use ($framework) {
+        self::$DI['app']['phraseanet.ftp.client'] = self::$DI['app']->protect(function ($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false) use ($framework) {
             $ftpStub = $framework->getMockBuilder('\ftpclient')
                 ->setMethods(array('login', 'close'))
                 ->disableOriginalConstructor()

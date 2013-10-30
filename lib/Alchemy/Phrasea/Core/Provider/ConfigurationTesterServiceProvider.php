@@ -21,7 +21,7 @@ class ConfigurationTesterServiceProvider implements ServiceProviderInterface
 
     public function register(SilexApplication $app)
     {
-        $app['phraseanet.configuration-tester'] = $app->share(function(Application $app) {
+        $app['phraseanet.configuration-tester'] = $app->share(function (Application $app) {
             return new ConfigurationTester($app);
         });
     }

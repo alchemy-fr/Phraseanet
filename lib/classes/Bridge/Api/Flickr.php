@@ -697,7 +697,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     public function check_upload_constraints(array $datas, record_adapter $record)
     {
         $errors = $this->check_record_constraints($record);
-        $check = function($field) use (&$errors, $datas, $record) {
+        $check = function ($field) use (&$errors, $datas, $record) {
                 $key = $record->get_serialize_key();
                 $name = $field['name'];
                 $length = (int) $field['length'];
@@ -720,7 +720,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     public function check_update_constraints(Array $datas)
     {
         $errors = array();
-        $check = function($field) use (&$errors, $datas) {
+        $check = function ($field) use (&$errors, $datas) {
                 $name = $field['name'];
                 $length = (int) $field['length'];
                 $required = ! ! $field['required'];
