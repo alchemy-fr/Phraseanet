@@ -26,6 +26,8 @@ class Root implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.client'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -48,7 +50,7 @@ class Root implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('getClient'))
+        $controllers->get('/', 'controller.client:getClient')
             ->bind('get_client');
 
          /**
@@ -64,7 +66,7 @@ class Root implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->get('/language/', $this->call('getClientLanguage'))
+        $controllers->get('/language/', 'controller.client:getClientLanguage')
             ->bind('get_client_language');
 
          /**
@@ -80,7 +82,7 @@ class Root implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->get('/publications/', $this->call('getClientPublications'))
+        $controllers->get('/publications/', 'controller.client:getClientPublications')
             ->bind('client_publications_start_page');
 
          /**
@@ -96,7 +98,7 @@ class Root implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/help/', $this->call('getClientHelp'))
+        $controllers->get('/help/', 'controller.client:getClientHelp')
             ->bind('client_help_start_page');
 
          /**
@@ -112,7 +114,7 @@ class Root implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/query/', $this->call('query'))
+        $controllers->post('/query/', 'controller.client:query')
             ->bind('client_query');
 
         return $controllers;
@@ -554,16 +556,5 @@ class Root implements ControllerProviderInterface
     private function getHelpStartPage(Application $app)
     {
         return $app['twig']->render('client/help.html.twig');
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }
