@@ -25,6 +25,8 @@ class Lightbox implements ControllerProviderInterface
 {
     public function connect(SilexApplication $app)
     {
+        $app['controller.lightbox'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {

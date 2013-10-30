@@ -26,6 +26,8 @@ class Datafiles extends AbstractDelivery
 {
     public function connect(Application $app)
     {
+        $app['controller.datafiles'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $that = $this;
