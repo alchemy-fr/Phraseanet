@@ -26,9 +26,10 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Tools implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.tools'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {

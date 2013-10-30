@@ -21,9 +21,10 @@ use Silex\ControllerProviderInterface;
  */
 class Language implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.language'] = $this;
+
         $controller = $app['controllers_factory'];
 
         $controller->get("/", function(Application $app) {

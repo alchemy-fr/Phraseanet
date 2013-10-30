@@ -27,31 +27,32 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class WorkZone implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.workzone'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        $controllers->get('/', $this->call('displayWorkzone'))
+        $controllers->get('/', 'controller.prod.workzone:displayWorkzone')
             ->bind('prod_workzone_show');
 
-        $controllers->get('/Browse/', $this->call('browse'))
+        $controllers->get('/Browse/', 'controller.prod.workzone:browse')
             ->bind('prod_workzone_browse');
 
-        $controllers->get('/Browse/Search/', $this->call('browserSearch'))
+        $controllers->get('/Browse/Search/', 'controller.prod.workzone:browserSearch')
             ->bind('prod_workzone_search');
 
-        $controllers->get('/Browse/Basket/{basket_id}/', $this->call('browseBasket'))
+        $controllers->get('/Browse/Basket/{basket_id}/', 'controller.prod.workzone:browseBasket')
             ->bind('prod_workzone_basket')
             ->assert('basket_id', '\d+');
 
-        $controllers->post('/attachStories/', $this->call('attachStories'));
+        $controllers->post('/attachStories/', 'controller.prod.workzone:attachStories');
 
-        $controllers->post('/detachStory/{sbas_id}/{record_id}/', $this->call('detachStory'))
+        $controllers->post('/detachStory/{sbas_id}/{record_id}/', 'controller.prod.workzone:detachStory')
             ->bind('prod_workzone_detach_story')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
@@ -222,16 +223,5 @@ class WorkZone implements ControllerProviderInterface
         }
 
         return $app->redirectPath('prod_workzone_show');
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

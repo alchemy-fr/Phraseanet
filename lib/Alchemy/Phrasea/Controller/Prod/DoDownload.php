@@ -27,6 +27,8 @@ class DoDownload implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.do-download'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         /**
@@ -42,7 +44,7 @@ class DoDownload implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{token}/prepare/', $this->call('prepareDownload'))
+        $controllers->get('/{token}/prepare/', 'controller.prod.do-download:prepareDownload')
             ->bind('prepare_download')
             ->assert('token', '[a-zA-Z0-9]{8,16}');
 
@@ -59,7 +61,7 @@ class DoDownload implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->match('/{token}/get/', $this->call('downloadDocuments'))
+        $controllers->match('/{token}/get/', 'controller.prod.do-download:downloadDocuments')
             ->bind('document_download')
             ->assert('token', '[a-zA-Z0-9]{8,16}');
 
@@ -76,7 +78,7 @@ class DoDownload implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{token}/execute/', $this->call('downloadExecute'))
+        $controllers->post('/{token}/execute/', 'controller.prod.do-download:downloadExecute')
             ->bind('execute_download')
             ->assert('token', '[a-zA-Z0-9]{8,16}');
 
@@ -219,16 +221,5 @@ class DoDownload implements ControllerProviderInterface
             'success' => true,
             'message' => ''
         ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

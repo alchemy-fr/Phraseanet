@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractDelivery implements ControllerProviderInterface
 {
-
     public function deliverContent(Request $request, \record_adapter $record, $subdef, $watermark, $stamp, Application $app)
     {
         $file = $record->get_subdef($subdef);

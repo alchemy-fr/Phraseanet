@@ -23,54 +23,55 @@ use Silex\ControllerProviderInterface;
  */
 class Tooltip implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.tooltip'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        $controllers->post('/basket/{basket_id}/', $this->call('displayBasket'))
+        $controllers->post('/basket/{basket_id}/', 'controller.prod.tooltip:displayBasket')
             ->assert('basket_id', '\d+')
             ->bind('prod_tooltip_basket');
 
-        $controllers->post('/Story/{sbas_id}/{record_id}/', $this->call('displayStory'))
+        $controllers->post('/Story/{sbas_id}/{record_id}/', 'controller.prod.tooltip:displayStory')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+')
             ->bind('prod_tooltip_story');
 
-        $controllers->post('/user/{usr_id}/', $this->call('displayUserBadge'))
+        $controllers->post('/user/{usr_id}/', 'controller.prod.tooltip:displayUserBadge')
             ->assert('usr_id', '\d+')
             ->bind('prod_tooltip_user');
 
-        $controllers->post('/preview/{sbas_id}/{record_id}/', $this->call('displayPreview'))
+        $controllers->post('/preview/{sbas_id}/{record_id}/', 'controller.prod.tooltip:displayPreview')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+')
             ->bind('prod_tooltip_preview');
 
-        $controllers->post('/caption/{sbas_id}/{record_id}/{context}/', $this->call('displayCaption'))
+        $controllers->post('/caption/{sbas_id}/{record_id}/{context}/', 'controller.prod.tooltip:displayCaption')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+')
             ->bind('prod_tooltip_caption');
 
-        $controllers->post('/tc_datas/{sbas_id}/{record_id}/', $this->call('displayTechnicalDatas'))
+        $controllers->post('/tc_datas/{sbas_id}/{record_id}/', 'controller.prod.tooltip:displayTechnicalDatas')
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+')
             ->bind('prod_tooltip_technical_data');
 
-        $controllers->post('/metas/FieldInfos/{sbas_id}/{field_id}/', $this->call('displayFieldInfos'))
+        $controllers->post('/metas/FieldInfos/{sbas_id}/{field_id}/', 'controller.prod.tooltip:displayFieldInfos')
             ->assert('sbas_id', '\d+')
             ->assert('field_id', '\d+')
             ->bind('prod_tooltip_metadata');
 
-        $controllers->post('/DCESInfos/{sbas_id}/{field_id}/', $this->call('displayDCESInfos'))
+        $controllers->post('/DCESInfos/{sbas_id}/{field_id}/', 'controller.prod.tooltip:displayDCESInfos')
             ->assert('sbas_id', '\d+')
             ->assert('field_id', '\d+')
             ->bind('prod_tooltip_dces');
 
-        $controllers->post('/metas/restrictionsInfos/{sbas_id}/{field_id}/', $this->call('displayMetaRestrictions'))
+        $controllers->post('/metas/restrictionsInfos/{sbas_id}/{field_id}/', 'controller.prod.tooltip:displayMetaRestrictions')
             ->assert('sbas_id', '\d+')
             ->assert('field_id', '\d+')
             ->bind('prod_tooltip_metadata_restrictions');
@@ -186,16 +187,5 @@ class Tooltip implements ControllerProviderInterface
                 'prod/Tooltip/DataboxFieldRestrictions.html.twig'
                 , array('field' => $field)
         );
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

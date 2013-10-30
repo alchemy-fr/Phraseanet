@@ -24,9 +24,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TOU implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.tou'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         /**
@@ -42,7 +43,7 @@ class TOU implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/deny/{sbas_id}/', $this->call('denyTermsOfUse'))
+        $controllers->post('/deny/{sbas_id}/', 'controller.prod.tou:denyTermsOfUse')
             ->bind('deny_tou')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireAuthentication();
@@ -61,7 +62,7 @@ class TOU implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('displayTermsOfUse'))
+        $controllers->get('/', 'controller.prod.tou:displayTermsOfUse')
             ->bind('get_tou');
 
         return $controllers;
@@ -127,16 +128,5 @@ class TOU implements ControllerProviderInterface
             'TOUs'        => $data,
             'local_title' => _('Terms of use')
         )));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

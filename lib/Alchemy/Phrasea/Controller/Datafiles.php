@@ -24,7 +24,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  */
 class Datafiles extends AbstractDelivery
 {
-
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];

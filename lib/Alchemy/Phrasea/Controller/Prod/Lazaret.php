@@ -31,7 +31,6 @@ use Symfony\Component\Filesystem\Exception\IOException;
  */
 class Lazaret implements ControllerProviderInterface
 {
-
     /**
      * Connect the ControllerCollection to the Silex Application
      *
@@ -40,6 +39,8 @@ class Lazaret implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.lazaret'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -61,7 +62,7 @@ class Lazaret implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('listElement'))
+        $controllers->get('/', 'controller.prod.lazaret:listElement')
             ->bind('lazaret_elements');
 
         /**
@@ -75,7 +76,7 @@ class Lazaret implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->get('/{file_id}/', $this->call('getElement'))
+        $controllers->get('/{file_id}/', 'controller.prod.lazaret:getElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_element');
 
@@ -94,7 +95,7 @@ class Lazaret implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{file_id}/force-add/', $this->call('addElement'))
+        $controllers->post('/{file_id}/force-add/', 'controller.prod.lazaret:addElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_force_add');
 
@@ -109,7 +110,7 @@ class Lazaret implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{file_id}/deny/', $this->call('denyElement'))
+        $controllers->post('/{file_id}/deny/', 'controller.prod.lazaret:denyElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_deny_element');
 
@@ -124,7 +125,7 @@ class Lazaret implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/empty/', $this->call('emptyLazaret'))
+        $controllers->post('/empty/', 'controller.prod.lazaret:emptyLazaret')
             ->bind('lazaret_empty');
 
         /**
@@ -142,7 +143,7 @@ class Lazaret implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{file_id}/accept/', $this->call('acceptElement'))
+        $controllers->post('/{file_id}/accept/', 'controller.prod.lazaret:acceptElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_accept');
 
@@ -158,7 +159,7 @@ class Lazaret implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->get('/{file_id}/thumbnail/', $this->call('thumbnailElement'))
+        $controllers->get('/{file_id}/thumbnail/', 'controller.prod.lazaret:thumbnailElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_thumbnail');
 
@@ -529,16 +530,5 @@ class Lazaret implements ControllerProviderInterface
         $lazaretThumbFileName = $app['root.path'] . '/tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         return $app['phraseanet.file-serve']->deliverFile($lazaretThumbFileName, $lazaretFile->getOriginalName(), DeliverDataInterface::DISPOSITION_INLINE, 'image/jpeg', 3600);
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

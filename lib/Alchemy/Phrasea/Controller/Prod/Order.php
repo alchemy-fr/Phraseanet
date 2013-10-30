@@ -32,12 +32,13 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Order implements ControllerProviderInterface
 {
-
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.order'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -58,7 +59,7 @@ class Order implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('displayOrders'))
+        $controllers->get('/', 'controller.prod.order:displayOrders')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
@@ -77,7 +78,7 @@ class Order implements ControllerProviderInterface
          *
          * return       : HTML Response | JSON Response
          */
-        $controllers->post('/', $this->call('createOrder'))
+        $controllers->post('/', 'controller.prod.order:createOrder')
             ->bind('prod_order_new');
 
         /**
@@ -93,7 +94,7 @@ class Order implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{order_id}/', $this->call('displayOneOrder'))
+        $controllers->get('/{order_id}/', 'controller.prod.order:displayOneOrder')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
@@ -113,7 +114,7 @@ class Order implements ControllerProviderInterface
          *
          * return       : HTML Response | JSON Response
          */
-        $controllers->post('/{order_id}/send/', $this->call('sendOrder'))
+        $controllers->post('/{order_id}/send/', 'controller.prod.order:sendOrder')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
@@ -133,7 +134,7 @@ class Order implements ControllerProviderInterface
          *
          * return       : HTML Response | JSON Response
          */
-        $controllers->post('/{order_id}/deny/', $this->call('denyOrder'))
+        $controllers->post('/{order_id}/deny/', 'controller.prod.order:denyOrder')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
@@ -439,16 +440,5 @@ class Order implements ControllerProviderInterface
             'success' => (int) $success,
             'action'  => 'send'
         ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

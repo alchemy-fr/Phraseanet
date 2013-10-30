@@ -27,9 +27,10 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  */
 class Story implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.story'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {

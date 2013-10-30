@@ -28,9 +28,10 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class UsrLists implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.usr-lists'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -40,59 +41,61 @@ class UsrLists implements ControllerProviderInterface
         /**
          * Get all lists
          */
-        $controllers->get('/all/', $this->call('getAll'))->bind('prod_lists_all');
+        $controllers->get('/all/', 'controller.prod.usr-lists:getAll')
+            ->bind('prod_lists_all');
 
         /**
          * Creates a list
          */
-        $controllers->post('/list/', $this->call('createList'))->bind('prod_lists_list');
+        $controllers->post('/list/', 'controller.prod.usr-lists:createList')
+            ->bind('prod_lists_list');
 
         /**
          * Gets a list
          */
-        $controllers->get('/list/{list_id}/', $this->call('displayList'))
+        $controllers->get('/list/{list_id}/', 'controller.prod.usr-lists:displayList')
             ->assert('list_id', '\d+');
 
         /**
          * Update a list
          */
-        $controllers->post('/list/{list_id}/update/', $this->call('updateList'))
+        $controllers->post('/list/{list_id}/update/', 'controller.prod.usr-lists:updateList')
             ->bind('prod_lists_list_update')
             ->assert('list_id', '\d+');
 
         /**
          * Delete a list
          */
-        $controllers->post('/list/{list_id}/delete/', $this->call('removeList'))
+        $controllers->post('/list/{list_id}/delete/', 'controller.prod.usr-lists:removeList')
             ->assert('list_id', '\d+');
 
         /**
          * Remove a usr_id from a list
          */
-        $controllers->post('/list/{list_id}/remove/{usr_id}/', $this->call('removeUser'))
+        $controllers->post('/list/{list_id}/remove/{usr_id}/', 'controller.prod.usr-lists:removeUser')
             ->assert('list_id', '\d+')
             ->assert('usr_id', '\d+');
 
         /**
          * Adds a usr_id to a list
          */
-        $controllers->post('/list/{list_id}/add/', $this->call('addUsers'))
+        $controllers->post('/list/{list_id}/add/', 'controller.prod.usr-lists:addUsers')
             ->assert('list_id', '\d+');
 
-        $controllers->get('/list/{list_id}/share/', $this->call('displayShares'))
+        $controllers->get('/list/{list_id}/share/', 'controller.prod.usr-lists:displayShares')
             ->assert('list_id', '\d+')
             ->bind('prod_lists_list_share');
 
         /**
          * Share a list to a user with an optionnal role
          */
-        $controllers->post('/list/{list_id}/share/{usr_id}/', $this->call('shareWithUser'))
+        $controllers->post('/list/{list_id}/share/{usr_id}/', 'controller.prod.usr-lists:shareWithUser')
             ->assert('list_id', '\d+')
             ->assert('usr_id', '\d+');
         /**
          * UnShare a list to a user
          */
-        $controllers->post('/list/{list_id}/unshare/{usr_id}/', $this->call('unshareWithUser'))
+        $controllers->post('/list/{list_id}/unshare/{usr_id}/', 'controller.prod.usr-lists:unshareWithUser')
             ->assert('list_id', '\d+')
             ->assert('usr_id', '\d+');
 
@@ -572,16 +575,5 @@ class UsrLists implements ControllerProviderInterface
         }
 
         return $app->json($datas);
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

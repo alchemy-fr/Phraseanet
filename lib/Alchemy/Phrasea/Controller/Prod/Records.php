@@ -20,12 +20,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Records implements ControllerProviderInterface
 {
-
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.records'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -45,7 +46,7 @@ class Records implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->match('/', $this->call('getRecord'))
+        $controllers->match('/', 'controller.prod.records:getRecord')
             ->bind('record_details')
             ->method('GET|POST');
 
@@ -62,7 +63,7 @@ class Records implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/delete/', $this->call('doDeleteRecords'))
+        $controllers->post('/delete/', 'controller.prod.records:doDeleteRecords')
             ->bind('record_delete');
 
         /**
@@ -78,7 +79,7 @@ class Records implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/delete/what/', $this->call('whatCanIDelete'))
+        $controllers->post('/delete/what/', 'controller.prod.records:whatCanIDelete')
             ->bind('record_what_can_i_delete');
 
         /**
@@ -94,7 +95,7 @@ class Records implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/renew-url/', $this->call('renewUrl'))
+        $controllers->post('/renew-url/', 'controller.prod.records:renewUrl')
             ->bind('record_renew_url');
 
         return $controllers;
@@ -272,16 +273,5 @@ class Records implements ControllerProviderInterface
         };
 
         return $app->json($renewed);
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

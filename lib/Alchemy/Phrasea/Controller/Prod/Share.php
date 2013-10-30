@@ -18,12 +18,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Share implements ControllerProviderInterface
 {
-
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.share'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -43,7 +44,7 @@ class Share implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/record/{base_id}/{record_id}/', $this->call('shareRecord'))
+        $controllers->get('/record/{base_id}/{record_id}/', 'controller.prod.share:shareRecord')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas(\phrasea::sbasFromBas($app, $request->attributes->get('base_id')), 'bas_chupub');
             })
@@ -72,16 +73,5 @@ class Share implements ControllerProviderInterface
         return new Response($app['twig']->render('prod/Share/record.html.twig', array(
             'record' => $record,
         )));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

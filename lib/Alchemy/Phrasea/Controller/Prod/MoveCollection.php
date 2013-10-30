@@ -23,9 +23,10 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class MoveCollection implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.move-collection'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -34,8 +35,11 @@ class MoveCollection implements ControllerProviderInterface
                 ->requireRight('deleterecord');
         });
 
-        $controllers->post('/', $this->call('displayForm'))->bind('prod_move_collection');
-        $controllers->post('/apply/', $this->call('apply'))->bind('prod_move_collection_apply');
+        $controllers->post('/', 'controller.prod.move-collection:displayForm')
+            ->bind('prod_move_collection');
+
+        $controllers->post('/apply/', 'controller.prod.move-collection:apply')
+            ->bind('prod_move_collection_apply');
 
         return $controllers;
     }
@@ -114,16 +118,5 @@ class MoveCollection implements ControllerProviderInterface
         }
 
         return $app->json($ret);
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

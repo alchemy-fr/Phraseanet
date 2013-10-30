@@ -27,9 +27,10 @@ use Alchemy\Phrasea\Helper;
  */
 class Root implements ControllerProviderInterface
 {
-
     public function connect(SilexApplication $app)
     {
+        $app['controller.prod'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
