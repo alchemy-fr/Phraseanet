@@ -21,6 +21,8 @@ class Activity implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.report.activity'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
@@ -28,37 +30,37 @@ class Activity implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('report');
         });
 
-        $controllers->post('/users/connexions', $this->call('doReportConnexionsByUsers'))
+        $controllers->post('/users/connexions', 'controller.report.activity:doReportConnexionsByUsers')
             ->bind('report_activity_users_connexions');
 
-        $controllers->post('/users/downloads', $this->call('doReportDownloadsByUsers'))
+        $controllers->post('/users/downloads', 'controller.report.activity:doReportDownloadsByUsers')
             ->bind('report_activity_users_downloads');;
 
-        $controllers->post('/questions/best-of', $this->call('doReportBestOfQuestions'))
+        $controllers->post('/questions/best-of', 'controller.report.activity:doReportBestOfQuestions')
             ->bind('report_activity_questions_bestof');
 
-        $controllers->post('/questions/no-best-of', $this->call('doReportNoBestOfQuestions'))
+        $controllers->post('/questions/no-best-of', 'controller.report.activity:doReportNoBestOfQuestions')
             ->bind('report_activity_questions_nobestof');
 
-        $controllers->post('/instance/hours', $this->call('doReportSiteActiviyPerHours'))
+        $controllers->post('/instance/hours', 'controller.report.activity:doReportSiteActiviyPerHours')
             ->bind('report_activity_instance_hours');
 
-        $controllers->post('/instance/days', $this->call('doReportSiteActiviyPerDays'))
+        $controllers->post('/instance/days', 'controller.report.activity:doReportSiteActiviyPerDays')
             ->bind('report_activity_instance_days');
 
-        $controllers->post('/documents/pushed', $this->call('doReportPushedDocuments'))
+        $controllers->post('/documents/pushed', 'controller.report.activity:doReportPushedDocuments')
             ->bind('report_activity_documents_pushed');
 
-        $controllers->post('/documents/added', $this->call('doReportAddedDocuments'))
+        $controllers->post('/documents/added', 'controller.report.activity:doReportAddedDocuments')
             ->bind('report_activity_documents_added');
 
-        $controllers->post('/documents/edited', $this->call('doReportEditedDocuments'))
+        $controllers->post('/documents/edited', 'controller.report.activity:doReportEditedDocuments')
             ->bind('report_activity_documents_edited');
 
-        $controllers->post('/documents/validated', $this->call('doReportValidatedDocuments'))
+        $controllers->post('/documents/validated', 'controller.report.activity:doReportValidatedDocuments')
             ->bind('report_activity_documents_validated');
 
-        $controllers->post('/documents/sent', $this->call('doReportSentDocuments'))
+        $controllers->post('/documents/sent', 'controller.report.activity:doReportSentDocuments')
             ->bind('report_activity_documents_sent');
 
         return $controllers;
@@ -883,16 +885,5 @@ class Activity implements ControllerProviderInterface
         }
 
         return $reportArray;
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

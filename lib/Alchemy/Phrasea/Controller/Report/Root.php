@@ -21,6 +21,8 @@ class Root implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.report'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
@@ -32,25 +34,25 @@ class Root implements ControllerProviderInterface
             return $app->redirectPath('report_dashboard');
         })->bind('report');
 
-        $controllers->get('/dashboard', $this->call('getDashboard'))
+        $controllers->get('/dashboard', 'controller.report:getDashboard')
             ->bind('report_dashboard');
 
-        $controllers->post('/init', $this->call('initReport'))
+        $controllers->post('/init', 'controller.report:initReport')
             ->bind('report_init');
 
-        $controllers->post('/connexions', $this->call('doReportConnexions'))
+        $controllers->post('/connexions', 'controller.report:doReportConnexions')
             ->bind('report_connexions');
 
-        $controllers->post('/questions', $this->call('doReportQuestions'))
+        $controllers->post('/questions', 'controller.report:doReportQuestions')
             ->bind('report_questions');
 
-        $controllers->post('/downloads', $this->call('doReportDownloads'))
+        $controllers->post('/downloads', 'controller.report:doReportDownloads')
             ->bind('report_downloads');
 
-        $controllers->post('/documents', $this->call('doReportDocuments'))
+        $controllers->post('/documents', 'controller.report:doReportDocuments')
             ->bind('report_documents');
 
-        $controllers->post('/clients', $this->call('doReportClients'))
+        $controllers->post('/clients', 'controller.report:doReportClients')
             ->bind('report_clients');
 
         return $controllers;
@@ -634,16 +636,5 @@ class Root implements ControllerProviderInterface
         }
 
         return $reportArray;
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

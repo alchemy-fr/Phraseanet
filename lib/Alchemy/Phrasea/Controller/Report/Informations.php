@@ -20,6 +20,8 @@ class Informations implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.report.informations'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
@@ -27,13 +29,13 @@ class Informations implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('report');
         });
 
-        $controllers->post('/user', $this->call('doReportInformationsUser'))
+        $controllers->post('/user', 'controller.report.informations:doReportInformationsUser')
             ->bind('report_infomations_user');
 
-        $controllers->post('/browser', $this->call('doReportInformationsBrowser'))
+        $controllers->post('/browser', 'controller.report.informations:doReportInformationsBrowser')
             ->bind('report_infomations_browser');
 
-        $controllers->post('/document', $this->call('doReportInformationsDocument'))
+        $controllers->post('/document', 'controller.report.informations:doReportInformationsDocument')
             ->bind('report_infomations_document');
 
         return $controllers;
@@ -510,16 +512,5 @@ class Informations implements ControllerProviderInterface
             'display_nav' => false,
             'title'       => $title
         ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }
