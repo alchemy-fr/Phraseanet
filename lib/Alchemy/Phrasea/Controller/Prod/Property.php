@@ -33,67 +33,15 @@ class Property implements ControllerProviderInterface
             $app['firewall']->requireNotGuest();
         });
 
-        /**
-         * Display records status property
-         *
-         * name         : display_status_property
-         *
-         * description  : Display records status property
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/', 'controller.prod.property:displayStatusProperty')
             ->bind('display_status_property');
 
-        /**
-         * Display records status property
-         *
-         * name         : display_type_property
-         *
-         * description  : Display records status property
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/type/', 'controller.prod.property:displayTypeProperty')
             ->bind('display_type_property');
 
-        /**
-         * Change records status
-         *
-         * name         : change_status
-         *
-         * description  : Change records status
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/status/', 'controller.prod.property:changeStatus')
             ->bind('change_status');
 
-        /**
-         * Change records type
-         *
-         * name         : change_type
-         *
-         * description  : Change records type
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/type/', 'controller.prod.property:changeType')
             ->bind('change_type');
 

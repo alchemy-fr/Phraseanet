@@ -46,54 +46,15 @@ class Order implements ControllerProviderInterface
                 ->requireRight('order');
         });
 
-        /**
-         * List all orders
-         *
-         * name         : prod_orders
-         *
-         * description  : Display all orders
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/', 'controller.prod.order:displayOrders')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_orders');
 
-        /**
-         * Create a new order
-         *
-         * name         : prod_order_new
-         *
-         * description  : Create a new order
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response | JSON Response
-         */
         $controllers->post('/', 'controller.prod.order:createOrder')
             ->bind('prod_order_new');
 
-        /**
-         * Display one order
-         *
-         * name         : prod_order
-         *
-         * description  : Display one order
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/{order_id}/', 'controller.prod.order:displayOneOrder')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
@@ -101,19 +62,6 @@ class Order implements ControllerProviderInterface
             ->bind('prod_order')
             ->assert('order_id', '\d+');
 
-        /**
-         * Send a new order
-         *
-         * name         : prod_order_send
-         *
-         * description  : Send an order
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response | JSON Response
-         */
         $controllers->post('/{order_id}/send/', 'controller.prod.order:sendOrder')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
@@ -121,19 +69,6 @@ class Order implements ControllerProviderInterface
             ->bind('prod_order_send')
             ->assert('order_id', '\d+');
 
-        /**
-         * Deny an order
-         *
-         * name         : prod_order_deny
-         *
-         * description  : Deny an order
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response | JSON Response
-         */
         $controllers->post('/{order_id}/deny/', 'controller.prod.order:denyOrder')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();

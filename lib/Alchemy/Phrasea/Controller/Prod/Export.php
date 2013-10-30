@@ -36,67 +36,15 @@ class Export implements ControllerProviderInterface
             $app['firewall']->requireNotGuest();
         });
 
-        /**
-         * Display multi export
-         *
-         * name         : export_multi_export
-         *
-         * description  : Display multi export
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/multi-export/', 'controller.prod.export:displayMultiExport')
             ->bind('export_multi_export');
 
-        /**
-         * Export by mail
-         *
-         * name         : export_mail
-         *
-         * description  : Export by mail
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/mail/', 'controller.prod.export:exportMail')
             ->bind('export_mail');
 
-        /**
-         * Export by FTP
-         *
-         * name         : export_ftp
-         *
-         * description  : Export by FTP
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/ftp/', 'controller.prod.export:exportFtp')
             ->bind('export_ftp');
 
-        /**
-         * Test FTP connexion
-         *
-         * name         : export_ftp_test
-         *
-         * description  : Test a FTP connexion
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/ftp/test/', 'controller.prod.export:testFtpConnexion')
             ->bind('export_ftp_test');
 

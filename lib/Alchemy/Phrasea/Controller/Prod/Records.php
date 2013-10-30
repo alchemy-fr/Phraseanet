@@ -33,68 +33,16 @@ class Records implements ControllerProviderInterface
             $app['firewall']->requireNotGuest();
         });
 
-         /**
-         * Get  the record detailed view
-         *
-         * name         : record_details
-         *
-         * description  : Get the detailed view for a specific record
-         *
-         * method       : POST|GET
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->match('/', 'controller.prod.records:getRecord')
             ->bind('record_details')
             ->method('GET|POST');
 
-        /**
-         * Delete a record or a list of records
-         *
-         * name         : record_delete
-         *
-         * description  : Delete a record or a list of records
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/delete/', 'controller.prod.records:doDeleteRecords')
             ->bind('record_delete');
 
-        /**
-         * Verify if I can delete records
-         *
-         * name         : record_what_can_i_delete
-         *
-         * description  : Verify if I can delete records
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/delete/what/', 'controller.prod.records:whatCanIDelete')
             ->bind('record_what_can_i_delete');
 
-        /**
-         * Renew a record URL
-         *
-         * name         : record_renew_url
-         *
-         * description  : Renew a record URL
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/renew-url/', 'controller.prod.records:renewUrl')
             ->bind('record_renew_url');
 

@@ -38,47 +38,26 @@ class UsrLists implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Get all lists
-         */
         $controllers->get('/all/', 'controller.prod.usr-lists:getAll')
             ->bind('prod_lists_all');
 
-        /**
-         * Creates a list
-         */
         $controllers->post('/list/', 'controller.prod.usr-lists:createList')
             ->bind('prod_lists_list');
 
-        /**
-         * Gets a list
-         */
         $controllers->get('/list/{list_id}/', 'controller.prod.usr-lists:displayList')
             ->assert('list_id', '\d+');
 
-        /**
-         * Update a list
-         */
         $controllers->post('/list/{list_id}/update/', 'controller.prod.usr-lists:updateList')
             ->bind('prod_lists_list_update')
             ->assert('list_id', '\d+');
 
-        /**
-         * Delete a list
-         */
         $controllers->post('/list/{list_id}/delete/', 'controller.prod.usr-lists:removeList')
             ->assert('list_id', '\d+');
 
-        /**
-         * Remove a usr_id from a list
-         */
         $controllers->post('/list/{list_id}/remove/{usr_id}/', 'controller.prod.usr-lists:removeUser')
             ->assert('list_id', '\d+')
             ->assert('usr_id', '\d+');
 
-        /**
-         * Adds a usr_id to a list
-         */
         $controllers->post('/list/{list_id}/add/', 'controller.prod.usr-lists:addUsers')
             ->assert('list_id', '\d+');
 
@@ -86,15 +65,10 @@ class UsrLists implements ControllerProviderInterface
             ->assert('list_id', '\d+')
             ->bind('prod_lists_list_share');
 
-        /**
-         * Share a list to a user with an optionnal role
-         */
         $controllers->post('/list/{list_id}/share/{usr_id}/', 'controller.prod.usr-lists:shareWithUser')
             ->assert('list_id', '\d+')
             ->assert('usr_id', '\d+');
-        /**
-         * UnShare a list to a user
-         */
+
         $controllers->post('/list/{list_id}/unshare/{usr_id}/', 'controller.prod.usr-lists:unshareWithUser')
             ->assert('list_id', '\d+')
             ->assert('usr_id', '\d+');

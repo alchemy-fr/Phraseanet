@@ -40,9 +40,6 @@ class Feed implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * I got a selection of docs, which publications are available forthese docs ?
-         */
         $controllers->post('/requestavailable/', function(Application $app, Request $request) {
             $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['authentication']->getUser());
             $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
@@ -50,9 +47,6 @@ class Feed implements ControllerProviderInterface
             return $app['twig']->render('prod/actions/publish/publish.html.twig', array('publishing' => $publishing, 'feeds' => $feeds));
         });
 
-        /**
-         * I've selected a publication for my docs, let's publish them
-         */
         $controllers->post('/entry/create/', function(Application $app, Request $request) {
             $feed = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->find($request->request->get('feed_id'));
 

@@ -36,51 +36,12 @@ class Query implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Query Phraseanet
-         *
-         * name         : prod_query
-         *
-         * description  : Query Phraseanet
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/', 'controller.prod.query:query')
             ->bind('prod_query');
 
-        /**
-         * Get a preview answer train
-         *
-         * name         : preview_answer_train
-         *
-         * description  : Get a preview answer train
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/answer-train/', 'controller.prod.query:queryAnswerTrain')
             ->bind('preview_answer_train');
 
-        /**
-         * Get a preview reg train
-         *
-         * name         : preview_reg_train
-         *
-         * description  : Get a preview reg train
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/reg-train/', 'controller.prod.query:queryRegTrain')
             ->bind('preview_reg_train');
 

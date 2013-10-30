@@ -31,19 +31,6 @@ class Share implements ControllerProviderInterface
             $app['firewall']->requireNotGuest();
         });
 
-        /**
-         * Share a record
-         *
-         * name         : share_record
-         *
-         * description  : Share a record
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/record/{base_id}/{record_id}/', 'controller.prod.share:shareRecord')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas(\phrasea::sbasFromBas($app, $request->attributes->get('base_id')), 'bas_chupub');

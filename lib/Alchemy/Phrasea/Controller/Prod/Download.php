@@ -31,19 +31,6 @@ class Download implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Download a set of documents
-         *
-         * name         : check_download
-         *
-         * description  : Download a set of documents
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/', 'controller.prod.download:checkDownload')
             ->bind('check_download');
 

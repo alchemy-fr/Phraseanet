@@ -31,53 +31,14 @@ class DoDownload implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        /**
-         * Prepare a set of documents for download
-         *
-         * name         : prepare_download
-         *
-         * description  : Prepare a set of documents for download
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/{token}/prepare/', 'controller.prod.do-download:prepareDownload')
             ->bind('prepare_download')
             ->assert('token', '[a-zA-Z0-9]{8,16}');
 
-        /**
-         * Download a set of documents
-         *
-         * name         : document_download
-         *
-         * description  : Download a set of documents
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->match('/{token}/get/', 'controller.prod.do-download:downloadDocuments')
             ->bind('document_download')
             ->assert('token', '[a-zA-Z0-9]{8,16}');
 
-        /**
-         * Build a zip with all downloaded documents
-         *
-         * name         : execute_download
-         *
-         * description  :  Build a zip with all downloaded documents
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{token}/execute/', 'controller.prod.do-download:downloadExecute')
             ->bind('execute_download')
             ->assert('token', '[a-zA-Z0-9]{8,16}');
