@@ -20,6 +20,8 @@ class Thesaurus implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.thesaurus'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
@@ -27,41 +29,41 @@ class Thesaurus implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('thesaurus');
         });
 
-        $controllers->match('/', $this->call('indexThesaurus'))->bind('thesaurus');
-        $controllers->match('accept.php', $this->call('accept'));
-        $controllers->match('export_text.php', $this->call('exportText'));
-        $controllers->match('export_text_dlg.php', $this->call('exportTextDialog'));
-        $controllers->match('export_topics.php', $this->call('exportTopics'));
-        $controllers->match('export_topics_dlg.php', $this->call('exportTopicsDialog'));
-        $controllers->match('import.php', $this->call('import'));
-        $controllers->match('import_dlg.php', $this->call('importDialog'));
-        $controllers->match('linkfield.php', $this->call('linkFieldStep1'));
-        $controllers->match('linkfield2.php', $this->call('linkFieldStep2'));
-        $controllers->match('linkfield3.php', $this->call('linkFieldStep3'));
-        $controllers->match('loadth.php', $this->call('loadThesaurus'))->bind('thesaurus_loadth');
-        $controllers->match('newsy_dlg.php', $this->call('newSynonymDialog'));
-        $controllers->match('newterm.php', $this->call('newTerm'));
-        $controllers->match('properties.php', $this->call('properties'));
-        $controllers->match('search.php', $this->call('search'));
-        $controllers->match('thesaurus.php', $this->call('thesaurus'))->bind('thesaurus_thesaurus');
+        $controllers->match('/', 'controller.thesaurus:indexThesaurus')->bind('thesaurus');
+        $controllers->match('accept.php', 'controller.thesaurus:accept');
+        $controllers->match('export_text.php', 'controller.thesaurus:exportText');
+        $controllers->match('export_text_dlg.php', 'controller.thesaurus:exportTextDialog');
+        $controllers->match('export_topics.php', 'controller.thesaurus:exportTopics');
+        $controllers->match('export_topics_dlg.php', 'controller.thesaurus:exportTopicsDialog');
+        $controllers->match('import.php', 'controller.thesaurus:import');
+        $controllers->match('import_dlg.php', 'controller.thesaurus:importDialog');
+        $controllers->match('linkfield.php', 'controller.thesaurus:linkFieldStep1');
+        $controllers->match('linkfield2.php', 'controller.thesaurus:linkFieldStep2');
+        $controllers->match('linkfield3.php', 'controller.thesaurus:linkFieldStep3');
+        $controllers->match('loadth.php', 'controller.thesaurus:loadThesaurus')->bind('thesaurus_loadth');
+        $controllers->match('newsy_dlg.php', 'controller.thesaurus:newSynonymDialog');
+        $controllers->match('newterm.php', 'controller.thesaurus:newTerm');
+        $controllers->match('properties.php', 'controller.thesaurus:properties');
+        $controllers->match('search.php', 'controller.thesaurus:search');
+        $controllers->match('thesaurus.php', 'controller.thesaurus:thesaurus')->bind('thesaurus_thesaurus');
 
-        $controllers->match('xmlhttp/accept.x.php', $this->call('acceptXml'));
-        $controllers->match('xmlhttp/acceptcandidates.x.php', $this->call('acceptCandidatesXml'));
-        $controllers->match('xmlhttp/changesylng.x.php', $this->call('changeSynonymLanguageXml'));
-        $controllers->match('xmlhttp/changesypos.x.php', $this->call('changeSynonymPositionXml'));
-        $controllers->match('xmlhttp/deletenohits.x.php', $this->call('removeNoHitXml'));
-        $controllers->match('xmlhttp/delsy.x.php', $this->call('removeSynonymXml'));
-        $controllers->match('xmlhttp/delts.x.php', $this->call('removeSpecificTermXml'));
-        $controllers->match('xmlhttp/gethtmlbranch.x.php', $this->call('getHtmlBranchXml'));
-        $controllers->match('xmlhttp/getsy.x.php', $this->call('getSynonymXml'));
-        $controllers->match('xmlhttp/getterm.x.php', $this->call('getTermXml'));
-        $controllers->match('xmlhttp/killterm.x.php', $this->call('killTermXml'));
-        $controllers->match('xmlhttp/newsy.x.php', $this->call('newSynonymXml'));
-        $controllers->match('xmlhttp/newts.x.php', $this->call('newSpecificTermXml'));
-        $controllers->match('xmlhttp/openbranches.x.php', $this->call('openBranchesXml'));
-        $controllers->match('xmlhttp/reject.x.php', $this->call('RejectXml'));
-        $controllers->match('xmlhttp/searchcandidate.x.php', $this->call('searchCandidateXml'));
-        $controllers->match('xmlhttp/searchnohits.x.php', $this->call('searchNoHitsXml'));
+        $controllers->match('xmlhttp/accept.x.php', 'controller.thesaurus:acceptXml');
+        $controllers->match('xmlhttp/acceptcandidates.x.php', 'controller.thesaurus:acceptCandidatesXml');
+        $controllers->match('xmlhttp/changesylng.x.php', 'controller.thesaurus:changeSynonymLanguageXml');
+        $controllers->match('xmlhttp/changesypos.x.php', 'controller.thesaurus:changeSynonymPositionXml');
+        $controllers->match('xmlhttp/deletenohits.x.php', 'controller.thesaurus:removeNoHitXml');
+        $controllers->match('xmlhttp/delsy.x.php', 'controller.thesaurus:removeSynonymXml');
+        $controllers->match('xmlhttp/delts.x.php', 'controller.thesaurus:removeSpecificTermXml');
+        $controllers->match('xmlhttp/gethtmlbranch.x.php', 'controller.thesaurus:getHtmlBranchXml');
+        $controllers->match('xmlhttp/getsy.x.php', 'controller.thesaurus:getSynonymXml');
+        $controllers->match('xmlhttp/getterm.x.php', 'controller.thesaurus:getTermXml');
+        $controllers->match('xmlhttp/killterm.x.php', 'controller.thesaurus:killTermXml');
+        $controllers->match('xmlhttp/newsy.x.php', 'controller.thesaurus:newSynonymXml');
+        $controllers->match('xmlhttp/newts.x.php', 'controller.thesaurus:newSpecificTermXml');
+        $controllers->match('xmlhttp/openbranches.x.php', 'controller.thesaurus:openBranchesXml');
+        $controllers->match('xmlhttp/reject.x.php', 'controller.thesaurus:RejectXml');
+        $controllers->match('xmlhttp/searchcandidate.x.php', 'controller.thesaurus:searchCandidateXml');
+        $controllers->match('xmlhttp/searchnohits.x.php', 'controller.thesaurus:searchNoHitsXml');
 
         return $controllers;
     }
@@ -3116,10 +3118,5 @@ class Thesaurus implements ControllerProviderInterface
         }
 
         return $ret;
-    }
-
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

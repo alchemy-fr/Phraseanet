@@ -22,6 +22,8 @@ class Xmlhttp implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
+        $app['controller.thesaurus.xmlhttp'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
@@ -29,17 +31,17 @@ class Xmlhttp implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('thesaurus');
         });
 
-        $controllers->match('acceptcandidates.j.php', $this->call('AcceptCandidatesJson'));
-        $controllers->match('checkcandidatetarget.j.php', $this->call('CheckCandidateTargetJson'));
-        $controllers->match('editing_presets.j.php', $this->call('EditingPresetsJson'));
-        $controllers->match('getsy_prod.x.php', $this->call('GetSynonymsXml'));
-        $controllers->match('getterm_prod.h.php', $this->call('GetTermHtml'));
-        $controllers->match('getterm_prod.x.php', $this->call('GetTermXml'));
-        $controllers->match('openbranch_prod.j.php', $this->call('OpenBranchJson'));
-        $controllers->match('openbranches_prod.h.php', $this->call('OpenBranchesHtml'));
-        $controllers->match('openbranches_prod.x.php', $this->call('OpenBranchesXml'));
-        $controllers->match('replacecandidate.j.php', $this->call('ReplaceCandidateJson'));
-        $controllers->match('search_th_term_prod.j.php', $this->call('SearchTermJson'));
+        $controllers->match('acceptcandidates.j.php', 'controller.thesaurus.xmlhttp:AcceptCandidatesJson');
+        $controllers->match('checkcandidatetarget.j.php', 'controller.thesaurus.xmlhttp:CheckCandidateTargetJson');
+        $controllers->match('editing_presets.j.php', 'controller.thesaurus.xmlhttp:EditingPresetsJson');
+        $controllers->match('getsy_prod.x.php', 'controller.thesaurus.xmlhttp:GetSynonymsXml');
+        $controllers->match('getterm_prod.h.php', 'controller.thesaurus.xmlhttp:GetTermHtml');
+        $controllers->match('getterm_prod.x.php', 'controller.thesaurus.xmlhttp:GetTermXml');
+        $controllers->match('openbranch_prod.j.php', 'controller.thesaurus.xmlhttp:OpenBranchJson');
+        $controllers->match('openbranches_prod.h.php', 'controller.thesaurus.xmlhttp:OpenBranchesHtml');
+        $controllers->match('openbranches_prod.x.php', 'controller.thesaurus.xmlhttp:OpenBranchesXml');
+        $controllers->match('replacecandidate.j.php', 'controller.thesaurus.xmlhttp:ReplaceCandidateJson');
+        $controllers->match('search_th_term_prod.j.php', 'controller.thesaurus.xmlhttp:SearchTermJson');
 
         return $controllers;
     }
@@ -1636,10 +1638,5 @@ class Xmlhttp implements ControllerProviderInterface
                 $html .= $tab . '</UL>' . "\n";
             }
         }
-    }
-
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }
