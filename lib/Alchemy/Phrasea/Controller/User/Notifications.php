@@ -24,6 +24,8 @@ class Notifications implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
+        $app['controller.user.notifications'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -43,7 +45,7 @@ class Notifications implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->get('/', $this->call('listNotifications'))
+        $controllers->get('/', 'controller.user.notifications:listNotifications')
             ->bind('get_notifications');
 
         /**
@@ -59,7 +61,7 @@ class Notifications implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/read/', $this->call('readNotifications'))
+        $controllers->post('/read/', 'controller.user.notifications:readNotifications')
             ->bind('set_notifications_readed');
 
         return $controllers;
@@ -106,16 +108,5 @@ class Notifications implements ControllerProviderInterface
         $page = (int) $request->query->get('page', 0);
 
         return $app->json($app['events-manager']->get_notifications_as_array(($page < 0 ? 0 : $page)));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }
