@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ConnectedUsers implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $app['controller.admin.connected-users'] = $this;

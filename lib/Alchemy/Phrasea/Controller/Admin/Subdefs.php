@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Subdefs implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $app['controller.admin.subdefs'] = $this;

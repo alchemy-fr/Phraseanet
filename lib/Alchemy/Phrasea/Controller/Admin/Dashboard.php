@@ -26,7 +26,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Dashboard implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $app['controller.admin.dashboard'] = $this;
@@ -37,83 +36,18 @@ class Dashboard implements ControllerProviderInterface
             $app['firewall']->requireAdmin();
         });
 
-        /**
-         * Get admin dashboard
-         *
-         * name         : admin_dashbord
-         *
-         * description  : Display admin dashboard
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/', 'controller.admin.dashboard:slash')
             ->bind('admin_dashbord');
 
-        /**
-         * Reset cache
-         *
-         * name         : admin_dashboard_flush_cache
-         *
-         * description  : Reset all cache
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/flush-cache/', 'controller.admin.dashboard:flush')
             ->bind('admin_dashboard_flush_cache');
 
-        /**
-         * Test send mail
-         *
-         * name         : admin_dashboard_test_mail
-         *
-         * description  : Test send mail
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/send-mail-test/', 'controller.admin.dashboard:sendMail')
             ->bind('admin_dashboard_test_mail');
 
-        /**
-         * Reset admin rights
-         *
-         * name         : admin_dashboard_reset_admin_rights
-         *
-         * description  : Reset admin rights
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/reset-admin-rights/', 'controller.admin.dashboard:resetAdminRights')
             ->bind('admin_dashboard_reset_admin_rights');
 
-        /**
-         * Add admins
-         *
-         * name         : admin_dashboard_new
-         *
-         * description  : Add new admin_dashboard_add_admins
-         *
-         * method       : POST
-         *
-         * parameters   : admins An array of user id admins
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/add-admins/', 'controller.admin.dashboard:addAdmins')
             ->bind('admin_dashboard_add_admins');
 

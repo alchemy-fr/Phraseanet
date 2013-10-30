@@ -30,7 +30,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Setup implements ControllerProviderInterface
 {
-
     public function connect(SilexApplication $app)
     {
         $app['controller.admin.setup'] = $this;
@@ -41,35 +40,9 @@ class Setup implements ControllerProviderInterface
             $app['firewall']->requireAdmin();
         });
 
-        /**
-         * Get globals values
-         *
-         * name         : setup_display_globals
-         *
-         * description  : Display globals values
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/', 'controller.admin.setup:getGlobals')
             ->bind('setup_display_globals');
 
-        /**
-         * Submit global values
-         *
-         * name         : setup_submit_globals
-         *
-         * description  : Change globals values
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/', 'controller.admin.setup:postGlobals')
             ->bind('setup_submit_globals');
 

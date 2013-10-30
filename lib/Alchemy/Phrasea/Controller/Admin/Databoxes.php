@@ -25,7 +25,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Databoxes implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $app['controller.admin.databoxes'] = $this;
@@ -36,73 +35,21 @@ class Databoxes implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('admin');
         });
 
-        /**
-         * Get Databases control panel
-         *
-         * name         : admin_databases
-         *
-         * description  : Get Databases control panel
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/', 'controller.admin.databoxes:getDatabases')
             ->bind('admin_databases');
 
-        /**
-         * Create Database
-         *
-         * name         : admin_database_new
-         *
-         * description  : Create Database
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/', 'controller.admin.databoxes:createDatabase')
             ->bind('admin_database_new')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireAdmin();
             });
 
-        /**
-         * Mount a database
-         *
-         * name         : admin_database_mount
-         *
-         * description  : Upgrade all databases
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/mount/', 'controller.admin.databoxes:databaseMount')
             ->bind('admin_database_mount')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireAdmin();
             });
 
-        /**
-         * Upgrade all databases
-         *
-         * name         : admin_databases_upgrade
-         *
-         * description  : Upgrade all databases
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/upgrade/', 'controller.admin.databoxes:databasesUpgrade')
             ->bind('admin_databases_upgrade')
             ->before(function(Request $request) use ($app) {

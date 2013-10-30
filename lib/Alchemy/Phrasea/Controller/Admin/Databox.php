@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Databox implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $app['controller.admin.databox'] = $this;
@@ -35,131 +34,40 @@ class Databox implements ControllerProviderInterface
                 ->requireAccessToSbas($request->attributes->get('databox_id'));
         });
 
-        /**
-         * Get admin database
-         *
-         * name         : admin_database
-         *
-         * description  : Get database informations
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/{databox_id}/', 'controller.admin.databox:getDatabase')
             ->assert('databox_id', '\d+')
             ->bind('admin_database');
 
-        /**
-         * Delete a database
-         *
-         * name         : admin_database_delete
-         *
-         * description  : Delete a database
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{databox_id}/delete/', 'controller.admin.databox:deleteBase')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_delete');
 
-        /**
-         * Unmount a database
-         *
-         * name         : admin_database_unmount
-         *
-         * description  : unmount one database
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/{databox_id}/unmount/', 'controller.admin.databox:unmountDatabase')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_unmount');
 
-        /**
-         * Empty a database
-         *
-         * name         : admin_database_empty
-         *
-         * description  : empty one database
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/{databox_id}/empty/', 'controller.admin.databox:emptyDatabase')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_empty');
 
-        /**
-         * Reorder database collection
-         *
-         * name         : admin_database_display_collections_order
-         *
-         * description  : Reorder database collection
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/{databox_id}/collections/order/', 'controller.admin.databox:getReorder')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_display_collections_order');
 
-        /**
-         * Reorder database collection
-         *
-         * name         : admin_database_submit_collections_order
-         *
-         * description  : Reorder database collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/{databox_id}/collections/order/', 'controller.admin.databox:setReorder')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_submit_collections_order');
 
-        /**
-         * Create new collection
-         *
-         * name         : admin_database_submit_collection
-         *
-         * description  : Create a new collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/{databox_id}/collection/', 'controller.admin.databox:createCollection')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
@@ -167,19 +75,6 @@ class Databox implements ControllerProviderInterface
             })
             ->bind('admin_database_submit_collection');
 
-        /**
-         * Get database CGU
-         *
-         * name         : admin_database_display_cgus
-         *
-         * description  : Get database CGU
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/{databox_id}/cgus/', 'controller.admin.databox:getDatabaseCGU')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
@@ -192,76 +87,24 @@ class Databox implements ControllerProviderInterface
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_databox_labels');
 
-        /**
-         * Update database CGU
-         *
-         * name         : admin_database_submit_cgus
-         *
-         * description  : Update database CGU
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/{databox_id}/cgus/', 'controller.admin.databox:updateDatabaseCGU')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_modify_struct');
             })->bind('admin_database_submit_cgus');
 
-        /**
-         * Update document information
-         *
-         * name         : admin_database_display_document_information
-         *
-         * description  : Update document information
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/{databox_id}/informations/documents/', 'controller.admin.databox:progressBarInfos')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_display_document_information');
 
-        /**
-         * Get document details
-         *
-         * name         : admin_database_display_document_details
-         *
-         * description  : Get document details
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/{databox_id}/informations/details/', 'controller.admin.databox:getDetails')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_display_document_details');
 
-        /**
-         * Mount collection on collection
-         *
-         * name         : admin_database_mount_collection
-         *
-         * description  : Mount collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/{databox_id}/collection/{collection_id}/mount/', 'controller.admin.databox:mountCollection')
             ->assert('databox_id', '\d+')
             ->assert('collection_id', '\d+')
@@ -269,133 +112,42 @@ class Databox implements ControllerProviderInterface
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_mount_collection');
 
-        /**
-         * Get a new collection form
-         *
-         * name         : admin_database_display_new_collection_form
-         *
-         * description  : New collection form
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/{databox_id}/collection/', 'controller.admin.databox:getNewCollection')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_display_new_collection_form');
 
-        /**
-         * Add databox logo
-         *
-         * name         : admin_database_submit_logo
-         *
-         * description  : add logo to databox
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/{databox_id}/logo/', 'controller.admin.databox:sendLogoPdf')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_submit_logo');
 
-        /**
-         * Delete databox logo
-         *
-         * name         : admin_database_delete_logo
-         *
-         * description  : delete logo databox
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/{databox_id}/logo/delete/', 'controller.admin.databox:deleteLogoPdf')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_delete_logo');
 
-        /**
-         * Clear databox logs
-         *
-         * name         : admin_database_clear_logs
-         *
-         * description  : Clear databox logs
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/{databox_id}/clear-logs/', 'controller.admin.databox:clearLogs')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_clear_logs');
 
-        /**
-         * Reindex database
-         *
-         * name         : admin_database_reindex
-         *
-         * description  : Reindex database
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/{databox_id}/reindex/', 'controller.admin.databox:reindex')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_reindex');
 
-        /**
-         * Set database indexable
-         *
-         * name         : admin_database_set_indexable
-         *
-         * description  : Set database indexable
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/{databox_id}/indexable/', 'controller.admin.databox:setIndexable')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_set_indexable');
 
-        /**
-         * Set database name
-         *
-         * name         : admin_database_rename
-         *
-         * description  : Set database indexable
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/{databox_id}/view-name/', 'controller.admin.databox:changeViewName')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {

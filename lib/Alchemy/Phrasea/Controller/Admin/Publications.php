@@ -26,7 +26,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class Publications implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $app['controller.admin.publications'] = $this;

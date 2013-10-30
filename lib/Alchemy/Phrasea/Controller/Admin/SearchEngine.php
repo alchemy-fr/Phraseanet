@@ -23,7 +23,6 @@ use Silex\ControllerProviderInterface;
  */
 class SearchEngine implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $app['controller.admin.search-engine'] = $this;

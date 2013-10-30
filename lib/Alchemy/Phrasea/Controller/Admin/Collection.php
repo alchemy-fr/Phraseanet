@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Collection implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
         $app['controller.admin.collection'] = $this;
@@ -32,155 +31,38 @@ class Collection implements ControllerProviderInterface
                 ->requireRightOnBase($app['request']->attributes->get('bas_id'), 'canadmin');
         });
 
-        /**
-         * Get a collection
-         *
-         * name         : admin_display_collection
-         *
-         * description  : Display collection information page
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/{bas_id}/', 'controller.admin.collection:getCollection')
             ->assert('bas_id', '\d+')
             ->bind('admin_display_collection');
 
-        /**
-         * Get a collection suggested values
-         *
-         * name         : admin_collection_display_suggested_values
-         *
-         * description  : Display page to edit suggested values
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/{bas_id}/suggested-values/', 'controller.admin.collection:getSuggestedValues')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_display_suggested_values');
 
-        /**
-         * Submit suggested values
-         *
-         * name         : admin_collection_submit_suggested_values
-         *
-         * description  : Submit suggested values
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/{bas_id}/suggested-values/', 'controller.admin.collection:submitSuggestedValues')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_suggested_values');
 
-        /**
-         * Delete a collection
-         *
-         * name         : admin_collection_delete
-         *
-         * description  : Delete a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{bas_id}/delete/', 'controller.admin.collection:delete')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete');
 
-        /**
-         * Enable a collection
-         *
-         * name         : admin_collection_enable
-         *
-         * description  : Enable a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{bas_id}/enable/', 'controller.admin.collection:enable')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_enable');
 
-        /**
-         * Disable a collection
-         *
-         * name         : admin_collection_disable
-         *
-         * description  : Disable a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{bas_id}/disabled/', 'controller.admin.collection:disabled')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_disable');
 
-        /**
-         * Set new order admin
-         *
-         * name         : admin_collection_submit_order_admins
-         *
-         * description  : Set new admins for handle items order
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
         $controllers->post('/{bas_id}/order/admins/', 'controller.admin.collection:setOrderAdmins')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_order_admins');
 
-        /**
-         * Set publication watermark
-         *
-         * name         : admin_collection_submit_publication
-         *
-         * description  : Set publication watermark
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{bas_id}/publication/display/', 'controller.admin.collection:setPublicationDisplay')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_publication');
 
-        /**
-         * Rename a collection
-         *
-         * name         : admin_collection_rename
-         *
-         * description  : Rename a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{bas_id}/rename/', 'controller.admin.collection:rename')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_rename');
@@ -189,189 +71,46 @@ class Collection implements ControllerProviderInterface
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_labels');
 
-        /**
-         * Empty a collection
-         *
-         * name         : admin_collection_empty
-         *
-         * description  : Empty a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{bas_id}/empty/', 'controller.admin.collection:emptyCollection')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_empty');
 
-        /**
-         * Unmount a collection
-         *
-         * name         : admin_collection_unmount
-         *
-         * description  : Unmount a collection
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{bas_id}/unmount/', 'controller.admin.collection:unmount')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_unmount');
 
-        /**
-         * Set a collection mini logo
-         *
-         * name         : admin_collection_submit_logo
-         *
-         * description  : Set a collection mini logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
         $controllers->post('/{bas_id}/picture/mini-logo/', 'controller.admin.collection:setMiniLogo')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_logo');
 
-        /**
-         * Delete the current collection mini logo
-         *
-         * name         : admin_collection_delete_logo
-         *
-         * description  : Delete the current collection mini logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{bas_id}/picture/mini-logo/delete/', 'controller.admin.collection:deleteLogo')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_logo');
 
-        /**
-         * Set a new logo
-         *
-         * name         : admin_collection_submit_logo
-         *
-         * description  : Set a new logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
         $controllers->post('/{bas_id}/picture/watermark/', 'controller.admin.collection:setWatermark')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_watermark');
 
-        /**
-         * Delete a mini logo
-         *
-         * name         : admin_collection_delete_logo
-         *
-         * description  : Delete a mini logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{bas_id}/picture/watermark/delete/', 'controller.admin.collection:deleteWatermark')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_watermark');
 
-        /**
-         * Set a new stamp logo
-         *
-         * name         :
-         *
-         * description  : Set a new stamp
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
         $controllers->post('/{bas_id}/picture/stamp-logo/', 'controller.admin.collection:setStamp')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_stamp');
 
-        /**
-         * Delete a stamp logo
-         *
-         * name         : admin_collection_delete_stamp
-         *
-         * description  : Delete a stamp
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/{bas_id}/picture/stamp-logo/delete/', 'controller.admin.collection:deleteStamp')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_stamp');
 
-        /**
-         * Set a new banner
-         *
-         * name         : admin_collection_submit_banner
-         *
-         * description  : Set a new logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
         $controllers->post('/{bas_id}/picture/banner/', 'controller.admin.collection:setBanner')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_banner');
 
-        /**
-         * Delete a banner
-         *
-         * name         : admin_collection_delete_banner
-         *
-         * description  : Delete a mini logo
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
         $controllers->post('/{bas_id}/picture/banner/delete/', 'controller.admin.collection:deleteBanner')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_banner');
 
-        /**
-         * Get document details in the requested collection
-         *
-         * name         : admin_collection_display_document_details
-         *
-         * description  : Get documents collection details
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/{bas_id}/informations/details/', 'controller.admin.collection:getDetails')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_display_document_details');
