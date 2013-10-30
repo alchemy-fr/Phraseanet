@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "97403dc6569983cb1fe5b4ecafd95448",
+    "hash": "929a8014fbcf21060ec105550999e88d",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -2821,12 +2821,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "d866a5acc45426f3c48c82b7cedb985d9e24568c"
+                "reference": "59409b47c858b72e29555a3105b31e1744309b7f"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/symfony/zipball/d866a5acc45426f3c48c82b7cedb985d9e24568c",
-                "reference": "d866a5acc45426f3c48c82b7cedb985d9e24568c",
+                "reference": "59409b47c858b72e29555a3105b31e1744309b7f",
                 "shasum": ""
             },
             "require": {
@@ -2926,7 +2926,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-10-28 14:29:55"
+            "time": "2013-09-29 19:54:28"
         },
         {
             "name": "themattharris/tmhoauth",
