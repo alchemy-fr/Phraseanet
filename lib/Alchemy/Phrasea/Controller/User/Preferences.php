@@ -32,35 +32,9 @@ class Preferences implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Save preferences
-         *
-         * name         : save_pref
-         *
-         * description  : Save User preferences
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/', 'controller.user.preferences:saveUserPref')
             ->bind('save_pref');
 
-        /**
-         * Save temporary preferences
-         *
-         * name         : save_temp_pref
-         *
-         * description  : Save temporary preferences
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/temporary/', 'controller.user.preferences:saveTemporaryPref')
             ->bind('save_temp_pref');
 

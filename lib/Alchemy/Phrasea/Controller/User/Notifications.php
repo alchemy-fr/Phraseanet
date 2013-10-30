@@ -32,35 +32,9 @@ class Notifications implements ControllerProviderInterface
             $app['firewall']->requireNotGuest();
         });
 
-        /**
-         * Read all notifications
-         *
-         * name         : read_notifications_full
-         *
-         * description  : Read full notification
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->get('/', 'controller.user.notifications:listNotifications')
             ->bind('get_notifications');
 
-        /**
-         * Set notifications as readed
-         *
-         * name         : set_notifications_readed
-         *
-         * description  : Set notifications as readed
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/read/', 'controller.user.notifications:readNotifications')
             ->bind('set_notifications_readed');
 
