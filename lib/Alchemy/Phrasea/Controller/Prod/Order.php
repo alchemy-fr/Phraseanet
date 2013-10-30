@@ -32,12 +32,13 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Order implements ControllerProviderInterface
 {
-
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.order'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -45,95 +46,30 @@ class Order implements ControllerProviderInterface
                 ->requireRight('order');
         });
 
-        /**
-         * List all orders
-         *
-         * name         : prod_orders
-         *
-         * description  : Display all orders
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('displayOrders'))
+        $controllers->get('/', 'controller.prod.order:displayOrders')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_orders');
 
-        /**
-         * Create a new order
-         *
-         * name         : prod_order_new
-         *
-         * description  : Create a new order
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response | JSON Response
-         */
-        $controllers->post('/', $this->call('createOrder'))
+        $controllers->post('/', 'controller.prod.order:createOrder')
             ->bind('prod_order_new');
 
-        /**
-         * Display one order
-         *
-         * name         : prod_order
-         *
-         * description  : Display one order
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/{order_id}/', $this->call('displayOneOrder'))
+        $controllers->get('/{order_id}/', 'controller.prod.order:displayOneOrder')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_order')
             ->assert('order_id', '\d+');
 
-        /**
-         * Send a new order
-         *
-         * name         : prod_order_send
-         *
-         * description  : Send an order
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response | JSON Response
-         */
-        $controllers->post('/{order_id}/send/', $this->call('sendOrder'))
+        $controllers->post('/{order_id}/send/', 'controller.prod.order:sendOrder')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_order_send')
             ->assert('order_id', '\d+');
 
-        /**
-         * Deny an order
-         *
-         * name         : prod_order_deny
-         *
-         * description  : Deny an order
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response | JSON Response
-         */
-        $controllers->post('/{order_id}/deny/', $this->call('denyOrder'))
+        $controllers->post('/{order_id}/deny/', 'controller.prod.order:denyOrder')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
@@ -439,16 +375,5 @@ class Order implements ControllerProviderInterface
             'success' => (int) $success,
             'action'  => 'send'
         ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

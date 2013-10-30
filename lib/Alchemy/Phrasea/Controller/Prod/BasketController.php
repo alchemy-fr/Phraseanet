@@ -28,111 +28,58 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class BasketController implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.basket'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Get a basket
-         */
-        $controllers->get('/{basket_id}/', $this->call('displayBasket'))
+        $controllers->get('/{basket_id}/', 'controller.prod.basket:displayBasket')
             ->bind('prod_baskets_basket')
             ->assert('basket_id', '\d+');
 
-        /**
-         * This route is used to create a Basket
-         *
-         * @params name : title (mandatory)
-         * @params desc : description (optionnal)
-         * @params lst  : Phraseanet serialized record list (optionnal)
-         *
-         * @accept JSON / YAML
-         *
-         */
-        $controllers->post('/', $this->call('createBasket'))
+        $controllers->post('/', 'controller.prod.basket:createBasket')
             ->bind('prod_baskets');
 
-        /**
-         * This route is used to delete a basket
-         *
-         * @accept JSON / HTML
-         *
-         */
-        $controllers->post('/{basket_id}/delete/', $this->call('deleteBasket'))
+        $controllers->post('/{basket_id}/delete/', 'controller.prod.basket:deleteBasket')
             ->assert('basket_id', '\d+')
             ->bind('basket_delete');
 
-        /**
-         * Removes a BasketElement
-         */
-        $controllers->post('/{basket_id}/delete/{basket_element_id}/', $this->call('removeBasketElement'))
+        $controllers->post('/{basket_id}/delete/{basket_element_id}/', 'controller.prod.basket:removeBasketElement')
             ->bind('prod_baskets_basket_element_remove')
             ->assert('basket_id', '\d+')
             ->assert('basket_element_id', '\d+');
 
-        /**
-         * Update name and description of a basket
-         *
-         * @param name string mandatory
-         * @param description string optionnal
-         *
-         */
-        $controllers->post('/{basket_id}/update/', $this->call('updateBasket'))
+        $controllers->post('/{basket_id}/update/', 'controller.prod.basket:updateBasket')
             ->bind('prod_baskets_basket_update')
             ->assert('basket_id', '\d+');
 
-        /**
-         * Get the form to update the Basket attributes (name and description)
-         */
-        $controllers->get('/{basket_id}/update/', $this->call('displayUpdateForm'))
+        $controllers->get('/{basket_id}/update/', 'controller.prod.basket:displayUpdateForm')
             ->assert('basket_id', '\d+');
 
-        /**
-         * Get the Basket reorder form
-         */
-        $controllers->get('/{basket_id}/reorder/', $this->call('displayReorderForm'))
+        $controllers->get('/{basket_id}/reorder/', 'controller.prod.basket:displayReorderForm')
             ->assert('basket_id', '\d+')
             ->bind('prod_baskets_basket_reorder');
 
-        $controllers->post('/{basket_id}/reorder/', $this->call('reorder'))
+        $controllers->post('/{basket_id}/reorder/', 'controller.prod.basket:reorder')
             ->assert('basket_id', '\d+');
 
-        /**
-         * Toggle the status of a Basket
-         *
-         * @param acrhive : 0|1 (mandatory)
-         *
-         * @returns JSON / HTML
-         */
-        $controllers->post('/{basket_id}/archive/', $this->call('archiveBasket'))
+        $controllers->post('/{basket_id}/archive/', 'controller.prod.basket:archiveBasket')
             ->bind('prod_baskets_basket_archive')
             ->assert('basket_id', '\d+');
 
-        /**
-         * Add a BasketElement to a basket
-         */
-        $controllers->post('/{basket_id}/addElements/', $this->call('addElements'))
+        $controllers->post('/{basket_id}/addElements/', 'controller.prod.basket:addElements')
             ->assert('basket_id', '\d+');
 
-        /**
-         *
-         * Move Basket element from a basket to another
-         *
-         * @params elements Array : list of basket element id
-         *
-         */
-        $controllers->post('/{basket_id}/stealElements/', $this->call('stealElements'))
+        $controllers->post('/{basket_id}/stealElements/', 'controller.prod.basket:stealElements')
             ->assert('basket_id', '\d+');
 
-        /**
-         * Get basket creation form
-         */
-        $controllers->get('/create/', $this->call('displayCreateForm'))->bind('prod_baskets_create');
+        $controllers->get('/create/', 'controller.prod.basket:displayCreateForm')
+            ->bind('prod_baskets_create');
 
         return $controllers;
     }
@@ -459,16 +406,5 @@ class BasketController implements ControllerProviderInterface
     public function displayCreateForm(Application $app)
     {
         return $app['twig']->render('prod/Baskets/Create.html.twig');
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

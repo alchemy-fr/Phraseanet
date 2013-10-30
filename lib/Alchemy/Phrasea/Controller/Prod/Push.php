@@ -33,7 +33,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class Push implements ControllerProviderInterface
 {
-
     protected function getUserFormatter()
     {
         return function(\User_Adapter $user) {
@@ -104,6 +103,8 @@ class Push implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
+        $app['controller.prod.push'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {

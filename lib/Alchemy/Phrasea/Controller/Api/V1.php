@@ -25,6 +25,8 @@ class V1 implements ControllerProviderInterface
 {
     public function connect(SilexApplication $app)
     {
+        $app['controller.api.v1'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         /**

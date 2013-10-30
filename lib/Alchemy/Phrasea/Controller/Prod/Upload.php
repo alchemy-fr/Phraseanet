@@ -34,7 +34,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  */
 class Upload implements ControllerProviderInterface
 {
-
     /**
      * Connect the ControllerCollection to the Silex Application
      *
@@ -43,6 +42,8 @@ class Upload implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.upload'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -50,53 +51,13 @@ class Upload implements ControllerProviderInterface
                 ->requireRight('addrecord');
         });
 
-        /**
-         * Upload form route
-         *
-         * name         : upload_form
-         *
-         * description  : Render the html upload form
-         *
-         * method       : GET
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('getUploadForm'))
+        $controllers->get('/', 'controller.prod.upload:getUploadForm')
             ->bind('upload_form');
 
-        /**
-         * Flash upload form route
-         *
-         * name         : upload_flash_form
-         *
-         * description  : Render the html flash upload form
-         *
-         * method       : GET
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/flash-version/', $this->call('getFlashUploadForm'))
+        $controllers->get('/flash-version/', 'controller.prod.upload:getFlashUploadForm')
             ->bind('upload_flash_form');
 
-        /**
-         * UPLOAD route
-         *
-         * name         : upload
-         *
-         * description  : Initiate the upload process
-         *
-         * method       : POST
-         *
-         * parameters   : 'bas_id'        int     (mandatory) :   The id of the destination collection
-         *                'status'        array   (optional)  :   The status to set to new uploaded files
-         *                'attributes'    array   (optional)  :   Attributes id's to attach to the uploaded files
-         *                'forceBehavior' int     (optional)  :   Force upload behavior
-         *                      - 0 Force record
-         *                      - 1 Force lazaret
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/', $this->call('upload'))
+        $controllers->post('/', 'controller.prod.upload:upload')
             ->bind('upload');
 
         return $controllers;
@@ -148,6 +109,13 @@ class Upload implements ControllerProviderInterface
      *
      * @param Application $app     The Silex application
      * @param Request     $request The current request
+     *
+     * parameters   : 'bas_id'        int     (mandatory) :   The id of the destination collection
+     *                'status'        array   (optional)  :   The status to set to new uploaded files
+     *                'attributes'    array   (optional)  :   Attributes id's to attach to the uploaded files
+     *                'forceBehavior' int     (optional)  :   Force upload behavior
+     *                      - 0 Force record
+     *                      - 1 Force lazaret
      *
      * @return Response
      */
@@ -296,17 +264,6 @@ class Upload implements ControllerProviderInterface
         $response->headers->set('Content-type', 'text/html');
 
         return $response;
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 
     /**

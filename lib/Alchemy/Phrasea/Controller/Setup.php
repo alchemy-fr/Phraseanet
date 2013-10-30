@@ -26,9 +26,9 @@ class Setup implements ControllerProviderInterface
 {
     public function connect(SilexApplication $app)
     {
-        $controllers = $app['controllers_factory'];
-
         $app['controller.setup'] = $this;
+
+        $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function(Application $app) {
             return $app->redirectPath('install_root');

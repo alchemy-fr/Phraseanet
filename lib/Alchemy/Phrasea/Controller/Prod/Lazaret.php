@@ -31,7 +31,6 @@ use Symfony\Component\Filesystem\Exception\IOException;
  */
 class Lazaret implements ControllerProviderInterface
 {
-
     /**
      * Connect the ControllerCollection to the Silex Application
      *
@@ -40,6 +39,8 @@ class Lazaret implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.lazaret'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -47,118 +48,29 @@ class Lazaret implements ControllerProviderInterface
                 ->requireRight('addrecord');
         });
 
-        /**
-         * Lazaret Elements route
-         *
-         * name         : lazaret_elements
-         *
-         * description  : List all lazaret elements
-         *
-         * method       : GET
-         *
-         * parameters   : 'offset'      int (optional)  default 0   : List offset
-         *                'limit'       int (optional)  default 10  : List limit
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('listElement'))
+        $controllers->get('/', 'controller.prod.lazaret:listElement')
             ->bind('lazaret_elements');
 
-        /**
-         * Lazaret Element route
-         *
-         * name         : lazaret_element
-         *
-         * descritpion  : Get one lazaret element identified by {file_id} parameter
-         *
-         * method       : GET
-         *
-         * return       : JSON Response
-         */
-        $controllers->get('/{file_id}/', $this->call('getElement'))
+        $controllers->get('/{file_id}/', 'controller.prod.lazaret:getElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_element');
 
-        /**
-         * Lazaret Force Add route
-         *
-         * name         : lazaret_force_add
-         *
-         * description  : Move a lazaret element identified by {file_id} parameter into phraseanet
-         *
-         * method       : POST
-         *
-         * parameters   : 'bas_id'            int     (mandatory) : The id of the destination collection
-         *                'keep_attributes'   boolean (optional)  : Keep all attributes attached to the lazaret element
-         *                'attributes'        array   (optional)  : Attributes id's to attach to the lazaret element
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{file_id}/force-add/', $this->call('addElement'))
+        $controllers->post('/{file_id}/force-add/', 'controller.prod.lazaret:addElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_force_add');
 
-        /**
-         * Lazaret Deny route
-         *
-         * name         : lazaret_deny_element
-         *
-         * description  : Remove a lazaret element identified by {file_id} parameter
-         *
-         * method       : POST
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{file_id}/deny/', $this->call('denyElement'))
+        $controllers->post('/{file_id}/deny/', 'controller.prod.lazaret:denyElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_deny_element');
 
-        /**
-         * Lazaret Empty route
-         *
-         * name         : lazaret_empty
-         *
-         * description  : Empty the lazaret
-         *
-         * method       : POST
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/empty/', $this->call('emptyLazaret'))
+        $controllers->post('/empty/', 'controller.prod.lazaret:emptyLazaret')
             ->bind('lazaret_empty');
 
-        /**
-         * Lazaret Accept Route
-         *
-         * name         : lazaret_accept
-         *
-         * description  : Substitute the phraseanet record identified by
-         *                the post parameter 'record_id'by the lazaret element identified
-         *                by {file_id} parameter
-         *
-         * method       : POST
-         *
-         * parameters   : 'record_id' int (mandatory) : The substitued record
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/{file_id}/accept/', $this->call('acceptElement'))
+        $controllers->post('/{file_id}/accept/', 'controller.prod.lazaret:acceptElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_accept');
 
-        /**
-         * Lazaret Thumbnail route
-         *
-         * name         : lazaret_thumbnail
-         *
-         * descritpion  : Get the thumbnail attached to the lazaret element
-         *                identified by {file_id} parameter
-         *
-         * method       : GET
-         *
-         * return       : JSON Response
-         */
-        $controllers->get('/{file_id}/thumbnail/', $this->call('thumbnailElement'))
+        $controllers->get('/{file_id}/thumbnail/', 'controller.prod.lazaret:thumbnailElement')
             ->assert('file_id', '\d+')
             ->bind('lazaret_thumbnail');
 
@@ -236,6 +148,10 @@ class Lazaret implements ControllerProviderInterface
      * @param Application $app     A Silex application
      * @param Request     $request The current request
      * @param int         $file_id A lazaret element id
+     *
+     * parameters   : 'bas_id'            int     (mandatory) : The id of the destination collection
+     *                'keep_attributes'   boolean (optional)  : Keep all attributes attached to the lazaret element
+     *                'attributes'        array   (optional)  : Attributes id's to attach to the lazaret element
      *
      * @return Response
      */
@@ -529,16 +445,5 @@ class Lazaret implements ControllerProviderInterface
         $lazaretThumbFileName = $app['root.path'] . '/tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         return $app['phraseanet.file-serve']->deliverFile($lazaretThumbFileName, $lazaretFile->getOriginalName(), DeliverDataInterface::DISPOSITION_INLINE, 'image/jpeg', 3600);
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

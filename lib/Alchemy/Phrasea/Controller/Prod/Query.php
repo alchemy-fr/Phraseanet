@@ -26,61 +26,23 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Query implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.query'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Query Phraseanet
-         *
-         * name         : prod_query
-         *
-         * description  : Query Phraseanet
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/', $this->call('query'))
+        $controllers->post('/', 'controller.prod.query:query')
             ->bind('prod_query');
 
-        /**
-         * Get a preview answer train
-         *
-         * name         : preview_answer_train
-         *
-         * description  : Get a preview answer train
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/answer-train/', $this->call('queryAnswerTrain'))
+        $controllers->post('/answer-train/', 'controller.prod.query:queryAnswerTrain')
             ->bind('preview_answer_train');
 
-        /**
-         * Get a preview reg train
-         *
-         * name         : preview_reg_train
-         *
-         * description  : Get a preview reg train
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/reg-train/', $this->call('queryRegTrain'))
+        $controllers->post('/reg-train/', 'controller.prod.query:queryRegTrain')
             ->bind('preview_reg_train');
 
         return $controllers;
@@ -300,16 +262,5 @@ class Query implements ControllerProviderInterface
             'container_records' => $record->get_container()->get_children(),
             'record'            => $record
         )));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

@@ -25,9 +25,10 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Edit implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.prod.edit'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {

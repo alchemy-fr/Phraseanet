@@ -20,80 +20,29 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Property implements ControllerProviderInterface
 {
-
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.property'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireNotGuest();
         });
 
-        /**
-         * Display records status property
-         *
-         * name         : display_status_property
-         *
-         * description  : Display records status property
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('displayStatusProperty'))
+        $controllers->get('/', 'controller.prod.property:displayStatusProperty')
             ->bind('display_status_property');
 
-        /**
-         * Display records status property
-         *
-         * name         : display_type_property
-         *
-         * description  : Display records status property
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/type/', $this->call('displayTypeProperty'))
+        $controllers->get('/type/', 'controller.prod.property:displayTypeProperty')
             ->bind('display_type_property');
 
-        /**
-         * Change records status
-         *
-         * name         : change_status
-         *
-         * description  : Change records status
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/status/', $this->call('changeStatus'))
+        $controllers->post('/status/', 'controller.prod.property:changeStatus')
             ->bind('change_status');
 
-        /**
-         * Change records type
-         *
-         * name         : change_type
-         *
-         * description  : Change records type
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/type/', $this->call('changeType'))
+        $controllers->post('/type/', 'controller.prod.property:changeType')
             ->bind('change_type');
 
         return $controllers;
@@ -291,16 +240,5 @@ class Property implements ControllerProviderInterface
         }
 
         return null;
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

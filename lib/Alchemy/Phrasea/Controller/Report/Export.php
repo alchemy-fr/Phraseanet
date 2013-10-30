@@ -21,6 +21,8 @@ class Export implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.report.export'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
@@ -28,7 +30,7 @@ class Export implements ControllerProviderInterface
             $app['firewall']->requireAccessToModule('report');
         });
 
-        $controllers->post('/csv', $this->call('exportCSV'))
+        $controllers->post('/csv', 'controller.report.export:exportCSV')
             ->bind('report_export_csv');
 
         return $controllers;
@@ -67,15 +69,5 @@ class Export implements ControllerProviderInterface
         $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename));
 
         return $response;
-    }
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

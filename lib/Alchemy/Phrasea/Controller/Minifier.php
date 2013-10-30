@@ -21,6 +21,8 @@ class Minifier implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.minifier'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function (Application $app, Request $request) {

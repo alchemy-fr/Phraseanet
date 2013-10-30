@@ -30,45 +30,20 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Setup implements ControllerProviderInterface
 {
-
     public function connect(SilexApplication $app)
     {
+        $app['controller.admin.setup'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireAdmin();
         });
 
-        /**
-         * Get globals values
-         *
-         * name         : setup_display_globals
-         *
-         * description  : Display globals values
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/', $this->call('getGlobals'))
+        $controllers->get('/', 'controller.admin.setup:getGlobals')
             ->bind('setup_display_globals');
 
-        /**
-         * Submit global values
-         *
-         * name         : setup_submit_globals
-         *
-         * description  : Change globals values
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/', $this->call('postGlobals'))
+        $controllers->post('/', 'controller.admin.setup:postGlobals')
             ->bind('setup_submit_globals');
 
         return $controllers;
@@ -118,16 +93,5 @@ class Setup implements ControllerProviderInterface
         return $app->redirectPath('setup_display_globals', array(
             'success' => 0
         ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

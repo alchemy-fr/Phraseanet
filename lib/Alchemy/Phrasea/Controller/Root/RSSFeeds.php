@@ -23,9 +23,10 @@ use Silex\ControllerProviderInterface;
  */
 class RSSFeeds implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.rss-feeds'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) {

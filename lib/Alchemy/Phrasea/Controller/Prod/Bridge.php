@@ -21,13 +21,13 @@ class Bridge implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['bridge.controller'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireRight('bas_chupub');
         });
-
-        $app['bridge.controller'] = $this;
 
         $controllers
             ->post('/manager/', 'bridge.controller:doPostManager');

@@ -18,32 +18,20 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Download implements ControllerProviderInterface
 {
-
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.download'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Download a set of documents
-         *
-         * name         : check_download
-         *
-         * description  : Download a set of documents
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/', $this->call('checkDownload'))
+        $controllers->post('/', 'controller.prod.download:checkDownload')
             ->bind('check_download');
 
         return $controllers;
@@ -98,16 +86,5 @@ class Download implements ControllerProviderInterface
         ));
 
         return $app->redirectPath('prepare_download', array('token' => $token));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

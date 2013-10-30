@@ -22,9 +22,10 @@ use Silex\ControllerProviderInterface;
  */
 class PathFileTest implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.utils.pathfile-test'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         /**

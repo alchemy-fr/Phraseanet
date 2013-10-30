@@ -23,107 +23,31 @@ class Baskets implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.client.baskets'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Gets client baskets
-         *
-         * name         : get_client_baskets
-         *
-         * description  : fetch current user baskets
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->match('/', $this->call('getBaskets'))
+        $controllers->match('/', 'controller.client.baskets:getBaskets')
             ->method('POST|GET')
             ->bind('get_client_baskets');
 
-        /**
-         * Creates a new basket
-         *
-         * name         : client_new_basket
-         *
-         * description  : Create a new basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/new/', $this->call('createBasket'))
+        $controllers->post('/new/', 'controller.client.baskets:createBasket')
             ->bind('client_new_basket');
 
-        /**
-         * Deletes a basket
-         *
-         * name         : client_delete_basket
-         *
-         * description  : Delete a basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/delete/', $this->call('deleteBasket'))
+        $controllers->post('/delete/', 'controller.client.baskets:deleteBasket')
             ->bind('client_delete_basket');
 
-       /**
-         * Checks if client basket should be updated
-         *
-         * name         : client_basket_check
-         *
-         * description  : Update basket client
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/check/', $this->call('checkBaskets'))
+        $controllers->post('/check/', 'controller.client.baskets:checkBaskets')
             ->bind('client_basket_check');
 
-       /**
-         * Adds an element to a basket
-         *
-         * name         : client_basket_add_element
-         *
-         * description  : Add an element to a basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/add-element/', $this->call('addElementToBasket'))
+        $controllers->post('/add-element/', 'controller.client.baskets:addElementToBasket')
             ->bind('client_basket_add_element');
 
-        /**
-         * Deletes an element from a basket
-         *
-         * name         : client_basket_delete_element
-         *
-         * description  : Delete an element from a basket
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : REDIRECT Response
-         */
-        $controllers->post('/delete-element/', $this->call('deleteBasketElement'))
+        $controllers->post('/delete-element/', 'controller.client.baskets:deleteBasketElement')
             ->bind('client_basket_delete_element');
 
         return $controllers;
@@ -299,16 +223,5 @@ class Baskets implements ControllerProviderInterface
             'message' => '',
             'no_view' => $noview
         ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

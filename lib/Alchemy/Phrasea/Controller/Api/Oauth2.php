@@ -26,6 +26,8 @@ class Oauth2 implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.oauth2'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $app['oauth'] = $app->share(function($app) {

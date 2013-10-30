@@ -24,42 +24,18 @@ class Preferences implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
+        $app['controller.user.preferences'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * Save preferences
-         *
-         * name         : save_pref
-         *
-         * description  : Save User preferences
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/', $this->call('saveUserPref'))
+        $controllers->post('/', 'controller.user.preferences:saveUserPref')
             ->bind('save_pref');
 
-        /**
-         * Save temporary preferences
-         *
-         * name         : save_temp_pref
-         *
-         * description  : Save temporary preferences
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/temporary/', $this->call('saveTemporaryPref'))
+        $controllers->post('/temporary/', 'controller.user.preferences:saveTemporaryPref')
             ->bind('save_temp_pref');
 
         return $controllers;
@@ -117,16 +93,5 @@ class Preferences implements ControllerProviderInterface
         }
 
         return new JsonResponse(array('success' => $success, 'message' => $msg));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

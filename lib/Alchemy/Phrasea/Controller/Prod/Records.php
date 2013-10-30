@@ -20,81 +20,30 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Records implements ControllerProviderInterface
 {
-
     /**
      * {@inheritDoc}
      */
     public function connect(Application $app)
     {
+        $app['controller.prod.records'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireNotGuest();
         });
 
-         /**
-         * Get  the record detailed view
-         *
-         * name         : record_details
-         *
-         * description  : Get the detailed view for a specific record
-         *
-         * method       : POST|GET
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->match('/', $this->call('getRecord'))
+        $controllers->match('/', 'controller.prod.records:getRecord')
             ->bind('record_details')
             ->method('GET|POST');
 
-        /**
-         * Delete a record or a list of records
-         *
-         * name         : record_delete
-         *
-         * description  : Delete a record or a list of records
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/delete/', $this->call('doDeleteRecords'))
+        $controllers->post('/delete/', 'controller.prod.records:doDeleteRecords')
             ->bind('record_delete');
 
-        /**
-         * Verify if I can delete records
-         *
-         * name         : record_what_can_i_delete
-         *
-         * description  : Verify if I can delete records
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/delete/what/', $this->call('whatCanIDelete'))
+        $controllers->post('/delete/what/', 'controller.prod.records:whatCanIDelete')
             ->bind('record_what_can_i_delete');
 
-        /**
-         * Renew a record URL
-         *
-         * name         : record_renew_url
-         *
-         * description  : Renew a record URL
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/renew-url/', $this->call('renewUrl'))
+        $controllers->post('/renew-url/', 'controller.prod.records:renewUrl')
             ->bind('record_renew_url');
 
         return $controllers;
@@ -272,16 +221,5 @@ class Records implements ControllerProviderInterface
         };
 
         return $app->json($renewed);
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

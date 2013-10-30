@@ -24,9 +24,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class Permalink extends AbstractDelivery
 {
-
     public function connect(Application $app)
     {
+        $app['controller.permalink'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $that = $this;

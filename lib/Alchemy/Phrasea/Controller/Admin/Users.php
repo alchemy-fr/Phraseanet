@@ -25,9 +25,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Users implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.admin.users'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {

@@ -21,25 +21,14 @@ class Session implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
+        $app['controller.session'] = $this;
+
         $controllers = $app['controllers_factory'];
 
-        /**
-         * Check session state
-         *
-         * name         : update_session
-         *
-         * description  : Check session state
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/update/', $this->call('updateSession'))
+        $controllers->post('/update/', 'controller.session:updateSession')
             ->bind('update_session');
 
-        $controllers->post('/delete/{id}', $this->call('deleteSession'))
+        $controllers->post('/delete/{id}', 'controller.session:deleteSession')
             ->before(function() use ($app) {
                 $app['firewall']->requireAuthentication();
             })
@@ -165,16 +154,5 @@ class Session implements ControllerProviderInterface
         }
 
         return $app->redirectPath('account_sessions');
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }
