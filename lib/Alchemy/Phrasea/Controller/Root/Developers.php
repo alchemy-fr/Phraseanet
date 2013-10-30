@@ -25,9 +25,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class Developers implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.account.developers'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
@@ -47,7 +48,7 @@ class Developers implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/applications/', $this->call('listApps'))
+        $controllers->get('/applications/', 'controller.account.developers:listApps')
             ->bind('developers_applications');
 
         /**
@@ -63,7 +64,7 @@ class Developers implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/application/new/', $this->call('displayFormApp'))
+        $controllers->get('/application/new/', 'controller.account.developers:displayFormApp')
             ->bind('developers_application_new');
 
         /**
@@ -79,7 +80,7 @@ class Developers implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/application/', $this->call('newApp'))
+        $controllers->post('/application/', 'controller.account.developers:newApp')
             ->bind('submit_developers_application');
 
         /**
@@ -95,7 +96,7 @@ class Developers implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/application/{id}/', $this->call('getApp'))
+        $controllers->get('/application/{id}/', 'controller.account.developers:getApp')
             ->assert('id', '\d+')
             ->bind('developers_application');
 
@@ -112,7 +113,7 @@ class Developers implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->delete('/application/{id}/', $this->call('deleteApp'))
+        $controllers->delete('/application/{id}/', 'controller.account.developers:deleteApp')
             ->assert('id', '\d+')
             ->bind('delete_developers_application');
 
@@ -130,7 +131,7 @@ class Developers implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/application/{id}/authorize_grant_password/', $this->call('authorizeGrantpassword'))
+        $controllers->post('/application/{id}/authorize_grant_password/', 'controller.account.developers:authorizeGrantpassword')
             ->assert('id', '\d+')
             ->bind('submit_developers_application_authorize_grant_password');
 
@@ -147,7 +148,7 @@ class Developers implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/application/{id}/access_token/', $this->call('renewAccessToken'))
+        $controllers->post('/application/{id}/access_token/', 'controller.account.developers:renewAccessToken')
             ->assert('id', '\d+')
             ->bind('submit_developers_application_token');
 
@@ -164,7 +165,7 @@ class Developers implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/application/{id}/callback/', $this->call('renewAppCallback'))
+        $controllers->post('/application/{id}/callback/', 'controller.account.developers:renewAppCallback')
             ->assert('id', '\d+')
             ->bind('submit_application_callback');
 
@@ -380,16 +381,5 @@ class Developers implements ControllerProviderInterface
             "user"        => $app['authentication']->getUser(),
             "token"       => $token
         ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }
