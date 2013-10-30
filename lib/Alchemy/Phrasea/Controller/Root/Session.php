@@ -25,19 +25,6 @@ class Session implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        /**
-         * Check session state
-         *
-         * name         : update_session
-         *
-         * description  : Check session state
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
         $controllers->post('/update/', 'controller.session:updateSession')
             ->bind('update_session');
 

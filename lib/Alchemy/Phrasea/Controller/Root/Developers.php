@@ -35,136 +35,31 @@ class Developers implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-        /**
-         * List of apps created by the user
-         *
-         * name         : developers_applications
-         *
-         * description  : List all user applications
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/applications/', 'controller.account.developers:listApps')
             ->bind('developers_applications');
 
-        /**
-         * Get the form to create a new application
-         *
-         * name         : developers_application_new
-         *
-         * description  : Display form to create a new user application
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/application/new/', 'controller.account.developers:displayFormApp')
             ->bind('developers_application_new');
 
-        /**
-         * Create a new app
-         *
-         * name         : submit_developers_application
-         *
-         * description  : POST request to create a new user app
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/application/', 'controller.account.developers:newApp')
             ->bind('submit_developers_application');
 
-        /**
-         * Get application information
-         *
-         * name         : developers_application
-         *
-         * description  : Get application information
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->get('/application/{id}/', 'controller.account.developers:getApp')
             ->assert('id', '\d+')
             ->bind('developers_application');
 
-        /**
-         * Delete application
-         *
-         * name         : delete_developers_application
-         *
-         * description  : Delete selected application
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->delete('/application/{id}/', 'controller.account.developers:deleteApp')
             ->assert('id', '\d+')
             ->bind('delete_developers_application');
 
-        /**
-         * Allow authentification paswword grant method
-         *
-         * name         : submit_developers_application_authorize_grant_password
-         *
-         * description  : Authorize application to use a grant password type, which allow end user to
-         *                authenticate himself with their credentials (login/password)
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/application/{id}/authorize_grant_password/', 'controller.account.developers:authorizeGrantpassword')
             ->assert('id', '\d+')
             ->bind('submit_developers_application_authorize_grant_password');
 
-        /**
-         * Renew access token
-         *
-         * name         : submit_developers_application_token
-         *
-         * description  : Regenerate an access token for the current app linked to the authenticated user
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/application/{id}/access_token/', 'controller.account.developers:renewAccessToken')
             ->assert('id', '\d+')
             ->bind('submit_developers_application_token');
 
-        /**
-         * Update application callback
-         *
-         * name         : submit_application_callback
-         *
-         * description  : Change callback used by application
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
         $controllers->post('/application/{id}/callback/', 'controller.account.developers:renewAppCallback')
             ->assert('id', '\d+')
             ->bind('submit_application_callback');
