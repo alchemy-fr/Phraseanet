@@ -97,8 +97,10 @@ class task_manager
             $classname = $row['class'];
             if (!class_exists($classname)) {
                 if(substr($classname, 0, 12) == "task_period_") {
-                    $classfile = substr($classname, 12) . ".php";
-                    @require_once(__DIR__ . "/../../../config/classes/task/period/" . $classfile);
+                    $classfile = __DIR__ . "/../../../config/classes/task/period/" . substr($classname, 12) . ".php";
+                    if (file_exists($classfile)) {
+                        require_once $classfile;
+                    }
                 }
             }
             if (!class_exists($classname)) {
