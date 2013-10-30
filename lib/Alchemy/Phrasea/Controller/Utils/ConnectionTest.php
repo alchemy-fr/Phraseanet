@@ -21,9 +21,10 @@ use Silex\ControllerProviderInterface;
  */
 class ConnectionTest implements ControllerProviderInterface
 {
-
     public function connect(Application $app)
     {
+        $app['controller.utils.connection-test'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         /**
