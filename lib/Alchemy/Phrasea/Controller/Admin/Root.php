@@ -27,6 +27,8 @@ class Root implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
+        $app['controller.admin.root'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {

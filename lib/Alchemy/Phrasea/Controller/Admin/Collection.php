@@ -23,6 +23,8 @@ class Collection implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
+        $app['controller.admin.collection'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -43,7 +45,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{bas_id}/', $this->call('getCollection'))
+        $controllers->get('/{bas_id}/', 'controller.admin.collection:getCollection')
             ->assert('bas_id', '\d+')
             ->bind('admin_display_collection');
 
@@ -60,7 +62,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{bas_id}/suggested-values/', $this->call('getSuggestedValues'))
+        $controllers->get('/{bas_id}/suggested-values/', 'controller.admin.collection:getSuggestedValues')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_display_suggested_values');
 
@@ -77,7 +79,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/suggested-values/', $this->call('submitSuggestedValues'))
+        $controllers->post('/{bas_id}/suggested-values/', 'controller.admin.collection:submitSuggestedValues')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_suggested_values');
 
@@ -94,7 +96,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{bas_id}/delete/', $this->call('delete'))
+        $controllers->post('/{bas_id}/delete/', 'controller.admin.collection:delete')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete');
 
@@ -111,7 +113,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{bas_id}/enable/', $this->call('enable'))
+        $controllers->post('/{bas_id}/enable/', 'controller.admin.collection:enable')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_enable');
 
@@ -128,7 +130,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{bas_id}/disabled/', $this->call('disabled'))
+        $controllers->post('/{bas_id}/disabled/', 'controller.admin.collection:disabled')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_disable');
 
@@ -145,7 +147,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/{bas_id}/order/admins/', $this->call('setOrderAdmins'))
+        $controllers->post('/{bas_id}/order/admins/', 'controller.admin.collection:setOrderAdmins')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_order_admins');
 
@@ -162,7 +164,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{bas_id}/publication/display/', $this->call('setPublicationDisplay'))
+        $controllers->post('/{bas_id}/publication/display/', 'controller.admin.collection:setPublicationDisplay')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_publication');
 
@@ -179,11 +181,11 @@ class Collection implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{bas_id}/rename/', $this->call('rename'))
+        $controllers->post('/{bas_id}/rename/', 'controller.admin.collection:rename')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_rename');
 
-        $controllers->post('/{bas_id}/labels/', $this->call('labels'))
+        $controllers->post('/{bas_id}/labels/', 'controller.admin.collection:labels')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_labels');
 
@@ -200,7 +202,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{bas_id}/empty/', $this->call('emptyCollection'))
+        $controllers->post('/{bas_id}/empty/', 'controller.admin.collection:emptyCollection')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_empty');
 
@@ -217,7 +219,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{bas_id}/unmount/', $this->call('unmount'))
+        $controllers->post('/{bas_id}/unmount/', 'controller.admin.collection:unmount')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_unmount');
 
@@ -234,7 +236,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : REDIRECT Response
          */
-        $controllers->post('/{bas_id}/picture/mini-logo/', $this->call('setMiniLogo'))
+        $controllers->post('/{bas_id}/picture/mini-logo/', 'controller.admin.collection:setMiniLogo')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_logo');
 
@@ -251,7 +253,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{bas_id}/picture/mini-logo/delete/', $this->call('deleteLogo'))
+        $controllers->post('/{bas_id}/picture/mini-logo/delete/', 'controller.admin.collection:deleteLogo')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_logo');
 
@@ -268,7 +270,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : REDIRECT Response
          */
-        $controllers->post('/{bas_id}/picture/watermark/', $this->call('setWatermark'))
+        $controllers->post('/{bas_id}/picture/watermark/', 'controller.admin.collection:setWatermark')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_watermark');
 
@@ -285,7 +287,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{bas_id}/picture/watermark/delete/', $this->call('deleteWatermark'))
+        $controllers->post('/{bas_id}/picture/watermark/delete/', 'controller.admin.collection:deleteWatermark')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_watermark');
 
@@ -302,7 +304,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : REDIRECT Response
          */
-        $controllers->post('/{bas_id}/picture/stamp-logo/', $this->call('setStamp'))
+        $controllers->post('/{bas_id}/picture/stamp-logo/', 'controller.admin.collection:setStamp')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_stamp');
 
@@ -319,7 +321,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{bas_id}/picture/stamp-logo/delete/', $this->call('deleteStamp'))
+        $controllers->post('/{bas_id}/picture/stamp-logo/delete/', 'controller.admin.collection:deleteStamp')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_stamp');
 
@@ -336,7 +338,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : REDIRECT Response
          */
-        $controllers->post('/{bas_id}/picture/banner/', $this->call('setBanner'))
+        $controllers->post('/{bas_id}/picture/banner/', 'controller.admin.collection:setBanner')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_banner');
 
@@ -353,7 +355,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : REDIRECT Response
          */
-        $controllers->post('/{bas_id}/picture/banner/delete/', $this->call('deleteBanner'))
+        $controllers->post('/{bas_id}/picture/banner/delete/', 'controller.admin.collection:deleteBanner')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_banner');
 
@@ -370,7 +372,7 @@ class Collection implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{bas_id}/informations/details/', $this->call('getDetails'))
+        $controllers->get('/{bas_id}/informations/details/', 'controller.admin.collection:getDetails')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_display_document_details');
 
@@ -1322,16 +1324,5 @@ class Collection implements ControllerProviderInterface
             'collection' => $collection,
             'table'      => $out,
         ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

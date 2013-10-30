@@ -21,13 +21,15 @@ class ConnectedUsers implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
+        $app['controller.admin.connected-users'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('Admin');
         });
 
-        $controllers->get('/', $this->call('listConnectedUsers'))
+        $controllers->get('/', 'controller.admin.connected-users:listConnectedUsers')
             ->bind('admin_connected_users');
 
         return $controllers;
@@ -129,16 +131,5 @@ class ConnectedUsers implements ControllerProviderInterface
         );
 
         return isset($appRef[$appId]) ? $appRef[$appId] : null;
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

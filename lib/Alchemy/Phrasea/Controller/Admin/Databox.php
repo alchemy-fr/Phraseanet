@@ -26,6 +26,8 @@ class Databox implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
+        $app['controller.admin.databox'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -46,7 +48,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{databox_id}/', $this->call('getDatabase'))
+        $controllers->get('/{databox_id}/', 'controller.admin.databox:getDatabase')
             ->assert('databox_id', '\d+')
             ->bind('admin_database');
 
@@ -63,7 +65,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/{databox_id}/delete/', $this->call('deleteBase'))
+        $controllers->post('/{databox_id}/delete/', 'controller.admin.databox:deleteBase')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -82,7 +84,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/{databox_id}/unmount/', $this->call('unmountDatabase'))
+        $controllers->post('/{databox_id}/unmount/', 'controller.admin.databox:unmountDatabase')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -101,7 +103,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/{databox_id}/empty/', $this->call('emptyDatabase'))
+        $controllers->post('/{databox_id}/empty/', 'controller.admin.databox:emptyDatabase')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -120,7 +122,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{databox_id}/collections/order/', $this->call('getReorder'))
+        $controllers->get('/{databox_id}/collections/order/', 'controller.admin.databox:getReorder')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -139,7 +141,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{databox_id}/collections/order/', $this->call('setReorder'))
+        $controllers->post('/{databox_id}/collections/order/', 'controller.admin.databox:setReorder')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -158,7 +160,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{databox_id}/collection/', $this->call('createCollection'))
+        $controllers->post('/{databox_id}/collection/', 'controller.admin.databox:createCollection')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -178,13 +180,13 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{databox_id}/cgus/', $this->call('getDatabaseCGU'))
+        $controllers->get('/{databox_id}/cgus/', 'controller.admin.databox:getDatabaseCGU')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_modify_struct');
             })->bind('admin_database_display_cgus');
 
-        $controllers->post('/{databox_id}/labels/', $this->call('setLabels'))
+        $controllers->post('/{databox_id}/labels/', 'controller.admin.databox:setLabels')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -203,7 +205,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{databox_id}/cgus/', $this->call('updateDatabaseCGU'))
+        $controllers->post('/{databox_id}/cgus/', 'controller.admin.databox:updateDatabaseCGU')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_modify_struct');
@@ -222,7 +224,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{databox_id}/informations/documents/', $this->call('progressBarInfos'))
+        $controllers->get('/{databox_id}/informations/documents/', 'controller.admin.databox:progressBarInfos')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -241,7 +243,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{databox_id}/informations/details/', $this->call('getDetails'))
+        $controllers->get('/{databox_id}/informations/details/', 'controller.admin.databox:getDetails')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -260,7 +262,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{databox_id}/collection/{collection_id}/mount/', $this->call('mountCollection'))
+        $controllers->post('/{databox_id}/collection/{collection_id}/mount/', 'controller.admin.databox:mountCollection')
             ->assert('databox_id', '\d+')
             ->assert('collection_id', '\d+')
             ->before(function(Request $request) use ($app) {
@@ -280,7 +282,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{databox_id}/collection/', $this->call('getNewCollection'))
+        $controllers->get('/{databox_id}/collection/', 'controller.admin.databox:getNewCollection')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -299,7 +301,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{databox_id}/logo/', $this->call('sendLogoPdf'))
+        $controllers->post('/{databox_id}/logo/', 'controller.admin.databox:sendLogoPdf')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -318,7 +320,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{databox_id}/logo/delete/', $this->call('deleteLogoPdf'))
+        $controllers->post('/{databox_id}/logo/delete/', 'controller.admin.databox:deleteLogoPdf')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -337,7 +339,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{databox_id}/clear-logs/', $this->call('clearLogs'))
+        $controllers->post('/{databox_id}/clear-logs/', 'controller.admin.databox:clearLogs')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -356,7 +358,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{databox_id}/reindex/', $this->call('reindex'))
+        $controllers->post('/{databox_id}/reindex/', 'controller.admin.databox:reindex')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -375,7 +377,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{databox_id}/indexable/', $this->call('setIndexable'))
+        $controllers->post('/{databox_id}/indexable/', 'controller.admin.databox:setIndexable')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -394,7 +396,7 @@ class Databox implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{databox_id}/view-name/', $this->call('changeViewName'))
+        $controllers->post('/{databox_id}/view-name/', 'controller.admin.databox:changeViewName')
             ->assert('databox_id', '\d+')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
@@ -1104,16 +1106,5 @@ class Databox implements ControllerProviderInterface
             'table'   => $details,
             'total'   => $total
         ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

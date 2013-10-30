@@ -29,6 +29,8 @@ class Dashboard implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
+        $app['controller.admin.dashboard'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -48,7 +50,7 @@ class Dashboard implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('slash'))
+        $controllers->get('/', 'controller.admin.dashboard:slash')
             ->bind('admin_dashbord');
 
         /**
@@ -64,7 +66,7 @@ class Dashboard implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/flush-cache/', $this->call('flush'))
+        $controllers->post('/flush-cache/', 'controller.admin.dashboard:flush')
             ->bind('admin_dashboard_flush_cache');
 
         /**
@@ -80,7 +82,7 @@ class Dashboard implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/send-mail-test/', $this->call('sendMail'))
+        $controllers->post('/send-mail-test/', 'controller.admin.dashboard:sendMail')
             ->bind('admin_dashboard_test_mail');
 
         /**
@@ -96,7 +98,7 @@ class Dashboard implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/reset-admin-rights/', $this->call('resetAdminRights'))
+        $controllers->post('/reset-admin-rights/', 'controller.admin.dashboard:resetAdminRights')
             ->bind('admin_dashboard_reset_admin_rights');
 
         /**
@@ -112,7 +114,7 @@ class Dashboard implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/add-admins/', $this->call('addAdmins'))
+        $controllers->post('/add-admins/', 'controller.admin.dashboard:addAdmins')
             ->bind('admin_dashboard_add_admins');
 
         return $controllers;
@@ -228,16 +230,5 @@ class Dashboard implements ControllerProviderInterface
         }
 
         return $app->redirectPath('admin_dashbord');
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

@@ -33,6 +33,8 @@ class Setup implements ControllerProviderInterface
 
     public function connect(SilexApplication $app)
     {
+        $app['controller.admin.setup'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -52,7 +54,7 @@ class Setup implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('getGlobals'))
+        $controllers->get('/', 'controller.admin.setup:getGlobals')
             ->bind('setup_display_globals');
 
         /**
@@ -68,7 +70,7 @@ class Setup implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/', $this->call('postGlobals'))
+        $controllers->post('/', 'controller.admin.setup:postGlobals')
             ->bind('setup_submit_globals');
 
         return $controllers;
@@ -118,16 +120,5 @@ class Setup implements ControllerProviderInterface
         return $app->redirectPath('setup_display_globals', array(
             'success' => 0
         ));
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }

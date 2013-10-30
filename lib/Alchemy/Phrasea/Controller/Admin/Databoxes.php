@@ -28,6 +28,8 @@ class Databoxes implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
+        $app['controller.admin.databoxes'] = $this;
+
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
@@ -47,7 +49,7 @@ class Databoxes implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('getDatabases'))
+        $controllers->get('/', 'controller.admin.databoxes:getDatabases')
             ->bind('admin_databases');
 
         /**
@@ -63,7 +65,7 @@ class Databoxes implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/', $this->call('createDatabase'))
+        $controllers->post('/', 'controller.admin.databoxes:createDatabase')
             ->bind('admin_database_new')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireAdmin();
@@ -82,7 +84,7 @@ class Databoxes implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/mount/', $this->call('databaseMount'))
+        $controllers->post('/mount/', 'controller.admin.databoxes:databaseMount')
             ->bind('admin_database_mount')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireAdmin();
@@ -101,7 +103,7 @@ class Databoxes implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/upgrade/', $this->call('databasesUpgrade'))
+        $controllers->post('/upgrade/', 'controller.admin.databoxes:databasesUpgrade')
             ->bind('admin_databases_upgrade')
             ->before(function(Request $request) use ($app) {
                 $app['firewall']->requireAdmin();
@@ -349,16 +351,5 @@ class Databoxes implements ControllerProviderInterface
         } catch (\Exception $e) {
             return $app->redirectPath('admin_databases', array('success' => 0, 'error' => 'unknow'));
         }
-    }
-
-    /**
-     * Prefix the method to call with the controller class name
-     *
-     * @param  string $method The method to call
-     * @return string
-     */
-    private function call($method)
-    {
-        return sprintf('%s::%s', __CLASS__, $method);
     }
 }
