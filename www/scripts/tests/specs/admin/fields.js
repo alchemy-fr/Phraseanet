@@ -225,6 +225,15 @@ define([
 
                     assert.isTrue(view.$('input#tag').closest(".control-group").hasClass("error"));
                 });
+
+                it("should uncheck vocabulary restricted if provided vocabulary is empty", function() {
+                    var view =  this.view.render();
+
+                    view.$('input#vocabulary-restricted').attr("checked", true);
+                    view.$('input#vocabulary-type option').first().attr("selected", true);
+
+                    assert.isTrue(false === view.$('input#vocabulary-restricted').is(":checked"));
+                });
             });
 
             describe("FieldError Views", function() {
