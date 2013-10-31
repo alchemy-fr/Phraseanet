@@ -44,15 +44,6 @@ before_script:
   - sh -c "cd imagick-3.1.0RC2 && phpize && ./configure --with-imagick=/usr/local && make -j && sudo make install"
   - echo "extension=imagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
 
-notifications:
-  irc:
-    channels:
-      - "irc.freenode.org#phrasea"
-    template:
-      - "%{repository_url} %{branch} by %{author} (%{commit}) : %{message}"
-      - "Build details: %{build_url}"
-    use_notice: true
-
 php:
   - 5.3
   - 5.4
