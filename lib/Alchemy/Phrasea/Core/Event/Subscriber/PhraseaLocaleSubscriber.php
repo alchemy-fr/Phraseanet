@@ -14,7 +14,9 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 use Silex\Application;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class PhraseaLocaleSubscriber implements EventSubscriberInterface
 {
@@ -34,16 +36,19 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
                 // symfony locale is set on 16 priority, let's override it
                 array('addLocale', 17),
                 array('addLocale', 15),
-                array('removePhraseanetLocale', 14),
             ),
+            KernelEvents::RESPONSE => array(
+                array('addLocaleCookie', 8),
+            ),
+            KernelEvents::TERMINATE => array(
+                array('unsetLocale', -255),
+            )
         );
     }
 
-    public function removePhraseanetLocale(GetResponseEvent $event)
+    public function unsetLocale()
     {
-        if (isset($this->locale)) {
-            unset($this->locale);
-        }
+        $this->locale = null;
     }
 
     public function addLocale(GetResponseEvent $event)
@@ -66,7 +71,7 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
             )
         );
 
-        $this->app['locale'] = $this->locale = $this->app->share(function(Application $app) use ($event) {
+        $this->app['locale'] = $this->app->share(function(Application $app) use ($event) {
             if (isset($app['phraseanet.registry'])) {
                 $event->getRequest()->setDefaultLocale(
                     $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
@@ -102,6 +107,16 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
             return $event->getRequest()->getLocale();
         });
 
-        \phrasea::use_i18n($this->app['locale']);
+        $this->locale = $this->app['locale'];
+        \phrasea::use_i18n($this->locale);
+    }
+
+    public function addLocaleCookie(FilterResponseEvent $event)
+    {
+        $cookies = $event->getRequest()->cookies;
+
+        if (isset($this->locale) && (false === $cookies->has('locale') || $cookies->get('locale') !== $this->locale)) {
+            $event->getResponse()->headers->setCookie(new Cookie('locale', $this->locale, 0,  '/',  null, false, false));
+        }
     }
 }

@@ -91,7 +91,7 @@
                     <ul class="unstyled inline">
                         <ul class="unstyled inline">
                             <% _.each(field.labels, function(value, code) { %>
-                                <li class="lng-label <%= code === 'fr' ? 'select' : ''%>"><a href="#label_<%= code %>"><%= languages[code] %></a></li>
+                                <li class="lng-label <%= code === lng ? 'select' : ''%>"><a href="#label_<%= code %>"><%= languages[code] %></a></li>
                             <% }); %>
                         </ul>
                     </ul>

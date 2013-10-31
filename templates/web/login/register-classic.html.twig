@@ -62,7 +62,7 @@
                     <div class="row-fluid">
                         <div class="span12">
                             {% set label %}
-                                <a href="{{ path("login_cgus") }}">
+                                <a target="_blank" href="{{ path("login_cgus") }}">
                                     {% trans "I have read the terms of use" %}
                                 </a>
                             {% endset %}
@@ -71,11 +71,14 @@
                         </div>
                     </div>
 
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {{ auth_macro.selectInput(form.collections) }}
+                    {# form.collections is not defined if current instance is configured with auto collection selection #}
+                    {% if form.collections is defined %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ auth_macro.selectInput(form.collections) }}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
 
                     {{ form_rest(form) }}
 

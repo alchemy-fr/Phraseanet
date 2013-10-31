@@ -12,8 +12,13 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     public function testRouteSetLocale()
     {
-        $crawler = self::$DI['client']->request('GET', '/language/fr_CA/');
-        $response = self::$DI['client']->getResponse();
+        $cookieJar = new CookieJar();
+        $cookieJar->set(new BrowserCookie('locale', 'de_DE'));
+
+        $client = new Client(self::$DI['app'], array(), null, $cookieJar);
+        $crawler = $client->request('GET', '/language/fr_CA/');
+
+        $response = $client->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
 
         $found = false;

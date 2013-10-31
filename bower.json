@@ -23,7 +23,8 @@
         "geonames-server-jquery-plugin": "~0.2",
         "swfobject": "latest",
         "tinymce": "~4.0",
-        "jquery-galleria": "1.2.9"
+        "jquery-galleria": "1.2.9",
+        "jquery.cookie": "~1.4"
     },
     "devDependencies": {
         "mocha": "latest",

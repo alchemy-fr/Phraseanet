@@ -308,7 +308,7 @@ class Login implements ControllerProviderInterface
 
                     require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
-                    if ($app['phraseanet.registry']->get('GV_autoSelectDb')) {
+                    if ($app['phraseanet.registry']->get('GV_autoselectDB')) {
                         $selected = null;
                     } else {
                         $selected = isset($data['collections']) ? $data['collections'] : null;
@@ -385,8 +385,8 @@ class Login implements ControllerProviderInterface
 
                     $appbox_register = new \appbox_register($app['phraseanet.appbox']);
 
-                    foreach ($selected as $base_id) {
-                        if (false === $inscOK[$base_id] || $user->ACL()->has_access_to_base($base_id)) {
+                    foreach ($inscOK as $base_id => $autorisation) {
+                        if (false === $autorisation || $user->ACL()->has_access_to_base($base_id)) {
                             continue;
                         }
 
@@ -1055,10 +1055,9 @@ class Login implements ControllerProviderInterface
 
             $token = $app['auth.password-encoder']->encodePassword($string, $nonce);
 
-            $session->setToken($token)
-                ->setNonce($nonce);
-            $cookie = new Cookie('persistent', $token);
-            $response->headers->setCookie($cookie);
+            $session->setToken($token)->setNonce($nonce);
+
+            $response->headers->setCookie(new Cookie('persistent', $token));
 
             $app['EM']->persist($session);
             $app['EM']->flush();
