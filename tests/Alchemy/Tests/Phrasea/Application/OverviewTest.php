@@ -55,7 +55,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     public function testDatafilesRouteNotAuthenticated()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
 
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
@@ -79,7 +79,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     public function testDatafilesRouteNotAuthenticatedUnknownSubdef()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/notfoundreview/');
 
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
@@ -96,7 +96,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     public function testPermalinkNotAuthenticated()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
         $this->get_a_permalinkBCcompatibility(array("Content-Type" => "image/jpeg"));
         $this->get_a_permaviewBCcompatibility(array("Content-Type" => "text/html; charset=UTF-8"));
@@ -112,7 +112,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
 
     public function testCaptionNotAuthenticated()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $this->assertFalse(self::$DI['app']['authentication']->isAuthenticated());
         $this->get_a_caption(array("Content-Type" => "application/json"));
     }
@@ -213,7 +213,7 @@ class ApplicationOverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstrac
         $entry = \Feed_Entry_Adapter::create(self::$DI['app'], $publicFeed, $publisher, 'titre', 'sub titre entry', 'author name', 'author email', false);
         $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());

@@ -83,7 +83,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetRecordDetailResult()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
         self::$DI['record_24'];
 
         $options = new SearchEngineOptions();
@@ -119,7 +119,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetRecordDetailREG()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
         self::$DI['record_story_1'];
 
         $this->XMLHTTPRequest('POST', '/prod/records/', array(
@@ -149,7 +149,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetRecordDetailBasket()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
         $basket = $this->insertOneBasket();
         $record = self::$DI['record_1'];
 
@@ -191,7 +191,7 @@ class RecordsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetRecordDetailFeed()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
 
         self::$feed = \Feed_Adapter::create(
             self::$DI['app'],

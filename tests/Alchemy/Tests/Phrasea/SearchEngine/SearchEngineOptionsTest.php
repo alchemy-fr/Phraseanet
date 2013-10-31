@@ -39,7 +39,7 @@ class SearchEngineOptionsTest extends \PhraseanetPHPUnitAbstract
      */
     public function testFromRequest()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
 
         foreach ($this->provideRequestData() as $pack) {
             list ($query, $request, $field, $dateField) = $pack;

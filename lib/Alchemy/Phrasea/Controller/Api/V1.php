@@ -162,6 +162,10 @@ class V1 implements ControllerProviderInterface
             );
         });
 
+        $controllers->after(function () use ($app) {
+            $app['authentication']->closeAccount();
+        });
+
         /**
          * Method Not Allowed Closure
          */

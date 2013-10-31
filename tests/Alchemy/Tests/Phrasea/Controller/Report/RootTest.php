@@ -15,7 +15,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteDashboard()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
 
         self::$DI['client']->request('GET', '/report/dashboard');
 
@@ -26,7 +26,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteDashboardJson()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
 
         $this->XMLHTTPRequest('GET', '/report/dashboard', array(
             'dmin' => $this->dmin->format('Y-m-d H:i:s'),

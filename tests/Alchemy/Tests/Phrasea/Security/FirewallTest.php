@@ -19,7 +19,7 @@ class FirewallTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRequiredAuthNotAuthenticated()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['app']['firewall']->requireAuthentication(self::$DI['app']);
     }
 }
