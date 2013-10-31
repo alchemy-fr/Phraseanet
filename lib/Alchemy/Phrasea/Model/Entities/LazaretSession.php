@@ -159,7 +159,7 @@ class LazaretSession
     /**
      * Add files
      *
-     * @param  LazaretFile $files
+     * @param  LazaretFile    $files
      * @return LazaretSession
      */
     public function addFile(LazaretFile $files)

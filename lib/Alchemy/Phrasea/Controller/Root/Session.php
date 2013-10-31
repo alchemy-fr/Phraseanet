@@ -29,7 +29,7 @@ class Session implements ControllerProviderInterface
             ->bind('update_session');
 
         $controllers->post('/delete/{id}', 'controller.session:deleteSession')
-            ->before(function() use ($app) {
+            ->before(function () use ($app) {
                 $app['firewall']->requireAuthentication();
             })
             ->bind('delete_session');

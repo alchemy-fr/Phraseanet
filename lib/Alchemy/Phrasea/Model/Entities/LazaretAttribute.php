@@ -160,7 +160,7 @@ class LazaretAttribute
     /**
      * Set lazaretFile
      *
-     * @param  LazaretFile $lazaretFile
+     * @param  LazaretFile      $lazaretFile
      * @return LazaretAttribute
      */
     public function setLazaretFile(LazaretFile $lazaretFile = null)

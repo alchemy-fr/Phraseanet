@@ -425,10 +425,10 @@ class Manager
     /**
      * Send a package file to lazaret
      *
-     * @param  File                  $file    The package file
-     * @param  Visa                  $visa    The visa related to the package file
-     * @param  LazaretSession        $session The current LazaretSession
-     * @param  Boolean               $forced  True if the file has been forced to quarantine
+     * @param File           $file    The package file
+     * @param Visa           $visa    The visa related to the package file
+     * @param LazaretSession $session The current LazaretSession
+     * @param Boolean        $forced  True if the file has been forced to quarantine
      *
      * @return LazaretFile
      */

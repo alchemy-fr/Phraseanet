@@ -178,7 +178,7 @@ class UsrListOwner
     /**
      * Set list
      *
-     * @param  UsrList $list
+     * @param  UsrList      $list
      * @return UsrListOwner
      */
     public function setList(UsrList $list = null)

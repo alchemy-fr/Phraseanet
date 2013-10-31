@@ -27,12 +27,12 @@ class Share implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireNotGuest();
         });
 
         $controllers->get('/record/{base_id}/{record_id}/', 'controller.prod.share:shareRecord')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas(\phrasea::sbasFromBas($app, $request->attributes->get('base_id')), 'bas_chupub');
             })
             ->bind('share_record');

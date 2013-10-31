@@ -77,7 +77,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $records = array();
 
-        $postProcessRecord = function($record) use (&$records) {
+        $postProcessRecord = function ($record) use (&$records) {
                 $records[] = $record;
             };
 
@@ -87,7 +87,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $phpunit = $this;
 
-        $postProcess = function($element, $visa, $code) use ($phpunit, &$records) {
+        $postProcess = function ($element, $visa, $code) use ($phpunit, &$records) {
                 $phpunit->assertInstanceOf('\\Alchemy\Phrasea\Model\Entities\\LazaretFile', $element);
                 $phpunit->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
                 $phpunit->assertEquals(Manager::LAZARET_CREATED, $code);
@@ -96,7 +96,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']), $postProcess));
 
-        $postProcess = function($element, $visa, $code) use ($phpunit, &$records) {
+        $postProcess = function ($element, $visa, $code) use ($phpunit, &$records) {
                 $phpunit->assertInstanceOf('\\record_adapter', $element);
                 $phpunit->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
                 $phpunit->assertEquals(Manager::RECORD_CREATED, $code);
@@ -119,7 +119,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $records = array();
 
-        $postProcessRecord = function($record) use (&$records) {
+        $postProcessRecord = function ($record) use (&$records) {
                 $records[] = $record;
             };
         $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']), NULL, Manager::FORCE_LAZARET));
@@ -139,7 +139,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $records = array();
 
-        $postProcessRecord = function($record) use (&$records) {
+        $postProcessRecord = function ($record) use (&$records) {
                 $records[] = $record;
             };
 
@@ -252,7 +252,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $lazaret = null;
 
-        $postProcessRecord = function($element) use (&$lazaret) {
+        $postProcessRecord = function ($element) use (&$lazaret) {
                 $lazaret = $element;
             };
 
@@ -384,7 +384,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $phpunit = $this;
         $application = self::$DI['app'];
 
-        $postProcess = function($element, $visa, $code) use ($phpunit, $application) {
+        $postProcess = function ($element, $visa, $code) use ($phpunit, $application) {
                 $phpunit->assertInstanceOf('\\Alchemy\Phrasea\Model\Entities\\LazaretFile', $element);
 
                 /* @var $element \Alchemy\Phrasea\Model\Entities\LazaretFile */
@@ -553,7 +553,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $records = array();
 
-        $postProcessRecord = function($record) use (&$records) {
+        $postProcessRecord = function ($record) use (&$records) {
                 $records[] = $record;
             };
 

@@ -21,14 +21,14 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
 {
     public function register(SilexApplication $app)
     {
-        $app['manipulator.task'] = $app->share(function(SilexApplication $app) {
+        $app['manipulator.task'] = $app->share(function (SilexApplication $app) {
             return new TaskManipulator($app['EM'], $app['task-manager.notifier']);
         });
 
-        $app['manipulator.user'] = $app->share(function($app) {
+        $app['manipulator.user'] = $app->share(function ($app) {
             return new UserManipulator($app['model.user-manager'], $app['auth.password-encoder'], $app['geonames.connector']);
         });
-        $app['model.user-manager'] = $app->share(function($app) {
+        $app['model.user-manager'] = $app->share(function ($app) {
             return new UserManager($app['EM'], $app['phraseanet.appbox']->get_connection());
         });
     }

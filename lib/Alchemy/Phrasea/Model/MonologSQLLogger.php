@@ -37,8 +37,8 @@ class MonologSQLLogger implements SQLLogger
     /**
      * Tell which monolog user to use and which format to output
      *
-     * @param LoggerInterface   $logger A monolog logger instance
-     * @param string            $type   the output format
+     * @param LoggerInterface $logger A monolog logger instance
+     * @param string          $type   the output format
      */
     public function __construct(LoggerInterface $logger, $type = self::YAML)
     {

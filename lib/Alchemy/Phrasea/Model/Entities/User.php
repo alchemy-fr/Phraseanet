@@ -953,7 +953,7 @@ class User
      * Retrieves user setting value.
      *
      * @param string $name
-     * @param mixed $default
+     * @param mixed  $default
      *
      * @return string
      */

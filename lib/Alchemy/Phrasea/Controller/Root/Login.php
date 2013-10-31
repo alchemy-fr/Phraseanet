@@ -52,7 +52,7 @@ class Login implements ControllerProviderInterface
     {
         $items = array();
 
-        foreach($app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->loadLatest($app, 20) as $item) {
+        foreach ($app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->loadLatest($app, 20) as $item) {
             $record = $item->getRecord($app);
             $preview = $record->get_subdef('preview');
             $permalink = $preview->get_permalink();
@@ -93,7 +93,7 @@ class Login implements ControllerProviderInterface
 
         $app['login.controller'] = $this;
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             if ($request->getPathInfo() == $app->path('homepage')) {
                 return;
             }
@@ -101,7 +101,7 @@ class Login implements ControllerProviderInterface
 
         // Displays the homepage
         $controllers->get('/', 'login.controller:login')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                     $app['firewall']->requireNotAuthenticated();
 
                     if (null !== $request->query->get('postlog')) {
@@ -126,14 +126,14 @@ class Login implements ControllerProviderInterface
 
         // Authentication end point
         $controllers->post('/authenticate/', 'login.controller:authenticate')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })
             ->bind('login_authenticate');
 
         // Guest access end point
         $controllers->match('/authenticate/guest/', 'login.controller:authenticateAsGuest')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })
             ->bind('login_authenticate_as_guest')
@@ -141,67 +141,67 @@ class Login implements ControllerProviderInterface
 
         // Authenticate with an AuthProvider
         $controllers->get('/provider/{providerId}/authenticate/', 'login.controller:authenticateWithProvider')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })
             ->bind('login_authentication_provider_authenticate');
 
         // AuthProviders callbacks
         $controllers->get('/provider/{providerId}/callback/', 'login.controller:authenticationCallback')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_authentication_provider_callback');
 
         // Logout end point
         $controllers->get('/logout/', 'login.controller:logout')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireAuthentication();
             })->bind('logout');
 
         // Registration end point ; redirects to classic registration or AuthProvider registration
         $controllers->get('/register/', 'login.controller:displayRegisterForm')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_register');
 
         // Classic registration end point
         $controllers->match('/register-classic/', 'login.controller:doRegistration')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })
             ->bind('login_register_classic');
 
         // Provide a JSON serialization of registration fields configuration
-        $controllers->get('/registration-fields/', function(PhraseaApplication $app, Request $request) {
+        $controllers->get('/registration-fields/', function (PhraseaApplication $app, Request $request) {
             return $app->json($app['registration.fields']);
         })->bind('login_registration_fields');
 
         // Unlocks an email address that is currently locked
         $controllers->get('/register-confirm/', 'login.controller:registerConfirm')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_register_confirm');
 
         // Displays a form to send an account unlock email again
         $controllers->get('/send-mail-confirm/', 'login.controller:sendConfirmMail')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_send_mail');
 
         // Forgot password end point
         $controllers->match('/forgot-password/', 'login.controller:forgotPassword')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_forgot_password');
 
         // Renew password end point
         $controllers->match('/renew-password/', 'login.controller:renewPassword')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireNotAuthenticated();
             })->bind('login_renew_password');
 
         // Displays Terms of use
-        $controllers->get('/cgus', function(PhraseaApplication $app, Request $request) {
+        $controllers->get('/cgus', function (PhraseaApplication $app, Request $request) {
             return $app['twig']->render('login/cgus.html.twig', array_merge(
                 array('cgus' => \databox_cgu::getHome($app)),
                 self::getDefaultTemplateVariables($app)

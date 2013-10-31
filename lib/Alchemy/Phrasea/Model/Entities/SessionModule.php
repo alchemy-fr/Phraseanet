@@ -132,7 +132,7 @@ class SessionModule
     /**
      * Set session
      *
-     * @param  Session $session
+     * @param  Session       $session
      * @return SessionModule
      */
     public function setSession(Session $session = null)

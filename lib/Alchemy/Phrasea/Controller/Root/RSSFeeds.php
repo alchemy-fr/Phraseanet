@@ -29,7 +29,7 @@ class RSSFeeds implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) {
+        $controllers->get('/feed/{id}/{format}/', function (Application $app, $id, $format) {
             $feed = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->find($id);
 
             if (null === $feed) {
@@ -51,7 +51,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('id', '\d+')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) {
+        $controllers->get('/userfeed/{token}/{id}/{format}/', function (Application $app, $token, $id, $format) {
             $token = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\FeedToken', $id);
 
             $request = $app['request'];
@@ -66,7 +66,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('id', '\d+')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) {
+        $controllers->get('/userfeed/aggregated/{token}/{format}/', function (Application $app, $token, $format) {
             $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(array("value" => $token));
 
             $user = \User_Adapter::getInstance($token->getUsrId(), $app);
@@ -85,7 +85,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->bind('feed_user_aggregated')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/aggregated/{format}/', function(Application $app, $format) {
+        $controllers->get('/aggregated/{format}/', function (Application $app, $format) {
             $feed = Aggregate::getPublic($app);
 
             $request = $app['request'];
@@ -97,7 +97,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->bind('feed_public_aggregated')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/cooliris/', function(Application $app) {
+        $controllers->get('/cooliris/', function (Application $app) {
             $feed = Aggregate::getPublic($app);
 
             $request = $app['request'];

@@ -23,14 +23,14 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['task-manager.logger'] = $app->share(function(Application $app) {
+        $app['task-manager.logger'] = $app->share(function (Application $app) {
             $logger = new Logger('task-manager logger');
             $logger->pushHandler(new NullHandler());
 
             return $logger;
         });
 
-        $app['task-manager'] = $app->share(function(Application $app) {
+        $app['task-manager'] = $app->share(function (Application $app) {
             $options = $app['task-manager.listener.options'];
 
             return TaskManager::create(
@@ -45,7 +45,7 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
             );
         });
 
-        $app['task-manager.task-list'] = $app->share(function(Application $app) {
+        $app['task-manager.task-list'] = $app->share(function (Application $app) {
             $conf = $app['phraseanet.registry']->get('GV_PHP_INI', null);
             $finder = new PhpExecutableFinder();
             $php = $finder->find();

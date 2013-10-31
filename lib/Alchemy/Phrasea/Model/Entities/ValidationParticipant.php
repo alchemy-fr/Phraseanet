@@ -244,7 +244,7 @@ class ValidationParticipant
     /**
      * Add datas
      *
-     * @param  ValidationData $datas
+     * @param  ValidationData        $datas
      * @return ValidationParticipant
      */
     public function addData(ValidationData $datas)
@@ -277,7 +277,7 @@ class ValidationParticipant
     /**
      * Set session
      *
-     * @param  ValidationSession $session
+     * @param  ValidationSession     $session
      * @return ValidationParticipant
      */
     public function setSession(ValidationSession $session = null)

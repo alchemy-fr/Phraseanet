@@ -438,7 +438,7 @@ class Session
     /**
      * Get a module by its identifier
      *
-     * @param  integer                     $moduleId
+     * @param  integer                                           $moduleId
      * @return Alchemy\Phrasea\Model\Entities\SessionModule|null
      */
     public function getModuleById($moduleId)

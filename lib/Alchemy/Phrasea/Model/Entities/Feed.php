@@ -548,7 +548,7 @@ class Feed implements FeedInterface
      *
      * Returns a boolean indicating whether a given user has access to the feed
      *
-     * @param \User_Adapter $user
+     * @param \User_Adapter                $user
      * @param \Alchemy\Phrasea\Application $app
      *
      * @return boolean
@@ -561,6 +561,7 @@ class Feed implements FeedInterface
             || in_array($coll->get_base_id(), array_keys($user->ACL()->get_granted_base()))) {
                 return true;
             }
+
         return false;
     }
 }

@@ -32,9 +32,9 @@ class TaskManipulator implements ManipulatorInterface
     /**
      * Creates a Task.
      *
-     * @param string $name
-     * @param string $jobId
-     * @param string $settings
+     * @param string  $name
+     * @param string  $jobId
+     * @param string  $settings
      * @param integer $period
      *
      * @return Task

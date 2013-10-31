@@ -43,7 +43,7 @@ class ORMServiceProvider implements ServiceProviderInterface
             return new MonologSQLLogger($logger, 'yaml');
         });
 
-        $app['EM.driver'] = $app->share(function(Application $app) {
+        $app['EM.driver'] = $app->share(function (Application $app) {
             AnnotationRegistry::registerFile(
                 $app['root.path'].'/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
             );
@@ -71,7 +71,7 @@ class ORMServiceProvider implements ServiceProviderInterface
             return $driverChain;
         });
 
-        $app['EM.config'] = $app->share(function(Application $app) {
+        $app['EM.config'] = $app->share(function (Application $app) {
             $config = new ORMConfiguration();
 
             if ($app['debug']) {
@@ -99,27 +99,27 @@ class ORMServiceProvider implements ServiceProviderInterface
             return $config;
         });
 
-        $app['EM.opcode-cache-type'] = $app->share(function(Application $app) {
+        $app['EM.opcode-cache-type'] = $app->share(function (Application $app) {
             return $app['phraseanet.configuration']['main']['opcodecache']['type'];
         });
-        $app['EM.opcode-cache-options'] = $app->share(function(Application $app) {
+        $app['EM.opcode-cache-options'] = $app->share(function (Application $app) {
             return $app['phraseanet.configuration']['main']['opcodecache']['options'];
         });
 
-        $app['EM.cache-type'] = $app->share(function(Application $app) {
+        $app['EM.cache-type'] = $app->share(function (Application $app) {
             return $app['phraseanet.configuration']['main']['cache']['type'];
         });
-        $app['EM.cache-options'] = $app->share(function(Application $app) {
+        $app['EM.cache-options'] = $app->share(function (Application $app) {
             return $app['phraseanet.configuration']['main']['cache']['options'];
         });
-        $app['EM.events-manager'] = $app->share(function(Application $app) {
+        $app['EM.events-manager'] = $app->share(function (Application $app) {
             $evm = new EventManager();
             $evm->addEventSubscriber(new TimestampableListener());
 
             return $evm;
         });
 
-        $app['EM.dbal-conf'] = $app->share(function(Application $app) {
+        $app['EM.dbal-conf'] = $app->share(function (Application $app) {
             if ('test' === $app->getEnvironment()) {
                 return $app['phraseanet.configuration']['main']['database-test'];
             }
@@ -127,7 +127,7 @@ class ORMServiceProvider implements ServiceProviderInterface
             return $app['phraseanet.configuration']['main']['database'];
         });
 
-        $app['EM'] = $app->share(function(Application $app) {
+        $app['EM'] = $app->share(function (Application $app) {
             try {
                 $em = EntityManager::create($app['EM.dbal-conf'], $app['EM.config'], $app['EM.events-manager']);
             } catch (\Exception $e) {

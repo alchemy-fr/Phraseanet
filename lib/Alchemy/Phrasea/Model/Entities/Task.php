@@ -101,7 +101,7 @@ class Task
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string $name
      * @return Task
      */
     public function setName($name)
@@ -124,7 +124,7 @@ class Task
     /**
      * Set JobId
      *
-     * @param string $jobId
+     * @param  string $jobId
      * @return Task
      */
     public function setJobId($jobId)
@@ -147,7 +147,7 @@ class Task
     /**
      * Set settings
      *
-     * @param string $settings
+     * @param  string $settings
      * @return Task
      */
     public function setSettings($settings)
@@ -170,7 +170,7 @@ class Task
     /**
      * Set completed
      *
-     * @param boolean $completed
+     * @param  boolean $completed
      * @return Task
      */
     public function setCompleted($completed)
@@ -193,7 +193,7 @@ class Task
     /**
      * Set status
      *
-     * @param string $status
+     * @param  string $status
      * @return Task
      */
     public function setStatus($status)
@@ -220,7 +220,7 @@ class Task
     /**
      * Set crashed
      *
-     * @param integer $crashed
+     * @param  integer $crashed
      * @return Task
      */
     public function setCrashed($crashed)
@@ -266,7 +266,7 @@ class Task
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param  \DateTime $created
      * @return Task
      */
     public function setCreated($created)
@@ -289,7 +289,7 @@ class Task
     /**
      * Set updated
      *
-     * @param \DateTime $updated
+     * @param  \DateTime $updated
      * @return Task
      */
     public function setUpdated($updated)
@@ -312,7 +312,7 @@ class Task
     /**
      * Set last execution
      *
-     * @param \DateTime $lastExecution
+     * @param  \DateTime $lastExecution
      * @return Task
      */
     public function setExecuted($lastExecution)

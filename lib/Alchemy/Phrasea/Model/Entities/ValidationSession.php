@@ -194,7 +194,7 @@ class ValidationSession
     /**
      * Set basket
      *
-     * @param  Basket  $basket
+     * @param  Basket            $basket
      * @return ValidationSession
      */
     public function setBasket(Basket $basket = null)

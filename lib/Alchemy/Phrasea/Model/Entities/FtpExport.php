@@ -144,7 +144,7 @@ class FtpExport
     /**
      * Set crash
      *
-     * @param  integer   $crash
+     * @param integer $crash
      *
      * @return FtpExport
      */
@@ -180,7 +180,7 @@ class FtpExport
     /**
      * Set nbretry
      *
-     * @param  integer   $nbretry
+     * @param integer $nbretry
      *
      * @return FtpExport
      */
@@ -204,7 +204,7 @@ class FtpExport
     /**
      * Set mail
      *
-     * @param  string    $mail
+     * @param string $mail
      *
      * @return FtpExport
      */
@@ -228,7 +228,7 @@ class FtpExport
     /**
      * Set addr
      *
-     * @param  string    $addr
+     * @param string $addr
      *
      * @return FtpExport
      */
@@ -252,7 +252,7 @@ class FtpExport
     /**
      * Set ssl
      *
-     * @param  boolean   $ssl
+     * @param boolean $ssl
      *
      * @return FtpExport
      */
@@ -276,7 +276,7 @@ class FtpExport
     /**
      * Set login
      *
-     * @param  string    $login
+     * @param string $login
      *
      * @return FtpExport
      */
@@ -300,7 +300,7 @@ class FtpExport
     /**
      * Set pwd
      *
-     * @param  string    $pwd
+     * @param string $pwd
      *
      * @return FtpExport
      */
@@ -324,7 +324,7 @@ class FtpExport
     /**
      * Set passif
      *
-     * @param  boolean   $passif
+     * @param boolean $passif
      *
      * @return FtpExport
      */
@@ -348,7 +348,7 @@ class FtpExport
     /**
      * Set destfolder
      *
-     * @param  string    $destfolder
+     * @param string $destfolder
      *
      * @return FtpExport
      */
@@ -372,7 +372,7 @@ class FtpExport
     /**
      * Set sendermail
      *
-     * @param  string    $sendermail
+     * @param string $sendermail
      *
      * @return FtpExport
      */
@@ -396,7 +396,7 @@ class FtpExport
     /**
      * Set textMailSender
      *
-     * @param  string    $textMailSender
+     * @param string $textMailSender
      *
      * @return FtpExport
      */
@@ -420,7 +420,7 @@ class FtpExport
     /**
      * Set textMailReceiver
      *
-     * @param  string    $textMailReceiver
+     * @param string $textMailReceiver
      *
      * @return FtpExport
      */
@@ -444,7 +444,7 @@ class FtpExport
     /**
      * Set usrId
      *
-     * @param  integer   $usrId
+     * @param integer $usrId
      *
      * @return FtpExport
      */
@@ -478,7 +478,7 @@ class FtpExport
     /**
      * Set user
      *
-     * @param  \User_Adapter $user
+     * @param \User_Adapter $user
      *
      * @return FtpExport
      */
@@ -492,7 +492,7 @@ class FtpExport
     /**
      * Set foldertocreate
      *
-     * @param  string    $foldertocreate
+     * @param string $foldertocreate
      *
      * @return FtpExport
      */
@@ -516,7 +516,7 @@ class FtpExport
     /**
      * Set logfile
      *
-     * @param  boolean   $logfile
+     * @param boolean $logfile
      *
      * @return FtpExport
      */
@@ -540,7 +540,7 @@ class FtpExport
     /**
      * Set created
      *
-     * @param  \DateTime $created
+     * @param \DateTime $created
      *
      * @return FtpExport
      */
@@ -564,7 +564,7 @@ class FtpExport
     /**
      * Set updated
      *
-     * @param  \DateTime $updated
+     * @param \DateTime $updated
      *
      * @return FtpExport
      */
@@ -588,7 +588,7 @@ class FtpExport
     /**
      * Add elements
      *
-     * @param  FtpExportElement $elements
+     * @param FtpExportElement $elements
      *
      * @return FtpExport
      */

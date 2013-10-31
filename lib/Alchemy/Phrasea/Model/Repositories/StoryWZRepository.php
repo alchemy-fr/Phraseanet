@@ -46,7 +46,7 @@ class StoryWZRepository extends EntityRepository
                 $sortedStories[] = $story->getRecord($app)->get_title();
             }
 
-            uasort($sortedStories, function($a, $b) {
+            uasort($sortedStories, function ($a, $b) {
                     if ($a == $b) {
                         return 0;
                     }

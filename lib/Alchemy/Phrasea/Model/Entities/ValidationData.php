@@ -160,7 +160,7 @@ class ValidationData
     /**
      * Set basket_element
      *
-     * @param  BasketElement $basketElement
+     * @param  BasketElement  $basketElement
      * @return ValidationData
      */
     public function setBasketElement(BasketElement $basketElement = null)

@@ -35,7 +35,7 @@ class Push implements ControllerProviderInterface
 {
     protected function getUserFormatter()
     {
-        return function(\User_Adapter $user) {
+        return function (\User_Adapter $user) {
             $subtitle = array_filter(array($user->get_job(), $user->get_company()));
 
             return array(
@@ -54,7 +54,7 @@ class Push implements ControllerProviderInterface
     {
         $userFormatter = $this->getUserFormatter();
 
-        return function(UsrList $List) use ($userFormatter, $app) {
+        return function (UsrList $List) use ($userFormatter, $app) {
             $entries = array();
 
             foreach ($List->getEntries() as $entry) {
@@ -77,7 +77,7 @@ class Push implements ControllerProviderInterface
 
     protected function getUsersInSelectionExtractor()
     {
-        return function(array $selection) {
+        return function (array $selection) {
             $Users = new \Doctrine\Common\Collections\ArrayCollection();
 
             foreach ($selection as $record) {
@@ -107,7 +107,7 @@ class Push implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication()
                 ->requireRight('push');
         });
@@ -118,7 +118,7 @@ class Push implements ControllerProviderInterface
 
         $userSelection = $this->getUsersInSelectionExtractor();
 
-        $controllers->post('/sendform/', function(Application $app) use ($userSelection) {
+        $controllers->post('/sendform/', function (Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
@@ -136,7 +136,7 @@ class Push implements ControllerProviderInterface
             return $app['twig']->render('prod/actions/Push.html.twig', $params);
         });
 
-        $controllers->post('/validateform/', function(Application $app) use ($userSelection) {
+        $controllers->post('/validateform/', function (Application $app) use ($userSelection) {
             $push = new RecordHelper\Push($app, $app['request']);
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
@@ -154,7 +154,7 @@ class Push implements ControllerProviderInterface
             return $app['twig']->render('prod/actions/Push.html.twig', $params);
         });
 
-        $controllers->post('/send/', function(Application $app) {
+        $controllers->post('/send/', function (Application $app) {
             $request = $app['request'];
 
             $ret = array(
@@ -269,7 +269,7 @@ class Push implements ControllerProviderInterface
             return $app->json($ret);
         })->bind('prod_push_send');
 
-        $controllers->post('/validate/', function(Application $app) {
+        $controllers->post('/validate/', function (Application $app) {
             $request = $app['request'];
 
             $ret = array(
@@ -471,7 +471,7 @@ class Push implements ControllerProviderInterface
             return $app->json($ret);
         })->bind('prod_push_validate');
 
-        $controllers->get('/user/{usr_id}/', function(Application $app, $usr_id) use ($userFormatter) {
+        $controllers->get('/user/{usr_id}/', function (Application $app, $usr_id) use ($userFormatter) {
             $datas = null;
 
             $request = $app['request'];
@@ -495,7 +495,7 @@ class Push implements ControllerProviderInterface
             return $app->json($datas);
         })->assert('usr_id', '\d+');
 
-        $controllers->get('/list/{list_id}/', function(Application $app, $list_id) use ($listFormatter) {
+        $controllers->get('/list/{list_id}/', function (Application $app, $list_id) use ($listFormatter) {
             $datas = null;
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
@@ -511,7 +511,7 @@ class Push implements ControllerProviderInterface
             ->bind('prod_push_lists_list')
             ->assert('list_id', '\d+');
 
-        $controllers->post('/add-user/', function(Application $app, Request $request) use ($userFormatter) {
+        $controllers->post('/add-user/', function (Application $app, Request $request) use ($userFormatter) {
             $result = array('success' => false, 'message' => '', 'user'    => null);
 
             try {
@@ -576,13 +576,13 @@ class Push implements ControllerProviderInterface
             return $app->json($result);
         })->bind('prod_push_do_add_user');
 
-        $controllers->get('/add-user/', function(Application $app, Request $request) {
+        $controllers->get('/add-user/', function (Application $app, Request $request) {
             $params = array('callback' => $request->query->get('callback'));
 
             return $app['twig']->render('prod/User/Add.html.twig', $params);
         })->bind('prod_push_add_user');
 
-        $controllers->get('/search-user/', function(Application $app) use ($userFormatter, $listFormatter) {
+        $controllers->get('/search-user/', function (Application $app) use ($userFormatter, $listFormatter) {
             $request = $app['request'];
 
             $query = new \User_Query($app);
@@ -619,7 +619,7 @@ class Push implements ControllerProviderInterface
             return $app->json($datas);
         });
 
-        $controllers->match('/edit-list/{list_id}/', function(Application $app, Request $request, $list_id) {
+        $controllers->match('/edit-list/{list_id}/', function (Application $app, Request $request, $list_id) {
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 

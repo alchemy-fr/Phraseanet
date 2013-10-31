@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="FeedTokens")
@@ -79,7 +78,7 @@ class FeedToken
     /**
      * Set feed
      *
-     * @param  Feed $feed
+     * @param  Feed      $feed
      * @return FeedToken
      */
     public function setFeed(Feed $feed = null)

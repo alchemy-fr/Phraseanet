@@ -19,7 +19,7 @@ class ConvertersServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['converter.task'] = $app->share(function($app) {
+        $app['converter.task'] = $app->share(function ($app) {
             return new TaskConverter($app['EM']);
         });
     }

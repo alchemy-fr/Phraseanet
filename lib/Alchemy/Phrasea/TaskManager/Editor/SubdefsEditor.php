@@ -22,7 +22,7 @@ class SubdefsEditor extends AbstractEditor
     {
         return 'admin/task-manager/task-editor/subdefs.html.twig';
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -30,7 +30,7 @@ class SubdefsEditor extends AbstractEditor
     {
         return 10;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -43,7 +43,7 @@ class SubdefsEditor extends AbstractEditor
 </tasksettings>
 EOF;
     }
-    
+
     /**
      * {@inheritdoc}
      */

@@ -79,6 +79,7 @@ class TaskManagerStatus
     {
         if (!isset($this->conf['task-manager'])) {
             $this->conf['task-manager'] = array('status' => static::STATUS_STARTED);
+
             return;
         }
         if (!isset($this->conf['task-manager']['status'])) {

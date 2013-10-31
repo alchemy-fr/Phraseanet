@@ -365,7 +365,7 @@ class Basket
     /**
      * Set order
      *
-     * @param  Order $order
+     * @param  Order  $order
      * @return Basket
      */
     public function setOrder(Order $order = null)

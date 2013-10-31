@@ -24,29 +24,29 @@ class FeedServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['feed.user-link-generator'] = $app->share(function($app) {
+        $app['feed.user-link-generator'] = $app->share(function ($app) {
             return new FeedLinkGenerator($app['url_generator'], $app['EM'], $app['tokens']);
         });
-        $app['feed.aggregate-link-generator'] = $app->share(function($app) {
+        $app['feed.aggregate-link-generator'] = $app->share(function ($app) {
             return new AggregateLinkGenerator($app['url_generator'], $app['EM'], $app['tokens']);
         });
-        $app['feed.link-generator-collection'] = $app->share(function($app) {
+        $app['feed.link-generator-collection'] = $app->share(function ($app) {
             $collection = new LinkGeneratorCollection();
             $collection->pushGenerator($app['feed.user-link-generator']);
             $collection->pushGenerator($app['feed.aggregate-link-generator']);
 
             return $collection;
         });
-        $app['feed.rss-formatter'] = $app->share(function($app) {
+        $app['feed.rss-formatter'] = $app->share(function ($app) {
             return new RssFormatter($app['feed.link-generator-collection']);
         });
-        $app['feed.atom-formatter'] = $app->share(function($app) {
+        $app['feed.atom-formatter'] = $app->share(function ($app) {
             return new AtomFormatter($app['feed.link-generator-collection']);
         });
-        $app['feed.cooliris-formatter'] = $app->share(function($app) {
+        $app['feed.cooliris-formatter'] = $app->share(function ($app) {
             return new CoolirisFormatter($app['feed.link-generator-collection']);
         });
-        $app['feed.formatter-strategy'] = $app->protect(function($type) use ($app) {
+        $app['feed.formatter-strategy'] = $app->protect(function ($type) use ($app) {
             switch ($type) {
                 case 'rss':
                     return $app['feed.rss-formatter'];

@@ -36,18 +36,18 @@ class Feed implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        $controllers->post('/requestavailable/', function(Application $app, Request $request) {
+        $controllers->post('/requestavailable/', function (Application $app, Request $request) {
             $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['authentication']->getUser());
             $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
 
             return $app['twig']->render('prod/actions/publish/publish.html.twig', array('publishing' => $publishing, 'feeds' => $feeds));
         });
 
-        $controllers->post('/entry/create/', function(Application $app, Request $request) {
+        $controllers->post('/entry/create/', function (Application $app, Request $request) {
             $feed = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->find($request->request->get('feed_id'));
 
             if (null === $feed) {
@@ -95,11 +95,11 @@ class Feed implements ControllerProviderInterface
             return $app->json($datas);
         })
             ->bind('prod_feeds_entry_create')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');
             });
 
-        $controllers->get('/entry/{id}/edit/', function(Application $app, Request $request, $id) {
+        $controllers->get('/entry/{id}/edit/', function (Application $app, Request $request, $id) {
             $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($id);
 
             if (!$entry->isPublisher($app['authentication']->getUser())) {
@@ -114,11 +114,11 @@ class Feed implements ControllerProviderInterface
         })
             ->bind('feed_entry_edit')
             ->assert('id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');
             });
 
-        $controllers->post('/entry/{id}/update/', function(Application $app, Request $request, $id) {
+        $controllers->post('/entry/{id}/update/', function (Application $app, Request $request, $id) {
             $datas = array('error' => true, 'message' => '', 'datas' => '');
             $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($id);
 
@@ -177,11 +177,11 @@ class Feed implements ControllerProviderInterface
             ));
         })
             ->bind('prod_feeds_entry_update')
-            ->assert('id', '\d+')->before(function(Request $request) use ($app) {
+            ->assert('id', '\d+')->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');
             });
 
-        $controllers->post('/entry/{id}/delete/', function(Application $app, Request $request, $id) {
+        $controllers->post('/entry/{id}/delete/', function (Application $app, Request $request, $id) {
             $datas = array('error' => true, 'message' => '');
 
             $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($id);
@@ -199,11 +199,11 @@ class Feed implements ControllerProviderInterface
             return $app->json(array('error' => false, 'message' => 'succes'));
         })
             ->bind('prod_feeds_entry_delete')
-            ->assert('id', '\d+')->before(function(Request $request) use ($app) {
+            ->assert('id', '\d+')->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRight('bas_chupub');
             });
 
-        $controllers->get('/', function(Application $app, Request $request) {
+        $controllers->get('/', function (Application $app, Request $request) {
             $request = $app['request'];
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
@@ -219,7 +219,7 @@ class Feed implements ControllerProviderInterface
             return new Response($datas);
         })->bind('prod_feeds');
 
-        $controllers->get('/feed/{id}/', function(Application $app, Request $request, $id) {
+        $controllers->get('/feed/{id}/', function (Application $app, Request $request, $id) {
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
@@ -236,7 +236,7 @@ class Feed implements ControllerProviderInterface
             ->bind('prod_feeds_feed')
             ->assert('id', '\d+');
 
-        $controllers->get('/subscribe/aggregated/', function(Application $app, Request $request) {
+        $controllers->get('/subscribe/aggregated/', function (Application $app, Request $request) {
             $renew = ($request->query->get('renew') === 'true');
 
             $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['authentication']->getUser());
@@ -257,7 +257,7 @@ class Feed implements ControllerProviderInterface
             return $app->json($output);
         })->bind('prod_feeds_subscribe_aggregated');
 
-        $controllers->get('/subscribe/{id}/', function(Application $app, Request $request, $id) {
+        $controllers->get('/subscribe/{id}/', function (Application $app, Request $request, $id) {
             $renew = ($request->query->get('renew') === 'true');
 
             $feed = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->find($id);

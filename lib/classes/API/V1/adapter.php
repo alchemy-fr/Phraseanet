@@ -180,7 +180,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get informations about an identified task
      *
-     * @param  \Silex\Application $app    The API silex application
+     * @param  \Silex\Application $app  The API silex application
      * @param  Task               $task
      * @return \API_V1_result
      */
@@ -196,8 +196,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Start a specified task
      *
-     * @param  \Silex\Application $app    The API silex application
-     * @param  Task            $task The task to start
+     * @param  \Silex\Application $app  The API silex application
+     * @param  Task               $task The task to start
      * @return \API_V1_result
      */
     public function start_task(Application $app, Task $task)
@@ -213,8 +213,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Stop a specified task
      *
-     * @param  \Silex\Application $app    The API silex application
-     * @param  Task            $task The task to stop
+     * @param  \Silex\Application $app  The API silex application
+     * @param  Task               $task The task to stop
      * @return \API_V1_result
      */
     public function stop_task(Application $app, Task $task)
@@ -232,8 +232,8 @@ class API_V1_adapter extends API_V1_Abstract
      *  - name
      *  - autostart
      *
-     * @param  \Silex\Application           $app    Silex application
-     * @param  Task                         $task   The task
+     * @param  \Silex\Application           $app  Silex application
+     * @param  Task                         $task The task
      * @return \API_V1_result
      * @throws \API_V1_exception_badrequest
      */
