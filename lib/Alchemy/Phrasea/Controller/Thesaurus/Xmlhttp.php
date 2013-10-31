@@ -26,11 +26,16 @@ class Xmlhttp implements ControllerProviderInterface
 
         $controllers->before(function () use ($app) {
             $app['firewall']->requireAuthentication();
-            $app['firewall']->requireAccessToModule('thesaurus');
         });
 
-        $controllers->match('acceptcandidates.j.php', $this->call('AcceptCandidatesJson'));
-        $controllers->match('checkcandidatetarget.j.php', $this->call('CheckCandidateTargetJson'));
+        $controllers->match('acceptcandidates.j.php', $this->call('AcceptCandidatesJson'))
+            ->before(function () use ($app) {
+                $app['firewall']->requireAccessToModule('thesaurus');
+            });
+        $controllers->match('checkcandidatetarget.j.php', $this->call('CheckCandidateTargetJson'))
+            ->before(function () use ($app) {
+                $app['firewall']->requireAccessToModule('thesaurus');
+            });
         $controllers->match('editing_presets.j.php', $this->call('EditingPresetsJson'));
         $controllers->match('getsy_prod.x.php', $this->call('GetSynonymsXml'));
         $controllers->match('getterm_prod.h.php', $this->call('GetTermHtml'));
@@ -38,7 +43,10 @@ class Xmlhttp implements ControllerProviderInterface
         $controllers->match('openbranch_prod.j.php', $this->call('OpenBranchJson'));
         $controllers->match('openbranches_prod.h.php', $this->call('OpenBranchesHtml'));
         $controllers->match('openbranches_prod.x.php', $this->call('OpenBranchesXml'));
-        $controllers->match('replacecandidate.j.php', $this->call('ReplaceCandidateJson'));
+        $controllers->match('replacecandidate.j.php', $this->call('ReplaceCandidateJson'))
+            ->before(function () use ($app) {
+                $app['firewall']->requireAccessToModule('thesaurus');
+            });
         $controllers->match('search_th_term_prod.j.php', $this->call('SearchTermJson'));
 
         return $controllers;
