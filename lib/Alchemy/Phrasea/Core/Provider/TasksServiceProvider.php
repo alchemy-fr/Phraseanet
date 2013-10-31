@@ -31,11 +31,11 @@ class TasksServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['task-manager.notifier'] = $app->share(function(Application $app) {
+        $app['task-manager.notifier'] = $app->share(function (Application $app) {
             return Notifier::create($app['task-manager.listener.options']);
         });
 
-        $app['task-manager.listener.options'] = $app->share(function(Application $app) {
+        $app['task-manager.listener.options'] = $app->share(function (Application $app) {
             if (isset($app['phraseanet.configuration']['task-manager']) && isset($app['phraseanet.configuration']['task-manager']['listener'])) {
                 $listenerConf = $app['phraseanet.configuration']['task-manager']['listener'];
             } else {
@@ -50,15 +50,15 @@ class TasksServiceProvider implements ServiceProviderInterface
             ), $listenerConf);
         });
 
-        $app['task-manager.job-factory'] = $app->share(function(Application $app) {
+        $app['task-manager.job-factory'] = $app->share(function (Application $app) {
             return new JobFactory($app['dispatcher'],isset($app['task-manager.logger']) ? $app['task-manager.logger'] : $app['logger']);
         });
 
-        $app['task-manager.status'] = $app->share(function(Application $app) {
+        $app['task-manager.status'] = $app->share(function (Application $app) {
             return new TaskManagerStatus($app['phraseanet.configuration']);
         });
 
-        $app['task-manager.live-information'] = $app->share(function(Application $app) {
+        $app['task-manager.live-information'] = $app->share(function (Application $app) {
             return new LiveInformation($app['task-manager.status'], $app['task-manager.notifier']);
         });
 
@@ -66,11 +66,11 @@ class TasksServiceProvider implements ServiceProviderInterface
             return $app['root.path'].'/logs';
         });
 
-        $app['task-manager.log-file.factory'] = $app->share(function(Application $app) {
+        $app['task-manager.log-file.factory'] = $app->share(function (Application $app) {
             return new LogFileFactory($app['task-manager.log-file.root']);
         });
 
-        $app['task-manager.available-jobs'] = $app->share(function(Application $app) {
+        $app['task-manager.available-jobs'] = $app->share(function (Application $app) {
             return array(
                 new FtpJob(),
                 new ArchiveJob(),

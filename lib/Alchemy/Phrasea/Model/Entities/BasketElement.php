@@ -247,7 +247,7 @@ class BasketElement
     /**
      * Set basket
      *
-     * @param  Basket $basket
+     * @param  Basket        $basket
      * @return BasketElement
      */
     public function setBasket(Basket $basket = null)
@@ -277,7 +277,7 @@ class BasketElement
 
     /**
      *
-     * @param  \User_Adapter            $user
+     * @param  \User_Adapter  $user
      * @return ValidationData
      */
     public function getUserValidationDatas(\User_Adapter $user, Application $app)

@@ -11,7 +11,6 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Alchemy\Phrasea\Model\Entities\User;

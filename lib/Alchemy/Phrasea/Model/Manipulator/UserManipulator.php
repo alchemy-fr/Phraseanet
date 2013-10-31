@@ -15,10 +15,8 @@ use Alchemy\Geonames\Connector as GeonamesConnector;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
 use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 /**
@@ -59,7 +57,7 @@ class UserManipulator implements ManipulatorInterface
      * @return User
      *
      * @throws InvalidArgumentException if login or email is not valid.
-     * @throws RuntimeException if login or email already exists.
+     * @throws RuntimeException         if login or email already exists.
      */
     public function createUser($login, $password, $email = null, $admin = false)
     {
@@ -82,7 +80,7 @@ class UserManipulator implements ManipulatorInterface
      * @return User The template
      *
      * @throws InvalidArgumentException if login is not valid.
-     * @throws RuntimeException if login already exists.
+     * @throws RuntimeException         if login already exists.
      */
     public function createTemplate($login, User $owner)
     {
@@ -142,7 +140,7 @@ class UserManipulator implements ManipulatorInterface
      * @param string $email
      *
      * @throws InvalidArgumentException if email is not valid or already exists.
-     * @throws RuntimeException if email already exists.
+     * @throws RuntimeException         if email already exists.
      */
     public function setEmail(User $user, $email)
     {
@@ -195,7 +193,7 @@ class UserManipulator implements ManipulatorInterface
      * @param sring $login
      *
      * @throws InvalidArgumentException if login is not valid.
-     * @throws RuntimeException if login already exists.
+     * @throws RuntimeException         if login already exists.
      */
     private function doSetLogin(User $user, $login)
     {
@@ -213,7 +211,7 @@ class UserManipulator implements ManipulatorInterface
      * @param string $email
      *
      * @throws InvalidArgumentException if email is not valid or already exists.
-     * @throws RuntimeException if email already exists.
+     * @throws RuntimeException         if email already exists.
      */
     private function doSetEmail(User $user, $email)
     {

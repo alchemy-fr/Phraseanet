@@ -73,7 +73,7 @@ class LazaretCheck
     /**
      * Set lazaretFile
      *
-     * @param  LazaretFile $lazaretFile
+     * @param  LazaretFile  $lazaretFile
      * @return LazaretCheck
      */
     public function setLazaretFile(LazaretFile $lazaretFile = null)

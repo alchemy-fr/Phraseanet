@@ -47,7 +47,6 @@ class LiveInformationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals($expected, $live->getManager());
     }
 
-
     public function testItReturnsWorkingTaskStatus()
     {
         $task = new Task();

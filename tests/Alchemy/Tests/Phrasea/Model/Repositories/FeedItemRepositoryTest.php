@@ -2,10 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
-use Alchemy\Phrasea\Model\Entities\FtpExport;
-use Alchemy\Phrasea\Model\Entities\FtpExportElement;
-use Gedmo\Timestampable\TimestampableListener;
-
 class FeedItemRepositoryTest extends \PhraseanetPHPUnitAbstract
 {
     public function testIs_record_in_public_feedInPublicFeed()

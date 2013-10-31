@@ -46,7 +46,7 @@ class Permalink extends AbstractDelivery
             return $record;
         };
 
-        $deliverPermaview = function($sbas_id, $record_id, $token, $subdef, PhraseaApplication $app) use ($retrieveRecord) {
+        $deliverPermaview = function ($sbas_id, $record_id, $token, $subdef, PhraseaApplication $app) use ($retrieveRecord) {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
             $record = $retrieveRecord($app, $databox, $token, $record_id, $subdef);
@@ -62,7 +62,7 @@ class Permalink extends AbstractDelivery
             return $app['twig']->render('overview.html.twig', $params);
         };
 
-        $deliverPermalink = function(PhraseaApplication $app, $sbas_id, $record_id, $token, $subdef) use ($that, $retrieveRecord) {
+        $deliverPermalink = function (PhraseaApplication $app, $sbas_id, $record_id, $token, $subdef) use ($that, $retrieveRecord) {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
             $record = $retrieveRecord($app, $databox, $token, $record_id, $subdef);
@@ -114,7 +114,7 @@ class Permalink extends AbstractDelivery
             return $response;
         };
 
-        $controllers->get('/v1/{sbas_id}/{record_id}/caption/', function(PhraseaApplication $app, Request $request, $sbas_id, $record_id) use ($retrieveRecord) {
+        $controllers->get('/v1/{sbas_id}/{record_id}/caption/', function (PhraseaApplication $app, Request $request, $sbas_id, $record_id) use ($retrieveRecord) {
             $token = $request->query->get('token');
 
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
@@ -135,7 +135,7 @@ class Permalink extends AbstractDelivery
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
 
-        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{token}/{subdef}/view/', function(PhraseaApplication $app, $label, $sbas_id, $record_id, $token, $subdef) use ($deliverPermaview) {
+        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{token}/{subdef}/view/', function (PhraseaApplication $app, $label, $sbas_id, $record_id, $token, $subdef) use ($deliverPermaview) {
             return $deliverPermaview($sbas_id, $record_id, $token, $subdef, $app);
         })
             ->bind('permalinks_permaview_old')
@@ -151,7 +151,7 @@ class Permalink extends AbstractDelivery
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
 
-        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{token}/{subdef}/', function(PhraseaApplication $app, $label, $sbas_id, $record_id, $token, $subdef) use ($deliverPermalink) {
+        $controllers->get('/v1/{label}/{sbas_id}/{record_id}/{token}/{subdef}/', function (PhraseaApplication $app, $label, $sbas_id, $record_id, $token, $subdef) use ($deliverPermalink) {
             return $deliverPermalink($app, $sbas_id, $record_id, $token, $subdef);
         })
             ->bind('permalinks_permalink_old')

@@ -143,7 +143,7 @@ class UsrListEntry
     /**
      * Set list
      *
-     * @param  UsrList $list
+     * @param  UsrList      $list
      * @return UsrListEntry
      */
     public function setList(UsrList $list = null)

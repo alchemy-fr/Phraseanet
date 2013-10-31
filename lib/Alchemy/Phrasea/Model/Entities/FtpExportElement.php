@@ -108,7 +108,7 @@ class FtpExportElement
     /**
      * Set recordId
      *
-     * @param  integer          $recordId
+     * @param integer $recordId
      *
      * @return FtpExportElement
      */
@@ -132,7 +132,7 @@ class FtpExportElement
     /**
      * Set baseId
      *
-     * @param  integer          $baseId
+     * @param integer $baseId
      *
      * @return FtpExportElement
      */
@@ -156,7 +156,7 @@ class FtpExportElement
     /**
      * Set subdef
      *
-     * @param  string           $subdef
+     * @param string $subdef
      *
      * @return FtpExportElement
      */
@@ -180,7 +180,7 @@ class FtpExportElement
     /**
      * Set filename
      *
-     * @param  string           $filename
+     * @param string $filename
      *
      * @return FtpExportElement
      */
@@ -204,7 +204,7 @@ class FtpExportElement
     /**
      * Set folder
      *
-     * @param  string           $folder
+     * @param string $folder
      *
      * @return FtpExportElement
      */
@@ -228,7 +228,7 @@ class FtpExportElement
     /**
      * Set error
      *
-     * @param  boolean          $error
+     * @param boolean $error
      *
      * @return FtpExportElement
      */
@@ -252,7 +252,7 @@ class FtpExportElement
     /**
      * Set done
      *
-     * @param  boolean          $done
+     * @param boolean $done
      *
      * @return FtpExportElement
      */
@@ -276,7 +276,7 @@ class FtpExportElement
     /**
      * Set businessfields
      *
-     * @param  boolean          $businessfields
+     * @param boolean $businessfields
      *
      * @return FtpExportElement
      */
@@ -300,7 +300,7 @@ class FtpExportElement
     /**
      * Set created
      *
-     * @param  \DateTime        $created
+     * @param \DateTime $created
      *
      * @return FtpExportElement
      */
@@ -324,7 +324,7 @@ class FtpExportElement
     /**
      * Set updated
      *
-     * @param  \DateTime        $updated
+     * @param \DateTime $updated
      *
      * @return FtpExportElement
      */
@@ -348,7 +348,7 @@ class FtpExportElement
     /**
      * Set export
      *
-     * @param  FtpExport $export
+     * @param FtpExport $export
      *
      * @return FtpExportElement
      */

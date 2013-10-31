@@ -41,8 +41,8 @@ class UsrListRepository extends EntityRepository
 
     /**
      *
-     * @param  \User_Adapter     $user
-     * @param  type              $list_id
+     * @param  \User_Adapter $user
+     * @param  type          $list_id
      * @return UsrList
      */
     public function findUserListByUserAndId(Application $app, \User_Adapter $user, $list_id)

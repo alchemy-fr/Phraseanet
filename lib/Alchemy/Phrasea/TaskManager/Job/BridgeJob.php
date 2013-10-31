@@ -105,7 +105,7 @@ class BridgeJob extends AbstractJob
     }
 
     /**
-     * @param  Bridge_Element        $element
+     * @param Bridge_Element $element
      *
      * @return BridgeJob
      */
@@ -127,8 +127,8 @@ class BridgeJob extends AbstractJob
     }
 
     /**
-     * @param  Bridge_Element        $element
-     * 
+     * @param Bridge_Element $element
+     *
      * @return BridgeJob
      */
     protected function update_element(Application $app, \Bridge_Element $element)

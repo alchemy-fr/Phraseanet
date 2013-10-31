@@ -41,13 +41,13 @@ class Order implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication()
                 ->requireRight('order');
         });
 
         $controllers->get('/', 'controller.prod.order:displayOrders')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_orders');
@@ -56,21 +56,21 @@ class Order implements ControllerProviderInterface
             ->bind('prod_order_new');
 
         $controllers->get('/{order_id}/', 'controller.prod.order:displayOneOrder')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_order')
             ->assert('order_id', '\d+');
 
         $controllers->post('/{order_id}/send/', 'controller.prod.order:sendOrder')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_order_send')
             ->assert('order_id', '\d+');
 
         $controllers->post('/{order_id}/deny/', 'controller.prod.order:denyOrder')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_order_deny')
@@ -135,7 +135,7 @@ class Order implements ControllerProviderInterface
                 }
             }
 
-            $noAdmins = $collectionHasOrderAdmins->forAll(function($key, $hasAdmin) {
+            $noAdmins = $collectionHasOrderAdmins->forAll(function ($key, $hasAdmin) {
                     return false === $hasAdmin;
                 });
 

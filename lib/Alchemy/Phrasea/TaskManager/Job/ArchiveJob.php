@@ -1061,7 +1061,7 @@ class ArchiveJob extends AbstractJob
 
         $record = null;
 
-        $postProcess = function($element, $visa, $code) use (&$record) {
+        $postProcess = function ($element, $visa, $code) use (&$record) {
                 $record = $element;
             };
 

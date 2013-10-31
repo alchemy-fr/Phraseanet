@@ -222,7 +222,7 @@ class UsrList
 
     /**
      *
-     * @param  \User_Adapter          $user
+     * @param  \User_Adapter $user
      * @return UsrListOwner
      */
     public function getOwner(\User_Adapter $user, Application $app)
@@ -245,7 +245,7 @@ class UsrList
     public function has(\User_Adapter $user, Application $app)
     {
         return $this->entries->exists(
-            function($key, $entry) use ($user, $app) {
+            function ($key, $entry) use ($user, $app) {
                 return $entry->getUser($app)->get_id() === $user->get_id();
             }
         );

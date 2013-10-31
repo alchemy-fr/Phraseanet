@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Model\Manager;
 
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\Common\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UserSetting;
@@ -91,13 +90,13 @@ class UserManager
      */
     private function cleanSettings(User $user)
     {
-        foreach($user->getNotificationSettings() as $userNotificationSetting) {
+        foreach ($user->getNotificationSettings() as $userNotificationSetting) {
             $this->objectManager->remove($userNotificationSetting);
         }
 
         $user->getNotificationSettings()->clear();
 
-        foreach($user->getSettings() as $userSetting) {
+        foreach ($user->getSettings() as $userSetting) {
             $this->objectManager->remove($userSetting);
         }
 
@@ -111,7 +110,7 @@ class UserManager
      */
     private function cleanQueries(User $user)
     {
-        foreach($user->getQueries() as $userQuery) {
+        foreach ($user->getQueries() as $userQuery) {
             $this->objectManager->remove($userQuery);
         }
 
@@ -140,7 +139,7 @@ class UserManager
        $elements = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
                ->findBy(array('usrId' => $user->getId()));
 
-       foreach($elements as $element) {
+       foreach ($elements as $element) {
            $this->objectManager->remove($element);
        }
     }
@@ -155,7 +154,7 @@ class UserManager
        $orders = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\Order')
                ->findBy(array('usrId' => $user->getId()));
 
-       foreach($orders as $order) {
+       foreach ($orders as $order) {
            $this->objectManager->remove($order);
        }
     }

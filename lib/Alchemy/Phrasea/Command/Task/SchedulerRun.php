@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Command\Task;
 use Alchemy\TaskManager\TaskManager;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\TaskManager\Event\TaskManagerSubscriber\LockFileSubscriber;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

@@ -11,7 +11,6 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
-use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Model\Entities\UserNotificationSetting;
 use Alchemy\Phrasea\Model\Entities\UserQuery;
 use Alchemy\Phrasea\Model\Entities\UserSetting;

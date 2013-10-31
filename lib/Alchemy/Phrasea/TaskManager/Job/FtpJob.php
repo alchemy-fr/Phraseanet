@@ -118,7 +118,6 @@ class FtpJob extends AbstractJob
                 , "  (" . date('r') . ")"
             ) . PHP_EOL;
 
-
         $this->log('debug', $line);
 
         try {

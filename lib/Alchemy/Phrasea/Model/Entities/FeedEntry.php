@@ -236,7 +236,7 @@ class FeedEntry
     /**
      * Add items
      *
-     * @param  FeedItem $items
+     * @param  FeedItem  $items
      * @return FeedEntry
      */
     public function addItem(FeedItem $items)
@@ -292,7 +292,7 @@ class FeedEntry
     /**
      * Set feed
      *
-     * @param  Feed $feed
+     * @param  Feed      $feed
      * @return FeedEntry
      */
     public function setFeed(Feed $feed = null)

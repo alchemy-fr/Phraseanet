@@ -66,7 +66,7 @@ class FeedItemRepository extends EntityRepository
 
             $result = $query->getResult();
 
-            foreach($result as $item) {
+            foreach ($result as $item) {
                 try {
                     $record = $item->getRecord($app);
                 } catch (NotFoundHttpException $e) {

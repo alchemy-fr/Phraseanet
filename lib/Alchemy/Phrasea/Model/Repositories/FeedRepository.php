@@ -2,9 +2,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
-use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
-use Alchemy\Phrasea\Model\Entities\Feed;
 
 /**
  * FeedRepository

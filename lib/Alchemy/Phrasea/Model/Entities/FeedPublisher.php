@@ -109,7 +109,7 @@ class FeedPublisher
     /**
      * Set feed
      *
-     * @param  Feed $feed
+     * @param  Feed          $feed
      * @return FeedPublisher
      */
     public function setFeed(Feed $feed = null)

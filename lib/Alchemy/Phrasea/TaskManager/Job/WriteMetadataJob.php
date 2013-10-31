@@ -87,7 +87,7 @@ class WriteMetadataJob extends AbstractJob
             $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            foreach ($rs as $row ) {
+            foreach ($rs as $row) {
                 $record_id = $row['record_id'];
                 $jeton = $row['jeton'];
 

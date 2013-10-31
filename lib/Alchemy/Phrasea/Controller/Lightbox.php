@@ -29,7 +29,7 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             if (!$request->query->has('LOG')) {
                 return;
             }
@@ -62,7 +62,7 @@ class Lightbox implements ControllerProviderInterface
             }
         });
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
@@ -96,7 +96,7 @@ class Lightbox implements ControllerProviderInterface
         })
             ->bind('lightbox');
 
-        $controllers->get('/ajax/NOTE_FORM/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
+        $controllers->get('/ajax/NOTE_FORM/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
 
             if (!$app['browser']->isMobile()) {
                 return new Response('');
@@ -116,7 +116,7 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_ajax_note_form')
             ->assert('sselcont_id', '\d+');
 
-        $controllers->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
+        $controllers->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
             /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
@@ -162,7 +162,7 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_ajax_load_basketelement')
             ->assert('sselcont_id', '\d+');
 
-        $controllers->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(SilexApplication $app, $entry_id, $item_id) {
+        $controllers->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function (SilexApplication $app, $entry_id, $item_id) {
 
             $entry = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry')->find($entry_id);
             $item = $entry->getItem($item_id);
@@ -344,7 +344,7 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_feed_entry')
             ->assert('entry_id', '\d+');
 
-        $controllers->get('/ajax/LOAD_REPORT/{ssel_id}/', function(SilexApplication $app, $ssel_id) {
+        $controllers->get('/ajax/LOAD_REPORT/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
 
             $template = 'lightbox/basket_content_report.html.twig';
 
@@ -405,7 +405,7 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_ajax_set_note')
             ->assert('sselcont_id', '\d+');
 
-        $controllers->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
+        $controllers->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
             $request = $app['request'];
             $agreement = $request->request->get('agreement');
 
@@ -468,7 +468,7 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_ajax_set_element_agreement')
             ->assert('sselcont_id', '\d+');
 
-        $controllers->post('/ajax/SET_RELEASE/{ssel_id}/', function(SilexApplication $app, $ssel_id) {
+        $controllers->post('/ajax/SET_RELEASE/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 

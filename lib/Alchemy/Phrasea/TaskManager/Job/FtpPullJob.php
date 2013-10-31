@@ -105,6 +105,7 @@ class FtpPullJob extends AbstractJob
         if (!$this->isStarted()) {
             $ftp->close();
             $this->log('debug', "Stopping");
+
             return;
         }
 
