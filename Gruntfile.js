@@ -137,6 +137,14 @@ module.exports = function(grunt) {
                 ],
                 "dest": "<%= path.asset %>/jquery-mobile/"
             },
+            "jquery.cookie": {
+                "expand": true,
+                "cwd": "<%= path.bower %>/jquery.cookie",
+                "src": [
+                    "jquery.cookie.js"
+                ],
+                "dest": "<%= path.asset %>/jquery.cookie/"
+            },
             "jquery-ui": {
                 "expand": true,
                 "cwd": "<%= path.bower %>/jquery.ui",
