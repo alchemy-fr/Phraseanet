@@ -28,7 +28,7 @@ class Firewall
     {
         $this->requireNotGuest();
 
-        if (!$this->app['authentication']->getUser()->ACL()->is_admin()) {
+        if (!$this->app['acl']->get($this->app['authentication']->getUser())->is_admin()) {
             $this->app->abort(403, 'Admin role is required');
         }
 
@@ -39,7 +39,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['authentication']->getUser()->ACL()->has_access_to_module($module)) {
+        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_access_to_module($module)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -50,7 +50,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['authentication']->getUser()->ACL()->has_access_to_sbas($sbas_id)) {
+        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_access_to_sbas($sbas_id)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -61,7 +61,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['authentication']->getUser()->ACL()->has_access_to_base($base_id)) {
+        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_access_to_base($base_id)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -72,7 +72,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['authentication']->getUser()->ACL()->has_right($right)) {
+        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_right($right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -83,7 +83,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['authentication']->getUser()->ACL()->has_right_on_base($base_id, $right)) {
+        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($base_id, $right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -94,7 +94,7 @@ class Firewall
     {
         $this->requireAuthentication();
 
-        if (!$this->app['authentication']->getUser()->ACL()->has_right_on_sbas($sbas_id, $right)) {
+        if (!$this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_sbas($sbas_id, $right)) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
@@ -136,7 +136,7 @@ class Firewall
 
     public function requireOrdersAdmin()
     {
-        if (false === !!count($this->app['authentication']->getUser()->ACL()->get_granted_base(array('order_master')))) {
+        if (false === !!count($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(array('order_master')))) {
             $this->app->abort(403, 'You are not an order admin');
         }
 

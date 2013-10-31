@@ -626,12 +626,12 @@ class SearchEngineOptions
         } elseif (!$app['authentication']->isAuthenticated()) {
             $bas = $app->getOpenCollections();
         } else {
-            $bas = $app['authentication']->getUser()->ACL()->get_granted_base();
+            $bas = $app['acl']->get($app['authentication']->getUser())->get_granted_base();
         }
 
         $bas = array_filter($bas, function ($collection) use ($app) {
             if ($app['authentication']->isAuthenticated()) {
-                return $app['authentication']->getUser()->ACL()->has_access_to_base($collection->get_base_id());
+                return $app['acl']->get($app['authentication']->getUser())->has_access_to_base($collection->get_base_id());
             } else {
                 return in_array($collection, $app->getOpenCollections());
             }
@@ -645,9 +645,9 @@ class SearchEngineOptions
             }
         }
 
-        if ($app['authentication']->isAuthenticated() && $app['authentication']->getUser()->ACL()->has_right('modifyrecord')) {
-            $BF = array_filter($bas, function ($collection) use ($app) {
-                return $app['authentication']->getUser()->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+        if ($app['authentication']->isAuthenticated() && $app['acl']->get($app['authentication']->getUser())->has_right('modifyrecord')) {
+            $BF = array_filter($bas, function( $collection) use ($app) {
+                return $app['acl']->get($app['authentication']->getUser())->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
             });
 
             $options->allowBusinessFieldsOn($BF);

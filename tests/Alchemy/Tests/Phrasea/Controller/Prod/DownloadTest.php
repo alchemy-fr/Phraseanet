@@ -76,9 +76,14 @@ class DownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('remaining_download')
             ->will($this->returnValue(0));
 
-        self::$DI['app']['authentication']->getUser()->expects($this->any())
-            ->method('ACL')
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
             ->will($this->returnValue($stubbedACL));
+
+        self::$DI['app']['acl'] = $aclProvider;
 
         self::$DI['client']->request('POST', '/prod/download/', array(
             'lst'               => self::$DI['record_1']->get_serialize_key(),

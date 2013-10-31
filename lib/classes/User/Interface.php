@@ -24,8 +24,6 @@ interface User_Interface
 
     public function __construct($id, Application $app);
 
-    public function ACL();
-
     public function set_password($pasword);
 
     public function set_email($email);

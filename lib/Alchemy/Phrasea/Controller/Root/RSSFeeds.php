@@ -71,7 +71,7 @@ class RSSFeeds implements ControllerProviderInterface
 
             $user = \User_Adapter::getInstance($token->getUsrId(), $app);
 
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($user);
+            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($user));
 
             $aggregate = new Aggregate($app['EM'], $feeds, $token);
 

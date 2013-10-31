@@ -64,12 +64,12 @@ class Datafiles extends AbstractDelivery
                     throw new NotFoundHttpException;
                 }
 
-                if (!$app['authentication']->getUser()->ACL()->has_access_to_subdef($record, $subdef)) {
+                if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_subdef($record, $subdef)) {
                     throw new AccessDeniedHttpException(sprintf('User has not access to subdef %s', $subdef));
                 }
 
                 $stamp = false;
-                $watermark = !$app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
+                $watermark = !$app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'nowatermark');
 
                 if ($watermark && !$all_access) {
                     $subdef_class = $databox
@@ -77,9 +77,9 @@ class Datafiles extends AbstractDelivery
                         ->get_subdef($record->get_type(), $subdef)
                         ->get_class();
 
-                    if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $app['authentication']->getUser()->ACL()->has_preview_grant($record)) {
+                    if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $app['acl']->get($app['authentication']->getUser())->has_preview_grant($record)) {
                         $watermark = false;
-                    } elseif ($subdef_class == \databox_subdef::CLASS_DOCUMENT && $app['authentication']->getUser()->ACL()->has_hd_grant($record)) {
+                    } elseif ($subdef_class == \databox_subdef::CLASS_DOCUMENT && $app['acl']->get($app['authentication']->getUser())->has_hd_grant($record)) {
                         $watermark = false;
                     }
                 }
@@ -88,7 +88,7 @@ class Datafiles extends AbstractDelivery
 
                     $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
-                    /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
+                    /* @var $repository BasketElementRepository */
 
                     $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $app['authentication']->getUser());
                     $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $app['authentication']->getUser());

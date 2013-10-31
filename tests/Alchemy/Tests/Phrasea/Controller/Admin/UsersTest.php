@@ -65,9 +65,9 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(is_object($datas));
         $datas = json_decode($response->getContent());
         $this->assertFalse($datas->error);
-        $this->assertTrue($user->ACL()->has_right_on_base($base_id, "manage"));
-        $this->assertTrue($user->ACL()->has_right_on_base($base_id, "canpush"));
-        $this->assertTrue($user->ACL()->has_right_on_base($base_id, "canreport"));
+        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base($base_id, "manage"));
+        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base($base_id, "canpush"));
+        $this->assertTrue(self::$DI['app']['acl']->get($user)->has_right_on_base($base_id, "canreport"));
         $user->delete();
     }
 
@@ -92,7 +92,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteQuota()
     {
-        $keys = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
         $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
@@ -113,7 +113,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteQuotaRemove()
     {
-        $keys = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
         $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
@@ -124,7 +124,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteRightTime()
     {
-        $keys = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
         $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
@@ -192,7 +192,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteRightMask()
     {
-        $keys = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $keys = array_keys(self::$DI['app']['acl']->get(self::$DI['user'])->get_granted_base());
         $base_id = array_pop($keys);
         $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
@@ -352,7 +352,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $username = uniqid('user_');
         $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
 
-        $user->ACL()->give_access_to_sbas(array_keys(self::$DI['app']['phraseanet.appbox']->get_databoxes()));
+        self::$DI['app']['acl']->get($user)->give_access_to_sbas(array_keys(self::$DI['app']['phraseanet.appbox']->get_databoxes()));
 
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
 
@@ -363,11 +363,11 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 , 'bas_chupub'        => '1'
             );
 
-            $user->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+            self::$DI['app']['acl']->get($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
-                $user->ACL()->give_access_to_base(array($base_id));
+                self::$DI['app']['acl']->get($user)->give_access_to_base(array($base_id));
 
                 $rights = array(
                     'canputinalbum'  => '1'
@@ -376,7 +376,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     , 'nowatermark'    => '1'
                 );
 
-                $user->ACL()->update_rights_to_base($collection->get_base_id(), $rights);
+                self::$DI['app']['acl']->get($user)->update_rights_to_base($collection->get_base_id(), $rights);
                 break;
             }
         }
@@ -388,7 +388,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $datas = json_decode($response->getContent());
         $this->assertTrue(is_object($datas));
         $this->assertFalse($datas->error);
-        $this->assertFalse($user->ACL()->has_access_to_base($base_id));
+        $this->assertFalse(self::$DI['app']['acl']->get($user)->has_access_to_base($base_id));
         $user->delete();
     }
 

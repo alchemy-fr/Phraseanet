@@ -335,24 +335,14 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
 
     /**
-     * Return Access Control List object for the user
-     *
-     * @return ACL
-     */
-    public function ACL()
-    {
-        return $this->get_ACL();
-    }
-
-    /**
      *
      * @param Application $app
      */
     protected function set_app(Application $app)
     {
         $this->app = $app;
-        if (null !== $this->ACL) {
-            $this->ACL->set_app($app);
+        if (null !== $app['acl']->get($this)) {
+            $app['acl']->get($this)->set_app($app);
         }
     }
 
@@ -402,20 +392,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $this->delete_data_from_cache();
 
         return $this;
-    }
-
-    /**
-     * Load if needed of the ACL for the current user
-     *
-     * @return ACL
-     */
-    protected function get_ACL()
-    {
-        if (!$this->ACL instanceof ACL) {
-            $this->ACL = new ACL($this, $this->app);
-        }
-
-        return $this->ACL;
     }
 
     /**
@@ -1255,7 +1231,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach (array_keys($users) as $usr_id) {
                 $user = User_Adapter::getInstance($usr_id, $app);
-                $user->ACL()->give_access_to_sbas(array($databox->get_sbas_id()));
+                $app['acl']->get($user)->give_access_to_sbas(array($databox->get_sbas_id()));
 
                 $rights = array(
                     'bas_manage'        => '1'
@@ -1264,10 +1240,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                     , 'bas_chupub'        => '1'
                 );
 
-                $user->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+                $app['acl']->get($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
                 foreach ($databox->get_collections() as $collection) {
-                    $user->ACL()->give_access_to_base(array($collection->get_base_id()));
+                    $app['acl']->get($user)->give_access_to_base(array($collection->get_base_id()));
 
                     $rights = array(
                         'canputinalbum'     => '1'
@@ -1290,8 +1266,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
                         , 'bas_modify_struct' => '1'
                     );
 
-                    $user->ACL()->update_rights_to_base($collection->get_base_id(), $rights);
-                    $user->ACL()->set_limits($collection->get_base_id(), false);
+                    $app['acl']->get($user)->update_rights_to_base($collection->get_base_id(), $rights);
+                    $app['acl']->get($user)->set_limits($collection->get_base_id(), false);
                 }
             }
         }

@@ -461,7 +461,7 @@ class Feed implements FeedInterface
     public function hasAccess(\User_Adapter $user, Application $app)
     {
         if ($this->getCollection($app) instanceof collection) {
-            return $user->ACL()->has_access_to_base($this->collection->get_base_id());
+            return $app['acl']->get($user)->has_access_to_base($this->collection->get_base_id());
         }
 
         return true;
@@ -558,7 +558,7 @@ class Feed implements FeedInterface
         $coll = $this->getCollection($app);
         if ($this->isPublic()
             || $coll === null
-            || in_array($coll->get_base_id(), array_keys($user->ACL()->get_granted_base()))) {
+            || in_array($coll->get_base_id(), array_keys($app['acl']->get($user)->get_granted_base()))) {
                 return true;
             }
 

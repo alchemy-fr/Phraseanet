@@ -73,7 +73,7 @@ class Manage extends Helper
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
-            ->on_bases_where_i_am($this->app['authentication']->getUser()->ACL(), array('canadmin'))
+            ->on_bases_where_i_am($this->app['acl']->get($this->app['authentication']->getUser()), array('canadmin'))
             ->execute();
 
         return $this->results->get_results();
@@ -111,7 +111,7 @@ class Manage extends Helper
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
-            ->on_bases_where_i_am($this->app['authentication']->getUser()->ACL(), array('canadmin'))
+            ->on_bases_where_i_am($this->app['acl']->get($this->app['authentication']->getUser()), array('canadmin'))
             ->limit($offset_start, $results_quantity)
             ->execute();
 

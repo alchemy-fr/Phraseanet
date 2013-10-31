@@ -180,7 +180,7 @@ class V1 implements ControllerProviderInterface
          */
         $mustBeAdmin = function (Request $request) use ($app) {
             $user = $app['token']->get_account()->get_user();
-            if (!$user->ACL()->is_admin()) {
+            if (!$app['acl']->get($user)->is_admin()) {
                 throw new \API_V1_exception_unauthorized('You are not authorized');
             }
         };

@@ -25,11 +25,13 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteDashboard()
     {
         $this->setAdmin(true);
-
+        self::$DI['app']['phraseanet.configuration-tester']->getRequirements();
         self::$DI['client']->request('GET', '/admin/dashboard/', array(
             'flush_cache' => 'ok',
             'email'       => 'sent'
         ));
+
+        var_dump(self::$DI['client']->getResponse()->getContent());
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }

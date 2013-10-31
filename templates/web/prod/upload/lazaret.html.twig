@@ -318,8 +318,8 @@
             </h5>
             <ul class="thumbnails">
                 {% for record in records %}
-                    {% if app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), "canaddrecord")
-                        and app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), "candeleterecord") %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), "canaddrecord")
+                        and app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), "candeleterecord") %}
                         <li class="records-subititution span3">
                             <div class="thumbnail">
                                 <div class="record-thumb" style="text-align:center;">

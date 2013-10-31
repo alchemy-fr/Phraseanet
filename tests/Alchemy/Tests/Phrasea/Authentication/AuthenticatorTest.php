@@ -90,9 +90,14 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
             ->method('get_granted_sbas')
             ->will($this->returnValue(array()));
 
-        $user->expects($this->once())
-            ->method('ACL')
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
             ->will($this->returnValue($acl));
+
+        $app['acl'] = $aclProvider;
 
         $em->expects($this->at(0))
             ->method('persist')

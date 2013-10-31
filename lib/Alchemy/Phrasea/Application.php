@@ -736,7 +736,7 @@ class Application extends SilexApplication
             return false;
         }
 
-        return count(\User_Adapter::getInstance($usrId, $this)->ACL()->get_granted_base()) > 0;
+        return count($this['acl']->get(\User_Adapter::getInstance($usrId, $this))->get_granted_base()) > 0;
     }
 
     /**

@@ -132,7 +132,7 @@ class Collection implements ControllerProviderInterface
 
         $admins = array();
 
-        if ($app['authentication']->getUser()->ACL()->has_right_on_base($bas_id, 'manage')) {
+        if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($bas_id, 'manage')) {
             $query = new \User_Query($app);
             $admins = $query->on_base_ids(array($bas_id))
                 ->who_have_right(array('order_master'))
@@ -194,12 +194,12 @@ class Collection implements ControllerProviderInterface
                             ->execute()->get_results();
 
                     foreach ($result as $user) {
-                        $user->ACL()->update_rights_to_base($bas_id, array('order_master' => false));
+                        $app['acl']->get($user)->update_rights_to_base($bas_id, array('order_master' => false));
                     }
 
                     foreach (array_filter($newAdmins) as $admin) {
                         $user = \User_Adapter::getInstance($admin, $app);
-                        $user->ACL()->update_rights_to_base($bas_id, array('order_master' => true));
+                        $app['acl']->get($user)->update_rights_to_base($bas_id, array('order_master' => true));
                     }
                     $conn->commit();
 

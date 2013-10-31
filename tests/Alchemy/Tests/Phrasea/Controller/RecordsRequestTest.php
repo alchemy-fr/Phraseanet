@@ -16,8 +16,8 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         self::$DI['app'] = new Application('test');
 
         self::giveRightsToUser(self::$DI['app'], self::$DI['user']);
-        self::$DI['user']->ACL()->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
-        self::$DI['user']->ACL()->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+        self::$DI['app']['acl']->get(self::$DI['user'])->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
+        self::$DI['app']['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
     }
 
     public function testSimple()
@@ -86,7 +86,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSimpleWithoutSbasRights()
     {
-        self::$DI['app']['authentication']->getUser()->ACL()
+        self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())
             ->update_rights_to_sbas(self::$DI['record_2']->get_sbas_id(), array('bas_chupub' => 0));
 
         $request = new Request(array(
@@ -112,7 +112,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSimpleWithoutBasRights()
     {
-        self::$DI['app']['authentication']->getUser()->ACL()
+        self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())
             ->update_rights_to_base(self::$DI['record_2']->get_base_id(), array('chgstatus' => 0));
 
         $request = new Request(array(

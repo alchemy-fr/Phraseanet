@@ -142,7 +142,7 @@ class WorkZone implements ControllerProviderInterface
                 throw new \Exception('You can only attach stories');
             }
 
-            if (!$app['authentication']->getUser()->ACL()->has_access_to_base($Story->get_base_id())) {
+            if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_base($Story->get_base_id())) {
                 throw new AccessDeniedHttpException('You do not have access to this Story');
             }
 

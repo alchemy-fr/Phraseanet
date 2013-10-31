@@ -87,7 +87,7 @@
                                 <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" style="width:210px;"/>
                                 <br/>
                                 {% trans 'Select a user in the list'%} <br/>
-                                {% if app['authentication'].getUser().ACL().has_right('manageusers') %}
+                                {% if app['acl'].get(app['authentication'].getUser()).has_right('manageusers') %}
                                     {% trans 'or' %}
                                     <a href="{{ path('prod_push_add_user') }}" class="user_adder link">{% trans 'Add user' %}</a>
                                 {% endif %}

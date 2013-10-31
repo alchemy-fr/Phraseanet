@@ -72,7 +72,7 @@ class Permalink extends AbstractDelivery
             if ($app['authentication']->isAuthenticated()) {
                 $user = \User_Adapter::getInstance($app['authentication']->getUser()->get_id(), $app);
 
-                $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
+                $watermark = !$app['acl']->get($user)->has_right_on_base($record->get_base_id(), 'nowatermark');
 
                 if ($watermark) {
 

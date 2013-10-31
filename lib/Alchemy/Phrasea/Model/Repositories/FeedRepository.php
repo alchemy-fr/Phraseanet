@@ -18,9 +18,9 @@ class FeedRepository extends EntityRepository
      * @param  User_Adapter                            $user
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getAllForUser(\User_Adapter $user)
+    public function getAllForUser(\ACL $userACL)
     {
-        $base_ids = array_keys($user->ACL()->get_granted_base());
+        $base_ids = array_keys($userACL->get_granted_base());
 
         $qb = $this
             ->createQueryBuilder('f');

@@ -52,7 +52,7 @@ class MoveCollection implements ControllerProviderInterface
                 return $databox->get_sbas_id();
             }, $records->databoxes());
 
-        $collections = $app['authentication']->getUser()->ACL()
+        $collections = $app['acl']->get($app['authentication']->getUser())
             ->get_granted_base(array('canaddrecord'), $sbas_ids);
 
         $parameters = array(
@@ -80,7 +80,7 @@ class MoveCollection implements ControllerProviderInterface
                 return $app->json($datas);
             }
 
-            if (!$app['authentication']->getUser()->ACL()->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
+            if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
                 $datas['message'] = sprintf(_("You do not have the permission to move records to %s"), \phrasea::bas_labels($move->getBaseIdDestination(), $app));
 
                 return $app->json($datas);
@@ -99,7 +99,7 @@ class MoveCollection implements ControllerProviderInterface
 
                 if ($request->request->get("chg_coll_son") == "1") {
                     foreach ($record->get_children() as $child) {
-                        if ($app['authentication']->getUser()->ACL()->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
+                        if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
                             $child->move_to_collection($collection, $app['phraseanet.appbox']);
                         }
                     }

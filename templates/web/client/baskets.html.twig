@@ -45,7 +45,7 @@
                     <div class="baskCreate" title="{% trans 'action:: nouveau panier' %}" onclick="newBasket();"></div>
                     <div style="float:right;position:relative;width:3px;height:16px;"></div>
 
-                    {% if total_baskets > 0 and (app['authentication'].getUser().ACL().has_right("candwnldhd") or app['authentication'].getUser().ACL().has_right("candwnldpreview") or app['authentication'].getUser().ACL().has_right("cancmd") > 0) %}
+                    {% if total_baskets > 0 and (app['acl'].get(app['authentication'].getUser()).has_right("candwnldhd") or app['acl'].get(app['authentication'].getUser()).has_right("candwnldpreview") or app['acl'].get(app['authentication'].getUser()).has_right("cancmd") > 0) %}
                         <div class="baskDownload" title="{% trans 'action : exporter' %}" onclick="evt_dwnl();"></div>
                     {% endif %}
 
@@ -117,10 +117,10 @@
                         onclick="evt_del_in_chutier({{ element.getId() }});"
                         title="{% trans 'action : supprimer' %}">
                     </div>
-                    {% if app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), 'candwnldhd')
-                            or app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), 'candwnldpreview')
-                            or app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), 'cancmd')
-                            or app['authentication'].getUser().ACL().has_preview_grant(record) %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'candwnldhd')
+                            or app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'candwnldpreview')
+                            or app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'cancmd')
+                            or app['acl'].get(app['authentication'].getUser()).has_preview_grant(record) %}
                         <div class="baskOneDownload" onclick="evt_dwnl('{{ record.get_serialize_key() }}');" title="{% trans 'action : exporter' %}"></div>
                     {% endif %}
                 </div>

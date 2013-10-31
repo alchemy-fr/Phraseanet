@@ -14,7 +14,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 {
     /**
      *
-     * @var Symfony\Component\HttpKernel\Client
+     * @var Client
      */
     protected $client;
 
@@ -1999,7 +1999,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $lazaretSession = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
         self::$DI['app']['EM']->persist($lazaretSession);
 
-        $quarantineItem;
+        $quarantineItem = null;
         $callback = function ($element, $visa, $code) use (&$quarantineItem) {
                 $quarantineItem = $element;
             };

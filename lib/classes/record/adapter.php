@@ -400,7 +400,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         if (isset($dstatus[$sbas_id])) {
             foreach ($dstatus[$sbas_id] as $n => $statbit) {
                 if ($statbit['printable'] == '0' &&
-                    !$this->app['authentication']->getUser()->ACL()->has_right_on_base($this->base_id, 'chgstatus')) {
+                    !$this->app['acl']->get($this->app['authentication']->getUser())->has_right_on_base($this->base_id, 'chgstatus')) {
                     continue;
                 }
 

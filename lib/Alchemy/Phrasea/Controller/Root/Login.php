@@ -378,15 +378,15 @@ class Login implements ControllerProviderInterface
                         foreach (array_keys($inscOK) as $base_id) {
                             $base_ids[] = $base_id;
                         }
-                        $user->ACL()->apply_model($template_user, $base_ids);
+                        $app['acl']->get($user)->apply_model($template_user, $base_ids);
                     }
 
-                    $autoReg = $user->ACL()->get_granted_base();
+                    $autoReg = $app['acl']->get($user)->get_granted_base();
 
                     $appbox_register = new \appbox_register($app['phraseanet.appbox']);
 
                     foreach ($inscOK as $base_id => $autorisation) {
-                        if (false === $autorisation || $user->ACL()->has_access_to_base($base_id)) {
+                        if (false === $autorisation || $app['acl']->get($user)->has_access_to_base($base_id)) {
                             continue;
                         }
 
@@ -561,7 +561,7 @@ class Login implements ControllerProviderInterface
 
         $app['tokens']->removeToken($code);
 
-        if (count($user->ACL()->get_granted_base()) > 0) {
+        if (count($app['acl']->get($user)->get_granted_base()) > 0) {
             $mail = MailSuccessEmailConfirmationRegistered::create($app, $receiver);
             $app['notification.deliverer']->deliver($mail);
 
@@ -791,11 +791,11 @@ class Login implements ControllerProviderInterface
         $inviteUsrid = \User_Adapter::get_usr_id_from_login($app, 'invite');
         $invite_user = \User_Adapter::getInstance($inviteUsrid, $app);
 
-        $usr_base_ids = array_keys($user->ACL()->get_granted_base());
-        $user->ACL()->revoke_access_from_bases($usr_base_ids);
+        $usr_base_ids = array_keys($app['acl']->get($user)->get_granted_base());
+        $app['acl']->get($user)->revoke_access_from_bases($usr_base_ids);
 
-        $invite_base_ids = array_keys($invite_user->ACL()->get_granted_base());
-        $user->ACL()->apply_model($invite_user, $invite_base_ids);
+        $invite_base_ids = array_keys($app['acl']->get($invite_user)->get_granted_base());
+        $app['acl']->get($user)->apply_model($invite_user, $invite_base_ids);
 
         $this->postAuthProcess($app, $user);
 
@@ -1032,7 +1032,7 @@ class Login implements ControllerProviderInterface
         $response = $this->generateAuthResponse($app, $app['browser'], $request->request->get('redirect'));
         $response->headers->clearCookie('invite-usr-id');
 
-        $user->ACL()->inject_rights();
+        $app['acl']->get($user)->inject_rights();
 
         if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
             if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {

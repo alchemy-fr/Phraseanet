@@ -169,7 +169,7 @@
                         <div id="THPD_tabs">
                             <ul>
                                 <li class="th_tab"><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
-                                {% if app['authentication'].getUser().ACL().has_access_to_module('thesaurus') %}
+                                {% if app['acl'].get(app['authentication'].getUser()).has_access_to_module('thesaurus') %}
                                     <li class="th_tab"><a href="#THPD_C"><span>{% trans 'prod::thesaurusTab:candidats' %}</span></a></li>
                                 {% endif %}
                             </ul>
@@ -209,7 +209,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                {% if app['authentication'].getUser().ACL().has_access_to_module('thesaurus') %}
+                                {% if app['acl'].get(app['authentication'].getUser()).has_access_to_module('thesaurus') %}
                                 <div id="THPD_C">
                                     <div id='THPD_C_treeBox' class="searchZone">
                                         <div onclick="Xclick(event);return(false);" ondblclick="CXdblClick(event);">
@@ -248,7 +248,7 @@
                                 {% trans 'Browse Baskets' %}
                             </a>
                         </div>
-                        {% if app['phraseanet.registry'].get('GV_multiAndReport') and app['authentication'].getUser().ACL().has_right('addrecord') %}
+                        {% if app['phraseanet.registry'].get('GV_multiAndReport') and app['acl'].get(app['authentication'].getUser()).has_right('addrecord') %}
                             <div class="context-menu-item-inner">
                                 <a title="{% trans 'action:: nouveau reportage' %}" class="dialog small-dialog" href="{{ path('prod_stories_create') }}">
                                     <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau reportage' %}" />
@@ -531,19 +531,19 @@
                     </span>
 
                     {% set actions = {} %}
-                    {% if app['authentication'].getUser().ACL().has_right('modifyrecord') %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('modifyrecord') %}
                         {% set label %}
                             {% trans 'action : editer' %}
                         {% endset %}
                         {% set actions = actions|merge( { 'edit' : {'icon': "/skins/prod/000000/images/ppen_history.gif", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
                     {% endif %}
-                    {% if app['authentication'].getUser().ACL().has_right('changestatus') %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('changestatus') %}
                         {% set label %}
                             {% trans 'action : status' %}
                         {% endset %}
                         {% set actions = actions|merge( { 'status' : {'icon': "/skins/prod/000000/images/chgstatus_history.gif", 'class':'TOOL_chgstatus_btn', 'label' : label} }) %}
                     {% endif %}
-                    {% if app['authentication'].getUser().ACL().has_right('deleterecord') and app['authentication'].getUser().ACL().has_right('addrecord') %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('deleterecord') and app['acl'].get(app['authentication'].getUser()).has_right('addrecord') %}
                         {% set label %}
                             {% trans 'action : collection' %}
                         {% endset %}
@@ -591,7 +591,7 @@
                         </span>
                     {% endif %}
 
-                    {% if app['authentication'].getUser().ACL().has_right('push') and app['authentication'].getUser().ACL().has_right('bas_chupub') %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('push') and app['acl'].get(app['authentication'].getUser()).has_right('bas_chupub') %}
                         <span class="dropdownButton">
                             <div class="btn-group">
                                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">
@@ -622,7 +622,7 @@
                                 </ul>
                             </div>
                         </span>
-                    {% elseif app['authentication'].getUser().ACL().has_right('push') %}
+                    {% elseif app['acl'].get(app['authentication'].getUser()).has_right('push') %}
                         <span class="dropdownButton">
                             <div class="btn-group">
                                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse" >
@@ -639,7 +639,7 @@
                                 </ul>
                             </div>
                         </span>
-                    {% elseif app['authentication'].getUser().ACL().has_right('bas_chupub') %}
+                    {% elseif app['acl'].get(app['authentication'].getUser()).has_right('bas_chupub') %}
                         <span class="dropdownButton">
                             <div class="btn-group">
                                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse" >
@@ -658,7 +658,7 @@
                         </span>
                     {% endif %}
 
-                    {% if app['authentication'].getUser().ACL().has_right('doctools') %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('doctools') %}
                         <span class="classicButton">
                             <div class="btn-group">
                                 <button class="TOOL_imgtools_btn results_window btn btn-inverse" >
@@ -667,7 +667,7 @@
                             </div>
                         </span>
                     {% endif %}
-                    {% if app['authentication'].getUser().ACL().has_right('deleterecord') %}
+                    {% if app['acl'].get(app['authentication'].getUser()).has_right('deleterecord') %}
                         <span class="classicButton">
                             <div class="btn-group">
                                 <button class="TOOL_trash_btn results_window btn btn-inverse" >

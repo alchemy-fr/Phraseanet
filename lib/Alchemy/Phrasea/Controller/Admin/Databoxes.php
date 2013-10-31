@@ -69,8 +69,8 @@ class Databoxes implements ControllerProviderInterface
     public function getDatabases(Application $app, Request $request)
     {
         $sbasIds = array_merge(
-            array_keys($app['authentication']->getUser()->ACL()->get_granted_sbas(array('bas_manage')))
-            , array_keys($app['authentication']->getUser()->ACL()->get_granted_sbas(array('bas_modify_struct')))
+            array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_sbas(array('bas_manage')))
+            , array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_sbas(array('bas_modify_struct')))
         );
 
         $sbas = array();
@@ -177,7 +177,7 @@ class Databoxes implements ControllerProviderInterface
             try {
                 $base = \databox::create($app, $connbas, $dataTemplate, $app['phraseanet.registry']);
                 $base->registerAdmin($app['authentication']->getUser());
-                $app['authentication']->getUser()->ACL()->delete_data_from_cache();
+                $app['acl']->get($app['authentication']->getUser())->delete_data_from_cache();
 
                 return $app->redirectPath('admin_database', array('databox_id' => $base->get_sbas_id(), 'success' => 1, 'reload-tree' => 1));
             } catch (\Exception $e) {

@@ -204,7 +204,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             return false;
         }
 
-        if ($this->app['authentication']->getUser()->ACL()->has_right('manageusers')) {
+        if ($this->app['acl']->get($this->app['authentication']->getUser())->has_right('manageusers')) {
             $bool = true;
         }
 

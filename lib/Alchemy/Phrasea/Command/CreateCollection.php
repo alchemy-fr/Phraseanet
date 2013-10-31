@@ -47,7 +47,7 @@ class CreateCollection extends Command
         $databox = $this->container['phraseanet.appbox']
             ->get_databox((int) $input->getArgument('databox_id'));
 
-        $new_collection = \collection::create($app, $databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
+        $new_collection = \collection::create($this->container, $databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
 
         if ($new_collection && $input->getOption('base_id_rights')) {
 
@@ -58,7 +58,7 @@ class CreateCollection extends Command
             while ($n < $total) {
                 $results = $query->limit($n, 40)->execute()->get_results();
                 foreach ($results as $user) {
-                    $user->ACL()->duplicate_right_from_bas($input->getOption('base_id_rights'), $new_collection->get_base_id());
+                    $this->container['acl']->get($user)->duplicate_right_from_bas($input->getOption('base_id_rights'), $new_collection->get_base_id());
                 }
                 $n+=40;
             }

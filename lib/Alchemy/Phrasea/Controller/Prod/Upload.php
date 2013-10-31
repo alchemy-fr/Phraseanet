@@ -144,7 +144,7 @@ class Upload implements ControllerProviderInterface
             throw new BadRequestHttpException('Missing base_id parameter');
         }
 
-        if (!$app['authentication']->getUser()->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
+        if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($base_id, 'canaddrecord')) {
             throw new AccessDeniedHttpException('User is not allowed to add record on this collection');
         }
 
@@ -276,7 +276,7 @@ class Upload implements ControllerProviderInterface
     {
         $collections = array();
 
-        foreach ($user->ACL()->get_granted_base(array('canaddrecord')) as $collection) {
+        foreach ($app['acl']->get($user)->get_granted_base(array('canaddrecord')) as $collection) {
             $databox = $collection->get_databox();
 
             if ( ! isset($collections[$databox->get_sbas_id()])) {

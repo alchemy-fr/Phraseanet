@@ -13,7 +13,6 @@ use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
@@ -26,6 +25,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\UserQuery;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
+use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -660,7 +660,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $collection = \collection::get_from_base_id($this->app, $request->get('base_id'));
 
-        if (!$app['authentication']->getUser()->ACL()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
+        if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
             throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])));
         }
 
@@ -735,7 +735,7 @@ class API_V1_adapter extends API_V1_Abstract
         $offset_start = max($request->get('offset_start', 0), 0);
         $per_page = min(max($request->get('per_page', 10), 1), 20);
 
-        $baseIds = array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('canaddrecord')));
+        $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('canaddrecord')));
 
         $lazaretFiles = array();
 
@@ -773,7 +773,7 @@ class API_V1_adapter extends API_V1_Abstract
             throw new \API_V1_exception_notfound(sprintf('Lazaret file id %d not found', $lazaret_id));
         }
 
-        if (!$app['authentication']->getUser()->ACL()->has_right_on_base($lazaretFile->getBaseId(), 'canaddrecord')) {
+        if (!$app['acl']->get($app['authentication']->getUser())->has_right_on_base($lazaretFile->getBaseId(), 'canaddrecord')) {
             throw new \API_V1_exception_forbidden('You do not have access to this quarantine item');
         }
 
@@ -1477,7 +1477,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $coll = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($user);
+        $coll = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($this->app['acl']->get($user));
 
         $datas = array();
         foreach ($coll as $feed) {
@@ -1535,7 +1535,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($this->app, $request, $this);
 
-        $feed = Aggregate::createFromUser($this->app['EM'], $user);
+        $feed = Aggregate::createFromUser($this->app, $user);
 
         $offset_start = (int) ($request->get('offset_start') ? : 0);
         $per_page = (int) ($request->get('per_page') ? : 5);
@@ -1562,7 +1562,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $collection = $entry->getFeed()->getCollection($this->app);
 
-        if (null !== $collection && !$user->ACL()->has_access_to_base($collection->get_base_id())) {
+        if (null !== $collection && !$this->app['acl']->get($user)->has_access_to_base($collection->get_base_id())) {
             throw new \API_V1_exception_forbidden('You have not access to the parent feed');
         }
 

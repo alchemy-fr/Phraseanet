@@ -525,8 +525,8 @@ class collection implements cache_cacheableInterface
         while ($n < $total) {
             $results = $query->limit($n, 50)->execute()->get_results();
             foreach ($results as $user) {
-                $user->ACL()->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
-                $user->ACL()->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
+                $app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
+                $app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
             }
             $n+=50;
         }
@@ -626,7 +626,7 @@ class collection implements cache_cacheableInterface
             "modify_struct"   => "1"
         );
 
-        $user->ACL()->update_rights_to_base($base_id, $rights);
+        $this->app['acl']->get($user)->update_rights_to_base($base_id, $rights);
 
         return true;
     }

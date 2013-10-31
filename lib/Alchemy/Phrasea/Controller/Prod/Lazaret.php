@@ -87,7 +87,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function listElement(Application $app, Request $request)
     {
-        $baseIds = array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('canaddrecord')));
+        $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('canaddrecord')));
 
         $lazaretFiles = null;
 

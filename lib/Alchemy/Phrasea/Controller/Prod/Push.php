@@ -204,13 +204,13 @@ class Push implements ControllerProviderInterface
                         $Basket->addElement($BasketElement);
 
                         if ($receiver['HD']) {
-                            $user_receiver->ACL()->grant_hd_on(
+                            $app['acl']->get($user_receiver)->grant_hd_on(
                                 $BasketElement->getRecord($app)
                                 , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_PUSH
                             );
                         } else {
-                            $user_receiver->ACL()->grant_preview_on(
+                            $app['acl']->get($user_receiver)->grant_preview_on(
                                 $BasketElement->getRecord($app)
                                 , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_PUSH
@@ -392,13 +392,13 @@ class Push implements ControllerProviderInterface
                         $BasketElement->addValidationData($ValidationData);
 
                         if ($participant['HD']) {
-                            $participant_user->ACL()->grant_hd_on(
+                            $app['acl']->get($participant_user)->grant_hd_on(
                                 $BasketElement->getRecord($app)
                                 , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_VALIDATE
                             );
                         } else {
-                            $participant_user->ACL()->grant_preview_on(
+                            $app['acl']->get($participant_user)->grant_preview_on(
                                 $BasketElement->getRecord($app)
                                 , $app['authentication']->getUser()
                                 , \ACL::GRANT_ACTION_VALIDATE
@@ -478,7 +478,7 @@ class Push implements ControllerProviderInterface
 
             $query = new \User_Query($app);
 
-            $query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canpush'));
+            $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), array('canpush'));
 
             $query->in(array($usr_id));
 
@@ -515,7 +515,7 @@ class Push implements ControllerProviderInterface
             $result = array('success' => false, 'message' => '', 'user'    => null);
 
             try {
-                if (!$app['authentication']->getUser()->ACL()->has_right('manageusers'))
+                if (!$app['acl']->get($app['authentication']->getUser())->has_right('manageusers'))
                     throw new ControllerException(_('You are not allowed to add users'));
 
                 if (!$request->request->get('firstname'))
@@ -587,7 +587,7 @@ class Push implements ControllerProviderInterface
 
             $query = new \User_Query($app);
 
-            $query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canpush'));
+            $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), array('canpush'));
 
             $query->like(\User_Query::LIKE_FIRSTNAME, $request->query->get('query'))
                 ->like(\User_Query::LIKE_LASTNAME, $request->query->get('query'))
@@ -627,7 +627,7 @@ class Push implements ControllerProviderInterface
 
             $query = new \User_Query($app);
 
-            $query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canpush'));
+            $query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), array('canpush'));
 
             if ($request->get('query')) {
                 $query->like($request->get('like_field'), $request->get('query'))
