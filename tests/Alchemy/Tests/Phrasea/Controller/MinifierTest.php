@@ -45,7 +45,7 @@ class MinifierTest extends \PhraseanetPHPUnitAbstract
     {
         $_GET['f'] = $file;
         self::$DI['client']->request('GET', '/include/minify/?f=' . $file);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk(), "Group $file is ok");
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk(), "File $file is ok");
     }
 
     public function provideFilesToMinify()
