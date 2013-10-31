@@ -1113,6 +1113,14 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
         $app['session']->clear();
         $app['session']->set('usr_id', self::$DI['user']->get_id());
+        $session = new \Entities\Session();
+        $session->setUsrId(self::$DI['user']->get_id());
+        $session->setUserAgent('');
+        self::$DI['app']['EM']->persist($session);
+        self::$DI['app']['EM']->flush();
+
+        $app['session']->set('session_id', $session->getId());
+
         self::$DI['app']['authentication']->reinitUser();
     }
 

@@ -83,7 +83,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testNoPersistentCookie()
     {
         $app = self::$DI['app'];
-        $app['authentication']->closeAccount();
+        $this->logout($app);
 
         $boolean = false;
 
@@ -102,7 +102,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPersistentCookie()
     {
         $app = self::$DI['app'];
-        $app['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         $browser = $this->getMockBuilder('\Browser')
             ->disableOriginalConstructor()

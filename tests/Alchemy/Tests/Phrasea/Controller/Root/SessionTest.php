@@ -38,7 +38,7 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpdSession()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
 
         $this->XMLHTTPRequest('POST', '/session/update/', array(
             'usr' => self::$DI['user']->get_id(),
@@ -55,7 +55,7 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpdSessionBadRequestMissingModuleArgument()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
 
         $this->XMLHTTPRequest('POST', '/session/update/', array(
             'usr' => self::$DI['user']->get_id()

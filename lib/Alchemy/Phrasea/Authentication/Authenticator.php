@@ -116,6 +116,15 @@ class Authenticator
      */
     public function closeAccount()
     {
+        if (!$this->session->has('session_id')) {
+            throw new RuntimeException('No session to close.');
+        }
+
+        if (null !== $session = $this->em->find('Entities\Session', $this->session->get('session_id'))) {
+            $this->em->remove($session);
+            $this->em->flush();
+        }
+
         $this->session->invalidate();
         $this->reinitUser();
 

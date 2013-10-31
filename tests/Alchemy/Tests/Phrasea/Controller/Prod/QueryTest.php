@@ -30,7 +30,7 @@ class QueryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testQueryAnswerTrain()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
         self::$DI['record_24'];
 
         $options = new SearchEngineOptions();

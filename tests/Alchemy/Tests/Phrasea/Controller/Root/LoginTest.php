@@ -55,7 +55,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testLoginRedirectPostLog()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         self::$DI['client']->request('GET', '/login/', array('postlog'  => '1', 'redirect' => 'prod'));
         $response = self::$DI['client']->getResponse();
@@ -68,7 +68,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testLoginError($type, $message)
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['app']->addFlash($type, $message);
 
         $crawler = self::$DI['client']->request('GET', '/login/');
@@ -83,7 +83,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterConfirmMailNoCode()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/register-confirm/');
         $response = self::$DI['client']->getResponse();
 
@@ -97,7 +97,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterConfirmMailWrongCode()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/register-confirm/', array(
             'code'    => '34dT0k3n'
         ));
@@ -113,7 +113,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterConfirmMailUserNotFound()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, 0, null, $email);
         self::$DI['client']->request('GET', '/login/register-confirm/', array(
@@ -131,7 +131,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterConfirmMailUnlocked()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->get_id(), null, $email);
 
@@ -152,7 +152,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered');
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
         $appboxRegister = new \appbox_register(self::$DI['app']['phraseanet.appbox']);
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->get_id(), null, $email);
@@ -178,7 +178,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $user = \User_Adapter::create(self::$DI['app'], 'test'.mt_rand(), \random::generatePassword(), 'email-random'.mt_rand().'@phraseanet.com', false);
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $email = $this->generateEmail();
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, $user->get_id(), null, $email);
 
@@ -201,7 +201,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewPasswordInvalidEmail()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
             'email'    => 'invalid.email.com',
             '_token'   => 'token',
@@ -218,7 +218,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewPasswordUnknowEmail()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
             'email'   => 'invalid_email@test.com',
             '_token'  => 'token',
@@ -236,7 +236,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate');
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('POST', '/login/forgot-password/', array(
             'email'    => self::$DI['user']->get_email(),
             '_token'   => 'token',
@@ -253,7 +253,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewPasswordBadArguments()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->get_id());
         $crawler = self::$DI['client']->request('POST', '/login/renew-password/', array(
             'token'           => $token,
@@ -269,7 +269,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRenewPasswordBadToken()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('POST', '/login/renew-password/', array(
             'token'           => 'badToken',
             '_token'          => 'token',
@@ -296,7 +296,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRenewPasswordNoToken()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('POST', '/login/renew-password/', array(
             '_token'          => 'token',
             'password'        => array('password' => 'password', 'confirm' => 'password')
@@ -325,7 +325,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewPassword()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->get_id());
 
         self::$DI['client']->request('POST', '/login/renew-password/', array(
@@ -347,7 +347,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewPasswordPageShowsFlashMessages($type, $message)
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['app']->addFlash($type, $message);
 
         $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_PASSWORD, self::$DI['user']->get_id());
@@ -363,7 +363,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testForgotPasswordGet()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/forgot-password/');
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -381,7 +381,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testForgotPasswordInvalidEmail()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
             '_token' => 'token',
             'email'  => 'invalid.email',
@@ -395,7 +395,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testForgotPasswordWrongEmail()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
             '_token' => 'token',
             'email'  => 'invalid@email.com',
@@ -411,7 +411,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate');
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $crawler = self::$DI['client']->request('POST', '/login/forgot-password/', array(
             '_token' => 'token',
             'email'  => self::$DI['user']->get_email(),
@@ -429,7 +429,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetRegister($type, $message)
     {
         self::$DI['app']['registration.enabled'] = true;
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['app']->addFlash($type, $message);
         $crawler = self::$DI['client']->request('GET', '/login/register-classic/');
 
@@ -442,7 +442,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetRegisterWithRegisterIdBindDataToForm()
     {
         self::$DI['app']['registration.enabled'] = true;
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
 
@@ -488,7 +488,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetPostRegisterWhenRegistrationDisabled($method, $route)
     {
         self::$DI['app']['registration.enabled'] = false;
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request($method, $route);
         $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
     }
@@ -501,7 +501,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['registration.enabled'] = true;
         self::$DI['app']['registration.fields'] = $extraParameters;
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         $parameters = array_merge(array('_token' => 'token'), $parameters);
         foreach ($parameters as $key => $parameter) {
@@ -528,7 +528,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostRegisterWithoutParams()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $crawler = self::$DI['client']->request('POST', '/login/register-classic/');
 
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
@@ -782,7 +782,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostRegisterWithProviderIdAndAlreadyBoundProvider()
     {
         self::$DI['app']['registration.fields'] = array();
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
@@ -832,7 +832,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostRegisterWithUnknownProvider()
     {
         self::$DI['app']['registration.fields'] = array();
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         $parameters = array_merge(array('_token' => 'token'), array(
             "password" => array(
@@ -867,7 +867,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostRegisterWithProviderNotAuthenticated()
     {
         self::$DI['app']['registration.fields'] = array();
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
@@ -909,7 +909,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostRegisterWithProviderId()
     {
         self::$DI['app']['registration.fields'] = array();
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         $emails = array(
             'Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation'=>0,
@@ -983,7 +983,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$DI['app']['registration.fields'] = $extraParameters;
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         $emails = array(
             'Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation'=>0,
@@ -1044,7 +1044,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSendConfirmMailBadRequest()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/send-mail-confirm/');
 
         $this->assertBadResponse(self::$DI['client']->getResponse());
@@ -1057,7 +1057,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation');
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/send-mail-confirm/', array('usr_id' => self::$DI['user']->get_id()));
 
         $response = self::$DI['client']->getResponse();
@@ -1071,7 +1071,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSendConfirmMailWrongUser()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/send-mail-confirm/', array('usr_id' => 0));
 
         $response = self::$DI['client']->getResponse();
@@ -1091,7 +1091,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['authentication']->getUser()->set_password($password);
         self::$DI['app']['authentication']->getUser()->set_mail_locked(false);
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         self::$DI['client'] = new Client(self::$DI['app'], array());
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
@@ -1116,7 +1116,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['authentication']->getUser()->set_password($password);
         self::$DI['app']['authentication']->getUser()->set_mail_locked(false);
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         $preEvent = 0;
         $phpunit = $this;
@@ -1163,7 +1163,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $login = self::$DI['app']['authentication']->getUser()->get_login();
         self::$DI['app']['authentication']->getUser()->set_password($password);
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         self::$DI['client'] = new Client(self::$DI['app'], array());
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
@@ -1189,7 +1189,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $user->ACL()->give_access_to_base(array(self::$DI['collection']->get_base_id()));
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         self::$DI['client'] = new Client(self::$DI['app'], array());
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
@@ -1221,7 +1221,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $user = \User_Adapter::getInstance($usr_id, self::$DI['app']);
         $user->ACL()->give_access_to_base(array(self::$DI['collection']->get_base_id()));
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         self::$DI['client'] = new Client(self::$DI['app'], array());
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
@@ -1235,7 +1235,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGuestAuthenticateWithGetMethod()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         self::$DI['client'] = new Client(self::$DI['app'], array());
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
@@ -1255,7 +1255,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testBadAuthenticate()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('POST', '/login/authenticate/', array(
             'login' => self::$DI['user']->get_login(),
             'password'   => 'test',
@@ -1272,7 +1272,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testBadAuthenticateCheckRedirect()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('POST', '/login/authenticate/', array(
             'login'     => self::$DI['user']->get_login(),
             'password'       => 'test',
@@ -1290,7 +1290,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testMailLockedAuthenticate()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         $password = \random::generatePassword();
         self::$DI['user']->set_mail_locked(true);
         self::$DI['client']->request('POST', '/login/authenticate/', array(
@@ -1327,7 +1327,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($parameters)
             ->will($this->returnValue($response));
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/provider/provider-test/authenticate/', $parameters);
 
         $this->assertSame($response, self::$DI['client']->getResponse());
@@ -1367,7 +1367,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->equalTo('provider-test'))
             ->will($this->throwException(new InvalidArgumentException('Provider not found')));
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request($method, $route);
 
         $this->assertEquals(404, self::$DI['client']->getResponse()->getStatusCode());
@@ -1398,7 +1398,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('onCallback')
             ->will($this->throwException(new NotAuthenticatedException('Not authenticated.')));
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/provider/provider-test/callback/');
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -1428,7 +1428,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('getToken')
             ->will($this->returnValue($token));
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/provider/provider-test/callback/');
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -1462,7 +1462,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($token)
             ->will($this->returnValue($user));
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/provider/provider-test/callback/');
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -1537,7 +1537,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('isEnabled')
             ->will($this->returnValue(true));
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/provider/provider-test/callback/');
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -1589,7 +1589,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['app']['registration.enabled'] = true;
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/provider/provider-test/callback/');
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -1632,7 +1632,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$DI['app']['registration.enabled'] = false;
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/provider/provider-test/callback/');
 
         $this->assertSame(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -1651,7 +1651,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
         self::$DI['app']['registration.fields'] = $fields;
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/registration-fields/');
 
         $this->assertSame(200, self::$DI['client']->getResponse()->getStatusCode());
@@ -1662,7 +1662,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRegisterRedirectsNoAuthProvidersAvailable()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         self::$DI['app']['authentication.providers'] = new ProvidersCollection();
 
@@ -1674,7 +1674,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRegisterDisplaysIfAuthProvidersAvailable()
     {
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $provider->expects($this->any())

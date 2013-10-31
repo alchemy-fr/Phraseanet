@@ -160,7 +160,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearch_recordsWithRecords()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
 
         $record = \record_adapter::createFromFile(BorderFile::buildFromPathfile(__DIR__ . '/../../../files/cestlafete.jpg', self::$DI['collection'], self::$DI['app']), self::$DI['app']);
 
@@ -240,7 +240,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearch_recordsWithStories()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
 
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
@@ -272,7 +272,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearchWithStories()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
 
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
@@ -307,7 +307,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearchWithRecords()
     {
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
 
         $record = \record_adapter::createFromFile(BorderFile::buildFromPathfile(__DIR__ . '/../../../files/cestlafete.jpg', self::$DI['collection'], self::$DI['app']), self::$DI['app']);
 

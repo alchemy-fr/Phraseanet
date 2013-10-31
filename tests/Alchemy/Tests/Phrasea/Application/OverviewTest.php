@@ -61,23 +61,20 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    public function testDatafilesRouteOnUnaccessibleRecordIsOkInPublicFeed()
+    public function testDatafilesRouteNotAuthenticatedIsOkInPublicFeed()
     {
-        $tmp = tempnam(sys_get_temp_dir(), 'testEtag');
-        copy(__DIR__ . '/../../../../files/cestlafete.jpg', $tmp);
+        $publicFeed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], 'titre', 'subtitre');
+        $publicFeed->set_public(true);
+        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $publicFeed, self::$DI['user']);
+        $entry = \Feed_Entry_Adapter::create(self::$DI['app'], $publicFeed, $publisher, 'titre', 'sub titre entry', 'author name', 'author email', false);
+        self::$DI['record_1']->move_to_collection(self::$DI['collection_no_access'], self::$DI['app']['phraseanet.appbox']);
+        $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
 
-        $media = self::$DI['app']['mediavorus']->guess($tmp);
+        self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
 
-        $file = new File(self::$DI['app'], $media, self::$DI['collection_no_access']);
-        $record = \record_adapter::createFromFile($file, self::$DI['app']);
-        $record->generate_subdefs($record->get_databox(), self::$DI['app']);
-
-        $item = $this->insertOneFeedItem(self::$DI['user'], true, 1, $record);
-
-        self::$DI['client']->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
-
-        unlink($tmp);
+        self::$DI['record_1']->move_to_collection(self::$DI['collection'], self::$DI['app']['phraseanet.appbox']);
+        $publicFeed->set_public(false);
     }
 
     public function testDatafilesRouteNotAuthenticatedUnknownSubdef()
@@ -210,12 +207,17 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPermalinkRouteNotAuthenticatedIsOkInPublicFeed()
     {
-        $record = $this->insertOneFeedItem(self::$DI['user'], true)->getRecord(self::$DI['app']);
+        $publicFeed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], 'titre', 'subtitre');
+        $publicFeed->set_public(true);
+        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $publicFeed, self::$DI['user']);
+        $entry = \Feed_Entry_Adapter::create(self::$DI['app'], $publicFeed, $publisher, 'titre', 'sub titre entry', 'author name', 'author email', false);
+        $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
 
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('GET', '/permalink/v1/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
+        self::$DI['client']->request('GET', '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $publicFeed->set_public(false);
     }
 
     protected function get_a_permaviewBCcompatibility(array $headers = array())
