@@ -45,7 +45,7 @@ class Upload implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication()
                 ->requireRight('addrecord');
         });
@@ -220,7 +220,7 @@ class Upload implements ControllerProviderInterface
             $reasons = array();
             $elementCreated = null;
 
-            $callback = function($element, $visa, $code) use (&$reasons, &$elementCreated) {
+            $callback = function ($element, $visa, $code) use (&$reasons, &$elementCreated) {
                     foreach ($visa->getResponses() as $response) {
                         if (!$response->isOk()) {
                             $reasons[] = $response->getMessage();

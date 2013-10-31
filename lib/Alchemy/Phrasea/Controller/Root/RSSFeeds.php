@@ -27,7 +27,7 @@ class RSSFeeds implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $display_feed = function(Application $app, $feed, $format, $page, $user = null) {
+        $display_feed = function (Application $app, $feed, $format, $page, $user = null) {
             $total = $feed->get_count_total_entries();
             $perPage = 5;
             $entries = $feed->get_entries((($page - 1) * $perPage), $perPage);
@@ -76,7 +76,7 @@ class RSSFeeds implements ControllerProviderInterface
             return $response;
         };
 
-        $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) use ($display_feed) {
+        $controllers->get('/feed/{id}/{format}/', function (Application $app, $id, $format) use ($display_feed) {
             $feed = new \Feed_Adapter($app, $id);
 
             if (!$feed->is_public()) {
@@ -94,7 +94,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('id', '\d+')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) use ($display_feed) {
+        $controllers->get('/userfeed/{token}/{id}/{format}/', function (Application $app, $token, $id, $format) use ($display_feed) {
             $token = new \Feed_Token($app, $token, $id);
             $feed = $token->get_feed();
 
@@ -109,7 +109,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->assert('id', '\d+')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) use ($display_feed) {
+        $controllers->get('/userfeed/aggregated/{token}/{format}/', function (Application $app, $token, $format) use ($display_feed) {
             $token = new \Feed_TokenAggregate($app, $token);
             $feed = $token->get_feed();
 
@@ -123,7 +123,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->bind('feed_user_aggregated')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/aggregated/{format}/', function(Application $app, $format) use ($display_feed) {
+        $controllers->get('/aggregated/{format}/', function (Application $app, $format) use ($display_feed) {
             $feeds = \Feed_Collection::load_public_feeds($app);
             $feed = $feeds->get_aggregate();
 
@@ -136,7 +136,7 @@ class RSSFeeds implements ControllerProviderInterface
             ->bind('feed_public_aggregated')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/cooliris/', function(Application $app) use ($display_feed) {
+        $controllers->get('/cooliris/', function (Application $app) use ($display_feed) {
             $feeds = \Feed_Collection::load_public_feeds($app);
             $feed = $feeds->get_aggregate();
 

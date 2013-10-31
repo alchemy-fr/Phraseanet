@@ -87,7 +87,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $boolean = false;
 
-        $app->get('/unit-test-route', function(Application $app) use (&$boolean) {
+        $app->get('/unit-test-route', function (Application $app) use (&$boolean) {
             $boolean = $app['authentication']->isAuthenticated();
 
             return new Response();
@@ -136,7 +136,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $boolean = false;
 
-        $app->get('/unit-test-route', function(Application $app) use (&$boolean) {
+        $app->get('/unit-test-route', function (Application $app) use (&$boolean) {
             $boolean = $app['authentication']->isAuthenticated();
 
             return new Response();

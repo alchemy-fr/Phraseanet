@@ -30,7 +30,7 @@ class Query implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
@@ -119,9 +119,9 @@ class Query implements ControllerProviderInterface
         $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage);
 
         foreach ($options->getDataboxes() as $databox) {
-            $colls = array_map(function(\collection $collection) {
+            $colls = array_map(function (\collection $collection) {
                 return $collection->get_coll_id();
-            }, array_filter($options->getCollections(), function(\collection $collection) use ($databox) {
+            }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
                 return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
             }));
 

@@ -708,7 +708,7 @@ class RssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function removeBadItems(Array &$item_entries, Array $available_medium)
     {
-        $remove = function($entry_item, $key) use (&$item_entries, $available_medium) {
+        $remove = function ($entry_item, $key) use (&$item_entries, $available_medium) {
                 $preview_sd = $entry_item->get_record()->get_subdef('preview');
                 $url_preview = $preview_sd->get_permalink();
                 $thumbnail_sd = $entry_item->get_record()->get_thumbnail();

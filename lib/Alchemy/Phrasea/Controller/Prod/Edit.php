@@ -30,13 +30,13 @@ class Edit implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']
                 ->requireNotGuest()
                 ->requireRight('modifyrecord');
         });
 
-        $controllers->post('/', function(Application $app, Request $request) {
+        $controllers->post('/', function (Application $app, Request $request) {
 
             $records = RecordsRequest::fromRequest($app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, array('canmodifrecord'));
 
@@ -228,7 +228,7 @@ class Edit implements ControllerProviderInterface
             return $app['twig']->render('prod/actions/edit_default.html.twig', $params);
         });
 
-        $controllers->get('/vocabulary/{vocabulary}/', function(Application $app, Request $request, $vocabulary) {
+        $controllers->get('/vocabulary/{vocabulary}/', function (Application $app, Request $request, $vocabulary) {
             $datas = array('success' => false, 'message' => '', 'results' => array());
 
             $sbas_id = (int) $request->query->get('sbas_id');
@@ -267,7 +267,7 @@ class Edit implements ControllerProviderInterface
             return $app->json($datas);
         });
 
-        $controllers->post('/apply/', function(Application $app, Request $request) {
+        $controllers->post('/apply/', function (Application $app, Request $request) {
 
             $records = RecordsRequest::fromRequest($app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, array('canmodifrecord'));
 

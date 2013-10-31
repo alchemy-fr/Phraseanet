@@ -304,7 +304,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         }
 
         if ( ! $this->is_valid_object_id($object_id))
-            throw new Bridge_Exception_InvalidObjectId($object_id);
+            throw new Bridge_Exception_ActionInvalidObjectId($object_id);
 
         switch ($object) {
             case "video" :
@@ -912,7 +912,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     {
         $errors = $this->check_record_constraints($record);
 
-        $check = function($field) use (&$errors, $datas, $record) {
+        $check = function ($field) use (&$errors, $datas, $record) {
                 $key = $record->get_serialize_key();
                 $name = $field['name'];
                 $length = (int) $field['length'];
@@ -939,7 +939,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     public function check_update_constraints(Array $datas)
     {
         $errors = array();
-        $check = function($field) use (&$errors, $datas) {
+        $check = function ($field) use (&$errors, $datas) {
                 $name = $field['name'];
                 $length = (int) $field['length'];
                 $required = ! ! $field['required'];

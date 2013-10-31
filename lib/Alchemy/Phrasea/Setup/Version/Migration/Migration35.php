@@ -35,7 +35,7 @@ class Migration35 implements MigrationInterface
             $config['registration-fields'][$key]['required'] = (boolean) $field['required'];
         }
 
-        $retrieve_old_credentials = function() {
+        $retrieve_old_credentials = function () {
             require __DIR__ . '/../../../../../../config/connexion.inc';
 
             return array(
@@ -52,7 +52,7 @@ class Migration35 implements MigrationInterface
             $config['main']['database'][$key] = (string) $value;
         }
 
-        $retrieve_old_parameters = function() {
+        $retrieve_old_parameters = function () {
             require __DIR__ . '/../../../../../../config/config.inc';
 
             return array(

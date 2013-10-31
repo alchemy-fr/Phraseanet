@@ -1578,7 +1578,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->execute(array(':record_id' => $this->get_record_id()));
         $stmt->closeCursor();
 
-        $base_ids = array_map(function($collection) {
+        $base_ids = array_map(function ($collection) {
                 return $collection->get_base_id();
             }, $this->databox->get_collections());
 

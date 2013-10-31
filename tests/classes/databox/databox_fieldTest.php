@@ -348,7 +348,7 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
         $this->object_mono->set_label($code, null)->save();
         $this->assertEquals($this->object_mono->get_name(), $this->object_mono->get_label($code));
-        
+
         $this->object_mono->set_label($code, '')->save();
         $this->assertEquals($this->object_mono->get_name(), $this->object_mono->get_label($code));
     }

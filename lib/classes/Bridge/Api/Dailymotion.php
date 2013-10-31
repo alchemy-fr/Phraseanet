@@ -370,7 +370,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
         );
 
         if ( ! $this->is_valid_object_id($object_id))
-            throw new Bridge_Exception_InvalidObjectId($object_id);
+            throw new Bridge_Exception_ActionInvalidObjectId($object_id);
 
         switch ($object) {
             case self::ELEMENT_TYPE_VIDEO :
@@ -804,7 +804,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     public function check_upload_constraints(Array $datas, record_adapter $record)
     {
         $errors = $this->check_record_constraints($record);
-        $check = function($field) use (&$errors, $datas, $record) {
+        $check = function ($field) use (&$errors, $datas, $record) {
                 $key = $record->get_serialize_key();
                 $required = ! ! $field["required"];
                 $name = $field["name"];
@@ -830,7 +830,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     public function check_update_constraints(Array $datas)
     {
         $errors = array();
-        $check = function($field) use (&$errors, $datas) {
+        $check = function ($field) use (&$errors, $datas) {
                 $required = ! ! $field["required"];
                 $name = $field["name"];
                 $length = (int) $field["length"];

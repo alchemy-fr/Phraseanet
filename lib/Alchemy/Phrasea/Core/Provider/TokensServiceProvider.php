@@ -18,7 +18,7 @@ class TokensServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['tokens'] = $app->share(function($app) {
+        $app['tokens'] = $app->share(function ($app) {
             return new \random($app);
         });
     }

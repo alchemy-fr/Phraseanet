@@ -32,7 +32,7 @@ class CacheServiceProvider implements ServiceProviderInterface
             return new Factory();
         });
 
-        $app['phraseanet.cache-service'] = $app->share(function(Application $app) {
+        $app['phraseanet.cache-service'] = $app->share(function (Application $app) {
             return new CacheManager(
                 $app['phraseanet.cache-compiler'],
                 $app['phraseanet.cache-registry'],
@@ -41,13 +41,13 @@ class CacheServiceProvider implements ServiceProviderInterface
             );
         });
 
-        $app['cache'] = $app->share(function(Application $app) {
+        $app['cache'] = $app->share(function (Application $app) {
             $conf = $app['phraseanet.configuration']['main']['cache'];
 
             return $app['phraseanet.cache-service']->factory('cache', $conf['type'], $conf['options']);
         });
 
-        $app['opcode-cache'] = $app->share(function(Application $app) {
+        $app['opcode-cache'] = $app->share(function (Application $app) {
             $conf = $app['phraseanet.configuration']['main']['opcodecache'];
 
             return $app['phraseanet.cache-service']->factory('cache', $conf['type'], $conf['options']);

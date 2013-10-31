@@ -19,17 +19,17 @@ class LocaleServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['locale'] = $app->share(function(Application $app){
+        $app['locale'] = $app->share(function (Application $app) {
             return $app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
         });
 
-        $app['locale.I18n'] = function(Application $app){
+        $app['locale.I18n'] = function (Application $app) {
             $data = explode('_', $app['locale']);
 
             return $data[0];
         };
 
-        $app['locale.l10n'] = function(Application $app){
+        $app['locale.l10n'] = function (Application $app) {
             $data = explode('_', $app['locale']);
 
             return $data[1];

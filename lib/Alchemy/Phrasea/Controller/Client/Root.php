@@ -26,7 +26,7 @@ class Root implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             if (!$app['authentication']->isAuthenticated() && null !== $request->query->get('nolog')) {
                 return $app->redirectPath('login_authenticate_as_guest', array('redirect' => 'client'));
             }
@@ -151,9 +151,9 @@ class Root implements ControllerProviderInterface
         $result = $app['phraseanet.SE']->query($query, ($currentPage - 1) * $perPage, $perPage);
 
         foreach ($options->getDataboxes() as $databox) {
-            $colls = array_map(function(\collection $collection) {
+            $colls = array_map(function (\collection $collection) {
                 return $collection->get_coll_id();
-            }, array_filter($options->getCollections(), function(\collection $collection) use ($databox) {
+            }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
                 return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
             }));
 
@@ -406,7 +406,7 @@ class Root implements ControllerProviderInterface
         $iterator = $finder
             ->directories()
             ->depth(0)
-            ->filter(function(\SplFileInfo $fileinfo) {
+            ->filter(function (\SplFileInfo $fileinfo) {
                 return ctype_xdigit($fileinfo->getBasename());
             })
             ->in($cssPath);

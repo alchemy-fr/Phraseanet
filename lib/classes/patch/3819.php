@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Symfony\Component\Process\ExecutableFinder;
 
 class patch_3819 implements patchInterface
 {

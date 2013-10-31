@@ -39,14 +39,14 @@ abstract class Command extends SymfoCommand implements CommandInterface
             $handler = new StreamHandler('php://stdout');
 
             $this->container['monolog'] = $this->container->share(
-                $this->container->extend('monolog', function($logger, $app) use ($handler) {
+                $this->container->extend('monolog', function ($logger, $app) use ($handler) {
                     $logger->pushHandler($handler);
 
                     return $logger;
                 })
             );
             $this->container['task-manager.logger'] = $this->container->share(
-                $this->container->extend('task-manager.logger', function($logger, $app) use ($handler) {
+                $this->container->extend('task-manager.logger', function ($logger, $app) use ($handler) {
                     $logger->pushHandler($handler);
 
                     return $logger;

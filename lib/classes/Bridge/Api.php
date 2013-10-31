@@ -173,7 +173,7 @@ class Bridge_Api
      */
     public function list_elements($type, $offset_start = 0, $quantity = 10)
     {
-        $action = function(Bridge_Api $obj) use ($type, $offset_start, $quantity ) {
+        $action = function (Bridge_Api $obj) use ($type, $offset_start, $quantity) {
                 return $obj->get_connector()->list_elements($type, $offset_start, $quantity);
             };
 
@@ -189,7 +189,7 @@ class Bridge_Api
      */
     public function list_containers($type, $offset_start = 0, $quantity = 10)
     {
-        $action = function(Bridge_Api $obj) use ($type, $offset_start, $quantity ) {
+        $action = function (Bridge_Api $obj) use ($type, $offset_start, $quantity) {
                 return $obj->get_connector()->list_containers($type, $offset_start, $quantity);
             };
 
@@ -205,7 +205,7 @@ class Bridge_Api
      */
     public function update_element($object, $object_id, Array $datas)
     {
-        $action = function(Bridge_Api $obj) use ($object, $object_id, $datas) {
+        $action = function (Bridge_Api $obj) use ($object, $object_id, $datas) {
                 return $obj->get_connector()->update_element($object, $object_id, $datas);
             };
 
@@ -220,7 +220,7 @@ class Bridge_Api
      */
     public function create_container($container_type, Request $request)
     {
-        $action = function(Bridge_Api $obj) use ($container_type, $request) {
+        $action = function (Bridge_Api $obj) use ($container_type, $request) {
                 return $obj->get_connector()->create_container($container_type, $request);
             };
 
@@ -237,7 +237,7 @@ class Bridge_Api
      */
     public function add_element_to_container($element_type, $element_id, $destination, $container_id)
     {
-        $action = function(Bridge_Api $obj) use ($element_type, $element_id, $destination, $container_id) {
+        $action = function (Bridge_Api $obj) use ($element_type, $element_id, $destination, $container_id) {
                 return $obj->get_connector()->add_element_to_container($element_type, $element_id, $destination, $container_id);
             };
 
@@ -252,7 +252,7 @@ class Bridge_Api
      */
     public function delete_object($object, $object_id)
     {
-        $action = function(Bridge_Api $obj) use ($object, $object_id) {
+        $action = function (Bridge_Api $obj) use ($object, $object_id) {
                 return $obj->get_connector()->delete_object($object, $object_id);
             };
 
@@ -265,7 +265,7 @@ class Bridge_Api
      */
     public function acceptable_records()
     {
-        $action = function(Bridge_Api $obj) {
+        $action = function (Bridge_Api $obj) {
                 return $obj->get_connector()->acceptable_records();
             };
 
@@ -280,7 +280,7 @@ class Bridge_Api
      */
     public function get_element_from_id($element_id, $type)
     {
-        $action = function(Bridge_Api $obj) use ($element_id, $type) {
+        $action = function (Bridge_Api $obj) use ($element_id, $type) {
                 return $obj->get_connector()->get_element_from_id($element_id, $type);
             };
 
@@ -295,7 +295,7 @@ class Bridge_Api
      */
     public function get_container_from_id($element_id, $type)
     {
-        $action = function(Bridge_Api $obj) use ($element_id, $type) {
+        $action = function (Bridge_Api $obj) use ($element_id, $type) {
                 return $obj->get_connector()->get_container_from_id($element_id, $type);
             };
 
@@ -308,7 +308,7 @@ class Bridge_Api
      */
     public function get_category_list()
     {
-        $action = function(Bridge_Api $obj) {
+        $action = function (Bridge_Api $obj) {
                 return $obj->get_connector()->get_category_list();
             };
 
@@ -323,7 +323,7 @@ class Bridge_Api
      */
     public function get_element_status(Bridge_Element $element)
     {
-        $action = function(Bridge_Api $obj) use ($element) {
+        $action = function (Bridge_Api $obj) use ($element) {
                 return $obj->get_connector()->get_element_status($element);
             };
 
@@ -337,7 +337,7 @@ class Bridge_Api
      */
     public function map_connector_to_element_status($status)
     {
-        $action = function(Bridge_Api $obj) use ($status) {
+        $action = function (Bridge_Api $obj) use ($status) {
                 return $obj->get_connector()->map_connector_to_element_status($status);
             };
 
@@ -351,7 +351,7 @@ class Bridge_Api
      */
     public function get_error_message_from_status($connector_status)
     {
-        $action = function(Bridge_Api $obj) use ($connector_status) {
+        $action = function (Bridge_Api $obj) use ($connector_status) {
                 return $obj->get_connector()->get_error_message_from_status($connector_status);
             };
 
@@ -366,7 +366,7 @@ class Bridge_Api
      */
     public function upload(record_adapter $record, array $options = array())
     {
-        $action = function(Bridge_Api $obj) use ($record, $options) {
+        $action = function (Bridge_Api $obj) use ($record, $options) {
                 return $obj->get_connector()->upload($record, $options);
             };
 

@@ -112,7 +112,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         $phpunit = $this;
 
-        self::$DI['app'] = self::$DI->share(function($DI) use ($phpunit) {
+        self::$DI['app'] = self::$DI->share(function ($DI) use ($phpunit) {
             $environment = 'test';
             $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Root.php';
 
@@ -120,7 +120,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 return new CsrfTestProvider();
             });
 
-            $app['url_generator'] = $app->share($app->extend('url_generator', function($generator, $app) {
+            $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
                 $host = parse_url($app['phraseanet.configuration']['main']['servername'], PHP_URL_HOST);
                 $generator->setContext(new RequestContext('', 'GET', $host));
 
@@ -129,14 +129,14 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $app['debug'] = true;
 
-            $app['EM'] = $app->share($app->extend('EM', function($em) {
+            $app['EM'] = $app->share($app->extend('EM', function ($em) {
                 @unlink('/tmp/db.sqlite');
                 copy(__DIR__ . '/../db-ref.sqlite', '/tmp/db.sqlite');
 
                 return $em;
             }));
 
-            $app['browser'] = $app->share($app->extend('browser', function($browser) {
+            $app['browser'] = $app->share($app->extend('browser', function ($browser) {
 
                 $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
 
@@ -148,21 +148,21 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 ->getMock();
             $app['notification.deliverer']->expects($phpunit->any())
                 ->method('deliver')
-                ->will($phpunit->returnCallback(function() use ($phpunit) {
+                ->will($phpunit->returnCallback(function () use ($phpunit) {
                     $phpunit->fail('Notification deliverer must be mocked');
                 }));
 
             return $app;
         });
 
-        self::$DI['cli'] = self::$DI->share(function($DI) use ($phpunit) {
+        self::$DI['cli'] = self::$DI->share(function ($DI) use ($phpunit) {
             $app = new CLI('cli test', null, 'test');
 
             $app['form.csrf_provider'] = $app->share(function () {
                 return new CsrfTestProvider();
             });
 
-            $app['url_generator'] = $app->share($app->extend('url_generator', function($generator, $app) {
+            $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
                 $host = parse_url($app['phraseanet.configuration']['main']['servername'], PHP_URL_HOST);
                 $generator->setContext(new RequestContext('', 'GET', $host));
 
@@ -171,14 +171,14 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $app['debug'] = true;
 
-            $app['EM'] = $app->share($app->extend('EM', function($em) {
+            $app['EM'] = $app->share($app->extend('EM', function ($em) {
                 @unlink('/tmp/db.sqlite');
                 copy(__DIR__ . '/../db-ref.sqlite', '/tmp/db.sqlite');
 
                 return $em;
             }));
 
-            $app['browser'] = $app->share($app->extend('browser', function($browser) {
+            $app['browser'] = $app->share($app->extend('browser', function ($browser) {
 
                 $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
 
@@ -190,14 +190,14 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 ->getMock();
             $app['notification.deliverer']->expects($phpunit->any())
                 ->method('deliver')
-                ->will($phpunit->returnCallback(function() use ($phpunit) {
+                ->will($phpunit->returnCallback(function () use ($phpunit) {
                     $phpunit->fail('Notification deliverer must be mocked');
                 }));
 
             return $app;
         });
 
-        self::$DI['client'] = self::$DI->share(function($DI) {
+        self::$DI['client'] = self::$DI->share(function ($DI) {
             return new Client($DI['app'], array());
         });
 
@@ -261,7 +261,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
         $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$DI['app']['EM'], $purger);
         $executor->execute($fixtureLoader->getFixtures(), $append);
-        self::$DI['client'] = self::$DI->share(function($DI) {
+        self::$DI['client'] = self::$DI->share(function ($DI) {
             return new Client($DI['app'], array());
         });
     }
@@ -287,7 +287,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $app['browser']->setUserAgent($user_agent);
         $app->register(new \Silex\Provider\TwigServiceProvider());
         $app->setupTwig();
-        self::$DI['client'] = self::$DI->share(function($DI) use ($app) {
+        self::$DI['client'] = self::$DI->share(function ($DI) use ($app) {
             return new Client($app, array());
         });
     }
@@ -756,7 +756,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         self::$DI['collection'] = $coll;
 
-        self::$DI['collection_no_access'] = self::$DI->share(function($DI) use ($application, $databox, $collection_no_acces) {
+        self::$DI['collection_no_access'] = self::$DI->share(function ($DI) use ($application, $databox, $collection_no_acces) {
             if (!$collection_no_acces instanceof collection) {
                 $collection_no_acces = collection::create($application, $databox, $application['phraseanet.appbox'], 'BIBOO', $DI['user']);
             }
@@ -775,7 +775,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             return $collection_no_acces;
         });
 
-        self::$DI['collection_no_access_by_status'] = self::$DI->share(function($DI) use ($application, $databox, $collection_no_acces_by_status) {
+        self::$DI['collection_no_access_by_status'] = self::$DI->share(function ($DI) use ($application, $databox, $collection_no_acces_by_status) {
             if (!$collection_no_acces_by_status instanceof collection) {
                 $collection_no_acces_by_status = collection::create($application, $databox, $application['phraseanet.appbox'], 'BIBOONOACCESBYSTATUS', $DI['user']);
             }
@@ -808,7 +808,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $logger->pushHandler(new \Monolog\Handler\NullHandler());
             self::$recordsInitialized = array();
 
-            $resolvePathfile = function($i) {
+            $resolvePathfile = function ($i) {
                 $finder = new Symfony\Component\Finder\Finder();
 
                 $name = $i < 10 ? 'test00' . $i . '.*' : 'test0' . $i . '.*';
@@ -823,7 +823,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             };
 
             foreach (range(1, 24) as $i) {
-                self::$DI['record_' . $i] = self::$DI->share(function($DI) use ($logger, $resolvePathfile, $i) {
+                self::$DI['record_' . $i] = self::$DI->share(function ($DI) use ($logger, $resolvePathfile, $i) {
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
 
@@ -838,7 +838,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             }
 
             foreach (range(1, 2) as $i) {
-                self::$DI['record_story_' . $i] = self::$DI->share(function($DI) use ($i) {
+                self::$DI['record_story_' . $i] = self::$DI->share(function ($DI) use ($i) {
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
 
@@ -846,7 +846,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 });
             }
 
-            self::$DI['record_no_access'] = self::$DI->share(function($DI) {
+            self::$DI['record_no_access'] = self::$DI->share(function ($DI) {
 
                 PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
 
@@ -855,7 +855,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 return \record_adapter::createFromFile($file, $DI['app']);
             });
 
-            self::$DI['record_no_access_by_status'] = self::$DI->share(function($DI) {
+            self::$DI['record_no_access_by_status'] = self::$DI->share(function ($DI) {
 
                 PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
 

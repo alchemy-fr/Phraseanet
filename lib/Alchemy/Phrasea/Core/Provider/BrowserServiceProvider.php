@@ -19,7 +19,7 @@ class BrowserServiceProvider implements ServiceProviderInterface
 
     public function register(Application $app)
     {
-        $app['browser'] = $app->share(function($app) {
+        $app['browser'] = $app->share(function ($app) {
             return new \Browser();
         });
     }

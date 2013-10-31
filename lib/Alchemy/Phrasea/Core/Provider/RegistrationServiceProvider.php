@@ -20,11 +20,11 @@ class RegistrationServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['registration.fields'] = $app->share(function (Application $app){
+        $app['registration.fields'] = $app->share(function (Application $app) {
             return isset($app['phraseanet.configuration']['registration-fields']) ? $app['phraseanet.configuration']['registration-fields'] : array();
         });
 
-        $app['registration.enabled'] = $app->share(function (Application $app){
+        $app['registration.enabled'] = $app->share(function (Application $app) {
             require_once __DIR__ . '/../../../../classes/deprecated/inscript.api.php';
 
             $bases = giveMeBases($app);

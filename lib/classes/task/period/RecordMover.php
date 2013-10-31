@@ -168,7 +168,7 @@ class task_period_RecordMover extends task_appboxAbstract
                         , dataType:'json'
                         , type:"POST"
                         , async:true
-                        , success:function(data) {
+                        , success:function (data) {
                             t = "";
                             for (i in data.tasks) {
                                 t += "<div class=\"title\">&nbsp;";
@@ -210,7 +210,7 @@ class task_period_RecordMover extends task_appboxAbstract
                                 , dataType:'json'
                                 , type:"POST"
                                 , async:true
-                                , success:function(data) {
+                                , success:function (data) {
                                     for (i in data.tasks) {
                                         if (data.tasks[i].sql) {
                                             if (data.tasks[i].sql.test.err) {
@@ -235,11 +235,11 @@ class task_period_RecordMover extends task_appboxAbstract
             }
 
             $(document).ready(
-                function(){
-                    (function( $ ){
-                        $.fn.serializeJSON=function() {
+                function () {
+                    (function ($) {
+                        $.fn.serializeJSON=function () {
                             var json = {};
-                            jQuery.map($(this).serializeArray(), function(n, i){
+                            jQuery.map($(this).serializeArray(), function (n, i) {
                                 json[n['name']] = n['value'];
                             });
 
@@ -251,7 +251,7 @@ class task_period_RecordMover extends task_appboxAbstract
                         'period':{'min':<?php echo self::MINPERIOD; ?>, 'max':<?php echo self::MAXPERIOD; ?>},
                         'delay':{min:0}
                     } ;
-                    $(".formElem").change(function(){
+                    $(".formElem").change(function () {
                         fieldname = $(this).attr("name");
                         switch ((this.nodeName+$(this).attr("type")).toLowerCase()) {
                             case "inputtext":

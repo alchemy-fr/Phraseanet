@@ -21,7 +21,7 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
 
     public function register(Application $app)
     {
-        $app['border-manager'] = $app->share(function(Application $app) {
+        $app['border-manager'] = $app->share(function (Application $app) {
             $borderManager = new Manager($app);
 
             try {

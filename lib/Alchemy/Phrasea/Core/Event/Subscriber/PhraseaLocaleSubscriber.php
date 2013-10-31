@@ -71,7 +71,7 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
             )
         );
 
-        $this->app['locale'] = $this->app->share(function(Application $app) use ($event) {
+        $this->app['locale'] = $this->app->share(function (Application $app) use ($event) {
             if (isset($app['phraseanet.registry'])) {
                 $event->getRequest()->setDefaultLocale(
                     $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')

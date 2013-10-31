@@ -25,15 +25,15 @@ class TaskManager implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireRight('taskmanager');
         });
 
-        $controllers->get('/', function(Application $app, Request $request) {
+        $controllers->get('/', function (Application $app, Request $request) {
             return $app->redirectPath('admin_tasks_list');
         })->bind('admin_tasks');
 
-        $controllers->get('/tasks/', function(Application $app, Request $request) {
+        $controllers->get('/tasks/', function (Application $app, Request $request) {
 
             if ($request->getContentType() == 'json') {
                 return $app->json($app['task-manager']->toArray());
@@ -48,7 +48,7 @@ class TaskManager implements ControllerProviderInterface
             }
         })->bind('admin_tasks_list');
 
-        $controllers->post('/tasks/create/', function(Application $app, Request $request) {
+        $controllers->post('/tasks/create/', function (Application $app, Request $request) {
             if (!class_exists($className = $request->request->get('tcl'))) {
                 $app->abort(400, sprintf('Unknown task %s', $className));
             }
@@ -68,7 +68,7 @@ class TaskManager implements ControllerProviderInterface
         /*
          * route /admin/scheduler/stop
          */
-        $controllers->get('/scheduler/stop', function(Application $app, Request $request) use ($app) {
+        $controllers->get('/scheduler/stop', function (Application $app, Request $request) use ($app) {
             try {
                 $app['task-manager']->setSchedulerState(\task_manager::STATE_TOSTOP);
 
@@ -80,7 +80,7 @@ class TaskManager implements ControllerProviderInterface
             return $app->json(array('success' => false));
         })->bind('admin_tasks_scheduler_stop');
 
-        $controllers->get('/scheduler/log', function(Application $app, Request $request) {
+        $controllers->get('/scheduler/log', function (Application $app, Request $request) {
             $logdir = $app['root.path'] . '/logs/';
 
             $rname = '/scheduler((\.log)|(-.*\.log))$/';
@@ -102,7 +102,7 @@ class TaskManager implements ControllerProviderInterface
                 return $app->redirectPath('admin_tasks_scheduler_log');
             }
 
-            return $app->stream(function() use ($finder, $app) {
+            return $app->stream(function () use ($finder, $app) {
                 foreach ($finder->getIterator() as $file) {
                     printf("<h4>%s\n", $file->getRealPath());
                     printf("&nbsp;<a href=\"".$app->path('admin_tasks_scheduler_log', array('clr' => $file->getFilename()))."\">%s</a>"
@@ -118,7 +118,7 @@ class TaskManager implements ControllerProviderInterface
             }, 200, array('Content-Type' => 'text/html'));
         })->bind('admin_tasks_scheduler_log');
 
-        $controllers->get('/task/{id}/log', function(Application $app, Request $request, $id) {
+        $controllers->get('/task/{id}/log', function (Application $app, Request $request, $id) {
             $logdir = $app['root.path'] . '/logs/';
 
             $rname = '/task_' . $id . '((\.log)|(-.*\.log))$/';
@@ -140,7 +140,7 @@ class TaskManager implements ControllerProviderInterface
                 return $app->redirectPath('admin_tasks_task_log', array('id' => $id));
             }
 
-            return $app->stream(function() use ($finder, $id) {
+            return $app->stream(function () use ($finder, $id) {
                 foreach ($finder->getIterator() as $file) {
                     printf("<h4>%s\n", $file->getRealPath());
                     printf("&nbsp;<a href=\"/admin/task-manager/task/%s/log?clr=%s\">%s</a>"
@@ -158,7 +158,7 @@ class TaskManager implements ControllerProviderInterface
             });
         })->bind('admin_tasks_task_log');
 
-        $controllers->get('/task/{id}/delete', function(Application $app, Request $request, $id) {
+        $controllers->get('/task/{id}/delete', function (Application $app, Request $request, $id) {
 
             try {
                 $task = $app['task-manager']->getTask($id);
@@ -175,7 +175,7 @@ class TaskManager implements ControllerProviderInterface
             }
         })->bind('admin_tasks_task_delete');
 
-        $controllers->get('/task/{id}/tostart', function(Application $app, Request $request, $id) {
+        $controllers->get('/task/{id}/tostart', function (Application $app, Request $request, $id) {
 
             $ret = false;
             try {
@@ -192,7 +192,7 @@ class TaskManager implements ControllerProviderInterface
             return $app->json($ret);
         })->bind('admin_tasks_task_start');
 
-        $controllers->get('/task/{id}/tostop', function(Application $app, Request $request, $id) {
+        $controllers->get('/task/{id}/tostop', function (Application $app, Request $request, $id) {
 
             $ret = false;
             try {
@@ -213,7 +213,7 @@ class TaskManager implements ControllerProviderInterface
             return $app->json($ret);
         })->bind('admin_tasks_task_stop');
 
-        $controllers->get('/task/{id}/resetcrashcounter/', function(Application $app, Request $request, $id) {
+        $controllers->get('/task/{id}/resetcrashcounter/', function (Application $app, Request $request, $id) {
 
             try {
                 $task = $app['task-manager']->getTask($id);
@@ -230,7 +230,7 @@ class TaskManager implements ControllerProviderInterface
          * route /admin/task-manager/task/{id}/save
          * return json
          */
-        $controllers->post('/task/{id}/save/', function(Application $app, Request $request, $id) {
+        $controllers->post('/task/{id}/save/', function (Application $app, Request $request, $id) {
 
             $dom = new \DOMDocument('1.0', 'UTF-8');
             $dom->strictErrorChecking = true;
@@ -259,7 +259,7 @@ class TaskManager implements ControllerProviderInterface
          * route /admin/task-manager/task/{id}/facility/
          * call callback(s) of a task, for ex. to transform gui(form) to xml settings
          */
-        $controllers->post('/task/{id}/facility/', function(Application $app, Request $request, $id) {
+        $controllers->post('/task/{id}/facility/', function (Application $app, Request $request, $id) {
 
             $ret = '';
             try {
@@ -299,7 +299,7 @@ class TaskManager implements ControllerProviderInterface
             return $ret;
         })->bind('admin_tasks_task_facility');
 
-        $controllers->get('/task/{id}', function(Application $app, Request $request, $id) {
+        $controllers->get('/task/{id}', function (Application $app, Request $request, $id) {
 
             $task = $app['task-manager']->getTask($id);
 
@@ -315,7 +315,7 @@ class TaskManager implements ControllerProviderInterface
          * route /admin/task/checkxml/
          * check if the xml is valid
          */
-        $controllers->post('/task/checkxml/', function(Application $app, Request $request) {
+        $controllers->post('/task/checkxml/', function (Application $app, Request $request) {
             $ret = array('ok'                      => true, 'err'                     => null);
             $dom = new \DOMDocument('1.0', 'UTF-8');
             $dom->strictErrorChecking = true;

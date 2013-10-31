@@ -18,7 +18,7 @@ class UnicodeServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['unicode'] = $app->share(function($app) {
+        $app['unicode'] = $app->share(function ($app) {
             return new \unicode();
         });
     }

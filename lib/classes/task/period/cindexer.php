@@ -174,7 +174,7 @@ class task_period_cindexer extends task_abstract
                     xml = $.parseXML(xml);
                     xml = $(xml);
 
-                    var isyes = function(v) {
+                    var isyes = function (v) {
                         v = v.toUpperCase().trim();
 
                         return v=='O' || v=='Y' || v=='OUI' || v=='YES' || v=='1';
@@ -235,8 +235,8 @@ class task_period_cindexer extends task_abstract
                 $('#cmd').html(cmd);
             }
 
-            $(document).ready(function(){
-                $("#graphicForm *").change(function(){
+            $(document).ready(function () {
+                $("#graphicForm *").change(function () {
                     taskFillGraphic_<?php echo(get_class($this));?>(null);
                 });
             });

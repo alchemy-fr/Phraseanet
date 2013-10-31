@@ -737,7 +737,7 @@ class Browser
             }
 
             return true;
-        } else if(stripos($this->_agent, 'trident') !== false) {
+        } elseif (stripos($this->_agent, 'trident') !== false) {
             // >= IE 11
             $this->setBrowser(self::BROWSER_IE);
 

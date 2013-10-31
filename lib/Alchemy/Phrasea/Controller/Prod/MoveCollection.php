@@ -28,7 +28,7 @@ class MoveCollection implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication()
                 ->requireRight('addrecord')
                 ->requireRight('deleterecord');
@@ -44,7 +44,7 @@ class MoveCollection implements ControllerProviderInterface
     {
         $records = RecordsRequest::fromRequest($app, $request, false, array('candeleterecord'));
 
-        $sbas_ids = array_map(function(\databox $databox) {
+        $sbas_ids = array_map(function (\databox $databox) {
                 return $databox->get_sbas_id();
             }, $records->databoxes());
 

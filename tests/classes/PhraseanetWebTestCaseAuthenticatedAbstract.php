@@ -83,7 +83,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
         self::$DI['app']['authentication']->setUser($stubAuthenticatedUser);
 
-        self::$DI['client'] = self::$DI->share(function($DI) {
+        self::$DI['client'] = self::$DI->share(function ($DI) {
                 return new Client($DI['app'], array());
             });
     }
