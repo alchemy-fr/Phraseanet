@@ -32,7 +32,7 @@ class TOU implements ControllerProviderInterface
 
         $controllers->post('/deny/{sbas_id}/', 'controller.prod.tou:denyTermsOfUse')
             ->bind('deny_tou')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireAuthentication();
             });
 

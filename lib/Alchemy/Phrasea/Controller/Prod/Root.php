@@ -33,7 +33,7 @@ class Root implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             if (!$app['authentication']->isAuthenticated() && null !== $request->query->get('nolog')) {
                 return $app->redirectPath('login_authenticate_as_guest');
             }
@@ -41,7 +41,7 @@ class Root implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-        $controllers->get('/', function(Application $app) {
+        $controllers->get('/', function (Application $app) {
             try {
                 \Session_Logger::updateClientInfos($app, 1);
             } catch (SessionNotFound $e) {
@@ -58,7 +58,7 @@ class Root implements ControllerProviderInterface
             $iterator = $finder
                 ->directories()
                 ->depth(0)
-                ->filter(function(\SplFileInfo $fileinfo) {
+                ->filter(function (\SplFileInfo $fileinfo) {
                         return ctype_xdigit($fileinfo->getBasename());
                     })
                 ->in($cssPath);

@@ -20,7 +20,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\DebuggerSubscriber;
 use Silex\Provider\WebProfilerServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 
-return call_user_func(function($environment = PhraseaApplication::ENV_PROD) {
+return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
 
     $app = new PhraseaApplication($environment);
     $app->loadPlugins();
@@ -57,7 +57,7 @@ return call_user_func(function($environment = PhraseaApplication::ENV_PROD) {
     }
 
     $app['dispatcher'] = $app->share(
-        $app->extend('dispatcher', function($dispatcher, PhraseaApplication $app){
+        $app->extend('dispatcher', function ($dispatcher, PhraseaApplication $app) {
             $dispatcher->addSubscriber(new BridgeExceptionSubscriber($app));
             $dispatcher->addSubscriber(new FirewallSubscriber());
             $dispatcher->addSubscriber(new JsonRequestSubscriber());

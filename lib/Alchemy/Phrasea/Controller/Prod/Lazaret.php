@@ -43,7 +43,7 @@ class Lazaret implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication()
                 ->requireRight('addrecord');
         });
@@ -191,7 +191,7 @@ class Lazaret implements ControllerProviderInterface
             /* @var $record \record_adapter */
 
             //Post record creation
-            $callBack = function($element, $visa, $code) use (&$record) {
+            $callBack = function ($element, $visa, $code) use (&$record) {
                     $record = $element;
                 };
 

@@ -32,13 +32,13 @@ class Datafiles extends AbstractDelivery
 
         $that = $this;
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             if (!$app['authentication']->isAuthenticated()) {
                 $app->abort(403, 'You are not autorized to see this');
             }
         });
 
-        $controllers->get('/{sbas_id}/{record_id}/{subdef}/', function($sbas_id, $record_id, $subdef, PhraseaApplication $app) use ($that) {
+        $controllers->get('/{sbas_id}/{record_id}/{subdef}/', function ($sbas_id, $record_id, $subdef, PhraseaApplication $app) use ($that) {
 
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
             $record = new \record_adapter($app, $sbas_id, $record_id);

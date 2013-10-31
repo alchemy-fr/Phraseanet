@@ -154,7 +154,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application('test');
         $sessionId = null;
-        $app->post('/prod/upload/', function(Application $app) use (&$sessionId) {
+        $app->post('/prod/upload/', function (Application $app) use (&$sessionId) {
             $sessionId = $app['session']->getId();
         });
 
@@ -315,7 +315,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
             unlink($app['phraseanet.configuration.config-compiled-path']);
         }
 
-        $app->get('/', function(Application $app, Request $request) {
+        $app->get('/', function (Application $app, Request $request) {
             return 'Hello';
         });
 
@@ -342,7 +342,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application('test');
 
-        $app->get('/', function(Application $app, Request $request) {
+        $app->get('/', function (Application $app, Request $request) {
             return $app['locale'];
         });
         unset($app['exception_handler']);
@@ -363,7 +363,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     private function getApp()
     {
         $app = new Application('test');
-        $app->get('/', function(Application $app, Request $request) {
+        $app->get('/', function (Application $app, Request $request) {
 
             $app['session']->set('usr_id', 5);
 

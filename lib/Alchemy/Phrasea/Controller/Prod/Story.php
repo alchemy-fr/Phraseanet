@@ -33,15 +33,15 @@ class Story implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
 
-        $controllers->get('/create/', function(Application $app) {
+        $controllers->get('/create/', function (Application $app) {
             return $app['twig']->render('prod/Story/Create.html.twig', array());
         })->bind('prod_stories_create');
 
-        $controllers->post('/', function(Application $app, Request $request) {
+        $controllers->post('/', function (Application $app, Request $request) {
             /* @var $request \Symfony\Component\HttpFoundation\Request */
             $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
 
@@ -109,7 +109,7 @@ class Story implements ControllerProviderInterface
             }
         })->bind('prod_stories_do_create');
 
-        $controllers->get('/{sbas_id}/{record_id}/', function(Application $app, $sbas_id, $record_id) {
+        $controllers->get('/{sbas_id}/{record_id}/', function (Application $app, $sbas_id, $record_id) {
             $Story = new \record_adapter($app, $sbas_id, $record_id);
 
             $html = $app['twig']->render('prod/WorkZone/Story.html.twig', array('Story' => $Story));
@@ -120,7 +120,7 @@ class Story implements ControllerProviderInterface
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
 
-        $controllers->post('/{sbas_id}/{record_id}/addElements/', function(Application $app, Request $request, $sbas_id, $record_id) {
+        $controllers->post('/{sbas_id}/{record_id}/addElements/', function (Application $app, Request $request, $sbas_id, $record_id) {
             $Story = new \record_adapter($app, $sbas_id, $record_id);
 
             if (!$app['authentication']->getUser()->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
@@ -151,7 +151,7 @@ class Story implements ControllerProviderInterface
             }
         })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
-        $controllers->post('/{sbas_id}/{record_id}/delete/{child_sbas_id}/{child_record_id}/', function(Application $app, Request $request, $sbas_id, $record_id, $child_sbas_id, $child_record_id) {
+        $controllers->post('/{sbas_id}/{record_id}/delete/{child_sbas_id}/{child_record_id}/', function (Application $app, Request $request, $sbas_id, $record_id, $child_sbas_id, $child_record_id) {
             $Story = new \record_adapter($app, $sbas_id, $record_id);
 
             $record = new \record_adapter($app, $child_sbas_id, $child_record_id);
@@ -181,7 +181,7 @@ class Story implements ControllerProviderInterface
         /**
          * Get the Basket reorder form
          */
-        $controllers->get('/{sbas_id}/{record_id}/reorder/', function(Application $app, $sbas_id, $record_id) {
+        $controllers->get('/{sbas_id}/{record_id}/reorder/', function (Application $app, $sbas_id, $record_id) {
             $story = new \record_adapter($app, $sbas_id, $record_id);
 
             if (!$story->is_grouping()) {
@@ -199,7 +199,7 @@ class Story implements ControllerProviderInterface
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
 
-        $controllers->post('/{sbas_id}/{record_id}/reorder/', function(Application $app, $sbas_id, $record_id) {
+        $controllers->post('/{sbas_id}/{record_id}/reorder/', function (Application $app, $sbas_id, $record_id) {
             $ret = array('success' => false, 'message' => _('An error occured'));
             try {
 

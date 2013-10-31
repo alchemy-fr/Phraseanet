@@ -22,7 +22,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\ApiExceptionHandlerSubscriber;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Request;
 
-return call_user_func(function($environment = PhraseaApplication::ENV_PROD) {
+return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
 
     $app = new PhraseaApplication($environment);
     $app->loadPlugins();
@@ -34,7 +34,7 @@ return call_user_func(function($environment = PhraseaApplication::ENV_PROD) {
     $app->register(new \API_V1_Timer());
     $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_START, new ApiLoadStartEvent());
 
-    $app->get('/api/', function(Request $request, SilexApplication $app) {
+    $app->get('/api/', function (Request $request, SilexApplication $app) {
         $apiAdapter = new \API_V1_adapter($app);
 
         $result = new \API_V1_result($app, $request, $apiAdapter);

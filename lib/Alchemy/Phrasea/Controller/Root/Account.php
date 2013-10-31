@@ -33,7 +33,7 @@ class Account implements ControllerProviderInterface
 
         $app['account.controller'] = $this;
 
-        $controllers->before(function() use ($app) {
+        $controllers->before(function () use ($app) {
                 $app['firewall']->requireAuthentication();
             });
 

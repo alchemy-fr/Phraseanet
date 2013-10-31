@@ -31,24 +31,24 @@ class Users implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin')
                 ->requireRight('manageusers');
         });
 
-        $controllers->post('/rights/', function(Application $app) {
+        $controllers->post('/rights/', function (Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
 
             return $app['twig']->render('admin/editusers.html.twig', $rights->get_users_rights());
         });
 
-        $controllers->get('/rights/', function(Application $app) {
+        $controllers->get('/rights/', function (Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
 
             return $app['twig']->render('admin/editusers.html.twig', $rights->get_users_rights());
         });
 
-        $controllers->post('/rights/reset/', function(Application $app, Request $request) {
+        $controllers->post('/rights/reset/', function (Application $app, Request $request) {
             try {
                 $datas = array('error' => false);
 
@@ -62,14 +62,14 @@ class Users implements ControllerProviderInterface
             return $app->json($datas);
         })->bind('admin_users_rights_reset');
 
-        $controllers->post('/delete/', function(Application $app) {
+        $controllers->post('/delete/', function (Application $app) {
             $module = new UserHelper\Edit($app, $app['request']);
             $module->delete_users();
 
             return $app->redirectPath('admin_users_search');
         });
 
-        $controllers->post('/rights/apply/', function(Application $app) {
+        $controllers->post('/rights/apply/', function (Application $app) {
             $datas = array('error' => true);
 
             try {
@@ -90,58 +90,58 @@ class Users implements ControllerProviderInterface
             return $app->json($datas);
         })->bind('admin_users_rights_apply');
 
-        $controllers->post('/rights/quotas/', function(Application $app) {
+        $controllers->post('/rights/quotas/', function (Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
 
             return $app['twig']->render('admin/editusers_quotas.html.twig', $rights->get_quotas());
         });
 
-        $controllers->post('/rights/quotas/apply/', function(Application $app) {
+        $controllers->post('/rights/quotas/apply/', function (Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
             $rights->apply_quotas();
 
             return $app->json(array('message' => '', 'error'   => false));
         });
 
-        $controllers->post('/rights/time/', function(Application $app) {
+        $controllers->post('/rights/time/', function (Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
 
             return $app['twig']->render('admin/editusers_timelimit.html.twig', $rights->get_time());
         });
 
-        $controllers->post('/rights/time/sbas/', function(Application $app) {
+        $controllers->post('/rights/time/sbas/', function (Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
 
             return $app['twig']->render('admin/editusers_timelimit_sbas.html.twig', $rights->get_time_sbas());
         });
 
-        $controllers->post('/rights/time/apply/', function(Application $app) {
+        $controllers->post('/rights/time/apply/', function (Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
             $rights->apply_time();
 
             return $app->json(array('message' => '', 'error'   => false));
         });
 
-        $controllers->post('/rights/masks/', function(Application $app) {
+        $controllers->post('/rights/masks/', function (Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
 
             return $app['twig']->render('admin/editusers_masks.html.twig', $rights->get_masks());
         });
 
-        $controllers->post('/rights/masks/apply/', function(Application $app) {
+        $controllers->post('/rights/masks/apply/', function (Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
             $rights->apply_masks();
 
             return $app->json(array('message' => '', 'error'   => false));
         });
 
-        $controllers->match('/search/', function(Application $app) {
+        $controllers->match('/search/', function (Application $app) {
             $users = new UserHelper\Manage($app, $app['request']);
 
             return $app['twig']->render('admin/users.html.twig', $users->search());
         })->bind('admin_users_search');
 
-        $controllers->post('/search/export/', function() use ($app) {
+        $controllers->post('/search/export/', function () use ($app) {
             $request = $app['request'];
 
             $users = new UserHelper\Manage($app, $app['request']);
@@ -197,7 +197,7 @@ class Users implements ControllerProviderInterface
             return $response;
         })->bind('admin_users_search_export');
 
-        $controllers->post('/apply_template/', function() use ($app) {
+        $controllers->post('/apply_template/', function () use ($app) {
             $users = new UserHelper\Edit($app, $app['request']);
 
             $users->apply_template();
@@ -205,7 +205,7 @@ class Users implements ControllerProviderInterface
             return $app->redirectPath('admin_users_search');
         })->bind('admin_users_apply_template');
 
-        $controllers->get('/typeahead/search/', function(Application $app) {
+        $controllers->get('/typeahead/search/', function (Application $app) {
             $request = $app['request'];
 
             $user_query = new \User_Query($app);
@@ -243,7 +243,7 @@ class Users implements ControllerProviderInterface
             return $app->json($datas);
         });
 
-        $controllers->post('/create/', function(Application $app) {
+        $controllers->post('/create/', function (Application $app) {
 
             $datas = array('error'   => false, 'message' => '', 'data'    => null);
             try {
@@ -266,7 +266,7 @@ class Users implements ControllerProviderInterface
             return $app->json($datas);
         });
 
-        $controllers->post('/export/csv/', function(Application $app) {
+        $controllers->post('/export/csv/', function (Application $app) {
             $request = $app['request'];
             $user_query = new \User_Query($app);
 
@@ -341,7 +341,7 @@ class Users implements ControllerProviderInterface
             return $response;
         })->bind('admin_users_export_csv');
 
-        $controllers->get('/demands/', function(Application $app, Request $request) {
+        $controllers->get('/demands/', function (Application $app, Request $request) {
 
             $lastMonth = time() - (3 * 4 * 7 * 24 * 60 * 60);
             $sql = "DELETE FROM demand WHERE date_modif < :date";
@@ -398,7 +398,7 @@ class Users implements ControllerProviderInterface
             ));
         })->bind('users_display_demands');
 
-        $controllers->post('/demands/', function(Application $app, Request $request) {
+        $controllers->post('/demands/', function (Application $app, Request $request) {
 
             $templates = $deny = $accept = $options = array();
 
@@ -573,11 +573,11 @@ class Users implements ControllerProviderInterface
             return $app->redirectPath('users_display_demands', array('success' => 1));
         })->bind('users_submit_demands');
 
-        $controllers->get('/import/file/', function(Application $app, Request $request) {
+        $controllers->get('/import/file/', function (Application $app, Request $request) {
             return $app['twig']->render('admin/user/import/file.html.twig');
         })->bind('users_display_import_file');
 
-        $controllers->post('/import/file/', function(Application $app, Request $request) {
+        $controllers->post('/import/file/', function (Application $app, Request $request) {
             if ((null === $file = $request->files->get('files')) || !$file->isValid()) {
                 return $app->redirectPath('users_display_import_file', array('error' => 'file-invalid'));
             }
@@ -595,7 +595,7 @@ class Users implements ControllerProviderInterface
 
             $roughColumns = array_shift($lines);
 
-            $columnsSanitized = array_map(function($columnName) {
+            $columnsSanitized = array_map(function ($columnName) {
                 return trim(mb_strtolower($columnName));
             }, $roughColumns);
 
@@ -729,7 +729,7 @@ class Users implements ControllerProviderInterface
             ));
         })->bind('users_submit_import_file');
 
-        $controllers->post('/import/', function(Application $app, Request $request) {
+        $controllers->post('/import/', function (Application $app, Request $request) {
             $nbCreation = 0;
 
             if ((null === $serializedColumns = $request->request->get('sr_columns')) || ('' === $serializedColumns)) {
@@ -861,7 +861,7 @@ class Users implements ControllerProviderInterface
             return $app->redirectPath('admin_users_search', array('user-updated' => $nbCreation));
         })->bind('users_submit_import');
 
-        $controllers->get('/import/example/csv/', function(Application $app, Request $request) {
+        $controllers->get('/import/example/csv/', function (Application $app, Request $request) {
 
             $file = new \SplFileInfo($app['root.path'] . '/lib/Fixtures/exampleImportUsers.csv');
 
@@ -880,7 +880,7 @@ class Users implements ControllerProviderInterface
             return $response;
         })->bind('users_import_csv');
 
-        $controllers->get('/import/example/rtf/', function(Application $app, Request $request) {
+        $controllers->get('/import/example/rtf/', function (Application $app, Request $request) {
 
             $file = new \SplFileInfo($app['root.path'] . '/lib/Fixtures/Fields.rtf');
 

@@ -473,12 +473,12 @@ class SearchEngineOptions
                 $value = $value->format(DATE_ATOM);
             }
             if (in_array($key, array('date_fields', 'fields'))) {
-                $value = array_map(function(\databox_field $field) {
+                $value = array_map(function (\databox_field $field) {
                             return $field->get_databox()->get_sbas_id() . '_' . $field->get_id();
                         }, $value);
             }
             if (in_array($key, array('collections', 'business_fields'))) {
-                $value = array_map(function($collection) {
+                $value = array_map(function ($collection) {
                             return $collection->get_base_id();
                         }, $value);
             }
@@ -529,7 +529,7 @@ class SearchEngineOptions
                     }
                     break;
                 case in_array($key, array('date_fields', 'fields')):
-                    $value = array_map(function($serialized) use ($app) {
+                    $value = array_map(function ($serialized) use ($app) {
                                 $data = explode('_', $serialized);
 
                                 return \databox_field::get_instance($app, $app['phraseanet.appbox']->get_databox($data[0]), $data[1]);
@@ -537,7 +537,7 @@ class SearchEngineOptions
                             }, $value);
                     break;
                 case in_array($key, array('collections', 'business_fields')):
-                    $value = array_map(function($base_id) use ($app) {
+                    $value = array_map(function ($base_id) use ($app) {
                                 return \collection::get_from_base_id($app, $base_id);
                             }, $value);
                     break;
@@ -620,7 +620,7 @@ class SearchEngineOptions
         $options->setLocale($app['locale.I18n']);
 
         if (is_array($request->get('bases'))) {
-            $bas = array_map(function($base_id) use ($app) {
+            $bas = array_map(function ($base_id) use ($app) {
                 return \collection::get_from_base_id($app, $base_id);
             }, $request->get('bases'));
         } elseif (!$app['authentication']->isAuthenticated()) {
@@ -629,7 +629,7 @@ class SearchEngineOptions
             $bas = $app['authentication']->getUser()->ACL()->get_granted_base();
         }
 
-        $bas = array_filter($bas, function($collection) use ($app) {
+        $bas = array_filter($bas, function ($collection) use ($app) {
             if ($app['authentication']->isAuthenticated()) {
                 return $app['authentication']->getUser()->ACL()->has_access_to_base($collection->get_base_id());
             } else {
@@ -646,7 +646,7 @@ class SearchEngineOptions
         }
 
         if ($app['authentication']->isAuthenticated() && $app['authentication']->getUser()->ACL()->has_right('modifyrecord')) {
-            $BF = array_filter($bas, function($collection) use ($app) {
+            $BF = array_filter($bas, function ($collection) use ($app) {
                 return $app['authentication']->getUser()->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
             });
 

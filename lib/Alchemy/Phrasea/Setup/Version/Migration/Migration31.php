@@ -35,7 +35,7 @@ class Migration31 implements MigrationInterface
         require __DIR__ . '/../../../../../../config/_GV.php';
         $GV = require __DIR__ . '/../../../../../../lib/conf.d/_GV_template.inc';
 
-        $retrieve_old_credentials = function() {
+        $retrieve_old_credentials = function () {
                 require __DIR__ . '/../../../../../../config/connexion.inc';
 
                 return array(

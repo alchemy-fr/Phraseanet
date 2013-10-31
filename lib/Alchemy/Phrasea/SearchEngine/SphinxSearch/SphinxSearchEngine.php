@@ -626,7 +626,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         $this->sphinx->SetFilter('parent_record_id', array($options->getSearchType()));
 
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
-            foreach (array_unique(array_map(function(\databox_field $field) {
+            foreach (array_unique(array_map(function (\databox_field $field) {
                                 return $field->get_name();
                             }, $options->getDateFields())) as $field) {
 

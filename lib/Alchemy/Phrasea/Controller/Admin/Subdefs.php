@@ -28,12 +28,12 @@ class Subdefs implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin')
                 ->requireRightOnSbas($request->attributes->get('sbas_id'), 'bas_modify_struct');
         });
 
-        $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id) {
+        $controllers->get('/{sbas_id}/', function (Application $app, $sbas_id) {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
             return $app['twig']->render('admin/subdefs.html.twig', array(
@@ -44,7 +44,7 @@ class Subdefs implements ControllerProviderInterface
             ->bind('admin_subdefs_subdef')
             ->assert('sbas_id', '\d+');
 
-        $controllers->post('/{sbas_id}/', function(Application $app, Request $request, $sbas_id) {
+        $controllers->post('/{sbas_id}/', function (Application $app, Request $request, $sbas_id) {
             $delete_subdef = $request->request->get('delete_subdef');
             $toadd_subdef = $request->request->get('add_subdef');
             $Parmsubdefs = $request->request->get('subdefs', array());

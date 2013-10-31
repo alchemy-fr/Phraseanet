@@ -22,7 +22,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
     public function register(Application $app)
     {
-        $app['phraseanet.SE'] = $app->share(function($app) {
+        $app['phraseanet.SE'] = $app->share(function ($app) {
 
             $engineClass = $app['phraseanet.configuration']['main']['search-engine']['type'];
             $engineOptions = $app['phraseanet.configuration']['main']['search-engine']['options'];
@@ -34,7 +34,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return $engineClass::create($app, $engineOptions);
         });
 
-        $app['phraseanet.SE.logger'] = $app->share(function(Application $app) {
+        $app['phraseanet.SE.logger'] = $app->share(function (Application $app) {
             return new SearchEngineLogger($app);
         });
     }

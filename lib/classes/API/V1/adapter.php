@@ -680,7 +680,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $reasons = $output = null;
 
-        $callback = function($element, $visa, $code) use (&$reasons, &$output) {
+        $callback = function ($element, $visa, $code) use (&$reasons, &$output) {
                     if (!$visa->isValid()) {
                         $reasons = array();
 
@@ -900,9 +900,9 @@ class API_V1_adapter extends API_V1_Abstract
         $this->app['EM']->flush();
 
         foreach ($options->getDataboxes() as $databox) {
-            $colls = array_map(function(\collection $collection) {
+            $colls = array_map(function (\collection $collection) {
                 return $collection->get_coll_id();
-            }, array_filter($options->getCollections(), function(\collection $collection) use ($databox) {
+            }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
                 return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
             }));
 
@@ -1908,7 +1908,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $caption = $story->get_caption();
 
-        $format = function(caption_record $caption, $dcField) {
+        $format = function (caption_record $caption, $dcField) {
 
             $field = $caption->get_dc_field($dcField);
 

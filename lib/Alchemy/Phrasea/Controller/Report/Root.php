@@ -25,12 +25,12 @@ class Root implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function() use ($app) {
+        $controllers->before(function () use ($app) {
             $app['firewall']->requireAuthentication();
             $app['firewall']->requireAccessToModule('report');
         });
 
-        $controllers->get('/', function(Application $app) {
+        $controllers->get('/', function (Application $app) {
             return $app->redirectPath('report_dashboard');
         })->bind('report');
 

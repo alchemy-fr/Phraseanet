@@ -38,7 +38,7 @@ class SearchEngineLogger
             ':date'      => date("Y-m-d H:i:s"),
             ':query'     => $query,
             ':nbresults' => $answers,
-            ':colls'     => implode(',', array_map(function($coll_id) {
+            ':colls'     => implode(',', array_map(function ($coll_id) {
                                 return (int) $coll_id;
                             }, $coll_ids)),
         ));

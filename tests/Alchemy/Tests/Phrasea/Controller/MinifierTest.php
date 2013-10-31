@@ -35,7 +35,7 @@ class MinifierTest extends \PhraseanetPHPUnitAbstract
     {
         $groups = require __DIR__ . '/../../../../../lib/conf.d/minifyGroupsConfig.php';
 
-        return array_map(function($group){return array($group);}, array_keys($groups));
+        return array_map(function ($group) {return array($group);}, array_keys($groups));
     }
 
     /**

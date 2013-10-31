@@ -61,7 +61,7 @@ class DelivererTest extends \PHPUnit_Framework_TestCase
         $mailer = $this->getMailerMock();
         $mailer->expects($this->once())
             ->method('send')
-            ->will($this->returnCallback(function($email) use (&$catchEmail) {
+            ->will($this->returnCallback(function ($email) use (&$catchEmail) {
                 $catchEmail = $email;
             }));
 
@@ -125,7 +125,7 @@ class DelivererTest extends \PHPUnit_Framework_TestCase
         $mailer = $this->getMailerMock();
         $mailer->expects($this->once())
             ->method('send')
-            ->will($this->returnCallback(function($email) use (&$catchEmail) {
+            ->will($this->returnCallback(function ($email) use (&$catchEmail) {
                 $catchEmail = $email;
             }));
 
@@ -158,7 +158,7 @@ class DelivererTest extends \PHPUnit_Framework_TestCase
         $mailer = $this->getMailerMock();
         $mailer->expects($this->once())
             ->method('send')
-            ->will($this->returnCallback(function($email) use (&$catchEmail) {
+            ->will($this->returnCallback(function ($email) use (&$catchEmail) {
                 $catchEmail = $email;
             }));
 
@@ -191,7 +191,7 @@ class DelivererTest extends \PHPUnit_Framework_TestCase
         $mailer = $this->getMailerMock();
         $mailer->expects($this->once())
             ->method('send')
-            ->will($this->returnCallback(function($email) use (&$catchEmail) {
+            ->will($this->returnCallback(function ($email) use (&$catchEmail) {
                 $catchEmail = $email;
             }));
 
@@ -233,7 +233,7 @@ class DelivererTest extends \PHPUnit_Framework_TestCase
         $mailer = $this->getMailerMock();
         $mailer->expects($this->once())
             ->method('send')
-            ->will($this->returnCallback(function($email) use (&$catchEmail) {
+            ->will($this->returnCallback(function ($email) use (&$catchEmail) {
                 $catchEmail = $email;
             }));
 
@@ -272,7 +272,7 @@ class DelivererTest extends \PHPUnit_Framework_TestCase
         $mailer = $this->getMailerMock();
         $mailer->expects($this->once())
             ->method('send')
-            ->will($this->returnCallback(function($email) use (&$catchEmail) {
+            ->will($this->returnCallback(function ($email) use (&$catchEmail) {
                 $catchEmail = $email;
             }));
 
@@ -315,7 +315,7 @@ class DelivererTest extends \PHPUnit_Framework_TestCase
         $mailer = $this->getMailerMock();
         $mailer->expects($this->once())
             ->method('send')
-            ->will($this->returnCallback(function($email) use (&$catchEmail) {
+            ->will($this->returnCallback(function ($email) use (&$catchEmail) {
                 $catchEmail = $email;
             }));
 

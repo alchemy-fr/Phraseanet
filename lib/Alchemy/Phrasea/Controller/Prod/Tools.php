@@ -32,12 +32,12 @@ class Tools implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication()
                 ->requireRight('doctools');
         });
 
-        $controllers->get('/', function(Application $app, Request $request) {
+        $controllers->get('/', function (Application $app, Request $request) {
 
             $records = RecordsRequest::fromRequest($app, $request, false);
 
@@ -68,7 +68,7 @@ class Tools implements ControllerProviderInterface
             return $app['twig']->render('prod/actions/Tools/index.html.twig', $var);
         });
 
-        $controllers->post('/rotate/', function(Application $app, Request $request) {
+        $controllers->post('/rotate/', function (Application $app, Request $request) {
             $return = array('success'      => true, 'errorMessage' => '');
 
             $records = RecordsRequest::fromRequest($app, $request, false);
@@ -91,7 +91,7 @@ class Tools implements ControllerProviderInterface
             return $app->json($return);
         })->bind('prod_tools_rotate');
 
-        $controllers->post('/image/', function(Application $app, Request $request) {
+        $controllers->post('/image/', function (Application $app, Request $request) {
             $return = array('success' => true);
 
             $selection = RecordsRequest::fromRequest($app, $request, false, array('canmodifrecord'));
@@ -114,7 +114,7 @@ class Tools implements ControllerProviderInterface
             return $app->json($return);
         })->bind('prod_tools_image');
 
-        $controllers->post('/hddoc/', function(Application $app, Request $request) {
+        $controllers->post('/hddoc/', function (Application $app, Request $request) {
             $success = false;
             $message = _('An error occured');
 
@@ -175,7 +175,7 @@ class Tools implements ControllerProviderInterface
             ));
         })->bind('prod_tools_hd_substitution');
 
-        $controllers->post('/chgthumb/', function(Application $app, Request $request) {
+        $controllers->post('/chgthumb/', function (Application $app, Request $request) {
             $success = false;
             $message = _('An error occured');
 
@@ -229,7 +229,7 @@ class Tools implements ControllerProviderInterface
             ));
         })->bind('prod_tools_thumbnail_substitution');
 
-        $controllers->post('/thumb-extractor/confirm-box/', function(Application $app, Request $request) {
+        $controllers->post('/thumb-extractor/confirm-box/', function (Application $app, Request $request) {
             $return = array('error'   => false, 'datas'   => '');
             $template = 'prod/actions/Tools/confirm.html.twig';
 
@@ -248,7 +248,7 @@ class Tools implements ControllerProviderInterface
             return $app->json($return);
         });
 
-        $controllers->post('/thumb-extractor/apply/', function(Application $app, Request $request) {
+        $controllers->post('/thumb-extractor/apply/', function (Application $app, Request $request) {
             $return = array('success' => false, 'message' => '');
 
             try {

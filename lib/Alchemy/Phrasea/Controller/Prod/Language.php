@@ -27,7 +27,7 @@ class Language implements ControllerProviderInterface
 
         $controller = $app['controllers_factory'];
 
-        $controller->get("/", function(Application $app) {
+        $controller->get("/", function (Application $app) {
 
             $out = array();
             $out['thesaurusBasesChanged'] = _('prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.');

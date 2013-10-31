@@ -30,7 +30,7 @@ class Oauth2 implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $app['oauth'] = $app->share(function($app) {
+        $app['oauth'] = $app->share(function ($app) {
             return new \API_OAuth2_Adapter($app);
         });
 
@@ -40,7 +40,7 @@ class Oauth2 implements ControllerProviderInterface
          * Authorization endpoint - used to obtain authorization from the
          * resource owner via user-agent redirection.
          */
-        $authorize_func = function() use ($app) {
+        $authorize_func = function () use ($app) {
             $request = $app['request'];
             $oauth2_adapter = $app['oauth'];
 
@@ -147,7 +147,7 @@ class Oauth2 implements ControllerProviderInterface
          *  TOKEN ENDPOINT
          *  Token endpoint - used to exchange an authorization grant for an access token.
          */
-        $controllers->post('/token', function(\Silex\Application $app, Request $request) {
+        $controllers->post('/token', function (\Silex\Application $app, Request $request) {
             if ( ! $request->isSecure()) {
                 throw new HttpException(400, 'This route requires the use of the https scheme', null, array('content-type' => 'application/json'));
             }

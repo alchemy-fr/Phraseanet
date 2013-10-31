@@ -29,7 +29,7 @@ class Databox implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAccessToModule('admin')
                 ->requireAccessToSbas($request->attributes->get('databox_id'));
         });
@@ -40,117 +40,117 @@ class Databox implements ControllerProviderInterface
 
         $controllers->post('/{databox_id}/delete/', 'controller.admin.databox:deleteBase')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_delete');
 
         $controllers->post('/{databox_id}/unmount/', 'controller.admin.databox:unmountDatabase')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_unmount');
 
         $controllers->post('/{databox_id}/empty/', 'controller.admin.databox:emptyDatabase')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_empty');
 
         $controllers->get('/{databox_id}/collections/order/', 'controller.admin.databox:getReorder')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_display_collections_order');
 
         $controllers->post('/{databox_id}/collections/order/', 'controller.admin.databox:setReorder')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_submit_collections_order');
 
         $controllers->post('/{databox_id}/collection/', 'controller.admin.databox:createCollection')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })
             ->bind('admin_database_submit_collection');
 
         $controllers->get('/{databox_id}/cgus/', 'controller.admin.databox:getDatabaseCGU')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_modify_struct');
             })->bind('admin_database_display_cgus');
 
         $controllers->post('/{databox_id}/labels/', 'controller.admin.databox:setLabels')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_databox_labels');
 
         $controllers->post('/{databox_id}/cgus/', 'controller.admin.databox:updateDatabaseCGU')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_modify_struct');
             })->bind('admin_database_submit_cgus');
 
         $controllers->get('/{databox_id}/informations/documents/', 'controller.admin.databox:progressBarInfos')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_display_document_information');
 
         $controllers->get('/{databox_id}/informations/details/', 'controller.admin.databox:getDetails')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_display_document_details');
 
         $controllers->post('/{databox_id}/collection/{collection_id}/mount/', 'controller.admin.databox:mountCollection')
             ->assert('databox_id', '\d+')
             ->assert('collection_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_mount_collection');
 
         $controllers->get('/{databox_id}/collection/', 'controller.admin.databox:getNewCollection')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_display_new_collection_form');
 
         $controllers->post('/{databox_id}/logo/', 'controller.admin.databox:sendLogoPdf')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_submit_logo');
 
         $controllers->post('/{databox_id}/logo/delete/', 'controller.admin.databox:deleteLogoPdf')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_delete_logo');
 
         $controllers->post('/{databox_id}/clear-logs/', 'controller.admin.databox:clearLogs')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_clear_logs');
 
         $controllers->post('/{databox_id}/reindex/', 'controller.admin.databox:reindex')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_reindex');
 
         $controllers->post('/{databox_id}/indexable/', 'controller.admin.databox:setIndexable')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_set_indexable');
 
         $controllers->post('/{databox_id}/view-name/', 'controller.admin.databox:changeViewName')
             ->assert('databox_id', '\d+')
-            ->before(function(Request $request) use ($app) {
+            ->before(function (Request $request) use ($app) {
                 $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
             })->bind('admin_database_rename');
 

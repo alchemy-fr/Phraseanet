@@ -31,7 +31,7 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
         $app['phraseanet.configuration.config-path'] = $app['root.path'] . '/config/configuration.yml';
         $app['phraseanet.configuration.config-compiled-path'] = $app['root.path'] . '/tmp/configuration-compiled.php';
 
-        $app['phraseanet.configuration'] = $app->share(function(SilexApplication $app) {
+        $app['phraseanet.configuration'] = $app->share(function (SilexApplication $app) {
             return new Configuration(
                 $app['phraseanet.configuration.yaml-parser'],
                 $app['phraseanet.configuration.compiler'],
@@ -48,7 +48,7 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
     public function boot(SilexApplication $app)
     {
         $app['dispatcher'] = $app->share(
-            $app->extend('dispatcher', function($dispatcher, SilexApplication $app){
+            $app->extend('dispatcher', function ($dispatcher, SilexApplication $app) {
                 $dispatcher->addSubscriber(new TrustedProxySubscriber($app['phraseanet.configuration']));
 
                 return $dispatcher;

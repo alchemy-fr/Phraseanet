@@ -27,7 +27,7 @@ class Fields implements ControllerProviderInterface
 
         $app['admin.fields.controller'] = $this;
 
-        $controllers->before(function(Request $request) use ($app) {
+        $controllers->before(function (Request $request) use ($app) {
             $app['firewall']
                 ->requireAccessToModule('admin')
                 ->requireRight('bas_modify_struct');
