@@ -37,7 +37,7 @@
         "symfony/symfony"                  : "2.3.3",
         "alchemy-fr/tcpdf-clone"           : "~6.0",
         "themattharris/tmhoauth"           : "~0.7",
-        "twig/twig"                        : "~1.13.0",
+        "twig/twig"                        : "~1.14, >=1.14.2",
         "twig/extensions"                  : "~1.0",
         "zend/gdata"                       : "~1.12.1"
     },
