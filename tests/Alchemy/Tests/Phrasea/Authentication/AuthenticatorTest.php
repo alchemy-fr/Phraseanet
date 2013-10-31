@@ -207,19 +207,23 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCloseAccount()
     {
-        $app = new Application();
-
+        $app = self::$DI['app'];
         $user = self::$DI['user'];
 
-        $app['browser'] = $browser = $this->getBrowserMock();
-        $app['session'] = $session = $this->getSessionMock();
-        $app['EM'] = $em = $this->getEntityManagerMock();
-
-        $session->set('usr_id', $user->get_id());
-
-        $authenticator = new Authenticator($app, $browser, $session, $em);
+        $authenticator = new Authenticator($app, $app['browser'], $app['session'], $app['EM']);
+        $authenticator->openAccount($user);
+        $this->assertNotNull($authenticator->getUser());
         $authenticator->closeAccount();
         $this->assertNull($authenticator->getUser());
+    }
+
+    public function testCloseAccountWhenNoSessionThrowsAnException()
+    {
+        $app = self::$DI['app'];
+
+        $authenticator = new Authenticator($app, $app['browser'], $app['session'], $app['EM']);
+        $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException', 'No session to close.');
+        $authenticator->closeAccount();
     }
 
     /**

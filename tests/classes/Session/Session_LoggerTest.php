@@ -17,7 +17,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
     {
         $user = self::$DI['user'];
 
-        self::$DI['app']['authentication']->openAccount(self::$DI['user']);
+        $this->authenticate(self::$DI['app']);
         $logger_creater = self::$DI['app']['phraseanet.logger'];
 
         foreach ($user->ACL()->get_granted_sbas() as $databox) {
@@ -52,7 +52,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $ses_id = self::$DI['app']['session']->get('session_id');
         $usr_id = self::$DI['app']['authentication']->getUser()->get_id();
 
-        self::$DI['app']['authentication']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';

@@ -35,8 +35,10 @@
                         {% set row = session['session'] %}
                         <tr id="row-{{ row.Id() }}">
                             <td>
-                                {% if app['session'].get('phrasea_session_id') != row.Id() %}
+                                {% if app['session'].get('session_id') != row.Id() %}
                                     <a href="{{ path('delete_session', {"id": row.Id()}) }}" title="{% trans %}End Activity{% endtrans %}" class="btn btn-inverse btn-small delete-session"><i class="icon-remove"> {% trans %}End Activity{% endtrans %}</i></a>
+                                {% else  %}
+                                    {% trans 'Current session' %}
                                 {% endif %}
                             </td>
                             <td>
