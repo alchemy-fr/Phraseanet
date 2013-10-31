@@ -934,7 +934,7 @@ class User
      *
      * @return User
      */
-    public function AddQuery(UserQuery $query)
+    public function addQuery(UserQuery $query)
     {
         $this->queries->add($query);
 

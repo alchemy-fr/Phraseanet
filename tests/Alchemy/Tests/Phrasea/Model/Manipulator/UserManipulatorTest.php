@@ -169,4 +169,28 @@ class UserManipulatorTest extends \PhraseanetPHPUnitAbstract
         );
         self::$DI['app']['manipulator.user']->createTemplate('login', $user);
     }
+
+    public function testAddUserSetting()
+    {
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
+        self::$DI['app']['manipulator.user']->addUserSetting($user, 'name' ,'value');
+        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
+        $this->assertCount(1, $user->getSettings());
+    }
+
+    public function testAddNotificationSetting()
+    {
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
+        self::$DI['app']['manipulator.user']->addNotificationSetting($user, 'name', 'value');
+        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
+        $this->assertCount(1, $user->getNotificationSettings());
+    }
+
+    public function testAddQuery()
+    {
+        $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
+        self::$DI['app']['manipulator.user']->logQuery($user, 'query');
+        $user = self::$DI['app']['manipulator.user']->getRepository()->findOneByLogin('login');
+        $this->assertCount(1, $user->getQueries());
+    }
 }
