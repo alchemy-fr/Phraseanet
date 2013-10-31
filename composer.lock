@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "929a8014fbcf21060ec105550999e88d",
+    "hash": "4f95339f95a308e3ad5bef8f973bffa9",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -2541,12 +2541,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Silex.git",
-                "reference": "8a870bac112d0b24ec02602dfb33e8eb2028cf23"
+                "reference": "f4af81750740121a59a07619ed07bbeb35c20b2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Silex/zipball/8a870bac112d0b24ec02602dfb33e8eb2028cf23",
-                "reference": "8a870bac112d0b24ec02602dfb33e8eb2028cf23",
+                "url": "https://api.github.com/repos/fabpot/Silex/zipball/f4af81750740121a59a07619ed07bbeb35c20b2b",
+                "reference": "f4af81750740121a59a07619ed07bbeb35c20b2b",
                 "shasum": ""
             },
             "require": {
@@ -2617,7 +2617,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2013-10-26 07:18:45"
+            "time": "2013-10-30 09:01:56"
         },
         {
             "name": "silex/web-profiler",
@@ -2821,12 +2821,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "59409b47c858b72e29555a3105b31e1744309b7f"
+                "reference": "f7692beec7ad44e4b48c92d9936501ac235925b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/d866a5acc45426f3c48c82b7cedb985d9e24568c",
-                "reference": "59409b47c858b72e29555a3105b31e1744309b7f",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/f7692beec7ad44e4b48c92d9936501ac235925b6",
+                "reference": "f7692beec7ad44e4b48c92d9936501ac235925b6",
                 "shasum": ""
             },
             "require": {
@@ -2926,7 +2926,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-09-29 19:54:28"
+            "time": "2013-10-31 11:15:14"
         },
         {
             "name": "themattharris/tmhoauth",
@@ -2972,20 +2972,20 @@
         },
         {
             "name": "twig/extensions",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig-extensions.git",
-                "reference": "921799aaf05f88af749d72912d6b154dfeb9a03e"
+                "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/921799aaf05f88af749d72912d6b154dfeb9a03e",
-                "reference": "921799aaf05f88af749d72912d6b154dfeb9a03e",
+                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
+                "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
                 "shasum": ""
             },
             "require": {
-                "twig/twig": "1.*"
+                "twig/twig": "~1.0"
             },
             "type": "library",
             "extra": {
@@ -3015,7 +3015,7 @@
                 "i18n",
                 "text"
             ],
-            "time": "2013-02-28 14:21:30"
+            "time": "2013-10-18 19:37:15"
         },
         {
             "name": "twig/twig",
