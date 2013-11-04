@@ -1035,7 +1035,7 @@ function cleanTags(string)
   }, {
     'f':">",
     't':"&gt;"
-  },  ];
+  }  ];
   for(c in chars2replace)
     string = string.replace(RegExp(chars2replace[c].f,"g") ,chars2replace[c].t);
   return string;
@@ -1929,6 +1929,10 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     });
   }
 
+  hsplit1();
+  vsplit2()
+  vsplit1();
+
   $('#EDIT_TOP', p4.edit.editBox).resizable({
     handles : 's',
     minHeight:100,
@@ -1958,7 +1962,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
   });
 
 $('#EDIT_MID_R')
-    .css('left', $('#EDIT_MID_R').position().left)
+    .css('left', $('#EDIT_MID_L').position().left + $('#EDIT_MID_L').width() + 15)
     .resizable({
         handles : 'w',
         minWidth:200,
@@ -2113,10 +2117,6 @@ $('#EDIT_MID_R')
   });
 
   ETHSeeker = new EditThesaurusSeeker(p4.edit.sbas_id);
-
-  hsplit1();
-  vsplit2();
-  vsplit1();
 
   setSizeLimits();
 
