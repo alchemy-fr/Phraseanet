@@ -10,8 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Entities\Order;
-use Entities\OrderElement;
+use Alchemy\Phrasea\Model\Entities\Order;
+use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Gedmo\Timestampable\TimestampableListener;
 
 class patch_3901 implements patchInterface

@@ -16,9 +16,9 @@ use Alchemy\Phrasea\TaskManager\Editor\FtpEditor;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
 use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Model\Entities\FtpExport;
+use Alchemy\Phrasea\Model\Entities\FtpExportElement;
 use Alchemy\Phrasea\Model\Entities\Task;
-use Entities\FtpExport;
-use Entities\FtpExportElement;
 
 class FtpJob extends AbstractJob
 {

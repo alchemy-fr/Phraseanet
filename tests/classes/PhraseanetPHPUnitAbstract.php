@@ -9,6 +9,7 @@ use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Entities\FeedToken;
+use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Silex\WebTestCase;
@@ -1113,7 +1114,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
         $app['session']->clear();
         $app['session']->set('usr_id', self::$DI['user']->get_id());
-        $session = new \Entities\Session();
+        $session = new Session();
         $session->setUsrId(self::$DI['user']->get_id());
         $session->setUserAgent('');
         self::$DI['app']['EM']->persist($session);
