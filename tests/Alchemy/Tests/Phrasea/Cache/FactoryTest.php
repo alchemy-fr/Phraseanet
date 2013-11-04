@@ -28,6 +28,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
             array('arraycache', null, 'Alchemy\Phrasea\Cache\ArrayCache'),
             array('memcache', 'memcache', 'Alchemy\Phrasea\Cache\MemcacheCache'),
             array('memcachecache', 'memcache', 'Alchemy\Phrasea\Cache\MemcacheCache'),
+            array('memcached', 'memcached', 'Alchemy\Phrasea\Cache\MemcachedCache'),
+            array('memcachecached', 'memcached', 'Alchemy\Phrasea\Cache\MemcachedCache'),
             array('redis', 'redis', 'Alchemy\Phrasea\Cache\RedisCache'),
             array('rediscache', 'redis', 'Alchemy\Phrasea\Cache\RedisCache'),
             array('wincache', 'wincache', 'Alchemy\Phrasea\Cache\WincacheCache'),
