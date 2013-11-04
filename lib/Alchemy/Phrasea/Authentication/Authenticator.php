@@ -120,7 +120,7 @@ class Authenticator
             throw new RuntimeException('No session to close.');
         }
 
-        if (null !== $session = $this->em->find('Entities\Session', $this->session->get('session_id'))) {
+        if (null !== $session = $this->em->find('Alchemy\Phrasea\Model\Entities\Session', $this->session->get('session_id'))) {
             $this->em->remove($session);
             $this->em->flush();
         }

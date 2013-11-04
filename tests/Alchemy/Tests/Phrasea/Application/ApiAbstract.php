@@ -151,10 +151,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     public function testThatSessionIsClosedAfterRequest()
     {
-        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Entities\Session')->findAll());
+        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findAll());
         $this->setToken(self::$token);
         self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
-        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Entities\Session')->findAll());
+        $this->assertCount(0, self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findAll());
     }
 
     public function provideEventNames()
