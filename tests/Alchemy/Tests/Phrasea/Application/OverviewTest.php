@@ -63,18 +63,13 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDatafilesRouteNotAuthenticatedIsOkInPublicFeed()
     {
-        $publicFeed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], 'titre', 'subtitre');
-        $publicFeed->set_public(true);
-        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $publicFeed, self::$DI['user']);
-        $entry = \Feed_Entry_Adapter::create(self::$DI['app'], $publicFeed, $publisher, 'titre', 'sub titre entry', 'author name', 'author email', false);
+        $this->insertOneFeedItem(self::$DI['user'], true, 1, self::$DI['record_1']);
         self::$DI['record_1']->move_to_collection(self::$DI['collection_no_access'], self::$DI['app']['phraseanet.appbox']);
-        $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
 
         self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         self::$DI['record_1']->move_to_collection(self::$DI['collection'], self::$DI['app']['phraseanet.appbox']);
-        $publicFeed->set_public(false);
     }
 
     public function testDatafilesRouteNotAuthenticatedUnknownSubdef()
@@ -207,17 +202,12 @@ class OverviewTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPermalinkRouteNotAuthenticatedIsOkInPublicFeed()
     {
-        $publicFeed = \Feed_Adapter::create(self::$DI['app'], self::$DI['user'], 'titre', 'subtitre');
-        $publicFeed->set_public(true);
-        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $publicFeed, self::$DI['user']);
-        $entry = \Feed_Entry_Adapter::create(self::$DI['app'], $publicFeed, $publisher, 'titre', 'sub titre entry', 'author name', 'author email', false);
-        $item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
+        $item = $this->insertOneFeedItem(self::$DI['user'], true);
 
         self::$DI['app']['authentication']->closeAccount();
-        self::$DI['client']->request('GET', '/permalink/v1/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
+        self::$DI['client']->request('GET', '/permalink/v1/' . $item->getRecord(self::$DI['app'])->get_sbas_id() . '/' . $item->getRecord(self::$DI['app'])->get_record_id() . '/preview/');
 
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
-        $publicFeed->set_public(false);
     }
 
     protected function get_a_permaviewBCcompatibility(array $headers = array())
