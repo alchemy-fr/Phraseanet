@@ -235,6 +235,8 @@ class databox_field implements cache_cacheableInterface
 
         $this->thumbtitle = $row['thumbtitle'];
 
+        $this->loadVocabulary();
+
         return $this;
     }
 
