@@ -113,8 +113,7 @@ class Installer
     private function createUser($email, $password)
     {
         $user = \User_Adapter::create($this->app, $email, $password, $email, true);
-
-        $this->app['session']->set('usr_id', $user->get_id());
+        $this->app['authentication']->openAccount($user);
 
         return $user;
     }
