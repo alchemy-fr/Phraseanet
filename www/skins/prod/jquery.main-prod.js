@@ -183,70 +183,77 @@ function checkBases(bool)
 function checkFilters(save)
 {
     var danger = false;
-    var search = {};
-    var adv_box = $('form.phrasea_query .adv_options');
-    search.bases = {};
-    search.fields = {};
-    search.dates = {};
-    search.status = {};
-    var scroll = $('.field_filter select').scrollTop();
+    var search = {
+        bases: {},
+        fields: {},
+        dates: {},
+        status: {}
+    };
 
-    var switches = $('#sbasfiltercont .field_switch');
+    var adv_box = $('form.phrasea_query .adv_options');
+    var container = $("#sbasfiltercont");
+    var fieldsSelect = $('.field_filter select', container);
+    var filters = $('.field_filter, .status_filter, .date_filter', adv_box);
+    var scroll = fieldsSelect.scrollTop();
+    var switches = $('.field_switch', container);
 
     switches.filter('.was').removeClass('was');
-
     switches.filter('option:selected, input:checked').addClass('was');
 
-    $('#sbasfiltercont select option:selected:not(".default-selection")').removeAttr('selected').selected(false);
+    $('select option:selected:not(".default-selection")', container).removeAttr('selected').selected(false);
 
-    $('#sbasfiltercont select option.field_switch').hide();
+    $('select option.field_switch', container).addClass("hidden");
 
-    $('#sbasfiltercont input.field_switch:checked').removeAttr('checked');
+    $('input.field_switch:checked', container).removeAttr('checked');
 
-    $('#sbasfiltercont input.field_switch:checkbox').parent().hide();
+    $('input.field_switch:checkbox', container).parent().hide();
 
-    $('.field_filter, .status_filter, .date_filter', adv_box).removeClass('danger');
+    filters.removeClass('danger');
 
-    var adv_box = $('form.phrasea_query .adv_options');
+    var nbSelectedColls = 0;
 
     $.each($('.sbascont', adv_box), function(){
+        var $this = $(this);
 
-        var sbas_id = $(this).parent().find('input[name="reference"]').val();
+        var sbas_id = $this.parent().find('input[name="reference"]').val();
         search.bases[sbas_id] = new Array();
 
-        var bas_ckbox = $(this).find('.checkbas');
+        var bas_ckbox = $this.find('.checkbas');
 
-        if(bas_ckbox.filter(':not(:checked)').length > 0)
-        {
+        if(bas_ckbox.filter(':not(:checked)').length > 0) {
             danger = 'medium';
         }
 
         var checked = bas_ckbox.filter(':checked');
 
-
-
-        if(checked.length>0)
-        {
-            var sbas_fields = $('#sbasfiltercont .field_' + sbas_id).show();
+        if(checked.length>0) {
+            var sbas_fields = $('.field_' + sbas_id, container).removeClass("hidden");
             sbas_fields.filter('option').show().filter('.was').removeClass('was').attr('selected', 'selected').selected(true);
             sbas_fields.filter(':checkbox').parent().show().find('.was').attr('checked','checked').removeClass('was');
         }
 
         checked.each(function(){
-            search.bases[sbas_id].push($(this).val());
+            nbSelectedColls++;
+            search.bases[sbas_id].push($this.val());
         });
     });
 
-    search.fields = (search.fields = $('.field_filter select').val()) !== null ? search.fields : new Array;
+    if (nbSelectedColls === 0) {
+        filters.addClass("danger");
+    }
+
+    search.fields = (search.fields = fieldsSelect.val()) !== null ? search.fields : new Array;
 
     var reset_field = false;
+
     $.each(search.fields, function(i,n){
         if(n === 'phraseanet--all--fields')
             reset_field = true;
     });
+
     if(reset_field)
     {
-        $('#sbasfiltercont select[name="fields[]"] option:selected').removeAttr('selected').selected(false);
+        $('select[name="fields[]"] option:selected', container).removeAttr('selected').selected(false);
         search.fields = new Array;
     }
 
@@ -274,7 +281,8 @@ function checkFilters(save)
         $('.date_filter', adv_box).addClass('danger');
     }
 
-    $('.field_filter select').scrollTop(scroll);
+    fieldsSelect.scrollTop(scroll);
+
     if(save===true)
         setPref('search',JSON.stringify(search));
 
@@ -1345,7 +1353,7 @@ $(document).ready(function(){
                                     cancelKey = shortCut = true;
                                     break;
                                 case 38:	// down arrow
-                                    $('#baskets div.bloc').scrollTop($('baskets div.bloc').scrollTop()-30);
+                                    $('#baskets div.bloc').scrollTop($('#baskets div.bloc').scrollTop()-30);
                                     cancelKey = shortCut = true;
                                     break;
                                 //								case 37://previous page
