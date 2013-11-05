@@ -193,7 +193,7 @@ function checkFilters(save)
     var adv_box = $('form.phrasea_query .adv_options');
     var container = $("#sbasfiltercont");
     var fieldsSelect = $('.field_filter select', container);
-
+    var filters = $('.field_filter, .status_filter, .date_filter', adv_box);
     var scroll = fieldsSelect.scrollTop();
     var switches = $('.field_switch', container);
 
@@ -208,40 +208,49 @@ function checkFilters(save)
 
     $('input.field_switch:checkbox', container).parent().hide();
 
-    $('.field_filter, .status_filter, .date_filter', adv_box).removeClass('danger');
+    filters.removeClass('danger');
+
+    var nbSelectedColls = 0;
 
     $.each($('.sbascont', adv_box), function(){
-        var sbas_id = $(this).parent().find('input[name="reference"]').val();
+        var $this = $(this);
+
+        var sbas_id = $this.parent().find('input[name="reference"]').val();
         search.bases[sbas_id] = new Array();
 
-        var bas_ckbox = $(this).find('.checkbas');
+        var bas_ckbox = $this.find('.checkbas');
 
-        if(bas_ckbox.filter(':not(:checked)').length > 0)
-        {
+        if(bas_ckbox.filter(':not(:checked)').length > 0) {
             danger = 'medium';
         }
 
         var checked = bas_ckbox.filter(':checked');
 
-        if(checked.length>0)
-        {
+        if(checked.length>0) {
             var sbas_fields = $('.field_' + sbas_id, container).removeClass("hidden");
             sbas_fields.filter('option').show().filter('.was').removeClass('was').attr('selected', 'selected').selected(true);
             sbas_fields.filter(':checkbox').parent().show().find('.was').attr('checked','checked').removeClass('was');
         }
 
         checked.each(function(){
-            search.bases[sbas_id].push($(this).val());
+            nbSelectedColls++;
+            search.bases[sbas_id].push($this.val());
         });
     });
+
+    if (nbSelectedColls === 0) {
+        filters.addClass("danger");
+    }
 
     search.fields = (search.fields = fieldsSelect.val()) !== null ? search.fields : new Array;
 
     var reset_field = false;
+
     $.each(search.fields, function(i,n){
         if(n === 'phraseanet--all--fields')
             reset_field = true;
     });
+
     if(reset_field)
     {
         $('select[name="fields[]"] option:selected', container).removeAttr('selected').selected(false);
