@@ -199,7 +199,7 @@ function checkFilters(save)
 
     $('#sbasfiltercont select option:selected:not(".default-selection")').removeAttr('selected').selected(false);
 
-    $('#sbasfiltercont select option.field_switch').hide();
+    $('#sbasfiltercont select option.field_switch').addClass("hidden");
 
     $('#sbasfiltercont input.field_switch:checked').removeAttr('checked');
 
@@ -210,7 +210,6 @@ function checkFilters(save)
     var adv_box = $('form.phrasea_query .adv_options');
 
     $.each($('.sbascont', adv_box), function(){
-
         var sbas_id = $(this).parent().find('input[name="reference"]').val();
         search.bases[sbas_id] = new Array();
 
@@ -223,11 +222,9 @@ function checkFilters(save)
 
         var checked = bas_ckbox.filter(':checked');
 
-
-
         if(checked.length>0)
         {
-            var sbas_fields = $('#sbasfiltercont .field_' + sbas_id).show();
+            var sbas_fields = $('#sbasfiltercont .field_' + sbas_id).removeClass("hidden");
             sbas_fields.filter('option').show().filter('.was').removeClass('was').attr('selected', 'selected').selected(true);
             sbas_fields.filter(':checkbox').parent().show().find('.was').attr('checked','checked').removeClass('was');
         }
@@ -1345,7 +1342,7 @@ $(document).ready(function(){
                                     cancelKey = shortCut = true;
                                     break;
                                 case 38:	// down arrow
-                                    $('#baskets div.bloc').scrollTop($('baskets div.bloc').scrollTop()-30);
+                                    $('#baskets div.bloc').scrollTop($('#baskets div.bloc').scrollTop()-30);
                                     cancelKey = shortCut = true;
                                     break;
                                 //								case 37://previous page
