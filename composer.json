@@ -39,7 +39,7 @@
         "php-xpdf/php-xpdf"                : "~0.2.1",
         "phpexiftool/phpexiftool"          : "~0.3",
         "react/zmq"                        : "~0.2",
-        "silex/silex"                      : "1.1.x-dev@dev",
+        "silex/silex"                      : "1.2.x-dev@dev",
         "silex/web-profiler"               : "~1.0.0@dev",
         "swiftmailer/swiftmailer"          : "~4.3.0",
         "symfony/symfony"                  : "~2.4",
