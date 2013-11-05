@@ -40,7 +40,7 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
             KernelEvents::RESPONSE => array(
                 array('addLocaleCookie', 8),
             ),
-            KernelEvents::TERMINATE => array(
+            KernelEvents::FINISH_REQUEST => array(
                 array('unsetLocale', -255),
             )
         );
