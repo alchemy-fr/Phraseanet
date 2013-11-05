@@ -13,6 +13,9 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Geonames\Connector as GeonamesConnector;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
+use Alchemy\Phrasea\Model\Entities\UserNotificationSetting;
+use Alchemy\Phrasea\Model\Entities\UserQuery;
+use Alchemy\Phrasea\Model\Entities\UserSetting;
 use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\RuntimeException;
@@ -24,10 +27,10 @@ use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
  */
 class UserManipulator implements ManipulatorInterface
 {
-    /** @var UserManager */
-    private $manager;
     /** @var PasswordEncoderInterface */
     protected $passwordEncoder;
+    /** @var UserManager */
+    private $manager;
     /** @var GeonamesConnector */
     private $geonamesConnector;
 
@@ -93,7 +96,7 @@ class UserManipulator implements ManipulatorInterface
     }
 
     /**
-     * Sets the password for an user.
+     * Sets the password for a user.
      *
      * @param user   $user
      * @param string $password
@@ -105,7 +108,7 @@ class UserManipulator implements ManipulatorInterface
     }
 
     /**
-     * Sets the geonameid for an user.
+     * Sets the geonameid for a user.
      *
      * @param User    $user
      * @param integer $geonameid
@@ -134,7 +137,7 @@ class UserManipulator implements ManipulatorInterface
     }
 
     /**
-     * Sets email for an user.
+     * Sets email for a user.
      *
      * @param User   $user
      * @param string $email
@@ -175,7 +178,61 @@ class UserManipulator implements ManipulatorInterface
     }
 
     /**
-     * Sets the password for an user.
+     * Sets a preference setting for a user.
+     *
+     * @param User      $user
+     * @param string    $name
+     * @param string    $value
+     */
+    public function addUserSetting(User $user, $name, $value)
+    {
+        $userSetting = new UserSetting();
+        $userSetting->setUsrId($user->getId());
+        $userSetting->setName($name);
+        $userSetting->setValue($value);
+        $user->addSetting($userSetting);
+
+        $this->manager->update($user);
+    }
+
+    /**
+     * Sets a notification setting for a user.
+     *
+     * @param User      $user
+     * @param string    $name
+     * @param string    $value
+     */
+    public function addNotificationSetting(User $user, $name, $value)
+    {
+        $notifSetting = new UserNotificationSetting();
+        $notifSetting->setName($name);
+        $notifSetting->setValue($value);
+        $notifSetting->setUsrId($user->getId());
+        $user->addNotificationSettings($notifSetting);
+
+        $this->manager->update($user);
+    }
+
+    /**
+     * Logs a user query.
+     *
+     * @param User  $user
+     * @param string $query
+     */
+    public function logQuery(User $user, $query)
+    {
+        $userQuery = new UserQuery();
+        $userQuery->setUser($user);
+        $userQuery->setQuery($query);
+        $userQuery->setUsrId($user->getId());
+
+        $user->addQuery($userQuery);
+
+        $this->manager->update($user);
+    }
+
+    /**
+     * Sets the password for a user.
      *
      * @param user   $user
      * @param string $password
@@ -187,7 +244,7 @@ class UserManipulator implements ManipulatorInterface
     }
 
     /**
-     * Sets the login for an user.
+     * Sets the login for a user.
      *
      * @param User  $user
      * @param sring $login
@@ -205,7 +262,7 @@ class UserManipulator implements ManipulatorInterface
     }
 
     /**
-     * Sets email for an user.
+     * Sets email for a user.
      *
      * @param User   $user
      * @param string $email
