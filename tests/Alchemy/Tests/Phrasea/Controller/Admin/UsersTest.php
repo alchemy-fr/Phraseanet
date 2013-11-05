@@ -46,6 +46,15 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         }
     }
 
+    public function testRouteDeleteCurrentUserDoesNothing()
+    {
+        self::$DI['client']->request('POST', '/admin/users/delete/', array('users'   => self::$DI['user']->get_id()));
+        $response = self::$DI['client']->getResponse();
+        $this->assertTrue($response->isRedirect());
+
+        $this->assertTrue(false !== \User_Adapter::get_usr_id_from_login(self::$DI['app'], self::$DI['user']->get_login()));
+    }
+
     public function testRouteRightsApply()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate', 2);

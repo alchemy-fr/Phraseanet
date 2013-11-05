@@ -65,6 +65,9 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     public function delete_users()
     {
         foreach ($this->users as $usr_id) {
+            if ($this->app['authentication']->getUser()->get_id() === (int) $usr_id) {
+                continue;
+            }
             $user = \User_Adapter::getInstance($usr_id, $this->app);
             $this->delete_user($user);
         }
