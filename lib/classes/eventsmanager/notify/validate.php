@@ -20,7 +20,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = ['__PUSH_VALIDATION__'];
+    public $events = array('__PUSH_VALIDATION__');
 
     /**
      *
@@ -52,12 +52,12 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = [
+        $default = array(
             'from'    => ''
             , 'to'      => ''
             , 'message' => ''
             , 'ssel_id' => ''
-        ];
+        );
 
         $params = array_merge($default, $params);
 
@@ -93,8 +93,8 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
 
             $readyToSend = false;
             try {
-                $user_from = User_Adapter::getInstance($params['from'], $this->app);
-                $user_to = User_Adapter::getInstance($params['to'], $this->app);
+                $user_from = $this->app['manipulator.user']->getRepository()->find($params['from']);
+                $user_to = $this->app['manipulator.user']->getRepository()->find($params['to']);
 
                 $basket = $this->app['EM']
                     ->getRepository('Phraseanet:Basket')
@@ -137,13 +137,11 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         $from = (string) $sx->from;
         $ssel_id = (string) $sx->ssel_id;
 
-        try {
-            User_Adapter::getInstance($from, $this->app);
-        } catch (Exception $e) {
-            return [];
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($from)) {
+            return array();
         }
 
-        $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
+        $sender = $user->getDisplayName();
 
         try {
             $basket = $this->app['converter.basket']->convert($ssel_id);
@@ -153,7 +151,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         }
 
         $bask_link = '<a href="'
-            . $this->app->url('lightbox_validation', ['basket' => (string) $sx->ssel_id])
+            . $this->app->url('lightbox_validation', array('ssel_id' => (string) $sx->ssel_id))
             . '" target="_blank">'
             . $basket_name . '</a>';
 
@@ -163,7 +161,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
                 '%title%' => $bask_link,
             ])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        ];
+        );
 
         return $ret;
     }

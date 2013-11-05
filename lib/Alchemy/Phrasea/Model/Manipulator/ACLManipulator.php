@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class ACLManipulator implements ManipulatorInterface
 {
@@ -39,13 +40,13 @@ class ACLManipulator implements ManipulatorInterface
     /**
      * Resets rights for users.
      *
-     * @param User_Adapter $user
+     * @param User[]    $users
      *
      * @throws InvalidArgumentException
      */
     public function resetAdminRights($users)
     {
-        foreach ($this->makeTraversable($users) as $user) {
+        foreach($this->makeTraversable($users) as $user) {
             $this->doResetAdminRights($user);
         }
     }
@@ -53,9 +54,9 @@ class ACLManipulator implements ManipulatorInterface
     /**
      * Resets rights for a user.
      *
-     * @param \User_adapter $user
+     * @param User $user
      */
-    private function doResetAdminRights(\User_adapter $user)
+    private function doResetAdminRights(User $user)
     {
         $acl = $this->ACLProvider->get($user);
         $databoxes = $this->appbox->get_databoxes();
@@ -79,12 +80,12 @@ class ACLManipulator implements ManipulatorInterface
     {
         $collections = $databox->get_collections();
 
-        $acl->update_rights_to_sbas($databox->get_sbas_id(), [
+        $acl->update_rights_to_sbas($databox->get_sbas_id(), array(
             'bas_manage'        => '1',
             'bas_modify_struct' => '1',
             'bas_modif_th'      => '1',
             'bas_chupub'        => '1'
-        ]);
+        ));
 
         $acl->give_access_to_base(array_map(function (\collection $collection) {
             return $collection->get_base_id();
@@ -108,7 +109,7 @@ class ACLManipulator implements ManipulatorInterface
         $acl->set_limits($baseId, false);
         $acl->remove_quotas_on_base($baseId);
         $acl->set_masks_on_base($baseId, '0', '0', '0', '0');
-        $acl->update_rights_to_base($baseId, [
+        $acl->update_rights_to_base($baseId, array(
             'canputinalbum'     => '1',
             'candwnldhd'        => '1',
             'candwnldsubdef'    => '1',
@@ -127,7 +128,7 @@ class ACLManipulator implements ManipulatorInterface
             'manage'            => '1',
             'modify_struct'     => '1',
             'bas_modify_struct' => '1'
-        ]);
+        ));
     }
 
     /**
@@ -140,7 +141,7 @@ class ACLManipulator implements ManipulatorInterface
     private function makeTraversable($var)
     {
         if (!is_array($var) && !$var instanceof \Traversable) {
-            return [$var];
+            return array($var);
         }
 
         return $var;

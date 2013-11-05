@@ -93,7 +93,7 @@ class Account implements ControllerProviderInterface
                 $data = $form->getData();
                 $user = $app['authentication']->getUser();
 
-                if ($app['auth.password-encoder']->isPasswordValid($user->get_password(), $data['oldPassword'], $user->get_nonce())) {
+                if ($app['auth.password-encoder']->isPasswordValid($user->getPassword(), $data['oldPassword'], $user->getNonce())) {
                     $user->set_password($data['password']);
                     $app->addFlash('success', $app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
@@ -126,7 +126,7 @@ class Account implements ControllerProviderInterface
 
         $user = $app['authentication']->getUser();
 
-        if (!$app['auth.password-encoder']->isPasswordValid($user->get_password(), $password, $user->get_nonce())) {
+        if (!$app['auth.password-encoder']->isPasswordValid($user->getPassword(), $password, $user->getNonce())) {
             $app->addFlash('error', $app->trans('admin::compte-utilisateur:ftp: Le mot de passe est errone'));
 
             return $app->redirectPath('account_reset_email');
@@ -145,8 +145,8 @@ class Account implements ControllerProviderInterface
         }
 
         $date = new \DateTime('1 day');
-        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->get_id(), $date, $app['authentication']->getUser()->get_email());
-        $url = $app->url('account_reset_email', ['token' => $token]);
+        $token = $app['tokens']->getUrlToken(\random::TYPE_EMAIL, $app['authentication']->getUser()->getId(), $date, $app['authentication']->getUser()->getEmail());
+        $url = $app->url('account_reset_email', array('token' => $token));
 
         try {
             $receiver = Receiver::fromUser($app['authentication']->getUser());
@@ -179,7 +179,7 @@ class Account implements ControllerProviderInterface
         if (null !== $token = $request->query->get('token')) {
             try {
                 $datas = $app['tokens']->helloToken($token);
-                $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
+                $user = $app['manipulator.user']->getRepository()->find((int) $datas['usr_id']);
                 $user->set_email($datas['datas']);
                 $app['tokens']->removeToken($token);
 
@@ -239,9 +239,9 @@ class Account implements ControllerProviderInterface
     {
         require_once $app['root.path'] . '/lib/classes/deprecated/inscript.api.php';
 
-        return $app['twig']->render('account/access.html.twig', [
-            'inscriptions' => giveMeBases($app, $app['authentication']->getUser()->get_id())
-        ]);
+        return $app['twig']->render('account/access.html.twig', array(
+            'inscriptions' => giveMeBases($app, $app['authentication']->getUser()->getId())
+        ));
     }
 
     /**
@@ -318,11 +318,11 @@ class Account implements ControllerProviderInterface
      */
     public function displayAccount(Application $app, Request $request)
     {
-        return $app['twig']->render('account/account.html.twig', [
+        return $app['twig']->render('account/account.html.twig', array(
             'user'          => $app['authentication']->getUser(),
             'evt_mngr'      => $app['events-manager'],
-            'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()),
-        ]);
+            'notifications' => $app['events-manager']->list_notifications_available($app['authentication']->getUser()->getId()),
+        ));
     }
 
     /**
@@ -410,7 +410,7 @@ class Account implements ControllerProviderInterface
 
         $requestedNotifications = (array) $request->request->get('notifications', []);
 
-        foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()->get_id()) as $notifications) {
+        foreach ($app['events-manager']->list_notifications_available($app['authentication']->getUser()->getId()) as $notifications) {
             foreach ($notifications as $notification) {
                 if (isset($requestedNotifications[$notification['id']])) {
                     $app['authentication']->getUser()->set_notification_preference($app, $notification['id'], '1');

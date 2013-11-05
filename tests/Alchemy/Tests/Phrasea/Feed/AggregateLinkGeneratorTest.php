@@ -21,7 +21,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
         $another_feed = new Feed($user);
         $another_feed->setTitle("another_title");
 
-        $feeds = [$feed, $another_feed];
+        $feeds = array($feed, $another_feed);
 
         $aggregate = new Aggregate(self::$DI['app']['EM'], $feeds);
 
@@ -67,16 +67,16 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
                 $this->assertNotEquals($tokenValue, $capture['token']);
 
                 $this->assertCount(0, self::$DI['app']['EM']
-                    ->getRepository('Phraseanet:AggregateToken')
-                    ->findBy(['value' => $tokenValue]));
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
+                    ->findBy(array('value' => $tokenValue)));
                 $this->assertCount(1, self::$DI['app']['EM']
-                    ->getRepository('Phraseanet:AggregateToken')
-                    ->findBy(['value' => $capture['token']]));
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
+                    ->findBy(array('value' => $capture['token'])));
             } else {
-                $expectedParams = [
+                $expectedParams = array(
                     'token'  => $tokenValue,
                     'format' => $format,
-                ];
+                );
 
                 if ($page !== null) {
                     $expectedParams['page'] = $page;
@@ -85,8 +85,8 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
                 $this->assertEquals($expectedParams, $capture);
 
                 $this->assertCount(1, self::$DI['app']['EM']
-                    ->getRepository('Phraseanet:AggregateToken')
-                    ->findBy(['value' => $tokenValue]));
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
+                    ->findBy(array('value' => $tokenValue)));
             }
         } else {
             if (null !== $page) {
@@ -96,8 +96,8 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
             $this->assertEquals(12, strlen($capture['token']));
 
             $this->assertCount(1, self::$DI['app']['EM']
-                ->getRepository('Phraseanet:AggregateToken')
-                ->findBy(['value' => $capture['token']]));
+                ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
+                ->findBy(array('value' => $capture['token'])));
         }
     }
 
@@ -125,11 +125,11 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
 
     public function provideGenerationDataPublic()
     {
-        return [
-            ['doliprane', 'atom', null],
-            ['doliprane', 'atom', 1],
-            ['doliprane', 'rss', null],
-            ['doliprane', 'rss', 1]
-        ];
+        return array(
+            array('doliprane', 'atom', null),
+            array('doliprane', 'atom', 1),
+            array('doliprane', 'rss', null),
+            array('doliprane', 'rss', 1)
+        );
     }
 }

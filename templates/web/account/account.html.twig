@@ -38,7 +38,7 @@
                         <div class="control-group">
                             <label class="form_label control-label" for="form_login"><strong>{{ "admin::compte-utilisateur identifiant" | trans }}</strong></label>
                             <div class="controls">
-                                <span class="control-span">{{ app["authentication"].getUser().get_login() }}</span>
+                                <span class="control-span">{{ app["authentication"].getUser().getLogin() }}</span>
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
@@ -47,13 +47,13 @@
                             <div class="controls">
                                 <select name="form_gender" class="input-xlarge">
                                     <option value=""></option>
-                                    <option {% if app["authentication"].getUser().get_gender() == "0" %}selected{% endif %} value="0" >
+                                    <option {% if app["authentication"].getUser().getGender() == "0" %}selected{% endif %} value="0" >
                                         {{ "admin::compte-utilisateur:sexe: mademoiselle" | trans }}
                                     </option>
-                                    <option {% if app["authentication"].getUser().get_gender() == "1" %}selected{% endif %} value="1" >
+                                    <option {% if app["authentication"].getUser().getGender() == "1" %}selected{% endif %} value="1" >
                                         {{ "admin::compte-utilisateur:sexe: madame" | trans }}
                                     </option>
-                                    <option {% if app["authentication"].getUser().get_gender() == "2" %}selected{% endif %} value="2" >
+                                    <option {% if app["authentication"].getUser().getGender() == "2" %}selected{% endif %} value="2" >
                                         {{ "admin::compte-utilisateur:sexe: monsieur" | trans }}
                                     </option>
                                 </select>
@@ -63,21 +63,21 @@
                         <div class="control-group">
                             <label class="form_label control-label" for="form_lastname"><strong>{{ "admin::compte-utilisateur nom" | trans }}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge" type="text" name="form_lastname" id="form_lastname" value="{{ app["authentication"].getUser().get_lastname() }}" />
+                                <input class="input_element input-xlarge" type="text" name="form_lastname" id="form_lastname" value="{{ app["authentication"].getUser().getLastName() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="form_label control-label" for="form_firstname"><strong>{{ "admin::compte-utilisateur prenom" | trans }}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge" type="text" name="form_firstname" id="form_firstname" value="{{ app["authentication"].getUser().get_firstname() }}" />
+                                <input class="input_element input-xlarge" type="text" name="form_firstname" id="form_firstname" value="{{ app["authentication"].getUser().getFirstName() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="form_label control-label" for="form_firstname"><strong>{{ "admin::compte-utilisateur email" | trans }}</strong></label>
                             <div class="controls">
-                                <span class="control-span">{{ app["authentication"].getUser().get_email() }} <a href="{{ path("account_reset_email") }}" target="_self">{{ "login:: Changer mon adresse email" | trans }}</a></span>
+                                <span class="control-span">{{ app["authentication"].getUser().getEmail() }} <a href="{{ path("account_reset_email") }}" target="_self">{{ "login:: Changer mon adresse email" | trans }}</a></span>
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
@@ -90,56 +90,56 @@
                         <div class="control-group">
                             <label class="form_label control-label" for="form_address"><strong>{{ "admin::compte-utilisateur adresse" | trans }}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge" type="text" name="form_address" id="form_address" value="{{ app["authentication"].getUser().get_address() }}" />
+                                <input class="input_element input-xlarge" type="text" name="form_address" id="form_address" value="{{ app["authentication"].getUser().getAddress() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="form_label control-label" for="form_zip"><strong>{{ "admin::compte-utilisateur code postal" | trans }}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge" type="text" name="form_zip" id="form_zip" value="{{ app["authentication"].getUser().get_zipcode() }}" />
+                                <input class="input_element input-xlarge" type="text" name="form_zip" id="form_zip" value="{{ app["authentication"].getUser().getZipCode() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="form_label control-label" for="form_city"><strong>{{ "admin::compte-utilisateur ville" | trans }}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge geoname_field" type="text" name="form_geonameid" id="form_geonameid" value="{{ app["authentication"].getUser().get_geonameid() }}" />
+                                <input class="input_element input-xlarge geoname_field" type="text" name="form_geonameid" id="form_geonameid" value="{{ app["authentication"].getUser().getGeonameId() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="form_label control-label" for="form_function"><strong>{{ "admin::compte-utilisateur poste" | trans }}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge" type="text" name="form_function" id="form_function" value="{{ app["authentication"].getUser().get_position() }}" />
+                                <input class="input_element input-xlarge" type="text" name="form_function" id="form_function" value="{{ app["authentication"].getUser().getActivity() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="form_label control-label" for="form_company"><strong>{{ "admin::compte-utilisateur societe" | trans }}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge" type="text" name="form_company" id="form_company" value="{{ app["authentication"].getUser().get_company() }}" />
+                                <input class="input_element input-xlarge" type="text" name="form_company" id="form_company" value="{{ app["authentication"].getUser().getCompany() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="form_label control-label" for="form_activity"><strong>{{ "admin::compte-utilisateur activite" | trans }}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge" type="text" name="form_activity" id="form_activity" value="{{ app["authentication"].getUser().get_job() }}" />
+                                <input class="input_element input-xlarge" type="text" name="form_activity" id="form_activity" value="{{ app["authentication"].getUser().getJob() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="form_label control-label" for="form_phone"><strong>{{ "admin::compte-utilisateur telephone" | trans }}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge" type="text" name="form_phone" id="form_phone" value="{{ app["authentication"].getUser().get_tel() }}" />
+                                <input class="input_element input-xlarge" type="text" name="form_phone" id="form_phone" value="{{ app["authentication"].getUser().getPhone() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="form_label control-label" for="form_fax"><strong>{{ "admin::compte-utilisateur fax" | trans }}</strong></label>
                             <div class="controls">
-                                <input class="input_element input-xlarge" type="text" name="form_fax" id="form_fax" value="{{ app["authentication"].getUser().get_fax() }}" />
+                                <input class="input_element input-xlarge" type="text" name="form_fax" id="form_fax" value="{{ app["authentication"].getUser().getFax() }}" />
                                 <p class="form_alert help-block"></p>
                             </div>
                         </div>

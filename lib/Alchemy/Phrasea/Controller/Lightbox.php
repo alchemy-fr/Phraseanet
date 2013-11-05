@@ -44,7 +44,7 @@ class Lightbox implements ControllerProviderInterface
                 return $app->redirectPath('homepage');
             }
 
-            $app['authentication']->openAccount(\User_Adapter::getInstance($usr_id, $app));
+            $app['authentication']->openAccount($app['manipulator.user']->getRepository()->find($usr_id));
 
             try {
                 $datas = $app['tokens']->helloToken($request->query->get('LOG'));
@@ -468,15 +468,15 @@ class Lightbox implements ControllerProviderInterface
                 $expires = new \DateTime('+10 days');
                 $url = $app->url('lightbox', ['LOG' => $app['tokens']->getUrlToken(
                         \random::TYPE_VALIDATE
-                        , $basket->getValidation()->getInitiator($app)->get_id()
+                        , $basket->getValidation()->getInitiator($app)->getId()
                         , $expires
                         , $basket->getId()
                 )]);
 
-                $to = $basket->getValidation()->getInitiator($app)->get_id();
+                $to = $basket->getValidation()->getInitiator($app)->getId();
                 $params = [
                     'ssel_id' => $basket->getId(),
-                    'from'    => $app['authentication']->getUser()->get_id(),
+                    'from'    => $app['authentication']->getUser()->getId(),
                     'url'     => $url,
                     'to'      => $to
                 ];

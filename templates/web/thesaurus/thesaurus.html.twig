@@ -102,7 +102,7 @@
                     dataType: 'json',
                     data: {
                         module : 5,
-                        usr : {{ app['authentication'].getUser().get_id() }}
+                        usr : {{ app['authentication'].getUser().getId() }}
                     },
                     error: function(){
                         window.setTimeout("sessionactive();", 10000);

@@ -52,7 +52,7 @@ class Publications implements ControllerProviderInterface
             $feed = new Feed();
 
             $publisher->setFeed($feed);
-            $publisher->setUsrId($app['authentication']->getUser()->get_id());
+            $publisher->setUsrId($app['authentication']->getUser()->getId());
             $publisher->setIsOwner(true);
 
             $feed->addPublisher($publisher);
@@ -193,11 +193,11 @@ class Publications implements ControllerProviderInterface
             $error = '';
             try {
                 $request = $app['request'];
-                $user = \User_Adapter::getInstance($request->request->get('usr_id'), $app);
-                $feed = $app["EM"]->find('Phraseanet:Feed', $id);
+                $user = $app['manipulator.user']->getRepository()->find($request->request->get('usr_id'));
+                $feed = $app["EM"]->find('Alchemy\Phrasea\Model\Entities\Feed', $id);
 
                 $publisher = new FeedPublisher();
-                $publisher->setUsrId($user->get_id());
+                $publisher->setUsrId($user->getId());
                 $publisher->setFeed($feed);
 
                 $feed->addPublisher($publisher);

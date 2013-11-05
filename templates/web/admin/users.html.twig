@@ -26,9 +26,9 @@
             <a href="{{ path('users_display_import_file') }}" target='right'>{{ 'admin::user: import d\'utilisateurs' | trans }}</a> /
             <a href="#"  onclick="exportlist();return(false);">{{ 'admin::user: export d\'utilisateurs' | trans }}</a>
             <a class="invite_modifier" href="#">{{ 'Reglages:: reglages d acces guest' | trans }}</a>
-            <input type="hidden" value="{{invite_user.get_id()}}" name="invite_user_id"/>
+            <input type="hidden" value="{{invite_user.getId()}}" name="invite_user_id"/>
             <a class="autoregister_modifier" href="#">{{ 'Reglages:: reglages d inscitpition automatisee' | trans }}</a>
-            <input type="hidden" value="{{autoregister_user.get_id()}}" name="autoregister_user_id"/>
+            <input type="hidden" value="{{autoregister_user.getId()}}" name="autoregister_user_id"/>
         </p>
 
         <form id="users_page_search" method="post" action="{{ path('admin_users_search') }}" target="_self" class="form-inline">
@@ -47,7 +47,7 @@
                 <select name="last_model" class="input-medium">
                     <option value="">{{ 'None' | trans }}</option>
                     {% for template in templates %}
-                        <option {% if parm['last_model'] == template.get_login() %}selected="selected"{% endif %} value="{{ template.get_login() }}">{{ template.get_login() }}</option>
+                        <option {% if parm['last_model'] == template.getLogin() %}selected="selected"{% endif %} value="{{ template.getLogin() }}">{{ template.getLogin() }}</option>
                     {% endfor %}
                 </select>
                 <button type="submit" class="btn">{{ 'boutton::chercher' | trans }}</button>
@@ -60,7 +60,7 @@
                 <select name="template_chooser" class="input-medium">
                     <option value="">{{ 'boutton::choisir' | trans }}</option>
                     {% for template in templates %}
-                        <option value="{{ template.get_id() }}">{{ template.get_display_name() }}</option>
+                        <option value="{{ template.getId() }}">{{ template.getDisplayName() }}</option>
                     {% endfor %}
                 </select>
                 <button type="submit" class="btn">{{ 'boutton::appliquer' | trans }}</button>
@@ -121,37 +121,37 @@
             </thead>
             <tbody>
                 {% for usr in users.get_results %}
-                    <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}" id="user_{{usr.get_id()}}">
+                    <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}" id="user_{{usr.getId()}}">
                         <td style="text-align: center;">
-                            {% if usr.is_template() %}
+                            {% if usr.isTemplate() %}
                                 <img title="{{ 'This is a template' | trans }}" src="/skins/icons/template.png"/>
                             {% else %}
                                 {% if app['acl'].get(usr).is_phantom() %}
                                     <img title="{{ 'This user has no rights' | trans }}" src="/skins/admin/ghost.png"/>
                                 {% endif %}
-                                {{usr.get_id()}}
+                                {{usr.getId()}}
                             {% endif %}
                         </td>
                         <td>
-                            {{usr.get_login()}}
+                            {{usr.getLogin()}}
                         </td>
                         <td>
-                            {{usr.get_firstname()}} {{usr.get_lastname()}}
+                            {{usr.getFirstName()}} {{usr.getLastName()}}
                         </td>
                         <td>
-                            {{usr.get_company()}}
+                            {{usr.getCompany()}}
                         </td>
                         <td>
-                            {{usr.get_email()}}
+                            {{usr.getEmail()}}
                         </td>
                         <td>
-                            {{usr.get_country()}}
+                            {{usr.getCountry()}}
                         </td>
                         <td>
-                            {{usr.get_applied_template()}}
+                            {{usr.getLastModel()->getDisplayName()}}
                         </td>
                         <td>
-                            {{ app['date-formatter'].getDate(usr.get_creation_date()) }}
+                            {{ app['date-formatter'].getDate(usr.getCreated()) }}
                         </td>
                     </tr>
                 {% endfor %}

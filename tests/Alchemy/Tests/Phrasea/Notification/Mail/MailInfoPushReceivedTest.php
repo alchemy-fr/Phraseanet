@@ -28,12 +28,12 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
             $this->getExpiration()
         );
 
-        $user = $this->getMockBuilder('User_Adapter')
+        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
             ->disableOriginalConstructor()
             ->getMock();
 
         $user->expects($this->any())
-            ->method('get_firstname')
+            ->method('getFirstName')
             ->will($this->returnValue('JeanFirstName'));
 
         $mail->setPusher($user);
@@ -110,12 +110,12 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
             ->method('getElements')
             ->will($this->returnValue($collection));
 
-        $user = $this->getMockBuilder('User_Adapter')
+        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
             ->disableOriginalConstructor()
             ->getMock();
 
         $user->expects($this->any())
-            ->method('get_display_name')
+            ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 
         $mail->setPusher($user);

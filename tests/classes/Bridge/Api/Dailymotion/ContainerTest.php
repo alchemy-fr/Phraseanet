@@ -40,7 +40,7 @@ class Bridge_Api_Dailymotion_ContainerTest extends \PhraseanetTestCase
         $this->assertEquals($this->test['id'], $this->object->get_id());
         unset($this->test["id"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_id());
+        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->getId());
         $this->assertEmpty($this->object->get_id());
     }
 

@@ -91,7 +91,7 @@ class Root implements ControllerProviderInterface
         $result = $app['phraseanet.SE']->query($query, ($currentPage - 1) * $perPage, $perPage, $options);
 
         $userQuery = new UserQuery();
-        $userQuery->setUsrId($app['authentication']->getUser()->get_id());
+        $userQuery->setUsrId($app['authentication']->getUser()->getId());
         $userQuery->setQuery($query);
 
         $app['EM']->persist($userQuery);
@@ -171,7 +171,7 @@ class Root implements ControllerProviderInterface
             'per_page'             => $perPage,
             'search_engine'        =>  $app['phraseanet.SE'],
             'search_engine_option' => $options->serialize(),
-            'history'              => \queries::history($app, $app['authentication']->getUser()->get_id()),
+            'history'              => \queries::history($app, $app['authentication']->getUser()->getId()),
             'result'               => $result,
             'proposals'            => $currentPage === 1 ? $result->getProposals() : null,
             'help'                 => count($resultData) === 0 ? $this->getHelpStartPage($app) : '',

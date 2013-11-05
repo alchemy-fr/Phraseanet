@@ -116,7 +116,7 @@ class Session
 
     public function setUser(\User_Adapter $user)
     {
-        return $this->setUsrId($user->get_id());
+        return $this->setUsrId($user->getId());
     }
 
     /**

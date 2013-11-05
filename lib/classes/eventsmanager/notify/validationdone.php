@@ -20,7 +20,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = ['__VALIDATION_DONE__'];
+    public $events = array('__VALIDATION_DONE__');
 
     /**
      *
@@ -52,11 +52,11 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = [
+        $default = array(
             'from'    => ''
             , 'to'      => ''
             , 'ssel_id' => ''
-        ];
+        );
 
         $params = array_merge($default, $params);
 
@@ -88,8 +88,8 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         if ($this->shouldSendNotificationFor($params['to'])) {
             $readyToSend = false;
             try {
-                $user_from = User_Adapter::getInstance($params['from'], $this->app);
-                $user_to = User_Adapter::getInstance($params['to'], $this->app);
+                $user_from = $this->app['manipulator.user']->getRepository()->find($params['from']);
+                $user_to = $this->app['manipulator.user']->getRepository()->find($params['to']);
 
                 $basket = $this->app['EM']
                     ->getRepository('Phraseanet:Basket')
@@ -131,18 +131,18 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         $from = (string) $sx->from;
         $ssel_id = (string) $sx->ssel_id;
 
-        try {
-            $registered_user = User_Adapter::getInstance($from, $this->app);
-        } catch (Exception $e) {
-            return [];
+        if (null === $registered_user = $this->app['manipulator.user']->getRepository()->find($from)) {
+            return array();
         }
 
-        $sender = $registered_user->get_display_name();
+        $sender = $registered_user->getDisplayName();
 
         try {
-            $basket = $this->app['converter.basket']->convert($ssel_id);
+            $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+
+            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
         } catch (Exception $e) {
-            return [];
+            return array();
         }
 
         $ret = [
@@ -151,7 +151,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
                 . $basket->getName() . '</a>'
             ])
             , 'class' => ''
-        ];
+        );
 
         return $ret;
     }
@@ -181,9 +181,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      */
     public function is_available($usr_id)
     {
-        try {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
-        } catch (\Exception $e) {
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
             return false;
         }
 

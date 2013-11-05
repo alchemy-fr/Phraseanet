@@ -57,12 +57,11 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
             $templates = array_filter(array_map(function ($templateId) use ($app) {
                 try {
                     if (is_int($templateId) || ctype_digit($templateId)) {
-                        return \User_Adapter::getInstance($templateId, $app);
-                    } else {
-                        $template = \User_Adapter::get_usr_id_from_login($app, $templateId);
-                        if (false !== $template) {
-                            return \User_Adapter::getInstance($template, $app);
-                        }
+                        return $app['manipulator.user']->getRepository()->find($templateId);
+                    }
+
+                    if (false !== $templateId) {
+                        return $app['manipulator.user']->getRepository()->find($templateId);
                     }
                 } catch (\Exception $e) {
 

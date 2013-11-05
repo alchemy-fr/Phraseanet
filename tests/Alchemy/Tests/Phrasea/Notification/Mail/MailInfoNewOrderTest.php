@@ -41,12 +41,12 @@ class MailInfoNewOrderTest extends MailTestCase
             $this->getMessage()
         );
 
-        $user = $this->getMockBuilder('User_Adapter')
+        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
             ->disableOriginalConstructor()
             ->getMock();
 
         $user->expects($this->any())
-            ->method('get_display_name')
+            ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 
         $mail->setUser($user);

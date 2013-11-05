@@ -29,13 +29,13 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
             return $this->loadApp('/lib/Alchemy/Phrasea/Application/Api.php');
         });
 
-        $this->queryParameters = [
+        $this->queryParameters = array(
             "response_type" => "code",
             "client_id"     => self::$DI['oauth2-app-user']->get_client_id(),
             "redirect_uri"  => self::$DI['oauth2-app-user']->get_redirect_uri(),
             "scope"         => "",
             "state"         => "valueTest"
-        ];
+        );
     }
 
     public static function tearDownAfterClass()
@@ -51,7 +51,7 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
       DELETE FROM api_applications
       WHERE application_id = :id
     ';
-        $t = [':id' => $app->get_id()];
+        $t = array(':id' => $app->get_id());
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
         $sql = '
@@ -59,7 +59,7 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
       WHERE api_account_id  = :id
     ';
         $acc = self::getAccount();
-        $t = [':id' => $acc->get_id()];
+        $t = array(':id' => $acc->get_id());
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
     }
@@ -86,18 +86,18 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
 
     public function provideEventNames()
     {
-        return [
-            [false, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'],
-            [true, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'],
-            [false, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'],
-            [true, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'],
-        ];
+        return array(
+            array(false, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+            array(true, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+            array(false, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+            array(true, 'GET', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'),
+        );
     }
 
     public static function getApp($rowId)
     {
         $sql = "SELECT * FROM api_applications WHERE application_id = :app_id";
-        $t = [":app_id" => $rowId];
+        $t = array(":app_id" => $rowId);
         $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);

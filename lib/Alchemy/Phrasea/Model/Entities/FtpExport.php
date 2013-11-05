@@ -478,13 +478,13 @@ class FtpExport
     /**
      * Set user
      *
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return FtpExport
      */
     public function setUser(\User_Adapter $user)
     {
-        $this->setUsrId($user->get_id());
+        $this->setUsrId($user->getId());
 
         return $this;
     }

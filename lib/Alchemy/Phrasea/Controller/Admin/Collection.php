@@ -200,8 +200,9 @@ class Collection implements ControllerProviderInterface
                     }
 
                     foreach (array_filter($newAdmins) as $admin) {
-                        $user = \User_Adapter::getInstance($admin, $app);
-                        $app['acl']->get($user)->update_rights_to_base($bas_id, ['order_master' => true]);
+                        if (null !== $user = $app['manipulator.user']->getRepository()->find($admin)) {
+                            $app['acl']->get($user)->update_rights_to_base($bas_id, array('order_master' => true));
+                        }
                     }
                     $conn->commit();
 

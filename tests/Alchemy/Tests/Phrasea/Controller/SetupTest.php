@@ -101,13 +101,13 @@ class SetupTest extends \PhraseanetWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $user = $this->getMockBuilder('User_Adapter')
+        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
             ->disableOriginalConstructor()
             ->getMock();
 
         $user->expects($this->exactly(1))
-            ->method('get_id')
-            ->will($this->returnValue(self::$DI['user']->get_id()));
+            ->method('getId')
+            ->will($this->returnValue(self::$DI['user']->getId()));
 
         $acl = $this->getMockBuilder('ACL')
             ->disableOriginalConstructor()

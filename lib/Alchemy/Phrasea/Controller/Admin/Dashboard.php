@@ -69,7 +69,7 @@ class Dashboard implements ControllerProviderInterface
 
         $parameters = [
             'cache_flushed'                 => $request->query->get('flush_cache') === 'ok',
-            'admins'                        => \User_Adapter::get_sys_admins($app),
+            'admins'                        => $app['manipulator.user']->getRepository()->findAdmins(),
             'email_status'                  => $emailStatus,
         ];
 
@@ -132,9 +132,7 @@ class Dashboard implements ControllerProviderInterface
      */
     public function resetAdminRights(Application $app, Request $request)
     {
-        $app['manipulator.acl']->resetAdminRights(array_map(function ($id) use ($app) {
-            return \User_Adapter::getInstance($id, $app);
-        }, array_keys(\User_Adapter::get_sys_admins($app))));
+        $app['manipulator.acl']->resetAdminRights($app['manipulator.user']->getRepository()->findAdmins());
 
         return $app->redirectPath('admin_dashbord');
     }
@@ -150,15 +148,13 @@ class Dashboard implements ControllerProviderInterface
     {
         if (count($admins = $request->request->get('admins', [])) > 0) {
 
-            if (!in_array($app['authentication']->getUser()->get_id(), $admins)) {
-                $admins[] = $app['authentication']->getUser()->get_id();
+            if (!in_array($app['authentication']->getUser()->getId(), $admins)) {
+                $admins[] = $app['authentication']->getUser()->getId();
             }
 
             if ($admins > 0) {
                 \User_Adapter::set_sys_admins($app, array_filter($admins));
-                $app['manipulator.acl']->resetAdminRights(array_map(function ($id) use ($app) {
-                    return \User_Adapter::getInstance($id, $app);
-                }, array_keys(\User_Adapter::get_sys_admins($app))));
+                $app['manipulator.acl']->resetAdminRights($app['manipulator.user']->getRepository()->findAdmins());
             }
         }
 

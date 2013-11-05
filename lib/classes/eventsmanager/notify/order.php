@@ -18,7 +18,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = ['__NEW_ORDER__'];
+    public $events = array('__NEW_ORDER__');
 
     /**
      *
@@ -38,22 +38,22 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = [
+        $default = array(
             'usr_id'   => ''
-            , 'order_id' => []
-        ];
+            , 'order_id' => array()
+        );
 
         $params = array_merge($default, $params);
         $order_id = $params['order_id'];
 
-        $users = [];
+        $users = array();
 
         try {
             $repository = $this->app['EM']->getRepository('Phraseanet:OrderElement');
 
-            $results = $repository->findBy(['orderId' => $order_id]);
+            $results = $repository->findBy(array('orderId' => $order_id));
 
-            $base_ids = [];
+            $base_ids = array();
             foreach ($results as $result) {
                 $base_ids[] = $result->getBaseId();
             }
@@ -61,7 +61,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
             $query = new User_Query($this->app);
             $users = $query->on_base_ids($base_ids)
-                    ->who_have_right(['order_master'])
+                    ->who_have_right(array('order_master'))
                     ->execute()->get_results();
         } catch (Exception $e) {
 
@@ -92,16 +92,14 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
         $datas = $dom_xml->saveXml();
 
-        try {
-            $orderInitiator = User_Adapter::getInstance($params['usr_id'], $this->app);
-        } catch (\Exception $e) {
+        if (null === $orderInitiator = $this->app['manipulator.user']->getRepository()->find($params['usr_id'])) {
             return;
         }
 
         foreach ($users as $user) {
             $mailed = false;
 
-            if ($this->shouldSendNotificationFor($user->get_id())) {
+            if ($this->shouldSendNotificationFor($user->getId())) {
                 $readyToSend = false;
                 try {
                     $receiver = Receiver::fromUser($user);
@@ -119,7 +117,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
                 }
             }
 
-            $this->broker->notify($user->get_id(), __CLASS__, $datas, $mailed);
+            $this->broker->notify($user->getId(), __CLASS__, $datas, $mailed);
         }
 
         return;
@@ -138,13 +136,11 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
         $order_id = (string) $sx->order_id;
 
-        try {
-            User_Adapter::getInstance($usr_id, $this->app);
-        } catch (Exception $e) {
-            return [];
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
+            return array();
         }
 
-        $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
+        $sender = $user->getDisplayName();
 
         $ret = [
             'text'  => $this->app->trans('%user% a passe une %opening_link% commande %end_link%', [
@@ -152,7 +148,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
                 '%opening_link%' => '<a href="/prod/order/'.$order_id.'/" class="dialog full-dialog" title="'.$this->app->trans('Orders manager').'">',
                 '%end_link%' => '</a>',])
             , 'class' => ''
-        ];
+        );
 
         return $ret;
     }
@@ -182,9 +178,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function is_available($usr_id)
     {
-        try {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
-        } catch (\Exception $e) {
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
             return false;
         }
 

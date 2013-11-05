@@ -20,7 +20,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = ['__ORDER_DELIVER__'];
+    public $events = array('__ORDER_DELIVER__');
 
     /**
      *
@@ -52,12 +52,12 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = [
+        $default = array(
             'from'    => ''
             , 'to'      => ''
             , 'ssel_id' => ''
             , 'n'       => ''
-        ];
+        );
 
         $params = array_merge($default, $params);
 
@@ -92,8 +92,8 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         if ($this->shouldSendNotificationFor($params['to'])) {
             $readyToSend = false;
             try {
-                $user_from = User_Adapter::getInstance($params['from'], $this->app);
-                $user_to = User_Adapter::getInstance($params['to'], $this->app);
+                $user_from = $this->app['manipulator.user']->getRepository()->find($params['from']);
+                $user_to = $this->app['manipulator.user']->getRepository()->find($params['to']);
 
                 $receiver = Receiver::fromUser($user_to);
                 $emitter = Emitter::fromUser($user_from);
@@ -107,15 +107,15 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
             }
 
             if ($readyToSend) {
-                $url = $this->app->url('lightbox_compare', [
-                    'basket' => $basket->getId(),
+                $url = $this->app->url('lightbox_compare', array(
+                    'ssel_id' => $basket->getId(),
                     'LOG' => $this->app['tokens']->getUrlToken(
                         \random::TYPE_VIEW,
-                        $user_to->get_id(),
+                        $user_to->getId(),
                         null,
                         $basket->getId()
                     )
-                ]);
+                ));
 
                 $mail = MailInfoOrderDelivered::create($this->app, $receiver, $emitter, null);
                 $mail->setButtonUrl($url);
@@ -144,25 +144,25 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         $ssel_id = (string) $sx->ssel_id;
         $n = (int) $sx->n;
 
-        try {
-            User_Adapter::getInstance($from, $this->app);
-        } catch (Exception $e) {
-            return [];
+        if (null === $user= $this->app['manipulator.user']->getRepository()->find(($from))) {
+            return array();
         }
 
-        $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
+        $sender = $user->getDisplayName();
 
         try {
-            $basket = $this->app['converter.basket']->convert($ssel_id);
+            $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+
+            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
         } catch (Exception $e) {
-            return [];
+            return array();
         }
         $ret = [
             'text'  => $this->app->trans('%user% vous a delivre %quantity% document(s) pour votre commande %title%', ['%user%' => $sender, '%quantity%' => $n, '%title%' => '<a href="/lightbox/compare/'
                 . (string) $sx->ssel_id . '/" target="_blank">'
                 . $basket->getName() . '</a>'])
             , 'class' => ''
-        ];
+        );
 
         return $ret;
     }

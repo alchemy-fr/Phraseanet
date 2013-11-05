@@ -93,9 +93,7 @@ class patch_390alpha6a implements patchInterface
         $n = 0;
 
         foreach ($rs as $row) {
-            try {
-                $user = \User_Adapter::getInstance($row['usr_id'], $app);
-            } catch (\Exception $e) {
+            if (null === $user = $app['manipulator.user']->getRepository()->find($row['usr_id'])) {
                 continue;
             }
 

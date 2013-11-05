@@ -46,24 +46,24 @@ class MailInfoUserRegisteredTest extends MailTestCase
             $this->getMessage()
         );
 
-        $user = $this->getMockBuilder('User_Adapter')
+        $user = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
             ->disableOriginalConstructor()
             ->getMock();
 
         $user->expects($this->any())
-            ->method('get_firstname')
+            ->method('getFirstName')
             ->will($this->returnValue('JeanFirstName'));
 
         $user->expects($this->any())
-            ->method('get_lastname')
+            ->method('getLastName')
             ->will($this->returnValue('JeanLastName'));
 
         $user->expects($this->any())
-            ->method('get_job')
+            ->method('getJob')
             ->will($this->returnValue('JeanJob'));
 
         $user->expects($this->any())
-            ->method('get_company')
+            ->method('getCompany')
             ->will($this->returnValue('JeanCompany'));
 
         $mail->setRegisteredUser($user);

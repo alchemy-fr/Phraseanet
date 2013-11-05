@@ -46,9 +46,9 @@
                 <label for="feed_add_subtitle">{{ 'publication : sous titre' | trans }}</label>
                 <textarea id="feed_add_subtitle" name="subtitle">{{desc}}</textarea>
                 <label for="feed_add_author_name">{{ 'publication : autheur' | trans }}</label>
-                <input class="required_text" type="text" name="author_name" id="feed_add_author_name" value="{{ app['authentication'].getUser().get_display_name() }}" />
+                <input class="required_text" type="text" name="author_name" id="feed_add_author_name" value="{{ app['authentication'].getUser().getDisplayName() }}" />
                 <label for="feed_add_author_mail">{{ 'publication : email autheur' | trans }}</label>
-                <input class="required_text" type="text" name="author_mail" id="feed_add_author_mail" value="{{ app['authentication'].getUser().get_email() }}" />
+                <input class="required_text" type="text" name="author_mail" id="feed_add_author_mail" value="{{ app['authentication'].getUser().getEmail() }}" />
             </div>
         </div>
         <div class="PNB" style="width:50%;left:auto;">

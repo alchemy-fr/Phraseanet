@@ -29,11 +29,11 @@
               <img src="/skins/icons/user.png"/>
             </td>
             <td style="width:150px;padding:5px;">
-              {{ owner.getUser(app).get_display_name() }}
-              <input type="hidden" name="usr_id" value="{{ owner.getUser(app).get_id() }}" />
+              {{ owner.getUser(app).getDisplayName() }}
+              <input type="hidden" name="usr_id" value="{{ owner.getUser(app).getId() }}" />
             </td>
             <td style="padding-right:10px;min-width:100px;">
-              {% if app['authentication'].getUser().get_id() == owner.getUser(app).get_id() %}
+              {% if app['authentication'].getUser().ggetId()== owner.getUser(app).gegetId()}
                 {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                   {{ 'You are Admin' | trans }}
                 {% endif %}
@@ -53,7 +53,7 @@
               {% endif %}
             </td>
             <td style="width:15px">
-               {% if app['authentication'].getUser().get_id() != owner.getUser(app).get_id() %}
+               {% if app['authentication'].getUser().getgetId() owner.getUser(app).getId() %}
                   <a href="#" class="deleter">
                     <img src="/skins/prod/Push/close_badge.png" title="{{ 'Remove' | trans }}"/>
                   </a>

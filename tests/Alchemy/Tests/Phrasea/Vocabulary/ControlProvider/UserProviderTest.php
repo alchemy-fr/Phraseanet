@@ -43,17 +43,17 @@ class UserProviderTest extends \PhraseanetTestCase
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
 
-        $results = $this->object->find(self::$DI['user']->get_email(), self::$DI['user'], self::$DI['collection']->get_databox());
+        $results = $this->object->find(self::$DI['user']->getEmail(), self::$DI['user'], self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);
 
-        $results = $this->object->find(self::$DI['user']->get_firstname(), self::$DI['user'], self::$DI['collection']->get_databox());
+        $results = $this->object->find(self::$DI['user']->getFirstName(), self::$DI['user'], self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);
 
-        $results = $this->object->find(self::$DI['user']->get_lastname(), self::$DI['user'], self::$DI['collection']->get_databox());
+        $results = $this->object->find(self::$DI['user']->getLastName(), self::$DI['user'], self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);
@@ -63,7 +63,7 @@ class UserProviderTest extends \PhraseanetTestCase
     {
         $this->assertFalse($this->object->validate(-200));
         $this->assertFalse($this->object->validate('A'));
-        $this->assertTrue($this->object->validate(self::$DI['user']->get_id()));
+        $this->assertTrue($this->object->validate(self::$DI['user']->getId()));
     }
 
     public function testGetValue()
@@ -82,6 +82,6 @@ class UserProviderTest extends \PhraseanetTestCase
 
         }
 
-        $this->assertEquals(self::$DI['user']->get_display_name(), $this->object->getValue(self::$DI['user']->get_id()));
+        $this->assertEquals(self::$DI['user']->getDisplayName(), $this->object->getValue(self::$DI['user']->getId()));
     }
 }

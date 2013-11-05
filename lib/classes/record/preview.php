@@ -141,7 +141,7 @@ class record_preview extends record_adapter
             case "BASK":
                 $Basket = $app['converter.basket']->convert($contId);
                 $app['acl.basket']->hasAccess($Basket, $app['authentication']->getUser());
-
+                
                 /* @var $Basket Basket */
                 $this->container = $Basket;
                 $this->total = $Basket->getElements()->count();
@@ -338,7 +338,7 @@ class record_preview extends record_adapter
 
         if (! $report) {
             $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
-            $params[':usr_id'] = $this->app['authentication']->getUser()->get_id();
+            $params[':usr_id'] = $this->app['authentication']->getUser()->getId();
             $params[':site'] = $this->app['conf']->get(['main', 'key']);
         }
 
@@ -353,33 +353,25 @@ class record_preview extends record_adapter
             $hour = $this->app['date-formatter']->getPrettyString(new DateTime($row['date']));
 
             if ( ! isset($tab[$hour]))
-                $tab[$hour] = [];
+                $tab[$hour] = array();
 
             $site = $row['site'];
 
             if ( ! isset($tab[$hour][$site]))
-                $tab[$hour][$site] = [];
+                $tab[$hour][$site] = array();
 
             $action = $row['action'];
 
             if ( ! isset($tab[$hour][$site][$action]))
-                $tab[$hour][$site][$action] = [];
+                $tab[$hour][$site][$action] = array();
 
             if ( ! isset($tab[$hour][$site][$action][$row['usr_id']])) {
-                $user = null;
-
-                try {
-                    $user = \User_Adapter::getInstance($row['usr_id'], $this->app);
-                } catch (Exception $e) {
-
-                }
-
                 $tab[$hour][$site][$action][$row['usr_id']] =
-                    [
-                        'final' => []
-                        , 'comment' => []
-                        , 'user' => $user
-                ];
+                    array(
+                        'final' => array()
+                        , 'comment' => array()
+                        , 'user' => $this->app['manipulator.user']->getRepository()->find($row['usr_id'])
+                );
             }
 
             if ( ! in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final'])) {
@@ -418,7 +410,7 @@ class record_preview extends record_adapter
             return $this->view_popularity;
         }
 
-        $views = $dwnls = [];
+        $views = $dwnls = array();
         $top = 1;
         $day = 30;
         $min = 0;
@@ -516,11 +508,11 @@ class record_preview extends record_adapter
             GROUP BY referrer ORDER BY referrer ASC';
 
         $stmt = $connsbas->prepare($sql);
-        $stmt->execute([':record_id' => $this->get_record_id()]);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $referrers = [];
+        $referrers = array();
 
         foreach ($rs as $row) {
             if ($row['referrer'] == 'NO REFERRER')
@@ -579,7 +571,7 @@ class record_preview extends record_adapter
             return $this->download_popularity;
         }
 
-        $views = $dwnls = [];
+        $views = $dwnls = array();
         $top = 1;
         $day = 30;
 

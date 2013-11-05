@@ -142,7 +142,7 @@ class StoryWZ
 
     public function setUser(\User_Adapter $user)
     {
-        $this->setUsrId($user->get_id());
+        $this->setUsrId($user->getId());
     }
 
     public function getUser(Application $app)

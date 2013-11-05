@@ -24,9 +24,9 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testUpdSessionChangeUser()
     {
-        $this->XMLHTTPRequest('POST', '/session/update/', [
-            'usr' => self::$DI['user_alt1']->get_id()
-        ]);
+        $this->XMLHTTPRequest('POST', '/session/update/', array(
+            'usr' => self::$DI['user_alt1']->getId()
+        ));
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->checkSessionReturn($datas);
@@ -40,10 +40,10 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
 
-        $this->XMLHTTPRequest('POST', '/session/update/', [
-            'usr' => self::$DI['user']->get_id(),
+        $this->XMLHTTPRequest('POST', '/session/update/', array(
+            'usr' => self::$DI['user']->getId(),
             'module' => 1
-        ]);
+        ));
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->checkSessionReturn($datas);
@@ -57,9 +57,9 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
 
-        $this->XMLHTTPRequest('POST', '/session/update/', [
-            'usr' => self::$DI['user']->get_id()
-        ]);
+        $this->XMLHTTPRequest('POST', '/session/update/', array(
+            'usr' => self::$DI['user']->getId()
+        ));
 
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
@@ -93,7 +93,7 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $session->expects($this->once())
             ->method('getUsrId')
-            ->will($this->returnValue(self::$DI['app']['authentication']->getUser()->get_id()));
+            ->will($this->returnValue(self::$DI['app']['authentication']->getUser()->getId()));
 
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -110,11 +110,11 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->returnValue(null));
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], []);
+        self::$DI['client'] = new Client(self::$DI['app'], array());
         $this->XMLHTTPRequest('POST', '/session/delete/1');
         $this->assertTrue(self::$DI['client']->getResponse()->isOK());
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], []);
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         $em = null;
     }
@@ -127,7 +127,7 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $session->expects($this->once())
             ->method('getUsrId')
-            ->will($this->returnValue(self::$DI['app']['authentication']->getUser()->get_id() + 1));
+            ->will($this->returnValue(self::$DI['app']['authentication']->getUser()->getId() + 1));
 
         $em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -138,12 +138,12 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->returnValue($session));
 
         self::$DI['app']['EM'] = $em;
-        self::$DI['client'] = new Client(self::$DI['app'], []);
+        self::$DI['client'] = new Client(self::$DI['app'], array());
         self::$DI['client']->request('POST', '/session/delete/1');
         $this->assertFalse(self::$DI['client']->getResponse()->isOK());
         $this->assertEquals(self::$DI['client']->getResponse()->getStatusCode(), 403);
         self::$DI['app']['EM'] = $originalEm;
-        self::$DI['client'] = new Client(self::$DI['app'], []);
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         $em = null;
     }

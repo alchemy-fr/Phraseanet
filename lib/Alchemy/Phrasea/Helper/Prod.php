@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Helper;
 
+use Alchemy\Phrasea\Model\Entities\User;
+
 class Prod extends Helper
 {
 
@@ -24,7 +26,7 @@ class Prod extends Helper
 
         $bases = $fields = $dates = [];
 
-        if (! $this->app['authentication']->getUser() instanceof \User_Adapter) {
+        if (! $this->app['authentication']->getUser() instanceof User) {
             return $search_datas;
         }
 

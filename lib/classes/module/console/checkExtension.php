@@ -41,9 +41,7 @@ class module_console_checkExtension extends Command
 
         $usrId = $input->getArgument('usr_id');
 
-        try {
-            $TestUser = \User_Adapter::getInstance($usrId, $this->container);
-        } catch (\Exception $e) {
+        if (null === $TestUser = $this->container['manipulator.user']->getRepository()->find($usrId)) {
             $output->writeln("<error>Wrong user !</error>");
 
             return 1;
@@ -52,8 +50,8 @@ class module_console_checkExtension extends Command
         $output->writeln(
             sprintf(
                 "\nWill do the check with user <info>%s</info> (%s)\n"
-                , $TestUser->get_display_name()
-                , $TestUser->get_email()
+                , $TestUser->getDisplayName()
+                , $TestUser->getEmail()
             )
         );
 
@@ -93,7 +91,7 @@ class module_console_checkExtension extends Command
 
         $output->writeln("\n-- phrasea_create_session --");
 
-        $sessid = phrasea_create_session((string) $TestUser->get_id());
+        $sessid = phrasea_create_session((string) $TestUser->getId());
 
         if (ctype_digit((string) $sessid)) {
             $output->writeln("<info>Succes ! </info> got session id $sessid");

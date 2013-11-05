@@ -105,12 +105,12 @@ class ValidationSession
 
     public function isInitiator(\User_Adapter $user)
     {
-        return $this->getInitiatorId() == $user->get_id();
+        return $this->getInitiatorId() == $user->getId();
     }
 
     public function setInitiator(\User_Adapter $user)
     {
-        $this->initiator_id = $user->get_id();
+        $this->initiator_id = $user->getId();
 
         return;
     }
@@ -269,9 +269,9 @@ class ValidationSession
             }
         } else {
             if ($this->getParticipant($user, $app)->getCanSeeOthers()) {
-                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->get_display_name(), '%n%' => count($this->getParticipants()) - 1]);
+                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->getDisplayName(), '%n%' => count($this->getParticipants()) - 1]);
             } else {
-                return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->get_display_name()]);
+                return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->getDisplayName()]);
             }
         }
     }
@@ -284,11 +284,11 @@ class ValidationSession
     public function getParticipant(\User_Adapter $user, Application $app)
     {
         foreach ($this->getParticipants() as $participant) {
-            if ($participant->getUser($app)->get_id() == $user->get_id()) {
+            if ($participant->getUser($app)->getId() == $user->getId()) {
                 return $participant;
             }
         }
 
-        throw new NotFoundHttpException('Participant not found ' . $user->get_email());
+        throw new NotFoundHttpException('Participant not found' . $user->get_email());
     }
 }

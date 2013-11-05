@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Feed\Formatter;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Feed\FeedInterface;
+use Alchemy\Phrasea\Model\Entities\User;
 
 interface FeedFormatterInterface
 {
@@ -21,24 +22,24 @@ interface FeedFormatterInterface
      *
      * @param FeedInterface $feed
      * @param type          $page
-     * @param \User_Adapter $user
+     * @param User $user
      * @param type          $generator
      * @param Application   $app
      *
      * @return string
      */
-    public function format(FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet', Application $app);
+    public function format(FeedInterface $feed, $page, User $user = null, $generator = 'Phraseanet', Application $app);
 
     /**
      * Returns an HTTP Response containing a string representation of the feed.
      *
      * @param FeedInterface $feed
      * @param type          $page
-     * @param \User_Adapter $user
+     * @param User $user
      * @param type          $generator
      * @param Application   $app
      *
      * @return string
      */
-    public function createResponse(Application $app, FeedInterface $feed, $page, \User_Adapter $user = null, $generator = 'Phraseanet');
+    public function createResponse(Application $app, FeedInterface $feed, $page, User $user = null, $generator = 'Phraseanet');
 }

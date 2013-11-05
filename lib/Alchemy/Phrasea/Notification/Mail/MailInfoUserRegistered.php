@@ -12,18 +12,19 @@
 namespace Alchemy\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class MailInfoUserRegistered extends AbstractMail
 {
-    /** @var \User_Adapter */
+    /** @var User */
     private $registeredUser;
 
     /**
      * Sets the user that just registered
      *
-     * @param \User_Adapter $registeredUser
+     * @param User $registeredUser
      */
-    public function setRegisteredUser(\User_Adapter $registeredUser)
+    public function setRegisteredUser(User $registeredUser)
     {
         $this->registeredUser = $registeredUser;
     }
@@ -46,8 +47,8 @@ class MailInfoUserRegistered extends AbstractMail
         }
 
         return $this->app->trans('admin::register: un utilisateur a fait une demande d\'inscription')
-        . "\n\n" .  sprintf('%s %s',$this->registeredUser->get_firstname(),  $this->registeredUser->get_lastname())
-        . "\n\n" .  sprintf('%s %s',$this->registeredUser->get_job(),  $this->registeredUser->get_company());
+        . "\n\n" .  sprintf('%s %s',$this->registeredUser->getFirstName(),  $this->registeredUser->getLastName())
+        . "\n\n" .  sprintf('%s %s',$this->registeredUser->getJob(),  $this->registeredUser->getCompany());
     }
 
     /**

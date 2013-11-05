@@ -101,7 +101,7 @@ class Installer
 
     private function createUser($email, $password)
     {
-        $user = \User_Adapter::create($this->app, $email, $password, $email, true);
+        $user = $this->app['manipulator.user']->createUser($email, $password, $email, true);
         $this->app['authentication']->openAccount($user);
 
         return $user;

@@ -94,7 +94,7 @@ class Order implements ControllerProviderInterface
 
         if (!$records->isEmpty()) {
             $order = new OrderEntity();
-            $order->setUsrId($app['authentication']->getUser()->get_id());
+            $order->setUsrId($app['authentication']->getUser()->getId());
             $order->setDeadline((null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine);
             $order->setOrderUsage($request->request->get('use', ''));
             foreach ($records as $key => $record) {
@@ -242,7 +242,7 @@ class Order implements ControllerProviderInterface
             throw new NotFoundHttpException('Order not found');
         }
 
-        $dest_user = \User_Adapter::getInstance($order->getUsrId(), $app);
+        $dest_user = $app['manipulator.user']->getRepository()->find($order->getUsrId());
 
         $basket = $order->getBasket();
 
@@ -267,7 +267,7 @@ class Order implements ControllerProviderInterface
                 $basketElement->setRecord($record);
                 $basketElement->setBasket($basket);
 
-                $orderElement->setOrderMasterId($app['authentication']->getUser()->get_id());
+                $orderElement->setOrderMasterId($app['authentication']->getUser()->getId());
                 $orderElement->setDeny(false);
                 $orderElement->getOrder()->setBasket($basket);
 
@@ -284,8 +284,8 @@ class Order implements ControllerProviderInterface
 
                 $app['events-manager']->trigger('__ORDER_DELIVER__', [
                     'ssel_id' => $order->getBasket()->getId(),
-                    'from'    => $app['authentication']->getUser()->get_id(),
-                    'to'      => $dest_user->get_id(),
+                    'from'    => $app['authentication']->getUser()->getId(),
+                    'to'      => $dest_user->getId(),
                     'n'       => $n
                 ]);
             }
@@ -333,7 +333,7 @@ class Order implements ControllerProviderInterface
         $elements = $request->request->get('elements', []);
         foreach ($order->getElements() as $orderElement) {
             if (in_array($orderElement->getId(),$elements)) {
-                $orderElement->setOrderMasterId($app['authentication']->getUser()->get_id());
+                $orderElement->setOrderMasterId($app['authentication']->getUser()->getId());
                 $orderElement->setDeny(true);
 
                 $app['EM']->persist($orderElement);
@@ -346,7 +346,7 @@ class Order implements ControllerProviderInterface
                 $order->setTodo($order->getTodo() - $n);
 
                 $app['events-manager']->trigger('__ORDER_NOT_DELIVERED__', [
-                    'from' => $app['authentication']->getUser()->get_id(),
+                    'from' => $app['authentication']->getUser()->getId(),
                     'to'   => $order->getUsrId(),
                     'n'    => $n
                 ]);

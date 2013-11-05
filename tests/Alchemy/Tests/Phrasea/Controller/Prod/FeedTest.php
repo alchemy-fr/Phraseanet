@@ -354,7 +354,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
         foreach ($feeds as $one_feed) {
             $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->getId() . "/']");
-            $msg = sprintf("user %s has access to feed %s", self::$DI['user']->get_id(), $one_feed->getId());
+            $msg = sprintf("user %s has access to feed %s", self::$DI['user']->getId(), $one_feed->getId());
 
             if ($one_feed->hasAccess(self::$DI['user'], self::$DI['app'])) {
                 $this->assertEquals(1, $crawler->filterXPath($path)->count(), $msg);
@@ -377,7 +377,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->returnValue('http://aggregated-link/'));
         self::$DI['app']['feed.aggregate-link-generator']->expects($this->once())
             ->method('generate')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Feed\Aggregate'), $this->isInstanceOf('\User_Adapter'), 'rss', null, false)
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Feed\Aggregate'), $this->isInstanceOf('Alchemy\Phrasea\Model\Entities\User'), 'rss', null, false)
             ->will($this->returnValue($link));
 
         self::$DI['client']->request('GET', '/prod/feeds/subscribe/aggregated/');
@@ -411,7 +411,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->returnValue('http://user-link/'));
         self::$DI['app']['feed.user-link-generator']->expects($this->once())
             ->method('generate')
-            ->with($this->isInstanceOf('\Alchemy\Phrasea\Model\Entities\Feed'), $this->isInstanceOf('\User_Adapter'), 'rss', null, false)
+            ->with($this->isInstanceOf('\Alchemy\Phrasea\Model\Entities\Feed'), $this->isInstanceOf('Alchemy\Phrasea\Model\Entities\User'), 'rss', null, false)
             ->will($this->returnValue($link));
 
         self::$DI['client']->request('GET', '/prod/feeds/subscribe/' . $feed->getId() . '/');

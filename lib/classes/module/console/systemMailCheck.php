@@ -81,9 +81,9 @@ class module_console_systemMailCheck extends Command
                 $id = $dialog->ask($output, '<question>Which id ?</question>', '');
 
                 try {
-                    $tmp_user = User_Adapter::getInstance($id, $this->container);
+                    $tmp_user = $this->container['manipulator.user']->getRepository()->find($id);
 
-                    if ($tmp_user->get_email() != $email) {
+                    if ($tmp_user->getEmail() != $email) {
                         throw new Exception('Invalid user');
                     }
 

@@ -8,9 +8,9 @@
         <hr/>
         {% for validationDatas in basket_element.getValidationDatas() %}
             {% if validationDatas.getNote() != '' %}
-                <div class="note_wrapper ui-corner-all {% if validationDatas.getParticipant().getUser(app).get_id() == app['authentication'].getUser().get_id() %}my_note{% endif %} ">
+                <div class="note_wrapper ui-corner-all {% if validationDatas.getParticipant().getUser(app).getId() == app['authentication'].getUser().getId() %}my_note{% endif %} ">
                     <span class="note_author title15">
-                      {{validationDatas.getParticipant().getUser(app).get_display_name()}}
+                      {{validationDatas.getParticipant().getUser(app).getDisplayName()}}
                     </span> : {{ validationDatas.getNote()|nl2br }}
                 </div>
           {% endif %}

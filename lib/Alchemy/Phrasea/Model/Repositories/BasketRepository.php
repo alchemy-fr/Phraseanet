@@ -11,8 +11,12 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BasketRepository extends EntityRepository
 {
@@ -24,10 +28,10 @@ class BasketRepository extends EntityRepository
     /**
      * Returns all basket for a given user that are not marked as archived
      *
-     * @param  \User_Adapter                                $user
+     * @param  User                               $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function findActiveByUser(\User_Adapter $user, $sort = null)
+    public function findActiveByUser(User $user, $sort = null)
     {
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
@@ -42,7 +46,7 @@ class BasketRepository extends EntityRepository
         }
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters(['usr_id' => $user->get_id()]);
+        $query->setParameters(array('usr_id' => $user->getId()));
 
         return $query->getResult();
     }
@@ -50,10 +54,10 @@ class BasketRepository extends EntityRepository
     /**
      * Returns all unread basket for a given user that are not marked as archived
      *
-     * @param  \User_Adapter                                $user
+     * @param  User                               $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function findUnreadActiveByUser(\User_Adapter $user)
+    public function findUnreadActiveByUser(User $user)
     {
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
@@ -69,11 +73,11 @@ class BasketRepository extends EntityRepository
               )
             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())';
 
-        $params = [
-            'usr_id_owner'       => $user->get_id(),
-            'usr_id_ownertwo'    => $user->get_id(),
-            'usr_id_participant' => $user->get_id()
-        ];
+        $params = array(
+            'usr_id_owner'       => $user->getId(),
+            'usr_id_ownertwo'    => $user->getId(),
+            'usr_id_participant' => $user->getId()
+        );
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -85,10 +89,10 @@ class BasketRepository extends EntityRepository
      * Returns all baskets that are in validation session not expired  and
      * where a specified user is participant (not owner)
      *
-     * @param  \User_Adapter                                $user
+     * @param  User                               $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function findActiveValidationByUser(\User_Adapter $user, $sort = null)
+    public function findActiveValidationByUser(User $user, $sort = null)
     {
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
@@ -106,12 +110,57 @@ class BasketRepository extends EntityRepository
         }
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters([1 => $user->get_id(), 2 => $user->get_id()]);
+        $query->setParameters(array(1 => $user->getId(), 2 => $user->getId()));
 
         return $query->getResult();
     }
 
-    public function findContainingRecordForUser(\record_adapter $record, \User_Adapter $user)
+    /**
+     * Find a basket specified by his basket_id and his owner
+     *
+     * @throws NotFoundHttpException
+     * @throws AccessDeniedHttpException
+     * @param  type                      $basket_id
+     * @param  User            $user
+     * @return Basket
+     */
+    public function findUserBasket(Application $app, $basket_id, User $user, $requireOwner)
+    {
+        $dql = 'SELECT b
+            FROM Alchemy\Phrasea\Model\Entities\Basket b
+            LEFT JOIN b.elements e
+            WHERE b.id = :basket_id';
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters(array('basket_id' => $basket_id));
+
+        $basket = $query->getOneOrNullResult();
+
+        /* @var $basket Basket */
+        if (null === $basket) {
+            throw new NotFoundHttpException(_('Basket is not found'));
+        }
+
+        if ($basket->getOwner($app)->getId() != $user->getId()) {
+            $participant = false;
+
+            if ($basket->getValidation() && !$requireOwner) {
+                try {
+                    $basket->getValidation()->getParticipant($user, $app);
+                    $participant = true;
+                } catch (\Exception $e) {
+
+                }
+            }
+            if (!$participant) {
+                throw new AccessDeniedHttpException(_('You have not access to this basket'));
+            }
+        }
+
+        return $basket;
+    }
+
+    public function findContainingRecordForUser(\record_adapter $record, User $user)
     {
 
         $dql = 'SELECT b
@@ -120,10 +169,10 @@ class BasketRepository extends EntityRepository
             WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id
               AND b.usr_id = :usr_id';
 
-        $params = [
+        $params = array(
             'record_id' => $record->get_record_id(),
-            'usr_id'    => $user->get_id()
-        ];
+            'usr_id'    => $user->getId()
+        );
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -131,9 +180,9 @@ class BasketRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function findWorkzoneBasket(\User_Adapter $user, $query, $year, $type, $offset, $perPage)
+    public function findWorkzoneBasket(User $user, $query, $year, $type, $offset, $perPage)
     {
-        $params = [];
+        $params = array();
 
         switch ($type) {
             case self::RECEIVED:
@@ -141,9 +190,9 @@ class BasketRepository extends EntityRepository
                 FROM Phraseanet:Basket b
                 JOIN b.elements e
                 WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL';
-                $params = [
-                    'usr_id' => $user->get_id()
-                ];
+                $params = array(
+                    'usr_id' => $user->getId()
+                );
                 break;
             case self::VALIDATION_DONE:
                 $dql = 'SELECT b
@@ -152,10 +201,10 @@ class BasketRepository extends EntityRepository
                 JOIN b.validation s
                 JOIN s.participants p
                 WHERE b.usr_id != ?1 AND p.usr_id = ?2';
-                $params = [
-                    1       => $user->get_id()
-                    , 2       => $user->get_id()
-                ];
+                $params = array(
+                    1       => $user->getId()
+                    , 2       => $user->getId()
+                );
                 break;
             case self::VALIDATION_SENT:
                 $dql = 'SELECT b
@@ -163,9 +212,9 @@ class BasketRepository extends EntityRepository
                 JOIN b.elements e
                 JOIN b.validation v
                 WHERE b.usr_id = :usr_id';
-                $params = [
-                    'usr_id' => $user->get_id()
-                ];
+                $params = array(
+                    'usr_id' => $user->getId()
+                );
                 break;
             default:
                 $dql = 'SELECT b
@@ -174,10 +223,10 @@ class BasketRepository extends EntityRepository
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
                 WHERE (b.usr_id = :usr_id OR p.usr_id = :validating_usr_id)';
-                $params = [
-                    'usr_id'            => $user->get_id(),
-                    'validating_usr_id' => $user->get_id()
-                ];
+                $params = array(
+                    'usr_id'            => $user->getId(),
+                    'validating_usr_id' => $user->getId()
+                );
                 break;
             case self::MYBASKETS:
                 $dql = 'SELECT b
@@ -186,9 +235,9 @@ class BasketRepository extends EntityRepository
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
                 WHERE (b.usr_id = :usr_id)';
-                $params = [
-                    'usr_id' => $user->get_id()
-                ];
+                $params = array(
+                    'usr_id' => $user->getId()
+                );
                 break;
         }
 
@@ -221,11 +270,11 @@ class BasketRepository extends EntityRepository
     /**
      * Return all actives validation where current user is involved and user basket
      *
-     * @param  \User_Adapter $user
+     * @param  User         $user
      * @param  type          $sort
      * @return Array
      */
-    public function findActiveValidationAndBasketByUser(\User_Adapter $user, $sort = null)
+    public function findActiveValidationAndBasketByUser(User $user, $sort = null)
     {
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
@@ -244,7 +293,7 @@ class BasketRepository extends EntityRepository
         }
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters(['usr_id' => $user->get_id()]);
+        $query->setParameters(array('usr_id' => $user->getId()));
 
         return $query->getResult();
     }

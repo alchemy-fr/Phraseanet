@@ -179,7 +179,7 @@ class Basket
 
     public function setOwner(\User_Adapter $user)
     {
-        $this->setUsrId($user->get_id());
+        $this->setUsrId($user->getId());
     }
 
     public function getOwner(Application $app)
@@ -237,7 +237,7 @@ class Basket
 
     public function setPusher(\User_Adapter $user)
     {
-        $this->setPusherId($user->get_id());
+        $this->setPusherId($user->getId());
     }
 
     public function getPusher(Application $app)

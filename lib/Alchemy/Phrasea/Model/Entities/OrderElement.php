@@ -98,7 +98,7 @@ class OrderElement
         if (isset($this->orderMasterId) && null !== $this->orderMasterId) {
             $user = \User_Adapter::getInstance($this->orderMasterId, $app);
 
-            return $user->get_firstname();
+            return $user->getFirstName();
         }
 
         return null;

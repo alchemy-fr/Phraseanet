@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListEntry;
 use Doctrine\ORM\EntityRepository;
@@ -29,17 +30,17 @@ class UsrListEntryRepository extends EntityRepository
     /**
      * Get all lists entries matching a given User
      *
-     * @param \User_Adapter $user
+     * @param User $user
      * @param type          $like
      */
-    public function findUserList(\User_Adapter $user)
+    public function findUserList(User $user)
     {
         $dql = 'SELECT e FROM Phraseanet:UsrListEntry e
             WHERE e.usr_id = :usr_id';
 
-        $params = [
-            'usr_id' => $user->get_id(),
-        ];
+        $params = array(
+            'usr_id' => $user->getId(),
+        );
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -69,10 +70,10 @@ class UsrListEntryRepository extends EntityRepository
               JOIN e.list l
             WHERE e.usr_id = :usr_id AND l.id = :list_id';
 
-        $params = [
+        $params = array(
             'usr_id'  => $usr_id,
             'list_id' => $list->getId(),
-        ];
+        );
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);

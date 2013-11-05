@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Vocabulary\ControlProvider;
 
+use Alchemy\Phrasea\Model\Entities\User;
+
 interface ControlProviderInterface
 {
 
@@ -48,10 +50,10 @@ interface ControlProviderInterface
      * Find matching Term in the vocabulary repository
      *
      * @param string        $query      A scalar quaery
-     * @param \User_Adapter $for_user   The user doing the query
+     * @param User $for_user   The user doing the query
      * @param \databox      $on_databox The databox where vocabulary should be requested
      *
      * @return Doctrine\Common\Collections\ArrayCollection
      */
-    public function find($query, \User_Adapter $for_user, \databox $on_databox);
+    public function find($query, User $for_user, \databox $on_databox);
 }

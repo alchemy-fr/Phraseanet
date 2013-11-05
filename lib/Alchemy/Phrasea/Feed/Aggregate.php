@@ -12,7 +12,9 @@
 namespace Alchemy\Phrasea\Feed;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
@@ -55,7 +57,7 @@ class Aggregate implements FeedInterface
         $this->updatedOn = new \DateTime();
         $this->em = $em;
 
-        $tmp_feeds = [];
+        $tmp_feeds = array();
 
         foreach ($feeds as $feed) {
             $tmp_feeds[$feed->getId()] = $feed;
@@ -71,14 +73,14 @@ class Aggregate implements FeedInterface
      * Creates an aggregate from all the feeds available to a given user.
      *
      * @param EntityManager $em
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return Aggregate
      */
-    public static function createFromUser(Application $app, \User_Adapter $user)
+    public static function createFromUser(Application $app, User $user)
     {
-        $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($user));
-        $token = $app['EM']->getRepository('Phraseanet:AggregateToken')->findOneBy(['usrId' => $user->get_id()]);
+        $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($user));
+        $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(array('usrId' => $user->getId()));
 
         return new static($app['EM'], $feeds, $token);
     }
@@ -115,7 +117,7 @@ class Aggregate implements FeedInterface
             return new ArrayCollection();
         }
 
-        $feedIds = [];
+        $feedIds = array();
         foreach ($this->feeds as $feed) {
             $feedIds[] = $feed->getId();
         }
@@ -201,7 +203,7 @@ class Aggregate implements FeedInterface
     public function getCountTotalEntries()
     {
         if (count($this->feeds) > 0) {
-            $feedIds = [];
+            $feedIds = array();
             foreach ($this->feeds as $feed) {
                 $feedIds[] = $feed->getId();
             }
@@ -238,6 +240,6 @@ class Aggregate implements FeedInterface
      */
     public static function getPublic(Application $app)
     {
-        return new static($app['EM'], $app['EM']->getRepository('Phraseanet:Feed')->findBy(['public' => true], ['updatedOn' => 'DESC']));
+        return new static($app['EM'], $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findBy(array('public' => true), array('updatedOn' => 'DESC')));
     }
 }

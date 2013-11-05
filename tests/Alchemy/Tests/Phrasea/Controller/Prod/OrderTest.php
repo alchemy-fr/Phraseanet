@@ -238,7 +238,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 
         $order = new Order();
         $order->setOrderUsage($usage);
-        $order->setUsrId(self::$DI['user_alt2']->get_id());
+        $order->setUsrId(self::$DI['user_alt2']->getId());
         $order->setDeadline(new \DateTime('+10 minutes'));
 
         $orderElement = new OrderElement();

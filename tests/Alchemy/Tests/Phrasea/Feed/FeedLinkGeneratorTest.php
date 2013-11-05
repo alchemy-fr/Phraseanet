@@ -59,17 +59,17 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
                 }
 
                 $this->assertCount(0, self::$DI['app']['EM']
-                    ->getRepository('Phraseanet:FeedToken')
-                    ->findBy(['value' => $tokenValue]));
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
+                    ->findBy(array('value' => $tokenValue)));
                 $this->assertCount(1, self::$DI['app']['EM']
-                    ->getRepository('Phraseanet:FeedToken')
-                    ->findBy(['value' => $capture['token']]));
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
+                    ->findBy(array('value' => $capture['token'])));
             } else {
-                $expectedParams = [
+                $expectedParams = array(
                     'token'  => $tokenValue,
                     'id'     => $feed->getId(),
                     'format' => $format,
-                ];
+                );
 
                 if ($page !== null) {
                     $expectedParams['page'] = $page;
@@ -78,8 +78,8 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
                 $this->assertEquals($expectedParams, $capture);
 
                 $this->assertCount(1, self::$DI['app']['EM']
-                    ->getRepository('Phraseanet:FeedToken')
-                    ->findBy(['value' => $tokenValue]));
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
+                    ->findBy(array('value' => $tokenValue)));
             }
         } else {
             if (null !== $page) {
@@ -90,8 +90,8 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
             $this->assertEquals(12, strlen($capture['token']));
 
             $this->assertCount(1, self::$DI['app']['EM']
-                ->getRepository('Phraseanet:FeedToken')
-                ->findBy(['value' => $capture['token']]));
+                ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
+                ->findBy(array('value' => $capture['token'])));
         }
     }
 

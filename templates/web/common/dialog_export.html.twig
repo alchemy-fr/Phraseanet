@@ -171,7 +171,7 @@
                         <div>
                             {{ 'export::mail: destinataire' | trans }}
                             <input type="text" value="" name="destmail" class="required span4">
-                            {% set my_email = app['authentication'].getUser().get_email() %}
+                            {% set my_email = app['authentication'].getUser().getEmail() %}
                             {% if my_email != '' %}
                                 <label class="checkbox">
                                     <input type="checkbox" name="reading_confirm" value="1" />
@@ -302,9 +302,9 @@
                         <label class="control-label" for="sexe">{{ 'Civility' | trans }}</label>
                         <div class="controls">
                             <select name="sexe" id="sexe">
-                                <option {% if app['authentication'].getUser().get_gender == 0 %}selected="selected"{% endif %} value="0">{{ 'admin::compte-utilisateur:sexe: mademoiselle' | trans }}</option>
-                                <option {% if app['authentication'].getUser().get_gender == 1 %}selected="selected"{% endif %} value="1">{{ 'admin::compte-utilisateur:sexe: madame' | trans }}</option>
-                                <option {% if app['authentication'].getUser().get_gender == 2 %}selected="selected"{% endif %} value="2">{{ 'admin::compte-utilisateur:sexe: monsieur' | trans }}</option>
+                                <option {% if app['authentication'].getUser().getGender == 0 %}selected="selected"{% endif %} value="0">{{ 'admin::compte-utilisateur:sexe: mademoiselle' | trans }}</option>
+                                <option {% if app['authentication'].getUser().getGender == 1 %}selected="selected"{% endif %} value="1">{{ 'admin::compte-utilisateur:sexe: madame' | trans }}</option>
+                                <option {% if app['authentication'].getUser().getGender == 2 %}selected="selected"{% endif %} value="2">{{ 'admin::compte-utilisateur:sexe: monsieur' | trans }}</option>
                             </select>
                         </div>
                     </div>
@@ -312,70 +312,70 @@
                     <div class="control-group">
                         <label class="control-label" for="usr_lastname">{{ 'admin::compte-utilisateur nom' | trans }}</label>
                         <div class="controls">
-                            <input id='usr_lastname' type="text" name="usr_nom" class="required" value="{{ app['authentication'].getUser().get_lastname() }}"/>
+                            <input id='usr_lastname' type="text" name="usr_nom" class="required" value="{{ app['authentication'].getUser().getLastName() }}"/>
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label class="control-label" for="usr_firstname">{{ 'admin::compte-utilisateur prenom' | trans }}</label>
                         <div class="controls">
-                            <input type="text" name="usr_prenom" class="required" id="usr_firstname" value="{{ app['authentication'].getUser().get_firstname() }}"/>
+                            <input type="text" name="usr_prenom" class="required" id="usr_firstname" value="{{ app['authentication'].getUser().getFirstName() }}"/>
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label class="control-label" for="usr_mail"> {{ 'admin::compte-utilisateur email' | trans }}</label>
                         <div class="controls">
-                            <input class="required" type="text" name="usr_mail" id="usr_mail" value="{{ app['authentication'].getUser().get_email() }}"/>
+                            <input class="required" type="text" name="usr_mail" id="usr_mail" value="{{ app['authentication'].getUser().ggetEmail) }}"/>
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label class="control-label" for="usr_tel">{{ 'admin::compte-utilisateur telephone' | trans }}</label>
                         <div class="controls">
-                            <input type="text" name="tel" id="usr_tel" value="{{ app['authentication'].getUser().get_tel() }}"/>
+                            <input type="text" name="tel" id="usr_tel" value="{{ app['authentication'].getUser().getPhone() }}"/>
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label class="control-label" for="usr_societe">{{ 'admin::compte-utilisateur societe' | trans }}</label>
                         <div class="controls">
-                            <input type="text" name="societe" id="usr_societe" value="{{ app['authentication'].getUser().get_company() }}"/>
+                            <input type="text" name="societe" id="usr_societe" value="{{ app['authentication'].getUser().getCompany() }}"/>
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label class="control-label" for="usr_function">{{ 'admin::compte-utilisateur poste' | trans }}</label>
                         <div class="controls">
-                            <input type="text" name="fonction" id="usr_fonction" value="{{ app['authentication'].getUser().get_job() }}"/>
+                            <input type="text" name="fonction" id="usr_fonction" value="{{ app['authentication'].getUser().getJob() }}"/>
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label class="control-label" for="usr_address">{{ 'admin::compte-utilisateur adresse' | trans }}</label>
                         <div class="controls">
-                            <input class="required" type="text" name="adresse" id="usr_adresse" value="{{ app['authentication'].getUser().get_address() }}"/>
+                            <input class="required" type="text" name="adresse" id="usr_adresse" value="{{ app['authentication'].getUser().getAddress() }}"/>
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label class="control-label" for="usr_zip_code">{{ 'admin::compte-utilisateur code postal' | trans }}</label>
                         <div class="controls">
-                            <input id="usr_zip_code" type="text" name="cpostal" name="cpostal" class="required" value="{{ app['authentication'].getUser().get_zipcode() }}"/>
+                            <input id="usr_zip_code" type="text" name="cpostal" name="cpostal" class="required" value="{{ app['authentication'].getUser().getZipCode() }}"/>
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label class="control-label" for="command_geoname_field">{{ 'admin::compte-utilisateur ville' | trans }}</label>
                         <div class="controls">
-                            <input class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" value="{{ app['authentication'].getUser().get_geonameid() }}" />
+                            <input class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" value="{{ app['authentication'].getUser().getGeonameId() }}" />
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label class="control-label" for="usr_fax">{{ 'admin::compte-utilisateur fax' | trans }}</label>
                         <div class="controls">
-                            <input type="text" id="usr_fax" name="fax" value="{{ app['authentication'].getUser().get_fax() }}"/>
+                            <input type="text" id="usr_fax" name="fax" value="{{ app['authentication'].getUser().getFax() }}"/>
                         </div>
                     </div>
 
@@ -652,7 +652,7 @@
                         $('input[name="obj[]"]:checked', $('#download')).each(function(i,n){
                         $('input[name="obj[]"][value="'+$(n).val()+'"]', $('#sendmail')).attr('checked', true);
                         });
-                        $('input[name="destmail"]', $('#sendmail')).val("{{app['authentication'].getUser().get_email()}}");
+                        $('input[name="destmail"]', $('#sendmail')).val("{{app['authentication'].getUser().getEmail()}}");
 
                         var tabs = $('.tabs', dialog.getDomElement());
                         tabs.tabs("option", "active", 1);

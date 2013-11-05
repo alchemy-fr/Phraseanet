@@ -89,7 +89,7 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayUserBadge(Application $app, $usr_id)
     {
-        $user = \User_Adapter::getInstance($usr_id, $app);
+        $user = $app['manipulator.user']->getRepository()->find($usr_id);
 
         return $app['twig']->render(
                 'prod/Tooltip/User.html.twig'

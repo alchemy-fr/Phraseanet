@@ -119,7 +119,7 @@ class Root implements ControllerProviderInterface
                 'GV_google_api'        => $app['conf']->get(['registry', 'webservices', 'google-charts-enabled']),
                 'queries_topics'       => $queries_topics,
                 'search_status'        => \databox_status::getSearchStatus($app),
-                'queries_history'      => \queries::history($app, $app['authentication']->getUser()->get_id()),
+                'queries_history'      => \queries::history($app, $app['authentication']->getUser()->getId()),
                 'thesau_js_list'       => $thjslist,
                 'thesau_json_sbas'     => json_encode($sbas),
                 'thesau_json_bas2sbas' => json_encode($bas2sbas),

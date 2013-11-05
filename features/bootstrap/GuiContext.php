@@ -14,6 +14,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use Alchemy\Phrasea\Application;
 use Behat\Behat\Exception\PendingException;
 use Behat\MinkExtension\Context\MinkContext;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class GuiContext extends MinkContext
 {
@@ -65,9 +66,7 @@ class GuiContext extends MinkContext
      */
     public function aUserDoesNotExist($login)
     {
-        if (false !== $userId = \User_Adapter::get_usr_id_from_login($this->app, $login)) {
-            $user = \User_Adapter::getInstance($userId, $this->app);
-
+        if (null !== $user = $this->app['manipulator.user']->getRepository()->findByLogin($login)) {
             $user->ACL()->revoke_access_from_bases(array_keys(
                 $this->app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin'))
             ));
@@ -81,14 +80,8 @@ class GuiContext extends MinkContext
      */
     public function aUserExistsWithAsPassword($login, $password)
     {
-        if (false === \User_Adapter::get_usr_id_from_login($this->app, $login)) {
-            \User_Adapter::create(
-                $this->app,
-                $login,
-                $password,
-                $login,
-                false
-            );
+        if (null === $user = $this->app['manipulator.user']->getRepository()->findByLogin($login)) {
+            $this->app['manipulator.user']->create($login, $password, null, false);
         }
     }
 
@@ -168,17 +161,8 @@ class GuiContext extends MinkContext
      */
     public function userGuestAccessIsEnable()
     {
-        if (false === $usrId = \User_Adapter::get_usr_id_from_login($this->app, 'invite')) {
-            $user = \User_Adapter::create(
-                $this->app,
-                'invite',
-                '',
-                null,
-                false,
-                true
-            );
-        } else {
-            $user = \User_Adapter::getInstance($usrId, $this->app);
+        if (null === $user = $this->app['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
+            $user = $this->app['manipulator.user']->create(User::USER_GUEST, '');
         }
 
         $user->ACL()->give_access_to_sbas(array_keys($this->app['phraseanet.appbox']->get_databoxes()));
@@ -195,9 +179,7 @@ class GuiContext extends MinkContext
      */
     public function userGuestAccessIsDisable()
     {
-        if (false !== $usrId = \User_Adapter::get_usr_id_from_login($this->app, 'invite')) {
-            $user = \User_Adapter::getInstance($usrId, $this->app);
-
+        if (null !== $user = $this->app['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
             foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
                 foreach ($databox->get_collections() as $collection) {
                     $user->ACL()->revoke_access_from_bases(array($collection->get_base_id()));
@@ -227,11 +209,9 @@ class GuiContext extends MinkContext
      */
     public function isAuthenticated($login)
     {
-        if (false == $usrId = \User_Adapter::get_usr_id_from_login($this->app, $login)) {
+        if (null === $user = $this->app['manipulator.user']->getRepository()->findByLogin($login)) {
             throw new \Exception(sprintf('User %s does not exists, use the following definition to create it : a user "%s" exists', $login, $login));
         }
-
-        $user = \User_Adapter::getInstance($usrId, $this->app);
 
         $this->app['authentication']->openAccount($user);
 

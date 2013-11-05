@@ -18,7 +18,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      *
      * @var string
      */
-    public $events = ['__REGISTER_APPROVAL__'];
+    public $events = array('__REGISTER_APPROVAL__');
 
     /**
      *
@@ -38,10 +38,10 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      */
     public function fire($event, $params, &$object)
     {
-        $default = [
+        $default = array(
             'usr_id' => ''
-            , 'demand' => []
-        ];
+            , 'demand' => array()
+        );
 
         $params = array_merge($default, $params);
         $base_ids = $params['demand'];
@@ -50,7 +50,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             return;
         }
 
-        $mailColl = [];
+        $mailColl = array();
 
         try {
             $sql = 'SELECT u.usr_id, b.base_id
@@ -70,7 +70,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
             foreach ($rs as $row) {
                 if ( ! isset($mailColl[$row['usr_id']]))
-                    $mailColl[$row['usr_id']] = [];
+                    $mailColl[$row['usr_id']] = array();
 
                 $mailColl[$row['usr_id']][] = $row['base_id'];
             }
@@ -103,10 +103,8 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         $datas = $dom_xml->saveXml();
 
-        try {
-            $registeredUser = \User_Adapter::getInstance($params['usr_id'], $this->app);
-        } catch (\Exception $e) {
-            return;
+        if (null === $registeredUser = $this->app['manipulator.user']->getRepository()->find($params['usr_id'])) {
+          return;
         }
 
         foreach ($mailColl as $usr_id => $base_ids) {
@@ -115,7 +113,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             if ($this->shouldSendNotificationFor($usr_id)) {
                 $readyToSend = false;
                 try {
-                    $admin_user = User_Adapter::getInstance($usr_id, $this->app);
+                    $admin_user = $this->app['manipulator.user']->getRepository()->find($usr_id);
                     $receiver = Receiver::fromUser($admin_user);
                     $readyToSend = true;
                 } catch (\Exception $e) {
@@ -150,18 +148,16 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         $usr_id = (string) $sx->usr_id;
 
-        try {
-            User_Adapter::getInstance($usr_id, $this->app);
-        } catch (Exception $e) {
-            return [];
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
+            return array();
         }
 
-        $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
+        $sender = $user->getDisplayName();
 
         $ret = [
             'text'  => $this->app->trans('%user% demande votre approbation sur une ou plusieurs %before_link% collections %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="' . $this->app->url('admin', ['section' => 'registrations']) . '" target="_blank">', '%after_link%' => '</a>'])
             , 'class' => ''
-        ];
+        );
 
         return $ret;
     }
@@ -195,9 +191,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             return false;
         }
 
-        try {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
-        } catch (\Exception $e) {
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($usr_id)) {
             return false;
         }
 

@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Helper\Helper;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class Manage extends Helper
 {
@@ -44,7 +45,7 @@ class Manage extends Helper
         $offset_start = (int) $request->get('offset_start');
         $offset_start = $offset_start < 0 ? 0 : $offset_start;
 
-        $this->query_parms = [
+        $this->query_parms = array(
             'inactives'    => $request->get('inactives')
             , 'like_field'   => $request->get('like_field')
             , 'like_value'   => $request->get('like_value')
@@ -54,7 +55,7 @@ class Manage extends Helper
             , 'srt'          => $request->get("srt", \User_Query::SORT_CREATIONDATE)
             , 'ord'          => $request->get("ord", \User_Query::ORD_DESC)
             , 'offset_start' => 0
-        ];
+        );
 
         $query = new \User_Query($this->app);
 
@@ -68,7 +69,7 @@ class Manage extends Helper
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
-            ->on_bases_where_i_am($this->app['acl']->get($this->app['authentication']->getUser()), ['canadmin'])
+            ->on_bases_where_i_am($this->app['acl']->get($this->app['authentication']->getUser()), array('canadmin'))
             ->execute();
 
         return $this->results->get_results();
@@ -81,7 +82,7 @@ class Manage extends Helper
         $results_quantity = (int) $this->request->get('per_page');
         $results_quantity = ($results_quantity < 10 || $results_quantity > 50) ? 20 : $results_quantity;
 
-        $this->query_parms = [
+        $this->query_parms = array(
             'inactives'    => $this->request->get('inactives')
             , 'like_field'   => $this->request->get('like_field')
             , 'like_value'   => $this->request->get('like_value')
@@ -92,7 +93,7 @@ class Manage extends Helper
             , 'ord'          => $this->request->get("ord", \User_Query::ORD_DESC)
             , 'per_page'     => $results_quantity
             , 'offset_start' => $offset_start
-        ];
+        );
 
         $query = new \User_Query($this->app);
 
@@ -106,22 +107,16 @@ class Manage extends Helper
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
-            ->on_bases_where_i_am($this->app['acl']->get($this->app['authentication']->getUser()), ['canadmin'])
+            ->on_bases_where_i_am($this->app['acl']->get($this->app['authentication']->getUser()), array('canadmin'))
             ->limit($offset_start, $results_quantity)
             ->execute();
 
-        try {
-            $invite_id = \User_Adapter::get_usr_id_from_login($this->app, 'invite');
-            $invite = \User_Adapter::getInstance($invite_id, $this->app);
-        } catch (\Exception $e) {
-            $invite = \User_Adapter::create($this->app, 'invite', 'invite', '', false);
+        if (null === $invite = $this->app['manipulator.user']->getRepository()->findByLogin(User::USER_GUEST)) {
+            $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
         }
 
-        try {
-            $autoregister_id = \User_Adapter::get_usr_id_from_login($this->app, 'autoregister');
-            $autoregister = \User_Adapter::getInstance($autoregister_id, $this->app);
-        } catch (\Exception $e) {
-            $autoregister = \User_Adapter::create($this->app, 'autoregister', 'autoregister', '', false);
+        if (null == $autoregister = $this->app['manipulator.user']->getRepository()->findByLogin(User::USER_AUTOREGISTER)) {
+            $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
         }
 
         foreach ($this->query_parms as $k => $v) {
@@ -134,13 +129,13 @@ class Manage extends Helper
                 ->only_templates(true)
                 ->execute()->get_results();
 
-        return [
+        return array(
             'users'             => $this->results,
             'parm'              => $this->query_parms,
             'invite_user'       => $invite,
             'autoregister_user' => $autoregister,
             'templates'         => $templates
-        ];
+        );
     }
 
     public function create_newuser()
@@ -154,7 +149,7 @@ class Manage extends Helper
         $conn = $this->app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
         $stmt = $conn->prepare($sql);
-        $stmt->execute([':email' => $email]);
+        $stmt->execute(array(':email' => $email));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $count = count($row);
 
@@ -162,8 +157,7 @@ class Manage extends Helper
             $sendCredentials = !!$this->request->get('send_credentials', false);
             $validateMail = !!$this->request->get('validate_mail', false);
 
-            $createdUser = \User_Adapter::create($this->app, $email, \random::generatePassword(16), $email, false, false);
-            /* @var $createdUser \User_Adapter */
+            $createdUser = $this->app['manipulator.user']->createUser($email, \random::generatePassword(16), $email);
 
             $receiver = null;
             try {
@@ -173,12 +167,12 @@ class Manage extends Helper
             }
 
             if ($sendCredentials) {
-                $urlToken = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id());
+                $urlToken = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->getId());
 
                 if ($receiver && false !== $urlToken) {
-                    $url = $this->app->url('login_renew_password', ['token' => $urlToken]);
+                    $url = $this->app->url('login_renew_password', array('token' => $urlToken));
                     $mail = MailRequestPasswordSetup::create($this->app, $receiver, null, '', $url);
-                    $mail->setLogin($createdUser->get_login());
+                    $mail->setLogin($createdUser->getLogin());
                     $this->app['notification.deliverer']->deliver($mail);
                 }
             }
@@ -188,18 +182,18 @@ class Manage extends Helper
 
                 if ($receiver) {
                     $expire = new \DateTime('+3 days');
-                    $token = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id(), $expire, $createdUser->get_email());
-                    $url = $this->app->url('login_register_confirm', ['code' => $token]);
+                    $token = $this->app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $createdUser->getId(), $expire, $createdUser->getEmail());
+                    $url = $this->app->url('login_register_confirm', array('code' => $token));
 
                     $mail = MailRequestEmailConfirmation::create($this->app, $receiver, null, '', $url, $expire);
                     $this->app['notification.deliverer']->deliver($mail);
                 }
             }
 
-            $this->usr_id = $createdUser->get_id();
+            $this->usr_id = $createdUser->getId();
         } else {
             $this->usr_id = $row['usr_id'];
-            $createdUser = \User_Adapter::getInstance($this->usr_id, $this->app);
+            $createdUser = $this->app['manipulator.user']->getRepository()->find($this->usr_id);
         }
 
         return $createdUser;
@@ -213,9 +207,9 @@ class Manage extends Helper
             throw new \Exception_InvalidArgument('Invalid template name');
         }
 
-        $created_user = \User_Adapter::create($this->app, $name, \random::generatePassword(16), null, false, false);
+        $created_user = $this->app['manipulator.user']->getRepository()->find($name, \random::generatePassword(16));
         $created_user->set_template($this->app['authentication']->getUser());
-        $this->usr_id = $this->app['authentication']->getUser()->get_id();
+        $this->usr_id = $this->app['authentication']->getUser()->getId();
 
         return $created_user;
     }

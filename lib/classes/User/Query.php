@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class User_Query implements User_QueryInterface
@@ -231,11 +232,11 @@ class User_Query implements User_QueryInterface
             if (!$this->app['authentication']->getUser()) {
                 throw new InvalidArgumentException('Unable to load templates while disconnected');
             }
-            $sql .= ' AND model_of = ' . $this->app['authentication']->getUser()->get_id();
+            $sql .= ' AND model_of = ' . $this->app['authentication']->getUser()->getId();
         } elseif ($this->include_templates === false) {
             $sql .= ' AND model_of=0';
         } elseif ($this->app['authentication']->getUser()) {
-            $sql .= ' AND (model_of=0 OR model_of = ' . $this->app['authentication']->getUser()->get_id() . ' ) ';
+            $sql .= ' AND (model_of=0 OR model_of = ' . $this->app['authentication']->getUser()->getId() . ' ) ';
         } else {
             $sql .= ' AND model_of=0';
         }
@@ -396,7 +397,7 @@ class User_Query implements User_QueryInterface
 
     public function last_model_is($login = null)
     {
-        $this->last_model = $login instanceof \User_Adapter ? $login->get_login() : $login;
+        $this->last_model = $login instanceof User ? $login->getLogin() : $login;
 
         return $this;
     }
@@ -511,7 +512,7 @@ class User_Query implements User_QueryInterface
         $users = new ArrayCollection();
 
         foreach ($rs as $row) {
-            $users[] = User_Adapter::getInstance($row['usr_id'], $this->app);
+            $users[] = $this->app['manipulator.user']->getRepository()->find($row['usr_id']);
         }
 
         $this->results = $users;

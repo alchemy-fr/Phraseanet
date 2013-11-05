@@ -24,7 +24,6 @@ class FeedRepository extends EntityRepository
     /**
      * Returns all the feeds a user can access.
      *
-     * @param  User_Adapter                            $user
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getAllForUser(\ACL $userACL)

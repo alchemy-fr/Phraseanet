@@ -20,7 +20,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      *
      * @var string
      */
-    public $events = ['__VALIDATION_REMINDER__'];
+    public $events = array('__VALIDATION_REMINDER__');
 
     /**
      *
@@ -52,12 +52,12 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      */
     public function fire($event, $params, &$object)
     {
-        $default = [
+        $default = array(
             'from'    => ''
             , 'to'      => ''
             , 'ssel_id' => ''
             , 'url'     => ''
-        ];
+        );
 
         $params = array_merge($default, $params);
 
@@ -86,10 +86,10 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
         $mailed = false;
 
-        try {
-            $user_from = User_Adapter::getInstance($params['from'], $this->app);
-            $user_to = User_Adapter::getInstance($params['to'], $this->app);
-        } catch (Exception $e) {
+        $user_from = $this->app['manipulator.user']->getRepository()->find($params['from']);
+        $user_to = $this->app['manipulator.user']->getRepository()->find($params['to']);
+
+        if (null === $user_from || null === $user_to) {
             return false;
         }
 
@@ -136,13 +136,11 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $from = (string) $sx->from;
         $ssel_id = (string) $sx->ssel_id;
 
-        try {
-            User_Adapter::getInstance($from, $this->app);
-        } catch (Exception $e) {
-            return [];
+        if (null === $user = $this->app['manipulator.user']->getRepository()->find($from)) {
+            return array();
         }
 
-        $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
+        $sender = $user->getDisplayName();
 
         try {
             $basket = $this->app['converter.basket']->convert($ssel_id);
@@ -158,7 +156,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $ret = [
             'text'  => $this->app->trans('Rappel : Il vous reste %number% jours pour valider %title% de %user%', ['%number%' => $this->app['conf']->get(['registry', 'actions', 'validation-reminder-days']), '%title%' => $bask_link, '%user%' => $sender])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
-        ];
+        );
 
         return $ret;
     }

@@ -15,12 +15,12 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUserBadRequest()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        self::$DI['client']->request('POST', '/report/informations/user', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -30,13 +30,13 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUser()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        self::$DI['client']->request('POST', '/report/informations/user', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
-            'user'          => self::$DI['user']->get_id(),
-        ]);
+            'user'          => self::$DI['user']->getId(),
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -45,14 +45,14 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUserFromConnexion()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        self::$DI['client']->request('POST', '/report/informations/user', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
-            'user'          => self::$DI['user']->get_id(),
+            'user'          => self::$DI['user']->getId(),
             'from'          => 'CNX',
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -61,14 +61,14 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUserFromQuestion()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        self::$DI['client']->request('POST', '/report/informations/user', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'from'          => 'ASK',
-            'user'          => self::$DI['user']->get_id(),
-        ]);
+            'user'          => self::$DI['user']->getId(),
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -77,14 +77,14 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUserFromDownload()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        self::$DI['client']->request('POST', '/report/informations/user', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'from'          => 'GEN',
-            'user'          => self::$DI['user']->get_id(),
-        ]);
+            'user'          => self::$DI['user']->getId(),
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -93,15 +93,15 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUserFromConnexionCSV()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        self::$DI['client']->request('POST', '/report/informations/user', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'from'          => 'CNX',
             'printcsv'      => 'on',
-            'user'          => self::$DI['user']->get_id(),
-        ]);
+            'user'          => self::$DI['user']->getId(),
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -110,15 +110,15 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUserFromQuestionCSV()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        self::$DI['client']->request('POST', '/report/informations/user', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'from'          => 'ASK',
             'printcsv'      => 'on',
-            'user'          => self::$DI['user']->get_id(),
-        ]);
+            'user'          => self::$DI['user']->getId(),
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -127,15 +127,15 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUserFromDownloadCSV()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        self::$DI['client']->request('POST', '/report/informations/user', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'from'          => 'GEN',
             'printcsv'      => 'on',
-            'user'          => self::$DI['user']->get_id(),
-        ]);
+            'user'          => self::$DI['user']->getId(),
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -144,15 +144,15 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUserFromDownloadOnCustomField()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        self::$DI['client']->request('POST', '/report/informations/user', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'from'          => 'GEN',
             'on'            => 'usr_mail',
-            'user'          => self::$DI['user']->get_email()
-        ]);
+            'user'          => self::$DI['user']->getEmail()
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -161,15 +161,15 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUserFromConnexionOnCustomField()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        self::$DI['client']->request('POST', '/report/informations/user', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'from'          => 'CNX',
             'on'            => 'usr_mail',
-            'user'          => self::$DI['user']->get_email()
-        ]);
+            'user'          => self::$DI['user']->getEmail()
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -178,15 +178,15 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportUserFromQuestionOnCustomField()
     {
-        self::$DI['client']->request('POST', '/report/informations/user', [
+        self::$DI['client']->request('POST', '/report/informations/user', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'from'          => 'ASK',
             'on'            => 'usr_mail',
-            'user'          => self::$DI['user']->get_email()
-        ]);
+            'user'          => self::$DI['user']->getEmail()
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -195,12 +195,12 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportInformationsBrowserBadRequest()
     {
-        self::$DI['client']->request('POST', '/report/informations/browser', [
+        self::$DI['client']->request('POST', '/report/informations/browser', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -210,13 +210,13 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportInfomationsBrowser()
     {
-        self::$DI['client']->request('POST', '/report/informations/browser', [
+        self::$DI['client']->request('POST', '/report/informations/browser', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'user'          => 'chrome',
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -225,14 +225,14 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportInfomationsDocumentsNotFound()
     {
-        self::$DI['client']->request('POST', '/report/informations/document', [
+        self::$DI['client']->request('POST', '/report/informations/document', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'sbasid'        => 0,
             'rid'           => 0,
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -242,14 +242,14 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportInfomationsDocuments()
     {
-        self::$DI['client']->request('POST', '/report/informations/document', [
+        self::$DI['client']->request('POST', '/report/informations/document', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'sbasid'        => self::$DI['record_1']->get_sbas_id(),
             'rid'           => self::$DI['record_1']->get_record_id(),
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -258,7 +258,7 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportInfomationsDocumentsFromTool()
     {
-        self::$DI['client']->request('POST', '/report/informations/document', [
+        self::$DI['client']->request('POST', '/report/informations/document', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
@@ -266,7 +266,7 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
             'sbasid'        => self::$DI['record_1']->get_sbas_id(),
             'rid'           => self::$DI['record_1']->get_record_id(),
             'from'          => 'TOOL'
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -275,7 +275,7 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportInfomationsDocumentsFromDashboard()
     {
-        self::$DI['client']->request('POST', '/report/informations/document', [
+        self::$DI['client']->request('POST', '/report/informations/document', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
@@ -283,7 +283,7 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
             'sbasid'        => self::$DI['record_1']->get_sbas_id(),
             'rid'           => self::$DI['record_1']->get_record_id(),
             'from'          => 'DASH'
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -292,15 +292,15 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDoReportInfomationsDocumentsFromOther()
     {
-        self::$DI['client']->request('POST', '/report/informations/document', [
+        self::$DI['client']->request('POST', '/report/informations/document', array(
             'dmin'          => $this->dmin->format('Y-m-d H:i:s'),
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => self::$DI['collection']->get_sbas_id(),
             'collection'    => self::$DI['collection']->get_coll_id(),
             'sbasid'        => self::$DI['record_1']->get_sbas_id(),
             'rid'           => self::$DI['record_1']->get_record_id(),
-            'user'          => self::$DI['user']->get_id()
-        ]);
+            'user'          => self::$DI['user']->getId()
+        ));
 
         $response = self::$DI['client']->getResponse();
 

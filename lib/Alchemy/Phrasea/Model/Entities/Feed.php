@@ -280,14 +280,14 @@ class Feed implements FeedInterface
     /**
      * Returns a boolean indicating whether the given User_Adapter is the owner of the feed.
      *
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return boolean
      */
     public function isOwner(\User_Adapter $user)
     {
         $owner = $this->getOwner();
-        if ($owner !== null && $user->get_id() === $owner->getUsrId()) {
+        if ($owner !== null && $user->getId() === $owner->getUsrId()) {
             return true;
         }
 
@@ -374,14 +374,14 @@ class Feed implements FeedInterface
     /**
      * Returns a boolean indicating whether the given User_Adapter is a publisher of the feed.
      *
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return boolean
      */
     public function isPublisher(\User_Adapter $user)
     {
         foreach ($this->getPublishers() as $publisher) {
-            if ($publisher->getUsrId() == $user->get_id()) {
+            if ($publisher->getUsrId() == $user->getId()) {
                 return true;
             }
         }
@@ -392,14 +392,14 @@ class Feed implements FeedInterface
     /**
      * Returns an instance of FeedPublisher matching to the given User_Adapter
      *
-     * @param \User_Adapter $user
+     * @param User $user
      *
      * @return FeedPublisher
      */
     public function getPublisher(\User_Adapter $user)
     {
         foreach ($this->getPublishers() as $publisher) {
-            if ($publisher->getUsrId() == $user->get_id()) {
+            if ($publisher->getUsrId() == $user->getId()) {
                 return $publisher;
             }
         }
@@ -453,7 +453,7 @@ class Feed implements FeedInterface
     /**
      * Returns a boolean indicating whether the given User_Adapter has access to the feed
      *
-     * @param \User_Adapter $user
+     * @param User $user
      * @param Application   $app
      *
      * @return boolean

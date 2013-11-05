@@ -58,13 +58,13 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetResetMailWithToken()
     {
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->get_id(), null, 'new_email@email.com');
-        $crawler = self::$DI['client']->request('GET', '/account/reset-email/', ['token'   => $token]);
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_EMAIL, self::$DI['user']->getId(), null, 'new_email@email.com');
+        $crawler = self::$DI['client']->request('GET', '/account/reset-email/', array('token'   => $token));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/', $response->headers->get('location'));
 
-        $this->assertEquals('new_email@email.com', self::$DI['user']->get_email());
+        $this->assertEquals('new_email@email.com', self::$DI['user']->getEmail());
         self::$DI['user']->set_email('noone@example.com');
         try {
             self::$DI['app']['tokens']->helloToken($token);
@@ -81,7 +81,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetResetMailWithBadToken()
     {
-        self::$DI['client']->request('GET', '/account/reset-email/', ['token'   => '134dT0k3n']);
+        self::$DI['client']->request('GET', '/account/reset-email/', array('token'   => '134dT0k3n'));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/', $response->headers->get('location'));
@@ -104,11 +104,11 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostResetMailBadPassword()
     {
-        self::$DI['client']->request('POST', '/account/reset-email/', [
+        self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => 'changeme',
             'form_email'         => 'new@email.com',
             'form_email_confirm' => 'new@email.com',
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -124,11 +124,11 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = \random::generatePassword();
         self::$DI['app']['authentication']->getUser()->set_password($password);
-        self::$DI['client']->request('POST', '/account/reset-email/', [
+        self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => "invalid#!&&@@email.x",
             'form_email_confirm' => 'invalid#!&&@@email.x',
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -144,11 +144,11 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $password = \random::generatePassword();
         self::$DI['app']['authentication']->getUser()->set_password($password);
-        self::$DI['client']->request('POST', '/account/reset-email/', [
+        self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
             'form_email_confirm' => 'email2@email.com',
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -166,11 +166,11 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
         $password = \random::generatePassword();
         self::$DI['app']['authentication']->getUser()->set_password($password);
-        self::$DI['client']->request('POST', '/account/reset-email/', [
+        self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
             'form_email_confirm' => 'email1@email.com',
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -250,7 +250,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testUpdateAccount()
     {
-        $bases = $notifs = [];
+        $bases = $notifs = array();
 
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
@@ -262,7 +262,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             $this->markTestSkipped('No collections');
         }
 
-        foreach (self::$DI['app']['events-manager']->list_notifications_available(self::$DI['app']['authentication']->getUser()->get_id()) as $notifications) {
+        foreach (self::$DI['app']['events-manager']->list_notifications_available(self::$DI['app']['authentication']->getUser()->getId()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifs[] = $notification['id'];
             }
@@ -270,7 +270,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
         array_shift($notifs);
 
-        self::$DI['client']->request('POST', '/account/', [
+        self::$DI['client']->request('POST', '/account/', array(
             'demand'               => $bases,
             'form_gender'          => 'M',
             'form_firstname'       => 'gros',
@@ -290,17 +290,17 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             'form_prefixFTPfolder' => '',
             'form_retryFTP'        => '',
             'notifications'        => $notifs,
-            'form_defaultdataFTP'  => ['document', 'preview', 'caption'],
+            'form_defaultdataFTP'  => array('document', 'preview', 'caption'),
             'mail_notifications' => '1'
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('minet', self::$DI['app']['authentication']->getUser()->get_lastname());
+        $this->assertEquals('minet', self::$DI['app']['authentication']->getUser()->getLastName());
 
         $sql = 'SELECT base_id FROM demand WHERE usr_id = :usr_id AND en_cours="1" ';
         $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => self::$DI['app']['authentication']->getUser()->get_id()]);
+        $stmt->execute(array(':usr_id' => self::$DI['app']['authentication']->getUser()->getId()));
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -316,7 +316,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAUthorizedAppGrantAccessNotSuccessfull()
     {
-        self::$DI['client']->request('GET', '/account/security/application/0/grant/', [], [], ['HTTP_ACCEPT'           => 'application/json', 'HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        self::$DI['client']->request('GET', '/account/security/application/0/grant/', array(), array(), array('HTTP_ACCEPT'           => 'application/json', 'HTTP_X-Requested-With' => 'XMLHttpRequest'));
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
@@ -333,10 +333,10 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         self::$DI['client']->request('GET', '/account/security/application/' . self::$DI['oauth2-app-user']->get_id() . '/grant/', [
             'revoke' => $revoke
-            ], [], [
+            ), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest'
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -357,12 +357,12 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function revokeProvider()
     {
-        return [
-            ['1', true],
-            ['0', false],
-            [null, false],
-            ['titi', true],
-        ];
+        return array(
+            array('1', true),
+            array('0', false),
+            array(null, false),
+            array('titi', true),
+        );
     }
 
     /**
@@ -372,14 +372,14 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
     {
         self::$DI['app']['authentication']->getUser()->set_password($oldPassword);
 
-        $crawler = self::$DI['client']->request('POST', '/account/reset-password/', [
-            'password' => [
+        $crawler = self::$DI['client']->request('POST', '/account/reset-password/', array(
+            'password' => array(
                 'password' => $password,
                 'confirm'  => $passwordConfirm
-            ],
+            ),
             'oldPassword'     => $oldPassword,
             '_token'          => 'token',
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -389,14 +389,14 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostRenewPasswordBadOldPassword()
     {
-        $crawler = self::$DI['client']->request('POST', '/account/reset-password/', [
-            'password' => [
+        $crawler = self::$DI['client']->request('POST', '/account/reset-password/', array(
+            'password' => array(
                 'password' => 'password',
                 'confirm'  => 'password'
-            ],
+            ),
             'oldPassword'     => 'oulala',
             '_token'          => 'token',
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
         $this->assertFalse($response->isRedirect());
@@ -409,13 +409,13 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['authentication']->getUser()->set_password($password);
 
-        $crawler = self::$DI['client']->request('POST', '/account/reset-password/', [
-            'password' => [
+        $crawler = self::$DI['client']->request('POST', '/account/reset-password/', array(
+            'password' => array(
                 'password' => 'password',
                 'confirm'  => 'password'
-            ],
+            ),
             'oldPassword'     => $password,
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -429,14 +429,14 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']['authentication']->getUser()->set_password($password);
 
-        self::$DI['client']->request('POST', '/account/reset-password/', [
-            'password' => [
+        self::$DI['client']->request('POST', '/account/reset-password/', array(
+            'password' => array(
                 'password' => 'password',
                 'confirm'  => 'password'
-            ],
+            ),
             'oldPassword'     => $password,
             '_token'          => 'token',
-        ]);
+        ));
 
         $response = self::$DI['client']->getResponse();
 
@@ -448,8 +448,8 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function passwordProvider()
     {
-        return [
-            [\random::generatePassword(), 'password', 'not_identical_password'],
-        ];
+        return array(
+            array(\random::generatePassword(), 'password', 'not_identical_password'),
+        );
     }
 }

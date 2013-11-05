@@ -83,15 +83,14 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
             $results = $Query->limit($start, $perLoop)->execute()->get_results();
 
             foreach ($results as $user_to_notif) {
-                /* @var $user_to_notif \User_Adapter */
                 $mailed = false;
 
-                if ($params['notify_email'] && $this->shouldSendNotificationFor($user_to_notif->get_id())) {
+                if ($params['notify_email'] && $this->shouldSendNotificationFor($user_to_notif->getId())) {
                     $readyToSend = false;
                     try {
                         $token = $this->app['tokens']->getUrlToken(
                                 \random::TYPE_FEED_ENTRY
-                                , $user_to_notif->get_id()
+                                , $user_to_notif->getId()
                                 , null
                                 , $entry->getId()
                         );
@@ -115,7 +114,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                     }
                 }
 
-                $this->broker->notify($user_to_notif->get_id(), __CLASS__, $datas, $mailed);
+                $this->broker->notify($user_to_notif->getId(), __CLASS__, $datas, $mailed);
             }
             $start += $perLoop;
         } while (count($results) > 0);

@@ -283,11 +283,11 @@ class BasketElement
     public function getUserValidationDatas(\User_Adapter $user, Application $app)
     {
         foreach ($this->validation_datas as $validationData) {
-            if ($validationData->getParticipant($app)->getUser($app)->get_id() == $user->get_id()) {
+            if ($validationData->getParticipant($app)->getUser($app)->getId() == $user->getId()) {
                 return $validationData;
             }
         }
 
-        throw new \Exception('There is no such participant ' . $user->get_email());
+        throw new \Exception('There is no such participant ' . $user->getEmail());
     }
 }

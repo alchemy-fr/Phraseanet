@@ -48,8 +48,8 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->logout(self::$DI['app']);
 
-        $Basket = self::$DI['app']['EM']->find('Phraseanet:Basket', 1);
-        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_VIEW, self::$DI['user_alt2']->get_id(), null, $Basket->getId());
+        $Basket = self::$DI['app']['EM']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
+        $token = self::$DI['app']['tokens']->getUrlToken(\random::TYPE_VIEW, self::$DI['user_alt2']->getId(), null, $Basket->getId());
 
         self::$DI['client']->request('GET', '/lightbox/?LOG='.$token);
 

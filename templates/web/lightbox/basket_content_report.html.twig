@@ -33,7 +33,7 @@
                                             {% set imguser = '<img src="/skins/lightbox/disagree.png" />' %}
                                             {% set styleuser = '' %}
                                         {% endif %}
-                                        <b style="{{styleuser}}">{{imguser|raw}} {{validationDatas.getParticipant().getUser(app).get_display_name()}}</b>
+                                        <b style="{{styleuser}}">{{imguser|raw}} {{validationDatas.getParticipant().getUser(app).getDisplayName()}}</b>
                                         {% if validationDatas.getNote() != '' %}
                                              : {{validationDatas.getNote()|nl2br}}
                                         {% endif %}

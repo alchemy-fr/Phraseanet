@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Vocabulary\ControlProvider;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Vocabulary\Term;
 
@@ -45,11 +46,11 @@ class UserProvider implements ControlProviderInterface
     /**
      *
      * @param  string                                       $query
-     * @param  \User_Adapter                                $for_user
+     * @param  User                                         $for_user
      * @param  \databox                                     $on_databox
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function find($query, \User_Adapter $for_user, \databox $on_databox = null)
+    public function find($query, User $for_user, \databox $on_databox = null)
     {
         $user_query = new \User_Query($this->app);
 
@@ -67,7 +68,7 @@ class UserProvider implements ControlProviderInterface
 
         foreach ($users as $user) {
             $results->add(
-                new Term($user->get_display_name(), '', $this, $user->get_id())
+                new Term($user->getDisplayName(), '', $this, $user->getId())
             );
         }
 
@@ -81,15 +82,7 @@ class UserProvider implements ControlProviderInterface
      */
     public function validate($id)
     {
-        try {
-            \User_Adapter::getInstance($id, $this->app);
-
-            return true;
-        } catch (\Exception $e) {
-
-        }
-
-        return false;
+        return (Boolean) $this->app['manipulator.user']->getRepository()->find($id);
     }
 
     /**
@@ -99,9 +92,9 @@ class UserProvider implements ControlProviderInterface
      */
     public function getValue($id)
     {
-        $user = \User_Adapter::getInstance($id, $this->app);
+        $user = $this->app['manipulator.user']->getRepository()->find($id);
 
-        return $user->get_display_name();
+        return $user->getDisplayName();
     }
 
     /**
@@ -111,6 +104,6 @@ class UserProvider implements ControlProviderInterface
      */
     public function getRessource($id)
     {
-        return \User_Adapter::getInstance($id, $this->app);
+        return $this->app['manipulator.user']->getRepository()->find($id);
     }
 }

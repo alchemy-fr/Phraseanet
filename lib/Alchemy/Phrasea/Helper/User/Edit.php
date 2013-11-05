@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Helper\User;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,17 +61,17 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     public function delete_users()
     {
         foreach ($this->users as $usr_id) {
-            if ($this->app['authentication']->getUser()->get_id() === (int) $usr_id) {
+            if ($this->app['authentication']->getUser()->getId() === (int) $usr_id) {
                 continue;
             }
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
             $this->delete_user($user);
         }
 
         return $this;
     }
 
-    protected function delete_user(\User_Adapter $user)
+    protected function delete_user(User $user)
     {
         $list = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
@@ -180,7 +181,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         if (count($this->users) == 1) {
             $usr_id = array_pop($this->users);
-            $out['main_user'] = \User_Adapter::getInstance($usr_id, $this->app);
+            $out['main_user'] = $this->app['manipulator.user']->getRepository()->find($usr_id);
         }
 
         return $out;
@@ -565,9 +566,9 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $users = $this->users;
 
-        $user = \User_adapter::getInstance(array_pop($users), $this->app);
+        $user = $this->app['manipulator.user']->getRepository()->find(array_pop($users));
 
-        if ($user->is_template() || $user->is_special()) {
+        if ($user->isTemplate() || $user->isSpecial()) {
             return $this;
         }
 
@@ -592,7 +593,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             throw new \Exception_InvalidArgument('Email addess is not valid');
         }
 
-        $old_email = $user->get_email();
+        $old_email = $user->getEmail();
 
         $user->set_firstname($parm['first_name'])
             ->set_lastname($parm['last_name'])
@@ -607,7 +608,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             ->set_tel($parm['telephone'])
             ->set_fax($parm['fax']);
 
-        $new_email = $user->get_email();
+        $new_email = $user->getEmail();
 
         if ($old_email != $new_email) {
             $oldReceiver = $newReceiver = null;
@@ -639,18 +640,18 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function apply_template()
     {
-        $template = \User_adapter::getInstance($this->request->get('template'), $this->app);
+        $template = $this->app['manipulator.user']->getRepository()->find($this->request->get('template'));
 
-        if ($template->get_template_owner()->get_id() != $this->app['authentication']->getUser()->get_id()) {
+        if ($template->getLastModel()->getId() !== $this->app['authentication']->getUser()->getId()) {
             throw new AccessDeniedHttpException('You are not the owner of the template');
         }
 
         $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
-            $user = \User_adapter::getInstance($usr_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
 
-            if ($user->is_template()) {
+            if ($user->isTemplate()) {
                 continue;
             }
 
@@ -665,7 +666,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $this->base_id = (int) $this->request->get('base_id');
 
         foreach ($this->users as $usr_id) {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
             if ($this->request->get('quota'))
                 $this->app['acl']->get($user)->set_quotas_on_base($this->base_id, $this->request->get('droits'), $this->request->get('restes'));
             else
@@ -686,7 +687,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         if ($vand_and && $vand_or && $vxor_and && $vxor_or) {
             foreach ($this->users as $usr_id) {
-                $user = \User_Adapter::getInstance($usr_id, $this->app);
+                $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
 
                 $this->app['acl']->get($user)->set_masks_on_base($this->base_id, $vand_and, $vand_or, $vxor_and, $vxor_or);
             }
@@ -708,7 +709,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
 
             if ($this->base_id > 0) {
                 $this->app['acl']->get($user)->set_limits($this->base_id, $activate, $dmin, $dmax);
@@ -727,13 +728,13 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $base_ids = array_keys($this->app['acl']->get($this->app['authentication']->getUser())->get_granted_base(['canadmin']));
 
         foreach ($this->users as $usr_id) {
-            $user = \User_Adapter::getInstance($usr_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
             $ACL = $this->app['acl']->get($user);
 
-            if ($user->is_template()) {
+            if ($user->isTemplate()) {
                 $template = $user;
 
-                if ($template->get_template_owner()->get_id() !== $this->app['authentication']->getUser()->get_id()) {
+                if ($template->getLastModel()->getId() !== $this->app['authentication']->getUser()->getId()) {
                     continue;
                 }
             }

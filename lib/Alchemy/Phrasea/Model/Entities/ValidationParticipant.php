@@ -116,7 +116,7 @@ class ValidationParticipant
      */
     public function setUser(\User_Adapter $user)
     {
-        $this->usr_id = $user->get_id();
+        $this->usr_id = $user->getId();
 
         return $this;
     }

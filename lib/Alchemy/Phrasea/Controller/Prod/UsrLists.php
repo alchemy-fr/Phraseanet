@@ -90,26 +90,26 @@ class UsrLists implements ControllerProviderInterface
                 $owners = $entries = [];
 
                 foreach ($list->getOwners() as $owner) {
-                    $owners[] = [
-                        'usr_id'       => $owner->getUser($app)->get_id(),
-                        'display_name' => $owner->getUser($app)->get_display_name(),
-                        'position'     => $owner->getUser($app)->get_position(),
-                        'job'          => $owner->getUser($app)->get_job(),
-                        'company'      => $owner->getUser($app)->get_company(),
-                        'email'        => $owner->getUser($app)->get_email(),
+                    $owners[] = array(
+                        'usr_id'       => $owner->getUser($app)->getId(),
+                        'display_name' => $owner->getUser($app)->getDisplayName(),
+                        'position'     => $owner->getUser($app)->getActivity(),
+                        'job'          => $owner->getUser($app)->getJob(),
+                        'company'      => $owner->getUser($app)->getCompany(),
+                        'email'        => $owner->getUser($app)->getEmail(),
                         'role'         => $owner->getRole()
-                    ];
+                    );
                 }
 
                 foreach ($list->getEntries() as $entry) {
-                    $entries[] = [
-                        'usr_id'       => $owner->getUser($app)->get_id(),
-                        'display_name' => $owner->getUser($app)->get_display_name(),
-                        'position'     => $owner->getUser($app)->get_position(),
-                        'job'          => $owner->getUser($app)->get_job(),
-                        'company'      => $owner->getUser($app)->get_company(),
-                        'email'        => $owner->getUser($app)->get_email(),
-                    ];
+                    $entries[] = array(
+                        'usr_id'       => $owner->getUser($app)->getId(),
+                        'display_name' => $owner->getUser($app)->getDisplayName(),
+                        'position'     => $owner->getUser($app)->getActivity(),
+                        'job'          => $owner->getUser($app)->getJob(),
+                        'company'      => $owner->getUser($app)->getCompany(),
+                        'email'        => $owner->getUser($app)->getEmail(),
+                    );
                 }
 
                 /* @var $list UsrList */
@@ -201,26 +201,26 @@ class UsrLists implements ControllerProviderInterface
         $owners = new ArrayCollection();
 
         foreach ($list->getOwners() as $owner) {
-            $owners[] = [
-                'usr_id'       => $owner->getUser($app)->get_id(),
-                'display_name' => $owner->getUser($app)->get_display_name(),
-                'position'     => $owner->getUser($app)->get_position(),
-                'job'          => $owner->getUser($app)->get_job(),
-                'company'      => $owner->getUser($app)->get_company(),
-                'email'        => $owner->getUser($app)->get_email(),
+            $owners[] = array(
+                'usr_id'       => $owner->getUser($app)->getId(),
+                'display_name' => $owner->getUser($app)->getDisplayName(),
+                'position'     => $owner->getUser($app)->getActivity(),
+                'job'          => $owner->getUser($app)->getJob(),
+                'company'      => $owner->getUser($app)->getCompany(),
+                'email'        => $owner->getUser($app)->getEmail(),
                 'role'         => $owner->getRole($app)
-            ];
+            );
         }
 
         foreach ($list->getEntries() as $entry) {
-            $entries[] = [
-                'usr_id'       => $entry->getUser($app)->get_id(),
-                'display_name' => $entry->getUser($app)->get_display_name(),
-                'position'     => $entry->getUser($app)->get_position(),
-                'job'          => $entry->getUser($app)->get_job(),
-                'company'      => $entry->getUser($app)->get_company(),
-                'email'        => $entry->getUser($app)->get_email(),
-            ];
+            $entries[] = array(
+                'usr_id'       => $entry->getUser($app)->getId(),
+                'display_name' => $entry->getUser($app)->getDisplayName(),
+                'position'     => $entry->getUser($app)->getActivity(),
+                'job'          => $entry->getUser($app)->getJob(),
+                'company'      => $entry->getUser($app)->getCompany(),
+                'email'        => $entry->getUser($app)->getEmail(),
+            );
         }
 
         return $app->json([
@@ -370,7 +370,7 @@ class UsrLists implements ControllerProviderInterface
             $inserted_usr_ids = [];
 
             foreach ($request->request->get('usr_ids') as $usr_id) {
-                $user_entry = \User_Adapter::getInstance($usr_id, $app);
+                $user_entry = $app['manipulator.user']->getRepository()->find($usr_id);
 
                 if ($list->has($user_entry, $app))
                     continue;
@@ -383,7 +383,7 @@ class UsrLists implements ControllerProviderInterface
 
                 $app['EM']->persist($entry);
 
-                $inserted_usr_ids[] = $user_entry->get_id();
+                $inserted_usr_ids[] = $user_entry->getId();
             }
 
             $app['EM']->flush();
@@ -461,10 +461,10 @@ class UsrLists implements ControllerProviderInterface
                 throw new ControllerException($app->trans('You are not authorized to do this'));
             }
 
-            $new_owner = \User_Adapter::getInstance($usr_id, $app);
+            $new_owner = $app['manipulator.user']->getRepository()->find($usr_id);
 
             if ($list->hasAccess($new_owner, $app)) {
-                if ($new_owner->get_id() == $app['authentication']->getUser()->get_id()) {
+                if ($new_owner->getId() == $app['authentication']->getUser()->getId()) {
                     throw new ControllerException('You can not downgrade your Admin right');
                 }
 

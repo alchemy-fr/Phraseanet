@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\FormProcessingException;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -362,7 +363,7 @@ class Login implements ControllerProviderInterface
                         $data['login'] = $data['email'];
                     }
 
-                    $user = \User_Adapter::create($app, $data['login'], $data['password'], $data['email'], false);
+                    $user = $app['manipulator.user']->createUser($data['login'], $data['password'], $data['email'], false);
 
                     foreach ([
                         'gender'    => 'set_gender',
@@ -391,11 +392,9 @@ class Login implements ControllerProviderInterface
 
                     if ($app['conf']->get(['registry', 'registration', 'auto-register-enabled'])) {
 
-                        $template_user_id = \User_Adapter::get_usr_id_from_login($app, 'autoregister');
+                        $template_user = $app['manipulator.user']->getRepository()->findbyLogin('autoregister');
 
-                        $template_user = \User_Adapter::getInstance($template_user_id, $app);
-
-                        $base_ids = [];
+                        $base_ids = array();
 
                         foreach (array_keys($inscOK) as $base_id) {
                             $base_ids[] = $base_id;
@@ -417,11 +416,11 @@ class Login implements ControllerProviderInterface
                         $demandOK[$base_id] = true;
                     }
 
-                    $params = [
+                    $params = array(
                         'demand'       => $demandOK,
                         'autoregister' => $autoReg,
-                        'usr_id'       => $user->get_id()
-                    ];
+                        'usr_id'       => $user->getId()
+                    );
 
                     $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
                     $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
@@ -462,12 +461,12 @@ class Login implements ControllerProviderInterface
         ]));
     }
 
-    private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, \User_Adapter $user)
+    private function attachProviderToUser(EntityManager $em, ProviderInterface $provider, User $user)
     {
         $usrAuthProvider = new UsrAuthProvider();
         $usrAuthProvider->setDistantId($provider->getToken()->getId());
         $usrAuthProvider->setProvider($provider->getId());
-        $usrAuthProvider->setUsrId($user->get_id());
+        $usrAuthProvider->setUsrId($user->getId());
 
         try {
             $provider->logout();
@@ -492,7 +491,7 @@ class Login implements ControllerProviderInterface
         }
 
         try {
-            $user = \User_Adapter::getInstance((int) $usrId, $app);
+            $user = $app['manipulator.user']->getRepository()->find((int) $usrId);
         } catch (\Exception $e) {
             $app->addFlash('error', $app->trans('Invalid link.'));
 
@@ -514,17 +513,17 @@ class Login implements ControllerProviderInterface
      * Sends an account unlock email.
      *
      * @param PhraseaApplication $app
-     * @param \User_Adapter      $user
+     * @param User      $user
      *
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
-    private function sendAccountUnlockEmail(PhraseaApplication $app, \User_Adapter $user)
+    private function sendAccountUnlockEmail(PhraseaApplication $app, User $user)
     {
         $receiver = Receiver::fromUser($user);
 
         $expire = new \DateTime('+3 days');
-        $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $expire, $user->get_email());
+        $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->getId(), $expire, $user->getEmail());
 
         $mail = MailRequestEmailConfirmation::create($app, $receiver);
         $mail->setButtonUrl($app->url('login_register_confirm', ['code' => $token]));
@@ -557,14 +556,14 @@ class Login implements ControllerProviderInterface
         }
 
         try {
-            $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
+            $user = $app['manipulator.user']->getRepository()->find((int) $datas['usr_id']);
         } catch (\Exception $e) {
             $app->addFlash('error', $app->trans('Invalid unlock link.'));
 
             return $app->redirectPath('homepage');
         }
 
-        if (!$user->get_mail_locked()) {
+        if (!$user->isMailLocked()) {
             $app->addFlash('info', $app->trans('Account is already unlocked, you can login.'));
 
             return $app->redirectPath('homepage');
@@ -621,7 +620,7 @@ class Login implements ControllerProviderInterface
 
                     $datas = $app['tokens']->helloToken($token);
 
-                    $user = \User_Adapter::getInstance($datas['usr_id'], $app);
+                    $user = $app['manipulator.user']->getRepository()->find($datas['usr_id']);
                     $user->set_password($data['password']);
 
                     $app['tokens']->removeToken($token);
@@ -660,7 +659,7 @@ class Login implements ControllerProviderInterface
                     $data = $form->getData();
 
                     try {
-                        $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $data['email']), $app);
+                        $user = $app['manipulator.user']->getRepository()->findByEmail($data['email']);
                     } catch (\Exception $e) {
                         throw new FormProcessingException($app->trans('phraseanet::erreur: Le compte n\'a pas ete trouve'));
                     }
@@ -671,7 +670,7 @@ class Login implements ControllerProviderInterface
                         throw new FormProcessingException($app->trans('Invalid email address'));
                     }
 
-                    $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
+                    $token = $app['tokens']->getUrlToken(\random::TYPE_PASSWORD, $user->getId(), new \DateTime('+1 day'));
 
                     if (!$token) {
                         return $app->abort(500, 'Unable to generate a token');
@@ -680,7 +679,7 @@ class Login implements ControllerProviderInterface
                     $url = $app->url('login_renew_password', ['token' => $token], true);
 
                     $mail = MailRequestPasswordUpdate::create($app, $receiver);
-                    $mail->setLogin($user->get_login());
+                    $mail->setLogin($user->getLogin());
                     $mail->setButtonUrl($url);
 
                     $app['notification.deliverer']->deliver($mail);
@@ -808,10 +807,7 @@ class Login implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
         $password = \random::generatePassword(24);
-        $user = \User_Adapter::create($app, 'invite', $password, null, false, true);
-
-        $inviteUsrid = \User_Adapter::get_usr_id_from_login($app, 'invite');
-        $invite_user = \User_Adapter::getInstance($inviteUsrid, $app);
+        $invite_user = $app['manipulator.user']->createUser('invite', $password);
 
         $usr_base_ids = array_keys($app['acl']->get($user)->get_granted_base());
         $app['acl']->get($user)->revoke_access_from_bases($usr_base_ids);
@@ -822,7 +818,7 @@ class Login implements ControllerProviderInterface
         $this->postAuthProcess($app, $user);
 
         $response = $this->generateAuthResponse($app, $app['browser'], $request->request->get('redirect'));
-        $response->headers->setCookie(new Cookie('invite-usr-id', $user->get_id()));
+        $response->headers->setCookie(new Cookie('invite-usr-id', $user->getId()));
 
         $event = new PostAuthenticate($request, $response, $user, $context);
         $app['dispatcher']->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
@@ -849,7 +845,7 @@ class Login implements ControllerProviderInterface
     }
 
     // move this in an event
-    public function postAuthProcess(PhraseaApplication $app, \User_Adapter $user)
+    public function postAuthProcess(PhraseaApplication $app, User $user)
     {
         $date = new \DateTime('+' . (int) $app['conf']->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
 
@@ -885,7 +881,7 @@ class Login implements ControllerProviderInterface
 
         $session = $app['authentication']->openAccount($user);
 
-        if ($user->get_locale() != $app['locale']) {
+        if ($user->getLocale() != $app['locale']) {
             $user->set_locale($app['locale']);
         }
 
@@ -1047,7 +1043,7 @@ class Login implements ControllerProviderInterface
             throw new AuthenticationException(call_user_func($redirector, $params));
         }
 
-        $user = \User_Adapter::getInstance($usr_id, $app);
+        $user = $app['manipulator.user']->getRepository()->find($usr_id);
 
         $session = $this->postAuthProcess($app, $user);
 
@@ -1056,13 +1052,13 @@ class Login implements ControllerProviderInterface
 
         if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
             if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
-                if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
+                if ($user->getId() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
 
                     $repo = $app['EM']->getRepository('Phraseanet:Basket');
                     $baskets = $repo->findBy(['usr_id' => $inviteUsrId]);
 
                     foreach ($baskets as $basket) {
-                        $basket->setUsrId($user->get_id());
+                        $basket->setUsrId($user->getId());
                         $app['EM']->persist($basket);
                     }
                 }

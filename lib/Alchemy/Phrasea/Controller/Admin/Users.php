@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Helper\User as UserHelper;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
+use Alchemy\Phrasea\Model\Entities\User;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -173,24 +174,23 @@ class Users implements ControllerProviderInterface
             ];
 
             foreach ($users->export() as $user) {
-                /* @var $user \User_Adapter */
                 $userTable[] = [
-                    $user->get_id(),
-                    $user->get_login(),
-                    $user->get_lastname(),
-                    $user->get_firstname(),
-                    $user->get_email(),
-                    $user->get_creation_date()->format(DATE_ATOM),
-                    $user->get_modification_date()->format(DATE_ATOM),
-                    $user->get_address(),
-                    $user->get_city(),
-                    $user->get_zipcode(),
-                    $user->get_country(),
-                    $user->get_tel(),
-                    $user->get_fax(),
-                    $user->get_job(),
-                    $user->get_company(),
-                    $user->get_position()
+                    $user->getId(),
+                    $user->getLogin(),
+                    $user->getLastName(),
+                    $user->getFirstName(),
+                    $user->getEmail(),
+                    $user->getCreated()->format(DATE_ATOM),
+                    $user->getUpdated()->format(DATE_ATOM),
+                    $user->getAddress(),
+                    $user->getCity(),
+                    $user->getZipCode(),
+                    $user->getCountry(),
+                    $user->getPhone(),
+                    $user->getFax(),
+                    $user->getJob(),
+                    $user->getCompany(),
+                    $user->getActivity()
                 ];
             }
 
@@ -241,10 +241,10 @@ class Users implements ControllerProviderInterface
 
             foreach ($elligible_users as $user) {
                 $datas[] = [
-                    'email' => $user->get_email() ? : ''
-                    , 'login' => $user->get_login() ? : ''
-                    , 'name'  => $user->get_display_name() ? : ''
-                    , 'id'    => $user->get_id()
+                    'email' => $user->getEmail() ? : ''
+                    , 'login' => $user->getLogin() ? : ''
+                    , 'name'  => $user->getDisplayName() ? : ''
+                    , 'id'    => $user->getId()
                 ];
             }
 
@@ -252,7 +252,6 @@ class Users implements ControllerProviderInterface
         });
 
         $controllers->post('/create/', function (Application $app) {
-
             $datas = ['error'   => false, 'message' => '', 'data'    => null];
             try {
                 $request = $app['request'];
@@ -262,10 +261,10 @@ class Users implements ControllerProviderInterface
                 } else {
                     $user = $module->create_newuser();
                 }
-                if (!($user instanceof \User_Adapter))
+                if (!($user instanceof User))
                     throw new \Exception('Unknown error');
 
-                $datas['data'] = $user->get_id();
+                $datas['data'] = $user->getId();
             } catch (\Exception $e) {
                 $datas['error'] = true;
                 if ($request->request->get('template') == '1') {
@@ -321,22 +320,22 @@ class Users implements ControllerProviderInterface
 
                 foreach ($results as $user) {
                     $buffer[] = [
-                        $user->get_id()
-                        , $user->get_login()
-                        , $user->get_lastname()
-                        , $user->get_firstname()
-                        , $user->get_email()
-                        , $app['date-formatter']->format_mysql($user->get_creation_date())
-                        , $app['date-formatter']->format_mysql($user->get_modification_date())
-                        , $user->get_address()
-                        , $user->get_city()
-                        , $user->get_zipcode()
-                        , $user->get_country()
-                        , $user->get_tel()
-                        , $user->get_fax()
-                        , $user->get_job()
-                        , $user->get_company()
-                        , $user->get_position()
+                        $user->getId()
+                        , $user->getLogin()
+                        , $user->getLastName()
+                        , $user->getFirstName()
+                        , $user->getEmail()
+                        , $app['date-formatter']->format_mysql($user->getCreated())
+                        , $app['date-formatter']->format_mysql($user->getUpdated())
+                        , $user->getAddress()
+                        , $user->getCity()
+                        , $user->getZipCode()
+                        , $user->getCountry()
+                        , $user->getPhone()
+                        , $user->getFax()
+                        , $user->getJob()
+                        , $user->getCompany()
+                        , $user->getActivity()
                     ];
                 }
             } while (count($results) > 0);
@@ -366,7 +365,7 @@ class Users implements ControllerProviderInterface
             $sql = 'SELECT usr_id, usr_login FROM usr WHERE model_of = :usr_id';
 
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute([':usr_id' => $app['authentication']->getUser()->get_id()]);
+            $stmt->execute(array(':usr_id' => $app['authentication']->getUser()->getId()));
             $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -458,10 +457,10 @@ class Users implements ControllerProviderInterface
                 $cache_to_update = [];
 
                 foreach ($templates as $usr => $template_id) {
-                    $user = \User_Adapter::getInstance($usr, $app);
+                    $user = $app['manipulator.user']->getRepository()->find($usr);
                     $cache_to_update[$usr] = true;
 
-                    $user_template = \User_Adapter::getInstance($template_id, $app);
+                    $user_template = $app['manipulator.user']->getRepository()->find($template_id);
                     $base_ids = array_keys($app['acl']->get($user_template)->get_granted_base());
 
                     $app['acl']->get($user)->apply_model($user_template, $base_ids);
@@ -507,7 +506,7 @@ class Users implements ControllerProviderInterface
                 $stmt->closeCursor();
 
                 foreach ($accept as $usr => $bases) {
-                    $user = \User_Adapter::getInstance($usr, $app);
+                    $user = $app['manipulator.user']->getRepository()->find($usr);
                     $cache_to_update[$usr] = true;
 
                     foreach ($bases as $bas) {
@@ -538,7 +537,7 @@ class Users implements ControllerProviderInterface
                 }
 
                 foreach (array_keys($cache_to_update) as $usr_id) {
-                    $user = \User_Adapter::getInstance($usr_id, $app);
+                    $user = $app['manipulator.user']->getRepository()->find($usr_id);
                     $app['acl']->get($user)->delete_data_from_cache();
                     unset($user);
                 }
@@ -667,7 +666,7 @@ class Users implements ControllerProviderInterface
                         } elseif (in_array($loginToAdd, $loginNew)) {
                             $out['errors'][] = $app->trans("Login %login% is already defined in the file at line %line%", ['%login%' => $loginToAdd, '%line%' => $nbLine]);
                         } else {
-                            if (\User_Adapter::get_usr_id_from_login($app, $loginToAdd)) {
+                            if (null !== $app['manipulator.user']->getRepository()->findByLogin($loginToAdd)) {
                                 $out['errors'][] = $app->trans("Login %login% already exists in database", ['%login%' => $loginToAdd]);
                             } else {
                                 $loginValid = true;
@@ -680,7 +679,7 @@ class Users implements ControllerProviderInterface
 
                         if ($mailToAdd === "") {
                             $out['errors'][] = $app->trans("Mail line %line% is empty", ['%line%' => $nbLine + 1]);
-                        } elseif (false !== \User_Adapter::get_usr_id_from_email($app, $mailToAdd)) {
+                        } elseif (null !== $app['manipulator.user']->getRepository()->findByEmail($mailToAdd)) {
                             $out['errors'][] = $app->trans("Email '%email%' for login '%login%' already exists in database", ['%email%' => $mailToAdd, '%login%' => $loginToAdd]);
                         } else {
                             $mailValid = true;
@@ -727,7 +726,7 @@ class Users implements ControllerProviderInterface
             GROUP BY usr_id";
 
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute([':usr_id' => $app['authentication']->getUser()->get_id()]);
+            $stmt->execute(array(':usr_id' => $app['authentication']->getUser()->getId()));
             $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -807,12 +806,13 @@ class Users implements ControllerProviderInterface
                 if (isset($curUser['usr_login']) && trim($curUser['usr_login']) !== ''
                         && isset($curUser['usr_password']) && trim($curUser['usr_password']) !== ''
                         && isset($curUser['usr_mail']) && trim($curUser['usr_mail']) !== '') {
-                    if (false === \User_Adapter::get_usr_id_from_login($app, $curUser['usr_login'])
-                            && false === \User_Adapter::get_usr_id_from_email($app, $curUser['usr_mail'])) {
-                        $NewUser = \User_Adapter::create($app, $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
+                    if (null === $app['manipulator.user']->getRepository()->findByLogin($curUser['usr_login'])
+                            && false === $app['manipulator.user']->getRepository()->findByEmail($curUser['usr_mail'])) {
+
+                        $NewUser = $app['manipulator.user']->createUser($curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail']);
 
                         $ftpCredential = new FtpCredential();
-                        $ftpCredential->setUsrId($NewUser->get_id());
+                        $ftpCredential->setUsrId($NewUser->getId());
 
                         if (isset($curUser['activeFTP'])) {
                             $ftpCredential->setActive((int) $curUser['activeFTP']);
@@ -830,38 +830,38 @@ class Users implements ControllerProviderInterface
                             $ftpCredential->setRepositoryPrefixName($curUser['prefixFTPfolder']);
                         }
                         if (isset($curUser['usr_prenom'])) {
-                            $NewUser->set_firstname($curUser['usr_prenom']);
+                            $NewUser->setFirstName($curUser['usr_prenom']);
                         }
                         if (isset($curUser['usr_nom'])) {
-                            $NewUser->set_lastname($curUser['usr_nom']);
+                            $NewUser->setLastName($curUser['usr_nom']);
                         }
                         if (isset($curUser['adresse'])) {
-                            $NewUser->set_address($curUser['adresse']);
+                            $NewUser->setAdress($curUser['adresse']);
                         }
                         if (isset($curUser['cpostal'])) {
-                            $NewUser->set_zip($curUser['cpostal']);
+                            $NewUser->setZipCode($curUser['cpostal']);
                         }
                         if (isset($curUser['usr_sexe'])) {
-                            $NewUser->set_gender((int) ($curUser['usr_sexe']));
+                            $NewUser->setGender((int) ($curUser['usr_sexe']));
                         }
                         if (isset($curUser['tel'])) {
-                            $NewUser->set_tel($curUser['tel']);
+                            $NewUser->setPhone($curUser['tel']);
                         }
                         if (isset($curUser['fax'])) {
-                            $NewUser->set_fax($curUser['fax']);
+                            $NewUser->setFax($curUser['fax']);
                         }
                         if (isset($curUser['activite'])) {
-                            $NewUser->set_job($curUser['activite']);
+                            $NewUser->setJob($curUser['activite']);
                         }
                         if (isset($curUser['fonction'])) {
-                            $NewUser->set_position($curUser['fonction']);
+                            $NewUser->setPosition($curUser['fonction']);
                         }
                         if (isset($curUser['societe'])) {
-                            $NewUser->set_company($curUser['societe']);
+                            $NewUser->setCompany($curUser['societe']);
                         }
 
                         $app['acl']->get($NewUser)->apply_model(
-                            \User_Adapter::getInstance($model, $app), array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(['manage']))
+                            $app['manipulator.user']->getRepository()->find($model), array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('manage')))
                         );
 
                         $nbCreation++;

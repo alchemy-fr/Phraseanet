@@ -80,8 +80,8 @@ class Bridge_AccountTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_user()
     {
-        $this->assertInstanceOf('User_Adapter', self::$object->get_user());
-        $this->assertEquals(self::$DI['user']->get_id(), self::$object->get_user()->get_id());
+        $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', self::$object->get_user());
+        $this->assertEquals(self::$DI['user']->getId(), self::$object->get_user()->getId());
     }
 
     public function testGet_name()

@@ -212,7 +212,7 @@ class UsrList
     public function hasAccess(\User_Adapter $user, Application $app)
     {
         foreach ($this->getOwners() as $owner) {
-            if ($owner->getUser($app)->get_id() == $user->get_id()) {
+            if ($owner->getUser($app)->getId() == $user->getId()) {
                 return true;
             }
         }
@@ -228,7 +228,7 @@ class UsrList
     public function getOwner(\User_Adapter $user, Application $app)
     {
         foreach ($this->getOwners() as $owner) {
-            if ($owner->getUser($app)->get_id() == $user->get_id()) {
+            if ($owner->getUser($app)->getId() == $user->getId()) {
                 return $owner;
             }
         }
@@ -246,7 +246,7 @@ class UsrList
     {
         return $this->entries->exists(
             function ($key, $entry) use ($user, $app) {
-                return $entry->getUser($app)->get_id() === $user->get_id();
+                return $entry->getUser($app)->getId() === $user->getId();
             }
         );
     }

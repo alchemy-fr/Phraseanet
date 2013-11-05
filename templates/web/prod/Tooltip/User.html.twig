@@ -1,7 +1,7 @@
 {% extends 'prod/Tooltip/Tooltip.html.twig' %}
 
 {% set title %}
-    app['authentication'].getUser().get_display_name()
+    app['authentication'].getUser().getDisplayName()
 {% endset %}
 {% set width = 300 %}
 {% set maxwidth = null %}
@@ -12,12 +12,12 @@
             <img style="margin:14px 8px;" src="/skins/icons/user.png"/>
         </div>
         <div class="PNB" style="left:100px;">
-            <h1> {{ app['authentication'].getUser().get_display_name() }}</h1>
+            <h1> {{ app['authentication'].getUser().getDisplayName() }}</h1>
             <ul>
-                <li>{{ app['authentication'].getUser().get_email() }}</li>
-                <li>{{ app['authentication'].getUser().get_company() }}</li>
-                <li>{{ app['authentication'].getUser().get_job() }}</li>
-                <li>{{ app['authentication'].getUser().get_position() }}</li>
+                <li>{{ app['authentication'].getUser().getEmail() }}</li>
+                <li>{{ app['authentication'].getUser().getCompany() }}</li>
+                <li>{{ app['authentication'].getUser().getJob() }}</li>
+                <li>{{ app['authentication'].getUser().getActivity() }}</li>
             </ul>
         </div>
     </div>

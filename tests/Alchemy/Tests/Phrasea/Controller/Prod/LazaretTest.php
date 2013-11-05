@@ -635,7 +635,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
     {
         //The lazaret session
         $lazaretSession = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
-        $lazaretSession->setUsrId(self::$DI['user']->get_id());
+        $lazaretSession->setUsrId(self::$DI['user']->getId());
         $lazaretSession->setUpdated(new \DateTime('now'));
         $lazaretSession->setCreated(new \DateTime('-1 day'));
 

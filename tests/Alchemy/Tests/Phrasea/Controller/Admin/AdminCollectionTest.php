@@ -9,7 +9,7 @@ use Alchemy\Phrasea\Border\File;
 class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
-    public static $createdCollections = [];
+    public static $createdCollections = array();
 
     public function tearDown()
     {
@@ -28,7 +28,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
             }
         }
 
-        self::$createdCollections = [];
+        self::$createdCollections = array();
         // /!\ re enable collection
         self::$DI['collection']->enable(self::$DI['app']['phraseanet.appbox']);
 
@@ -139,9 +139,9 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $prefs = '<?xml version="1.0" encoding="UTF-8"?> <baseprefs> <status>0</status> <sugestedValues> <Object> <value>my_new_value</value> </Object> </sugestedValues> </baseprefs>';
 
-        $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/suggested-values/', [
+        $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/suggested-values/', array(
             'str' => $prefs
-        ]);
+        ));
 
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
@@ -160,9 +160,9 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $prefs = '<?xml version="1.0" encoding="UTF-alues> </baseprefs>';
 
-        $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/suggested-values/', [
+        $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/suggested-values/', array(
             'str' => $prefs
-        ]);
+        ));
 
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertFalse($json->success);
@@ -268,9 +268,9 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->setAdmin(true);
 
-        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/order/admins/', [
-            'admins' => [self::$DI['user_alt1']->get_id()]
-        ]);
+        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/order/admins/', array(
+            'admins' => array(self::$DI['user_alt1']->getId())
+        ));
 
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');
 
@@ -284,9 +284,9 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->setAdmin(true);
 
-        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/publication/display/', [
+        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/publication/display/', array(
             'pub_wm' => 'wm',
-        ]);
+        ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
@@ -321,9 +321,9 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->setAdmin(true);
 
-        $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/publication/display/', [
+        $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/publication/display/', array(
             'pub_wm' => 'wm',
-        ]);
+        ));
 
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
@@ -341,9 +341,9 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $collection = $this->createOneCollection();
 
-        self::$DI['client']->request('POST', '/admin/collection/' . $collection->get_base_id() . '/rename/', [
+        self::$DI['client']->request('POST', '/admin/collection/' . $collection->get_base_id() . '/rename/', array(
             'name' => 'test_rename_coll'
-        ]);
+        ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertEquals('/admin/collection/' . $collection->get_base_id() . '/?success=1&reload-tree=1', self::$DI['client']->getResponse()->headers->get('location'));
@@ -358,13 +358,13 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $collection = $this->createOneCollection();
 
-        self::$DI['client']->request('POST', '/admin/collection/' . $collection->get_base_id() . '/labels/', [
-            'labels' => [
+        self::$DI['client']->request('POST', '/admin/collection/' . $collection->get_base_id() . '/labels/', array(
+            'labels' => array(
                 'en' => 'english label',
                 'fr' => 'french label',
                 'ru' => 'russian label',
-            ]
-        ]);
+            )
+        ));
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertContains('/admin/collection/'.$collection->get_base_id().'/', self::$DI['client']->getResponse()->headers->get('location'));
@@ -425,9 +425,9 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $collection = $this->createOneCollection();
 
-        $this->XMLHTTPRequest('POST', '/admin/collection/' . $collection->get_base_id() . '/rename/', [
+        $this->XMLHTTPRequest('POST', '/admin/collection/' . $collection->get_base_id() . '/rename/', array(
             'name' => 'test_rename_coll'
-        ]);
+        ));
 
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
@@ -445,15 +445,15 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $collection = $this->createOneCollection();
 
-        $this->XMLHTTPRequest('POST', '/admin/collection/' . $collection->get_base_id() . '/labels/', [
-            'labels' => [
+        $this->XMLHTTPRequest('POST', '/admin/collection/' . $collection->get_base_id() . '/labels/', array(
+            'labels' => array(
                 'nl' => 'netherlands label',
                 'de' => 'german label',
                 'fr' => 'label français',
                 'en' => 'label à l\'anglaise',
                 'ru' => 'label à la russe',
-            ]
-        ]);
+            )
+        ));
 
         $json = $this->getJson(self::$DI['client']->getResponse());
         $this->assertTrue($json->success);
@@ -535,7 +535,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $stmt = $databox->get_connection()->prepare($sql);
         $i = 0;
         while ($i < 502) {
-            $stmt->execute([
+            $stmt->execute(array(
                 ':coll_id'          => $collection->get_coll_id(),
                 ':parent_record_id' => 0,
                 ':type'             => 'unknown',
@@ -543,7 +543,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
                 ':uuid'             => \uuid::generate_v4(),
                 ':originalname'     => null,
                 ':mime'             => null,
-            ]);
+            ));
             $i ++;
         }
 
@@ -618,10 +618,10 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
         self::$DI['app']['filesystem']->copy(__DIR__ . '/../../../../../files/p4logo.jpg', $target);
-        $files = [
+        $files = array(
             'newLogo' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
-        ];
-        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/mini-logo/', [], $files);
+        );
+        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/mini-logo/', array(), $files);
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');
         $this->assertEquals(1, count(\collection::getLogo(self::$DI['collection']->get_base_id(), self::$DI['app'])));
     }
@@ -665,10 +665,10 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
         self::$DI['app']['filesystem']->copy(__DIR__ . '/../../../../../files/p4logo.jpg', $target);
-        $files = [
+        $files = array(
             'newWm' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
-        ];
-        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/watermark/', [], $files);
+        );
+        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/watermark/', array(), $files);
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');
         $this->assertEquals(1, count(\collection::getWatermark(self::$DI['collection']->get_base_id())));
     }
@@ -712,10 +712,10 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
         self::$DI['app']['filesystem']->copy(__DIR__ . '/../../../../../files/p4logo.jpg', $target);
-        $files = [
+        $files = array(
             'newStamp' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
-        ];
-        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/stamp-logo/', [], $files);
+        );
+        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/stamp-logo/', array(), $files);
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');
         $this->assertEquals(1, count(\collection::getStamp(self::$DI['collection']->get_base_id())));
     }
@@ -760,10 +760,10 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
         self::$DI['app']['filesystem']->copy(__DIR__ . '/../../../../../files/p4logo.jpg', $target);
-        $files = [
+        $files = array(
             'newBanner' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
-        ];
-        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/banner/', [], $files);
+        );
+        self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/banner/', array(), $files);
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');
         $this->assertEquals(1, count(\collection::getPresentation(self::$DI['collection']->get_base_id())));
     }

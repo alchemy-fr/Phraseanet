@@ -222,7 +222,7 @@ class API_OAuth2_Adapter extends OAuth2
                 , 'client_id'   => $token->get_account()->get_application()->get_client_id()
                 , 'session_id'  => $token->get_session_id()
                 , 'revoked'     => ($token->get_account()->is_revoked() ? '1' : '0')
-                , 'usr_id'      => $token->get_account()->get_user()->get_id()
+                , 'usr_id'      => $token->get_account()->get_user()->getId()
                 , 'oauth_token' => $token->get_value()
             ];
 
@@ -506,7 +506,7 @@ class API_OAuth2_Adapter extends OAuth2
             throw new logicalException("Client property must be set before update an account");
 
         try {
-            $user = User_Adapter::getInstance($usr_id, $this->app);
+            $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
             $account = API_OAuth2_Account::load_with_user($this->app, $this->client, $user);
         } catch (Exception $e) {
             $account = $this->createAccount($usr_id);
@@ -522,7 +522,7 @@ class API_OAuth2_Adapter extends OAuth2
      */
     private function createAccount($usr_id)
     {
-        $user = User_Adapter::getInstance($usr_id, $this->app);
+        $user = $this->app['manipulator.user']->getRepository()->find($usr_id);
 
         return API_OAuth2_Account::create($this->app, $user, $this->client);
     }

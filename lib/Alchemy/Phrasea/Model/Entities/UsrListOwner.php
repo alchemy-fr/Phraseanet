@@ -95,7 +95,7 @@ class UsrListOwner
 
     public function setUser(\User_Adapter $user)
     {
-        return $this->setUsrId($user->get_id());
+        return $this->setUsrId($user->getId());
     }
 
     public function getUser(Application $app)

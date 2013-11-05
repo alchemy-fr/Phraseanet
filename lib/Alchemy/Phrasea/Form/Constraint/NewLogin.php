@@ -27,9 +27,7 @@ class NewLogin extends Constraint
 
     public function isAlreadyRegistered($login)
     {
-        $ret = (Boolean) \User_Adapter::get_usr_id_from_login($this->app, $login);
-
-        return $ret;
+        return (Boolean) $this->app['manipulator.user']->getRepository()->findByLogin($login);
     }
 
     public static function create(Application $app)

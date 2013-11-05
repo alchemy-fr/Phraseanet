@@ -104,9 +104,9 @@
                                             {% set recommendation = recommendation %}
                                         {% endif %}
                                         {% set recommendation = recommendation
-                                        ~ ' <a href="#" class="recommended_users UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : user.get_id() }) ~ '">'
-                                        ~ '<input type="hidden" name="usr_id" value="' ~ user.get_id() ~ '" />'
-                                        ~ user.get_display_name()
+                                        ~ ' <a href="#" class="recommended_users UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : user.getId() }) ~ '">'
+                                        ~ '<input type="hidden" name="usr_id" value="' ~ user.getId() ~ '" />'
+                                        ~ user.getDisplayName()
                                         ~ '</a>' %}
                                     {% endif %}
                                 {% endfor %}
@@ -139,8 +139,8 @@
                                                 <img src="/skins/icons/user.png"/>
                                             </td>
                                             <td>
-                                                {{ user.get_display_name() }}
-                                                <input type="hidden" name="usr_id" value="{{ user.get_id() }}" />
+                                                {{ user.getDisplayName() }}
+                                                <input type="hidden" name="usr_id" value="{{ user.getId() }}" />
                                             </td>
                                             <td>
                                                 <a href="#" class="adder">{{ 'Add' | trans }}</a>

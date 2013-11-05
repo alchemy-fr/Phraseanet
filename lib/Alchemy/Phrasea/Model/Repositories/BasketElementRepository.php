@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -24,7 +25,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class BasketElementRepository extends EntityRepository
 {
 
-    public function findUserElement($element_id, \User_Adapter $user)
+    public function findUserElement($element_id, User $user)
     {
         $dql = 'SELECT e
             FROM Phraseanet:BasketElement e
@@ -35,11 +36,11 @@ class BasketElementRepository extends EntityRepository
             WHERE (b.usr_id = :usr_id OR p.usr_id = :same_usr_id)
               AND e.id = :element_id';
 
-        $params = [
-            'usr_id'      => $user->get_id(),
-            'same_usr_id' => $user->get_id(),
+        $params = array(
+            'usr_id'      => $user->getId(),
+            'same_usr_id' => $user->getId(),
             'element_id'  => $element_id
-        ];
+        );
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -64,10 +65,10 @@ class BasketElementRepository extends EntityRepository
             WHERE e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
-        $params = [
+        $params = array(
             'sbas_id'   => $record->get_sbas_id(),
             'record_id' => $record->get_record_id()
-        ];
+        );
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -84,9 +85,9 @@ class BasketElementRepository extends EntityRepository
             LEFT JOIN s.participants p
             WHERE e.sbas_id = :sbas_id';
 
-        $params = [
+        $params = array(
             'sbas_id'   => $databox->get_sbas_id(),
-        ];
+        );
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -97,10 +98,10 @@ class BasketElementRepository extends EntityRepository
     /**
      *
      * @param  \record_adapter                              $record
-     * @param  \User_Adapter                                $user
+     * @param  User                                $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function findReceivedElementsByRecord(\record_adapter $record, \User_Adapter $user)
+    public function findReceivedElementsByRecord(\record_adapter $record, User $user)
     {
         $dql = 'SELECT e
             FROM Phraseanet:BasketElement e
@@ -112,11 +113,11 @@ class BasketElementRepository extends EntityRepository
             AND e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
-        $params = [
+        $params = array(
             'sbas_id'   => $record->get_sbas_id(),
             'record_id' => $record->get_record_id(),
-            'usr_id'    => $user->get_id()
-        ];
+            'usr_id'    => $user->getId()
+        );
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
@@ -124,7 +125,7 @@ class BasketElementRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function findReceivedValidationElementsByRecord(\record_adapter $record, \User_Adapter $user)
+    public function findReceivedValidationElementsByRecord(\record_adapter $record, User $user)
     {
         $dql = 'SELECT e
             FROM Phraseanet:BasketElement e
@@ -135,11 +136,11 @@ class BasketElementRepository extends EntityRepository
             AND e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
-        $params = [
+        $params = array(
             'sbas_id'   => $record->get_sbas_id(),
             'record_id' => $record->get_record_id(),
-            'usr_id'    => $user->get_id()
-        ];
+            'usr_id'    => $user->getId()
+        );
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);

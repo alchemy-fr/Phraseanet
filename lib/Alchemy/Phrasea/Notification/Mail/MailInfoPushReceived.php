@@ -13,12 +13,13 @@ namespace Alchemy\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class MailInfoPushReceived extends AbstractMailWithLink
 {
     /** @var Basket */
     private $basket;
-    /** @var \User_Adapter */
+    /** @var User */
     private $pusher;
 
     /**
@@ -31,7 +32,7 @@ class MailInfoPushReceived extends AbstractMailWithLink
         $this->basket = $basket;
     }
 
-    public function setPusher(\User_Adapter $pusher)
+    public function setPusher(User $pusher)
     {
         $this->pusher = $pusher;
     }
@@ -61,7 +62,7 @@ class MailInfoPushReceived extends AbstractMailWithLink
         }
 
         return
-            $this->app->trans('You just received a push containing %quantity% documents from %user%', ['%quantity%' => count($this->basket->getElements()), '%user%' => $this->pusher->get_display_name()])
+            $this->app->trans('You just received a push containing %quantity% documents from %user%', ['%quantity%' => count($this->basket->getElements()), '%user%' => $this->pusher->getDisplayName()])
             . "\n" . $this->message;
     }
 

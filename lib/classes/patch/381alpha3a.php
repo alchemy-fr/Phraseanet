@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class patch_381alpha3a implements patchInterface
 {
@@ -59,7 +60,7 @@ class patch_381alpha3a implements patchInterface
         $propSql = $propArgs = [];
         $n = 0;
 
-        foreach (\User_Adapter::$def_values as $prop => $value) {
+        foreach (User::$defaultUserSettings as $prop => $value) {
             if ('start_page_query' === $prop) {
                 continue;
             }

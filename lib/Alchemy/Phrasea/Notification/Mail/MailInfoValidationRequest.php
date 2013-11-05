@@ -12,12 +12,13 @@
 namespace Alchemy\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class MailInfoValidationRequest extends AbstractMailWithLink
 {
     /** @var string */
     private $title;
-    /** @var \User_Adapter */
+    /** @var User */
     private $user;
     /** @var integer */
     private $duration;
@@ -59,7 +60,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
             throw new LogicException('You must set a title before calling getSubject');
         }
 
-        return $this->app->trans("Validation request from %user% for '%title%'", ['%user%' => $this->user->get_display_name(), '%title%' => $this->title]);
+        return $this->app->trans("Validation request from %user% for '%title%'", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title]);
     }
 
     /**

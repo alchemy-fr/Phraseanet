@@ -55,15 +55,16 @@ class RSSFeeds implements ControllerProviderInterface
             $page = $page < 1 ? 1 : $page;
 
             return $app['feed.formatter-strategy']($format)
-                ->createResponse($app, $token->getFeed(), $page, \User_Adapter::getInstance($token->getUsrId(), $app));
+                ->createResponse($app, $token->getFeed(), $page, $app['manipulator.user']->getRepository()->find($token->getUsrId()));
         })
             ->bind('feed_user')
             ->assert('id', '\d+')
             ->assert('format', '(rss|atom)');
 
         $controllers->get('/userfeed/aggregated/{token}/{format}/', function (Application $app, $token, $format) {
-            $token = $app['EM']->getRepository('Phraseanet:AggregateToken')->findOneBy(["value" => $token]);
-            $user = \User_Adapter::getInstance($token->getUsrId(), $app);
+            $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(["value" => $token]);
+
+            $user = $app['manipulator.user']->getRepository()->find($token->getUsrId());
 
             $feeds = $app['EM']->getRepository('Phraseanet:Feed')->getAllForUser($app['acl']->get($user));
 
