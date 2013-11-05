@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Cache;
 
+use Alchemy\Phrasea\Cache\ConnectionFactory;
 use Alchemy\Phrasea\Cache\Factory;
 
 class FactoryTest extends \PHPUnit_Framework_TestCase
@@ -15,7 +16,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped(sprintf('Extension %s is not loaded', $extension));
         }
 
-        $factory = new Factory();
+        $factory = new Factory(new ConnectionFactory());
         $this->assertInstanceOf($expected, $factory->create($name, array()));
     }
 

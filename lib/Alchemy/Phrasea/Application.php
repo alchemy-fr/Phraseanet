@@ -81,6 +81,7 @@ use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
+use Alchemy\Phrasea\Core\Provider\CacheConnectionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider;
@@ -202,6 +203,7 @@ class Application extends SilexApplication
         $this->register(new ConvertersServiceProvider());
         $this->register(new RegistrationServiceProvider());
         $this->register(new CacheServiceProvider());
+        $this->register(new CacheConnectionServiceProvider());
         $this->register(new ImagineServiceProvider());
         $this->register(new JMSSerializerServiceProvider());
         $this->register(new FFMpegServiceProvider());
