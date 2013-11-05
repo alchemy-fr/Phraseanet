@@ -89,10 +89,21 @@ define([
             "blur input#tbranch": "fieldChangedAction",
             "blur input#separator": "fieldChangedAction",
             "blur input#tag": "tagFieldChangedAction",
+            "change select#vocabulary-type": "triggerControlledVocabulary",
             "keyup input.input-label": "labelChangedAction",
             "change input[type=checkbox]": "fieldChangedAction",
             "change select": "selectionChangedAction",
             "click .lng-label a": "_toggleLabels"
+        },
+        triggerControlledVocabulary: function(e) {
+            if ($(e.target, this.$el).find("option:selected").val() === "") {
+                this.model.set("vocabulary-type", false);
+                this.render();
+            } else if ($("input#vocabulary-restricted", this.$el).length === 0) {
+                this.model.set("vocabulary-restricted", false);
+                this.model.set("vocabulary-type", $(e.target, this.$el).find("option:selected").val());
+                this.render();
+            }
         },
         selectionChangedAction: function(e) {
             var field = $(e.target);

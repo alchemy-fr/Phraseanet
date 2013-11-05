@@ -5,6 +5,7 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\Session;
 
 class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
 {
@@ -33,11 +34,17 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
 
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
-        $app['EM'] = $em = $this->getEntityManagerMock();
+
+        $sessionEntity = new Session();
+        $sessionEntity->setUsrId($user->get_id());
+        $sessionEntity->setUserAgent('');
+        $app['EM']->persist($sessionEntity);
+        $app['EM']->flush();
 
         $session->set('usr_id', $user->get_id());
+        $session->set('session_id', $sessionEntity->getId());
 
-        $authenticator = new Authenticator($app, $browser, $session, $em);
+        $authenticator = new Authenticator($app, $browser, $session, $app['EM']);
         $this->assertEquals($user, $authenticator->getUser());
     }
 
@@ -69,8 +76,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
     public function testOpenAccount()
     {
         $app = new Application();
-
-        $sessionId = 2442;
+        $capturedSession = null;
 
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
@@ -97,11 +103,8 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $em->expects($this->at(0))
             ->method('persist')
             ->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\Session'))
-            ->will($this->returnCallback(function ($session) use ($sessionId) {
-                $ref = new \ReflectionObject($session);
-                $prop = $ref->getProperty('id');
-                $prop->setAccessible(true);
-                $prop->setValue($session, $sessionId);
+            ->will($this->returnCallback(function ($session) use (&$capturedSession) {
+                $capturedSession = $session;
             }));
         $em->expects($this->at(1))
             ->method('flush');
@@ -110,7 +113,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $phsession = $authenticator->openAccount($user);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\Session', $phsession);
-        $this->assertEquals($sessionId, $session->get('session_id'));
+        $this->assertEquals($capturedSession, $phsession);
     }
 
     /**
@@ -129,7 +132,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $usrId = $user->get_id();
         $sessionId = 4224242;
 
-        $session = new \Alchemy\Phrasea\Model\Entities\Session();
+        $session = new Session();
         $session->setUsrId($usrId);
 
         $ref = new \ReflectionObject($session);
@@ -171,7 +174,7 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
         $usrId = $user->get_id();
         $sessionId = 4224242;
 
-        $session = new \Alchemy\Phrasea\Model\Entities\Session();
+        $session = new Session();
         $session->setUsrId($usrId);
 
         $ref = new \ReflectionObject($session);
@@ -237,11 +240,17 @@ class AuthenticatorTest extends \PhraseanetPHPUnitAbstract
 
         $app['browser'] = $browser = $this->getBrowserMock();
         $app['session'] = $session = $this->getSessionMock();
-        $app['EM'] = $em = $this->getEntityManagerMock();
+
+        $sessionEntity = new Session();
+        $sessionEntity->setUsrId($user->get_id());
+        $sessionEntity->setUserAgent('');
+        $app['EM']->persist($sessionEntity);
+        $app['EM']->flush();
 
         $session->set('usr_id', $user->get_id());
+        $session->set('session_id', $sessionEntity->getId());
 
-        $authenticator = new Authenticator($app, $browser, $session, $em);
+        $authenticator = new Authenticator($app, $browser, $session, $app['EM']);
         $this->assertTrue($authenticator->isAuthenticated());
     }
 

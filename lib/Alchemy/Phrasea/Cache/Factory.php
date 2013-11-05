@@ -45,6 +45,10 @@ class Factory
             case 'memcachecache':
                 $cache = $this->createMemcache($options);
                 break;
+            case 'memcached':
+            case 'memcachecached':
+                $cache = $this->createMemcached($options);
+                break;
             case 'redis':
             case 'rediscache':
                 $cache = $this->createRedis($options);
@@ -127,6 +131,29 @@ class Factory
 
         $cache = new MemcacheCache();
         $cache->setMemcache($memcache);
+
+        return $cache;
+    }
+
+    private function createMemcached($options)
+    {
+        if (!extension_loaded('memcached')) {
+            throw new RuntimeException('The Memcached cache requires the Memcached extension.');
+        }
+
+        $host = isset($options['host']) ? $options['host'] : 'localhost';
+        $port = isset($options['port']) ? $options['port'] : 11211;
+
+        $memcached = new \Memcached();
+        $memcached->addServer($host, $port);
+        $memcached->getStats();
+
+        if (\Memcached::RES_SUCCESS !== $memcached->getResultCode()) {
+            throw new RuntimeException(sprintf("Memcached instance with host '%s' and port '%s' is not reachable", $host, $port));
+        }
+
+        $cache = new MemcachedCache();
+        $cache->setMemcached($memcached);
 
         return $cache;
     }

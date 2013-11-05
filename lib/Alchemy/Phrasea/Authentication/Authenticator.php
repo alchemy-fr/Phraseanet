@@ -149,6 +149,19 @@ class Authenticator
      */
     public function isAuthenticated()
     {
-        return $this->session->has('usr_id');
+        if (!$this->session->has('usr_id')) {
+            return false;
+        }
+
+        if ($this->session->has('session_id')) {
+            if (null !== $this->em->find('Alchemy\Phrasea\Model\Entities\Session', $this->session->get('session_id'))) {
+                return true;
+            }
+        }
+
+        $this->session->invalidate();
+        $this->reinitUser();
+
+        return false;
     }
 }
