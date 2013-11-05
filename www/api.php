@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
+use Symfony\Component\Debug\ErrorHandler;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
