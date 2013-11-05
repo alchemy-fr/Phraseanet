@@ -12,6 +12,11 @@ class ManipulatorServiceProvidertest extends ServiceProviderTestCase
                 'manipulator.task',
                 'Alchemy\Phrasea\Model\Manipulator\TaskManipulator'
             ),
+            array(
+                'Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider',
+                'manipulator.acl',
+                'Alchemy\Phrasea\Model\Manipulator\ACLManipulator'
+            ),
         );
     }
 }

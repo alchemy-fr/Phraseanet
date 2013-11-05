@@ -137,7 +137,9 @@ class Dashboard implements ControllerProviderInterface
      */
     public function resetAdminRights(Application $app, Request $request)
     {
-        \User_Adapter::reset_sys_admins_rights($app);
+        $app['manipulator.acl']->resetAdminRights(array_map(function ($id) use ($app) {
+            return \User_Adapter::getInstance($id, $app);
+        }, array_keys(\User_Adapter::get_sys_admins($app))));
 
         return $app->redirectPath('admin_dashbord');
     }
@@ -159,7 +161,9 @@ class Dashboard implements ControllerProviderInterface
 
             if ($admins > 0) {
                 \User_Adapter::set_sys_admins($app, array_filter($admins));
-                \User_Adapter::reset_sys_admins_rights($app);
+                $app['manipulator.acl']->resetAdminRights(array_map(function ($id) use ($app) {
+                    return \User_Adapter::getInstance($id, $app);
+                }, array_keys(\User_Adapter::get_sys_admins($app))));
             }
         }
 

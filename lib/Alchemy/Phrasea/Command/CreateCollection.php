@@ -64,6 +64,9 @@ class CreateCollection extends Command
             }
         }
 
-        \User_Adapter::reset_sys_admins_rights($this->container);
+        $app = $this->container;
+        $this->container['manipulator.acl']->resetAdminRights(array_map(function ($id) use ($app) {
+            return \User_Adapter::getInstance($id, $app);
+        }, array_keys(\User_Adapter::get_sys_admins($this->container))));
     }
 }

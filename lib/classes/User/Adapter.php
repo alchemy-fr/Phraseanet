@@ -1224,57 +1224,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return false;
     }
 
-    public static function reset_sys_admins_rights(Application $app)
-    {
-        $users = self::get_sys_admins($app);
-
-        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
-            foreach (array_keys($users) as $usr_id) {
-                $user = User_Adapter::getInstance($usr_id, $app);
-                $app['acl']->get($user)->give_access_to_sbas(array($databox->get_sbas_id()));
-
-                $rights = array(
-                    'bas_manage'        => '1'
-                    , 'bas_modify_struct' => '1'
-                    , 'bas_modif_th'      => '1'
-                    , 'bas_chupub'        => '1'
-                );
-
-                $app['acl']->get($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
-
-                foreach ($databox->get_collections() as $collection) {
-                    $app['acl']->get($user)->give_access_to_base(array($collection->get_base_id()));
-
-                    $rights = array(
-                        'canputinalbum'     => '1'
-                        , 'candwnldhd'        => '1'
-                        , 'candwnldsubdef'    => '1'
-                        , 'nowatermark'       => '1'
-                        , 'candwnldpreview'   => '1'
-                        , 'cancmd'            => '1'
-                        , 'canadmin'          => '1'
-                        , 'canreport'         => '1'
-                        , 'canpush'           => '1'
-                        , 'creationdate'      => '1'
-                        , 'canaddrecord'      => '1'
-                        , 'canmodifrecord'    => '1'
-                        , 'candeleterecord'   => '1'
-                        , 'chgstatus'         => '1'
-                        , 'imgtools'          => '1'
-                        , 'manage'            => '1'
-                        , 'modify_struct'     => '1'
-                        , 'bas_modify_struct' => '1'
-                    );
-
-                    $app['acl']->get($user)->update_rights_to_base($collection->get_base_id(), $rights);
-                    $app['acl']->get($user)->set_limits($collection->get_base_id(), false);
-                }
-            }
-        }
-
-        return;
-    }
-
     public function get_locale()
     {
         return $this->locale ?: $this->app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
