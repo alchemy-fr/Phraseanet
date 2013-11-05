@@ -207,7 +207,7 @@ class patch_320f implements patchInterface
             $app['EM']->flush();
 
             } elseif ($pub_restrict == 1) {
-                $collections = $user->ACL()->get_granted_base();
+                $collections = $app['acl']->get($user)->get_granted_base();
                 $collection = array_shift($collections);
                 if ( ! ($collection instanceof collection)) {
                     foreach ($appbox->get_databoxes() as $databox) {

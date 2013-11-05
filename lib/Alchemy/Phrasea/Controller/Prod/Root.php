@@ -74,8 +74,8 @@ class Root implements ControllerProviderInterface
                 $cssfile = '000000';
             }
 
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['authentication']->getUser());
-            $aggregate = Aggregate::createFromUser($app['EM'], $app['authentication']->getUser());
+            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
+            $aggregate = Aggregate::createFromUser($app, $app['authentication']->getUser());
 
             $thjslist = "";
 

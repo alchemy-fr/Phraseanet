@@ -120,7 +120,7 @@ class Edit implements ControllerProviderInterface
                 /**
                  * generate javascript status
                  */
-                if ($app['authentication']->getUser()->ACL()->has_right('changestatus')) {
+                if ($app['acl']->get($app['authentication']->getUser())->has_right('changestatus')) {
                     $dbstatus = \databox_status::getDisplayStatus($app);
                     if (isset($dbstatus[$databox->get_sbas_id()])) {
                         foreach ($dbstatus[$databox->get_sbas_id()] as $n => $statbit) {
@@ -156,7 +156,7 @@ class Edit implements ControllerProviderInterface
                     );
 
                     $elements[$indice]['statbits'] = array();
-                    if ($app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'chgstatus')) {
+                    if ($app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'chgstatus')) {
                         foreach ($status as $n => $s) {
                             $tmp_val = substr(strrev($record->get_status()), $n, 1);
                             $elements[$indice]['statbits'][$n]['value'] = ($tmp_val == '1') ? '1' : '0';

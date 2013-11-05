@@ -10,8 +10,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = "/prod/story/";
 
-        $collections = self::$DI['app']['authentication']->getUser()
-            ->ACL()
+        $collections = self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())
             ->get_granted_base(array('canaddrecord'));
 
         $collection = array_shift($collections);
@@ -40,8 +39,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = "/prod/story/";
 
-        $collections = self::$DI['app']['authentication']->getUser()
-            ->ACL()
+        $collections = self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())
             ->get_granted_base(array('canaddrecord'));
 
         $collection = array_shift($collections);

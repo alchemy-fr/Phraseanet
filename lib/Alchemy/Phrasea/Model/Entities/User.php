@@ -288,11 +288,6 @@ class User
     private $notificationSettings;
 
     /**
-     * @var \ACL
-     */
-    private $acl;
-
-    /**
      * @var ArrayCollection
      */
     private $cachedSettings;
@@ -1008,20 +1003,6 @@ class User
         $this->notificationSettings->add($notificationSetting);
 
         return $this;
-    }
-
-    /**
-     * @param Application $app
-     *
-     * @return \ACL
-     */
-    public function ACL(Application $app)
-    {
-        if (!$this->acl instanceof \ACL) {
-            $this->acl = new \ACL($this, $app);
-        }
-
-        return $this->acl;
     }
 
     /**

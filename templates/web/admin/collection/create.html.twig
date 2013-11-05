@@ -32,10 +32,10 @@
             </div>
             <div class="control-group">
                 <div class="controls">
-                     {% if app['authentication'].getUser().ACL().get_granted_base(["canadmin"]) | length > 0 %}
+                     {% if app['acl'].get(app['authentication'].getUser()).get_granted_base(["canadmin"]) | length > 0 %}
                         <select id="othcollsel" name="othcollsel" disabled>
                             <option>{% trans "choisir" %}</option>
-                            {% for collection in app['authentication'].getUser().ACL().get_granted_base(["canadmin"]) %}
+                            {% for collection in app['acl'].get(app['authentication'].getUser()).get_granted_base(["canadmin"]) %}
                                <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale.I18n']) }}</option>
                             {% endfor %}
                         </select>

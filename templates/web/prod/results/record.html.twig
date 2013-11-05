@@ -80,7 +80,7 @@
                     {% endif %}
                     <td style='text-align:right;width:{{l_width}}px;' valign='bottom'>
                     {{drop_down.prod(record, entry_id)}}
-                    {% if record.has_preview() and app['authentication'].getUser().ACL().has_access_to_subdef(record, 'preview') %}
+                    {% if record.has_preview() and app['acl'].get(app['authentication'].getUser()).has_access_to_subdef(record, 'preview') %}
                     <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}" class="previewTips"></div>
                     {% endif %}
                     {% if user_rollover_thumbnail == 'preview' %}

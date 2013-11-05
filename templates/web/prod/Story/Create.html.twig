@@ -2,7 +2,7 @@
 
     <label>{% trans 'Collection' %}</label>
     <select name="base_id">
-        {% for collection in app['authentication'].getUser().ACL().get_granted_base(['canaddrecord']) %}
+        {% for collection in app['acl'].get(app['authentication'].getUser()).get_granted_base(['canaddrecord']) %}
             <option value="{{ collection.get_base_id() }}">{{ collection.get_databox().get_label(app['locale.I18n']) }} / {{ collection.get_label(app['locale.I18n']) }}</option>
         {% endfor %}
     </select>

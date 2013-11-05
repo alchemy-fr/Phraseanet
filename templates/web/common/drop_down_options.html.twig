@@ -8,7 +8,7 @@
             <tr>
             <td>
                 <div class="context-menu context-menu-theme-vista">
-                {% if app['authentication'].getUser().ACL.has_right_on_base(record.get_base_id, 'canputinalbum') and not record.is_grouping() %}
+                {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id, 'canputinalbum') and not record.is_grouping() %}
                 <div title="" class="context-menu-item">
                     <div class="context-menu-item-inner"
                         onclick="evt_add_in_chutier('{{record.get_sbas_id}}','{{record.get_record_id}}',false,this);return(false);">
@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 {% endif %}
-                {% if app['authentication'].getUser().ACL.has_right_on_base(record.get_base_id, 'candwnldpreview') or app['authentication'].getUser().ACL.has_right_on_base(record.get_base_id, 'candwnldhd') %}
+                {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id, 'candwnldpreview') or app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id, 'candwnldhd') %}
                 <div title="" class="context-menu-item">
                     <div class="context-menu-item-inner"
                         onclick="evt_dwnl('{{record.get_sbas_id}}_{{record.get_record_id}}',false,this);return(false);">
@@ -30,7 +30,7 @@
                     {% trans 'action : print' %}
                     </div>
                 </div>
-                {% if app['phraseanet.registry'].get('GV_social_tools') == 'all' or (app['phraseanet.registry'].get('GV_social_tools') == 'publishers' and user.ACL().has_right_on_sbas(record.get_sbas_id(), 'bas_chupub')) %}
+                {% if app['phraseanet.registry'].get('GV_social_tools') == 'all' or (app['phraseanet.registry'].get('GV_social_tools') == 'publishers' and app['acl'].get(user).has_right_on_sbas(record.get_sbas_id(), 'bas_chupub')) %}
                     {% if record.is_grouping() is empty %}
                     <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"

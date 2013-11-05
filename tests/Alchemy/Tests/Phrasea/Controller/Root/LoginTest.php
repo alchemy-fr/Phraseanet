@@ -1187,7 +1187,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $user = \User_Adapter::getInstance($usr_id, self::$DI['app']);
 
-        $user->ACL()->give_access_to_base(array(self::$DI['collection']->get_base_id()));
+        self::$DI['app']['acl']->get($user)->give_access_to_base(array(self::$DI['collection']->get_base_id()));
 
         $this->logout(self::$DI['app']);
 
@@ -1219,7 +1219,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $usr_id = \User_Adapter::get_usr_id_from_login(self::$DI['app'], 'invite');
         $user = \User_Adapter::getInstance($usr_id, self::$DI['app']);
-        $user->ACL()->give_access_to_base(array(self::$DI['collection']->get_base_id()));
+        self::$DI['app']['acl']->get($user)->give_access_to_base(array(self::$DI['collection']->get_base_id()));
 
         $this->logout(self::$DI['app']);
 

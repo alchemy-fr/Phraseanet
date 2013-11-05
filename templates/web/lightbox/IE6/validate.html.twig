@@ -94,7 +94,7 @@
                     <div id="record_infos">
                         <div class="lightbox_container">
               {% if basket_element %}
-                {% set business = app['authentication'].getUser().ACL().has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
+                {% set business = app['acl'].get(app['authentication'].getUser()).has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
                 {{caption.format_caption(basket_element.getRecord(app), '', null, business)}}
               {% endif %}
             </div>

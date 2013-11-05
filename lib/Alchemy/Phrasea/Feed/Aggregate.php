@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Feed;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\LogicException;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
@@ -74,12 +75,12 @@ class Aggregate implements FeedInterface
      *
      * @return Aggregate
      */
-    public static function createFromUser(EntityManager $em, \User_Adapter $user)
+    public static function createFromUser(Application $app, \User_Adapter $user)
     {
-        $feeds = $em->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($user);
-        $token = $em->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(array('usrId' => $user->get_id()));
+        $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($user));
+        $token = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')->findOneBy(array('usrId' => $user->get_id()));
 
-        return new static($em, $feeds, $token);
+        return new static($app['EM'], $feeds, $token);
     }
 
     /**
@@ -92,7 +93,7 @@ class Aggregate implements FeedInterface
      */
     public static function create(Application $app, array $feed_ids)
     {
-        $feeds = $this->em->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findByIds($feed_ids);
+        $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->findByIds($feed_ids);
 
         return new static($app, $feeds);
     }

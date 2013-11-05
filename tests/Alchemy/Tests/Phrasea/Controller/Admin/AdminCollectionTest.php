@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Border\File;
 
 class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -12,7 +13,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function tearDown()
     {
-        self::$DI['app']['authentication']->setUser(self::$DI['user']);
+        self::$DI['app']['acl'] = new ACLProvider(self::$DI['app']);
         foreach (self::$createdCollections as $collection) {
             try {
                 $collection->unmount_collection(self::$DI['app']);
@@ -26,6 +27,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
             }
         }
+
         self::$createdCollections = array();
         // /!\ re enable collection
         self::$DI['collection']->enable(self::$DI['app']['phraseanet.appbox']);
@@ -38,8 +40,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app'] = new Application('test');
 
         self::giveRightsToUser(self::$DI['app'], self::$DI['user']);
-        self::$DI['user']->ACL()->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
-        self::$DI['user']->ACL()->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+        self::$DI['app']['acl']->get(self::$DI['user'])->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
+        self::$DI['app']['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
 
         parent::tearDownAfterClass();
     }
@@ -103,12 +105,10 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $collection = $this->createOneCollection();
-
-        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg'), $collection);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg'), self::$DI['collection']);
         \record_adapter::createFromFile($file, self::$DI['app']);
 
-        self::$DI['client']->request('GET', '/admin/collection/' . $collection->get_base_id() . '/informations/details/');
+        self::$DI['client']->request('GET', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/informations/details/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
@@ -279,7 +279,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');
 
-        $this->assertTrue(self::$DI['user_alt1']->ACL()->has_right_on_base(self::$DI['collection']->get_base_id(), 'order_master'));
+        $this->assertTrue(self::$DI['app']['acl']->get(self::$DI['user_alt1'])->has_right_on_base(self::$DI['collection']->get_base_id(), 'order_master'));
     }
 
     /**

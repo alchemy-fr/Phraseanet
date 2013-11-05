@@ -870,7 +870,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     public static function giveRightsToUser(Application $app, \User_Adapter $user)
     {
-        $user->ACL()->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
+        $app['acl']->get($user)->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
 
@@ -881,13 +881,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 , 'bas_chupub'        => '1'
             );
 
-            $user->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+            $app['acl']->get($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
-                $user->ACL()->give_access_to_base(array($base_id));
-                $user->ACL()->update_rights_to_base($base_id, array('order_master' => true));
+                $app['acl']->get($user)->give_access_to_base(array($base_id));
+                $app['acl']->get($user)->update_rights_to_base($base_id, array('order_master' => true));
 
                 $rights = array(
                     'canputinalbum'     => '1'
@@ -911,7 +911,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     , 'bas_modify_struct' => '1'
                 );
 
-                $user->ACL()->update_rights_to_base($collection->get_base_id(), $rights);
+                $app['acl']->get($user)->update_rights_to_base($collection->get_base_id(), $rights);
             }
         }
     }
@@ -957,7 +957,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces) {
-                    $user->ACL()->revoke_access_from_bases(array($collection_no_acces->get_base_id()));
+                    $DI['app']['acl']->get($user)->revoke_access_from_bases(array($collection_no_acces->get_base_id()));
                     $DI['client'] = new Client($DI['app'], array());
 
                     return $user;
@@ -976,7 +976,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces_by_status) {
-                    $user->ACL()->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+                    $DI['app']['acl']->get($user)->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
                     $DI['client'] = new Client($DI['app'], array());
 
                     return $user;
@@ -1061,7 +1061,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             self::$DI['user'] = self::$DI->share(
                 self::$DI->extend('user', function ($user, $DI) use ($app) {
                     PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
-                    $user->ACL()->set_admin(true);
+                    $app['acl']->get($user)->set_admin(true);
 
                     return $user;
                 })
@@ -1070,7 +1070,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             self::$DI['user_notAdmin'] = self::$DI->share(
                 self::$DI->extend('user_notAdmin', function ($user, $DI) use ($app) {
                     PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
-                    $user->ACL()->set_admin(false);
+                    $app['acl']->get($user)->set_admin(false);
 
                     return $user;
                 })

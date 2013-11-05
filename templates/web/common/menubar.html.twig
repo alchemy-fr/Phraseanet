@@ -33,7 +33,7 @@
             {% endif %}
           </li>
 
-          {% if app['browser'].isNewGeneration and app['phraseanet.registry'].get('GV_thesaurus') == true and app['authentication'].getUser().ACL.has_access_to_module('thesaurus') %}
+          {% if app['browser'].isNewGeneration and app['phraseanet.registry'].get('GV_thesaurus') == true and app['acl'].get(app['authentication'].getUser()).has_access_to_module('thesaurus') %}
           <li>
             <a target="_blank" href="{{ path('thesaurus') }}">
               <span class="{% if module is defined and module == "thesaurus" %}selected{% endif %}">
@@ -45,7 +45,7 @@
 
 
           {# MODULE #}
-          {% if app['authentication'].getUser().ACL.has_access_to_module('admin') %}
+          {% if app['acl'].get(app['authentication'].getUser()).has_access_to_module('admin') %}
           <li>
             <a target="_blank" href="{{ path('admin') }}">
               <span class="{% if module is defined and module == "admin" %}selected{% endif %}">
@@ -56,7 +56,7 @@
           {% endif %}
 
           {# MODULE #}
-          {% if app['authentication'].getUser().ACL.has_access_to_module('report') %}
+          {% if app['acl'].get(app['authentication'].getUser()).has_access_to_module('report') %}
           <li>
             <a target="_blank" href="{{ path('report_dashboard') }}">
               <span class="{% if module is defined and module == "report" %}selected{% endif %}">
@@ -75,9 +75,9 @@
             </a>
           </li>
 
-          {# MODULE #}
+          {# MODULE #}       
           {% if module is defined and module == "prod" %}
-            {% if app['authentication'].getUser().ACL.has_access_to_module('upload') %}
+              {% if app['acl'].get(app['authentication'].getUser()).has_access_to_module('upload') %}
             <li>
                 {% set link = path('upload_form') %}
 
@@ -105,7 +105,7 @@
           </li>
           {% endif %}
 
-          {% if module is defined and module == "prod" and app['authentication'].getUser().ACL.has_right('order_master') %}
+          {% if module is defined and module == "prod" and app['acl'].get(app['authentication'].getUser()).has_right('order_master') %}
           <li>
             <a href="{{ path('prod_orders') }}" class="dialog full-dialog" title="{% trans 'Orders manager' %}">
               <span>

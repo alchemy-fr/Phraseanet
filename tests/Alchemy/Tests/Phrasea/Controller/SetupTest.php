@@ -113,9 +113,15 @@ class SetupTest extends \PhraseanetWebTestCaseAbstract
             ->method('get_granted_sbas')
             ->will($this->returnValue(array()));
 
-        $user->expects($this->once())
-            ->method('ACL')
+
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
             ->will($this->returnValue($acl));
+
+        $this->app['acl'] = $aclProvider;
 
         $this->app['phraseanet.installer']->expects($this->once())
             ->method('install')

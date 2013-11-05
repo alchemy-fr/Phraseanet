@@ -58,7 +58,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $receveid = array(self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']);
 
-        self::$DI['app']['authentication']->getUser()->ACL()->update_rights_to_base(self::$DI['record_1']->get_base_id(), array('order_master' => true));
+        self::$DI['app']['acl']->get( self::$DI['app']['authentication']->getUser())->update_rights_to_base(self::$DI['record_1']->get_base_id(), array('order_master' => true));
 
         $eventManagerStub = $this->getMockBuilder('\eventsmanager_broker')
                      ->disableOriginalConstructor()

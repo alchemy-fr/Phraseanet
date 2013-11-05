@@ -41,7 +41,9 @@ class Feed implements ControllerProviderInterface
         });
 
         $controllers->post('/requestavailable/', function (Application $app, Request $request) {
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['authentication']->getUser());
+            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(
+                $app['acl']->get($app['authentication']->getUser())
+            );
             $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
 
             return $app['twig']->render('prod/actions/publish/publish.html.twig', array('publishing' => $publishing, 'feeds' => $feeds));
@@ -106,7 +108,7 @@ class Feed implements ControllerProviderInterface
                 throw new AccessDeniedHttpException();
             }
 
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['authentication']->getUser());
+            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', array('entry' => $entry, 'feeds' => $feeds));
 
@@ -203,12 +205,12 @@ class Feed implements ControllerProviderInterface
                 $app['firewall']->requireRight('bas_chupub');
             });
 
-        $controllers->get('/', function (Application $app, Request $request) {
+        $controllers->get('/', function(Application $app, Request $request) {
             $request = $app['request'];
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['authentication']->getUser());
+            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array(
                 'feeds' => $feeds,
@@ -227,7 +229,7 @@ class Feed implements ControllerProviderInterface
             if (!$feed->isAccessible($app['authentication']->getUser(), $app)) {
                 $app->abort(404, 'Feed not found');
             }
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['authentication']->getUser());
+            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array('feed' => $feed, 'feeds' => $feeds, 'page' => $page));
 
@@ -239,7 +241,7 @@ class Feed implements ControllerProviderInterface
         $controllers->get('/subscribe/aggregated/', function (Application $app, Request $request) {
             $renew = ($request->query->get('renew') === 'true');
 
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['authentication']->getUser());
+            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $link = $app['feed.aggregate-link-generator']->generate(new Aggregate($app['EM'], $feeds),
                 $app['authentication']->getUser(),

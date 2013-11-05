@@ -38,7 +38,7 @@ class Publications implements ControllerProviderInterface
 
         $controllers->get('/list/', function (PhraseaApplication $app) {
             $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(
-                $app['authentication']->getUser()
+                $app['acl']->get($app['authentication']->getUser())
             );
 
             return $app['twig']

@@ -64,7 +64,7 @@ class databox_cgu
                 $userValidation = true;
 
                 if (! $home) {
-                    if ( ! $app['authentication']->getUser()->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                    if ( ! $app['acl']->get($app['authentication']->getUser())->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }
                     $userValidation = ($app['authentication']->getUser()->getPrefs('terms_of_use_' . $databox->get_sbas_id()) !== $update && trim($value) !== '');

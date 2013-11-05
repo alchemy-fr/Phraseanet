@@ -195,7 +195,7 @@ class Order implements ControllerProviderInterface
         $perPage = (int) $request->query->get('per-page', 10);
         $sort = $request->query->get('sort');
 
-        $baseIds = array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('order_master')));
+        $baseIds = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('order_master')));
 
         $ordersList = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->listOrders($baseIds, $offsetStart, $perPage, $sort);
         $total = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->countTotalOrders($baseIds);
@@ -278,7 +278,7 @@ class Order implements ControllerProviderInterface
                 $basket->addElement($basketElement);
 
                 $n++;
-                $dest_user->ACL()->grant_hd_on($record, $app['authentication']->getUser(), 'order');
+                $app['acl']->get($dest_user)->grant_hd_on($record, $app['authentication']->getUser(), 'order');
             }
         }
 

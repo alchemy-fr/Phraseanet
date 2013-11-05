@@ -677,7 +677,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $feedItem = $this->insertOneFeedItem(self::$DI['user']);
         $feed = $feedItem->getEntry()->getFeed();
 
-        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['user']);
+        $feeds = self::$DI['app']['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']['acl']->get(self::$DI['user']));
         foreach ($feeds as $feed) {
             $result = $this->object->get_publication($request, $feed->getId(), self::$DI['user']);
             $this->checkResponseField($result, "feed", 'array');

@@ -445,9 +445,9 @@ class databox extends base
         while ($n < $total) {
             $results = $query->limit($n, 50)->execute()->get_results();
             foreach ($results as $user) {
-                $user->ACL()->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
-                $user->ACL()->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
-                $user->ACL()->delete_injected_rights_sbas($this);
+                $this->app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
+                $this->app['acl']->get($user)->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
+                $this->app['acl']->get($user)->delete_injected_rights_sbas($this);
             }
             $n+=50;
         }
@@ -972,7 +972,7 @@ class databox extends base
     {
         $conn = connection::getPDOConnection($this->app);
 
-        $user->ACL()
+        $this->app['acl']->get($user)
             ->give_access_to_sbas(array($this->id))
             ->update_rights_to_sbas(
                 $this->id, array(
@@ -1006,9 +1006,9 @@ class databox extends base
             }
         }
 
-        $user->ACL()->give_access_to_base($base_ids);
+        $this->app['acl']->get($user)->give_access_to_base($base_ids);
         foreach ($base_ids as $base_id) {
-            $user->ACL()->update_rights_to_base($base_id, array(
+            $this->app['acl']->get($user)->update_rights_to_base($base_id, array(
                 'canpush'         => 1, 'cancmd'          => 1
                 , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
                 , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1

@@ -26,11 +26,6 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
-        self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
-            ->setMethods(array('ACL'))
-            ->disableOriginalConstructor()
-            ->getMock());
-
         $stubbedACL = $this->getMockBuilder('\ACL')
             ->disableOriginalConstructor()
             ->getMock();
@@ -45,9 +40,15 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('has_access_to_subdef')
             ->will($this->returnValue(true));
 
-        self::$DI['app']['authentication']->getUser()->expects($this->any())
-            ->method('ACL')
+
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
             ->will($this->returnValue($stubbedACL));
+
+        self::$DI['app']['acl'] = $aclProvider;
 
         $url = sprintf('/prod/share/record/%d/%d/', self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
         self::$DI['client']->request('GET', $url);
@@ -72,11 +73,6 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $share = new Share();
 
-        self::$DI['app']['authentication']->setUser($this->getMockBuilder('\User_Adapter')
-            ->setMethods(array('ACL'))
-            ->disableOriginalConstructor()
-            ->getMock());
-
         $stubbedACL = $this->getMockBuilder('\ACL')
             ->disableOriginalConstructor()
             ->getMock();
@@ -86,9 +82,15 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('has_access_to_subdef')
             ->will($this->returnValue(false));
 
-        self::$DI['app']['authentication']->getUser()->expects($this->once())
-            ->method('ACL')
+
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $aclProvider->expects($this->any())
+            ->method('get')
             ->will($this->returnValue($stubbedACL));
+
+        self::$DI['app']['acl'] = $aclProvider;
 
         $share->shareRecord(
             self::$DI['app'],

@@ -138,9 +138,9 @@ class Root implements ControllerProviderInterface
                 $isImage = true;
             }
 
-            $canDownload = $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
-                $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
-                $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'cancmd');
+            $canDownload = $app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
+            $app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
+            $app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'cancmd');
 
             try {
                 $previewExists = $record->get_preview()->is_physically_present();
@@ -159,7 +159,7 @@ class Root implements ControllerProviderInterface
                 'is_image'          => $isImage,
                 'is_document'       => $isDocument,
                 'can_download'      => $canDownload,
-                'can_add_to_basket' => $app['authentication']->getUser()->ACL()->has_right_on_base($record->get_base_id(), 'canputinalbum')
+                'can_add_to_basket' => $app['acl']->get($app['authentication']->getUser())->has_right_on_base($record->get_base_id(), 'canputinalbum')
             );
         }
 
@@ -297,13 +297,13 @@ class Root implements ControllerProviderInterface
     {
         $allDataboxes = $allCollections = array();
 
-        foreach ($app['authentication']->getUser()->ACL()->get_granted_sbas() as $databox) {
+        foreach ($app['acl']->get($app['authentication']->getUser())->get_granted_sbas() as $databox) {
             if (count($app['phraseanet.appbox']->get_databoxes()) > 0) {
                 $allDataboxes[$databox->get_sbas_id()] = array('databox'     => $databox, 'collections' => array());
             }
 
             if (count($databox->get_collections()) > 0) {
-                foreach ($app['authentication']->getUser()->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
+                foreach ($app['acl']->get($app['authentication']->getUser())->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
                     $allDataboxes[$databox->get_sbas_id()]['collections'][$coll->get_base_id()] = $coll;
                     $allCollections[$coll->get_base_id()] = $coll;
                 }
@@ -447,7 +447,7 @@ class Root implements ControllerProviderInterface
                 $collections = array_merge($collections, $bases);
             }
         } else {
-            $collections = array_keys($app['authentication']->getUser()->ACL()->get_granted_base());
+            $collections = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base());
         }
 
         $queryParameters["mod"] = $app['authentication']->getUser()->getPrefs('client_view') ?: '3X6';
@@ -477,7 +477,7 @@ class Root implements ControllerProviderInterface
     private function getPublicationStartPage(Application $app)
     {
         return $app['twig']->render('client/home_inter_pub_basket.html.twig', array(
-            'feeds'         => Aggregate::createFromUser($app['EM'], $app['authentication']->getUser()),
+            'feeds'         => Aggregate::createFromUser($app, $app['authentication']->getUser()),
             'image_size'    => (int) $app['authentication']->getUser()->getPrefs('images_size')
         ));
     }

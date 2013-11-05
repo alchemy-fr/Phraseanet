@@ -21,7 +21,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
     public function setAdmin($bool)
     {
         $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')//, array('is_admin', 'ACL'), array(self::$DI['app']['authentication']->getUser()->get_id(), self::$DI['app']))
-            ->setMethods(array('ACL', 'get_id'))
+            ->setMethods(array('get_id'))
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -73,9 +73,15 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             ->method('get_granted_sbas')
             ->will($this->returnValue(array(self::$DI['collection']->get_databox())));
 
-        $stubAuthenticatedUser->expects($this->any())
-            ->method('ACL')
+        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $aclProvider->expects($this->any())
+            ->method('get')
             ->will($this->returnValue($this->StubbedACL));
+
+        self::$DI['app']['acl'] = $aclProvider;
 
         $stubAuthenticatedUser->expects($this->any())
             ->method('get_id')
@@ -123,7 +129,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             , 'bas_chupub'        => '1'
         );
 
-        self::$DI['app']['authentication']->getUser()->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+        self::$DI['app']['acl']->get(self::$DI['app']['authentication']->getUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
         $databox->registerAdmin(self::$DI['app']['authentication']->getUser());
 

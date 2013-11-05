@@ -2,7 +2,7 @@
 
 <ul id="tree" class="filetree">
 
-  {% if app['authentication'].getUser().ACL().is_admin() %}
+  {% if app['acl'].get(app['authentication'].getUser()).is_admin() %}
   <li>
     <a target="right" href="{{ path('admin_dashbord') }}" class="ajax">
       <img src="/skins/admin/Dashboard.png" />
@@ -15,7 +15,7 @@
   </li>
   {% endif %}
 
-  {% if app['authentication'].getUser().ACL().is_admin() %}
+  {% if app['acl'].get(app['authentication'].getUser()).is_admin() %}
   <li>
     <a target="right" href="{{ path('setup_display_globals') }}" class="ajax">
       <img src="/skins/admin/Setup.png" />
@@ -36,7 +36,7 @@
     </a>
   </li>
 
-  {% if app['authentication'].getUser().ACL().has_right('manageusers') %}
+  {% if app['acl'].get(app['authentication'].getUser()).has_right('manageusers') %}
   <li class="{% if feature == 'users' %}selected{% endif %}">
     <a target="right" href="{{ path('admin_users_search') }}" class="ajax zone_editusers">
       <img src="/skins/admin/Users.png" />
@@ -51,7 +51,7 @@
   </li>
   {% endif %}
 
-  {% if app['authentication'].getUser().ACL().has_right('bas_chupub') %}
+  {% if app['acl'].get(app['authentication'].getUser()).has_right('bas_chupub') %}
   <li class="">
     <a target="right" href="{{ path('admin_feeds_list') }}" class="ajax">
       <img src="/skins/icons/rss16.png" />
@@ -60,7 +60,7 @@
   </li>
   {% endif %}
 
-  {% if app['authentication'].getUser().ACL().has_right('taskmanager') %}
+  {% if app['acl'].get(app['authentication'].getUser()).has_right('taskmanager') %}
   <li class="{% if feature == 'taskmanager' %}selected{% endif %}">
     <a target="right" href="{{ path('admin_tasks_list') }}" class="ajax">
       <img src="/skins/admin/TaskManager.png" />
@@ -103,7 +103,7 @@
         </div>
         <ul>
 
-        {% if app['authentication'].getUser().ACL().has_right_on_sbas( sbas_id , 'bas_modify_struct') %}
+        {% if app['acl'].get(app['authentication'].getUser()).has_right_on_sbas( sbas_id , 'bas_modify_struct') %}
           <li>
             <a target="right" class="ajax" href="{{ path('database_display_stucture', { 'databox_id' : sbas_id }) }}">
               <img src="/skins/icons/miniadjust01.gif"/>
@@ -144,7 +144,7 @@
         {% set seeUsrGene = false %}
 
         {% for coll in databox.get_collections() %}
-          {% if app['authentication'].getUser().ACL.has_right_on_base( coll.get_base_id() , 'canadmin') %}
+          {% if app['acl'].get(app['authentication'].getUser()).has_right_on_base( coll.get_base_id() , 'canadmin') %}
             {% set seeUsrGene = true %}
           {% endif %}
         {% endfor %}
@@ -159,9 +159,9 @@
         {% endif %}
 
         {% for collection in databox.get_collections() %}
-          {% if (collection.get_base_id() in app['authentication'].getUser().ACL.get_granted_base(['canadmin'])|keys
-              or collection.get_base_id() in app['authentication'].getUser().ACL.get_granted_base(['manage'])|keys
-              or collection.get_base_id() in app['authentication'].getUser().ACL.get_granted_base(['modify_struct'])|keys) %}
+          {% if (collection.get_base_id() in app['acl'].get(app['authentication'].getUser()).get_granted_base(['canadmin'])|keys
+              or collection.get_base_id() in app['acl'].get(app['authentication'].getUser()).get_granted_base(['manage'])|keys
+              or collection.get_base_id() in app['acl'].get(app['authentication'].getUser()).get_granted_base(['modify_struct'])|keys) %}
 
           <li>
             <div style="padding:0 0 2px 0;">
@@ -171,7 +171,7 @@
             </div>
             <ul>
 
-            {% if (app['authentication'].getUser().ACL.has_right_on_base(collection.get_base_id(), 'modify_struct')) %}
+            {% if (app['acl'].get(app['authentication'].getUser()).has_right_on_base(collection.get_base_id(), 'modify_struct')) %}
               <li>
                 <a target="right" href="{{ path('admin_collection_display_suggested_values', { 'bas_id' : collection.get_base_id() }) }}" class="ajax">
                   <img src="/skins/icons/foldph20open_0.gif"/>
@@ -180,10 +180,10 @@
               </li>
             {% endif %}
 
-            {% if (app['authentication'].getUser().ACL.has_right_on_base( collection.get_base_id(), 'canadmin')) %}
-              {% if (app['authentication'].getUser().ACL.has_right_on_base( collection.get_base_id(), 'canmodifrecord')
-                 and app['authentication'].getUser().ACL.has_right_on_base( collection.get_base_id(), 'manage')
-                 and app['authentication'].getUser().ACL.has_right_on_sbas( sbas_id, 'bas_manage') ) %}
+            {% if (app['acl'].get(app['authentication'].getUser()).has_right_on_base( collection.get_base_id(), 'canadmin')) %}
+              {% if (app['acl'].get(app['authentication'].getUser()).has_right_on_base( collection.get_base_id(), 'canmodifrecord')
+                 and app['acl'].get(app['authentication'].getUser()).has_right_on_base( collection.get_base_id(), 'manage')
+                 and app['acl'].get(app['authentication'].getUser()).has_right_on_sbas( sbas_id, 'bas_manage') ) %}
               <li>
                 <a target="right" href="{{ path('admin_users_search', { 'base_id' : [ collection.get_base_id() ] }) }}" class="ajax">
                   <img src="/skins/admin/Users.png"/>

@@ -34,7 +34,7 @@
                     </div>
                     <div class="lightbox_container left">
                         {% if first_item %}
-                            {% if app['authentication'].getUser().ACL().has_access_to_subdef(first_item.getRecord(app), 'preview') %}
+                            {% if app['acl'].get(app['authentication'].getUser()).has_access_to_subdef(first_item.getRecord(app), 'preview') %}
                                 {% set preview = first_item.getRecord(app).get_preview() %}
                             {% else %}
                                 {% set preview = first_item.getRecord(app).get_thumbnail() %}
@@ -81,7 +81,7 @@
                 <div class="right_column_wrapper right_column_wrapper_caption left unselectable" style="width:230px;height:auto;">
                     <div id="record_infos">
                         <div class="lightbox_container">
-              {% set business = app['authentication'].getUser().ACL().has_right_on_base(first_item.getRecord(app).get_base_id(), 'canmodifrecord') %}
+              {% set business = app['acl'].get(app['authentication'].getUser()).has_right_on_base(first_item.getRecord(app).get_base_id(), 'canmodifrecord') %}
               {% if first_item %}
                 {{caption.format_caption(first_item.getRecord(app), '', null, business)}}
               {% endif %}

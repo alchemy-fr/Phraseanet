@@ -188,7 +188,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     public function is_available()
     {
         if (null !== $this->app['authentication']->getUser()) {
-            return $this->app['authentication']->getUser()->ACL()->has_right('addrecord');
+            return $this->app['acl']->get($this->app['authentication']->getUser())->has_right('addrecord');
         }
 
         return false;

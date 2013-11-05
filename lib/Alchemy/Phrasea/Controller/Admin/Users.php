@@ -217,7 +217,7 @@ class Users implements ControllerProviderInterface
             $on_base = $request->query->get('on_base') ? : array();
 
             $elligible_users = $user_query
-                ->on_sbas_where_i_am($app['authentication']->getUser()->ACL(), $rights)
+                ->on_sbas_where_i_am($app['acl']->get($app['authentication']->getUser()), $rights)
                 ->like(\User_Query::LIKE_EMAIL, $like_value)
                 ->like(\User_Query::LIKE_FIRSTNAME, $like_value)
                 ->like(\User_Query::LIKE_LASTNAME, $like_value)
@@ -275,7 +275,7 @@ class Users implements ControllerProviderInterface
             $on_base = $request->request->get('base_id') ? : null;
             $on_sbas = $request->request->get('sbas_id') ? : null;
 
-            $elligible_users = $user_query->on_bases_where_i_am($app['authentication']->getUser()->ACL(), array('canadmin'))
+            $elligible_users = $user_query->on_bases_where_i_am($app['acl']->get($app['authentication']->getUser()), array('canadmin'))
                 ->like($like_field, $like_value)
                 ->on_base_ids($on_base)
                 ->on_sbas_ids($on_sbas);
@@ -349,7 +349,7 @@ class Users implements ControllerProviderInterface
             $stmt->execute(array(':date' => date('Y-m-d', $lastMonth)));
             $stmt->closeCursor();
 
-            $baslist = array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('canadmin')));
+            $baslist = array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('canadmin')));
 
             $sql = 'SELECT usr_id, usr_login FROM usr WHERE model_of = :usr_id';
 
@@ -450,9 +450,9 @@ class Users implements ControllerProviderInterface
                     $cache_to_update[$usr] = true;
 
                     $user_template = \User_Adapter::getInstance($template_id, $app);
-                    $base_ids = array_keys($user_template->ACL()->get_granted_base());
+                    $base_ids = array_keys($app['acl']->get($user_template)->get_granted_base());
 
-                    $user->ACL()->apply_model($user_template, $base_ids);
+                    $app['acl']->get($user)->apply_model($user_template, $base_ids);
 
                     if (!isset($done[$usr])) {
                         $done[$usr] = array();
@@ -499,7 +499,7 @@ class Users implements ControllerProviderInterface
                     $cache_to_update[$usr] = true;
 
                     foreach ($bases as $bas) {
-                        $user->ACL()->give_access_to_sbas(array(\phrasea::sbasFromBas($app, $bas)));
+                        $app['acl']->get($user)->give_access_to_sbas(array(\phrasea::sbasFromBas($app, $bas)));
 
                         $rights = array(
                             'canputinalbum'   => '1'
@@ -509,8 +509,8 @@ class Users implements ControllerProviderInterface
                             , 'actif'           => '1'
                         );
 
-                        $user->ACL()->give_access_to_base(array($bas));
-                        $user->ACL()->update_rights_to_base($bas, $rights);
+                        $app['acl']->get($user)->give_access_to_base(array($bas));
+                        $app['acl']->get($user)->update_rights_to_base($bas, $rights);
 
                         if (!isset($done[$usr])) {
                             $done[$usr] = array();
@@ -527,7 +527,7 @@ class Users implements ControllerProviderInterface
 
                 foreach (array_keys($cache_to_update) as $usr_id) {
                     $user = \User_Adapter::getInstance($usr_id, $app);
-                    $user->ACL()->delete_data_from_cache();
+                    $app['acl']->get($user)->delete_data_from_cache();
                     unset($user);
                 }
 
@@ -654,7 +654,7 @@ class Users implements ControllerProviderInterface
                         if ($loginToAdd === "") {
                             $out['errors'][] = sprintf(_("Login line %d is empty"), $nbLine + 1);
                         } elseif (in_array($loginToAdd, $loginNew)) {
-                            $out['errors'][] = sprintf(_("Login %s is already defined in the file at line %d"), $loginToAdd, $i);
+                            $out['errors'][] = sprintf(_("Login %s is already defined in the file at line %d"), $loginToAdd, $nbLine);
                         } else {
                             if (\User_Adapter::get_usr_id_from_login($app, $loginToAdd)) {
                                 $out['errors'][] = sprintf(_("Login %s already exists in database"), $loginToAdd);
@@ -711,7 +711,7 @@ class Users implements ControllerProviderInterface
               INNER JOIN basusr
                 ON (basusr.usr_id=usr.usr_id)
             WHERE usr.model_of = :usr_id
-              AND base_id in(" . implode(', ', array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('manage')))) . ")
+              AND base_id in(" . implode(', ', array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('manage')))) . ")
               AND usr_login not like '(#deleted_%)'
             GROUP BY usr_id";
 
@@ -849,8 +849,8 @@ class Users implements ControllerProviderInterface
                             $NewUser->set_company($curUser['societe']);
                         }
 
-                        $NewUser->ACL()->apply_model(
-                            \User_Adapter::getInstance($model, $app), array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array('manage')))
+                        $app['acl']->get($NewUser)->apply_model(
+                            \User_Adapter::getInstance($model, $app), array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array('manage')))
                         );
 
                         $nbCreation++;

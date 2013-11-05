@@ -53,7 +53,7 @@ class Share implements ControllerProviderInterface
     {
         $record = new \record_adapter($app, \phrasea::sbasFromBas($app, $base_id), $record_id);
 
-        if (!$app['authentication']->getUser()->ACL()->has_access_to_subdef($record, 'preview')) {
+        if (!$app['acl']->get($app['authentication']->getUser())->has_access_to_subdef($record, 'preview')) {
             $app->abort(403);
         }
 

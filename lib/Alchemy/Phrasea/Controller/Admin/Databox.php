@@ -409,7 +409,7 @@ class Databox implements ControllerProviderInterface
                 $results = $query->limit($n, 50)->execute()->get_results();
 
                 foreach ($results as $user) {
-                    $user->ACL()->duplicate_right_from_bas($othCollSel, $baseId);
+                    $app['acl']->get($user)->duplicate_right_from_bas($othCollSel, $baseId);
                 }
 
                 $n += 50;
@@ -725,7 +725,7 @@ class Databox implements ControllerProviderInterface
     public function getReorder(Application $app, Request $request, $databox_id)
     {
         return $app['twig']->render('admin/collection/reorder.html.twig', array(
-            'collections' => $app['authentication']->getUser()->ACL()->get_granted_base(array(), array($databox_id)),
+            'collections' => $app['acl']->get($app['authentication']->getUser())->get_granted_base(array(), array($databox_id)),
         ));
     }
 
@@ -805,7 +805,7 @@ class Databox implements ControllerProviderInterface
                 while ($n < $total) {
                     $results = $query->limit($n, 20)->execute()->get_results();
                     foreach ($results as $user) {
-                        $user->ACL()->duplicate_right_from_bas($othcollsel, $collection->get_base_id());
+                        $app['acl']->get($user)->duplicate_right_from_bas($othcollsel, $collection->get_base_id());
                     }
                     $n += 20;
                 }

@@ -25,7 +25,7 @@
     {% endif %}
 
   {% if name == 'access' %}
-    {% if class != 'checked' and type == 'base' and admin.ACL().has_access_to_base(id) is empty %}
+    {% if class != 'checked' and type == 'base' and app['acl'].get(admin).has_access_to_base(id) is empty %}
       <div class="no_switch">
       </div>
     {% else %}
@@ -34,10 +34,10 @@
        </div>
     {% endif %}
   {% else %}
-    {% if class != 'checked' and type == 'base' and admin.ACL().has_right_on_base(id, name) is empty %}
+    {% if class != 'checked' and type == 'base' and app['acl'].get(admin).has_right_on_base(id, name) is empty %}
       <div class="no_switch">
       </div>
-    {% elseif class != 'checked' and type == 'sbas' and admin.ACL().has_right_on_sbas(id, name) is empty %}
+    {% elseif class != 'checked' and type == 'sbas' and app['acl'].get(admin).has_right_on_sbas(id, name) is empty %}
       <div class="no_switch">
       </div>
     {% else %}

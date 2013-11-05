@@ -57,10 +57,10 @@ class TOU implements ControllerProviderInterface
         try {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
-            $app['authentication']->getUser()->ACL()->revoke_access_from_bases(
-                array_keys($app['authentication']->getUser()->ACL()->get_granted_base(array(), array($databox->get_sbas_id())))
+            $app['acl']->get($app['authentication']->getUser())->revoke_access_from_bases(
+                array_keys($app['acl']->get($app['authentication']->getUser())->get_granted_base(array(), array($databox->get_sbas_id())))
             );
-            $app['authentication']->getUser()->ACL()->revoke_unused_sbas_rights();
+            $app['acl']->get($app['authentication']->getUser())->revoke_unused_sbas_rights();
 
             $app['authentication']->closeAccount();
 

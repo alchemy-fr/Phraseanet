@@ -24,7 +24,7 @@
         <tr>
             <td colspan="2"><strong>{{ 'admin::monitor: bases sur lesquelles l\'utilisateur est connecte : ' | trans }} :</strong></td>
         </tr>
-        {% for databox in user.ACL().get_granted_sbas() %}
+        {% for databox in app['acl'].get(user).get_granted_sbas() %}
             <tr>
                 <td colspan="2" style="overflow:hidden;" >{{ databox.get_label(app['locale.I18n']) }}</td>
             </tr>

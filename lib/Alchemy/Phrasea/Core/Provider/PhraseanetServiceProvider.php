@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Security\Firewall;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
@@ -36,6 +37,10 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
             $events->start();
 
             return $events;
+        });
+
+        $app['acl'] = $app->share(function(SilexApplication $app) {
+            return new ACLProvider($app);
         });
     }
 

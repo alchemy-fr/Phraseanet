@@ -78,7 +78,7 @@ class Authenticator
 
         $this->session->set('session_id', $session->getId());
 
-        foreach ($user->ACL()->get_granted_sbas() as $databox) {
+        foreach ($this->app['acl']->get($user)->get_granted_sbas() as $databox) {
             \cache_databox::insertClient($this->app, $databox);
         }
         $this->reinitUser();
@@ -102,7 +102,7 @@ class Authenticator
         $this->session->set('usr_id', $session->getUsrId());
         $this->session->set('session_id', $session->getId());
 
-        foreach ($user->ACL()->get_granted_sbas() as $databox) {
+        foreach ($this->app['acl']->get($user)->get_granted_sbas() as $databox) {
             \cache_databox::insertClient($this->app, $databox);
         }
 
