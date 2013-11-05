@@ -31,8 +31,6 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'email'       => 'sent'
         ));
 
-        var_dump(self::$DI['client']->getResponse()->getContent());
-
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 

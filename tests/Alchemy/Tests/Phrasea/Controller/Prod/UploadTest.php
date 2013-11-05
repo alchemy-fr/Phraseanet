@@ -77,10 +77,10 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        $data = DataUri\Data::buildFromFile(__DIR__ . '/../../../../../files/cestlafete.jpg');
+        $data = DataURI\Data::buildFromFile(__DIR__ . '/../../../../../files/cestlafete.jpg');
         $params = array(
             'base_id' => self::$DI['collection']->get_base_id(),
-            'b64_image' => DataUri\Dumper::dump($data)
+            'b64_image' => DataURI\Dumper::dump($data)
         );
 
         $files = array(

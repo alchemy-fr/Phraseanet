@@ -11,7 +11,7 @@
   <div style="text-align:center;">
     {{record.get_status_icons()|raw}}
   </div>
-  {% set business = app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
+  {% set business =  app['acl'].get(app['authentication'].getUser()).has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
   {% if record.is_from_reg()  %}
     {{caption.format_caption(record, '', null, business)}}
   {% else %}

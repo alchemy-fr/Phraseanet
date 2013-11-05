@@ -78,7 +78,7 @@ class Upload implements ControllerProviderInterface
         return $app['twig']->render(
             'prod/upload/upload-flash.html.twig', array(
             'sessionId'           => session_id(),
-            'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+            'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
             'maxFileSize'         => $maxFileSize,
             'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
         ));
@@ -98,7 +98,7 @@ class Upload implements ControllerProviderInterface
 
         return $app['twig']->render(
             'prod/upload/upload.html.twig', array(
-            'collections'         => $this->getGrantedCollections($app['authentication']->getUser()),
+            'collections'         => $this->getGrantedCollections($app['acl']->get($app['authentication']->getUser())),
             'maxFileSize'         => $maxFileSize,
             'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
         ));
@@ -269,14 +269,15 @@ class Upload implements ControllerProviderInterface
     /**
      * Get current user's granted collections where he can upload
      *
-     * @param  \User_Adapter $user
+     * @param  \ACL $acl The user's ACL.
+     *
      * @return array
      */
-    private function getGrantedCollections(\User_Adapter $user)
+    private function getGrantedCollections(\ACL $acl)
     {
         $collections = array();
 
-        foreach ($app['acl']->get($user)->get_granted_base(array('canaddrecord')) as $collection) {
+        foreach ($acl->get_granted_base(array('canaddrecord')) as $collection) {
             $databox = $collection->get_databox();
 
             if ( ! isset($collections[$databox->get_sbas_id()])) {

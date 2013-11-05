@@ -21,7 +21,7 @@
       </button>
       {% endif %}
 
-      {% if app['acl'].get(app['authentication'].getUser()).has_right('deleterecord') and app['authentication'].getUser()).has_right('addrecord') %}
+      {% if app['acl'].get(app['authentication'].getUser()).has_right('deleterecord') and app['acl'].get(app['authentication'].getUser()).has_right('addrecord') %}
       <button class="ui-corner-all TOOL_chgcoll_btn story_window" title="{% trans 'action : collection' %}">
         <img src="/skins/prod/000000/images/chgcoll_history.gif"/>
       </button>

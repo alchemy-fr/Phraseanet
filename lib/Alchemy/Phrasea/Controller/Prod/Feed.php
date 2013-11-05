@@ -210,7 +210,7 @@ class Feed implements ControllerProviderInterface
             $page = (int) $request->query->get('page');
             $page = $page > 0 ? $page : 1;
 
-            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['authentication']->getUser());
+            $feeds = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser($app['acl']->get($app['authentication']->getUser()));
 
             $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array(
                 'feeds' => $feeds,

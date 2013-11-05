@@ -75,7 +75,7 @@ class ACLProvider
      */
     private function hasCache(\User_Adapter $user)
     {
-        return array_key_exists($user->get_id(), self::$cache) && self::$cache[$user->get_id()] instanceof \ACL;
+        return isset(self::$cache[$user->get_id()]);
     }
 
     /**

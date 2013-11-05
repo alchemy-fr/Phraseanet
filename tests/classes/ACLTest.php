@@ -9,12 +9,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
      */
     protected static $object;
 
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-        self::$object = self::$DI['app']['acl']->get(self::$DI['user']);
-    }
-
     public static function tearDownAfterClass()
     {
         /**
@@ -41,6 +35,15 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         self::$DI['app']['acl']->get(self::$DI['user'])->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
 
         parent::tearDownAfterClass();
+    }
+
+    public function setup()
+    {
+        parent::setUp();
+
+        if (null === self::$object) {
+            self::$object = self::$DI['app']['acl']->get(self::$DI['user']);
+        }
     }
 
     public function testHasAccesToRecord()
