@@ -9,13 +9,14 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Symfony\Component\Debug\ErrorHandler;
 
 require_once __DIR__ . "/../lib/autoload.php";
 
 ErrorHandler::register();
 
-$environment = 'prod';
+$environment = Application::ENV_PROD;
 $app = require __DIR__ . '/../lib/Alchemy/Phrasea/Application/Root.php';
 
 $app->run();

@@ -68,4 +68,4 @@ return call_user_func(function ($environment = PhraseaApplication::ENV_PROD) {
     );
 
     return $app;
-}, isset($environment) ? $environment : null);
+}, isset($environment) ? $environment : PhraseaApplication::ENV_PROD);
