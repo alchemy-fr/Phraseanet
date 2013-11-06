@@ -202,6 +202,36 @@ class module_console_checkExtension extends Command
             return 1;
         }
 
+
+        // test disconnected mode if available
+        // prepare the test before closing session
+        if(function_exists("phrasea_public_query"))
+        {
+            // fill an array for each sbas to query
+            $tbases = array();
+            foreach ($phSession["bases"] as $phbase) {
+                // fill an array of collections to query for this sbas
+                $tcoll = array();
+                foreach ($phbase["collections"] as $coll) {
+                    $tcoll[] = 0 + $coll["base_id"];
+                }
+
+                if (sizeof($tcoll) > 0) {
+                    // parse the query for this sbas
+                    $qp = new PhraseaEngineQueryParser($this->container);
+                    $treeq = $qp->parsequery($input->getOption('query'));
+                    $arrayq = $qp->makequery($treeq);
+
+                    $tbases["S".$phbase["sbas_id"]] = array(    // key does no matter
+                        "sbas_id" => $phbase["sbas_id"],        // sbas_id
+                        "searchcoll" => $tcoll,                 // colls to query
+                        "arrayq" => $arrayq                     // parsed query
+                    );
+                }
+            }
+        }
+
+
         $output->writeln("\n-- phrasea_close_session --");
 
         $rs = phrasea_close_session($sessid);
@@ -213,6 +243,70 @@ class module_console_checkExtension extends Command
 
             return 1;
         }
+
+
+
+        // session is closed, test disconnected mode if available
+        if(function_exists("phrasea_public_query"))
+        {
+            $output->writeln("\n-- phrasea_public_query(...0, 5,...) --");
+
+            $ret = phrasea_public_query(
+                $tbases                         // array of sbas with colls and query
+                , PHRASEA_MULTIDOC_DOCONLY      // mode
+                , ''                            // sortfield
+                , array()                       // search business fields
+                , ''                            // lng for stemmed search
+                , 0                             // offset for first answer (start=0)
+                , 5                             // nbr of answers
+                , true                          // verbose output (chrono, sql...)
+            );
+
+            if(is_array($ret) && array_key_exists("results", $ret) && is_array($ret["results"])) {
+                $output->writeln( sprintf("<info>Succes ! </info> returned %d answers", count($ret["results"])) );
+            } else {
+                $output->writeln("<error>Failed ! </error>");
+
+                return 1;
+            }
+
+
+            foreach($ret['results'] as $result)
+            {
+                $sbid = $result["sbid"];
+                $rid  = $result["rid"];
+                $q = $tbases["S".$sbid]["arrayq"];  // query tree
+
+                $h = phrasea_highlight(
+                    $sbid                       // sbas_id
+                    , $rid                      // record_id
+                    , $q                        // query parsed
+                    , ""                        // lng for stemmed
+                    , false                     // verbose output (chrono, sql...)
+                    );
+
+                $output->writeln(sprintf("\n-- phrasea_highlight(%d, %d,...) --", $sbid, $rid));
+
+                if(is_array($h) && array_key_exists("results", $h) && is_array($h["results"])
+                    && count($h["results"])==1
+                    && array_key_exists("sbid", $h["results"][0]) && $h["results"][0]["sbid"]==$sbid
+                    && array_key_exists("rid", $h["results"][0]) && $h["results"][0]["rid"]==$rid
+                    && array_key_exists("spots", $h["results"][0]) && is_array($h["results"][0]["spots"]) )
+                {
+
+                    $output->writeln( sprintf("<info>Succes ! </info> sbid=%d, rid=%d (%d spots)",
+                        $sbid,
+                        $ret["results"][0]["rid"],
+                        count($h["results"][0]["spots"]))
+                    );
+                } else {
+                    $output->writeln("<error>Failed ! </error>");
+
+                    return 1;
+                }
+            }
+
+        } // disconnected mode
 
         return 0;
     }
