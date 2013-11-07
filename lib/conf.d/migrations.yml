@@ -1,0 +1,50 @@
+name: Phraseanet Migrations
+migrations_namespace: Alchemy\Phrasea\Setup\DoctrineMigrations
+table_name: doctrine_migration_versions
+
+migrations:
+  migration1:
+    version: 3.2.0-alpha.4
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version320alpha4
+  migration2:
+    version: 3.6.0-alpha.1
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version360alpha1
+  migration3:
+    version: 3.7.0-alpha.7
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version370alpha7
+  migration4:
+    version: 3.7.0-alpha.8
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version370alpha8
+  migration5:
+    version: 3.8.0-alpha.4
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version380alpha4
+  migration6:
+    version: 3.8.0-alpha.11
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version380alpha11
+  migration7:
+    version: 3.9.0-alpha.1a
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha1a
+  migration8:
+    version: 3.9.0-alpha.1b
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha1b
+  migration9:
+    version: 3.9.0-alpha.2
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha2
+  migration10:
+    version: 3.9.0-alpha.3
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha3
+  migration11:
+    version: 3.9.0-alpha.4
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha4
+  migration12:
+    version: 3.9.0-alpha.5
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha5
+  migration13:
+    version: 3.9.0-alpha.6
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha6
+  migration14:
+    version: 3.9.0-alpha.7
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha7
+  migration15:
+    version: 3.9.0-alpha.8
+    class: Alchemy\Phrasea\Setup\DoctrineMigrations\Version390alpha8

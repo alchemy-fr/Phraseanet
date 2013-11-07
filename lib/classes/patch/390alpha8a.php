@@ -49,6 +49,9 @@ class patch_390alpha8a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
+        $version = $app['doctrine-migration.configuration']->getVersion($this->release);
+        $version->execute('up');
+
         $sql = 'DELETE FROM Tasks';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();

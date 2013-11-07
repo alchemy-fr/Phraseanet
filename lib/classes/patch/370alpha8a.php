@@ -65,7 +65,10 @@ class patch_370alpha8a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $ttasks = [];
+        $version = $app['doctrine-migration.configuration']->getVersion($this->release);
+        $version->execute('up');
+
+        $ttasks = array();
         $conn = $appbox->get_connection();
         $sql = 'SELECT task_id, active, name, class, settings FROM task2 WHERE class=\'task_period_workflow01\'';
         if (($stmt = $conn->prepare($sql)) !== FALSE) {

@@ -51,6 +51,9 @@ class patch_390alpha1b implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
+        $version = $app['doctrine-migration.configuration']->getVersion($this->release . 'b');
+        $version->execute('up');
+
         $sql = 'DELETE FROM Orders';
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();

@@ -59,6 +59,9 @@ class patch_370alpha7a implements patchInterface
 
     public function apply(base $appbox, Application $app)
     {
+        $version = $app['doctrine-migration.configuration']->getVersion($this->release);
+        $version->execute('up');
+
         $conn = $appbox->get_connection();
 
         try {

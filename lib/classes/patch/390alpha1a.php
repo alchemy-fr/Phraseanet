@@ -49,6 +49,9 @@ class patch_390alpha1a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
+        $version = $app['doctrine-migration.configuration']->getVersion($this->release . 'a');
+        $version->execute('up');
+
         $conn = $app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT usr_id, activeFTP, addrFTP, loginFTP,
                 retryFTP, passifFTP, pwdFTP, destFTP, prefixFTPfolder

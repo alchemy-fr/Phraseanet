@@ -46,7 +46,6 @@ $app = new CLI("
  under certain conditions; type `about:license' for details.\n\n"
             . ' SETUP', Version::getName() . ' ' . Version::getNumber());
 
-
 $app->register(new DoctrineMigrationServiceProvider());
 
 $app->command(new \module_console_aboutAuthors('about:authors'));

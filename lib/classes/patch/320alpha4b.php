@@ -61,7 +61,10 @@ class patch_320alpha4b implements patchInterface
 
     public function apply(base $appbox, Application $app)
     {
-        $feeds = [];
+        $version = $app['doctrine-migration.configuration']->getVersion($this->release);
+        $version->execute('up');
+
+        $feeds = array();
 
         try {
             $sql = 'ALTER TABLE `ssel` ADD `migrated` INT NOT NULL DEFAULT "0"';

@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\Filesystem\Filesystem;
@@ -304,15 +305,8 @@ class appbox extends base
         $upgrader->add_steps_complete(1);
 
         $upgrader->set_current_message(_('Creating new tables'));
-        //create schema
 
         $app['phraseanet.pre-schema-upgrader']->apply($app);
-
-        if ($app['EM']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
-            $tool = new \Doctrine\ORM\Tools\SchemaTool($app['EM']);
-            $metas = $app['EM']->getMetadataFactory()->getAllMetadata();
-            $tool->updateSchema($metas, true);
-        }
 
         $upgrader->add_steps_complete(1);
 
@@ -387,6 +381,12 @@ class appbox extends base
         $upgrader->set_current_message(_('Flushing cache'));
 
         $app['phraseanet.cache-service']->flushAll();
+
+        if ($app['EM']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
+            $tool = new SchemaTool($app['EM']);
+            $metas = $app['EM']->getMetadataFactory()->getAllMetadata();
+            $tool->updateSchema($metas, true);
+        }
 
         $upgrader->add_steps_complete(1);
 

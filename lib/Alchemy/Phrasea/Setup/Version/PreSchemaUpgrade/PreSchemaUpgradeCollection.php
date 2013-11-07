@@ -23,7 +23,6 @@ class PreSchemaUpgradeCollection
 
     public function __construct()
     {
-        $this->upgrades[] = new Upgrade39();
     }
 
     /**

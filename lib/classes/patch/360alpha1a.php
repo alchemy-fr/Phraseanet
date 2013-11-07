@@ -10,6 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use Doctrine\DBAL\DriverManager;
 
 /**
  *
@@ -55,7 +57,10 @@ class patch_360alpha1a implements patchInterface
 
     public function apply(base $appbox, Application $app)
     {
-        $tables = ['StoryWZ', 'ValidationDatas', 'ValidationParticipants', 'ValidationSessions', 'BasketElements', 'Baskets'];
+        $version = $app['doctrine-migration.configuration']->getVersion($this->release);
+        $version->execute('up');
+
+        $tables = array('StoryWZ', 'ValidationDatas', 'ValidationParticipants', 'ValidationSessions', 'BasketElements', 'Baskets');
 
         foreach ($tables as $table) {
             $sql = 'DELETE FROM ' . $table;
@@ -67,8 +72,8 @@ class patch_360alpha1a implements patchInterface
         $stories = [];
 
         $sql = 'SELECT sbas_id, rid as record_id, usr_id
-                                FROM ssel
-                                WHERE temporaryType = "1"';
+                FROM ssel
+                WHERE temporaryType = "1"';
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
@@ -88,8 +93,9 @@ class patch_360alpha1a implements patchInterface
         }
 
         $sql = 'DELETE FROM ssel
-                             WHERE temporaryType="1" AND record_id = :record_id
-                                AND usr_id = :usr_id AND sbas_id = :sbas_id';
+                WHERE temporaryType="1" AND record_id = :record_id
+                AND usr_id = :usr_id AND sbas_id = :sbas_id';
+
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($stories as $row) {
@@ -117,8 +123,7 @@ class patch_360alpha1a implements patchInterface
         $sql = 'INSERT INTO Baskets
             (
                 SELECT ssel_id as id, name, descript as description, usr_id, 1 as is_read
-                    , pushFrom as pusher_id,
-                    0 as archived, date as created, updater as updated
+                , pushFrom as pusher_id, 0 as archived, date as created, updater as updated
                 FROM ssel
                 WHERE temporaryType = "0"
             )';
@@ -137,9 +142,9 @@ class patch_360alpha1a implements patchInterface
 
         foreach ($rs as $row) {
             $sql = 'SELECT c.sselcont_id, c.record_id, b.sbas_id
-                        FROM sselcont c, bas b, ssel s
-                        WHERE s.temporaryType = "0" AND b.base_id = c.base_id
-                            AND c.ssel_id = :ssel_id AND s.ssel_id = c.ssel_id';
+                    FROM sselcont c, bas b, ssel s
+                    WHERE s.temporaryType = "0" AND b.base_id = c.base_id
+                    AND c.ssel_id = :ssel_id AND s.ssel_id = c.ssel_id';
 
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute([':ssel_id' => $row['ssel_id']]);
@@ -189,8 +194,8 @@ class patch_360alpha1a implements patchInterface
         $sql = 'INSERT INTO ValidationSessions
             (
                 SELECT null as id, v.ssel_id as basket_id ,created_on as created
-                    ,updated_on as updated ,expires_on as expires
-                    ,v.usr_id as initiator_id
+                ,updated_on as updated ,expires_on as expires
+                ,v.usr_id as initiator_id
                 FROM ssel s, validate v
                 WHERE v.ssel_id = s.ssel_id AND v.usr_id = s.usr_id
             )';
@@ -202,11 +207,11 @@ class patch_360alpha1a implements patchInterface
         $sql = 'INSERT INTO ValidationParticipants
             (
                 SELECT v.id as id, v.usr_id
-                        , 1 AS is_aware, confirmed as is_confirmed, 1 as can_agree
-                        , can_see_others, last_reminder AS reminded
-                        , vs.`id` AS ValidationSession_id
-                    FROM validate v, ssel s, ValidationSessions vs
-                    WHERE s.ssel_id = v.ssel_id AND vs.basket_id = v.ssel_id
+                , 1 AS is_aware, confirmed as is_confirmed, 1 as can_agree
+                , can_see_others, last_reminder AS reminded
+                , vs.`id` AS ValidationSession_id
+                FROM validate v, ssel s, ValidationSessions vs
+                WHERE s.ssel_id = v.ssel_id AND vs.basket_id = v.ssel_id
             )';
 
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -214,21 +219,22 @@ class patch_360alpha1a implements patchInterface
         $stmt->closeCursor();
 
         $sql = 'SELECT usr_id, basket_id, p.id as participant_id
-                        FROM ValidationParticipants p, ValidationSessions s
-                        WHERE p.ValidationSession_Id = s.id';
+                FROM ValidationParticipants p, ValidationSessions s
+                WHERE p.ValidationSession_Id = s.id';
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sql = 'INSERT INTO ValidationDatas (
-                            SELECT d.id , :participant_id as participant_id, d.sselcont_id, d.agreement,
-                                d.note, d.updated_on as updated
-                            FROM validate v, validate_datas d, sselcont c
-                            WHERE c.sselcont_id = d.sselcont_id AND v.id = d.validate_id
-                                AND v.usr_id = :usr_id AND v.ssel_id = :basket_id
-                         )';
+        $sql = 'INSERT INTO ValidationDatas
+            (
+                SELECT d.id , :participant_id as participant_id, d.sselcont_id, d.agreement
+                ,d.note, d.updated_on as updated
+                FROM validate v, validate_datas d, sselcont c
+                WHERE c.sselcont_id = d.sselcont_id AND v.id = d.validate_id
+                AND v.usr_id = :usr_id AND v.ssel_id = :basket_id
+            )';
         $stmt = $appbox->get_connection()->prepare($sql);
         foreach ($rs as $row) {
             $params = [
@@ -242,14 +248,14 @@ class patch_360alpha1a implements patchInterface
         $stmt->closeCursor();
 
         $sql = 'UPDATE ValidationDatas
-             SET agreement = NULL where agreement = "0"';
+                SET agreement = NULL where agreement = "0"';
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
         $sql = 'UPDATE ValidationDatas
-             SET agreement = "0" where agreement = "-1"';
+                SET agreement = "0" where agreement = "-1"';
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
