@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Command\Setup\Install;
 use Alchemy\Phrasea\Command\Setup\PluginsReset;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
+use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -44,6 +45,9 @@ $app = new CLI("
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
             . ' SETUP', Version::getName() . ' ' . Version::getNumber());
+
+
+$app->register(new DoctrineMigrationServiceProvider());
 
 $app->command(new \module_console_aboutAuthors('about:authors'));
 $app->command(new \module_console_aboutLicense('about:license'));
