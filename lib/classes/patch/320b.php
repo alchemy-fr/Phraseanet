@@ -22,7 +22,7 @@ class patch_320b implements patchInterface
      *
      * @var string
      */
-    private $release = '3.2.0.0.a3';
+    private $release = '3.2.0-alpha.3';
 
     /**
      *

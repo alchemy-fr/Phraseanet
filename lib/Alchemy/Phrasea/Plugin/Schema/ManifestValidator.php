@@ -15,7 +15,8 @@ use Alchemy\Phrasea\Application;
 use JsonSchema\Validator as JsonValidator;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Plugin\Exception\JsonValidationException;
-use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Core\Version as PhraseaVersion;
+use vierbergenlars\SemVer\version;
 
 class ManifestValidator
 {
@@ -23,7 +24,7 @@ class ManifestValidator
     private $version;
     private $schemaData;
 
-    public function __construct(JsonValidator $validator, $schemaData, Version $version)
+    public function __construct(JsonValidator $validator, $schemaData, PhraseaVersion $version)
     {
         if (!is_object($schemaData)) {
             throw new InvalidArgumentException('Json Schema must be an object');
@@ -56,7 +57,7 @@ class ManifestValidator
         }
 
         if (isset($data->{'minimum-phraseanet-version'})) {
-            if (true !== version_compare($this->version->getNumber(), $data->{'minimum-phraseanet-version'}, '>=')) {
+            if (version::lt($this->version->getNumber(), $data->{'minimum-phraseanet-version'})) {
                 throw new JsonValidationException(sprintf(
                     'Version incomptibility : Minimum Phraseanet version required is %s, current version is %s',
                     $data->{'minimum-phraseanet-version'},
@@ -66,7 +67,7 @@ class ManifestValidator
         }
 
         if (isset($data->{'maximum-phraseanet-version'})) {
-            if (true !== version_compare($this->version->getNumber(), $data->{'maximum-phraseanet-version'}, '<')) {
+            if (version::gte($this->version->getNumber(), $data->{'maximum-phraseanet-version'})) {
                 throw new JsonValidationException(sprintf(
                     'Version incomptibility : Maximum Phraseanet version required is %s, current version is %s',
                     $data->{'maximum-phraseanet-version'},

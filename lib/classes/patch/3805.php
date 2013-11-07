@@ -15,7 +15,7 @@ use Entities\AuthFailure;
 class patch_3805 implements patchInterface
 {
     /** @var string */
-    private $release = '3.8.0.a4';
+    private $release = '3.8.0-alpha.4';
 
     /** @var array */
     private $concern = array(base::APPLICATION_BOX);

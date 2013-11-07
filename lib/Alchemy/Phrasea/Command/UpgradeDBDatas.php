@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Command\Upgrade\Step35;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use vierbergenlars\SemVer\version;
 
 /**
  *
@@ -69,7 +70,7 @@ EOF
 
         if (null !== $input->getOption('from')) {
             foreach ($versions as $classname => $version) {
-                if (version_compare($input->getOption('from'), $version) > 0) {
+                if (version::lt($version, $input->getOption('from'))) {
                     continue;
                 }
 

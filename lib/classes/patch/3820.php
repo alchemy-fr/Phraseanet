@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Application;
 class patch_3820 implements patchInterface
 {
     /** @var string */
-    private $release = '3.8.1';
+    private $release = '3.8.1-alpha.1';
 
     /** @var array */
     private $concern = array(base::DATA_BOX);

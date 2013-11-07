@@ -16,7 +16,7 @@ use Entities\SessionModule;
 class patch_3811 implements patchInterface
 {
     /** @var string */
-    private $release = '3.8.0.a11';
+    private $release = '3.8.0-alpha.11';
 
     /** @var array */
     private $concern = array(base::APPLICATION_BOX);

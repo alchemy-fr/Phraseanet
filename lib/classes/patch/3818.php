@@ -15,7 +15,7 @@ use Symfony\Component\Process\ExecutableFinder;
 class patch_3818 implements patchInterface
 {
     /** @var string */
-    private $release = '3.8.0.a18';
+    private $release = '3.8.0-alpha.18';
 
     /** @var array */
     private $concern = array(base::APPLICATION_BOX);

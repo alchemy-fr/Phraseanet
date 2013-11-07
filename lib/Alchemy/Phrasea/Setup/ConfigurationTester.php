@@ -27,6 +27,7 @@ use Alchemy\Phrasea\Setup\Probe\PhraseaProbe;
 use Alchemy\Phrasea\Setup\Probe\SearchEngineProbe;
 use Alchemy\Phrasea\Setup\Probe\SubdefsPathsProbe;
 use Alchemy\Phrasea\Setup\Probe\SystemProbe;
+use vierbergenlars\SemVer\version;
 
 class ConfigurationTester
 {
@@ -109,11 +110,11 @@ class ConfigurationTester
             return false;
         }
 
-        $upgradable = version_compare($this->app['phraseanet.appbox']->get_version(), $this->app['phraseanet.version']->getNumber(), ">");
+        $upgradable = version::lt($this->app['phraseanet.appbox']->get_version(), $this->app['phraseanet.version']->getNumber());
 
         if (!$upgradable) {
             foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
-                if (version_compare($databox->get_version(), $this->app['phraseanet.version']->getNumber(), "<")) {
+                if (version::lt($databox->get_version(), $this->app['phraseanet.version']->getNumber())) {
                     $upgradable = true;
                     break;
                 }
