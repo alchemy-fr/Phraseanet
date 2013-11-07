@@ -343,10 +343,10 @@
                                                 <option value="{{ ord }}">{{ ord_name }}</option>
                                                 {% endfor %}
                                             </select>
-                                            {% if app['phraseanet.SE'].hasStemming() %}
+                                            {% if app['phraseanet.SE'].hasStemming() and app['phraseanet.SE'].isStemmingEnabled() %}
                                             <div>
                                                 <label class="checkbox">
-                                                     <input type="checkbox" {% if app['phraseanet.SE'].isStemmingEnabled() %} checked="checked" {% endif %} name="stemme" /> {% trans 'rechercher par stemme' %}
+                                                     <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
                                                 </label>
                                             </div>
                                             {% endif %}
