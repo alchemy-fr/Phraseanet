@@ -154,7 +154,7 @@
                                         {% for notification in nots %}
                                             <li>
                                                 <label class="checkbox" for="notif_{{ notification["id"] }}">
-                                                    <input type="checkbox" id="notif_{{ notification["id"] }}" name="notifications[{{ notification["id"] }}]" {% if not app["authentication"].getUser().getPrefs("notification_" ~ notification["id"]) == "0" %}checked{% endif %} value="1"/>
+                                                    <input type="checkbox" id="notif_{{ notification["id"] }}" name="notifications[{{ notification["id"] }}]" {% if not app["authentication"].getUser().get_notifications_preference(app, notification["id"]) == "0" %}checked{% endif %} value="1"/>
                                                     {{ notification["description"] }}
                                                 </label>
                                                 <p class="form_alert help-block"></p>
