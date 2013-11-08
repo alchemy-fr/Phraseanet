@@ -178,21 +178,18 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
     }
 
     /**
+     * @param integer $usr_id The id of the user to check
      *
      * @return boolean
      */
-    public function is_available()
+    public function is_available($usr_id)
     {
-        $bool = false;
-
-        if ( ! $this->app['authentication']->isAuthenticated()) {
+        try {
+            $user = \User_Adapter::getInstance($usr_id, $this->app);
+        } catch (\Exception $e) {
             return false;
         }
 
-        if ($this->app['authentication']->getUser()->ACL()->has_right('push')) {
-            $bool = true;
-        }
-
-        return $bool;
+        return $user->ACL()->has_right('push');
     }
 }

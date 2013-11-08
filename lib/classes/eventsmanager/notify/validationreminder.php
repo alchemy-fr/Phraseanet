@@ -187,10 +187,11 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
     }
 
     /**
+     * @param integer $usr_id The id of the user to check
      *
      * @return string
      */
-    public function is_available()
+    public function is_available($usr_id)
     {
         return true;
     }

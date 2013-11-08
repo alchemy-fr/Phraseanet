@@ -57,7 +57,7 @@ class eventsmanager_broker
                 foreach ($this->pool_classes[$classname]->get_events() as $event)
                     $this->bind($event, $classname);
 
-                if ($type === 'notify' && $this->pool_classes[$classname]->is_available())
+                if ($type === 'notify' && $this->pool_classes[$classname])
                     $this->notifications[] = $classname;
             }
         }
@@ -286,7 +286,7 @@ class eventsmanager_broker
             WHERE usr_id = :usr_id AND id = :notif_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id'   => $usr_id, ':notif_id' => $notifications));
+        $stmt->execute(array(':usr_id'   => $usr_id, ':notif_id' => $notification));
         $stmt->closeCursor();
 
         return;
@@ -298,6 +298,9 @@ class eventsmanager_broker
         $personnal_notifications = array();
 
         foreach ($this->notifications as $notification) {
+            if (!$this->pool_classes[$notification]->is_available($usr_id)) {
+                continue;
+            }
             $group = $this->pool_classes[$notification]->get_group();
             $group = $group === null ? _('Notifications globales') : $group;
 

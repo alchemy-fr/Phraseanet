@@ -162,10 +162,11 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
     }
 
     /**
+     * @param integer $usr_id The id of the user to check
      *
      * @return boolean
      */
-    public function is_available()
+    public function is_available($usr_id)
     {
         return true;
     }
