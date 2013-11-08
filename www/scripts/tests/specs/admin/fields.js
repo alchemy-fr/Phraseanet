@@ -235,7 +235,7 @@ define([
                     this.view.render().el.nodeName.should.equal("DIV");
                 });
 
-                it("should rnot ender an error message if provided tag is empty", function() {
+                it("should not render an error message if provided tag is empty", function() {
                    var view =  this.view.render();
 
                     view.$('input#tag').val("").blur();
