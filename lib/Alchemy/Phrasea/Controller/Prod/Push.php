@@ -221,7 +221,7 @@ class Push implements ControllerProviderInterface
                     $app['EM']->flush();
 
                     $url = $app->url('lightbox_compare', array(
-                        'ssel_id' => $Basket->getId(),
+                        'basket' => $Basket->getId(),
                         'LOG' => $app['tokens']->getUrlToken(
                             \random::TYPE_VIEW,
                             $user_receiver->get_id(),
@@ -419,7 +419,7 @@ class Push implements ControllerProviderInterface
                     $app['EM']->flush();
 
                     $url = $app->url('lightbox_validation', array(
-                        'ssel_id' => $Basket->getId(),
+                        'basket' => $Basket->getId(),
                         'LOG' => $app['tokens']->getUrlToken(
                             \random::TYPE_VALIDATE,
                             $participant_user->get_id(),

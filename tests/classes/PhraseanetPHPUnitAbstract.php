@@ -5,6 +5,8 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\Common\DataFixtures\Loader;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
+use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
@@ -12,6 +14,8 @@ use Alchemy\Phrasea\Model\Entities\FeedToken;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\ValidationSession;
+use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
@@ -329,22 +333,17 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return \Alchemy\Phrasea\Model\Entities\Basket
      */
-    protected function insertOneBasket()
+    protected function insertOneBasket(\User_Adapter $user = null)
     {
-        try {
-            $basketFixture = new PhraseaFixture\Basket\LoadOneBasket();
+        $basket = new Basket();
+        $basket->setOwner($user ?: self::$DI['user']);
+        $basket->setName('test');
+        $basket->setName('description test');
 
-            $basketFixture->setUser(self::$DI['user']);
+        self::$DI['app']['EM']->persist($basket);
+        self::$DI['app']['EM']->flush();
 
-            $loader = new Loader();
-            $loader->addFixture($basketFixture);
-
-            $this->insertFixtureInDatabase($loader);
-
-            return $basketFixture->basket;
-        } catch (\Exception $e) {
-            $this->fail('Fail load one Basket : ' . $e->getMessage());
-        }
+        return $basket;
     }
 
     /**
@@ -591,28 +590,21 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     /**
-     *
      * @return \Alchemy\Phrasea\Model\Entities\BasketElement
      */
-    protected function insertOneBasketElement()
+    protected function insertOneBasketElement(\User_Adapter $user = null, \record_adapter $record = null)
     {
-        $basket = $this->insertOneBasket();
+        $element = new BasketElement();
+        $element->setRecord($record ?: self::$DI['record_1']);
 
-        $basketElement = new \Alchemy\Phrasea\Model\Entities\BasketElement();
-        $basketElement->setRecord(self::$DI['record_1']);
-        $basketElement->setBasket($basket);
+        $basket = $this->insertOneBasket($user);
+        $basket->addElement($element);
+        $element->setBasket($basket);
 
-        $basket->addElement($basketElement);
+        self::$DI['app']['EM']->persist($element);
+        self::$DI['app']['EM']->flush();
 
-        $em = self::$DI['app']['EM'];
-
-        $em->persist($basketElement);
-
-        $em->merge($basket);
-
-        $em->flush();
-
-        return $basketElement;
+        return $element;
     }
 
     /**
@@ -673,26 +665,39 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     protected function insertOneBasketEnv()
     {
-        try {
-            $basketFixture = new PhraseaFixture\Basket\LoadOneBasketEnv();
+        $basket = new Basket();
+        $basket->setName('test');
+        $basket->setDescription('description');
+        $basket->setOwner(self::$DI['user']);
+        self::$DI['app']['EM']->persist($basket);
 
-            $basketFixture->setUser(self::$DI['user']);
-
-            $basketFixture->addParticipant(self::$DI['user_alt1']);
-            $basketFixture->addParticipant(self::$DI['user_alt2']);
-
-            $basketFixture->addElement(self::$DI['record_1']);
-            $basketFixture->addElement(self::$DI['record_2']);
-
-            $loader = new Loader();
-            $loader->addFixture($basketFixture);
-
-            $this->insertFixtureInDatabase($loader);
-
-            return $basketFixture->basket;
-        } catch (\Exception $e) {
-            $this->fail('Fail load one Basket context : ' . $e->getMessage());
+        foreach (array(self::$DI['record_1'], self::$DI['record_2']) as $record) {
+            $basketElement = new BasketElement();
+            $basketElement->setRecord($record);
+            $basketElement->setBasket($basket);
+            $basket->addElement($basketElement);
+            self::$DI['app']['EM']->persist($basketElement);
         }
+
+        $validationSession = new ValidationSession();
+        $validationSession->setBasket($basket);
+        $basket->setValidation($validationSession);
+        $expires = new \DateTime();
+        $expires->modify('+1 week');
+        $validationSession->setExpires($expires);
+        $validationSession->setInitiator(self::$DI['user']);
+
+        foreach (array(self::$DI['user_alt1'], self::$DI['user_alt2']) as $user) {
+            $validationParticipant = new ValidationParticipant();
+            $validationParticipant->setUser($user);
+            $validationParticipant->setSession($validationSession);
+            $validationSession->addParticipant($validationParticipant);
+            self::$DI['app']['EM']->persist($validationParticipant);
+        }
+
+        self::$DI['app']['EM']->flush();
+
+        return $basket;
     }
 
     /**

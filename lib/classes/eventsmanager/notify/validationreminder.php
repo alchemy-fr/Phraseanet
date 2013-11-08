@@ -145,10 +145,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         try {
-            $repository = $this->app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-
-            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['authentication']->getUser(), false);
-
+            $basket = $this->app['converter.basket']->convert($ssel_id);
             $basket_name = trim($basket->getName()) ? : _('Une selection');
         } catch (Exception $e) {
             $basket_name = _('Une selection');

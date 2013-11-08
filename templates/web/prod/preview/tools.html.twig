@@ -10,7 +10,7 @@
        class="baskDeleter WorkZoneElementRemover" title="{% trans 'Remove from basket' %}"
        data-context="reg_train_basket"
        onclick="remove_from_basket($(this), false);return false;"
-       href="{{ path('prod_baskets_basket_element_remove', { 'basket_id' :  record.get_container().getId(), 'basket_element_id' : record.get_original_item().getId()}) }}">
+       href="{{ path('prod_baskets_basket_element_remove', { 'basket' :  record.get_container().getId(), 'basket_element_id' : record.get_original_item().getId()}) }}">
     </a>
 {% endif %}
 

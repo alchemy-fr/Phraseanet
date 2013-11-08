@@ -852,7 +852,7 @@ class Login implements ControllerProviderInterface
                 'ssel_id'     => $basketId,
                 'from'        => $validationSession->getInitiatorId(),
                 'validate_id' => $validationSession->getId(),
-                'url'         => $app->url('lightbox_validation', array('ssel_id' => $basketId, 'LOG' => $token)),
+                'url'         => $app->url('lightbox_validation', array('basket' => $basketId, 'LOG' => $token)),
             ));
 
             $participant->setReminded(new \DateTime('now'));

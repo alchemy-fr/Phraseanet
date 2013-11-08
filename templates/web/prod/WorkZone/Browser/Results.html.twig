@@ -34,7 +34,7 @@
   <div class="PNB" style="right:10px">
   {% for Basket in Baskets %}
     <div class="result {% if loop.index is odd %}odd{% endif %}">
-      <a href="{{ path('basket_delete', {basket_id: Basket.getId()}) }}" class="delete-basket close" title="{% trans %}Delete basket{% endtrans %}" style="color:#fff;padding:2px">×</a>
+      <a href="{{ path('basket_delete', {basket: Basket.getId()}) }}" class="delete-basket close" title="{% trans %}Delete basket{% endtrans %}" style="color:#fff;padding:2px">×</a>
       <div class="PNB10" style="right:15px;">
         <table>
           <tr>
@@ -51,18 +51,18 @@
               <h1 class="title">
                 <img class="loader" src="/skins/prod/Basket/Browser/loader.gif" />
                 {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app['authentication'].getUser()) %}
-                <a href="{{ path('prod_baskets_basket_archive', { 'basket_id' : Basket.getId(), 'archive' : 1 }) }}" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
+                <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 1 }) }}" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
                   <span>
                     <img src="/skins/prod/Basket/Browser/archive.png"/>
                   </span>
                 </a>
-                <a href="{{ path('prod_baskets_basket_archive', { 'basket_id' : Basket.getId(), 'archive' : 0 }) }}" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
+                <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 0 }) }}" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
                   <span>
                     <img src="/skins/prod/Basket/Browser/archived.png"/>
                   </span>
                 </a>
                 {% endif %}
-                <a class="basket_link" href="{{ path('prod_workzone_basket', { basket_id : Basket.getId() }) }}">
+                <a class="basket_link" href="{{ path('prod_workzone_basket', { basket : Basket.getId() }) }}">
                   {{ Basket.getName() }}
                 </a>
               </h1>

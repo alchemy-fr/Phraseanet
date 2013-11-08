@@ -29,7 +29,7 @@
   {% set record = basket_element.getRecord(app) %}
 <div data-role="page" id="page">
   <div data-role="header">
-    <a href="{{ path('lightbox_validation', { 'ssel_id' : basket_element.getBasket().getId() }) }}" data-rel="back" data-icon="arrow-l">Back</a>
+    <a href="{{ path('lightbox_validation', { 'basket' : basket_element.getBasket().getId() }) }}" data-rel="back" data-icon="arrow-l">Back</a>
     <h1>{{basket_element.getOrd()}} - {{record.get_title()}}</h1>
     <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
   </div>

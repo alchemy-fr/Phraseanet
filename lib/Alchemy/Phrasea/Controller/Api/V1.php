@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -88,7 +89,7 @@ class V1 implements ControllerProviderInterface
             $app['dispatcher']->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
 
             return;
-        }, 256);
+        });
 
         /**
          * OAuth log process
@@ -604,11 +605,14 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->get('/baskets/{basket_id}/content/', function (SilexApplication $app, $basket_id) {
-            return $app['api']->get_basket($app['request'], $basket_id)->get_response();
-        })->assert('basket_id', '\d+');
+        $controllers->get('/baskets/{basket}/content/', function (SilexApplication $app, Basket $basket) {
+            return $app['api']->get_basket($app['request'], $basket)->get_response();
+        })
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-access'])
+            ->assert('basket', '\d+');
 
-        $controllers->get('/baskets/{wrong_basket_id}/content/', $bad_request_exception);
+        $controllers->get('/baskets/{wrong_basket}/content/', $bad_request_exception);
 
         /**
          * Route : /baskets/BASKET_ID/settitle/
@@ -619,13 +623,16 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->post('/baskets/{basket_id}/setname/', function (SilexApplication $app, $basket_id) {
+        $controllers->post('/baskets/{basket}/setname/', function (SilexApplication $app, Basket $basket) {
             return $app['api']
-                    ->set_basket_title($app['request'], $basket_id)
+                    ->set_basket_title($app['request'], $basket)
                     ->get_response();
-        })->assert('basket_id', '\d+');
+        })
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-is-owner'])
+            ->assert('basket', '\d+');
 
-        $controllers->post('/baskets/{wrong_basket_id}/setname/', $bad_request_exception);
+        $controllers->post('/baskets/{wrong_basket}/setname/', $bad_request_exception);
 
         /**
          * Route : /baskets/BASKET_ID/setdescription/
@@ -636,13 +643,16 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->post('/baskets/{basket_id}/setdescription/', function (SilexApplication $app, $basket_id) {
+        $controllers->post('/baskets/{basket}/setdescription/', function (SilexApplication $app, Basket $basket) {
             return $app['api']
-                    ->set_basket_description($app['request'], $basket_id)
+                    ->set_basket_description($app['request'], $basket)
                     ->get_response();
-        })->assert('basket_id', '\d+');
+        })
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-is-owner'])
+            ->assert('basket', '\d+');
 
-        $controllers->post('/baskets/{wrong_basket_id}/setdescription/', $bad_request_exception);
+        $controllers->post('/baskets/{wrong_basket}/setdescription/', $bad_request_exception);
 
         /**
          * Route : /baskets/BASKET_ID/delete/
@@ -653,11 +663,14 @@ class V1 implements ControllerProviderInterface
          *    BASKET_ID : required INT
          *
          */
-        $controllers->post('/baskets/{basket_id}/delete/', function (SilexApplication $app, $basket_id) {
-            return $app['api']->delete_basket($app['request'], $basket_id)->get_response();
-        })->assert('basket_id', '\d+');
+        $controllers->post('/baskets/{basket}/delete/', function (SilexApplication $app, Basket $basket) {
+            return $app['api']->delete_basket($app['request'], $basket)->get_response();
+        })
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-is-owner'])
+            ->assert('basket', '\d+');
 
-        $controllers->post('/baskets/{wrong_basket_id}/delete/', $bad_request_exception);
+        $controllers->post('/baskets/{wrong_basket}/delete/', $bad_request_exception);
 
         /**
          * Route : /feeds/list/

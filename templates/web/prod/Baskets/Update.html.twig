@@ -1,5 +1,5 @@
 <div>
-    <form action="{{ path('prod_baskets_basket_update', { 'basket_id' : basket.getId()}) }}" method="POST" id="basket-rename-box">
+    <form action="{{ path('prod_baskets_basket_update', { 'basket' : basket.getId()}) }}" method="POST" id="basket-rename-box">
         <label style="margin:5px 0 0 0;">{% trans 'panier:: nom' %}</label>
         <input type="text" name="name" value="{{ basket.getName() }}" style="width:98%;" />
         <label style="margin:5px 0 0 0;">{% trans 'panier:: description' %}</label>

@@ -34,49 +34,62 @@ class BasketController implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function (Request $request) use ($app) {
-            $app['firewall']->requireAuthentication();
-        });
+        $controllers
+            ->before(function (Request $request, Application $app) {
+                $app['firewall']->requireAuthentication();
+            })
+            // Silex\Route::convert is not used as this should be done prior the before middleware
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-access']);
 
-        $controllers->get('/{basket_id}/', 'controller.prod.basket:displayBasket')
+        $controllers->get('/{basket}/', 'controller.prod.basket:displayBasket')
             ->bind('prod_baskets_basket')
-            ->assert('basket_id', '\d+');
+            ->assert('basket', '\d+');
 
         $controllers->post('/', 'controller.prod.basket:createBasket')
             ->bind('prod_baskets');
 
-        $controllers->post('/{basket_id}/delete/', 'controller.prod.basket:deleteBasket')
-            ->assert('basket_id', '\d+')
-            ->bind('basket_delete');
+        $controllers->post('/{basket}/delete/', 'controller.prod.basket:deleteBasket')
+            ->assert('basket', '\d+')
+            ->bind('basket_delete')
+            ->before($app['middleware.basket.user-is-owner']);
 
-        $controllers->post('/{basket_id}/delete/{basket_element_id}/', 'controller.prod.basket:removeBasketElement')
+        $controllers->post('/{basket}/delete/{basket_element_id}/', 'controller.prod.basket:removeBasketElement')
             ->bind('prod_baskets_basket_element_remove')
-            ->assert('basket_id', '\d+')
-            ->assert('basket_element_id', '\d+');
+            ->assert('basket', '\d+')
+            ->assert('basket_element_id', '\d+')
+            ->before($app['middleware.basket.user-is-owner']);
 
-        $controllers->post('/{basket_id}/update/', 'controller.prod.basket:updateBasket')
+        $controllers->post('/{basket}/update/', 'controller.prod.basket:updateBasket')
             ->bind('prod_baskets_basket_update')
-            ->assert('basket_id', '\d+');
+            ->assert('basket', '\d+')
+            ->before($app['middleware.basket.user-is-owner']);
 
-        $controllers->get('/{basket_id}/update/', 'controller.prod.basket:displayUpdateForm')
-            ->assert('basket_id', '\d+');
+        $controllers->get('/{basket}/update/', 'controller.prod.basket:displayUpdateForm')
+            ->assert('basket', '\d+')
+            ->before($app['middleware.basket.user-is-owner']);
 
-        $controllers->get('/{basket_id}/reorder/', 'controller.prod.basket:displayReorderForm')
-            ->assert('basket_id', '\d+')
-            ->bind('prod_baskets_basket_reorder');
+        $controllers->get('/{basket}/reorder/', 'controller.prod.basket:displayReorderForm')
+            ->assert('basket', '\d+')
+            ->bind('prod_baskets_basket_reorder')
+            ->before($app['middleware.basket.user-is-owner']);
 
-        $controllers->post('/{basket_id}/reorder/', 'controller.prod.basket:reorder')
-            ->assert('basket_id', '\d+');
+        $controllers->post('/{basket}/reorder/', 'controller.prod.basket:reorder')
+            ->assert('basket', '\d+')
+            ->before($app['middleware.basket.user-is-owner']);
 
-        $controllers->post('/{basket_id}/archive/', 'controller.prod.basket:archiveBasket')
+        $controllers->post('/{basket}/archive/', 'controller.prod.basket:archiveBasket')
             ->bind('prod_baskets_basket_archive')
-            ->assert('basket_id', '\d+');
+            ->assert('basket', '\d+')
+            ->before($app['middleware.basket.user-is-owner']);
 
-        $controllers->post('/{basket_id}/addElements/', 'controller.prod.basket:addElements')
-            ->assert('basket_id', '\d+');
+        $controllers->post('/{basket}/addElements/', 'controller.prod.basket:addElements')
+            ->assert('basket', '\d+')
+            ->before($app['middleware.basket.user-is-owner']);
 
-        $controllers->post('/{basket_id}/stealElements/', 'controller.prod.basket:stealElements')
-            ->assert('basket_id', '\d+');
+        $controllers->post('/{basket}/stealElements/', 'controller.prod.basket:stealElements')
+            ->assert('basket', '\d+')
+            ->before($app['middleware.basket.user-is-owner']);
 
         $controllers->get('/create/', 'controller.prod.basket:displayCreateForm')
             ->bind('prod_baskets_create');
@@ -84,11 +97,8 @@ class BasketController implements ControllerProviderInterface
         return $controllers;
     }
 
-    public function displayBasket(Application $app, Request $request, $basket_id)
+    public function displayBasket(Application $app, Request $request, BasketEntity $basket)
     {
-        $basket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), false);
-
         if ($basket->getIsRead() === false) {
             $basket->setIsRead(true);
             $app['EM']->flush();
@@ -111,9 +121,6 @@ class BasketController implements ControllerProviderInterface
 
     public function createBasket(Application $app, Request $request)
     {
-        $request = $app['request'];
-        /* @var $request \Symfony\Component\HttpFoundation\Request */
-
         $Basket = new BasketEntity();
 
         $Basket->setName($request->request->get('name', ''));
@@ -144,7 +151,7 @@ class BasketController implements ControllerProviderInterface
 
         $app['EM']->flush();
 
-        if ($request->getRequestFormat() == 'json') {
+        if ($request->getRequestFormat() === 'json') {
             $data = array(
                 'success' => true
                 , 'message' => _('Basket created')
@@ -155,15 +162,12 @@ class BasketController implements ControllerProviderInterface
 
             return $app->json($data);
         } else {
-            return $app->redirectPath('prod_baskets_basket', array('basket_id' => $Basket->getId()));
+            return $app->redirectPath('prod_baskets_basket', array('basket' => $Basket->getId()));
         }
     }
 
-    public function deleteBasket(Application $app, Request $request, $basket_id)
+    public function deleteBasket(Application $app, Request $request, BasketEntity $basket)
     {
-        $basket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), true);
-
         $app['EM']->remove($basket);
         $app['EM']->flush();
 
@@ -172,21 +176,18 @@ class BasketController implements ControllerProviderInterface
             , 'message' => _('Basket has been deleted')
         );
 
-        if ($request->getRequestFormat() == 'json') {
+        if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
         } else {
             return $app->redirectPath('prod_workzone_show');
         }
     }
 
-    public function removeBasketElement(Application $app, Request $request, $basket_id, $basket_element_id)
+    public function removeBasketElement(Application $app, Request $request, BasketEntity $basket, $basket_element_id)
     {
-        $basket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), true);
-
         foreach ($basket->getElements() as $basket_element) {
             /* @var $basket_element BasketElement */
-            if ($basket_element->getId() == $basket_element_id) {
+            if ($basket_element->getId() === (int) $basket_element_id) {
                 $app['EM']->remove($basket_element);
             }
         }
@@ -198,21 +199,18 @@ class BasketController implements ControllerProviderInterface
             , 'message' => _('Record removed from basket')
         );
 
-        if ($request->getRequestFormat() == 'json') {
+        if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
         } else {
             return $app->redirectPath('prod_workzone_show');
         }
     }
 
-    public function updateBasket(Application $app, Request $request, $basket_id)
+    public function updateBasket(Application $app, Request $request, BasketEntity $basket)
     {
         $success = false;
 
         try {
-            $basket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-                ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), true);
-
             $basket->setName($request->request->get('name', ''));
             $basket->setDescription($request->request->get('description'));
 
@@ -232,41 +230,30 @@ class BasketController implements ControllerProviderInterface
         $data = array(
             'success' => $success
             , 'message' => $msg
-            , 'basket'  => array('id' => $basket_id)
+            , 'basket'  => array('id' => $basket->getId())
         );
 
-        if ($request->getRequestFormat() == 'json') {
+        if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
         } else {
             return $app->redirectPath('prod_workzone_show');
         }
     }
 
-    public function displayUpdateForm(Application $app, $basket_id)
+    public function displayUpdateForm(Application $app, BasketEntity $basket)
     {
-        $basket = $app['EM']
-            ->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), true);
-
         return $app['twig']->render('prod/Baskets/Update.html.twig', array('basket' => $basket));
     }
 
-    public function displayReorderForm(Application $app, $basket_id)
+    public function displayReorderForm(Application $app, BasketEntity $basket)
     {
-        $basket = $app['EM']
-            ->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), true);
-
         return $app['twig']->render('prod/Baskets/Reorder.html.twig', array('basket' => $basket));
     }
 
-    public function reorder(Application $app, $basket_id)
+    public function reorder(Application $app, BasketEntity $basket)
     {
         $ret = array('success' => false, 'message' => _('An error occured'));
         try {
-            $basket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-                ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), true);
-
             $order = $app['request']->request->get('element');
 
             /* @var $basket BasketEntity */
@@ -287,11 +274,8 @@ class BasketController implements ControllerProviderInterface
         return $app->json($ret);
     }
 
-    public function archiveBasket(Application $app, Request $request, $basket_id)
+    public function archiveBasket(Application $app, Request $request, BasketEntity $basket)
     {
-        $basket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), true);
-
         $archive_status = (Boolean) $request->query->get('archive');
 
         $basket->setArchived($archive_status);
@@ -311,18 +295,15 @@ class BasketController implements ControllerProviderInterface
             , 'message' => $message
         );
 
-        if ($request->getRequestFormat() == 'json') {
+        if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
         } else {
             return $app->redirectPath('prod_workzone_show');
         }
     }
 
-    public function addElements(Application $app, Request $request, $basket_id)
+    public function addElements(Application $app, Request $request, BasketEntity $basket)
     {
-        $basket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), true);
-
         $n = 0;
 
         $records = RecordsRequest::fromRequest($app, $request, true);
@@ -362,18 +343,15 @@ class BasketController implements ControllerProviderInterface
             , 'message' => sprintf(_('%d records added'), $n)
         );
 
-        if ($request->getRequestFormat() == 'json') {
+        if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
         } else {
             return $app->redirectPath('prod_workzone_show');
         }
     }
 
-    public function stealElements(Application $app, Request $request, $basket_id)
+    public function stealElements(Application $app, Request $request, BasketEntity $basket)
     {
-        $basket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), true);
-
         $n = 0;
 
         foreach ($request->request->get('elements') as $bask_element_id) {
@@ -384,6 +362,7 @@ class BasketController implements ControllerProviderInterface
                 continue;
             }
 
+            $basket_element->getBasket()->removeElement($basket_element);
             $basket_element->setBasket($basket);
             $basket->addElement($basket_element);
             $n++;
@@ -396,7 +375,7 @@ class BasketController implements ControllerProviderInterface
             , 'message' => sprintf(_('%d records moved'), $n)
         );
 
-        if ($request->getRequestFormat() == 'json') {
+        if ($request->getRequestFormat() === 'json') {
             return $app->json($data);
         } else {
             return $app->redirectPath('prod_workzone_show');

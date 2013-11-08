@@ -9,7 +9,7 @@
         </select>
         <button type="button" class="autoorder btn btn-inverse">{% trans 'Re-ordonner' %}</button>
         <button type="button" class="reverseorder btn btn-inverse">{% trans 'Inverser' %}</button>
-        <form name="reorder" method="POST" action="{{ path('prod_baskets_basket_reorder', { 'basket_id' : basket.getId() }) }}" style="display:inline;">
+        <form name="reorder" method="POST" action="{{ path('prod_baskets_basket_reorder', { 'basket' : basket.getId() }) }}" style="display:inline;">
         {% for element in basket.getElements() %}
                 <input type="hidden" name="element[{{ element.getId() }}]" value="{{ element.getOrd() }}"/>
         {% endfor %}

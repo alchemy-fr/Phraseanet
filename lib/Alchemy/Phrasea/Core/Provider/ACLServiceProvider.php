@@ -11,21 +11,16 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Model\Converter\BasketConverter;
-use Alchemy\Phrasea\Model\Converter\TaskConverter;
+use Alchemy\Phrasea\ACL\BasketACL;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
-class ConvertersServiceProvider implements ServiceProviderInterface
+class ACLServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['converter.task'] = $app->share(function ($app) {
-            return new TaskConverter($app['EM']);
-        });
-
-        $app['converter.basket'] = $app->share(function ($app) {
-            return new BasketConverter($app['EM']);
+        $app['acl.basket'] = $app->share(function ($app) {
+            return new BasketACL();
         });
     }
 

@@ -57,14 +57,17 @@ class Lightbox implements ControllerProviderInterface
                     break;
                 case \random::TYPE_VALIDATE:
                 case \random::TYPE_VIEW:
-                    return $app->redirectPath('lightbox_validation', array('ssel_id' => $datas['datas']));
+                    return $app->redirectPath('lightbox_validation', array('basket' => $datas['datas']));
                     break;
             }
         });
 
         $controllers->before(function (Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
-        });
+        })
+            // Silex\Route::convert is not used as this should be done prior the before middleware
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-access']);
 
         $controllers->get('/', function (SilexApplication $app) {
             try {
@@ -74,8 +77,6 @@ class Lightbox implements ControllerProviderInterface
             }
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-
-            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
 
             $basket_collection = array_merge(
                 $repository->findActiveByUser($app['authentication']->getUser())
@@ -117,7 +118,6 @@ class Lightbox implements ControllerProviderInterface
             ->assert('sselcont_id', '\d+');
 
         $controllers->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
-            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
             $BasketElement = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
@@ -201,7 +201,7 @@ class Lightbox implements ControllerProviderInterface
             ->assert('entry_id', '\d+')
             ->assert('item_id', '\d+');
 
-        $controllers->get('/validate/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
+        $controllers->get('/validate/{basket}/', function (SilexApplication $app, $basket) {
 
             try {
                 \Session_Logger::updateClientInfos($app, 6);
@@ -211,15 +211,8 @@ class Lightbox implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
                 $app['authentication']->getUser()
-            );
-
-            $basket = $repository->findUserBasket(
-                $app, $ssel_id
-                , $app['authentication']->getUser()
-                , false
             );
 
             if ($basket->getIsRead() === false) {
@@ -253,9 +246,9 @@ class Lightbox implements ControllerProviderInterface
             return $response;
         })
             ->bind('lightbox_validation')
-            ->assert('ssel_id', '\d+');
+            ->assert('basket', '\d+');
 
-        $controllers->get('/compare/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
+        $controllers->get('/compare/{basket}/', function (SilexApplication $app, Basket $basket) {
 
             try {
                 \Session_Logger::updateClientInfos($app, 6);
@@ -265,15 +258,8 @@ class Lightbox implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
-            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
             $basket_collection = $repository->findActiveValidationAndBasketByUser(
                 $app['authentication']->getUser()
-            );
-
-            $basket = $repository->findUserBasket(
-                $app, $ssel_id
-                , $app['authentication']->getUser()
-                , false
             );
 
             if ($basket->getIsRead() === false) {
@@ -307,7 +293,7 @@ class Lightbox implements ControllerProviderInterface
             return $response;
         })
             ->bind('lightbox_compare')
-            ->assert('ssel_id', '\d+');
+            ->assert('basket', '\d+');
 
         $controllers->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
 
@@ -344,26 +330,12 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_feed_entry')
             ->assert('entry_id', '\d+');
 
-        $controllers->get('/ajax/LOAD_REPORT/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
+        $controllers->get('/ajax/LOAD_REPORT/{basket}/', function (SilexApplication $app, Basket $basket) {
 
-            $template = 'lightbox/basket_content_report.html.twig';
-
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-
-            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
-            $basket = $repository->findUserBasket(
-                $app, $ssel_id
-                , $app['authentication']->getUser()
-                , false
-            );
-
-            $response = new Response($app['twig']->render($template, array('basket' => $basket)));
-            $response->setCharset('UTF-8');
-
-            return $response;
+            return new Response($app['twig']->render('lightbox/basket_content_report.html.twig', array('basket' => $basket)));
         })
             ->bind('lightbox_ajax_report')
-            ->assert('ssel_id', '\d+');
+            ->assert('basket', '\d+');
 
         $controllers->post('/ajax/SET_NOTE/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
             $output = array('error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees'));
@@ -375,7 +347,6 @@ class Lightbox implements ControllerProviderInterface
                 Return new Response('You must provide a note value', 400);
             }
 
-            /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
             $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
             $basket_element = $repository->findUserElement($sselcont_id, $app['authentication']->getUser());
@@ -425,7 +396,6 @@ class Lightbox implements ControllerProviderInterface
 
                 $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
 
-                /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketElementRepository */
                 $basket_element = $repository->findUserElement(
                     $sselcont_id
                     , $app['authentication']->getUser()
@@ -468,20 +438,11 @@ class Lightbox implements ControllerProviderInterface
             ->bind('lightbox_ajax_set_element_agreement')
             ->assert('sselcont_id', '\d+');
 
-        $controllers->post('/ajax/SET_RELEASE/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
-
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
+        $controllers->post('/ajax/SET_RELEASE/{basket}/', function (SilexApplication $app, Basket $basket) {
 
             $datas = array('error' => true, 'datas' => '');
 
             try {
-                /* @var $repository Alchemy\Phrasea\Model\Repositories\BasketRepository */
-                $basket = $repository->findUserBasket(
-                    $app, $ssel_id
-                    , $app['authentication']->getUser()
-                    , false
-                );
-
                 if (!$basket->getValidation()) {
                     throw new ControllerException('There is no validation session attached to this basket');
                 }
@@ -536,7 +497,7 @@ class Lightbox implements ControllerProviderInterface
             return $app->json($datas);
         })
             ->bind('lightbox_ajax_set_release')
-            ->assert('ssel_id', '\d+');
+            ->assert('basket', '\d+');
 
         return $controllers;
     }

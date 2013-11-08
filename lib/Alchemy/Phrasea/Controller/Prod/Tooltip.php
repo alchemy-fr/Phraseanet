@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
@@ -33,8 +34,10 @@ class Tooltip implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-        $controllers->post('/basket/{basket_id}/', 'controller.prod.tooltip:displayBasket')
-            ->assert('basket_id', '\d+')
+        $controllers->post('/basket/{basket}/', 'controller.prod.tooltip:displayBasket')
+            ->assert('basket', '\d+')
+            ->before($app['middleware.basket.converter'])
+            ->before($app['middleware.basket.user-access'])
             ->bind('prod_tooltip_basket');
 
         $controllers->post('/Story/{sbas_id}/{record_id}/', 'controller.prod.tooltip:displayStory')
@@ -79,11 +82,8 @@ class Tooltip implements ControllerProviderInterface
         return $controllers;
     }
 
-    public function displayBasket(Application $app, $basket_id)
+    public function displayBasket(Application $app, Basket $basket)
     {
-        $basket = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
-            ->findUserBasket($app, $basket_id, $app['authentication']->getUser(), false);
-
         return $app['twig']->render('prod/Tooltip/Basket.html.twig', array('basket' => $basket));
     }
 

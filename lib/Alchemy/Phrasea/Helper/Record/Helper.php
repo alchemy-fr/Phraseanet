@@ -113,10 +113,8 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
         $this->selection = new \set_selection($app);
 
         if (trim($Request->get('ssel')) !== '') {
-            $repository = $app['EM']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
-
-            /* @var $$repository Alchemy\Phrasea\Model\\Repositories\BasketRepository */
-            $Basket = $repository->findUserBasket($this->app, $Request->get('ssel'), $app['authentication']->getUser(), false);
+            $Basket = $app['converter.basket']->convert($Request->get('ssel'));
+            $app['acl.basket']->hasAccess($Basket, $app['authentication']->getUser());
 
             $this->selection->load_basket($Basket);
 
