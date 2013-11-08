@@ -134,38 +134,43 @@ define([
             return this;
         },
         tagFieldChangedAction: function(e) {
+            var $this = this;
             var fieldTag = $(e.target);
             var fieldTagId = fieldTag.attr("id");
             var fieldTagValue = fieldTag.val();
-            var notValid = "" === fieldTagValue;
 
-            // check for format tag
-            if (notValid) {
-                fieldTag
-                    .closest(".control-group")
-                    .addClass("error")
-                    .find(".help-block")
-                    .empty()
-                    .append(i18n.t("validation_tag_invalid"));
-                // add error
-                AdminFieldApp.errorManager.addModelFieldError(new Error(
-                    this.model, fieldTagId, i18n.t("validation_tag_invalid")
-                ));
-            } else if (fieldTag.closest(".control-group").hasClass("error")) {
-                // remove error
-                AdminFieldApp.errorManager.removeModelFieldError(
-                    this.model, fieldTagId
-                );
+            var onFieldValid = function() {
+                if (fieldTag.closest(".control-group").hasClass("error")) {
+                    // remove error
+                    AdminFieldApp.errorManager.removeModelFieldError(
+                        $this.model, fieldTagId
+                    );
 
-                fieldTag
-                    .closest(".control-group")
-                    .removeClass("error")
-                    .find(".help-block")
-                    .empty();
+                    fieldTag
+                        .closest(".control-group")
+                        .removeClass("error")
+                        .find(".help-block")
+                        .empty();
+                } else {
+                    $this.fieldChangedAction(e);
+                }
             }
 
-            if (!notValid) {
-                this.fieldChangedAction(e);
+            if ("" !== fieldTagValue) {
+                var jqxhr = $.get( "/admin/fields/tags/"+fieldTagValue, onFieldValid).fail(function() {
+                    fieldTag
+                        .closest(".control-group")
+                        .addClass("error")
+                        .find(".help-block")
+                        .empty()
+                        .append(i18n.t("validation_tag_invalid"));
+                    // add error
+                    AdminFieldApp.errorManager.addModelFieldError(new Error(
+                        $this.model, fieldTagId, i18n.t("validation_tag_invalid")
+                    ));
+                });
+            } else {
+                onFieldValid();
             }
         },
         deleteAction: function() {
