@@ -496,7 +496,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     /**
      * @dataProvider provideInvalidRegistrationData
      */
-    public function testPostRegisterbadArguments($parameters, $extraParameters, $errors)
+    public function testPostRegisterbadArguments($parameters, $extraParameters, $errors, $type)
     {
         self::$DI['app']['registration.enabled'] = true;
         self::$DI['app']['registration.fields'] = $extraParameters;
@@ -520,8 +520,15 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             unset($parameters['collections']);
         }
 
-        $crawler = self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
+        if (false === self::$DI['app']->hasTermsOfUse()) {
+            unset($parameters['accept-tou']);
 
+            if ('tou' === $type) {
+                $errors = 0;
+            }
+        }
+
+        $crawler = self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
         $this->assertFormOrFlashError($crawler, $errors);
     }
@@ -545,7 +552,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     ),
                     "accept-tou"      => '1',
                     "collections"     => null,
-                ), array(), 1),
+                ), array(), 1, ''),
             array(array(//required extra-field missing
                     "password" => array(
                         'password' => 'password',
@@ -559,7 +566,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                         'name'     => 'login',
                         'required' => true,
                     )
-                ), 1),
+                ), 1, ''),
             array(array(//password mismatch
                     "password" => array(
                         'password' => 'password',
@@ -568,7 +575,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
+                ), array(), 1, ''),
             array(array(//password tooshort
                     "password" => array(
                         'password' => 'min',
@@ -577,7 +584,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
+                ), array(), 1, ''),
             array(array(//email invalid
                     "password" => array(
                         'password' => 'password',
@@ -586,7 +593,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     "email"           => 'invalid.email',
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
+                ), array(), 1, ''),
             array(array(//login exists
                     "login"           => null,
                     "password" => array(
@@ -601,7 +608,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                         'name'     => 'login',
                         'required' => true,
                     )
-                ), 1),
+                ), 1, ''),
             array(array(//mails exists
                     "password" => array(
                         'password' => 'password',
@@ -610,7 +617,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     "email"           => null,
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
+                ), array(), 1, ''),
             array(array(//tou declined
                     "password" => array(
                         'password' => 'password',
@@ -618,7 +625,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     ),
                     "email"           => $this->generateEmail(),
                     "collections"     => null
-                ), array(), 1)
+                ), array(), 1, 'tou')
         );
     }
 
