@@ -234,7 +234,7 @@ function checkFilters(save)
 
         checked.each(function(){
             nbSelectedColls++;
-            search.bases[sbas_id].push($this.val());
+            search.bases[sbas_id].push($(this).val());
         });
     });
 
@@ -341,7 +341,7 @@ function clearAnswers(){
 
 function reset_adv_search()
 {
-    $('#sbasfiltercont select').val('');
+    $('#sbasfiltercont select[name="sort"]').val($('#sbasfiltercont select[name="sort"] option.default-selection').attr('value'));
     $('#sbasfiltercont input:checkbox.field_switch').removeAttr('checked');
     $('#sbasfiltercont .datepicker').val('');
     $('form.adv_search_bind input:text').val('');
