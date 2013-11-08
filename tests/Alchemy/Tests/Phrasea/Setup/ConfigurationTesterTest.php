@@ -93,7 +93,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
         /**
          * Must return version + 1
          */
-        $app['phraseanet.version']->expects($this->any())
+        $app['phraseanet.version']::staticExpects($this->any())
             ->method('getNumber')
             ->will($this->returnValue('3.9'));
 
@@ -134,7 +134,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
         /**
          * Must return version + 1
          */
-        $app['phraseanet.version']->expects($this->any())
+        $app['phraseanet.version']::staticExpects($this->any())
             ->method('getNumber')
             ->will($this->returnValue('3.9'));
 

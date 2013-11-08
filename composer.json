@@ -41,6 +41,7 @@
         "themattharris/tmhoauth"           : "~0.7",
         "twig/twig"                        : "~1.14, >=1.14.2",
         "twig/extensions"                  : "~1.0",
+        "vierbergenlars/php-semver"        : "~2.1",
         "zend/gdata"                       : "~1.12.1"
     },
     "require-dev": {

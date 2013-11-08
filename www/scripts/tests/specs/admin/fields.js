@@ -208,6 +208,23 @@ define([
                     var model = new FieldModel({"id": 1, "sbas-id": sbasId, "name": "Categorie", "tag": "XMP:Categorie"});
 
                     this.view = new EditView({"model": model});
+                    AdminFieldApp.fieldsCollection.reset();
+                    AdminFieldApp.fieldsCollection.add({"sbas-id": sbasId, "name": "Categorie", "tag": "XMP:Categorie"});
+                    AdminFieldApp.dcFieldsCollection.add({
+                        "label": "Contributor",
+                        "definition": "An entity responsible for making contributions to the resource.",
+                        "URI": "http://dublincore.org/documents/dces/#contributor"
+                    });
+
+                    AdminFieldApp.saveView = new SaveView();
+                    AdminFieldApp.fieldErrorView = new FieldErrorView();
+                    AdminFieldApp.fieldListView = new ListItemView({
+                        collection: AdminFieldApp.fieldsCollection,
+                        el: AdminFieldApp.$leftBlock
+                    });
+                    // render views
+                    AdminFieldApp.saveView.render();
+                    AdminFieldApp.fieldListView.render();
                 });
 
                 it("render() should return the view object", function() {
@@ -218,12 +235,12 @@ define([
                     this.view.render().el.nodeName.should.equal("DIV");
                 });
 
-                it("should render an error message if provided tag is empty", function() {
+                it("should not render an error message if provided tag is empty", function() {
                    var view =  this.view.render();
 
                     view.$('input#tag').val("").blur();
 
-                    assert.isTrue(view.$('input#tag').closest(".control-group").hasClass("error"));
+                    assert.isFalse(view.$('input#tag').closest(".control-group").hasClass("error"));
                 });
 
                 it("should uncheck vocabulary restricted if provided vocabulary is empty", function() {
@@ -288,6 +305,7 @@ define([
 
         describe("Edge cases", function() {
             beforeEach(function() {
+                AdminFieldApp.fieldsCollection.reset();
                 AdminFieldApp.fieldsCollection.add({"sbas-id": sbasId, "name": "Categorie", "tag": "XMP:Categorie"});
                 AdminFieldApp.dcFieldsCollection.add({
                     "label": "Contributor",

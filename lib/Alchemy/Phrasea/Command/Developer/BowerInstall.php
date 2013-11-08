@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use vierbergenlars\SemVer\version;
 
 class BowerInstall extends Command
 {
@@ -42,7 +43,7 @@ class BowerInstall extends Command
 
         $version = trim($bower->command('-v'));
 
-        if (!version_compare('1.0.0-alpha.1', $version, '<=')) {
+        if (version::lt($version, '1.0.0-alpha.1')) {
             throw new RuntimeException(sprintf(
                 'Bower version 1.0.0-alpha.1 is required (version %s provided), please install bower-canary : `npm install -g bower-canary or run npm install from root directory`', $version
             ));

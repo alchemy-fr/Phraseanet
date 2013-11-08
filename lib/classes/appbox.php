@@ -16,6 +16,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use vierbergenlars\SemVer\version;
 
 /**
  *
@@ -389,13 +390,13 @@ class appbox extends base
 
         $upgrader->add_steps_complete(1);
 
-        if (version_compare($from_version, '3.1') < 0) {
+        if (version::lt($from_version, '3.1')) {
             $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.1');
-        } elseif (version_compare($from_version, '3.5') < 0) {
+        } elseif (version::lt($from_version, '3.5')) {
             $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.5');
         }
 
-        if (version_compare($from_version, '3.7') < 0) {
+        if (version::lt($from_version, '3.7')) {
             $upgrader->addRecommendation(_('Your install might need to re-read technical datas'), 'bin/console records:rescan-technical-datas');
             $upgrader->addRecommendation(_('Your install might need to build some sub-definitions'), 'bin/console records:build-missing-subdefs');
         }
