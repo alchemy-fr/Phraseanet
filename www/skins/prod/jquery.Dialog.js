@@ -75,24 +75,30 @@ var p4 = p4 || {};
 
         this.options.buttons = addButtons(this.options.buttons, this);
 
-        switch (this.options.size) {
-            case 'Full':
-                height = bodySize.y - 30;
-                width = bodySize.x - 30;
-                break;
-            case 'Medium':
-                width = Math.min(bodySize.x - 30, 730);
-                height = Math.min(bodySize.y - 30, 520);
-                break;
-            default:
-            case 'Small':
-                width = Math.min(bodySize.x - 30, 420);
-                height = Math.min(bodySize.y - 30, 300);
-                break;
-            case 'Alert':
-                width = Math.min(bodySize.x - 30, 300);
-                height = Math.min(bodySize.y - 30, 150);
-                break;
+        if (/\d+x\d+/.test(this.options.size)) {
+            var dimension = this.options.size.split('x');
+            height = dimension[1];
+            width = dimension[0];
+        } else {
+            switch (this.options.size) {
+                case 'Full':
+                    height = bodySize.y - 30;
+                    width = bodySize.x - 30;
+                    break;
+                case 'Medium':
+                    width = Math.min(bodySize.x - 30, 730);
+                    height = Math.min(bodySize.y - 30, 520);
+                    break;
+                default:
+                case 'Small':
+                    width = Math.min(bodySize.x - 30, 420);
+                    height = Math.min(bodySize.y - 30, 300);
+                    break;
+                case 'Alert':
+                    width = Math.min(bodySize.x - 30, 300);
+                    height = Math.min(bodySize.y - 30, 150);
+                    break;
+            }
         }
 
         /*

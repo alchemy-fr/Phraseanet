@@ -74,18 +74,29 @@ function ini_edit_usrs() {
             template: $('#users_rights_form select[name="template"]').val(),
             user_infos: $('#user_infos_form').serialize()
         };
-        $.ajax({
-            type: 'POST',
-            url: '../admin/users/rights/apply/',
-            dataType: 'json',
-            data: datas,
-            success: function (data) {
-                if (!data.error)
-                    $('a.zone_editusers').trigger('click');
-                else
-                    alert(data.message);
-            }
-        });
+
+        var callback = function (reset_before_apply) {
+            datas.reset_before_apply = reset_before_apply;
+            $.ajax({
+                type: 'POST',
+                url: '../admin/users/rights/apply/',
+                dataType: 'json',
+                data: datas,
+                success: function (data) {
+                    if (!data.error)
+                        $('a.zone_editusers').trigger('click');
+                    else
+                        alert(data.message);
+                }
+            });
+        };
+
+        if (datas.template !== '') {
+            dialogUserTemplate(callback);
+        } else {
+            callback('0');
+        }
+
         return false;
     });
 
