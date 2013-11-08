@@ -10,7 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Core\Version as PhraseaVersion;
+use vierbergenlars\SemVer\version;
 
 abstract class base implements cache_cacheableInterface
 {
@@ -331,7 +332,7 @@ abstract class base implements cache_cacheableInterface
         return $recommends;
     }
 
-    protected function setVersion(Version $version)
+    protected function setVersion(PhraseaVersion $version)
     {
         try {
             $sql = '';
@@ -757,7 +758,7 @@ abstract class base implements cache_cacheableInterface
 
     protected function apply_patches($from, $to, $post_process, Setup_Upgrade $upgrader, Application $app)
     {
-        if (version_compare($from, $to, '=')) {
+        if (version::eq($from, $to)) {
             return true;
         }
 
@@ -783,7 +784,12 @@ abstract class base implements cache_cacheableInterface
                 if ( ! ! $post_process !== ! ! $patch->require_all_upgrades())
                     continue;
 
-                if ( ! version_compare($patch->get_release(), $from, '>') || ! version_compare($patch->get_release(), $to, '<=')) {
+                // if patch is older than current install
+                if (version::lte($patch->get_release(), $from)) {
+                    continue;
+                }
+                // if patch is new than current target
+                if (version::gt($patch->get_release(), $to)) {
                     continue;
                 }
 
