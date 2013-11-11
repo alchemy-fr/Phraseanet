@@ -63,7 +63,7 @@ define([
 
             // highlight view if edit view model match current view model
             if (AdminFieldApp.fieldEditView
-                    && AdminFieldApp.fieldEditView.model.get("id") === this.model.get("id")) {
+                && AdminFieldApp.fieldEditView.model.get("id") === this.model.get("id")) {
                 this.select();
             }
 

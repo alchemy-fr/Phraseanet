@@ -17,9 +17,9 @@ require([
 
     i18n.init({
         resGetPath: Common.languagePath,
-            useLocalStorage: true
+        useLocalStorage: true
     }, function() {
-          new LoginForm({
+        new LoginForm({
             el : $("form[name=loginForm]"),
             rules: [{
                 name: "login",

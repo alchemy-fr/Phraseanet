@@ -36,9 +36,9 @@ define([
                 } else {
                     return i18n.t(
                         options.length === 1 ? "one_collection_selected": "collections_selected", {
-                        postProcess: "sprintf",
-                        sprintf: [options.length]
-                    }) + ' <b class="caret"></b>';
+                            postProcess: "sprintf",
+                            sprintf: [options.length]
+                        }) + ' <b class="caret"></b>';
                 }
             }
         });

@@ -19,7 +19,7 @@ require([
         resGetPath: Common.languagePath,
         useLocalStorage: true
     }, function() {
-          new LoginForm({
+        new LoginForm({
             el : $("form[name=loginForm]"),
             rules: [{
                 name: "login",

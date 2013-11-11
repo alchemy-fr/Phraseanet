@@ -207,7 +207,7 @@ define([
         },
         // select temView by index in itemList
         _selectModelView: function(index) {
-             // select previous or next itemview
+            // select previous or next itemview
             if (index >= 0) {
                 AdminFieldApp.fieldListView.itemViews[index].select().animate().click();
             }

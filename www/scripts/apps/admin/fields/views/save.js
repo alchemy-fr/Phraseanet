@@ -38,19 +38,19 @@ define([
             if (this._isModelDesync()) {
                 this._loadingState(true);
                 $.when.apply($, _.map(AdminFieldApp.fieldsToDelete, function(m){
-                    return m.destroy({
-                        success: function(model, response) {
-                            AdminFieldApp.fieldsToDelete = _.filter(AdminFieldApp.fieldsToDelete, function(m){
-                                return model.get("id") !== m.get("id");
-                            });
-                        },
-                        error: function(xhr, textStatus, errorThrown) {
-                            new AlertView({
-                                alert: "error", message: '' !== xhr.responseText ? xhr.responseText : i18n.t("something_wrong")
-                            }).render();
-                        }
-                    });
-                })).done(
+                        return m.destroy({
+                            success: function(model, response) {
+                                AdminFieldApp.fieldsToDelete = _.filter(AdminFieldApp.fieldsToDelete, function(m){
+                                    return model.get("id") !== m.get("id");
+                                });
+                            },
+                            error: function(xhr, textStatus, errorThrown) {
+                                new AlertView({
+                                    alert: "error", message: '' !== xhr.responseText ? xhr.responseText : i18n.t("something_wrong")
+                                }).render();
+                            }
+                        });
+                    })).done(
                     function() {
                         AdminFieldApp.fieldsCollection.save({
                             success: function(fields) {
@@ -69,8 +69,8 @@ define([
                                 }).render();
                             }
                         }).done(function() {
-                            self._loadingState(false);
-                        });
+                                self._loadingState(false);
+                            });
                     }
                 );
             }
