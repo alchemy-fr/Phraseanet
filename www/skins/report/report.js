@@ -101,8 +101,8 @@ function bindEvents() {
         },
         text: false
     }).unbind("click").bind("click", function () {
-        showMenu();
-    });
+            showMenu();
+        });
 
     $("#liste_dash").find("em").unbind("click").bind("click", function () {
         id = $(this).attr('id').substr(3);
