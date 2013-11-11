@@ -55,7 +55,7 @@ define([
             return this;
         },
         reset: function() {
-             this.$el.empty();
+            this.$el.empty();
         }
     });
 
