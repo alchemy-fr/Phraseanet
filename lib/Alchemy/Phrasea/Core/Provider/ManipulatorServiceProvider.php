@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Manager\UserManager;
@@ -28,6 +29,11 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         $app['manipulator.user'] = $app->share(function ($app) {
             return new UserManipulator($app['model.user-manager'], $app['auth.password-encoder'], $app['geonames.connector']);
         });
+
+        $app['manipulator.acl'] = $app->share(function ($app) {
+            return new ACLManipulator($app['acl'], $app['phraseanet.appbox']);
+        });
+
         $app['model.user-manager'] = $app->share(function ($app) {
             return new UserManager($app['EM'], $app['phraseanet.appbox']->get_connection());
         });

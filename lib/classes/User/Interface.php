@@ -118,8 +118,6 @@ interface User_Interface
 
     public static function set_sys_admins(Application $app, $admins);
 
-    public static function reset_sys_admins_rights(Application $app);
-
     public function get_locale();
 
     public static function create(Application $app, $login, $password, $email, $admin, $invite = false);
