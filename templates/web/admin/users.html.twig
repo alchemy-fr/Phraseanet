@@ -11,7 +11,7 @@
         {% trans %}
             The user has been created.
         {% endtrans %}
-    {% else %}     
+    {% else %}
         {% trans %}
            {{ user_count }} users have been created.
         {% endtrans %}
@@ -58,7 +58,7 @@
             </fieldset>
         </form>
 
-        <form id="users_apply_template" method="post" action="{{ path('admin_users_apply_template') }}" target="_self" class="form-inline pull-left" style="margin:0">
+        <form id="users_apply_template" method="post" action="{{ path('admin_users_apply_template') }}" target="_self" class="form-inline pull-left no-ajax" style="margin:0">
             <fieldset class="admin_head_opts">
                 <span>{% trans 'Apply a template' %}</span>
                 <select name="template_chooser" class="input-medium">
@@ -140,7 +140,7 @@
                             {{usr.get_login()}}
                         </td>
                         <td>
-                            {{usr.get_firstname()}} {{usr.get_lastname()}} 
+                            {{usr.get_firstname()}} {{usr.get_lastname()}}
                         </td>
                         <td>
                             {{usr.get_company()}}

@@ -72,9 +72,15 @@ class Users implements ControllerProviderInterface
 
             try {
                 $rights = new UserHelper\Edit($app, $app['request']);
-                $rights->apply_rights();
+
+                if (!$app['request']->request->get('reset_before_apply')) {
+                    $rights->apply_rights();
+                }
 
                 if ($app['request']->request->get('template')) {
+                    if ($app['request']->request->get('reset_before_apply')) {
+                        $rights->resetRights();
+                    }
                     $rights->apply_template();
                 }
 
@@ -198,6 +204,9 @@ class Users implements ControllerProviderInterface
         $controllers->post('/apply_template/', function () use ($app) {
             $users = new UserHelper\Edit($app, $app['request']);
 
+            if ($app['request']->request->get('reset_before_apply')) {
+                $users->resetRights();
+            }
             $users->apply_template();
 
             return $app->redirectPath('admin_users_search');
