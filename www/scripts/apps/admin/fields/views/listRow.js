@@ -12,18 +12,18 @@ define([
     "underscore",
     "backbone",
     "apps/admin/fields/views/edit"
-], function($, _, Backbone, FieldEditView) {
+], function ($, _, Backbone, FieldEditView) {
     var FieldListRowView = Backbone.View.extend({
         tagName: "li",
         className: "field-row",
-        initialize: function() {
+        initialize: function () {
             // destroy view is model is deleted
             this.model.on("change", this.onChange, this);
             this.model.on("destroy", this.remove, this);
         },
-        events : {
+        events: {
             "click .trigger-click": "clickAction",
-            "drop" : "dropAction"
+            "drop": "dropAction"
         },
         clickAction: function (e) {
             this.select();
@@ -33,7 +33,7 @@ define([
                     el: AdminFieldApp.$rightBlock,
                     model: this.model
                 });
-            } else  {
+            } else {
                 AdminFieldApp.fieldEditView.updateModel(this.model).initialize();
             }
 
@@ -41,17 +41,17 @@ define([
 
             return this;
         },
-        dropAction: function(event, ui) {
+        dropAction: function (event, ui) {
             this.$el.trigger("update-sort", [this.model, ui]);
 
             return this;
         },
-        onChange: function() {
+        onChange: function () {
             if (this.model.hasChanged("tag")) {
                 this.render();
             }
         },
-        render: function() {
+        render: function () {
             var template = _.template($("#list_row_template").html(), {
                 id: this.model.get("id"),
                 position: this.model.get("sorter"),
@@ -76,7 +76,7 @@ define([
 
             return this;
         },
-        click: function() {
+        click: function () {
             this.$el.find('.trigger-click').first().trigger('click');
             return this;
         },
@@ -96,7 +96,7 @@ define([
         error: function (errored) {
             if (errored) {
                 this.$el.addClass("error");
-            } else  {
+            } else {
                 this.$el.removeClass("error");
             }
 

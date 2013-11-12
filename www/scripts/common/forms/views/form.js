@@ -14,13 +14,13 @@ define([
     "bootstrap",
     "common/forms/validator",
     "common/forms/views/input"
-], function($, _, Backbone, bootstrap, Validator, InputView) {
+], function ($, _, Backbone, bootstrap, Validator, InputView) {
     var Form = Backbone.View.extend({
         events: {
             "submit": "_onSubmit"
         },
-        initialize: function(options) {
-            options = options || {};
+        initialize: function (options) {
+            options = options || {};
 
             var self = this;
 
@@ -49,7 +49,7 @@ define([
                 // cancel submit
                 event.preventDefault();
                 // group errors by input
-                _.each(_.groupBy(this.validator.getErrors(), function(error){
+                _.each(_.groupBy(this.validator.getErrors(), function (error) {
                     return error.name;
                 }), function (errors, name) {
                     // show new errors in the views
@@ -66,17 +66,17 @@ define([
                 });
             }
         },
-        _resetInputErrors: function() {
-            _.each(this.inputViews, function(view) {
+        _resetInputErrors: function () {
+            _.each(this.inputViews, function (view) {
                 view.resetErrors();
             });
         },
-        _addInputView: function(input) {
+        _addInputView: function (input) {
             var name = input.name;
 
             this.inputViews[name] = new InputView({
                 name: name,
-                el : $("input[name='"+name+"'], select[name='"+name+"'], textarea[name='"+name+"']", this.$el).first().closest("div"),
+                el: $("input[name='" + name + "'], select[name='" + name + "'], textarea[name='" + name + "']", this.$el).first().closest("div"),
                 errorTemplate: this.errorTemplate,
                 onRenderError: this.onRenderError
             });

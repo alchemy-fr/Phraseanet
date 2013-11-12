@@ -19,7 +19,7 @@ require.config({
         bootstrap: "../assets/bootstrap/js/bootstrap.min"
     },
     shim: {
-        bootstrap : ["jquery"],
+        bootstrap: ["jquery"],
         jqueryui: {
             deps: [ "jquery" ]
         }
@@ -27,6 +27,6 @@ require.config({
 });
 
 // launch application
-require(["apps/admin/fields/app"], function(App) {
+require(["apps/admin/fields/app"], function (App) {
     App.initialize();
 });

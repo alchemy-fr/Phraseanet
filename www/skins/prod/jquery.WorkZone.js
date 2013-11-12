@@ -1,8 +1,7 @@
 var p4 = p4 || {};
 
-(function(p4) {
-    function refreshBaskets(baskId, sort, scrolltobottom, type)
-    {
+(function (p4) {
+    function refreshBaskets(baskId, sort, scrolltobottom, type) {
         type = typeof type === 'undefined' ? 'basket' : type;
 
         var active = $('#baskets .SSTT.ui-state-active');
@@ -19,12 +18,12 @@ var p4 = p4 || {};
             data: {
                 id: baskId,
                 sort: sort,
-                type:type
+                type: type
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 $('#basketcontextwrap').remove();
             },
-            success: function(data) {
+            success: function (data) {
                 var cache = $("#idFrameC #baskets");
 
                 if ($(".SSTT", cache).data("ui-droppable")) {
@@ -53,8 +52,7 @@ var p4 = p4 || {};
         });
     }
 
-    function setTemporaryPref(name, value)
-    {
+    function setTemporaryPref(name, value) {
         $.ajax({
             type: "POST",
             url: "/user/preferences/temporary/",
@@ -62,13 +60,13 @@ var p4 = p4 || {};
                 prop: name,
                 value: value
             },
-            success: function(data) {
+            success: function (data) {
                 return;
             }
         });
     }
 
-    $("#baskets div.content select[name=valid_ord]").live('change', function() {
+    $("#baskets div.content select[name=valid_ord]").live('change', function () {
         var active = $('#baskets .SSTT.ui-state-active');
         if (active.length === 0) {
             return;
@@ -79,19 +77,18 @@ var p4 = p4 || {};
         getContent(active, order);
     });
 
-    function WorkZoneElementRemover(el, confirm)
-    {
+    function WorkZoneElementRemover(el, confirm) {
         var context = el.data('context');
 
         if (confirm !== true && $(el).hasClass('groupings') && p4.reg_delete) {
             var buttons = {};
 
-            buttons[language.valider] = function() {
+            buttons[language.valider] = function () {
                 $("#DIALOG-baskets").dialog('close').remove();
                 WorkZoneElementRemover(el, true);
             };
 
-            buttons[language.annuler] = function() {
+            buttons[language.annuler] = function () {
                 $("#DIALOG-baskets").dialog('close').remove();
             };
 
@@ -121,10 +118,10 @@ var p4 = p4 || {};
             type: "POST",
             url: $(el).attr('href'),
             dataType: 'json',
-            beforeSend: function() {
+            beforeSend: function () {
                 $('.wrapCHIM_' + id).find('.CHIM').fadeOut();
             },
-            success: function(data) {
+            success: function (data) {
                 if (data.success) {
                     humane.info(data.message);
                     p4.WorkZone.Selection.remove(id);
@@ -153,7 +150,7 @@ var p4 = p4 || {};
                         } else if (carouselItemLength > 1) {
                             // click next item
                             selectedItem.next().find("img").trigger("click");
-                        } else  {
+                        } else {
                             closePreview();
                         }
 
@@ -170,8 +167,7 @@ var p4 = p4 || {};
     }
 
 
-    function activeBaskets()
-    {
+    function activeBaskets() {
         var cache = $("#idFrameC #baskets");
 
         cache.accordion({
@@ -179,7 +175,7 @@ var p4 = p4 || {};
             heightStyle: "content",
             collapsible: true,
             header: 'div.header',
-            activate: function(event, ui) {
+            activate: function (event, ui) {
                 var b_active = $('#baskets .SSTT.active');
                 if (p4.next_bask_scroll) {
                     p4.next_bask_scroll = false;
@@ -200,7 +196,8 @@ var p4 = p4 || {};
                 b_active.not('.ui-state-active').removeClass('active');
 
                 if (uiactive.length === 0) {
-                    return; /* everything is closed */
+                    return;
+                    /* everything is closed */
                 }
 
                 uiactive.addClass('ui-state-focus active');
@@ -210,14 +207,14 @@ var p4 = p4 || {};
                 getContent(uiactive);
 
             },
-            beforeActivate: function(event, ui) {
+            beforeActivate: function (event, ui) {
                 ui.newHeader.addClass('active');
                 $('#basketcontextwrap .basketcontextmenu').hide();
             }
         });
 
         $('.bloc', cache).droppable({
-            accept: function(elem) {
+            accept: function (elem) {
                 if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT'))
                     return true;
                 return false;
@@ -225,7 +222,7 @@ var p4 = p4 || {};
             scope: 'objects',
             hoverClass: 'groupDrop',
             tolerance: 'pointer',
-            drop: function() {
+            drop: function () {
                 fix();
             }
         });
@@ -240,8 +237,8 @@ var p4 = p4 || {};
                 scope: 'objects',
                 hoverClass: 'baskDrop',
                 tolerance: 'pointer',
-                accept: function(elem) {
-                    if ($(elem).hasClass('CHIM'))  {
+                accept: function (elem) {
+                    if ($(elem).hasClass('CHIM')) {
                         if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
                             return false;
                         }
@@ -250,7 +247,7 @@ var p4 = p4 || {};
                         return false;
                     return true;
                 },
-                drop: function(event, ui) {
+                drop: function (event, ui) {
                     dropOnBask(event, ui.draggable, $(this));
                 }
             });
@@ -258,12 +255,12 @@ var p4 = p4 || {};
         if ($('#basketcontextwrap').length === 0)
             $('body').append('<div id="basketcontextwrap"></div>');
 
-        $('.context-menu-item', cache).hover(function() {
+        $('.context-menu-item', cache).hover(function () {
             $(this).addClass('context-menu-item-hover');
-        }, function() {
+        }, function () {
             $(this).removeClass('context-menu-item-hover');
         });
-        $.each($(".SSTT", cache), function() {
+        $.each($(".SSTT", cache), function () {
             var el = $(this);
             $(this).find('.contextMenuTrigger').contextMenu('#' + $(this).attr('id') + ' .contextMenu', {
                 'appendTo': '#basketcontextwrap',
@@ -278,9 +275,8 @@ var p4 = p4 || {};
 
     }
 
-    function getContent(header, order)
-    {
-        if (window.console)  {
+    function getContent(header, order) {
+        if (window.console) {
             console.log('Reload content for ', header);
         }
 
@@ -294,11 +290,11 @@ var p4 = p4 || {};
             type: "GET",
             url: url,
             dataType: 'html',
-            beforeSend: function() {
+            beforeSend: function () {
                 $('#tooltip').hide();
                 header.next().addClass('loading');
             },
-            success: function(data) {
+            success: function (data) {
                 header.removeClass('unread');
 
                 var dest = header.next();
@@ -309,14 +305,14 @@ var p4 = p4 || {};
 
                 dest.append(data);
 
-                $('a.WorkZoneElementRemover', dest).bind('mousedown', function(event) {
+                $('a.WorkZoneElementRemover', dest).bind('mousedown',function (event) {
                     return false;
-                }).bind('click', function(event) {
+                }).bind('click', function (event) {
                         return WorkZoneElementRemover($(this), false);
                     });
 
                 dest.droppable({
-                    accept: function(elem) {
+                    accept: function (elem) {
                         if ($(elem).hasClass('CHIM')) {
                             if ($(elem).closest('.content')[0] === $(this)[0]) {
                                 return false;
@@ -328,7 +324,7 @@ var p4 = p4 || {};
                     },
                     hoverClass: 'baskDrop',
                     scope: 'objects',
-                    drop: function(event, ui) {
+                    drop: function (event, ui) {
                         dropOnBask(event, ui.draggable, $(this).prev());
                     },
                     tolerance: 'pointer'
@@ -337,7 +333,7 @@ var p4 = p4 || {};
                 $('.noteTips, .captionRolloverTips', dest).tooltip();
 
                 dest.find('.CHIM').draggable({
-                    helper: function() {
+                    helper: function () {
                         $('body').append('<div id="dragDropCursor" ' +
                             'style="position:absolute;z-index:9999;background:red;' +
                             '-moz-border-radius:8px;-webkit-border-radius:8px;">' +
@@ -353,23 +349,23 @@ var p4 = p4 || {};
                         top: 10,
                         left: -20
                     },
-                    start: function(event, ui) {
+                    start: function (event, ui) {
                         var baskets = $('#baskets');
                         baskets.append('<div class="top-scroller"></div>' +
                             '<div class="bottom-scroller"></div>');
-                        $('.bottom-scroller', baskets).bind('mousemove', function() {
+                        $('.bottom-scroller', baskets).bind('mousemove', function () {
                             $('#baskets .bloc').scrollTop($('#baskets .bloc').scrollTop() + 30);
                         });
-                        $('.top-scroller', baskets).bind('mousemove', function() {
+                        $('.top-scroller', baskets).bind('mousemove', function () {
                             $('#baskets .bloc').scrollTop($('#baskets .bloc').scrollTop() - 30);
                         });
                     },
-                    stop: function() {
+                    stop: function () {
                         $('#baskets').find('.top-scroller, .bottom-scroller')
                             .unbind()
                             .remove();
                     },
-                    drag: function(event, ui) {
+                    drag: function (event, ui) {
                         if (is_ctrl_key(event) || $(this).closest('.content').hasClass('grouping'))
                             $('#dragDropCursor div').empty().append('+ ' + p4.WorkZone.Selection.length());
                         else
@@ -383,8 +379,7 @@ var p4 = p4 || {};
         });
     }
 
-    function dropOnBask(event, from, destKey, singleSelection)
-    {
+    function dropOnBask(event, from, destKey, singleSelection) {
         var action = "", from = $(from), dest_uri = '', lstbr = [], sselcont = [], act = "ADD";
 
         if (from.hasClass("CHIM")) {
@@ -422,7 +417,7 @@ var p4 = p4 || {};
                 lstbr = p4.Results.Selection.get();
             }
         } else {
-            sselcont = $.map(p4.WorkZone.Selection.get(), function(n, i) {
+            sselcont = $.map(p4.WorkZone.Selection.get(), function (n, i) {
                 return $('.CHIM_' + n, $('#baskets .content:visible')).attr('id').split('_').slice(1, 2).pop();
             });
             lstbr = p4.WorkZone.Selection.get();
@@ -486,10 +481,10 @@ var p4 = p4 || {};
             url: url,
             data: data,
             dataType: 'json',
-            beforeSend: function() {
+            beforeSend: function () {
 
             },
-            success: function(data) {
+            success: function (data) {
                 if (!data.success) {
                     humane.error(data.message);
                 } else {
@@ -506,37 +501,35 @@ var p4 = p4 || {};
         });
     }
 
-    function fix()
-    {
+    function fix() {
         $.ajax({
             type: "POST",
             url: "../prod/WorkZone/attachStories/",
             data: {stories: p4.Results.Selection.get()},
             dataType: "json",
-            success: function(data) {
+            success: function (data) {
                 humane.info(data.message);
                 p4.WorkZone.refresh();
             }
         });
     }
 
-    function unfix(link)
-    {
+    function unfix(link) {
         $.ajax({
             type: "POST",
             url: link,
             dataType: "json",
-            success: function(data) {
+            success: function (data) {
                 humane.info(data.message);
                 p4.WorkZone.refresh();
             }
         });
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         activeBaskets();
 
-        $('a.story_unfix').live('click', function() {
+        $('a.story_unfix').live('click', function () {
             unfix($(this).attr('href'));
 
             return false;
@@ -545,7 +538,7 @@ var p4 = p4 || {};
         p4.WorkZone = {
             'Selection': new Selectable($('#baskets'), {selector: '.CHIM'}),
             'refresh': refreshBaskets,
-            'addElementToBasket': function(sbas_id, record_id, event, singleSelection) {
+            'addElementToBasket': function (sbas_id, record_id, event, singleSelection) {
                 singleSelection = !!singleSelection || false;
 
                 if ($('#baskets .SSTT.active').length === 1) {
@@ -554,27 +547,26 @@ var p4 = p4 || {};
                     humane.info(language.noActiveBasket);
                 }
             },
-            "removeElementFromBasket":  WorkZoneElementRemover,
-            'reloadCurrent': function() {
+            "removeElementFromBasket": WorkZoneElementRemover,
+            'reloadCurrent': function () {
                 var sstt = $('#baskets .content:visible');
                 if (sstt.length === 0)
                     return;
                 getContent(sstt.prev());
             },
-            'close': function() {
+            'close': function () {
                 var frame = $('#idFrameC'), that = this;
 
-                if (!frame.hasClass('closed'))
-                {
+                if (!frame.hasClass('closed')) {
                     // hide tabs content
                     var activeTabIdx = $('#idFrameC .tabs').tabs("option", "active");
-                    $('#idFrameC .tabs > div:eq('+activeTabIdx+')').hide();
+                    $('#idFrameC .tabs > div:eq(' + activeTabIdx + ')').hide();
 
                     frame.data('openwidth', frame.width());
                     frame.animate({width: 100},
                         300,
                         'linear',
-                        function() {
+                        function () {
                             answerSizer();
                             linearize();
                             $('#answers').trigger('resize');
@@ -582,16 +574,15 @@ var p4 = p4 || {};
                     frame.addClass('closed');
                     $('.escamote', frame).hide();
                     $('li.ui-tabs-selected', frame).removeClass('ui-tabs-selected');
-                    frame.unbind('click.escamote').bind('click.escamote', function() {
+                    frame.unbind('click.escamote').bind('click.escamote', function () {
                         that.open();
                     });
                 }
             },
-            'open': function() {
+            'open': function () {
                 var frame = $('#idFrameC');
 
-                if (frame.hasClass('closed'))
-                {
+                if (frame.hasClass('closed')) {
                     var width = frame.data('openwidth') ? frame.data('openwidth') : 300;
                     frame.css({width: width});
                     answerSizer();
@@ -601,7 +592,7 @@ var p4 = p4 || {};
                     frame.unbind('click.escamote');
                     // show tabs content
                     var activeTabIdx = $('#idFrameC .tabs').tabs("option", "active");
-                    $('#idFrameC .tabs > div:eq('+activeTabIdx+')').show();
+                    $('#idFrameC .tabs > div:eq(' + activeTabIdx + ')').show();
                 }
             }
         };

@@ -10,21 +10,21 @@
 define([
     "jquery",
     "underscore"
-], function($, _) {
-    var ErrorModel = function(id) {
+], function ($, _) {
+    var ErrorModel = function (id) {
         this.id = id;
         this.errors = {};
     };
 
     ErrorModel.prototype = {
-        add: function(id, error) {
-            if (! error instanceof Error) {
+        add: function (id, error) {
+            if (!error instanceof Error) {
                 throw "Item must be an error object";
             }
 
             this.errors[id] = error;
         },
-        get: function(id) {
+        get: function (id) {
             if (this.has(id)) {
                 return this.errors[id];
             }
@@ -33,12 +33,12 @@ define([
         has: function (id) {
             return "undefined" !== typeof this.errors[id];
         },
-        remove: function(id) {
+        remove: function (id) {
             if (this.has(id)) {
                 delete this.errors[id];
             }
         },
-        count: function() {
+        count: function () {
             var count = 0;
             for (var k in this.errors) {
                 if (this.errors.hasOwnProperty(k)) {

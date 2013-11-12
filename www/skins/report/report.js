@@ -38,19 +38,19 @@ $(document).ready(function () {
     configure_dash();
     bindEvents();
 
-    $("a.select-all").bind("click", function(e) {
+    $("a.select-all").bind("click", function (e) {
         $("ul.multiselect .coll-checkbox", $(this).closest('.form2')).attr("checked", true);
     });
 
-    $("a.deselect-all").bind("click", function(e) {
+    $("a.deselect-all").bind("click", function (e) {
         $("ul.multiselect .coll-checkbox", $(this).closest('.form2')).attr("checked", false);
     });
 
-    $(".multiselect-group").toggle(function() {
+    $(".multiselect-group").toggle(function () {
         var $this = $(this);
         var groupId = $this.data('group-id');
         $(".checkbox-" + groupId, $this.closest('.form2')).attr("checked", true);
-    }, function() {
+    }, function () {
         var $this = $(this);
         var groupId = $this.data('group-id');
         $(".checkbox-" + groupId, $this.closest('.form2')).attr("checked", false);

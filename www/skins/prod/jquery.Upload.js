@@ -2,40 +2,40 @@
 var p4 = p4 || {};
 
 ;
-(function(p4, $){
+(function (p4, $) {
 
     /**
      * UPLOADER MANAGER
      */
-    var UploaderManager = function(options){
+    var UploaderManager = function (options) {
 
         var options = options || {};
 
-        if(false === ("container" in options)){
+        if (false === ("container" in options)) {
             throw "missing container parameter";
         }
-        else if(! options.container.jquery){
+        else if (!options.container.jquery) {
             throw "container parameter must be a jquery dom element";
         }
 
-        if(false === ("settingsBox" in options)){
+        if (false === ("settingsBox" in options)) {
             throw "missing settingBox parameter";
         }
-        else if(! options.settingsBox.jquery){
+        else if (!options.settingsBox.jquery) {
             throw "container parameter must be a jquery dom element";
         }
 
-        if(false === ("uploadBox" in options)){
+        if (false === ("uploadBox" in options)) {
             throw "missing uploadBox parameter";
         }
-        else if(! options.uploadBox.jquery){
+        else if (!options.uploadBox.jquery) {
             throw "container parameter must be a jquery dom element";
         }
 
-        if(false === ("downloadBox" in options)){
+        if (false === ("downloadBox" in options)) {
             throw "missing downloadBox parameter";
         }
-        else if(! options.downloadBox.jquery){
+        else if (!options.downloadBox.jquery) {
             throw "container parameter must be a jquery dom element";
         }
 
@@ -51,7 +51,7 @@ var p4 = p4 || {};
 
         this.options.downloadBox = this.options.downloadBox.find('ul:first');
 
-        if($.isFunction($.fn.sortable)){
+        if ($.isFunction($.fn.sortable)) {
             this.options.uploadBox.sortable();
         }
 
@@ -63,54 +63,54 @@ var p4 = p4 || {};
     };
 
     UploaderManager.prototype = {
-        setOptions : function(options){
+        setOptions: function (options) {
             return $.extend(this.options, options);
         },
-        getContainer : function(){
+        getContainer: function () {
             return this.options.container;
         },
-        getUploadBox : function(){
+        getUploadBox: function () {
             return this.options.uploadBox;
         },
-        getSettingsBox : function(){
+        getSettingsBox: function () {
             return this.options.settingsBox;
         },
-        getDownloadBox : function(){
+        getDownloadBox: function () {
             return this.options.downloadBox;
         },
-        clearUploadBox: function(){
+        clearUploadBox: function () {
             this.getUploadBox().empty();
             this.uploadIndex = 0;
             this.Queue.clear();
         },
-        getDatas : function(){
+        getDatas: function () {
             return this.Queue.all();
         },
-        getData : function(index){
+        getData: function (index) {
             return this.Queue.get(index);
         },
-        addData: function(data){
+        addData: function (data) {
             this.uploadIndex++;
             data.uploadIndex = this.uploadIndex;
             this.Queue.set(this.uploadIndex, data);
         },
-        removeData  : function(index){
+        removeData: function (index) {
             this.Queue.remove(index);
         },
-        addAttributeToData : function(indexOfData, attribute, value){
+        addAttributeToData: function (indexOfData, attribute, value) {
             var data = this.getData(indexOfData);
-            if($.type(attribute) === "string"){
+            if ($.type(attribute) === "string") {
                 data[attribute] = value;
                 this.Queue.set(indexOfData, data);
             }
         },
-        getUploadIndex : function(){
+        getUploadIndex: function () {
             return this.uploadIndex;
         },
-        hasData : function(){
+        hasData: function () {
             return !this.Queue.isEmpty();
         },
-        countData: function (){
+        countData: function () {
             return this.Queue.getLength();
         }
     };
@@ -130,29 +130,29 @@ var p4 = p4 || {};
      *  canva: (boolean) render preview as canva if supported by the navigator
      */
 
-    var Preview = function(){
+    var Preview = function () {
         this.options = {
             fileType: /^image\/(gif|jpeg|png|jpg)$/,
-            maxSize : 5242880 // 5MB
+            maxSize: 5242880 // 5MB
         };
     };
 
     Preview.prototype = {
-        setOptions: function(options){
+        setOptions: function (options) {
             this.options = $.extend(this.options, options);
         },
-        getOptions: function(){
+        getOptions: function () {
             return this.options;
         },
-        render: function(file, callback){
-            if(typeof loadImage === 'function' && this.options.fileType.test(file.type)){
-                if($.type(this.options.maxSize) !== 'number' || file.size < this.options.maxSize){
+        render: function (file, callback) {
+            if (typeof loadImage === 'function' && this.options.fileType.test(file.type)) {
+                if ($.type(this.options.maxSize) !== 'number' || file.size < this.options.maxSize) {
                     var options = {
                         maxWidth: this.options.maxWidth || 150,
                         maxHeight: this.options.maxHeight || 75,
                         minWidth: this.options.minWidth || 80,
                         minHeight: this.options.minHeight || 40,
-                        canvas : this.options.canva || true
+                        canvas: this.options.canva || true
                     };
                     loadImage(file, callback, options);
                 }
@@ -165,7 +165,7 @@ var p4 = p4 || {};
      * FORMATER
      */
 
-    var Formater = function(){
+    var Formater = function () {
 
     };
 
@@ -200,50 +200,50 @@ var p4 = p4 || {};
             }
             return bytes + ' o/s';
         },
-        pourcent: function(current, total){
-            return (current/ total * 100).toFixed(2);
+        pourcent: function (current, total) {
+            return (current / total * 100).toFixed(2);
         }
     };
 
     /**
      * QUEUE
      */
-    var Queue = function(){
+    var Queue = function () {
         this.list = {};
     };
 
     Queue.prototype = {
-        all : function(){
+        all: function () {
             return this.list;
         },
-        set : function(id, item){
+        set: function (id, item) {
             this.list[id] = item;
             return this;
         },
-        get : function(id){
-            if(!this.list[id]){
+        get: function (id) {
+            if (!this.list[id]) {
                 throw 'Unknown ID' + id;
             }
             return this.list[id];
         },
-        remove : function(id) {
+        remove: function (id) {
             delete this.list[id];
         },
-        getLength : function(){
+        getLength: function () {
             var count = 0;
-            for (var k in this.list){
-                if (this.list.hasOwnProperty(k)){
+            for (var k in this.list) {
+                if (this.list.hasOwnProperty(k)) {
                     ++count;
                 }
             }
             return count;
         },
-        isEmpty: function(){
+        isEmpty: function () {
             return this.getLength() === 0;
         },
-        clear: function(){
+        clear: function () {
             var $this = this;
-            $.each(this.list, function(k){
+            $.each(this.list, function (k) {
                 $this.remove(k);
             });
         }

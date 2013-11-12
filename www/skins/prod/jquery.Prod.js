@@ -1,9 +1,9 @@
-(function() {
-    $(document).ready(function() {
+(function () {
+    $(document).ready(function () {
         humane.info = humane.spawn({addnCls: 'humane-libnotify-info', timeout: 1000});
         humane.error = humane.spawn({addnCls: 'humane-libnotify-error', timeout: 1000});
 
-        $('a.dialog').live('click', function(event) {
+        $('a.dialog').live('click', function (event) {
             var $this = $(this), size = 'Medium';
 
             if ($this.hasClass('small-dialog')) {
@@ -25,7 +25,7 @@
                 type: "GET",
                 url: $this.attr('href'),
                 dataType: 'html',
-                success: function(data) {
+                success: function (data) {
                     $dialog.setContent(data);
                     return;
                 }

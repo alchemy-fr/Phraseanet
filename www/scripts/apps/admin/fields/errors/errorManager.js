@@ -12,9 +12,9 @@ define([
     "underscore",
     "backbone",
     "apps/admin/fields/errors/errorModel"
-], function($, _, Backbone, ErrorModel) {
+], function ($, _, Backbone, ErrorModel) {
 
-    var ErrorManager = function() {
+    var ErrorManager = function () {
         this.errors = {};
         _.extend(this, Backbone.Events);
     };
@@ -38,8 +38,8 @@ define([
         containsModelError: function (model) {
             return "undefined" !== typeof this.errors[model.get("id")];
         },
-        addModelFieldError: function(error) {
-            if (! error instanceof Error) {
+        addModelFieldError: function (error) {
+            if (!error instanceof Error) {
                 throw "Item must be an error object";
             }
 
@@ -56,7 +56,7 @@ define([
 
             return this;
         },
-        removeModelFieldError: function(model, fieldId) {
+        removeModelFieldError: function (model, fieldId) {
             var modelError = this.getModelError(model);
 
             if (modelError) {
@@ -72,7 +72,7 @@ define([
                 }
             }
         },
-        clearModelFieldErrors: function(model, fieldId) {
+        clearModelFieldErrors: function (model, fieldId) {
             var modelError = this.getModelError(model);
 
             if (modelError) {
@@ -93,7 +93,7 @@ define([
 
             return false;
         },
-        getModelFieldError: function(model, fieldId) {
+        getModelFieldError: function (model, fieldId) {
             var modelError = this.getModelError(model);
 
             if (modelError) {
@@ -102,7 +102,7 @@ define([
 
             return null;
         },
-        clearAll: function() {
+        clearAll: function () {
             this.errors = {};
             this.trigger("no-error");
         },
@@ -120,8 +120,8 @@ define([
         },
         all: function () {
             var errors = [];
-            _.each(this.errors, function(modelErrors) {
-                _.each(modelErrors.all(), function(error) {
+            _.each(this.errors, function (modelErrors) {
+                _.each(modelErrors.all(), function (error) {
                     errors.push(error);
                 });
             });

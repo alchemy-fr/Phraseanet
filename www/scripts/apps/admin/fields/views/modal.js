@@ -13,7 +13,7 @@ define([
     "backbone",
     "i18n",
     "bootstrap"
-], function($, _, Backbone, i18n, bootstrap) {
+], function ($, _, Backbone, i18n, bootstrap) {
     var ModalView = Backbone.View.extend({
         tagName: "div",
         className: "modal",
@@ -23,7 +23,7 @@ define([
         initialize: function (options) {
             var self = this;
             // remove view when modal is closed
-            this.$el.on("hidden", function() {
+            this.$el.on("hidden", function () {
                 self.remove();
             });
 
@@ -31,7 +31,7 @@ define([
                 this.message = options.message;
             }
         },
-        render: function() {
+        render: function () {
             var template = _.template($("#modal_template").html(), {
                 msg: this.message || ""
             });
