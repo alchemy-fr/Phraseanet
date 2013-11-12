@@ -58,14 +58,16 @@ class PhraseaRegisterForm extends AbstractType
             ),
         ));
 
-        $builder->add('accept-tou', 'checkbox', array(
-            'label'         => _('Terms of Use'),
-            'mapped'        => false,
-            "constraints"   => array(
-                new Assert\True(array(
-                "message" => _("Please accept the Terms and conditions in order to register.")
-            ))),
-        ));
+        if ($this->app->hasTermsOfUse()) {
+            $builder->add('accept-tou', 'checkbox', array(
+                'label'         => _('Terms of Use'),
+                'mapped'        => false,
+                "constraints"   => array(
+                    new Assert\True(array(
+                        "message" => _("Please accept the Terms and conditions in order to register.")
+                    ))),
+            ));
+        }
 
         $builder->add('provider-id', 'hidden');
 
