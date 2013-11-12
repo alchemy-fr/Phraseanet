@@ -63,10 +63,12 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
 
         $base_id = self::$DI['collection']->get_base_id();
-        $_GET['values'] = 'canreport_' . $base_id . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1';
-        $_GET['user_infos'] = "user_infos[email]=" . $user->get_email();
 
-        self::$DI['client']->request('POST', '/admin/users/rights/apply/', array('users'   => $user->get_id()));
+        self::$DI['client']->request('POST', '/admin/users/rights/apply/', array(
+            'users' => $user->get_id(),
+            'values' => 'canreport_' . $base_id . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1',
+            'user_infos' => "user_infos[email]=" . $user->get_email(),
+        ));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
@@ -87,9 +89,11 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $username = uniqid('user_');
         $user = \User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
         $base_id = self::$DI['collection']->get_base_id();
-        $_GET['values'] = 'canreport_' . $base_id . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1';
-        $_GET['user_infos'] = "user_infos[email]=" . $user->get_email();
-        self::$DI['client']->request('POST', '/admin/users/rights/apply/', array('users'   => $user->get_id()));
+        self::$DI['client']->request('POST', '/admin/users/rights/apply/', array(
+            'users' => $user->get_id(),
+            'values' => 'canreport_' . $base_id . '=1&manage_' . self::$DI['collection']->get_base_id() . '=1&canpush_' . self::$DI['collection']->get_base_id() . '=1',
+            'user_infos' => "user_infos[email]=" . $user->get_email(),
+        ));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));

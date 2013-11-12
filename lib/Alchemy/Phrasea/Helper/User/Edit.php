@@ -443,7 +443,6 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function apply_rights()
     {
-        $request = \http_request::getInstance();
         $ACL = $this->app['acl']->get($this->app['authentication']->getUser());
         $base_ids = array_keys($ACL->get_granted_base(array('canadmin')));
 
@@ -477,7 +476,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 }
                 $rights[$k] = $right . '_' . $base_id;
             }
-            $parm = $request->get_parms_from_serialized_datas($rights, 'values');
+            $parm = $this->unserializedRequestData($this->app['request'], $rights, 'values');
 
             foreach ($parm as $p => $v) {
                 if (trim($v) == '')
@@ -518,7 +517,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 $rights[$k] = $right . '_' . $databox->get_sbas_id();
             }
 
-            $parm = $request->get_parms_from_serialized_datas($rights, 'values');
+            $parm = $this->unserializedRequestData($this->app['request'], $rights, 'values');
 
             foreach ($parm as $p => $v) {
                 if (trim($v) == '')
@@ -577,8 +576,6 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             return $this;
         }
 
-        $request = \http_request::getInstance();
-
         $infos = array(
             'gender'
             , 'first_name'
@@ -594,7 +591,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             , 'fax'
         );
 
-        $parm = $request->get_parms_from_serialized_datas($infos, 'user_infos');
+        $parm = $this->unserializedRequestData($this->app['request'], $infos, 'user_infos');
 
         if ($parm['email'] && !\Swift_Validate::email($parm['email'])) {
             throw new \Exception_InvalidArgument(_('Email addess is not valid'));
@@ -757,5 +754,19 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             $ACL->revoke_access_from_bases($base_ids);
             $ACL->revoke_unused_sbas_rights();
         }
+    }
+
+    private function unserializedRequestData(Request $request, array $indexes, $requestIndex)
+    {
+        $parameters = $data = array();
+        parse_str($request->get($requestIndex), $data);
+
+        if (count($data) > 0) {
+            foreach ($indexes as $index) {
+                $parameters[$index] = isset($data[$index]) ? $data[$index] : null;
+            }
+        }
+
+        return $parameters;
     }
 }
