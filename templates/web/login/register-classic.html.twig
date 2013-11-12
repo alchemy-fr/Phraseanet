@@ -59,17 +59,19 @@
                         {% endif %}
                     {% endfor %}
 
-                    <div class="row-fluid">
-                        <div class="span12">
-                            {% set label %}
-                                <a target="_blank" href="{{ path("login_cgus") }}">
-                                    {% trans "I have read the terms of use" %}
-                                </a>
-                            {% endset %}
+                    {%  if has_terms_of_use %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {% set label %}
+                                    <a target="_blank" href="{{ path("login_cgus") }}">
+                                        {% trans "I have read the terms of use" %}
+                                    </a>
+                                {% endset %}
 
-                            {{ auth_macro.checkboxInput(form['accept-tou'], label) }}
+                                {{ auth_macro.checkboxInput(form['accept-tou'], label) }}
+                            </div>
                         </div>
-                    </div>
+                    {%  endif %}
 
                     {# form.collections is not defined if current instance is configured with auto collection selection #}
                     {% if form.collections is defined %}

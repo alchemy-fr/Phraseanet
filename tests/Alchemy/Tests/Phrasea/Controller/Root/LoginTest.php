@@ -20,6 +20,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public static $login;
     public static $email;
 
+    private static $termsOfUse;
+
     public function setUp()
     {
         parent::setUp();
@@ -43,6 +45,46 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         if (null === self::$email) {
             self::$email = self::$DI['user']->get_email();
         }
+    }
+
+    public function testRegisterWithNoTou()
+    {
+        $this->logout(self::$DI['app']);
+        $this->disableTOU();
+        self::$DI['client']->followRedirects();
+        $crawler = self::$DI['client']->request('GET', '/login/register-classic');
+        $this->assertEquals(0, $crawler->filter('a[href="'.self::$DI['app']->path('login_cgus').'"]')->count());
+        $this->resetTOU();
+    }
+
+    public function testRegisterWithTou()
+    {
+        $this->logout(self::$DI['app']);
+        $this->enableTOU();
+        self::$DI['client']->followRedirects();
+        $crawler = self::$DI['client']->request('GET', '/login/register-classic');
+        $this->assertEquals(2, $crawler->filter('a[href="'.self::$DI['app']->path('login_cgus').'"]')->count());
+        $this->resetTOU();
+    }
+
+    public function testRegisterWithAutoSelect()
+    {
+        $this->logout(self::$DI['app']);
+        $gvAutoSelectDb = !! self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB');
+        self::$DI['app']['phraseanet.registry']->set('GV_autoselectDB', false, \registry::TYPE_BOOLEAN);
+        $crawler = self::$DI['client']->request('GET', '/login/register-classic/');
+        $this->assertEquals(1, $crawler->filter('select[name="collections[]"]')->count());
+        self::$DI['app']['phraseanet.registry']->set('GV_autoselectDB', $gvAutoSelectDb, \registry::TYPE_BOOLEAN);
+    }
+
+    public function testRegisterWithNoAutoSelect()
+    {
+        $this->logout(self::$DI['app']);
+        $gvAutoSelectDb = !! self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB');
+        self::$DI['app']['phraseanet.registry']->set('GV_autoselectDB', true, \registry::TYPE_BOOLEAN);
+        $crawler = self::$DI['client']->request('GET', '/login/register-classic/');
+        $this->assertEquals(0, $crawler->filter('select[name="collections[]"]')->count());
+        self::$DI['app']['phraseanet.registry']->set('GV_autoselectDB', $gvAutoSelectDb, \registry::TYPE_BOOLEAN);
     }
 
     public function testLoginAlreadyAthenticated()
@@ -70,9 +112,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->logout(self::$DI['app']);
         self::$DI['app']->addFlash($type, $message);
-
         $crawler = self::$DI['client']->request('GET', '/login/');
-
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $this->assertFlashMessage($crawler, $type, 1, $message);
@@ -86,7 +126,6 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->logout(self::$DI['app']);
         self::$DI['client']->request('GET', '/login/register-confirm/');
         $response = self::$DI['client']->getResponse();
-
         $this->assertTrue($response->isRedirect());
         $this->assertFlashMessagePopulated(self::$DI['app'], 'error', 1);
         $this->assertEquals('/login/', $response->headers->get('location'));
@@ -496,7 +535,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     /**
      * @dataProvider provideInvalidRegistrationData
      */
-    public function testPostRegisterbadArguments($parameters, $extraParameters, $errors)
+    public function testPostRegisterBadArguments($parameters, $extraParameters, $errors, $type)
     {
         self::$DI['app']['registration.enabled'] = true;
         self::$DI['app']['registration.fields'] = $extraParameters;
@@ -520,8 +559,15 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             unset($parameters['collections']);
         }
 
-        $crawler = self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
+        if (false === self::$DI['app']->hasTermsOfUse()) {
+            unset($parameters['accept-tou']);
 
+            if ('tou' === $type) {
+                $errors = 0;
+            }
+        }
+
+        $crawler = self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
         $this->assertFormOrFlashError($crawler, $errors);
     }
@@ -532,7 +578,18 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request('POST', '/login/register-classic/');
 
         $this->assertFalse(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertFormOrFlashError($crawler, self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB') ? 7 : 8);
+
+        $nbErrors = 8;
+
+        if (self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+            $nbErrors--;
+        }
+
+        if (false === self::$DI['app']->hasTermsOfUse()) {
+            $nbErrors--;
+        }
+
+        $this->assertFormOrFlashError($crawler, $nbErrors);
     }
 
     public function provideInvalidRegistrationData()
@@ -545,7 +602,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     ),
                     "accept-tou"      => '1',
                     "collections"     => null,
-                ), array(), 1),
+                ), array(), 1, ''),
             array(array(//required extra-field missing
                     "password" => array(
                         'password' => 'password',
@@ -559,7 +616,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                         'name'     => 'login',
                         'required' => true,
                     )
-                ), 1),
+                ), 1, ''),
             array(array(//password mismatch
                     "password" => array(
                         'password' => 'password',
@@ -568,7 +625,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
+                ), array(), 1, ''),
             array(array(//password tooshort
                     "password" => array(
                         'password' => 'min',
@@ -577,7 +634,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     "email"           => $this->generateEmail(),
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
+                ), array(), 1, ''),
             array(array(//email invalid
                     "password" => array(
                         'password' => 'password',
@@ -586,7 +643,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     "email"           => 'invalid.email',
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
+                ), array(), 1, ''),
             array(array(//login exists
                     "login"           => null,
                     "password" => array(
@@ -601,7 +658,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                         'name'     => 'login',
                         'required' => true,
                     )
-                ), 1),
+                ), 1, ''),
             array(array(//mails exists
                     "password" => array(
                         'password' => 'password',
@@ -610,7 +667,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     "email"           => null,
                     "accept-tou"      => '1',
                     "collections"     => null
-                ), array(), 1),
+                ), array(), 1, ''),
             array(array(//tou declined
                     "password" => array(
                         'password' => 'password',
@@ -618,7 +675,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     ),
                     "email"           => $this->generateEmail(),
                     "collections"     => null
-                ), array(), 1)
+                ), array(), 1, 'tou')
         );
     }
 
@@ -955,6 +1012,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             unset($parameters['collections']);
         }
 
+        if (false === self::$DI['app']->hasTermsOfUse()) {
+            unset($parameters['accept-tou']);
+        }
+
         self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
 
         if (false === $userId = \User_Adapter::get_usr_id_from_email(self::$DI['app'], $parameters['email'])) {
@@ -1006,8 +1067,12 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
         }
 
-        if ( self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
+        if (self::$DI['app']['phraseanet.registry']->get('GV_autoselectDB')) {
             unset($parameters['collections']);
+        }
+
+        if (false === self::$DI['app']->hasTermsOfUse()) {
+            unset($parameters['accept-tou']);
         }
 
         self::$DI['client']->request('POST', '/login/register-classic/', $parameters);
@@ -1752,5 +1817,51 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     private function generateEmail()
     {
         return \random::generatePassword() . '_email@email.com';
+    }
+
+    private function disableTOU()
+    {
+        if (null === self::$termsOfUse) {
+            self::$termsOfUse = array();
+            foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+                self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
+
+                foreach( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
+                    $databox->update_cgus($lng, '', false);
+                }
+            }
+        }
+    }
+
+    private function enableTOU()
+    {
+        if (null === self::$termsOfUse) {
+            self::$termsOfUse = array();
+            foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+                self::$termsOfUse[$databox->get_sbas_id()] = $databox->get_cgus();
+
+                foreach( self::$termsOfUse[$databox->get_sbas_id()]as $lng => $tou) {
+                    $databox->update_cgus($lng, 'something', false);
+                }
+            }
+        }
+    }
+
+    private function resetTOU()
+    {
+        if (null === self::$termsOfUse) {
+            return;
+        }
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+            if (!isset(self::$termsOfUse[$databox->get_sbas_id()])) {
+                continue;
+            }
+            $tous = self::$termsOfUse[$databox->get_sbas_id()];
+            foreach ($tous as $lng => $tou) {
+                $databox->update_cgus($lng, $tou['value'], false);
+            }
+        }
+
+        self::$termsOfUse = null;
     }
 }
