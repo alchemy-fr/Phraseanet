@@ -98,20 +98,20 @@ var p4 = p4 || {};
             var texte = '<p>' + language.confirmRemoveReg + '</p><div><input type="checkbox" onchange="toggleRemoveReg(this);"/>' + language.hideMessage + '</div>';
             $('body').append('<div id="DIALOG-baskets"></div>');
             $("#DIALOG-baskets").attr('title', language.removeTitle)
-            .empty()
-            .append(texte)
-            .dialog({
-                autoOpen: false,
-                closeOnEscape: true,
-                resizable: false,
-                draggable: false,
-                modal: true,
-                buttons: buttons,
-                overlay: {
-                    backgroundColor: '#000',
-                    opacity: 0.7
-                }
-            }).dialog('open');
+                .empty()
+                .append(texte)
+                .dialog({
+                    autoOpen: false,
+                    closeOnEscape: true,
+                    resizable: false,
+                    draggable: false,
+                    modal: true,
+                    buttons: buttons,
+                    overlay: {
+                        backgroundColor: '#000',
+                        opacity: 0.7
+                    }
+                }).dialog('open');
             return;
         }
 
@@ -145,11 +145,11 @@ var p4 = p4 || {};
                         if (selectedItemIndex === 0 && carouselItemLength > 1) {
                             // click next item
                             selectedItem.next().find("img").trigger("click");
-                        // item is last item and list has at least 2 items
+                            // item is last item and list has at least 2 items
                         } else if (carouselItemLength > 1 && selectedItemIndex === (carouselItemLength - 1)) {
                             // click previous item
                             selectedItem.prev().find("img").trigger("click");
-                        // Basket is empty
+                            // Basket is empty
                         } else if (carouselItemLength > 1) {
                             // click next item
                             selectedItem.next().find("img").trigger("click");
@@ -236,24 +236,24 @@ var p4 = p4 || {};
         }
 
         $(".SSTT, .content", cache)
-                .droppable({
-            scope: 'objects',
-            hoverClass: 'baskDrop',
-            tolerance: 'pointer',
-            accept: function(elem) {
-                if ($(elem).hasClass('CHIM'))  {
-                    if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
-                        return false;
+            .droppable({
+                scope: 'objects',
+                hoverClass: 'baskDrop',
+                tolerance: 'pointer',
+                accept: function(elem) {
+                    if ($(elem).hasClass('CHIM'))  {
+                        if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
+                            return false;
+                        }
                     }
+                    if ($(elem).hasClass('grouping') || $(elem).parent()[0] === $(this)[0])
+                        return false;
+                    return true;
+                },
+                drop: function(event, ui) {
+                    dropOnBask(event, ui.draggable, $(this));
                 }
-                if ($(elem).hasClass('grouping') || $(elem).parent()[0] === $(this)[0])
-                    return false;
-                return true;
-            },
-            drop: function(event, ui) {
-                dropOnBask(event, ui.draggable, $(this));
-            }
-        });
+            });
 
         if ($('#basketcontextwrap').length === 0)
             $('body').append('<div id="basketcontextwrap"></div>');
@@ -312,8 +312,8 @@ var p4 = p4 || {};
                 $('a.WorkZoneElementRemover', dest).bind('mousedown', function(event) {
                     return false;
                 }).bind('click', function(event) {
-                    return WorkZoneElementRemover($(this), false);
-                });
+                        return WorkZoneElementRemover($(this), false);
+                    });
 
                 dest.droppable({
                     accept: function(elem) {
@@ -339,10 +339,10 @@ var p4 = p4 || {};
                 dest.find('.CHIM').draggable({
                     helper: function() {
                         $('body').append('<div id="dragDropCursor" ' +
-                                'style="position:absolute;z-index:9999;background:red;' +
-                                '-moz-border-radius:8px;-webkit-border-radius:8px;">' +
-                                '<div style="padding:2px 5px;font-weight:bold;">' +
-                                p4.WorkZone.Selection.length() + '</div></div>');
+                            'style="position:absolute;z-index:9999;background:red;' +
+                            '-moz-border-radius:8px;-webkit-border-radius:8px;">' +
+                            '<div style="padding:2px 5px;font-weight:bold;">' +
+                            p4.WorkZone.Selection.length() + '</div></div>');
                         return $('#dragDropCursor');
                     },
                     scope: "objects",
@@ -356,7 +356,7 @@ var p4 = p4 || {};
                     start: function(event, ui) {
                         var baskets = $('#baskets');
                         baskets.append('<div class="top-scroller"></div>' +
-                                '<div class="bottom-scroller"></div>');
+                            '<div class="bottom-scroller"></div>');
                         $('.bottom-scroller', baskets).bind('mousemove', function() {
                             $('#baskets .bloc').scrollTop($('#baskets .bloc').scrollTop() + 30);
                         });
@@ -366,8 +366,8 @@ var p4 = p4 || {};
                     },
                     stop: function() {
                         $('#baskets').find('.top-scroller, .bottom-scroller')
-                                .unbind()
-                                .remove();
+                            .unbind()
+                            .remove();
                     },
                     drag: function(event, ui) {
                         if (is_ctrl_key(event) || $(this).closest('.content').hasClass('grouping'))
@@ -572,13 +572,13 @@ var p4 = p4 || {};
 
                     frame.data('openwidth', frame.width());
                     frame.animate({width: 100},
-                    300,
-                            'linear',
-                            function() {
-                                answerSizer();
-                                linearize();
-                                $('#answers').trigger('resize');
-                            });
+                        300,
+                        'linear',
+                        function() {
+                            answerSizer();
+                            linearize();
+                            $('#answers').trigger('resize');
+                        });
                     frame.addClass('closed');
                     $('.escamote', frame).hide();
                     $('li.ui-tabs-selected', frame).removeClass('ui-tabs-selected');

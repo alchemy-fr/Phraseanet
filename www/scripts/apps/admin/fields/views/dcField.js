@@ -38,5 +38,5 @@ define([
         }
     });
 
-   return DcFieldsView;
+    return DcFieldsView;
 });

@@ -17,9 +17,9 @@ define([
 ], function($, _, i18n, Backbone, bootstrap, FormView) {
     var PasswordSetterForm = FormView.extend({
         events: function(){
-           return _.extend({},FormView.prototype.events,{
-               'keyup input[type=password]' : 'onPasswordKeyup'
-           });
+            return _.extend({},FormView.prototype.events,{
+                'keyup input[type=password]' : 'onPasswordKeyup'
+            });
         },
         onPasswordKeyup : function(event) {
             var input = $(event.target);

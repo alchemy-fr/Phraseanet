@@ -52,11 +52,11 @@ $(document).ready(function() {
         saveBtn.show();
         // wrapp current calback in an input
         input
-        .empty()
-        .wrapInner(''
-            + '<input value = "'+inputVal+'"'
-            + ' name="oauth_callback" size="50" type="text"/>'
-        );
+            .empty()
+            .wrapInner(''
+                + '<input value = "'+inputVal+'"'
+                + ' name="oauth_callback" size="50" type="text"/>'
+            );
 
         $(".url_callback").die();
 
@@ -71,9 +71,9 @@ $(document).ready(function() {
                 data :{callback : callback},
                 success : function(data) {
                     if(data.success) {
-                       input.empty().append(callback);
+                        input.empty().append(callback);
                     } else {
-                       input.empty().append(inputVal);
+                        input.empty().append(inputVal);
                     }
                 }
             });

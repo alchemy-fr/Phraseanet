@@ -32,7 +32,7 @@ define([
     ModalView,
     SaveView,
     DcFieldView
-) {
+    ) {
     var expect = chai.expect;
     var assert = chai.assert;
     var should = chai.should();
@@ -176,14 +176,14 @@ define([
             describe("DcField Views", function() {
                 beforeEach(function() {
                     this.collection = new DcFieldCollection([{
-                            "label": "Contributor",
-                            "definition": "An entity responsible for making contributions to the resource.",
-                            "URI": "http://dublincore.org/documents/dces/#contributor"
-                        }, {
-                            "label": "Coverage",
-                            "definition": "The spatial or temporal topic of the resource, the spatial applicability of the resource,\n                          or the jurisdiction under which the resource\n                          is relevant.",
-                            "URI": "http://dublincore.org/documents/dces/#coverage"
-                        }
+                        "label": "Contributor",
+                        "definition": "An entity responsible for making contributions to the resource.",
+                        "URI": "http://dublincore.org/documents/dces/#contributor"
+                    }, {
+                        "label": "Coverage",
+                        "definition": "The spatial or temporal topic of the resource, the spatial applicability of the resource,\n                          or the jurisdiction under which the resource\n                          is relevant.",
+                        "URI": "http://dublincore.org/documents/dces/#coverage"
+                    }
                     ]);
 
                     var model = new FieldModel({"id": 1, "sbas-id": sbasId, "name": "Categorie", "tag": "XMP:Categorie"});
@@ -236,7 +236,7 @@ define([
                 });
 
                 it("should not render an error message if provided tag is empty", function() {
-                   var view =  this.view.render();
+                    var view =  this.view.render();
 
                     view.$('input#tag').val("").blur();
 

@@ -138,15 +138,15 @@ define([
                     AdminFieldApp.fieldsCollection.add(field);
                     _.last(AdminFieldApp.fieldListView.itemViews).clickAction().animate();
 
-                   new AlertView({alert: "info", message: i18n.t("created_success", {
-                            postProcess: "sprintf",
-                            sprintf: [field.get("name")]
-                        })
+                    new AlertView({alert: "info", message: i18n.t("created_success", {
+                        postProcess: "sprintf",
+                        sprintf: [field.get("name")]
+                    })
                     }).render();
                 },
                 error: function(xhr, textStatus, errorThrown) {
                     new AlertView({
-                        alert: "error", message: '' !== xhr.responseText ? xhr.responseText : i18n.t("something_wrong")}
+                            alert: "error", message: '' !== xhr.responseText ? xhr.responseText : i18n.t("something_wrong")}
                     ).render();
 
                     self.toggleCreateFormAction();
