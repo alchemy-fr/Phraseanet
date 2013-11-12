@@ -10,7 +10,7 @@
 define([
     "underscore",
     "backbone"
-], function(_, Backbone) {
+], function (_, Backbone) {
     var VocabularyModel = Backbone.Model.extend({
         urlRoot: function () {
             return "/admin/fields/vocabularies";

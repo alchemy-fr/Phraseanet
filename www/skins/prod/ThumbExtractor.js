@@ -1,15 +1,15 @@
 ;
-(function(document){
+(function (document) {
 
     /*****************
      * Canva Object
      *****************/
-    var Canva = function(domCanva){
+    var Canva = function (domCanva) {
         this.domCanva = domCanva;
     };
 
     Canva.prototype = {
-        resize : function(elementDomNode){
+        resize: function (elementDomNode) {
             var w = elementDomNode.getWidth();
             var maxH = elementDomNode.getHeight();
 
@@ -20,7 +20,7 @@
 
                 if (h > maxH) {
                     var h = maxH;
-                    var w =  Math.round(h * ratio);
+                    var w = Math.round(h * ratio);
                 }
             } else {
                 var h = maxH;
@@ -31,10 +31,9 @@
 
             return this;
         },
-        getContext2d : function(){
+        getContext2d: function () {
 
-            if (undefined === this.domCanva.getContext)
-            {
+            if (undefined === this.domCanva.getContext) {
                 return G_vmlCanvasManager
                     .initElement(this.domCanva)
                     .getContext("2d");
@@ -42,13 +41,13 @@
 
             return this.domCanva.getContext('2d');
         },
-        extractImage : function(){
+        extractImage: function () {
             return this.domCanva.toDataURL("image/png");
         },
-        reset : function(){
+        reset: function () {
             var context = this.getContext2d();
             var w = this.getWidth();
-            var h =  this.getHeight();
+            var h = this.getHeight();
 
             context.save();
             context.setTransform(1, 0, 0, 1, 0, 0);
@@ -57,7 +56,7 @@
 
             return this;
         },
-        copy : function(elementDomNode){
+        copy: function (elementDomNode) {
             var context = this.getContext2d();
 
             context.drawImage(
@@ -70,13 +69,13 @@
 
             return this;
         },
-        getDomElement : function(){
+        getDomElement: function () {
             return this.domCanva;
         },
-        getHeight : function(){
+        getHeight: function () {
             return this.domCanva.offsetHeight;
         },
-        getWidth : function(){
+        getWidth: function () {
             return this.domCanva.offsetWidth;
         }
     };
@@ -85,18 +84,18 @@
     /******************
      *  Image Object
      ******************/
-    var Image = function(domElement){
+    var Image = function (domElement) {
         this.domElement = domElement;
     };
 
     Image.prototype = {
-        getDomElement : function(){
+        getDomElement: function () {
             return this.domElement;
         },
-        getHeight : function(){
+        getHeight: function () {
             return this.domElement.offsetHeight;
         },
-        getWidth : function(){
+        getWidth: function () {
             return this.domElement.offsetWidth;
         }
     };
@@ -105,45 +104,45 @@
      *  Video Object inherits from Image object
      ******************/
 
-    var Video = function(domElement){
+    var Video = function (domElement) {
         Image.call(this, domElement);
         this.aspectRatio = domElement.getAttribute('data-ratio');
     };
 
     Video.prototype = new Image();
     Video.prototype.constructor = Video;
-    Video.prototype.getCurrentTime = function(){
+    Video.prototype.getCurrentTime = function () {
         return Math.floor(this.domElement.currentTime);
     };
-    Video.prototype.getAspectRatio = function(){
+    Video.prototype.getAspectRatio = function () {
         return this.aspectRatio;
     };
 
     /******************
      *  Cache Object
      ******************/
-    var Store = function(){
+    var Store = function () {
         this.datas = {};
     };
 
     Store.prototype = {
-        set : function(id, item){
+        set: function (id, item) {
             this.datas[id] = item;
             return this;
         },
-        get : function(id){
-            if(!this.datas[id]){
+        get: function (id) {
+            if (!this.datas[id]) {
                 throw 'Unknown ID';
             }
             return this.datas[id];
         },
-        remove : function(id) {
+        remove: function (id) {
             delete this.datas[id];
         },
-        getLength : function(){
+        getLength: function () {
             var count = 0;
-            for (var k in this.datas){
-                if (this.datas.hasOwnProperty(k)){
+            for (var k in this.datas) {
+                if (this.datas.hasOwnProperty(k)) {
                     ++count;
                 }
             }
@@ -154,7 +153,7 @@
     /******************
      *  Screenshot Object
      ******************/
-    var ScreenShot = function(id, canva, video){
+    var ScreenShot = function (id, canva, video) {
 
         var date = new Date();
 
@@ -168,16 +167,16 @@
     };
 
     ScreenShot.prototype = {
-        getId:function(){
+        getId: function () {
             return this.id;
         },
-        getDataURI: function(){
+        getDataURI: function () {
             return this.dataURI;
         },
-        getTimeStamp: function(){
+        getTimeStamp: function () {
             return this.timestamp;
         },
-        getVideoTime : function(){
+        getVideoTime: function () {
             return this.videoTime;
         }
     };
@@ -185,7 +184,7 @@
     /**
      * THUMB EDITOR
      */
-    var ThumbEditor = function(videoId, canvaId){
+    var ThumbEditor = function (videoId, canvaId) {
 
         var domElement = document.getElementById(videoId);
 
@@ -194,18 +193,18 @@
         }
         var store = new Store();
 
-        function getCanva(){
+        function getCanva() {
             return document.getElementById(canvaId);
         }
 
         return {
-            isSupported : function () {
+            isSupported: function () {
                 var elem = document.createElement('canvas');
 
-                return !! document.getElementById(videoId) && document.getElementById(canvaId)
-                    && !! elem.getContext && !! elem.getContext('2d');
+                return !!document.getElementById(videoId) && document.getElementById(canvaId)
+                    && !!elem.getContext && !!elem.getContext('2d');
             },
-            screenshot : function(){
+            screenshot: function () {
                 var screenshot = new ScreenShot(
                     store.getLength() + 1,
                     new Canva(getCanva()),
@@ -216,8 +215,8 @@
 
                 return screenshot;
             },
-            store : store,
-            copy: function(elementDomNode){
+            store: store,
+            copy: function (elementDomNode) {
                 var element = new Image(elementDomNode);
                 var editorCanva = new Canva(getCanva());
                 editorCanva
@@ -225,15 +224,15 @@
                     .resize(editorVideo)
                     .copy(element);
             },
-            getCanvaImage : function(){
+            getCanvaImage: function () {
                 var canva = new Canva(getCanva());
                 return canva.extractImage();
             },
-            resetCanva : function(){
+            resetCanva: function () {
                 var editorCanva = new Canva(getCanva());
                 editorCanva.reset();
             },
-            getNbScreenshot : function(){
+            getNbScreenshot: function () {
                 return store.getLength();
             }
         };

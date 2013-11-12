@@ -16,13 +16,13 @@ define([
     "common/multiviews",
     "apps/admin/fields/views/listRow",
     "apps/admin/fields/views/create"
-], function($, jqueryui, _, Backbone, i18n, MultiViews, FieldListRowView, CreateView) {
+], function ($, jqueryui, _, Backbone, i18n, MultiViews, FieldListRowView, CreateView) {
     var FieldListView = Backbone.View.extend(_.extend({}, MultiViews, {
         events: {
             "keyup #live_search": "searchAction",
             "update-sort": "updateSortAction"
         },
-        initialize: function() {
+        initialize: function () {
             var self = this;
             // store all single rendered views
             this.itemViews = [];
@@ -40,9 +40,9 @@ define([
             this.collection.bind("remove", this._onRemove, this);
             this.collection.bind("remove", this.render, this);
 
-            AdminFieldApp.errorManager.on('add-error', function(error) {
+            AdminFieldApp.errorManager.on('add-error', function (error) {
                 var model = error.model;
-                var itemView = _.find(self.itemViews, function(view) {
+                var itemView = _.find(self.itemViews, function (view) {
                     return model.get('id') === view.model.get('id');
                 });
 
@@ -51,8 +51,8 @@ define([
                 }
             });
 
-            AdminFieldApp.errorManager.on('remove-error', function(model) {
-                var itemView = _.find(self.itemViews, function(view) {
+            AdminFieldApp.errorManager.on('remove-error', function (model) {
+                var itemView = _.find(self.itemViews, function (view) {
                     return model.get('id') === view.model.get('id');
                 });
 
@@ -61,7 +61,7 @@ define([
                 }
             });
         },
-        render: function() {
+        render: function () {
             var template = _.template($("#item_list_view_template").html());
 
             this.$el.empty().html(template);
@@ -71,7 +71,7 @@ define([
             this._renderList(this.collection);
 
             this._assignView({
-                ".create-subview" : new CreateView()
+                ".create-subview": new CreateView()
             });
 
             AdminFieldApp.resizeListBlock();
@@ -79,13 +79,13 @@ define([
             return this;
         },
         // render list by appending single item view, also fill itemViews
-        _renderList: function(fields) {
+        _renderList: function (fields) {
             var that = this;
 
             this.$listEl.empty();
             this.itemViews = [];
 
-            fields.each(function(field) {
+            fields.each(function (field) {
                 var fieldErrors = AdminFieldApp.errorManager.getModelError(field);
 
                 var singleView = new FieldListRowView({
@@ -100,10 +100,10 @@ define([
             this.$listEl.sortable({
                 handle: ".handle",
                 placeholder: "item-list-placeholder",
-                start: function(event, ui) {
+                start: function (event, ui) {
                     ui.item.addClass("border-bottom");
                 },
-                stop: function(event, ui) {
+                stop: function (event, ui) {
                     ui.firstItemPosition = $("li:first", $(this).sortable('widget')).position().top;
                     ui.item.trigger("drop", ui);
                 }
@@ -115,14 +115,14 @@ define([
 
             return this;
         },
-        searchAction: function(event) {
+        searchAction: function (event) {
             this._renderList(this.collection.search($("#live_search", this.$el).val()));
 
             return this;
         },
-        _onRemove : function (model) {
+        _onRemove: function (model) {
             var models = [];
-            this.collection.each(function(m) {
+            this.collection.each(function (m) {
                 if (m.get("sorter") > model.get("sorter")) {
                     m.set("sorter", m.get("sorter") - 1);
                 }
@@ -132,7 +132,7 @@ define([
 
             this.collection.reset(models);
         },
-        updateSortAction: function(event, model, ui) {
+        updateSortAction: function (event, model, ui) {
             var newPosition = ui.item.index();
             this.collection.remove(model, {silent: true});
             this.collection.each(function (model, index) {
@@ -145,7 +145,7 @@ define([
 
             this.itemViews[0].animate(Math.abs(ui.firstItemPosition));
             // update edit view model
-            AdminFieldApp.fieldEditView.updateModel(this.collection.find(function(el) {
+            AdminFieldApp.fieldEditView.updateModel(this.collection.find(function (el) {
                 return el.get("id") === AdminFieldApp.fieldEditView.model.get("id");
             }));
 

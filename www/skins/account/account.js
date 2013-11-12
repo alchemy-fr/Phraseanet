@@ -1,16 +1,16 @@
-$(document).ready(function() {
+$(document).ready(function () {
     // revoke third party application access
-    $("a.app-btn").bind("click", function(e) {
+    $("a.app-btn").bind("click", function (e) {
         e.preventDefault();
         var $this = $(this);
         $.ajax({
-            type:"GET",
-            url : $this.attr("href"),
+            type: "GET",
+            url: $this.attr("href"),
             dataType: 'json',
-            data : {revoke : $this.hasClass("authorize") ? 1 : 0},
-            success : function(data) {
-                if(data.success) {
-                    var li =  $this.closest('li');
+            data: {revoke: $this.hasClass("authorize") ? 1 : 0},
+            success: function (data) {
+                if (data.success) {
+                    var li = $this.closest('li');
 
                     var hidden = $('.app-btn.hidden , .status.hidden', li);
                     var notHidden = $('.app-btn:not(.hidden), .status:not(.hidden)', li);
@@ -23,18 +23,18 @@ $(document).ready(function() {
     });
 
     // generate new access token
-    $("a#generate_access").bind("click", function(e) {
+    $("a#generate_access").bind("click", function (e) {
         e.preventDefault();
         var $this = $(this);
         $.ajax({
-            type:"POST",
-            url : $this.attr("href"),
+            type: "POST",
+            url: $this.attr("href"),
             dataType: 'json',
-            data : {
-                usr_id : $this.closest("div").attr("id")
+            data: {
+                usr_id: $this.closest("div").attr("id")
             },
-            success : function(data){
-                if(data.success) {
+            success: function (data) {
+                if (data.success) {
                     $("#my_access_token").empty().append(data.token);
                 }
             }
@@ -42,7 +42,7 @@ $(document).ready(function() {
     });
 
     //modify application callback url
-    $(".modifier_callback").bind("click", function() {
+    $(".modifier_callback").bind("click", function () {
         var modifierBtn = $(this);
         var saveBtn = $("a.save_callback");
         var input = $(".url_callback_input");
@@ -54,23 +54,23 @@ $(document).ready(function() {
         input
             .empty()
             .wrapInner(''
-                + '<input value = "'+inputVal+'"'
+                + '<input value = "' + inputVal + '"'
                 + ' name="oauth_callback" size="50" type="text"/>'
             );
 
         $(".url_callback").die();
 
         // save new callback
-        saveBtn.bind("click", function(e) {
+        saveBtn.bind("click", function (e) {
             e.preventDefault();
             var callback = $("input[name=oauth_callback]").val();
             $.ajax({
-                type:"POST",
-                url : saveBtn.attr("href"),
+                type: "POST",
+                url: saveBtn.attr("href"),
                 dataType: 'json',
-                data :{callback : callback},
-                success : function(data) {
-                    if(data.success) {
+                data: {callback: callback},
+                success: function (data) {
+                    if (data.success) {
                         input.empty().append(callback);
                     } else {
                         input.empty().append(inputVal);
@@ -81,8 +81,8 @@ $(document).ready(function() {
     });
 
     // hide or show callback url input whether user choose a web or dektop application
-    $("#form_create input[name=type]").bind("click", function() {
-        if($(this).val() === "desktop") {
+    $("#form_create input[name=type]").bind("click", function () {
+        if ($(this).val() === "desktop") {
             $("#form_create .callback td").hide().find("input").val('');
         } else {
             $("#form_create .callback td").show();
@@ -90,30 +90,31 @@ $(document).ready(function() {
     });
 
     // authorize password grant type or not
-    $('.grant-type').bind('click', function(){
+    $('.grant-type').bind('click', function () {
         var $this = $(this);
         $.ajax({
-            type:"POST",
-            url : $this.attr("value") ,
+            type: "POST",
+            url: $this.attr("value"),
             dataType: 'json',
-            data : {grant : $this.is(":checked") ? "1": "0"},
-            success : function(data){}
+            data: {grant: $this.is(":checked") ? "1" : "0"},
+            success: function (data) {
+            }
         });
     });
 
     // delete an application
-    $("a.delete-app").bind("click", function(e) {
+    $("a.delete-app").bind("click", function (e) {
         e.preventDefault();
         var $this = $(this);
         var li = $this.closest("li");
 
         $.ajax({
-            type:"DELETE",
-            url : $this.attr('href'),
+            type: "DELETE",
+            url: $this.attr('href'),
             dataType: 'json',
-            data : {},
-            success : function(data){
-                if(data.success) {
+            data: {},
+            success: function (data) {
+                if (data.success) {
                     li.find('.modal').modal('hide');
                     li.remove();
                 }

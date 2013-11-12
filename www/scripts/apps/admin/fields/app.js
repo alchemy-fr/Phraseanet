@@ -19,19 +19,17 @@ define([
     "apps/admin/fields/views/save",
     "apps/admin/fields/views/fieldError",
     "apps/admin/fields/errors/errorManager"
-], function(
-    $, _, Backbone, i18n, FieldsCollection, VocabulariesCollection,
-    DcFieldsCollection, FieldListView, SaveView, FieldErrorView, ErrorManager) {
-    var initialize = function() {
+], function ($, _, Backbone, i18n, FieldsCollection, VocabulariesCollection, DcFieldsCollection, FieldListView, SaveView, FieldErrorView, ErrorManager) {
+    var initialize = function () {
         AdminFieldApp = {
-            $window         : $(window),
-            $scope          : $("#admin-field-app"),
-            $top            : $(".row-top", this.$scope),
-            $bottom         : $(".row-bottom", this.$scope),
-            $leftBlock      : $(".left-block", this.$bottom),
-            $rightBlock     : $(".right-block", this.$bottom),
-            fieldsToDelete  : [],
-            lng             : function() {
+            $window: $(window),
+            $scope: $("#admin-field-app"),
+            $top: $(".row-top", this.$scope),
+            $bottom: $(".row-bottom", this.$scope),
+            $leftBlock: $(".left-block", this.$bottom),
+            $rightBlock: $(".right-block", this.$bottom),
+            fieldsToDelete: [],
+            lng: function () {
                 return typeof p4 === "undefined" ? "en" : (p4.lng || "en");
             },
             resizeListBlock: function () {
@@ -56,7 +54,7 @@ define([
 
         // initiliaze collections
         AdminFieldApp.fieldsCollection = new FieldsCollection(null, {
-            sbas_id : AdminFieldApp.sbas_id
+            sbas_id: AdminFieldApp.sbas_id
         });
         AdminFieldApp.vocabularyCollection = new VocabulariesCollection();
         AdminFieldApp.dcFieldsCollection = new DcFieldsCollection();
@@ -71,12 +69,12 @@ define([
                 AdminFieldApp.dcFieldsCollection.fetch(),
                 $.ajax({
                     url: '/available-languages',
-                    success: function(languages) {
+                    success: function (languages) {
                         AdminFieldApp.languages = languages;
                     }
                 })
             ]).done(
-            function() {
+            function () {
                 // register views
                 AdminFieldApp.saveView = new SaveView({
                     el: $(".save-block", AdminFieldApp.scope)
@@ -96,7 +94,7 @@ define([
                 AdminFieldApp.$window.trigger("resize");
 
                 // click on first item list
-                if (AdminFieldApp.fieldListView.itemViews.length > 0 ) {
+                if (AdminFieldApp.fieldListView.itemViews.length > 0) {
                     _.first(AdminFieldApp.fieldListView.itemViews).clickAction().animate();
                 }
             }

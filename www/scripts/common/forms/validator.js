@@ -11,8 +11,8 @@ define([
     "jquery",
     "underscore",
     "backbone"
-], function($, _, Backbone) {
-    var FormValidator = function(rules, handlers) {
+], function ($, _, Backbone) {
+    var FormValidator = function (rules, handlers) {
         // rules setted by user
         this.rules = rules || [];
         // custom callbacks
@@ -22,7 +22,7 @@ define([
 
         var self = this;
 
-        _.each(this.rules, function(field) {
+        _.each(this.rules, function (field) {
             if ("name" in field && "rules" in field) {
                 self._addField(field);
             }
@@ -30,16 +30,16 @@ define([
     };
 
     // Validate method, argument is the serialize form
-    FormValidator.prototype.validate = function(inputs) {
+    FormValidator.prototype.validate = function (inputs) {
         var self = this;
         // possible errors
         this.errors = [];
         // inputs present in form
         this.inputs = {};
 
-        _.each(_.groupBy(inputs, function(input){
+        _.each(_.groupBy(inputs, function (input) {
             return input.name;
-        }), function(fields, name) {
+        }), function (fields, name) {
             self.inputs[name] = fields;
         });
 
@@ -48,19 +48,19 @@ define([
         return this;
     };
 
-    FormValidator.prototype.getErrors = function() {
+    FormValidator.prototype.getErrors = function () {
         return this.errors;
     };
 
-    FormValidator.prototype.hasErrors = function() {
+    FormValidator.prototype.hasErrors = function () {
         return this.errors.length > 0;
     };
 
-    FormValidator.prototype.getRules = function() {
+    FormValidator.prototype.getRules = function () {
         return this.rules;
     };
 
-    FormValidator.prototype._addField = function(field) {
+    FormValidator.prototype._addField = function (field) {
         this.fields.push({
             name: field.name,
             rules: field.rules,
@@ -70,15 +70,15 @@ define([
         });
     };
 
-    FormValidator.prototype._validateForm = function() {
+    FormValidator.prototype._validateForm = function () {
         var self = this;
         this.errors = [];
-        _.each(this.fields, function(field){
+        _.each(this.fields, function (field) {
             if (_.has(self.inputs, field.name)) {
                 // values can be multiple
                 var values = [];
 
-                _.each(self.inputs[field.name], function(field){
+                _.each(self.inputs[field.name], function (field) {
                     return values.push(field.value);
                 });
 
@@ -92,13 +92,13 @@ define([
         });
     };
 
-    FormValidator.prototype._validateField = function(field) {
+    FormValidator.prototype._validateField = function (field) {
         var self = this;
         var ruleRegex = /^(.+?)\[(.+)\]$/;
         var rules = field.rules.split('|');
 
         // Run through the rules and execute the validation methods as needed
-        _.every(rules, function(method) {
+        _.every(rules, function (method) {
             var param = null;
             var failed = false;
             var parts = ruleRegex.exec(method);
@@ -141,32 +141,32 @@ define([
     };
 
     FormValidator.prototype.Regexp = {
-        numericRegex : /^[0-9]+$/,
-        integerRegex : /^\-?[0-9]+$/,
-        decimalRegex : /^\-?[0-9]*\.?[0-9]+$/,
-        emailRegex : /^[^@]+@[^@]+\.[^@]+$/,
-        alphaRegex : /^[a-z]+$/i,
-        alphaNumericRegex : /^[a-z0-9]+$/i,
-        alphaDashRegex : /^[a-z0-9_\-]+$/i,
-        naturalRegex : /^[0-9]+$/i,
-        naturalNoZeroRegex : /^[1-9][0-9]*$/i,
+        numericRegex: /^[0-9]+$/,
+        integerRegex: /^\-?[0-9]+$/,
+        decimalRegex: /^\-?[0-9]*\.?[0-9]+$/,
+        emailRegex: /^[^@]+@[^@]+\.[^@]+$/,
+        alphaRegex: /^[a-z]+$/i,
+        alphaNumericRegex: /^[a-z0-9]+$/i,
+        alphaDashRegex: /^[a-z0-9_\-]+$/i,
+        naturalRegex: /^[0-9]+$/i,
+        naturalNoZeroRegex: /^[1-9][0-9]*$/i,
         // IP v6 a v4 or hostname, by Mikulas Dite see http://stackoverflow.com/a/9209720/96656
-        ipRegex : /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^(?:(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){6})(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:::(?:(?:(?:[0-9a-fA-F]{1,4})):){5})(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})))?::(?:(?:(?:[0-9a-fA-F]{1,4})):){4})(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,1}(?:(?:[0-9a-fA-F]{1,4})))?::(?:(?:(?:[0-9a-fA-F]{1,4})):){3})(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,2}(?:(?:[0-9a-fA-F]{1,4})))?::(?:(?:(?:[0-9a-fA-F]{1,4})):){2})(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,3}(?:(?:[0-9a-fA-F]{1,4})))?::(?:(?:[0-9a-fA-F]{1,4})):)(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,4}(?:(?:[0-9a-fA-F]{1,4})))?::)(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,5}(?:(?:[0-9a-fA-F]{1,4})))?::)(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,6}(?:(?:[0-9a-fA-F]{1,4})))?::))))$/i,
-        numericDashRegex : /^[\d\-\s]+$/,
-        urlRegex : /^((http|https):\/\/(\w+:{0,1}\w*@)?(\S+)|)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/
+        ipRegex: /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^(?:(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){6})(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:::(?:(?:(?:[0-9a-fA-F]{1,4})):){5})(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})))?::(?:(?:(?:[0-9a-fA-F]{1,4})):){4})(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,1}(?:(?:[0-9a-fA-F]{1,4})))?::(?:(?:(?:[0-9a-fA-F]{1,4})):){3})(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,2}(?:(?:[0-9a-fA-F]{1,4})))?::(?:(?:(?:[0-9a-fA-F]{1,4})):){2})(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,3}(?:(?:[0-9a-fA-F]{1,4})))?::(?:(?:[0-9a-fA-F]{1,4})):)(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,4}(?:(?:[0-9a-fA-F]{1,4})))?::)(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,5}(?:(?:[0-9a-fA-F]{1,4})))?::)(?:(?:[0-9a-fA-F]{1,4})))|(?:(?:(?:(?:(?:(?:[0-9a-fA-F]{1,4})):){0,6}(?:(?:[0-9a-fA-F]{1,4})))?::))))$/i,
+        numericDashRegex: /^[\d\-\s]+$/,
+        urlRegex: /^((http|https):\/\/(\w+:{0,1}\w*@)?(\S+)|)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/
     };
 
     // Object containing all of the validation hooks
     FormValidator.prototype._hooks = {
-        "required": function(field) {
+        "required": function (field) {
             var value = field.value;
 
             return (value !== null && value !== '');
         },
-        "equal": function(field, defaultName) {
+        "equal": function (field, defaultName) {
             return field.value === defaultName;
         },
-        "matches": function(field, matchName) {
+        "matches": function (field, matchName) {
             if (typeof this.inputs[matchName] === "undefined") {
                 return false;
             }
@@ -179,10 +179,10 @@ define([
 
             return false;
         },
-        "valid_email": function(field) {
+        "valid_email": function (field) {
             return this.Regexp.emailRegex.test(field.value);
         },
-        "valid_emails": function(field) {
+        "valid_emails": function (field) {
             var result = field.value.split(",");
 
             for (var i = 0; i < result.length; i++) {
@@ -193,9 +193,11 @@ define([
 
             return true;
         },
-        "min_length": function(field, length) {
+        "min_length": function (field, length) {
             if (field.type === "multiple") {
-                return _.filter(field.value.split(","), function(value){ return value !== ""; }).length >= parseInt(length, 10)
+                return _.filter(field.value.split(","),function (value) {
+                    return value !== "";
+                }).length >= parseInt(length, 10)
             }
 
             if (!this.Regexp.numericRegex.test(length)) {
@@ -204,9 +206,11 @@ define([
 
             return (field.value.length >= parseInt(length, 10));
         },
-        "max_length": function(field, length) {
+        "max_length": function (field, length) {
             if (field.type === "multiple") {
-                return _.filter(field.value.split(","), function(value){ return value !== ""; }).length <= parseInt(length, 10)
+                return _.filter(field.value.split(","),function (value) {
+                    return value !== "";
+                }).length <= parseInt(length, 10)
             }
 
             if (!this.Regexp.numericRegex.test(length)) {
@@ -215,9 +219,11 @@ define([
 
             return (field.value.length <= parseInt(length, 10));
         },
-        "exact_length": function(field, length) {
+        "exact_length": function (field, length) {
             if (field.type === "multiple") {
-                return _.filter(field.value.split(","), function(value){ return value !== ""; }).length === parseInt(length, 10)
+                return _.filter(field.value.split(","),function (value) {
+                    return value !== "";
+                }).length === parseInt(length, 10)
             }
 
             if (!this.Regexp.numericRegex.test(length)) {
@@ -226,48 +232,48 @@ define([
 
             return (field.value.length === parseInt(length, 10));
         },
-        "greater_than": function(field, param) {
+        "greater_than": function (field, param) {
             if (!this.Regexp.decimalRegex.test(field.value)) {
                 return false;
             }
 
             return (parseFloat(field.value) > parseFloat(param));
         },
-        "less_than": function(field, param) {
+        "less_than": function (field, param) {
             if (!this.Regexp.decimalRegex.test(field.value)) {
                 return false;
             }
 
             return (parseFloat(field.value) < parseFloat(param));
         },
-        "alpha": function(field) {
+        "alpha": function (field) {
             return (this.Regexp.alphaRegex.test(field.value));
         },
-        "alpha_numeric": function(field) {
+        "alpha_numeric": function (field) {
             return (this.Regexp.alphaNumericRegex.test(field.value));
         },
-        "alpha_dash": function(field) {
+        "alpha_dash": function (field) {
             return (this.Regexp.alphaDashRegex.test(field.value));
         },
-        "numeric": function(field) {
+        "numeric": function (field) {
             return (this.Regexp.numericRegex.test(field.value));
         },
-        "integer": function(field) {
+        "integer": function (field) {
             return (this.Regexp.integerRegex.test(field.value));
         },
-        "decimal": function(field) {
+        "decimal": function (field) {
             return (this.Regexp.decimalRegex.test(field.value));
         },
-        "is_natural": function(field) {
+        "is_natural": function (field) {
             return (this.Regexp.naturalRegex.test(field.value));
         },
-        "is_natural_no_zero": function(field) {
+        "is_natural_no_zero": function (field) {
             return (this.Regexp.naturalNoZeroRegex.test(field.value));
         },
-        "valid_ip": function(field) {
+        "valid_ip": function (field) {
             return (this.Regexp.ipRegex.test(field.value));
         },
-        "valid_url": function(field) {
+        "valid_url": function (field) {
             return (this.Regexp.urlRegex.test(field.value));
         }
     };

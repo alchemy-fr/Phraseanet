@@ -10,7 +10,7 @@
 define([
     "jquery",
     "underscore"
-], function($, _) {
+], function ($, _) {
 
     var Error = function (model, fieldId, message) {
         this.model = model;

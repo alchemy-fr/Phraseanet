@@ -12,24 +12,27 @@ require([
     "i18n",
     "apps/login/home/common",
     "common/forms/views/form"
-], function($, i18n, Common, ForgotPassWordForm) {
+], function ($, i18n, Common, ForgotPassWordForm) {
     Common.initialize();
 
     i18n.init({
         resGetPath: Common.languagePath,
         useLocalStorage: true
-    }, function() {
+    }, function () {
         new ForgotPassWordForm({
-            el : $("form[name=forgottenPasswordForm]"),
-            rules: [{
-                name: "email",
-                rules: "required",
-                message: i18n.t("validation_blank")
-            },{
-                name: "email",
-                rules: "valid_email",
-                message: i18n.t("validation_email")
-            }]
+            el: $("form[name=forgottenPasswordForm]"),
+            rules: [
+                {
+                    name: "email",
+                    rules: "required",
+                    message: i18n.t("validation_blank")
+                },
+                {
+                    name: "email",
+                    rules: "valid_email",
+                    message: i18n.t("validation_email")
+                }
+            ]
         });
     });
 });

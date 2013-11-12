@@ -18,7 +18,7 @@ require.config({
         bootstrap: "../skins/build/bootstrap/js/bootstrap.min"
     },
     shim: {
-        bootstrap : ["jquery"],
+        bootstrap: ["jquery"],
         jqueryui: {
             deps: ["jquery"]
         },
@@ -39,11 +39,12 @@ mocha.setup({
     globals: ['js-fixtures']
 });
 
-console = window.console || function() {};
+console = window.console || function () {
+};
 
 window.notrack = true;
 
-var runMocha = function() {
+var runMocha = function () {
     if (window.mochaPhantomJS) {
         mochaPhantomJS.run();
     } else {
