@@ -414,7 +414,7 @@ class Account implements ControllerProviderInterface
 
                 $app->addFlash('success', _('login::notification: Changements enregistres'));
                 $app['phraseanet.appbox']->get_connection()->commit();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $app->addFlash('error', _('forms::erreurs lors de l\'enregistrement des modifications'));
                 $app['phraseanet.appbox']->get_connection()->rollBack();
             }
