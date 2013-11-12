@@ -194,6 +194,6 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             return false;
         }
 
-        return $user->ACL()->has_right('addrecord');
+        return $this->app['acl']->get($user)->has_right('addrecord');
     }
 }

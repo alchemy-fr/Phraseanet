@@ -194,6 +194,6 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
             return false;
         }
 
-        return $user->ACL()->has_right('order_master');
+        return $this->app['acl']->get($user)->has_right('order_master');
     }
 }

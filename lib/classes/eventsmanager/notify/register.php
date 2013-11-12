@@ -207,10 +207,8 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             $user = \User_Adapter::getInstance($usr_id, $this->app);
         } catch (\Exception $e) {
             return false;
-        if ($this->app['acl']->get($this->app['authentication']->getUser())->has_right('manageusers')) {
-            $bool = true;
         }
 
-        return $user->ACL()->has_right('manageusers');
+        return $this->app['acl']->get($user)->has_right('manageusers');
     }
 }

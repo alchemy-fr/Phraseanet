@@ -230,6 +230,6 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
             return false;
         }
 
-        return $user->ACL()->has_right('manageusers');
+        return $this->app['acl']->get($user)->has_right('manageusers');
     }
 }

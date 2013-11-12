@@ -190,6 +190,6 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
             return false;
         }
 
-        return $user->ACL()->has_right('push');
+        return $this->app['acl']->get($user)->has_right('push');
     }
 }
